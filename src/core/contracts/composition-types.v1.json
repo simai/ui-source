@@ -249,6 +249,168 @@
                     "children"
                   ],
                   "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "badge"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "compact": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "kbd"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "text"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "icon"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "filled": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "label": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "icon"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "button"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
                 }
               ]
             },
@@ -290,7 +452,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.heading",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],
@@ -383,6 +545,168 @@
                     "children"
                   ],
                   "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "badge"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "compact": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "kbd"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "text"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "icon"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "filled": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "label": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "icon"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "const": "button"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
                 }
               ]
             },
@@ -422,7 +746,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.paragraph",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],

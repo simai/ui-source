@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "title": "Inline editor",
-  "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code and links -- and gives the host the normalised content model, never HTML.",
+  "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -354,15 +354,15 @@
       },
       {
         "path": "src/smart/inline-editor/docs.md",
-        "sha256": "6af2bce6eade9c5f3e1fee5f3466c1da613f66375296baea2e8d4b59ebd96b74"
+        "sha256": "9c0b3e8e9cf3504e9df828810c1d649096996291d80b113259dfedffca9b49e8"
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "97e90cce145c4e36dc2dfe017e661f053b32cf1f88ceb58b324e4f22996f518c"
+        "sha256": "4ecde5e1e822f9c709d24a7eb8bbf9c2e8d182a3ae3dc38932e3d36adc5f4dce"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
-        "sha256": "2d584862b57ce8e1586da111399313920dd2f0e72b5a1a19b5ba3bede6269077"
+        "sha256": "2c723569aeab51c90311b90208f52990b3a5abd6a03ef2f2b813ad76e7544663"
       }
     ],
     "generated_runtime": []

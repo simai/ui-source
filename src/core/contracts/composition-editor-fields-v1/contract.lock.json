@@ -6,13 +6,13 @@
   },
   "compatibility": {
     "editor_manifest": "simai.composition.editor-manifest.v1 unchanged",
-    "existing_fields": "layout.section, layout.columns and content.heading fields unchanged",
+    "existing_fields": "layout.section, layout.columns and content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)",
     "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:34aa81a0353a2abafce250429f722171963ea597a1cff39763fd3e1c93145b41",
+  "contractDigest": "sha256:974d88bca4cbb6075e3265454ecf9ce115b7bf79108f69f76420a503e6e57111",
   "manifests": {
-    "editor:content.heading@1.0.0": "sha256:452bc1a0065f29c40c232d86e9e5588fd5e0c913600ab345d78dbe8e23fbf02c",
+    "editor:content.heading@1.1.0": "sha256:1276721858634c130a8f74f9e0e3f1928c6f2a70f4ff044375a62c12e03a1edb",
     "editor:layout.columns@1.0.0": "sha256:24c7fa4dc173efa6bb86507aaeea8d99cfaed7a58c0f0d25643fc66d8afd956b",
     "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
     "editor:layout.section@1.0.0": "sha256:9cc6a6c2cde719d55de567f2474a038f5cff27adad927f261929ec7a21f96073",
@@ -22,10 +22,10 @@
     "field-kind:toggle@1": "sha256:c44dc5e62c2f45154497a89710fcb889670feb60c1659064fb72ef9ccca04d5c"
   },
   "normativeFiles": {
-    "README.md": "sha256:8d26b4a95d021a37824324cc263c5cabcaa74cbda9aa364e249dcf97e3b2d36d",
-    "fixtures/field-kinds.json": "sha256:1edbb8a2307b395554c44a3573d2c948feae4f4812f47ad9dae11a5b46e9de2a"
+    "README.md": "sha256:659434665869b7b6627c6bbb17922c99a4ac1876ff922d0452d5059504479a8e",
+    "fixtures/field-kinds.json": "sha256:ba5fcf5fc152a3cb5dfbf7f1c4c02b56bbb8ff9642c3f999cfe15c86df507a48"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

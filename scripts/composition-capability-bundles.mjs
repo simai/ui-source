@@ -56,13 +56,13 @@ export const BUNDLES = Object.freeze([
   {
     directory: 'composition-editor-fields-v1',
     capability: 'simai.composition.editor-fields',
-    version: '1.0.0',
+    version: '1.0.1',
     status: 'owner-accepted-candidate',
     compatibility: {
       editor_manifest: 'simai.composition.editor-manifest.v1 unchanged',
       registry: 'additive layout.region entry in composition-editor-manifests.v1.json',
       field_kinds: 'new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json',
-      existing_fields: 'layout.section, layout.columns and content.heading fields unchanged',
+      existing_fields: 'layout.section, layout.columns and content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)',
     },
     schemas: [],
     entries: () => [...kinds(), ...editors('layout.region', 'layout.section', 'layout.columns', 'content.heading')],

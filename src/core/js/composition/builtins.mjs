@@ -1,6 +1,10 @@
+import { inlineComponentSchemas } from './inline-model.mjs';
 import { REGION_ACCEPTS, REGION_LANDMARKS, REGION_PLACEMENTS } from './regions.mjs';
 import { schemaFields } from './schema-name.mjs';
 
+// Text runs, links of text runs, and since content.heading and
+// content.paragraph 1.1.0 the inline component atoms: one shape per declared
+// name, never inside a link and without marks.
 const inlineContentSchema = {
   type: 'array',
   items: {
@@ -46,6 +50,7 @@ const inlineContentSchema = {
           },
         },
       },
+      ...inlineComponentSchemas(),
     ],
   },
 };
@@ -131,7 +136,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.heading',
-    version: '1.0.0',
+    version: '1.1.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -154,7 +159,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.paragraph',
-    version: '1.0.0',
+    version: '1.1.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -342,7 +347,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'content.heading',
-    type_version: '1.0.0',
+    type_version: '1.1.0',
     fields: [
       {
         key: 'level',
