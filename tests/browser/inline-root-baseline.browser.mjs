@@ -45,6 +45,11 @@ const server = createServer((request, response) => {
 await new Promise((ready) => server.once('listening', ready));
 const origin = `http://127.0.0.1:${server.address().port}/`;
 
+// The files of the faces the icons are set in, as the icons sheet declares them.
+const iconFaces = [...readFileSync(join(parts.component, 'icons', 'css', 'icons.min.css'), 'utf8').matchAll(/@font-face\s*\{[^}]*\}/gu)]
+  .filter(([face]) => /font-family:\s*["']?material symbols/iu.test(face))
+  .flatMap(([face]) => [...face.matchAll(/url\(["']?\.\.\/([^"')?]+)/gu)].map((match) => match[1]));
+if (!iconFaces.length) throw new Error('the icons sheet declares no icon face');
 const failures = [];
 const browser = await chromium.launch();
 const place = (page, root) => page.evaluate((root) => {
@@ -67,9 +72,11 @@ for (const item of CASES) {
   await frames(page);
   const marked = await place(page, item.root);
   await held.close();
-  // The faces in: the drawn state.
+  // The icon's face in: the drawn state. The text's faces stay out in all three
+  // states, their metrics move the line by a pixel of their own, by arrival time.
   const open = await browser.newContext({viewport: {width: 1280, height: 800}});
   const drawnPage = await open.newPage();
+  await drawnPage.route(/\.woff2?(\?|$)/u, (route) => (iconFaces.some((face) => route.request().url().endsWith(face)) ? route.continue() : route.abort()));
   await drawnPage.goto(origin, {waitUntil: 'load'});
   await mark(drawnPage);
   await drawnPage.evaluate(async () => {
