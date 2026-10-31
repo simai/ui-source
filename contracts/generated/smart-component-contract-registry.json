@@ -1162,13 +1162,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/inline-editor/smart.manifest.json",
-      "manifest_sha256": "7361757469d71e70efe210f04713138d3ccd4026c7eb16ebaa63f32092c735be",
+      "manifest_sha256": "0bf53afec26ddf23f717f9f1489c8d06fe45b88a1766585c6cb3fc2ab3097287",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code and links -- and gives the host the normalised content model, never HTML.",
+      "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
       "tags": [
         "composition",
         "editor",

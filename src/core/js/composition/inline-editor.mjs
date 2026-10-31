@@ -1,5 +1,5 @@
 import { pageText } from '../page-language.js';
-import { INLINE_MARKS, fromSegments, inlineText, marksIn, normalizeInline, replaceRange, safeHref, setLink, toSegments, toggleMark } from './inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentView, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
 // it on a rendered heading or paragraph element; the editor exposes only
@@ -39,6 +39,37 @@ const MESSAGES = {
 const SHORTCUTS = { strong: 'b', em: 'i', code: 'e' };
 const SKIP = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'HEAD', 'TITLE', 'META', 'LINK', 'IMG', 'SVG', 'OBJECT', 'IFRAME', 'NOSCRIPT']);
 const BLOCK = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TR', 'TABLE', 'BLOCKQUOTE', 'SECTION', 'ARTICLE']);
+// While editing, an atom or an opaque node is one element that is not
+// editable inside and carries its entry as JSON here, so reading the DOM back,
+// and pasting what the editor copied, return the entry exactly.
+const NODE_ATTRIBUTE = 'data-sf-inline-node';
+const ATOM_TAGS = new Map(Object.entries(INLINE_COMPONENTS).map(([name, entry]) => [entry.tag.toUpperCase(), name]));
+const isAtomElement = (node) => node?.nodeType === 1 && node.hasAttribute(NODE_ATTRIBUTE);
+
+/** The entry an atom element holds: its JSON, or for a drawn atom without it, its tag and declared attributes. */
+function atomEntry(element) {
+  const json = element.getAttribute(NODE_ATTRIBUTE);
+  if (json !== null) {
+    try {
+      const entry = JSON.parse(json);
+      // Only atoms and opaque nodes travel this way; text and links are read from the DOM.
+      if (entry && typeof entry === 'object' && !Array.isArray(entry) && typeof entry.type === 'string' && entry.type !== 'text' && entry.type !== 'link') return entry;
+    } catch { /* not ours: read the element as markup */ }
+    return null;
+  }
+  const name = ATOM_TAGS.get(element.tagName.toUpperCase());
+  if (!name) return null;
+  const declared = INLINE_COMPONENTS[name].props;
+  const props = {};
+  if (name === 'kbd') props.text = element.textContent.replace(/\s+/gu, ' ').trim();
+  else for (const [key, kind] of Object.entries(declared)) {
+    if (!element.hasAttribute(key)) continue;
+    props[key] = kind === 'boolean' ? true : element.getAttribute(key);
+  }
+  const entry = { type: 'component', name, ...(Object.keys(props).length ? { props } : {}) };
+  return isInlineComponent(entry) ? entry : null;
+}
+
 const format = (template, values) => template.replace(/\{(\w+)\}/gu, (_, key) => String(values[key] ?? ''));
 // Words in the page's language through pageText, as every component takes
 // them: the editor read <html lang> alone and offered only English or Russian,
@@ -57,6 +88,13 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
       return;
     }
     if (node.nodeType !== 1 && node.nodeType !== 11) return;
+    if (node.nodeType === 1 && node !== root) {
+      const entry = atomEntry(node);
+      if (entry) {
+        segments.push({ text: INLINE_OBJECT, marks: [], href, node: entry });
+        return;
+      }
+    }
     if (node.nodeType === 1 && SKIP.has(node.tagName.toUpperCase())) return;
     const tag = node.nodeType === 1 ? node.tagName.toUpperCase() : '';
     const next = new Set(active);
@@ -88,19 +126,33 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
   let content = fromSegments(segments.map((segment) => ({ ...segment, marks: segment.marks.filter((mark) => allowed.has(mark)), href: links ? segment.href : null })));
   if (collapse) {
     const flat = toSegments(content);
-    if (flat.length) {
-      flat[0] = { ...flat[0], text: flat[0].text.replace(/^ +/u, '') };
-      flat[flat.length - 1] = { ...flat.at(-1), text: flat.at(-1).text.replace(/ +$/u, '') };
-    }
+    if (flat.length && !flat[0].node) flat[0] = { ...flat[0], text: flat[0].text.replace(/^ +/u, '') };
+    if (flat.length && !flat.at(-1).node) flat[flat.length - 1] = { ...flat.at(-1), text: flat.at(-1).text.replace(/ +$/u, '') };
     content = fromSegments(flat);
   }
   return content;
 }
 
-/** Renders inline content with the same element nesting as the Framework renderer. */
+/**
+ * Renders inline content with the same element nesting as the Framework
+ * renderer. An atom draws its component's element, an opaque node a
+ * placeholder; both are not editable inside and carry their entry.
+ */
 export function renderInlineDom(doc, content) {
   const fragment = doc.createDocumentFragment();
+  const object = (entry) => {
+    const view = inlineComponentView(entry);
+    const element = doc.createElement(view ? view.tag : 'span');
+    if (view) {
+      for (const [name, value] of view.attributes) element.setAttribute(name, value);
+      if (view.text) element.textContent = view.text;
+    } else element.textContent = INLINE_OBJECT;
+    element.setAttribute('contenteditable', 'false');
+    element.setAttribute(NODE_ATTRIBUTE, JSON.stringify(entry));
+    return element;
+  };
   const run = (entry) => {
+    if (entry.type !== 'text') return object(entry);
     let node = doc.createTextNode(entry.value);
     for (const mark of entry.marks || []) {
       const wrapper = doc.createElement(mark);
@@ -120,39 +172,60 @@ export function renderInlineDom(doc, content) {
   return fragment;
 }
 
-function textNodes(root) {
-  const walker = root.ownerDocument.createTreeWalker(root, 4);
-  const nodes = [];
-  while (walker.nextNode()) nodes.push(walker.currentNode);
-  return nodes;
+// The units of offset inside root, in document order: text nodes outside
+// atoms, and atom elements, which hold one unit each.
+function units(root) {
+  const list = [];
+  const visit = (node) => {
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) list.push(child);
+      else if (isAtomElement(child)) list.push(child);
+      else if (child.nodeType === 1) visit(child);
+    }
+  };
+  visit(root);
+  return list;
 }
+const unitLength = (unit) => (unit.nodeType === 3 ? unit.nodeValue.length : 1);
 
-/** Character offset of a DOM position inside root, counted over text nodes. */
+/** Offset of a DOM position inside root: characters of text nodes, one per atom. */
 export function textOffset(root, container, offset) {
   const range = root.ownerDocument.createRange();
   range.setStart(root, 0);
   range.setEnd(container, offset);
-  return range.toString().length;
+  let total = 0;
+  for (const unit of units(root)) {
+    if (unit === container) return total + offset;
+    // A unit counts once its end is inside [root start, position].
+    const [parent, index] = unit.nodeType === 3 ? [unit, unit.nodeValue.length] : [unit.parentNode, [...unit.parentNode.childNodes].indexOf(unit) + 1];
+    if (range.comparePoint(parent, index) !== 0) break;
+    total += unitLength(unit);
+  }
+  return total;
 }
 
-function setSelection(root, start, end = start) {
+// The DOM position of an offset: inside a text node where one holds it, else
+// beside the atom, so the caret never lands inside one.
+function locate(root, offset) {
+  let total = 0;
+  const list = units(root);
+  for (const unit of list) {
+    if (unit.nodeType === 3) {
+      if (offset <= total + unit.nodeValue.length) return [unit, offset - total];
+    } else if (offset <= total) return [unit.parentNode, [...unit.parentNode.childNodes].indexOf(unit)];
+    total += unitLength(unit);
+  }
+  const last = list.at(-1);
+  if (!last) return [root, 0];
+  return last.nodeType === 3 ? [last, last.nodeValue.length] : [last.parentNode, [...last.parentNode.childNodes].indexOf(last) + 1];
+}
+
+/** Selects from anchor to focus (focus may come first: a backward selection). */
+function setSelection(root, anchor, focus = anchor) {
   const selection = root.ownerDocument.getSelection();
-  const nodes = textNodes(root);
-  const locate = (offset) => {
-    let total = 0;
-    for (const node of nodes) {
-      if (offset <= total + node.nodeValue.length) return [node, offset - total];
-      total += node.nodeValue.length;
-    }
-    return nodes.length ? [nodes.at(-1), nodes.at(-1).nodeValue.length] : [root, 0];
-  };
-  const range = root.ownerDocument.createRange();
-  const [startNode, startOffset] = locate(start);
-  const [endNode, endOffset] = locate(end);
-  range.setStart(startNode, startOffset);
-  range.setEnd(endNode, endOffset);
-  selection.removeAllRanges();
-  selection.addRange(range);
+  const [anchorNode, anchorOffset] = locate(root, anchor);
+  const [focusNode, focusOffset] = locate(root, focus);
+  selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
 
 /**
@@ -179,7 +252,7 @@ export function startInlineEdit(element, options = {}) {
   const read = () => readInlineDom(element, { marks, links });
   const selectionOffsets = () => {
     const selection = doc.getSelection();
-    if (!selection?.rangeCount || !element.contains(selection.anchorNode)) return [inlineText(read()).length, inlineText(read()).length];
+    if (!selection?.rangeCount || !element.contains(selection.anchorNode)) return [inlineLength(read()), inlineLength(read())];
     const range = selection.getRangeAt(0);
     return [textOffset(element, range.startContainer, range.startOffset), textOffset(element, range.endContainer, range.endOffset)];
   };
@@ -350,7 +423,7 @@ export function startInlineEdit(element, options = {}) {
   element.setAttribute('aria-label', format(text.editing, { label: options.label || '' }).replace(/^: /u, ''));
   element.replaceChildren(renderInlineDom(doc, initial));
   element.focus();
-  setSelection(element, inlineText(initial).length);
+  setSelection(element, inlineLength(initial));
   history.push({ content: initial, selection: selectionOffsets(), typing: false });
   historyIndex = 0;
 
@@ -393,14 +466,60 @@ export function startInlineEdit(element, options = {}) {
       : [{ type: 'text', value: plain.replace(/\s+/gu, ' ').trim() }];
     const inserted = toSegments(parsed);
     const [start, end] = selectionOffsets();
-    const length = inserted.reduce((sum, segment) => sum + segment.text.length, 0);
+    const length = inlineLength(fromSegments(inserted));
     apply(replaceRange(read(), start, end, inserted), start + length, start + length);
   }, signal);
   element.addEventListener('drop', (event) => event.preventDefault(), signal);
+  // Copy and cut write the editor's own HTML, in which an atom keeps its
+  // entry, so pasting it into an inline editor gives the same atom back.
+  const copySelection = (event, remove) => {
+    const [start, end] = selectionOffsets();
+    if (start === end || !event.clipboardData) return;
+    event.preventDefault();
+    const slice = sliceInline(read(), start, end);
+    const holder = doc.createElement('div');
+    holder.append(renderInlineDom(doc, slice));
+    event.clipboardData.setData('text/html', holder.innerHTML);
+    event.clipboardData.setData('text/plain', toSegments(slice).map(({ text, node }) => (node ? (typeof node.props?.text === 'string' ? node.props.text : '') : text)).join(''));
+    if (remove) apply(replaceRange(read(), start, end, []), start, start);
+  };
+  element.addEventListener('copy', (event) => copySelection(event, false), signal);
+  element.addEventListener('cut', (event) => copySelection(event, true), signal);
+  // An atom is one caret stop: arrows step over it in one move, Backspace
+  // and Delete remove it whole. Only the moves next to an atom are taken over.
+  const stepOverAtom = (event) => {
+    const selection = doc.getSelection();
+    if (!selection?.rangeCount || event.altKey || event.ctrlKey || event.metaKey) return false;
+    const content = read();
+    const [start, end] = selectionOffsets();
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+      if (start !== end) {
+        if (!toSegments(sliceInline(content, start, end)).some(({ node }) => node)) return false;
+        apply(replaceRange(content, start, end, []), start, start);
+        return true;
+      }
+      const at = event.key === 'Backspace' ? start - 1 : start;
+      if (at < 0 || !objectAt(content, at)) return false;
+      apply(replaceRange(content, at, at + 1, []), at, at);
+      return true;
+    }
+    const rtl = globalThis.getComputedStyle(element).direction === 'rtl';
+    const forward = (event.key === 'ArrowRight') !== rtl;
+    const anchor = textOffset(element, selection.anchorNode, selection.anchorOffset);
+    const focus = textOffset(element, selection.focusNode, selection.focusOffset);
+    if (!event.shiftKey && anchor !== focus) return false;
+    const next = forward ? focus + 1 : focus - 1;
+    if (!objectAt(content, forward ? focus : focus - 1)) return false;
+    setSelection(element, event.shiftKey ? anchor : next, next);
+    updateToolbar();
+    return true;
+  };
   element.addEventListener('keydown', (event) => {
     if (event.isComposing || composing) return;
     const modifier = event.ctrlKey || event.metaKey;
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(event.key) && stepOverAtom(event)) {
+      event.preventDefault();
+    } else if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       commit();
     } else if (event.key === 'Escape') {

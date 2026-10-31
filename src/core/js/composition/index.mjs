@@ -13,7 +13,7 @@ import {
 } from './fields.mjs';
 import { Recipe, parseRecipeJson, recipeDigest, recipeNodeId, resolveRecipe } from './recipe.mjs';
 import { REGION_ELEMENTS, describeRegions, validateRegionRules } from './regions.mjs';
-import { INLINE_MARKS, inlineText, marksIn, normalizeInline, replaceRange, setLink, toggleMark } from './inline-model.mjs';
+import { INLINE_MARKS, inlineComponentView, inlineText, marksIn, normalizeInline, replaceRange, setLink, toggleMark } from './inline-model.mjs';
 import {
   ENDPOINT_EXTENSION,
   VALUE_TYPES,
@@ -402,6 +402,14 @@ function escapeHtml(value) {
 function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
+    if (inline.type !== 'text') {
+      // An atom draws its own element, its props escaped as text; anything
+      // else (validation refuses it) draws nothing rather than "undefined".
+      const view = inlineComponentView(inline);
+      if (!view) return '';
+      const attributes = view.attributes.map(([name, value]) => (value === '' ? ` ${name}` : ` ${name}="${escapeHtml(value)}"`)).join('');
+      return `<${view.tag}${attributes}>${escapeHtml(view.text)}</${view.tag}>`;
+    }
     let output = escapeHtml(inline.value);
     for (const mark of inline.marks || []) output = mark === 'strong' ? `<strong>${output}</strong>` : mark === 'em' ? `<em>${output}</em>` : `<code>${output}</code>`;
     return output;

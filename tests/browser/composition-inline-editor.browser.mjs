@@ -141,6 +141,115 @@ await page.waitForTimeout(50);
 check((await lab()).commits.at(-1)?.id === 'title', 'moving focus away commits the edit', (await lab()).commits.at(-1));
 await page.screenshot({ path: resolve(outputDir, 'inline-wide-light.png') });
 
+// Inline atoms: drawn props stay text, one caret stop, removed whole, kept by copy and paste.
+await open();
+const atoms = () => page.locator('#canvas [data-sf-composition-id="atoms"]');
+const KBD = { type: 'component', name: 'kbd', props: { text: '<script>window.lab.xss = 1</script>' } };
+const BADGE = { type: 'component', name: 'badge', props: { text: '<img src=x onerror="window.lab.xss = 2">', status: 'success' } };
+const escapedIn = () => page.evaluate(() => {
+  const element = document.querySelector('[data-sf-composition-id="atoms"]');
+  const kbd = element.querySelector('kbd');
+  const badge = element.querySelector('sf-badge');
+  return { xss: window.lab.xss ?? null, scripts: element.querySelectorAll('script, img').length, kbd: kbd?.textContent ?? null, badge: badge?.getAttribute('text') ?? null };
+});
+const published = await escapedIn();
+observations.atomsPublished = published;
+check(published.xss === null && published.scripts === 0 && published.kbd === '<script>window.lab.xss = 1</script>' && published.badge === '<img src=x onerror="window.lab.xss = 2">', 'the renderer draws atom props as text, never markup', published);
+const caret = () => page.evaluate(() => {
+  const element = document.querySelector('[data-sf-composition-id="atoms"]');
+  const selection = document.getSelection();
+  return [window.SF.InlineEditor.textOffset(element, selection.anchorNode, selection.anchorOffset), window.SF.InlineEditor.textOffset(element, selection.focusNode, selection.focusOffset)];
+});
+const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+await atoms().dblclick({ position: { x: 4, y: 4 } });
+const editing = await escapedIn();
+check(editing.xss === null && editing.scripts === 0 && editing.kbd === KBD.props.text && editing.badge === BADGE.props.text, 'while editing, atom props stay text', editing);
+check(await page.evaluate(() => [...document.querySelectorAll('[data-sf-composition-id="atoms"] [data-sf-inline-node]')].every((node) => node.getAttribute('contenteditable') === 'false')), 'atoms are not editable inside', null);
+await page.keyboard.press('Home');
+for (let index = 0; index < 8; index += 1) await page.keyboard.press('ArrowRight');
+const beforeAtom = await caret();
+await page.keyboard.press('ArrowRight');
+const afterAtom = await caret();
+await page.keyboard.press('ArrowLeft');
+const backAtom = await caret();
+observations.atomCaret = { beforeAtom, afterAtom, backAtom };
+check(same(beforeAtom, [8, 8]) && same(afterAtom, [9, 9]), 'ArrowRight steps over the atom in one move', observations.atomCaret);
+check(same(backAtom, [8, 8]), 'ArrowLeft steps back over the atom in one move', observations.atomCaret);
+await page.keyboard.press('Shift+ArrowRight');
+const selectedAtom = await caret();
+await page.keyboard.press('Shift+ArrowRight');
+const acrossAtom = await caret();
+check(same(selectedAtom, [8, 9]) && same(acrossAtom, [8, 10]), 'a selection extends over the atom and across it', { selectedAtom, acrossAtom });
+await page.keyboard.press('ControlOrMeta+b');
+value = await editorValue();
+check(same(value[1], KBD) && value.some((entry) => same(entry, { type: 'text', value: ' ', marks: ['strong'] })), 'a mark across the atom leaves the atom without marks', value);
+await page.keyboard.press('ControlOrMeta+z');
+check(same(await editorValue(), [{ type: 'text', value: 'Нажмите ' }, KBD, { type: 'text', value: ' и ' }, BADGE, { type: 'text', value: ' готово' }]), 'undo restores the content around the atom', await editorValue());
+// Typing next to the atom keeps it.
+await page.keyboard.press('Home');
+for (let index = 0; index < 9; index += 1) await page.keyboard.press('ArrowRight');
+await page.keyboard.type('X');
+value = await editorValue();
+check(same(value[1], KBD) && same(value[2], { type: 'text', value: 'X и ' }), 'typing after the atom keeps it', value);
+await page.keyboard.press('Backspace');
+check(same((await editorValue())[2], { type: 'text', value: ' и ' }), 'Backspace after typing removes the typed character only', await editorValue());
+// Backspace and Delete remove the atom whole.
+await page.keyboard.press('Backspace');
+value = await editorValue();
+check(same(value, [{ type: 'text', value: 'Нажмите  и ' }, BADGE, { type: 'text', value: ' готово' }]) && same(await caret(), [8, 8]), 'Backspace removes the atom whole', value);
+await page.keyboard.press('ControlOrMeta+z');
+check(same((await editorValue())[1], KBD), 'undo brings the atom back', await editorValue());
+await page.keyboard.press('Home');
+for (let index = 0; index < 8; index += 1) await page.keyboard.press('ArrowRight');
+await page.keyboard.press('Delete');
+value = await editorValue();
+check(same(value, [{ type: 'text', value: 'Нажмите  и ' }, BADGE, { type: 'text', value: ' готово' }]), 'Delete removes the atom whole', value);
+await page.keyboard.press('ControlOrMeta+z');
+// Copy the atom and paste it at the end: the same atom comes back.
+await page.keyboard.press('Home');
+for (let index = 0; index < 8; index += 1) await page.keyboard.press('ArrowRight');
+await page.keyboard.press('Shift+ArrowRight');
+const copied = await page.evaluate(() => {
+  const element = document.querySelector('[data-sf-composition-id="atoms"]');
+  const data = new DataTransfer();
+  element.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+  return { html: data.getData('text/html'), plain: data.getData('text/plain') };
+});
+observations.atomCopied = copied;
+check(copied.plain === KBD.props.text && copied.html.includes('data-sf-inline-node'), 'copy writes the atom with its entry', copied);
+await page.keyboard.press('End');
+await page.evaluate((html) => {
+  const data = new DataTransfer();
+  data.setData('text/html', html);
+  data.setData('text/plain', 'plain');
+  document.querySelector('[data-sf-composition-id="atoms"]').dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+}, copied.html);
+value = await editorValue();
+check(same(value.at(-1), KBD) && same(value[1], KBD) && same(value.at(-2), { type: 'text', value: ' готово' }), 'paste keeps the copied atom exactly', value);
+const pastedEditing = await escapedIn();
+check(pastedEditing.xss === null && pastedEditing.scripts === 0, 'a pasted atom draws its props as text', pastedEditing);
+await page.keyboard.press('Enter');
+const atomCommit = (await lab()).commits.at(-1);
+check(atomCommit?.id === 'atoms' && !(await lab()).refused && same(atomCommit.content.at(-1), KBD), 'the content with atoms commits and validates', atomCommit);
+const afterAtoms = await escapedIn();
+check(afterAtoms.xss === null && afterAtoms.scripts === 0, 'the saved rendering draws atom props as text', afterAtoms);
+// An entry the editor does not know comes back out unchanged.
+const opaque = await page.evaluate(() => {
+  const element = document.createElement('p');
+  document.body.append(element);
+  const entry = { type: 'mention', user: { id: 7, name: '<b>Rim</b>' } };
+  const session = window.SF.Composition.startInlineEdit(element, { content: [{ type: 'text', value: 'Привет, ' }, entry, { type: 'text', value: '!' }], nodeId: 'opaque', label: 'Абзац' });
+  const before = session.value();
+  document.execCommand('insertText', false, ' Ура');
+  const after = session.value();
+  const html = element.innerHTML;
+  session.cancel();
+  element.remove();
+  return { entry, before, after, html };
+});
+observations.opaque = opaque;
+check(same(opaque.before[1], opaque.entry) && same(opaque.after[1], opaque.entry) && opaque.after.at(-1).value === '! Ура' && !opaque.html.includes('<b>'), 'an unknown inline node survives an edit unchanged', opaque);
+
 // Dark, narrow, RTL.
 await open({ theme: 'dark', width: 390, dir: 'rtl' });
 await body().dblclick({ position: { x: 4, y: 4 } });

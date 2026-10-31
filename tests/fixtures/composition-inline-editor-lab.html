@@ -33,6 +33,8 @@
       let model = {schema: 'simai.composition.document.v1', id: 'inline', profile: 'ui-layout', root: {id: 'section', type: 'layout.section', slots: {default: [
         {id: 'title', type: 'content.heading', data: {level: 2, content: [{type: 'text', value: 'Заголовок страницы'}]}},
         {id: 'body', type: 'content.paragraph', data: {content: [{type: 'text', value: 'Первый абзац '}, {type: 'text', value: 'с пометкой', marks: ['em']}, {type: 'text', value: ' и '}, {type: 'link', href: '/help/', children: [{type: 'text', value: 'ссылкой'}]}]}},
+        // Inline atoms (content.paragraph 1.1.0); the props hold markup that must stay text.
+        {id: 'atoms', type: 'content.paragraph', data: {content: [{type: 'text', value: 'Нажмите '}, {type: 'component', name: 'kbd', props: {text: '<script>window.lab.xss = 1</script>'}}, {type: 'text', value: ' и '}, {type: 'component', name: 'badge', props: {text: '<img src=x onerror="window.lab.xss = 2">', status: 'success'}}, {type: 'text', value: ' готово'}]}},
       ]}}};
       const find = (id) => model.root.slots.default.find((node) => node.id === id);
       const draw = async () => {

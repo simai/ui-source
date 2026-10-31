@@ -1,10 +1,14 @@
-# Composition Editor Fields 1.0.0: нормативный комплект
+# Composition Editor Fields 1.0.1: нормативный комплект
 
 Комплект публикует типы полей визуального редактора и новые manifests полей.
 `simai.composition.editor-manifest.v1`, Recipe 1.0.1, Document v1 и type
 manifest v1 не меняются. Реестр типов полей —
 `composition-editor-field-kinds.v1.json` (схема записи
 `composition-editor-field-kind.v1.schema.json`). Владелец — ui-source.
+
+1.0.1: поля `content.heading` те же; manifest полей следует за типом
+`content.heading@1.1.0` (inline-атомы), поэтому в fixture и lock его
+`type_version` — 1.1.0.
 
 ## Файлы
 

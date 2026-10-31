@@ -1,11 +1,82 @@
 // Pure operations on the Composition inline content model used by
 // content.heading and content.paragraph: text runs with strong, em and code
-// marks, and links whose children are text runs. No DOM access here.
+// marks, links whose children are text runs, and inline component atoms
+// ({type: 'component', name, props}). No DOM access here.
+//
+// Every other entry -- a node from a newer producer, or an atom this model
+// does not know -- is opaque: it holds one caret stop, takes no marks, and
+// comes back out of every operation exactly as it went in. toSegments used
+// to drop such entries, so an edit next to them lost them silently.
 
 export const INLINE_MARKS = Object.freeze(['strong', 'em', 'code']);
 const MARK_ORDER = new Map(INLINE_MARKS.map((mark, index) => [mark, index]));
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
-export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048 });
+export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048, maxPropLength: 1000 });
+
+// The closed list of inline atoms. Each name draws one element; its props
+// are that component's own settings, a string (text) or a token (a name the
+// component reads from a fixed set) or a boolean. Nothing else is drawn, so
+// no prop can become an event handler or markup.
+export const INLINE_COMPONENTS = Object.freeze({
+  badge: Object.freeze({ tag: 'sf-badge', required: [], props: Object.freeze({ text: 'text', icon: 'token', appearance: 'token', scheme: 'token', status: 'token', size: 'token', compact: 'boolean' }) }),
+  kbd: Object.freeze({ tag: 'kbd', required: ['text'], props: Object.freeze({ text: 'text' }) }),
+  icon: Object.freeze({ tag: 'sf-icon', required: ['icon'], props: Object.freeze({ icon: 'token', label: 'text', size: 'token', filled: 'boolean' }) }),
+  button: Object.freeze({ tag: 'sf-button', required: [], props: Object.freeze({ text: 'text', icon: 'token', appearance: 'token', scheme: 'token', size: 'token' }) }),
+});
+const TOKEN = '^[a-z0-9][a-z0-9_/-]{0,63}$';
+const TOKEN_PATTERN = new RegExp(TOKEN, 'u');
+// The one unit an atom or an opaque node holds in segment offsets.
+export const INLINE_OBJECT = '\ufffc';
+
+/** JSON Schema of one inline atom per name, for the type manifests. */
+export function inlineComponentSchemas() {
+  const prop = (kind) => (kind === 'boolean' ? { type: 'boolean' } : kind === 'token' ? { type: 'string', pattern: TOKEN } : { type: 'string', maxLength: INLINE_LIMITS.maxPropLength });
+  return Object.entries(INLINE_COMPONENTS).map(([name, entry]) => ({
+    type: 'object',
+    required: ['type', 'name', ...(entry.required.length ? ['props'] : [])],
+    additionalProperties: false,
+    properties: {
+      type: { const: 'component' },
+      name: { const: name },
+      props: {
+        type: 'object',
+        ...(entry.required.length ? { required: [...entry.required] } : {}),
+        additionalProperties: false,
+        properties: Object.fromEntries(Object.entries(entry.props).map(([key, kind]) => [key, prop(kind)])),
+      },
+    },
+  }));
+}
+
+/** True for an atom whose name is declared and whose props are all declared and well typed. */
+export function isInlineComponent(node) {
+  const entry = node?.type === 'component' && Object.hasOwn(INLINE_COMPONENTS, node.name) ? INLINE_COMPONENTS[node.name] : null;
+  if (!entry) return false;
+  if (Object.keys(node).some((key) => !['type', 'name', 'props'].includes(key))) return false;
+  const props = node.props ?? {};
+  if (!props || typeof props !== 'object' || Array.isArray(props)) return false;
+  if (entry.required.some((key) => !(key in props))) return false;
+  return Object.entries(props).every(([key, value]) => {
+    const kind = Object.hasOwn(entry.props, key) ? entry.props[key] : null;
+    if (kind === 'boolean') return typeof value === 'boolean';
+    if (kind === 'token') return typeof value === 'string' && TOKEN_PATTERN.test(value);
+    return kind === 'text' && typeof value === 'string' && value.length <= INLINE_LIMITS.maxPropLength;
+  });
+}
+
+/** The tag and attributes an atom draws as; text is a kbd's content. Values are raw: the caller escapes. */
+export function inlineComponentView(node) {
+  if (!isInlineComponent(node)) return null;
+  const entry = INLINE_COMPONENTS[node.name];
+  const props = node.props ?? {};
+  if (node.name === 'kbd') return { tag: entry.tag, attributes: [], text: props.text };
+  const attributes = Object.keys(entry.props).filter((key) => key in props && props[key] !== false)
+    .map((key) => [key, props[key] === true ? '' : props[key]]);
+  return { tag: entry.tag, attributes, text: '' };
+}
+
+const clone = (value) => JSON.parse(JSON.stringify(value));
+const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link';
 
 /** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
 export function safeHref(value) {
@@ -23,10 +94,18 @@ function sortMarks(marks) {
   return [...new Set(marks)].filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
 }
 
-/** Flat segments: {text, marks: string[], href: string|null}. */
+/**
+ * Flat segments: {text, marks: string[], href: string|null}. An atom or an
+ * opaque node is one segment {text: INLINE_OBJECT, marks: [], href, node}
+ * that carries the entry unchanged; inside a link it keeps the link's href.
+ */
 export function toSegments(content) {
   const segments = [];
   const push = (run, href) => {
+    if (isObjectEntry(run)) {
+      segments.push({ text: INLINE_OBJECT, marks: [], href, node: clone(run) });
+      return;
+    }
     if (run?.type !== 'text' || typeof run.value !== 'string' || !run.value) return;
     segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href });
   };
@@ -39,12 +118,16 @@ export function toSegments(content) {
   return segments;
 }
 
-const sameStyle = (left, right) => left.href === right.href && left.marks.join() === right.marks.join();
+const sameStyle = (left, right) => !left.node && !right.node && left.href === right.href && left.marks.join() === right.marks.join();
 
 /** Builds normalized content: merged runs, canonical marks, no empty parts. */
 export function fromSegments(segments) {
   const merged = [];
   for (const segment of segments) {
+    if (segment.node) {
+      merged.push({ text: INLINE_OBJECT, marks: [], href: segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
+      continue;
+    }
     if (!segment.text) continue;
     const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: segment.href && safeHref(segment.href) ? segment.href : null };
     const previous = merged.at(-1);
@@ -53,7 +136,7 @@ export function fromSegments(segments) {
   }
   const content = [];
   for (const segment of merged) {
-    const run = { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
+    const run = segment.node ? clone(segment.node) : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
     const previous = content.at(-1);
     if (segment.href) {
       if (previous?.type === 'link' && previous.href === segment.href) previous.children.push(run);
@@ -67,8 +150,31 @@ export function normalizeInline(content) {
   return fromSegments(toSegments(content));
 }
 
+/** The text of the text runs; atoms and opaque nodes add nothing. */
 export function inlineText(content) {
-  return toSegments(content).map(({ text }) => text).join('');
+  return toSegments(content).filter(({ node }) => !node).map(({ text }) => text).join('');
+}
+
+/** Length in segment offsets: characters, plus one for each atom or opaque node. */
+export function inlineLength(content) {
+  return toSegments(content).reduce((sum, { text }) => sum + text.length, 0);
+}
+
+/** The atom or opaque node that holds offset [at, at + 1), or null. */
+export function objectAt(content, at) {
+  let position = 0;
+  for (const segment of toSegments(content)) {
+    if (position === at && segment.node) return segment.node;
+    position += segment.text.length;
+    if (position > at) return null;
+  }
+  return null;
+}
+
+/** The segments of [start, end), for copying. */
+export function sliceInline(content, start, end) {
+  const [from, to] = [Math.min(start, end), Math.max(start, end)];
+  return fromSegments(range(content, from, to).filter(({ inside }) => inside).map(({ segment }) => segment));
 }
 
 function split(segments, offset) {
@@ -96,7 +202,8 @@ function range(content, start, end) {
 
 /** Marks and link shared by every character in [start, end). */
 export function marksIn(content, start, end) {
-  const inside = range(content, Math.min(start, end), Math.max(start, end)).filter(({ inside: isInside }) => isInside).map(({ segment }) => segment);
+  // Atoms take no marks and no link, so they do not decide the state.
+  const inside = range(content, Math.min(start, end), Math.max(start, end)).filter(({ inside: isInside, segment }) => isInside && !segment.node).map(({ segment }) => segment);
   if (!inside.length) return { marks: [], href: null };
   const marks = INLINE_MARKS.filter((mark) => inside.every((segment) => segment.marks.includes(mark)));
   const href = inside.every((segment) => segment.href === inside[0].href) ? inside[0].href : null;
@@ -108,7 +215,7 @@ export function toggleMark(content, start, end, mark) {
   if (!MARK_ORDER.has(mark) || start === end) return normalizeInline(content);
   const [from, to] = [Math.min(start, end), Math.max(start, end)];
   const remove = marksIn(content, from, to).marks.includes(mark);
-  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside
+  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside && !segment.node
     ? { ...segment, marks: remove ? segment.marks.filter((entry) => entry !== mark) : [...segment.marks, mark] }
     : segment)));
 }
@@ -118,7 +225,8 @@ export function setLink(content, start, end, href) {
   if (href !== null && !safeHref(href)) throw new TypeError('inline_link_unsafe');
   const [from, to] = [Math.min(start, end), Math.max(start, end)];
   if (from === to) return normalizeInline(content);
-  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside ? { ...segment, href } : segment)));
+  // An atom is never nested in a link: the link stops on each side of it.
+  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside && !segment.node ? { ...segment, href } : segment)));
 }
 
 /** Replaces [start, end) with segments (typing, paste or deletion). */
@@ -136,4 +244,4 @@ export function replaceRange(content, start, end, inserted) {
   return fromSegments([...before, ...inserted, ...after]);
 }
 
-export default { INLINE_MARKS, fromSegments, inlineText, marksIn, normalizeInline, replaceRange, safeHref, setLink, toSegments, toggleMark };
+export default { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark };
