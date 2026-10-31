@@ -42,9 +42,10 @@ The value is a string of HTML limited to
 
 The value is never trusted: what the page gives (the attribute or the
 property), every paste and drop, and the editing surface after every edit go
-through the same cleaner (`js/rich-text-html.mjs`). The server must clean
-what it receives again with the same subset: a request can be written by
-anyone.
+through the same cleaner (`js/rich-text-html.mjs`, which re-exports the core
+runtime's `composition/html-subset.mjs`; the Composition renderer cleans a
+`content.html` block with it too). The server must clean what it receives
+again with the same subset: a request can be written by anyone.
 
 ## Attributes
 

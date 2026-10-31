@@ -207,6 +207,13 @@ const DRAW = {
   // Smart module. The region widths are measured by
   // tests/browser/workspace-layout.browser.mjs, in the container they follow.
   workspace: {css: [], js: [], html: '<div style="inline-size:800px;block-size:300px"><div class="sf-workspace" data-sf-workspace-panel="open"><nav class="sf-workspace-rail">R</nav><section class="sf-workspace-list">L</section><section class="sf-workspace-main">M</section><aside class="sf-workspace-panel">P</aside></div></div>'},
+  // The display parts of the structured-content types: class markup, no
+  // Smart module. A figure with a caption; a procedure of two steps, so the
+  // line between the markers is drawn (the marker is a ::before, the line an
+  // ::after).
+  card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
+  figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
+  procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -275,8 +282,8 @@ try {
         const role = roles[variable.role];
         if (!role) { answers.push({name: variable.name, role: variable.role, unmeasured: true}); continue; }
         // A part may be a pseudo-element: the accordion's divider is the
-        // header's ::after.
-        const read = () => scope.flatMap((element) => [null, '::after'].flatMap((pseudo) => role.properties.map((property) => getComputedStyle(element, pseudo).getPropertyValue(property).trim())));
+        // header's ::after, a procedure's marker a ::before.
+        const read = () => scope.flatMap((element) => [null, '::before', '::after'].flatMap((pseudo) => role.properties.map((property) => getComputedStyle(element, pseudo).getPropertyValue(property).trim())));
         const before = read();
         document.documentElement.style.setProperty(variable.name, role.value);
         const after = read();

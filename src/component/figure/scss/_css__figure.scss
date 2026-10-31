@@ -1,0 +1,81 @@
+// SIMAI Framework
+// https://simai.io
+
+// FIGURE
+//
+// An image, a video or an illustration with its caption under it. The media
+// box takes the surface radius and clips what it holds; it keeps the media's
+// own proportions unless a ratio is named, and then the media fills the box
+// (cover) or stands whole inside it (sf-figure--contain), the rest of the box
+// filled with the container role. The caption is the small text of the page.
+// content.figure renders with it, and content.media draws its picture with it.
+
+@layer sf.components {
+  .sf-figure {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-figure-gap, var(--sf-space-1\/2));
+    box-sizing: border-box;
+    min-inline-size: 0;
+    margin: var(--sf-0);
+  }
+
+  .sf-figure-media {
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+    // A container fill: dimmed text on it reads the container role.
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    background-color: var(--sf-figure-background, var(--sf-surface-container));
+    border: var(--sf-figure-border-width, var(--sf-0)) solid var(--sf-figure-border-color, var(--sf-outline-variant));
+    border-radius: var(--sf-figure-radius, var(--sf-radius--surface));
+  }
+
+  .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  .sf-figure-media > picture > img {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  .sf-figure-media > picture {
+    display: contents;
+  }
+
+  // A named ratio: the box keeps it and the media fills it.
+  .sf-figure--ratio-1x1 { --sf-figure--ratio: 1 / 1; }
+  .sf-figure--ratio-4x3 { --sf-figure--ratio: 4 / 3; }
+  .sf-figure--ratio-3x2 { --sf-figure--ratio: 3 / 2; }
+  .sf-figure--ratio-16x9 { --sf-figure--ratio: 16 / 9; }
+  .sf-figure--ratio-21x9 { --sf-figure--ratio: 21 / 9; }
+
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media {
+    aspect-ratio: var(--sf-figure--ratio);
+  }
+
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media > picture > img {
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .sf-figure.sf-figure--contain > .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  .sf-figure.sf-figure--contain > .sf-figure-media > picture > img {
+    object-fit: contain;
+  }
+
+  .sf-figure-caption {
+    margin: var(--sf-0);
+    color: var(--sf-figure-caption-color, var(--sf-on-surface-variant));
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    overflow-wrap: break-word;
+  }
+
+  @media (forced-colors: active) {
+    .sf-figure-media {
+      border-color: CanvasText;
+    }
+  }
+}

@@ -72,6 +72,10 @@ const FOLDERS = {
   lookup: 'smart/lookup',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
+  // The display parts of the structured-content types (2026-11-01): CSS only.
+  card: 'card',
+  figure: 'figure',
+  procedure: 'procedure',
 };
 
 const scss = async (folder) => {

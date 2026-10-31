@@ -130,6 +130,9 @@ const NOT_A_MANIFEST = [
   // composition type of a Smart component): a source file the build reads,
   // never the embedded manifest, which keeps no `composition`.
   {file: 'src/core/js/composition/index.mjs', read: 'name].summary'},
+  // A content.details node's summary line, a field of the node's data in a
+  // Composition Document (content types, 2026-11-01), not a component.json.
+  {file: 'src/core/js/composition/index.mjs', read: 'data.summary'},
 ];
 
 /** The dropped keys a text reads: `x.<key>`, `x?.<key>`, `x['<key>']`, `x?.['<key>']`. */

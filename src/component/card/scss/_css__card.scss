@@ -1,0 +1,45 @@
+// SIMAI Framework
+// https://simai.io
+
+// CARD
+//
+// A panel that groups a few blocks of content -- a heading, a paragraph, a
+// list, an action -- on a surface of its own: a fill, a hairline edge and the
+// surface radius. Its blocks stand in one column with one gap between them,
+// so their own outer margins are taken off. sf-card--plain keeps the column
+// and drops the surface, for a card inside a grid that needs no frame.
+// content.card renders with it.
+
+@layer sf.components {
+  .sf-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-card-gap, var(--sf-content--space-text));
+    box-sizing: border-box;
+    min-inline-size: 0;
+    padding-block: var(--sf-card-padding-block, var(--sf-space-2));
+    padding-inline: var(--sf-card-padding-inline, var(--sf-space-2));
+    color: var(--sf-card-color, var(--sf-on-surface));
+    background-color: var(--sf-card-background, var(--sf-surface-0));
+    border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
+    border-radius: var(--sf-card-radius, var(--sf-radius--surface));
+    overflow-wrap: break-word;
+  }
+
+  .sf-card > * {
+    margin-block: var(--sf-0);
+  }
+
+  .sf-card--plain {
+    padding: var(--sf-0);
+    background-color: var(--sf-transparent);
+    border-color: var(--sf-transparent);
+    border-radius: var(--sf-0);
+  }
+
+  @media (forced-colors: active) {
+    .sf-card:not(.sf-card--plain) {
+      border-color: CanvasText;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.procedure",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/procedure/docs/docs.md",
+    "src/component/procedure/index.js",
+    "src/component/procedure/rule.js",
+    "src/component/procedure/scss/_css__procedure.scss",
+    "src/component/procedure/scss/index.scss"
+  ],
+  "content_sha256": "0f35a684284dd5ddcff3a9246ceb12aed9cbbcceb9c551de5c18afc03be4ad87",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

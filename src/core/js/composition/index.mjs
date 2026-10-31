@@ -1,4 +1,5 @@
-import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
+import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
+import { sanitizeRichText } from './html-subset.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
 import { isSchema, schemaFields } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
@@ -180,6 +181,58 @@ function validateInlineContent(value, path, diagnostics) {
   }
 }
 
+// Every inline content of a node, with its path: the link rule applies to all
+// of them, wherever a type keeps text.
+function inlineFields(node, path) {
+  const data = isPlainObject(node.data) ? node.data : {};
+  const at = (key) => (Array.isArray(data[key]) ? [[data[key], `${path}.data.${key}`]] : []);
+  switch (node.type) {
+    case 'content.heading':
+    case 'content.paragraph':
+    case 'content.list-item':
+      return at('content');
+    case 'content.alert':
+    case 'content.step':
+      return at('title');
+    case 'content.details':
+      return at('summary');
+    case 'content.figure':
+      return at('caption');
+    case 'content.table':
+      return [
+        ...at('caption'),
+        ...(Array.isArray(data.rows) ? data.rows : []).flatMap((row, rowIndex) => (Array.isArray(row) ? row : [])
+          .map((cell, cellIndex) => [cell, `${path}.data.rows[${rowIndex}][${cellIndex}]`])),
+      ];
+    default:
+      return [];
+  }
+}
+
+// Content rules beyond a type's own schema: links and image sources follow the
+// Document's URL rule, an item type stands only in its own parent, and a
+// layout holds at most one outlet.
+function validateContentRules(root, diagnostics) {
+  let outlets = 0;
+  const visit = (node, path, parentType) => {
+    if (!isPlainObject(node)) return;
+    for (const [content, contentPath] of inlineFields(node, path)) validateInlineContent(content, contentPath, diagnostics);
+    if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !validUrl(node.data.src)) {
+      diagnostics.push(diagnostic('unsafe_url', `${path}.data.src`, 'Image source protocol is not allowed'));
+    }
+    const parent = CONTENT_ITEM_PARENTS[node.type];
+    if (parent && parentType !== parent) diagnostics.push(diagnostic('content_parent_invalid', path, `${node.type} must be a direct child of ${parent}`));
+    if (node.type === 'content.outlet') {
+      outlets += 1;
+      if (outlets > 1) diagnostics.push(diagnostic('outlet_duplicate', path, 'A layout holds the page content in one place'));
+    }
+    for (const [slotName, children] of Object.entries(isPlainObject(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) children.forEach((child, index) => visit(child, `${path}.slots.${slotName}[${index}]`, node.type));
+    }
+  };
+  visit(root, '$.root', null);
+}
+
 let defaultPorts = null;
 
 function normalizePorts(ports) {
@@ -304,7 +357,6 @@ export function validate(document, registry = undefined, options = {}) {
     if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
     validateJsonSchema(node.data || {}, manifest.data_schema, `${path}.data`, diagnostics);
     validateJsonSchema(node.props || {}, manifest.props_schema, `${path}.props`, diagnostics);
-    if (node.type === 'content.heading' || node.type === 'content.paragraph') validateInlineContent(node.data?.content, `${path}.data.content`, diagnostics);
     if (node.presentation !== undefined) {
       if (!isPlainObject(node.presentation)) diagnostics.push(diagnostic('presentation_invalid', `${path}.presentation`, 'Presentation must be an object'));
       else {
@@ -363,6 +415,7 @@ export function validate(document, registry = undefined, options = {}) {
   if (nodeCount > limits.maxNodes) diagnostics.push(diagnostic('node_limit', '$.root', 'Composition has too many nodes'));
   else {
     validateRegionRules(document.root, resolvedRegistry, diagnostics);
+    validateContentRules(document.root, diagnostics);
     resolveRoutes(document.root, resolvedRegistry, normalizePorts(options.ports), diagnostics);
   }
   return { valid: diagnostics.length === 0, diagnostics };
@@ -416,6 +469,79 @@ function renderInline(content) {
   }).join('');
 }
 
+const id = (node) => ` data-sf-composition-id="${escapeHtml(node.id)}"`;
+// Docara's ratio words and the figure's modifier: 16/9 is sf-figure--ratio-16x9.
+const ratioClass = (ratio) => (ratio && ratio !== 'auto' ? ` sf-figure--ratio-${ratio.replace('/', 'x')}` : '');
+const ALERT_ICONS = { neutral: 'info', info: 'info', success: 'check_circle', warning: 'warning', error: 'error' };
+const GRID_COLUMNS = {
+  1: 'grid-col-1',
+  2: 'grid-col-1 md:grid-col-2',
+  3: 'grid-col-1 md:grid-col-2 lg:grid-col-3',
+  4: 'grid-col-1 md:grid-col-2 lg:grid-col-4',
+};
+
+function renderImage(data) {
+  const size = ['width', 'height'].filter((key) => Number.isInteger(data[key])).map((key) => ` ${key}="${data[key]}"`).join('');
+  return `<img src="${escapeHtml(data.src)}" alt="${escapeHtml(data.alt)}"${size} loading="lazy" decoding="async">`;
+}
+
+function renderTable(node) {
+  const { rows } = node.data;
+  const header = node.props?.header ?? 'row';
+  const headRow = header === 'row' || header === 'both';
+  const headColumn = header === 'column' || header === 'both';
+  const align = Array.isArray(node.props?.align) ? node.props.align : [];
+  // The frame sets every cell to the start; a column set otherwise says so on
+  // its cells, with one of two fixed values.
+  const cellStyle = (index) => (align[index] === 'center' || align[index] === 'end' ? ` style="text-align: ${align[index]}"` : '');
+  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellStyle(index)}>${renderInline(content)}</${tag}>`;
+  const row = (cells, inHead) => `<tr>${cells.map((content, index) => (inHead
+    ? cell(content, index, 'th', 'col')
+    : headColumn && index === 0 ? cell(content, index, 'th', 'row') : cell(content, index, 'td', null))).join('')}</tr>`;
+  const caption = Array.isArray(node.data.caption) ? `<caption>${renderInline(node.data.caption)}</caption>` : '';
+  const head = headRow ? `<thead>${row(rows[0], true)}</thead>` : '';
+  const body = (headRow ? rows.slice(1) : rows).map((cells) => row(cells, false)).join('');
+  return `<div class="table-frame"${id(node)}><table class="table">${caption}${head}${body ? `<tbody>${body}</tbody>` : ''}</table></div>`;
+}
+
+function renderCode(node) {
+  const lang = node.props?.lang;
+  const language = lang ? ` class="language-${escapeHtml(lang)}" data-lang="${escapeHtml(lang)}"` : '';
+  const lines = node.props?.numbers === true ? ' data-lines' : '';
+  const code = `<div class="sf-highlight"${node.props?.title ? '' : id(node)}><pre><code${language}${lines}>${escapeHtml(node.data.code)}</code></pre></div>`;
+  if (!node.props?.title) return code;
+  return `<figure class="flex flex-col gap-1/2 m-0"${id(node)}><figcaption class="text-1/2 weight-5 color-on-surface-variant">${escapeHtml(node.props.title)}</figcaption>${code}</figure>`;
+}
+
+function renderTabs(node, slots) {
+  const tabs = node.slots.tabs;
+  const panels = slots.tabsList || [];
+  const label = node.data?.label ? ` aria-label="${escapeHtml(node.data.label)}"` : '';
+  // The first tab is selected; the tabs runtime adds roles, ids and keys.
+  const buttons = tabs.map((tab, index) => `<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1${index === 0 ? ' selected' : ''}"><span class="sf-button-text-container">${escapeHtml(tab.data.label)}</span></button>`).join('');
+  const bodies = tabs.map((tab, index) => `<div class="sf-tabs-main-tab${index === 0 ? ' selected' : ''}"${id(tab)}${index === 0 ? '' : ' hidden'}>${panels[index] || ''}</div>`).join('');
+  return `<div class="sf-tabs sf-tabs--underline flex flex-col"${id(node)}><div class="sf-tabs-top-container"><div class="sf-tabs-top flex"${label}>${buttons}</div></div><div class="sf-tabs-main-container">${bodies}</div></div>`;
+}
+
+function renderSteps(node, slots) {
+  const steps = node.slots.steps;
+  const items = slots.stepsList || [];
+  const current = Number.isInteger(node.props?.current) ? node.props.current : null;
+  const layout = node.props?.layout === 'list' ? ' sf-procedure--list' : '';
+  return `<ol class="sf-procedure${layout}"${id(node)}>${steps.map((step, index) => {
+    const number = index + 1;
+    const state = current === null ? '' : number < current ? ' sf-procedure-step--complete' : number === current ? ' sf-procedure-step--current' : '';
+    return `<li class="sf-procedure-step${state}"${id(step)}${current === number ? ' aria-current="step"' : ''}>${items[index] || ''}</li>`;
+  }).join('')}</ol>`;
+}
+
+function renderMedia(node, slots) {
+  const figure = `<figure class="sf-figure${ratioClass(node.props?.ratio ?? '16/9')}"><div class="sf-figure-media">${renderImage(node.data)}</div></figure>`;
+  const text = `<div class="min-w-0">${slots.default || ''}</div>`;
+  const parts = node.props?.side === 'left' ? figure + text : text + figure;
+  return `<div class="grid grid-col-1 md:grid-col-2 gap-3 items-cross-center"${id(node)}>${parts}</div>`;
+}
+
 const BUILTIN_RENDERERS = {
   'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
   'layout.section': ({ node, slots }) => `<section data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</section>`,
@@ -434,6 +560,55 @@ const BUILTIN_RENDERERS = {
     return `<${element} class="sf-composition-region" data-sf-composition-id="${escapeHtml(node.id)}" data-sf-region="${escapeHtml(props.name)}" data-sf-region-placement="${escapeHtml(props.placement ?? 'block')}"${sticky}${label}>${slots.default || ''}</${element}>`;
   },
   'layout.scope': ({ node, slots, routes }) => `<sf-composition-scope data-sf-composition-id="${escapeHtml(node.id)}" data-sf-routes="${escapeHtml(routesAttribute(routes || []))}">${slots.default || ''}</sf-composition-scope>`,
+  'content.document': ({ node, slots }) => `<article${id(node)}>${node.data?.title ? `<h1>${escapeHtml(node.data.title)}</h1>` : ''}${slots.default || ''}</article>`,
+  'content.list': ({ node, slots }) => {
+    const ordered = node.props?.ordered === true;
+    const start = ordered && Number.isInteger(node.props?.start) && node.props.start !== 1 ? ` start="${node.props.start}"` : '';
+    return `<${ordered ? 'ol' : 'ul'}${start}${id(node)}>${slots.items || ''}</${ordered ? 'ol' : 'ul'}>`;
+  },
+  'content.list-item': ({ node, slots }) => `<li${id(node)}>${renderInline(node.data.content)}${slots.default || ''}</li>`,
+  'content.quote': ({ node, slots }) => `<blockquote${id(node)}>${slots.default || ''}</blockquote>`,
+  'content.code': ({ node }) => renderCode(node),
+  'content.divider': ({ node }) => `<hr class="sf-divider sf-divider-horizontal"${id(node)}>`,
+  'content.table': ({ node }) => renderTable(node),
+  'content.figure': ({ node }) => {
+    const fit = node.props?.fit === 'contain' ? ' sf-figure--contain' : '';
+    const caption = Array.isArray(node.data.caption) ? `<figcaption class="sf-figure-caption">${renderInline(node.data.caption)}</figcaption>` : '';
+    return `<figure class="sf-figure${ratioClass(node.props?.ratio)}${fit}"${id(node)}><div class="sf-figure-media">${renderImage(node.data)}</div>${caption}</figure>`;
+  },
+  'content.alert': ({ node, slots }) => {
+    const status = node.props?.status ?? 'neutral';
+    const appearance = node.props?.appearance ?? 'default';
+    const title = Array.isArray(node.data?.title) ? `<div class="sf-alert-text">${renderInline(node.data.title)}</div>` : '';
+    const body = slots.default ? `<div class="sf-alert-supporting-text">${slots.default}</div>` : '';
+    return `<div class="sf-alert sf-alert--${status} sf-alert--${appearance} flex items-start"${id(node)}><i class="sf-icon" aria-hidden="true">${ALERT_ICONS[status]}</i><div class="sf-alert-wrap flex flex-col flex-1"><div class="sf-alert-content flex flex-col flex-1">${title}${body}</div></div></div>`;
+  },
+  // Native details: it opens and closes with no script.
+  'content.details': ({ node, slots }) => {
+    const lines = node.props?.layout === 'lines';
+    const frame = lines ? 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1' : 'bg-surface-0 border-1 border-solid border-outline-variant radius-2 p-2';
+    return `<details class="${frame}"${id(node)}${node.props?.open === true ? ' open' : ''}><summary class="weight-5 cursor-pointer">${renderInline(node.data.summary)}</summary><div class="p-top-1">${slots.default || ''}</div></details>`;
+  },
+  'content.tabs': ({ node, slots }) => renderTabs(node, slots),
+  // A tab is drawn by its tabs: the panel is theirs, the content its own.
+  'content.tab': ({ slots }) => slots.default || '',
+  'content.steps': ({ node, slots }) => renderSteps(node, slots),
+  // A step is drawn by its steps: the item is theirs, title and content its own.
+  'content.step': ({ node, slots }) => {
+    const title = Array.isArray(node.data?.title) ? `<div class="sf-procedure-title">${renderInline(node.data.title)}</div>` : '';
+    return `${title}<div class="sf-procedure-content">${slots.default || ''}</div>`;
+  },
+  'content.grid': ({ node, slots }) => {
+    const columns = GRID_COLUMNS[node.props?.columns ?? 3];
+    const gap = Number.isInteger(node.props?.gap) ? node.props.gap : 2;
+    return `<div class="grid ${columns} gap-${gap}"${id(node)}>${(slots.defaultList || []).map((child) => `<div class="min-w-0">${child}</div>`).join('')}</div>`;
+  },
+  'content.card': ({ node, slots }) => `<div class="sf-card${node.props?.variant === 'plain' ? ' sf-card--plain' : ''}"${id(node)}>${slots.default || ''}</div>`,
+  'content.media': ({ node, slots }) => renderMedia(node, slots),
+  // Cleaned at render by the html@1 subset's one rule: no script, no style, no
+  // attribute but a safe href survives.
+  'content.html': ({ node }) => `<div${id(node)}>${sanitizeRichText(node.data.markup)}</div>`,
+  'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
 };
 
 export async function render(document, context = {}) {
@@ -443,6 +618,23 @@ export async function render(document, context = {}) {
   const diagnostics = [];
   const hydration = [];
   const routes = resolveRoutes(normalized.document.root, registry, normalizePorts(context.options?.ports), []);
+  // The page's content for a layout's content.outlet: a structured-content
+  // Document, rendered with the same registry; its assets and diagnostics
+  // join the layout's.
+  let outlet = '';
+  const outletAssets = [];
+  if (context.content !== undefined) {
+    if (context.content?.profile !== 'structured-content') {
+      diagnostics.push(diagnostic('outlet_content_invalid', '$.content', 'The page content must be a structured-content Document'));
+    } else {
+      const { content, ...rest } = context;
+      const page = await render(content, rest);
+      outlet = page.html;
+      outletAssets.push(...page.assets);
+      hydration.push(...page.hydration);
+      diagnostics.push(...page.diagnostics.map((entry) => ({ ...entry, path: `$.content${entry.path.startsWith('$') ? entry.path.slice(1) : `:${entry.path}`}` })));
+    }
+  }
   const renderNode = async (node) => {
     const manifest = registry.types.get(node.type);
     const slots = {};
@@ -470,10 +662,11 @@ export async function render(document, context = {}) {
       return '';
     }
     if (node.type === 'layout.scope') hydration.push({ id: node.id, type: node.type, element: 'sf-composition-scope' });
-    return renderer({ node, slots, context, resolvedBindings, manifest, routes: routes.get(node.id), endpoint: endpointName(node) });
+    return renderer({ node, slots, context, resolvedBindings, manifest, routes: routes.get(node.id), endpoint: endpointName(node), outlet: node.type === 'content.outlet' ? outlet : undefined });
   };
   const html = await renderNode(normalized.document.root);
-  return { html, assets: normalized.dependencies.assets, hydration, diagnostics, digest: normalized.digest };
+  const assets = outletAssets.length ? [...new Set([...normalized.dependencies.assets, ...outletAssets])].sort() : normalized.dependencies.assets;
+  return { html, assets, hydration, diagnostics, digest: normalized.digest };
 }
 
 export const Composition = Object.freeze({

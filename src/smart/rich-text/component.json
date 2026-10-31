@@ -2,7 +2,7 @@
   "$comment": "The source of sf-rich-text's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
   "id": "smart.rich-text",
   "tag": "sf-rich-text",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "field",
   "settings": {

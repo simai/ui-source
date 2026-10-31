@@ -3507,6 +3507,164 @@
           "since": "2026-10-30"
         }
       ]
+    },
+    {
+      "component": "card",
+      "selector": ".sf-card",
+      "variables": [
+        {
+          "name": "--sf-card-background",
+          "role": "background",
+          "summary": "The card's fill.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-color",
+          "role": "color",
+          "summary": "The card's text.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-border-color",
+          "role": "border-color",
+          "summary": "The card's edge.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-border-width",
+          "role": "border-width",
+          "summary": "The width of the card's edge.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-radius",
+          "role": "radius",
+          "summary": "The card's corners.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-padding-block",
+          "role": "padding-block",
+          "summary": "The space above and below the content.",
+          "default": "var(--sf-space-2)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-padding-inline",
+          "role": "padding-inline",
+          "summary": "The space beside the content.",
+          "default": "var(--sf-space-2)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-gap",
+          "role": "gap",
+          "summary": "The space between the card's blocks.",
+          "default": "var(--sf-content--space-text)",
+          "since": "2026-11-01"
+        }
+      ]
+    },
+    {
+      "component": "figure",
+      "selector": ".sf-figure",
+      "variables": [
+        {
+          "name": "--sf-figure-background",
+          "role": "background",
+          "summary": "The media box's fill, seen around contained media.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-figure-border-color",
+          "role": "border-color",
+          "summary": "The media box's edge.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-figure-border-width",
+          "role": "border-width",
+          "summary": "The width of the media box's edge; none unless this is set.",
+          "default": "var(--sf-0)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-figure-radius",
+          "role": "radius",
+          "summary": "The media box's corners.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-figure-caption-color",
+          "role": "color",
+          "summary": "The caption.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-figure-gap",
+          "role": "gap",
+          "summary": "The space between the media and the caption.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-11-01"
+        }
+      ]
+    },
+    {
+      "component": "procedure",
+      "selector": ".sf-procedure",
+      "variables": [
+        {
+          "name": "--sf-procedure-marker-background",
+          "role": "background",
+          "summary": "The fill of a step's marker; a complete or current step draws its own.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-procedure-marker-color",
+          "role": "color",
+          "summary": "The number in a step's marker.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-procedure-line-color",
+          "role": "background",
+          "summary": "The line from one marker to the next.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-procedure-line-width",
+          "role": "inline-size",
+          "summary": "The width of the line between the markers.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-procedure-gap",
+          "role": "gap",
+          "summary": "The space between the steps.",
+          "default": "var(--sf-content--space-related)",
+          "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-procedure-indent",
+          "role": "gap",
+          "summary": "The space between a marker and its step's content.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-01"
+        }
+      ]
     }
   ]
 }

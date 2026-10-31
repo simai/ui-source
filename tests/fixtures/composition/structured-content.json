@@ -1,0 +1,69 @@
+{
+  "schema": "simai.composition.document",
+  "schema_version": 1,
+  "id": "content-types",
+  "profile": "structured-content",
+  "locale": "en",
+  "root": {
+    "id": "page",
+    "type": "content.document",
+    "data": {"title": "Content types"},
+    "slots": {
+      "default": [
+        {"id": "h1", "type": "content.heading", "data": {"level": 2, "content": [{"type": "text", "value": "Every content type"}]}},
+        {"id": "p1", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "A paragraph with "}, {"type": "text", "value": "code", "marks": ["code"]}, {"type": "text", "value": " and a "}, {"type": "link", "href": "#figure", "children": [{"type": "text", "value": "link"}]}, {"type": "text", "value": "."}]}},
+        {"id": "list", "type": "content.list", "props": {"ordered": true, "start": 3}, "slots": {"items": [
+          {"id": "li1", "type": "content.list-item", "data": {"content": [{"type": "text", "value": "Third, with a nested list"}]}, "slots": {"default": [
+            {"id": "list2", "type": "content.list", "slots": {"items": [
+              {"id": "li3", "type": "content.list-item", "data": {"content": [{"type": "text", "value": "Nested item"}]}}
+            ]}}
+          ]}},
+          {"id": "li2", "type": "content.list-item", "data": {"content": [{"type": "text", "value": "Fourth, with "}, {"type": "component", "name": "kbd", "props": {"text": "Enter"}}]}}
+        ]}},
+        {"id": "quote", "type": "content.quote", "slots": {"default": [
+          {"id": "qp", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "A quoted paragraph."}]}}
+        ]}},
+        {"id": "code", "type": "content.code", "data": {"code": "const answer = 42;\nconsole.log(`<${answer}>`);"}, "props": {"lang": "js", "title": "example.js", "numbers": true}},
+        {"id": "divider", "type": "content.divider"},
+        {"id": "table", "type": "content.table", "data": {"caption": [{"type": "text", "value": "Three columns"}], "rows": [
+          [[{"type": "text", "value": "Name"}], [{"type": "text", "value": "Kind"}], [{"type": "text", "value": "Count"}]],
+          [[{"type": "text", "value": "Alpha"}], [{"type": "text", "value": "Letter", "marks": ["em"]}], [{"type": "text", "value": "1"}]],
+          [[{"type": "text", "value": "Beta"}], [{"type": "text", "value": "Letter"}], [{"type": "text", "value": "2"}]]
+        ]}, "props": {"align": ["start", "start", "end"]}},
+        {"id": "figure", "type": "content.figure", "data": {"src": "./figure.svg", "alt": "A blue square", "width": 640, "height": 360, "caption": [{"type": "text", "value": "A figure with a caption."}]}, "props": {"ratio": "16/9", "fit": "contain"}},
+        {"id": "alert", "type": "content.alert", "data": {"title": [{"type": "text", "value": "Before you start"}]}, "props": {"status": "warning", "appearance": "outlined"}, "slots": {"default": [
+          {"id": "ap", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Save your work first."}]}}
+        ]}},
+        {"id": "details", "type": "content.details", "data": {"summary": [{"type": "text", "value": "More detail"}]}, "slots": {"default": [
+          {"id": "dp", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Shown when the details open."}]}}
+        ]}},
+        {"id": "tabs", "type": "content.tabs", "data": {"label": "Package managers"}, "slots": {"tabs": [
+          {"id": "tab1", "type": "content.tab", "data": {"label": "npm"}, "slots": {"default": [{"id": "t1c", "type": "content.code", "data": {"code": "npm install @simai-studio/ui"}, "props": {"lang": "bash"}}]}},
+          {"id": "tab2", "type": "content.tab", "data": {"label": "yarn"}, "slots": {"default": [{"id": "t2c", "type": "content.code", "data": {"code": "yarn add @simai-studio/ui"}, "props": {"lang": "bash"}}]}}
+        ]}},
+        {"id": "steps", "type": "content.steps", "props": {"current": 2}, "slots": {"steps": [
+          {"id": "s1", "type": "content.step", "data": {"title": [{"type": "text", "value": "Install"}]}, "slots": {"default": [{"id": "s1p", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Add the package."}]}}]}},
+          {"id": "s2", "type": "content.step", "data": {"title": [{"type": "text", "value": "Configure"}]}, "slots": {"default": [
+            {"id": "s2p", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Write the settings:"}]}},
+            {"id": "s2c", "type": "content.code", "data": {"code": "{\"theme\": \"auto\"}"}, "props": {"lang": "json"}}
+          ]}},
+          {"id": "s3", "type": "content.step", "data": {"title": [{"type": "text", "value": "Publish"}]}, "slots": {"default": [
+            {"id": "s3l", "type": "content.list", "slots": {"items": [{"id": "s3i", "type": "content.list-item", "data": {"content": [{"type": "text", "value": "Build the site."}]}}]}}
+          ]}}
+        ]}},
+        {"id": "grid", "type": "content.grid", "props": {"columns": 3, "gap": 2}, "slots": {"default": [
+          {"id": "c1", "type": "content.card", "slots": {"default": [{"id": "c1h", "type": "content.heading", "data": {"level": 4, "content": [{"type": "text", "value": "Markdown"}]}}, {"id": "c1p", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Readable source content."}]}}]}},
+          {"id": "c2", "type": "content.card", "slots": {"default": [{"id": "c2h", "type": "content.heading", "data": {"level": 4, "content": [{"type": "text", "value": "JSON"}]}}, {"id": "c2p", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Validated settings."}]}}]}},
+          {"id": "c3", "type": "content.card", "props": {"variant": "plain"}, "slots": {"default": [{"id": "c3h", "type": "content.heading", "data": {"level": 4, "content": [{"type": "text", "value": "Plain"}]}}, {"id": "c3p", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "No surface of its own."}]}}]}}
+        ]}},
+        {"id": "media", "type": "content.media", "data": {"src": "./figure.svg", "alt": "A blue square"}, "props": {"side": "left", "ratio": "4/3"}, "slots": {"default": [
+          {"id": "mh", "type": "content.heading", "data": {"level": 3, "content": [{"type": "text", "value": "Image on the left"}]}},
+          {"id": "mp", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "The text stands beside it and moves below on a phone."}]}}
+        ]}},
+        {"id": "html", "type": "content.html", "data": {"markup": "<p>Raw <strong>markup</strong> <a href=\"https://simai.io\" onclick=\"steal()\">link</a></p><script>window.__pwned = true</script><img src=x onerror=\"window.__pwned = true\">"}},
+        {"id": "diagram", "type": "content.diagram", "data": {"source": "graph LR\n  A --> B"}, "props": {"title": "Flow"}},
+        {"id": "math", "type": "content.math", "data": {"source": "e^{i\\pi} + 1 = 0"}, "props": {"label": "Euler's identity"}}
+      ]
+    }
+  }
+}

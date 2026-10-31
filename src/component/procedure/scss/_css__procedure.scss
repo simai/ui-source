@@ -1,0 +1,139 @@
+// SIMAI Framework
+// https://simai.io
+
+// PROCEDURE
+//
+// A numbered sequence of steps read from top to bottom, each of which may hold
+// rich content: paragraphs, lists, code. The number stands in a round marker
+// on the step's first line; a line runs down from each marker to the next.
+// The step's title and content stand beside the marker in one column with one
+// gap between their blocks, so the blocks' own outer margins are taken off.
+// The numbers are a CSS counter and the line a pseudo-element: no script.
+//
+// sf-procedure-step--complete fills the marker with the primary role;
+// sf-procedure-step--current rings it. sf-procedure--list drops
+// the line. content.steps renders with it. sf-steps, the indicator of where
+// a person is in a process, is another component.
+
+@layer sf.components {
+  .sf-procedure {
+    --sf-procedure--marker-size: var(--sf-ui-1\/2--control-height);
+    --sf-procedure--gap: var(--sf-procedure-gap, var(--sf-content--space-related));
+    --sf-procedure--line-width: var(--sf-procedure-line-width, var(--sf-px));
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-procedure--gap);
+    box-sizing: border-box;
+    min-inline-size: 0;
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    list-style: none;
+    counter-reset: sf-procedure;
+  }
+
+  .sf-procedure-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--sf-procedure--marker-size) minmax(0, 1fr);
+    align-content: start;
+    column-gap: var(--sf-procedure-indent, var(--sf-space-1));
+    row-gap: var(--sf-content--space-text);
+    min-inline-size: 0;
+    margin: var(--sf-0);
+    counter-increment: sf-procedure;
+  }
+
+  .sf-procedure-step::before {
+    content: counter(sf-procedure);
+    display: flex;
+    grid-column: 1;
+    grid-row: 1;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    inline-size: var(--sf-procedure--marker-size);
+    block-size: var(--sf-procedure--marker-size);
+    color: var(--sf-procedure-marker-color, var(--sf-on-surface));
+    // A container fill: dimmed text on it reads the container role.
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    background-color: var(--sf-procedure-marker-background, var(--sf-surface-container));
+    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius-circle);
+    font-size: var(--sf-text-size-1\/2);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1\/2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  // The line from this marker down to the next one: it starts under the
+  // marker and ends at the next step's top, across the gap between steps.
+  .sf-procedure-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    inset-block-start: calc(var(--sf-procedure--marker-size) + var(--sf-space-1\/4));
+    inset-block-end: calc(var(--sf-space-1\/4) - var(--sf-procedure--gap));
+    inset-inline-start: calc((var(--sf-procedure--marker-size) - var(--sf-procedure--line-width)) / 2);
+    inline-size: var(--sf-procedure--line-width);
+    background-color: var(--sf-procedure-line-color, var(--sf-outline-variant));
+  }
+
+  .sf-procedure-title,
+  .sf-procedure-content {
+    grid-column: 2;
+    min-inline-size: 0;
+  }
+
+  // The title's first line stands centred on the marker.
+  .sf-procedure-title {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--sf-procedure--marker-size);
+    font-weight: var(--sf-font-weight-medium);
+    overflow-wrap: break-word;
+  }
+
+  .sf-procedure-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-content--space-text);
+    overflow-wrap: break-word;
+  }
+
+  .sf-procedure-content > * {
+    margin-block: var(--sf-0);
+  }
+
+  // Without a title the content's first line stands beside the marker.
+  .sf-procedure-step > .sf-procedure-content:first-child {
+    grid-row: 1;
+    padding-block-start: calc((var(--sf-procedure--marker-size) - var(--sf-text--height)) / 2);
+  }
+
+  .sf-procedure-step--complete::before {
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+
+  .sf-procedure-step--current::before {
+    color: var(--sf-on-primary-container);
+    background-color: var(--sf-primary-container);
+    border-color: var(--sf-primary);
+    box-shadow: var(--sf-0) var(--sf-0) var(--sf-0) var(--sf-px) var(--sf-primary);
+  }
+
+  .sf-procedure--list > .sf-procedure-step::after {
+    content: none;
+  }
+
+  @media (forced-colors: active) {
+    .sf-procedure-step::before {
+      border-color: CanvasText;
+    }
+
+    .sf-procedure-step:not(:last-child)::after {
+      background-color: CanvasText;
+    }
+  }
+}

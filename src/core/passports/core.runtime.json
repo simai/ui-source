@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -89,6 +89,7 @@
     "src/core/js/composition/editor.mjs",
     "src/core/js/composition/fields.mjs",
     "src/core/js/composition/fragments.mjs",
+    "src/core/js/composition/html-subset.mjs",
     "src/core/js/composition/index.mjs",
     "src/core/js/composition/inline-editor.mjs",
     "src/core/js/composition/inline-model.mjs",
@@ -154,7 +155,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "89cd4bc36d3ac4cc83999610466c16bc1807af3b98af37fe5a023110a0885a68",
+  "content_sha256": "272a85412b8004f2c13802464a87b7ab038d1ffd9bf6484d652bc4ed4085dc01",
   "dependencies": [
     {
       "id": "core.styles",
