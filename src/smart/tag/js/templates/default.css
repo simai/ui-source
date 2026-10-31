@@ -1,4 +1,13 @@
 @layer sf.components {
+    /* An inline-level tag sits in its parent's line by a baseline it takes from
+       its first item, the icon. An icon's baseline depends on its state and its
+       font: font-size 0 until the runtime marks it loaded, the fallback's metrics
+       until the face arrives. Layout containment gives the icon a baseline of its
+       box, so the tag and the text under it hold still through all of it. */
+    .sf-tag .sf-tag-icon {
+        contain: layout;
+    }
+
     .sf-tag .sf-tag-action {
         appearance: none;
         margin: 0;

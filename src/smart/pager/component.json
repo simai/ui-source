@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pager's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is tab 2 of ui-control's prototypes/docara-four.html, with the owner's decisions of 2026-10-30.",
   "id": "smart.pager",
   "tag": "sf-pager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "navigation",
   "settings": {

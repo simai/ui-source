@@ -308,6 +308,13 @@
   gap: var(--sf-pager--gap);
 }
 
+/* The same inline root as sf-tag's: its baseline comes from the first arrow's
+   icon, and an icon's baseline moves with its state and its font. Layout
+   containment gives the icon a baseline of its box, so the first paint holds. */
+.sf-pager--counter .sf-icon {
+  contain: layout;
+}
+
 .sf-pager--counter .sf-pager-place {
   min-inline-size: 7ch;
   color: var(--sf-on-surface);
