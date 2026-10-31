@@ -727,7 +727,7 @@
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "088ce4d6d16103985b9624b8e226c66374085cfad9cb3ffb51562c4f7d8f750f"
+        "sha256": "e625de85b481bb99d420d24f0137b7b8858c768525a91c0c65a7766c885bbb96"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
@@ -743,7 +743,7 @@
       },
       {
         "path": "src/core/js/layer-stack.js",
-        "sha256": "2da26d10408da2e4917113e08b72839a078f1474f1985fc1ab07b17fdd094f37"
+        "sha256": "de5602e4bf8252a95dbbbe0d3af79cf4db753cce384ccd948bd3b2e64fc367c0"
       }
     ],
     "generated_runtime": []
