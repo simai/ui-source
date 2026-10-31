@@ -251,6 +251,35 @@ function writeAttribute(element, member, value) {
   element.setAttribute(member.attribute, String(value));
 }
 
+// Every setting is a property of the same name (§5.1, the model guide). A
+// component that writes its own getter for one -- to normalise what the
+// attribute says -- shadows the pair this base defines, and the setter goes
+// with it, so `element.size = '2'` changed nothing and said nothing. Measured
+// on 2026-10-31: sf-badge status, sf-dropdown size, sf-input size,
+// sf-textarea rows and sf-toast duration all dropped the value in silence, and
+// twenty-three components hold such a getter. The author's getter stays; the
+// base's setter is put back beside it, once per class, when its first element
+// is built.
+const completedAccessors = new WeakSet();
+
+function completeOwnAccessors(Class, baseProto, members) {
+  if (typeof Class !== 'function' || completedAccessors.has(Class)) return;
+  completedAccessors.add(Class);
+  for (let proto = Class.prototype; proto && proto !== baseProto; proto = Object.getPrototypeOf(proto)) {
+    for (const member of members) {
+      if (member.native || !member.writable || !member.attribute) continue;
+      const own = Object.getOwnPropertyDescriptor(proto, member.property);
+      if (!own || !own.get || own.set || !own.configurable) continue;
+      Object.defineProperty(proto, member.property, {
+        configurable: true,
+        enumerable: own.enumerable,
+        get: own.get,
+        set(value) { writeAttribute(this, member, value); },
+      });
+    }
+  }
+}
+
 function defineMembers(target, members) {
   for (const member of members) {
     // The browser's own members stay the browser's (§3.1); a component that
@@ -396,6 +425,7 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
 
     constructor() {
       super();
+      completeOwnAccessors(new.target, ManifestElement.prototype, read.members);
       this.sfInternals = formAssociated && typeof this.attachInternals === 'function' ? this.attachInternals() : null;
     }
 

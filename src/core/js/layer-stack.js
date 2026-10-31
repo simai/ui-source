@@ -337,9 +337,15 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = []} =
   if (!portal || !host?.isConnected) return;
   const doc = host.ownerDocument;
   const view = doc.defaultView;
-  const lang = host.closest('[lang]')?.getAttribute('lang') ?? doc.documentElement.getAttribute('lang') ?? '';
+  const nearest = host.closest('[lang]');
+  const lang = nearest?.getAttribute('lang') ?? doc.documentElement.getAttribute('lang') ?? '';
   if (lang) portal.setAttribute('lang', lang);
   else portal.removeAttribute('lang');
+  // Where the copy came from: the page itself, or a section that names its own
+  // language. Only the first follows SF.language.use(), which the page language
+  // does before it announces the change (simai/ui-source#55).
+  if (!nearest || nearest === doc.documentElement) portal.dataset.sfLayerLang = 'page';
+  else delete portal.dataset.sfLayerLang;
   const declared = host.closest('[dir]')?.getAttribute('dir');
   const dir = declared && declared !== 'auto' ? declared : view.getComputedStyle(host).direction;
   if (dir) portal.setAttribute('dir', dir);

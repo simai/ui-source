@@ -89,7 +89,12 @@ for (const file of files) {
     // The whole report too: the last three lines of a failure's JSON were all
     // brackets, and a probe that fails once in a long run could not be read
     // (context-menu-panel, 2026-10-18 and -19).
-    const detail = `${String(error.stdout ?? '').trim()}\n${String(error.stderr ?? '').trim()}`.trim().slice(0, 4000);
+    // The cut keeps the END: these probes print their measurements first and
+    // their verdict last, so the head is the part that says nothing (a
+    // quantity-smart failure read as geometry and never reached its
+    // «failures», 2026-10-31).
+    const whole = `${String(error.stdout ?? '').trim()}\n${String(error.stderr ?? '').trim()}`.trim();
+    const detail = whole.length > 6000 ? `…cut ${whole.length - 6000} characters…\n${whole.slice(-6000)}` : whole;
     results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), said: said.slice(0, 300), detail});
   }
 }

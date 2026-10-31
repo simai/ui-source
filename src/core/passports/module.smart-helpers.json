@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.smart-helpers",
   "kind": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "owner": "simai/ui-source",
   "summary": "The helpers the Smart components import (src/smart/helpers); not a component itself.",
   "includes": [
@@ -22,7 +22,7 @@
     "src/smart/helpers/refs.js",
     "src/smart/helpers/text.js"
   ],
-  "content_sha256": "ea57bd440629d33e36e6a94d93c8377deabb653f87d6017d4464d3173b3b9e63",
+  "content_sha256": "ee2ad2872ceab27e3e695008a339457f5adff90e5719b43afe5c5840766a5c99",
   "dependencies": [
     {
       "id": "component.badges",
