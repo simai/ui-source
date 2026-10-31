@@ -636,7 +636,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.layer?.append(this.dropHint);
       }
       this.dropHint.hidden = !rect;
-      if (rect) Object.assign(this.dropHint.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
+      if (!rect) return;
+      const origin = this.layerOrigin();
+      Object.assign(this.dropHint.style, { left: `${rect.left - origin.left}px`, top: `${rect.top - origin.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
     }
 
     // Moving a canvas node: pointer via the selected label, keyboard via the tree.
@@ -915,7 +917,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       frame.hidden = false;
       frame.style.insetInlineStart = '';
-      Object.assign(frame.style, { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+      const origin = this.layerOrigin();
+      Object.assign(frame.style, { left: `${box.left - origin.left}px`, top: `${box.top - origin.top}px`, width: `${box.width}px`, height: `${box.height}px` });
       const { label, badges } = this.info(this.byId.get(id));
       frame.firstChild.textContent = badges.length ? `${label} · ${badges.join(' · ')}` : label;
       return box;
@@ -945,7 +948,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
         const start = rtl ? box.right - bar.width : box.left;
         const left = Math.max(0, Math.min(start, globalThis.innerWidth - bar.width));
-        Object.assign(this.toolbar.style, { top: `${top}px`, left: `${left}px` });
+        const origin = this.layerOrigin();
+        Object.assign(this.toolbar.style, { top: `${top - origin.top}px`, left: `${left - origin.left}px` });
       }
       this.positionInsertions();
     }
@@ -990,7 +994,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         const marked = Boolean(target && target.parent_id === point.parent && target.slot === point.slot && target.index === point.index);
         button.setAttribute('aria-pressed', marked ? 'true' : 'false');
         button.setAttribute('aria-label', format(this.messages.insertAt, { slot: point.slot, index: point.index + 1 }));
-        Object.assign(button.style, { left: `${box.left}px`, top: `${top}px`, width: `${box.width}px` });
+        const origin = this.layerOrigin();
+        Object.assign(button.style, { left: `${box.left - origin.left}px`, top: `${top - origin.top}px`, width: `${box.width}px` });
       }
       for (const [key, button] of existing) if (!keep.has(key)) button.remove();
     }
@@ -1032,6 +1037,22 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       return view;
     }
 
+    /**
+     * Where the layer's own box starts. Everything the overlay draws is
+     * `position: fixed` and placed from page coordinates, which is right
+     * while the viewport is the containing block. An ancestor with
+     * `contain: layout` becomes that containing block instead -- the
+     * Framework's own drawer gives it to [data-sf-drawer-container] -- and
+     * every frame then sat the ancestor's corner away from its node (48 px
+     * under an app bar: simai/ui-source#58, found by ui-mail). The layer is
+     * `inset: 0` of the same containing block, so its corner is exactly that
+     * error: zero on an ordinary page, the ancestor's corner inside one.
+     */
+    layerOrigin() {
+      const box = this.layer?.getBoundingClientRect?.();
+      return box ? { left: box.left, top: box.top } : { left: 0, top: 0 };
+    }
+
     applyClip(clip) {
       const layer = this.layer.getBoundingClientRect();
       const value = !clip || clip.right <= clip.left || clip.bottom <= clip.top
@@ -1055,7 +1076,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
       const start = rtl ? box.right - bar.width : box.left;
       const left = Math.max(0, Math.min(start, globalThis.document.documentElement.clientWidth - bar.width));
-      Object.assign(this.toolbar.style, { top: `${top}px`, left: `${left}px` });
+      const origin = this.layerOrigin();
+      Object.assign(this.toolbar.style, { top: `${top - origin.top}px`, left: `${left - origin.left}px` });
     }
 
     /** The innermost node under a pointer event in the frame: the smallest element or rect node that holds it. */
