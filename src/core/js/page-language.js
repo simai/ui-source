@@ -64,7 +64,25 @@ const componentOf = (node) => {
   return typeof tag === 'string' ? tag.toLowerCase() : null;
 };
 
+// A layer drawn in a portal carries a copy of its host's language, stamped by
+// carryLayerOrigin (§19.1). When that copy came from the page itself, it has
+// to follow the page before the listeners draw: a word read inside a drawer
+// during SF.language.use() answered the language the page had just left, and
+// the portal was carried again only later, with nothing to draw it again
+// (simai/ui-source#55, found by ui-mail). A portal whose host sits in a
+// section with a language of its own is not touched: that section means it.
+const carryPageLanguage = () => {
+  const doc = globalThis.document;
+  if (!doc?.querySelectorAll) return;
+  const lang = doc.documentElement?.getAttribute('lang') || '';
+  for (const portal of doc.querySelectorAll('[data-sf-layer-lang="page"]')) {
+    if (lang) portal.setAttribute('lang', lang);
+    else portal.removeAttribute('lang');
+  }
+};
+
 const announce = () => {
+  carryPageLanguage();
   for (const listener of [...LISTENERS]) {
     try {
       listener();
