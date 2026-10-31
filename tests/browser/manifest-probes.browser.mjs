@@ -369,7 +369,12 @@ async function runSteps(page, pr) {
     await page.evaluate(({names, clear}) => {
       window.__heard = [];
       window.__listen?.();
-      const listeners = names.map((name) => [name, (event) => window.__heard.push({name: event.type, detail: event.detail})]);
+      // The target as well as the name: these listeners are on window, so an
+      // element of the page that acts by itself -- a toast with a duration --
+      // is counted as the element under test unless the record says whose it
+      // was (sf-toast p1 and p4 under load, 2026-10-31).
+      const whose = (node) => (node?.id ? `#${node.id}` : node?.localName || node?.nodeName || String(node));
+      const listeners = names.map((name) => [name, (event) => window.__heard.push({name: event.type, detail: event.detail, from: whose(event.target)})]);
       for (const [name, fn] of listeners) window.addEventListener(name, fn);
       window.__listen = () => { for (const [name, fn] of listeners) window.removeEventListener(name, fn); };
       // A step that expects journal notes reads only the ones it made.
@@ -424,7 +429,7 @@ async function runSteps(page, pr) {
       const active = document.activeElement;
       return {
         values: Object.fromEntries(Object.keys(values).map((path) => [path, read(path)])),
-        heard: window.__heard.map(({name, detail}) => ({name, detail: detail && typeof detail === 'object' ? JSON.parse(JSON.stringify(detail, (key, value) => (value instanceof Node ? `<${value.localName ?? '#node'}>` : value))) : detail})),
+        heard: window.__heard.map(({name, detail, from}) => ({name, from, detail: detail && typeof detail === 'object' ? JSON.parse(JSON.stringify(detail, (key, value) => (value instanceof Node ? `<${value.localName ?? '#node'}>` : value))) : detail})),
         journal: window.SF?.deprecations?.list?.() ?? [],
         inside: focus === 'expect inside' ? Boolean(document.querySelector(target)?.contains(active)) : null,
         returned: focus && focus.startsWith('expect returned to ') ? document.querySelector(focus.slice('expect returned to '.length)) === active : null,
@@ -435,13 +440,13 @@ async function runSteps(page, pr) {
     for (const [path, value] of Object.entries(expect.values ?? {})) if (!loose(seen.values[path], value)) notes.push(`${at}: ${path} = ${JSON.stringify(seen.values[path])}, expected ${JSON.stringify(value)}`);
     for (const name of [].concat(expect.event ?? [])) {
       const got = seen.heard.find((one) => one.name === name);
-      if (!got) { notes.push(`${at}: no ${name}`); continue; }
+      if (!got) { notes.push(`${at}: no ${name}${seen.heard.length ? ` (heard ${seen.heard.map((one) => `${one.name} from ${one.from}`).join(', ')})` : ''}`); continue; }
       for (const [key, value] of Object.entries(expect.detail ?? {})) if (!loose(got.detail?.[key], value)) notes.push(`${at}: ${name}.${key} = ${JSON.stringify(got.detail?.[key] ?? null)}, expected ${JSON.stringify(value)}`);
     }
     for (const want of [].concat(expect.events ?? [])) {
       const got = seen.heard.filter((one) => one.name === want.name);
       const count = want.count ?? 1;
-      if (got.length !== count) notes.push(`${at}: ${want.name} heard ${got.length} times, expected ${count}`);
+      if (got.length !== count) notes.push(`${at}: ${want.name} heard ${got.length} times, expected ${count} (from ${got.map((one) => one.from).join(', ') || 'nothing'})`);
       else if (want.detail && !subset(got[0].detail, want.detail)) notes.push(`${at}: ${want.name} detail ${JSON.stringify(got[0].detail)}`);
     }
     if (expect.returns !== undefined && !subset(returns, expect.returns)) notes.push(`${at}: returned ${JSON.stringify(returns)}, expected ${JSON.stringify(expect.returns)}`);
