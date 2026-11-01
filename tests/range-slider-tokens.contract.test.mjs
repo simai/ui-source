@@ -25,8 +25,27 @@ test('disabled ancestors exclude hover and use disabled roles',async()=>{
   for(const selector of style.split('{').slice(0,-1).filter(s=>s.includes(':hover'))){
     assert.ok(selector.includes(':not([disabled] *):not(.disabled *)'));
   }
-  assert.ok(style.includes('background-color: var(--sf-disable)'));
-  assert.ok(style.includes('background-color: var(--sf-on-disable)'));
+  // Disabled, the handle is a solid disc of the disabled content role over the
+  // surface, without a centre.
+  assert.ok(style.includes('background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable))'));
+  assert.match(style,/:is\(\[disabled\], \.disabled\) \.sf-thumb-inner \{\s*background-color: transparent;/);
+});
+
+test('the handle is solid by default and the hollow centre is opt-in',async()=>{
+  const style=await read('_css__thumbs.scss');
+  // Unset, the centre is transparent; the public variable brings it back.
+  assert.ok(style.includes('var(--sf-thumb-inner--background-color, var(--sf-range-slider-handle-inner-color, transparent))'));
+  // A ring of the surface parts the disc from the fill.
+  assert.ok(style.includes('box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, var(--sf-a2)) var(--sf-thumb-handle--ring-color, var(--sf-surface-0))'));
+  // Hover and press draw a halo of the primary state layer, 8% and 12%.
+  assert.ok(style.includes('var(--sf-primary-transparent-select)'));
+  assert.ok(style.includes('var(--sf-primary-transparent-active)'));
+});
+
+test('the handle stands above the progress, so the fill ends under it',async()=>{
+  const layout=await read('_css__range_slider_custom.scss');
+  const origin=layout.slice(layout.lastIndexOf('.sf-range-slider .sf-range-slider-origin {'));
+  assert.match(origin.slice(0,origin.indexOf('}')),/z-index: 2;/);
 });
 
 test('Smart range consumes the shared root-style contract on render and DOM updates',async()=>{
