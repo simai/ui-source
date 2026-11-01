@@ -109,7 +109,7 @@ test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it
   // simai/ui-source#44 item 2: Escape is a panel's key; in accessibility.keys it says when.
   assert.deepEqual(manifest.keyboard.panel, {Escape: 'close'});
   assert.ok(!('Escape' in manifest.keyboard.host));
-  assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {collapse: 'always'}]);
+  assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {orientation: 'horizontal', appearance: 'navigation'}, {collapse: 'always'}]);
   const source = read('src/smart/menu/index.js');
   assert.match(source, /return flyouts \|\| panel \? \{outcome: 'applied'\} : \{outcome: 'refused', reason: 'already'\};/u);
   assert.doesNotMatch(source, /\+\+sequence|let sequence/u, 'no module counter (#41)');

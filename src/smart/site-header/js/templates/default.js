@@ -8,13 +8,14 @@ import {html, nothing} from 'lit';
 // start over a scrim, named by its heading. The page's slot nodes are placed
 // once and stay where they are in both forms.
 export function renderSiteHeaderTemplate(context) {
-  const {component, id, open, collapse, sticky, size, label, menuLabel, closeLabel, slot, hasSlot, rootClass} = context;
+  const {component, id, open, collapse, sticky, size, navigationAlign, label, menuLabel, closeLabel, slot, hasSlot, rootClass} = context;
   const panelId = `${id}-panel`;
   const headingId = `${id}-heading`;
   const classes = [
     'sf-site-header',
     `sf-site-header--collapse-${collapse}`,
     `sf-site-header--size-${size === '1/2' ? 'half' : '1'}`,
+    navigationAlign === 'center' ? 'sf-site-header--navigation-center' : '',
     sticky ? 'sf-site-header--sticky' : '',
     open ? 'sf-site-header--open' : '',
     rootClass,

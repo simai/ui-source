@@ -2,7 +2,7 @@
   "$comment": "The source of sf-site-header's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.site-header",
   "tag": "sf-site-header",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -32,6 +32,15 @@
       ],
       "default": "1",
       "summary": "The ladder rung of the bar's controls: the bar's height follows it, and the menu and close buttons take it. Slotted controls are given the same size by the page"
+    },
+    "navigation-align": {
+      "type": "enum",
+      "values": [
+        "start",
+        "center"
+      ],
+      "default": "start",
+      "summary": "Where the nav stands in the wide bar: start, right after the brand; center, at the centre of the bar between the brand and the actions and tools -- the bar's true centre while both sides fit, otherwise the centre of the room left, never over them. Collapsed, the nav is in the side panel either way"
     },
     "label": {
       "type": "string",
@@ -252,7 +261,8 @@
     "nav slot: the default slot. Children without a slot attribute are the navigation: a <nav aria-label> with a list of links, or sf-menu orientation=horizontal collapse=none, which the header turns vertical while the bar is collapsed (its public orientation setting, never its look).",
     "geometry (docs/foundation-composition-geometry.md): the bar is the size's control height plus a space-1 inset above and below plus the 1px region edge; the brand mark is the size 1/2 control height; gutters are the .container's, so a product's --sf-container-gutter reaches the bar; every length is a token.",
     "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one, so the bar's height a page reads is the internal --sf-site-header--block-size the sheet computes.",
-    "words (§11): label, menu-label and close-label default to the language files' runtime words."
+    "words (§11): label, menu-label and close-label default to the language files' runtime words.",
+    "version 1.1.0: navigation-align (owner decision by recommendation, 2026-11-01), start (the default, the 1.0 bar) or center, the nav of a Docara-like header. A sheet rule, nothing measured, so the first paint is right without the script: the brand and the end of the bar (the tools; the actions and the tools when there are actions) share the room the nav leaves, each at least its own width, so the nav stands at the bar's true centre while both sides fit and moves aside rather than overlap them; with actions the nav is centred in the room between the brand and the actions. Collapsed, nothing changes: the nav is in the side panel. The same at size 1/2 and 1."
   ],
   "x-registry": {
     "capabilities": [

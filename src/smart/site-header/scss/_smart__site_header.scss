@@ -100,11 +100,48 @@
   gap: var(--sf-space-1);
 }
 
+/* navigation-align center: the nav at the centre of the bar. The row is three
+   columns -- the brand, the nav, the tools -- and the two sides share the room
+   the nav leaves, each at least its own width: while both fit they are equal,
+   so the nav stands at the bar's true centre; when one side is wider the nav
+   moves aside rather than lie over it, and a nav that has no room left shrinks
+   (an sf-menu with collapse auto becomes its button). A rule, not a
+   measurement, so the first paint is already centred. With actions the bar
+   keeps its row and the nav is centred in the room between the brand and the
+   actions. The :where keeps the weight of the 1.0 rules, so the collapsed bar
+   below overrules it. */
+.sf-site-header--navigation-center .sf-site-header-nav {
+  justify-content: center;
+}
+
+.sf-site-header--navigation-center .sf-site-header-row:where(:not(:has(.sf-site-header-actions))) {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+}
+
+.sf-site-header--navigation-center :where(.sf-site-header-row:not(:has(.sf-site-header-actions))) > .sf-site-header-brand {
+  grid-area: 1 / 1;
+}
+
+.sf-site-header--navigation-center :where(.sf-site-header-row:not(:has(.sf-site-header-actions))) .sf-site-header-nav {
+  grid-area: 1 / 2;
+}
+
+.sf-site-header--navigation-center :where(.sf-site-header-row:not(:has(.sf-site-header-actions))) > .sf-site-header-tools {
+  grid-area: 1 / 3;
+  justify-content: flex-end;
+}
+
 /* Collapsed: the menu button first, the brand, then the tools at the end; the
    panel is shown only while open, as a side panel at the inline start over a
    scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
    which lifts the whole header to the layer's z-index while it is open. */
 @mixin collapsed {
+  /* A row again whatever navigation-align says: the nav is in the panel. */
+  .sf-site-header-row {
+    display: flex;
+  }
+
   /* flex, as the icon button's own utility draws it. */
   .sf-site-header-menu-button > button {
     display: flex;
