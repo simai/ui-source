@@ -115,12 +115,16 @@
       "rule_name": "cl-content-editor",
       "folder": "content-editor",
       "requires": [
+        "smart.button",
         "smart.context-menu",
         "smart.dropdown",
+        "smart.file-upload",
         "smart.icon",
         "smart.icon-button",
         "smart.inline-editor",
         "smart.input",
+        "smart.popover",
+        "smart.progress-bar",
         "smart.switch"
       ]
     },
