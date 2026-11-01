@@ -225,3 +225,66 @@ test('smart menu: the class menu\'s public variables wrap the values it drew bef
   const docs = read('src/smart/menu/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
 });
+
+// Header navigation (owner decision by recommendation, 2026-11-01): the look
+// of a site header's sections as Docara draws them, so a header needs no
+// classes of its own over the menu. tests/browser/menu-navigation.browser.mjs
+// measures it on the built bytes.
+test('smart menu: appearance navigation is a row or a column of frameless rows', () => {
+  assert.deepEqual([...MENU_APPEARANCES], ['default', 'documentation-tree', 'compact', 'navigation']);
+  assert.match(read('src/smart/menu/items.mjs'), /export const ROW_APPEARANCES = Object\.freeze\(\['default', 'navigation'\]\);/u);
+  assert.match(source, /return this\.orientation === 'horizontal' && ROW_APPEARANCES\.includes\(this\.appearance\);/u);
+  // Escape closes a navigation row's panel as it does a default row's.
+  const component = JSON.parse(read('src/smart/menu/component.json'));
+  assert.deepEqual(component.accessibility.keys.Escape.when, [
+    {orientation: 'horizontal', appearance: 'default'},
+    {orientation: 'horizontal', appearance: 'navigation'},
+    {collapse: 'always'},
+  ]);
+  const sheet = read('src/component/menu/scss/_css__menu.scss');
+  const block = sheet.slice(sheet.indexOf('.sf-menu.sf-menu--navigation {'), sheet.indexOf('/* Documentation navigation'));
+  const rule = (selector) => {
+    const at = block.indexOf(`${selector} {`);
+    assert.ok(at >= 0, selector);
+    return block.slice(at, block.indexOf('}', at));
+  };
+  const enabled = ".sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true'])";
+  // No frame, no fill at rest; the row keeps the class row's height, padding,
+  // type and radius (nothing of them is written here).
+  assert.match(rule('.sf-menu.sf-menu--navigation .sf-menu-element'), /--sf-menu-element--border-width: var\(--sf-0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
+  assert.doesNotMatch(block, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
+  // The states are the alpha scale's role tokens: state 4, 12 and 8, the fill
+  // family's 24 for the current page -- never a number of its own.
+  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
+  assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
+  assert.match(rule(`${enabled}:is(.open, [aria-expanded='true'])`), /var\(--sf-surface-transparent-select\)/u);
+  const current = `${enabled}:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))`;
+  assert.match(rule(current), /--sf-menu-element--background-color: var\(--sf-surface-container-active\);/u);
+  assert.doesNotMatch(block, /rgba?\(|#[0-9a-f]{3,8}\b|--sf-[a-z0-9-]+--alfa-/iu);
+  // The current page's plate comes after the pointer's states at the same
+  // weight, so hover and press never lighten it.
+  assert.ok(block.indexOf(`${current} {`) > block.indexOf(`${enabled}:active {`));
+  assert.match(block, /@media \(forced-colors: active\)[\s\S]*--sf-menu-element--border-width: var\(--sf-px\);/u);
+  // The row's gap stays the public variable's.
+  assert.match(rule('.sf-menu.sf-menu--navigation'), /--sf-menu--gap: var\(--sf-menu-gap, var\(--sf-space-1\\\/4\)\);/u);
+  for (const docs of ['src/smart/menu/docs.md', 'src/component/menu/docs/docs.md']) assert.match(read(docs), /navigation/u, docs);
+});
+
+// sf-site-header navigation-align (owner decision by recommendation,
+// 2026-11-01): the nav at the centre of the bar, a sheet rule so the first
+// paint is centred; tests/browser/menu-navigation.browser.mjs measures it.
+test('site header: navigation-align centres the nav without measuring', () => {
+  const component = JSON.parse(read('src/smart/site-header/component.json'));
+  const setting = component.settings['navigation-align'];
+  assert.deepEqual(setting.values, ['start', 'center']);
+  assert.equal(setting.default, 'start');
+  assert.match(read('src/smart/site-header/index.js'), /navigationAlign: this\.navigationAlign,/u);
+  assert.match(read('src/smart/site-header/js/templates/default.js'), /navigationAlign === 'center' \? 'sf-site-header--navigation-center' : ''/u);
+  const headerSheet = read('src/smart/site-header/scss/_smart__site_header.scss');
+  assert.match(headerSheet, /\.sf-site-header--navigation-center \.sf-site-header-row:where\(:not\(:has\(\.sf-site-header-actions\)\)\) \{\n  display: grid;\n  grid-template-columns: minmax\(max-content, 1fr\) minmax\(0, max-content\) minmax\(max-content, 1fr\);/u);
+  // Collapsed, the bar is a row again whatever the setting says.
+  const collapsed = headerSheet.slice(headerSheet.indexOf('@mixin collapsed {'));
+  assert.match(collapsed, /^@mixin collapsed \{\n[^\n]*\n  \.sf-site-header-row \{\n    display: flex;\n  \}/u);
+  assert.ok(headerSheet.indexOf('@mixin collapsed {') > headerSheet.indexOf('.sf-site-header--navigation-center'));
+  assert.match(read('src/smart/site-header/docs.md'), /navigation-align="center"/u);
+});

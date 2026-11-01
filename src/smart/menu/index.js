@@ -24,6 +24,7 @@ import {
   MENU_APPEARANCES,
   MENU_COLLAPSE,
   MENU_ORIENTATIONS,
+  ROW_APPEARANCES,
   currentItemId,
   findItem,
   itemsFromList,
@@ -170,9 +171,10 @@ class SfSmartMenu extends MenuElement {
   // orientation, appearance, collapse, current-from-location and the words are
   // the manifest's accessors (attribute and property).
 
-  // The documentation tree and the compact rail are columns.
+  // The documentation tree and the compact rail are columns; the default and
+  // the navigation can be a row.
   get horizontal() {
-    return this.orientation === 'horizontal' && this.appearance === 'default';
+    return this.orientation === 'horizontal' && ROW_APPEARANCES.includes(this.appearance);
   }
 
   // The row became a button that opens the same links as a column.

@@ -86,6 +86,61 @@
   --sf-menu-element--padding-inline-start: var(--sf-space-1);
 }
 
+/* Header navigation (sf-menu appearance navigation): the site's sections in
+   a header row -- and the same rows as a column, in a side panel or a sidebar.
+   A row has no frame and no fill at rest; a pointer lays the state family of
+   the alpha scale over it (4 hover, 12 press), an open branch takes the select
+   step (8), and the current page is a plate of the fill family
+   (--sf-surface-container-active, 24 in both themes on the theme's neutral
+   tone). Height, padding, type, radius and the focus ring stay the class
+   row's: the size 1 control height, space-1 at the sides, text size 1, the
+   ui radius. The current page's plate does not change under the pointer, so
+   it is never lighter than at rest. */
+.sf-menu.sf-menu--navigation {
+  --sf-menu--gap: var(--sf-menu-gap, var(--sf-space-1\/4));
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element {
+  --sf-menu-element--border-width: var(--sf-0);
+  --sf-menu-element--border-color: var(--sf-transparent);
+  --sf-menu-element--background-color: var(--sf-menu-item-background-color, var(--sf-transparent));
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+  --sf-menu-element--background-color: var(--sf-surface-transparent-hover);
+  --sf-menu-element--border-color: var(--sf-transparent);
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+  --sf-menu-element--background-color: var(--sf-surface-transparent-active);
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is(.open, [aria-expanded='true']) {
+  --sf-menu-element--background-color: var(--sf-surface-transparent-select);
+  --sf-menu-element--border-color: var(--sf-transparent);
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+  --sf-menu-element--background-color: var(--sf-surface-container-active);
+  --sf-menu-element--border-color: var(--sf-transparent);
+}
+
+.sf-menu.sf-menu--navigation .sf-menu-element:disabled,
+.sf-menu.sf-menu--navigation .sf-menu-element.disabled,
+.sf-menu.sf-menu--navigation .sf-menu-element[aria-disabled='true'] {
+  --sf-menu-element--background-color: var(--sf-transparent);
+}
+
+/* Forced colours drop the plates: the current page keeps a frame of the
+   system's text colour instead, and the padding gives up its width as it does
+   for the default row. */
+@media (forced-colors: active) {
+  .sf-menu.sf-menu--navigation .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    --sf-menu-element--border-width: var(--sf-px);
+    --sf-menu-element--border-color: CanvasText;
+  }
+}
+
 /* Documentation navigation is a public presentation preset for nested menus. */
 .sf-menu.sf-menu--documentation-tree,
 .sf-menu.sf-menu--documentation-tree .sf-menu {

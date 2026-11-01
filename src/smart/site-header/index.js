@@ -293,6 +293,7 @@ class SfSiteHeader extends SiteHeaderElement {
       collapse: this.collapse,
       sticky: this.sticky,
       size: this.size,
+      navigationAlign: this.navigationAlign,
       label: this.label,
       menuLabel: this.menuLabel,
       closeLabel: this.closeLabel,

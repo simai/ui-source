@@ -8,9 +8,13 @@
 // header (sf-menu--horizontal, the first level only).
 export const MENU_ORIENTATIONS = Object.freeze(['vertical', 'horizontal']);
 // The class menu's presentations by name: default, the documentation tree
-// (sf-menu--documentation-tree) and the compact rail (sf-menu--compact). The
-// tree and the rail are columns: with them the menu is vertical.
-export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'compact']);
+// (sf-menu--documentation-tree), the compact rail (sf-menu--compact) and the
+// header navigation (sf-menu--navigation). The tree and the rail are columns:
+// with them the menu is vertical. The navigation is a row or a column, as
+// orientation says, like the default.
+export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'compact', 'navigation']);
+// The presentations that can stand in a row.
+export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
 // When a row of links that does not fit becomes a button that opens them as a
 // column: when it does not fit, always, or never.
 export const MENU_COLLAPSE = Object.freeze(['auto', 'always', 'none']);

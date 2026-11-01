@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -64,11 +64,12 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open. Both are columns.",
+        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says.",
         "enum": [
           "default",
           "documentation-tree",
-          "compact"
+          "compact",
+          "navigation"
         ]
       },
       "current-from-location": {
@@ -533,11 +534,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "3266d35555e15438778d766d0f4bcdf39f9a551239692e433e7043872205e5c6"
+        "sha256": "fec32ba99ba31336f48320bd70c724636dfe4df170dbaf80230ab76b848ab81a"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "1c16a6d1cca129315049a31e0c137bb6f8b702c28cf64e6c56d803374f38b192"
+        "sha256": "d999db26df9c77bc9d186b4130b26b187fbe49e97e0cdb75419c786e979aa69f"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
@@ -553,7 +554,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "1a233094c0772a935ff0c929183db48c7c1b22b2fce3b4252b56f0c24bae912e"
+        "sha256": "c018a6487294ca9a2975a72544ed4e112dc1e88d8fc52fd7cb75dcf30c6d1ad5"
       }
     ],
     "generated_runtime": []

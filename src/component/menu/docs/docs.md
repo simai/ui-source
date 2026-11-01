@@ -35,6 +35,30 @@ Framework still recognizes existing server markup with a supplied icon button
 or `div[role="button"]`. New generated branches use a native button. Context
 Menu, Admin Menu and Smart Admin Menu have separate behavior contracts.
 
+## Header navigation
+
+Add `sf-menu--navigation` to the root `sf-menu` for a site's sections as a
+header draws them, with or without `sf-menu--horizontal`: rows with no border
+and no fill at rest, `--sf-on-surface` words, and the ordinary row's size 1
+height, `space-1` side padding, text size 1, `--sf-radius--ui` and focus ring.
+A pointer lays the state family of the alpha scale over a row
+(`--sf-surface-transparent-hover`, `-active` on press), an open branch takes
+`--sf-surface-transparent-select`, and the current page (`aria-current="page"`
+or `"true"` on the row or on the link inside it) is a plate of
+`--sf-surface-container-active`, which the pointer does not change. Rows stand
+`space-1/4` apart unless `--sf-menu-gap` says otherwise. In forced colours the
+current page is framed instead. Submenus keep their panel and take the same
+row states.
+
+```html
+<nav aria-label="Sections">
+  <ul class="sf-menu sf-menu--horizontal sf-menu--navigation">
+    <li class="sf-menu-item"><a class="sf-menu-element sf-menu-element--level-1" href="/" aria-current="page"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Home</span></span></a></li>
+    <li class="sf-menu-item"><a class="sf-menu-element sf-menu-element--level-1" href="/start/"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Quick start</span></span></a></li>
+  </ul>
+</nav>
+```
+
 ## Compact menu and counters
 
 A row's counter is a `.sf-badge` with `data-count` inside
