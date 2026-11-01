@@ -51,7 +51,10 @@
   cursor: text;
 }
 
-.sf-verification-input:focus { outline: 0; }
+/* !important: a page's unlayered :focus-visible rule beats any layered one, and
+   drew a second frame on the bare input inside the cells' ring (owner,
+   2026-11-01). */
+.sf-verification-input:focus { outline: 0 !important; }
 
 .sf-verification:has(.sf-verification-input:focus-visible),
 .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {

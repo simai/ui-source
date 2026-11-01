@@ -181,16 +181,22 @@
   outline-offset: calc(var(--sf-focus--width) * -1);
 }
 
+/* The button and the text control inside the field give their rings up: the
+   field already carries one for the whole control. */
+/* !important, and only here: a page's own unlayered `:focus-visible { outline }`
+   beats every layered rule whatever its specificity, so a plain `outline: none`
+   in a layer cannot keep it off the bare control, and the page drew a second
+   frame inside the one the field draws (owner, 2026-11-01). An important
+   declaration in a layer beats the page's, important or not. The field's own
+   ring is untouched. */
 .sf-dropdown .sf-dropdown-field > button[aria-haspopup]:focus-visible {
   --sf-icon-button--box-shadow: none;
   box-shadow: none;
-  outline: none;
+  outline: none !important;
 }
 
-/* The text control inside the field gives its ring up for the same reason the
-   button does: the field already carries one for the whole control. */
 .sf-dropdown .sf-dropdown-field input:focus-visible {
-  outline: none;
+  outline: none !important;
 }
 
 @media (forced-colors: active) {
