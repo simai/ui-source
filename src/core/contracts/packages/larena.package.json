@@ -110,6 +110,21 @@
       ]
     },
     {
+      "id": "smart.content-editor",
+      "element": "sf-content-editor",
+      "rule_name": "cl-content-editor",
+      "folder": "content-editor",
+      "requires": [
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.inline-editor",
+        "smart.input",
+        "smart.switch"
+      ]
+    },
+    {
       "id": "smart.data-view",
       "element": "sf-table",
       "rule_name": "cl-table",
