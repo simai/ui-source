@@ -100,8 +100,10 @@
   --sf-menu--gap: var(--sf-menu-gap, var(--sf-space-1\/4));
 }
 
+/* A zero length, not the unitless --sf-0: the row's padding subtracts the
+   border width from a length, and a unitless 0 would void the calc. */
 .sf-menu.sf-menu--navigation .sf-menu-element {
-  --sf-menu-element--border-width: var(--sf-0);
+  --sf-menu-element--border-width: calc(var(--sf-px) * 0);
   --sf-menu-element--border-color: var(--sf-transparent);
   --sf-menu-element--background-color: var(--sf-menu-item-background-color, var(--sf-transparent));
 }

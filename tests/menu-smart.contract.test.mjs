@@ -251,7 +251,8 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   const enabled = ".sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true'])";
   // No frame, no fill at rest; the row keeps the class row's height, padding,
   // type and radius (nothing of them is written here).
-  assert.match(rule('.sf-menu.sf-menu--navigation .sf-menu-element'), /--sf-menu-element--border-width: var\(--sf-0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
+  const rest = block.slice(block.indexOf('.sf-menu.sf-menu--navigation .sf-menu-element {'));
+  assert.match(rest.slice(0, rest.indexOf('}')), /--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
   assert.doesNotMatch(block, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
   // The states are the alpha scale's role tokens: state 4, 12 and 8, the fill
   // family's 24 for the current page -- never a number of its own.
