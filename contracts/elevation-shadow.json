@@ -8,7 +8,6 @@
     {"file": "src/smart/sortable/scss/_smart__sortable.scss", "token": "--sf-ui-shadow-4", "reason": "The drag ghost is a copy of the dragged element and keeps that element's own fill; a raised surface would repaint it."},
     {"file": "src/smart/toggle/scss/styles_default.scss", "token": "--sf-ui-shadow-1", "reason": "The toggle knob sits on its track and keeps its own colour; it is a control part, not a panel."},
     {"file": "src/component/range-slider/scss/_css__thumbs.scss", "token": "--sf-ui-shadow-1", "reason": "The value tooltip is painted by the tooltip role (inverse or surface-1), which a raised surface would overwrite."},
-    {"file": "src/component/range-slider/scss/_css__range_slider.scss", "token": "--sf-ui-shadow-2", "reason": "The track keeps its container fill; it is a control part, not a panel."},
     {"file": "src/component/featured-icon/scss/_css_featured-icon.scss", "token": "--sf-ui-shadow-2", "reason": "The elevated featured icon keeps its container wash, which reads in both themes and carries the icon's tone."}
   ]
 }
