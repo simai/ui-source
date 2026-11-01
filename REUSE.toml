@@ -33,6 +33,13 @@ precedence = "override"
 SPDX-FileCopyrightText = "Google LLC"
 SPDX-License-Identifier = "Apache-2.0"
 
+# A Material Symbols subset the icon subset service cut, kept as a probe fixture.
+[[annotations]]
+path = "tests/fixtures/icons-subset-grow/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Google LLC"
+SPDX-License-Identifier = "Apache-2.0"
+
 # 37 of the flags are taken from flag-icons (MIT), recoloured and refitted;
 # the rest are the project's own.
 [[annotations]]

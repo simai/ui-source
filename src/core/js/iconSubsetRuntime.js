@@ -1113,6 +1113,18 @@ export function installIconSubsetRuntime(
     return { handled: true, iconCount };
   };
 
+  // Called straight from the mutation observer, ahead of its debounce: an
+  // icon whose new name is not drawn by the font in place stops being marked
+  // loaded, so it waits invisibly instead of spelling its name out.
+  SFLoaderPlugin.prototype.holdChangedStaticIcon = function (node) {
+    const el = this.getStaticIconElement(node);
+    if (!el || !el.classList.contains("sf-icon-loaded")) return;
+    const tracked = this.getTrackedStaticIconAttrs(el);
+    if (!tracked || !this.isTrackedIconLoaded(tracked)) {
+      el.classList.remove("sf-icon-loaded");
+    }
+  };
+
   SFLoaderPlugin.prototype.syncStaticIconLoadedState = function (root = null) {
     const host = root || document.body;
     if (!host) return;
@@ -1629,17 +1641,31 @@ export function installIconSubsetRuntime(
     if (manifest.hash) {
       style.setAttribute("data-sf-icons-subset-hash", manifest.hash);
     }
-    style.textContent = cssText;
     this.setIconManifestForType(type, manifest);
     this.markManifestIconsAsLoaded(manifest);
     this.iconSubsetPending = true;
     this.iconSubsetReady = false;
-    document.head.appendChild(style);
 
-    const fontVerification =
+    const verify = () =>
       Array.isArray(manifest.fonts) && manifest.fonts.length
-      ? this.verifyIconManifestFonts(manifest, { icons, weights })
-      : this.verifyIconCssFonts(cssText, { icons });
+        ? this.verifyIconManifestFonts(manifest, { icons, weights })
+        : this.verifyIconCssFonts(cssText, { icons });
+    let fontVerification;
+    if (prev && this.canPreloadIconFontFaces()) {
+      // A subset that already drew: load the grown face first, then swap.
+      fontVerification = this.preloadIconFontFaces(cssText).then(
+        (preloaded) => {
+          style.textContent = preloaded ? preloaded.cssText : cssText;
+          if (preloaded) style.sfIconFontFaces = preloaded.faces;
+          document.head.appendChild(style);
+          return verify();
+        },
+      );
+    } else {
+      style.textContent = cssText;
+      document.head.appendChild(style);
+      fontVerification = verify();
+    }
     this.iconSubsetPromise = fontVerification
       .then(async () => {
         this.ensureConfiguredIconSubsetState({ forceLoaded: true });
@@ -1682,7 +1708,7 @@ export function installIconSubsetRuntime(
         await new Promise((resolve) => requestAnimationFrame(resolve));
 
         if (prev) {
-          prev.remove();
+          this.retireIconSubsetStyle(prev);
         }
 
         window.dispatchEvent(
@@ -1701,7 +1727,7 @@ export function installIconSubsetRuntime(
         this.iconSubsetPending = false;
         this.iconSubsetReady = false;
         this.setIconManifestForType(type, null);
-        style.remove();
+        this.retireIconSubsetStyle(style);
         safeRemoveItem?.(this.getIconManifestStorageKey(type));
         console.warn("SFLoader cached icon manifest failed", error);
         this.applyIconFontFallback({
@@ -1806,6 +1832,78 @@ export function installIconSubsetRuntime(
     return (String(cssText || "").match(/@font-face\s*{[^}]*}/gim) || []).join(
       "\n",
     );
+  };
+
+  // A grown subset replaces the face every icon on the page draws with. Put
+  // in as a CSS rule, the new face shadows the old one while its file is on
+  // the way, and with font-display: block every icon that already showed goes
+  // blank until it arrives. The grown face is loaded off to the side with the
+  // FontFace API first and joins document.fonts only once its file is in; the
+  // stylesheet that follows carries no @font-face of its own. The faces ride
+  // on the style element, a DOM node every bundle's copy of this module sees,
+  // so whoever retires the style retires its faces too.
+  SFLoaderPlugin.prototype.parseIconFontFaceBlocks = function (cssText = "") {
+    const blocks = String(cssText || "").match(/@font-face\s*{[^}]*}/gim) || [];
+    return blocks
+      .map((block) => {
+        const read = (name) =>
+          block.match(new RegExp(`(?:^|[;{\\s])${name}\\s*:\\s*([^;}]+)`, "i"))?.[1]?.trim() || "";
+        const family = read("font-family").replace(/^['"]|['"]$/g, "");
+        const src = read("src");
+        if (!family || !src) return null;
+        const descriptors = {};
+        const weight = read("font-weight");
+        const style = read("font-style");
+        const display = read("font-display");
+        const unicodeRange = read("unicode-range");
+        if (weight) descriptors.weight = weight;
+        if (style) descriptors.style = style;
+        if (display) descriptors.display = display;
+        if (unicodeRange) descriptors.unicodeRange = unicodeRange;
+        return { family, src, descriptors };
+      })
+      .filter(Boolean);
+  };
+
+  SFLoaderPlugin.prototype.canPreloadIconFontFaces = function () {
+    return (
+      typeof window.FontFace === "function" &&
+      typeof document.fonts?.add === "function"
+    );
+  };
+
+  // Loads every @font-face of cssText as a FontFace, adds the loaded faces to
+  // document.fonts and returns the stylesheet without its @font-face blocks.
+  // Returns null when there is nothing to preload or no FontFace API; throws
+  // when a face fails to load, as the CSS face would have.
+  SFLoaderPlugin.prototype.preloadIconFontFaces = async function (
+    cssText = "",
+  ) {
+    if (!this.canPreloadIconFontFaces()) return null;
+    const parsed = this.parseIconFontFaceBlocks(cssText);
+    if (!parsed.length) return null;
+    const faces = parsed.map(
+      ({ family, src, descriptors }) =>
+        new window.FontFace(family, src, descriptors),
+    );
+    await Promise.all(faces.map((face) => face.load()));
+    faces.forEach((face) => document.fonts.add(face));
+    return {
+      faces,
+      cssText: String(cssText || "")
+        .replace(/@font-face\s*{[^}]*}\s*/gim, "")
+        .trim(),
+    };
+  };
+
+  SFLoaderPlugin.prototype.retireIconSubsetStyle = function (style) {
+    if (!style) return;
+    const faces = Array.isArray(style.sfIconFontFaces)
+      ? style.sfIconFontFaces
+      : [];
+    faces.forEach((face) => document.fonts?.delete?.(face));
+    style.sfIconFontFaces = null;
+    style.remove?.();
   };
 
   SFLoaderPlugin.prototype.verifyIconCssFonts = async function (
@@ -2130,7 +2228,13 @@ export function installIconSubsetRuntime(
       const style = document.createElement("style");
       style.setAttribute("data-sf-icons-subset", icons.join(","));
       style.setAttribute("data-sf-icons-subset-family", type);
-      style.textContent = cssText;
+      // Growing a subset that already drew: the icons on the page keep their
+      // glyphs while the grown face loads; only the new names wait for it.
+      const preloaded = previous
+        ? await this.preloadIconFontFaces(cssText)
+        : null;
+      style.textContent = preloaded ? preloaded.cssText : cssText;
+      if (preloaded) style.sfIconFontFaces = preloaded.faces;
       document.head.appendChild(style);
       appliedStyle = style;
 
@@ -2153,11 +2257,11 @@ export function installIconSubsetRuntime(
       this.liftIconSubsetPending();
       await new Promise((resolve) => requestAnimationFrame(resolve));
       await new Promise((resolve) => requestAnimationFrame(resolve));
-      previous?.remove?.();
+      this.retireIconSubsetStyle(previous);
 
       return true;
     } catch (error) {
-      appliedStyle?.remove?.();
+      this.retireIconSubsetStyle(appliedStyle);
       this.setIconManifestForType(type, null);
       safeRemoveItem?.(this.getIconManifestStorageKey(type));
       return this.applyIconFontFallback({ icons, reason: error, type });

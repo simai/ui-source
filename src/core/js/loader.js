@@ -2631,6 +2631,16 @@ SFLoaderPlugin.prototype.search = function () {
       return;
     }
 
+    // A static icon whose name changed to one the font does not draw yet
+    // loses its loaded mark now, before the next paint: the changes below
+    // wait out a debounce, and meanwhile the new name was drawn as text in a
+    // fallback font -- the theme button showed "light_mode" spelled out.
+    relevantChanges.forEach((change) => {
+      if (change.type === 'characterData' || change.type === 'childList') {
+        _this.holdChangedStaticIcon?.(change.target);
+      }
+    });
+
     if (_this.searchEnd) {
       mutationBuffer.push(...relevantChanges);
       clearTimeout(debounceTimer);
