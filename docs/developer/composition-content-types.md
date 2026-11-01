@@ -153,6 +153,16 @@ published field kind (choice, integer, text, toggle).
   every type (`tests/fixtures/composition/structured-content.json`) drawn on
   the built bytes, light and dark, at 1280 and 390 px, with no horizontal
   overflow; the details open with script disabled.
+- `contracts/conformance/structured-content/`: the conformance kit, the
+  Documents any renderer of structured content must draw and what it must
+  draw (every type with its defaults and each parameter value, the inline
+  model, escaping, the html@1 cleaning, the outlet, invalid Documents and
+  their diagnostics), with its comparison rule in its README. A renderer in
+  another language passes the same kit. `node
+  scripts/generate-structured-content-conformance.mjs` writes it from the JS
+  renderer, `--check` verifies it, and
+  `tests/structured-content-conformance.contract.test.mjs` runs the JS
+  renderer over it.
 - `tests/browser/card.browser.mjs`, `figure.browser.mjs`,
   `procedure.browser.mjs`: the three display parts on their built sheets.
 
