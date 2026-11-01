@@ -13,7 +13,10 @@
 //   markers and line, the highlighted code, the tabs bound by their runtime;
 // - the tabs switch panels; the details open on a click of the summary;
 // - the content.html block ran nothing and kept no script;
-// - with no script at all, the details still open and close (native).
+// - the content.file row is sf-download-file's: framed, its icon, name and
+//   size on one line, a link that downloads;
+// - with no script at all, the details still open and close (native) and the
+//   file is still a download link.
 //
 // PROBE_SHOTS=<folder> keeps a screenshot of each theme and width.
 import {createServer} from 'node:http';
@@ -96,6 +99,7 @@ try {
           && ready('.sf-procedure-step', (node) => getComputedStyle(node, '::before').content.includes('counter'))
           && ready('.sf-alert', (node) => getComputedStyle(node).backgroundColor !== 'rgba(0, 0, 0, 0)' || getComputedStyle(node).borderTopWidth !== '0px')
           && ready('.table-frame', (node) => getComputedStyle(node).borderTopWidth !== '0px')
+          && ready('.sf-download-file', (node) => getComputedStyle(node).borderTopWidth !== '0px')
           && [...document.querySelectorAll('img')].every((image) => image.complete && image.naturalWidth > 0);
       }, null, {timeout: 15000}).catch(() => fail(where, 'the page did not finish drawing'));
       await tab.waitForTimeout(300);
@@ -132,6 +136,18 @@ try {
           highlighted: document.querySelectorAll('.sf-highlight code span[class^="hljs"]').length,
           tabs: {role: document.querySelector('.sf-tabs-top')?.getAttribute('role'), hidden: [...document.querySelectorAll('.sf-tabs-main-tab')].map((panel) => panel.hidden)},
           details: document.querySelector('details').open,
+          file: (() => {
+            const link = document.querySelector('[data-sf-composition-id="file"]');
+            const part = (selector) => link?.querySelector(selector);
+            const row = (selector) => part(selector)?.getBoundingClientRect();
+            const name = row('.sf-download-file__name');
+            const size = row('.sf-download-file__size');
+            return {
+              tag: link?.tagName.toLowerCase(), download: link?.hasAttribute('download'), border: link ? getComputedStyle(link).borderTopWidth : null,
+              icon: part('.sf-icon')?.textContent, name: part('.sf-download-file__name')?.textContent, size: part('.sf-download-file__size')?.textContent,
+              oneLine: Boolean(name && size && Math.abs((name.top + name.bottom) / 2 - (size.top + size.bottom) / 2) < 2),
+            };
+          })(),
           html: {pwned: window.__pwned === true, scripts: document.querySelectorAll('[data-sf-composition-id="html"] script, [data-sf-composition-id="html"] img').length},
           theme: document.documentElement.className,
           bodyColor: getComputedStyle(document.body).color,
@@ -160,6 +176,7 @@ try {
       if (state.highlighted === 0) fail(where, 'the code is highlighted');
       if (state.tabs.role !== 'tablist' || JSON.stringify(state.tabs.hidden) !== '[false,true]') fail(where, 'the tabs are bound with the first panel shown', state.tabs);
       if (state.details) fail(where, 'the details start closed');
+      if (state.file.tag !== 'a' || !state.file.download || state.file.border !== '1px' || state.file.icon !== 'picture_as_pdf' || state.file.name !== 'Annual report.pdf' || state.file.size !== '1.4 MB' || !state.file.oneLine) fail(where, 'the file is a framed download row with its icon, name and size', state.file);
       if (state.html.pwned || state.html.scripts) fail(where, 'content.html ran or kept something', state.html);
       // Behaviour: the second tab, then the details.
       await tab.click('.sf-tabs-top button:nth-child(2)');
@@ -183,8 +200,10 @@ try {
   const shown = await tab.locator('details > div').isVisible();
   await tab.click('details > summary');
   const closed = await tab.locator('details').evaluate((node) => node.open).catch(() => null);
-  seen.noScript = {before, opened, shown, closed};
+  const file = await tab.evaluate(() => { const link = document.querySelector('[data-sf-composition-id="file"]'); return {tag: link?.tagName.toLowerCase(), download: link?.hasAttribute('download'), href: link?.getAttribute('href')}; });
+  seen.noScript = {before, opened, shown, closed, file};
   if (before !== false || opened !== true || !shown || closed !== false) fail('no script', 'the details open and close natively', seen.noScript);
+  if (file.tag !== 'a' || !file.download || file.href !== './report.pdf') fail('no script', 'the file is a download link', file);
   await context.close();
 } finally {
   await browser.close();

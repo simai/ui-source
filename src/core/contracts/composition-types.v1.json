@@ -3761,6 +3761,75 @@
       "version": "1.0.0"
     },
     {
+      "assets": [
+        "component/download-file"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "category": "content",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "href": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "mime": {
+            "maxLength": 255,
+            "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}$",
+            "type": "string"
+          },
+          "size": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "value": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "href"
+        ],
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout",
+        "structured-content"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "content.file"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "content.file",
+      "version": "1.0.0"
+    },
+    {
       "assets": [],
       "capabilities": [
         "html"

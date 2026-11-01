@@ -3,6 +3,13 @@
 // apart from the element so the contract tests can run them in Node, as
 // sf-resizer's engine.mjs is.
 
+// The size and the name rules live in the core runtime
+// (composition/file-size.mjs), where the Composition renderer draws
+// content.file with them; this module re-exports the formatter it published.
+import {fileNameFromAddress as nameFromAddress, formatFileSize} from '../../core/js/composition/file-size.mjs';
+
+export {formatFileSize};
+
 // Whether a file is one the accept list names: `.ext`, `type/*` or `type/sub`,
 // as the platform dialog reads it. The dialog filters what a person may pick;
 // a drop goes past it and would take any file at all. It is the rule
@@ -19,15 +26,6 @@ export function acceptsFile(accept, file) {
     if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1));
     return type === token;
   });
-}
-
-function nameFromAddress(href) {
-  const tail = String(href).split(/[?#]/u)[0].split('/').pop() || '';
-  try {
-    return decodeURIComponent(tail);
-  } catch {
-    return tail;
-  }
 }
 
 // The value is the file shape the Framework already uses for a stored file --
@@ -68,27 +66,4 @@ export function normaliseImageValue(input) {
   // A file chosen in this page and not stored yet carries the File itself.
   if (source.file) value.file = source.file;
   return value;
-}
-
-// A size as people read it: «2 КБ», «1,4 МБ». `units` are the four words in
-// the page's language, `locale` its formatting. Text the host already
-// formatted is returned as it came; anything that is not a size is ''.
-export function formatFileSize(size, units = ['B', 'KB', 'MB', 'GB'], locale = 'en') {
-  if (typeof size === 'string') return size;
-  const bytes = Number(size);
-  if (size === null || size === undefined || !Number.isFinite(bytes) || bytes < 0) return '';
-  let amount = bytes;
-  let index = 0;
-  while (amount >= 1024 && index < units.length - 1) {
-    amount /= 1024;
-    index += 1;
-  }
-  const digits = index === 0 || amount >= 10 ? 0 : 1;
-  let number;
-  try {
-    number = new Intl.NumberFormat(locale, {maximumFractionDigits: digits}).format(amount);
-  } catch {
-    number = amount.toFixed(digits);
-  }
-  return `${number} ${units[index]}`;
 }

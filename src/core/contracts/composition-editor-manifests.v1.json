@@ -934,6 +934,62 @@
       "fields": [
         {
           "capability_hints": [
+            "composition.data.label"
+          ],
+          "constraints": {
+            "max_length": 300,
+            "min_length": 1
+          },
+          "group": "basic",
+          "help_key": "sf.composition.content_file.label_help",
+          "key": "label",
+          "label_key": "sf.composition.content_file.label",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "data",
+          "property": {
+            "type": "string",
+            "version": 2
+          },
+          "target": "label",
+          "visibility": "visible"
+        },
+        {
+          "capability_hints": [
+            "composition.data.href"
+          ],
+          "constraints": {
+            "max_length": 2048,
+            "min_length": 1
+          },
+          "group": "basic",
+          "help_key": "sf.composition.content_file.href_help",
+          "key": "href",
+          "label_key": "sf.composition.content_file.href",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "data",
+          "property": {
+            "type": "string",
+            "version": 2
+          },
+          "target": "href",
+          "visibility": "visible"
+        }
+      ],
+      "schema": "simai.composition.editor-manifest",
+      "schema_version": 1,
+      "type": "content.file",
+      "type_version": "1.0.0"
+    },
+    {
+      "fields": [
+        {
+          "capability_hints": [
             "composition.props.title"
           ],
           "constraints": {
