@@ -4,12 +4,6 @@ import test from 'node:test';
 import {withoutPublicVariables} from './support/public-variables.mjs';
 const read = file => withoutPublicVariables(readFileSync(new URL(`../src/component/${file}`, import.meta.url), 'utf8'));
 
-test('overbox geometry uses existing rem primitives including negative offsets', () => {
-  const source = read('overbox/scss/_css__overbox.scss');
-  assert.doesNotMatch(source, /\d*\.?\d+rem\b/);
-  for (const token of ['c1', 'c3', 'c6', 'a8', 'b6']) assert.ok(source.includes(`var(--sf-${token})`));
-  assert.match(source, /top:\s*calc\(-1 \* var\(--sf-c1\)\)/);
-});
 test('centered modal entrance, closing and hidden offsets use the same primitive', () => {
   const source = read('modal/scss/_css__modal_custom.scss');
   assert.equal(source.split('translateY(var(--sf-space-1\\/2)) scale(0.98)').length-1, 3);

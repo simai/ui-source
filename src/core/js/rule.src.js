@@ -852,7 +852,6 @@ import '../../component/radio/rule.js';
 import '../../component/range-slider/rule.js';
 import '../../component/reference-link/rule.js';
 import '../../component/scrollbar/rule.js';
-import '../../component/sf-system/rule.js';
 import '../../component/skeleton/rule.js';
 import '../../component/slider/rule.js';
 import '../../component/special/rule.js';

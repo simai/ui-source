@@ -1,7 +1,7 @@
 {
   "schema": "simai.framework.public-js-api",
   "schema_version": 1,
-  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Modal, SF.Input, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core).",
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core).",
   "globals": [
     {
       "name": "SF.Loader",
@@ -501,13 +501,6 @@
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
     },
     {
-      "name": "SF.AjaxLoad",
-      "status": "public",
-      "kind": "object",
-      "loaded_by": "component/ajaxload",
-      "summary": "The AjaxLoad component's script API, loaded with the component (component/ajaxload); its methods are the component's documentation."
-    },
-    {
       "name": "SF.Blocks",
       "status": "internal",
       "kind": "object",
@@ -620,25 +613,11 @@
       "summary": "The Input component's script API, loaded with the component (component/inputs); its methods are the component's documentation."
     },
     {
-      "name": "SF.LazyLoad",
-      "status": "public",
-      "kind": "object",
-      "loaded_by": "component/lazy-load",
-      "summary": "The LazyLoad component's script API, loaded with the component (component/lazy-load); its methods are the component's documentation."
-    },
-    {
       "name": "SF.Methods",
       "status": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
-    },
-    {
-      "name": "SF.Modal",
-      "status": "public",
-      "kind": "object",
-      "loaded_by": "component/sf-system",
-      "summary": "The sf-system modal's script API, loaded with component/sf-system; its methods are that component's documentation. It is not the Modal component's class: a page that loads only component/modal (sf-modal, the modal examples) has no SF.Modal, and finds the class at SF.Loader.ComponentRegistry.Modal (new Modal({id, param})), as the documentation's examples do."
     },
     {
       "name": "SF.Overbox",

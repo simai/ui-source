@@ -65,6 +65,4 @@ test('elevation: the legacy system builds panels from one level class', () => {
     }
   }
   assert.deepEqual(offenders, [], 'use elevation-N, which sets the surface and the shadow');
-  const pointer = read('src/component/overbox/scss/_css__overbox.scss');
-  assert.match(pointer, /background-color: var\(--sf-elevation-4--surface\);/u);
 });

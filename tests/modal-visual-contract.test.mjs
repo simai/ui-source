@@ -67,9 +67,6 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
 test('system modal defaults use current semantic utilities', async () => {
   const sources = await Promise.all([
     read('src/component/sf-system/js/init/_init.js'),
-    read('src/component/sf-system/js/modal/_modal.js'),
-    read('src/component/sf-system/js/param/modal.js'),
-    read('src/component/sf-system/js/param/overbox.js'),
     read('src/component/sf-system/js/search/_search.js'),
   ]);
   const combined = sources.join('\n');

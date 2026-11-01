@@ -27,7 +27,15 @@ test('every unit of the committed tree has a passport that matches its files', (
 test('the units are every class component, utility folder, plugin, Smart component and port, and the foundations', () => {
   const folders = (base) => new Set([...head.tree.keys()].filter((file) => file.startsWith(base) && file.slice(base.length).includes('/')).map((file) => file.slice(base.length).split('/')[0]));
   const count = (kind) => collected.units.filter((unit) => unit.kind === kind).length;
-  assert.equal(count('component'), folders('src/component/').size);
+  // A folder a central passport claims whole is that module's (module.sf-system, module.special).
+  const claimed = new Set(collected.units.filter((unit) => unit.passportFile.startsWith('src/core/passports/')).flatMap((unit) => unit.includes));
+  assert.equal(count('component'), [...folders('src/component/')].filter((folder) => !claimed.has(`src/component/${folder}/`)).length);
+  for (const name of ['sf-system', 'special']) {
+    const unit = byId.get(`module.${name}`);
+    assert.ok(unit.files.includes(`src/component/${name}/index.js`), `module.${name} holds its folder`);
+    assert.ok(unit.passport.former_ids.some(({id}) => id === `component.${name}`), `module.${name} keeps its former id`);
+    assert.ok(!byId.has(`component.${name}`), `component.${name} is no unit`);
+  }
   assert.equal(count('utility'), folders('src/utility/').size, 'one utility folder, one unit (owner, 2026-10-27)');
   assert.equal(count('plugin'), folders('src/plugin/').size);
   const smart = [...folders('src/smart/')].filter((folder) => head.tree.has(`src/smart/${folder}/component.json`));

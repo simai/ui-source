@@ -52,10 +52,6 @@
       "range": "^1.0.0"
     },
     {
-      "id": "component.sf-system",
-      "range": "^1.0.0"
-    },
-    {
       "id": "component.skeleton",
       "range": "^1.0.0"
     },
@@ -70,6 +66,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "module.sf-system",
+      "range": "^2.0.0"
     }
   ]
 }

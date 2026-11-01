@@ -14,7 +14,10 @@
 //
 // - every folder of src/component, src/utility and src/plugin is one unit
 //   (component.<folder>, utility.<folder>, plugin.<folder>) with passport.json
-//   in the folder;
+//   in the folder, unless a central passport claims the whole folder: a
+//   folder of src/component whose code is internal (module.sf-system,
+//   module.special) keeps its path, so the distribution and the imports do not
+//   move, and its passport says what it is;
 // - every Smart component (a folder of src/smart with component.json) is
 //   smart.<folder>: its passport is derived -- the id and version from
 //   component.json, the files its folder -- so nothing is written into
@@ -184,9 +187,18 @@ export function collectUnits(tree) {
   const units = [];
   const problems = [];
 
+  const centralFiles = [...tree.keys()].filter((entry) => entry.startsWith(CENTRAL) && entry.endsWith('.json'));
+  const centralFolders = new Map();
+  for (const file of centralFiles) for (const include of json(tree, file).includes ?? []) centralFolders.set(include, file);
+
   for (const [base, kind] of Object.entries(FOLDER_KINDS)) {
     for (const folder of topFolders(tree, base)) {
       const passportFile = `${base}${folder}/passport.json`;
+      // A folder a central passport claims whole is that passport's unit.
+      if (centralFolders.has(`${base}${folder}/`)) {
+        if (tree.has(passportFile)) problems.push({id: passportFile, code: 'claimed-twice', message: `${base}${folder} is claimed by ${centralFolders.get(`${base}${folder}/`)}; remove ${passportFile}`});
+        continue;
+      }
       // A folder's name in camelCase (contentDivider) becomes kebab-case in the id.
       const id = `${kind}.${folder.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`)}`;
       const includes = [`${base}${folder}/`];

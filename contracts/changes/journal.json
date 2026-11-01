@@ -3191,6 +3191,327 @@
           "to": "sf-chat-window-settled"
         }
       ]
+    },
+    {
+      "id": "component-ajax-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit ajax is removed. It was one re-export of the legacy system's SF.Ajax helper, built as a second copy that no Loader rule loaded and nothing imported.",
+      "items": [
+        {
+          "component": "ajax",
+          "from": "component/ajax/",
+          "to": "fetch",
+          "match": "\\bcomponent/ajax/(?:js|css)/"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "manual": "Drop the script tag that links component/ajax by hand. SF.Ajax was never public and stays internal to the legacy system scripts; call fetch() directly. To load a part of the page, use the Smart component sf-fragment once it ships. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-ajaxload-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit ajaxload is removed: [sf-ajaxload] polled every element once a second and filled it through BX.ajax.post, so it threw outside Bitrix, and no Loader rule loaded it. Its script API SF.AjaxLoad, listed as public, goes with it.",
+      "items": [
+        {
+          "component": "ajaxload",
+          "from": "sf-ajaxload",
+          "to": "fetch",
+          "match": "\\ssf-ajaxload(?=[\\s=/>])"
+        },
+        {
+          "component": "ajaxload",
+          "from": "SF.AjaxLoad",
+          "to": null,
+          "match": "\\bSF\\??\\.AjaxLoad\\b"
+        },
+        {
+          "component": "ajaxload",
+          "from": "component/ajaxload/",
+          "to": null,
+          "match": "\\bcomponent/ajaxload/(?:js|css)/"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div sf-ajaxload='{\"src\":\"/ajax/news.php\"}'></div>",
+        "after": "<sf-fragment src=\"/ajax/news.php\" load=\"view\"></sf-fragment>"
+      },
+      "manual": "Load the content with fetch() when the element enters the viewport (an IntersectionObserver), or use the Smart component sf-fragment (src, load=\"view\") once it ships. [sf-canceltrack] has no successor: an observer stops by itself after the first load. Bitrix sites keep their own frozen copy of the unit. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-lazy-load-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit lazy-load is removed. Its SF.LazyLoad, listed as public, was an empty function hooked to lazysizes' lazybeforeunveil event, and no Loader rule loaded the unit.",
+      "items": [
+        {
+          "component": "lazy-load",
+          "from": "component/lazy-load/",
+          "to": "loading=\"lazy\"",
+          "match": "\\bcomponent/lazy-load/(?:js|css)/"
+        },
+        {
+          "component": "lazy-load",
+          "from": "SF.LazyLoad",
+          "to": null,
+          "match": "\\bSF\\??\\.LazyLoad\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<img class=\"lazyload\" data-src=\"/photo.jpg\" alt=\"\">",
+        "after": "<img src=\"/photo.jpg\" loading=\"lazy\" alt=\"\">"
+      },
+      "manual": "Use the browser's own lazy loading: loading=\"lazy\" on img and iframe. A page that drives lazysizes itself keeps doing so; the unit added nothing to it. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-share-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit share is removed. Its only import was commented out, so it shipped no styles and no script: the class sf-share drew nothing from the Framework.",
+      "items": [
+        {
+          "component": "share",
+          "from": "sf-share",
+          "to": null,
+          "match": "(?<![\\w</-])sf-share(?:-btn)?(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "manual": "Lay the buttons out with the flex utilities (flex flex-wrap items-center gap-*) and sf-button; the Smart component sf-share is planned for share buttons. The match finds the class, not a future <sf-share> tag. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-viewbox-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit viewbox is removed: unlayered padding-top ratio boxes and cover layers with global class names (.fit, .view, .mask, .content, .decor), loaded by no Loader rule. The aspect-ratio utility has the same ratio set.",
+      "items": [
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-1x1",
+          "to": "aspect-1x1"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-1x2",
+          "to": "aspect-1x2"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-2x1",
+          "to": "aspect-2x1"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-2x3",
+          "to": "aspect-2x3"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-3x1",
+          "to": "aspect-3x1"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-3x2",
+          "to": "aspect-3x2"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-3x4",
+          "to": "aspect-3x4"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-4x1",
+          "to": "aspect-4x1"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-4x3",
+          "to": "aspect-4x3"
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-wrap",
+          "to": null
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox",
+          "to": null
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-video",
+          "to": null
+        },
+        {
+          "component": "viewbox",
+          "from": "sf-viewbox-hover",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"sf-viewbox-wrap sf-viewbox-16x9\"><img class=\"sf-viewbox\" src=\"/a.jpg\" alt=\"\"></div>",
+        "after": "<div class=\"relative overflow-hidden aspect-16x9\"><img class=\"absolute inset-0 w-full h-full object-cover\" src=\"/a.jpg\" alt=\"\"></div>"
+      },
+      "manual": "Replace sf-viewbox-NxM with the aspect-ratio utility aspect-NxM (the same nine ratios; the utility also has 16x9 and 9x16): the box takes its height from aspect-ratio instead of padding-top. Give the box relative overflow-hidden and each layer absolute inset-0; object-fit and object-position place an image or a video. The hover layer is product CSS or the hover: variant on the layer itself. The Smart component sf-scene is planned for layered areas. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-overbox-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit overbox is removed. It held only the arrow styles of the legacy [sf-overbox] popover, whose script (SF.Overbox) no build ever included, so nothing created the element they styled.",
+      "items": [
+        {
+          "component": "overbox",
+          "from": "sf-overbox",
+          "to": "sf-popover",
+          "match": "(?<![\\w-])sf-overbox(?:-pointer(?:-right|-bottom|-left)?)?(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "replace-component",
+      "manual": "Use the Smart component sf-popover for a panel opened by a click and sf-tooltip for a hint on hover or focus; both place themselves and draw their own arrow. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-overcard-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit overcard is removed: one hover rule that showed .sf-overcard-secondary, with no hidden state of its own, loaded by no Loader rule.",
+      "items": [
+        {
+          "component": "overcard",
+          "from": "sf-overcard",
+          "to": null
+        },
+        {
+          "component": "overcard",
+          "from": "sf-overcard-secondary",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "manual": "Write the two rules in product CSS (the secondary layer hidden, and shown on :hover and :focus-within of the card), or use the visibility and opacity utilities with the hover: variant on the layer itself. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-wow-removed",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "The class unit wow is removed: a vendored copy of WOW.js that replayed the animation of .wow boxes when they scrolled into view, loaded by no Loader rule and used nowhere.",
+      "items": [
+        {
+          "component": "wow",
+          "from": "wow",
+          "to": "animation",
+          "match": "\\bclass=[\"'][^\"']*(?<![\\w-])wow(?![\\w-])"
+        },
+        {
+          "component": "wow",
+          "from": "data-wow-duration",
+          "to": "animation-duration-*"
+        },
+        {
+          "component": "wow",
+          "from": "data-wow-delay",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"wow\" data-wow-duration=\"1s\">…</div>",
+        "after": "<div class=\"animation animation-duration-slow\">…</div>"
+      },
+      "manual": "Use the animation utility (animation, animation-from-left, animation-from-right, animation-from-bottom) and animation-duration-fast|normal|slow. It plays the animation when the element renders; waiting for the element to scroll into view is planned as a setting of the utility. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "component-sf-system-special-internal",
+      "recorded_on": "2026-11-02",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "sf-system and special are internal modules now, module.sf-system and module.special (former ids component.sf-system, component.special). sf-system loses its rule /sf-gallery|sf-overbox/, which loaded an SF.Search that found nothing it could build, and its never-imported gallery, modal and overbox code; SF.Modal, listed as public, was never defined by it.",
+      "items": [
+        {
+          "component": "sf-system",
+          "from": "component.sf-system",
+          "to": "module.sf-system"
+        },
+        {
+          "component": "special",
+          "from": "component.special",
+          "to": "module.special"
+        },
+        {
+          "component": "sf-system",
+          "from": "SF.Modal",
+          "to": null,
+          "match": "\\bSF\\??\\.Modal\\b"
+        },
+        {
+          "component": "sf-system",
+          "from": "sf-gallery",
+          "to": "sf-gallery",
+          "match": "<(?!sf-)[a-z][\\w-]*\\b[^>]*\\s(?:sf-gallery|sf-overbox|sf-modal)(?=[\\s=/>])"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-02",
+      "rewrite": "manual",
+      "manual": "Nothing a page did changes: the legacy [sf-gallery], [sf-overbox] and [sf-modal] attributes built nothing before either. Use the Smart components sf-gallery, sf-modal, sf-popover and sf-tooltip. A script that called SF.Modal finds no such name; the class component's script is at SF.Loader.ComponentRegistry.Modal. The class sf-special still loads the special panel for Bitrix site templates; it is not documented and may change in any release. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "owner": "ui-control",
+      "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
     }
   ]
 }

@@ -8,9 +8,9 @@
 //   - SF.ProgressBar takes and reports status;
 //   - SF.smartBaseReady settles with the base a bundle brought, and is live;
 //   - sf-loader-ready is stamped when it is sent;
-//   - (legacy [sf-gallery] markup: SF.Search no longer constructs an absent
-//     SF.Gallery; not driven here, because the attribute scan does not load
-//     sf-system for [sf-gallery] on this page -- recorded as debt);
+//   - (legacy [sf-gallery] markup: not driven; sf-system is an internal module
+//     with no rule since journal component-sf-system-special-internal, so no
+//     markup loads it);
 //   - the composition overlay follows SF.language.use().
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
