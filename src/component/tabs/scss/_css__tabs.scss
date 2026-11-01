@@ -537,4 +537,49 @@
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):is(:disabled, .disabled) {
     color: var(--sf-on-disable);
   }
+
+  // Pills: the selected tab is the only filled one. The others are text on
+  // the surface, whatever the scheme, painted only by the state layer of what
+  // the pointer does -- 4 under it, 8 with the keyboard on it, 12 pressed. A
+  // row of filled pills told the selected one apart by a step of the same
+  // colour, and on a green theme in the dark the steps could not be told
+  // apart (effects.simai.io, owner, 2026-11-01). The selected tab keeps the
+  // fill and ink every tab skin gives it. These rules stand in the states
+  // layer because the buttons' own pointer states do.
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) {
+    --sf-tabs--focus-ink: var(--sf-on-surface);
+    --sf-button--background-color: var(--sf-transparent);
+    --sf-button--border-color: var(--sf-transparent);
+    --sf-icon-button--background-color: var(--sf-transparent);
+    --sf-icon-button--border-color: var(--sf-transparent);
+    color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-surface-transparent-hover);
+    --sf-icon-button--background-color: var(--sf-surface-transparent-hover);
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-surface-transparent-select);
+    --sf-icon-button--background-color: var(--sf-surface-transparent-select);
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active),
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
+    --sf-button--background-color: var(--sf-surface-transparent-active);
+    --sf-icon-button--background-color: var(--sf-surface-transparent-active);
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
 }

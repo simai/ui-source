@@ -72,14 +72,18 @@ Reference pattern: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
 
 ## Pills, and what a two-option switch is
 
-`type="pills"` only rounds the tabs; their paint comes from `scheme`, which
-selects the button appearance. With the default `scheme` every pill is a filled
-button, the selected one in its selected state — a row where nothing stands
-out. For pills where only the selected tab is filled use `scheme="outline"`
-(or `link`):
+`type="pills"` draws rounded tabs where the selected one is the only filled
+tab: it keeps the selected fill (primary, with on-primary ink), and the others
+are text on the surface with no fill and no border, whatever `scheme` says,
+painted only by the surface state layer of what the pointer does (4 % on
+hover, 8 % with keyboard focus, 12 % pressed), in the light and dark themes and
+with any theme colour. Until 2026-11-01 the unselected pills took the `scheme`
+fill, and with the default scheme a row of filled pills told the selected one
+apart by a step of the same colour; `scheme="outline"`, once the advice for
+this, is no longer needed and gives the same pills.
 
 ```html
-<sf-tabs type="pills" scheme="outline" aria-label="Разделы"></sf-tabs>
+<sf-tabs type="pills" aria-label="Разделы"></sf-tabs>
 ```
 
 Tabs are not a switch. For a two-option segmented switch — two choices, no

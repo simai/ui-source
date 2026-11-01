@@ -45,6 +45,13 @@ to the legacy styling-only `.disabled` class for accessible state announcements.
 Ordinary runtime skips built-in Smart roots. Smart Tabs use their host.goTo()
 method. Ordinary instances restrict control and panel queries to their own root.
 
+In `.sf-tabs--pills` the selected tab is the only filled one: it keeps the
+fill every skin gives a selected tab (primary, with on-primary ink), and the
+other tabs are text on the surface in `--sf-tabs-color` (on-surface by
+default), with no fill and no border whatever the button scheme; the pointer
+paints them only with the surface state layer -- 4 % on hover, 8 % with
+keyboard focus, 12 % pressed -- in the light and dark themes alike.
+
 Tabs controls use `--sf-radius--ui`; pills remain explicitly rounded. Borders
 use `--sf-tabs--border-width` with `--sf-px` fallback, including the double-width
 underline and its alignment offset. Vertical spacing uses `--sf-tabs--gap` with

@@ -14,8 +14,19 @@
 //   - an underline tab's colour is --sf-on-surface at rest and
 //     --sf-on-surface-active when selected, resolved in the theme; no text tab
 //     computes the browser's ButtonText.
+//
+// Pills (owner, effects.simai.io, 2026-11-01): the selected pill is the only
+// filled one. In both themes, with the default theme colour and a green one,
+// for every scheme and both variants:
+//   - a resting unselected pill has a transparent background and border, and
+//     its label reads on the page at 4.5:1 or more;
+//   - the selected pill is filled with --sf-primary-active, and its label
+//     reads on that fill at 4.5:1 or more;
+//   - under the pointer an unselected pill takes the surface state layer
+//     (--sf-surface-transparent-hover), not a fill of the theme colour.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
+import {themeFromColor, themeVariables} from '../../src/core/js/theme-palette.js';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
@@ -29,6 +40,48 @@ const TYPES = ['', 'underline', 'pills', 'full', 'vertical'];
 const SCHEMES = ['default', 'outline', 'link'];
 const VARIANTS = ['', 'icons'];
 const ITEMS = 'Один::icon=home|Два::icon=star|Три::icon=edit,disabled';
+
+// A green theme colour, as effects.simai.io offers it, for the pills.
+const GREEN = themeVariables(themeFromColor('#2e7d32'));
+
+// Every pill tab of the page: its background, border, ink and state, and the
+// page and the selected fill resolved in the theme.
+const PILLS = () => {
+  const probe = document.getElementById('role');
+  probe.style.backgroundColor = 'var(--sf-primary-active)';
+  const fill = getComputedStyle(probe).backgroundColor;
+  probe.style.backgroundColor = '';
+  const rows = [...document.querySelectorAll('sf-tabs[type="pills"]')].flatMap((host) =>
+    [...host.querySelectorAll('.sf-tabs-top :is(.sf-button, .sf-icon-button)')].map((tab, index) => {
+      const style = getComputedStyle(tab);
+      const label = tab.querySelector('.sf-button-text-container') || tab.querySelector('.sf-icon');
+      return {key: host.dataset.k.replace(/^pills\//u, ''), index, selected: tab.classList.contains('selected'),
+        disabled: tab.disabled, background: style.backgroundColor, border: style.borderTopColor, ink: getComputedStyle(label).color};
+    }));
+  const body = getComputedStyle(document.body).backgroundColor;
+  return {rows, fill, page: /^rgba\(.*, 0\)$/u.test(body) || body === 'transparent'
+    ? getComputedStyle(document.documentElement).backgroundColor : body};
+};
+const parse = (colour) => {
+  const parts = String(colour).match(/[\d.]+/gu)?.map(Number) ?? [0, 0, 0, 0];
+  return {r: parts[0], g: parts[1], b: parts[2], a: parts.length > 3 ? parts[3] : 1};
+};
+const transparent = (colour) => parse(colour).a === 0;
+const over = (top, bottom) => {
+  const a = parse(top);
+  const b = typeof bottom === 'string' ? parse(bottom) : bottom;
+  return {r: a.r * a.a + b.r * (1 - a.a), g: a.g * a.a + b.g * (1 - a.a), b: a.b * a.a + b.b * (1 - a.a), a: 1};
+};
+const luminance = ({r, g, b}) => {
+  const channel = (value) => { const c = value / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+};
+const contrast = (ink, background, page) => {
+  const ground = over(background, transparent(page) ? {r: 255, g: 255, b: 255, a: 1} : page);
+  const one = luminance(over(ink, ground));
+  const two = luminance(ground);
+  return Math.round(((Math.max(one, two) + 0.05) / (Math.min(one, two) + 0.05)) * 100) / 100;
+};
 
 const failures = [];
 const evidence = {};
@@ -98,6 +151,48 @@ try {
     }
     await page.mouse.move(0, 0);
     evidence[theme] = {tabs: rows.length, matched, roles, buttonText, hovered};
+
+    // Pills: the selected one is the only filled one, with the default theme
+    // colour and with a green one.
+    evidence[theme].pills = {};
+    for (const [colour, variables] of [['default', null], ['green', GREEN]]) {
+      if (variables) {
+        await page.evaluate((variables) => {
+          for (const [name, value] of Object.entries(variables)) document.documentElement.style.setProperty(name, value);
+        }, variables);
+        await page.waitForTimeout(600);
+      }
+      const pills = await page.evaluate(PILLS);
+      evidence[theme].pills[colour] = {count: pills.rows.length, fill: pills.fill};
+      check(`${theme} ${colour}: pill rows were read`, pills.rows.length === SCHEMES.length * VARIANTS.length * 3, {count: pills.rows.length});
+      for (const row of pills.rows) {
+        if (row.disabled) continue;
+        const at = `${theme} ${colour} pills/${row.key} tab ${row.index}${row.selected ? ' (selected)' : ''}`;
+        if (row.selected) {
+          check(`${at}: the selected pill is filled with --sf-primary-active`, row.background === pills.fill && !transparent(row.background),
+            {...row, expected: pills.fill});
+          check(`${at}: its label reads on the fill at 4.5:1`, contrast(row.ink, row.background, pills.page) >= 4.5,
+            {...row, ratio: contrast(row.ink, row.background, pills.page)});
+        } else {
+          check(`${at}: an unselected pill has no fill`, transparent(row.background), row);
+          check(`${at}: an unselected pill has no border`, transparent(row.border), row);
+          check(`${at}: its label reads on the page at 4.5:1`, contrast(row.ink, row.background, pills.page) >= 4.5,
+            {...row, ratio: contrast(row.ink, row.background, pills.page)});
+        }
+      }
+      for (const key of ['default/text', 'outline/text', 'default/icons']) {
+        await page.hover(`sf-tabs[data-k="pills/${key}"] .sf-tabs-top :is(.sf-button, .sf-icon-button) >> nth=1`);
+        await page.waitForTimeout(600);
+        const row = await page.evaluate((key) => {
+          const tab = document.querySelectorAll(`sf-tabs[data-k="pills/${key}"] .sf-tabs-top :is(.sf-button, .sf-icon-button)`)[1];
+          const probe = document.getElementById('role');
+          probe.style.backgroundColor = 'var(--sf-surface-transparent-hover)';
+          return {background: getComputedStyle(tab).backgroundColor, layer: getComputedStyle(probe).backgroundColor};
+        }, key);
+        check(`${theme} ${colour} pills/${key}: a hovered unselected pill takes the surface state layer`, row.background === row.layer, row);
+      }
+      await page.mouse.move(0, 0);
+    }
     await page.close();
   }
 } finally {
