@@ -100,6 +100,14 @@
   gap: var(--sf-space-1);
 }
 
+/* The tools are a toolbar of icon-sized controls: one even step between them,
+   and a colour's swatch and its reset button take the same step, so the reset
+   button does not drift away from its swatch. */
+.sf-site-header-tools,
+.sf-site-header-tools .sf-color {
+  gap: var(--sf-site-header-tools-gap, var(--sf-space-1\/3));
+}
+
 /* navigation-align center: the nav at the centre of the bar. The row is three
    columns -- the brand, the nav, the tools -- and the two sides share the room
    the nav leaves, each at least its own width: while both fit they are equal,

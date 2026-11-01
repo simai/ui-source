@@ -2011,7 +2011,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/site-header/smart.manifest.json",
-      "manifest_sha256": "ae82d93118e85a8bf10f66c56ee29afd8036017a06df3b77d86a0b7f3eee3a1f",
+      "manifest_sha256": "81a93451cc39c72a7f2812f4ca7297c186cd3dbbb3a7a9565ac446d39ba22177",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -212,6 +212,9 @@
         },
         {
           "check": "getComputedStyle(document.querySelector('#wide .sf-site-header-row')).columnGap === '17px' && getComputedStyle(document.querySelector('#wide > header')).backgroundColor === 'rgb(1, 2, 3)'"
+        },
+        {
+          "check": "(() => { const t = document.querySelector('#wide .sf-site-header-tools'); const a = getComputedStyle(t).columnGap; t.style.setProperty('--sf-site-header-tools-gap', '5px'); const ok = a !== '0px' && getComputedStyle(t).columnGap === '5px' && [...t.querySelectorAll('.sf-color')].every((c) => getComputedStyle(c).columnGap === '5px'); t.style.removeProperty('--sf-site-header-tools-gap'); return ok; })()"
         }
       ]
     }

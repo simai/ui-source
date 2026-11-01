@@ -135,6 +135,7 @@
 | `--sf-site-header-border-color` | Нижняя граница полосы и заголовка панели |
 | `--sf-site-header-block-size` | Высота полосы |
 | `--sf-site-header-gap` | Расстояние между группами строки |
+| `--sf-site-header-tools-gap` | Шаг между инструментами; его же берёт выбор цвета между образцом и кнопкой сброса |
 | `--sf-site-header-brand-size` | Высота картинки бренда |
 | `--sf-site-header-sheet-inline-size` | Ширина открытой панели |
 | `--sf-site-header-z-index` | Слой прилипшей полосы |

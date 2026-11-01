@@ -3106,6 +3106,13 @@
           "since": "2026-10-28"
         },
         {
+          "name": "--sf-site-header-tools-gap",
+          "role": "gap",
+          "summary": "The step between the tools, and between a colour tool's swatch and its reset button.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-11-02"
+        },
+        {
           "name": "--sf-site-header-brand-size",
           "role": "size",
           "summary": "The height of the brand's picture.",
