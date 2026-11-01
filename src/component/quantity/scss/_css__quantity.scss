@@ -345,7 +345,9 @@
    bargain the field makes, and for the same reason: a text control matches
    :focus-visible on a click as well as on a tab. */
 .sf-quantity input:focus-visible {
-  outline: none;
+  /* !important: a page's unlayered :focus-visible rule beats any layered one,
+     and drew a second frame on the bare input (owner, 2026-11-01). */
+  outline: none !important;
 }
 
 .sf-quantity.error .sf-quantity-wrap {

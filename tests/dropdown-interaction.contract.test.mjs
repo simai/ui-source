@@ -28,7 +28,9 @@ test('joined dropdown and options use keyboard-only semantic inset focus',async(
   assert.ok(custom.includes('outline-offset: calc(var(--sf-focus--width) * -1)'));
   assert.ok(custom.includes('solid Highlight'));
   assert.match(custom,/@layer sf\.states\s*\{\s*\.sf-dropdown/);
-  assert.match(custom,/button\[aria-haspopup\]:focus-visible\s*\{[^}]*box-shadow: none;[^}]*outline: none;/);
+  // Important, so a page's unlayered :focus-visible rule cannot draw a second
+  // frame on the button (tests/field-inner-focus.contract.test.mjs).
+  assert.match(custom,/button\[aria-haspopup\]:focus-visible\s*\{[^}]*box-shadow: none;[^}]*outline: none !important;/);
 });
 test('Native search box keeps its own change inside, as sf-dropdown does (simai/ui-source#53)',async()=>{
   const base=await read('src/component/dropdown/js/_dropdown.js');

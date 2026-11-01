@@ -400,8 +400,10 @@
    Here the focus lives on the bare control while the ring belongs to the part
    the person sees, so the control gives its own ring up: one component, one
    ring. */
+/* !important: a page's unlayered :focus-visible rule beats any layered one,
+   and drew a second frame on the bare input (owner, 2026-11-01). */
 .sf-country-code .sf-country-code-field input:focus-visible {
-  outline: none;
+  outline: none !important;
 }
 
 .sf-country-code:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-country-code-field {

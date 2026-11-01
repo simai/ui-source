@@ -406,8 +406,11 @@
      it moved it: off the field, onto the bare input inside, where it drew a
      tight square inside the rounded field. The field's border already turns to
      the focus colour in both cases and is what marks the focus after a click. */
+  /* !important: a page's unlayered :focus-visible rule beats any layered one,
+     and drew a second frame on the bare input (owner, 2026-11-01); see
+     sf-dropdown. */
   .sf-input input:focus-visible {
-    outline: none;
+    outline: none !important;
   }
 
   .sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {

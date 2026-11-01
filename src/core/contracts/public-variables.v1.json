@@ -1736,15 +1736,15 @@
         {
           "name": "--sf-range-slider-handle-color",
           "role": "background",
-          "summary": "A handle's ring at rest; disabled keeps its own.",
+          "summary": "A handle's disc at rest; disabled keeps its own.",
           "default": "var(--sf-primary)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-range-slider-handle-inner-color",
           "role": "background",
-          "summary": "The centre of a handle.",
-          "default": "var(--sf-surface-0)",
+          "summary": "The centre of a hollow handle. Unset, the handle is a solid disc; a colour draws the centre in it.",
+          "default": "transparent",
           "since": "2026-10-27"
         },
         {

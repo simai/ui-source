@@ -45,8 +45,23 @@ direction of an already initialized tree.
 
 ## Presentation
 
-Thumb geometry uses compact control tokens and remains circular. The rail uses
-the UI radius. Value labels participate in layout, clamp to the track and merge
+Thumb geometry uses compact control tokens and remains circular. The thumb is a
+solid disc in the primary colour with a ring of the surface around it, so the
+fill ends under the thumb and never shows past it. Hover and press add a halo
+of the primary state layer around the ring; keyboard focus draws the focus ring
+outside it. A disabled thumb is a solid disc of the disabled content colour.
+
+On a surface other than `--sf-surface-0`, set `--sf-thumb-handle--ring-color` on
+an enclosing element to that surface. For a hollow thumb, set
+`--sf-range-slider-handle-inner-color` to the colour of its centre:
+
+```html
+<div style="--sf-range-slider-handle-inner-color: var(--sf-surface-0)">
+  <div class="sf-range-slider" data-start="40" aria-label="Volume"></div>
+</div>
+```
+
+The rail uses the UI radius. Value labels participate in layout, clamp to the track and merge
 visually when they overlap; each handle keeps its independent accessible value.
 Motion is limited to the affected paint and geometry properties and is removed
 for `prefers-reduced-motion`.

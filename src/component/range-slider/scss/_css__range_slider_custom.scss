@@ -67,11 +67,18 @@
 // edge. It used to inherit `right: 0` from the rule above, which made it span
 // from the value to the end of the track, and the handle — anchored to that
 // end — sat at 100% whatever the value was.
+//
+// It also carries will-change: transform from that rule, which makes it a
+// stacking context of its own at z-index auto: the handle's z-index 2 then
+// counted only inside it, and the progress (z-index 1) painted over the whole
+// thumb -- the fill line ran across the handle into its centre (owner,
+// 2026-11-01, effects.simai.io). The marker itself stands above the progress.
 .sf-range-slider .sf-range-slider-origin {
   block-size: 0;
   inline-size: 0;
   inset-inline-end: auto;
   position: absolute;
+  z-index: 2;
 }
 
 // The handle hangs off the start of that marker by half its own width, in

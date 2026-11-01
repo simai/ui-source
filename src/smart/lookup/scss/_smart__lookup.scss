@@ -137,9 +137,11 @@
   outline-offset: var(--sf-focus--offset);
 }
 
+/* !important: a page's unlayered :focus-visible rule beats any layered one, and
+   drew a second frame on the bare input (owner, 2026-11-01). */
 .sf-lookup .sf-lookup-input:focus,
 .sf-lookup .sf-lookup-input:focus-visible {
-  outline: none;
+  outline: none !important;
 }
 
 .sf-lookup.error.sf-lookup--bordered .sf-lookup-frame {

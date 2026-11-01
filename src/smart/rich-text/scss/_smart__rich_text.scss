@@ -114,9 +114,12 @@
   outline-offset: var(--sf-focus--offset);
 }
 
+/* !important: a page's unlayered :focus-visible rule beats any layered one, and
+   drew a second frame on the editor inside the frame's ring (owner,
+   2026-11-01). */
 .sf-rich-text .sf-rich-text-editor:focus,
 .sf-rich-text .sf-rich-text-editor:focus-visible {
-  outline: none;
+  outline: none !important;
 }
 
 .sf-rich-text.error.sf-rich-text--bordered .sf-rich-text-frame {
