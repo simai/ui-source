@@ -73,7 +73,8 @@ on an enclosing element, or pass a complete `style` / `root-style` declaration
 to the Smart host. `root-style` updates apply without resetting the value or
 recreating the slider; removing it restores the captured `style` defaults.
 `--sf-range-slider-track--height` also supplies the default progress thickness.
-Thumbs remain circular and solid, with a ring of the surface around them;
+Thumbs remain circular, plain solid discs with a soft shadow, and the inactive
+track is a flat fill;
 `--sf-range-slider-handle-inner-color` draws a hollow thumb with that centre.
 Rail corners use the compact UI radius. Disabled state
 uses disabled color roles and does not acquire an enabled hover treatment.

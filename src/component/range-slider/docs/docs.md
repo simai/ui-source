@@ -46,13 +46,14 @@ direction of an already initialized tree.
 ## Presentation
 
 Thumb geometry uses compact control tokens and remains circular. The thumb is a
-solid disc in the primary colour with a ring of the surface around it, so the
-fill ends under the thumb and never shows past it. Hover and press add a halo
-of the primary state layer around the ring; keyboard focus draws the focus ring
-outside it. A disabled thumb is a solid disc of the disabled content colour.
+plain solid disc in the primary colour with a soft shadow; the fill ends under
+the thumb and never shows past it. The inactive track is a flat fill, without a
+shadow. Hover and press add a halo of the primary state layer around the disc;
+keyboard focus draws the focus ring outside it. A disabled thumb is a solid disc
+of the disabled content colour.
 
-On a surface other than `--sf-surface-0`, set `--sf-thumb-handle--ring-color` on
-an enclosing element to that surface. For a hollow thumb, set
+For a ring of the surface around the thumb, set `--sf-thumb-handle--ring-width`
+and `--sf-thumb-handle--ring-color` on an enclosing element. For a hollow thumb, set
 `--sf-range-slider-handle-inner-color` to the colour of its centre:
 
 ```html

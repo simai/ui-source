@@ -36,7 +36,7 @@ test('the handle is solid by default and the hollow centre is opt-in',async()=>{
   // Unset, the centre is transparent; the public variable brings it back.
   assert.ok(style.includes('var(--sf-thumb-inner--background-color, var(--sf-range-slider-handle-inner-color, transparent))'));
   // A ring of the surface parts the disc from the fill.
-  assert.ok(style.includes('box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, var(--sf-a2)) var(--sf-thumb-handle--ring-color, var(--sf-surface-0))'));
+  assert.ok(style.includes('box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0))'));
   // Hover and press draw a halo of the primary state layer, 8% and 12%.
   assert.ok(style.includes('var(--sf-primary-transparent-select)'));
   assert.ok(style.includes('var(--sf-primary-transparent-active)'));

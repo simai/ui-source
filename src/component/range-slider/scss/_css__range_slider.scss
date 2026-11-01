@@ -24,7 +24,8 @@
   border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));
   border-start-start-radius: var(--sf-range-slider-track--border-start-start-radius, var(--sf-radius--ui));
-  box-shadow: var(--sf-range-slider-track--box-shadow, var(--sf-ui-shadow-2));
+  // The inactive rail is a flat fill: a shadow under it read as a blur (owner, 2026-11-01).
+  box-shadow: var(--sf-range-slider-track--box-shadow, none);
   height: var(--sf-range-slider-track--height, var(--sf-a4));
 }
 
