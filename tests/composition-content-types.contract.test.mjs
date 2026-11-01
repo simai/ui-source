@@ -26,7 +26,7 @@ const FIRST_EDITION = [
   'content.document', 'content.list', 'content.list-item', 'content.quote', 'content.code', 'content.divider',
   'content.table', 'content.figure', 'content.alert', 'content.details', 'content.tabs', 'content.tab',
   'content.steps', 'content.step', 'content.grid', 'content.card', 'content.media', 'content.html',
-  'content.diagram', 'content.math', 'content.outlet',
+  'content.diagram', 'content.math', 'content.outlet', 'content.file',
 ];
 
 // One valid block per type and the HTML its renderer draws.
@@ -98,6 +98,10 @@ const CASES = {
     node: { id: 'm', type: 'content.media', data: { src: 'https://cdn.test/m.webp', alt: '' }, props: { side: 'left', ratio: '4/3' }, slots: { default: [p('mp', 'Beside.')] } },
     html: '<div class="grid grid-col-1 md:grid-col-2 gap-3 items-cross-center" data-sf-composition-id="m"><figure class="sf-figure sf-figure--ratio-4x3"><div class="sf-figure-media"><img src="https://cdn.test/m.webp" alt="" loading="lazy" decoding="async"></div></figure><div class="min-w-0"><p data-sf-composition-id="mp">Beside.</p></div></div>',
   },
+  'content.file': {
+    node: { id: 'fl', type: 'content.file', data: { value: 'file-42', href: '/files/report.pdf?v=2', label: 'Report "Q3" <2026>', mime: 'application/pdf', size: 1468006 } },
+    html: '<a class="sf-download-file" href="/files/report.pdf?v=2" download type="application/pdf" data-sf-composition-id="fl"><span class="sf-download-file__body sf-download-file-wrap"><span class="sf-download-file__main sf-download-file-container"><i class="sf-download-file__icon sf-icon" aria-hidden="true">picture_as_pdf</i><span class="sf-download-file__name sf-download-file-file-name">Report &quot;Q3&quot; &lt;2026&gt;</span></span><span class="sf-download-file__size sf-download-file-file-size">1.4 MB</span></span></a>',
+  },
   'content.html': {
     node: { id: 'h', type: 'content.html', data: { markup: '<h2 class="x" style="color:red">Raw</h2><p onclick="steal()">Text <a href="javascript:alert(1)">bad</a> <a href="https://simai.io/a">good</a></p><script>window.pwned = 1</script><img src="x" onerror="window.pwned = 1"><style>p{}</style>' } },
     html: '<div data-sf-composition-id="h"><h2>Raw</h2><p>Text bad <a href="https://simai.io/a">good</a></p></div>',
@@ -157,6 +161,7 @@ test('defaults render without their props: an unordered list, a neutral alert, t
     [{ id: 'm', type: 'content.media', data: { src: './a.png', alt: 'A' } }, '<div class="grid grid-col-1 md:grid-col-2 gap-3 items-cross-center" data-sf-composition-id="m"><div class="min-w-0"></div><figure class="sf-figure sf-figure--ratio-16x9"><div class="sf-figure-media"><img src="./a.png" alt="A" loading="lazy" decoding="async"></div></figure></div>'],
     [{ id: 's', type: 'content.steps', props: { layout: 'list' }, slots: { steps: [{ id: 's1', type: 'content.step' }] } }, '<ol class="sf-procedure sf-procedure--list" data-sf-composition-id="s"><li class="sf-procedure-step" data-sf-composition-id="s1"><div class="sf-procedure-content"></div></li></ol>'],
     [{ id: 't', type: 'content.table', data: { rows: [[[text('a')], [text('b')]]] }, props: { header: 'none' } }, '<div class="table-frame" data-sf-composition-id="t"><table class="table"><tbody><tr><td>a</td><td>b</td></tr></tbody></table></div>'],
+    [{ id: 'fl', type: 'content.file', data: { href: 'https://cdn.test/files/Price%20list.xlsx#sheet' } }, '<a class="sf-download-file" href="https://cdn.test/files/Price%20list.xlsx#sheet" download data-sf-composition-id="fl"><span class="sf-download-file__body sf-download-file-wrap"><span class="sf-download-file__main sf-download-file-container"><i class="sf-download-file__icon sf-icon" aria-hidden="true">download</i><span class="sf-download-file__name sf-download-file-file-name">Price list.xlsx</span></span></span></a>'],
   ];
   for (const [node, html] of cases) {
     const result = await render(documentOf(node));
@@ -204,6 +209,19 @@ test('each type refuses what its schema does not allow', () => {
     [{ id: 'dg', type: 'content.diagram', data: { source: 'graph LR' }, props: { engine: 'plantuml' } }, ['schema_enum']],
     [{ id: 'mt', type: 'content.math', data: {} }, ['schema_required']],
     [{ id: 'o', type: 'content.outlet' }, ['type_profile_unsupported']],
+    [{ id: 'fl', type: 'content.file', data: { label: 'No address' } }, ['schema_required']],
+    [{ id: 'fl', type: 'content.file', data: { href: 'javascript:alert(1)' } }, ['unsafe_url']],
+    [{ id: 'fl', type: 'content.file', data: { href: '//evil.test/a.pdf' } }, ['unsafe_url']],
+    [{ id: 'fl', type: 'content.file', data: { href: 'data:application/pdf;base64,AA' } }, ['unsafe_url']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', mime: 'Application/PDF' } }, ['schema_pattern']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', mime: 'application/pdf; charset=binary' } }, ['schema_pattern']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', size: -1 } }, ['schema_minimum']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', size: 1.5 } }, ['schema_type']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', size: '12 KB' } }, ['schema_type']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', label: '' } }, ['schema_min_length']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf', name: 'a.pdf' } }, ['schema_additional_property']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf' }, props: { download: true } }, ['schema_additional_property']],
+    [{ id: 'fl', type: 'content.file', data: { href: '/a.pdf' }, slots: { default: [] } }, ['leaf_slots_forbidden', 'slot_unknown']],
   ];
   for (const [node, expected] of NEGATIVE) {
     const result = validate(documentOf(node));
@@ -265,6 +283,23 @@ test('diagram and math draw through a renderer the host registers, and report it
   assert.equal(inner(hosted.html), '<figure data-engine="mermaid">17</figure><div role="math" aria-label="Euler"></div>');
 });
 
+test('content.file reads its size in the Document\'s language and its icon from the media type', async () => {
+  const file = (data) => ({ id: 'fl', type: 'content.file', data: { href: '/a', ...data } });
+  const drawn = async (data, locale) => {
+    const { html, diagnostics } = await render({ ...documentOf(file(data)), ...(locale ? { locale } : {}) });
+    assert.deepEqual(diagnostics, []);
+    return { icon: html.match(/aria-hidden="true">([^<]*)</u)[1], size: html.match(/file-size">([^<]*)</u)?.[1] ?? null, name: html.match(/file-name">([^<]*)</u)[1] };
+  };
+  assert.deepEqual(await drawn({ size: 0 }), { icon: 'download', size: '0 B', name: 'a' });
+  assert.deepEqual(await drawn({ size: 2048, mime: 'image/png' }), { icon: 'image', size: '2 KB', name: 'a' });
+  assert.deepEqual(await drawn({ size: 1468006, mime: 'text/csv' }, 'ru'), { icon: 'table_chart', size: '1,4 МБ', name: 'a' });
+  assert.deepEqual(await drawn({ size: 5 * 1024 ** 3, mime: 'video/mp4' }, 'ru-RU'), { icon: 'movie', size: '5 ГБ', name: 'a' });
+  assert.deepEqual(await drawn({ size: 1536, mime: 'audio/mpeg' }, 'de'), { icon: 'audio_file', size: '1,5 KB', name: 'a' });
+  assert.deepEqual(await drawn({ mime: 'application/x-unknown' }), { icon: 'download', size: null, name: 'a' });
+  const assets = (await render(documentOf(file({})))).assets;
+  assert.deepEqual(assets, ['component/download-file']);
+});
+
 test('the fixture Document holding every type validates', async () => {
   const fixture = JSON.parse(await readFile(new URL('./fixtures/composition/structured-content.json', import.meta.url), 'utf8'));
   assert.deepEqual(validate(fixture), { valid: true, diagnostics: [] });
@@ -276,7 +311,7 @@ test('the fixture Document holding every type validates', async () => {
 
 test('editor manifests bind each parameterised type and map every field to one kind', () => {
   const registry = createRegistry();
-  const withEditor = ['content.list', 'content.code', 'content.table', 'content.figure', 'content.alert', 'content.details', 'content.tabs', 'content.tab', 'content.steps', 'content.grid', 'content.card', 'content.media', 'content.diagram', 'content.math'];
+  const withEditor = ['content.list', 'content.code', 'content.table', 'content.figure', 'content.alert', 'content.details', 'content.tabs', 'content.tab', 'content.steps', 'content.grid', 'content.card', 'content.media', 'content.file', 'content.diagram', 'content.math'];
   for (const type of withEditor) {
     const manifest = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === type);
     assert.ok(manifest, type);
@@ -289,6 +324,8 @@ test('editor manifests bind each parameterised type and map every field to one k
     ['status', ['neutral', 'info', 'success', 'warning', 'error'], 'neutral'],
     ['appearance', ['default', 'outlined', 'flat'], 'default'],
   ], 'the alert speaks sf-alert\'s words');
+  const file = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.file');
+  assert.deepEqual(file.fields.map(({ key, plane, constraints }) => [key, plane, constraints.max_length]), [['label', 'data', 300], ['href', 'data', 2048]], 'the file names its label and its address');
   for (const type of ['content.document', 'content.quote', 'content.divider', 'content.list-item', 'content.step', 'content.html', 'content.outlet']) {
     assert.equal(BUILTIN_EDITOR_MANIFESTS.some((entry) => entry.type === type), false, `${type} has no parameters`);
   }
@@ -307,7 +344,7 @@ test('every class a renderer writes is a SIMAI Framework class: a utility rule o
   }
   const utilities = Object.values(SF.RuleLoader).filter((rule) => rule instanceof RegExp);
   const sheets = (folder) => readdirSync(new URL(`src/component/${folder}/scss/`, root)).map((file) => readFileSync(new URL(`src/component/${folder}/scss/${file}`, root), 'utf8')).join('\n');
-  const componentSheets = ['alerts', 'card', 'contentDivider', 'figure', 'procedure', 'tabs', 'buttons', 'icons'].map(sheets).join('\n') + ['highlight/js/index.js', 'tabs/js/_tabs.js'].map((file) => readFileSync(new URL(`src/component/${file}`, root), 'utf8')).join('\n');
+  const componentSheets = ['alerts', 'card', 'contentDivider', 'download-file', 'figure', 'procedure', 'tabs', 'buttons', 'icons'].map(sheets).join('\n') + ['highlight/js/index.js', 'tabs/js/_tabs.js'].map((file) => readFileSync(new URL(`src/component/${file}`, root), 'utf8')).join('\n');
   const fixture = JSON.parse(await readFile(new URL('./fixtures/composition/structured-content.json', import.meta.url), 'utf8'));
   const documents = [fixture, ...Object.values(CASES).map(({ node }) => documentOf(node))];
   const classes = new Set();

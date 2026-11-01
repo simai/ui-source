@@ -1,5 +1,6 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
 import { sanitizeRichText } from './html-subset.mjs';
+import { fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
 import { isSchema, schemaFields } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
@@ -219,6 +220,9 @@ function validateContentRules(root, diagnostics) {
     for (const [content, contentPath] of inlineFields(node, path)) validateInlineContent(content, contentPath, diagnostics);
     if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !validUrl(node.data.src)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.src`, 'Image source protocol is not allowed'));
+    }
+    if (node.type === 'content.file' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
+      diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'File address protocol is not allowed'));
     }
     const parent = CONTENT_ITEM_PARENTS[node.type];
     if (parent && parentType !== parent) diagnostics.push(diagnostic('content_parent_invalid', path, `${node.type} must be a direct child of ${parent}`));
@@ -485,6 +489,35 @@ function renderImage(data) {
   return `<img src="${escapeHtml(data.src)}" alt="${escapeHtml(data.alt)}"${size} loading="lazy" decoding="async">`;
 }
 
+// The icon of a file's kind, by its media type: sf-download-file's own glyph
+// when the type says nothing a reader would recognise.
+const FILE_ICONS = [
+  [/^application\/pdf$/u, 'picture_as_pdf'],
+  [/^image\//u, 'image'],
+  [/^video\//u, 'movie'],
+  [/^audio\//u, 'audio_file'],
+  [/^application\/(?:zip|x-zip-compressed|x-7z-compressed|x-rar-compressed|vnd\.rar|x-tar|gzip|x-gzip)$/u, 'folder_zip'],
+  [/^(?:text\/csv|application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.spreadsheet)$/u, 'table_chart'],
+  [/^(?:application\/vnd\.ms-powerpoint|application\/vnd\.openxmlformats-officedocument\.presentationml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.presentation)$/u, 'slideshow'],
+  [/^(?:text\/|application\/msword$|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.[a-z.]+$|application\/vnd\.oasis\.opendocument\.text$|application\/rtf$)/u, 'description'],
+];
+function fileIcon(mime) {
+  if (typeof mime !== 'string' || !mime) return 'download';
+  return FILE_ICONS.find(([pattern]) => pattern.test(mime))?.[1] ?? 'download';
+}
+
+// sf-download-file's row, drawn as a plain link: it downloads with no script,
+// the name falls back to the address's last part, and the size reads in the
+// Document's language.
+function renderFile(node, locale) {
+  const { href, label, mime, size } = node.data;
+  const name = label || fileNameFromAddress(href) || href;
+  const type = mime ? ` type="${escapeHtml(mime)}"` : '';
+  const sizeText = Number.isInteger(size) ? formatFileSize(size, fileSizeUnits(locale), locale) : '';
+  const sizePart = sizeText ? `<span class="sf-download-file__size sf-download-file-file-size">${escapeHtml(sizeText)}</span>` : '';
+  return `<a class="sf-download-file" href="${escapeHtml(href)}" download${type}${id(node)}><span class="sf-download-file__body sf-download-file-wrap"><span class="sf-download-file__main sf-download-file-container"><i class="sf-download-file__icon sf-icon" aria-hidden="true">${fileIcon(mime)}</i><span class="sf-download-file__name sf-download-file-file-name">${escapeHtml(name)}</span></span>${sizePart}</span></a>`;
+}
+
 function renderTable(node) {
   const { rows } = node.data;
   const header = node.props?.header ?? 'row';
@@ -605,6 +638,7 @@ const BUILTIN_RENDERERS = {
   },
   'content.card': ({ node, slots }) => `<div class="sf-card${node.props?.variant === 'plain' ? ' sf-card--plain' : ''}"${id(node)}>${slots.default || ''}</div>`,
   'content.media': ({ node, slots }) => renderMedia(node, slots),
+  'content.file': ({ node, locale }) => renderFile(node, locale),
   // Cleaned at render by the html@1 subset's one rule: no script, no style, no
   // attribute but a safe href survives.
   'content.html': ({ node }) => `<div${id(node)}>${sanitizeRichText(node.data.markup)}</div>`,
@@ -662,7 +696,7 @@ export async function render(document, context = {}) {
       return '';
     }
     if (node.type === 'layout.scope') hydration.push({ id: node.id, type: node.type, element: 'sf-composition-scope' });
-    return renderer({ node, slots, context, resolvedBindings, manifest, routes: routes.get(node.id), endpoint: endpointName(node), outlet: node.type === 'content.outlet' ? outlet : undefined });
+    return renderer({ node, slots, context, resolvedBindings, manifest, routes: routes.get(node.id), endpoint: endpointName(node), outlet: node.type === 'content.outlet' ? outlet : undefined, locale: normalized.document.locale ?? 'en' });
   };
   const html = await renderNode(normalized.document.root);
   const assets = outletAssets.length ? [...new Set([...normalized.dependencies.assets, ...outletAssets])].sort() : normalized.dependencies.assets;

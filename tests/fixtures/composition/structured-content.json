@@ -60,6 +60,7 @@
           {"id": "mh", "type": "content.heading", "data": {"level": 3, "content": [{"type": "text", "value": "Image on the left"}]}},
           {"id": "mp", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "The text stands beside it and moves below on a phone."}]}}
         ]}},
+        {"id": "file", "type": "content.file", "data": {"value": "file-1", "href": "./report.pdf", "label": "Annual report.pdf", "mime": "application/pdf", "size": 1468006}},
         {"id": "html", "type": "content.html", "data": {"markup": "<p>Raw <strong>markup</strong> <a href=\"https://simai.io\" onclick=\"steal()\">link</a></p><script>window.__pwned = true</script><img src=x onerror=\"window.__pwned = true\">"}},
         {"id": "diagram", "type": "content.diagram", "data": {"source": "graph LR\n  A --> B"}, "props": {"title": "Flow"}},
         {"id": "math", "type": "content.math", "data": {"source": "e^{i\\pi} + 1 = 0"}, "props": {"label": "Euler's identity"}}

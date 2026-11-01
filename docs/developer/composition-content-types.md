@@ -47,6 +47,7 @@ for a parameter, the type uses it; elsewhere Docara's names stand.
 | `content.grid` | | `columns` (1-4), `gap` (0-4) | `default` | `grid` and `grid-col-*` utilities, one column on a phone |
 | `content.card` | | `variant` (default, plain) | `default` | component `card` |
 | `content.media` | `src`, `alt`, `width`, `height` | `side` (left, right), `ratio` | `default` | `grid` utilities and component `figure` |
+| `content.file` | `href`, `value`, `label`, `mime`, `size` | | | component `download-file` (`a.sf-download-file[download]`) |
 | `content.html` | `markup` | | | the html@1 subset of sf-rich-text |
 | `content.diagram` | `source` | `engine` (mermaid), `title` | | a renderer the host registers |
 | `content.math` | `source` (TeX) | `label` | | a renderer the host registers |
@@ -70,6 +71,36 @@ tel); anything else is `unsafe_url`.
   br`, nothing else, no attribute but a safe `href`. Its key is `markup`:
   `html` is refused anywhere in a Document. A converter never produces it by
   accident: it is written only when an author asks for raw markup.
+
+## A file to download
+
+`content.file` (1.0.0, after the first edition) is a file a reader downloads;
+`content.media` is a picture that stands in the page. Its data is the shape
+the SIMAI Framework already uses for a stored file (the property-view `file`
+type, sf-image-field's value):
+
+| Key | | Meaning |
+|:---|:---|:---|
+| `href` | required | the address the file is fetched from; the Document's URL rule, else `unsafe_url` |
+| `value` | | the host's own reference to the stored file (an id, a key); stored, never drawn |
+| `label` | | the name shown; without one, the last part of `href`, decoded, without its query and fragment |
+| `mime` | | the media type, lowercase `type/subtype` with no parameters (`application/pdf`) |
+| `size` | | bytes, a whole number |
+
+```json
+{"id": "report", "type": "content.file", "data": {"value": "file-42", "href": "/files/report.pdf", "label": "Annual report.pdf", "mime": "application/pdf", "size": 1468006}}
+```
+
+It draws sf-download-file's row as static HTML, with no script: an
+`<a class="sf-download-file" href download type>` holding the icon of the
+file's kind, the name and the size. The size reads in the Document's
+`locale` by the rule sf-image-field uses (`composition/file-size.mjs`):
+`1.4 MB` in English, `1,4 МБ` in Russian; another language takes its own
+digits and the English unit words. The icon follows the media type:
+`picture_as_pdf`, `image`, `movie`, `audio_file`, `folder_zip` (archives),
+`table_chart` (spreadsheets and CSV), `slideshow` (presentations),
+`description` (text and documents), else sf-download-file's own `download`.
+Its editor manifest has two text fields, `label` and `href`.
 
 ## Diagram and math
 
@@ -122,6 +153,16 @@ published field kind (choice, integer, text, toggle).
   every type (`tests/fixtures/composition/structured-content.json`) drawn on
   the built bytes, light and dark, at 1280 and 390 px, with no horizontal
   overflow; the details open with script disabled.
+- `contracts/conformance/structured-content/`: the conformance kit, the
+  Documents any renderer of structured content must draw and what it must
+  draw (every type with its defaults and each parameter value, the inline
+  model, escaping, the html@1 cleaning, the outlet, invalid Documents and
+  their diagnostics), with its comparison rule in its README. A renderer in
+  another language passes the same kit. `node
+  scripts/generate-structured-content-conformance.mjs` writes it from the JS
+  renderer, `--check` verifies it, and
+  `tests/structured-content-conformance.contract.test.mjs` runs the JS
+  renderer over it.
 - `tests/browser/card.browser.mjs`, `figure.browser.mjs`,
   `procedure.browser.mjs`: the three display parts on their built sheets.
 

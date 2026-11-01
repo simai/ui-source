@@ -120,6 +120,8 @@ const imageData = {
 export const CONTENT_RATIOS = Object.freeze(['1/1', '4/3', '3/2', '16/9', '21/9']);
 export const CONTENT_ALERT_STATUSES = Object.freeze(['neutral', 'info', 'success', 'warning', 'error']);
 export const CONTENT_ALERT_APPEARANCES = Object.freeze(['default', 'outlined', 'flat']);
+// A media type in its lowercase form: type/subtype, no parameters.
+export const CONTENT_FILE_MIME = '^[a-z0-9][a-z0-9!#$&^_.+-]{0,126}/[a-z0-9][a-z0-9!#$&^_.+-]{0,126}$';
 export const CONTENT_TABLE_HEADERS = Object.freeze(['row', 'column', 'both', 'none']);
 // Which parent an item type stands in; validate reports any other place.
 export const CONTENT_ITEM_PARENTS = Object.freeze({
@@ -460,6 +462,23 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     slots: { default: contentSlot(0, 100) },
     assets: ['component/figure'],
   }),
+  // A file to download, not to play in the page (content.media plays). Its
+  // data is the shape the SIMAI Framework already uses for a stored file (the
+  // property-view file type, sf-image-field's value): value the host's
+  // reference, href the address it is fetched from, label the name shown
+  // (else the address's last part), mime and size in bytes, both optional.
+  // The renderer draws sf-download-file's row as a plain <a download>.
+  contentManifest('content.file', {
+    mode: 'leaf',
+    data_schema: closed({
+      value: { type: 'string', minLength: 1, maxLength: 2048 },
+      href: urlSchema,
+      label: plainText(300),
+      mime: { type: 'string', maxLength: 255, pattern: CONTENT_FILE_MIME },
+      size: { type: 'integer', minimum: 0, maximum: Number.MAX_SAFE_INTEGER },
+    }, ['href']),
+    assets: ['component/download-file'],
+  }),
   // The escape hatch: markup in the html@1 subset of sf-rich-text, cleaned at
   // render by that subset's one rule. The key is not "html": that word is
   // refused anywhere in a Document.
@@ -744,6 +763,10 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('content.media', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
     contentField('content.media', 'side', 'props', 'choice', { choices: ['left', 'right'], default: 'right' }),
     contentField('content.media', 'ratio', 'props', 'choice', { choices: ['1/1', '4/3', '3/2', '16/9', '21/9'], default: '16/9' }),
+  ]),
+  contentEditor('content.file', [
+    contentField('content.file', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('content.file', 'href', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
   ]),
   contentEditor('content.diagram', [
     contentField('content.diagram', 'title', 'props', 'text', { constraints: { min_length: 1, max_length: 200 } }),
