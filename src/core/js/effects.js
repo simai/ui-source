@@ -98,6 +98,47 @@ export function checkEffectManifest(manifest) {
       if (!checked.ok) problems.push(`${at}: default is not a valid value`);
     }
   });
+  // simai.effect 1.3: a setting shown and read only while another holds one of
+  // the values its `when` lists.
+  const byKey = new Map(manifest.settings.filter((setting) => isObject(setting) && typeof setting.key === 'string')
+    .map((setting) => [setting.key, setting]));
+  manifest.settings.forEach((setting, index) => {
+    if (!isObject(setting) || setting.when === undefined) return;
+    const at = `settings[${index}].when`;
+    const {when} = setting;
+    if (!isObject(when) || Object.keys(when).some((name) => name !== 'key' && name !== 'is')) {
+      problems.push(`${at}: {key, is} and nothing else`);
+      return;
+    }
+    if (!Array.isArray(when.is) || !when.is.length) problems.push(`${at}: is lists one value or more`);
+    if (typeof when.key !== 'string' || !byKey.has(when.key)) {
+      problems.push(`${at}: key names no setting of this effect`);
+      return;
+    }
+    if (when.key === setting.key) {
+      problems.push(`${at}: key names the setting itself`);
+      return;
+    }
+    const controller = byKey.get(when.key);
+    if (Array.isArray(when.is) && SETTING_TYPES.has(controller.type)) {
+      for (const value of when.is) {
+        if (!['string', 'number', 'boolean'].includes(typeof value) || !checkSetting(controller, value).ok) {
+          problems.push(controller.type === 'choice'
+            ? `${at}: ${JSON.stringify(value)} is not an option of ${when.key}`
+            : `${at}: ${JSON.stringify(value)} is not a valid value of ${when.key}`);
+        }
+      }
+    }
+    // A condition that leads back to its own setting is never shown.
+    const seen = new Set([setting.key]);
+    for (let next = controller; isObject(next?.when); next = byKey.get(next.when.key)) {
+      if (seen.has(next.when.key)) {
+        problems.push(`${at}: the conditions form a loop through ${next.when.key}`);
+        break;
+      }
+      seen.add(next.key);
+    }
+  });
   return problems;
 }
 
@@ -145,10 +186,17 @@ export function checkSetting(setting, raw) {
 // Stored values -> the settings an effect gets: every key of the manifest, the
 // stored value where it is valid, the default where it is absent or not.
 // `invalid` names the keys whose stored value was dropped.
+//
+// simai.effect 1.3: a setting with `when` is read only while the setting it
+// names is itself read and holds one of the values `is` lists. Otherwise its
+// key is left out -- its stored value ignored, its default not applied, and it
+// is not named in `invalid` -- so a settings form shows exactly the keys this
+// answers for the values on it.
 export function effectSettings(manifest, stored = {}) {
   const settings = {};
   const invalid = [];
-  for (const setting of manifest.settings ?? []) {
+  const list = manifest.settings ?? [];
+  for (const setting of list) {
     if (Object.hasOwn(stored ?? {}, setting.key)) {
       const checked = checkSetting(setting, stored[setting.key]);
       if (checked.ok) {
@@ -158,6 +206,29 @@ export function effectSettings(manifest, stored = {}) {
       invalid.push(setting.key);
     }
     settings[setting.key] = checkSetting(setting, setting.default).value;
+  }
+  const byKey = new Map(list.map((setting) => [setting.key, setting]));
+  const read = new Map();
+  const isRead = (setting, path = new Set()) => {
+    if (!isObject(setting?.when)) return true;
+    if (read.has(setting.key)) return read.get(setting.key);
+    if (path.has(setting.key)) return false;
+    path.add(setting.key);
+    const controller = byKey.get(setting.when.key);
+    const answer = Boolean(controller) && controller !== setting && Array.isArray(setting.when.is)
+      && isRead(controller, path)
+      && setting.when.is.some((value) => {
+        const checked = checkSetting(controller, value);
+        return checked.ok && checked.value === settings[controller.key];
+      });
+    read.set(setting.key, answer);
+    return answer;
+  };
+  for (const setting of list) {
+    if (isRead(setting)) continue;
+    delete settings[setting.key];
+    const at = invalid.indexOf(setting.key);
+    if (at !== -1) invalid.splice(at, 1);
   }
   return {settings: Object.freeze(settings), invalid};
 }

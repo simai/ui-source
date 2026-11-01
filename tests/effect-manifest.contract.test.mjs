@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import {createHash} from 'node:crypto';
-import {FRAME_RUNNER, FRAME_RUNNER_SHA256, allowedModes, checkEffectManifest, effectSchemes, foreignMode, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
+import {FRAME_RUNNER, FRAME_RUNNER_SHA256, allowedModes, checkEffectManifest, effectSchemes, effectSettings, foreignMode, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
 
 // simai.effect 1.1 (2026-10-19): the manifest gains schemes, pair and
 // capabilities, each optional, so every 1.0 manifest stays valid. The live
@@ -63,7 +63,7 @@ test('invalid schemes, pairs and capabilities are refused', () => {
 });
 
 test('the live schema states the same fields as the reader', () => {
-  assert.equal(schema['x-simai-version'], '1.2.0');
+  assert.equal(schema['x-simai-version'], '1.3.0');
   assert.deepEqual(schema.properties.schemes.items.enum, ['dark', 'light']);
   assert.equal(schema.properties.schemes.minItems, 1);
   assert.equal(schema.properties.schemes.maxItems, 2);
@@ -78,6 +78,73 @@ test('the live schema states the same fields as the reader', () => {
     assert.ok(!schemaTakesPair(value), value);
     assert.match(checkEffectManifest(with_({schemes: ['dark'], pair: value})).join(), /pair/u, value);
   }
+});
+
+// simai.effect 1.3 (2026-11-01): a setting shown and read only while another
+// holds one of the values its when lists. The kit reads the manifest through
+// checkEffectManifest, so what is refused here is refused by the kit too.
+const label = {en: 'x'};
+const conditional = with_({settings: [
+  ...sample.settings,
+  {key: 'trail', type: 'boolean', label, default: false},
+  {key: 'trailLength', type: 'integer', label, default: 8, min: 1, max: 40, when: {key: 'trail', is: [true]}},
+  {key: 'corner', type: 'integer', label, default: 2, min: 0, max: 8, when: {key: 'shape', is: ['square']}},
+  {key: 'cornerTint', type: 'color', label, default: '#ff0000', when: {key: 'corner', is: [4, 8]}},
+]});
+
+test('a conditional setting is taken, and the live schema states when', () => {
+  assert.deepEqual(checkEffectManifest(conditional), []);
+  const when = schema.$defs.setting.properties.when;
+  assert.deepEqual(when.required, ['key', 'is']);
+  assert.equal(when.additionalProperties, false);
+  assert.equal(when.properties.key.pattern, schema.$defs.setting.properties.key.pattern);
+  assert.equal(when.properties.is.minItems, 1);
+  assert.ok(!schema.$defs.setting.required.includes('when'), 'when is optional');
+});
+
+test('a setting whose condition is false is not read: no value, no default, not named as dropped', () => {
+  const read = (stored) => effectSettings(conditional, stored);
+  // At the defaults: no trail, round dots -- none of the three conditional settings is read.
+  assert.deepEqual(Object.keys(read({}).settings), ['count', 'speed', 'color', 'shape', 'trail']);
+  // A stored value for a setting that is not read is ignored, valid or not.
+  assert.deepEqual(read({trailLength: 12, corner: 99}), {settings: read({}).settings, invalid: []});
+  // The condition holds: the stored value, or the default where it is missing or invalid.
+  assert.equal(read({trail: true, trailLength: 12}).settings.trailLength, 12);
+  assert.equal(read({trail: '1'}).settings.trailLength, 8);
+  assert.deepEqual(read({trail: true, trailLength: 99}).invalid, ['trailLength']);
+  // A chain: cornerTint needs corner at 4 or 8, and corner needs square dots.
+  assert.equal(read({shape: 'square'}).settings.corner, 2);
+  assert.ok(!('cornerTint' in read({shape: 'square'}).settings));
+  assert.equal(read({shape: 'square', corner: 4}).settings.cornerTint, '#ff0000');
+  assert.ok(!('cornerTint' in read({shape: 'round', corner: 4}).settings), 'a setting that is not read cannot open another');
+});
+
+test('a when that names no setting, the setting itself, a value it cannot hold or a loop is refused', () => {
+  const setting = (when, extra = []) => with_({settings: [...sample.settings, ...extra,
+    {key: 'trail', type: 'boolean', label, default: false}, {key: 'size', type: 'integer', label, default: 2, min: 1, max: 9, when}]});
+  for (const [manifest, problem] of [
+    [setting({key: 'missing', is: ['x']}), /key names no setting/u],
+    [setting({key: 'size', is: [2]}), /names the setting itself/u],
+    [setting({key: 'shape', is: ['triangle']}), /"triangle" is not an option of shape/u],
+    [setting({key: 'shape', is: ['round', 'hexagon']}), /"hexagon" is not an option of shape/u],
+    [setting({key: 'trail', is: ['yes']}), /"yes" is not a valid value of trail/u],
+    [setting({key: 'count', is: [1000]}), /1000 is not a valid value of count/u],
+    [setting({key: 'shape', is: []}), /is lists one value or more/u],
+    [setting({key: 'shape'}), /is lists one value or more/u],
+    [setting({key: 'shape', is: ['round'], not: true}), /\{key, is\} and nothing else/u],
+    [setting('shape'), /\{key, is\} and nothing else/u],
+    [setting({key: 'depth', is: [1]}, [{key: 'depth', type: 'integer', label, default: 1, min: 1, max: 3, when: {key: 'size', is: [2]}}]),
+      /loop/u],
+  ]) assert.match(checkEffectManifest(manifest).join(), problem, JSON.stringify(manifest.settings.at(-1).when));
+  // Choices compare their options as stored values compare: an integer option
+  // matches its number.
+  const numbered = with_({settings: [
+    {key: 'level', type: 'choice', label, default: 1, options: [{value: 1, label}, {value: 2, label}]},
+    {key: 'glow', type: 'boolean', label, default: true, when: {key: 'level', is: [2]}},
+  ]});
+  assert.deepEqual(checkEffectManifest(numbered), []);
+  assert.ok(!('glow' in effectSettings(numbered, {}).settings));
+  assert.equal(effectSettings(numbered, {level: '2'}).settings.glow, true);
 });
 
 // The theme policy is pure: what an editor may offer and what a placement

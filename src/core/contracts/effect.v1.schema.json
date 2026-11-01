@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/effect.v1.schema.json",
   "title": "Simai Background Effect Manifest v1",
-  "x-simai-version": "1.2.0",
+  "x-simai-version": "1.3.0",
   "description": "An animated background drawn into one area of a page. A product reads only this file to list, describe and configure an effect, without running its code.",
   "type": "object",
   "additionalProperties": false,
@@ -69,7 +69,15 @@
         "step": {"type": "number", "exclusiveMinimum": 0},
         "unit": {"type": "string", "maxLength": 16},
         "options": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["value", "label"], "properties": {"value": {"type": ["string", "integer"]}, "label": {"$ref": "#/$defs/text"}}}},
-        "accept": {"type": "array", "items": {"type": "string", "pattern": "^(image|video)/[a-z0-9.+-]+$"}, "description": "For a file: the kinds of the site's files that may be chosen."}
+        "accept": {"type": "array", "items": {"type": "string", "pattern": "^(image|video)/[a-z0-9.+-]+$"}, "description": "For a file: the kinds of the site's files that may be chosen."},
+        "when": {
+          "type": "object", "additionalProperties": false, "required": ["key", "is"],
+          "properties": {
+            "key": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9]{0,40}$"},
+            "is": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": ["string", "number", "boolean"]}}
+          },
+          "description": "A condition (simai.effect 1.3): the setting is shown and read only while the setting named by key, itself read, holds one of the values is lists. key names another setting of the same effect, never this one, and the conditions form no loop; each value of is is a valid value of that setting -- for a choice, one of its options. While the condition is false the setting is not read: its stored value is ignored and its default is not applied, and the effect is given no value for it."
+        }
       }
     }
   }

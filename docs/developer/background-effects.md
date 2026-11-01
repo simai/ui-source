@@ -13,13 +13,38 @@ and the kit (`scripts/effect-kit.mjs`).
 | --- | --- |
 | `checkEffectManifest(manifest)` | the problems of a manifest, `[]` when it holds |
 | `checkSetting(setting, value)` | `{ok, value}` for one stored value |
-| `effectSettings(manifest, stored)` | `{settings, invalid}`: every key, defaults where a value is missing or invalid |
+| `effectSettings(manifest, stored)` | `{settings, invalid}`: every key that is read, defaults where a value is missing or invalid; a conditional setting whose condition is false is left out |
 | `effectSchemes(manifest)` | the schemes it draws (`['dark', 'light']` when it declares none) |
 | `pairIsForeign(manifest)` | `true` when the pair is an address, not a catalogue id |
 | `SANDBOX_RUNNER_SHA256` | the base64 SHA-256 of the sandbox frame's runner script |
 | `EFFECT_FORMAT` | `{schema: 'simai.effect', schema_version: 1}`: the fields a writer of an `effect.json` spreads into it |
 | `EFFECT_SCHEMA` | `'simai.effect.v1'`, the older label of the format; legacy until 2026-12-01 (journal `global-effect-schema-constant`), use `EFFECT_FORMAT` |
 | `foreignMode(value?)` | `'sandbox'` or `'refuse'`: how foreign effects are treated (`SF_BOOT_CONFIG.effects.foreign` without an argument) |
+
+## Conditional settings
+
+Since simai.effect 1.3 (effect manifest schema 1.3.0) a setting may be shown
+and read only while another setting holds certain values:
+
+```json
+{"key": "trail", "type": "boolean", "label": {"en": "Trail"}, "default": false},
+{"key": "trailLength", "type": "integer", "label": {"en": "Trail length"}, "default": 8, "min": 1, "max": 40,
+  "when": {"key": "trail", "is": [true]}}
+```
+
+- `when.key` names another setting of the same effect, never the setting
+  itself; `when.is` lists one value or more, each a valid value of that
+  setting -- for a `choice`, one of its options. Conditions may chain (a
+  setting that is not read cannot open another) but form no loop.
+  `checkEffectManifest`, and so the kit, refuse anything else.
+- While the condition is false the setting is not read: `effectSettings`
+  leaves its key out, ignores a stored value for it and does not apply its
+  default, and does not name it in `invalid`. The effect is given no value for
+  it, in `mount` and in `update`, inline and in the sandbox.
+- A settings form shows exactly the keys `effectSettings(manifest, values)`
+  answers for the values on it, and asks again when one of them changes. It
+  keeps a hidden setting's value where it stores values; that value is read
+  again when its condition holds.
 
 ## Drawing deterministically
 
