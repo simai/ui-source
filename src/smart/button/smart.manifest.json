@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -90,7 +90,8 @@
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",
@@ -138,7 +139,14 @@
       },
       "text-position": {
         "type": "string",
-        "default": "center"
+        "default": "center",
+        "description": "How the label aligns inside a button wider than its content: start, center or end (the text-align utility on the label).",
+        "enum": [
+          "start",
+          "center",
+          "end",
+          "justify"
+        ]
       },
       "text": {
         "type": "string",
@@ -147,7 +155,14 @@
       },
       "segment": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The button's place in a joined group: start, middle or end squares the corners it shares with its neighbours; empty: a standalone button.",
+        "enum": [
+          "",
+          "start",
+          "middle",
+          "end"
+        ]
       },
       "icon": {
         "type": "string",

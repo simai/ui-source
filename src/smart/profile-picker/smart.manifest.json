@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "title": "Profile picker",
   "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -39,11 +39,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "label": {
         "type": "string",
@@ -77,10 +79,12 @@
         "description": "The id of the profile in use."
       },
       "profiles": {
-        "type": "array"
+        "type": "array",
+        "description": "The profiles the host offers, [{id, label, shared, builtin, editable}]: builtin is the standard one, never renamed or removed; editable false may be chosen but not changed. The picker never changes its own list."
       },
       "rights": {
-        "type": "object"
+        "type": "object",
+        "description": "What this person may create, {create: {personal, shared}}; with neither, no new profile is offered. Reset is the resettable setting."
       }
     },
     "additionalProperties": false
@@ -232,27 +236,33 @@
       "canonical": true
     },
     "sf-profile-select": {
-      "summary": "The person chose a profile.",
+      "summary": "The person chose a profile. It carries the same detail as sf-profile-picker-select.",
       "payload": {
         "type": "object",
         "required": [
-          "id"
+          "id",
+          "ids"
         ],
         "properties": {
           "id": {
             "type": "string"
+          },
+          "ids": {
+            "type": "array"
           }
         }
       },
       "alias_of": "sf-profile-picker-select"
     },
     "sf-profile-create": {
-      "summary": "The person asked for a new profile, a copy of the current one.",
+      "summary": "The person asked for a new profile, a copy of the current one. It carries the same detail as sf-profile-picker-create.",
       "payload": {
         "type": "object",
         "required": [
           "label",
-          "shared"
+          "shared",
+          "from",
+          "kind"
         ],
         "properties": {
           "label": {
@@ -263,18 +273,25 @@
           },
           "from": {
             "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "personal",
+              "shared"
+            ]
           }
         }
       },
       "alias_of": "sf-profile-picker-create"
     },
     "sf-profile-rename": {
-      "summary": "The person renamed a profile.",
+      "summary": "The person renamed a profile. It carries the same detail as sf-profile-picker-rename.",
       "payload": {
         "type": "object",
         "required": [
           "id",
-          "label"
+          "label",
+          "title"
         ],
         "properties": {
           "id": {
@@ -282,28 +299,35 @@
           },
           "label": {
             "type": "string"
+          },
+          "title": {
+            "type": "string"
           }
         }
       },
       "alias_of": "sf-profile-picker-rename"
     },
     "sf-profile-delete": {
-      "summary": "The person confirmed removing a profile.",
+      "summary": "The person confirmed removing a profile. It carries the same detail as sf-profile-picker-delete.",
       "payload": {
         "type": "object",
         "required": [
-          "id"
+          "id",
+          "ids"
         ],
         "properties": {
           "id": {
             "type": "string"
+          },
+          "ids": {
+            "type": "array"
           }
         }
       },
       "alias_of": "sf-profile-picker-delete"
     },
     "sf-profile-reset": {
-      "summary": "The person asked for the current profile back as the standard one.",
+      "summary": "The person asked for the current profile back as the standard one. It carries the same detail as sf-profile-picker-reset.",
       "payload": {
         "type": "object",
         "required": [

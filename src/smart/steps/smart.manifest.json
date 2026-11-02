@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Steps",
   "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
   "kind": "smart",
@@ -39,11 +39,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

@@ -140,6 +140,9 @@ function renderPresets(context) {
         </div>`;
 }
 
+// The weekday row lies in the main box with the days, so a month or year
+// choice covers both: above the box it labelled columns that were not there,
+// and the choice had a row less of height than the panel gives it.
 function renderDatepickerPanel(context) {
     const rootClasses = joinClasses('sf-datepicker inline-flex', context.presetItems.length ? 'sf-datepicker--presets' : '', context.rootClass);
 
@@ -152,11 +155,11 @@ function renderDatepickerPanel(context) {
             ${renderPresets(context)}
             <div class="sf-datepicker-container flex flex-col">
                 ${renderTop(context)}
-                <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
-                    ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}
-                </div>
                 <div class="sf-datepicker-main relative">
                     ${renderContext(context)}
+                    <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
+                        ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}
+                    </div>
                     <div class="sf-datepicker-grid grid grid-col-7">
                         ${context.days.map((day) => renderDay(day, context))}
                     </div>

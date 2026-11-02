@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -37,15 +37,18 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "placement": {
         "type": "string",
         "default": "right",
+        "description": "The edge the panel opens from: inline-start or inline-end follow the document direction and are the ones to use; left and right are physical (right, the default, stays right in a right-to-left page); bottom is a bottom sheet.",
         "enum": [
           "left",
           "right",
@@ -66,19 +69,23 @@
       },
       "overlay": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Draws the scrim behind a modal panel; a modeless panel has none."
       },
       "modal": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "A modal panel holds the focus, locks the page's scrolling and gives the focus back when it closes (the default, kept for compatibility); false: a modeless panel beside a page that stays usable. A docked panel is modeless while it has room."
       },
       "docked": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "A column of the page layout, which makes room for it, while its dock host (or the window) is at least dock-breakpoint wide; narrower, it floats over the page."
       },
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The panel's width step: 1/2, 1, 2 or full; width replaces it.",
         "enum": [
           "1/2",
           "1",
@@ -88,19 +95,23 @@
       },
       "close-on-esc": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Escape closes the top panel, while it is dismissible."
       },
       "close-on-overlay": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "A press on the scrim closes the top panel, while it is dismissible."
       },
       "preserve-scroll-gap": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "While a modal panel locks the page, adds the scrollbar's width to the page's end padding so the content does not shift; false leaves the padding alone."
       },
       "show-close": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Draws the close button (not while a controlled panel's outside switch is on screen)."
       },
       "controlled": {
         "type": "boolean",
@@ -110,6 +121,7 @@
       "close-placement": {
         "type": "string",
         "default": "inside",
+        "description": "Where the close button stands: inside the panel's head, or outside, on the panel's edge.",
         "enum": [
           "inside",
           "outside"
@@ -117,11 +129,13 @@
       },
       "heading": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The panel's title in its head; the panel is labelled by it when label is empty."
       },
       "label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The panel's accessible name (aria-label); empty: the heading names it."
       },
       "close-label": {
         "type": "string",
@@ -129,7 +143,8 @@
       },
       "width": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width."
       },
       "stack-offset": {
         "type": "string",
@@ -153,15 +168,18 @@
       },
       "z-index": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The panel's z-index, replacing its place in the shared layer scale (by default var(--sf-drawer-z-index) raised by its depth in the stack)."
       },
       "overlay-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the scrim."
       },
       "panel-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the panel."
       },
       "panel-style": {
         "type": "string",
@@ -170,23 +188,28 @@
       },
       "header-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the panel's head."
       },
       "body-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the panel's body."
       },
       "close-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the close button."
       },
       "unsaved": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Something in the panel is unsaved: the close request (sf-drawer-close) carries it as detail.unsaved, so a page can ask before it lets the panel close."
       },
       "dismissible": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "false: Escape and a press on the scrim no longer close the panel; its close button, close() and the page's own controls still do."
       },
       "open": {
         "type": "boolean",
@@ -548,18 +571,21 @@
       }
     },
     "drawer:before-open": {
-      "summary": "Cancelable intent before opening. Bubbles and is composed; detail.drawer is the emitting drawer.",
+      "summary": "Cancelable intent before opening. Bubbles and is composed; detail.drawer is the emitting drawer. Its detail is sf-drawer-open's with component, drawer (the element) and root (its rendered root) added.",
       "payload": {
         "type": "object",
+        "required": [
+          "drawerId"
+        ],
         "properties": {
+          "drawerId": {
+            "type": "string"
+          },
           "component": {
             "description": "The emitting sf-drawer."
           },
           "drawer": {
             "description": "The emitting sf-drawer."
-          },
-          "drawerId": {
-            "type": "string"
           },
           "root": {
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
@@ -569,18 +595,21 @@
       "alias_of": "sf-drawer-open"
     },
     "drawer:after-open": {
-      "summary": "The Drawer was opened. Bubbles and is composed; detail.drawer is the emitting drawer.",
+      "summary": "The Drawer was opened. Bubbles and is composed; detail.drawer is the emitting drawer. Its detail is sf-drawer-opened's with component, drawer (the element) and root (its rendered root) added.",
       "payload": {
         "type": "object",
+        "required": [
+          "drawerId"
+        ],
         "properties": {
+          "drawerId": {
+            "type": "string"
+          },
           "component": {
             "description": "The emitting sf-drawer."
           },
           "drawer": {
             "description": "The emitting sf-drawer."
-          },
-          "drawerId": {
-            "type": "string"
           },
           "root": {
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
@@ -590,21 +619,17 @@
       "alias_of": "sf-drawer-opened"
     },
     "drawer:before-close": {
-      "summary": "Cancelable intent before closing. Bubbles and is composed; detail.drawer is the emitting drawer.",
+      "summary": "Cancelable intent before closing. Bubbles and is composed; detail.drawer is the emitting drawer. Its detail is sf-drawer-close's with component, drawer (the element) and root (its rendered root) added.",
       "payload": {
         "type": "object",
+        "required": [
+          "drawerId",
+          "reason",
+          "unsaved"
+        ],
         "properties": {
-          "component": {
-            "description": "The emitting sf-drawer."
-          },
-          "drawer": {
-            "description": "The emitting sf-drawer."
-          },
           "drawerId": {
             "type": "string"
-          },
-          "root": {
-            "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
           },
           "reason": {
             "type": "string",
@@ -620,27 +645,31 @@
           "unsaved": {
             "type": "boolean",
             "description": "Whether something is unsaved; false until the component has an unsaved setting."
-          }
-        }
-      },
-      "alias_of": "sf-drawer-close"
-    },
-    "drawer:after-close": {
-      "summary": "The Drawer was closed. Bubbles and is composed; detail.drawer is the emitting drawer.",
-      "payload": {
-        "type": "object",
-        "properties": {
+          },
           "component": {
             "description": "The emitting sf-drawer."
           },
           "drawer": {
             "description": "The emitting sf-drawer."
           },
-          "drawerId": {
-            "type": "string"
-          },
           "root": {
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+          }
+        }
+      },
+      "alias_of": "sf-drawer-close"
+    },
+    "drawer:after-close": {
+      "summary": "The Drawer was closed. Bubbles and is composed; detail.drawer is the emitting drawer. Its detail is sf-drawer-closed's with component, drawer (the element) and root (its rendered root) added.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId",
+          "reason"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
           },
           "reason": {
             "type": "string",
@@ -652,21 +681,47 @@
               "api"
             ],
             "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+          },
+          "component": {
+            "description": "The emitting sf-drawer."
+          },
+          "drawer": {
+            "description": "The emitting sf-drawer."
+          },
+          "root": {
+            "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
           }
         }
       },
       "alias_of": "sf-drawer-closed"
     },
     "drawer:snap": {
-      "summary": "A bottom sheet came to rest at another height (handle, swipe or setSnap()).",
+      "summary": "A bottom sheet came to rest at another height (handle, swipe or setSnap()). Its detail is sf-drawer-snapped's with component, drawer (the element) and root (its rendered root) added.",
       "payload": {
         "type": "object",
+        "required": [
+          "drawerId",
+          "snap"
+        ],
         "properties": {
-          "drawer": {
-            "type": "object"
-          },
           "drawerId": {
             "type": "string"
+          },
+          "snap": {
+            "enum": [
+              "auto",
+              "half",
+              "full"
+            ]
+          },
+          "component": {
+            "description": "The emitting sf-drawer."
+          },
+          "drawer": {
+            "description": "The emitting sf-drawer."
+          },
+          "root": {
+            "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
           }
         }
       },

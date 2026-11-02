@@ -70,8 +70,8 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     failed: {role: 'error', icon: 'error', word: 'Failed'},
   };
 
-  assert.equal(component.version, '1.2.0');
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(component.version, '1.2.1');
+  assert.equal(manifest.version, '1.2.1');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings.compact.type, 'boolean');

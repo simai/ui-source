@@ -18,7 +18,8 @@ const sfIconButtonMeta = {
     "root-style": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Inline style declarations set on the root element the component draws, custom properties included."
     },
     "kind": {
       "kind": "enum",

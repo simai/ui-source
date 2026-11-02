@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Breadcrumbs",
   "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
   "kind": "smart",
@@ -38,11 +38,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "separator-icon": {
         "type": "string",

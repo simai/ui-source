@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tooltip",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Tooltip",
   "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
   "kind": "smart",
@@ -42,7 +42,8 @@
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "appearance": {
         "type": "string",

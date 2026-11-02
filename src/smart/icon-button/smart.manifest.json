@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon-button",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -45,7 +45,8 @@
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "kind": {
         "type": "string",

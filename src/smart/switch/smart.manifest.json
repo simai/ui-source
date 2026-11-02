@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -44,11 +44,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

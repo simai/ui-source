@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Tree item",
   "summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
   "kind": "smart",
@@ -40,11 +40,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "label": {
         "type": "string",
@@ -207,7 +209,7 @@
       }
     },
     "setOpen": {
-      "summary": "Opens or closes a branch and emits sf-tree-item-toggle; does nothing for a file, a leaf, a disabled item or an unchanged state.",
+      "summary": "Opens or closes a branch and emits sf-tree-item-toggle, the code under the expand, collapse and toggle-open actions; refused for a file, a leaf or a disabled item, applied with no event for an unchanged state.",
       "arguments": [
         {
           "name": "open",
@@ -217,31 +219,7 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "open": {
-      "summary": "Same as setOpen(true).",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "close": {
-      "summary": "Same as setOpen(false).",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "toggle": {
-      "summary": "Flips the open state through setOpen.",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
+        "description": "An outcome: {outcome: 'applied'} or {outcome: 'refused', reason: 'leaf' | 'disabled'}."
       }
     },
     "onToggle": {

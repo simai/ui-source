@@ -2,7 +2,7 @@
   "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
   "id": "smart.contents",
   "tag": "sf-contents",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "navigation",
   "settings": {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.textarea",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -42,11 +42,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

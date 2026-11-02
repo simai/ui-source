@@ -12,12 +12,14 @@ const sfSkeletonMeta = {
     "root-class": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Classes added to the root element the component draws."
     },
     "root-style": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Inline style declarations set on the root element the component draws, custom properties included."
     },
     "size": {
       "kind": "enum",
@@ -41,12 +43,14 @@ const sfSkeletonMeta = {
     "width": {
       "kind": "custom",
       "valueType": "string",
-      "default": "100%"
+      "default": "100%",
+      "description": "Each shape's width, a comma-separated list applied in turn and repeated: a percentage, a size token a0-a9 or b0-b9, or var(--sf-...); other values are ignored. Default 100%."
     },
     "height": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Each shape's height, a comma-separated list applied in turn and repeated: a percentage, a size token a0-a9 or b0-b9, or var(--sf-...); other values are ignored. Empty: the size step's height. A type=\"icon\" shape takes neither."
     },
     "count": {
       "kind": "custom",

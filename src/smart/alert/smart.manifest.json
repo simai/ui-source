@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Alert",
   "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
   "kind": "smart",
@@ -39,11 +39,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "status": {
         "type": "string",

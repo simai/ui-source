@@ -37,11 +37,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       }
     },
     "additionalProperties": false
@@ -163,7 +165,7 @@
       "canonical": true
     },
     "sf-inline-edit-input": {
-      "summary": "Dated alias of sf-inline-editor-input until 2026-12-01: Live normalized content after a change. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-input until 2026-12-01: Live normalized content after a change. Dispatched on the edited element; bubbles to document. Its detail is the former one, {node_id, content}, not sf-inline-editor-input's {id, content}.",
       "payload": {
         "type": "object",
         "required": [
@@ -185,7 +187,7 @@
       "alias_of": "sf-inline-editor-input"
     },
     "sf-inline-edit-commit": {
-      "summary": "Dated alias of sf-inline-editor-change until 2026-12-01: Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-change until 2026-12-01: Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document. Its detail is the former one, {node_id, content}, not sf-inline-editor-change's {id, content}.",
       "payload": {
         "type": "object",
         "required": [
@@ -207,7 +209,7 @@
       "alias_of": "sf-inline-editor-change"
     },
     "sf-inline-edit-cancel": {
-      "summary": "Dated alias of sf-inline-editor-cancel until 2026-12-01: Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-cancel until 2026-12-01: Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document. Its detail is the former one, {node_id}, not sf-inline-editor-cancel's {id}.",
       "payload": {
         "type": "object",
         "properties": {

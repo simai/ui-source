@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-group",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Button group",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -48,7 +48,8 @@
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "name": {
         "type": "string",

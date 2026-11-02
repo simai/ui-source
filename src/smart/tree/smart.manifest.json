@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -42,11 +42,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "selection": {
         "type": "string",

@@ -14,5 +14,9 @@ test('FileUpload file rows wrap unbroken content and preserve action/icon geomet
   assert.match(css,/\.sf-upload-progress-name,\s*\.sf-upload-progress-text,\s*\.sf-upload-progress-repeat \{\s*overflow-wrap: anywhere/);
   for(const name of ['content','top','left'])assert.match(css,new RegExp(`\\.sf-upload-progress-${name} \\{\\s*min-inline-size: 0;`));
   assert.match(css,/\.sf-icon-button \{\s*flex-shrink: 0/);
-  assert.match(css,/\.sf-upload-progress-repeat \{[^}]*max-inline-size: 100%/);
+  // The retry words stand where the size line starts: the control pulls back
+  // its own inline padding with a negative margin and may take the row's full
+  // width plus that padding (browser probe file-upload-error-row).
+  assert.match(css,/\.sf-upload-progress-repeat \{[^}]*max-inline-size: calc\(100% \+ var\(--sf-upload-progress-repeat--inset\) \* 2\)/);
+  assert.match(css,/\.sf-upload-progress-repeat \{[^}]*margin-inline: calc\(var\(--sf-upload-progress-repeat--inset\) \* -1\)/);
 });

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -73,7 +73,8 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100"
+      "x-summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100",
+      "summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100. Takes chunk({done, total}) or chunk(done, total)."
     }
   },
   "slots": {

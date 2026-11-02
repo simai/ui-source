@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Badges",
   "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
@@ -37,11 +37,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",
