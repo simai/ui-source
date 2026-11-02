@@ -117,6 +117,7 @@
     "src/core/js/loader.js",
     "src/core/js/mask.js",
     "src/core/js/notify.js",
+    "src/core/js/on-view.js",
     "src/core/js/open-surface-mark.js",
     "src/core/js/page-actions.js",
     "src/core/js/page-language.js",
@@ -156,7 +157,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "1c4ee12abbe384b5579c693391d66999b19b22d2ab34b07be70882b7a28c17cc",
+  "content_sha256": "0ca31be6937464973e55aa1fd4a7b305a997a7a4dd3f5bf6912488bcb024f8ea",
   "dependencies": [
     {
       "id": "core.styles",

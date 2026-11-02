@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.animation",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/animation/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/animation/default/scss/_sf_var__animation.scss",
     "src/utility/animation/default/scss/index.scss"
   ],
-  "content_sha256": "7eebee72207d641a206c29f2cdb1f4e4c2f2e9e08c0cc66c7e3552831cf58bf2",
+  "content_sha256": "3997d862815edc26e273066ddc36fdc0c65506af36f4c3f4d11fb52c8242794d",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

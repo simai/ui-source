@@ -11,6 +11,7 @@ import './preferences.js';
 import './region-navigation.js';
 import './workspace.js';
 import './effects.js';
+import './on-view.js';
 import './notify.js';
 import './sanitize.js';
 import {installReady} from './ready.js';
