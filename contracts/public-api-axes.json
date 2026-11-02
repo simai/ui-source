@@ -293,6 +293,13 @@
   },
   "exempt_properties": [
     {
+      "component": "chart-heatmap",
+      "property": "scheme",
+      "package": "chart",
+      "reason": "the value names the colour family the data's steps are drawn in -- a sequential or diverging scale over the Framework's role families, so a word like warning names a hue family of the data, not a status the control reports about the world.",
+      "kept_for": "sf-chart-heatmap lives in the chart package (simai/ui-chart). The package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one (ui-chart msg-4445239656ac4dc3b461, 2026-11-03)."
+    },
+    {
       "component": "table",
       "property": "data-state",
       "package": "pro",
