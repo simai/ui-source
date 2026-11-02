@@ -153,7 +153,8 @@ test('smart menu: a row\'s panels are placed by SF.Position and Escape closes th
   // and Escape is taken only as the innermost layer.
   assert.match(source, /import \{holdOpenSurfaceMark, isTopOpenSurface\} from '\.\.\/\.\.\/core\/js\/open-surface-mark';/u);
   assert.match(source, /if \(event\.key !== 'Escape' \|\| event\.defaultPrevented \|\| !isTopOpenSurface\(this\)\) return;/u);
-  assert.match(source, /holdOpenSurfaceMark\(this, hold\);/u);
+  // An outside press reaches it through the layer stack's one listener.
+  assert.match(source, /holdOpenSurfaceMark\(this, hold, \{onOutsidePress: this\.onOutsidePress\}\);/u);
   assert.match(source, /onDisconnected\(\) \{[\s\S]*?this\.holdSurface\(false\);/u);
 });
 

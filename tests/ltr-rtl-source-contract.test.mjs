@@ -72,7 +72,10 @@ test('Smart Drawer preserves physical aliases and adds logical placement', async
 
   assert.match(source, /const PLACEMENTS = \['left', 'right', 'inline-start', 'inline-end', 'bottom'\]/);
   assert.match(source, /values: PLACEMENTS/);
-  assert.match(source, /body\.style\.paddingInlineEnd/);
+  // The scrollbar gap is kept on the logical end by the layer stack's page
+  // lock, which the drawer takes (preserve-scroll-gap).
+  assert.match(source, /preserveScrollGap: drawer\.preserveScrollGap !== false/);
+  assert.match(await read('src/core/js/layer-stack.js'), /body\.style\.setProperty\('padding-inline-end'/);
   assert.match(source, /event\.key !== 'Tab'/);
   assert.match(source, /drawer:ready/);
   assert.match(source, /onBeforeOpen\(handler, options\)/);

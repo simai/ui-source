@@ -77,7 +77,9 @@ test('the holders are kept in the order they opened, and the innermost is known'
   assert.ok(source.includes('export function isTopOpenSurface'));
   // The holders are layers of the one document stack, under and over a modal
   // or a drawer alike.
-  assert.ok(source.includes("openLayer(owner, {kind: 'surface'})"));
+  // What the surface declares (root, onOutsidePress) goes with it; the kind
+  // stays a surface's.
+  assert.ok(source.includes("openLayer(owner, {...layer, kind: 'surface'})"));
   assert.ok(source.includes('closeLayer(owner, {restoreFocus: false})'));
   assert.ok(source.includes('if (!isTopLayer(owner)) return false;'));
   // A holder only an older pair's bundle registered still stands above.
@@ -112,9 +114,10 @@ test('the capture-phase surfaces act only as the innermost layer', async () => {
 
 test('the other surfaces that own Escape hold the mark too', async () => {
   for (const [path, held, released] of [
-    ['src/smart/context-menu/index.js', 'holdOpenSurfaceMark(this, true)', 'holdOpenSurfaceMark(this, false)'],
-    ['src/smart/profile-picker/index.js', 'holdOpenSurfaceMark(this, true)', 'holdOpenSurfaceMark(this, false)'],
-    ['src/smart/help-mark/index.js', 'holdOpenSurfaceMark(this, true)', 'holdOpenSurfaceMark(this, false)'],
+    // These three declare their outside press with the mark (layer stack).
+    ['src/smart/context-menu/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
+    ['src/smart/profile-picker/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
+    ['src/smart/help-mark/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
     ['src/component/country-code/js/_country_code.js', 'holdOpenSurfaceMark(root, open)', 'holdOpenSurfaceMark(root, false)'],
   ]) {
     const source = await read(path);

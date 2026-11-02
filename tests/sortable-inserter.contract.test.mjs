@@ -142,7 +142,8 @@ test('the inserter is the standard menu, and Escape is its layer alone', async (
   // open-surface mark, so a drawer or modal around the list stands back.
   assert.doesNotMatch(source, /addEventListener\('keydown'[^)]*true\)/);
   assert.doesNotMatch(source, /key === ['"]Escape['"]/);
-  assert.match(menu, /holdOpenSurfaceMark\(this, true\);/);
+  // The outside press comes through the layer stack with the mark.
+  assert.match(menu, /holdOpenSurfaceMark\(this, true, \{onOutsidePress: this\._onOutsidePress\}\);/);
   // The point is a native button of the smallest rung, a tab stop after the items.
   assert.match(source, /sf-icon-button--size-1\/3/);
   assert.match(source, /control\.compareDocumentPosition\(last\) & globalThis\.Node\.DOCUMENT_POSITION_FOLLOWING/);
