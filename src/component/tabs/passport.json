@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.tabs",
   "kind": "component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tabs/docs/docs.md",
@@ -14,7 +14,7 @@
     "src/component/tabs/scss/_css__tabs.scss",
     "src/component/tabs/scss/index.scss"
   ],
-  "content_sha256": "559dcad8a0312478c8bfc42e887225ca918029667f7ba92a99b99e987c378df0",
+  "content_sha256": "d3fbab274797ed33e393ca1114150877e12ba01b8f77d3801b759a067226a7ce",
   "dependencies": [
     {
       "id": "core.runtime",

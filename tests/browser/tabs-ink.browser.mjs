@@ -11,8 +11,9 @@
 //   - the tab element's colour equals its label's colour (the icon's, for an
 //     icon tab) for the selected, the resting and the disabled tab;
 //   - the same under the pointer, for underline, full and outline tabs;
-//   - an underline tab's colour is --sf-on-surface at rest and
-//     --sf-on-surface-active when selected, resolved in the theme; no text tab
+//   - an underline tab's colour is --sf-on-surface-variant at rest and
+//     --sf-on-surface when selected, resolved in the theme, and the selected
+//     tab's line is --sf-primary, at least 2px; no text tab
 //     computes the browser's ButtonText.
 //
 // Pills (owner, effects.simai.io, 2026-11-01): the selected pill is the only
@@ -104,9 +105,10 @@ try {
 
     const READ = `(tab) => {
       const label = tab.querySelector('.sf-button-text-container') || tab.querySelector('.sf-icon');
-      return {tab: getComputedStyle(tab).color, label: getComputedStyle(label).color};
+      const style = getComputedStyle(tab);
+      return {tab: style.color, label: getComputedStyle(label).color, line: style.borderBottomColor, lineWidth: style.borderBottomWidth};
     }`;
-    const roles = await page.evaluate(() => Object.fromEntries(['--sf-on-surface', '--sf-on-surface-active'].map((name) => {
+    const roles = await page.evaluate(() => Object.fromEntries(['--sf-on-surface', '--sf-on-surface-variant', '--sf-primary'].map((name) => {
       const probe = document.getElementById('role');
       probe.style.color = `var(${name})`;
       return [name, getComputedStyle(probe).color];
@@ -127,8 +129,10 @@ try {
       if (row.tab === row.label) matched += 1;
       if (row.key.endsWith('/text')) check(`${at}: not the browser's ButtonText`, row.tab !== buttonText || row.label === buttonText, {...row, buttonText});
       if (row.key.startsWith('underline/') && !row.disabled) {
-        const role = row.selected ? '--sf-on-surface-active' : '--sf-on-surface';
+        const role = row.selected ? '--sf-on-surface' : '--sf-on-surface-variant';
         check(`${at}: an underline tab takes ${role}`, row.tab === roles[role], {...row, expected: roles[role]});
+        if (row.selected) check(`${at}: the selected underline tab's line is --sf-primary, at least 2px`,
+          row.line === roles['--sf-primary'] && parseFloat(row.lineWidth) >= 2, {...row, expected: roles['--sf-primary']});
       }
     }
 
