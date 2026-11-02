@@ -45,6 +45,23 @@ Do not set `loaded` manually. It is a value, not a setting (`component.json`
 `values`): the state synchronized from the exact descriptor known to Loader. Changing `icon`, family or an axis requests a
 new cumulative subset and hides the ligature until that descriptor is ready.
 
+On the next page of the same origin an `sf-icon` (and the one inside an
+`sf-icon-button`) draws its glyph from its first render: the core runtime puts
+in the subset the last page used before any component renders, and the Loader
+counts its icons as loaded. A site does nothing for it; on an older pair a
+`cacheVersion` in `SF_BOOT_CONFIG` and a preconnect to the subset host do most
+of it:
+
+```html
+<link rel="preconnect" href="https://icons.simai.io" crossorigin>
+<script>
+  window.SF_BOOT_CONFIG = {cacheVersion: 'ui-2d39b617a719'};
+</script>
+```
+
+See `docs/developer/icon-subset-runtime.md` («The next page on the same
+origin», `icons.remember`).
+
 Color inherits the current semantic text/icon role. Use Framework role utilities
 or the documented semantic custom property rather than a literal color.
 

@@ -37,16 +37,20 @@ test('ordinary Icons publishes canonical modifiers and compatibility aliases', a
 });
 
 test('Loader tracks canonical and legacy ordinary icon descriptors', async () => {
-  const [runtime, rule] = await Promise.all([
+  // The subset selectors live in the module the runtime shares with the
+  // boot-time re-apply of a remembered subset (icon-subset-memory.js).
+  const [loader, memory, rule] = await Promise.all([
     read('src/core/js/iconSubsetRuntime.js'),
+    read('src/core/js/icon-subset-memory.js'),
     read('src/component/icons/rule.js'),
   ]);
+  const runtime = `${loader}\n${memory}`;
 
   assert.match(runtime, /"sf-icon--weight-medium", "500"/);
   assert.match(runtime, /"sf-icon--rounded", "rounded"/);
   assert.match(runtime, /"sf-icon--sharp", "sharp"/);
   assert.match(runtime, /classList\.contains\("sf-icon--filled"\)/);
-  assert.match(runtime, /\.sf-icon:is\(\.sf-icon--sharp, \.sf-icon-shape\)/);
+  assert.match(memory, /\.sf-icon:is\(\.sf-icon--sharp, \.sf-icon-shape\)/);
   assert.match(rule, /js: false/);
 });
 

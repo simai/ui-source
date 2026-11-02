@@ -24,6 +24,95 @@ The changed icon itself loses `sf-icon-loaded` before the next paint, so it
 waits unseen instead of spelling its name out in a fallback font (probe
 `tests/browser/icons-subset-grow.browser.mjs`).
 
+## The next page on the same origin
+
+A page whose origin already had the icon face draws its icons with their glyphs
+from the first frame. The Loader asks the subset service once the page is
+ready, and its `@font-face` goes in only when that answer is back; on
+effects.simai.io (pair `ui-2d39b617a719`) the header's `sf-icon-button` squares
+therefore painted empty for some 340 ms on every load, a warm cache included.
+Two causes, both fixed:
+
+- The Loader remembers the manifest the service sent with its last subset
+  (`localStorage`, key `SF_ICON_SUBSET_MANIFEST`, `:rounded` / `:sharp` for the
+  other families). A page that sets no `cacheVersion` -- most sites -- had it
+  wiped with the rest of the `SF_` caches on every boot. The remembered subset
+  is now kept through that wipe: it is not a list of a release's plugins but the
+  service's own answer, checked again on every use.
+- At boot, before any component renders, the core runtime writes the
+  remembered subset's stylesheet into the head (the same `<style
+  data-sf-icons-subset-family>` the Loader writes, marked
+  `data-sf-icons-remembered`), a `<link rel="preload" as="font" crossorigin>`
+  for each of its font files, and lifts `data-sf-icons="subset-pending"` as
+  soon as that face is loaded. On a warm HTTP cache the face is in before the
+  first icon button draws. The Loader adopts that stylesheet when it restores
+  the same manifest, so its icons count as loaded from their first render.
+
+Then the Loader asks the service as before. A page that needs a name the
+remembered subset does not hold grows it the way any subset grows (above): the
+remembered face keeps drawing every icon it holds, and the new name waits
+unseen until the grown face is loaded. Shared code:
+`src/core/js/icon-subset-memory.js`.
+
+What is reused is checked first. A remembered manifest is used only when its
+family is the page's icon type, every icon name is a plain ligature name
+(`[a-z0-9_]`), its family name and weights are plain values, and every font
+file it names is on the subset host the page is configured with
+(`icons.subsetHost`, by default `https://icons.simai.io`), over that host's own
+scheme. Anything else is not used (and the Loader drops it); nothing but the
+manifest the service sent is stored. Every storage access is guarded: a
+sandboxed page without storage simply starts cold.
+
+`font-display` stays `block`. An icon's fallback text is its name spelled out,
+so an icon waits unseen rather than swap; a remembered face comes out of the
+HTTP cache well inside the block period.
+
+`icons.remember = false` turns this off: nothing is remembered between pages
+(an existing entry is removed), and every page asks the service cold.
+
+```html
+<script>
+  window.SF_BOOT_CONFIG = {icons: {remember: false}};
+</script>
+```
+
+Measured with the probe `tests/browser/icons-warm-first-frame.browser.mjs`
+(subset service stubbed with a 250 ms stylesheet and a 400 ms cold font file):
+before, a warm page showed its icon buttons empty from about 100 ms to about
+420 ms after navigation; after, the glyphs are drawn in the frame the buttons
+first stand on screen, and no subset request is made for a page whose icons
+the remembered subset holds. The cold first visit is unchanged.
+
+### What a site can do on a pair without this
+
+On a pair that predates the change (`ui-2d39b617a719` and earlier), a page
+that sets a `cacheVersion` keeps the remembered subset already, and the
+Loader's own restore then draws the header's icons from their first frame on a
+warm cache (measured with the same probe). Use the pair id, and change it with
+the pair, since it also versions the Loader's cached plugin lists:
+
+```html
+<script>
+  window.SF_BOOT_CONFIG = {cacheVersion: 'ui-2d39b617a719' /* , ...the rest */};
+</script>
+```
+
+For the cold first visit, two hints in the page's own `<head>`, before
+`core.js`, start the work the core runtime would only start once it runs:
+
+```html
+<link rel="preconnect" href="https://icons.simai.io" crossorigin>
+<!-- Only with a fixed icon list (icons.staticSubset): the font file the
+     service answers that list with. Its name is the hash of the list, so it
+     changes when the list does. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://icons.simai.io/ms/font/<hash>.woff2">
+```
+
+The font preload only warms the file; the face is declared by the runtime.
+Sites keep using the Framework's icons as they are -- no `@font-face` of their
+own.
+
 `outlined`, `rounded` and `sharp` are tracked independently. A manifest for one
 family never replaces another family. `localStorage` is only a cache hint; a
 font and manifest still have to pass runtime verification.
@@ -68,6 +157,9 @@ read at boot, so they belong **before** `core.js` on the page:
 - `icons.fallbackFonts = {outlined, rounded, sharp}` (or `icons.fallbackFontUrl`
   for one) — where the full-font fallback lives when the app serves the fonts
   from somewhere other than `<sfPath>/component/icons/fonts/`.
+- `icons.remember = false` — nothing is remembered between pages on the
+  origin: no subset is written at boot, every page asks the service cold (see
+  "The next page on the same origin").
 - `icons.staticSubset = {icons: [...], weights, fill, grade, optical_size, type}`
   — the icon list a production build already knows: one request for exactly
   those icons instead of discovery, and nothing is asked for again as the page

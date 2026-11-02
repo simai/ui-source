@@ -15,6 +15,8 @@ import './on-view.js';
 import './notify.js';
 import './sanitize.js';
 import {installReady} from './ready.js';
+import {applyRememberedIconSubset} from './icon-subset-memory.js';
+import pageStorage from './page-storage.js';
 import {installEarlyPort} from './early-port.js';
 import {holdUndefinedElements, installPendingTags} from './pending-tags.js';
 import {
@@ -139,6 +141,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
         root.removeAttribute('data-sf-icons');
       }
     }, 6000);
+  }
+  // The subset the last page on this origin drew with goes in now, before
+  // any component renders, with a preload for its font: on a warm cache the
+  // header's icon buttons draw their glyphs from their first frame instead of
+  // waiting for the subset request (icon-subset-memory.js).
+  if (subsetEnabled && document.head) {
+    try {
+      applyRememberedIconSubset({win: window, doc: document, storage: pageStorage()});
+    } catch {
+      /* Nothing remembered is nothing lost: the Loader asks as before. */
+    }
   }
   // The subset is asked for once the page is ready; opening the connection
   // now takes its DNS, TCP and TLS (some 350 ms to icons.simai.io) off that

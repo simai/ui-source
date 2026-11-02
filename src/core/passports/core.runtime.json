@@ -112,6 +112,7 @@
     "src/core/js/effects.js",
     "src/core/js/element-manifest.js",
     "src/core/js/host-port.js",
+    "src/core/js/icon-subset-memory.js",
     "src/core/js/iconSubsetRuntime.js",
     "src/core/js/index.js",
     "src/core/js/instance-path.js",
@@ -160,7 +161,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "f42189c1726d4255e651a8ec0583db57437e8f9d5a0ea24c890a619c2a56063b",
+  "content_sha256": "519d74efe99a4699637414be3ce06d5d6a11bdba209b49117354c3d87f5f9df4",
   "dependencies": [
     {
       "id": "core.styles",

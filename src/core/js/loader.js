@@ -3790,10 +3790,16 @@ SFLoaderPlugin.prototype.clearCache = function () {
   safeRemoveItem('SF_MISSING_PLUGINS');
 };
 
+// The remembered icon subset is kept: it is not a list of this release's
+// plugins but the service's own answer, checked again on every use (its font
+// files on the subset host, its face loaded before it counts). Wiped with the
+// rest on every boot of a page that sets no cacheVersion -- most sites -- the
+// Loader asked the subset service again on every page, and the header's icon
+// buttons stood empty until it answered (effects.simai.io, 2026-11-02).
 SFLoaderPlugin.prototype.clearAllSfCache = function () {
   for (let i = pageStorage().length - 1; i >= 0; i--) {
     const key = pageStorage().key(i);
-    if (key && key.startsWith('SF_')) {
+    if (key && key.startsWith('SF_') && !key.startsWith('SF_ICON_SUBSET_MANIFEST')) {
       safeRemoveItem(key);
     }
   }

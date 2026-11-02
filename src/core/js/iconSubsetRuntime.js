@@ -1,4 +1,14 @@
 import pageStorage from './page-storage.js';
+import {
+  iconManifestFontFamily,
+  iconManifestType,
+  iconSubsetCssFromManifest,
+  iconSubsetHostOrigin,
+  iconSubsetSelector,
+  isIconSubsetRemembered,
+  isRememberedIconSubsetUsable,
+  normalizeIconFontLoadWeight,
+} from './icon-subset-memory.js';
 export function initIconSubsetState(loader) {
   loader.iconFontReady = false;
   loader.iconSubsetPending = false;
@@ -20,23 +30,9 @@ export function initIconSubsetState(loader) {
   return loader;
 }
 
-export function normalizeIconFontLoadWeight(value = "400") {
-  const normalized = String(value || "")
-    .trim()
-    .replace(/\s+/g, " ");
-  const range = normalized.match(/^([1-9]00)\s+([1-9]00)$/);
-
-  if (!range) {
-    return normalized || "400";
-  }
-
-  const start = Number(range[1]);
-  const end = Number(range[2]);
-  const minimum = Math.min(start, end);
-  const maximum = Math.max(start, end);
-
-  return String(Math.min(maximum, Math.max(minimum, 400)));
-}
+// Re-exported: the weight a font loads at is shared with the boot-time
+// re-apply of a remembered subset (icon-subset-memory.js).
+export { normalizeIconFontLoadWeight };
 
 export function installIconSubsetRuntime(
   SFLoaderPlugin,
@@ -83,11 +79,6 @@ export function installIconSubsetRuntime(
     ["sf-icon-rounded", "rounded"],
     ["sf-icon--sharp", "sharp"],
     ["sf-icon-shape", "sharp"],
-  ]);
-  const iconFamilyTypeMap = new Map([
-    ["material symbols outlined", "outlined"],
-    ["material symbols rounded", "rounded"],
-    ["material symbols sharp", "sharp"],
   ]);
   const iconFallbackFontFiles = Object.freeze({
     outlined: {
@@ -1395,47 +1386,15 @@ export function installIconSubsetRuntime(
   SFLoaderPlugin.prototype.getIconManifestFontFamily = function (
     manifest = {},
   ) {
-    if (manifest.font_family) return String(manifest.font_family);
-
-    return `${
-      (manifest.schema === "sf.icon_subset.v1"
-        ? iconFallbackFontFiles[this.getIconManifestType(manifest)]?.family
-        : manifest.family) || "Material Symbols Outlined"
-    } Subset`;
+    return iconManifestFontFamily(manifest);
   };
 
   SFLoaderPlugin.prototype.getIconManifestType = function (manifest = {}) {
-    const manifestType = String(
-      manifest.type ||
-        (manifest.schema === "sf.icon_subset.v1" ? manifest.family : "") ||
-        "",
-    )
-      .trim()
-      .toLowerCase();
-    if (manifestType) {
-      return this.normalizeIconType(manifestType);
-    }
-
-    const familyKey = String(manifest.family || "")
-      .trim()
-      .toLowerCase();
-    return this.normalizeIconType(
-      iconFamilyTypeMap.get(familyKey) || "outlined",
-    );
+    return this.normalizeIconType(iconManifestType(manifest));
   };
 
   SFLoaderPlugin.prototype.getIconSubsetSelector = function (manifest = {}) {
-    const type = this.getIconManifestType(manifest);
-
-    if (type === "rounded") {
-      return ".sf-icon:is(.sf-icon--rounded, .sf-icon-rounded)";
-    }
-
-    if (type === "sharp") {
-      return ".sf-icon:is(.sf-icon--sharp, .sf-icon-shape)";
-    }
-
-    return ".sf-icon:not(.sf-icon--rounded):not(.sf-icon-rounded):not(.sf-icon--sharp):not(.sf-icon-shape)";
+    return iconSubsetSelector(this.getIconManifestType(manifest));
   };
 
   SFLoaderPlugin.prototype.getIconFallbackFontUrl = function (type = "") {
@@ -1567,55 +1526,8 @@ export function installIconSubsetRuntime(
   SFLoaderPlugin.prototype.buildIconSubsetCssFromManifest = function (
     manifest = {},
   ) {
-    const fonts = Array.isArray(manifest.fonts) ? manifest.fonts : [];
-    if (!fonts.length) {
-      return { cssText: "", family: "", weights: [] };
-    }
-
-    const family = this.getIconManifestFontFamily(manifest);
-    const selector = this.getIconSubsetSelector(manifest);
-    const weights = new Set();
-
-    const fontFaces = fonts
-      .filter((font) => font?.url)
-      .map((font) => {
-        const weight = font.weight || manifest.axes?.wght?.value || 400;
-        weights.add(String(weight));
-
-        return (
-          `@font-face {\n` +
-          `  font-family: '${family}';\n` +
-          `  src: url('${font.url}') format('woff2');\n` +
-          `  font-style: normal;\n` +
-          `  font-weight: ${weight};\n` +
-          `  font-display: block;\n` +
-          `}\n`
-        );
-      })
-      .join("\n");
-
-    if (!fontFaces) {
-      return { cssText: "", family, weights: [...weights] };
-    }
-
-    const cssText =
-      fontFaces +
-      `\n` +
-      `${selector} {\n` +
-      `  --sf-icon--font-family: '${family}';\n` +
-      `  --sf-icon--font--weight: var(--sf-icon--weight, 400);\n` +
-      `  font-feature-settings: 'liga';\n` +
-      `  font-variation-settings: ` +
-      `'FILL' var(--sf-icon--fill, 0), ` +
-      `'wght' var(--sf-icon--weight, 400), ` +
-      `'GRAD' var(--sf-icon--grade, 0), ` +
-      `'opsz' var(--sf-icon--optical-size, 24);\n` +
-      `}\n`;
-
-    return {
-      cssText,
-      weights: [...weights],
-    };
+    const { cssText, family, weights } = iconSubsetCssFromManifest(manifest);
+    return cssText ? { cssText, weights } : { cssText: "", family, weights };
   };
 
   SFLoaderPlugin.prototype.applyIconManifest = function (
@@ -1632,10 +1544,22 @@ export function installIconSubsetRuntime(
 
     const icons = Array.isArray(manifest.icons) ? manifest.icons : [];
     const type = this.getIconManifestType(manifest);
-    const prev = document.querySelector(
+    let prev = document.querySelector(
       `style[data-sf-icons-subset-family="${type}"]`,
     );
-    const style = document.createElement("style");
+    // The core runtime already wrote this manifest's stylesheet at boot
+    // (icon-subset-memory.js): it is adopted as it stands, so its face, loaded
+    // or on its way, is the one the page keeps drawing with.
+    const adopted =
+      options.fromCache &&
+      prev?.hasAttribute("data-sf-icons-remembered") &&
+      prev.getAttribute("data-sf-icons-subset-hash") ===
+        String(manifest.hash || "") &&
+      prev.getAttribute("data-sf-icons-subset") === icons.join(",")
+        ? prev
+        : null;
+    if (adopted) prev = null;
+    const style = adopted || document.createElement("style");
     style.setAttribute("data-sf-icons-subset", icons.join(","));
     style.setAttribute("data-sf-icons-subset-family", type);
     if (manifest.hash) {
@@ -1651,7 +1575,9 @@ export function installIconSubsetRuntime(
         ? this.verifyIconManifestFonts(manifest, { icons, weights })
         : this.verifyIconCssFonts(cssText, { icons });
     let fontVerification;
-    if (prev && this.canPreloadIconFontFaces()) {
+    if (adopted) {
+      fontVerification = verify();
+    } else if (prev && this.canPreloadIconFontFaces()) {
       // A subset that already drew: load the grown face first, then swap.
       fontVerification = this.preloadIconFontFaces(cssText).then(
         (preloaded) => {
@@ -1955,16 +1881,35 @@ export function installIconSubsetRuntime(
     return true;
   };
 
+  SFLoaderPlugin.prototype.isIconSubsetRemembered = function () {
+    return isIconSubsetRemembered(window.SF_BOOT_CONFIG);
+  };
+
   SFLoaderPlugin.prototype.restoreIconManifestFromCache = function () {
     if (!this.isIconSubsetEnabled()) return false;
+    if (!this.isIconSubsetRemembered()) {
+      ["outlined", "rounded", "sharp"].forEach((type) =>
+        safeRemoveItem?.(this.getIconManifestStorageKey(type)),
+      );
+      return false;
+    }
 
     const currentDefaultType = this.getIconSubsetRequestConfig().defaultType;
     const manifest = this.getStoredIconManifest(currentDefaultType);
     if (!manifest) return false;
 
+    // Only a manifest whose font files are on the configured subset host,
+    // with plain icon names, is used again (icon-subset-memory.js).
     const manifestType = this.getIconManifestType(manifest);
     if (
       manifestType !== currentDefaultType ||
+      !isRememberedIconSubsetUsable(manifest, {
+        hostOrigin: iconSubsetHostOrigin(
+          this.getIconSubsetHost(),
+          document.baseURI,
+        ),
+        type: currentDefaultType,
+      }) ||
       !this.isManifestCoveredByConfiguredSubset(manifest)
     ) {
       safeRemoveItem?.(this.getIconManifestStorageKey(currentDefaultType));
@@ -2239,10 +2184,12 @@ export function installIconSubsetRuntime(
       appliedStyle = style;
 
       if (manifest) {
-        safeSetItem?.(
-          this.getIconManifestStorageKey(type),
-          JSON.stringify(manifest),
-        );
+        if (this.isIconSubsetRemembered()) {
+          safeSetItem?.(
+            this.getIconManifestStorageKey(type),
+            JSON.stringify(manifest),
+          );
+        }
         this.setIconManifestForType(type, manifest);
         this.markManifestIconsAsLoaded(manifest);
         if (Array.isArray(manifest.fonts) && manifest.fonts.length) {

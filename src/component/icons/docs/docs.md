@@ -42,6 +42,13 @@ with the same entries. While the subset is on its way the root carries
 `data-sf-icons="subset-pending"` and icons draw nothing; that attribute is
 Loader state too.
 
+The next page on the same origin draws its icons from the first frame: the
+core runtime puts in the subset the last page used, with a preload for its
+font, before any component renders, and the Loader grows it if the page needs
+more names. `icons.remember = false` turns that off; what a site on an older
+pair can do meanwhile (a `cacheVersion`, a preconnect) is in
+`docs/developer/icon-subset-runtime.md`.
+
 ## Count and dot
 
 The glyph's text is its ligature, so a count or a dot does not go inside
