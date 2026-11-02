@@ -158,3 +158,12 @@ test('a parent not defined yet is read again when it turns out to hold nothing',
   await new Promise((done) => setTimeout(done, 0));
   assert.deepEqual(loader.scanned, [list], 'the list once; the modal reads itself on sf-after-render');
 });
+
+test('the components ask through SF.Loader.ensure, not a race of their own', () => {
+  const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+  for (const path of ['src/smart/tabs/index.js', 'src/core/js/effects.js', 'src/core/js/composition/sortable-inserter.mjs']) {
+    const text = read(path);
+    assert.match(text, /SF\?\.Loader\?\.ensure\?\.\(/u, path);
+    assert.doesNotMatch(text, /Promise\.race\(\[[^\]]*whenDefined/u, path);
+  }
+});
