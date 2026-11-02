@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -37,11 +37,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "button-type": {
         "type": "string",
@@ -49,7 +51,15 @@
       },
       "button-size": {
         "type": "string",
-        "default": "1"
+        "default": "1",
+        "description": "The arrow buttons' size, an sf-icon-button size.",
+        "enum": [
+          "1/3",
+          "1/2",
+          "1",
+          "2",
+          "3"
+        ]
       },
       "dots": {
         "type": "boolean",
@@ -57,11 +67,25 @@
       },
       "dots-type": {
         "type": "string",
-        "default": "primary-dark"
+        "default": "primary-dark",
+        "description": "The dots' colours: primary-dark (the default), primary-light, primary (as primary-dark), light, dark, clear (as light).",
+        "enum": [
+          "primary-dark",
+          "primary-light",
+          "primary",
+          "light",
+          "dark",
+          "clear"
+        ]
       },
       "dots-size": {
         "type": "string",
-        "default": "2"
+        "default": "2",
+        "description": "The dots' size step.",
+        "enum": [
+          "1",
+          "2"
+        ]
       },
       "thumbs": {
         "type": "boolean",

@@ -18,7 +18,8 @@ const sfButtonMeta = {
     "root-style": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Inline style declarations set on the root element the component draws, custom properties included."
     },
     "size": {
       "kind": "enum",
@@ -67,7 +68,8 @@ const sfButtonMeta = {
     "text-position": {
       "kind": "custom",
       "valueType": "string",
-      "default": "center"
+      "default": "center",
+      "description": "How the label aligns inside a button wider than its content: start, center or end (the text-align utility on the label)."
     },
     "text": {
       "kind": "custom",
@@ -78,7 +80,8 @@ const sfButtonMeta = {
     "segment": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The button's place in a joined group: start, middle or end squares the corners it shares with its neighbours; empty: a standalone button."
     },
     "icon": {
       "kind": "custom",

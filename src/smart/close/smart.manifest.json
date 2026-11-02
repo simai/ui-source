@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.close",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "title": "Close",
   "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
   "kind": "smart",
@@ -36,11 +36,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

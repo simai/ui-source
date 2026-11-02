@@ -2,7 +2,7 @@
   "$comment": "The source of sf-sortable's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/sortable (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.sortable",
   "tag": "sf-sortable",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "kind": "leaf",
   "family": "sortable",
   "settings": {
@@ -50,7 +50,7 @@
     "inserter-items": {
       "type": "string",
       "default": "",
-      "summary": "The items an insertion point offers, as JSON [{item, label, icon?, description?}]; empty: no insertion point"
+      "summary": "What an insertion point offers, as JSON or the inserterItems property: [{value, label?, icon?, caption?, keywords?, disabled?}], with {type: \"heading\", label} and {type: \"separator\"} rows; sf-sortable-insert carries the chosen value as detail.item. Empty: no insertion point."
     }
   },
   "values": {},

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -38,11 +38,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",
@@ -110,7 +112,7 @@
   "contracts": {},
   "methods": {
     "chunk": {
-      "summary": "The action chunk.",
+      "summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100. Takes chunk({done, total}) or chunk(done, total).",
       "arguments": [
         {
           "name": "done",

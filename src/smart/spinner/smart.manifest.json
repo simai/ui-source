@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.spinner",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Spinner",
   "summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
   "kind": "smart",
@@ -38,11 +38,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

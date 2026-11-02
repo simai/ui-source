@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -52,7 +52,8 @@
     },
     "text-position": {
       "type": "string",
-      "default": "center"
+      "default": "center",
+      "summary": "How the label aligns inside a button wider than its content: start, center or end (the text-align utility on the label)."
     },
     "text": {
       "type": "string",
@@ -61,7 +62,8 @@
     },
     "segment": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The button's place in a joined group: start, middle or end squares the corners it shares with its neighbours; empty: a standalone button."
     },
     "icon": {
       "type": "icon",
@@ -650,6 +652,22 @@
       },
       "aria-label": {
         "description": "Accessible label for icon-only or custom buttons."
+      },
+      "text-position": {
+        "enum": [
+          "start",
+          "center",
+          "end",
+          "justify"
+        ]
+      },
+      "segment": {
+        "enum": [
+          "",
+          "start",
+          "middle",
+          "end"
+        ]
       }
     }
   }

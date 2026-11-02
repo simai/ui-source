@@ -12,12 +12,14 @@ const sfPaginationMeta = {
     "root-class": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Classes added to the root element the component draws."
     },
     "root-style": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Inline style declarations set on the root element the component draws, custom properties included."
     },
     "top": {
       "kind": "boolean",

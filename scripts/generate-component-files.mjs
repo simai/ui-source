@@ -157,6 +157,10 @@ const isRegExp = (value) => Object.prototype.toString.call(value) === '[object R
 // -------------------------------------------------------------------- meta.mjs
 
 const BASE_TEMPLATE_DESCRIPTION = 'Template variant name for SfBaseElement external templates.';
+// The other two base settings (§4.1), described once for every component; a
+// component's x-registry.inputs replaces the words where its root differs.
+const BASE_ROOT_CLASS_DESCRIPTION = 'Classes added to the root element the component draws.';
+const BASE_ROOT_STYLE_DESCRIPTION = 'Inline style declarations set on the root element the component draws, custom properties included.';
 
 // One reading of the interface for tools: settings, the base settings, the
 // host's aria-label and the dated alias settings, with their words.
@@ -167,8 +171,8 @@ export function attributesOf(component, lang = {}) {
   const out = {};
   // The base interface (§4.1): every element takes these three.
   out.template = {kind: 'custom', valueType: 'string', default: 'default', description: BASE_TEMPLATE_DESCRIPTION};
-  out['root-class'] = {kind: 'custom', valueType: 'string', default: ''};
-  out['root-style'] = {kind: 'custom', valueType: 'string', default: ''};
+  out['root-class'] = {kind: 'custom', valueType: 'string', default: '', description: BASE_ROOT_CLASS_DESCRIPTION};
+  out['root-style'] = {kind: 'custom', valueType: 'string', default: '', description: BASE_ROOT_STYLE_DESCRIPTION};
   // A default taken from the words (default-from runtime.<key>) is the page
   // language's word, read at run time: the registry names no fixed default.
   const word = (spec) => spec;

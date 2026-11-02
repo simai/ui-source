@@ -2,61 +2,74 @@
   "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.modal",
   "tag": "sf-modal",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "kind": "leaf",
   "family": "modal",
   "settings": {
     "modal-id": {
       "type": "id",
-      "default": ""
+      "default": "",
+      "summary": "The window's id: data-sf-modal-close and data-sf-modal-hide controls name it. Empty: the element's id, else a path id."
     },
     "heading": {
       "type": "string",
-      "default-from": "runtime.title"
+      "default-from": "runtime.title",
+      "summary": "The window's title in the default header. Empty: the text of the page's language (\"Dialog\" in English)."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Plain text in the body when no content is given."
     },
     "autoload": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Opens the window once, without animation, as soon as it is drawn."
     },
     "minimizable": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Shows a minimize button in the header (not in inline display); minimize() and the minimized attribute keep the window open but out of view."
     },
     "hide-modifier": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the minimize button."
     },
     "overlay": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draws the scrim behind the window (never in inline display)."
     },
     "show-header": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draws the header: the heading (or the header slot) and its buttons."
     },
     "show-close": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draws the close button in the header, while the window is dismissible."
     },
     "show-footer": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draws the footer slot's content."
     },
     "close-on-esc": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Escape closes the top window, while it is dismissible."
     },
     "close-on-overlay": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "A press on the scrim closes the top window, while it is dismissible."
     },
     "preserve-scroll-gap": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "While the page is locked, adds the scrollbar's width to the page's end padding so the content does not shift; false leaves the padding alone."
     },
     "position": {
       "type": "enum",
@@ -69,7 +82,8 @@
         "top",
         "bottom"
       ],
-      "default": "center"
+      "default": "center",
+      "summary": "Where the window stands: center, a side panel at inline-start or inline-end (following the document direction), top or bottom; left and right are the physical forms."
     },
     "mode": {
       "type": "enum",
@@ -78,7 +92,8 @@
         "ajax",
         "iframe"
       ],
-      "default": "inline"
+      "default": "inline",
+      "summary": "Where the content comes from: inline (the element's own content), ajax (fetched from src: a URL, or #id whose content is taken) or iframe (src in a frame)."
     },
     "display": {
       "type": "enum",
@@ -86,31 +101,38 @@
         "modal",
         "inline"
       ],
-      "default": "modal"
+      "default": "modal",
+      "summary": "modal: a dialog over the page; inline: a region in the page's flow, shown without open."
     },
     "src": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "For mode ajax, a URL to fetch or #id of an element whose content is taken; for mode iframe, the frame's URL."
     },
     "preload": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Loads src before the window opens; false loads it at the first opening."
     },
     "fullscreen": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "The window takes the whole viewport."
     },
     "width": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The panel's width, a CSS length (sets --sf-modal-width)."
     },
     "height": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The panel's height, a CSS length (sets --sf-modal-height)."
     },
     "backdrop-blur": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Blurs the page behind the scrim: present or true for the blur-type strength, or a strength itself (none, small, medium, large)."
     },
     "blur-type": {
       "type": "enum",
@@ -120,7 +142,8 @@
         "medium",
         "large"
       ],
-      "default": "medium"
+      "default": "medium",
+      "summary": "The strength backdrop-blur uses."
     },
     "overlay-preset": {
       "type": "enum",
@@ -128,39 +151,48 @@
         "default",
         "focus"
       ],
-      "default": "default"
+      "default": "default",
+      "summary": "The scrim: default, a fixed 60% black scrim; focus, the same with a small backdrop blur."
     },
     "overlay-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the scrim; applied last, so they win over the preset."
     },
     "close-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the close button."
     },
     "surface-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the window's surface."
     },
     "surface-padding": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The surface's padding, a CSS length (sets --sf-modal-surface-padding)."
     },
     "panel-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the panel, the box that holds the surface."
     },
     "header-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the header."
     },
     "body-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the body's scrolling area."
     },
     "content-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the wrapper of the slotted content."
     },
     "footer-class": {
       "type": "string",
@@ -169,11 +201,13 @@
     },
     "unsaved": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Something in the window is unsaved: the close request (sf-modal-close) carries it as detail.unsaved, so a page can ask before it lets the window close."
     },
     "dismissible": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "false: Escape, a press on the scrim and the close button no longer close the window; close() and the page's own controls still do."
     }
   },
   "values": {
@@ -489,7 +523,7 @@
         "kind": "setting",
         "mode": "same-detail",
         "section": "§3.1, §16 item 26",
-        "summary": "Empty: the text of the page's language (\"Dialog\" in English)."
+        "summary": "Dated alias of heading until 2026-12-01: the window's title."
       },
       {
         "from": "blur",
@@ -818,21 +852,18 @@
     },
     "alias-events": {
       "modal:after-close": {
-        "summary": "Fired after the window closes. Bubbles and is composed.",
+        "summary": "Fired after the window closes. Bubbles and is composed. Its detail is sf-modal-closed's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase",
+            "reason",
+            "accepted"
+          ],
           "properties": {
-            "component": {
-              "description": "The emitting sf-modal."
-            },
-            "modal": {
-              "description": "The emitting sf-modal."
-            },
             "modalId": {
               "type": "string"
-            },
-            "root": {
-              "description": "The rendered .sf-modal element."
             },
             "phase": {
               "type": "string",
@@ -848,98 +879,119 @@
                 "api"
               ],
               "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+            },
+            "accepted": {
+              "type": "boolean"
+            },
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
             }
           }
         }
       },
       "modal:after-hide": {
-        "summary": "Fired after the window is minimized. Bubbles and is composed.",
+        "summary": "Fired after the window is minimized. Bubbles and is composed. Its detail is sf-modal-minimized's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-hide"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "after-hide"
             }
           }
         }
       },
       "modal:after-open": {
-        "summary": "Fired after the window opens. Bubbles and is composed.",
+        "summary": "Fired after the window opens. Bubbles and is composed. Its detail is sf-modal-opened's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-open"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "after-open"
             }
           }
         }
       },
       "modal:after-show": {
-        "summary": "Fired after the window is shown again after being minimized. Bubbles and is composed.",
+        "summary": "Fired after the window is shown again after being minimized. Bubbles and is composed. Its detail is sf-modal-expanded's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-show"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "after-show"
             }
           }
         }
       },
       "modal:before-close": {
-        "summary": "Fired before the window closes; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "summary": "Fired before the window closes; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed. Its detail is sf-modal-close's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase",
+            "reason",
+            "unsaved"
+          ],
           "properties": {
-            "component": {
-              "description": "The emitting sf-modal."
-            },
-            "modal": {
-              "description": "The emitting sf-modal."
-            },
             "modalId": {
               "type": "string"
-            },
-            "root": {
-              "description": "The rendered .sf-modal element."
             },
             "phase": {
               "type": "string",
@@ -959,78 +1011,99 @@
             "unsaved": {
               "type": "boolean",
               "description": "Whether something is unsaved; false until the component has an unsaved setting."
+            },
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
             }
           }
         }
       },
       "modal:before-hide": {
-        "summary": "Fired before the window is minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "summary": "Fired before the window is minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed. Its detail is sf-modal-minimize's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-hide"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "before-hide"
             }
           }
         }
       },
       "modal:before-open": {
-        "summary": "Fired before the window opens; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "summary": "Fired before the window opens; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed. Its detail is sf-modal-open's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-open"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "before-open"
             }
           }
         }
       },
       "modal:before-show": {
-        "summary": "Fired before the window is shown again after being minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "summary": "Fired before the window is shown again after being minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed. Its detail is sf-modal-expand's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "phase"
+          ],
           "properties": {
+            "modalId": {
+              "type": "string"
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-show"
+            },
             "component": {
               "description": "The emitting sf-modal."
             },
             "modal": {
               "description": "The emitting sf-modal."
             },
-            "modalId": {
-              "type": "string"
-            },
             "root": {
               "description": "The rendered .sf-modal element."
-            },
-            "phase": {
-              "type": "string",
-              "const": "before-show"
             }
           }
         }
@@ -1076,16 +1149,15 @@
         }
       },
       "modal:before-content-upload": {
-        "summary": "An Ajax content request (mode=ajax) is starting. Bubbles and is composed.",
+        "summary": "An Ajax content request (mode=ajax) is starting. Bubbles and is composed. Its detail is sf-modal-content-upload's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "src",
+            "remote"
+          ],
           "properties": {
-            "component": {
-              "description": "The emitting sf-modal."
-            },
-            "modal": {
-              "description": "The emitting sf-modal."
-            },
             "modalId": {
               "type": "string"
             },
@@ -1107,21 +1179,29 @@
                   "type": "string"
                 }
               }
+            },
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
             }
           }
         }
       },
       "modal:after-content-upload": {
-        "summary": "Remote content finished loading, with success or error in detail.remote; an aborted request does not emit it. Also fired when an iframe loads. Bubbles and is composed.",
+        "summary": "Remote content finished loading, with success or error in detail.remote; an aborted request does not emit it. Also fired when an iframe loads. Bubbles and is composed. Its detail is sf-modal-content-uploaded's with component, modal (the element) and root (its rendered root) added.",
         "payload": {
           "type": "object",
+          "required": [
+            "modalId",
+            "src",
+            "remote"
+          ],
           "properties": {
-            "component": {
-              "description": "The emitting sf-modal."
-            },
-            "modal": {
-              "description": "The emitting sf-modal."
-            },
             "modalId": {
               "type": "string"
             },
@@ -1143,6 +1223,15 @@
                   "type": "string"
                 }
               }
+            },
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
             }
           }
         }

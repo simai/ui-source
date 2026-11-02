@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.sortable",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Drag and drop",
   "summary": "A list whose items move by pointer, touch and keyboard, between lists of a group and onto registered drop targets; it asks the host to move and never moves the host's DOM or data.",
   "kind": "smart",
@@ -41,11 +41,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "group": {
         "type": "string",
@@ -92,7 +94,7 @@
       "inserter-items": {
         "type": "string",
         "default": "",
-        "description": "The items an insertion point offers, as JSON [{item, label, icon?, description?}]; empty: no insertion point"
+        "description": "What an insertion point offers, as JSON or the inserterItems property: [{value, label?, icon?, caption?, keywords?, disabled?}], with {type: \"heading\", label} and {type: \"separator\"} rows; sf-sortable-insert carries the chosen value as detail.item. Empty: no insertion point."
       },
       "aria-label": {
         "type": "string",

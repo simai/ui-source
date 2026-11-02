@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -41,11 +41,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "for": {
         "type": "string",
@@ -569,7 +571,7 @@
       "canonical": true
     },
     "sf-composition-overlay-action": {
-      "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
+      "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen. Its detail is the former one, {action_id, node_id}, not sf-composition-overlay-apply's {action, scope, ids}.",
       "payload": {
         "type": "object",
         "required": [
@@ -588,7 +590,7 @@
       "alias_of": "sf-composition-overlay-apply"
     },
     "sf-composition-overlay-edit": {
-      "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back.",
+      "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back. Its detail is the former one, {node_id, value, previous}, not sf-composition-overlay-change's {id, value, previous}.",
       "payload": {
         "type": "object",
         "required": [

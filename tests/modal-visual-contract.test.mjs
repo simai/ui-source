@@ -48,7 +48,9 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
   // overlay-preset is a setting of the manifest (standard 1.3.8 §4): an enum
   // whose unknown value reads as its default.
   const preset = JSON.parse(await read('src/smart/modal/component.json')).settings['overlay-preset'];
-  assert.deepEqual(preset, {type: 'enum', values: ['default', 'focus'], default: 'default'});
+  const {summary, ...shape} = preset;
+  assert.deepEqual(shape, {type: 'enum', values: ['default', 'focus'], default: 'default'});
+  assert.match(summary, /focus/u);
   assert.match(component, /overlayPreset: this\.overlayPreset/);
 
   assert.match(template, /context\.overlayPreset === 'focus'/);

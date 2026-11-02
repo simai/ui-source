@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.checkbox",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Checkbox",
   "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
   "kind": "smart",
@@ -37,11 +37,13 @@
       },
       "root-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes added to the root element the component draws."
       },
       "root-style": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
       "size": {
         "type": "string",

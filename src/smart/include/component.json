@@ -2,7 +2,7 @@
   "$comment": "The source of sf-include's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: step 3 of ui-control's control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md (owner decision q-410df7e4b5), the successor of the retired class units ajax, ajaxload and lazy-load.",
   "id": "smart.include",
   "tag": "sf-include",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "content",
   "settings": {
