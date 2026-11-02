@@ -167,8 +167,9 @@
     display: block;
     position: fixed;
     inset: 0;
-    background: var(--sf-black);
-    opacity: var(--sf-opacity-60);
+    /* The shared scrim (core --sf-scrim-*). */
+    background: var(--sf-scrim-color, var(--sf-black));
+    opacity: var(--sf-scrim-opacity, var(--sf-opacity-60));
   }
 
   &.sf-site-header--open .sf-site-header-panel {

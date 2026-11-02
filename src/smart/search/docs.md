@@ -1,7 +1,8 @@
 # Smart Search
 
 `<sf-search>` is the site search of a SIMAI site: a window with a large
-rounded field and a separate results card under it, over a light scrim. A
+rounded field and a separate results card under it, over the scrim every
+window of the Framework draws (core `--sf-scrim-color`, `--sf-scrim-opacity`). A
 button in the header opens it, and so do Command/Control+K and `/`. On a phone
 it is a full-screen sheet with the field on top and a back arrow.
 
@@ -228,7 +229,7 @@ locked.
 | `--sf-search-inline-size` | The window's width (36rem) |
 | `--sf-search-inset-block-start` | The distance from the top of the window (4rem) |
 | `--sf-search-background` | The field's and the card's surface |
-| `--sf-search-scrim-color` | The scrim |
+| `--sf-search-scrim-color` | The scrim, a colour with its own transparency (by default the shared scrim) |
 | `--sf-search-mark-color` | The fill of the matched text |
 | `--sf-search-radius` | The results card's corners |
 | `--sf-search-list-max-block-size` | The card's greatest height |

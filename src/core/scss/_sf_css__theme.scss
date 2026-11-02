@@ -138,6 +138,15 @@
        on the neutral tone it came out 7.4 points lighter in the light theme --
        a veil that does not veil. */
     --sf-surface-overlay: light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8));
+    /* The scrim: what covers the page under a window, a panel or a sheet that
+       holds the focus -- a modal, a drawer, the site header's menu, the search
+       window, a workspace drawer. One colour and one strength for all of them,
+       the same in both themes: black at 60 dims a dark page as it dims a light
+       one. Each drew its own before, and they disagreed: black 60 in three
+       places, a light neutral at 32 in the search window (reuse audit
+       2026-11-02). A component's own scrim variables still win over these. */
+    --sf-scrim-color: var(--sf-black);
+    --sf-scrim-opacity: var(--sf-opacity-60);
     --sf-surface-2: light-dark(var(--sf-neutral-95), var(--sf-neutral-15));
     --sf-surface-3: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
     --sf-surface-4: light-dark(var(--sf-neutral-85), var(--sf-neutral-25));

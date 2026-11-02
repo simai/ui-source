@@ -22,8 +22,9 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: var(--sf-drawer-overlay-background, var(--sf-black));
-    opacity: var(--sf-drawer-overlay-opacity, var(--sf-opacity-60));
+    /* The shared scrim (core --sf-scrim-*), the drawer's own variables first. */
+    background: var(--sf-drawer-overlay-background, var(--sf-scrim-color, var(--sf-black)));
+    opacity: var(--sf-drawer-overlay-opacity, var(--sf-scrim-opacity, var(--sf-opacity-60)));
     transition: opacity var(--sf-duration-normal) var(--sf-ease-exit);
   }
 

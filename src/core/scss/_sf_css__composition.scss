@@ -285,7 +285,8 @@ $sf-workspace-wide-default: h6;
         $scope: sf-workspace-scope(wide, $step, $sf-workspace-wide-default);
 
         // Below the wide width the open panel is a drawer at the end edge,
-        // over main, on the drawer's surface; its shadow is the scrim.
+        // over main, on the drawer's surface; its shadow is the scrim, the
+        // shared one (core --sf-scrim-color, --sf-scrim-opacity).
         @container sf-workspace (width < #{$width}) {
             #{$scope} > .sf-workspace-panel {
                 position: absolute;
@@ -294,7 +295,7 @@ $sf-workspace-wide-default: h6;
                 z-index: var(--sf-z-index-layer, 9000);
                 background: var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface));
                 color: var(--sf-on-surface);
-                box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-black) var(--sf-opacity-60), transparent);
+                box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-scrim-color, var(--sf-black)) var(--sf-scrim-opacity, var(--sf-opacity-60)), transparent);
 
                 // It slides in from its edge, unless motion is reduced.
                 @media (prefers-reduced-motion: no-preference) {

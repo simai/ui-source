@@ -14,8 +14,9 @@
 }
 
 .sf-modal {
-  --sf-modal-overlay-background: var(--sf-black, #000);
-  --sf-modal-overlay-opacity: var(--sf-opacity-60, 0.6);
+  /* The shared scrim (core --sf-scrim-color, --sf-scrim-opacity). */
+  --sf-modal-overlay-background: var(--sf-scrim-color, var(--sf-black, #000));
+  --sf-modal-overlay-opacity: var(--sf-scrim-opacity, var(--sf-opacity-60, 0.6));
   --sf-modal-iframe-min-height: var(--sf-g2);
 }
 

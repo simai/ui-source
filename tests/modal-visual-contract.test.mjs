@@ -40,8 +40,9 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
     read('src/smart/modal/docs/docs.md'),
   ]);
 
-  assert.match(styles, /--sf-modal-overlay-background: var\(--sf-black, #000\)/);
-  assert.match(styles, /--sf-modal-overlay-opacity: var\(--sf-opacity-60, 0\.6\)/);
+  // The shared scrim of the core first (reuse audit 2026-11-02), black at 60.
+  assert.match(styles, /--sf-modal-overlay-background: var\(--sf-scrim-color, var\(--sf-black, #000\)\)/);
+  assert.match(styles, /--sf-modal-overlay-opacity: var\(--sf-scrim-opacity, var\(--sf-opacity-60, 0\.6\)\)/);
   assert.match(styles, /background-color: var\(--sf-modal-overlay-background\)/);
   assert.match(styles, /opacity: var\(--sf-modal-overlay-opacity\)/);
 

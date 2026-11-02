@@ -46,7 +46,11 @@
 .sf-search-scrim {
   position: absolute;
   inset: 0;
-  background: var(--sf-search-scrim-color, var(--sf-surface-transparent-overlay));
+  /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
+     own colour, which is then the whole scrim, as it always was. It was a light
+     neutral at 32 of its own, where every other window dims the page with
+     black at 60 (reuse audit 2026-11-02). */
+  background: var(--sf-search-scrim-color, color-mix(in srgb, var(--sf-scrim-color, var(--sf-black)) var(--sf-scrim-opacity, var(--sf-opacity-60)), transparent));
 }
 
 .sf-search-window {

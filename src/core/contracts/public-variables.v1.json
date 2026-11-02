@@ -3122,8 +3122,8 @@
         {
           "name": "--sf-search-scrim-color",
           "role": "background",
-          "summary": "The scrim between the window and the page.",
-          "default": "var(--sf-surface-transparent-overlay)",
+          "summary": "The scrim between the window and the page, a colour with its own transparency; by default the shared scrim every window draws (core --sf-scrim-color at --sf-scrim-opacity).",
+          "default": "color-mix(in srgb, var(--sf-scrim-color) var(--sf-scrim-opacity), transparent)",
           "state": "open",
           "since": "2026-10-30"
         },
