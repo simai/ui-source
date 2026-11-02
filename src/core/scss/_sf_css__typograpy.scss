@@ -89,10 +89,20 @@
     --sf-text--style: inherit;
     --sf-text--tracking: inherit;
     --sf-mark--color: var(--sf-warning-transparent-overlay);
-    --sf-code--color: var(--sf-tertiary);
-    --sf-code--background: var(--sf-tertiary-container);
+    // Code in running text (owner, 2026-11-02). These four were declared and
+    // read by nothing, the colour and the plate on the tertiary container: too
+    // loud for a word in a sentence. The plate is the neutral one a tag or a
+    // chat bubble stands on, the surface container role (neutral-50 at 16
+    // light, neutral-90 at 16 dark). 16 is the lowest step of the fill family
+    // that is a plate -- 12 is the pressed state and the disabled fill, and a
+    // word of code is neither. The dark half does not sit twelve higher because it is
+    // a different tone: the plate is mixed from the near-white neutral-90
+    // there, which reads at 16 as neutral-50 does on white (see the surface
+    // container role in _sf_css__theme.scss).
+    --sf-code--color: var(--sf-on-surface);
+    --sf-code--background: var(--sf-surface-container);
     --sf-code--font-family: var(--sf-mono);
-    --sf-code--radius: var(--sf-radius-1\/3);
+    --sf-code--radius: var(--sf-radius--ui);
 
     // Relative line height variables
     @each $line-height-name, $line-height-value in lineHeightVars.$line-height-array {
@@ -214,7 +224,40 @@
     // и код терял обычное начертание.
     font-weight: var(--sf-weight--regular);
     // Роли text-primary в теме нет; текст кода берёт основную роль текста.
-    color: var(--sf-on-surface);
+    color: var(--sf-code--color);
+  }
+
+  // Code inside running text: a paragraph, a list item, a table cell, a
+  // heading -- a Docara page, chat markup, a site's own <p>. It gets a quiet
+  // plate so it reads as code and not as a change of font (owner, 2026-11-02).
+  //
+  // Only author markup. A <code> is left alone when it sits in a block of code
+  // (pre, the highlighter's surface), in a key or sample (kbd, samp), in a
+  // button, when it carries a Framework class itself, or when its parent does:
+  // a component's own markup is classed sf-<component>-<part> (sf-color's
+  // value, a table cell's include), and prose is not.
+  //
+  // The whole selector is in :where(), so it weighs what a bare `code` does,
+  // and it is in the base layer: any component, utility or site rule wins.
+  // The ancestors are listed one by one rather than in :is(): the builder
+  // splits an :is() into one rule per branch, and each of those rules let
+  // through what the others excluded.
+  code:where(:not(
+    [class*='sf-'],
+    [class*='sf-'] > code,
+    pre code,
+    kbd code,
+    samp code,
+    button code,
+    [role='button'] code,
+    .sf-highlight code,
+    .sf-code-surface code
+  )) {
+    padding-inline: var(--sf-space-1\/4);
+    border-radius: var(--sf-code--radius);
+    background-color: var(--sf-code--background);
+    font-family: var(--sf-code--font-family);
+    font-size: 0.875em;
   }
 }
 
