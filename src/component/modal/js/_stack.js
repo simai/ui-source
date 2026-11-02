@@ -38,16 +38,16 @@ function updateModalLayers() {
 // page stays scrollable while it is open.
 const locksPage = (modal) => !modal.inContainer;
 
-function addModalLayer(modal, owner) {
+// The page lock is the stack's default one (lockPageScroll), which is the
+// lock this file's _scroll.js held before: the class, the page's own padding
+// plus the gap, and only what it set given back.
+function addModalLayer(modal) {
   if (hasLayer(modal)) return;
   openLayer(modal, {
     kind: 'modal',
     locksPage: locksPage(modal),
+    preserveScrollGap: modal.preserveScrollGap !== false,
     trapsFocus: true,
-    lockPage: () => {
-      owner.lockPage(modal.preserveScrollGap);
-      return () => owner.unlockPage();
-    },
     returnTo: modal._lastActive ?? modal.lastActive ?? null,
     root: () => modalRoot(modal),
     focusIn: () => modal.focusFirst?.(),

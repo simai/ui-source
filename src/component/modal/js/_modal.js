@@ -4,7 +4,6 @@ import { pageText } from '../../../core/js/page-language';
 import { trapModalFocus } from './_focus';
 import { freezeModalContent } from './_closing';
 import { scheduleModalClose, scheduleModalFrame } from './_motion';
-import { lockModalScroll, unlockModalScroll } from './_scroll';
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 // A box that holds its own overlays; a modal in it covers the box, not the
@@ -14,7 +13,7 @@ const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-containe
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from './_stack';
-import { layerZIndexAt } from '../../../core/js/layer-stack';
+import { layerZIndexAt, lockPageScroll } from '../../../core/js/layer-stack';
 
 function joinClasses(...parts) {
   return parts.filter(Boolean).join(' ').trim();
@@ -135,7 +134,7 @@ class Modal extends ComponentObserver {
     Modal.stack.push(modal);
     Modal.openCount = Modal.stack.length;
 
-    addModalLayer(modal, Modal);
+    addModalLayer(modal);
   }
 
   static removeFromStack(modal) {
@@ -1226,12 +1225,14 @@ class Modal extends ComponentObserver {
     Modal.globalBound = true;
   }
 
+  // Kept for code that calls them: the layer stack takes the page lock itself
+  // now, with its default lockPageScroll, while any layer that locks is open.
   static lockPage(preserveScrollGap = true) {
-    if (!Modal.lockState) Modal.lockState = lockModalScroll(preserveScrollGap);
+    if (!Modal.lockState) Modal.lockState = lockPageScroll({ preserveScrollGap });
   }
 
   static unlockPage() {
-    unlockModalScroll(Modal.lockState);
+    Modal.lockState?.();
     Modal.lockState = null;
   }
 }

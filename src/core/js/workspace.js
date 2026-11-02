@@ -20,34 +20,22 @@
 // panel in a fixed layer of the page, and the panel here is the host's own
 // region, which must stay where it is in the DOM to be a column when the
 // container is wide. The contract is sf-drawer's, kept with the same stack.
-import {closeLayer, openLayer, tryFocus} from './layer-stack.js';
+import {FOCUSABLE, closeLayer, focusablesIn, openLayer, tryFocus} from './layer-stack.js';
 
 const VIEW = 'data-sf-workspace-view';
 const PANEL = 'data-sf-workspace-panel';
 const LIST_HIDDEN = '[data-sf-workspace-list="hidden"]';
 const KEY = Symbol.for('sf.workspace');
-const FOCUSABLE = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled]):not([type="hidden"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[contenteditable="true"]',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',');
 const CURRENT = '[aria-current]:not([aria-current="false"])';
 
 const region = (element, name) => element.querySelector(`:scope > .sf-workspace-${name}`);
-
-const focusables = (root) => [...root.querySelectorAll(FOCUSABLE)]
-  .filter((node) => node.getClientRects().length && !node.closest('[inert]'));
 
 // The node itself when a person can focus it, else the first that can be
 // inside it, else the node with a temporary tabindex.
 function focusInto(node) {
   if (!node) return false;
   if (node.matches(FOCUSABLE) && tryFocus(node)) return true;
-  const inside = focusables(node)[0];
+  const inside = focusablesIn(node)[0];
   if (inside && tryFocus(inside)) return true;
   return tryFocus(node, true);
 }
@@ -189,7 +177,7 @@ class Workspace {
   }
 
   keepTab(event, panel) {
-    const inside = focusables(panel);
+    const inside = focusablesIn(panel);
     if (!inside.length) {
       event.preventDefault();
       return;

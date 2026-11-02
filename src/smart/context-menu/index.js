@@ -218,12 +218,26 @@ class SfContextMenu extends ContextMenuElement {
       delete this.entries;
       this._entries = Array.isArray(early) ? early : null;
     }
+    // A press outside, from the layer stack's one listener while this menu is
+    // the top layer (§19.3). The stack hears only the top one, the deepest
+    // submenu, so the walk goes up the chain: every menu the press is outside
+    // of closes, from the outermost, and a press on a parent row closes only
+    // the submenus below it -- as when each menu kept a listener of its own.
     this._onOutsidePress = (event) => {
       const path = event.composedPath();
-      if (path.includes(this) || path.includes(this._owned?.anchor)) return;
-      // A press inside an open submenu is inside the menu.
-      if (this._submenu && path.includes(this._submenu)) return;
-      this.close({restoreFocus: false, reason: "outside"});
+      let outermost = null;
+      for (let menu = this; menu?._owned; menu = menu._owned.parentMenu) {
+        if (path.includes(menu) || path.includes(menu._owned.anchor)) break;
+        // A press inside an open submenu is inside the menu.
+        if (menu._submenu && path.includes(menu._submenu)) break;
+        outermost = menu;
+      }
+      if (!outermost) return;
+      // A parent that refuses to close (sf-context-menu-close prevented) keeps
+      // itself open; the submenu the press was outside of still closes.
+      if (!outermost.close({restoreFocus: false, reason: "outside"}) && outermost !== this) {
+        this.close({restoreFocus: false, reason: "outside"});
+      }
     };
     this.addEventListener("focusin", (event) => {
       if (this.menuItems().includes(event.target)) {
@@ -797,11 +811,11 @@ class SfContextMenu extends ContextMenuElement {
     this._owned.position = position().anchor(anchor, surface, {
       side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
     });
-    document.addEventListener("pointerdown", this._onOutsidePress, true);
     // A menu it opens owns Escape, so the root says a surface is open: a record
     // panel listening on the document in capture runs before the menu's own
-    // listener and would otherwise close with it.
-    holdOpenSurfaceMark(this, true);
+    // listener and would otherwise close with it. The outside press comes from
+    // the stack.
+    holdOpenSurfaceMark(this, true, {onOutsidePress: this._onOutsidePress});
     this.sfEmit("opened", {});
     if (focus !== "none") {
       this.syncMenuItems();
@@ -841,7 +855,6 @@ class SfContextMenu extends ContextMenuElement {
     for (const name of ["--sf-context-menu--min-inline-size", "--sf-context-menu--max-inline-size", "inline-size"]) {
       owned.sizedContent?.style.removeProperty(name);
     }
-    document.removeEventListener("pointerdown", this._onOutsidePress, true);
     holdOpenSurfaceMark(this, false);
     const surface = this.surface();
     if (surface) {

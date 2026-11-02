@@ -14,6 +14,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
+import {FOCUSABLE} from '../../core/js/layer-stack';
 import {renderHelpMarkTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -42,10 +43,6 @@ class SfHelpMark extends HelpMarkElement {
     this._id = `sf-help-mark-${++sequence}`;
     this.isOpen = false;
     this.announcement = '';
-    this._onOutside = (event) => {
-      if (!this.isOpen || event.composedPath().includes(this)) return;
-      this.runClose({restoreFocus: false});
-    };
     // An open explanation owns Escape as the innermost open layer, and says so
     // on the root through the shared mark, so a record panel listening in
     // capture before it stands back instead of closing with it.
@@ -73,7 +70,7 @@ class SfHelpMark extends HelpMarkElement {
   }
 
   interactive() {
-    return Boolean(this.panel()?.querySelector('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+    return Boolean(this.panel()?.querySelector(FOCUSABLE));
   }
 
   // The template's press: a helper, not an action (the actions are open and
@@ -99,8 +96,9 @@ class SfHelpMark extends HelpMarkElement {
       if (!panel.matches(':popover-open')) panel.showPopover();
     }
     this._position = position().anchor(button, panel, {side: PLACEMENTS[this.placement], align: 'center', flip: true, shift: true});
-    holdOpenSurfaceMark(this, true);
-    document.addEventListener('pointerdown', this._onOutside, true);
+    // A press outside closes it, heard through the layer stack's one listener
+    // while it is the top layer (§19.3).
+    holdOpenSurfaceMark(this, true, {onOutsidePress: () => this.runClose({restoreFocus: false})});
     document.addEventListener('keydown', this._onKey, true);
     // Said once it is open: the text a screen reader hears is the text shown.
     this.announcement = '';
@@ -124,7 +122,6 @@ class SfHelpMark extends HelpMarkElement {
     this._position?.stop();
     this._position = null;
     holdOpenSurfaceMark(this, false);
-    document.removeEventListener('pointerdown', this._onOutside, true);
     document.removeEventListener('keydown', this._onKey, true);
     const panel = this.panel();
     if (panel?.matches?.(':popover-open')) panel.hidePopover();

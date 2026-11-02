@@ -30,8 +30,9 @@ test('Disabled, hidden, inert, detached and unfocusable openers fall back to rem
 });
 test('Remaining modal owns fallback; background removal never changes focus',()=>{
   const f=setup(),panel=f.node(),opener=f.node({disabled:true}),other=f.node();f.doc.activeElement=other;
-  const top={template:{contains:n=>n===opener},applyStackPosition(){},focusFirst(){panel.focus();}};
-  addModalLayer(top,{lockPage(){}});restoreModalLayerFocus(false,opener);assert.equal(f.doc.activeElement,other);
+  // In an overlay container, so the stack takes no page lock: this is about focus.
+  const top={inContainer:true,template:{contains:n=>n===opener},applyStackPosition(){},focusFirst(){panel.focus();}};
+  addModalLayer(top);restoreModalLayerFocus(false,opener);assert.equal(f.doc.activeElement,other);
   restoreModalLayerFocus(true,opener);assert.equal(f.doc.activeElement,panel);
 });
 test('Unavailable remembered regions fall back to main, then body',()=>{

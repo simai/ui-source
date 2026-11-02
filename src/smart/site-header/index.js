@@ -20,7 +20,7 @@
 // answer outcomes, the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {closeLayer, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
+import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -31,7 +31,6 @@ import './scss/index.scss';
 // the sheet's media rules read them: collapsed below the step.
 const STEPS = {sm: '32rem', md: '44rem', lg: '60rem', xl: '72rem'};
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
-const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 let sequence = 0;
 
 const applied = () => ({outcome: 'applied'});
@@ -154,10 +153,10 @@ class SfSiteHeader extends SiteHeaderElement {
     this.sfHostState('data-open', true);
     openLayer(this, {
       kind: 'panel',
+      // The stack's default page lock (lockPageScroll), the one every layer takes.
       locksPage: true,
       trapsFocus: true,
       returnTo: this._returnTo,
-      lockPage: () => this.lockPage(),
       root: () => this.panel(),
       focusIn: () => this.focusFirst(),
       onEscape: (event) => this.onEscape(event),
@@ -210,28 +209,8 @@ class SfSiteHeader extends SiteHeaderElement {
     else header.style.zIndex = String(zIndex);
   }
 
-  // The one page lock (§19.1): the stack takes it with the first layer that
-  // locks the page and gives it back with the last.
-  lockPage() {
-    const root = document.documentElement;
-    const body = document.body;
-    if (!root || !body) return () => {};
-    const gap = Math.max(0, window.innerWidth - root.clientWidth);
-    const kept = {root: root.style.overflow, body: body.style.overflow, padding: body.style.paddingInlineEnd};
-    root.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    if (gap > 0) body.style.paddingInlineEnd = `${gap}px`;
-    return () => {
-      root.style.overflow = kept.root;
-      body.style.overflow = kept.body;
-      body.style.paddingInlineEnd = kept.padding;
-    };
-  }
-
   focusable() {
-    const panel = this.panel();
-    if (!panel) return [];
-    return Array.from(panel.querySelectorAll(FOCUSABLE)).filter((element) => element.getClientRects().length > 0);
+    return focusablesIn(this.panel());
   }
 
   // Focus on open: the current page's link (the last one, as the nav comes

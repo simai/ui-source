@@ -35,7 +35,7 @@ import {render, nothing} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
 import BundledPreferences from '../../core/js/preferences.js';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {carryLayerOrigin, closeLayer, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
+import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
 import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
 import {PORT_ID, RESULT_LIMIT, SUPPORTED_PORT_VERSIONS, builtinSearchHost, indexHost, providerHost, recentStore} from './js/host';
 import manifest from './component.json';
@@ -45,7 +45,6 @@ import './scss/index.scss';
 
 const DEBOUNCE = 120;
 const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
-const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 // The port's three answers (no revision travels here, so nothing conflicts).
 const ANSWERS = ['applied', 'refused', 'unavailable'];
 // Which capability stands behind an intent (simai.search-port 1.0.0): an
@@ -309,10 +308,10 @@ class SfSearch extends SearchElement {
     const contained = this._contained;
     openLayer(this, {
       kind: 'modal',
+      // The stack's default page lock (lockPageScroll), the one every layer takes.
       locksPage: !contained,
       trapsFocus: true,
       returnTo: this._returnTo,
-      lockPage: () => this.lockPage(),
       root: () => this.dialog(),
       focusIn: () => this.focusField(),
       onEscape: (event) => this.onEscape(event),
@@ -386,23 +385,6 @@ class SfSearch extends SearchElement {
     else this._portal.style.zIndex = String(zIndex);
   }
 
-  // The one page lock (§19.1), as sf-site-header and sf-drawer take it.
-  lockPage() {
-    const root = document.documentElement;
-    const body = document.body;
-    if (!root || !body) return () => {};
-    const gap = Math.max(0, window.innerWidth - root.clientWidth);
-    const kept = {root: root.style.overflow, body: body.style.overflow, padding: body.style.paddingInlineEnd};
-    root.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    if (gap > 0) body.style.paddingInlineEnd = `${gap}px`;
-    return () => {
-      root.style.overflow = kept.root;
-      body.style.overflow = kept.body;
-      body.style.paddingInlineEnd = kept.padding;
-    };
-  }
-
   dialog() {
     return this._portal?.querySelector('.sf-search-window') ?? null;
   }
@@ -444,7 +426,7 @@ class SfSearch extends SearchElement {
   onTab(event) {
     if (!this.isOpen) return;
     const root = this.dialog();
-    const items = root ? Array.from(root.querySelectorAll(FOCUSABLE)).filter((element) => element.getClientRects().length > 0) : [];
+    const items = focusablesIn(root);
     if (!items.length) return;
     const first = items[0];
     const last = items.at(-1);

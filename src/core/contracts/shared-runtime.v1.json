@@ -113,8 +113,10 @@
     "layer-stack": {
       "source": "core/js/layer-stack.js",
       "exports": [
+        "FOCUSABLE",
         "carryLayerOrigin",
         "closeLayer",
+        "focusablesIn",
         "hasLayer",
         "hasLayerAbove",
         "isOutsideTopLayer",
@@ -123,6 +125,7 @@
         "layerIndex",
         "layerZIndex",
         "layerZIndexAt",
+        "lockPageScroll",
         "openLayer",
         "openLayers",
         "raiseLayer",

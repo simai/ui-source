@@ -19,6 +19,15 @@
 //     layer; else the nearest landmark; else the body. A layer that closes
 //     while another stands above it moves no focus.
 //
+// It also keeps what every layer did with a copy of its own: one listener for
+// a press outside the top layer (onOutsidePress), one page lock (lockPageScroll,
+// taken for a layer that locks the page and brings no lock of its own) and one
+// list of what can take focus (FOCUSABLE). A popover, a menu and a context menu
+// each bound a document listener for the outside press, and a drawer, a site
+// header, a search window and a modal each wrote the page lock again, three of
+// them without the modal's care for the page's own padding (reuse audit
+// 2026-11-02, findings 1 and 2).
+//
 // Kept on a shared global, not in module scope: every Smart bundle carries its
 // own copy of this module, and the modal's bundle has to see the drawer the
 // drawer's bundle opened. Each document (an iframe too) has its own stack.
@@ -36,11 +45,32 @@ const LAYER_STEP = 2;
 
 const LANDMARKS = 'main, section, article, [role="main"], [role="region"]';
 
+/**
+ * What a person can move focus to: the one list a layer keeps Tab inside and
+ * moves focus into. A hidden input is not a stop; an editable region is. Each
+ * component kept a list of its own, and they had drifted apart.
+ */
+export const FOCUSABLE = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled]):not([type="hidden"])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[contenteditable="true"]',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
+
+/** The focusable nodes inside these roots that are drawn and not inert, in order. */
+export function focusablesIn(...roots) {
+  return roots.flatMap((root) => Array.from(root?.querySelectorAll?.(FOCUSABLE) ?? []))
+    .filter((node) => node.getClientRects().length > 0 && !node.closest('[inert]'));
+}
+
 function stack() {
   const scope = globalThis;
   if (!scope[STACK_KEY]) {
     Object.defineProperty(scope, STACK_KEY, {
-      value: {layers: [], bound: false, lease: null, pressTop: new WeakMap()},
+      value: {layers: [], bound: false, pressBound: false, lease: null, pressTop: new WeakMap()},
       configurable: true,
     });
   }
@@ -69,16 +99,76 @@ export function layerZIndexAt(index) {
   return readToken('--sf-z-index-layer', LAYER_BASE) + index * readToken('--sf-z-index-layer-step', LAYER_STEP);
 }
 
+// The class the modal's lock always added, kept so a page that reads it (and
+// the modal's probes, which do) still sees a locked page.
+const LOCK_CLASS = 'overflow-hidden';
+
+/**
+ * The default page lock (§19.1): the document stops scrolling, and the body
+ * takes the scrollbar's width as padding so the page does not jump sideways
+ * when the bar goes. Answers the function that gives it back.
+ *
+ * It was the modal's: it adds the gap to the padding the body already has, and
+ * gives back only what it set -- a class or an overflow the page had before
+ * stays, and a padding the page changed meanwhile is the page's. The overflow
+ * is also written inline, as the drawer, the site header and the search window
+ * wrote it, so the lock holds before the utility sheet with the class arrives.
+ */
+export function lockPageScroll({preserveScrollGap = true} = {}) {
+  const doc = globalThis.document;
+  const html = doc?.documentElement;
+  const body = doc?.body;
+  if (!html || !body) return () => {};
+  const view = doc.defaultView || globalThis.window || globalThis;
+  const gap = Math.max(0, (view.innerWidth || 0) - html.clientWidth);
+  const kept = [html, body].map((node) => ({
+    node,
+    locked: node.classList.contains(LOCK_CLASS),
+    overflow: node.style.getPropertyValue('overflow'),
+    overflowPriority: node.style.getPropertyPriority('overflow'),
+  }));
+  for (const {node} of kept) {
+    node.classList.add(LOCK_CLASS);
+    node.style.setProperty('overflow', 'hidden');
+  }
+  const padding = {
+    value: body.style.getPropertyValue('padding-inline-end'),
+    priority: body.style.getPropertyPriority('padding-inline-end'),
+    applied: null,
+  };
+  if (preserveScrollGap && gap > 0) {
+    const current = parseFloat(view.getComputedStyle?.(body).paddingInlineEnd) || 0;
+    body.style.setProperty('padding-inline-end', `${current + gap}px`, padding.priority);
+    padding.applied = body.style.getPropertyValue('padding-inline-end');
+  }
+  return () => {
+    for (const {node, locked, overflow, overflowPriority} of kept) {
+      if (!locked) node.classList.remove(LOCK_CLASS);
+      // Only the overflow this lock wrote: one the page set meanwhile stays.
+      if (node.style.getPropertyValue('overflow') !== 'hidden' || node.style.getPropertyPriority('overflow')) continue;
+      if (overflow) node.style.setProperty('overflow', overflow, overflowPriority);
+      else node.style.removeProperty('overflow');
+    }
+    if (padding.applied === null ||
+        body.style.getPropertyValue('padding-inline-end') !== padding.applied ||
+        body.style.getPropertyPriority('padding-inline-end') !== padding.priority) return;
+    if (padding.value) body.style.setProperty('padding-inline-end', padding.value, padding.priority);
+    else body.style.removeProperty('padding-inline-end');
+  };
+}
+
 // The page lock is one lease for the whole stack, taken by the first layer
 // that locks the page and given back when no such layer is left -- whichever
 // kind opened first and whichever closes last. A modal and a drawer held two
 // locks before, and closing them out of order unlocked the page under an open
-// window.
+// window. A layer that brings no lockPage of its own takes the default one.
 function syncPageLock() {
   const state = stack();
   const locker = state.layers.find((entry) => entry.locksPage && isLive(entry));
   if (locker && !state.lease) {
-    const release = locker.lockPage?.();
+    const release = locker.lockPage
+      ? locker.lockPage()
+      : lockPageScroll({preserveScrollGap: locker.preserveScrollGap !== false});
     state.lease = typeof release === 'function' ? release : () => {};
   } else if (!locker && state.lease) {
     const release = state.lease;
@@ -144,11 +234,15 @@ export function openLayers(kind = '') {
  * options:
  *   kind        'modal' | 'panel' | 'surface' | 'toast'
  *   locksPage   true to hold the page lock while open; lockPage() takes it and
- *               returns the function that gives it back
+ *               returns the function that gives it back, and without one the
+ *               stack takes lockPageScroll({preserveScrollGap})
+ *   preserveScrollGap  false to let the page widen when its scrollbar goes
  *   trapsFocus  true to keep Tab inside and to return focus on close
  *   root()      the element the layer draws, for focus and outside presses
  *   onEscape(event)  closes the layer and answers true when it took the press
  *   onTab(event)     keeps focus inside
+ *   onOutsidePress(event)  a press began outside root() and the owner while
+ *               this is the top layer; the layer decides what it closes
  *   focusIn()        moves focus inside
  *   place({index, zIndex, top})  draws the layer at its height
  *   returnTo    what was active at open (default: the active element now)
@@ -157,6 +251,7 @@ export function openLayer(owner, options = {}) {
   if (!owner) return null;
   const state = stack();
   bindKeys();
+  bindPresses();
   let entry = find(owner);
   if (entry) {
     state.layers.splice(state.layers.indexOf(entry), 1);
@@ -311,6 +406,35 @@ function bindKeys() {
       return;
     }
     top.onTab?.(event);
+  });
+}
+
+// Outside a layer: in the composed path of neither what it draws nor its
+// owner, so a press inside a shadow root or a portal of its own is inside.
+function pressedOutside(entry, event) {
+  const path = event.composedPath?.() ?? [];
+  const root = entry.root?.();
+  return !path.includes(entry.owner) && !(root && path.includes(root));
+}
+
+// One pointerdown listener pair for the whole document, as for the keys: the
+// top layer is read in capture, before any component sees the press, and acts
+// in bubble, once the press has passed through the page. Only the top layer
+// hears it, so a list over a popover closes and the popover stays, and a layer
+// that opened or closed on the way down (a trigger's own press) does not hand
+// the press to another. Each surface bound a document listener of its own
+// before, and the first one bound acted whatever lay above it.
+function bindPresses() {
+  const state = stack();
+  if (state.pressBound || typeof globalThis.addEventListener !== 'function') return;
+  state.pressBound = true;
+  globalThis.addEventListener('pointerdown', (event) => {
+    state.pressTop.set(event, topLayer());
+  }, true);
+  globalThis.addEventListener('pointerdown', (event) => {
+    const top = state.pressTop.has(event) ? state.pressTop.get(event) : topLayer();
+    if (!top?.onOutsidePress || top !== topLayer() || !pressedOutside(top, event)) return;
+    top.onOutsidePress(event);
   });
 }
 

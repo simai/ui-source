@@ -8,7 +8,6 @@ import { renderModalTemplate } from "./js/templates/default";
 import { trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
-import { lockModalScroll, unlockModalScroll } from "../../component/modal/js/_scroll";
 import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -21,7 +20,7 @@ const OVERLAY_CONTAINER = "[data-sf-overlay-container], [data-sf-drawer-containe
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
-import { carryLayerOrigin, layerZIndexAt } from "../../core/js/layer-stack";
+import { carryLayerOrigin, layerZIndexAt, lockPageScroll } from "../../core/js/layer-stack";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §8, §19): the settings are attributes and properties made by
@@ -129,7 +128,7 @@ class SfModal extends ModalElement {
     // Keep the open-instance registry, but only visible dialogs own page focus
     // and the document scroll lock.
     if (!modal.hiddenState) {
-      addModalLayer(modal, SfModal);
+      addModalLayer(modal);
     }
   }
 
@@ -950,7 +949,7 @@ class SfModal extends ModalElement {
         root.inert = false;
         root.setAttribute("aria-hidden", "false");
       }
-      addModalLayer(this, SfModal);
+      addModalLayer(this);
       SfModal.bringToFront(this);
       requestAnimationFrame(() => this.focusFirst());
     }
@@ -1467,12 +1466,14 @@ class SfModal extends ModalElement {
     SfModal.globalBound = true;
   }
 
+  // Kept for code that calls them: the layer stack takes the page lock itself
+  // now, with its default lockPageScroll, while any layer that locks is open.
   static lockPage(preserveScrollGap = true) {
-    if (!SfModal.lockState) SfModal.lockState = lockModalScroll(preserveScrollGap);
+    if (!SfModal.lockState) SfModal.lockState = lockPageScroll({ preserveScrollGap });
   }
 
   static unlockPage() {
-    unlockModalScroll(SfModal.lockState);
+    SfModal.lockState?.();
     SfModal.lockState = null;
   }
 }

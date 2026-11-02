@@ -51,7 +51,12 @@ function step(delta) {
 // Idempotent for one owner, so a component can call it from every update with
 // its own open state and only a change moves the count. An owner that is removed
 // while open releases it the same way, from wherever it tears down.
-export function holdOpenSurfaceMark(owner, open) {
+//
+// `layer` is what the surface declares to the stack when it opens: root() when
+// it draws outside its owner, and onOutsidePress(event) when a press outside it
+// closes it -- the stack's one document listener calls it while the surface is
+// the top layer, in place of a listener the surface binds itself.
+export function holdOpenSurfaceMark(owner, open, layer = {}) {
     if (!owner) return;
     const wanted = Boolean(open);
     if (wanted === held.has(owner)) return;
@@ -59,7 +64,7 @@ export function holdOpenSurfaceMark(owner, open) {
     if (wanted) {
         held.add(owner);
         layers.push(owner);
-        openLayer(owner, {kind: 'surface'});
+        openLayer(owner, {...layer, kind: 'surface'});
     } else {
         held.delete(owner);
         const at = layers.lastIndexOf(owner);

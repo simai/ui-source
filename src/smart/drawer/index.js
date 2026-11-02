@@ -3,7 +3,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {noteDeprecated} from '../../core/js/deprecations';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {carryLayerOrigin, closeLayer, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
+import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
   raiseLayer, returnLayerFocus, landmarksAround, updateLayer} from '../../core/js/layer-stack';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -65,14 +65,6 @@ const PORTAL_ATTRIBUTE = 'data-sf-drawer-portal';
 // A box that holds its own overlays (sf-drawer, sf-modal); the drawer's own
 // name came first and is read until the change journal retires it.
 const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
-const FOCUSABLE_SELECTOR = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',');
 
 // The open drawers, in the order they opened: the panels of the one document
 // layer stack (layer-stack.js, standard 1.3.8 §19.1). The drawer kept an array
@@ -113,7 +105,6 @@ function escapeSelector(value) {
 
 const drawerManager = {
   globalBound: false,
-  lockState: null,
 
   // Opening raises a drawer that is open already: it is the last opened.
   add(drawer) {
@@ -121,10 +112,6 @@ const drawerManager = {
       kind: 'panel',
       ...this.declares(drawer),
       returnTo: drawer._lastActive ?? null,
-      lockPage: () => {
-        this.lockPage(drawer.preserveScrollGap);
-        return () => this.unlockPage();
-      },
       root: () => drawer.getDrawerRoot(),
       focusIn: () => drawer.focusFirst(),
       onEscape: (event) => drawer.onKeyDown(event),
@@ -137,13 +124,14 @@ const drawerManager = {
 
   // What the drawer declares to the stack (§19.1): a modal drawer locks the
   // page -- unless it stands in an overlay container, which it covers instead
-  // -- and holds the focus. The drawer remembers what it declared, so a docked
+  // -- with the stack's default page lock, and holds the focus. The drawer remembers what it declared, so a docked
   // drawer that starts or stops floating says so again (syncModal).
   declares(drawer) {
     const modal = drawer.modal;
     drawer._declaredModal = modal;
     return {
       locksPage: modal && !drawer.closest(OVERLAY_CONTAINER),
+      preserveScrollGap: drawer.preserveScrollGap !== false,
       trapsFocus: modal,
     };
   },
@@ -257,31 +245,6 @@ const drawerManager = {
   // changed while open says so again.
   syncPageLock() {
     for (const drawer of openDrawers()) updateLayer(drawer, this.declares(drawer));
-  },
-
-  lockPage(preserveScrollGap) {
-    const htmlElement = document.documentElement;
-    const body = document.body;
-    if (!htmlElement || !body || this.lockState) return;
-    const gap = Math.max(0, window.innerWidth - htmlElement.clientWidth);
-    this.lockState = {
-      htmlOverflow: htmlElement.style.overflow,
-      bodyOverflow: body.style.overflow,
-      bodyPaddingInlineEnd: body.style.paddingInlineEnd,
-    };
-    htmlElement.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    if (preserveScrollGap && gap > 0) body.style.paddingInlineEnd = `${gap}px`;
-  },
-
-  unlockPage() {
-    if (!this.lockState) return;
-    const htmlElement = document.documentElement;
-    const body = document.body;
-    htmlElement.style.overflow = this.lockState.htmlOverflow;
-    body.style.overflow = this.lockState.bodyOverflow;
-    body.style.paddingInlineEnd = this.lockState.bodyPaddingInlineEnd;
-    this.lockState = null;
   },
 
   bindGlobalEvents() {
@@ -1053,9 +1016,7 @@ class SfDrawer extends DrawerElement {
     // never reached them (simai.main keyboard QA, 2026-10-28).
     const edge = this.getDrawerRoot()?.querySelector('[data-sf-drawer-edge]');
     const inside = (element) => Boolean(element && (panel?.contains(element) || edge?.contains(element)));
-    const focusable = [panel, edge]
-      .flatMap((area) => Array.from(area?.querySelectorAll(FOCUSABLE_SELECTOR) || []))
-      .filter((element) => element.getClientRects().length > 0);
+    const focusable = focusablesIn(panel, edge);
     if (focusable.length === 0) {
       event.preventDefault();
       panel?.focus();

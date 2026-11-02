@@ -384,13 +384,13 @@ class SfSmartMenu extends MenuElement {
   holdSurface(hold) {
     if (hold === this._holding) return;
     this._holding = hold;
-    holdOpenSurfaceMark(this, hold);
+    // A press outside comes from the layer stack's one listener, while the
+    // menu is the top layer (§19.3).
+    holdOpenSurfaceMark(this, hold, {onOutsidePress: this.onOutsidePress});
     if (hold) {
       document.addEventListener('keydown', this.onDocumentKeydown, true);
-      document.addEventListener('pointerdown', this.onDocumentPointerDown, true);
     } else {
       document.removeEventListener('keydown', this.onDocumentKeydown, true);
-      document.removeEventListener('pointerdown', this.onDocumentPointerDown, true);
     }
   }
 
@@ -423,8 +423,8 @@ class SfSmartMenu extends MenuElement {
     }
   };
 
-  onDocumentPointerDown = (event) => {
-    if ((event.composedPath?.() ?? []).includes(this)) return;
+  // Outside the menu: the stack has checked that already.
+  onOutsidePress = () => {
     if (this.flyouts) this.closeFlyouts('user');
   };
 

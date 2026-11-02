@@ -10,7 +10,8 @@ const source = readFileSync(new URL('../src/smart/drawer/index.js', import.meta.
 test('the Tab cycle runs through the panel and then its edge', () => {
   const body = source.slice(source.indexOf('  onKeyDown(event) {'), source.indexOf('  emitDrawerEvent('));
   assert.match(body, /const edge = this\.getDrawerRoot\(\)\?\.querySelector\('\[data-sf-drawer-edge\]'\);/u);
-  assert.match(body, /\[panel, edge\]\s*\.flatMap\(\(area\) => Array\.from\(area\?\.querySelectorAll\(FOCUSABLE_SELECTOR\) \|\| \[\]\)\)/u);
+  // The panel's stops, then the edge's, by the layer stack's one list.
+  assert.match(body, /const focusable = focusablesIn\(panel, edge\);/u);
   assert.match(body, /if \(!inside\(document\.activeElement\)\) \{/u);
   assert.doesNotMatch(body, /!panel\?\.contains\(document\.activeElement\)/u);
 });

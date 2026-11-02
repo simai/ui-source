@@ -10,10 +10,21 @@ import test from 'node:test';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = await read('src/core/js/layer-stack.js');
 
-// Two windows of keydown listeners, as the browser has them: capture, then bubble.
+// Two windows of keydown listeners, as the browser has them: capture, then
+// bubble; and the same two for pointerdown.
 const listeners = {capture: [], bubble: []};
+const pointer = {capture: [], bubble: []};
 globalThis.addEventListener = (type, fn, capture) => {
   if (type === 'keydown') listeners[capture ? 'capture' : 'bubble'].push(fn);
+  if (type === 'pointerdown') pointer[capture ? 'capture' : 'bubble'].push(fn);
+};
+// A pointerdown whose composed path holds these nodes.
+const pointerDown = (path, {onTheWay} = {}) => {
+  const event = {composedPath: () => path};
+  pointer.capture.forEach((fn) => fn(event));
+  onTheWay?.(event);
+  pointer.bubble.forEach((fn) => fn(event));
+  return event;
 };
 const press = (key, {onTheWay} = {}) => {
   const event = {key, defaultPrevented: false, stopped: false,
@@ -33,6 +44,8 @@ function reset() {
   delete globalThis[Symbol.for('sf.layerStack')];
   listeners.capture.length = 0;
   listeners.bubble.length = 0;
+  pointer.capture.length = 0;
+  pointer.bubble.length = 0;
   const doc = {activeElement: null, body: null, querySelectorAll: () => [],
     defaultView: {getComputedStyle: () => ({visibility: 'visible'}), MutationObserver: class { observe() {} disconnect() {} }}};
   globalThis.document = doc;
@@ -198,6 +211,98 @@ test('one page lock for the whole stack, given back when the last locking layer 
   assert.deepEqual(calls, ['modal:lock']);
   drawerBundle.closeLayer(drawer, {restoreFocus: false});
   assert.deepEqual(calls, ['modal:lock', 'modal:unlock']);
+});
+
+// One document listener for an outside press (reuse audit 2026-11-02, finding
+// 1): a popover, a menu and a context menu each bound one of their own.
+test('an outside press reaches the top layer only; a press inside it, or a layer below, is not heard', () => {
+  reset();
+  const log = [];
+  const popoverRoot = {name: 'popover-root'};
+  const popover = {isConnected: true};
+  drawerBundle.openLayer(popover, {kind: 'surface', root: () => popoverRoot,
+    onOutsidePress: () => log.push('popover:outside')});
+  const listRoot = {name: 'list-root'};
+  const list = {isConnected: true};
+  modalBundle.openLayer(list, {kind: 'surface', root: () => listRoot,
+    onOutsidePress: () => { log.push('list:outside'); modalBundle.closeLayer(list, {restoreFocus: false}); }});
+  // Inside the top layer: its root, or its owner when it draws in place.
+  pointerDown([{}, listRoot, {}]);
+  pointerDown([list]);
+  assert.deepEqual(log, []);
+  // Inside the popover under the list is outside the list: the list closes,
+  // and the popover, no longer under anything, is not handed the same press.
+  pointerDown([popoverRoot]);
+  assert.deepEqual(log, ['list:outside']);
+  // Now the popover is the top layer.
+  pointerDown([{name: 'page'}]);
+  assert.deepEqual(log, ['list:outside', 'popover:outside']);
+});
+
+test('a layer that opens on the way down does not take the press that opened it', () => {
+  reset();
+  const log = [];
+  const below = {isConnected: true};
+  drawerBundle.openLayer(below, {kind: 'surface', root: () => ({}), onOutsidePress: () => log.push('below:outside')});
+  const above = {isConnected: true};
+  pointerDown([{name: 'trigger'}], {onTheWay: () => modalBundle.openLayer(above, {kind: 'surface',
+    root: () => ({}), onOutsidePress: () => log.push('above:outside')})});
+  assert.deepEqual(log, []);
+  // A toast takes no presses: the layer under it is still the top one.
+  modalBundle.openLayer({isConnected: true}, {kind: 'toast'});
+  pointerDown([{name: 'page'}]);
+  assert.deepEqual(log, ['above:outside']);
+});
+
+// One default page lock (finding 2): a drawer, a site header and a search
+// window each wrote a copy of their own, without the modal's care.
+test('a layer that locks the page and brings no lock takes the default one, one lease for all', () => {
+  reset();
+  const marks = [];
+  const node = () => {
+    const classes = new Set();
+    const props = new Map();
+    return {clientWidth: 1000,
+      classList: {contains: (name) => classes.has(name), add: (name) => { classes.add(name); }, remove: (name) => { classes.delete(name); }},
+      style: {getPropertyValue: (name) => props.get(name)?.[0] ?? '', getPropertyPriority: (name) => props.get(name)?.[1] ?? '',
+        setProperty(name, value, priority = '') { props.set(name, [value, priority]); }, removeProperty(name) { props.delete(name); }}};
+  };
+  const html = node();
+  const body = node();
+  Object.assign(globalThis.document, {documentElement: html, body});
+  globalThis.document.defaultView.innerWidth = 1015;
+  globalThis.document.defaultView.getComputedStyle = () => ({visibility: 'visible', paddingInlineEnd: '0'});
+  const locked = () => html.classList.contains('overflow-hidden') && body.style.getPropertyValue('overflow') === 'hidden';
+  const drawer = {isConnected: true};
+  const header = {isConnected: true};
+  const search = {isConnected: true};
+  drawerBundle.openLayer(drawer, {kind: 'panel', locksPage: true});
+  marks.push(locked(), body.style.getPropertyValue('padding-inline-end'));
+  modalBundle.openLayer(header, {kind: 'panel', locksPage: true});
+  // A layer that does not lock the page (a search window in an overlay box).
+  modalBundle.openLayer(search, {kind: 'modal', locksPage: false});
+  drawerBundle.closeLayer(drawer, {restoreFocus: false});
+  marks.push(locked());
+  modalBundle.closeLayer(header, {restoreFocus: false});
+  marks.push(locked(), body.style.getPropertyValue('padding-inline-end'));
+  assert.deepEqual(marks, [true, '15px', true, false, '']);
+  // preserveScrollGap: false leaves the page's padding alone.
+  drawerBundle.openLayer(drawer, {kind: 'panel', locksPage: true, preserveScrollGap: false});
+  assert.equal(body.style.getPropertyValue('padding-inline-end'), '');
+  drawerBundle.closeLayer(drawer, {restoreFocus: false});
+});
+
+test('the components keep one list of what takes focus, and no lock or outside listener of their own', async () => {
+  const stack = await modalBundle;
+  assert.match(stack.FOCUSABLE, /\[contenteditable="true"\]/);
+  for (const path of ['src/smart/drawer/index.js', 'src/smart/site-header/index.js', 'src/smart/search/index.js', 'src/core/js/workspace.js']) {
+    const code = await read(path);
+    assert.doesNotMatch(code, /const FOCUSABLE(_SELECTOR)? = /, `${path} keeps a list of its own`);
+    assert.doesNotMatch(code, /^\s+lockPage\(/mu, `${path} writes a page lock of its own`);
+  }
+  for (const path of ['src/smart/help-mark/index.js', 'src/smart/context-menu/index.js', 'src/smart/menu/index.js', 'src/smart/profile-picker/index.js']) {
+    assert.doesNotMatch(await read(path), /addEventListener\(['"]pointerdown['"]/u, `${path} binds an outside press of its own`);
+  }
 });
 
 test('a layer removed from the document without closing does not hold the keys', () => {

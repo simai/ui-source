@@ -46,12 +46,6 @@ class SfProfilePicker extends ProfilePickerElement {
     this._profiles = [];
     this._rights = {};
     this.state = {open: false, mode: null, target: null, draft: {name: '', shared: false}};
-    this._onOutside = (event) => {
-      if (!this.state.open) return;
-      const path = event.composedPath();
-      if (path.includes(this) || path.includes(this.panel())) return;
-      this.close({restoreFocus: false});
-    };
   }
 
   static get props() {
@@ -150,10 +144,14 @@ class SfProfilePicker extends ProfilePickerElement {
     // At least the trigger's width, wider for a long name.
     panel.style.minInlineSize = `${Math.round(trigger.getBoundingClientRect().width)}px`;
     this._position = position().anchor(trigger, panel, {side: 'block-end', align: 'start', flip: true, shift: true, fitHeight: true});
-    document.addEventListener('pointerdown', this._onOutside, true);
     // The open panel owns Escape: the root says so, and a drawer or record
-    // panel listening on the document stands back.
-    holdOpenSurfaceMark(this, true);
+    // panel listening on the document stands back. A press outside the picker
+    // and its panel closes it, heard through the layer stack's one listener
+    // while it is the top layer (§19.3).
+    holdOpenSurfaceMark(this, true, {
+      root: () => this.panel(),
+      onOutsidePress: () => this.close({restoreFocus: false}),
+    });
     (panel.querySelector('.sf-profile-picker-row[aria-checked="true"]') ?? panel.querySelector('.sf-profile-picker-row'))?.focus({preventScroll: true});
     return applied();
   }
@@ -163,7 +161,6 @@ class SfProfilePicker extends ProfilePickerElement {
     this.state = {...this.state, open: false, mode: null, target: null};
     this._position?.stop();
     this._position = null;
-    document.removeEventListener('pointerdown', this._onOutside, true);
     holdOpenSurfaceMark(this, false);
     const panel = this.panel();
     if (panel?.matches?.(':popover-open')) panel.hidePopover();
