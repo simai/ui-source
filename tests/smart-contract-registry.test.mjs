@@ -11,7 +11,7 @@ test("whole composite manifests are generated into the searchable registry", () 
   const registry = JSON.parse(readFileSync(new URL("../contracts/generated/smart-component-contract-registry.json", import.meta.url), "utf8"));
   assert.equal(registry.schema, "simai.smart-component-contract-registry.v2");
   // Rises with each component the Framework publishes; sf-popover made it 51, and
-  // the four components now in package larena leaving the free source made it 47,
+  // the four components now in package pro (then named larena) leaving the free source made it 47,
   // and sf-page-header made it 48, and sf-resizer 49, and sf-profile-picker 50, and sf-empty-state 51, and sf-copy-button 52, and sf-help-mark 53, and sf-theme-generator 54, and sf-image-field 55, and sf-accordion 56, and sf-quantity 57, and sf-menu 58, and sf-code-input 59, and sf-progress-ring 60, and sf-site-header 61, and sf-search 62, and sf-settings-menu 63, and sf-pager 64, and sf-contents 65, and sf-rich-text 66, and sf-lookup 67; 66 again when sf-settings-menu
   // was folded into sf-context-menu (owner, 2026-10-30), and sf-include 67 again; 66 when sf-toggle was swept (2026-11-02).
   // The number is pinned so an addition is an edit somebody made rather than a
@@ -19,9 +19,9 @@ test("whole composite manifests are generated into the searchable registry", () 
   // exactly what this would otherwise miss.
   assert.equal(registry.entries.length, 66);
   for (const id of ["smart.sortable", "smart.composition-overlay", "smart.inline-editor"]) assert.ok(registry.entries.some((entry) => entry.id === id), id);
-  // Larena's components are not part of the free registry (package larena).
+  // The Pro components are not part of the free registry (package pro).
   for (const id of ["smart.admin-menu", "smart.data-view", "smart.data-view-composite", "smart.property-view"]) {
-    assert.ok(!registry.entries.some((entry) => entry.id === id), `${id} is in package larena`);
+    assert.ok(!registry.entries.some((entry) => entry.id === id), `${id} is in package pro`);
   }
   assert.ok(registry.entries.some(({id}) => id === "smart.button-group"));
   assert.ok(registry.entries.every(({reuse_mode}) => ["whole", "parts", "both"].includes(reuse_mode)));

@@ -521,8 +521,8 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
 // Published typed ports. Framework owns the element protocol; the product owns
 // what a request means, data access and authorization.
 //
-// sf-table answers this port and lives with Larena, its owner, since 2026-10-11
-// (the component folder in simai/larena-ui, package larena). The port stays
+// sf-table answers this port and lives in the SIMAI Framework Pro package since
+// 2026-10-11 (the component folder in simai/ui-pro, package pro). The port stays
 // here: it is a public contract of the free Framework (composition-ports.v1.json,
 // the routing contract lock), and the package's tests read it from this file in
 // their overlay of ui-source.

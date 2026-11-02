@@ -3,7 +3,7 @@
 //
 // A component package is served from its own base and brings its own rules,
 // and the Loader fetches its components from there -- never from the Smart
-// base (Pro split, stage 2). Larena's components are the first package; this probe
+// base (Pro split, stage 2). The Pro components are the first package; this probe
 // uses a fake one, tests/fixtures/loader-package, so it judges the Loader and
 // nothing else.
 //

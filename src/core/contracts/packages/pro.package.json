@@ -1,0 +1,322 @@
+{
+  "schema_id": "simai.framework.package-reference",
+  "schema_version": 1,
+  "package": "pro",
+  "title": "SIMAI Framework Pro components",
+  "summary": "The SIMAI Framework Pro Smart components, the component package pro (owner decision q-4ac7d07595, 2026-11-02: one package name, pro; Larena is one consumer among others). They are built from the component folder in simai/ui-pro by the Framework builder over a pinned ui-source revision (standard simai.component-package) and published as releases of simai/ui-pro. A page loads them as a component package of the Loader: SF_BOOT_CONFIG.packages.pro = {base: '<package base>'}. This file names them, and what each needs, so the free registry can place them in the one free recipe that still names them; it carries no bytes and grants nothing. The former name larena stays a dated alias (larena.package.json, the Loader's packages.larena, journal record option-package-larena-to-pro) until 2027-01-01.",
+  "distribution": {
+    "owner": "simai/ui-pro",
+    "repository": "https://github.com/simai/ui-pro",
+    "runtime_path": "smart",
+    "rule_file": "smart/rule.js",
+    "receipt": "package-receipt.json"
+  },
+  "provides": [
+    {
+      "id": "smart.admin-menu",
+      "element": "sf-admin-menu",
+      "rule_name": "cl-admin-menu",
+      "folder": "admin-menu",
+      "requires": [
+        "component.admin-menu",
+        "component.badges",
+        "component.icons",
+        "component.inputs",
+        "smart.badge",
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.input",
+        "smart.profile-picker",
+        "smart.resizer",
+        "smart.sortable"
+      ]
+    },
+    {
+      "id": "smart.change-confirm",
+      "element": "sf-change-confirm",
+      "rule_name": "cl-change-confirm",
+      "folder": "change-confirm",
+      "requires": [
+        "smart.button",
+        "smart.icon"
+      ]
+    },
+    {
+      "id": "smart.chat-composer",
+      "element": "sf-chat-composer",
+      "rule_name": "cl-chat-composer",
+      "folder": "chat-composer",
+      "requires": [
+        "component.icon-buttons",
+        "component.textarea",
+        "smart.icon",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.chat-interlocutor",
+      "element": "sf-chat-interlocutor",
+      "rule_name": "cl-chat-interlocutor",
+      "folder": "chat-interlocutor",
+      "requires": [
+        "smart.context-menu",
+        "smart.icon",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.chat-message",
+      "element": "sf-chat-message",
+      "rule_name": "cl-chat-message",
+      "folder": "chat-message",
+      "requires": [
+        "component.buttons",
+        "component.icon-buttons",
+        "component.inputs",
+        "smart.avatar",
+        "smart.badge",
+        "smart.change-confirm",
+        "smart.context-menu",
+        "smart.icon"
+      ]
+    },
+    {
+      "id": "smart.chat-window",
+      "element": "sf-chat-window",
+      "rule_name": "cl-chat-window",
+      "folder": "chat-window",
+      "requires": [
+        "component.avatars",
+        "component.buttons",
+        "component.icon-buttons",
+        "component.inputs",
+        "smart.button",
+        "smart.change-confirm",
+        "smart.chat-composer",
+        "smart.chat-interlocutor",
+        "smart.chat-message",
+        "smart.context-menu",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.input",
+        "smart.lookup",
+        "smart.message-log",
+        "smart.progress-bar",
+        "smart.thread-list"
+      ]
+    },
+    {
+      "id": "smart.content-editor",
+      "element": "sf-content-editor",
+      "rule_name": "cl-content-editor",
+      "folder": "content-editor",
+      "requires": [
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.file-upload",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.inline-editor",
+        "smart.input",
+        "smart.popover",
+        "smart.progress-bar",
+        "smart.switch"
+      ]
+    },
+    {
+      "id": "smart.data-view",
+      "element": "sf-table",
+      "rule_name": "cl-table",
+      "folder": "table",
+      "requires": [
+        "component.icons",
+        "smart.avatar",
+        "smart.badge",
+        "smart.button",
+        "smart.checkbox",
+        "smart.color",
+        "smart.context-menu",
+        "smart.country-code",
+        "smart.datepicker",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.file-preview",
+        "smart.icon-button",
+        "smart.input",
+        "smart.list-item",
+        "smart.modal",
+        "smart.pagination",
+        "smart.radio",
+        "smart.range-slider",
+        "smart.reference-link",
+        "smart.resizer",
+        "smart.sortable",
+        "smart.spinner",
+        "smart.tabs",
+        "smart.tag"
+      ]
+    },
+    {
+      "id": "smart.data-view-composite",
+      "element": "sf-data-view",
+      "rule_name": "cl-data-view",
+      "folder": "data-view",
+      "requires": [
+        "component.icons",
+        "smart.button",
+        "smart.checkbox",
+        "smart.data-view",
+        "smart.dropdown",
+        "smart.icon-button",
+        "smart.pagination",
+        "smart.toast"
+      ]
+    },
+    {
+      "id": "smart.mail-canvas",
+      "element": "sf-mail-canvas",
+      "rule_name": "cl-mail-canvas",
+      "folder": "mail-canvas",
+      "requires": [
+        "smart.button-group",
+        "smart.composition-overlay"
+      ]
+    },
+    {
+      "id": "smart.mail-inspector",
+      "element": "sf-mail-inspector",
+      "rule_name": "cl-mail-inspector",
+      "folder": "mail-inspector",
+      "requires": [
+        "component.accordion",
+        "smart.breadcrumbs",
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.image-field",
+        "smart.input",
+        "smart.sortable",
+        "smart.switch",
+        "smart.tabs",
+        "smart.textarea"
+      ]
+    },
+    {
+      "id": "smart.mail-letters",
+      "element": "sf-mail-letters",
+      "rule_name": "cl-mail-letters",
+      "folder": "mail-letters",
+      "requires": [
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.icon-button",
+        "smart.input"
+      ]
+    },
+    {
+      "id": "smart.mail-library",
+      "element": "sf-mail-library",
+      "rule_name": "cl-mail-library",
+      "folder": "mail-library",
+      "requires": [
+        "smart.button",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.input",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.mail-structure",
+      "element": "sf-mail-structure",
+      "rule_name": "cl-mail-structure",
+      "folder": "mail-structure",
+      "requires": [
+        "smart.button",
+        "smart.context-menu",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.sortable"
+      ]
+    },
+    {
+      "id": "smart.message-log",
+      "element": "sf-message-log",
+      "rule_name": "cl-message-log",
+      "folder": "message-log",
+      "requires": [
+        "smart.button",
+        "smart.icon-button",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.property-view",
+      "element": "sf-property-view",
+      "rule_name": "cl-property-view",
+      "folder": "property-view",
+      "requires": [
+        "component.accordion",
+        "component.icons",
+        "smart.avatar",
+        "smart.badge",
+        "smart.button",
+        "smart.button-group",
+        "smart.checkbox",
+        "smart.color",
+        "smart.copy-button",
+        "smart.country-code",
+        "smart.data-view",
+        "smart.data-view-composite",
+        "smart.datepicker",
+        "smart.drawer",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.file-preview",
+        "smart.file-upload",
+        "smart.help-mark",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.input",
+        "smart.list-item",
+        "smart.popover",
+        "smart.profile-picker",
+        "smart.progress-bar",
+        "smart.progress-scale",
+        "smart.range-slider",
+        "smart.reference-link",
+        "smart.sortable",
+        "smart.spinner",
+        "smart.switch",
+        "smart.tabs",
+        "smart.tag",
+        "smart.textarea",
+        "smart.tree",
+        "smart.tree-item"
+      ]
+    },
+    {
+      "id": "smart.thread-list",
+      "element": "sf-thread-list",
+      "rule_name": "cl-thread-list",
+      "folder": "thread-list",
+      "requires": [
+        "smart.avatar",
+        "smart.badge",
+        "smart.context-menu",
+        "smart.icon",
+        "utility.sr-only"
+      ]
+    }
+  ]
+}

@@ -60,12 +60,12 @@ the next one.
   them; the sweep that found those found nine more. Collect the keys from the
   sources rather than from a list someone maintains, and record a deliberate
   omission with its reason so it cannot outlive it.
-  The package's `tests/property-view-field-keys.contract.test.mjs` (larena).
+  The package's `tests/property-view-field-keys.contract.test.mjs` (package pro).
 - **An intent declares the event the component announces**, and announces it
   on success as well as on failure. Two intents once named an event that
   existed nowhere, and the first fix announced it only when a write failed,
   which is a declaration a host hears only bad news through.
-  The package's `tests/host-port.contract.test.mjs` (larena).
+  The package's `tests/host-port.contract.test.mjs` (package pro).
 - **A capability names only data the port adds.** Rights that travel inside
   another answer are not a data shape of their own. Same test.
 - **A right that differs per person travels in the answer, not in a
@@ -284,7 +284,7 @@ the next one.
   not reset by `setHostPort`. This is not the routing contract's
   `sf-port-output`: a routing port is a typed value moving between endpoints, a
   host port is the data adapter. Every component that takes a host port today
-  lives in package larena, so the checks live with it:
+  lives in package pro, so the checks live with it:
   `tests/host-port-request.contract.test.mjs`;
   `tests/browser/host-port-request.browser.mjs`. The ports themselves are
   public: `src/core/contracts/ports/<port>/<version>/` (`component-packages.md`).

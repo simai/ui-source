@@ -83,7 +83,7 @@ to 98 KB minified.
 ## The rule for packages
 
 **A package carries no element layer of its own.** A product package
-(ui-pro's larena package, a project's own components) is built over the
+(ui-pro's package pro, a project's own components) is built over the
 ui-source of the SIMAI Framework release it pins and runs on that release's
 runtime. Its bundles ask the page's runtime for the modules above; they never
 bundle a copy. ui-builder guarantees it (the externals), and the package

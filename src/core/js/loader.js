@@ -20,6 +20,7 @@ import {
 } from './preloader';
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
 import {installPendingTags} from './pending-tags.js';
+import {noteDeprecated} from './deprecations.js';
 
 /* global __SF_CACHE_VERSION__, __SF_PLUGIN_LIST_VERSION__ */
 
@@ -91,14 +92,30 @@ function resolveSmartRoot(url, smartUrl) {
 }
 
 // Component packages: bundles of Smart components served from their own base
-// and carrying their own rules (Larena's components are the first; standard
-// simai.component-package). A page declares
+// and carrying their own rules (the SIMAI Framework Pro components, package
+// pro, are the first; standard simai.component-package). A page declares
 // them in `SF_BOOT_CONFIG.packages`; docs/developer/component-packages.md has
 // the contract. The name is also the prefix of the package's entries in the
 // missing-file cache, so it is kept to characters that cannot collide with a
 // rule name's own.
 const PACKAGE_NAME = /^[a-z][a-z0-9-]*$/;
 const PACKAGE_MISS_SEPARATOR = '::';
+
+// A package's former names, each kept as a dated alias of its current one
+// (contracts/changes/journal.json). The Pro components were published as the
+// package `larena` from 2026-10-11 to 2026-11-02 (owner decision q-4ac7d07595:
+// one package name, `pro`, Larena one consumer among others). A page that
+// declares packages.larena, or a package built under the old name that calls
+// registerPackage('larena'), is one package with packages.pro: the same base,
+// the same rules. Each use is noted in SF.deprecations.
+const PACKAGE_ALIASES = Object.freeze({
+  larena: Object.freeze({
+    to: 'pro',
+    since: '2026-11-02',
+    remove_after: '2027-01-01',
+    record: 'option-package-larena-to-pro',
+  }),
+});
 
 function normalisePackageUrl(value) {
   if (typeof value !== 'string') return '';
@@ -339,8 +356,44 @@ SFLoaderPlugin.prototype.warnPackage = function (key, message) {
   console.warn(`SFLoader: ${message}`);
 };
 
+// The current name of a package named `name`, noting a former one. `via` says
+// where the old name was met: the page's declaration or a package's own
+// registerPackage call, which are two lines to change and two notes.
+SFLoaderPlugin.prototype.packageNameOf = function (name, via = 'declaration') {
+  const alias = Object.prototype.hasOwnProperty.call(PACKAGE_ALIASES, name)
+    ? PACKAGE_ALIASES[name]
+    : null;
+  if (!alias) return name;
+  const expired = Date.now() > Date.parse(`${alias.remove_after}T23:59:59.999Z`);
+  noteDeprecated({
+    component: 'loader',
+    kind: 'option',
+    from: via === 'registration'
+      ? `SF.RuleLoader.registerPackage('${name}')`
+      : `SF_BOOT_CONFIG.packages.${name}`,
+    to: via === 'registration'
+      ? `SF.RuleLoader.registerPackage('${alias.to}')`
+      : `SF_BOOT_CONFIG.packages.${alias.to}`,
+    since: alias.since,
+    remove_after: alias.remove_after,
+    ...(expired ? {expired: true} : {}),
+  });
+  return alias.to;
+};
+
 SFLoaderPlugin.prototype.declarePackages = function (declared) {
-  Object.entries(declared || {}).forEach(([name, config]) => {
+  Object.entries(declared || {}).forEach(([declaredName, config]) => {
+    const name = PACKAGE_NAME.test(declaredName)
+      ? this.packageNameOf(declaredName)
+      : declaredName;
+    // Both names declared: the current one is the page's word, the former
+    // one is said aloud and not used.
+    if (name !== declaredName && Object.prototype.hasOwnProperty.call(declared, name)) {
+      this.warnPackage(`alias:${declaredName}`,
+          `SF_BOOT_CONFIG.packages declares both "${name}" and its former `
+          + `name "${declaredName}"; "${declaredName}" is ignored`);
+      return;
+    }
     if (!PACKAGE_NAME.test(name)) {
       this.warnPackage(`name:${name}`,
           `"${name}" in SF_BOOT_CONFIG.packages is not a package name `
@@ -394,7 +447,12 @@ SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
 // declared the package chose the package's bytes. A rule that has already
 // been loaded is not replaced -- a custom element cannot be defined twice.
 SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
-  const packageName = String(name ?? '').trim();
+  const givenName = String(name ?? '').trim();
+  // A package built under a former name registers under the current one, so
+  // its rules land where the page's declaration (either name) put the base.
+  const packageName = PACKAGE_NAME.test(givenName)
+    ? this.packageNameOf(givenName, 'registration')
+    : givenName;
   if (!PACKAGE_NAME.test(packageName)) {
     this.warnPackage(`name:${packageName}`,
         `"${packageName}" is not a package name (lower-case letters, digits `

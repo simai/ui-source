@@ -57,8 +57,8 @@ never duplicates subscriptions; a table whose query was left unanswered asks
 again once after remount.
 
 The routing contract and the `sf-table` port declaration are public and stay
-here. The `sf-table` element that answers it lives with Larena (package
-`larena`, the component folder of `simai/larena-ui`), so a page that routes to
+here. The `sf-table` element that answers it lives in the SIMAI Framework Pro
+package (package `pro`, the component folder of `simai/ui-pro`), so a page that routes to
 it declares that package (`component-packages.md`). The browser acceptance with
 real tables (`tests/browser/composition-routing.browser.mjs` and its lab) moved
 with it and runs in the package's own tests.
