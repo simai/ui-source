@@ -2,7 +2,7 @@
   "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.context-menu",
   "tag": "sf-context-menu",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -734,7 +734,8 @@
     "version 1.5.0 settings-fold: sf-settings-menu 1.0.0 is removed and its work is this component's (owner decision, 2026-10-30: \"Fold into sf-context-menu\"). Everything it drew is a recipe of entries here -- boolean is the switch row, choice the choice row, range the range row, action a command row, section a heading, divider a separator, tile: true a group with view: \"tiles\", its drill template submenu=\"drill\", its rows template the value rows, resettable the reset action with the reset event, values the entries themselves and set-all. Its change/changed pair is kept as it was -- change is the cancelable request, sent before the value is written, changed the fact after it -- and the menu's own select comes first, so a command row still raises select alone.",
     "version 1.5.0 values: a setting's declared value is the value its entry carried when the host set the entries; reset puts those back. The snapshot is taken once, when the entries arrive, and never again from a value the person changed -- a declared value re-read after a change is not a declared value. A change is written by the row's own path, which also fixes a choice row inside a submenu or a group: the old write looked the row up by identity in the top-level list and found nothing there.",
     "version 1.5.0 choice-drill: a choice of more or longer options than fit at a row's end is view: \"drill\" -- the chosen option under the label, a chevron, and the options as a level of the panel with a check mark on the chosen one; choosing one goes back to the rows, where the row now reads the new value. It is the same entry, the same id and the same change/changed pair as the quiet row, so a panel may move a row between the two looks without touching its host. The level holds no entries of its own, so nothing opens below it, and a flyout menu, which has no level to open, draws the quiet row.",
-    "version 1.5.0 panel-width: a drilling panel's width is fixed and public -- --sf-context-menu-inline-size, 280px by default (the ladder's f7 + a8), the width the owner reviewed in the prototype. A fixed width is the point of drilling: the panel neither grows with a level's longest word nor with a value, so a long label wraps and a long value is cut with the whole of it in title. openFor(anchor, {width}) still overrides it, as it does for a panel with tabs."
+    "version 1.5.0 panel-width: a drilling panel's width is fixed and public -- --sf-context-menu-inline-size, 280px by default (the ladder's f7 + a8), the width the owner reviewed in the prototype. A fixed width is the point of drilling: the panel neither grows with a level's longest word nor with a value, so a long label wraps and a long value is cut with the whole of it in title. openFor(anchor, {width}) still overrides it, as it does for a panel with tabs.",
+    "version 1.5.4: a header's initials without a picture are sf-avatar's rule (helpers/text.js getInitials, smart helpers 1.0.4; reuse audit 2026-11-02, finding 10): a preposition after the first word is skipped, a hyphenated single name reads as its parts and a letter outside the basic plane is whole. The row and header avatar markup is unchanged."
   ],
   "x-registry": {
     "item_contract": {

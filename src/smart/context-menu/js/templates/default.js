@@ -1,4 +1,5 @@
 import {html, nothing} from "lit";
+import {getInitials} from "../../../helpers/text";
 
 function joinClasses(...tokens) {
     return tokens.flat().filter(Boolean).join(" ");
@@ -45,12 +46,6 @@ function icon(name, className) {
     return html`<i class="sf-icon ${className}" aria-hidden="true">${name}</i>`;
 }
 
-// Initials for a person without a picture: the first letter of the first two
-// words, the way an avatar draws them.
-function initials(name = "") {
-    return String(name).trim().split(/\s+/u).slice(0, 2).map((word) => word[0] ?? "").join("").toUpperCase();
-}
-
 // What leads a row: an icon, or a picture of the thing itself -- a site's logo,
 // a person -- with its initials when there is no picture.
 function renderLead(entry) {
@@ -67,10 +62,13 @@ function renderLeadPlace(entry, lead) {
 
 // Who the menu is about -- the signed-in person at the top of a profile menu.
 // Text, not an item: it is read, not chosen.
+// Its initials, without a picture, are sf-avatar's rule (helpers/text.js
+// getInitials; reuse audit 2026-11-02, finding 10): the copy here took
+// word[0], half a letter outside the basic plane, and kept «по» as a word.
 function renderHeader(entry) {
     const picture = entry.avatar
         ? html`<img class="sf-context-menu-header-avatar" src=${entry.avatar} alt="">`
-        : html`<span class="sf-context-menu-header-avatar" aria-hidden="true">${entry.initials ?? initials(entry.text)}</span>`;
+        : html`<span class="sf-context-menu-header-avatar" aria-hidden="true">${entry.initials ?? getInitials(entry.text ?? "")}</span>`;
     const lines = Array.isArray(entry.caption) ? entry.caption : [entry.caption].filter(Boolean);
     return html`<div class="sf-context-menu-header" role="presentation">
         ${picture}
