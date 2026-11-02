@@ -6,8 +6,8 @@
 // router. Nothing leaves the browser: every other address answers 404 and is
 // recorded, so a probe can prove a foreign address was never asked for.
 import {createHash} from 'node:crypto';
-import {existsSync, readFileSync} from 'node:fs';
-import {dirname, join, resolve, sep} from 'node:path';
+import {existsSync, readFileSync, statSync} from 'node:fs';
+import {dirname, extname, join, resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const fixtures = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -101,9 +101,17 @@ export function buildCatalogue() {
 // for a foreign effect's host. Answers the page, the list of every address
 // asked for, and `routed`: the addresses that reached the router (a request
 // the browser blocked, by a content security policy say, is asked for but
-// never routed).
-export async function openPage(browser, out, {body = '', theme = 'theme-light', head = '', reducedMotion = 'no-preference', listen = null, effects = {}, serve = new Map()} = {}) {
+// never routed). With `distr` the rest of the built Framework is served
+// beside the core -- /distr/<part>/ from <out>/<part>/<part> (rule from
+// core/rule) -- so the Loader can fetch a Smart component the page asks for.
+export async function openPage(browser, out, {body = '', theme = 'theme-light', head = '', reducedMotion = 'no-preference', listen = null, effects = {}, serve = new Map(), distr = false} = {}) {
   const coreRoot = join(resolve(out), 'core', 'core');
+  const parts = distr ? {
+    rule: join(resolve(out), 'core', 'rule'),
+    component: join(resolve(out), 'component', 'component'),
+    smart: join(resolve(out), 'smart', 'smart'),
+    utility: join(resolve(out), 'utility', 'utility'),
+  } : {};
   const catalogue = buildCatalogue();
   const context = await browser.newContext({reducedMotion});
   const page = await context.newPage();
@@ -114,7 +122,7 @@ export async function openPage(browser, out, {body = '', theme = 'theme-light', 
   page.on('pageerror', (error) => errors.push(error.message));
   listen?.(page);
   const html = `<!doctype html><html lang="en" class="${theme}"><head><meta charset="utf-8"><title>effects probe</title>
-<script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'effects', pluginListVersion: 'effects', preloader: {enabled: false}, icons: {enabled: false}, theme: false, effects: ${JSON.stringify({catalogue: BASE, ...effects})}};
+<script>window.sfPath = '/distr/';${distr ? " window.sfSmartPath = '/distr/';" : ''} window.SF_BOOT_CONFIG = {cacheVersion: 'effects', pluginListVersion: 'effects', preloader: {enabled: false}, icons: {enabled: false}, theme: false, effects: ${JSON.stringify({catalogue: BASE, ...effects})}};
 window.__loadAt = null; window.addEventListener('load', () => { window.__loadAt = performance.now(); });
 window.__refused = []; document.addEventListener('sf-effect-refused', (event) => window.__refused.push({target: event.target.id, ...event.detail}));</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">${head}
@@ -135,6 +143,16 @@ window.__refused = []; document.addEventListener('sf-effect-refused', (event) =>
       if (file.startsWith(coreRoot + sep) && existsSync(file)) {
         const type = file.endsWith('.css') ? 'text/css' : 'text/javascript';
         return route.fulfill({status: 200, contentType: `${type}; charset=utf-8`, body: readFileSync(file)});
+      }
+    }
+    const part = /^\/distr\/([^/]+)\/(.+)$/u.exec(url.pathname);
+    if (part && parts[part[1]]) {
+      const root = parts[part[1]];
+      const file = resolve(root, part[2]);
+      if (file.startsWith(root + sep) && existsSync(file) && !statSync(file).isDirectory()) {
+        const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
+        const type = types[extname(file)] ?? 'application/octet-stream';
+        return route.fulfill({status: 200, contentType: type.startsWith('font/') || type.endsWith('octet-stream') ? type : `${type}; charset=utf-8`, headers: {'access-control-allow-origin': '*'}, body: readFileSync(file)});
       }
     }
     return route.fulfill({status: 404, body: ''});

@@ -15,6 +15,8 @@
 // cards. loadEffect and placeEffect take an effect from the pinned catalogue
 // (simai/ui-effects), every file checked against the index's SHA-256, and
 // data-sf-effect / data-sf-effect-windows place one from markup.
+// Since 1.4 a placement answers a right-click on the effect's background with
+// a small menu that says what it is (the about menu).
 //
 // What lives here is the part every product would otherwise write again:
 // checking a manifest, turning stored values into checked settings with the
@@ -29,6 +31,7 @@
 
 import {isSchema, schemaFields} from './composition/schema-name.mjs';
 import {noteDeprecated} from './deprecations.js';
+import {pageText} from './page-language.js';
 
 // The fields a writer of an effect.json emits: the format named without a
 // version, with schema_version beside it (format-names-without-version). A
@@ -48,15 +51,29 @@ const COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/iu;
 const SCHEMES = ['dark', 'light'];
 const CAPABILITIES = new Set(['windows']);
 const PAIR_URL = /^https:\/\/[^\s?#]+\/effect\.json$/u;
+const HOMEPAGE = /^https?:\/\/[^\s]+$/u;
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isText = (value) => isObject(value) && Object.keys(value).length > 0
   && Object.entries(value).every(([lang, text]) => /^[a-z]{2}(-[A-Z]{2})?$/u.test(lang) && typeof text === 'string' && text.length > 0);
+
+// An http(s) address as the URL parser reads it; null for anything else --
+// javascript:, data:, a relative path, credentials in the address.
+function webAddress(value) {
+  if (typeof value !== 'string' || value.length > 2048 || !HOMEPAGE.test(value)) return null;
+  try {
+    const url = new URL(value);
+    if ((url.protocol !== 'https:' && url.protocol !== 'http:') || url.username || url.password) return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
 
 // The problems of a manifest, empty when it holds.
 export function checkEffectManifest(manifest) {
   if (!isObject(manifest)) return ['manifest: not an object'];
   const problems = [];
-  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'schemes', 'pair', 'capabilities', 'settings', 'needs'];
+  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'schemes', 'pair', 'capabilities', 'settings', 'needs', 'homepage'];
   for (const key of Object.keys(manifest)) if (!allowed.includes(key)) problems.push(`${key}: undeclared`);
   if (!isSchema(manifest, 'simai.effect', 1)) problems.push('schema: not simai.effect, schema_version 1');
   if (typeof manifest.id !== 'string' || !ID.test(manifest.id)) problems.push('id');
@@ -75,6 +92,8 @@ export function checkEffectManifest(manifest) {
   }
   if (manifest.capabilities !== undefined && (!Array.isArray(manifest.capabilities)
     || !manifest.capabilities.every((name) => CAPABILITIES.has(name)) || new Set(manifest.capabilities).size !== manifest.capabilities.length)) problems.push('capabilities: known names, each once');
+  // simai.effect 1.4: where the effect's author shows it, named in the about menu.
+  if (manifest.homepage !== undefined && webAddress(manifest.homepage) === null) problems.push('homepage: an http or https address');
   if (!isObject(manifest.needs) || manifest.needs.network !== false || Object.keys(manifest.needs).length !== 1) problems.push('needs: {network: false}');
   if (!Array.isArray(manifest.settings)) {
     problems.push('settings');
@@ -721,6 +740,238 @@ function report(element, effect, reason, detail = {}) {
   element.dispatchEvent(new globalThis.CustomEvent('sf-effect-refused', {bubbles: true, detail: {effect, reason, ...detail}}));
 }
 
+// The about menu (simai.effect 1.4, not-in-the-way) -------------------------
+//
+// A right-click on the effect's own background -- the part of an area where
+// nothing but the effect is under the pointer -- opens a small menu that says
+// what the background is: the effect's name and version, its author, a link
+// to its page in SIMAI Effects (or to the homepage a foreign effect's
+// manifest names), and a switch for its motion that pauses the placement as
+// handle.pause() does. A right-click on content over the effect -- text, a
+// link, a control, a field, anything editable, an image, a panel with its own
+// background, a selection -- keeps the browser's menu, and so does
+// Shift+right-click. SF_BOOT_CONFIG.effects.about = false turns it off for the
+// page; data-sf-effect-about="false" on an area, or on anything around or
+// inside it, turns it off there (the nearest attribute wins). The menu is an
+// extra: the areas, their tab order and what a screen reader reads do not
+// change, and sf-context-menu is loaded on the first right-click that opens
+// it, never before.
+//
+// The effect's host and a foreign effect's sandbox frame take no pointer
+// events, so a right-click over either lands on the area in the page: the
+// test runs here for both, and the frame is told nothing it was not told
+// before.
+
+const LISTED_REPOSITORY = 'simai/ui-effects';
+const LISTED_PAGE = 'https://effects.simai.io/effect/';
+// The manifests loaded from SIMAI's own catalogue (simai/ui-effects).
+const LISTED = new WeakSet();
+
+// The words of the menu, English as shipped; a product may register others
+// for 'sf-effect-about' through SF.language.
+const ABOUT_WORDS = Object.freeze({
+  en: Object.freeze({
+    menu: 'About this background',
+    by: 'By {author}',
+    open: 'Open in SIMAI Effects',
+    homepage: 'Open homepage',
+    pause: 'Pause motion',
+    resume: 'Resume motion',
+  }),
+});
+const aboutWord = (key, node, vars = {}) => pageText(ABOUT_WORDS, key, node, 'sf-effect-about')
+  .replace(/\{(\w+)\}/gu, (whole, name) => (Object.hasOwn(vars, name) ? String(vars[name]) : whole));
+
+// SF_BOOT_CONFIG.effects.about: on unless it is false.
+export function aboutEnabled(value = effectsConfig().about) {
+  return value !== false && value !== 'false';
+}
+
+// The address the menu links to: the effect's page in SIMAI Effects for an
+// effect of that catalogue, else the homepage its manifest names; null when
+// there is neither.
+export function aboutLink(manifest, {listed = LISTED.has(manifest)} = {}) {
+  if (listed && typeof manifest?.id === 'string' && ID.test(manifest.id)) return {kind: 'open', href: `${LISTED_PAGE}${manifest.id}/`};
+  const homepage = webAddress(manifest?.homepage);
+  return homepage ? {kind: 'homepage', href: homepage} : null;
+}
+
+// The menu's entries for an effect: name and version, author, link, motion.
+export function aboutEntries(manifest, {paused = false, listed, node} = {}) {
+  const label = manifest?.label ?? {};
+  const name = label.en ?? Object.values(label)[0] ?? manifest?.id ?? '';
+  const entries = [{type: 'heading', text: `${name} ${manifest?.version ?? ''}`.trim()}];
+  const author = typeof manifest?.author === 'string' ? manifest.author.trim().slice(0, 200) : '';
+  if (author) entries.push({type: 'note', text: aboutWord('by', node, {author})});
+  entries.push({type: 'separator'});
+  const link = aboutLink(manifest, listed === undefined ? {} : {listed});
+  if (link) entries.push({id: 'sf-effect-link', text: aboutWord(link.kind, node), icon: 'open_in_new', href: link.href});
+  entries.push(paused
+    ? {id: 'sf-effect-motion', text: aboutWord('resume', node), icon: 'play_arrow'}
+    : {id: 'sf-effect-motion', text: aboutWord('pause', node), icon: 'pause'});
+  return entries;
+}
+
+// What over the effect is content, never its background.
+const CONTENT = [
+  'a[href]', 'area[href]', 'button', 'input', 'select', 'textarea', 'label', 'summary', 'option', 'output',
+  '[contenteditable]:not([contenteditable="false"])', '[tabindex]', '[draggable="true"]',
+  'img', 'picture', 'video', 'audio', 'canvas', 'svg', 'iframe', 'object', 'embed',
+  '[role="button"]', '[role="link"]', '[role="textbox"]', '[role="checkbox"]', '[role="radio"]', '[role="switch"]',
+  '[role="tab"]', '[role="slider"]', '[role="combobox"]', '[role="menuitem"]', '[role="option"]', '[role="img"]',
+].join(', ');
+
+const inside = (rect, x, y) => x >= rect.left - 1 && x <= rect.right + 1 && y >= rect.top - 1 && y <= rect.bottom + 1;
+
+// Whether the point is over a line of text (or a selection) in the document.
+function overText(document, x, y) {
+  const selection = document.getSelection?.();
+  for (let index = 0; selection && !selection.isCollapsed && index < selection.rangeCount; index += 1) {
+    for (const rect of selection.getRangeAt(index).getClientRects()) if (inside(rect, x, y)) return true;
+  }
+  let node = null;
+  if (typeof document.caretPositionFromPoint === 'function') node = document.caretPositionFromPoint(x, y)?.offsetNode ?? null;
+  else if (typeof document.caretRangeFromPoint === 'function') node = document.caretRangeFromPoint(x, y)?.startContainer ?? null;
+  if (!node || node.nodeType !== 3 || !node.data.trim()) return false;
+  const range = document.createRange();
+  range.selectNodeContents(node);
+  for (const rect of range.getClientRects()) if (inside(rect, x, y)) return true;
+  return false;
+}
+
+// A box that paints over the effect: a background colour or image of its own.
+function paints(element) {
+  const style = globalThis.getComputedStyle(element);
+  if (style.backgroundImage && style.backgroundImage !== 'none') return true;
+  const colour = style.backgroundColor;
+  if (!colour || colour === 'transparent') return false;
+  const alpha = /rgba?\([^)]*[,/]\s*([0-9.]+%?)\s*\)/u.exec(colour)?.[1];
+  if (alpha === undefined) return true;
+  return Number.parseFloat(alpha) > 0;
+}
+
+// Whether a right-click at the event's point is over the effect's own
+// background in `area`: not on content, not over text.
+function overBackground(event, area) {
+  const target = event.target instanceof globalThis.Element ? event.target : event.target?.parentElement;
+  if (!target || !area.contains(target)) return false;
+  // The effect's own layer (it takes no pointer events, but an effect may
+  // hand them back to its nodes) is the background.
+  if (!target.closest('[data-sf-effect-layer]')) {
+    for (let node = target; node && node !== area; node = node.parentElement) {
+      if (node.matches(CONTENT) || node.isContentEditable || paints(node)) return false;
+    }
+    if (target === area && area.isContentEditable) return false;
+  }
+  return !overText(area.ownerDocument, event.clientX, event.clientY);
+}
+
+// One menu for the page, made on the first right-click that opens it.
+let aboutMenu = null;
+let aboutAnchor = null;
+let aboutChoice = null;
+
+const MENU_TAG = 'sf-context-menu';
+
+// Whether sf-context-menu is defined or can be loaded: when it can be
+// neither, the browser keeps its own menu.
+function menuAvailable() {
+  if (globalThis.customElements?.get(MENU_TAG)) return true;
+  const loader = globalThis.SF?.Loader;
+  return Boolean(loader?.getCustomElementRules?.()?.[MENU_TAG] || loader?.findPlugins?.['cl-context-menu']);
+}
+
+async function menuElement(document) {
+  if (aboutMenu?.isConnected) return aboutMenu;
+  const registry = globalThis.customElements;
+  if (!registry.get(MENU_TAG)) {
+    const loader = globalThis.SF?.Loader;
+    if (!loader?.ensureSmartElementLoaded?.(MENU_TAG)) loader?.ensurePlugin?.('cl-context-menu');
+    await Promise.race([registry.whenDefined(MENU_TAG), new Promise((done) => { globalThis.setTimeout(done, 5000); })]);
+  }
+  if (!registry.get(MENU_TAG)) return null;
+  const menu = document.createElement(MENU_TAG);
+  menu.setAttribute('popup', '');
+  menu.setAttribute('data-sf-effect-about', '');
+  menu.addEventListener('sf-context-menu-select', (event) => {
+    const id = event.detail?.id;
+    const choice = aboutChoice;
+    if (id === 'sf-effect-motion') choice?.motion();
+    else if (id === 'sf-effect-link') {
+      // The link opens in a new tab with no opener and no referrer; the row's
+      // own navigation is kept from replacing the page.
+      const href = webAddress(event.detail?.entry?.href);
+      if (href) globalThis.open?.(href, '_blank', 'noopener,noreferrer');
+    }
+  });
+  menu.addEventListener('click', (event) => {
+    if (event.target?.closest?.('a[data-sf-entry]')) event.preventDefault();
+  });
+  menu.addEventListener('sf-context-menu-closed', () => {
+    aboutAnchor?.remove();
+    aboutAnchor = null;
+    aboutChoice = null;
+  });
+  document.body.append(menu);
+  aboutMenu = menu;
+  return menu;
+}
+
+async function openAbout(document, x, y, choice) {
+  const menu = await menuElement(document);
+  if (!menu) return false;
+  if (menu.isOpen) menu.close({restoreFocus: false, reason: 'api'});
+  aboutChoice = choice;
+  const node = choice.node;
+  menu.setAttribute('aria-label', aboutWord('menu', node));
+  // English as shipped; a page that registered its own words speaks its language.
+  const english = Object.entries(ABOUT_WORDS.en).every(([key, word]) => key === 'by' || aboutWord(key, node) === word);
+  if (english) menu.setAttribute('lang', 'en');
+  else menu.removeAttribute('lang');
+  menu.entries = aboutEntries(choice.manifest, {paused: choice.paused(), node});
+  // The menu opens at the pointer: a point the size of nothing, fixed where
+  // the right-click was, out of the accessibility tree.
+  const anchor = document.createElement('span');
+  anchor.setAttribute('aria-hidden', 'true');
+  anchor.setAttribute('data-sf-effect-about-point', '');
+  anchor.style.cssText = `position:fixed;left:${x}px;top:${y}px;inline-size:0;block-size:0;pointer-events:none;overflow:hidden`;
+  document.body.append(anchor);
+  aboutAnchor?.remove();
+  aboutAnchor = anchor;
+  const opened = await menu.openFor(anchor, {side: 'block-end', align: 'start', focus: 'first'});
+  if (!opened && aboutAnchor === anchor) {
+    anchor.remove();
+    aboutAnchor = null;
+    aboutChoice = null;
+  }
+  return opened;
+}
+
+// Listens on a placement's element for a right-click over the effect's
+// background in one of its areas. `describe()` answers the manifest of the
+// effect drawn now (null while nothing is drawn); `paused()` and `motion()`
+// read and switch the placement's own pause. Answers the way to stop.
+function aboutListener(element, {areas, describe, paused, motion}) {
+  const onMenu = (event) => {
+    if (event.defaultPrevented || event.shiftKey || !aboutEnabled()) return;
+    const target = event.target instanceof globalThis.Element ? event.target : event.target?.parentElement;
+    if (!target) return;
+    if (target.closest('[data-sf-effect-about]')?.getAttribute('data-sf-effect-about') === 'false') return;
+    const area = areas().find((candidate) => candidate.contains(target));
+    if (!area) return;
+    const manifest = describe();
+    if (!manifest || !overBackground(event, area) || !menuAvailable()) return;
+    event.preventDefault();
+    openAbout(element.ownerDocument, event.clientX, event.clientY, {element, manifest, paused, motion, node: area})
+      .catch((error) => globalThis.console?.warn?.('SF.Effects: the about menu did not open', error));
+  };
+  element.addEventListener('contextmenu', onMenu);
+  return () => {
+    element.removeEventListener('contextmenu', onMenu);
+    if (aboutChoice?.element === element) aboutMenu?.close({restoreFocus: false});
+  };
+}
+
 // A placement: the effect or its pair drawn into `host` as the theme policy
 // says, the `areas` in the drawn theme, the state on `element`; followed
 // through page theme changes while its mode is auto.
@@ -737,6 +988,7 @@ function place({element, host, areas, manifest, module, pair, pairRefused, store
   let mode = themeMode;
   let values = stored;
   let current = null;
+  let shown = null;
   let resolution = null;
   let held = false;
   let destroyed = false;
@@ -769,9 +1021,11 @@ function place({element, host, areas, manifest, module, pair, pairRefused, store
     } else if (was !== which) {
       current?.destroy();
       current = null;
+      shown = null;
       if (which) {
         const chosen = which === 'self' ? {manifest, module} : usable;
         current = mountModule(host, {manifest: chosen.manifest, module: chosen.module, stored: values, locale, scheme: drawn});
+        shown = chosen.manifest;
         if (held) current.pause();
         updated = true;
       }
@@ -787,9 +1041,17 @@ function place({element, host, areas, manifest, module, pair, pairRefused, store
   const unfollow = followPage(() => {
     if (mode === 'auto') apply();
   });
+  // A right-click on the background says what it is (simai.effect 1.4).
+  const unlisten = aboutListener(element, {
+    areas,
+    describe: () => (current ? shown : null),
+    paused: () => held,
+    motion: () => (held ? handle.resume() : handle.pause()),
+  });
   try {
     apply();
   } catch (error) {
+    unlisten();
     unfollow();
     theme.restore();
     element.removeAttribute(STATE);
@@ -817,8 +1079,10 @@ function place({element, host, areas, manifest, module, pair, pairRefused, store
       if (destroyed) return;
       destroyed = true;
       unfollow();
+      unlisten();
       current?.destroy();
       current = null;
+      shown = null;
       theme.restore();
       element.removeAttribute(STATE);
       element.removeAttribute(REASON);
@@ -1110,6 +1374,8 @@ async function loadVerified(base, id) {
   for (const name of manifest.styles ?? []) styles.push(decode(await verified(name)));
   const module = await importVerified(entryBytes);
   if (typeof module?.mount !== 'function') throw new EffectRefused('module-failed', {id, message: 'no mount export'});
+  // An effect of SIMAI's own catalogue has a page on its site: the about menu links to it.
+  if (index.repository === LISTED_REPOSITORY) LISTED.add(manifest);
   return Object.freeze({id, url: `${folder}effect.json`, manifest, module, styles: Object.freeze(styles), sandboxed: false});
 }
 

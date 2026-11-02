@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import {createHash} from 'node:crypto';
-import {FRAME_RUNNER, FRAME_RUNNER_SHA256, allowedModes, checkEffectManifest, effectSchemes, effectSettings, foreignMode, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
+import {FRAME_RUNNER, FRAME_RUNNER_SHA256, aboutEnabled, aboutEntries, aboutLink, allowedModes, checkEffectManifest, effectSchemes, effectSettings, foreignMode, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
 
 // simai.effect 1.1 (2026-10-19): the manifest gains schemes, pair and
 // capabilities, each optional, so every 1.0 manifest stays valid. The live
@@ -63,7 +63,7 @@ test('invalid schemes, pairs and capabilities are refused', () => {
 });
 
 test('the live schema states the same fields as the reader', () => {
-  assert.equal(schema['x-simai-version'], '1.3.0');
+  assert.equal(schema['x-simai-version'], '1.4.0');
   assert.deepEqual(schema.properties.schemes.items.enum, ['dark', 'light']);
   assert.equal(schema.properties.schemes.minItems, 1);
   assert.equal(schema.properties.schemes.maxItems, 2);
@@ -185,4 +185,47 @@ test('the sandbox switch and the runner the frame policy admits', () => {
   for (const value of ['inline', 'Sandbox', true, 1, null]) assert.equal(foreignMode(value), 'refuse', String(value));
   assert.equal(createHash('sha256').update(FRAME_RUNNER, 'utf8').digest('base64'), FRAME_RUNNER_SHA256);
   assert.doesNotMatch(FRAME_RUNNER, /<\/script/iu);
+});
+
+// simai.effect 1.4 (2026-11-02): the optional homepage, and the about menu a
+// placement opens on a right-click over the effect's background.
+test('homepage is an optional http or https address', () => {
+  assert.ok(!schema.required.includes('homepage'));
+  const pattern = new RegExp(schema.properties.homepage.pattern, 'u');
+  for (const value of ['https://example.com/effects/bands/', 'http://example.com']) {
+    assert.deepEqual(checkEffectManifest(with_({homepage: value})), [], value);
+    assert.ok(pattern.test(value), value);
+  }
+  for (const value of ['javascript:alert(1)', 'data:text/html,x', '/effects/bands/', 'ftp://example.com/', 'https://user:pass@example.com/', 'https://exa mple.com/', 42, '']) {
+    assert.match(checkEffectManifest(with_({homepage: value})).join(), /homepage/u, String(value));
+  }
+});
+
+test('the about menu names the effect, its author, its page and its motion', () => {
+  const manifest = with_({id: 'star-flight', version: '1.1.0', label: {ru: 'Звёздный полёт', en: 'Star flight'}, author: 'SIMAI'});
+  assert.deepEqual(aboutEntries(manifest, {listed: true}), [
+    {type: 'heading', text: 'Star flight 1.1.0'},
+    {type: 'note', text: 'By SIMAI'},
+    {type: 'separator'},
+    {id: 'sf-effect-link', text: 'Open in SIMAI Effects', icon: 'open_in_new', href: 'https://effects.simai.io/effect/star-flight/'},
+    {id: 'sf-effect-motion', text: 'Pause motion', icon: 'pause'},
+  ]);
+  assert.deepEqual(aboutEntries(manifest, {listed: true, paused: true}).at(-1), {id: 'sf-effect-motion', text: 'Resume motion', icon: 'play_arrow'});
+  // Not in SIMAI's catalogue: no link, unless the manifest names a homepage.
+  assert.equal(aboutLink(manifest), null);
+  assert.equal(aboutEntries(manifest).some((entry) => entry.id === 'sf-effect-link'), false);
+  assert.deepEqual(aboutLink({...manifest, homepage: 'https://example.com/fx'}), {kind: 'homepage', href: 'https://example.com/fx'});
+  assert.equal(aboutEntries({...manifest, homepage: 'https://example.com/fx'}).find((entry) => entry.id === 'sf-effect-link').text, 'Open homepage');
+  assert.equal(aboutLink({...manifest, homepage: 'javascript:alert(1)'}), null);
+  // No English label: the first one; no author: no line for it.
+  const bare = aboutEntries({...manifest, label: {ru: 'Полёт'}, author: undefined});
+  assert.equal(bare[0].text, 'Полёт 1.1.0');
+  assert.equal(bare.some((entry) => entry.type === 'note'), false);
+});
+
+test('the about menu is on unless the page turns it off', () => {
+  assert.equal(aboutEnabled(undefined), true);
+  assert.equal(aboutEnabled(true), true);
+  assert.equal(aboutEnabled(false), false);
+  assert.equal(aboutEnabled('false'), false);
 });

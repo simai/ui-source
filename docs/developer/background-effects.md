@@ -1,7 +1,7 @@
 # Background effects: SF.Effects
 
 `SF.Effects` (core, `src/core/js/effects.js`) runs background effects under
-the standard `simai.effect` 1.1.0 (`contracts/standards/simai.effect/1.1.0`).
+the standard `simai.effect` 1.4.0 (`contracts/standards/simai.effect/1.4.0`).
 An effect is an `effect.json` manifest and one module exporting
 `mount(host, settings, context)`. The effects themselves live in the
 catalogue `simai/ui-effects`; the Framework holds the runtime, the standard
@@ -308,6 +308,54 @@ The element carries `data-sf-effect-state` (`loading`, `running`, `hidden`,
 The effect draws in a layer (`[data-sf-effect-layer]`) prepended to the
 element; the element becomes `position: relative` (when static) and
 `isolation: isolate` so the layer stays under its content.
+
+## About menu
+
+Since simai.effect 1.4 every placement -- `placeEffect`, `data-sf-effect`,
+`data-sf-effect-windows`, `mountEffect` with a theme mode, `mountWindows` --
+answers a right-click on the effect's own background with a small English
+menu (`sf-context-menu`):
+
+- the effect's name (`label.en`, else its first label) and `version`, for
+  example "Star flight 1.1.0";
+- "By <author>" when the manifest names an `author`;
+- "Open in SIMAI Effects" (`https://effects.simai.io/effect/<id>/`) for an
+  effect loaded from a catalogue whose index names `repository:
+  "simai/ui-effects"`; otherwise "Open homepage" when the manifest names a
+  `homepage` (simai.effect 1.4, an `http`/`https` address), otherwise no
+  link. The link opens in a new tab without opener or referrer;
+- "Pause motion" / "Resume motion": the placement's own `pause()` and
+  `resume()`, the same switch a site's pause button calls. The row shows the
+  placement's state when the menu opens.
+
+The menu describes what is drawn now: the pair when the pair is shown, and
+nothing (the browser's menu) while the placement is hidden.
+
+Background means nothing but the effect is under the pointer. The browser's
+own menu stays for a right-click on text (a line of text or a selection under
+the pointer), on a link, button, form field, label, `[tabindex]`, an editable
+element, an image, video, canvas or SVG, on an element with an interactive
+role, and on any element between the target and the area that paints its own
+background (a panel over the effect). In windows mode only the window cards
+are areas: the gaps and the other cards keep the browser's menu.
+
+- Shift + right-click always gives the browser's menu.
+- `SF_BOOT_CONFIG.effects.about = false` turns the menu off for the page.
+- `data-sf-effect-about="false"` turns it off for an area or a part of one;
+  the nearest `data-sf-effect-about` above the target decides, so
+  `data-sf-effect-about="true"` inside switches it back on.
+- `sf-context-menu` is loaded on the first right-click that opens the menu,
+  never before; without it (and without a Loader that can load it) the
+  browser's menu stays.
+- Nothing else changes: the areas gain no role, no tab stop and nothing a
+  screen reader reads. The menu closes on Escape, Tab and a press outside it,
+  as any `sf-context-menu` does.
+- A foreign effect's sandbox frame takes no pointer events, so the right-click
+  lands on the area in the page and is tested there; the frame hears nothing
+  new.
+- The words ship in English under the component name `sf-effect-about`
+  (keys `menu`, `by`, `open`, `homepage`, `pause`, `resume`); a product may
+  register its own through `SF.language`.
 
 ## Events
 
