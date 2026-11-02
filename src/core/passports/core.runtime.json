@@ -85,7 +85,9 @@
     "src/core/js/assembly/logic.mjs",
     "src/core/js/assembly/values.mjs",
     "src/core/js/assembly/words.mjs",
+    "src/core/js/breakpoints.js",
     "src/core/js/cacheCodec.js",
+    "src/core/js/clipboard.js",
     "src/core/js/composition/builtins.mjs",
     "src/core/js/composition/canonical.mjs",
     "src/core/js/composition/editor-words.mjs",
@@ -111,6 +113,7 @@
     "src/core/js/early-port.js",
     "src/core/js/effects.js",
     "src/core/js/element-manifest.js",
+    "src/core/js/format.js",
     "src/core/js/host-port.js",
     "src/core/js/icon-subset-memory.js",
     "src/core/js/iconSubsetRuntime.js",
@@ -161,7 +164,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "76ec666d5bdb30f2bfb007c52ba2551183d7d41115c92f76b36a360c5ef1088c",
+  "content_sha256": "686d83ac364c6aa4347615303092c28755a101662f27f35046455a1abc16d2e2",
   "dependencies": [
     {
       "id": "core.styles",

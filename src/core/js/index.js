@@ -14,6 +14,11 @@ import './effects.js';
 import './on-view.js';
 import './notify.js';
 import './sanitize.js';
+// What every set formats, switches and copies by one rule (reuse audit
+// 2026-11-02, findings 6, 7, 11): SF.format, SF.breakpoints, SF.copyText.
+import './format.js';
+import './breakpoints.js';
+import './clipboard.js';
 import {installReady} from './ready.js';
 import {applyRememberedIconSubset} from './icon-subset-memory.js';
 import pageStorage from './page-storage.js';

@@ -179,6 +179,44 @@
       "summary": "The href SF.sanitizeHtml keeps, or null: http, https and mailto URLs and root-relative paths, never //host or /\\host."
     },
     {
+      "name": "SF.format",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Dates, days, numbers and file sizes in the page's language (the locale named, else the node's page language), through Intl. date(value, {date, time, intl, locale, node}); relativeDay(value, {now, today, yesterday, tomorrow, weekday, capital}) says today, yesterday, a weekday of the last week or the date, and msUntilNextDay(now) when that changes; relativeTime(value, {now}); dayOffset(value, {now}) counts calendar days; number(value, format, {step, grouping, gap}) by a format word (number, integer, decimal-<n>, percent, compact, currency-<CODE>, unit-<unit>); fileSize(size, {units}) in B, KB, MB, GB. docs/developer/format.md.",
+      "members": [
+        "locale",
+        "date",
+        "relativeDay",
+        "relativeTime",
+        "dayOffset",
+        "msUntilNextDay",
+        "number",
+        "numberOptions",
+        "fileSize"
+      ]
+    },
+    {
+      "name": "SF.breakpoints",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The Framework's breakpoint ladder for scripts, the same steps the sheets switch at (xs 0, sm 32rem, md 44rem, lg 60rem, xl 72rem, xxl 80rem): ladder; query(name, {below}) the media query; media(name, {below}) its MediaQueryList; matches(name, {below}) whether the page is that wide now. docs/developer/format.md.",
+      "members": [
+        "ladder",
+        "query",
+        "media",
+        "matches"
+      ]
+    },
+    {
+      "name": "SF.copyText",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
+    },
+    {
       "name": "SF.language",
       "status": "public",
       "kind": "object",
