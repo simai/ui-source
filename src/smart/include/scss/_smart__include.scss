@@ -1,0 +1,73 @@
+@layer sf.components {
+/* sf-include (standard simai.smart-component 1.3.14 §6). The region is a
+   plain block: the part the server answered lays itself out inside it. While
+   it loads the placeholder holds at least --sf-include-min-block-size; the
+   error state is one row on rung 1 of the ladder
+   (docs/foundation-composition-geometry.md): the message on the text line
+   --sf-text-height-1, the icon that line, Retry the rung's control height
+   --sf-ui-1--control-height, the row's inset the rung's space. The public
+   variables are read with the role token as their fallback and never set
+   here. */
+.sf-include {
+  --sf-include--min-block-size: var(--sf-include-min-block-size, 0px);
+  --sf-include--gap: var(--sf-include-gap, var(--sf-ui-1--text-space-x));
+  --sf-include--padding: var(--sf-include-padding, var(--sf-ui-1--space-y) var(--sf-ui-1--space-x));
+  --sf-include--border-color: var(--sf-include-border-color, var(--sf-outline-variant));
+  --sf-include--radius: var(--sf-include-radius, var(--sf-radius--ui));
+  --sf-include--message-color: var(--sf-include-message-color, var(--sf-on-surface-variant));
+  display: block;
+  box-sizing: border-box;
+  min-inline-size: 0;
+}
+
+/* sf-focus-ring: none. Focus lands on the region only from code, while a
+   retry loads (tabindex -1, never in the Tab order); it is no control, so it
+   draws no ring. Retry, the one control, keeps sf-button's ring. */
+.sf-include:focus {
+  outline: none;
+}
+
+.sf-include--idle,
+.sf-include--loading {
+  min-block-size: var(--sf-include--min-block-size);
+}
+
+.sf-include-placeholder {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-include-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-include--gap);
+  box-sizing: border-box;
+  padding: var(--sf-include--padding);
+  border: 1px solid var(--sf-include--border-color);
+  border-radius: var(--sf-include--radius);
+  color: var(--sf-include--message-color);
+}
+
+/* A picture is the line it stands on: the icon's own size tokens, never its
+   public --sf-icon-glyph-size, which stays the page's. */
+.sf-include .sf-include-error-icon {
+  --sf-include--icon-size: var(--sf-text-height-1);
+  --sf-icon--font-size: var(--sf-include--icon-size);
+  --sf-icon--width: var(--sf-include--icon-size);
+  --sf-icon--height: var(--sf-include--icon-size);
+  flex: none;
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-include-message {
+  flex: 1 1 12em;
+  min-inline-size: 0;
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-include-retry {
+  flex: none;
+}
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.include",
+  "title": "include reference",
+  "summary": "Deterministic reference fixture for sf-include.",
+  "locale": "ru",
+  "props": {
+    "src": "data:text/html;charset=utf-8,%3Ch3%3E%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8%3C%2Fh3%3E%3Cul%3E%3Cli%3E%3Ca%20href%3D%22%23release%22%3E%D0%92%D1%8B%D1%88%D0%BB%D0%B0%20%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F%205.20%3C%2Fa%3E%3C%2Fli%3E%3Cli%3E%3Ca%20href%3D%22%23include%22%3E%D0%9D%D0%BE%D0%B2%D1%8B%D0%B9%20%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%20sf-include%3C%2Fa%3E%3C%2Fli%3E%3Cli%3E%3Ca%20href%3D%22%23webinar%22%3E%D0%92%D0%B5%D0%B1%D0%B8%D0%BD%D0%B0%D1%80%20%D0%BE%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%D1%85%20%D0%BD%D0%B0%20SIMAI%20Framework%3C%2Fa%3E%3C%2Fli%3E%3C%2Ful%3E"
+  },
+  "children": [],
+  "state": "default"
+}

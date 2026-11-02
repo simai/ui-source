@@ -1,0 +1,288 @@
+{
+  "schema_version": 2,
+  "id": "smart.include",
+  "version": "1.0.0",
+  "title": "Include",
+  "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "include",
+    "fragment",
+    "partial",
+    "remote-content",
+    "lazy",
+    "ajax"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n"
+  ],
+  "custom_element": "sf-include",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.icon",
+      "smart.skeleton"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "src": {
+        "type": "string",
+        "default": "",
+        "description": "The address of the part: a page of the site's own server that answers with HTML. Same origin by default; another origin only when its server allows it by CORS. Changing it loads the new part; empty, nothing is fetched and the placeholder stays"
+      },
+      "load": {
+        "type": "string",
+        "default": "now",
+        "description": "When the part is fetched: now, as soon as the element is on the page; view, once, when it comes within 200 px of the viewport (an IntersectionObserver; where there is none, at once)",
+        "enum": [
+          "now",
+          "view"
+        ]
+      },
+      "lines": {
+        "type": "integer",
+        "default": 3,
+        "description": "How many text lines the placeholder skeleton draws while the part loads, when the page gives no placeholder of its own",
+        "minimum": 1,
+        "maximum": 20
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "refresh": {
+      "summary": "Fetches src again now, whatever load says (vocabulary refresh: it re-reads). Answers applied when the part arrived, refused {reason: no-src | network | http} when there is no address or the load failed, cancelled when a newer load (a changed src, another refresh) replaced it or the element was removed. The Retry button of the error state calls it",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "A promise of the outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-include-loaded": {
+      "summary": "The part arrived and is on the page: src is the address as given, status the HTTP status. Sent after the markup is inserted, so a listener finds it in the element",
+      "payload": {
+        "type": "object",
+        "required": [
+          "src",
+          "status"
+        ],
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-include-load-failed": {
+      "summary": "The part did not arrive: reason network (the request failed, or another origin refused it by CORS; status null) or http (the server answered outside 200-299; status is its code). The element shows the error state with Retry",
+      "payload": {
+        "type": "object",
+        "required": [
+          "src",
+          "status",
+          "reason"
+        ],
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "status": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "network",
+              "http"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "data": [
+        "idle",
+        "loading",
+        "ready",
+        "error"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "loading",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "external-host",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "deciding who may see the part (the server answers it, or refuses with a status)",
+      "running the part's scripts",
+      "cleaning untrusted HTML (SF.sanitizeHtml does that)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children",
+      "response"
+    ],
+    "network_policy": "host-only"
+  },
+  "accessibility": {
+    "role": "none",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches Retry in the error state",
+      "Enter or Space presses Retry"
+    ],
+    "focus": "Focus on Retry moves to the region (tabindex -1) while the part loads again, so it never falls to the page; a new failure hands it to the new Retry."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "template"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "fc60c9c8c574834877fcf3025b1e83deb7d1f63f",
+    "source_artifacts": [
+      {
+        "path": "src/smart/include/index.js",
+        "sha256": "b59165f1c5a8ab7d4f4362b4e906da52ab23a6994b7b821616d2c3e5b96ff41e"
+      },
+      {
+        "path": "src/smart/include/js/templates/default.js",
+        "sha256": "1f0f41a5c53d4850697b91bb5ab4ded48450d73f4af396ea21381de881cf3cc2"
+      },
+      {
+        "path": "src/smart/include/scss/_smart__include.scss",
+        "sha256": "02fe9a1dbaf846ea85b458243c9fd7def17baf132f3ee3efcae5e8e64a265e3c"
+      },
+      {
+        "path": "src/smart/include/rule.js",
+        "sha256": "417f5a4e2d1d0e3aa04de2226710ce91379a5298253287faf2d59aa7155bae1b"
+      },
+      {
+        "path": "src/smart/include/docs.md",
+        "sha256": "6ac393f99deb311cdad397731c4039ea3ed42e91c4f4846be9f9e407c905ba7d"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-include to put a part of the page that the site's server answers at an address into the page: a news block, a list rendered on the server, a part below the fold loaded once it nears the viewport (load=\"view\").",
+    "do_not": [
+      "Do not use sf-include for data a component asks a host for; a host port does that",
+      "Do not rely on scripts in the answer: they are not run; put the behaviour into components, which the Loader starts",
+      "Do not load untrusted HTML into it; clean it with SF.sanitizeHtml and draw it yourself",
+      "Do not poll an address with it; refresh() reloads when the page asks"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-include src=\"/parts/news/\" load=\"view\"></sf-include>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

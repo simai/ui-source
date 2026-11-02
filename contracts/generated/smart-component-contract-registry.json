@@ -1147,6 +1147,48 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon",
+          "smart.skeleton"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-include",
+      "id": "smart.include",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/include/smart.manifest.json",
+      "manifest_sha256": "88ed740f03d0baab2957b9c65a1ea4966b53be560b3ede90110e893e5716e7cf",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
+      "tags": [
+        "include",
+        "fragment",
+        "partial",
+        "remote-content",
+        "lazy",
+        "ajax"
+      ],
+      "title": "Include"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "interaction",
         "keyboard",
         "theme"

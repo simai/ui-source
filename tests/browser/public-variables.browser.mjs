@@ -175,6 +175,11 @@ const DRAW = {
   lookup: {css: ['tags', 'avatars', 'icon-buttons', 'icons', 'smart/smart/lookup/css/lookup.css'], js: 'lookup',
     html: '<sf-lookup label="Город" value="moscow"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"}]}</script></sf-lookup><sf-lookup label="Ошибка" invalid></sf-lookup><sf-lookup id="lk" label="Список"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"},{"value":"kazan","label":"Казань"}]}</script></sf-lookup>',
     open: 'const l = document.getElementById("lk"); l.querySelector("input").focus(); l.search("")'},
+  // The error row (an address that cannot load: the page is about:blank)
+  // takes the gap, padding, border, radius and message colour; the second,
+  // with no address, waits with its placeholder, which takes the block size.
+  include: {css: ['skeleton', 'buttons', 'icons', 'smart/smart/include/css/include.css'], js: ['include', 'skeleton'],
+    html: '<sf-include src="/missing/part"></sf-include><sf-include lines="2"></sf-include>'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   // Collapsed and open, so the side panel is on the stage: its width is the
   // only part that takes --sf-site-header-sheet-inline-size.

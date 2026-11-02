@@ -1,0 +1,269 @@
+{
+  "$comment": "The source of sf-include's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: step 3 of ui-control's control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md (owner decision q-410df7e4b5), the successor of the retired class units ajax, ajaxload and lazy-load.",
+  "id": "smart.include",
+  "tag": "sf-include",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "content",
+  "settings": {
+    "src": {
+      "type": "string",
+      "default": "",
+      "summary": "The address of the part: a page of the site's own server that answers with HTML. Same origin by default; another origin only when its server allows it by CORS. Changing it loads the new part; empty, nothing is fetched and the placeholder stays"
+    },
+    "load": {
+      "type": "enum",
+      "values": [
+        "now",
+        "view"
+      ],
+      "default": "now",
+      "summary": "When the part is fetched: now, as soon as the element is on the page; view, once, when it comes within 200 px of the viewport (an IntersectionObserver; where there is none, at once)"
+    },
+    "lines": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "max": 20,
+      "default": 3,
+      "summary": "How many text lines the placeholder skeleton draws while the part loads, when the page gives no placeholder of its own"
+    }
+  },
+  "values": {},
+  "events": {
+    "loaded": {
+      "carries": {
+        "src": "string",
+        "status": "number"
+      },
+      "own-verb": true,
+      "summary": "The part arrived and is on the page: src is the address as given, status the HTTP status. Sent after the markup is inserted, so a listener finds it in the element"
+    },
+    "load-failed": {
+      "carries": {
+        "src": "string",
+        "status": {
+          "type": "number",
+          "nullable": true
+        },
+        "reason": {
+          "type": "enum",
+          "values": [
+            "network",
+            "http"
+          ]
+        }
+      },
+      "own-verb": true,
+      "summary": "The part did not arrive: reason network (the request failed, or another origin refused it by CORS; status null) or http (the server answered outside 200-299; status is its code). The element shows the error state with Retry"
+    }
+  },
+  "actions": {
+    "refresh": {
+      "waits": true,
+      "x-outcomes": [
+        "applied",
+        "refused",
+        "cancelled"
+      ],
+      "summary": "Fetches src again now, whatever load says (vocabulary refresh: it re-reads). Answers applied when the part arrived, refused {reason: no-src | network | http} when there is no address or the load failed, cancelled when a newer load (a changed src, another refresh) replaced it or the element was removed. The Retry button of the error state calls it",
+      "x-returns": {
+        "type": "object",
+        "description": "A promise of the outcome."
+      }
+    }
+  },
+  "slots": {
+    "placeholder": {
+      "$comment": "Page content shown while the part loads, in place of the skeleton: <div slot=\"placeholder\">…</div>. A carrier whose only attribute is slot is unwrapped (the base's rule). It is the page's: placed as it is, never copied."
+    }
+  },
+  "side-effects": [
+    "network"
+  ],
+  "keyboard": {
+    "host": {
+      "Tab": "reach"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-skeleton"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The element is a plain region of the page: it has no role and no name of its own. It is aria-busy while the part loads (the skeleton is aria-hidden); the error message is a polite status, so it is announced, and Retry is a native button. The part's own markup brings its own roles.",
+    "role": "none",
+    "name": "none",
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
+    }
+  },
+  "host-states": {
+    "data-loading": "boolean",
+    "data-failed": "boolean"
+  },
+  "css-variables": {
+    "--sf-include-min-block-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-include-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-include-padding": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-include-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-include-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-include-message-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
+  "x-source": {
+    "package": "framework",
+    "folder": "include",
+    "brief": "simai/ui-control control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md step 3 (owner decision q-410df7e4b5): replaces the class units ajax, ajaxload and lazy-load (audit control/evidence/2026-11-02-legacy-class-units.md: ajaxload polled every element once a second and filled it through BX.ajax.post, Bitrix only)"
+  },
+  "x-decisions": [
+    "name: sf-include, not sf-fragment as the plan says. sf-fragment is a released, documented element already: core's interface-fragment boundary (src/core/js/composition/fragments.mjs defineFragmentBoundary, defined by core on every page; ui-doc guide/layouts/building/interface-fragments.md), and §21.4 refuses a second component with a taken name. include is the noun the web knows for a part of a page put in from another address (a server-side include).",
+    "family: content, a new one: the element holds a part of the page's content; none of the families shipped (state, skeleton, navigation) is it.",
+    "loading: fetch(src, {credentials: 'same-origin', headers: {Accept: 'text/html'}}), mode cors, so another origin answers only when its server allows it. One request at a time: a newer load aborts the older (AbortController on the instance's scope, §7.7), and a removed element aborts its request. No timer and no polling: load=view is one IntersectionObserver per element, rootMargin 200px, disconnected after its first sighting.",
+    "insertion: the answer is parsed in an inert <template> (a whole document: its body), its executable scripts are taken out (a <script> whose type is not JSON: a data-sf-settings island stays for the components inside), and so are inline event handlers (on* attributes) and javascript: addresses; the rest is drawn as the element's content with lit's unsafeHTML, as sf-modal draws its remote content. It is not a sanitizer: the part is the site's own markup. Untrusted HTML goes through SF.sanitizeHtml first.",
+    "components inside: the Loader's own MutationObserver scans the inserted markup like any markup added to the page (utilities, class components, Smart tags); the element also asks SF.Loader.ensureSmartElementLoaded for every Smart tag in the part that is not defined yet, so a part's components do not wait out the Loader's 100 ms debounce.",
+    "placeholder: an sf-skeleton of lines text lines (the last one 60 %), or the page's own slot placeholder in its place. While a part reloads (refresh, a new src) the placeholder shows again.",
+    "error: an icon, a short message in a polite status and an outline on-surface sf-button «Повторить» / «Retry» at the ladder's rung 1 that calls refresh. The words are the language files' own (runtime.failed, runtime.retry), not settings.",
+    "events: own verbs (vocabulary §5.1), loaded and load-failed, the fact forms copy-button's copied / copy-failed set. The action is refresh, the vocabulary's verb for reading again (§5), not reload: gate 11 refuses a synonym of a §5 verb.",
+    "first paint: the printed snapshot is what the element drew once its first load settled. A host printed with static markup keeps that picture until the first load settles (sfAwaitingData), then draws in one frame, so a printed part never flashes the skeleton between the server's picture and the element's.",
+    "host states: data-loading and data-failed (§5.3), besides aria-busy on the region while it loads.",
+    "css-variables: six public variables (§6) -- the placeholder's minimum block size, and the error state's gap, padding, border colour, radius and message colour -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "external-host",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "include",
+      "fragment",
+      "partial",
+      "remote-content",
+      "lazy",
+      "ajax"
+    ],
+    "state": {
+      "machines": {
+        "data": [
+          "idle",
+          "loading",
+          "ready",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "loading",
+        "error"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "deciding who may see the part (the server answers it, or refuses with a status)",
+        "running the part's scripts",
+        "cleaning untrusted HTML (SF.sanitizeHtml does that)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children",
+        "response"
+      ],
+      "network_policy": "host-only"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "template"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-include to put a part of the page that the site's server answers at an address into the page: a news block, a list rendered on the server, a part below the fold loaded once it nears the viewport (load=\"view\").",
+      "do_not": [
+        "Do not use sf-include for data a component asks a host for; a host port does that",
+        "Do not rely on scripts in the answer: they are not run; put the behaviour into components, which the Loader starts",
+        "Do not load untrusted HTML into it; clean it with SF.sanitizeHtml and draw it yourself",
+        "Do not poll an address with it; refresh() reloads when the page asks"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-include src=\"/parts/news/\" load=\"view\"></sf-include>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches Retry in the error state",
+        "Enter or Space presses Retry"
+      ],
+      "focus": "Focus on Retry moves to the region (tabindex -1) while the part loads again, so it never falls to the page; a new failure hands it to the new Retry."
+    }
+  }
+}

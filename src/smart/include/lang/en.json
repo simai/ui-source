@@ -1,0 +1,15 @@
+{
+  "title": "Include",
+  "runtime": {
+    "failed": "Could not load this part of the page.",
+    "retry": "Retry"
+  },
+  "events": {
+    "loaded": {
+      "label": "Loaded"
+    },
+    "load-failed": {
+      "label": "Could not load"
+    }
+  }
+}

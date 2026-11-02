@@ -3468,6 +3468,54 @@
       ]
     },
     {
+      "component": "include",
+      "selector": "sf-include, .sf-include",
+      "variables": [
+        {
+          "name": "--sf-include-min-block-size",
+          "role": "min-block-size",
+          "summary": "The least block size of the region while the part loads, so the page does not move when it arrives.",
+          "default": "0px",
+          "since": "2026-11-02"
+        },
+        {
+          "name": "--sf-include-gap",
+          "role": "gap",
+          "summary": "The space between the error's icon, message and Retry.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-11-02"
+        },
+        {
+          "name": "--sf-include-padding",
+          "role": "padding",
+          "summary": "The inset of the error row.",
+          "default": "var(--sf-ui-1--space-y) var(--sf-ui-1--space-x)",
+          "since": "2026-11-02"
+        },
+        {
+          "name": "--sf-include-border-color",
+          "role": "border-color",
+          "summary": "The edge of the error row.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-02"
+        },
+        {
+          "name": "--sf-include-radius",
+          "role": "radius",
+          "summary": "The corners of the error row.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-02"
+        },
+        {
+          "name": "--sf-include-message-color",
+          "role": "color",
+          "summary": "The error message's text.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-02"
+        }
+      ]
+    },
+    {
       "component": "workspace",
       "selector": ".sf-workspace",
       "variables": [

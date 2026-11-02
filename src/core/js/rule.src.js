@@ -766,6 +766,7 @@ import '../../smart/gallery/rule.js';
 import '../../smart/help-mark/rule.js';
 import '../../smart/icon-button/rule.js';
 import '../../smart/icon/rule.js';
+import '../../smart/include/rule.js';
 import '../../smart/image-field/rule.js';
 import '../../smart/inline-editor/rule.js';
 import '../../smart/input/rule.js';

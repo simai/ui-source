@@ -1,0 +1,174 @@
+{
+  "component": "sf-include",
+  "probe": "sf-include against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-include id=\"now\" src=\"/fixture/now\"></sf-include>",
+      "  <sf-include id=\"smart\" src=\"data:text/html;charset=utf-8,%3Cp%20id%3D%22smart-text%22%3E%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81%3A%20%3Csf-badge%20id%3D%22inner%22%20text%3D%22%D0%9D%D0%BE%D0%B2%D0%BE%D0%B5%22%3E%3C%2Fsf-badge%3E%3C%2Fp%3E%3Cscript%3Ewindow.__includeRan%20%3D%20true%3C%2Fscript%3E%3Cimg%20id%3D%22trap%22%20src%3D%22data%3A%2C%22%20onerror%3D%22window.__includeRan%20%3D%20true%22%20alt%3D%22%22%3E%3Cscript%20type%3D%22application%2Fjson%22%20data-keep%3E%7B%22kept%22%3A%20true%7D%3C%2Fscript%3E\"></sf-include>",
+      "  <sf-include id=\"broken\" src=\"/missing/part\"></sf-include>",
+      "  <div lang=\"en\"><sf-include id=\"en\" src=\"/missing/en\"></sf-include></div>",
+      "  <div style=\"block-size: 3000px\"></div>",
+      "  <sf-include id=\"view\" src=\"/fixture/view\" load=\"view\"></sf-include>",
+      "  <div style=\"block-size: 3000px\"></div>",
+      "  <sf-include id=\"own\" src=\"/fixture/own\" load=\"view\"><div slot=\"placeholder\"><p id=\"own-wait\">Готовим блок</p></div></sf-include>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-load-now",
+      "title": "load now fetches at once and puts the answer in place of the skeleton; the region is no longer busy",
+      "covers": "settings.src, settings.load now, host-states data-loading",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#now'); const root = el.querySelector(':scope > .sf-include'); return el.querySelector('#fixture-now')?.textContent === 'Загружено' && root.getAttribute('aria-busy') === 'false' && !el.hasAttribute('data-loading') && !el.querySelector('sf-skeleton'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-load-view",
+      "title": "load view below the fold fetches nothing and shows the skeleton until it is scrolled near; then it loads once",
+      "covers": "settings.load view, events.loaded",
+      "steps": [
+        {
+          "check": "(() => { const fetched = (name) => performance.getEntriesByType('resource').some((entry) => entry.name.includes(name)); return !fetched('/fixture/view') && !document.querySelector('#fixture-view') && Boolean(document.querySelector('#view sf-skeleton')); })()"
+        },
+        {
+          "script": "(document.querySelector('#view').querySelector(':scope > .sf-include').scrollIntoView(), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-include-loaded",
+                "count": 1,
+                "detail": {
+                  "src": "/fixture/view",
+                  "status": 200
+                }
+              }
+            ]
+          },
+          "check": "(() => { const fetched = (name) => performance.getEntriesByType('resource').some((entry) => entry.name.includes(name)); return Boolean(document.querySelector('#view #fixture-view')) && !document.querySelector('#view sf-skeleton') && !fetched('/fixture/own'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p3-own-placeholder",
+      "title": "the page's slot placeholder stands in for the skeleton while the part waits",
+      "covers": "slots.placeholder",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#own'); return el.querySelector('#own-wait')?.textContent === 'Готовим блок' && !el.querySelector('sf-skeleton'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p4-error",
+      "title": "a 404 is the error state: the message in a polite status and Retry; refresh answers refused http 404 and sends load-failed",
+      "covers": "events.load-failed, actions.refresh, host-states data-failed, lang runtime.failed, runtime.retry",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#broken'); const message = el.querySelector('.sf-include-error [role=\"status\"]'); const retry = el.querySelector('.sf-include-retry .sf-button-text-container'); return el.hasAttribute('data-failed') && message?.textContent.trim() === 'Не удалось загрузить эту часть страницы.' && retry?.textContent.trim() === 'Повторить'; })()"
+        },
+        {
+          "action": {
+            "name": "refresh"
+          },
+          "target": "#broken",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "http",
+              "status": 404
+            },
+            "events": [
+              {
+                "name": "sf-include-load-failed",
+                "count": 1,
+                "detail": {
+                  "src": "/missing/part",
+                  "status": 404,
+                  "reason": "http"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-retry",
+      "title": "Retry loads the same address again; when it answers, the part takes the error's place",
+      "covers": "the error state's Retry, events.loaded",
+      "steps": [
+        {
+          "script": "(() => { const real = window.fetch.bind(window); window.fetch = (input, init) => String(input).includes('/missing/part') ? Promise.resolve(new Response('<p id=\"fixed\">Снова на месте</p>', {status: 200, headers: {'content-type': 'text/html; charset=utf-8'}})) : real(input, init); return true; })()"
+        },
+        {
+          "user": "click:#broken .sf-include-retry button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-include-loaded",
+                "count": 1,
+                "detail": {
+                  "src": "/missing/part",
+                  "status": 200
+                }
+              }
+            ]
+          },
+          "check": "(() => { const el = document.querySelector('#broken'); return el.querySelector('#fixed')?.textContent === 'Снова на месте' && !el.querySelector('.sf-include-error') && !el.hasAttribute('data-failed'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p6-components-start",
+      "title": "a Smart component in the part is loaded by the Loader and draws; the part's scripts and inline handlers do not run, a JSON island stays",
+      "covers": "the Loader over inserted markup, partFrom",
+      "steps": [
+        {
+          "script": "Promise.race([customElements.whenDefined('sf-badge'), new Promise((settle) => setTimeout(settle, 5000))]).then(() => true)",
+          "wait": 600
+        },
+        {
+          "check": "(() => { const el = document.querySelector('#smart'); const badge = el.querySelector('#inner'); return Boolean(customElements.get('sf-badge')) && badge?.isRendered === true && badge.textContent.includes('Новое') && window.__includeRan !== true && !el.querySelector('script:not([type])') && Boolean(el.querySelector('script[data-keep]')) && !el.querySelector('#trap').hasAttribute('onerror'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p7-src-change",
+      "title": "a new src loads the new part in place of the old one",
+      "covers": "settings.src change",
+      "steps": [
+        {
+          "script": "(document.querySelector('#now').setAttribute('src', '/fixture/second'), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-include-loaded",
+                "count": 1,
+                "detail": {
+                  "src": "/fixture/second"
+                }
+              }
+            ]
+          },
+          "check": "(() => { const el = document.querySelector('#now'); return Boolean(el.querySelector('#fixture-second')) && !el.querySelector('#fixture-now'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-english",
+      "title": "on an English page the error speaks English",
+      "covers": "lang en runtime.failed, runtime.retry",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#en'); return el.querySelector('.sf-include-message')?.textContent.trim() === 'Could not load this part of the page.' && el.querySelector('.sf-include-retry .sf-button-text-container')?.textContent.trim() === 'Retry'; })()"
+        }
+      ]
+    }
+  ]
+}

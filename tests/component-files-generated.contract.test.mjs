@@ -50,6 +50,8 @@ const PHASE_A = [
   'contents',
   'rich-text',
   'lookup',
+  // A part of the page loaded from an address (2026-11-02).
+  'include',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

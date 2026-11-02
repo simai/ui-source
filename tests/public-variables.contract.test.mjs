@@ -70,6 +70,8 @@ const FOLDERS = {
   'rich-text': 'smart/rich-text',
   // sf-lookup (2026-10-30): a sheet of its own, sf-input's set and the list's surface.
   lookup: 'smart/lookup',
+  // sf-include (2026-11-02): a sheet of its own, the placeholder's height and the error row.
+  include: 'smart/include',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // The display parts of the structured-content types (2026-11-01): CSS only.
