@@ -159,7 +159,7 @@
      the named radius, as a single sf-button would. */
   .sf-button-group.sf-button-group--radius-default:not(.sf-button-group--segmented) > sf-button > .sf-button,
   .sf-button-group.sf-button-group--radius-default:not(.sf-button-group--segmented) > .sf-button {
-    --sf-button--radius: var(--sf-radius-default);
+    --sf-button--radius: var(--sf-radius--ui);
   }
 
   .sf-button-group.sf-button-group--radius-square:not(.sf-button-group--segmented) > sf-button > .sf-button,
@@ -270,7 +270,7 @@
      value reads, and the track follows it concentrically. The attribute wins
      over --sf-button-group-radius, as a button's class wins over its variable. */
   .sf-button-group--segmented.sf-button-group--radius-default {
-    --sf-button-group--plate-radius: var(--sf-radius-default);
+    --sf-button-group--plate-radius: var(--sf-radius--ui);
   }
 
   /* --sf-radius-square is a unitless 0, which calc() cannot add to the

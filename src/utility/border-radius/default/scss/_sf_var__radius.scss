@@ -12,7 +12,6 @@ $border-radius-array: (
 	'2': '2',
 	'3': '3',
 	'4': '4',
-	'default': 'default',
 	// Смысловые радиусы: мелкий контрол и крупный блок. Значение с ведущим
 	// дефисом даёт var(--sf-radius--ui) и var(--sf-radius--surface) — токены
 	// названы через два дефиса, потому что это роли, а не ступени шкалы.
@@ -20,6 +19,5 @@ $border-radius-array: (
 	'surface': '-surface',
 	'square': 'square',
 	'rounded': 'rounded',
-	'round': 'round',
 );
 

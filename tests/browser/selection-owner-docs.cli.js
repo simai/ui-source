@@ -2,7 +2,7 @@
 async (page) => {
   const docs = 'http://127.0.0.1:8893/ru/components';
   const assets = 'http://127.0.0.1:8765/ui-source/source/output/action-focus-browser/component';
-  const expectedExamples = { radio: 4, switch: 3, toggle: 4 };
+  const expectedExamples = { radio: 4, switch: 3 };
   const results = [];
   const failures = [];
   const errors = [];
@@ -11,7 +11,7 @@ async (page) => {
   for (const width of [390, 1280]) {
     for (const theme of ['light', 'dark']) {
       await page.setViewportSize({ width, height: 900 });
-      for (const kind of ['radio', 'switch', 'toggle']) {
+      for (const kind of ['radio', 'switch']) {
         await page.goto(`${docs}/${kind}/`);
         await page.addStyleTag({ url: `${assets}/${kind}/css/${kind}.css` });
         await page.addScriptTag({ url: `${assets}/${kind}/js/${kind}.js` });

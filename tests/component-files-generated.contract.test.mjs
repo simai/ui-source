@@ -35,7 +35,7 @@ const PHASE_A = [
   'accordion', 'resizer', 'tabs', 'icon', 'gallery', 'steps', 'profile-picker', 'range-slider', 'theme-generator',
   'datepicker', 'tree',
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones
-  'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'toggle', 'badge', 'button', 'icon-button',
+  'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
   'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'country-code', 'tag', 'pagination',
   'image-field', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
   'file-upload', 'composition-overlay',
@@ -96,7 +96,7 @@ test('a native event name with a detail (x-detail) describes that detail (dropdo
   const manifest = (name) => JSON.parse(results.find((result) => result.component === name).generated['smart.manifest.json']);
   assert.deepEqual(Object.keys(manifest('dropdown').events.change.payload.properties), ['value', 'label', 'values', 'item', 'multiple']);
   assert.equal(manifest('quantity').events.input.payload.type, 'object');
-  assert.equal(manifest('toggle').events.change.payload.type, 'null');
+  assert.equal(manifest('switch').events.change.payload.type, 'null');
 });
 
 test('a dated attribute alias of a setting is an input until it ends (modal hide, unclose inverted)', () => {

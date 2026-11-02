@@ -79,6 +79,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // 50 with sf-copy-button; 51 with sf-help-mark;
   // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu; 57 with sf-code-input;
   // 58 with sf-progress-ring; 59 with sf-site-header; 60 with sf-search; 61 with sf-settings-menu; 62 with sf-pager; 63 with sf-contents; 64 with sf-rich-text; 65 with sf-lookup;
-  // 64 again when sf-settings-menu was folded into sf-context-menu (owner, 2026-10-30); 65 with sf-include.
-  assert.equal(fixtureCount, 65);
+  // 64 again when sf-settings-menu was folded into sf-context-menu (owner, 2026-10-30); 65 with sf-include; 64 when sf-toggle was swept (2026-11-02).
+  assert.equal(fixtureCount, 64);
 });

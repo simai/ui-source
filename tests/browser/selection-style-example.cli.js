@@ -30,7 +30,7 @@ async (page) => {
     const changed = await read();
     if (JSON.stringify(changed.data) !== JSON.stringify([['delivery', 'download'], ['compact', 'yes']])) failures.push({width, theme, step: 'form interaction', changed});
     await page.getByRole('button', {name: 'Вернуть исходный выбор', exact: true}).click();
-    await page.waitForFunction(() => document.querySelector('sf-checkbox input')?.checked && !document.querySelector('sf-toggle input')?.checked);
+    await page.waitForFunction(() => document.querySelector('sf-checkbox input')?.checked && ![...document.querySelectorAll('main input[role="switch"]')].find((input) => input.closest('label')?.textContent.includes('Компактный режим'))?.checked);
     const reset = await read();
     if (JSON.stringify(initial) !== JSON.stringify(reset)) failures.push({width, theme, step: 'reset', initial, reset});
     await page.evaluate(async () => {

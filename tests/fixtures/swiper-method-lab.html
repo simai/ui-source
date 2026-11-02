@@ -19,7 +19,7 @@
     <div id="examples" class="grid gap-4"></div>
   </main>
   <script>
-    const createSlides = count => Array.from({length: count}, (_, index) => `<article class="swiper-slide p-inline-1 p-bottom-2"><div class="bg-surface-container color-on-surface border border-outline-variant p-3 radius-default">Слайд ${index + 1}</div></article>`).join('');
+    const createSlides = count => Array.from({length: count}, (_, index) => `<article class="swiper-slide p-inline-1 p-bottom-2"><div class="bg-surface-container color-on-surface border border-outline-variant p-3 radius-surface">Слайд ${index + 1}</div></article>`).join('');
 
     const waitForSwiper = callback => {
       if (typeof window.Swiper === 'function') callback();
@@ -54,7 +54,7 @@
           const slide = document.createElement('article');
           slide.className = 'swiper-slide p-inline-1 p-bottom-2';
           const surface = document.createElement('div');
-          surface.className = 'bg-surface-container color-on-surface border border-outline-variant p-3 radius-default';
+          surface.className = 'bg-surface-container color-on-surface border border-outline-variant p-3 radius-surface';
           surface.textContent = `Слайд ${wrapper.children.length + 1}`;
           slide.append(surface);
           wrapper.append(slide);

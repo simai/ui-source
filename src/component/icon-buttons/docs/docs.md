@@ -24,8 +24,10 @@ faint fill and a hairline boundary. `tonal primary` tints with the primary
 container role, as on the button. `ghost` was identical to `link` at rest and
 differed only by a fainter hover, so it now reads as `link`.
 
-`radius-default` maps to the large-surface radius and remains a compatibility
-input only. It is not a normal Icon Button variation. Joined positions
+`radius-default` is the control radius `--sf-radius--ui`, the same as no
+radius class; it stays for the Smart `radius="default"` value. The utility
+class of that name and the `--sf-radius-default` token were removed on
+2026-11-02 (journal `token-radius-default`). Joined positions
 `segment-start`, `segment-middle`, and `segment-end` belong to Button Group
 composition and use an inset keyboard focus ring.
 

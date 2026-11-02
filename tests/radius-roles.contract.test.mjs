@@ -17,23 +17,20 @@ async function walk(dir) {
 const files = await walk(SRC);
 const read = async (url) => [url.pathname.slice(url.pathname.indexOf('/src/') + 5), await readFile(url, 'utf8')];
 
-/* The old name says nothing about where it belongs, and the two roles that
-   replaced it do. Only the two selectors that implement the deprecated utility
-   class may still read it: they exist to describe that class, and the class
-   keeps its value until the major version takes both away. */
-test('radius: components read a role, not the old name', async () => {
+/* The old name said nothing about where it belongs, and the two roles that
+   replaced it do. The name was removed on the sweep of 2026-11-01 (journal
+   token-radius-default, token-radius-round): nothing declares or reads
+   --sf-radius-default or --sf-radius-round. The component modifier
+   .sf-button.radius-default (Smart radius="default") stays and reads the
+   control role. */
+test('radius: components read a role, not the removed names', async () => {
   const offenders = [];
   for (const url of files.filter((u) => u.pathname.endsWith('.scss'))) {
     const [name, source] = await read(url);
-    if (!source.includes('var(--sf-radius-default)')) continue;
-    // sf-button-group is excused beside them: its segments are buttons and
-    // the segmented plate is a button-sized control, so radius="default"
-    // means there what it means on sf-button.
-    const excused = /\.(sf-button|sf-icon-button)\.radius-default\s*\{[^}]*var\(--sf-radius-default\)/.test(source)
-      || /\.sf-button-group--radius-default[^{]*\{[^}]*var\(--sf-radius-default\)/.test(source);
-    if (!excused) offenders.push(name);
+    const code = source.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/.*$/gmu, '');
+    if (/--sf-radius-(?:default|round)(?![-\w])/u.test(code)) offenders.push(name);
   }
-  assert.deepEqual(offenders, [], 'these still read --sf-radius-default');
+  assert.deepEqual(offenders, [], 'these still declare or read a removed radius name');
 });
 
 test('radius: nothing ships the deprecated utility class in its own markup', async () => {

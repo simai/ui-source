@@ -52,7 +52,7 @@ test('FileUpload examples do not promise validation or introduce local design CS
   const source = examples.join('\n');
   assert.doesNotMatch(source, /до\s+\d+\s*(?:МБ|КБ)/i);
   assert.doesNotMatch(source, /<style\b|style\s*=\s*["'][^"']*(?:px|rem)/i);
-  assert.match(source, /root-class="p-2 bg-surface-container radius-default"/);
+  assert.match(source, /root-class="p-2 bg-surface-container radius-(?:default|surface)"/); // ui-doc moves to radius-surface with the 2026-11-01 sweep
 });
 
 // The item shape was readable only in the source, and the methods looked like

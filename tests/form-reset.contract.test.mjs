@@ -82,7 +82,7 @@ test('Smart reset keeps initial default across current-state rerenders', async (
 });
 
 test('all selection projections wire reset and separate live checked from default', async () => {
-  for (const kind of ['checkbox', 'radio', 'switch', 'toggle']) {
+  for (const kind of ['checkbox', 'radio', 'switch']) {
     const base = await read(`component/${kind}/js/_${kind}.js`);
     const smart = await read(`smart/${kind}/index.js`);
     const template = await read(`smart/${kind}/js/templates/default.js`);
@@ -117,11 +117,11 @@ test('radio synchronization respects native form ownership and literal names', a
 });
 
 test('JS constructors preserve initial checked defaults; setState only changes live state', async () => {
-  for (const [kind, expected] of [['checkbox', 1], ['switch', 1], ['radio', 2], ['toggle', 3]]) {
+  for (const [kind, expected] of [['checkbox', 1], ['switch', 1], ['radio', 2]]) {
     const js = await read(`component/${kind}/js/_${kind}.js`);
     assert.equal((js.match(/(?:this\.)?input\.defaultChecked = (?:this\.)?input\.checked;/g) || []).length, expected);
     const setter = js.slice(js.indexOf(`function set${kind[0].toUpperCase() + kind.slice(1)}State`), js.indexOf('\nclass '));
-    // Toggle builders follow its setter, so inspect only the setter body prefix.
+    // Builders may follow a setter, so inspect only the setter body prefix.
     assert.doesNotMatch(setter.split('\nfunction build')[0], /defaultChecked/);
   }
 });

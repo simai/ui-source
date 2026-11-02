@@ -178,21 +178,6 @@ test('a boundary and a ring never share the outline on one element', () => {
   }
 });
 
-test('the toggle ring sits on the switch and its boundary stays where it was', () => {
-  const source = read('src/component/toggle/scss/_css_toggle.scss');
-  // The root spans the label as well, so a ring there circles a line of text to
-  // report a twenty-pixel switch. The control wrapper is the switch and nothing
-  // else, and it has no outline of its own to fight over.
-  assert.match(
-    source,
-    /\.sf-toggle:has\(input:not\(:disabled\):not\(\.disabled\):focus-visible\) \.sf-toggle-control \{[^}]*outline: var\(--sf-focus--width\)/u,
-    'the ring is drawn on the control wrapper, not on the whole label',
-  );
-  const containerRule = source.split('\n\n').find((block) => block.trimStart().startsWith('.sf-toggle .sf-toggle-container {')) || '';
-  assert.match(containerRule, /outline: var\(--sf-px\)/u, 'the container keeps its boundary in the outline');
-  assert.doesNotMatch(source, /--sf-ui-focus\b/u, 'and no shadow ring is left');
-});
-
 test('an outline reset never stands alone', () => {
   const marker = /sf-focus-ring:\s*none/u;
   const componentOf = (path) => path.split('/').slice(0, 3).join('/');

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -18,11 +19,10 @@ test('Radio and Switch use the Framework hairline token', async () => {
   }
 });
 
-test('Radio, Switch and Toggle expose their whole enabled label as interactive', async () => {
+test('Radio and Switch expose their whole enabled label as interactive', async () => {
   for (const [kind, file, root] of [
     ['radio', '_css_radio_custom.scss', 'sf-radio-button'],
     ['switch', '_css_switch_custom.scss', 'sf-switch'],
-    ['toggle', '_css_toggle_custom.scss', 'sf-toggle'],
   ]) {
     const css = await source(`component/${kind}/scss/${file}`);
     assert.match(css, new RegExp(`\\.${root}:not\\(\\.disabled\\):has\\(input:not\\(:disabled\\)\\)\\s*\\{[^}]*cursor:\\s*pointer`, 's'));
@@ -30,8 +30,8 @@ test('Radio, Switch and Toggle expose their whole enabled label as interactive',
   }
 });
 
-test('Switch and Toggle constructors preserve native switch semantics', async () => {
-  for (const kind of ['switch', 'toggle']) {
+test('the Switch constructor preserves native switch semantics', async () => {
+  for (const kind of ['switch']) {
     const js = await source(`component/${kind}/js/_${kind}.js`);
     assert.match(js, /input\.type\s*=\s*['"]checkbox['"]/);
     assert.match(js, /input\.setAttribute\(['"]role['"],\s*['"]switch['"]\)/);
@@ -50,8 +50,8 @@ test('font Radio remains a named native group with a complete visual state contr
   assert.match(css, /@media\s*\(forced-colors:\s*active\)/);
 });
 
-test('Smart Switch and Toggle templates preserve native switch semantics', async () => {
-  for (const kind of ['switch', 'toggle']) {
+test('the Smart Switch template preserves native switch semantics', async () => {
+  for (const kind of ['switch']) {
     const template = await source(`smart/${kind}/js/templates/default.js`);
     assert.match(template, /type="checkbox"/);
     assert.match(template, /role="switch"/);
@@ -63,7 +63,6 @@ test('selection owner manifests declare base composition, closed variants and na
   const expectations = {
     radio: { sizes: ['1/2', '1', '2'], types: null, role: 'radio' },
     switch: { sizes: ['1/2', '1', '2'], types: null, role: 'switch' },
-    toggle: { sizes: ['1', '2'], types: ['simple', 'icon', 'short'], role: 'switch' },
   };
 
   for (const [kind, expected] of Object.entries(expectations)) {
@@ -88,11 +87,13 @@ test('ui-doc documents each selection owner and its source-backed examples', {
   const expectations = {
     radio: ['components/radio/overview', 'components/radio/state-checked', 'components/radio/state-disabled', 'components/radio/state-error', 'components/radio/sizes', 'components/radio/types'],
     switch: ['components/switch/overview', 'components/switch/state-checked', 'components/switch/state-disabled', 'components/switch/sizes'],
-    // Toggle was replaced by the switch. Its page carries the migration, not a
-    // second catalogue of variants, and its one example is written in the
-    // markup the migration leads to — the check below holds it to that.
-    toggle: ['components/toggle/overview'],
   };
+  // Toggle was replaced by the switch and removed on the 2026-11-01 sweep. While
+  // ui-doc keeps its page, the page carries the migration, not a second
+  // catalogue of variants, and its one example is written in the markup the
+  // migration leads to — the check below holds it to that.
+  const togglePage = join(root, 'content/ru/components/forms/toggle.md');
+  if (existsSync(togglePage)) expectations.toggle = ['components/toggle/overview'];
 
   for (const [kind, examples] of Object.entries(expectations)) {
     const markdown = await readFile(join(root, `content/ru/components/forms/${kind}.md`), 'utf8');
@@ -111,9 +112,11 @@ test('ui-doc documents each selection owner and its source-backed examples', {
 
   // A replaced owner must not leave live markup of the component that is going
   // away: whoever copies from this page has to land on the replacement.
-  const toggleExample = await readFile(join(root, 'examples/components/toggle/overview/index.html'), 'utf8');
-  assert.match(toggleExample, /class="sf-switch/u, 'the migration example is written as a switch');
-  assert.doesNotMatch(toggleExample, /class="[^"]*\bsf-toggle\b/u, 'no sf-toggle markup is left to copy');
+  if (expectations.toggle) {
+    const toggleExample = await readFile(join(root, 'examples/components/toggle/overview/index.html'), 'utf8');
+    assert.match(toggleExample, /class="sf-switch/u, 'the migration example is written as a switch');
+    assert.doesNotMatch(toggleExample, /class="[^"]*\bsf-toggle\b/u, 'no sf-toggle markup is left to copy');
+  }
 
   // The font tiles share their example with the plain radio; read the tile group.
   const types = await readFile(join(root, 'examples/components/radio/types/index.html'), 'utf8');
@@ -122,7 +125,7 @@ test('ui-doc documents each selection owner and its source-backed examples', {
   assert.equal((font.match(/type="radio"/g) || []).length, 3);
   assert.equal((font.match(/aria-label=/g) || []).length, 3);
 
-  for (const kind of ['switch', 'toggle']) {
+  for (const kind of ['switch', 'toggle'].filter((name) => expectations[name])) {
     for (const example of expectations[kind]) {
       const html = await readFile(join(root, `examples/${example}/index.html`), 'utf8');
       assert.match(html, /role="switch"/);
@@ -141,7 +144,6 @@ test('the size a Smart element accepts is a size its stylesheet draws', async ()
     checkbox: 'sf-checkbox',
     radio: 'sf-radio-button',
     switch: 'sf-switch',
-    toggle: 'sf-toggle',
   };
 
   for (const [kind, prefix] of Object.entries(selectors)) {

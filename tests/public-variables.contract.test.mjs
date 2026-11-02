@@ -18,8 +18,6 @@ const FOLDERS = {
   'image-field': 'smart/image-field',
   // sf-quantity draws the class component's markup, so the class sheet reads them.
   quantity: 'quantity',
-  // sf-toggle from its component.json (standard 1.3.8 §6, 2026-10-27).
-  toggle: 'toggle',
   // Group B of the form fields, with their move to standard 1.3.8 (2026-10-27).
   'country-code': 'country-code',
   // A Smart component whose sheet sits beside its template.

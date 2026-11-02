@@ -31,7 +31,7 @@ test('Breadcrumbs wrapper setup does not write through the author CSSOM',async()
   assert.doesNotMatch(source,/this\.style\.display\s*=/);
 });
 
-for (const kind of ['checkbox', 'radio', 'switch', 'toggle']) {
+for (const kind of ['checkbox', 'radio', 'switch']) {
   test(`${kind} applies root customization to the label without replacing its native input`,async()=>{
     const source=await read(`src/smart/${kind}/js/templates/default.js`);
     assert.match(source,/rootClass/);

@@ -173,14 +173,6 @@
       "state": "converted"
     },
     {
-      "component": "toggle",
-      "axis": "kind",
-      "legacy": [
-        "type"
-      ],
-      "state": "converted"
-    },
-    {
       "component": "tree-item",
       "axis": "kind",
       "legacy": [
@@ -376,8 +368,7 @@
       "range-slider",
       "switch",
       "tag",
-      "textarea",
-      "toggle"
+      "textarea"
     ],
     "aliases": [
       {

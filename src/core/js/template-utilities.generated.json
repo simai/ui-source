@@ -378,12 +378,6 @@
     "justify-content/default",
     "place-items/default"
   ],
-  "cl-toggle": [
-    "display/default",
-    "justify-content/default",
-    "place-items/default",
-    "transition-property/default"
-  ],
   "cl-tooltip": [
     "display/default",
     "flex-direction/default",

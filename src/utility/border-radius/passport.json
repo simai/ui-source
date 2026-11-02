@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.border-radius",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/border-radius/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/border-radius/xxl/scss/_sf_css__radius.scss",
     "src/utility/border-radius/xxl/scss/index.scss"
   ],
-  "content_sha256": "5f51a081f5ee81b6f828f91ed9bb02da0987bc9c38e3b69a81a874cc9f66e3ed",
+  "content_sha256": "ffd39600e6227d6cc7f2e93e797339fe8d0505297cd6c1b17499b85e31749bb3",
   "dependencies": [
     {
       "id": "tokens.border",

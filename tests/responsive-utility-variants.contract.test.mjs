@@ -15,7 +15,7 @@ test('xxl variants match every existing responsive utility family', () => {
         repositoryRoot,
     });
 
-    assert.equal(result.families.length, 87);
+    assert.equal(result.families.length, 86);
 
     const ruleRegistry = fs.readFileSync(
         path.join(repositoryRoot, 'src/core/js/rule.src.js'),
@@ -26,8 +26,8 @@ test('xxl variants match every existing responsive utility family', () => {
         'utf8',
     );
 
-    assert.equal((ruleRegistry.match(/utility\/.+\/xxl\/rule\.js/g) || []).length, 87);
-    assert.equal((fullUtilityRegistry.match(/utility\/.+\/xxl\/index\.scss/g) || []).length, 86);
+    assert.equal((ruleRegistry.match(/utility\/.+\/xxl\/rule\.js/g) || []).length, 86);
+    assert.equal((fullUtilityRegistry.match(/utility\/.+\/xxl\/index\.scss/g) || []).length, 85);
 
     const loader = fs.readFileSync(
         path.join(repositoryRoot, 'src/core/js/loader.js'),

@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
   <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icons/css/icons.css">
   <link rel="stylesheet" href="../../source/output/action-focus-browser/component/switch/css/switch.css">
-  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/toggle/css/toggle.css">
   <link rel="stylesheet" href="../../source/output/action-focus-browser/component/checkbox/css/checkbox.css">
   <link rel="stylesheet" href="../../source/output/action-focus-browser/component/radio/css/radio.css">
 </head>
@@ -21,11 +20,6 @@
 <section id="switch" class="grid gap-2"><h2>switch</h2><label class="sf-switch sf-switch--size-1 flex">
   <span class="sf-switch-toggler transition flex items-cross-center content-main-start"><input type="checkbox" role="switch" name="notifications" checked><span class="sf-switch-inner transition" aria-hidden="true"></span></span>
   <span class="sf-switch-container-wrap flex flex-col"><span class="sf-switch-top flex"><span class="sf-switch-container flex items-cross-center"><span class="sf-switch-text">Уведомления</span></span></span><span class="sf-switch-description">Сообщать о важных изменениях</span></span>
-</label>
-</section>
-<section id="toggle" class="grid gap-2"><h2>toggle</h2><label class="sf-toggle sf-toggle--simple sf-toggle--size-1 flex items-center">
-  <span class="sf-toggle-control"><input type="checkbox" role="switch" name="compact-mode"><span class="sf-toggle-container transition flex items-center content-main-start"><span class="sf-toggle-inner-wrap transition flex items-center content-main-center"><span class="sf-toggle-inner transition" aria-hidden="true"></span></span></span></span>
-  <span class="sf-toggle-text">Компактный режим</span>
 </label>
 </section>
 <section id="checkbox" class="grid gap-2"><h2>checkbox</h2><label class="sf-checkbox sf-checkbox--size-1 flex">
@@ -55,7 +49,6 @@
 <form id="smart-choices" class="grid gap-4">
   <h2>Smart: независимая форма</h2>
   <sf-switch label="Smart уведомления" name="smart-notifications" checked></sf-switch>
-  <sf-toggle label="Smart компактный режим" name="smart-compact" checked></sf-toggle>
   <sf-checkbox label="Smart обновления" name="smart-updates" checked></sf-checkbox>
   <sf-radio label="Smart почта" name="delivery" value="smart-email" checked></sf-radio>
   <sf-radio label="Smart файл" name="delivery" value="smart-download"></sf-radio>
@@ -65,7 +58,6 @@
   <button type="button" id="inspect-data" class="text-primary">Показать данные форм</button>
   <output id="form-data"></output>
 </form>
-<section id="toggle-matrix" class="grid gap-2"><h2>Toggle: варианты и размеры</h2></section>
 <form id="factory-choices" class="grid gap-2">
   <h2>Создание через конструкторы</h2>
   <button type="button" id="create-controls">Создать элементы</button>
@@ -74,45 +66,25 @@
 </form>
 </main>
 <script src="../../source/output/action-focus-browser/component/switch/js/switch.js"></script>
-<script src="../../source/output/action-focus-browser/component/toggle/js/toggle.js"></script>
 <script src="../../source/output/action-focus-browser/component/checkbox/js/checkbox.js"></script>
 <script src="../../source/output/action-focus-browser/component/radio/js/radio.js"></script>
 <script src="../../source/output/action-focus-browser/smart/icon/js/icon.js"></script>
 <script src="../../source/output/action-focus-browser/smart/switch/js/switch.js"></script>
-<script src="../../source/output/action-focus-browser/smart/toggle/js/toggle.js"></script>
 <script src="../../source/output/action-focus-browser/smart/checkbox/js/checkbox.js"></script>
 <script src="../../source/output/action-focus-browser/smart/radio/js/radio.js"></script>
 <script>
-// Clone source-backed markup to exercise the existing public variants.
-for (const type of ['simple', 'icon', 'short']) {
-  for (const size of ['1', '2']) {
-    const label = document.querySelector('#toggle label').cloneNode(true);
-    label.classList.remove('sf-toggle--simple', 'sf-toggle--size-1');
-    label.classList.add(`sf-toggle--${type}`, `sf-toggle--size-${size}`);
-    label.querySelector('input').name = `matrix-${type}-${size}`;
-    label.querySelector('.sf-toggle-text').textContent = `${type} ${size}`;
-    if (type === 'icon') {
-      const icon = document.createElement('i');
-      icon.className = 'sf-icon';
-      icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = 'check';
-      label.querySelector('.sf-toggle-inner').replaceWith(icon);
-    }
-    document.getElementById('toggle-matrix').append(label);
-  }
-}
 // A deliberately narrow test harness, not a component size or design token.
 const testModes = new URLSearchParams(location.search);
 if (testModes.has('rtl')) document.documentElement.dir = 'rtl';
 if (testModes.has('dark')) document.documentElement.className = 'theme-dark';
 if (testModes.has('disabled')) {
-  document.querySelectorAll('#choices input, #toggle-matrix input').forEach(input => { input.disabled = true; });
+  document.querySelectorAll('#choices input').forEach(input => { input.disabled = true; });
 }
 if (testModes.has('narrow')) {
   document.querySelector('main').style.width = '280px';
 }
 if (testModes.has('narrow') || testModes.has('long')) {
-  for (const selector of ['.sf-switch-text', '.sf-checkbox-label', '.sf-radio-button-text', '.sf-toggle-text']) {
+  for (const selector of ['.sf-switch-text', '.sf-checkbox-label', '.sf-radio-button-text']) {
     document.querySelectorAll(selector).forEach((label) => {
       label.textContent += ' — очень длинная подпись настройки для проверки переноса текста';
     });
@@ -124,7 +96,6 @@ document.getElementById('create-controls').addEventListener('click', (event) => 
   const definitions = [
     ['Checkbox', 'factory-checkbox', {title: 'Factory Checkbox'}],
     ['Switch', 'factory-switch', {label: 'Factory Switch'}],
-    ...['simple', 'icon', 'short'].map(type => ['Toggle', `factory-toggle-${type}`, {type, label: `Factory Toggle ${type}`}]),
     ['Radio', 'factory-radio', {title: 'Factory Radio A', value: 'a'}],
     ['Radio', 'factory-radio', {title: 'Factory Radio B', value: 'b', checked: false}],
     ['Radio', 'factory-font-radio', {type: 'font', count: 3, checked: 1, text: 'A', value: ['small', 'medium', 'large']}],

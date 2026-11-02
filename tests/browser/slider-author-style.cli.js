@@ -9,7 +9,7 @@ async page => {
     for(const path of ['component/swiper','smart/icons','smart/icon-buttons','smart/slider'])await page.addScriptTag({url:`${base}/${path}/js/${path.split('/').pop()}.js`});
     await page.evaluate(({dir,loop})=>{
       document.documentElement.dir=dir;document.documentElement.className=dir==='ltr'?'theme-light':'theme-dark';
-      document.querySelector('main').innerHTML=`<sf-slider id="subject" loop="${loop}" speed="0" thumbs root-style="padding:var(--sf-space-1)">${[1,2,3,4].map(i=>`<div slot="slide" class="bg-surface-container p-2 radius-default">Слайд ${i}<button type="button" class="sf-button">Действие ${i}</button></div>`).join('')}</sf-slider>`;
+      document.querySelector('main').innerHTML=`<sf-slider id="subject" loop="${loop}" speed="0" thumbs root-style="padding:var(--sf-space-1)">${[1,2,3,4].map(i=>`<div slot="slide" class="bg-surface-container p-2 radius-surface">Слайд ${i}<button type="button" class="sf-button">Действие ${i}</button></div>`).join('')}</sf-slider>`;
       window.changes=[];document.querySelector('#subject').addEventListener('sf-slide-change',e=>changes.push(e.detail.realIndex));
     },{dir,loop});
     await page.waitForFunction(()=>document.querySelector('#subject').getSlider()?.initialized);

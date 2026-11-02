@@ -66,8 +66,6 @@ const DRAW = {
   // its steppers are draw it.
   quantity: {css: ['quantity', 'icon-buttons'], js: 'quantity',
     html: '<sf-quantity label="Количество" value="3" min="0" max="10" size="1"></sf-quantity><sf-quantity label="Ошибка" value="3" invalid size="1"></sf-quantity>'},
-  // sf-toggle (deprecated, standard 1.3.8 §6): off and checked.
-  toggle: {css: ['toggle'], js: 'toggle', html: '<sf-toggle label="Тумблер"></sf-toggle><sf-toggle label="Включён" checked></sf-toggle>'},
   // The class menu's sheet, drawn by sf-menu as a column and as a row whose
   // panel is open, so the panel's own variables have a part to reach.
   menu: {css: ['menu', 'icons', 'icon-buttons', 'smart/smart/menu/css/menu.css'], js: 'menu',
@@ -228,7 +226,7 @@ const ROLES = {
   color: {properties: ['color'], value: 'rgb(4, 5, 6)'},
   // A divider between columns is a border at the inline edge (sf-workspace).
   'border-color': {properties: ['border-top-color', 'border-bottom-color', 'border-inline-start-color', 'border-inline-end-color'], value: 'rgb(7, 8, 9)'},
-  // A track drawn with an outline (sf-toggle).
+  // A drop target drawn with an outline (sf-tree-item).
   'outline-color': {properties: ['outline-color'], value: 'rgb(16, 17, 18)'},
   'border-width': {properties: ['border-top-width', 'border-bottom-width'], value: '7px'},
   radius: {properties: ['border-top-left-radius'], value: '13px'},

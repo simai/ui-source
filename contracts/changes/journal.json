@@ -1115,7 +1115,7 @@
     {
       "id": "utility-font-size-ext",
       "recorded_on": "2026-10-09",
-      "stage": "compat",
+      "stage": "removed",
       "kind": "utility",
       "summary": "The text-a0 … text-i9 classes set font size and line height equal to raw primitives, which is no type pair; nobody used them.",
       "items": [
@@ -1127,6 +1127,7 @@
       ],
       "deprecated_on": "2026-09-30",
       "remove_after": "2026-11-01",
+      "removed_on": "2026-11-02",
       "rewrite": "none",
       "manual": "Use the text scale classes, which pair a size with its line height.",
       "source": "ui-control/control/MIGRATION-DEBT.md"
@@ -1134,7 +1135,7 @@
     {
       "id": "token-radius-round",
       "recorded_on": "2026-10-09",
-      "stage": "compat",
+      "stage": "removed",
       "kind": "token",
       "summary": "Two names for one radius; rounded stays.",
       "items": [
@@ -1149,13 +1150,14 @@
       ],
       "deprecated_on": "2026-09-30",
       "remove_after": "2026-11-01",
+      "removed_on": "2026-11-02",
       "rewrite": "rename-token",
       "source": "ui-control/control/MIGRATION-DEBT.md"
     },
     {
       "id": "token-radius-default",
       "recorded_on": "2026-10-09",
-      "stage": "compat",
+      "stage": "removed",
       "kind": "token",
       "summary": "The radius names its role now: --sf-radius--ui for a control, --sf-radius--surface for a block.",
       "items": [
@@ -1170,6 +1172,7 @@
       ],
       "deprecated_on": "2026-09-30",
       "remove_after": "2026-11-01",
+      "removed_on": "2026-11-02",
       "rewrite": "manual",
       "manual": "A control takes --sf-radius--ui (4px); a large block takes --sf-radius--surface (8px), which is not what the old 4px gave it. In the same pair as the removal: the ui-doc guide page design-tokens/index.md (section «Радиусы») drops the old name, and the generated design-tokens/all-tokens.md is regenerated with scripts/build-token-reference.mjs, or docs:check goes red in between.",
       "source": "ui-control/control/MIGRATION-DEBT.md"
@@ -1177,7 +1180,7 @@
     {
       "id": "component-toggle-to-switch",
       "recorded_on": "2026-10-09",
-      "stage": "compat",
+      "stage": "removed",
       "kind": "component",
       "summary": "sf-toggle and sf-switch drew one control; the switch carries both looks now.",
       "items": [
@@ -1192,6 +1195,7 @@
       ],
       "deprecated_on": "2026-09-30",
       "remove_after": "2026-11-01",
+      "removed_on": "2026-11-02",
       "rewrite": "replace-component",
       "manual": "Sizes do not map one to one: toggle size 1 was a 40×20 track, the switch is 48×24 at size 1 on desktop. sf-switch--short and sf-switch--icon give the toggle's two looks.",
       "source": "ui-control/control/MIGRATION-DEBT.md"
@@ -3210,7 +3214,7 @@
       "remove_after": "2027-01-01",
       "removed_on": "2026-11-02",
       "rewrite": "manual",
-      "manual": "Drop the script tag that links component/ajax by hand. SF.Ajax was never public and stays internal to the legacy system scripts; call fetch() directly. To load a part of the page, use the Smart component sf-fragment once it ships. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "manual": "Drop the script tag that links component/ajax by hand. SF.Ajax was never public and stays internal to the legacy system scripts; call fetch() directly. To load a part of the page, use the Smart component sf-include (src, load=\"now\" or \"view\"). deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
       "owner": "ui-control",
       "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
     },
@@ -3246,9 +3250,9 @@
       "rewrite": "manual",
       "examples": {
         "before": "<div sf-ajaxload='{\"src\":\"/ajax/news.php\"}'></div>",
-        "after": "<sf-fragment src=\"/ajax/news.php\" load=\"view\"></sf-fragment>"
+        "after": "<sf-include src=\"/ajax/news.php\" load=\"view\"></sf-include>"
       },
-      "manual": "Load the content with fetch() when the element enters the viewport (an IntersectionObserver), or use the Smart component sf-fragment (src, load=\"view\") once it ships. [sf-canceltrack] has no successor: an observer stops by itself after the first load. Bitrix sites keep their own frozen copy of the unit. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
+      "manual": "Load the content with fetch() when the element enters the viewport (an IntersectionObserver), or use the Smart component sf-include (src, load=\"view\"), which ships in the same pair; sf-fragment is the core's fragment boundary, not a loader. [sf-canceltrack] has no successor: an observer stops by itself after the first load. Bitrix sites keep their own frozen copy of the unit. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
       "owner": "ui-control",
       "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
     },

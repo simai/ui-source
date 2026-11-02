@@ -760,13 +760,6 @@
       "summary": "The Toast component's script API, loaded with the component (component/toast); its methods are the component's documentation."
     },
     {
-      "name": "SF.Toggle",
-      "status": "public",
-      "kind": "object",
-      "loaded_by": "component/toggle",
-      "summary": "The Toggle component's script API, loaded with the component (component/toggle); its methods are the component's documentation."
-    },
-    {
       "name": "SF.Tree",
       "status": "public",
       "kind": "object",

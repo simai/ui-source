@@ -117,7 +117,7 @@ async page => {
   await loadExample('smart-disabled', true);
   if (!(await page.locator('input[type=file]').isDisabled())) failures.push({reason: 'Smart disabled example'});
   await loadExample('smart-customization', true);
-  const customized = await page.locator('.sf-file-upload').evaluate(root => ({surface: root.classList.contains('bg-surface-container'), radius: root.classList.contains('radius-default')}));
+  const customized = await page.locator('.sf-file-upload').evaluate(root => ({surface: root.classList.contains('bg-surface-container'), radius: root.classList.contains('radius-default') || root.classList.contains('radius-surface')}));
   if (!customized.surface || !customized.radius) failures.push({reason: 'Smart utility customization', customized});
 
   return {

@@ -30,8 +30,10 @@ the Smart `sf-button` projection.
 - radius: the normal control radius `--sf-radius--ui`, or the explicit
   `radius-square` and `radius-rounded` overrides.
 
-`radius-default` maps to the large-surface radius and is retained only for
-compatibility. It is not a normal button variation.
+`radius-default` is the control radius `--sf-radius--ui`, the same as no
+radius class; it stays for the Smart `radius="default"` value. The utility
+class of that name and the `--sf-radius-default` token were removed on
+2026-11-02 (journal `token-radius-default`).
 
 Five emphases, each in an accent (`primary`) and a neutral (`on-surface`)
 scheme:

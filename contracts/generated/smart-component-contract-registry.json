@@ -2500,46 +2500,6 @@
       "capabilities": [
         "render",
         "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [
-          "native-input",
-          "track",
-          "thumb",
-          "label"
-        ],
-        "uses": [
-          "component.icons",
-          "component.toggle"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-toggle",
-      "id": "smart.toggle",
-      "kind": "smart",
-      "lifecycle": "deprecated",
-      "manifest_path": "src/smart/toggle/smart.manifest.json",
-      "manifest_sha256": "4b31d785c11360fddaab5ed0705b21e9935d084249940ea9af360d56b5bdf558",
-      "reuse_mode": "both",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
-      "tags": [
-        "toggle"
-      ],
-      "title": "Toggle"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
         "responsive",
         "accessibility"
       ],

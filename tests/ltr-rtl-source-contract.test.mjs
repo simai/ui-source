@@ -8,12 +8,8 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 test('flow-relative source declarations use logical inline properties', async () => {
   const cases = [
     ['src/component/dropdown/scss/_css__custom.scss', 'inset-inline-end: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));'],
-    ['src/component/toggle/scss/_css_toggle_custom.scss', 'inset-inline-start: 0;'],
-    ['src/component/toggle/scss/_css_toggle_custom.scss', 'inset-inline-end: 0;'],
     ['src/core/scss/_sf_css__typograpy.scss', 'padding-inline-start: var(--sf-text--size-2);'],
     ['src/plugin/plugin3/scss/color/color.scss', 'padding-inline-start: 2rem;'],
-    ['src/smart/toggle/scss/styles_default.scss', 'inset-inline-start: var(--sf-toggle--top);'],
-    ['src/smart/toggle/scss/styles_default.scss', 'inset-inline-start: calc(var(--sf-a2) * -1);'],
   ];
 
   for (const [path, declaration] of cases) {
@@ -89,12 +85,6 @@ test('Smart Drawer preserves physical aliases and adds logical placement', async
   assert.match(styles, /data-sf-drawer-placement='left'/);
   assert.match(styles, /data-sf-drawer-placement='right'/);
   assert.match(docs, /Physical `left\|right` values remain supported/);
-});
-
-test('smart toggle mirrors its checked translation in RTL', async () => {
-  const source = await read('src/smart/toggle/scss/styles_default.scss');
-  assert.match(source, /\.sf-toggle:dir\(rtl\)[^{]+\{[^}]*translateX\(calc\(var\(--sf-checkbox-sl-r-translate\) \* -1\)\)/s);
-  assert.match(source, /translateX\(var\(--sf-checkbox-sl-r-translate\)\)/);
 });
 
 test('modal keeps physical values and adds semantic inline variants', async () => {

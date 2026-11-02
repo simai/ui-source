@@ -105,7 +105,7 @@ constant semantic boundary between adjacent rows.
 
 | Role                           | Component token                          | Framework source                       |
 | ------------------------------ | ---------------------------------------- | -------------------------------------- |
-| large surface radius           | `--sf-accordion--radius`                 | `--sf-radius-default`                  |
+| large surface radius           | `--sf-accordion--radius`                 | `--sf-radius--surface`                 |
 | outline and row boundary width | `--sf-accordion--border-width`           | `--sf-px`                              |
 | outline and row boundary color | `--sf-accordion--border-color`           | `--sf-outline-variant`                 |
 | trigger block inset            | `--sf-accordion--trigger-padding-block`  | `--sf-space-2`                         |
@@ -122,8 +122,8 @@ does not currently expose a higher-level role token.
 
 | Variant | Radius                | Fill                       | Persistent outer boundary |
 | ------- | --------------------- | -------------------------- | ------------------------- |
-| default | `--sf-radius-default` | semantic surface container | none                      |
-| outline | `--sf-radius-default` | transparent                | complete semantic outline |
+| default | `--sf-radius--surface` | semantic surface container | none                      |
+| outline | `--sf-radius--surface` | transparent                | complete semantic outline |
 | flush   | `--sf-radius-square`  | transparent                | block-end row separator   |
 
 The trigger and panel keep the same semantic inset in every variant. Borders

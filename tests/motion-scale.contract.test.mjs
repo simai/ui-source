@@ -34,11 +34,10 @@ test('motion: the transition utility takes its duration and curve from the scale
 });
 
 /* Everything else that moves says how long in a token too. Zero is exempt:
-   that is how motion is switched off, not a duration. The two exceptions are
-   named, so adding a third has to be a decision rather than a slip. */
+   that is how motion is switched off, not a duration. The exception is
+   named, so adding a second has to be a decision rather than a slip. */
 const EXEMPT = new Set([
   'core/scss/_sf_css__loader.scss',              // бесконечный отскок 2.2s, шкала так далеко не идёт
-  'smart/toggle/scss/styles_default.scss',       // компонент уезжает в мажорной версии
 ]);
 test('motion: no new literal duration appears outside the named exceptions', async () => {
   const found = [];

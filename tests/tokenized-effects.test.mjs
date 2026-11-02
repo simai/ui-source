@@ -23,9 +23,3 @@ test('tabs and screen-reader clipping use the fixed pixel primitive consistently
   assert.equal((sr.match(/var\(--sf-px\)/g)||[]).length,3);
   assert.match(sr,/margin: calc\(-1 \* var\(--sf-px\)\)/);
 });
-
-test('toggle focus shadow uses dimensionless zero while keeping token widths',()=>{
-  const toggle=read('smart/toggle/scss/styles_default.scss');
-  assert.doesNotMatch(toggle,/0px/);
-  assert.match(toggle,/box-shadow: 0 0 var\(--sf-a1\) var\(--sf-a5\)/);
-});

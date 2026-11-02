@@ -40,7 +40,6 @@ test('template context: the resolved names the templates read are passed', async
     skeleton: ['variant', 'type'],
     tag: ['kind', 'type', 'size', 'inline', 'line'],
     textarea: ['type', 'minlength', 'maxlength'],
-    toggle: ['type'],
   };
   for (const [component, names] of Object.entries(expected)) {
     const source = await read(`src/smart/${component}/index.js`);

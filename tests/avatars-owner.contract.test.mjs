@@ -114,6 +114,6 @@ test('Avatar documentation uses real Framework-only examples', {
   assert.match(status, /в сети/);
   assert.match(group, /role="list"/);
   assert.match(cards, /sf-avatar-card--square/);
-  assert.match(cards, /radius-default/);
+  assert.match(cards, /radius-(?:default|surface)/); // ui-doc moves to radius-surface with the 2026-11-01 sweep
   assert.doesNotMatch(examples, /<style\b|style=/);
 });

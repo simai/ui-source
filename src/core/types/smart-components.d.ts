@@ -66,8 +66,6 @@ export type SmartComponentCreateName =
     | 'sf-skeleton'
     | 'spinner'
     | 'sf-spinner'
-    | 'toggle'
-    | 'sf-toggle'
     | 'steps'
     | 'sf-steps'
     | 'switch'
@@ -120,45 +118,43 @@ export type SmartComponentCreateResult<TName extends string> =
                             ? HTMLSfSkeletonElement
                             : TName extends 'spinner' | 'sf-spinner'
                                 ? HTMLSfSpinnerElement
-                                : TName extends 'toggle' | 'sf-toggle'
-                                    ? HTMLSfToggleElement
-                                    : TName extends 'steps' | 'sf-steps'
-                                        ? HTMLSfStepsElement
-                                        : TName extends 'switch' | 'sf-switch'
-                                            ? HTMLSfSwitchElement
-                                            : TName extends 'radio' | 'sf-radio'
-                                                ? HTMLSfRadioElement
-                                                : TName extends 'checkbox' | 'sf-checkbox'
-                                                    ? HTMLSfCheckboxElement
-                                                    : TName extends 'button' | 'sf-button'
-                                                        ? HTMLSfButtonElement
-                                                        : TName extends 'icon-button' | 'sf-icon-button'
-                                                            ? HTMLSfIconButtonElement
-                                                            : TName extends 'slider' | 'sf-slider'
-                                                                ? HTMLSfSliderElement
-                                                                : TName extends 'modal' | 'sf-modal'
-                                                                    ? HTMLSfModalElement
-                                                                    : TName extends 'gallery' | 'sf-gallery'
-                                                                        ? HTMLSfGalleryElement
-                                                                        : TName extends 'dropdown' | 'sf-dropdown'
-                                                                            ? HTMLSfDropdownElement
-                                                                            : TName extends 'context-menu' | 'sf-context-menu'
-                                                                                ? HTMLSfContextMenuElement
-                                                                                : TName extends 'input' | 'sf-input'
-                                                                                    ? HTMLSfInputElement
-                                                                                    : TName extends 'textarea' | 'sf-textarea'
-                                                                                        ? HTMLSfTextareaElement
-                                                                                        : TName extends 'progress-bar' | 'sf-progress-bar'
-                                                                                            ? HTMLSfProgressBarElement
-                                                                                            : TName extends 'progress-scale' | 'sf-progress-scale'
-                                                                                                ? HTMLSfProgressScaleElement
-                                                                                                : TName extends 'pagination' | 'sf-pagination'
-                                                                                                    ? HTMLSfPaginationElement
-                                                                                                    : TName extends 'tabs' | 'sf-tabs'
-                                                                                                        ? HTMLSfTabsElement
-                                                                                                        : TName extends 'file-upload' | 'sf-file-upload'
-                                                                                                            ? HTMLSfFileUploadElement
-                                                                                                            : HTMLElement;
+                                : TName extends 'steps' | 'sf-steps'
+                                    ? HTMLSfStepsElement
+                                    : TName extends 'switch' | 'sf-switch'
+                                        ? HTMLSfSwitchElement
+                                        : TName extends 'radio' | 'sf-radio'
+                                            ? HTMLSfRadioElement
+                                            : TName extends 'checkbox' | 'sf-checkbox'
+                                                ? HTMLSfCheckboxElement
+                                                : TName extends 'button' | 'sf-button'
+                                                    ? HTMLSfButtonElement
+                                                    : TName extends 'icon-button' | 'sf-icon-button'
+                                                        ? HTMLSfIconButtonElement
+                                                        : TName extends 'slider' | 'sf-slider'
+                                                            ? HTMLSfSliderElement
+                                                            : TName extends 'modal' | 'sf-modal'
+                                                                ? HTMLSfModalElement
+                                                                : TName extends 'gallery' | 'sf-gallery'
+                                                                    ? HTMLSfGalleryElement
+                                                                    : TName extends 'dropdown' | 'sf-dropdown'
+                                                                        ? HTMLSfDropdownElement
+                                                                        : TName extends 'context-menu' | 'sf-context-menu'
+                                                                            ? HTMLSfContextMenuElement
+                                                                            : TName extends 'input' | 'sf-input'
+                                                                                ? HTMLSfInputElement
+                                                                                : TName extends 'textarea' | 'sf-textarea'
+                                                                                    ? HTMLSfTextareaElement
+                                                                                    : TName extends 'progress-bar' | 'sf-progress-bar'
+                                                                                        ? HTMLSfProgressBarElement
+                                                                                        : TName extends 'progress-scale' | 'sf-progress-scale'
+                                                                                            ? HTMLSfProgressScaleElement
+                                                                                            : TName extends 'pagination' | 'sf-pagination'
+                                                                                                ? HTMLSfPaginationElement
+                                                                                                : TName extends 'tabs' | 'sf-tabs'
+                                                                                                    ? HTMLSfTabsElement
+                                                                                                    : TName extends 'file-upload' | 'sf-file-upload'
+                                                                                                        ? HTMLSfFileUploadElement
+                                                                                                        : HTMLElement;
 
 export interface SmartComponentElement<TState = SmartComponentState>
     extends HTMLElement {
@@ -517,45 +513,6 @@ export interface HTMLSfSkeletonElement extends SmartComponentElement {}
 export interface HTMLSfSpinnerElement extends SmartComponentElement {
   getSpinnerRoot(): HTMLElement | null;
   refreshSpinner(): this;
-}
-
-export interface HTMLSfToggleState extends SmartComponentState {
-  type: string;
-  size: string;
-  checked: boolean;
-  disabled: boolean;
-  name: string;
-  value: string;
-  icon: string;
-  label: string;
-}
-
-export interface HTMLSfToggleElement
-    extends SmartComponentElement<HTMLSfToggleState> {
-  size: string;
-  type: string;
-  label: string;
-  icon: string;
-  name: string;
-  checked: boolean;
-  disabled: boolean;
-  value: string;
-  getInputElement(): HTMLInputElement | null;
-  isChecked(): boolean;
-  setChecked(nextValue?: boolean): this;
-  setDisabled(nextValue?: boolean): this;
-  onChange(
-      handler: EventListenerOrEventListenerObject,
-      options?: AddEventListenerOptions | boolean,
-  ): this;
-  onFocus(
-      handler: EventListenerOrEventListenerObject,
-      options?: AddEventListenerOptions | boolean,
-  ): this;
-  onBlur(
-      handler: EventListenerOrEventListenerObject,
-      options?: AddEventListenerOptions | boolean,
-  ): this;
 }
 
 export interface HTMLSfStepsElement extends SmartComponentElement {
@@ -930,7 +887,6 @@ declare global {
     'sf-tag': HTMLSfTagElement;
     'sf-skeleton': HTMLSfSkeletonElement;
     'sf-spinner': HTMLSfSpinnerElement;
-    'sf-toggle': HTMLSfToggleElement;
     'sf-steps': HTMLSfStepsElement;
     'sf-switch': HTMLSfSwitchElement;
     'sf-radio': HTMLSfRadioElement;

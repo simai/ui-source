@@ -4,7 +4,7 @@ async (page) => {
   await page.emulateMedia({forcedColors: 'none'});
   for (const width of [390, 1280]) for (const theme of ['light', 'dark']) {
     await page.setViewportSize({width, height: 900});
-    for (const kind of ['checkbox', 'radio', 'switch', 'toggle']) {
+    for (const kind of ['checkbox', 'radio', 'switch']) {
       await page.goto(`http://127.0.0.1:8765/ui-source/tests/fixtures/selection-controls-lab.html${theme === 'dark' ? '?dark' : ''}`);
       const selector = `#smart-choices sf-${kind}${kind === 'radio' ? ':last-of-type' : ''}`;
       const host = page.locator(selector);

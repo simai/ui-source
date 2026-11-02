@@ -6,7 +6,7 @@ import test from 'node:test';
 const source = (file) => readFile(new URL(`../src/${file}`, import.meta.url), 'utf8');
 for (const [name, file] of [
   ['checkbox', '_css__checkbox.scss'], ['radio', '_css_radio.scss'],
-  ['switch', '_css_switch.scss'], ['toggle', '_css_toggle.scss'],
+  ['switch', '_css_switch.scss'],
 ]) {
   test(`${name}: keyboard-only visual focus and high-contrast fallback`, async () => {
     const css = await source(`component/${name}/scss/${file}`);
@@ -57,7 +57,7 @@ test('Switch never hides the native checkbox from the accessibility tree', async
 test('long selection labels can wrap without shrinking the indicator', async () => {
   for (const [kind, file] of [
     ['switch', '_css_switch_custom.scss'], ['radio', '_css_radio_custom.scss'],
-    ['checkbox', '_custom__checkbox.scss'], ['toggle', '_css_toggle_custom.scss'],
+    ['checkbox', '_custom__checkbox.scss'],
   ]) {
     const css = await source(`component/${kind}/scss/${file}`);
     assert.match(css, /min-width:\s*0/);
@@ -67,10 +67,3 @@ test('long selection labels can wrap without shrinking the indicator', async () 
   }
 });
 
-test('Toggle off-state has a role-colored boundary and visible simple/icon thumb', async () => {
-  const css = await source('component/toggle/scss/_css_toggle.scss');
-  assert.match(css, /outline: var\(--sf-px\) solid var\(--sf-toggle-container--outline-color, var\(--sf-toggle-border-color, var\(--sf-outline\)\)\)/);
-  assert.match(css, /\.sf-toggle\.sf-toggle--simple \.sf-toggle-inner \{\s*--sf-toggle-inner--background-color: var\(--sf-on-surface-variant\)/);
-  assert.match(css, /\.sf-toggle\.sf-toggle--icon \.sf-toggle-inner-wrap \{\s*--sf-toggle-inner-wrap--background-color: var\(--sf-on-surface-variant\)/);
-  assert.match(css, /--sf-toggle-container--outline-color: var\(--sf-outline-disable\)/);
-});

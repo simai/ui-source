@@ -60,7 +60,7 @@ async page => {
   }));
   check('status example provides visible text equivalents', await status.evaluate(() => document.body.textContent.includes('в сети') && document.body.textContent.includes('не в сети') && document.body.textContent.includes('организация')));
   check('group exposes list semantics and only the add action is a button', await group.evaluate(() => document.querySelector('[role="list"]') && document.querySelectorAll('[role="listitem"]').length === 3 && document.querySelectorAll('button').length === 1));
-  check('cards use canonical BEM variants and surface utilities', await cards.evaluate(() => document.querySelector('.sf-avatar-card--square.radius-default') && document.querySelector('.sf-avatar-card--portrait.radius-default')));
+  check('cards use canonical BEM variants and surface utilities', await cards.evaluate(() => document.querySelector('.sf-avatar-card--square.radius-default, .sf-avatar-card--square.radius-surface') && document.querySelector('.sf-avatar-card--portrait.radius-default')));
 
   await page.setViewportSize({width: 390, height: 844});
   check('mobile documentation has no horizontal overflow', await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1));

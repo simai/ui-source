@@ -321,7 +321,7 @@ try {
         };
       };
       const probe = document.createElement('div');
-      probe.style.borderTopLeftRadius = 'var(--sf-radius-default)';
+      probe.style.borderTopLeftRadius = 'var(--sf-radius--ui)';
       document.body.append(probe);
       const named = parseFloat(getComputedStyle(probe).borderTopLeftRadius);
       probe.remove();
@@ -340,7 +340,7 @@ try {
     for (const row of rows.rows) {
       check(`radius ${row.radius} size ${row.size}: the track is the plate's radius plus the padding`, concentric(row), row);
       if (row.radius === 'none') check(`radius none size ${row.size}: the plate has the button's UI radius`, row.plate > 0, row);
-      if (row.radius === 'default') check(`radius default size ${row.size}: the plate takes --sf-radius-default, as sf-button`, Math.abs(row.plate - rows.named) < 0.01 && row.plate > 0, {row, named: rows.named});
+      if (row.radius === 'default') check(`radius default size ${row.size}: the plate takes --sf-radius--ui, as sf-button`, Math.abs(row.plate - rows.named) < 0.01 && row.plate > 0, {row, named: rows.named});
       if (row.radius === 'square') check(`radius square size ${row.size}: the plate is square, the track rounded by the padding`, row.plate === 0 && row.track === row.padding, row);
       if (row.radius === 'rounded') check(`radius rounded size ${row.size}: plate and track are pills`, row.track >= row.trackHeight / 2 && row.plate >= row.plateHeight / 2, row);
     }

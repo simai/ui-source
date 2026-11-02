@@ -148,7 +148,7 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /border-radius: var\(--sf-button-group--radius\);/);
   assert.match(styles, /--sf-button-group--plate-radius: var\(--sf-button-group-radius, var\(--sf-button-radius, var\(--sf-radius--ui\)\)\)/);
   assert.match(styles, /--sf-button-group--radius: calc\(var\(--sf-button-group--plate-radius\) \+ var\(--sf-button-group--padding\)\)/);
-  for (const [radius, value] of [['default', 'var(--sf-radius-default)'], ['square', 'calc(var(--sf-px) * 0)'], ['rounded', 'var(--sf-radius-rounded)']]) {
+  for (const [radius, value] of [['default', 'var(--sf-radius--ui)'], ['square', 'calc(var(--sf-px) * 0)'], ['rounded', 'var(--sf-radius-rounded)']]) {
     assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--radius-${radius} {\n    --sf-button-group--plate-radius: ${value};`), radius);
   }
   for (const size of ['1\\/3', '1\\/2', '2', '3']) assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--size-${size} {`), size);
