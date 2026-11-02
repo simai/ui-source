@@ -222,19 +222,27 @@
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
     --sf-button--background-color: transparent;
-    --sf-button--border-color: var(--sf-tabs-indicator-color, var(--sf-outline));
+    --sf-button--border-color: var(--sf-tabs-indicator-color, var(--sf-primary));
     --sf-icon-button--background-color: transparent;
-    --sf-icon-button--border-color: var(--sf-tabs-indicator-color, var(--sf-outline));
+    --sf-icon-button--border-color: var(--sf-tabs-indicator-color, var(--sf-primary));
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container,
+  // Underline: the resting tabs are quieter than the chosen one, which is
+  // marked by full ink and a primary line. With the chosen label on
+  // on-surface-active and the others on on-surface, the chosen tab read
+  // dimmer than the rest in the dark theme and its grey line as a border,
+  // so it looked disabled (ui-effects, 2026-11-01).
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface-variant));
+  }
+
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-variant));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
@@ -252,11 +260,11 @@
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface-active);
+    --sf-icon--color: var(--sf-on-surface);
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
-    --sf-button-text-container--color: var(--sf-on-surface-active);
+    --sf-button-text-container--color: var(--sf-on-surface);
   }
 
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),

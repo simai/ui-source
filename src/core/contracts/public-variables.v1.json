@@ -947,7 +947,7 @@
           "name": "--sf-tabs-indicator-color",
           "role": "indicator-color",
           "summary": "The colour of the line under the selected tab, in the underline appearance.",
-          "default": "var(--sf-outline)",
+          "default": "var(--sf-primary)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
