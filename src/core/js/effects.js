@@ -896,7 +896,11 @@ async function menuElement(document) {
   menu.addEventListener('sf-context-menu-select', (event) => {
     const id = event.detail?.id;
     const choice = aboutChoice;
-    if (id === 'sf-effect-motion') choice?.motion();
+    if (id === 'sf-effect-motion' && choice) {
+      choice.motion();
+      // The site's own pause control follows what the menu did.
+      choice.element.dispatchEvent(new globalThis.CustomEvent('sf-effect-motion', {bubbles: true, detail: {paused: Boolean(choice.paused())}}));
+    }
     else if (id === 'sf-effect-link') {
       // The link opens in a new tab with no opener and no referrer; the row's
       // own navigation is kept from replacing the page.

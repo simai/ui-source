@@ -359,6 +359,9 @@ are areas: the gaps and the other cards keep the browser's menu.
 
 ## Events
 
+- `sf-effect-motion` (bubbles, on the element): the about menu paused or
+  resumed the placement (`detail: {paused}`), so a site's own pause control
+  can follow. A site that calls `pause()` or `resume()` itself gets no event.
 - `sf-effect-refused` (bubbles, on the element): `detail: {effect, reason,
   ...}`, with a console warning. Sent for every refused load and for a
   placement hidden because its pair is foreign or was refused.

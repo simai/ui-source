@@ -178,6 +178,10 @@ try {
 
   // Pause and resume through the menu, as the placement's pause.
   expect('the effect moves before', await moving(page, 'inline'), true);
+  await page.evaluate(() => {
+    window.__motion = [];
+    document.querySelector('#inline').addEventListener('sf-effect-motion', (event) => window.__motion.push(event.detail.paused));
+  });
   await choose(page, 'Pause motion');
   expect('the menu closes after a choice', (await menu(page)).open, false);
   expect('Pause motion stops the drawing', await moving(page, 'inline'), false);
@@ -186,6 +190,7 @@ try {
   expect('the row offers to resume', (await menu(page)).items.at(-1), {text: 'Resume motion', href: null});
   await choose(page, 'Resume motion');
   expect('Resume motion restarts the drawing', await moving(page, 'inline'), true);
+  expect('the menu tells the site what it did', await page.evaluate(() => window.__motion), [true, false]);
 
   // Windows mode: an empty window card is background; the gap and a plain card are not.
   expect('a window card opens the menu', await rightClick(page, await point(page, 'centre', 'w2')), {prevented: true});
