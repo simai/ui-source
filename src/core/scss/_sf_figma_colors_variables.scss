@@ -281,28 +281,66 @@
        theme has a set of its own (HCT chroma 48, hues 5 to 325, the generator's
        tones, tests/avatar-tones.contract.test.mjs holds them). Tone 50 lays the
        plate on the fill family of the alpha scale, 20 light and 32 dark; tone 30
-       and tone 85 are the ink. */
+       and tone 85 are the ink.
+
+       The chart series take seven of the same hues rather than a set of their
+       own (--sf-chart-2 to -8 in the theme; SIMAI Chart D4): a solid step per
+       theme picked for 3:1 on the surfaces and for distance under colour-vision
+       deficiency, and the whole fill family on tone 50 for area fills, 12/16/20
+       light and 24/28/32 dark (tests/chart-colours.contract.test.mjs holds
+       them). Indigo sits beside the primary hue and is left out of the chart. */
+    --sf-tone-rose-50--alfa-12: #b858711f;
+    --sf-tone-rose-50--alfa-16: #b8587129;
     --sf-tone-rose-50--alfa-20: #b8587133;
+    --sf-tone-rose-50--alfa-24: #b858713d;
+    --sf-tone-rose-50--alfa-28: #b8587147;
     --sf-tone-rose-50--alfa-32: #b8587152;
     --sf-tone-rose-30: #7c2942;
+    --sf-tone-rose-50: #b85871;
+    --sf-tone-rose-60: #d7718b;
     --sf-tone-rose-85: #ffc6d1;
+    --sf-tone-amber-50--alfa-12: #ac67041f;
+    --sf-tone-amber-50--alfa-16: #ac670429;
     --sf-tone-amber-50--alfa-20: #ac670433;
+    --sf-tone-amber-50--alfa-24: #ac67043d;
+    --sf-tone-amber-50--alfa-28: #ac670447;
     --sf-tone-amber-50--alfa-32: #ac670452;
     --sf-tone-amber-30: #693c00;
+    --sf-tone-amber-60: #cb8024;
     --sf-tone-amber-85: #ffcb98;
+    --sf-tone-lime-50--alfa-12: #7d7b001f;
+    --sf-tone-lime-50--alfa-16: #7d7b0029;
     --sf-tone-lime-50--alfa-20: #7d7b0033;
+    --sf-tone-lime-50--alfa-24: #7d7b003d;
+    --sf-tone-lime-50--alfa-28: #7d7b0047;
     --sf-tone-lime-50--alfa-32: #7d7b0052;
     --sf-tone-lime-30: #4a4900;
+    --sf-tone-lime-50: #7d7b00;
+    --sf-tone-lime-60: #979523;
     --sf-tone-lime-85: #dcda62;
+    --sf-tone-green-50--alfa-12: #3886471f;
+    --sf-tone-green-50--alfa-16: #38864729;
     --sf-tone-green-50--alfa-20: #38864733;
+    --sf-tone-green-50--alfa-24: #3886473d;
+    --sf-tone-green-50--alfa-28: #38864747;
     --sf-tone-green-50--alfa-32: #38864752;
     --sf-tone-green-30: #00531f;
     --sf-tone-green-85: #95e79d;
+    --sf-tone-teal-50--alfa-12: #00857e1f;
+    --sf-tone-teal-50--alfa-16: #00857e29;
     --sf-tone-teal-50--alfa-20: #00857e33;
+    --sf-tone-teal-50--alfa-24: #00857e3d;
+    --sf-tone-teal-50--alfa-28: #00857e47;
     --sf-tone-teal-50--alfa-32: #00857e52;
     --sf-tone-teal-30: #00504b;
+    --sf-tone-teal-50: #00857e;
+    --sf-tone-teal-60: #00a299;
     --sf-tone-teal-85: #61e9de;
+    --sf-tone-sky-50--alfa-12: #157db91f;
+    --sf-tone-sky-50--alfa-16: #157db929;
     --sf-tone-sky-50--alfa-20: #157db933;
+    --sf-tone-sky-50--alfa-24: #157db93d;
+    --sf-tone-sky-50--alfa-28: #157db947;
     --sf-tone-sky-50--alfa-32: #157db952;
     --sf-tone-sky-30: #004b72;
     --sf-tone-sky-85: #afd9ff;
@@ -310,7 +348,11 @@
     --sf-tone-indigo-50--alfa-32: #6d6ec452;
     --sf-tone-indigo-30: #3b3d8f;
     --sf-tone-indigo-85: #d1d0ff;
+    --sf-tone-violet-50--alfa-12: #9e5faa1f;
+    --sf-tone-violet-50--alfa-16: #9e5faa29;
     --sf-tone-violet-50--alfa-20: #9e5faa33;
+    --sf-tone-violet-50--alfa-24: #9e5faa3d;
+    --sf-tone-violet-50--alfa-28: #9e5faa47;
     --sf-tone-violet-50--alfa-32: #9e5faa52;
     --sf-tone-violet-30: #682e76;
     --sf-tone-violet-85: #f9c2ff;

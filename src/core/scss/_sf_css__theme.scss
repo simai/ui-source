@@ -251,6 +251,63 @@
     --sf-on-tone-indigo-container: light-dark(var(--sf-tone-indigo-30), var(--sf-tone-indigo-85));
     --sf-tone-violet-container: light-dark(var(--sf-tone-violet-50--alfa-20), var(--sf-tone-violet-50--alfa-32));
     --sf-on-tone-violet-container: light-dark(var(--sf-tone-violet-30), var(--sf-tone-violet-85));
+    /* The series of a chart, in order: one hue per category, eight of them
+       (SIMAI Chart D4, parameters 8.3). The first is the primary graphic tone,
+       so a chart of one series is the brand colour and moves with a theme's
+       colour; the other seven are the fixed hues of the initials, which keep
+       their names under every theme. Indigo is left out, being the primary's
+       neighbour. Each holds 3:1 on surfaces 0 to 2 in both themes (WCAG
+       1.4.11); the first five stay apart under protanopia, deuteranopia and
+       tritanopia, where hue alone fails, by lightness too (tones 30 and 50
+       light, 60 and 85 dark); and each series stands far from the one before
+       it. tests/chart-colours.contract.test.mjs computes all of it rather
+       than trusting this comment. A series outside
+       the first five should not be told by colour alone. A project theme
+       overrides a role like any other.
+
+       The fill is an area under a line or a band, on the fill family of the
+       alpha scale and on tone 50 of the hue, as the containers of the
+       families are: 12, 16 and 20 light, 24, 28 and 32 dark, for rest, hover
+       and press. */
+    --sf-chart-1: light-dark(var(--sf-primary-50), var(--sf-primary-60));
+    --sf-chart-2: light-dark(var(--sf-tone-rose-50), var(--sf-tone-rose-60));
+    --sf-chart-3: light-dark(var(--sf-tone-green-30), var(--sf-tone-green-85));
+    --sf-chart-4: light-dark(var(--sf-tone-violet-30), var(--sf-tone-violet-85));
+    --sf-chart-5: light-dark(var(--sf-tone-lime-50), var(--sf-tone-lime-60));
+    --sf-chart-6: light-dark(var(--sf-tone-teal-50), var(--sf-tone-teal-60));
+    --sf-chart-7: light-dark(var(--sf-tone-amber-30), var(--sf-tone-amber-60));
+    --sf-chart-8: light-dark(var(--sf-tone-sky-30), var(--sf-tone-sky-85));
+    --sf-chart-1-fill: light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24));
+    --sf-chart-1-fill-hover: light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28));
+    --sf-chart-1-fill-active: light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32));
+    --sf-chart-2-fill: light-dark(var(--sf-tone-rose-50--alfa-12), var(--sf-tone-rose-50--alfa-24));
+    --sf-chart-2-fill-hover: light-dark(var(--sf-tone-rose-50--alfa-16), var(--sf-tone-rose-50--alfa-28));
+    --sf-chart-2-fill-active: light-dark(var(--sf-tone-rose-50--alfa-20), var(--sf-tone-rose-50--alfa-32));
+    --sf-chart-3-fill: light-dark(var(--sf-tone-green-50--alfa-12), var(--sf-tone-green-50--alfa-24));
+    --sf-chart-3-fill-hover: light-dark(var(--sf-tone-green-50--alfa-16), var(--sf-tone-green-50--alfa-28));
+    --sf-chart-3-fill-active: light-dark(var(--sf-tone-green-50--alfa-20), var(--sf-tone-green-50--alfa-32));
+    --sf-chart-4-fill: light-dark(var(--sf-tone-violet-50--alfa-12), var(--sf-tone-violet-50--alfa-24));
+    --sf-chart-4-fill-hover: light-dark(var(--sf-tone-violet-50--alfa-16), var(--sf-tone-violet-50--alfa-28));
+    --sf-chart-4-fill-active: light-dark(var(--sf-tone-violet-50--alfa-20), var(--sf-tone-violet-50--alfa-32));
+    --sf-chart-5-fill: light-dark(var(--sf-tone-lime-50--alfa-12), var(--sf-tone-lime-50--alfa-24));
+    --sf-chart-5-fill-hover: light-dark(var(--sf-tone-lime-50--alfa-16), var(--sf-tone-lime-50--alfa-28));
+    --sf-chart-5-fill-active: light-dark(var(--sf-tone-lime-50--alfa-20), var(--sf-tone-lime-50--alfa-32));
+    --sf-chart-6-fill: light-dark(var(--sf-tone-teal-50--alfa-12), var(--sf-tone-teal-50--alfa-24));
+    --sf-chart-6-fill-hover: light-dark(var(--sf-tone-teal-50--alfa-16), var(--sf-tone-teal-50--alfa-28));
+    --sf-chart-6-fill-active: light-dark(var(--sf-tone-teal-50--alfa-20), var(--sf-tone-teal-50--alfa-32));
+    --sf-chart-7-fill: light-dark(var(--sf-tone-amber-50--alfa-12), var(--sf-tone-amber-50--alfa-24));
+    --sf-chart-7-fill-hover: light-dark(var(--sf-tone-amber-50--alfa-16), var(--sf-tone-amber-50--alfa-28));
+    --sf-chart-7-fill-active: light-dark(var(--sf-tone-amber-50--alfa-20), var(--sf-tone-amber-50--alfa-32));
+    --sf-chart-8-fill: light-dark(var(--sf-tone-sky-50--alfa-12), var(--sf-tone-sky-50--alfa-24));
+    --sf-chart-8-fill-hover: light-dark(var(--sf-tone-sky-50--alfa-16), var(--sf-tone-sky-50--alfa-28));
+    --sf-chart-8-fill-active: light-dark(var(--sf-tone-sky-50--alfa-20), var(--sf-tone-sky-50--alfa-32));
+    /* The middle of a diverging scale -- error to success for data with a
+       good and a bad side, primary to tertiary for data without -- where the
+       value is neither: the quietest neutral that still stands off surfaces 0
+       to 2 (1.14:1 and 1.15:1 on surface-2), so a cell at the midpoint reads as
+       a cell and the two ends grow out of it (4.99:1 and 7.7:1 to their 40 and
+       80 steps). The same pair as surface-3, which a chart does not sit on. */
+    --sf-chart-midpoint: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
     --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);
