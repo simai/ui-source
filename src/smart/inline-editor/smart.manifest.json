@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -75,7 +75,7 @@
   },
   "methods": {
     "edit": {
-      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages",
+      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (session: the bar for the whole edit, over the element, the default; selection: only while text is selected, over the selection)",
       "arguments": [
         {
           "name": "element",
@@ -342,11 +342,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/inline-editor/index.js",
-        "sha256": "3f7df147f2621a2a641c09173ba7b980f592269c51040acd3dc8d3396600f8fe"
+        "sha256": "3804fd88fd43c4420c2054c8d93eec939d1e2be326bd8569214fdc515f9f251b"
       },
       {
         "path": "src/smart/inline-editor/scss/_smart__inline-editor.scss",
-        "sha256": "0072faa02ada62fbe108e21bcc3955e97db0a5aeb6acab866c80f0755ab4b707"
+        "sha256": "a9249e67c844cb7b16973c375718bc8723c74abd73a851c52ae84619f7c9cab1"
       },
       {
         "path": "src/smart/inline-editor/rule.js",
@@ -354,11 +354,11 @@
       },
       {
         "path": "src/smart/inline-editor/docs.md",
-        "sha256": "9c0b3e8e9cf3504e9df828810c1d649096996291d80b113259dfedffca9b49e8"
+        "sha256": "b488945dd4c1c5429c4c83a576961dc6fb773b7a3b127dd272dc1f0cec8008da"
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "4ecde5e1e822f9c709d24a7eb8bbf9c2e8d182a3ae3dc38932e3d36adc5f4dce"
+        "sha256": "e440de7a3ceac1a1e0d8cf33b226df7c4edb6cb1c6eb8f6dd440299c9cf46a2c"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",

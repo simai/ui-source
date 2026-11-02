@@ -228,14 +228,22 @@ function setSelection(root, anchor, focus = anchor) {
   selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
 
+// When the formatting toolbar shows: for the whole edit, over the element
+// (session, the default), or only while text is selected, over the selection
+// (selection: a flow editor where every paragraph is an edit, and a bar over
+// the element would cover the line being typed; simai/ui-source#67).
+export const INLINE_TOOLBAR_MODES = Object.freeze(['session', 'selection']);
+
 /**
  * Starts in-place editing of a rendered heading or paragraph element.
- * options: {content, nodeId, label, marks, links, messages}
+ * options: {content, nodeId, label, marks, links, messages, toolbar}
  * Returns {commit(), cancel(), value(), element}.
  */
 export function startInlineEdit(element, options = {}) {
   if (!(element instanceof globalThis.Element)) throw new TypeError('Inline editing needs an element');
   if (element.hasAttribute('data-sf-inline-editing')) throw new TypeError('inline_edit_active');
+  const toolbarMode = options.toolbar ?? 'session';
+  if (!INLINE_TOOLBAR_MODES.includes(toolbarMode)) throw new TypeError(`inline_toolbar_unknown: ${toolbarMode}`);
   const doc = element.ownerDocument;
   const text = { ...words(element), ...(options.messages || {}) };
   const marks = (options.marks || INLINE_MARKS).filter((mark) => INLINE_MARKS.includes(mark));
@@ -289,6 +297,8 @@ export function startInlineEdit(element, options = {}) {
   toolbar.className = 'sf-inline-editor-toolbar';
   toolbar.setAttribute('role', 'toolbar');
   toolbar.setAttribute('aria-label', text.toolbar);
+  toolbar.dataset.sfToolbar = toolbarMode;
+  if (toolbarMode === 'selection') toolbar.hidden = true;
   const buttons = new Map();
   for (const mark of marks) {
     const button = doc.createElement('button');
@@ -334,7 +344,42 @@ export function startInlineEdit(element, options = {}) {
   doc.body.append(toolbar);
   let savedSelection = [0, 0];
 
+  // The box of the text between two offsets: the first line's top, the last
+  // line's bottom, the span between the leftmost and rightmost edge.
+  function rangeBox(start, end) {
+    if (start === end) return null;
+    const range = doc.createRange();
+    range.setStart(...locate(element, Math.min(start, end)));
+    range.setEnd(...locate(element, Math.max(start, end)));
+    const lines = [...range.getClientRects()].filter((rect) => rect.width > 0 || rect.height > 0);
+    if (!lines.length) return null;
+    return {
+      top: Math.min(...lines.map((rect) => rect.top)),
+      bottom: Math.max(...lines.map((rect) => rect.bottom)),
+      left: Math.min(...lines.map((rect) => rect.left)),
+      right: Math.max(...lines.map((rect) => rect.right)),
+    };
+  }
+
+  // The selection mode's place: above the selected text, centred on it,
+  // below it when there is no room above, kept inside the viewport. While the
+  // link form is open the selection is in its field, so the saved one counts.
+  function positionOverSelection() {
+    if (toolbar.hidden) return;
+    const box = rangeBox(...(linkForm.hidden ? selectionOffsets() : savedSelection));
+    if (!box) return;
+    const bar = toolbar.getBoundingClientRect();
+    const above = box.top - bar.height - 4;
+    const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + 4);
+    const left = (box.left + box.right) / 2 - bar.width / 2;
+    Object.assign(toolbar.style, { top: `${top}px`, left: `${Math.max(0, Math.min(left, globalThis.innerWidth - bar.width))}px` });
+  }
+
   function positionToolbar() {
+    if (toolbarMode === 'selection') {
+      positionOverSelection();
+      return;
+    }
     const box = element.getBoundingClientRect();
     const bar = toolbar.getBoundingClientRect();
     const rtl = globalThis.getComputedStyle(element).direction === 'rtl';
@@ -349,6 +394,9 @@ export function startInlineEdit(element, options = {}) {
     const state = marksIn(read(), start, end === start ? Math.max(0, start - 1) : end);
     for (const mark of marks) buttons.get(mark).setAttribute('aria-pressed', state.marks.includes(mark) ? 'true' : 'false');
     buttons.get('link')?.setAttribute('aria-pressed', state.href ? 'true' : 'false');
+    // Selection mode: the bar is there while text is selected or a link is
+    // being written, and nowhere while the caret only stands in the text.
+    if (toolbarMode === 'selection') toolbar.hidden = start === end && linkForm.hidden;
     positionToolbar();
   }
 
@@ -374,6 +422,7 @@ export function startInlineEdit(element, options = {}) {
       element.focus();
       setSelection(element, ...savedSelection);
     }
+    if (toolbarMode === 'selection' && !finished) updateToolbar();
   }
 
   function applyLink(href) {
@@ -602,4 +651,4 @@ export function defineInlineEditor(registry = globalThis.customElements, { base 
   return SfInlineEditor;
 }
 
-export default { INLINE_EVENTS, INLINE_EVENTS_LEGACY, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };
+export default { INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };

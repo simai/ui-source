@@ -2,7 +2,7 @@
   "$comment": "The source of sf-inline-editor's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/inline-editor (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.inline-editor",
   "tag": "sf-inline-editor",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "editor",
   "settings": {},
@@ -63,7 +63,7 @@
         "options": "object"
       },
       "x-returns": "the session {element, commit(), cancel(), value()}",
-      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages"
+      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (session: the bar for the whole edit, over the element, the default; selection: only while text is selected, over the selection)"
     }
   },
   "keyboard": {
@@ -198,7 +198,8 @@
     "examples: examples.json -- the carrier alone, and an edit started on a paragraph and on a heading (the carrier has no settings; an edit's options are the action's).",
     "css-variables: five public variables of its sheet, all of an edit in progress: the edited element's outline, the toolbar's fill, radius, gap and padding. Not in src/core/contracts/public-variables.v1.json: its probe measures a component at rest, where none of these parts exist.",
     "version 1.2.0: content.heading and content.paragraph 1.1.0 -- an inline component atom {type: component, name, props}, name one of badge, kbd, icon, button, is one caret stop: not editable inside, no marks, never inside a link; arrows step over it in one move, Backspace and Delete remove it whole, copy and paste keep it (the copied HTML carries the entry in data-sf-inline-node), its props drawn as attribute and text values only. Any other entry the editor does not know is kept the same way and comes back out unchanged.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.3.0: the edit's option toolbar -- session (the default, as before: the bar for the whole edit, over the element) or selection (the bar only while text is selected or the link field is open, placed over the selected text). A flow editor where every paragraph is an edit took the bar out of the way from outside (simai/ui-source#67). SF.InlineEditor.INLINE_TOOLBAR_MODES names them; any other value throws inline_toolbar_unknown."
   ],
   "x-registry": {
     "capabilities": [

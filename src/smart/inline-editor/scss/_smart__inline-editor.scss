@@ -55,7 +55,8 @@
         gap: var(--sf-space-1, .25rem);
     }
 
-    .sf-inline-editor-link[hidden] {
+    .sf-inline-editor-link[hidden],
+    .sf-inline-editor-toolbar[hidden] {
         display: none;
     }
 

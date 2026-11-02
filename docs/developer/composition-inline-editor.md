@@ -74,6 +74,19 @@ is never interrupted; one value event follows the committed text. Drag-in drops
 are ignored. `options.marks` narrows marks, `options.links: false` disables
 links, `options.messages` overrides the Russian/English toolbar texts.
 
+`options.toolbar` says when the formatting toolbar shows (sf-inline-editor
+1.3.0). `'session'`, the default, keeps it for the whole edit, over the
+element. `'selection'` shows it only while text is selected (or the link field
+is open) and places it over the selected text: above its first line, centred
+on it, below it when there is no room above, inside the viewport. A flow editor
+where every paragraph is an edit takes `'selection'`, so the bar never covers
+the line being typed. The bar carries `data-sf-toolbar="session|selection"`;
+any other value throws `inline_toolbar_unknown`. The shortcuts work in both.
+
+```js
+SF.Composition.startInlineEdit(element, {content, nodeId: node.id, label: 'Абзац', toolbar: 'selection'});
+```
+
 While editing, the element is a labelled `role="textbox"` with a visible
 outline; the formatting toolbar floats above it (inline start in RTL) with
 `aria-pressed` states and `aria-keyshortcuts`. The events are dispatched on

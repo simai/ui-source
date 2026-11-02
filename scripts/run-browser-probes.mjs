@@ -31,7 +31,7 @@ const roots = {
 // (composition-routing, table-intents, table-search-caret and loader-hidden-tab
 // drive a table and left with the Pro components for package pro.)
 const needsLab = new Set([
-  'composition-editor-field-kinds', 'composition-inline-editor', 'composition-overlay',
+  'composition-editor-field-kinds', 'composition-inline-editor', 'composition-inline-toolbar', 'composition-overlay',
   'composition-regions', 'composition-sortable',
   'position', 'position-surfaces', 'drawer-docked',
   // Takes a distribution URL (a published pair by default), not a build root.
