@@ -35,6 +35,7 @@ import {render, nothing} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
 import BundledPreferences from '../../core/js/preferences.js';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
 import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
 import {PORT_ID, RESULT_LIMIT, SUPPORTED_PORT_VERSIONS, builtinSearchHost, indexHost, providerHost, recentStore} from './js/host';
@@ -55,9 +56,9 @@ const INTENT_CAPABILITY = {'result.preview': 'preview', 'action.run': 'actions',
 // keys are the panel's own, so they have no capability.
 const BLOCK_CAPABILITY = {scopes: 'scopes', recent: 'recent', popular: 'popular', actions: 'actions'};
 // The step at which the card has room for the preview pane beside the list:
-// the Framework's lg (core/scss/vars/_sf_var__breakpoint.scss), as the sheet's
-// own media rule reads it.
-const PREVIEW_STEP = '60rem';
+// the Framework's lg (core/js/breakpoints.js, the ladder the sheet's own media
+// rule reads; reuse audit 2026-11-02, finding 6).
+const PREVIEW_STEP = 'lg';
 let sequence = 0;
 
 const applied = () => ({outcome: 'applied'});
@@ -177,8 +178,7 @@ class SfSearch extends SearchElement {
     this._portRequested = false;
     this._querySequence = 0;
     this._previewSequence = 0;
-    this._previewMedia = typeof globalThis.matchMedia === 'function'
-      ? globalThis.matchMedia(`(min-width: ${PREVIEW_STEP})`) : null;
+    this._previewMedia = breakpointMedia(PREVIEW_STEP);
     this._onPreviewMedia = () => this.onPreviewRoomChange();
     this._onDocumentKeydown = (event) => this.onDocumentKeydown(event);
     this._onDocumentClick = (event) => this.onDocumentClick(event);

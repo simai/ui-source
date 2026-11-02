@@ -87,9 +87,6 @@
     "position/default",
     "text-decoration/default"
   ],
-  "cl-copy-button": [
-    "position/default"
-  ],
   "cl-country-code": [
     "display/default",
     "flex-direction/default",

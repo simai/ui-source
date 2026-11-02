@@ -25,15 +25,13 @@
 // files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {renderContentsTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// The Framework's breakpoints (core/scss/vars/_sf_var__breakpoint.scss), as
-// the sheet's media rules read them: compact below the step.
-const STEPS = {sm: '32rem', md: '44rem', lg: '60rem', xl: '72rem'};
 // A chosen section holds the answer while its scroll moves -- each scroll
 // event extends the hold by this long, so a long smooth scroll keeps it and a
 // section already in place lets it go at once -- and, once the scroll ended,
@@ -190,9 +188,9 @@ class SfContents extends ContentsElement {
 
   watchMedia() {
     this._media?.removeEventListener?.('change', this._onMedia);
-    const step = STEPS[this.collapse];
-    this._media = this.layout === 'auto' && step && typeof globalThis.matchMedia === 'function'
-      ? globalThis.matchMedia(`(min-width: ${step})`) : null;
+    // Compact below the Framework's step (core/js/breakpoints.js, the sheet's
+    // own ladder; reuse audit 2026-11-02, finding 6).
+    this._media = this.layout === 'auto' ? breakpointMedia(this.collapse) : null;
     this._media?.addEventListener?.('change', this._onMedia);
     this.syncCompact();
   }

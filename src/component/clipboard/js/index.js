@@ -1,5 +1,6 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
+import { copyText } from '../../../core/js/clipboard.js';
 
 const COPY_SELECTOR = '.sf-clipboard, .btn-clipboard';
 const BOUND_FLAG = 'sfCopyBound';
@@ -71,37 +72,11 @@ function resolveCopySource(button) {
   throw new Error('missing_source');
 }
 
-function legacyWriteText(text, documentRef) {
-  const textarea = documentRef.createElement('textarea');
-  textarea.className = 'sf-clipboard-fallback';
-  textarea.value = text;
-  textarea.setAttribute('readonly', '');
-  documentRef.body.append(textarea);
-  textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length);
-  let copied = false;
-  try {
-    copied = documentRef.execCommand('copy');
-  } finally {
-    textarea.remove();
-  }
-  if (!copied) throw new Error('copy_unsupported');
-}
-
-async function writeText(text, documentRef = document) {
-  if (window.isSecureContext && navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return 'native';
-    } catch {
-      // A secure page whose clipboard permission is denied -- a policy, an
-      // embedded frame, a browser that asks and was answered no. The API being
-      // present was read as the API being allowed, so the fallback that exists
-      // for exactly this was never reached and the copy simply failed.
-    }
-  }
-  legacyWriteText(text, documentRef);
-  return 'legacy';
+// The copy itself, with its fallback, is the core helper (core/js/clipboard.js,
+// reuse audit 2026-11-02 finding 11): sf-copy-button and this class wrote it
+// twice. Kept under its old name, which this module exports.
+function writeText(text, documentRef = document) {
+  return copyText(text, { document: documentRef });
 }
 
 function ensureStatus(button) {

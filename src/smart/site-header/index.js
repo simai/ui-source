@@ -20,6 +20,7 @@
 // answer outcomes, the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -27,9 +28,6 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// The Framework's breakpoints (core/scss/vars/_sf_var__breakpoint.scss), as
-// the sheet's media rules read them: collapsed below the step.
-const STEPS = {sm: '32rem', md: '44rem', lg: '60rem', xl: '72rem'};
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
 let sequence = 0;
 
@@ -93,8 +91,9 @@ class SfSiteHeader extends SiteHeaderElement {
 
   watchCollapse() {
     this._media?.removeEventListener?.('change', this._onMedia);
-    const step = STEPS[this.collapse];
-    this._media = step && typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(`(min-width: ${step})`) : null;
+    // Collapsed below the Framework's step (core/js/breakpoints.js, the sheet's
+    // own ladder; reuse audit 2026-11-02, finding 6); none has no step.
+    this._media = breakpointMedia(this.collapse);
     this._media?.addEventListener?.('change', this._onMedia);
     this.syncCollapsed();
   }

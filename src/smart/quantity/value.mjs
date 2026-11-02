@@ -8,6 +8,8 @@
 // character that cannot be part of a number is refused as it is typed, and the
 // value is a number or nothing -- never the text that happened to be in the box.
 
+import {formatNumber as formatCoreNumber} from '../../core/js/format.js';
+
 const symbolCache = new Map();
 
 // The decimal and group marks of a locale, from the platform's own formatter.
@@ -106,19 +108,13 @@ export function parseNumber(text, {locale, allowDecimal = false, allowNegative =
   return Number.isFinite(number) ? number : Number.NaN;
 }
 
-// A value as the page's language writes it, with the field's digits.
+// A value as the page's language writes it, with the field's digits: core's
+// number format (core/js/format.js, decimal-<n>; reuse audit 2026-11-02,
+// finding 7), so a quantity reads as the same number does in a table.
 export function formatNumber(value, {locale, precision = 0, grouping = true} = {}) {
-  if (value === null || value === undefined || !Number.isFinite(value)) return '';
+  if (typeof value !== 'number') return '';
   const digits = Math.min(20, Math.max(0, Number(precision) || 0));
-  try {
-    return new Intl.NumberFormat(locale || undefined, {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-      useGrouping: grouping,
-    }).format(value);
-  } catch {
-    return value.toFixed(digits);
-  }
+  return formatCoreNumber(value, `decimal-${digits}`, {locale, grouping});
 }
 
 // The value as a form submits it: a point, no grouping, the field's digits.

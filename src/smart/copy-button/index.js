@@ -11,6 +11,9 @@
 // aliases (aliases.json); the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+// The copy and its fallback are core's (core/js/clipboard.js, SF.copyText;
+// reuse audit 2026-11-02, finding 11), shared with the clipboard class.
+import {copyText} from '../../core/js/clipboard.js';
 import {renderCopyButtonTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -20,28 +23,6 @@ import './scss/index.scss';
 
 function isMac() {
   return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '');
-}
-
-// The clipboard, and execCommand where the API is absent or refused; the
-// same order the clipboard class uses.
-async function writeText(text, documentRef) {
-  if (globalThis.isSecureContext && globalThis.navigator?.clipboard?.writeText) {
-    try {
-      await globalThis.navigator.clipboard.writeText(text);
-      return 'native';
-    } catch { /* refused: the fallback is for exactly this */ }
-  }
-  const area = documentRef.createElement('textarea');
-  area.value = text;
-  area.setAttribute('readonly', '');
-  area.style.cssText = 'position:fixed;inset-inline-start:-9999px;opacity:0';
-  documentRef.body.append(area);
-  area.select();
-  let copied = false;
-  try { copied = documentRef.execCommand('copy'); } catch { copied = false; }
-  area.remove();
-  if (!copied) throw new Error('denied');
-  return 'legacy';
 }
 
 const CopyButtonElement = elementFromManifest(manifest, {
@@ -137,7 +118,7 @@ class SfCopyButton extends CopyButtonElement {
     try {
       const text = this.source();
       if (!text) throw new Error('empty_source');
-      const method = await writeText(text, this.ownerDocument);
+      const method = await copyText(text, {document: this.ownerDocument});
       this.setPhase('success', this.successText || this.words('copied'));
       this.sfEmit('copied', {text, method});
       return {outcome: 'applied', text, method};

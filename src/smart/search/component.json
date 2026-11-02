@@ -2,7 +2,7 @@
   "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "search",
   "settings": {
@@ -255,7 +255,7 @@
   },
   "presentation": {
     "skeleton": {
-      "$comment": "The window is an overlay: the first paint is the page's trigger, never the panel (\u00a75.4), so nothing the host answers holds a box. The port's data arrives when the window opens, long after the first paint, and the panel draws no skeleton for it.",
+      "$comment": "The window is an overlay: the first paint is the page's trigger, never the panel (§5.4), so nothing the host answers holds a box. The port's data arrives when the window opens, long after the first paint, and the panel draws no skeleton for it.",
       "late": []
     }
   },
@@ -355,7 +355,8 @@
     "scopes: the host's scopes are the groups its results fall into; filtering is local as well, so the counts stay right whichever pill is pressed, and scope travels as a field of query.change -- a hint, never an intent of its own.",
     "narrow: below the sm breakpoint (32rem) the window is a full-screen sheet with the field on top and a back arrow at its start; a media rule, so it is right on the first frame the window draws.",
     "geometry (docs/foundation-composition-geometry.md): the field is the size 2 control height with a 24 px glyph; a result row is the size 2 control height with a size 1/2 square (32 px) holding a 20 px glyph; a one-line row the size 1 control height; the field's glyph, the rows' squares and the captions share one axis, and the field's text starts where the rows' titles do.",
-    "css-variables: seven public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one."
+    "css-variables: seven public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one.",
+    "version 1.2.1: the preview pane's room is the Framework's lg read from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.19.0), not a 60rem of its own (reuse audit 2026-11-02, finding 6). The same step."
   ],
   "x-registry": {
     "capabilities": [

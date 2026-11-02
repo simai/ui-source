@@ -5,6 +5,9 @@ import test from 'node:test';
 const js = fs.readFileSync(new URL('../src/component/clipboard/js/index.js', import.meta.url), 'utf8');
 const css = fs.readFileSync(new URL('../src/component/clipboard/scss/_sf_copy.scss', import.meta.url), 'utf8');
 const rule = fs.readFileSync(new URL('../src/component/clipboard/rule.js', import.meta.url), 'utf8');
+// The copy and its fallback are core's (core/js/clipboard.js), shared with
+// sf-copy-button (reuse audit 2026-11-02, finding 11).
+const core = fs.readFileSync(new URL('../src/core/js/clipboard.js', import.meta.url), 'utf8');
 
 test('ordinary and constructed Copy share one lifecycle owner', () => {
   assert.match(js, /const COPY_SELECTOR = '\.sf-clipboard, \.btn-clipboard'/);
@@ -38,8 +41,9 @@ test('copy source resolution is exact and ambiguity fails closed', () => {
 });
 
 test('native clipboard has a checked fallback and explicit result events', () => {
-  assert.match(js, /navigator\.clipboard\?\.writeText/);
-  assert.match(js, /documentRef\.execCommand\('copy'\)/);
+  assert.match(js, /copyText\(text, \{ document: documentRef \}\)/);
+  assert.match(core, /navigator\?\.clipboard\?\.writeText/);
+  assert.match(core, /documentRef\.execCommand\('copy'\)/);
   assert.match(js, /sf:copy-success/);
   assert.match(js, /sf:copy-error/);
   assert.match(js, /NotAllowedError'[\s\S]*copy_denied/);

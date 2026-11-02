@@ -17,7 +17,6 @@
 // field reads, sizes and announces itself as sf-input and sf-textarea do.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {pageLocale} from '../../core/js/page-language';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {createFieldContract} from '../../component/field-contract';
 import {FIELD_SIZES, fieldSize} from '../../component/field-size';
@@ -209,7 +208,7 @@ class SfImageField extends FormField(ImageFieldElement) {
   // the host already formatted is shown as it came.
   formatSize(size) {
     const units = ['bytes', 'kilobytes', 'megabytes', 'gigabytes'].map((key) => this.text(key));
-    return formatFileSize(size, units, pageLocale(this));
+    return formatFileSize(size, {units, node: this});
   }
 
   // «450×300 · 2 КБ»: the image's own dimensions once it has loaded, then its

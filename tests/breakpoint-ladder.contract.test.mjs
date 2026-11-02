@@ -39,3 +39,30 @@ test('no media query is written at a retired pixel threshold', async () => {
   }
   assert.deepEqual(offenders, []);
 });
+
+// Scripts read the same ladder (core/js/breakpoints.js, SF.breakpoints; reuse
+// audit 2026-11-02, finding 6): three components had copied the steps by hand.
+test('the script ladder equals the sheet ladder, step for step', async () => {
+  const {BREAKPOINTS, breakpointQuery, matchesBreakpoint} = await import('../src/core/js/breakpoints.js');
+  const scss = Object.fromEntries([...(await read('src/core/scss/vars/_sf_var__breakpoint.scss'))
+    .matchAll(/^\s*(xs|sm|md|lg|xl|xxl):\s*([\d.]+)(rem)?\b/gmu)].map((m) => [m[1], Number(m[2])]));
+  const js = Object.fromEntries(Object.entries(BREAKPOINTS).map(([name, value]) => [name, Number.parseFloat(value)]));
+  assert.deepEqual(js, scss);
+  for (const value of Object.values(BREAKPOINTS)) assert.match(value, /^[\d.]+rem$/u, 'in rem, as the sheets write it');
+  assert.equal(breakpointQuery('lg'), '(min-width: 60rem)');
+  // One pixel under the step, in rem: the sheets' breakpoint-max.
+  assert.equal(breakpointQuery('md', {below: true}), '(max-width: 43.9375rem)');
+  assert.equal(breakpointQuery('none'), null);
+  const view = {matchMedia: (query) => ({query, matches: query === '(min-width: 44rem)'})};
+  assert.equal(matchesBreakpoint('md', {view}), true);
+  assert.equal(matchesBreakpoint('lg', {view}), false);
+  assert.equal(matchesBreakpoint('lg', {view: {}}), false, 'no matchMedia, no match');
+});
+
+test('components that switch in script take the step from the script ladder', async () => {
+  for (const file of ['src/smart/contents/index.js', 'src/smart/site-header/index.js', 'src/smart/search/index.js']) {
+    const source = await read(file);
+    assert.match(source, /import \{breakpointMedia\} from '\.\.\/\.\.\/core\/js\/breakpoints\.js'/u, file);
+    assert.doesNotMatch(source, /'(32|44|60|72|80)rem'/u, `${file} writes no step of its own`);
+  }
+});
