@@ -1,4 +1,5 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
+import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, editorFieldMessages } from './editor-words.mjs';
 import { sanitizeRichText } from './html-subset.mjs';
 import { fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
@@ -707,8 +708,11 @@ export const Composition = Object.freeze({
   BUILTIN_EDITOR_MANIFESTS,
   BUILTIN_FIELD_KINDS,
   BUILTIN_PORT_MANIFESTS,
+  EDITOR_FIELD_WORDS,
+  EDITOR_WORDS_OWNER,
   Recipe,
   applyFieldValue,
+  editorFieldMessages,
   parseFieldSubmission,
   renderFieldFallback,
   resolveFieldKind,
@@ -751,7 +755,7 @@ if (typeof globalThis !== 'undefined') {
 export default Composition;
 
 export { Recipe, parseRecipeJson, recipeDigest, recipeNodeId, resolveRecipe };
-export { BUILTIN_EDITOR_MANIFESTS, projectDocumentEditorFields, projectEditorFields, validateEditorManifest };
+export { BUILTIN_EDITOR_MANIFESTS, EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, editorFieldMessages, projectDocumentEditorFields, projectEditorFields, validateEditorManifest };
 export { BUILTIN_TYPE_MANIFESTS };
 export { describeRegions, stableStringify };
 export { BUILTIN_PORT_MANIFESTS, VALUE_TYPES, checkPortValue, createPortRegistry, defineCompositionScope };

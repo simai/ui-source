@@ -74,7 +74,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, and field kinds.",
+      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language).",
       "members": [
         "checkFragmentDescriptor",
         "publishEffects",
@@ -87,7 +87,8 @@
         "resolveFieldKind",
         "validateFieldValue",
         "applyFieldValue",
-        "parseFieldSubmission"
+        "parseFieldSubmission",
+        "editorFieldMessages"
       ]
     },
     {

@@ -183,6 +183,7 @@
         "followLanguage",
         "isRussianPage",
         "language",
+        "localeText",
         "pageLanguage",
         "pageLocale",
         "pageText",

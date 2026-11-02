@@ -31,3 +31,33 @@ if (!result.error) node = SF.Composition.applyFieldValue(node, field, result);
 control characters and counts code points; an empty value removes the key.
 `toggle` stores only `true`; unchecking removes the key, so the digest equals a
 never-set value. Validate the resulting Document before saving.
+
+## Words of the built-in editor manifests
+
+Every `label_key`, `help_key` and choice of the built-in editor manifests has a
+word in English and Russian. A choice that is a stable segment reads
+`<label_key>.<choice>` (`sf.composition.content_alert.status.warning`); any
+other choice (`16/9`) is shown as it is. `SF.Composition.editorFieldMessages`
+gives the `messages` a form reads:
+
+```js
+// The language of the node (nearest [lang], SF.language.use(), <html lang>):
+const messages = SF.Composition.editorFieldMessages(manifest, {node: form});
+// Or a language named outright, for a form drawn before it is placed:
+const ru = SF.Composition.editorFieldMessages(manifest, {locale: 'ru'});
+// With no manifest it answers every built-in one.
+```
+
+The words belong to the registry owner `sf-composition` (`SF.Composition.EDITOR_WORDS_OWNER`),
+so a product adds a language or corrects one word as for any component:
+
+```js
+SF.language.register('sf-composition', 'de', {'sf.composition.content_figure.src': 'Bildadresse'});
+```
+
+A registered word wins over the shipped one; a language without a word falls
+back to the language without its region, then English. A key with no word in
+any language is left out of `messages`, so a host's own manifest keeps its own
+words or shows the key. A host without JavaScript reads the same words from
+`src/core/contracts/composition-editor-words.v1.json` (`words.<locale>.<key>`),
+generated from `core/js/composition/editor-words.mjs`.

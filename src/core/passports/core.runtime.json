@@ -23,6 +23,7 @@
     "src/core/contracts/composition-editor-fields-v1/fixtures/field-kinds.json",
     "src/core/contracts/composition-editor-manifest.v1.schema.json",
     "src/core/contracts/composition-editor-manifests.v1.json",
+    "src/core/contracts/composition-editor-words.v1.json",
     "src/core/contracts/composition-port-manifest.v1.schema.json",
     "src/core/contracts/composition-ports.v1.json",
     "src/core/contracts/composition-recipe-v1/README.md",
@@ -87,6 +88,7 @@
     "src/core/js/cacheCodec.js",
     "src/core/js/composition/builtins.mjs",
     "src/core/js/composition/canonical.mjs",
+    "src/core/js/composition/editor-words.mjs",
     "src/core/js/composition/editor.mjs",
     "src/core/js/composition/fields.mjs",
     "src/core/js/composition/file-size.mjs",
@@ -158,7 +160,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "ce18cebcfb765e07e34cdf146e2c4ebd74209a9148d575556250a9d423b511de",
+  "content_sha256": "420a9f086b37fa8028eba77c150b30e8fe1294bf7b182a03d86ba7312677f145",
   "dependencies": [
     {
       "id": "core.styles",

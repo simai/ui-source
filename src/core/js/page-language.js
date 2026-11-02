@@ -199,9 +199,18 @@ export function isRussianPage(node) {
  * `this` identifies itself without saying so twice.
  */
 export function pageText(dictionary, key, node, component) {
-  const owner = component ?? componentOf(node);
-  for (const candidate of chain(pageLocale(node))) {
-    const added = owner ? REGISTERED.get(owner)?.get(candidate)?.[key] : undefined;
+  return localeText(dictionary, key, pageLocale(node), component ?? componentOf(node));
+}
+
+/**
+ * Text for `key` in a named language, with no node to read it from: a server
+ * fallback or a form drawn before it is placed. The same order as pageText --
+ * words registered for `component`, then the shipped ones, for the language,
+ * the language without its region and English -- and the key last.
+ */
+export function localeText(dictionary, key, locale, component) {
+  for (const candidate of chain(locale || 'en')) {
+    const added = component ? REGISTERED.get(component)?.get(candidate)?.[key] : undefined;
     if (added !== undefined) return added;
     const shipped = dictionary?.[candidate]?.[key];
     if (shipped !== undefined) return shipped;
