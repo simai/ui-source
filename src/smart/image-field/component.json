@@ -404,7 +404,7 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.8: the file size is core's (core/js/format.js formatFileSize, SF.format.fileSize, core.runtime 1.19.0; reuse audit 2026-11-02, finding 7), with the field's own unit words. The same text."
+    "version 1.1.8: the file size is core's (core/js/format.js formatFileSize, SF.format.fileSize, core.runtime 1.20.0; reuse audit 2026-11-02, finding 7), with the field's own unit words. The same text."
   ],
   "x-rule": {
     "$comment": [

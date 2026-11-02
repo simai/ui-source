@@ -267,7 +267,7 @@
     "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one, so the bar's height a page reads is the internal --sf-site-header--block-size the sheet computes.",
     "words (§11): label, menu-label and close-label default to the language files' runtime words.",
     "version 1.1.0: navigation-align (owner decision by recommendation, 2026-11-01), start (the default, the 1.0 bar) or center, the nav of a Docara-like header. A sheet rule, nothing measured, so the first paint is right without the script: the brand and the end of the bar (the tools; the actions and the tools when there are actions) share the room the nav leaves, each at least its own width, so the nav stands at the bar's true centre while both sides fit and moves aside rather than overlap them; with actions the nav is centred in the room between the brand and the actions. Collapsed, nothing changes: the nav is in the side panel. The same at size 1/2 and 1.",
-    "version 1.2.3: collapse reads its step from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.19.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps."
+    "version 1.2.3: collapse reads its step from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.20.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps."
   ],
   "x-registry": {
     "capabilities": [

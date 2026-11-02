@@ -241,7 +241,7 @@
     "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "words (§11): label defaults to the language files' runtime word.",
     "version 1.1.0 compact-sticky: the compact button honours sticky as the other three layouts do. It was left out in 1.0.0, so on a phone (and under the auto step) the button scrolled away with the page; a reader who had scrolled past it had no way to the sections but scrolling back. Sticky it needs a backing, because the page scrolls under it: the host takes --sf-contents-background, else the page surface, with the band given back by a negative margin so the geometry is the one 1.0.0 measured. A page that wants the old behaviour sets sticky=\"false\".",
-    "version 1.1.2: layout=\"auto\" compacts below the step core/js/breakpoints.js names (SF.breakpoints, core.runtime 1.19.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps."
+    "version 1.1.2: layout=\"auto\" compacts below the step core/js/breakpoints.js names (SF.breakpoints, core.runtime 1.20.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps."
   ],
   "x-registry": {
     "capabilities": [

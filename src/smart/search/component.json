@@ -356,7 +356,7 @@
     "narrow: below the sm breakpoint (32rem) the window is a full-screen sheet with the field on top and a back arrow at its start; a media rule, so it is right on the first frame the window draws.",
     "geometry (docs/foundation-composition-geometry.md): the field is the size 2 control height with a 24 px glyph; a result row is the size 2 control height with a size 1/2 square (32 px) holding a 20 px glyph; a one-line row the size 1 control height; the field's glyph, the rows' squares and the captions share one axis, and the field's text starts where the rows' titles do.",
     "css-variables: seven public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one.",
-    "version 1.2.1: the preview pane's room is the Framework's lg read from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.19.0), not a 60rem of its own (reuse audit 2026-11-02, finding 6). The same step."
+    "version 1.2.1: the preview pane's room is the Framework's lg read from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.20.0), not a 60rem of its own (reuse audit 2026-11-02, finding 6). The same step."
   ],
   "x-registry": {
     "capabilities": [
