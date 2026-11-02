@@ -310,13 +310,16 @@ class HostView {
   }
 
   // ---------- when a part starts (§7.2.1) ----------
+  // start visible watches a box. A Smart host is display: contents (the base
+  // sets it, and a printed first paint carries it), so it has no box and never
+  // intersects: the part never started (ui-chart, msg-79c9121dcde847e0b43e).
   awaitStart(rec, mode) {
     this.deferred.add(rec);
     if (mode === 'visible' && !this.visible && typeof globalThis.IntersectionObserver === 'function') {
       this.visible = new globalThis.IntersectionObserver((seen) => {
         for (const one of seen) {
           if (!one.isIntersecting) continue;
-          const rec = [...this.deferred].find((candidate) => candidate.element === one.target);
+          const rec = [...this.deferred].find((candidate) => candidate.seenBy === one.target);
           this.visible.unobserve(one.target);
           if (rec && !this.closed(rec.element)) this.core.startPart(rec, 'visible');
         }
@@ -359,7 +362,8 @@ class HostView {
         this.core.startPart(rec, 'opened');
       } else if (rec.def.start === 'visible' && this.visible && !rec.observed && !this.closed(rec.element)) {
         rec.observed = true;
-        this.visible.observe(rec.element);
+        rec.seenBy = boxFor(rec.element);
+        this.visible.observe(rec.seenBy);
       }
     }
     for (const rec of [...this.watched]) {
@@ -428,7 +432,7 @@ class HostView {
   removePart(rec) {
     this.deferred.delete(rec);
     this.watched.delete(rec);
-    if (rec.element && this.visible) this.visible.unobserve(rec.element);
+    if (rec.seenBy && this.visible) this.visible.unobserve(rec.seenBy);
     (rec.panel ?? rec.element)?.remove();
   }
 
@@ -716,3 +720,20 @@ export function elementClass(definition, options = {}) {
 }
 
 export {HostView, OWNED, PART_LINK};
+
+// The element whose box stands for a part in view: the part itself when it
+// draws a box, else its first descendant that does (the printed skeleton or
+// what the part drew), else the nearest ancestor that does (its place).
+function boxFor(element) {
+  // getClientRects is empty for display: contents and display: none alike.
+  const drawsBox = (node) => node.getClientRects?.().length > 0;
+  if (drawsBox(element)) return element;
+  const walker = element.ownerDocument.createTreeWalker(element, 1);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (drawsBox(node)) return node;
+  }
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    if (drawsBox(node)) return node;
+  }
+  return element;
+}

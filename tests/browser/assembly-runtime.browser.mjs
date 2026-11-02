@@ -121,14 +121,15 @@ Assembly.interfaces.registerAll({
   't-late': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
   't-side': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
   't-later': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
+  't-far': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
 });
 Assembly.define({
   tag: 't-lazy', kind: 'assembly', settings: {}, values: {}, events: {}, actions: {},
   keys: {open: {type: 'boolean', writer: 'logic', initial: false}},
-  roles: {panel: {part: 't-late', if: 'open'}, side: {part: 't-side'}, later: {part: 't-later', start: 'opened'}},
+  roles: {panel: {part: 't-late', if: 'open'}, side: {part: 't-side'}, later: {part: 't-later', start: 'opened'}, far: {part: 't-far', start: 'visible'}},
   rules: [],
 }, {
-  layouts: {default: '<x-role name="panel"></x-role><section if="open"><x-role name="side"></x-role></section><div class="closed" hidden><x-role name="later"></x-role></div>'},
+  layouts: {default: '<x-role name="panel"></x-role><section if="open"><x-role name="side"></x-role></section><div class="closed" hidden><x-role name="later"></x-role></div><div style="block-size: 3000px"></div><x-role name="far"></x-role>'},
 });
 window.__ready = true;
 </script></body></html>`;
@@ -278,6 +279,9 @@ try {
   // closed container hides (§7.2.1; stand 24 F1).
   const fetched = [];
   tab.on('request', (request) => { const path = new URL(request.url()).pathname; if (path.startsWith('/parts/')) fetched.push(path); });
+  // A Smart host is display: contents and has no box of its own; start
+  // visible watches a box that exists (ui-chart msg-79c9121dcde847e0b43e).
+  await tab.addStyleTag({content: 't-far { display: contents; }'});
   await tab.evaluate(async () => {
     const lazy = document.createElement('t-lazy');
     lazy.id = 'lazy';
@@ -316,6 +320,9 @@ try {
     }
   });
   check('a part shown again fetches nothing', fetched.length === 3, fetched.join(', '));
+  await tab.evaluate(() => document.querySelector('#lazy x-role[name="far"]').scrollIntoView());
+  await tab.waitForFunction(() => customElements.get('t-far'), null, {timeout: 3000}).catch(() => {});
+  check('a display: contents part with start visible starts when its place comes into view', fetched.filter((one) => one === '/parts/t-far.mjs').length === 1, fetched.join(', '));
 
   check('no page errors', errors.length === 0, errors.join('; '));
   const journal = await tab.evaluate(() => window.Assembly.journal.entries().filter((entry) => entry.level === 'error').map((entry) => entry.text));
