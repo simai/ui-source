@@ -124,8 +124,21 @@ SF.RuleLoader.registerPackage('pro', {
   (standard simai.smart-component 1.3.8 §7.2.1, simai/ui-source#47). A page
   that wants the old warm-up after `sf-loader-ready` sets
   `SF_BOOT_CONFIG.prefetchLazyRelations = true`. An element that creates a
-  lazy one and calls it straight away waits for `customElements.whenDefined`
-  first.
+  lazy one and calls it straight away asks for it and waits in one call:
+  `const {missing} = await SF.Loader.ensure(['sf-context-menu'], {timeout: 3000})`.
+  It fetches each tag's code as the page would, settles when all are defined
+  or the timeout has passed (3 s by default), and never rejects: `ready`
+  lists the tags that are defined, `missing` those that are not, for the
+  caller's fallback. A tag already defined costs nothing, and callers of one
+  tag share one fetch and one wait.
+- What an element renders from its own code outside its own render -- a
+  window, a menu or a panel it draws into a box of its own (a portal) -- is
+  read by the Loader as the page is. A Smart element inside such a box does
+  not wait for an ancestor outside it to capture its source: the element marks
+  the box with `SF.Loader.watch(box)` (it sets `data-sf-portal`, reads what is
+  in the box at once, and returns the function that unmarks it;
+  `SF.Loader.unwatch(box)` does the same). A parent element defined over
+  another base than the Smart base holds none of its children either.
 - A package's elements may carry its owner's prefix (`lr-records-list`)
   rather than the Framework's `sf-`, and a new element should (standard
   `simai.component-package`, own-element-prefix). The Loader loads any tag a

@@ -884,11 +884,7 @@ function menuAvailable() {
 async function menuElement(document) {
   if (aboutMenu?.isConnected) return aboutMenu;
   const registry = globalThis.customElements;
-  if (!registry.get(MENU_TAG)) {
-    const loader = globalThis.SF?.Loader;
-    if (!loader?.ensureSmartElementLoaded?.(MENU_TAG)) loader?.ensurePlugin?.('cl-context-menu');
-    await Promise.race([registry.whenDefined(MENU_TAG), new Promise((done) => { globalThis.setTimeout(done, 5000); })]);
-  }
+  if (!registry.get(MENU_TAG)) await globalThis.SF?.Loader?.ensure?.([MENU_TAG], {timeout: 5000});
   if (!registry.get(MENU_TAG)) return null;
   const menu = document.createElement(MENU_TAG);
   menu.setAttribute('popup', '');

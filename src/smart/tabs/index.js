@@ -716,10 +716,9 @@ class SfTabs extends TabsElement {
   }
 
   async standardMenu(field, select) {
-    if (!customElements.get('sf-context-menu')) {
-      globalThis.SF?.Loader?.ensurePlugin?.('cl-context-menu');
-      await Promise.race([customElements.whenDefined('sf-context-menu'), new Promise((done) => setTimeout(done, 3000))]);
-    }
+    // The standard menu is a relation of the tabs fetched when first used
+    // (SF.Loader.ensure: asked for, waited for up to 3 s, never thrown).
+    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
     if (this[field]?.isConnected) return this[field];
     const menu = document.createElement('sf-context-menu');
     menu.setAttribute('popup', '');
@@ -756,12 +755,10 @@ class SfTabs extends TabsElement {
 
   async settingsMenu() {
     if (this._settingsMenu?.isConnected) return this._settingsMenu;
-    if (!customElements.get('sf-context-menu')) {
-      globalThis.SF?.Loader?.ensurePlugin?.('cl-context-menu');
-      await Promise.race([customElements.whenDefined('sf-context-menu'), new Promise((done) => setTimeout(done, 3000))]);
-    }
-    globalThis.SF?.Loader?.ensureSmartElementLoaded?.('sf-sortable');
-    globalThis.SF?.Loader?.ensureSmartElementLoaded?.('sf-checkbox');
+    // The list's elements are asked for now, not waited for: the Loader also
+    // finds them in the menu once it is drawn.
+    globalThis.SF?.Loader?.ensure?.(['sf-sortable', 'sf-checkbox']);
+    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
     const menu = document.createElement('sf-context-menu');
     menu.setAttribute('popup', '');
     menu.setAttribute('aria-label', this.text('customize'));

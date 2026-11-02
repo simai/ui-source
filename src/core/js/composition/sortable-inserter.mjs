@@ -294,10 +294,7 @@ export function createSortableInserter(list) {
   async function standardMenu() {
     if (menu?.isConnected) return menu;
     const registry = globalThis.customElements;
-    if (!registry.get('sf-context-menu')) {
-      globalThis.SF?.Loader?.ensurePlugin?.('cl-context-menu');
-      await Promise.race([registry.whenDefined('sf-context-menu'), new Promise((done) => { globalThis.setTimeout(done, 3000); })]);
-    }
+    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
     if (!registry.get('sf-context-menu')) return null;
     menu = document_().createElement('sf-context-menu');
     menu.setAttribute('popup', '');

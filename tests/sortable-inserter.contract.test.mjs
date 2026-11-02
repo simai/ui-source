@@ -135,7 +135,7 @@ test('the inserter is the standard menu, and Escape is its layer alone', async (
     read('src/smart/context-menu/index.js'),
   ]);
   assert.match(source, /createElement\('sf-context-menu'\)/);
-  assert.match(source, /ensurePlugin\?\.\('cl-context-menu'\)/);
+  assert.match(source, /Loader\?\.ensure\?\.\(\['sf-context-menu'\]\)/);
   assert.match(source, /surface\.search = \{ placeholder: text\('search'\), empty: text\('empty'\) \};/);
   assert.match(source, /surface\.openFor\(button,/);
   // No Escape of its own on the document: the menu owns it and holds the
