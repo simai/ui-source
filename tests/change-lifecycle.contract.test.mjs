@@ -78,32 +78,48 @@ test('change journal: every match compiles as sf-upgrade compiles it', () => {
    no project file declares the package. The four Larena components moved
    twice -- to package pro, then to larena when SIMAI Framework Pro was dropped
    -- and only the last move is owed: the pro record stays as history and is
-   never reported, so a project on larena is not told to declare pro, and a
-   project still on pro is told to declare larena. */
+   never reported. Then the package itself was renamed larena -> pro
+   (option-package-larena-to-pro, 2026-11-02): the last move is owed under the
+   current name, pro, and while the rename is in compat a project declaring
+   larena has declared the package; the rename reports that declaration. */
 test('sf-upgrade: a moved component is reported only without its package declaration', () => {
   const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
-  const run = () => {
+  const findings = () => {
     const result = spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json'], {encoding: 'utf8'});
     assert.equal(result.stderr, '', 'sf-upgrade runs through the whole journal');
-    const findings = JSON.parse(result.stdout).findings;
-    assert.deepEqual(findings.filter(({record}) => record === 'component-pro-package-move'), [], 'the earlier move is history, never owed');
-    return findings.filter(({record}) => record === 'component-larena-package-move');
+    const all = JSON.parse(result.stdout).findings;
+    assert.deepEqual(all.filter(({record}) => record === 'component-pro-package-move'), [], 'the earlier move is history, never owed');
+    return all;
   };
+  const run = () => findings().filter(({record}) => record === 'component-larena-package-move');
+  const renamed = () => findings().filter(({record}) => record === 'option-package-larena-to-pro');
   try {
     writeFileSync(join(project, 'page.html'), '<sf-table table-settings-key="orders"></sf-table>\n<div class="sf-admin-menu"></div>\n');
-    assert.deepEqual(run().map(({from, line}) => `${from}:${line}`), ['sf-table:1'], 'the tag, not the free CSS class');
-    writeFileSync(join(project, 'package.json'), '{"packages": ["a"], "dependencies": {"larena": "1"}}\n');
-    assert.equal(run().length, 1, 'a key named larena is not a package declaration');
-    writeFileSync(join(project, 'boot.js'), "window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};\n");
-    assert.equal(run().length, 1, 'a project still on pro owes the larena declaration');
+    assert.deepEqual(run().map(({from, to, line}) => `${from}:${line}:${to}`), ['sf-table:1:SF_BOOT_CONFIG.packages.pro'],
+      'the tag, not the free CSS class, owed under the current name');
+    writeFileSync(join(project, 'package.json'), '{"packages": ["a"], "dependencies": {"larena": "1", "pro": "1"}}\n');
+    assert.equal(run().length, 1, 'a key named larena or pro is not a package declaration');
+    assert.deepEqual(renamed(), [], 'nor is it a declaration under the old name');
+    for (const declaration of [
+      "window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};",
+      "SF_BOOT_CONFIG.packages.pro = {base: '/assets/ui-pro/smart'};",
+      "<?php return ['packages' => ['pro' => ['base' => '/assets/ui-pro/smart']]];",
+    ]) {
+      writeFileSync(join(project, 'boot.js'), `${declaration}\n`);
+      assert.deepEqual(run(), [], declaration);
+      assert.deepEqual(renamed(), [], declaration);
+    }
     for (const declaration of [
       "window.SF_BOOT_CONFIG = {icons: {type: 'outlined'}, packages: {larena: {base: '/assets/larena/smart'}}};",
       "SF_BOOT_CONFIG.packages.larena = {base: '/assets/larena/smart'};",
       "<?php return ['packages' => ['larena' => ['base' => '/assets/larena/smart']]];",
     ]) {
       writeFileSync(join(project, 'boot.js'), `${declaration}\n`);
-      assert.deepEqual(run(), [], declaration);
+      assert.deepEqual(run(), [], `the alias declares the package: ${declaration}`);
+      assert.deepEqual(renamed().map(({file, line, to}) => `${file}:${line}:${to}`), ['boot.js:1:SF_BOOT_CONFIG.packages.pro'], declaration);
     }
+    writeFileSync(join(project, 'boot.js'), "SF.RuleLoader.registerPackage('larena', {rules: {}});\n");
+    assert.deepEqual(renamed().map(({from}) => from), ["SF.RuleLoader.registerPackage('larena')"], 'a package of its own under the old name');
   } finally {
     rmSync(project, {recursive: true, force: true});
   }

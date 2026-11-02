@@ -10,14 +10,15 @@ const directory = join(root, 'src/core/contracts/packages');
    in the runtime as distr/core/contracts/packages/, so a consumer that holds
    only the distribution can tell which elements need the package. The
    reference carries no bytes; its components must not be in the free source.
-   Since SIMAI Framework Pro was dropped the only one is larena's, kept while
-   the free recipe recipe.admin.collection still places its data view; both
-   leave once Larena reads them from its own folder, and no reference for a
-   package nobody publishes may stay behind. */
+   The only one is pro's (the SIMAI Framework Pro components, simai/ui-pro),
+   kept while the free recipe recipe.admin.collection still places its data
+   view. Its former name larena (2026-10-11 to 2026-11-02) is a dated alias
+   (journal option-package-larena-to-pro): larena.package.json names the same
+   components, so a package built under either name agrees with the release,
+   and it leaves with the alias. */
 test('every package reference names components the free Framework does not ship', () => {
   const files = readdirSync(directory).filter((name) => name.endsWith('.package.json'));
-  assert.ok(!files.includes('pro.package.json'), 'package pro is no longer published');
-  assert.ok(files.includes('larena.package.json'), 'larena is named while the free recipe places its data view');
+  assert.ok(files.includes('pro.package.json'), 'pro is named while the free recipe places its data view');
   for (const name of files) {
     const reference = JSON.parse(readFileSync(join(directory, name), 'utf8'));
     assert.equal(reference.schema_id, 'simai.framework.package-reference');
@@ -31,4 +32,16 @@ test('every package reference names components the free Framework does not ship'
       assert.deepEqual(entry.requires, [...new Set(entry.requires)].sort(), `${entry.id}: requires sorted and unique`);
     }
   }
+});
+
+test('larena.package.json is a dated alias of pro.package.json, entry for entry', () => {
+  const read = (name) => JSON.parse(readFileSync(join(directory, name), 'utf8'));
+  const pro = read('pro.package.json');
+  const larena = read('larena.package.json');
+  assert.equal(pro.alias_of, undefined, 'pro is the current name');
+  assert.equal(larena.alias_of, 'pro');
+  assert.deepEqual(larena.provides, pro.provides, 'the alias names the same components');
+  const journal = JSON.parse(readFileSync(join(root, 'contracts/changes/journal.json'), 'utf8'));
+  const record = journal.records.find((one) => one.id === 'option-package-larena-to-pro');
+  assert.equal(larena.remove_after, record?.remove_after, 'the file leaves with the alias');
 });

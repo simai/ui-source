@@ -96,23 +96,23 @@ test('4a. a package declares its output and its base; the server serves it after
     writeFileSync(join(pkg, 'rule.js'), 'rule');
     writeFileSync(join(pkg, 'free.js'), 'shadow');
     writeFileSync(join(pkg, 'table', 'index.js'), 'table');
-    writeFileSync(join(dir, 'config.json'), JSON.stringify({packages: {larena: {output: 'pkg/smart'}, beside: {output: 'pkg/smart', base: '/distr/smart/'}}}));
+    writeFileSync(join(dir, 'config.json'), JSON.stringify({packages: {pro: {output: 'pkg/smart'}, beside: {output: 'pkg/smart', base: '/distr/smart/'}}}));
     const config = readConfig([`--config=${join(dir, 'config.json')}`], {});
-    assert.deepEqual(config.packages.larena, {output: pkg, base: '/distr/package/larena/'});
+    assert.deepEqual(config.packages.pro, {output: pkg, base: '/distr/package/pro/'});
     assert.equal(config.packages.beside.base, '/distr/smart/');
     assert.deepEqual(readConfig([], {FIRST_PAINT_CONFIG: join(dir, 'config.json')}), config);
     assert.deepEqual(readConfig([], {}), {packages: {}});
-    writeFileSync(join(dir, 'bad.json'), JSON.stringify({packages: {larena: {output: 'nowhere'}}}));
+    writeFileSync(join(dir, 'bad.json'), JSON.stringify({packages: {pro: {output: 'nowhere'}}}));
     assert.throws(() => readConfig([`--config=${join(dir, 'bad.json')}`], {}), /no rule\.js/u);
 
     const site = await serveOutput(out, {packages: config.packages});
     try {
       const get = async (path) => { const response = await fetch(`${site.origin}${path}`); return response.ok ? response.text() : response.status; };
-      assert.equal(await get('/distr/package/larena/rule.js'), 'rule');
-      assert.equal(await get('/distr/package/larena/table/index.js'), 'table');
+      assert.equal(await get('/distr/package/pro/rule.js'), 'rule');
+      assert.equal(await get('/distr/package/pro/table/index.js'), 'table');
       assert.equal(await get('/distr/smart/table/index.js'), 'table', 'a package under a free base is served after it');
       assert.equal(await get('/distr/smart/free.js'), 'free', 'never in the free output\'s place');
-      assert.equal(await get('/distr/package/larena/../../../config.json'), 404);
+      assert.equal(await get('/distr/package/pro/../../../config.json'), 404);
       const css = await get('/distr/core/css/core.css');
       assert.match(css, /"Inter Variable";font-display: block/u, 'the snapshots are measured in Inter');
       assert.match(css, /"Icons";font-display:optional/u, 'other faces as shipped');

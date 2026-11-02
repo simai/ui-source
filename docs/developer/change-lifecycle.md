@@ -56,7 +56,16 @@ A component can move again, from one package to another: the four Larena
 components went to `pro` and then to `larena` the same day, when SIMAI
 Framework Pro was dropped (`component-larena-package-move`). Both records stay
 as history, and `sf-upgrade` reports only the last move of each component, so
-a project already on `larena` is not told to declare `pro`.
+a project already on `larena` is not told to declare `pro` by the first record.
+
+A package can be renamed, too: an `option` record whose item moves
+`SF_BOOT_CONFIG.packages.<old>` to `SF_BOOT_CONFIG.packages.<new>`. The package
+`larena` became `pro` again on 2026-11-02 (`option-package-larena-to-pro`,
+owner decision q-4ac7d07595); the Loader takes `larena` as a dated alias until
+2027-01-01. `sf-upgrade` reports a component's last move under the package's
+current name, counts a declaration under the old name as declaring the package
+while the rename is in compat, and reports that declaration through the
+rename's own item.
 
 ## The sweep
 

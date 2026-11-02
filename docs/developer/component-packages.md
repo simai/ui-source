@@ -7,15 +7,28 @@ an external author ships its components as a package rather than adding them
 to the Framework (owner's decisions of 2026-10-11). The standard is
 `simai.component-package` 1.0.0 (`contracts/standards/simai.component-package/`).
 
-Larena's components are the first package, `larena`: `sf-table`,
-`sf-data-view`, `sf-property-view` and `sf-admin-menu` are not in Core's rule
-list or in `ui`; they live in the component folder of `simai/larena-ui`, open
-under Apache-2.0, and arrive this way. They went to a package named `pro`
-first; SIMAI Framework Pro was dropped the same day, and the change journal
-records both moves (`component-pro-package-move`,
-`component-larena-package-move`). The Loader side is in
-`src/core/js/loader.js` (`registerPackage`, `resolveSmartBase`,
-`getMissingFileKey`).
+The SIMAI Framework Pro components are the first package, `pro`:
+`sf-table`, `sf-data-view`, `sf-property-view`, `sf-admin-menu` and the rest
+are not in Core's rule list or in `ui`; they live in the component folder of
+`simai/ui-pro` and arrive this way. Larena is one of their consumers. They
+went to a package named `pro` on 2026-10-11, to `larena` the same day, and
+back to `pro` on 2026-11-02 (owner decision q-4ac7d07595); the change journal
+records each step (`component-pro-package-move`,
+`component-larena-package-move`, `option-package-larena-to-pro`). The Loader
+side is in `src/core/js/loader.js` (`registerPackage`, `resolveSmartBase`,
+`getMissingFileKey`, `PACKAGE_ALIASES`).
+
+### A package's former name
+
+A renamed package keeps its former name as a dated alias until the journal's
+sweep day. `larena` is the alias of `pro` until 2027-01-01: a page that
+declares `packages.larena` declares `pro` (the same base and rule file), and a
+package built under the old name, whose rule file calls
+`registerPackage('larena', ...)`, registers as `pro`. Either use is noted once
+in `SF.deprecations` (kind `option`, component `loader`). A page that declares
+both names gets `pro` and a warning that `larena` is ignored. A Framework pair
+from before 2026-11-02 knows only the name the page declares, so over such a
+pair the page and the package must use the same name.
 
 ## Where Smart comes from without a package
 
@@ -50,7 +63,7 @@ before `core.js`:
   window.sfPath = '/assets/ui/distr/';
   window.SF_BOOT_CONFIG = {
     packages: {
-      larena: {base: '/assets/larena/smart'},
+      pro: {base: '/assets/ui-pro/smart'},
     },
   };
 </script>
@@ -83,7 +96,7 @@ declares no package starts exactly as before, synchronously.
 The file is a plain script with one call:
 
 ```js
-SF.RuleLoader.registerPackage('larena', {
+SF.RuleLoader.registerPackage('pro', {
   rules: {
     'cl-table': {
       tags: ['sf-table'],
@@ -100,7 +113,7 @@ SF.RuleLoader.registerPackage('larena', {
 - A rule is written exactly as a Core Smart rule is; the Loader stamps
   `package: '<name>'` on it, and that field is what sends its files to the
   package base. Relations name rules by key and each resolves from its own
-  package, so a larena rule relating to `cl-icon` fetches the icons from the
+  package, so a pro rule relating to `cl-icon` fetches the icons from the
   Smart base.
 - A relation the element renders only later -- a filter editor, a date
   picker, a cell renderer for a type a page may not hold -- is marked
@@ -175,8 +188,8 @@ component with its `index.js`, `rule.js` (writing exactly its own `cl-<folder>`
 rule as plain data), manifest and templates, plus `tests/`, `docs/` and a
 `framework.lock.json` pinning one ui-source revision
 (`simai.framework.product-package-source-lock.v1`). The folder may be a
-repository's root or a folder inside a product's own repository; Larena's is
-the component folder of `simai/larena-ui`.
+repository's root or a folder inside a product's own repository; Pro's is
+the component folder of `simai/ui-pro`.
 
 ui-builder builds it over the pinned ui-source, from committed bytes, twice,
 and the two waves must be identical (`docs/developer/product-packages.md` in
@@ -186,7 +199,7 @@ ui-builder). The output is laid out for exactly the declaration above: a
 components' rule files -- at the default place, so a page needs only
 
 ```js
-window.SF_BOOT_CONFIG = {packages: {larena: {base: '/assets/larena/smart'}}};
+window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};
 ```
 
 Every build a consumer uses has a receipt, `package-receipt.json`: the package,
@@ -195,11 +208,13 @@ release `ui-<12>` it was built over, the builder, and the hashes of what it
 wrote. The owner delivers the build inside its own distribution; there is no
 separate distribution repository and no built bytes in git.
 
-While the free recipe `recipe.admin.collection` still places Larena's data
-view, `src/core/contracts/packages/larena.package.json` names the package's
+While the free recipe `recipe.admin.collection` still places the Pro data
+view, `src/core/contracts/packages/pro.package.json` names the package's
 components so the free registry can place them. It carries no bytes, and it
-leaves the free Framework together with the recipe once Larena reads both from
-its own folder.
+leaves the free Framework together with the recipe. `larena.package.json`
+names the same components under the former name (`alias_of: "pro"`), so a
+package built as `larena` still agrees with the release; it leaves with the
+alias on 2027-01-01.
 
 ## Not yet
 

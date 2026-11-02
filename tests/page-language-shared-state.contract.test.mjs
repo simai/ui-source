@@ -1,7 +1,7 @@
 // The page's language state lives on one shared global, never in module scope.
 //
 // Core, each Smart component, each composite -- and a component package such
-// as larena, delivered by its owner -- are separate bundles,
+// as pro, delivered by its owner -- are separate bundles,
 // and each carries its own copy of src/core/js/page-language.js. With the
 // registry in module scope the page had as many registries as bundles:
 // `SF.language` was published from core's copy, the table read its own, and a

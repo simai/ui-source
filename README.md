@@ -14,10 +14,11 @@ edited directly.
 Documentation (Russian): https://ui.simai.io/
 
 The Framework is extended through component packages: a component lives with
-its owner. Larena's components (`sf-table`, `sf-data-view`, `sf-property-view`,
-`sf-admin-menu`) are the package `larena`, built from the component folder of
-`simai/larena-ui` against a pinned revision of this repository and delivered
-inside Larena's distribution; see
+its owner. The SIMAI Framework Pro components (`sf-table`, `sf-data-view`,
+`sf-property-view`, `sf-admin-menu` and the rest) are the package `pro` (until
+2027-01-01 also loadable under its former name `larena`), built from the
+component folder of `simai/ui-pro` against a pinned revision of this
+repository and published as releases of `simai/ui-pro`; see
 [docs/developer/component-packages.md](docs/developer/component-packages.md)
 and the standard `simai.component-package`.
 
@@ -27,7 +28,7 @@ and the standard `simai.component-package`.
 - `simai/ui-builder` — deterministic build system;
 - `simai/ui` — generated Framework distribution (Core, utilities, components, Smart Components);
 - `simai/ui-smart` — archived: it mirrored `ui/distr/smart` while consumers moved;
-- `simai/larena-ui` — Larena's UI, whose component folder is the package `larena` (Apache-2.0); `simai/ui-source-pro` and `simai/ui-pro` are archived;
+- `simai/ui-pro` — the SIMAI Framework Pro components, the component package `pro` (Larena is one of its consumers); `simai/ui-source-pro` and `simai/ui-pro-history` are archived;
 - `simai/ui-doc` — public documentation.
 
 The Loader is one module inside this repository. The previous repository name

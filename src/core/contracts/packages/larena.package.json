@@ -2,11 +2,13 @@
   "schema_id": "simai.framework.package-reference",
   "schema_version": 1,
   "package": "larena",
-  "title": "Larena components",
-  "summary": "Smart components that live with Larena, their owner (owner's decision 2026-10-11: a component lives with its owner; SIMAI Framework Pro is dropped). They are open, under Apache-2.0, built from the component folder in simai/larena-ui by the Framework builder over a pinned ui-source revision (standard simai.component-package 1.0.0), and delivered inside Larena's distribution. A page loads them as a component package of the Loader: SF_BOOT_CONFIG.packages.larena = {base: '<package base>'}. This file names them, and what each needs, so the free registry can place them in the one free recipe that still names them; it carries no bytes and grants nothing. It leaves the free Framework together with recipe.admin.collection, once Larena reads both from its own folder.",
+  "alias_of": "pro",
+  "remove_after": "2027-01-01",
+  "title": "SIMAI Framework Pro components (former package name larena)",
+  "summary": "The package pro under its former name, larena (2026-10-11 to 2026-11-02), kept as a dated alias until 2027-01-01 (journal record option-package-larena-to-pro): a package built as larena checks its rules against this file, and its provides are pro.package.json's, entry for entry. Read pro.package.json; this file leaves with the alias.",
   "distribution": {
-    "owner": "simai/larena-ui",
-    "repository": "https://github.com/simai/larena-ui",
+    "owner": "simai/ui-pro",
+    "repository": "https://github.com/simai/ui-pro",
     "runtime_path": "smart",
     "rule_file": "smart/rule.js",
     "receipt": "package-receipt.json"

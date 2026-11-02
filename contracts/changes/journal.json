@@ -3516,6 +3516,37 @@
       "manual": "Nothing a page did changes: the legacy [sf-gallery], [sf-overbox] and [sf-modal] attributes built nothing before either. Use the Smart components sf-gallery, sf-modal, sf-popover and sf-tooltip. A script that called SF.Modal finds no such name; the class component's script is at SF.Loader.ComponentRegistry.Modal. The class sf-special still loads the special panel for Bitrix site templates; it is not documented and may change in any release. deprecated_on and remove_after are the policy's dates for the day of the removal and mean nothing further: no Loader rule ever loaded the unit, so there was no alias to keep.",
       "owner": "ui-control",
       "source": "ui-control/control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md"
+    },
+    {
+      "id": "option-package-larena-to-pro",
+      "recorded_on": "2026-11-02",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "The SIMAI Framework Pro component package (sf-table, sf-data-view, sf-property-view, sf-admin-menu and the rest built from simai/ui-pro) is named pro, not larena; Larena is one of its consumers. The Loader takes the old name as a dated alias until remove_after: SF_BOOT_CONFIG.packages.larena declares the same package as packages.pro (the same base, the same rule file), and a package built under the old name, whose rule file calls SF.RuleLoader.registerPackage('larena', ...), registers as pro. Each use is noted in SF.deprecations. When a page declares both names, pro is used and larena is said aloud and ignored. The tags, rules, attributes, events and ports are unchanged.",
+      "items": [
+        {
+          "component": "loader",
+          "from": "SF_BOOT_CONFIG.packages.larena",
+          "to": "SF_BOOT_CONFIG.packages.pro",
+          "match": "\\bpackages['\"]?\\s*(?::|=>|=)\\s*[\\[{][^;]{0,400}?['\"]?larena['\"]?\\s*(?::|=>|=)\\s*[\\[{]|\\bpackages\\.larena\\s*="
+        },
+        {
+          "component": "loader",
+          "from": "SF.RuleLoader.registerPackage('larena')",
+          "to": "SF.RuleLoader.registerPackage('pro')",
+          "match": "registerPackage\\(\\s*['\"]larena['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-02",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<script>window.SF_BOOT_CONFIG = {packages: {larena: {base: '/assets/larena/smart'}}};</script>",
+        "after": "<script>window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};</script>"
+      },
+      "manual": "Write pro for larena in the page's package declaration (SF_BOOT_CONFIG.packages.pro, or 'packages' => ['pro' => [...]] in a PHP config) and take a package built as pro (pro-<12>, package-pro.tar, wave-1/output/package/pro): its rule file calls registerPackage('pro'). The base may stay where it is served. A Framework pair from before this record knows only the name the page declares, so a page and the package it loads move together: either both say larena (an older pair) or the page says pro over this pair or later, where both builds work.",
+      "owner": "ui-control",
+      "source": "src/core/js/loader.js (PACKAGE_ALIASES, packageNameOf); owner decision q-4ac7d07595"
     }
   ]
 }

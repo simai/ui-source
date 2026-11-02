@@ -52,9 +52,9 @@ const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
  *
  *   {
  *     "packages": {
- *       "larena": {
+ *       "pro": {
  *         "output": "<the package's built smart/ directory: rule.js and its component folders>",
- *         "base": "/distr/package/larena/"
+ *         "base": "/distr/package/pro/"
  *       }
  *     }
  *   }

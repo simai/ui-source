@@ -36,7 +36,7 @@
         "null"
       ],
       "pattern": "^[a-z][a-z0-9-]*-[a-f0-9]{12}$",
-      "description": "The release's identity, e.g. the pair id ui-<12> or a package id larena-<12>; null before a release names it."
+      "description": "The release's identity, e.g. the pair id ui-<12> or a package id pro-<12>; null before a release names it."
     },
     "units": {
       "type": "array",

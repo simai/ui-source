@@ -26,6 +26,13 @@
 // journal as history; it is not reported, or a project already on `larena`
 // would be told to declare `pro`.
 //
+// A package can also be renamed: an option record whose item moves
+// `SF_BOOT_CONFIG.packages.<old>` to `SF_BOOT_CONFIG.packages.<new>` (larena ->
+// pro, 2026-11-02). The last move of a component is then owed under the
+// package's current name, and while the rename is in compat a project that
+// declares the old name has declared the package -- the Loader takes it as an
+// alias, and the rename's own item reports the declaration.
+//
 // A format named with its version (`rewrite: "rename-format"`, owner decision
 // 2026-10-11: names carry no version) moves to two fields, `"schema":
 // "simai.<name>"` and `"schema_version": <major>`. That is mechanical where the
@@ -86,6 +93,32 @@ const declaresPackage = (name) => {
   }
   return declaredPackages.get(name);
 };
+// Package renames, old name -> {to, compat}, in journal order.
+const packageRenames = new Map();
+for (const record of journal.records) {
+  if (record.kind !== 'option') continue;
+  for (const item of record.items) {
+    const from = PACKAGE_TARGET.exec(item.from || '');
+    const to = PACKAGE_TARGET.exec(item.to || '');
+    if (from && to) packageRenames.set(from[1], {to: to[1], compat: record.stage === 'compat'});
+  }
+}
+// A package's current name, through every rename.
+const packageNow = (name) => {
+  const seen = new Set();
+  while (packageRenames.has(name) && !seen.has(name)) {
+    seen.add(name);
+    name = packageRenames.get(name).to;
+  }
+  return name;
+};
+// Whether a project declares the package `name` now goes by: under that name,
+// or under a former one the Loader still takes.
+const declaresCurrentPackage = (name) => {
+  const now = packageNow(name);
+  if (declaresPackage(now)) return true;
+  return [...packageRenames].some(([old, {compat}]) => compat && packageNow(old) === now && declaresPackage(old));
+};
 // One rule per item: a pattern that finds the old form and, where the rewrite is
 // mechanical, the replacement for one match.
 // The package each moved component lives in now: the target of the last record
@@ -105,7 +138,8 @@ function rulesFor(record) {
   // names: two items with the same `from` (tightness-low on sf-button and on
   // sf-icon-button) made two identical rules, and every use was reported twice.
   const names = new Set();
-  for (const item of record.items) {
+  for (const listed of record.items) {
+    let item = listed;
     if (record.kind === 'class' || record.kind === 'token') {
       const key = `${item.from}\u0000${item.to ?? ''}`;
       if (names.has(key)) continue;
@@ -113,7 +147,9 @@ function rulesFor(record) {
     }
     const moved = record.kind === 'component' && PACKAGE_TARGET.exec(item.to || '');
     if (moved && item.component && currentPackage.get(item.component) !== moved[1]) continue;
-    if (moved && declaresPackage(moved[1])) continue;
+    if (moved && declaresCurrentPackage(moved[1])) continue;
+    // Owed under the package's current name.
+    if (moved && packageNow(moved[1]) !== moved[1]) item = {...item, to: `SF_BOOT_CONFIG.packages.${packageNow(moved[1])}`};
     const tag = item.component && item.component.startsWith('sf-') ? item.component : null;
     if (item.match) {
       rules.push({item, mechanical: false, pattern: new RegExp(item.match, 'gu')});

@@ -29,7 +29,7 @@ const roots = {
 // reason rather than filtered silently, because a skipped probe and a passing one
 // must not read the same.
 // (composition-routing, table-intents, table-search-caret and loader-hidden-tab
-// drive a table and left with the Larena components for package larena.)
+// drive a table and left with the Pro components for package pro.)
 const needsLab = new Set([
   'composition-editor-field-kinds', 'composition-inline-editor', 'composition-overlay',
   'composition-regions', 'composition-sortable',
