@@ -83,12 +83,21 @@
   padding-top: var(--sf-icon-button--padding-top);
 }
 
+/* The retry words are the failed file's second line, under its name like the
+   size line: the control keeps its padding for the hit area and the focus
+   ring, and a negative margin of the same width puts its words where the size
+   line's start (docs report on pair ui-2d39b617a719: they stood inset). */
 .sf-upload-progress .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--radius: var(--sf-radius--ui);
-  max-inline-size: 100%;
+  --sf-upload-progress-repeat--inset: max(var(--sf-upload-progress-repeat--padding-inline), var(--sf-focus-outline-width));
+  max-inline-size: calc(100% + var(--sf-upload-progress-repeat--inset) * 2);
   border-radius: var(--sf-upload-progress-repeat--radius);
+  margin-inline: calc(var(--sf-upload-progress-repeat--inset) * -1);
   padding-block: max(var(--sf-upload-progress-repeat--padding-block), var(--sf-focus-outline-width));
-  padding-inline: max(var(--sf-upload-progress-repeat--padding-inline), var(--sf-focus-outline-width));
+  padding-inline: var(--sf-upload-progress-repeat--inset);
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
   color: var(--sf-upload-progress-repeat--color);
   font-family: var(--sf-upload-progress-repeat--font-family);
   font-size: var(--sf-upload-progress-repeat--font-size);
@@ -124,8 +133,8 @@
 .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1 .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--padding-block: var(--sf-ui-1--space-y-tightness-default);
   --sf-upload-progress-repeat--padding-inline: var(--sf-ui-1--space-x);
-  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1);
-  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1\/2);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1\/2);
 }
 
 .sf-upload-progress--size-2 .sf-upload-progress-content {
@@ -144,8 +153,8 @@
 .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-2 .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--padding-block: var(--sf-ui-2--space-y-tightness-default);
   --sf-upload-progress-repeat--padding-inline: var(--sf-ui-2--space-x);
-  --sf-upload-progress-repeat--font-size: var(--sf-text-size-2);
-  --sf-upload-progress-repeat--line-height: var(--sf-text-height-2);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1);
 }
 
 .sf-upload-progress--size-1\/2 .sf-upload-progress-name {
@@ -161,8 +170,8 @@
 .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1\/2 .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
   --sf-upload-progress-repeat--padding-inline: var(--sf-ui-1\/2--space-x);
-  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1\/2);
-  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1\/2);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1\/3);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1\/3);
 }
 
 .sf-upload-progress--size-1 {
@@ -237,6 +246,7 @@
 .sf-upload-progress--error .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--color: var(--sf-on-surface);
   --sf-upload-progress-repeat--font-family: var(--sf-text--family);
-  --sf-upload-progress-repeat--font-weight: var(--sf-font-weight-bold);
+  /* The size line's weight: bold made the retry read as a second file name. */
+  --sf-upload-progress-repeat--font-weight: var(--sf-font-weight-regular);
 }
 }
