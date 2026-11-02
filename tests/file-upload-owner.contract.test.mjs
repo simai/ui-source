@@ -7,6 +7,17 @@ import test from 'node:test';
 const uiDocRoot = process.env.UI_DOC_ROOT;
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const readUiDoc = path => readFile(`${uiDocRoot}/${path}`, 'utf8');
+// ui-doc moved its Smart pages from smart-components/ to smart/; read the
+// first that exists, so the test holds on either side of the move.
+const readUiDocFirst = async (...paths) => {
+  for (const path of paths) {
+    try {
+      return await readUiDoc(path);
+    } catch (error) {
+      if (error.code !== 'ENOENT' || path === paths.at(-1)) throw error;
+    }
+  }
+};
 
 // The Smart pages' examples live under smart-components/ since the Smart
 // migration (ui-doc 5b299228); their overview is `overview` there.
@@ -23,7 +34,7 @@ test('FileUpload keeps File objects for application transport and clears the pic
 test('FileUpload documentation follows the user-facing component template and source events', async () => {
   const [ordinary, smart] = await Promise.all([
     readUiDoc('content/ru/components/forms/file-upload.md'),
-    readUiDoc('content/ru/smart-components/forms/file-upload.md'),
+    readUiDocFirst('content/ru/smart/forms/file-upload.md', 'content/ru/smart-components/forms/file-upload.md'),
   ]);
 
   for (const heading of ['# Загрузка файлов', '## Пример', '## Разметка', '## Состояния', '## Доступность', '## JavaScript']) {
