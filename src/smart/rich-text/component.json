@@ -2,7 +2,7 @@
   "$comment": "The source of sf-rich-text's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
   "id": "smart.rich-text",
   "tag": "sf-rich-text",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -240,7 +240,8 @@
     "geometry: the frame is sf-textarea's -- the hairline, --sf-radius--ui, the padding calc of each size and the focus ring on the frame -- and the toolbar's buttons are one rung below the field (1/3, 1/2, 1 for sizes 1/2, 1, 2). rows sets the least height in the size's lines, max-rows the most before the text scrolls.",
     "a11y: role textbox with aria-multiline on the editing surface, named by the label or the host's aria-label; toolbar role toolbar with aria-controls. Colours are role tokens only: on-surface on surface-0 and surface-container, on-secondary-container on secondary-container for a pressed tool, on-surface-variant for the hint, placeholder and quotes, error for the error line -- the pairs the theme makes AA in light and dark.",
     "css-variables: seven public variables in sf-textarea's pattern (§6), listed in src/core/contracts/public-variables.v1.json.",
-    "version 1.0.1: the bare editor keeps a page's unlayered :focus-visible outline off with outline: none !important -- an unlayered rule beats every layered one, and drew a second frame inside the frame's ring (owner, 2026-11-01). The frame's ring is unchanged."
+    "version 1.0.1: the bare editor keeps a page's unlayered :focus-visible outline off with outline: none !important -- an unlayered rule beats every layered one, and drew a second frame inside the frame's ring (owner, 2026-11-01). The frame's ring is unchanged.",
+    "version 1.0.3: the editor is unchanged. The subset module it carries (core/js/composition/html-subset.mjs) gains the paste profile of a structured-content editor, cleanTree(tree, {profile: 'paste'}), which keeps pre and simple tables as blocks of their own (simai/ui-source#66); html@1 and every value this editor writes stay as they were."
   ],
   "x-registry": {
     "reuse_mode": "whole",

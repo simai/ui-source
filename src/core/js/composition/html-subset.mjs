@@ -35,6 +35,24 @@
 // No imports and no state: the element and the contract tests use the same
 // functions.
 //
+// The paste profile (simai/ui-source#66). html@1 is a stored type, so it does
+// not grow: a value never holds pre or table. A structured-content editor
+// reads a paste with cleanTree(tree, {profile: 'paste'}), which is html@1
+// plus two blocks the profile maps to its own types instead of flattening
+// them into paragraphs:
+//
+//   {type: 'pre', text}            a code block: its text with its line
+//                                  breaks and indentation (-> content.code)
+//   {type: 'table', caption, rows} a simple table: rows of {head, cells},
+//                                  each cell {header, leaves} with the
+//                                  subset's inline leaves (-> content.table)
+//
+// Everything inside them is cleaned by the same rule: the same marks, the
+// same href check, DROPPED goes with its content. A pre or a table inside a
+// list item, and a table inside a cell, are read as html@1 reads them.
+// serialize writes the two in html@1 terms (lines of a paragraph, a
+// paragraph per cell), so whatever comes out of it is still the subset.
+//
 // The module lives in the core runtime since content.html 1.0.0: the
 // Composition renderer sanitises a content.html block through it at render,
 // so a page that only renders a Document needs no Smart component.
@@ -44,6 +62,10 @@
 export const RICH_TEXT_ELEMENTS = Object.freeze(['p', 'h2', 'h3', 'h4', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'blockquote', 'br']);
 export const RICH_TEXT_BLOCKS = Object.freeze(['p', 'h2', 'h3', 'h4']);
 export const RICH_TEXT_SCHEMES = Object.freeze(['https:', 'mailto:', 'tel:']);
+// The profiles cleanTree reads by: html@1 itself, and the paste profile of a
+// structured-content editor, which keeps PASTE_BLOCKS as blocks of their own.
+export const RICH_TEXT_PROFILES = Object.freeze(['html', 'paste']);
+export const PASTE_BLOCKS = Object.freeze(['pre', 'table']);
 
 // Dropped with everything inside: their content is code, a document's head,
 // a drawing, or a control's own data, not text for a reader.
@@ -458,6 +480,14 @@ function walk(node, flow, context) {
     flow.close();
     return;
   }
+  if (context.paste && flow.kind !== 'item' && (name === 'pre' || name === 'listing')) {
+    flow.block({type: 'pre', text: preText(node)});
+    return;
+  }
+  if (context.paste && flow.kind !== 'item' && name === 'table') {
+    flow.block(readTable(node, inner));
+    return;
+  }
   if (BREAKING.has(name)) {
     flow.open('p');
     walkChildren(node.children, flow, name === 'pre' || name === 'listing' ? {...inner, pre: true} : inner);
@@ -466,6 +496,74 @@ function walk(node, flow, context) {
   }
   // Any other element: its text, in place.
   walkChildren(node.children, flow, inner);
+}
+
+// The text of a pre as it stands: line breaks and indentation kept, a <br> a
+// line break, what DROPPED names gone. The newline right after <pre> is the
+// markup's, as a browser reads it; trailing blank lines are not code.
+function preText(node) {
+  const read = (current) => {
+    if (current.type === 'text') return current.value;
+    if (DROPPED.has(current.name)) return '';
+    if (current.name === 'br') return '\n';
+    return current.children.map(read).join('');
+  };
+  return node.children.map(read).join('')
+    .replace(/\r\n?/gu, '\n')
+    .replace(/\u00a0/gu, ' ')
+    .replace(/^\n/u, '')
+    .replace(/\s+$/u, '');
+}
+
+// A simple table: thead, tbody, tfoot and rows straight in the table, cells
+// th and td; a cell's content is inline leaves, its paragraphs and list items
+// lines of it. colspan and rowspan are not read: a cell is one cell.
+function readTable(node, context) {
+  const table = {type: 'table', caption: [], rows: []};
+  const readRow = (row, head) => {
+    const cells = [];
+    for (const cell of row.children) {
+      if (cell.type !== 'element' || (cell.name !== 'td' && cell.name !== 'th')) continue;
+      const flow = new Flow('item');
+      walkChildren(cell.children, flow, {...context, marks: marksOf(cell, context.marks)});
+      flow.flush();
+      cells.push({header: cell.name === 'th', leaves: flatLeaves(flow.blocks)});
+    }
+    if (cells.length) table.rows.push({head, cells});
+  };
+  const readSection = (section, head) => {
+    for (const child of section.children) {
+      if (child.type === 'element' && child.name === 'tr') readRow(child, head);
+    }
+  };
+  for (const child of node.children) {
+    if (child.type !== 'element') continue;
+    if (child.name === 'caption') {
+      const flow = new Flow('item');
+      walkChildren(child.children, flow, context);
+      flow.flush();
+      table.caption = flatLeaves(flow.blocks);
+    } else if (child.name === 'thead') readSection(child, true);
+    else if (child.name === 'tbody' || child.name === 'tfoot') readSection(child, false);
+    else if (child.name === 'tr') readRow(child, false);
+  }
+  return table;
+}
+
+// An item's parts as one line of leaves: a nested list's items are lines too.
+function flatLeaves(parts) {
+  const out = [];
+  const add = (leaves) => {
+    if (!leaves.length) return;
+    if (out.length) out.push({kind: 'br', strong: false, em: false, href: null});
+    out.push(...leaves);
+  };
+  const visit = (part) => {
+    if (part.type === 'inline') add(part.leaves);
+    else for (const item of part.items) item.children.forEach(visit);
+  };
+  parts.forEach(visit);
+  return out;
 }
 
 function readItem(node, context) {
@@ -611,6 +709,13 @@ function tidyBlocks(blocks, mode) {
       else if (mode === 'editor') tidy = {type: 'blockquote', blocks: [{type: 'p', leaves: [{kind: 'br', strong: false, em: false, href: null}]}]};
     } else if (LISTS.has(block.type)) {
       tidy = tidyList(block, mode);
+    } else if (block.type === 'pre') {
+      if (block.text.trim()) tidy = {type: 'pre', text: block.text};
+    } else if (block.type === 'table') {
+      // A row with no text in any cell is not kept, as an empty paragraph is not.
+      const rows = block.rows.map((row) => ({head: row.head, cells: row.cells.map((cell) => ({header: cell.header, leaves: tidyLeaves(cell.leaves, 'value')}))}))
+        .filter((row) => row.cells.some((cell) => hasText(cell.leaves)));
+      if (rows.length) tidy = {type: 'table', caption: tidyLeaves(block.caption, 'value'), rows};
     } else {
       const leaves = tidyLeaves(block.leaves, mode);
       if (mode === 'value') {
@@ -634,9 +739,10 @@ function tidyBlocks(blocks, mode) {
  * mode "editor": what the editing surface holds -- an empty block keeps a
  *   <br> so the caret has a line, breaks the person typed stay.
  */
-export function cleanTree(tree, {mode = 'value'} = {}) {
+export function cleanTree(tree, {mode = 'value', profile = 'html'} = {}) {
+  if (!RICH_TEXT_PROFILES.includes(profile)) throw new TypeError(`rich_text_profile_unknown: ${profile}`);
   const flow = new Flow('flow');
-  walkChildren(tree.children ?? [], flow, {marks: {}, href: null, pre: false});
+  walkChildren(tree.children ?? [], flow, {marks: {}, href: null, pre: false, paste: profile === 'paste'});
   flow.flush();
   const blocks = tidyBlocks(flow.blocks, mode);
   if (mode === 'editor' && !blocks.length) return [{type: 'p', leaves: [{kind: 'br', strong: false, em: false, href: null}]}];
@@ -684,6 +790,18 @@ export function serialize(blocks) {
   return blocks.map((block) => {
     if (block.type === 'blockquote') return `<blockquote>${serialize(block.blocks)}</blockquote>`;
     if (LISTS.has(block.type)) return writeList(block);
+    // The paste profile's blocks in html@1 terms: never a pre or a table.
+    if (block.type === 'pre') {
+      const leaves = block.text.split('\n').flatMap((line, index) => [
+        ...(index ? [{kind: 'br', strong: false, em: false, href: null}] : []),
+        {kind: 'text', value: line.replace(/[\t\f]/gu, ' '), strong: false, em: false, href: null},
+      ]);
+      return `<p>${writeLeaves(tidyLeaves(leaves, 'value'))}</p>`;
+    }
+    if (block.type === 'table') {
+      const cells = [{leaves: block.caption}, ...block.rows.flatMap((row) => row.cells)];
+      return cells.filter((cell) => hasText(cell.leaves)).map((cell) => `<p>${writeLeaves(cell.leaves)}</p>`).join('');
+    }
     return `<${block.type}>${writeLeaves(block.leaves)}</${block.type}>`;
   }).join('');
 }

@@ -72,6 +72,42 @@ tel); anything else is `unsafe_url`.
   `html` is refused anywhere in a Document. A converter never produces it by
   accident: it is written only when an author asks for raw markup.
 
+## Pasting into structured content
+
+html@1 is a stored type and does not grow: a value never holds `pre` or
+`table`. A structured-content editor reads a paste with the subset's paste
+profile, which is html@1 plus two blocks it maps to its own types instead of
+flattening them into paragraphs:
+
+```js
+import {cleanTree, parseHtml, treeFromDom} from 'core/js/composition/html-subset.mjs';
+const blocks = cleanTree(treeFromDom(template.content), {mode: 'value', profile: 'paste'});
+// html@1 blocks (p, h2-h4, blockquote, ul, ol) and:
+// {type: 'pre', text}                  -> content.code {data: {code: text}}
+// {type: 'table', caption, rows}       -> content.table {data: {caption, rows}}
+//   rows: [{head, cells: [{header, leaves}]}]; a head row or header cells
+//   suggest props.header 'row' or 'column'
+```
+
+- `pre` (and `listing`) keeps its text with its line breaks and indentation; a
+  `<br>` is a line break, the newline right after `<pre>` and trailing blank
+  lines are dropped, marks inside are dropped (code is text).
+- A simple table: `thead`, `tbody`, `tfoot` or rows straight in the table,
+  cells `th` and `td`, an optional `caption`. A cell's content is the subset's
+  inline leaves (strong, em, safe links); its paragraphs and list items are
+  lines of it. `colspan` and `rowspan` are not read. A row with no text is not
+  kept, nor a table without one.
+- Everything inside is cleaned by the one rule: the same marks, the same href
+  check, `script` and the other dropped elements go with their content.
+- A `pre` or a `table` inside a list item, and a table inside a cell, are read
+  as html@1 reads them.
+- `serialize` writes the two blocks in html@1 terms (the lines of one
+  paragraph, a paragraph per cell), so its output is still the subset; a
+  profile other than `html` or `paste` throws `rich_text_profile_unknown`.
+
+The mapping to Document nodes is the editor's: the content model's limits
+(1000 rows, 50 cells, 200000 characters of code) apply there.
+
 ## A file to download
 
 `content.file` (1.0.0, after the first edition) is a file a reader downloads;
