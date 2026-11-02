@@ -2,7 +2,7 @@
   "$comment": "The source of sf-site-header's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.site-header",
   "tag": "sf-site-header",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "header",
   "settings": {

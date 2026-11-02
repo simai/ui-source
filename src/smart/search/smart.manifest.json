@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "title": "Site search",
-  "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
+  "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -398,7 +398,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "436ece281d6850bdfa663e0fbf1de38830cd7d41427f7ba79cc38fc648fdfe05"
+        "sha256": "bae103c98959d26abdc296ff6fb5af11c0a0b9e8e8dc53363a4634297d5074ba"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
@@ -406,7 +406,7 @@
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "cb821dcf42738cc390d15ff6da8ca883ee9fed7788255f19c7c8ffdd01b653cc"
+        "sha256": "ed809be01f6964160be39988ed05711cfe9a4c227c03d1953eaad895afe9eced"
       },
       {
         "path": "src/smart/search/rule.js",
@@ -414,7 +414,7 @@
       },
       {
         "path": "src/smart/search/docs.md",
-        "sha256": "8c6eb4f4a824c1149fbc54a588deef6b29422d41c995f4100b5167c3c20e8365"
+        "sha256": "b2db9f1eb6f3e62412dc4d3fc5cc27558aa853210c432e10ae855005e32964ba"
       }
     ],
     "generated_runtime": []

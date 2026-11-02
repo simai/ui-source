@@ -768,11 +768,11 @@
       },
       {
         "path": "src/core/js/open-surface-mark.js",
-        "sha256": "e5ab09390f79ec00211086f7177c6c5c4e491db52aac20a0968e8f8fbd733154"
+        "sha256": "31e76ae99e3e8085e1a05a24e84a68b9518f02567fce56f2fc68133db09fac57"
       },
       {
         "path": "src/core/js/layer-stack.js",
-        "sha256": "de5602e4bf8252a95dbbbe0d3af79cf4db753cce384ccd948bd3b2e64fc367c0"
+        "sha256": "44ed9eb5c3f8dc562b6b546d037ee5e4451e578f28f5a0ba25ddc02df8428ad2"
       }
     ],
     "generated_runtime": []

@@ -521,7 +521,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "4ba938a1b409706db0d2ed9f6d6ce10959c15355df06e0456f00cfa1602db743",
+      "manifest_sha256": "20abea96918154c31339bca3707323325e44e9fad00fda8e3ca658c076b3d3c2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -602,7 +602,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/context-menu/smart.manifest.json",
-      "manifest_sha256": "f808a7ba8c6ca70686bef3947508534ff0ecd096acac4854b4900dfe894602a6",
+      "manifest_sha256": "9b3c10f6a0281f5d9d56b74975f051f632cdd4d63c1540f259f2cdef507d81bd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -791,7 +791,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "0ee1aa12171b03077e5e964d5702cee398caf899ef8c19a63aa14233ee7a0b9a",
+      "manifest_sha256": "161413e08811eea65856195fede7db5192cee83e7834e565a433c3409d0d9003",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1012,7 +1012,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/help-mark/smart.manifest.json",
-      "manifest_sha256": "3db2238b68c215fcb8a49f766973e0cb8252c5208558209f72b3b6ac0fa035d8",
+      "manifest_sha256": "8bc7c0ffa365bbd50dbf14d829136746fdb2b03bb6960d08c8ad0932ba52ff13",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1388,7 +1388,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "96cbd22e646aa3662d81aad6a0f40b6a3aefe476eed33ab9ac69ed2fffbbac08",
+      "manifest_sha256": "f891d2c9503934984fd123e8fa2d05fc635cb397ca06cda2e1bbffe89275d021",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1428,7 +1428,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "8aa4a26ae1dff7e4791a9f57cc61f6c405917ab1123fb19d4f42b9ee7e3f4b2e",
+      "manifest_sha256": "37567d76336990178e81b4c4738de5ef9ea6643caf4ad2b2b94957092cab1e91",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1626,7 +1626,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/profile-picker/smart.manifest.json",
-      "manifest_sha256": "ce4ae92b1bfa99a6bd12c1ac04590f9ab0ff620ca787da769241b0fb0da1b833",
+      "manifest_sha256": "6fafc54bf6c0dc3a9a4bd4f9247718d50a53533da24ec4c0ed87471782442bb3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2011,13 +2011,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/search/smart.manifest.json",
-      "manifest_sha256": "8e81e796bb5c201c41b57da5d4d7a9df6d1a7f80b6fc09a655b334feb42fe24b",
+      "manifest_sha256": "f7a526477a3d6f12b4272e2c0d8c6ab6a9a4d826ae785e6bd5360ad4fc11ac5a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
+      "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
       "tags": [
         "search",
         "site-search",
@@ -2053,7 +2053,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/site-header/smart.manifest.json",
-      "manifest_sha256": "65ef42c39377e8a31cc1f8140035ba7cae7499a06011672a46349727d54a159f",
+      "manifest_sha256": "381edfa2745fb990e6c63cedaf00127cec5e09304123f269501e277b65467cd9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
