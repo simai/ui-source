@@ -521,7 +521,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "20abea96918154c31339bca3707323325e44e9fad00fda8e3ca658c076b3d3c2",
+      "manifest_sha256": "1eea4a0a8e4cbdb449353fc34f259ae47257ca231f1aa9af0332593aca40d00b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
