@@ -141,7 +141,10 @@ An invalid page draws nothing in the outlet.
 Each type with parameters has an editor manifest
 (`composition-editor-manifests.v1.json`): one field per parameter with its
 `key`, `plane`, `choices`, `default` and `visibility`, each mapped to one
-published field kind (choice, integer, text, toggle).
+published field kind (choice, integer, text, toggle). Every data field a type
+requires has a field, so a parameters form drawn from the manifest alone is
+complete: `content.figure` and `content.media` offer `src` (a text field up to
+2048 characters; `validate` applies the Document's URL rule) beside `alt`.
 
 ## Checks
 

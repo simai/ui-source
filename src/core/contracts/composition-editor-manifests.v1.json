@@ -398,6 +398,30 @@
       "fields": [
         {
           "capability_hints": [
+            "composition.data.src"
+          ],
+          "constraints": {
+            "max_length": 2048,
+            "min_length": 1
+          },
+          "group": "basic",
+          "help_key": "sf.composition.content_figure.src_help",
+          "key": "src",
+          "label_key": "sf.composition.content_figure.src",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "data",
+          "property": {
+            "type": "string",
+            "version": 2
+          },
+          "target": "src",
+          "visibility": "visible"
+        },
+        {
+          "capability_hints": [
             "composition.data.alt"
           ],
           "constraints": {
@@ -839,6 +863,30 @@
     },
     {
       "fields": [
+        {
+          "capability_hints": [
+            "composition.data.src"
+          ],
+          "constraints": {
+            "max_length": 2048,
+            "min_length": 1
+          },
+          "group": "basic",
+          "help_key": "sf.composition.content_media.src_help",
+          "key": "src",
+          "label_key": "sf.composition.content_media.src",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "data",
+          "property": {
+            "type": "string",
+            "version": 2
+          },
+          "target": "src",
+          "visibility": "visible"
+        },
         {
           "capability_hints": [
             "composition.data.alt"

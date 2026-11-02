@@ -729,7 +729,11 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   contentEditor('content.table', [
     contentField('content.table', 'header', 'props', 'choice', { choices: ['row', 'column', 'both', 'none'], default: 'row' }),
   ]),
+  // src is the one field the type requires besides alt: a host draws a
+  // complete form from the manifest alone (simai/ui-source#64). The address
+  // is a text field; validate applies the Document's URL rule on top.
   contentEditor('content.figure', [
+    contentField('content.figure', 'src', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('content.figure', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
     contentField('content.figure', 'ratio', 'props', 'choice', { choices: ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], default: 'auto' }),
     contentField('content.figure', 'fit', 'props', 'choice', { choices: ['cover', 'contain'], default: 'cover' }),
@@ -760,6 +764,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('content.card', 'variant', 'props', 'choice', { choices: ['default', 'plain'], default: 'default' }),
   ]),
   contentEditor('content.media', [
+    contentField('content.media', 'src', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('content.media', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
     contentField('content.media', 'side', 'props', 'choice', { choices: ['left', 'right'], default: 'right' }),
     contentField('content.media', 'ratio', 'props', 'choice', { choices: ['1/1', '4/3', '3/2', '16/9', '21/9'], default: '16/9' }),

@@ -326,6 +326,16 @@ test('editor manifests bind each parameterised type and map every field to one k
   ], 'the alert speaks sf-alert\'s words');
   const file = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.file');
   assert.deepEqual(file.fields.map(({ key, plane, constraints }) => [key, plane, constraints.max_length]), [['label', 'data', 300], ['href', 'data', 2048]], 'the file names its label and its address');
+  // A form drawn from the manifest alone sets every field the type requires
+  // (simai/ui-source#64): figure and media name their src.
+  for (const type of ['content.figure', 'content.media']) {
+    const manifest = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === type);
+    const src = manifest.fields.find((entry) => entry.key === 'src');
+    assert.deepEqual([src.plane, src.target, resolveFieldKind(src).kind, src.constraints.max_length], ['data', 'src', 'text', 2048], type);
+    const required = registry.types.get(type).data_schema.required || [];
+    const offered = new Set(manifest.fields.filter((entry) => entry.plane === 'data').map((entry) => entry.target));
+    for (const key of required) assert.ok(offered.has(key), `${type} offers data.${key}`);
+  }
   for (const type of ['content.document', 'content.quote', 'content.divider', 'content.list-item', 'content.step', 'content.html', 'content.outlet']) {
     assert.equal(BUILTIN_EDITOR_MANIFESTS.some((entry) => entry.type === type), false, `${type} has no parameters`);
   }
