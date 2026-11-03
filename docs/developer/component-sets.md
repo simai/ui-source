@@ -1,8 +1,9 @@
 # Component sets
 
 Status: draft standard `simai.component-set` 1.0.0
-(`contracts/standards/simai.component-set/1.0.0/standard.json`). The Loader,
-the builder and the package references do not follow it yet; see "What is not
+(`contracts/standards/simai.component-set/1.0.0/standard.json`). The Loader
+follows it since `core.runtime` 1.25.0 and the builder has a generic set
+release route; the package references do not follow it yet. See "What is not
 built yet" below.
 
 Every Smart component outside the free SIMAI Framework lives in a **component
@@ -16,7 +17,7 @@ The set id is the repository name without `ui-`:
 
 | Set | Repository | Licence | Families | State |
 |---|---|---|---|---|
-| admin | simai/ui-admin | simai-pro | admin, confirm | planned |
+| admin | simai/ui-admin | simai-pro | admin | planned |
 | view | simai/ui-view | simai-pro | view | pending the owner |
 | chat | simai/ui-chat | simai-pro | chat, message | planned |
 | mail | simai/ui-mail | simai-pro | mail | planned |
@@ -167,27 +168,90 @@ Each release adds one row to the one compatibility index, with:
 - the set;
 - the release;
 - the version;
-- the Framework pairs it runs over;
+- the Framework it was built over (`pair`, `source_revision`) and the lowest
+  `core.runtime` it needs, so it runs over every pair at or above it;
 - the sets it requires;
 - the receipt digest.
 
 No release is moved or rewritten.
 
+### The compatibility index
+
+- Format: `simai.framework.set-index`, `schema_version: 1`
+  (`contracts/schema/set-index.v1.schema.json`, pinned by the standard).
+  A fixture is `tests/fixtures/component-set/index.json`.
+- Where: `index.json` of the npm package `@simai-studio/sets`. The Loader reads
+  `https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json`: the format's
+  major is pinned, the rows grow.
+- Writer: the set release route, `ui-builder/scripts/set-index.py add`, from
+  the release's built `set.json` and receipt. Nobody edits it by hand.
+- Reader: the Loader picks the newest release of a set whose
+  `framework.core_runtime` this Core meets (`core/js/sets.js`,
+  `selectSetRelease`).
+
+```json
+{
+  "schema": "simai.framework.set-index",
+  "schema_version": 1,
+  "sets": [{"id": "effects", "title": "SIMAI Effects", "repository": "simai/ui-effects",
+            "npm": "@simai-studio/effects", "licence": {"class": "framework", "spdx": "Apache-2.0"},
+            "docs": "https://effects.simai.io/"}],
+  "releases": [{"set": "effects", "release": "effects-<12 hex>", "version": "1.0.0",
+                "source_revision": "<40 hex>",
+                "framework": {"core_runtime": ">=1.25.0", "source_revision": "<40 hex>", "pair": "ui-<12 hex>"},
+                "requires_sets": [], "receipt_sha256": "<64 hex>", "published_on": "2026-11-03"}]
+}
+```
+
 ## One-line connection
 
-A page loads SIMAI Framework and names its sets in one declaration before
-the core starts. The Loader then:
-
-1. finds each set's base through the compatibility index, unless the page
-   gives a base;
-2. loads only the components on the page.
-
-Until the Loader step lands, the declaration is the component-package one:
+A page loads SIMAI Framework and names its sets on the same line
+(`core.runtime` 1.25.0):
 
 ```html
-<script>window.SF_BOOT_CONFIG = {packages: {effects: {base: '<set base>/dist/smart'}}};</script>
-<script src="<framework>/distr/core/js/core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simai-studio/ui@<v>/distr/core/js/core.min.js" data-sf-sets="effects"></script>
 ```
+
+The Loader then:
+
+1. finds each set's base through the compatibility index:
+   `@simai-studio/<set>@<version>/dist/smart` of the newest release this Core
+   meets;
+2. fetches the set's `rule.js` before the first scan;
+3. loads only the components on the page.
+
+Other forms of the same declaration:
+
+| Written | Means |
+|---|---|
+| `data-sf-sets="effects admin@1.2.0"` | effects by the index; admin at npm 1.2.0, no index read |
+| `SF_BOOT_CONFIG.packages.effects = true` (or `{index: true}`) | by the index |
+| `SF_BOOT_CONFIG.packages.effects = '1.0.0'` | that npm version |
+| `SF_BOOT_CONFIG.packages.effects = '<base>'` | that base, for example a `gh/` commit or a local copy |
+| `SF_BOOT_CONFIG.packages.effects = {base, rule}` | the component-package form |
+| `<script src="<base>/rule.js">` after core.js | the base is the rule file's directory |
+
+`SF_BOOT_CONFIG` wins over `data-sf-sets`. `SF_BOOT_CONFIG.setIndex` and
+`SF_BOOT_CONFIG.setNpm` replace the index address and the npm root, for a
+mirror or a local stand.
+
+What a set adds at runtime, through its `rule.js` and its bundles:
+
+- `SF.RuleLoader.registerPackage(<set>, {rules, api, aliases, base})`: the
+  rules; `api`, the rule whose bundle carries the set's scripted API; `aliases`,
+  the set's own dated former tags (`{from, to, since, remove_after}`), merged
+  into `SF.tags` so SIMAI Framework keeps no row for them.
+- `SF.RuleLoader.registerPackage(<set>, {exports})`: the scripted API, from the
+  bundle. A page reads it with `await SF.package('<set>')`, which asks for the
+  `api` element if it has not loaded and refuses a set the page has not
+  declared, naming the line to add.
+- `SF.RuleLoader.packageOf(<set>)`: `{name, base, declared, registered,
+  version, release, api, exported}`, frozen. A bundle finds files published
+  with it (the effects catalogue) relative to `base`.
+
+In debug (`?sf-debug`, `data-sf-debug`) the Loader also reads
+`<base>/../set.json` and names each required set the page has not declared.
+It never loads a required set on the page's behalf.
 
 ## One site per set
 
@@ -228,15 +292,9 @@ transitional bundle of the paid sets.
 
 ## What is not built yet
 
-- **Loader:**
-  - resolving a set by name through the compatibility index;
-  - per-set tag aliases and exports through `registerPackage`.
-- **Builder:**
-  - a generic `publish-package-release.sh` / `bind-package-release.py`;
-  - `set.json` in the build, receipt and release;
-  - the receipt checked against `set.json` and the registry.
 - **References:** `src/core/contracts/packages/*.package.json` and the tag
   alias rows generated from them leave as dated aliases.
-- **Compatibility index:** its location, format and writer.
+- **Compatibility index:** `@simai-studio/sets` is not published until the
+  first set release; no gate checks `requires_sets` across sets yet.
 - **Docara:** the shared set template.
 - **ui-doc:** the guide section on component sets.

@@ -31,7 +31,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The load rules by name: what a class, a tag or a component needs. A product package adds its own rules here (its rule.js)."
+      "summary": "The load rules by name: what a class, a tag or a component needs. A component set adds its own rules here (its rule.js) with SF.RuleLoader.registerPackage(name, {rules, api, aliases, exports, base}); SF.RuleLoader.packageOf(name) answers where a set is served ({name, base, declared, registered, version, release, api, exported}, frozen). Both are functions, not rules, and are not enumerated (since core.runtime 1.25.0)."
     },
     {
       "name": "SF.Preferences",
@@ -125,7 +125,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "Background effects (simai.effect): check a manifest, read stored settings, resolve a placement's theme, mount an effect or a windows group under the rules, load one from the pinned catalogue with integrity, run a foreign one only in a sandboxed frame.",
+      "summary": "Background effects (simai.effect): check a manifest, read stored settings, resolve a placement's theme, mount an effect or a windows group under the rules, load one from the pinned catalogue with integrity, run a foreign one only in a sandboxed frame. Since core.runtime 1.25.0 a dated alias of the set effects: the engine lives in simai/ui-effects, SF.package('effects') answers the same functions, and every read of SF.Effects is noted in SF.deprecations (journal global-sf-effects-to-package, remove_after 2027-01-01).",
       "members": [
         "checkEffectManifest",
         "checkSetting",
@@ -143,7 +143,20 @@
         "EFFECT_FORMAT",
         "EFFECT_SCHEMA",
         "SANDBOX_RUNNER_SHA256"
-      ]
+      ],
+      "deprecated": {
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "journal": "global-sf-effects-to-package",
+        "to": "SF.package('effects')"
+      }
+    },
+    {
+      "name": "SF.package",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "A component set's scripted API: SF.package('<set>') is a Promise of what the set's bundle registered as its exports (SF.RuleLoader.registerPackage(name, {exports})), asking for the set's api element when it has not loaded. Rejects when the page has not declared the set, naming the line to add (data-sf-sets on the core script, or SF_BOOT_CONFIG.packages.<set>). Callable as soon as core.js has run; it waits for the Loader (since core.runtime 1.25.0)."
     },
     {
       "name": "SF.Position",

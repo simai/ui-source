@@ -62,6 +62,23 @@ export function registerTagAliases(table, tag) {
   return rows;
 }
 
+// Rows a component set gives at runtime (SF.RuleLoader.registerPackage(name,
+// {aliases})): {from, to, since, remove_after}, the set's own former tags, so
+// SIMAI Framework needs no table row for a set it does not know. Answers the
+// rows taken; a row whose old tag is already known keeps the first.
+export function registerTagAliasRows(rows) {
+  const shared = state();
+  const taken = [];
+  for (const row of Array.isArray(rows) ? rows : []) {
+    if (!row || typeof row.from !== 'string' || typeof row.to !== 'string') continue;
+    if (shared.byOld.has(row.from)) continue;
+    const clean = Object.freeze({from: row.from, to: row.to, since: String(row.since ?? ''), remove_after: String(row.remove_after ?? '')});
+    addRow(shared, clean);
+    taken.push(clean);
+  }
+  return taken;
+}
+
 // The open old names of a tag, its own first: ['sf-button-close', 'sf-close'].
 export function tagNames(tag) {
   const name = String(tag || '').toLowerCase();

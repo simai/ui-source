@@ -17,6 +17,7 @@
         "breadcrumbs",
         "button",
         "checkbox",
+        "confirm",
         "contents",
         "drawer",
         "dropdown",
@@ -327,8 +328,7 @@
       "repository": "simai/ui-admin",
       "status": "planned",
       "families": [
-        "admin",
-        "confirm"
+        "admin"
       ],
       "names": [
         {
@@ -542,6 +542,13 @@
       "owner": "framework",
       "family_owner": "editor",
       "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. To be decided: move it to the set editor, or rename it in the Framework through the change lifecycle.",
+      "since": "2026-11-03"
+    },
+    {
+      "element": "sf-confirm-change",
+      "owner": "admin",
+      "family_owner": "framework",
+      "reason": "The family confirm belongs to SIMAI Framework (dispatcher, 2026-11-03, stage 1 of the component sets decision: sf-confirm-change with a plain sf-confirm move into the Framework). Until the move lands in ui-source the element is still shipped by the pro package from simai/ui-pro and stays registered there; the move re-registers it to framework and this exception leaves.",
       "since": "2026-11-03"
     }
   ]

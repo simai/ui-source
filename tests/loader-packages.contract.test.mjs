@@ -11,6 +11,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import test from 'node:test';
+import * as sets from '../src/core/js/sets.js';
 
 const source = fs.readFileSync(new URL('../src/core/js/loader.js', import.meta.url), 'utf8');
 
@@ -31,8 +32,11 @@ const slices = [
   between('SFLoaderPlugin.prototype.forwardedRule =', 'SFLoaderPlugin.prototype.setRelation ='),
 ].join('\n');
 
-function harness({prepared = false, declared = {}} = {}) {
+function harness({prepared = false, declared = {}, index = null, config = {}, currentScript = null} = {}) {
   const warnings = [];
+  const aliasRows = [];
+  const fetched = [];
+  const ensured = [];
   const notes = [];
   const stored = new Map();
   const scans = [];
@@ -57,6 +61,26 @@ function harness({prepared = false, declared = {}} = {}) {
     decodeCacheValue: (value) => value,
     SF: {RuleLoader: rules},
     noteDeprecated: (note) => notes.push(note),
+    // The set functions (sets.js) the Loader imports, and what they reach.
+    readSetDeclaration: sets.readSetDeclaration,
+    npmBase: sets.npmBase,
+    declarationLine: sets.declarationLine,
+    checkSetIndex: sets.checkSetIndex,
+    selectSetRelease: sets.selectSetRelease,
+    SET_INDEX_URL: sets.SET_INDEX_URL,
+    SET_NPM_ROOT: sets.SET_NPM_ROOT,
+    registerTagAliasRows: (rows) => { aliasRows.push(...rows); return rows; },
+    window: {SF_BOOT_CONFIG: config},
+    globalThis: {document: {currentScript}},
+    setTimeout,
+    clearTimeout,
+    fetch: (url) => {
+      fetched.push(url);
+      const body = url.endsWith('/set.json') ? context.__passports?.[url] : index;
+      return Promise.resolve(body
+        ? {ok: true, status: 200, json: () => Promise.resolve(JSON.parse(JSON.stringify(body)))}
+        : {ok: false, status: 404, json: () => Promise.reject(new Error('404'))});
+    },
   };
   context.SFLoaderPlugin = function SFLoaderPlugin() {
     this.findPlugins = rules;
@@ -85,14 +109,16 @@ function harness({prepared = false, declared = {}} = {}) {
     SFLoaderPlugin.prototype.scanCustomElements = function (root) { __scans.push(['custom', root]); };
     SFLoaderPlugin.prototype.scanAttributes = function (root) { __scans.push(['attributes', root]); };
     SFLoaderPlugin.prototype.searchRegexp = function () { __scans.push(['regexp']); };
+    SFLoaderPlugin.prototype.ensure = function (tags) { __ensured.push(...tags); return Promise.resolve({ready: [], missing: tags}); };
     SFLoaderPlugin.prototype.addScript = function (url) {
       __scripts.push(url);
       return url.includes('absent') ? Promise.reject(new Error('404')) : Promise.resolve();
     };
     this.resolveSmartRoot = resolveSmartRoot;
-  `, Object.assign(context, {__scans: scans, __scripts: scripts}));
+  `, Object.assign(context, {__scans: scans, __scripts: scripts, __ensured: ensured}));
   const loader = new context.SFLoaderPlugin();
-  return {loader, rules, warnings, notes, stored, scans, scripts, body, resolveSmartRoot: context.resolveSmartRoot};
+  return {loader, rules, warnings, notes, stored, scans, scripts, body, aliasRows, fetched, ensured, context,
+    resolveSmartRoot: context.resolveSmartRoot};
 }
 
 const plain = (value) => JSON.parse(JSON.stringify(value));
@@ -352,4 +378,134 @@ test('a forward leads to a package rule, and a package that still owns the forme
   assert.match(source, /const forwardTo = named\?\.name && this\.forwardedRule\(named\.name\);/u);
   assert.match(source, /const target = this\.forwardedRule\(relation\.name\) \|\| relation\.name;/u);
   assert.doesNotMatch(source.replace(/SFLoaderPlugin\.prototype\.forwardedRule = [\s\S]*?\n\};/u, ''), /this\.ruleForwards\?\.\[/u, 'no reader skips the package check');
+});
+
+/* Component sets (standard simai.component-set 1.0.0): a page names a set,
+   by its base, by an npm version or by name alone through the compatibility
+   index; a set's bundle gives its exports and its own former tags at runtime;
+   SF.RuleLoader.packageOf tells a bundle where it is served. */
+const SHA = '0123456789abcdef0123456789abcdef01234567';
+const INDEX = {
+  schema: 'simai.framework.set-index',
+  schema_version: 1,
+  releases: [
+    {set: 'effects', release: 'effects-aaaaaaaaaaaa', version: '1.0.0', framework: {core_runtime: '>=1.25.0'}},
+    {set: 'effects', release: 'effects-bbbbbbbbbbbb', version: '1.1.0', framework: {core_runtime: '>=1.25.0'}},
+    {set: 'effects', release: 'effects-cccccccccccc', version: '2.0.0', framework: {core_runtime: '>=9.0.0'}},
+  ],
+};
+
+test('a gh/ base works as any base: rule file and component files from it', () => {
+  const base = `https://cdn.jsdelivr.net/gh/simai/ui-effects@${SHA}/dist/smart`;
+  const {loader} = harness({declared: {effects: {base: `${base}/`}}});
+  assert.equal(loader.packages.effects.rule, `${base}/rule.js`);
+  loader.registerPackage('effects', {rules: {'cl-effect': {tags: ['sf-effect'], type: 'smart', mode: 'smart', js: true, css: true}}});
+  assert.equal(loader.pathPluginJs('cl-effect', true, 'default', 'smart'), `${base}/effect/js/effect.js`);
+  assert.equal(loader.pathPluginCss('cl-effect', 'smart', 'default'), `${base}/effect/css/effect.css`);
+  loader.addToMissingFiles('cl-effect', 'js');
+  assert.ok(loader.notFoundFiles['effects::cl-effect'], 'a miss is kept under the set name');
+});
+
+test('a set is declared by a base string, an npm version or by name alone', () => {
+  const {loader} = harness({declared: {
+    effects: '/vendor/effects/smart/',
+    chart: '1.4.2',
+    admin: true,
+    view: {index: true},
+  }, config: {setNpm: 'http://127.0.0.1:9/npm/'}});
+  assert.equal(loader.packages.effects.base, '/vendor/effects/smart');
+  assert.equal(loader.packages.chart.base, 'http://127.0.0.1:9/npm/@simai-studio/chart@1.4.2/dist/smart');
+  assert.equal(loader.packages.chart.version, '1.4.2');
+  assert.equal(loader.packages.admin.base, '', 'by name: no base until the index answers');
+  assert.equal(loader.packages.admin.byIndex, true);
+  assert.equal(loader.packages.view.byIndex, true);
+});
+
+test('by name: the index gives the newest release this Core meets, its npm base and rule file', async () => {
+  const {loader, scripts, fetched, warnings} = harness({
+    declared: {effects: true, ghost: true},
+    index: INDEX,
+    config: {setIndex: 'http://127.0.0.1:9/sets/index.json'},
+  });
+  await loader.loadDeclaredPackageRules();
+  assert.deepEqual(plain(fetched).filter((url) => !url.endsWith('/set.json')), ['http://127.0.0.1:9/sets/index.json'], 'one fetch for every set');
+  assert.equal(loader.packages.effects.version, '1.1.0', 'not 2.0.0: that one needs core.runtime 9');
+  assert.equal(loader.packages.effects.release, 'effects-bbbbbbbbbbbb');
+  assert.equal(loader.packages.effects.base, 'https://cdn.jsdelivr.net/npm/@simai-studio/effects@1.1.0/dist/smart');
+  assert.deepEqual(plain(scripts), ['https://cdn.jsdelivr.net/npm/@simai-studio/effects@1.1.0/dist/smart/rule.js']);
+  assert.ok(warnings.some((text) => text.includes('set "ghost"') && text.includes('unknown-set')));
+});
+
+test('an unreachable index is said aloud for each set it was to place, and nothing is loaded', async () => {
+  const {loader, scripts, warnings} = harness({declared: {effects: true}, index: null});
+  await loader.loadDeclaredPackageRules();
+  assert.deepEqual(plain(scripts), []);
+  assert.ok(warnings.some((text) => text.includes('set "effects" could not be placed') && text.includes('404')));
+});
+
+test('packageOf answers a frozen record and is not read as a rule', () => {
+  const {loader, rules} = harness({declared: {effects: '/fx/smart'}});
+  assert.equal(typeof rules.packageOf, 'function');
+  assert.ok(!Object.keys(rules).includes('packageOf'));
+  loader.registerPackage('effects', {api: 'cl-effect', rules: {'cl-effect': {tags: ['sf-effect'], type: 'smart', js: true}}});
+  const record = rules.packageOf('effects');
+  assert.ok(Object.isFrozen(record));
+  assert.deepEqual(plain(record), {name: 'effects', base: '/fx/smart', declared: true, registered: true,
+    version: '', release: '', api: 'cl-effect', exported: false});
+  assert.equal(rules.packageOf('nothing'), null);
+});
+
+test('exports: SF.package resolves with what the bundle registers, asking for the api element', async () => {
+  const {loader, ensured} = harness({declared: {effects: '/fx/smart'}});
+  loader.registerPackage('effects', {api: 'cl-effect', rules: {'cl-effect': {tags: ['sf-effect'], type: 'smart', js: true}}});
+  const waiting = loader.packageExports('effects');
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(plain(ensured), ['sf-effect'], 'the api element is asked for as an element would be');
+  const exportsGiven = {mountEffect() {}, version: '1.0.0'};
+  assert.deepEqual(plain(loader.registerPackage('effects', {exports: exportsGiven})), [], 'exports alone add no rule');
+  const answered = await waiting;
+  assert.equal(answered.mountEffect, exportsGiven.mountEffect);
+  assert.ok(Object.isFrozen(answered));
+  assert.equal(await loader.packageExports('effects'), answered, 'the same object every time');
+});
+
+test('SF.package refuses a set the page has not declared, naming the line to add', async () => {
+  const {loader} = harness();
+  await assert.rejects(loader.packageExports('effects'), /set "effects" is not declared[\s\S]*data-sf-sets="effects"/u);
+});
+
+test('a set gives its own former tags at runtime; a row for a tag it does not own is refused', () => {
+  const {loader, aliasRows, warnings} = harness({declared: {admin: '/a'}});
+  loader.registerPackage('admin', {
+    rules: {'cl-admin-menu': {tags: ['sf-admin-menu', 'sf-admin-nav'], type: 'smart', js: true}},
+    aliases: [
+      {from: 'sf-admin-nav', to: 'sf-admin-menu', since: '2026-11-03', remove_after: '2027-01-01'},
+      {from: 'sf-button-old', to: 'sf-button', since: '2026-11-03', remove_after: '2027-01-01'},
+    ],
+  });
+  assert.deepEqual(plain(aliasRows).map((row) => row.from), ['sf-admin-nav']);
+  assert.ok(warnings.some((text) => text.includes('sf-button-old')));
+});
+
+test('a rule file loaded by a script tag of the page gives its own directory as the base', () => {
+  const {loader} = harness({currentScript: {src: 'https://cdn.example/fx@1/dist/smart/rule.js'}});
+  loader.registerPackage('effects', {rules: {'cl-effect': {tags: ['sf-effect'], type: 'smart', js: true}}});
+  assert.equal(loader.packages.effects.base, 'https://cdn.example/fx@1/dist/smart');
+
+  const bundle = harness({currentScript: {src: 'https://cdn.example/fx@1/dist/smart/effect/js/effect.js'}});
+  bundle.loader.registerPackage('effects', {exports: {}});
+  assert.equal(bundle.loader.packages.effects.base, '', 'a bundle is not a rule file');
+});
+
+test('debug: the passport beside the base names a required set the page did not declare', async () => {
+  const {loader, warnings, context} = harness({declared: {admin: '/sets/admin/smart'}});
+  context.__passports = {'/sets/admin/set.json': {
+    schema: 'simai.framework.component-set', id: 'admin', requires_sets: [{id: 'view', range: '^1.0.0'}],
+  }};
+  loader.minified = false;
+  loader.registerPackage('admin', {rules: {'cl-admin-menu': {tags: ['sf-admin-menu'], type: 'smart', js: true}}});
+  await loader.loadDeclaredPackageRules();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(loader.packages.admin.passport.id, 'admin');
+  assert.ok(warnings.some((text) => text.includes('needs set "view"') && text.includes('data-sf-sets="view"')));
 });

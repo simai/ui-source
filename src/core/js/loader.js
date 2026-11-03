@@ -5,7 +5,7 @@ import { convertTailwindClasses } from './tailwind-map';
 import utilityModuleAliases from '../contracts/utility-module-aliases.v1.json';
 import smartRuleForwards from '../contracts/smart-rule-forwards.v1.json';
 import templateUtilities from './template-utilities.generated.json';
-import { canonicalTag } from './tag-aliases.js';
+import { canonicalTag, registerTagAliasRows } from './tag-aliases.js';
 import { resolveUtilityModule } from './utilityModuleAliases';
 import {
   initIconSubsetState,
@@ -22,6 +22,16 @@ import {
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
 import {installPendingTags} from './pending-tags.js';
 import {noteDeprecated} from './deprecations.js';
+import {
+  checkSetIndex,
+  declarationLine,
+  npmBase,
+  readSetDeclaration,
+  selectSetRelease,
+  setsFromScripts,
+  SET_INDEX_URL,
+  SET_NPM_ROOT,
+} from './sets.js';
 
 /* global __SF_CACHE_VERSION__, __SF_PLUGIN_LIST_VERSION__ */
 
@@ -121,6 +131,14 @@ const PACKAGE_ALIASES = Object.freeze({
 function normalisePackageUrl(value) {
   if (typeof value !== 'string') return '';
   return value.trim().replace(/\/+$/, '');
+}
+
+// The directory of the package rule file that is running now, when it is one
+// (<base>/rule.js or rule.min.js); '' for anything else, a bundle included.
+function ruleScriptBase() {
+  const src = globalThis.document?.currentScript?.src || '';
+  const match = /^(.*)\/rule(?:\.min)?\.js(?:[?#].*)?$/u.exec(src);
+  return match ? match[1] : '';
 }
 
 function SFLoaderPlugin(params) {
@@ -309,7 +327,13 @@ function SFLoaderPlugin(params) {
   this.packages = Object.create(null);
   this.packageWarnings = new Set();
   this.installPackageApi();
+  // A set named on the core script (data-sf-sets) is declared like one in
+  // SF_BOOT_CONFIG.packages; the configuration wins over the attribute.
+  const named = setsFromScripts(globalThis.document);
+  named.refused.forEach((word) => this.warnPackage(`sets:${word}`,
+      `"${word}" in data-sf-sets is not a set name (or name@version); it is ignored`));
   this.declarePackages({
+    ...named.sets,
     ...(window.SF_BOOT_CONFIG?.packages || {}),
     ...(params.packages || {}),
   });
@@ -348,6 +372,12 @@ SFLoaderPlugin.prototype.installPackageApi = function () {
     enumerable: false,
     writable: true,
     value: (name, options) => this.registerPackage(name, options),
+  });
+  Object.defineProperty(rules, 'packageOf', {
+    configurable: true,
+    enumerable: false,
+    writable: true,
+    value: (name) => this.packageOf(name),
   });
 };
 
@@ -401,41 +431,165 @@ SFLoaderPlugin.prototype.declarePackages = function (declared) {
           + '(lower-case letters, digits and hyphens); it is ignored');
       return;
     }
-    const base = normalisePackageUrl(config?.base);
-    if (!base) {
+    // A set may be declared by its base, by an npm version or by name alone
+    // (sets.js); a version makes the base, a name alone waits for the index.
+    const read = readSetDeclaration(config);
+    if (!read) {
       this.warnPackage(`base:${name}`,
           `package "${name}" is declared without a base, so none of its `
           + 'components can load; set SF_BOOT_CONFIG.packages.'
           + `${name}.base to the directory holding its component folders`);
     }
+    const base = read?.base
+      || (read?.version ? npmBase(name, read.version, this.setNpmRoot()) : '');
     this.packages[name] = {
       name,
       base,
-      rule: normalisePackageUrl(config?.rule) || (base ? `${base}/rule.js` : ''),
+      rule: read?.rule || (base ? `${base}/rule.js` : ''),
+      version: read?.version || '',
+      byIndex: Boolean(read?.byIndex),
       declared: true,
       registered: false,
     };
   });
 };
 
+SFLoaderPlugin.prototype.setNpmRoot = function () {
+  return normalisePackageUrl(window.SF_BOOT_CONFIG?.setNpm) || SET_NPM_ROOT;
+};
+
+// The bases of the sets a page named without one, from the compatibility
+// index: fetched once, only when a set needs it. A set the index cannot place
+// is said aloud with the reason and stays without a base.
+SFLoaderPlugin.prototype.resolveIndexedPackages = function () {
+  const waiting = Object.values(this.packages).filter((pkg) => pkg.byIndex && !pkg.base);
+  if (!waiting.length) return null;
+  const url = normalisePackageUrl(window.SF_BOOT_CONFIG?.setIndex) || SET_INDEX_URL;
+  const unplaced = (pkg, why) => this.warnPackage(`index:${pkg.name}`,
+      `set "${pkg.name}" could not be placed from the compatibility index `
+      + `(${why}); give it a base or a version: SF_BOOT_CONFIG.packages.`
+      + `${pkg.name} = '<base>' or '<version>'`);
+  return fetch(url, {credentials: 'omit'})
+      .then((response) => {
+        if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+        return response.json();
+      })
+      .then((index) => {
+        const problems = checkSetIndex(index);
+        if (problems.length) throw new Error(`${url} is not a set index: ${problems[0]}`);
+        this.setIndex = index;
+        waiting.forEach((pkg) => {
+          const chosen = selectSetRelease(index, pkg.name);
+          if (!chosen.row) {
+            unplaced(pkg, chosen.reason);
+            return;
+          }
+          pkg.version = chosen.row.version;
+          pkg.release = chosen.row.release;
+          pkg.base = npmBase(pkg.name, chosen.row.version, this.setNpmRoot());
+          pkg.rule = `${pkg.base}/rule.js`;
+        });
+      })
+      .catch((error) => waiting.forEach((pkg) => unplaced(pkg, String(error?.message || error))));
+};
+
 SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
-  const loads = Object.values(this.packages)
-      .filter((pkg) => pkg.declared && pkg.rule)
-      .map((pkg) => this.addScript(pkg.rule)
-          .then(() => {
-            if (!pkg.registered) {
-              this.warnPackage(`empty:${pkg.name}`,
-                  `${pkg.rule} loaded but registered nothing for package `
-                  + `"${pkg.name}"; it must call SF.RuleLoader.registerPackage(`
-                  + `"${pkg.name}", {rules})`);
-            }
-          })
-          .catch(() => {
-            this.warnPackage(`rule:${pkg.name}`,
-                `the rules of package "${pkg.name}" could not be loaded from `
-                + `${pkg.rule}; its components stay undefined`);
-          }));
-  return loads.length ? Promise.all(loads) : null;
+  const load = () => {
+    const loads = Object.values(this.packages)
+        .filter((pkg) => pkg.declared && pkg.rule)
+        .map((pkg) => this.addScript(pkg.rule)
+            .then(() => {
+              if (!pkg.registered) {
+                this.warnPackage(`empty:${pkg.name}`,
+                    `${pkg.rule} loaded but registered nothing for package `
+                    + `"${pkg.name}"; it must call SF.RuleLoader.registerPackage(`
+                    + `"${pkg.name}", {rules})`);
+              }
+              if (!this.minified) this.readSetPassport(pkg);
+            })
+            .catch(() => {
+              this.warnPackage(`rule:${pkg.name}`,
+                  `the rules of package "${pkg.name}" could not be loaded from `
+                  + `${pkg.rule}; its components stay undefined`);
+            }));
+    return loads.length ? Promise.all(loads) : null;
+  };
+  const indexed = this.resolveIndexedPackages();
+  this.packageRulesReady = indexed ? indexed.then(load) : load();
+  return this.packageRulesReady;
+};
+
+// Debug only (?sf-debug, data-sf-debug, minified: false): the set's passport,
+// <base>/../set.json, read for diagnostics. It says which sets this one needs;
+// one the page has not declared is said aloud with the line to add, and is
+// never loaded on the page's behalf.
+SFLoaderPlugin.prototype.readSetPassport = function (pkg) {
+  if (!pkg.base || typeof fetch !== 'function') return null;
+  const url = `${pkg.base.replace(/\/[^/]*$/u, '')}/set.json`;
+  return fetch(url, {credentials: 'omit'})
+      .then((response) => (response.ok ? response.json() : null))
+      .then((passport) => {
+        if (!passport || passport.schema !== 'simai.framework.component-set') return;
+        pkg.passport = passport;
+        if (passport.id !== pkg.name) {
+          this.warnPackage(`passport:${pkg.name}`,
+              `${url} is the passport of set "${passport.id}", not "${pkg.name}"`);
+        }
+        (Array.isArray(passport.requires_sets) ? passport.requires_sets : []).forEach((need) => {
+          if (this.packages[need?.id]) return;
+          this.warnPackage(`requires:${pkg.name}:${need?.id}`,
+              `set "${pkg.name}" needs set "${need?.id}" (${need?.range}), which this `
+              + `page has not declared; add ${declarationLine(need?.id)}`);
+        });
+      })
+      .catch(() => null);
+};
+
+// What the Loader knows of a package: frozen, safe to hand out. A bundle uses
+// it to find files beside its own at the same commit (its catalogue, its
+// data), since a classic script has no import.meta.url.
+SFLoaderPlugin.prototype.packageOf = function (name) {
+  const pkg = this.packages[String(name ?? '').trim()];
+  if (!pkg) return null;
+  return Object.freeze({
+    name: pkg.name,
+    base: pkg.base,
+    declared: pkg.declared,
+    registered: pkg.registered,
+    version: pkg.version || '',
+    release: pkg.release || '',
+    api: pkg.api || '',
+    exported: Boolean(pkg.exports),
+  });
+};
+
+// SF.package(name) (sets.js): the set's exports, once its bundle has given
+// them. The set's `api` rule (registerPackage(name, {api})) is the element
+// whose bundle carries them, asked for as an element would be. A set the page
+// has not declared and nothing has registered is refused with the line to add.
+SFLoaderPlugin.prototype.packageExports = function (name, {timeout = 10000} = {}) {
+  const ready = this.packageRulesReady || Promise.resolve();
+  return Promise.resolve(ready).then(() => {
+    const given = String(name ?? '').trim();
+    const packageName = PACKAGE_NAME.test(given) ? this.packageNameOf(given) : given;
+    const pkg = this.packages[packageName];
+    if (!pkg) {
+      throw new Error(`SF.package: set "${given}" is not declared on this page; add ${declarationLine(given)}`);
+    }
+    if (pkg.exports) return pkg.exports;
+    if (!pkg.exportsReady) {
+      pkg.exportsReady = new Promise((resolve) => { pkg.resolveExports = resolve; });
+    }
+    const apiTag = pkg.api ? this.findPlugins?.[pkg.api]?.tags?.[0] : '';
+    if (apiTag) this.ensure([apiTag], {timeout});
+    let timer = null;
+    const expired = new Promise((resolve, reject) => {
+      timer = setTimeout(() => reject(new Error(
+          `SF.package: set "${packageName}" gave no exports within ${timeout} ms`
+          + (pkg.api ? ` (its api rule ${pkg.api})` : ' (it names no api rule)'))), timeout);
+    });
+    return Promise.race([pkg.exportsReady, expired]).finally(() => clearTimeout(timer));
+  });
 };
 
 // The one way a package adds rules. It may run before the first scan (the
@@ -461,7 +615,12 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
     return [];
   }
   const rules = options?.rules;
-  if (!rules || typeof rules !== 'object' || Array.isArray(rules)) {
+  const exported = options?.exports && typeof options.exports === 'object' ? options.exports : null;
+  const aliases = Array.isArray(options?.aliases) ? options.aliases : null;
+  const hasRules = rules && typeof rules === 'object' && !Array.isArray(rules);
+  // A set's bundle registers again with its exports alone (SF.package); a
+  // call with neither rules nor exports nor aliases registers nothing.
+  if (!hasRules && !exported && !aliases) {
     this.warnPackage(`rules:${packageName}`,
         `package "${packageName}" was registered without a rules object`);
     return [];
@@ -473,9 +632,31 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
   }
   const pkg = this.packages[packageName];
   // Where the bytes are served is the page's decision, so a base the page
-  // declared wins over the one a bundle suggests.
-  if (!pkg.base) pkg.base = normalisePackageUrl(options.base);
-  pkg.registered = true;
+  // declared wins over the one a bundle suggests; then the bundle's own word;
+  // then, for a rule file the page loaded with a script tag of its own
+  // (<script src="<base>/rule.js">), the directory it came from.
+  if (!pkg.base) pkg.base = normalisePackageUrl(options.base) || ruleScriptBase();
+  if (hasRules) pkg.registered = true;
+  if (typeof options.api === 'string' && /^cl-[a-z][a-z0-9-]*$/u.test(options.api)) pkg.api = options.api;
+  if (aliases) {
+    const own = new Set(Object.values(hasRules ? rules : {}).flatMap((rule) => rule?.tags || []));
+    const rows = aliases.filter((row) => {
+      const ok = row && typeof row.from === 'string' && typeof row.to === 'string'
+        && own.has(row.to) && typeof row.remove_after === 'string';
+      if (!ok) {
+        this.warnPackage(`alias:${packageName}:${row?.from}`,
+            `package "${packageName}" alias ${JSON.stringify(row)} does not name `
+            + 'one of its own tags with a remove_after; skipped');
+      }
+      return ok;
+    });
+    registerTagAliasRows(rows);
+  }
+  if (exported && !pkg.exports) {
+    pkg.exports = Object.freeze({...exported});
+    pkg.resolveExports?.(pkg.exports);
+  }
+  if (!hasRules) return [];
 
   const added = [];
   Object.entries(rules).forEach(([key, rule]) => {

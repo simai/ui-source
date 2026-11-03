@@ -14,6 +14,9 @@ import './preferences.js';
 import './region-navigation.js';
 import './workspace.js';
 import './effects.js';
+// Component sets: SF.package(name) before the Loader has started, and the
+// set declaration helpers the Loader uses (core/js/sets.js).
+import './sets.js';
 import './on-view.js';
 import './notify.js';
 import './sanitize.js';

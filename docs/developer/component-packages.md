@@ -117,6 +117,14 @@ structured settings (`smart`, `preloader`, `icons`, the cache versions); the
 
 ## The rule file
 
+Since `core.runtime` 1.25.0 `registerPackage` also takes `api` (the rule whose
+bundle carries the package's scripted API), `aliases` (the package's own dated
+former tags) and, from a bundle, `exports` alone (read with
+`SF.package(<name>)`); `SF.RuleLoader.packageOf(<name>)` answers the package's
+base. A package may be declared by a base string, an npm version or by name
+through the compatibility index. These are the component set forms:
+`docs/developer/component-sets.md`, "One-line connection".
+
 The Loader fetches each declared package's rule file itself, before its first
 scan of the page. The page does not add it as a script. Two reasons: Core
 creates the rule map (`SF.RuleLoader`) when it starts, so a rule file that ran

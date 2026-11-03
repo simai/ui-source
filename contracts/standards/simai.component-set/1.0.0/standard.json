@@ -113,14 +113,14 @@
       "level": "must",
       "text": "Every release adds one row to one shared compatibility index: the set, the release id, the npm version, the SIMAI Framework pairs it runs over, the sets it requires with their ranges, and the digest of its receipt. The index is the only place a consumer and the Loader learn which set releases go with which SIMAI Framework pair; no set keeps an index of its own.",
       "verification": "manual",
-      "guidance": "Replaces simai/ui-pro package-index/releases.json. Location and format are fixed with the Loader step (not_yet_checked)."
+      "guidance": "Replaces simai/ui-pro package-index/releases.json. Format simai.framework.set-index (contracts/schema/set-index.v1.schema.json, pinned/set-index-1.0.0.schema.json). Location: index.json of the npm package @simai-studio/sets, read by the Loader from https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json (the format major pinned; SF_BOOT_CONFIG.setIndex overrides it for a mirror or a stand). Writer: the set release route, ui-builder scripts/set-index.py add, from the release's built set.json and receipt; a row is never changed. The Loader chooses the newest release of a set whose framework.core_runtime this Core meets (core/js/sets.js selectSetRelease)."
     },
     {
       "id": "one-line-connection",
       "level": "must",
       "text": "A page loads SIMAI Framework and names the sets it uses, in one declaration before the core starts; the Loader finds each set's base through the compatibility index unless the page gives a base, and loads only the components on the page. A set component that cannot load is reported, never fetched from SIMAI Framework's own base in its place. The page's owner chooses every set it trusts.",
       "verification": "manual",
-      "guidance": "Today: SF_BOOT_CONFIG.packages.<set> = {base} (simai.component-package declared-before-core). The set-name form resolved through the index is the Loader step listed under rollout."
+      "guidance": "The one line: <script src=\".../distr/core/js/core.min.js\" data-sf-sets=\"effects\"></script>, or the same in SF_BOOT_CONFIG.packages: effects: true (by the index), effects: '1.0.0' (that npm version, no index), effects: '<base>' (that base) or {base, rule, version}. A set named without a base is served from @simai-studio/<set>@<version>/dist/smart on jsDelivr (SF_BOOT_CONFIG.setNpm overrides the npm root). A set's bundle gives its scripted API with SF.RuleLoader.registerPackage(<set>, {exports}) and a page reads it with SF.package('<set>'); SF.RuleLoader.packageOf('<set>') tells a bundle its base. In debug the Loader reads <base>/../set.json and names every required set the page did not declare (core.runtime 1.25.0)."
     },
     {
       "id": "one-site-per-set",
@@ -151,6 +151,13 @@
       "path": "../../pinned/name-registry-1.0.0.schema.json",
       "sha256": "2a12010aadbab09c2008362e6433227b22b3b76b7a4536e18fcff0ea78fcc2dd",
       "description": "The shared name registry: the prefix, each owner (SIMAI Framework or a set, active, planned or pending the owner's decision) with the families it holds and the names known in them, and the listed exceptions."
+    },
+    {
+      "id": "simai.framework.set-index-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/set-index-1.0.0.schema.json",
+      "sha256": "89dba243fa63b85b6a65f26d0566272454e9d527102b0d080f28a8ad40c578e1",
+      "description": "The one compatibility index: one row per set release with its npm version, the SIMAI Framework it was built over, the lowest core.runtime it needs, the sets it requires and its receipt digest; the Loader places a set named without a base from it."
     },
     {
       "id": "simai.framework.smart-component-manifest",
@@ -215,20 +222,21 @@
         "registry": "simai/ui-source contracts/registry/names.json (read from main)",
         "registry_schema": "simai/ui-source contracts/schema/name-registry.v1.schema.json",
         "gate": "simai/ui-source tests/component-set.contract.test.mjs",
-        "fixture": "simai/ui-source tests/fixtures/component-set/set.json"
+        "fixture": "simai/ui-source tests/fixtures/component-set/set.json",
+        "set_index_schema": "simai/ui-source contracts/schema/set-index.v1.schema.json",
+        "loader": "simai/ui-source src/core/js/sets.js and loader.js (data-sf-sets, packages.<set> forms, packageOf, SF.package, per-set aliases); tests/component-set-loader.contract.test.mjs, tests/loader-packages.contract.test.mjs, tests/browser/component-sets.browser.mjs"
       },
       "rollout": [
         "1. this standard, the passport and registry formats, the registry seeded and its gate (draft)",
-        "2. Loader: set names resolved through the compatibility index, per-set tag aliases from registerPackage, set exports; core.runtime minor",
+        "2. Loader: set names resolved through the compatibility index, per-set tag aliases from registerPackage, set exports (SF.package, SF.RuleLoader.packageOf); core.runtime 1.25.0 (done on the standard branch)",
         "3. ui-builder: publish-package-release.sh and bind-package-release.py for any set; set.json copied into build, receipt and release; receipt checked against set.json and the registry instead of distr/core/contracts/packages/<name>.package.json",
         "4. effects as the first set; then admin, chat, mail, editor and chart out of ui-pro, with pro as a transitional bundle",
         "4a. the shared Docara set template with the five required sections, and simai.io set cards",
         "5. contracts/packages/*.package.json and the generated tag alias rows from them become dated aliases and leave with the larena sweep"
       ],
       "not_yet_checked": [
-        "the compatibility index has no location, format or writer yet",
+        "the compatibility index has a format and a Loader reader but no published copy yet: @simai-studio/sets is not on npm until the first set release",
         "required-sets-shallow is checked by no gate until the compatibility index exists",
-        "the Loader does not read set.json, resolve a set by name or merge per-set aliases yet",
         "no set publishes set.json yet; the registry's sets are planned and their names come from ui-pro, ui-chart and the owner's decisions",
         "one-site-per-set: no gate checks the five sections until the Docara set template exists",
         "framework-first is a review item with no gate",
