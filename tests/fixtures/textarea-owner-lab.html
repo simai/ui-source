@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
     <link rel="stylesheet" href="http://127.0.0.1:8897/utility/utility/resize/default/css/default.css">
     <link rel="stylesheet" href="http://127.0.0.1:8897/component-final/component/textarea/css/textarea.css">
-    <link rel="stylesheet" href="http://127.0.0.1:8897/smart-final/smart/textarea/css/textarea.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8897/smart-final/smart/input-textarea/css/input-textarea.css">
   </head>
   <body class="p-4">
     <main class="grid gap-4">
@@ -36,8 +36,8 @@
       </form>
 
       <form id="smart-form" class="grid grid-col-1 md:grid-col-2 gap-3">
-        <sf-textarea id="smart" label="Описание" name="description" value="Начальная строка&#10;Продолжение" rows="4" autocomplete="on" inputmode="text" minlength="10" maxlength="500" spellcheck="true" wrap="soft" required></sf-textarea>
-        <sf-textarea id="smart-invalid" label="Ошибка" invalid error-message="Добавьте подробности" rows="3"></sf-textarea>
+        <sf-input-textarea id="smart" label="Описание" name="description" value="Начальная строка&#10;Продолжение" rows="4" autocomplete="on" inputmode="text" minlength="10" maxlength="500" spellcheck="true" wrap="soft" required></sf-input-textarea>
+        <sf-input-textarea id="smart-invalid" label="Ошибка" invalid error-message="Добавьте подробности" rows="3"></sf-input-textarea>
         <button class="sf-button sf-button--size-1 sf-button--secondary" type="reset">Сбросить Smart</button>
       </form>
       <button id="factory" class="sf-button sf-button--size-1 sf-button--neutral" type="button">Создать через API</button>
@@ -55,6 +55,6 @@
     </script>
     <script src="/ui/distr/core/js/smart-base.js"></script>
     <script src="http://127.0.0.1:8897/component-final/component/textarea/js/textarea.js"></script>
-    <script src="http://127.0.0.1:8897/smart-final/smart/textarea/js/textarea.js"></script>
+    <script src="http://127.0.0.1:8897/smart-final/smart/input-textarea/js/input-textarea.js"></script>
   </body>
 </html>

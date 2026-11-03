@@ -592,7 +592,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "8439bcb982663ddc8ac74349d2a2409c04040d4e30c86be6c6a7ce0d96b5428d",
+      "manifest_sha256": "c177c551e10a12a85f286a663c01d9b6f1e6daed62f2abb7ae995699c6f3d119",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1129,7 +1129,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "98e5741bec81ec099f5286006cabe0cbf7fda69001b65dcc49e49e909032a2a9",
+      "manifest_sha256": "e4bc827c55fcd0617ba9871372ffe062f730d28629c7f3e98b5ed829798896f9",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1210,7 +1210,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "7ba25da900cb3bd9f5187b19d2d53b6b8c4f9c0ef12fc622b507c780144f7261",
+      "manifest_sha256": "4e4a777e2132b6e7fb23b5079db64ac59f8f65418a556bbffe62c5d1ad91950e",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1329,7 +1329,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-image/smart.manifest.json",
-      "manifest_sha256": "c3bd46815c11a94ae9fa57ea94b38f0fdbd6f047df8646862b0dc8021fac9787",
+      "manifest_sha256": "69849f9fda5f0a789d1ab5bc1128373beeecbc1a277ce9e010d6247cd6d79f9a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1472,7 +1472,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-rich/smart.manifest.json",
-      "manifest_sha256": "c06ae7430f8dc0310e93027abb1aac4985bc67353a8c1505d22dbbee265f9290",
+      "manifest_sha256": "62dae6c3d4af07d5e0aa935d84401771a99a95cd21eac7cdd57183ca01de43f8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1488,6 +1488,46 @@
         "form"
       ],
       "title": "Rich text"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-textarea",
+          "label",
+          "hint"
+        ],
+        "uses": [
+          "component.icon-buttons",
+          "component.icons",
+          "component.textarea"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-textarea",
+      "id": "smart.input-textarea",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-textarea/smart.manifest.json",
+      "manifest_sha256": "63b5140472e5d080b2b548f27f5cc96197e32434504892ef25e409e962bc972e",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
+      "tags": [
+        "input-textarea"
+      ],
+      "title": "Text area"
     },
     {
       "backend_adapters": [],
@@ -2282,7 +2322,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "d1b666f121bcd8536638fb3bd4abf8793f71d0c62aba6dc53f3e67c65e7b9c07",
+      "manifest_sha256": "39cbb99efd0bc6e62a98ef0924241ea576b876082ac6e185093ae744b0a2d4da",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2374,46 +2414,6 @@
         "tags"
       ],
       "title": "Tags"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [
-          "native-textarea",
-          "label",
-          "hint"
-        ],
-        "uses": [
-          "component.icon-buttons",
-          "component.icons",
-          "component.textarea"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-textarea",
-      "id": "smart.textarea",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/textarea/smart.manifest.json",
-      "manifest_sha256": "fb73912f50deffdaba30268cfb066570887898269adb3f02e5874970aa2c261f",
-      "reuse_mode": "both",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
-      "tags": [
-        "textarea"
-      ],
-      "title": "Text area"
     },
     {
       "backend_adapters": [],

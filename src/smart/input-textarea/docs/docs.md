@@ -1,6 +1,6 @@
 # Smart Textarea
 
-`<sf-textarea>` is the declarative wrapper for the ordinary Textarea component.
+`<sf-input-textarea>` is the declarative wrapper for the ordinary Textarea component.
 It renders a native `<textarea>` and preserves native multiline editing, value,
 validation, form submission and reset.
 
@@ -27,7 +27,7 @@ scrolls inside. With no `max-rows` it grows without a cap; a `max-rows` below
 used while `auto-grow` is on, and the field is not resizable by hand.
 
 ```html
-<sf-textarea label="Comment" auto-grow min-rows="1" max-rows="6"></sf-textarea>
+<sf-input-textarea label="Comment" auto-grow min-rows="1" max-rows="6"></sf-input-textarea>
 ```
 
 Heights stay on the size ladder: one row is exactly as tall as an `sf-input` or
@@ -49,7 +49,7 @@ focus:
 
 ```html
 <form class="composer">
-  <sf-textarea appearance="flush" auto-grow max-rows="8" aria-label="Message"></sf-textarea>
+  <sf-input-textarea appearance="flush" auto-grow max-rows="8" aria-label="Message"></sf-input-textarea>
   <sf-button icon="send" text="Send"></sf-button>
 </form>
 ```
@@ -94,7 +94,7 @@ value stays empty. Once text is typed, the marker gives way to a reset button
 in the same place.
 
 ```html
-<sf-textarea name="footer" label="Footer" inherited-value="Команда бренда"></sf-textarea>
+<sf-input-textarea name="footer" label="Footer" inherited-value="Команда бренда"></sf-input-textarea>
 ```
 
 The reset is a native button named by `reset-label` («Сбросить к наследуемому»,
@@ -116,7 +116,7 @@ does the same from code and returns whether it reset. While inherited, the
 control carries the value as `aria-description` («Наследуется: …»); the visible
 marker is hidden from assistive technology so it is not read twice.
 
-The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
+The state is shared by sf-input, sf-input-textarea, sf-dropdown, sf-color and
 sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets
 the same way whichever control it is. The marker and the reset are one step
 down the size ladder and sit inside the field's box with the same gap above,

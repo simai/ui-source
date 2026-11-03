@@ -791,7 +791,7 @@ import '../../smart/steps/rule.js';
 import '../../smart/switch/rule.js';
 import '../../smart/tabs/rule.js';
 import '../../smart/tag/rule.js';
-import '../../smart/textarea/rule.js';
+import '../../smart/input-textarea/rule.js';
 import '../../smart/theme-generator/rule.js';
 import '../../smart/toast/rule.js';
 import '../../smart/tooltip/rule.js';

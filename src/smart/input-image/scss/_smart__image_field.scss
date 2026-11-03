@@ -11,7 +11,7 @@
    exactly what it saw before they existed. The double-dash names below are
    the field's own wiring -- the sizes and the states write them -- and stay
    internal: a public colour is the resting one, and drag-over, error and
-   disabled keep their own, as sf-input's and sf-textarea's do.
+   disabled keep their own, as sf-input's and sf-input-textarea's do.
 
    Every measure comes from the size ladder of the field's own size, so a size 1
    image field stands in a form of size 1 inputs without a stray pixel:
@@ -22,7 +22,7 @@
      control row is 40px, holds a 48px picture: the audit asked for 48-64);
    - the glyph in an empty thumbnail is the field's icon, its text height;
    - the name is the field's text, the size line one rung smaller, the label
-     and the help text the rungs sf-textarea uses for them. */
+     and the help text the rungs sf-input-textarea uses for them. */
 .sf-image-field {
   container: sf-image-field / inline-size;
   position: relative;

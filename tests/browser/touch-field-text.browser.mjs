@@ -7,7 +7,7 @@
 // phone (coarse pointer, no hover) and in a plain window of the same width,
 // and at 1440px:
 //   - on the touch phone every text field reads at least 16px: sf-input and
-//     sf-textarea of every step, the dropdown's search, the datepicker's field
+//     sf-input-textarea of every step, the dropdown's search, the datepicker's field
 //     and the menu's search; a field already at 16px or more keeps its own;
 //   - each field stands exactly as tall on the touch phone as in the plain
 //     window: only the font size moves, the control height stays the step's;
@@ -29,7 +29,7 @@ const html = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body style="margin:16px">
 ${SIZES.map((size) => `<sf-input data-field="input ${size}" size="${size}" label="Поле" value="Текст"></sf-input>`).join('\n')}
-${SIZES.map((size) => `<sf-textarea data-field="textarea ${size}" size="${size}" label="Текст" value="Текст"></sf-textarea>`).join('\n')}
+${SIZES.map((size) => `<sf-input-textarea data-field="textarea ${size}" size="${size}" label="Текст" value="Текст"></sf-input-textarea>`).join('\n')}
 <sf-input-date data-field="datepicker" size="1/2" label="Дата"></sf-input-date>
 <sf-dropdown id="dropdown" size="1/2" mode="select" label="Город">
   <sf-list-item kind="text" text="Москва"></sf-list-item>
@@ -66,7 +66,7 @@ const measure = async (options) => {
   page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', said: error.message}); });
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.waitForFunction(() => document.querySelectorAll('sf-input input').length >= 5
-    && document.querySelectorAll('sf-textarea textarea').length === 5
+    && document.querySelectorAll('sf-input-textarea textarea').length === 5
     && document.querySelector('sf-input-date input') && document.querySelector('#dropdown button[aria-haspopup]')
     && customElements.get('sf-context-menu'), null, {timeout: 20000});
   await page.evaluate(() => document.fonts.ready);

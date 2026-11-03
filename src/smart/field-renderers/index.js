@@ -969,7 +969,7 @@ function renderIncludeView(field, value) {
 
 function renderIncludeEdit(field, value, host) {
     return html`
-        <sf-textarea
+        <sf-input-textarea
                 size=${EDIT_SIZE}
                 appearance="bordered"
                 class="sf-field-include-edit"
@@ -982,7 +982,7 @@ function renderIncludeEdit(field, value, host) {
                 ?disabled=${field.readonly === true}
                 @change=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
-        ></sf-textarea>
+        ></sf-input-textarea>
     `;
 }
 
@@ -1092,7 +1092,7 @@ function renderMaskedEdit(field, value, host, mask) {
 function renderTextAreaEdit(field, value, host) {
     value = scalarValue(value);
     return html`
-        <sf-textarea
+        <sf-input-textarea
                 size=${EDIT_SIZE}
                 appearance="bordered"
                 name=${fieldName(field)}
@@ -1102,7 +1102,7 @@ function renderTextAreaEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
                 @change=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
-        ></sf-textarea>
+        ></sf-input-textarea>
     `;
 }
 

@@ -4785,6 +4785,72 @@
       },
       "owner": "ui-source",
       "source": "src/smart/quantity/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-quantity/component.json"
+    },
+    {
+      "id": "tag-sf-textarea-to-sf-input-textarea",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-textarea is sf-input-textarea (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-textarea's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-textarea, sf-textarea), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-textarea",
+          "from": "sf-textarea",
+          "to": "sf-input-textarea"
+        },
+        {
+          "component": "sf-input-textarea",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-textarea></sf-textarea>",
+        "after": "<sf-input-textarea></sf-input-textarea>"
+      },
+      "manual": "Write <sf-input-textarea> for <sf-textarea> in markup and sf-input-textarea for sf-textarea in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-textarea, or both names through SF.tags.selector('sf-input-textarea') while the alias lives; a class or a custom property spelled like the old tag (.sf-textarea, --sf-textarea-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-textarea/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-textarea-to-input-textarea",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-textarea is served from smart/input-textarea/ since its folder took the new tag's name: js/input-textarea.js, loader bundle cl-input-textarea. The old path keeps working until remove_after: smart/textarea/js/textarea.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-textarea/js/input-textarea.js, the Loader forwards the bundle name cl-textarea to cl-input-textarea (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.textarea is a dated alias of smart.input-textarea, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-textarea",
+          "from": "smart/textarea/js/textarea.js",
+          "to": "smart/input-textarea/js/input-textarea.js",
+          "match": "smart/textarea/js/textarea(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-textarea",
+          "to": "cl-input-textarea",
+          "match": "['\"]cl-textarea['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.textarea",
+          "to": "smart.input-textarea",
+          "match": "['\"]smart\\.textarea['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-textarea/ for smart/textarea/ and input-textarea for textarea in the file names (js/input-textarea.js, js/input-textarea.min.js); in a product rule's relation write cl-input-textarea for cl-textarea, and in a manifest or a package contract smart.input-textarea for smart.textarea. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/textarea/js/textarea.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-textarea/js/input-textarea.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/textarea/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-textarea/component.json"
     }
   ]
 }

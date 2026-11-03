@@ -1,6 +1,6 @@
 async(page)=>{
   const failures=[],results=[],errors=[];page.on('pageerror',e=>errors.push(e.stack||e.message));
-  const cases=[['dropdown-state-lab.html','#smart','.sf-dropdown'],['field-controls-lab.html','sf-input','.sf-input'],['field-controls-lab.html','sf-textarea','.sf-textarea'],['range-slider-state-lab.html','#smart-auto','.sf-range-slider']];
+  const cases=[['dropdown-state-lab.html','#smart','.sf-dropdown'],['field-controls-lab.html','sf-input','.sf-input'],['field-controls-lab.html','sf-input-textarea','.sf-textarea'],['range-slider-state-lab.html','#smart-auto','.sf-range-slider']];
   for(const [fixture,selector,rootSelector] of cases){
     await page.goto(`http://127.0.0.1:8765/ui-source/tests/fixtures/${fixture}`);
     await page.waitForFunction(({selector,rootSelector})=>document.querySelector(selector)?.querySelector(rootSelector),{selector,rootSelector});

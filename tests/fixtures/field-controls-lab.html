@@ -45,7 +45,7 @@
       <span class="sf-input-field items-cross-center transition flex"><input type="text" name="contact"></span>
     </label>
     <sf-input label="Smart адрес" name="smart-email" error error-message="Адрес требует исправления"></sf-input>
-    <sf-textarea label="Smart комментарий" name="smart-comment" rows="3"></sf-textarea>
+    <sf-input-textarea label="Smart комментарий" name="smart-comment" rows="3"></sf-input-textarea>
     <button type="reset">Сбросить поля</button>
   </form>
 </main>
@@ -54,13 +54,13 @@
 <script src="../../source/output/action-focus-browser/component/quantity/js/quantity.js"></script>
 <script src="../../source/output/action-focus-browser/smart/icon/js/icon.js"></script>
 <script src="../../source/output/action-focus-browser/smart/input/js/input.js"></script>
-<script src="../../source/output/action-focus-browser/smart/textarea/js/textarea.js"></script>
+<script src="../../source/output/action-focus-browser/smart/input-textarea/js/input-textarea.js"></script>
 <script>
 const modes = new URLSearchParams(location.search);
 if (modes.has('dark')) document.documentElement.className = 'theme-dark';
 if (modes.has('rtl')) document.documentElement.dir = 'rtl';
 if (modes.has('filled')) {
-  document.querySelectorAll('sf-input, sf-textarea').forEach(e => e.setAttribute('type', 'filled'));
+  document.querySelectorAll('sf-input, sf-input-textarea').forEach(e => e.setAttribute('type', 'filled'));
   document.querySelectorAll('.sf-input').forEach(e => { e.classList.replace('sf-input--bordered', 'sf-input--filled'); });
   document.querySelectorAll('.sf-textarea').forEach(e => { e.classList.replace('sf-textarea--bordered', 'sf-textarea--filled'); });
 }

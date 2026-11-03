@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-textarea's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/textarea (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
-  "id": "smart.textarea",
-  "tag": "sf-textarea",
-  "version": "1.6.4",
+  "$comment": "The source of sf-input-textarea's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/textarea (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.input-textarea",
+  "tag": "sf-input-textarea",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -261,7 +261,7 @@
     }
   },
   "aliases": {
-    "$comment": "Dated aliases of sf-textarea for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "$comment": "Dated aliases of sf-input-textarea for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
     "since": "2026-10-27",
     "remove-after": "2026-12-01",
     "rows": [
@@ -294,6 +294,16 @@
         "section": "§8, §20.2",
         "note": "the event of the trait field-inherit@1, declared in component.json as the shared event field-reset; the field sends sf-field-reset and the shim follows it with this dated name, same detail, one cancel",
         "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
+      },
+      {
+        "from": "sf-textarea",
+        "to": "sf-input-textarea",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.7.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-input-textarea; sf-textarea is a subclass defined beside it until the date"
       }
     ]
   },
@@ -324,7 +334,8 @@
     "accessibility.name: the label only, as converted; the textarea takes no aria-label from the host today (left as it is).",
     "version 1.5.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.5.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.6.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01."
+    "version 1.6.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01.",
+    "version 1.7.0: the tag is sf-input-textarea (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-textarea and the bundle cl-input-textarea follow it. sf-textarea stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-textarea, sf-textarea) (change journal tag-sf-textarea-to-sf-input-textarea, path-smart-textarea-to-input-textarea)."
   ],
   "x-rule": {
     "$comment": [
@@ -420,7 +431,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",
+      "use_when": "Use sf-input-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",
       "do_not": [
         "Do not use Textarea for short single-line values, rich text or code editing",
         "Do not enable horizontal resizing inside responsive layouts without an explicit layout decision",
@@ -435,7 +446,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-textarea label=\"Comment\" name=\"comment\" rows=\"4\" maxlength=\"500\"></sf-textarea>",
+      "minimal_example": "<sf-input-textarea label=\"Comment\" name=\"comment\" rows=\"4\" maxlength=\"500\"></sf-input-textarea>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

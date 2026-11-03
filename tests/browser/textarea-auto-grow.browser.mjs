@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// Auto-grow for sf-textarea (simai/ui-source#17), measured on the built bytes.
+// Auto-grow for sf-input-textarea (simai/ui-source#17), measured on the built bytes.
 // The acceptance base is ui-chat's composer (f359b7d): the field grows with its
 // text, stops at a cap and scrolls inside, and nothing around it shifts. Here:
 //   - at every step, 1/3 to 3 (1/3 and 3 render as the kept 1/2 and 2), on both
@@ -28,7 +28,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/inputs/css/inputs.css', 'smart/smart/input/css/input.css', 'component/component/textarea/css/textarea.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/input/js/input.js', 'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
+  'smart/smart/input/js/input.js', 'component/component/textarea/js/textarea.js', 'smart/smart/input-textarea/js/input-textarea.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const KEPT = {'1/3': '1/2', '3': '2'};
 const MAX = 4;
@@ -56,8 +56,8 @@ async function open({width, body, fallback}) {
   }
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-textarea') && customElements.get('sf-input') && customElements.get('sf-button'));
-  await page.waitForFunction(() => [...document.querySelectorAll('sf-textarea')].every((node) => node.querySelector('textarea')));
+  await page.waitForFunction(() => customElements.get('sf-input-textarea') && customElements.get('sf-input') && customElements.get('sf-button'));
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-input-textarea')].every((node) => node.querySelector('textarea')));
   await page.waitForTimeout(400);
   return page;
 }
@@ -70,7 +70,7 @@ const HEIGHTS = `async (rows, mode) => {
   const text = (n) => Array.from({length: n}, (_, i) => 'Строка ' + (i + 1)).join('\\n');
   const out = {};
   for (const row of rows) {
-    const element = row.querySelector(mode === 'smart' ? 'sf-textarea' : 'label.sf-textarea[data-plain]');
+    const element = row.querySelector(mode === 'smart' ? 'sf-input-textarea' : 'label.sf-textarea[data-plain]');
     const field = element.querySelector('textarea');
     const write = (value) => { if (mode === 'smart') element.value = value; else field.value = value; };
     const height = () => field.getBoundingClientRect().height;
@@ -113,8 +113,8 @@ try {
       const body = SIZES.map((size) => `<div data-row data-size="${size}" style="display:grid;gap:8px;inline-size:min(100%, 480px);margin-block-end:16px">
         <div><sf-button size="${KEPT[size] ?? size}" icon="search" text="Кнопка"></sf-button></div>
         <sf-input size="${size}" placeholder="Поле"></sf-input>
-        <sf-textarea size="${size}" auto-grow max-rows="${MAX}" placeholder="Сообщение"></sf-textarea>
-        <label data-plain class="sf-textarea sf-textarea--size-${size} sf-textarea--bordered flex flex-col">
+        <sf-input-textarea size="${size}" auto-grow max-rows="${MAX}" placeholder="Сообщение"></sf-input-textarea>
+        <label data-plain class="sf-input-textarea sf-textarea--size-${size} sf-textarea--bordered flex flex-col">
           <textarea data-auto-grow data-max-rows="${MAX}" placeholder="Сообщение"></textarea>
         </label>
       </div>`).join('');
@@ -157,15 +157,15 @@ try {
     {
       const body = `
         <sf-button size="1" text="Кнопка"></sf-button>
-        <sf-textarea id="min" auto-grow min-rows="2" max-rows="5" style="display:block;width:360px"></sf-textarea>
-        <sf-textarea id="typed" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-textarea>
-        <sf-textarea id="disabled" auto-grow disabled value="${'Строка\n'.repeat(2)}Строка" style="display:block;width:360px"></sf-textarea>
-        <div dir="rtl" style="width:360px"><sf-textarea id="rtl" auto-grow max-rows="${MAX}"></sf-textarea></div>
-        <form id="form" style="width:360px"><sf-textarea id="reset" auto-grow max-rows="${MAX}" value="Первая строка"></sf-textarea></form>
-        <sf-textarea id="state" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-textarea>
-        <sf-textarea id="ime" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-textarea>
-        <sf-textarea id="unbounded" auto-grow style="display:block;width:360px"></sf-textarea>
-        <sf-textarea id="plain-rows" rows="3" style="display:block;width:360px"></sf-textarea>
+        <sf-input-textarea id="min" auto-grow min-rows="2" max-rows="5" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="typed" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="disabled" auto-grow disabled value="${'Строка\n'.repeat(2)}Строка" style="display:block;width:360px"></sf-input-textarea>
+        <div dir="rtl" style="width:360px"><sf-input-textarea id="rtl" auto-grow max-rows="${MAX}"></sf-input-textarea></div>
+        <form id="form" style="width:360px"><sf-input-textarea id="reset" auto-grow max-rows="${MAX}" value="Первая строка"></sf-input-textarea></form>
+        <sf-input-textarea id="state" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="ime" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="unbounded" auto-grow style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="plain-rows" rows="3" style="display:block;width:360px"></sf-input-textarea>
         <div style="height:2400px"></div>`;
       const page = await open({width: 1000, body, fallback});
       const base = await page.evaluate(() => {

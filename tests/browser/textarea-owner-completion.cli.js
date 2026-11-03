@@ -7,7 +7,7 @@ async (page) => {
   page.on('pageerror', (error) => errors.push(error.message));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base);
-  await page.waitForFunction(() => customElements.get('sf-textarea') && document.querySelector('#smart textarea'));
+  await page.waitForFunction(() => customElements.get('sf-input-textarea') && document.querySelector('#smart textarea'));
 
   const smart = page.locator('#smart textarea');
   const metadata = await smart.evaluate((textarea) => ({
@@ -62,7 +62,7 @@ async (page) => {
   for (const theme of ['light', 'dark']) {
     for (const dir of ['ltr', 'rtl']) {
       await page.goto(`${base}?theme=${theme}&dir=${dir}`);
-      await page.waitForFunction(() => customElements.get('sf-textarea') && document.querySelector('#smart textarea'));
+      await page.waitForFunction(() => customElements.get('sf-input-textarea') && document.querySelector('#smart textarea'));
       const geometry = await page.locator('#smart textarea').evaluate((textarea) => ({ width: textarea.getBoundingClientRect().width, radius: getComputedStyle(textarea).borderStartStartRadius, resize: getComputedStyle(textarea).resize }));
       if (geometry.width <= 0 || geometry.radius === '0px' || geometry.resize !== 'vertical') failures.push({ check: 'theme and direction geometry', theme, dir, geometry });
     }
@@ -70,7 +70,7 @@ async (page) => {
 
   await page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' });
   await page.goto(base);
-  await page.waitForFunction(() => customElements.get('sf-textarea') && document.querySelector('#smart textarea'));
+  await page.waitForFunction(() => customElements.get('sf-input-textarea') && document.querySelector('#smart textarea'));
   await page.keyboard.press('Tab');
   const accessibleState = await page.locator('#ordinary').evaluate((textarea) => ({
     focusVisible: textarea.matches(':focus-visible'),

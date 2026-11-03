@@ -202,10 +202,10 @@
         "smart.icon-button",
         "smart.input",
         "smart.input-image",
+        "smart.input-textarea",
         "smart.sortable",
         "smart.switch",
-        "smart.tabs",
-        "smart.textarea"
+        "smart.tabs"
       ]
     },
     {
@@ -288,6 +288,7 @@
         "smart.input-color",
         "smart.input-country",
         "smart.input-date",
+        "smart.input-textarea",
         "smart.list-item",
         "smart.popover",
         "smart.profile-picker",
@@ -300,7 +301,6 @@
         "smart.switch",
         "smart.tabs",
         "smart.tag",
-        "smart.textarea",
         "smart.tree",
         "smart.tree-item"
       ]

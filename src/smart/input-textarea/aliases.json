@@ -1,6 +1,6 @@
 {
-  "$comment": "Dated aliases of sf-textarea for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
-  "component": "sf-textarea",
+  "$comment": "Dated aliases of sf-input-textarea for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-input-textarea",
   "since": "2026-10-27",
   "remove_after": "2026-12-01",
   "aliases": [
@@ -8,7 +8,7 @@
       "from": "spellcheck",
       "to": "spell-check",
       "kind": "setting",
-      "component": "sf-textarea",
+      "component": "sf-input-textarea",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "§3.1, §16 item 26"
@@ -17,7 +17,7 @@
       "from": "error",
       "to": "invalid",
       "kind": "setting",
-      "component": "sf-textarea",
+      "component": "sf-input-textarea",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "§17.2",
@@ -27,7 +27,7 @@
       "from": "type",
       "to": "appearance",
       "kind": "setting",
-      "component": "sf-textarea",
+      "component": "sf-input-textarea",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "§16 item 20, contracts/public-api-axes.json",
@@ -37,12 +37,22 @@
       "from": "sf-field:reset",
       "to": "sf-field-reset",
       "kind": "event",
-      "component": "sf-textarea",
+      "component": "sf-input-textarea",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "mode": "same-detail",
       "section": "§8, §20.2",
       "note": "the event of the trait field-inherit@1, declared in component.json as the shared event field-reset; the field sends sf-field-reset and the shim follows it with this dated name, same detail, one cancel"
+    },
+    {
+      "from": "sf-textarea",
+      "to": "sf-input-textarea",
+      "kind": "tag",
+      "component": "sf-input-textarea",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+      "note": "the element is sf-input-textarea; sf-textarea is a subclass defined beside it until the date"
     }
   ]
 }

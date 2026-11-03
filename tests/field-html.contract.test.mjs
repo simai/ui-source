@@ -48,7 +48,7 @@ test('view, edit and cell draw html; the filter falls back to a text search', ()
 
 test('the edit is sf-input-rich, named as the textarea is, and writes the editor\'s value back', () => {
   const edit = element(body('renderHtmlEdit'), 'sf-input-rich');
-  const textarea = element(body('renderTextAreaEdit'), 'sf-textarea');
+  const textarea = element(body('renderTextAreaEdit'), 'sf-input-textarea');
   for (const line of ['size=${EDIT_SIZE}', 'appearance="bordered"', 'name=${fieldName(field)}',
     'placeholder=${field.placeholder || nothing}', '?required=${Boolean(field.required)}',
     "aria-label=${field.label || field.key || ''}"]) {

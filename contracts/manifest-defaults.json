@@ -66,12 +66,12 @@
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "textarea",
+      "component": "input-textarea",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "textarea",
+      "component": "input-textarea",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     },

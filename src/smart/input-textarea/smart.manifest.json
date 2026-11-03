@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.textarea",
-  "version": "1.6.4",
+  "id": "smart.input-textarea",
+  "version": "1.7.0",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
   "reuse_mode": "both",
   "lifecycle": "experimental",
   "tags": [
-    "textarea"
+    "input-textarea"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-textarea",
+  "custom_element": "sf-input-textarea",
   "templates": [
     "default"
   ],
@@ -433,8 +433,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-textarea>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-textarea>",
+        "since": "1.7.0",
+        "replacement": "<sf-input-textarea>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -443,15 +451,15 @@
     "source_revision": "15634edbb04334b53609d27fa6b98e602b5bf315",
     "source_artifacts": [
       {
-        "path": "src/smart/textarea/index.js",
-        "sha256": "69bc7e2b713f21f72776adb3f92097638d29038b80b16ff24a497e0083ad74dc"
+        "path": "src/smart/input-textarea/index.js",
+        "sha256": "e572ee83323c6abb2ebe5c7bfb46f039600b51f6f15c7e46cb7b3c9ebc68405c"
       },
       {
-        "path": "src/smart/textarea/rule.js",
-        "sha256": "cf090096997360e618f591ad002ebde4dccd632368515da696690a76025ebb0c"
+        "path": "src/smart/input-textarea/rule.js",
+        "sha256": "53361350a98629446cb8e162ac08e171592a85342efa3b4254096ae601e49ba3"
       },
       {
-        "path": "src/smart/textarea/js/templates/default.js",
+        "path": "src/smart/input-textarea/js/templates/default.js",
         "sha256": "4d092acb372912b3280b03fceabac693fa7b9e0d3d1536e8d64730fccdd44438"
       },
       {
@@ -460,20 +468,20 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "f1b1981b112c29340955574d1f6cfa9451cb0eb29fdc986ab12905d200dbbb11"
+        "sha256": "25f80e71f8aa3df55503690bc4d28aeae44c8937e07416d4e2a2b3fbae58458c"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/textarea/js/textarea.js",
+        "path": "smart/input-textarea/js/input-textarea.js",
         "sha256": "35dd882e7250d617d3b4880d148f26a351b4880ae6f076e5d1245d0281e378fd"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",
+    "use_when": "Use sf-input-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",
     "do_not": [
       "Do not use Textarea for short single-line values, rich text or code editing",
       "Do not enable horizontal resizing inside responsive layouts without an explicit layout decision",
@@ -488,7 +496,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-textarea label=\"Comment\" name=\"comment\" rows=\"4\" maxlength=\"500\"></sf-textarea>",
+    "minimal_example": "<sf-input-textarea label=\"Comment\" name=\"comment\" rows=\"4\" maxlength=\"500\"></sf-input-textarea>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

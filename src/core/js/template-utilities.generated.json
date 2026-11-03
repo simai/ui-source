@@ -228,6 +228,11 @@
     "font-style/default",
     "font-weight/default"
   ],
+  "cl-input-textarea": [
+    "display/default",
+    "flex-direction/default",
+    "transition-property/default"
+  ],
   "cl-list-item": [
     "align-items/default",
     "background-color/default",
@@ -360,11 +365,6 @@
     "justify-content/default",
     "min-width/default",
     "place-items/default"
-  ],
-  "cl-textarea": [
-    "display/default",
-    "flex-direction/default",
-    "transition-property/default"
   ],
   "cl-toast": [
     "align-items/default",

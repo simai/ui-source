@@ -105,7 +105,7 @@
     --sf-icon-button--padding-inline-end: var(--sf-field-reset--padding);
   }
 
-  /* sf-textarea and sf-switch: the slot is its own row or its own cell, so it
+  /* sf-input-textarea and sf-switch: the slot is its own row or its own cell, so it
      needs no inset into a box. */
   .sf-textarea-inherited,
   .sf-switch-inherited,
@@ -140,7 +140,7 @@
       --sf-input-placeholder--color: CanvasText;
       color: CanvasText;
     }
-    sf-textarea[data-inherited] .sf-textarea textarea::placeholder {
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::placeholder {
       --sf-textarea-placeholder--color: CanvasText;
       color: CanvasText;
     }

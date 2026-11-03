@@ -1,7 +1,7 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-const sfTextareaMeta = {
-  "tag": "sf-textarea",
-  "source": "src/smart/textarea/component.json",
+const sfInputTextareaMeta = {
+  "tag": "sf-input-textarea",
+  "source": "src/smart/input-textarea/component.json",
   "attributes": {
     "template": {
       "kind": "custom",
@@ -220,5 +220,5 @@ const sfTextareaMeta = {
   }
 };
 
-export {sfTextareaMeta};
-export default sfTextareaMeta;
+export {sfInputTextareaMeta};
+export default sfInputTextareaMeta;

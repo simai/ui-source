@@ -12,7 +12,7 @@
 <script>
 for (const theme of ['theme-light', 'theme-dark']) document.body.insertAdjacentHTML('beforeend', `<section class="panel ${theme}" data-theme="${theme}">
   <sf-input data-lab="input" size="1" label="Name" placeholder="Name"></sf-input>
-  <sf-textarea data-lab="textarea" size="1" label="Note" rows="2"></sf-textarea>
+  <sf-input-textarea data-lab="textarea" size="1" label="Note" rows="2"></sf-input-textarea>
   <sf-dropdown data-lab="dropdown" size="1" label="Status" placeholder="Choose"><sf-list-item text="Open" value="open"></sf-list-item></sf-dropdown>
   <sf-input-country data-lab="country-code" size="1" label="Phone"></sf-input-country>
   <sf-checkbox data-lab="checkbox" size="1" label="Agree"></sf-checkbox>
@@ -22,7 +22,7 @@ for (const theme of ['theme-light', 'theme-dark']) document.body.insertAdjacentH
 </section>`);
 </script>
 <script src="/ui-smart/smart/list-item/js/list-item.js"></script><script src="/ui-smart/smart/input/js/input.js"></script>
-<script src="/ui-smart/smart/textarea/js/textarea.js"></script><script src="/ui-smart/smart/dropdown/js/dropdown.js"></script>
+<script src="/ui-smart/smart/input-textarea/js/input-textarea.js"></script><script src="/ui-smart/smart/dropdown/js/dropdown.js"></script>
 <script src="/ui-smart/smart/input-country/js/input-country.js"></script><script src="/ui-smart/smart/checkbox/js/checkbox.js"></script>
 <script src="/ui-smart/smart/radio/js/radio.js"></script><script src="/ui-smart/smart/switch/js/switch.js"></script>
 <script src="/ui-smart/smart/button/js/button.js"></script>

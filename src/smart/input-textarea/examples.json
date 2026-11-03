@@ -164,7 +164,7 @@
           {
             "id": "typed-text-submits",
             "covers": "values.value, form.submits",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "user": [
               "type:ab",
               "tab"
@@ -187,7 +187,7 @@
           {
             "id": "typing-says-input-then-change",
             "covers": "events.input, events.change (native, §17.3)",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "user": [
               "type:ab",
               "tab"
@@ -210,16 +210,16 @@
           {
             "id": "tab-reaches-the-box",
             "covers": "keyboard.host.Tab reach",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "user": "tab",
             "expect": {
-              "focus": "sf-textarea textarea"
+              "focus": "sf-input-textarea textarea"
             }
           },
           {
             "id": "setting-value-is-silent",
             "covers": "§8: a value set from outside sends nothing",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "property": {
               "name": "value",
               "value": "set"
@@ -234,7 +234,7 @@
           {
             "id": "required-empty-blocks-submit",
             "covers": "form.required, form.validity value-missing",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\" required></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\" required></sf-input-textarea>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -248,7 +248,7 @@
           {
             "id": "disabled-leaves-the-form",
             "covers": "form.disabled (§17.1 item 3)",
-            "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-input-textarea>",
             "setting": {
               "name": "disabled",
               "value": true
@@ -265,7 +265,7 @@
           {
             "id": "readonly-submits",
             "covers": "form.readonly (§17.1 item 3)",
-            "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\" readonly></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" value=\"текст\" label=\"Заметка\" readonly></sf-input-textarea>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -277,7 +277,7 @@
           {
             "id": "form-reset-returns-the-default",
             "covers": "form.reset (§17.1 item 4), no events",
-            "field": "<sf-textarea name=\"note\" value=\"a\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" value=\"a\" label=\"Заметка\"></sf-input-textarea>",
             "given": [
               {
                 "user": "type:b"
@@ -295,7 +295,7 @@
           {
             "id": "inherited-submits-empty",
             "covers": "trait field-inherit: shown, never the value; data-inherited",
-            "field": "<sf-textarea name=\"sign\" label=\"Подпись\" inherited-value=\"С уважением\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"sign\" label=\"Подпись\" inherited-value=\"С уважением\"></sf-input-textarea>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -318,7 +318,7 @@
           {
             "id": "reset-to-inherited-new-then-old-event",
             "covers": "sf-field-reset then sf-field:reset once each, one detail, a dated journal note (§8, §16.20, §20.2)",
-            "field": "<sf-textarea name=\"sign\" label=\"Подпись\" value=\"Своя\" inherited-value=\"С уважением\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"sign\" label=\"Подпись\" value=\"Своя\" inherited-value=\"С уважением\"></sf-input-textarea>",
             "listen": [
               "sf-field-reset",
               "sf-field:reset",
@@ -333,14 +333,14 @@
               "events": [
                 {
                   "type": "sf-field-reset",
-                  "tag": "sf-textarea",
+                  "tag": "sf-input-textarea",
                   "value": "Своя",
                   "inheritedValue": "С уважением",
                   "name": "sign"
                 },
                 {
                   "type": "sf-field:reset",
-                  "tag": "sf-textarea",
+                  "tag": "sf-input-textarea",
                   "value": "Своя",
                   "inheritedValue": "С уважением",
                   "name": "sign"
@@ -374,7 +374,7 @@
           {
             "id": "custom-validity-blocks-submit",
             "covers": "form.validity custom-error (§17.2)",
-            "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-input-textarea>",
             "action": {
               "name": "set-custom-validity",
               "with": "Слишком коротко"
@@ -390,7 +390,7 @@
           {
             "id": "legacy-spellcheck-is-spell-check",
             "covers": "aliases.json spellcheck -> spell-check (§3.1, §16 item 26)",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "setting": {
               "name": "spellcheck",
               "value": "false"
@@ -418,7 +418,7 @@
           {
             "id": "legacy-error-is-invalid",
             "covers": "aliases.json error -> invalid (§17.2)",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "setting": {
               "name": "error",
               "value": true
@@ -448,7 +448,7 @@
           {
             "id": "legacy-type-is-appearance",
             "covers": "aliases.json type -> appearance",
-            "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+            "field": "<sf-input-textarea name=\"note\" label=\"Заметка\"></sf-input-textarea>",
             "setting": {
               "name": "type",
               "value": "filled"

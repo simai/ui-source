@@ -139,6 +139,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-quantity-to-input-quantity"
+    },
+    "cl-textarea": {
+      "to": "cl-input-textarea",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-textarea-to-input-textarea"
     }
   }
 }

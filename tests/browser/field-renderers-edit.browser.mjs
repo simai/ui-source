@@ -25,7 +25,7 @@ const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/checkbox/js/checkbox.js',
   'smart/smart/list-item/js/list-item.js', 'smart/smart/input/js/input.js',
-  'smart/smart/textarea/js/textarea.js', 'smart/smart/dropdown/js/dropdown.js',
+  'smart/smart/input-textarea/js/input-textarea.js', 'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/switch/js/switch.js', 'smart/smart/button-group/js/button-group.js',
   'smart/smart/input-date/js/input-date.js', 'smart/smart/spinner/js/spinner.js',
   'smart/smart/field-renderers/js/field-renderers.js',
@@ -89,7 +89,7 @@ try {
 
     const element = (key) => {
       const box = document.querySelector(`[data-field="${key}"]`);
-      const node = box?.querySelector('sf-input, sf-textarea, sf-dropdown, sf-switch, sf-button-group, sf-input-date');
+      const node = box?.querySelector('sf-input, sf-input-textarea, sf-dropdown, sf-switch, sf-button-group, sf-input-date');
       return node ? {tag: node.tagName.toLowerCase(), size: node.getAttribute('size'),
         value: node.getAttribute('value'),
         chosen: [...box.querySelectorAll('button')].filter((b) => b.className.includes('sf-button--default')).length,
@@ -164,7 +164,7 @@ try {
       expected: 'the renderer module and lit on the page'});
   } else {
     const expected = {
-      title: 'sf-input', about: 'sf-textarea', count: 'sf-input', when: 'sf-input-date',
+      title: 'sf-input', about: 'sf-input-textarea', count: 'sf-input', when: 'sf-input-date',
       live: 'sf-switch', maybe: 'sf-button-group', status: 'sf-dropdown',
     };
     for (const [key, tag] of Object.entries(expected)) {

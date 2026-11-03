@@ -2,7 +2,7 @@
 // Usage: node this-file /absolute/path/to/output
 // The inherited-value state of the input family (simai/ui-source#28), on the
 // built bytes with core.css and the field sheets, UTF-8, at 1000px and 390px.
-// For sf-input (text and numeric), sf-textarea, sf-dropdown, sf-color and
+// For sf-input (text and numeric), sf-input-textarea, sf-dropdown, sf-color and
 // sf-switch:
 // - forced colours: the inherited value is the page's own text (CanvasText),
 //   not the «unavailable» GrayText a placeholder is painted (#57), while an
@@ -34,12 +34,12 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/inputs/css/inputs.css', 'component/component/textarea/css/textarea.css',
   'component/component/dropdown/css/dropdown.css', 'component/component/switch/css/switch.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/icons/css/icons.css',
-  'smart/smart/input/css/input.css', 'smart/smart/textarea/css/textarea.css', 'smart/smart/dropdown/css/dropdown.css',
+  'smart/smart/input/css/input.css', 'smart/smart/input-textarea/css/input-textarea.css', 'smart/smart/dropdown/css/dropdown.css',
   'smart/smart/input-color/css/input-color.css', 'smart/smart/switch/css/switch.css',
   'component/component/quantity/css/quantity.css', 'smart/smart/input-quantity/css/input-quantity.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/list-item/js/list-item.js',
-  'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js', 'smart/smart/dropdown/js/dropdown.js',
+  'smart/smart/input/js/input.js', 'smart/smart/input-textarea/js/input-textarea.js', 'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/input-color/js/input-color.js', 'smart/smart/switch/js/switch.js', 'smart/smart/input-quantity/js/input-quantity.js'];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
@@ -53,7 +53,7 @@ const markup = `<!doctype html><html lang="ru" class="theme-light"><head><meta c
 <body style="margin:16px"><form id="form" style="display:flex;flex-direction:column;gap:16px;max-inline-size:480px">
   <sf-input id="text" name="site" label="Сайт" inherited-value="https://brand.example"></sf-input>
   <sf-input id="number" name="count" label="Количество" inputmode="numeric" inherited-value="12"></sf-input>
-  <sf-textarea id="area" name="sign" label="Подпись" inherited-value="Команда бренда"></sf-textarea>
+  <sf-input-textarea id="area" name="sign" label="Подпись" inherited-value="Команда бренда"></sf-input-textarea>
   <sf-dropdown id="select" name="city" label="Город" inherited-value="moscow" portal="false"></sf-dropdown>
   <sf-input-color id="color" name="brand" label="Цвет" inherited-value="#336699"></sf-input-color>
   <sf-switch id="toggle" name="notify" value="yes" label="Уведомления" inherited-value="true"></sf-switch>
@@ -88,7 +88,7 @@ try {
       for (const node of document.querySelectorAll('sf-dropdown')) node.options = JSON.parse(cities);
     }, CITIES);
     for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-    await page.waitForFunction(() => ['sf-input', 'sf-textarea', 'sf-dropdown', 'sf-input-color', 'sf-switch']
+    await page.waitForFunction(() => ['sf-input', 'sf-input-textarea', 'sf-dropdown', 'sf-input-color', 'sf-switch']
       .every((tag) => customElements.get(tag)) && document.querySelector('#toggle .sf-switch')
       && document.querySelector('#select .sf-dropdown-field') && document.querySelector('#color .sf-color'), null, {timeout: 10000});
     await page.evaluate(() => document.fonts.ready);

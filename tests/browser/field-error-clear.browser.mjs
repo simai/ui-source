@@ -9,7 +9,7 @@
 //   (removing the attribute, setState({invalid: false})) restores the valid
 //   border and leaves no aria-invalid -- also after a re-render in between and
 //   with error-message set;
-// - sf-textarea: the same, on the textarea;
+// - sf-input-textarea: the same, on the textarea;
 // - sf-datepicker: `invalid` and `error-message` reach its field and go away
 //   with the attribute;
 // - the field set's datetime editor: a cleared time marks the time control,
@@ -25,7 +25,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/textarea/css/textarea.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-textarea/js/input-textarea.js',
   'smart/smart/input-date/js/input-date.js', 'smart/smart/field-renderers/js/field-renderers.js'];
 
 const failures = [];
@@ -51,7 +51,7 @@ try {
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:16px">
     <sf-input id="input" label="Имя" error-message="Укажите имя"></sf-input>
     <sf-input id="input-error" label="Почта"></sf-input>
-    <sf-textarea id="textarea" label="Комментарий" error-message="Напишите комментарий"></sf-textarea>
+    <sf-input-textarea id="textarea" label="Комментарий" error-message="Напишите комментарий"></sf-input-textarea>
     <sf-input-date id="picker" label="Дата" value="2026-11-15"></sf-input-date>
     <div id="set" style="max-inline-size:420px;margin-block-start:24px"></div>
   </body></html>`);
@@ -61,7 +61,7 @@ try {
   await page.addStyleTag({content: '*, *::before, *::after { transition: none !important; }'});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => window.SF?.fieldRenderers?.renderEditField && window.SF?.render && customElements.get('sf-input-date')
-    && customElements.get('sf-input') && customElements.get('sf-textarea'), null, {timeout: 10000});
+    && customElements.get('sf-input') && customElements.get('sf-input-textarea'), null, {timeout: 10000});
   await page.waitForFunction(() => document.querySelector('#input input') && document.querySelector('#textarea textarea')
     && document.querySelector('#picker input'), null, {timeout: 8000});
   await settle();
@@ -111,10 +111,10 @@ try {
   await cycle('sf-input invalid twice, cleared once', '#input',
     () => { const el = document.querySelector('#input'); el.setAttribute('invalid', ''); el.setAttribute('error', ''); },
     () => { const el = document.querySelector('#input'); el.removeAttribute('invalid'); el.removeAttribute('error'); });
-  await cycle('sf-textarea invalid attribute', '#textarea',
+  await cycle('sf-input-textarea invalid attribute', '#textarea',
     () => document.querySelector('#textarea').setAttribute('invalid', ''),
     () => document.querySelector('#textarea').removeAttribute('invalid'), 'Напишите комментарий');
-  await cycle('sf-textarea error attribute', '#textarea',
+  await cycle('sf-input-textarea error attribute', '#textarea',
     () => document.querySelector('#textarea').setAttribute('error', ''),
     () => document.querySelector('#textarea').removeAttribute('error'));
   await cycle('sf-input-date invalid attribute', '#picker',

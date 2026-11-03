@@ -96,6 +96,8 @@ export type SmartComponentCreateName =
     | 'sf-input'
     | 'textarea'
     | 'sf-textarea'
+    | 'input-textarea'
+    | 'sf-input-textarea'
     | 'progress-bar'
     | 'sf-progress-bar'
     | 'progress-scale'
@@ -146,7 +148,7 @@ export type SmartComponentCreateResult<TName extends string> =
                                                                             ? HTMLSfContextMenuElement
                                                                             : TName extends 'input' | 'sf-input'
                                                                                 ? HTMLSfInputElement
-                                                                                : TName extends 'textarea' | 'sf-textarea'
+                                                                                : TName extends 'textarea' | 'sf-textarea' | 'input-textarea' | 'sf-input-textarea'
                                                                                     ? HTMLSfTextareaElement
                                                                                     : TName extends 'progress-bar' | 'sf-progress-bar'
                                                                                         ? HTMLSfProgressBarElement
@@ -905,6 +907,7 @@ declare global {
     'sf-dropdown': HTMLSfDropdownElement;
     'sf-input': HTMLSfInputElement;
     'sf-textarea': HTMLSfTextareaElement;
+    'sf-input-textarea': HTMLSfTextareaElement;
     'sf-progress-bar': HTMLSfProgressBarElement;
     'sf-progress-scale': HTMLSfProgressScaleElement;
     'sf-pagination': HTMLSfPaginationElement;

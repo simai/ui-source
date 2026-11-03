@@ -15,7 +15,7 @@
 //   value-missing;
 // - the keyboard: one Tab stop for the toolbar, the arrows, Home and End
 //   inside it, Tab into the text and out of the field with no tab typed;
-// - the frame against sf-textarea's at sizes 1/2, 1 and 2: the border, the
+// - the frame against sf-input-textarea's at sizes 1/2, 1 and 2: the border, the
 //   radius, the padding, the text size and line height;
 // - text, placeholder, hint and a pressed tool against their backgrounds,
 //   at least 4.5:1, in the light and the dark theme.
@@ -230,7 +230,7 @@ try {
   await page.evaluate(() => { window.__events = []; });
   await page.evaluate(() => document.getElementById('f').reset());
   await page.waitForTimeout(200);
-  // A value set from code is the default, as on sf-textarea: the property
+  // A value set from code is the default, as on sf-input-textarea: the property
   // writes the attribute.
   check('reset: back to the value attribute', await value(page) === '<p>Read the docs</p>', {got: await value(page)});
   check('reset: no event', await page.evaluate(() => window.__events.length === 0), {events: await page.evaluate(() => window.__events)});
@@ -256,26 +256,26 @@ try {
     && document.querySelector('#ru [data-sf-tool=bold]').getAttribute('aria-label') === words.bold
     && document.querySelector('#ru .sf-rich-text-editor').getAttribute('aria-label') === 'Text', ru));
 
-  // ---- geometry against sf-textarea ------------------------------------------------
+  // ---- geometry against sf-input-textarea ------------------------------------------------
   await open(page, 'theme-light', ['1/2', '1', '2'].map((size) => `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <sf-textarea data-size="${size}" size="${size}" label="Text" rows="2"></sf-textarea>
+      <sf-input-textarea data-size="${size}" size="${size}" label="Text" rows="2"></sf-input-textarea>
       <sf-input-rich data-size="${size}" size="${size}" label="Text" rows="2"></sf-input-rich></div>`).join(''));
-  await page.waitForFunction(() => document.querySelectorAll('sf-textarea textarea').length === 3, null, {timeout: 10000});
+  await page.waitForFunction(() => document.querySelectorAll('sf-input-textarea textarea').length === 3, null, {timeout: 10000});
   // At rest: nothing hovered.
   await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
   const geometry = await page.evaluate(() => ['1/2', '1', '2'].map((size) => {
-    const textarea = getComputedStyle(document.querySelector(`sf-textarea[data-size="${size}"] textarea`));
+    const textarea = getComputedStyle(document.querySelector(`sf-input-textarea[data-size="${size}"] textarea`));
     const frame = getComputedStyle(document.querySelector(`sf-input-rich[data-size="${size}"] .sf-rich-text-frame`));
     const editor = getComputedStyle(document.querySelector(`sf-input-rich[data-size="${size}"] .sf-rich-text-editor`));
     const label = (selector) => getComputedStyle(document.querySelector(selector)).fontSize;
     return {
       size,
-      textarea: [textarea.borderTopWidth, textarea.borderTopLeftRadius, textarea.borderTopColor, textarea.backgroundColor, textarea.paddingTop, textarea.paddingLeft, textarea.fontSize, textarea.lineHeight, label(`sf-textarea[data-size="${size}"] .sf-textarea-text`)],
+      textarea: [textarea.borderTopWidth, textarea.borderTopLeftRadius, textarea.borderTopColor, textarea.backgroundColor, textarea.paddingTop, textarea.paddingLeft, textarea.fontSize, textarea.lineHeight, label(`sf-input-textarea[data-size="${size}"] .sf-textarea-text`)],
       richText: [frame.borderTopWidth, frame.borderTopLeftRadius, frame.borderTopColor, frame.backgroundColor, editor.paddingTop, editor.paddingLeft, editor.fontSize, editor.lineHeight, label(`sf-input-rich[data-size="${size}"] .sf-rich-text-text`)],
     };
   }));
-  for (const one of geometry) check(`frame matches sf-textarea at size ${one.size}`, JSON.stringify(one.textarea) === JSON.stringify(one.richText), one);
+  for (const one of geometry) check(`frame matches sf-input-textarea at size ${one.size}`, JSON.stringify(one.textarea) === JSON.stringify(one.richText), one);
   evidence.geometry = geometry;
 
   // ---- contrast, light and dark ------------------------------------------------------

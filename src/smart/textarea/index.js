@@ -1,194 +1,56 @@
-import {
-  bindTextarea,
-  setTextareaState,
-  unbindTextarea,
-} from '../../component/textarea/js/_textarea';
-import SfBaseElement from '../../core/js/smart-base';
-import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
-import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, innerControlName } from '../helpers/form-field';
-import { renderTextareaTemplate } from './js/templates/default';
-import manifest from './component.json';
-import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+// The distribution path of sf-input-textarea (formerly sf-textarea) until 2027-01-01 (change
+// journal path-smart-textarea-to-input-textarea). The folder took the new tag's name: sf-input-textarea is
+// served from smart/input-textarea/ (js/input-textarea.js). A page or a doc that still names
+// smart/textarea/js/textarea.js keeps loading a working element, under either tag:
+//
+// - this bundle carries no element of its own (every bundle carries its own
+//   copy of the modules it imports, so a second class here would be a second
+//   class for one tag); it notes the old path in SF.deprecations and adds the
+//   script of smart/input-textarea/ beside its own, unless sf-input-textarea is defined or that
+//   script is already on the page;
+// - the Loader forwards the old bundle name, cl-textarea, to cl-input-textarea
+//   (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
+// Written by scripts/rename-smart-tag.mjs.
+import {noteDeprecated} from '../../core/js/deprecations.js';
 
-// sf-textarea from its component.json (standard simai.smart-component 1.3.8
-// §3, §4, §17, §20). The settings are made by core/js/element-manifest.js;
-// `spellcheck` (a property of HTMLElement, §3.1) is spell-check, and `type`
-// (appearance) and `error` (invalid, §17.2) are dated aliases, as is the
-// trait's old event sf-field:reset (aliases.json). The host is the form
-// control through ElementInternals: it submits the text and reports the native
-// textarea's validity, and the textarea carries no name (§17.1).
-const TextareaElement = elementFromManifest(manifest, {
-  base: InheritedValueField(SfBaseElement),
-  lang: { en, ru },
-  source: 'ru',
-  aliases,
-});
+const FROM = 'smart/textarea/';
+const TO = 'smart/input-textarea/';
+const OWN = /\/textarea\/js\/textarea(\.min)?\.js(?=$|[?#])/u;
 
-class SfTextarea extends FormField(TextareaElement) {
-  static get props() {
-    return {
-      ...super.props,
-      rootClass: { default: '' },
-      // What the field falls back to while it holds nothing (simai/ui-source#28).
-      inheritedValue: { attribute: 'inherited-value', default: '' },
-      inheritedText: { attribute: 'inherited-text', default: '' },
-      resetLabel: { attribute: 'reset-label', default: '' },
-    };
+function forward() {
+  const doc = globalThis.document;
+  if (!doc || !globalThis.customElements) return;
+  noteDeprecated({
+    component: 'sf-input-textarea',
+    kind: 'path',
+    from: FROM,
+    to: TO,
+    tag: 'sf-input-textarea',
+    since: '2026-11-03',
+    remove_after: '2027-01-01',
+  });
+  if (customElements.get('sf-input-textarea')) return;
+  // The old path this file was loaded by: document.currentScript while a
+  // classic script runs, else the page's script element that names it (a
+  // module script has no currentScript).
+  const own = [doc.currentScript?.src || '', ...[...doc.querySelectorAll('script[src]')].map((script) => script.src)]
+    .find((src) => OWN.test(src)) || '';
+  let src = '';
+  if (OWN.test(own)) {
+    src = own.replace(OWN, '/input-textarea/js/input-textarea$1.js');
+  } else {
+    // Loaded as a module or by a script of the page: the smart root the
+    // Loader uses (sfSmartPath, else sfPath), as it composes <root>/smart/.
+    const root = String(globalThis.sfSmartPath || globalThis.sfPath || '').trim().replace(/\/+$/u, '');
+    if (!root) return;
+    src = `${root}/smart/input-textarea/js/input-textarea.js`;
   }
-
-
-  constructor() {
-    super();
-    this._boundRoot = null;
-  }
-
-  get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-textarea');
-  }
-
-  get minlength() {
-    const value = this.getNumberAttr('minlength', null);
-    return Number.isInteger(value) && value >= 0 ? value : null;
-  }
-
-  get maxlength() {
-    const value = this.getNumberAttr('maxlength', null);
-    return Number.isInteger(value) && value >= 0 ? value : null;
-  }
-
-  // element.focus() on the host reaches the native textarea.
-  focusDelegate() {
-    return this.querySelector('textarea');
-  }
-
-  get value() {
-    const textarea = this.querySelector('.sf-textarea textarea');
-    return textarea ? textarea.value : this.getAttribute('value') || '';
-  }
-
-  set value(nextValue) {
-    const normalizedValue = String(nextValue ?? '');
-    if (nextValue === null || nextValue === undefined) {
-      this.removeAttribute('value');
-    } else {
-      this.setAttribute('value', normalizedValue);
-    }
-    const root = this.querySelector('.sf-textarea');
-    const textarea = root?.querySelector('textarea');
-    if (root?.__sfTextareaMask) root.__sfTextareaMask.value = normalizedValue;
-    else if (textarea) textarea.value = normalizedValue;
-    this.sfSyncFormState?.();
-  }
-
-  get rows() {
-    const value = Math.trunc(this.getNumberAttr('rows', 3));
-    return value > 0 ? value : 3;
-  }
-
-  get minRows() {
-    const value = Math.trunc(this.getNumberAttr('minRows', 1));
-    return value > 0 ? value : 1;
-  }
-
-  // No cap unless one is given; a cap below min-rows is min-rows.
-  get maxRows() {
-    const value = Math.trunc(this.getNumberAttr('maxRows', null));
-    return value > 0 ? Math.max(value, this.minRows) : null;
-  }
-
-  // The inherited-value seam: the native textarea is the value, the focus and
-  // what carries the description.
-  inheritedFocusTarget() {
-    return this.querySelector('.sf-textarea textarea');
-  }
-
-  getInputElement() {
-    return this.inheritedFocusTarget();
-  }
-
-  // A reset is said the way typing is: input, then change, from the textarea.
-  clearOwnValue() {
-    this.value = '';
-    const textarea = this.inheritedFocusTarget();
-    textarea?.dispatchEvent(new Event('input', {bubbles: true}));
-    textarea?.dispatchEvent(new Event('change', {bubbles: true}));
-  }
-
-  // The browser's restore of a form (back, reload) gives the text back.
-  formStateRestoreCallback(state) {
-    if (typeof state === 'string') this.value = state;
-  }
-
-  templateContext() {
-    const props = this.getPropsContext();
-    const textarea = this.querySelector('textarea');
-
-    return this.createTemplateContext({
-      ...props,
-      // The size the field draws: a retired size (1/3) is the one it keeps.
-      size: this.size,
-      value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
-      // The host is the form control where the browser has ElementInternals,
-      // so the textarea carries no name (§17.1 item 6).
-      controlName: innerControlName(this, props.name),
-      // Resolved names the template reads (contracts/template-context.json).
-      type: this.appearance,
-      minlength: this.minlength,
-      maxlength: this.maxlength,
-      autoGrow: this.autoGrow,
-      minRows: this.minRows,
-      maxRows: this.maxRows,
-      inheritedValue: this.inheritedValue,
-      inheritedText: this.inheritedText,
-      resetLabel: this.resetLabel,
-      component: this,
-    });
-  }
-
-  onDisconnected() {
-    if (this._boundRoot) {
-      unbindTextarea(this._boundRoot);
-      this._boundRoot = null;
-    }
-  }
-
-  afterRender() {
-    if (this._boundRoot) {
-      unbindTextarea(this._boundRoot);
-      this._boundRoot = null;
-    }
-
-    this._boundRoot = this.querySelector('.sf-textarea');
-    if (this._boundRoot) {
-      bindTextarea(this._boundRoot);
-    }
-    this.syncInheritedState();
-    this.sfSyncFormState();
-  }
-
-  template() {
-    return renderTextareaTemplate(this.templateContext());
-  }
-
-  get state() {
-    const root = this.querySelector('.sf-textarea');
-    const textarea = root?.querySelector?.('textarea') || null;
-    return {
-      value: textarea?.value || '',
-      disabled: !!textarea?.disabled,
-      invalid: textarea?.getAttribute('aria-invalid') === 'true',
-      error: root?.classList?.contains('error') || textarea?.classList?.contains('error') || false,
-    };
-  }
-
-  setState(nextState = {}) {
-    const root = this.querySelector('.sf-textarea');
-    return setTextareaState(root, nextState);
-  }
+  const loaded = [...doc.querySelectorAll('script[src]')].some((script) => /\/input-textarea\/js\/input-textarea(\.min)?\.js(?=$|[?#])/u.test(script.src));
+  if (loaded) return;
+  const script = doc.createElement('script');
+  script.src = src;
+  script.dataset.sfForwardedFrom = FROM;
+  (doc.currentScript?.parentNode || doc.head || doc.documentElement).appendChild(script);
 }
 
-SfTextarea.define('sf-textarea');
+forward();

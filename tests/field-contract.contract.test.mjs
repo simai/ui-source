@@ -33,7 +33,7 @@ test('field contract keeps stable identities and chooses an error over a hint', 
 test('input and textarea Smart templates expose the same native field semantics', async () => {
   const [inputTemplate, textareaTemplate] = await Promise.all([
     text('src/smart/input/js/templates/default.js'),
-    text('src/smart/textarea/js/templates/default.js'),
+    text('src/smart/input-textarea/js/templates/default.js'),
   ]);
 
   for (const source of [inputTemplate, textareaTemplate]) {
@@ -78,7 +78,7 @@ test('Smart input forwards the declared native input security and validation con
 test('input and textarea manifests publish the shared field parameters', async () => {
   const manifests = await Promise.all([
     json('src/smart/input/smart.manifest.json'),
-    json('src/smart/textarea/smart.manifest.json'),
+    json('src/smart/input-textarea/smart.manifest.json'),
   ]);
 
   for (const manifest of manifests) {

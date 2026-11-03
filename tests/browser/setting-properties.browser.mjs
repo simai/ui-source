@@ -4,7 +4,7 @@
 // moves the attribute and the element draws the new value. A component that
 // writes its own getter for a setting used to shadow the base's pair and lose
 // the setter with it, so the assignment changed nothing and said nothing
-// (sf-badge status, sf-dropdown size, sf-input size, sf-textarea rows,
+// (sf-badge status, sf-dropdown size, sf-input size, sf-input-textarea rows,
 // sf-toast duration; measured 2026-10-31). The base now puts its setter back
 // beside such a getter, once per class.
 import {createServer} from 'node:http';
@@ -25,7 +25,7 @@ for (const [name, path] of Object.entries(parts)) {
 // the last two do not, so they prove the ordinary path still works.
 const CASES = [
   {tag: 'sf-badge', markup: '<sf-badge id="badge" text="3" status="info"></sf-badge>', property: 'status', value: 'warning', attribute: 'status', says: 'warning'},
-  {tag: 'sf-textarea', markup: '<sf-textarea id="textarea" label="Текст" rows="2"></sf-textarea>', property: 'rows', value: 5, attribute: 'rows', says: '5'},
+  {tag: 'sf-input-textarea', markup: '<sf-input-textarea id="textarea" label="Текст" rows="2"></sf-input-textarea>', property: 'rows', value: 5, attribute: 'rows', says: '5'},
   {tag: 'sf-dropdown', markup: '<sf-dropdown id="dropdown" label="Город" size="1"></sf-dropdown>', property: 'size', value: '2', attribute: 'size', says: '2'},
   {tag: 'sf-toast', markup: '<sf-toast id="toast" heading="Готово"></sf-toast>', property: 'duration', value: 300, attribute: 'duration', says: '300'},
   {tag: 'sf-input', markup: '<sf-input id="input" label="Имя" size="1"></sf-input>', property: 'size', value: '2', attribute: 'size', says: '2'},

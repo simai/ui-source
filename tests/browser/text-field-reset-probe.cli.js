@@ -5,7 +5,7 @@ async (page) => {
   await page.getByRole('button', {name: 'Создать текстовые поля', exact: true}).click();
   const read = () => page.locator('input[name], textarea[name]').evaluateAll(es => es.map(e => {
     const root = e.closest('.sf-input,.sf-textarea');
-    const host = e.closest('sf-input,sf-textarea');
+    const host = e.closest('sf-input,sf-input-textarea');
     return {name: e.name, value: e.value, defaultValue: e.defaultValue,
       mask: (root.__sfInputMask || root.__sfTextareaMask)?.value ?? null,
       publicValue: host?.value ?? null};
@@ -16,7 +16,7 @@ async (page) => {
   }
   const edited = await read();
   await page.getByRole('button', {name: 'Обновить подсказки', exact: true}).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-textarea')].every(e => e.textContent.includes('Подсказка')));
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-input-textarea')].every(e => e.textContent.includes('Подсказка')));
   const rerendered = await read();
   await page.getByRole('button', {name: 'Сбросить текстовые поля', exact: true}).click();
   await page.getByRole('button', {name: 'Сбросить созданные поля', exact: true}).click();

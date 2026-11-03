@@ -17,14 +17,14 @@ async (page) => {
   const field = name => page.locator(`input[name="${name}"],textarea[name="${name}"]`);
   const read = () => page.locator('input[name], textarea[name]').evaluateAll(es => es.map(e => {
     const root = e.closest('.sf-input,.sf-textarea');
-    const host = e.closest('sf-input,sf-textarea');
+    const host = e.closest('sf-input,sf-input-textarea');
     return {name: e.name, value: e.value, defaultValue: e.defaultValue,
       mask: (root.__sfInputMask || root.__sfTextareaMask)?.value ?? null,
       publicValue: host?.value ?? null};
   }));
   const rerender = async () => {
     await page.getByRole('button', {name: 'Обновить подсказки', exact: true}).click();
-    await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-textarea')].every(e => e.textContent.includes(e.getAttribute('hint'))));
+    await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-input-textarea')].every(e => e.textContent.includes(e.getAttribute('hint'))));
   };
   const settleReset = () => page.evaluate(() => new Promise(resolve => setTimeout(resolve, 30)));
   const initial = await read();
@@ -74,7 +74,7 @@ async (page) => {
     eq(value.mask, '123', `${item.name} mask next keystroke`);
   }
   await field('smart-textarea-masked').blur();
-  const setters = await page.locator('sf-input,sf-textarea').evaluateAll(es => es.map(e => {
+  const setters = await page.locator('sf-input,sf-input-textarea').evaluateAll(es => es.map(e => {
     const masked = e.hasAttribute('mask');
     e.value = masked ? '56' : 'Программно';
     const root = e.querySelector('.sf-input,.sf-textarea');
@@ -87,7 +87,7 @@ async (page) => {
     eq(item.native, item.value, `${item.name} synchronous native setter`);
     if (item.mask !== null) eq(item.mask, item.value, `${item.name} synchronous mask setter`);
   }
-  await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-textarea')].every(e => e.querySelector('input,textarea').value === e.getAttribute('value')));
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-input,sf-input-textarea')].every(e => e.querySelector('input,textarea').value === e.getAttribute('value')));
   await page.screenshot({path: 'output/playwright/text-field-reset.png', fullPage: true});
   return {status: 'passed', checks, controls: initial.length, initial, reset, setters};
 }

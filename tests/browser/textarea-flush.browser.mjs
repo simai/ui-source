@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// The flush surface of sf-textarea (ui-chat's composer), measured on the built
+// The flush surface of sf-input-textarea (ui-chat's composer), measured on the built
 // bytes. The field sits inside a composite control whose own box draws the
 // border, the fill, the shadow and the focus; beside it a button. Here, at
 // sizes 1/2, 1 and 2, for the Smart element (appearance="flush") and the
@@ -24,7 +24,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/textarea/css/textarea.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
+  'component/component/textarea/js/textarea.js', 'smart/smart/input-textarea/js/input-textarea.js'];
 const SIZES = ['1/2', '1', '2'];
 const MAX = 8;
 
@@ -57,8 +57,8 @@ async function open(body, fallback) {
   }
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-textarea') && customElements.get('sf-button'));
-  await page.waitForFunction(() => [...document.querySelectorAll('sf-textarea')].every((node) => node.querySelector('textarea')));
+  await page.waitForFunction(() => customElements.get('sf-input-textarea') && customElements.get('sf-button'));
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-input-textarea')].every((node) => node.querySelector('textarea')));
   await page.waitForTimeout(400);
   return page;
 }
@@ -70,12 +70,12 @@ const MEASURE = `async (kind) => {
   for (const row of document.querySelectorAll('[data-size]')) {
     const box = row.querySelector('.composer[data-kind="' + kind + '"]');
     const field = box.querySelector('textarea');
-    const host = box.querySelector('sf-textarea');
+    const host = box.querySelector('sf-input-textarea');
     const write = (value) => { if (host) host.value = value; else field.value = value; };
     const style = getComputedStyle(field);
     const button = box.querySelector('sf-button > button');
     const result = {size: row.dataset.size, kind,
-      root: [...field.closest('.sf-textarea').classList].filter((name) => name.startsWith('sf-textarea')),
+      root: [...field.closest('.sf-textarea').classList].filter((name) => name.startsWith('sf-input-textarea')),
       border: [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat),
       background: style.backgroundColor, shadow: style.boxShadow, outline: style.outlineStyle,
       padding: {top: parseFloat(style.paddingTop), bottom: parseFloat(style.paddingBottom),
@@ -116,12 +116,12 @@ try {
     const tolerance = fallback ? 0.5 : 0.01;
     const body = SIZES.map((size) => `<div data-size="${size}">
       <div class="composer" data-kind="smart">
-        <sf-textarea size="${size}" appearance="flush" auto-grow max-rows="${MAX}" placeholder="Сообщение" aria-label="Сообщение"></sf-textarea>
+        <sf-input-textarea size="${size}" appearance="flush" auto-grow max-rows="${MAX}" placeholder="Сообщение" aria-label="Сообщение"></sf-input-textarea>
         <sf-button size="${size}" icon="send" text="Отправить"></sf-button>
       </div>
-      <sf-textarea data-reference size="${size}" rows="1" aria-label="Образец"></sf-textarea>
+      <sf-input-textarea data-reference size="${size}" rows="1" aria-label="Образец"></sf-input-textarea>
       <div class="composer" data-kind="plain">
-        <label class="sf-textarea sf-textarea--size-${size} sf-textarea--flush flex flex-col">
+        <label class="sf-input-textarea sf-textarea--size-${size} sf-textarea--flush flex flex-col">
           <textarea data-auto-grow data-max-rows="${MAX}" placeholder="Сообщение" aria-label="Сообщение"></textarea>
         </label>
         <sf-button size="${size}" icon="send" text="Отправить"></sf-button>

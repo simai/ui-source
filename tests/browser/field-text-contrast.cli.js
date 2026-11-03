@@ -4,9 +4,9 @@ async(page)=>{
   const settle=()=>page.evaluate(()=>Promise.all(document.getAnimations().filter(a=>Number.isFinite(a.effect?.getComputedTiming().iterations)).map(a=>a.finished.catch(()=>{}))));
   for(const theme of ['light','dark'])for(const appearance of ['bordered','filled'])for(const state of ['enabled','readonly','invalid','disabled']){
     await page.goto(`http://127.0.0.1:8765/ui-source/tests/fixtures/field-controls-lab.html?${theme==='dark'?'dark&':''}${appearance==='filled'?'filled':''}`);
-    await page.waitForFunction(()=>document.querySelector('sf-textarea textarea'));
+    await page.waitForFunction(()=>document.querySelector('sf-input-textarea textarea'));
     await page.evaluate(state=>{
-      for(const host of document.querySelectorAll('sf-input,sf-textarea')){
+      for(const host of document.querySelectorAll('sf-input,sf-input-textarea')){
         host.toggleAttribute('error',state==='invalid');host.setAttribute('hint','Подсказка поля');host.setAttribute('placeholder','Введите значение');
         host.toggleAttribute('disabled',state==='disabled');host.toggleAttribute('readonly',state==='readonly');
       }
@@ -34,7 +34,7 @@ async(page)=>{
           return over(parse(c.backgroundColor),color);
         },[255,255,255,1]);
       };
-      const specs=[['#email','.sf-input','input'],['#comment','.sf-textarea','textarea'],['#quantity','.sf-quantity','input'],['sf-input','.sf-input','input'],['sf-textarea','.sf-textarea','textarea']];
+      const specs=[['#email','.sf-input','input'],['#comment','.sf-textarea','textarea'],['#quantity','.sf-quantity','input'],['sf-input','.sf-input','input'],['sf-input-textarea','.sf-textarea','textarea']];
       const rows=[];
       for(const [selector,prefix,controlTag] of specs){
         const host=document.querySelector(selector),root=host.matches(prefix)?host:host.querySelector(prefix);
@@ -52,7 +52,7 @@ async(page)=>{
     });
     const record=(rows,interaction)=>{for(const row of rows){const result={theme,appearance,state,interaction,...row};results.push(result);if(!row.disabled&&row.ratio<4.5)failures.push(result);if(row.disabled&&['value','placeholder'].includes(row.role)&&row.color!==row.disabledColor)failures.push({...result,reason:'disabled role changed'});}};
     record(await read(),'rest');
-    for(const selector of ['#email','#comment','#quantity','sf-input','sf-textarea']){
+    for(const selector of ['#email','#comment','#quantity','sf-input','sf-input-textarea']){
       const control=page.locator(selector).locator('input,textarea').first();
       await control.hover();
       await settle();

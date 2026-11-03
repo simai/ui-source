@@ -36,7 +36,7 @@ const DRAW = {
   checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
   'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
-  textarea: {css: ['textarea'], js: 'textarea', html: '<sf-textarea label="Текст" value="Строка" size="1"></sf-textarea><sf-textarea label="Ошибка" invalid size="1"></sf-textarea>'},
+  textarea: {css: ['textarea'], js: 'input-textarea', html: '<sf-input-textarea label="Текст" value="Строка" size="1"></sf-input-textarea><sf-input-textarea label="Ошибка" invalid size="1"></sf-input-textarea>'},
   toast: {css: ['toast', 'icon-buttons'], js: 'toast', html: '<sf-toast status="info" title="Сохранено" supporting-text="Изменения доступны."></sf-toast>'},
   modal: {css: ['modal', 'icon-buttons', 'buttons'], js: 'modal', html: '<sf-modal id="modal" title="Окно"><p>Текст</p><button slot="footer" type="button">Отмена</button><button slot="footer" type="button">Удалить</button></sf-modal>',
     open: 'document.getElementById("modal").open()'},

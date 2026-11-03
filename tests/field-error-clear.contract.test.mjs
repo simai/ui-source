@@ -26,7 +26,7 @@ test('sf-input: the host\'s invalid/error is the state, and the classes follow i
 });
 
 test('sf-textarea draws the textarea\'s error class itself, so a clear reaches it', () => {
-  const template = read('src/smart/textarea/js/templates/default.js');
+  const template = read('src/smart/input-textarea/js/templates/default.js');
   assert.ok(template.includes("class=${`transition${field.invalid ? ' error' : ''}`}"));
   assert.ok(template.includes("aria-invalid=${field.invalid ? 'true' : nothing}"));
 });

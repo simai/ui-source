@@ -37,14 +37,14 @@ test('Textarea constructor projects bounded native multiline metadata', async ()
 
 test('Smart Textarea projects native metadata and closed visual axes', async () => {
   const [template, index, manifestText] = await Promise.all([
-    source('smart/textarea/js/templates/default.js'),
-    source('smart/textarea/index.js'),
-    source('smart/textarea/smart.manifest.json'),
+    source('smart/input-textarea/js/templates/default.js'),
+    source('smart/input-textarea/index.js'),
+    source('smart/input-textarea/smart.manifest.json'),
   ]);
   const manifest = JSON.parse(manifestText);
   // The settings are the component.json's (standard 1.3.8 §4); spellcheck is
   // spell-check there, a property of HTMLElement being reserved (§3.1).
-  const declared = JSON.parse(await source('smart/textarea/component.json'));
+  const declared = JSON.parse(await source('smart/input-textarea/component.json'));
   assert.match(index, /elementFromManifest\(manifest,/);
   for (const name of ['autocomplete', 'inputmode', 'minlength', 'maxlength', 'spell-check', 'wrap']) {
     assert.match(template, new RegExp(name.replace('-', ''), 'i'));
@@ -66,9 +66,9 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
 
 test('Smart Textarea source metadata describes multiline form ownership', async () => {
   const [docs, fixture, scenario] = await Promise.all([
-    source('smart/textarea/docs/docs.md'),
-    source('smart/textarea/studio.fixture.json').then(JSON.parse),
-    source('smart/textarea/studio.scenario.json').then(JSON.parse),
+    source('smart/input-textarea/docs/docs.md'),
+    source('smart/input-textarea/studio.fixture.json').then(JSON.parse),
+    source('smart/input-textarea/studio.scenario.json').then(JSON.parse),
   ]);
   assert.match(docs, /spellcheck/);
   assert.match(docs, /resize-y/);
@@ -85,14 +85,14 @@ test('Textarea flush surface draws no box and no focus of its own', async () => 
   const [css, javascript, index, meta, docs, smartDocs] = await Promise.all([
     source('component/textarea/scss/_css__textarea.scss'),
     source('component/textarea/js/_textarea.js'),
-    source('smart/textarea/index.js'),
-    source('smart/textarea/meta.mjs'),
+    source('smart/input-textarea/index.js'),
+    source('smart/input-textarea/meta.mjs'),
     source('component/textarea/docs/docs.md'),
-    source('smart/textarea/docs/docs.md'),
+    source('smart/input-textarea/docs/docs.md'),
   ]);
   assert.match(javascript, /const TEXTAREA_VARIANTS = new Set\(\['bordered', 'filled', 'flush'\]\);/);
-  const declared = JSON.parse(await source('smart/textarea/component.json'));
-  const aliasRows = JSON.parse(await source('smart/textarea/aliases.json')).aliases;
+  const declared = JSON.parse(await source('smart/input-textarea/component.json'));
+  const aliasRows = JSON.parse(await source('smart/input-textarea/aliases.json')).aliases;
   assert.match(index, /elementFromManifest\(manifest,/);
   assert.deepEqual(declared.settings.appearance.values, ['bordered', 'filled', 'flush']);
   assert.ok(aliasRows.some((row) => row.from === 'type' && row.to === 'appearance' && row.kind === 'setting'));

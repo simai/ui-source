@@ -8,5 +8,5 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 // focusDelegate (smart-base). UI Chat, msg-b050db447a3340ae86a0: sf-input had none.
 test('sf-input and sf-textarea name the native control that takes focus', () => {
   assert.match(read('src/smart/input/index.js'), /focusDelegate\(\) \{\n\s+return this\.getInputElement\(\);/u);
-  assert.match(read('src/smart/textarea/index.js'), /focusDelegate\(\) \{\n\s+return this\.querySelector\('textarea'\);/u);
+  assert.match(read('src/smart/input-textarea/index.js'), /focusDelegate\(\) \{\n\s+return this\.querySelector\('textarea'\);/u);
 });

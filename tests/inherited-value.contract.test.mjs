@@ -14,7 +14,7 @@ const sheet = read('src/smart/helpers/inherited-value.css');
 
 const CONTROLS = {
   input: {tag: 'sf-input', relation: /name: 'icon-buttons'/u},
-  textarea: {tag: 'sf-textarea', relation: /name: 'icon-buttons'/u},
+  'input-textarea': {tag: 'sf-input-textarea', relation: /name: 'icon-buttons'/u},
   dropdown: {tag: 'sf-dropdown', relation: /name: 'icon-buttons'/u},
   'input-color': {tag: 'sf-input-color', relation: /name: 'cl-icon-button'/u},
   switch: {tag: 'sf-switch', relation: /name: 'icon-buttons'/u},
@@ -107,7 +107,7 @@ test('the form gets nothing while the value is inherited', () => {
   // The text fields and the dropdown show it as their placeholder, never as
   // their value; the dropdown shows its options' labels.
   assert.match(read('src/smart/input/js/templates/default.js'), /const shownPlaceholder = context\.inheritedValue \|\| placeholder;/u);
-  assert.match(read('src/smart/textarea/js/templates/default.js'), /placeholder=\$\{context\.inheritedValue \|\| placeholder\}/u);
+  assert.match(read('src/smart/input-textarea/js/templates/default.js'), /placeholder=\$\{context\.inheritedValue \|\| placeholder\}/u);
   assert.match(read('src/smart/dropdown/js/templates/default.js'), /placeholder=\$\{context\.inheritedLabel \|\| context\.placeholder\}/u);
   // A reset on an uncontrolled sf-input does not write a value attribute: that
   // would swap the native input and drop the focus the reset gives back.

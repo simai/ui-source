@@ -2,7 +2,7 @@
 // Usage: node this-file /absolute/path/to/output
 //
 // One value axis for the fields (simai/ui-source#23, ui-mail visual audit):
-// the value text of sf-input and of a one-row sf-textarea of the same size
+// the value text of sf-input and of a one-row sf-input-textarea of the same size
 // stands at the same place in its box, and where an sf-button's label stands.
 // Measured on the rendered pixels, not on boxes: the boxes agreed while the
 // glyphs did not. The input took the reset's height: 100% against its centred
@@ -13,9 +13,9 @@
 // 2, light theme:
 //   - the field boxes are the control height of the size (32, 40, 48);
 //   - the first and last ink rows of the value are the same in sf-input and
-//     sf-textarea, and the same as in an sf-button of the size;
+//     sf-input-textarea, and the same as in an sf-button of the size;
 //   - the first ink column of the value is the same in sf-input and
-//     sf-textarea (the label axis the audit measured).
+//     sf-input-textarea (the label axis the audit measured).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -27,7 +27,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/buttons/css/buttons.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'component/component/inputs/js/inputs.js', 'smart/smart/input/js/input.js',
-  'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
+  'component/component/textarea/js/textarea.js', 'smart/smart/input-textarea/js/input-textarea.js'];
 const SIZES = {'1/2': 32, 1: 40, 2: 48};
 const VALUE = 'ННН';
 
@@ -43,20 +43,20 @@ try {
       page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', said: error.message}); });
       const body = Object.keys(SIZES).map((size) => `<div data-size="${size}" style="display:flex;gap:16px;align-items:flex-start;margin-block-end:16px">
         <sf-input size="${size}" appearance="${appearance}" value="${VALUE}" aria-label="Поле" style="inline-size:300px"></sf-input>
-        <sf-textarea size="${size}" appearance="${appearance}" value="${VALUE}" rows="1" aria-label="Поле" style="inline-size:300px"></sf-textarea>
+        <sf-input-textarea size="${size}" appearance="${appearance}" value="${VALUE}" rows="1" aria-label="Поле" style="inline-size:300px"></sf-input-textarea>
         <sf-button size="${size}" appearance="outline" scheme="on-surface" text="${VALUE}"></sf-button>
       </div>`).join('');
       // The caret would be ink too; it is hidden, nothing else is restyled.
       await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"><style>* { caret-color: transparent !important; }</style></head><body style="margin:16px">${body}</body></html>`);
       for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
       for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-      await page.waitForFunction(() => document.querySelectorAll('sf-input input, sf-textarea textarea, sf-button button').length === 9);
+      await page.waitForFunction(() => document.querySelectorAll('sf-input input, sf-input-textarea textarea, sf-button button').length === 9);
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(400);
 
       // The box that draws the field: the nearest element with a border or a fill.
       const boxes = await page.evaluate(() => [...document.querySelectorAll('[data-size]')].flatMap((row) =>
-        ['sf-input input', 'sf-textarea textarea', 'sf-button button'].map((selector) => {
+        ['sf-input input', 'sf-input-textarea textarea', 'sf-button button'].map((selector) => {
           const field = row.querySelector(selector);
           let node = field;
           while (node) {
@@ -97,13 +97,13 @@ try {
       const key = `${appearance}@${scale}x`;
       evidence[key] = rows.map(({size, kind, height, left, top, bottom}) => ({size, kind, height, left, top, bottom}));
       for (const [size, height] of Object.entries(SIZES)) {
-        const [input, textarea, button] = ['sf-input', 'sf-textarea', 'sf-button'].map((kind) => rows.find((row) => row.size === size && row.kind === kind));
+        const [input, textarea, button] = ['sf-input', 'sf-input-textarea', 'sf-button'].map((kind) => rows.find((row) => row.size === size && row.kind === kind));
         const at = (what) => `${key} size ${size}: ${what}`;
         check(at('the value has ink in every field'), [input, textarea, button].every((row) => Number.isFinite(row.top) && row.bottom > row.top), {input, textarea, button});
         check(at(`the field boxes are the control height (${height})`), input.height === height && textarea.height === height, {input, textarea});
-        check(at('sf-input and sf-textarea values stand on the same rows'), input.top === textarea.top && input.bottom === textarea.bottom, {input, textarea});
+        check(at('sf-input and sf-input-textarea values stand on the same rows'), input.top === textarea.top && input.bottom === textarea.bottom, {input, textarea});
         check(at('and on the rows of the sf-button label'), input.top === button.top && input.bottom === button.bottom, {input, button});
-        check(at('sf-input and sf-textarea values start in the same column'), input.left === textarea.left, {input, textarea});
+        check(at('sf-input and sf-input-textarea values start in the same column'), input.left === textarea.left, {input, textarea});
       }
       await page.close();
     }

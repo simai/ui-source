@@ -114,7 +114,7 @@
       "state": "converted"
     },
     {
-      "component": "textarea",
+      "component": "input-textarea",
       "axis": "appearance",
       "legacy": [
         "type"
@@ -375,7 +375,7 @@
       "slider-range",
       "switch",
       "tag",
-      "textarea"
+      "input-textarea"
     ],
     "aliases": [
       {
