@@ -1,0 +1,20 @@
+{
+  "schema": "simai.framework.component-set",
+  "schema_version": 1,
+  "standard": {"id": "simai.component-set", "version": "1.0.0"},
+  "id": "effects",
+  "title": "SIMAI Effects",
+  "summary": "A fixture of the set passport (standard simai.component-set): the free set effects with its one element, sf-effect. It is test data; the real passport lives in simai/ui-effects.",
+  "repository": "simai/ui-effects",
+  "licence": {"class": "framework", "spdx": "Apache-2.0"},
+  "framework": {
+    "core_runtime": ">=1.25.0",
+    "source_revision": "879eac3111888818680733bf7bfea97ff7288931"
+  },
+  "requires_sets": [],
+  "families": ["effect"],
+  "docs": "https://effects.simai.io/",
+  "components": [
+    {"element": "sf-effect", "rule": "cl-effect", "folder": "effect", "status": "preview", "requires": ["cl-menu-context"]}
+  ]
+}

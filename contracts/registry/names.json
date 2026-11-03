@@ -1,0 +1,548 @@
+{
+  "schema": "simai.framework.name-registry",
+  "schema_version": 1,
+  "summary": "The shared registry of Smart component names (standard simai.component-set 1.0.0): one prefix sf-, each name family owned by SIMAI Framework or by one component set, and the names known in each. Names only; a set lists its own components in its set.json. Seeded 2026-11-03 from the shipped Smart components of ui-source 879eac31, ui-pro 5c92812, ui-chart 8c18d4d and the owner decision of 2026-11-03 (component sets).",
+  "prefix": "sf-",
+  "owners": [
+    {
+      "id": "framework",
+      "kind": "framework",
+      "repository": "simai/ui-source",
+      "status": "active",
+      "families": [
+        "accordion",
+        "alert",
+        "avatar",
+        "badge",
+        "breadcrumbs",
+        "button",
+        "checkbox",
+        "contents",
+        "drawer",
+        "dropdown",
+        "empty",
+        "file",
+        "gallery",
+        "header",
+        "help",
+        "icon",
+        "include",
+        "input",
+        "list",
+        "menu",
+        "modal",
+        "pager",
+        "pagination",
+        "popover",
+        "profile",
+        "progress",
+        "radio",
+        "reference",
+        "resizer",
+        "search",
+        "skeleton",
+        "slider",
+        "sortable",
+        "spinner",
+        "steps",
+        "switch",
+        "tabs",
+        "tag",
+        "theme",
+        "toast",
+        "tooltip",
+        "tree"
+      ],
+      "names": [
+        {
+          "element": "sf-accordion",
+          "status": "released"
+        },
+        {
+          "element": "sf-alert",
+          "status": "released"
+        },
+        {
+          "element": "sf-avatar",
+          "status": "released"
+        },
+        {
+          "element": "sf-avatar-group",
+          "status": "released"
+        },
+        {
+          "element": "sf-badge",
+          "status": "released"
+        },
+        {
+          "element": "sf-breadcrumbs",
+          "status": "released"
+        },
+        {
+          "element": "sf-button",
+          "status": "released"
+        },
+        {
+          "element": "sf-button-close",
+          "status": "released"
+        },
+        {
+          "element": "sf-button-copy",
+          "status": "released"
+        },
+        {
+          "element": "sf-button-group",
+          "status": "released"
+        },
+        {
+          "element": "sf-button-icon",
+          "status": "released"
+        },
+        {
+          "element": "sf-checkbox",
+          "status": "released"
+        },
+        {
+          "element": "sf-contents",
+          "status": "released"
+        },
+        {
+          "element": "sf-drawer",
+          "status": "released"
+        },
+        {
+          "element": "sf-dropdown",
+          "status": "released"
+        },
+        {
+          "element": "sf-editor-inline",
+          "status": "released"
+        },
+        {
+          "element": "sf-editor-overlay",
+          "status": "released"
+        },
+        {
+          "element": "sf-empty-state",
+          "status": "released"
+        },
+        {
+          "element": "sf-file-download",
+          "status": "released"
+        },
+        {
+          "element": "sf-file-preview",
+          "status": "released"
+        },
+        {
+          "element": "sf-file-upload",
+          "status": "released"
+        },
+        {
+          "element": "sf-gallery",
+          "status": "released"
+        },
+        {
+          "element": "sf-header-page",
+          "status": "released"
+        },
+        {
+          "element": "sf-header-site",
+          "status": "released"
+        },
+        {
+          "element": "sf-help-mark",
+          "status": "released"
+        },
+        {
+          "element": "sf-icon",
+          "status": "released"
+        },
+        {
+          "element": "sf-include",
+          "status": "released"
+        },
+        {
+          "element": "sf-input",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-code",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-color",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-country",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-date",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-image",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-lookup",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-quantity",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-rich",
+          "status": "released"
+        },
+        {
+          "element": "sf-input-textarea",
+          "status": "released"
+        },
+        {
+          "element": "sf-list-item",
+          "status": "released"
+        },
+        {
+          "element": "sf-menu",
+          "status": "released"
+        },
+        {
+          "element": "sf-menu-context",
+          "status": "released"
+        },
+        {
+          "element": "sf-modal",
+          "status": "released"
+        },
+        {
+          "element": "sf-pager",
+          "status": "released"
+        },
+        {
+          "element": "sf-pagination",
+          "status": "released"
+        },
+        {
+          "element": "sf-popover",
+          "status": "released"
+        },
+        {
+          "element": "sf-profile-picker",
+          "status": "released"
+        },
+        {
+          "element": "sf-progress-bar",
+          "status": "released"
+        },
+        {
+          "element": "sf-progress-ring",
+          "status": "released"
+        },
+        {
+          "element": "sf-progress-scale",
+          "status": "released"
+        },
+        {
+          "element": "sf-radio",
+          "status": "released"
+        },
+        {
+          "element": "sf-reference-link",
+          "status": "released"
+        },
+        {
+          "element": "sf-resizer",
+          "status": "released"
+        },
+        {
+          "element": "sf-search",
+          "status": "released"
+        },
+        {
+          "element": "sf-skeleton",
+          "status": "released"
+        },
+        {
+          "element": "sf-slider",
+          "status": "released"
+        },
+        {
+          "element": "sf-slider-range",
+          "status": "released"
+        },
+        {
+          "element": "sf-sortable",
+          "status": "released"
+        },
+        {
+          "element": "sf-spinner",
+          "status": "released"
+        },
+        {
+          "element": "sf-steps",
+          "status": "released"
+        },
+        {
+          "element": "sf-switch",
+          "status": "released"
+        },
+        {
+          "element": "sf-tabs",
+          "status": "released"
+        },
+        {
+          "element": "sf-tag",
+          "status": "released"
+        },
+        {
+          "element": "sf-theme-generator",
+          "status": "released"
+        },
+        {
+          "element": "sf-toast",
+          "status": "released"
+        },
+        {
+          "element": "sf-tooltip",
+          "status": "released"
+        },
+        {
+          "element": "sf-tree",
+          "status": "released"
+        },
+        {
+          "element": "sf-tree-item",
+          "status": "released"
+        }
+      ],
+      "source": "ui-source src/smart/*/smart.manifest.json at 879eac31"
+    },
+    {
+      "id": "admin",
+      "kind": "set",
+      "repository": "simai/ui-admin",
+      "status": "planned",
+      "families": [
+        "admin",
+        "confirm"
+      ],
+      "names": [
+        {
+          "element": "sf-admin-menu",
+          "status": "released"
+        },
+        {
+          "element": "sf-confirm-change",
+          "status": "released"
+        }
+      ],
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+    },
+    {
+      "id": "view",
+      "kind": "set",
+      "repository": "simai/ui-view",
+      "status": "pending",
+      "families": [
+        "view"
+      ],
+      "names": [
+        {
+          "element": "sf-view",
+          "status": "released"
+        },
+        {
+          "element": "sf-view-properties",
+          "status": "released"
+        },
+        {
+          "element": "sf-view-table",
+          "status": "released"
+        }
+      ],
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)",
+      "note": "A possible set of data views (table, kanban, calendar, gantt, list) awaiting the owner (dispatcher, 2026-11-03). The family view is held here, not under admin, so it moves with the decision; if the owner declines the set, view returns to admin or to SIMAI Framework."
+    },
+    {
+      "id": "chat",
+      "kind": "set",
+      "repository": "simai/ui-chat",
+      "status": "planned",
+      "families": [
+        "chat",
+        "message"
+      ],
+      "names": [
+        {
+          "element": "sf-chat-composer",
+          "status": "released"
+        },
+        {
+          "element": "sf-chat-interlocutor",
+          "status": "released"
+        },
+        {
+          "element": "sf-chat-message",
+          "status": "released"
+        },
+        {
+          "element": "sf-chat-threads",
+          "status": "released"
+        },
+        {
+          "element": "sf-chat-window",
+          "status": "released"
+        },
+        {
+          "element": "sf-message-log",
+          "status": "released"
+        }
+      ],
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+    },
+    {
+      "id": "mail",
+      "kind": "set",
+      "repository": "simai/ui-mail",
+      "status": "planned",
+      "families": [
+        "mail"
+      ],
+      "names": [
+        {
+          "element": "sf-mail-canvas",
+          "status": "released"
+        },
+        {
+          "element": "sf-mail-inspector",
+          "status": "released"
+        },
+        {
+          "element": "sf-mail-letters",
+          "status": "released"
+        },
+        {
+          "element": "sf-mail-library",
+          "status": "released"
+        },
+        {
+          "element": "sf-mail-structure",
+          "status": "released"
+        }
+      ],
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+    },
+    {
+      "id": "editor",
+      "kind": "set",
+      "repository": "simai/ui-editor",
+      "status": "planned",
+      "families": [
+        "editor"
+      ],
+      "names": [
+        {
+          "element": "sf-editor",
+          "status": "released"
+        },
+        {
+          "element": "sf-editor-content",
+          "status": "released"
+        }
+      ],
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+    },
+    {
+      "id": "chart",
+      "kind": "set",
+      "repository": "simai/ui-chart",
+      "status": "planned",
+      "families": [
+        "chart"
+      ],
+      "names": [
+        {
+          "element": "sf-chart-bar",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-box",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-funnel",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-gauge",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-heatmap",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-line",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-metric",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-parts",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-pie",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-scatter",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-sparkline",
+          "status": "reserved"
+        }
+      ],
+      "source": "ui-chart components/src/smart at 8c18d4d; ui-control decisions/2026-11-02-ui-chart-package.md and 2026-11-02-smart-component-naming.md"
+    },
+    {
+      "id": "effects",
+      "kind": "set",
+      "repository": "simai/ui-effects",
+      "status": "planned",
+      "families": [
+        "effect"
+      ],
+      "names": [
+        {
+          "element": "sf-effect",
+          "status": "reserved"
+        }
+      ],
+      "source": "ui-control EFFECTS-PACKAGE-PLAN-2026-11-03.md"
+    }
+  ],
+  "exceptions": [
+    {
+      "element": "sf-editor-inline",
+      "owner": "framework",
+      "family_owner": "editor",
+      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. To be decided: move it to the set editor, or rename it in the Framework through the change lifecycle.",
+      "since": "2026-11-03"
+    },
+    {
+      "element": "sf-editor-overlay",
+      "owner": "framework",
+      "family_owner": "editor",
+      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. To be decided: move it to the set editor, or rename it in the Framework through the change lifecycle.",
+      "since": "2026-11-03"
+    }
+  ]
+}
