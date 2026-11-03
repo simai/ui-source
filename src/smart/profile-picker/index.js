@@ -17,7 +17,7 @@
 // lang/<locale>.json, and skeleton.html is its first paint before the host's
 // profiles arrive (§5.4).
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {renderProfilePickerTemplate} from './js/templates/default';
@@ -38,7 +38,6 @@ const position = () => globalThis.SF?.Position || BundledPosition;
 
 // The template names its words in camelCase; the language files in kebab-case.
 const kebab = (key) => String(key).replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
-const applied = () => ({outcome: 'applied'});
 
 class SfProfilePicker extends ProfilePickerElement {
   constructor() {

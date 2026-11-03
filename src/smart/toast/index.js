@@ -1,5 +1,5 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
-import { elementFromManifest } from '../../core/js/element-manifest';
+import { applied, refused, elementFromManifest } from '../../core/js/element-manifest';
 import { bindToast, dismissToast, unbindToast } from '../../component/toast/js/_toast';
 import { renderToastTemplate } from './js/templates/default';
 import manifest from './component.json';
@@ -19,8 +19,6 @@ const ToastElement = elementFromManifest(manifest, {
   aliases,
 });
 
-const applied = () => ({ outcome: 'applied' });
-const refused = (reason) => ({ outcome: 'refused', reason });
 
 class SfToast extends ToastElement {
   static get props() {

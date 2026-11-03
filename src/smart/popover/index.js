@@ -1,5 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {noteDeprecated} from '../../core/js/deprecations';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
@@ -21,8 +21,6 @@ const PopoverElement = elementFromManifest(manifest, {
     aliases,
 });
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 // A surface anchored to a control the consumer supplies: a field's settings, a
 // list of things to add, a filter, a colour picker's own panel. It exists

@@ -1,5 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
-import { elementFromManifest } from '../../core/js/element-manifest';
+import { applied, elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { tagSelector } from '../../core/js/tag-aliases.js';
 import { renderGalleryTemplate } from './js/templates/default';
@@ -21,7 +21,6 @@ const GalleryElement = elementFromManifest(manifest, {
   aliases,
 });
 
-const applied = () => ({ outcome: 'applied' });
 
 // What retires without a new name (aliases.json rows with `to: null`): kept
 // until the date, and each call is noted with it.
@@ -755,17 +754,20 @@ class SfGallery extends GalleryElement {
     }
 
     this._nestedDefinitionSyncQueued = true;
-    const waits = [];
+    const tags = [];
+    if (needsSliderUpgrade) tags.push('sf-slider');
+    if (needsModalUpgrade) tags.push('sf-modal');
 
-    if (needsSliderUpgrade && window.customElements?.whenDefined) {
-      waits.push(window.customElements.whenDefined('sf-slider'));
-    }
+    // The slider and the window are asked for, not only waited for
+    // (SF.Loader.ensure, core.runtime 1.19.0; duplication audit A-18): a
+    // gallery drawn into a page after the Loader's scan no longer waits on a
+    // definition nobody fetches. It waits as long as before (no timeout).
+    const loader = globalThis.SF?.Loader;
+    const wait = typeof loader?.ensure === 'function'
+      ? loader.ensure(tags, {timeout: Infinity})
+      : Promise.allSettled(tags.map((tag) => window.customElements?.whenDefined?.(tag)));
 
-    if (needsModalUpgrade && window.customElements?.whenDefined) {
-      waits.push(window.customElements.whenDefined('sf-modal'));
-    }
-
-    Promise.allSettled(waits).then(() => {
+    Promise.resolve(wait).then(() => {
       requestAnimationFrame(() => {
         this._nestedDefinitionSyncQueued = false;
 

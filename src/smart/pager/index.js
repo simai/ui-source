@@ -18,15 +18,13 @@
 // prev, next and go-to are the actions and answer outcomes, the words are
 // the language files'.
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {renderPagerTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 // A key pressed in a field is the field's: the keys setting never takes it.
 const EDITABLE = 'input, textarea, select, [contenteditable=""], [contenteditable="true"], [role="textbox"], [role="combobox"], [role="spinbutton"], [role="slider"]';

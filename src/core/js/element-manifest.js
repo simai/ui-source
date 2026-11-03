@@ -120,6 +120,108 @@ export function toOutcome(result) {
   return {outcome: 'applied', value: result};
 }
 
+// One spelling of the outcomes for every component and every set (duplication
+// audit 2026-11-03, A-26): about thirty components declared their own
+// `applied` and `refused`, and view-table carried the action wrapping below
+// for the view set alone (ui-pro view-table/js/manifest-actions.js).
+
+/** applied, with the value the action gives back when it has one. */
+export const applied = (value) => (value === undefined ? {outcome: 'applied'} : {outcome: 'applied', value});
+
+/** refused, with its reason and an optional message for a person. */
+export const refused = (reason = 'refused', message) => (message === undefined
+  ? {outcome: 'refused', reason}
+  : {outcome: 'refused', reason, message});
+
+/** cancelled: a newer call or the element's removal took the place of this one. */
+export const cancelled = () => ({outcome: 'cancelled'});
+
+/**
+ * An action's answer as an outcome, read the way a class-written action
+ * answers: as toOutcome, and also the element itself (a method that answered
+ * `this`) as applied and a host port's answer ({answer, reason, message},
+ * vocabulary §3.1) as the outcome it names.
+ */
+export function outcomeOf(result, element) {
+  if (element !== undefined && result === element) return {outcome: 'applied'};
+  if (result && typeof result === 'object' && typeof result.outcome !== 'string' && typeof result.answer === 'string') {
+    const {answer, reason, message} = result;
+    return {...result, outcome: answer, ...(reason ? {reason} : {}), ...(message ? {message} : {})};
+  }
+  if (typeof result === 'string') return {outcome: 'applied', value: result};
+  return toOutcome(result);
+}
+
+/**
+ * The actions a manifest declares, on a class that already has the methods
+ * (§4.4). elementFromManifest makes a method per action, but a class that
+ * predates its manifest keeps its own methods, which shadow the generated
+ * ones. Each is wrapped once so that it takes its `with` parameters as one
+ * object as well as positionally, and answers an outcome (outcomeOf).
+ */
+export function answerActions(Class, manifest) {
+  const proto = Class.prototype;
+  for (const [name, spec] of Object.entries(manifest?.actions || {})) {
+    const method = camelName(name);
+    const run = proto[method];
+    if (typeof run !== 'function' || run.sfAction) continue;
+    const names = Object.keys(spec?.with || {});
+    const wrapped = function manifestAction(...args) {
+      // One object naming only declared parameters is the object form.
+      if (args.length === 1 && isPlainObject(args[0])) {
+        const given = Object.keys(args[0]);
+        if (!names.length && !given.length) args = [];
+        else if (names.length && given.length && given.every((key) => names.includes(key) || names.map(camelName).includes(key))) {
+          args = names.map((key) => args[0][key] ?? args[0][camelName(key)]);
+        }
+      }
+      const result = run.apply(this, args);
+      if (result && typeof result.then === 'function') return result.then((value) => outcomeOf(value, this));
+      return outcomeOf(result, this);
+    };
+    wrapped.sfAction = true;
+    Object.defineProperty(proto, method, {configurable: true, writable: true, value: wrapped});
+  }
+  return Class;
+}
+
+/**
+ * A setting the class reads through a getter of its own is writable as a
+ * property too, as §4 makes every setting: the setter writes the attribute
+ * the getter reads (an assembly binds by property when the element has one).
+ */
+export function settingSetters(Class, manifest) {
+  const proto = Class.prototype;
+  for (const [name, spec] of Object.entries(manifest?.settings || {})) {
+    if (['list', 'object', 'state'].includes(spec?.type)) continue;
+    const property = camelName(name);
+    let owner = proto;
+    let found = null;
+    while (owner && owner !== globalThis.HTMLElement?.prototype && owner !== Object.prototype) {
+      found = Object.getOwnPropertyDescriptor(owner, property);
+      if (found) break;
+      owner = Object.getPrototypeOf(owner);
+    }
+    if (!found || !found.get || found.set) continue;
+    Object.defineProperty(owner, property, {
+      configurable: true,
+      get: found.get,
+      set(value) {
+        if (spec.type === 'boolean') {
+          if (value === true || value === '' || value === 'true') this.setAttribute(name, '');
+          else if (value === false && spec.default === true) this.setAttribute(name, 'false');
+          else this.removeAttribute(name);
+        } else if (value === null || value === undefined) {
+          this.removeAttribute(name);
+        } else {
+          this.setAttribute(name, String(value));
+        }
+      },
+    });
+  }
+  return Class;
+}
+
 function typedDefault(spec) {
   if (Object.prototype.hasOwnProperty.call(spec, 'default')) return spec.default;
   switch (spec.type) {

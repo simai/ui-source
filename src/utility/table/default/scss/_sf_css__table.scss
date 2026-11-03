@@ -32,8 +32,8 @@ $prefix: --sf-table-;
         #{$prefix}hover-color: #{$table-hover-color};
         #{$prefix}hover-bg: #{$table-hover-bg};
 
-        width: 100%;
-        margin-bottom: var(--sf-b6);
+        inline-size: 100%;
+        margin-block-end: var(--sf-b6);
         color: var(#{$prefix}color);
         vertical-align: top;
         border-color: var(#{$prefix}border-color);
@@ -42,7 +42,7 @@ $prefix: --sf-table-;
         > :not(caption) > * > * {
             padding: $table-cell-padding-y $table-cell-padding-x;
             //background-color: var(#{$prefix}bg);
-            border-bottom-width: var(--sf-px);
+            border-block-end-width: var(--sf-px);
             background-image: linear-gradient(var(#{$prefix}accent-bg), var(#{$prefix}accent-bg));
         }
 
@@ -52,6 +52,30 @@ $prefix: --sf-table-;
 
         > thead {
             vertical-align: bottom;
+        }
+
+        // The plain data table every set draws (owner decision 2026-11-03,
+        // component sets, point 12): a head cell reads as a head, start
+        // aligned like the body, and the caption says what the table holds in
+        // the quieter supporting line under it (caption-side: bottom above).
+        > thead > tr > th,
+        > tbody > tr > th[scope='row'] {
+            font-weight: var(--sf-font-weight-bold);
+            text-align: start;
+        }
+
+        > caption {
+            padding-block: var(--sf-space-1\/2);
+            color: var(--sf-on-surface-variant);
+            font-size: var(--sf-text-size-1\/2);
+            line-height: var(--sf-text-height-1\/2);
+            text-align: start;
+        }
+
+        // A column of numbers lines up on its digits: end aligned, tabular.
+        .table-numeric {
+            font-variant-numeric: tabular-nums;
+            text-align: end;
         }
     }
 

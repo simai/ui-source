@@ -1,6 +1,6 @@
 import {html, nothing, render} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {noteDeprecated} from '../../core/js/deprecations';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
@@ -47,8 +47,6 @@ function retiredEvent(type, detail) {
   return event;
 }
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 import './scss/index.scss';
 

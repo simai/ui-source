@@ -24,7 +24,7 @@
 // outcomes, change is the fact sf-contents-change, the words are the language
 // files'.
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {renderContentsTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -40,8 +40,6 @@ import './scss/index.scss';
 const HOLD_MS = 300;
 let sequence = 0;
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 const ContentsElement = elementFromManifest(manifest, {
   base: SfBaseElement,

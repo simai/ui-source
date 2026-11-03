@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -419,7 +419,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",
-        "sha256": "80b175c0d0ca66c7c2bd92785bd8560a3a62d9ec2809e71087b3051fa017afa6"
+        "sha256": "f076da22aee2271e9eec4a4ae78bfd3ef62185eb433278144943e906da6b2ce7"
       }
     ],
     "generated_runtime": [

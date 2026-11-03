@@ -22,6 +22,9 @@ import './sanitize.js';
 import './format.js';
 import './breakpoints.js';
 import './clipboard.js';
+// The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
+// SF.icons.choices.
+import './icon-choices.js';
 import {installReady} from './ready.js';
 import {applyRememberedIconSubset} from './icon-subset-memory.js';
 import pageStorage from './page-storage.js';

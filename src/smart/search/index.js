@@ -34,7 +34,7 @@
 import {render, nothing} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
 import BundledPreferences from '../../core/js/preferences.js';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
 import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
@@ -61,8 +61,6 @@ const BLOCK_CAPABILITY = {scopes: 'scopes', recent: 'recent', popular: 'popular'
 const PREVIEW_STEP = 'lg';
 let sequence = 0;
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 // The built-in hosts keep the recent queries as a view preference of the
 // person (SF.Preferences, owner 2026-10-14): in the browser under

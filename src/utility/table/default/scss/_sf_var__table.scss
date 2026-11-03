@@ -21,10 +21,13 @@ $table-active-bg: var(--sf-surface-transparent-select);
 $table-hover-color: var(--sf-on-surface);
 $table-hover-bg: var(--sf-surface-transparent-hover);
 
-$table-cell-padding-y: .5rem;
-$table-cell-padding-x: .5rem;
-$table-cell-padding-y-sm: .25rem;
-$table-cell-padding-x-sm: .25rem;
+// The cells on the space ladder (duplication audit 2026-11-03, A-4): the
+// half step was .5rem and the small table's quarter .25rem, the same lengths
+// on a phone, and now follow the ladder's adaptive steps like every control.
+$table-cell-padding-y: var(--sf-space-1\/2);
+$table-cell-padding-x: var(--sf-space-1\/2);
+$table-cell-padding-y-sm: var(--sf-space-1\/4);
+$table-cell-padding-x-sm: var(--sf-space-1\/4);
 
 $table-array-layout: (
     auto: auto,

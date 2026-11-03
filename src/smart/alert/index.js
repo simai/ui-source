@@ -1,5 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
-import { elementFromManifest } from '../../core/js/element-manifest';
+import { applied, refused, elementFromManifest } from '../../core/js/element-manifest';
 import { dismissAlertElement } from '../../component/alerts/dismiss';
 import { renderAlertTemplate } from './js/templates/default';
 import manifest from './component.json';
@@ -19,8 +19,6 @@ const AlertElement = elementFromManifest(manifest, {
   aliases,
 });
 
-const applied = () => ({ outcome: 'applied' });
-const refused = (reason) => ({ outcome: 'refused', reason });
 
 // The live region a status speaks through (§4.8, §7.4.1): polite for news,
 // assertive for a warning or an error.

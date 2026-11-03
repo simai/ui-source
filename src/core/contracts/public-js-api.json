@@ -243,6 +243,16 @@
       "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
     },
     {
+      "name": "SF.icons",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The icon helpers every set shares. SF.icons.choices: the frozen list of the hundred and twenty glyph names a person chooses from (a record section, a menu row), drawn as sf-dropdown options of kind icon; raised from sf-view-properties (duplication audit 2026-11-03, A-1).",
+      "members": [
+        "choices"
+      ]
+    },
+    {
       "name": "SF.language",
       "status": "public",
       "kind": "object",

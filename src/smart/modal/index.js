@@ -1,7 +1,7 @@
 import { html, nothing, render } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import SfBaseElement from "../../core/js/smart-base";
-import { elementFromManifest } from "../../core/js/element-manifest";
+import { applied, refused, elementFromManifest } from "../../core/js/element-manifest";
 import { noteDeprecated } from "../../core/js/deprecations";
 import { instancePath, partId } from "../../core/js/instance-path";
 import { renderModalTemplate } from "./js/templates/default";
@@ -70,8 +70,6 @@ const OLD_EVENT_NAMES = {
   "modal:after-content-upload": "content-uploaded",
 };
 
-const applied = () => ({ outcome: "applied" });
-const refused = (reason) => ({ outcome: "refused", reason });
 
 function isBlurTypeValue(value) {
   return ["none", "small", "medium", "large"].includes(

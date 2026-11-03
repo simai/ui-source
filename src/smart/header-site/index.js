@@ -19,7 +19,7 @@
 // core/js/element-manifest.js, open, close and toggle are the actions and
 // answer outcomes, the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
@@ -32,8 +32,6 @@ import './scss/index.scss';
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
 let sequence = 0;
 
-const applied = () => ({outcome: 'applied'});
-const refused = (reason) => ({outcome: 'refused', reason});
 
 const SiteHeaderElement = elementFromManifest(manifest, {
   base: SfBaseElement,

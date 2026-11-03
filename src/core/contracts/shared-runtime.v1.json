@@ -86,11 +86,17 @@
     "element-manifest": {
       "source": "core/js/element-manifest.js",
       "exports": [
+        "answerActions",
+        "applied",
         "camelName",
+        "cancelled",
         "elementFromManifest",
         "eventName",
+        "outcomeOf",
         "propsFromManifest",
         "readManifest",
+        "refused",
+        "settingSetters",
         "toOutcome"
       ]
     },

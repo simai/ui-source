@@ -166,6 +166,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "pressed": {
+          "default": false,
+          "type": "boolean"
+        },
         "radius": {
           "default": "",
           "enum": [
@@ -252,7 +256,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.2.1"
+    "version": "1.3.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -324,6 +328,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "pressed": {
+          "default": false,
+          "type": "boolean"
+        },
         "radius": {
           "default": "",
           "enum": [
@@ -388,7 +396,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.3.0"
+    "version": "1.4.0"
   },
   "sf-divider": {
     "component": "component.content-divider",
