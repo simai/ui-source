@@ -40,7 +40,7 @@ async page => {
   check('invalid Smart size falls back to 1/3', await page.locator('#smart-invalid').evaluate(host => host.querySelector('.sf-close')?.classList.contains('sf-close--size-1/3')));
   check('Smart action owns one named native button', await page.locator('#smart-action').evaluate(host => {
     const button = host.querySelector('button');
-    const glyph = host.querySelector('sf-close .sf-close');
+    const glyph = host.querySelector('sf-button-close .sf-close');
     return host.querySelectorAll('button').length === 1 && button?.getAttribute('aria-label') === 'Закрыть Smart уведомление' && glyph?.getAttribute('aria-hidden') === 'true';
   }));
 

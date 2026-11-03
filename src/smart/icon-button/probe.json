@@ -39,7 +39,7 @@
       "covers": "settings.kind close",
       "steps": [
         {
-          "check": "document.querySelector('#ib-close button').classList.contains('sf-icon-button--close') && document.querySelector('#ib-close button sf-close').getAttribute('size') === '1'"
+          "check": "document.querySelector('#ib-close button').classList.contains('sf-icon-button--close') && document.querySelector('#ib-close button sf-button-close').getAttribute('size') === '1'"
         }
       ]
     },

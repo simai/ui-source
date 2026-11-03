@@ -200,8 +200,10 @@ for (const row of rows) {
     for (const file of [...sources, ...walk(resolve(root, 'tests'))]) {
       if (machinery(file, row) || /tag-aliases\.(?:contract|browser)/u.test(file)) continue;
       if (!/\.(?:m?js|cjs|html|md|json)$/u.test(file)) continue;
-      const text = read(file);
+      let text = read(file);
       if (!text.includes(from)) continue;
+      // A manifest declares the old tag as its alias: compatibility is that list.
+      if (file.endsWith('smart.manifest.json')) text = JSON.stringify({...JSON.parse(text), compatibility: null}, null, 2);
       for (const pattern of [markup, definition, comparison]) {
         for (const match of text.matchAll(pattern)) found.push(`${file}:${lineOf(text, match.index)} ${match[0]}`);
       }

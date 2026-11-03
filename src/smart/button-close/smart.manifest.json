@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.close",
-  "version": "1.0.3",
+  "id": "smart.button-close",
+  "version": "1.1.0",
   "title": "Close",
   "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "close"
+    "button-close"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-close",
+  "custom_element": "sf-button-close",
   "templates": [
     "default"
   ],
@@ -152,8 +152,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-close>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-close>",
+        "since": "1.1.0",
+        "replacement": "<sf-button-close>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -162,25 +170,25 @@
     "source_revision": "c60ff12ac0400f367634bdf0404bf401faf98724",
     "source_artifacts": [
       {
-        "path": "src/smart/close/index.js",
-        "sha256": "25348873f7287bdc8283adadc0f5507d4ea80a3b12029d99185fc61f3fb1c64d"
+        "path": "src/smart/button-close/index.js",
+        "sha256": "1e9cd9645c5ab1b2a66b069e50c1694fb194457f398b683455f24c34aad68f87"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/close/js/close.js",
+        "path": "smart/button-close/js/button-close.js",
         "sha256": "2df0d31a6acd4ec1b432c2f29667cd4d57da14a5acf17bfc7567859e7b34cb18"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-close only as the decorative cross glyph inside a host-owned close action.",
+    "use_when": "Use sf-button-close only as the decorative cross glyph inside a host-owned close action.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",
-      "Do not make sf-close focusable or use it as the action owner"
+      "Do not make sf-button-close focusable or use it as the action owner"
     ],
     "required_reads": [
       "inputs",
@@ -189,7 +197,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<button type=\"button\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Close notification\"><sf-close size=\"1\"></sf-close></button>",
+    "minimal_example": "<button type=\"button\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Close notification\"><sf-button-close size=\"1\"></sf-button-close></button>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

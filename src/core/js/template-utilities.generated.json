@@ -52,6 +52,11 @@
     "flex/default",
     "pointer-events/default"
   ],
+  "cl-button-close": [
+    "display/default",
+    "justify-content/default",
+    "place-items/default"
+  ],
   "cl-button-group": [
     "align-items/default",
     "display/default",
@@ -63,11 +68,6 @@
     "display/default",
     "flex-direction/default",
     "transition-property/default"
-  ],
-  "cl-close": [
-    "display/default",
-    "justify-content/default",
-    "place-items/default"
   ],
   "cl-code-input": [
     "sr-only/default"

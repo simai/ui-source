@@ -8,8 +8,8 @@ const source = (file) => readFile(new URL(`../${file}`, import.meta.url), 'utf8'
 const uiDoc = (file) => readFile(`${process.env.UI_DOC_ROOT}/${file}`, 'utf8');
 
 test('Close remains a decorative glyph and the native Icon Button owns the action', async () => {
-  const template = await source('src/smart/close/js/templates/default.js');
-  const manifest = JSON.parse(await source('src/smart/close/smart.manifest.json'));
+  const template = await source('src/smart/button-close/js/templates/default.js');
+  const manifest = JSON.parse(await source('src/smart/button-close/smart.manifest.json'));
   assert.match(template, /aria-hidden="true"/);
   assert.doesNotMatch(template, /<button|tabindex|aria-label/);
   assert.deepEqual(manifest.accessibility.keyboard, []);
@@ -20,9 +20,9 @@ test('Close remains a decorative glyph and the native Icon Button owns the actio
 test('Smart Close closes the complete released size axis and rejects unknown input', async () => {
   // The element's size is made from component.json (core/js/element-manifest.js):
   // the attribute, the property, and an unknown value read as the default.
-  const runtime = await source('src/smart/close/index.js');
-  const manifest = JSON.parse(await source('src/smart/close/smart.manifest.json'));
-  const component = JSON.parse(await source('src/smart/close/component.json'));
+  const runtime = await source('src/smart/button-close/index.js');
+  const manifest = JSON.parse(await source('src/smart/button-close/smart.manifest.json'));
+  const component = JSON.parse(await source('src/smart/button-close/component.json'));
   const sizes = ['1/4', '1/3', '1/2', '1', '2', '3', '4', '5', '6', '7'];
   assert.deepEqual(manifest.inputs.properties.size.enum, sizes);
   // The words (summary) are component.json's own since standard 1.4.

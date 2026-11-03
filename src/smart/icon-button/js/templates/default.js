@@ -30,7 +30,7 @@ export function renderIconButtonTemplate(context) {
     const rootClasses = [
         'sf-icon-button',
         // The sizes the icon button draws; a close may be smaller (1/4, the
-        // closable tag's), and then sf-close sizes it alone: the class it got
+        // closable tag's), and then sf-button-close sizes it alone: the class it got
         // here had no rule (documentation trial 6, 2026-10-18).
         ICON_BUTTON_SIZES.has(size || '1') ? `sf-icon-button--size-${size || '1'}` : '',
         `sf-icon-button--${kind ?? variant ?? 'icon'}`,
@@ -60,7 +60,7 @@ export function renderIconButtonTemplate(context) {
             ? context.component.getSlotContent('icon')
             : (kind ?? variant) === 'close'
                 ? html`
-                            <sf-close root-class="pointer-event-none" size="${size || '1'}"></sf-close>`
+                            <sf-button-close root-class="pointer-event-none" size="${size || '1'}"></sf-button-close>`
                 : html`
                             <sf-icon filled="${filled}" root-class="pointer-event-none" icon="${icon}" weight="400" aria-hidden="true"></sf-icon>`;
 

@@ -67,7 +67,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert/smart.manifest.json",
-      "manifest_sha256": "ff9fb7a9ea7be4f4dcd4fca23dd613741fd8220ffd5dfaa7bfabbb020f573b79",
+      "manifest_sha256": "2a011dcc8586299dacda9e230dce1ee2b5bfb4947f714053e57d792bcbf67f8a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -307,6 +307,40 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.close"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-button-close",
+      "id": "smart.button-close",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/button-close/smart.manifest.json",
+      "manifest_sha256": "e3bb89150273a2052b89c4c3c275c3c62ac80ef4550174da619c9a3f185daf21",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
+      "tags": [
+        "button-close"
+      ],
+      "title": "Close"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "interaction",
         "keyboard",
         "theme",
@@ -378,40 +412,6 @@
         "checkbox"
       ],
       "title": "Checkbox"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "component.close"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-close",
-      "id": "smart.close",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/close/smart.manifest.json",
-      "manifest_sha256": "52ab77d377682b7532dadca25755394688494325067c789bfe0f3754697511f3",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
-      "tags": [
-        "close"
-      ],
-      "title": "Close"
     },
     {
       "backend_adapters": [],
@@ -1078,7 +1078,7 @@
           "component.badges",
           "component.icon-buttons",
           "component.spinner",
-          "smart.close",
+          "smart.button-close",
           "smart.icon"
         ]
       },
@@ -1091,7 +1091,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon-button/smart.manifest.json",
-      "manifest_sha256": "bb9feb3e6bdd5fc6f2a7b54908486d57752d0659c6ad3f238f0bd28f7c8c1ebb",
+      "manifest_sha256": "ea093efda9dd5bca83880296955e4736bd940e0e52c277e2423afd6f31b5c7e4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1341,7 +1341,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/lookup/smart.manifest.json",
-      "manifest_sha256": "cc16bc95848bb8f78df5bc989efe59c0f0e6c0fa687cc8e8edfb99bc0cc313fc",
+      "manifest_sha256": "529c9d4c2796117722e205f68e7e6ece6eb1b6f24500225b60946889049db1e3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2363,7 +2363,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "b156f18c983d1920fba6036d96b28a679a067862917b7679edf22e8789be7f53",
+      "manifest_sha256": "9413009144f4e1238ce377d062dba092883a19b0f2d3fb1a738b148417f65c28",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -30,7 +30,7 @@ const PENDING_META = {};
 // generated file, meta.mjs among them, is byte for byte what the generator
 // writes from them. Every Smart component of this repository is listed.
 const PHASE_A = [
-  'close', 'help-mark', 'reference-link', 'avatar', 'avatars', 'slider', 'breadcrumbs', 'empty-state', 'download-file',
+  'button-close', 'help-mark', 'reference-link', 'avatar', 'avatars', 'slider', 'breadcrumbs', 'empty-state', 'download-file',
   'color', 'switch', 'page-header', 'menu', 'inline-editor', 'sortable', 'copy-button', 'code-input', 'radio', 'checkbox',
   'accordion', 'resizer', 'tabs', 'icon', 'gallery', 'steps', 'profile-picker', 'range-slider', 'theme-generator',
   'datepicker', 'tree',

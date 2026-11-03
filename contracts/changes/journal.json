@@ -3547,6 +3547,67 @@
       "manual": "Write pro for larena in the page's package declaration (SF_BOOT_CONFIG.packages.pro, or 'packages' => ['pro' => [...]] in a PHP config) and take a package built as pro (pro-<12>, package-pro.tar, wave-1/output/package/pro): its rule file calls registerPackage('pro'). The base may stay where it is served. A Framework pair from before this record knows only the name the page declares, so a page and the package it loads move together: either both say larena (an older pair) or the page says pro over this pair or later, where both builds work.",
       "owner": "ui-control",
       "source": "src/core/js/loader.js (PACKAGE_ALIASES, packageNameOf); owner decision q-4ac7d07595"
+    },
+    {
+      "id": "tag-sf-close-to-sf-button-close",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-close is sf-button-close (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-button-close's class, the Loader's rule lists it, the Framework's sheets match :is(sf-button-close, sf-close), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-button-close",
+          "from": "sf-close",
+          "to": "sf-button-close"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-close></sf-close>",
+        "after": "<sf-button-close></sf-button-close>"
+      },
+      "manual": "Write <sf-button-close> for <sf-close> in markup and sf-button-close for sf-close in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-button-close, or both names through SF.tags.selector('sf-button-close') while the alias lives; a class or a custom property spelled like the old tag (.sf-close, --sf-close-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/button-close/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-close-to-button-close",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-button-close is served from smart/button-close/ since its folder took the new tag's name: js/button-close.js, loader bundle cl-button-close. The old path keeps working until remove_after: smart/close/js/close.js is a forwarding script that notes the path in SF.deprecations and loads smart/button-close/js/button-close.js, the Loader forwards the bundle name cl-close to cl-button-close (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.close is a dated alias of smart.button-close, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-button-close",
+          "from": "smart/close/js/close.js",
+          "to": "smart/button-close/js/button-close.js",
+          "match": "smart/close/js/close(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-close",
+          "to": "cl-button-close",
+          "match": "['\"]cl-close['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.close",
+          "to": "smart.button-close",
+          "match": "['\"]smart\\.close['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/button-close/ for smart/close/ and button-close for close in the file names (js/button-close.js, js/button-close.min.js); in a product rule's relation write cl-button-close for cl-close, and in a manifest or a package contract smart.button-close for smart.close. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/close/js/close.js\"></script>",
+        "after": "<script src=\"/distr/smart/button-close/js/button-close.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/close/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button-close/component.json"
     }
   ]
 }

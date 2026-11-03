@@ -28,7 +28,7 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
   assert.match(runtime, /elementFromManifest\(manifest/);
   assert.deepEqual(component.settings.segment.values, ['', 'start', 'middle', 'end']);
   assert.equal(component.settings.filled.type, 'boolean');
-  assert.match(rule, /name: 'cl-close'/);
+  assert.match(rule, /name: 'cl-button-close'/);
   // composition.uses is generated from the Loader relations (standard 1.4), sorted:
   // the spinner a loading icon button shows (simai/ui-source#10) and the sheet
   // that places a count or a dot on it (simai/ui-source#12) among them.
@@ -36,7 +36,7 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
     'component.badges',
     'component.icon-buttons',
     'component.spinner',
-    'smart.close',
+    'smart.button-close',
     'smart.icon',
   ]);
   assert.equal(manifest.accessibility.role, 'button');

@@ -6,7 +6,7 @@ async page => {
     ['sf-button', '.sf-button', {text: 'Продолжить'}],
     ['sf-icon-button', '.sf-icon-button', {icon: 'edit', 'aria-label': 'Редактировать'}],
     ['sf-icon-button', '.sf-icon-button', {variant: 'close', 'aria-label': 'Закрыть'}],
-    ['sf-close', '.sf-close', {}],
+    ['sf-button-close', '.sf-close', {}],
     ['sf-button-group', '.sf-button-group', {items: 'list::Список|cards::Карточки', value: 'list', 'aria-label': 'Вид'}],
     ['sf-badge', '.sf-badge', {text: 'Новое'}],
     ['sf-progress-bar', '.sf-progress-bar', {value: '42', 'text-position': 'bottom'}],

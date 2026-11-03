@@ -1,15 +1,15 @@
 {
-  "component": "sf-close",
+  "component": "sf-button-close",
   "probe": "sf-close against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-close id=\"c-default\"></sf-close>",
-      "  <sf-close id=\"c-1\" size=\"1\"></sf-close>",
-      "  <sf-close id=\"c-bad\" size=\"9\"></sf-close>",
-      "  <button type=\"button\" id=\"b\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-close id=\"c-in\" size=\"1\"></sf-close></button>",
+      "  <sf-button-close id=\"c-default\"></sf-button-close>",
+      "  <sf-button-close id=\"c-1\" size=\"1\"></sf-button-close>",
+      "  <sf-button-close id=\"c-bad\" size=\"9\"></sf-button-close>",
+      "  <button type=\"button\" id=\"b\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-button-close id=\"c-in\" size=\"1\"></sf-button-close></button>",
       "</main>"
     ]
   },

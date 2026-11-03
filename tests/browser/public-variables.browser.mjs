@@ -95,7 +95,7 @@ const DRAW = {
   // Display group A (standard 1.3.8, 2026-10-27): each state a variable
   // colours is drawn -- a copy that succeeded and one that failed, an open
   // explanation.
-  close: {css: ['close'], js: 'close', html: '<sf-close size="1"></sf-close>'},
+  close: {css: ['close'], js: 'button-close', html: '<sf-button-close size="1"></sf-button-close>'},
   icon: {css: ['icons'], js: 'icon', html: '<sf-icon icon="home" size="1"></sf-icon>'},
   'reference-link': {css: ['reference-link', 'icons'], js: 'reference-link',
     html: '<sf-reference-link label="Документация" text="/docs/" href="#" size="1"></sf-reference-link>'},

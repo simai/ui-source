@@ -44,7 +44,7 @@
     {
       "name": "in-icon-button",
       "title": "В кнопке закрытия",
-      "markup": "<button type=\"button\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-close size=\"1\"></sf-close></button>",
+      "markup": "<button type=\"button\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-button-close size=\"1\"></sf-button-close></button>",
       "settings": {
         "size": "1"
       },
@@ -61,10 +61,10 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-close id=\"c-default\"></sf-close>",
-          "  <sf-close id=\"c-1\" size=\"1\"></sf-close>",
-          "  <sf-close id=\"c-bad\" size=\"9\"></sf-close>",
-          "  <button type=\"button\" id=\"b\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-close id=\"c-in\" size=\"1\"></sf-close></button>",
+          "  <sf-button-close id=\"c-default\"></sf-button-close>",
+          "  <sf-button-close id=\"c-1\" size=\"1\"></sf-button-close>",
+          "  <sf-button-close id=\"c-bad\" size=\"9\"></sf-button-close>",
+          "  <button type=\"button\" id=\"b\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Закрыть уведомление\"><sf-button-close id=\"c-in\" size=\"1\"></sf-button-close></button>",
           "</main>"
         ]
       },

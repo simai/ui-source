@@ -53,6 +53,7 @@
 // journal records are set removed. Consumers are scanned first
 // (scripts/sf-upgrade.mjs), as the lifecycle says.
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -166,6 +167,7 @@ export function renameJson(value, from, to, key = '') {
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, renameJson(item, from, to, name)]));
   if (typeof value !== 'string') return value;
   if (value === from) return to;
+  if (key === '$comment') return renameProse(value, from, to);
   if (/\(|=>|;\s/u.test(value) && !/^\s*</u.test(value)) return renameSelectorCalls(value.replace(markup(from), (match, slash) => `<${slash}${to}`), from, to);
   return renameProse(value, from, to);
 }
@@ -311,6 +313,7 @@ function rename(oldTag, newTag) {
   next.id = `smart.${newFolder}`;
   next.version = version;
   next.aliases = component.aliases ?? {since: today, 'remove-after': until, rows: []};
+  if (next.aliases.$comment) next.aliases.$comment = renameProse(next.aliases.$comment, oldTag, newTag);
   next.aliases.rows = [
     ...(next.aliases.rows ?? []),
     {from: oldTag, to: newTag, kind: 'tag', since: today, remove_after: until, 'since-version': version,
@@ -373,6 +376,9 @@ function rename(oldTag, newTag) {
     out = renamePaths(out, oldFolder, newFolder);
     if (out !== text) write(file, out);
     if (['.js', '.mjs', '.cjs'].includes(extension)) for (const line of scriptLeftovers(out, oldTag)) leftovers.push(`${file}:${line}`);
+    // A test or a script that lists Smart folders by name ('close' in a list
+    // of folders) is a person's to read: the word may be something else.
+    if (/^(tests|scripts)\//u.test(file) && ['.js', '.mjs', '.cjs'].includes(extension) && new RegExp(`['"]${escape(oldFolder)}['"]`, 'u').test(out)) leftovers.push(`${file}: names '${oldFolder}' (a folder list?)`);
     const folder = /^src\/smart\/([^/]+)\//u.exec(file)?.[1];
     if (folder && out !== text) touched.add(folder);
   }
@@ -438,6 +444,7 @@ function rename(oldTag, newTag) {
   // 7. Versions, then the registry and the passports that carry them.
   bumpVersions(touched, newFolder);
   run(process.execPath, ['scripts/generate-component-files.mjs', '--write', ...components]);
+  refreshSourceArtifacts(touched);
   run(process.execPath, ['scripts/sf-contract.mjs', 'build']);
   run(process.execPath, ['scripts/linkage.mjs', 'passports', '--write']);
 
@@ -448,6 +455,24 @@ function rename(oldTag, newTag) {
     for (const place of leftovers) console.log(`  ${place}`);
   }
   console.log('\nNext: npm run component-files:check; node --test tests/tag-aliases.contract.test.mjs; npm test; on a build: node tests/browser/tag-aliases.browser.mjs <output>.');
+}
+
+// The manifest's provenance names the source files it was made from by hash
+// (sf-contract build refuses a drift): the moved and edited index.js. The
+// generated runtime it names is the last build's and is restamped by the next.
+function refreshSourceArtifacts(folders) {
+  for (const name of folders) {
+    const file = `src/smart/${name}/smart.manifest.json`;
+    if (!existsSync(abs(file))) continue;
+    const manifest = readJson(file);
+    let changed = false;
+    for (const artifact of manifest.provenance?.source_artifacts ?? []) {
+      if (!existsSync(abs(artifact.path))) continue;
+      const sha256 = createHash('sha256').update(readFileSync(abs(artifact.path))).digest('hex');
+      if (artifact.sha256 !== sha256) { artifact.sha256 = sha256; changed = true; }
+    }
+    if (changed) write(file, json(manifest));
+  }
 }
 
 // A patch for every unit whose files moved since the previous release while

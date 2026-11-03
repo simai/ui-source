@@ -137,7 +137,7 @@
   /* The colours are set on the control, as every other scheme rule sets them,
      and never on the glyph itself: a rule on the glyph would stand over the
      value a state hands down, and a disabled quiet control would keep its
-     resting colour. A close control draws its cross through sf-close, whose
+     resting colour. A close control draws its cross through sf-button-close, whose
      own element stands between the control and the mark, so that colour is
      handed down too. */
   .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) {

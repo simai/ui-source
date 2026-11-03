@@ -8,7 +8,7 @@ SF.RuleLoader['cl-icon-button'] = {
   relation: [
     { name: 'icon-buttons' },
     { name: 'cl-icon' },
-    { name: 'cl-close' },
+    { name: 'cl-button-close' },
     { name: 'pointer-events/default' },
     // The badge sheet places a count or a dot on the button (simai/ui-source#12).
     { name: 'badges' },

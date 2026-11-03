@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon-button",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -25,7 +25,7 @@
       "component.badges",
       "component.icon-buttons",
       "component.spinner",
-      "smart.close",
+      "smart.button-close",
       "smart.icon"
     ],
     "public_parts": []
