@@ -223,7 +223,7 @@
       },
       {
         "from": "sf-code-input:complete",
-        "to": "sf-input-code-completed",
+        "to": "sf-code-input-completed",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,

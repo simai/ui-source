@@ -329,7 +329,7 @@
       },
       {
         "from": "sf-image-field:select",
-        "to": "sf-input-image-attach",
+        "to": "sf-image-field-attach",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
@@ -339,7 +339,7 @@
       },
       {
         "from": "sf-image-field:remove",
-        "to": "sf-input-image-detach",
+        "to": "sf-image-field-detach",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
@@ -349,7 +349,7 @@
       },
       {
         "from": "sf-image-field:reject",
-        "to": "sf-input-image-rejected",
+        "to": "sf-image-field-rejected",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,

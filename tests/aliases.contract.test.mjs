@@ -411,3 +411,30 @@ test('an undated note keeps the record shape it always had', () => {
   noteDeprecated({component: 'sf-button', attribute: 'type', from: 'type', to: 'appearance'});
   assert.deepEqual(listDeprecations(), [{component: 'sf-button', kind: 'attribute', attribute: 'type', from: 'type', to: 'appearance', count: 1}]);
 });
+
+// --- a name renamed twice -----------------------------------------------------
+
+test('a chain: each older name follows the one it was renamed to, nearest first, one detail, notes name their own step', () => {
+  // sf-image-field:select -> sf-image-field-attach (2026-10-27), then the tag's
+  // rename: sf-image-field-attach -> sf-input-image-attach (2026-11-03).
+  const table = {tag: 'sf-input-image', aliases: [
+    row({from: 'sf-image-field:select', to: 'sf-image-field-attach', kind: 'event', mode: 'same-detail'}),
+    {from: 'sf-image-field-attach', to: 'sf-input-image-attach', kind: 'event', mode: 'same-detail', since: '2026-11-03', remove_after: '2027-01-01'},
+  ]};
+  const {element} = fresh('sf-input-image', table);
+  const seen = [];
+  for (const type of ['sf-input-image-attach', 'sf-image-field-attach', 'sf-image-field:select']) {
+    element.addEventListener(type, (event) => seen.push([event.type, event.detail]));
+  }
+  const detail = {source: 'drop'};
+  dispatchAliased(element, 'sf-input-image-attach', {detail});
+  assert.deepEqual(seen.map(([type]) => type), ['sf-input-image-attach', 'sf-image-field-attach', 'sf-image-field:select']);
+  assert.ok(seen.every(([, one]) => one === detail));
+  assert.deepEqual(events().map(({from, to}) => [from, to]).sort(), [['sf-image-field-attach', 'sf-input-image-attach'], ['sf-image-field:select', 'sf-image-field-attach']]);
+
+  // A component that still sends the oldest name: the current name first, then
+  // the middle one, then its own event.
+  seen.length = 0;
+  dispatchAliased(element, 'sf-image-field:select', {detail});
+  assert.deepEqual(seen.map(([type]) => type), ['sf-input-image-attach', 'sf-image-field-attach', 'sf-image-field:select']);
+});

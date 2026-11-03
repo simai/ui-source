@@ -17,7 +17,7 @@
     },
     {
       "from": "sf-code-input:complete",
-      "to": "sf-input-code-completed",
+      "to": "sf-code-input-completed",
       "kind": "event",
       "component": "sf-input-code",
       "since": "2026-10-27",

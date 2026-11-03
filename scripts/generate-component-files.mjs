@@ -433,11 +433,28 @@ export function eventsOf(component) {
   // like any other -- "shared": "<trait>", so sf-field:reset -> sf-field-reset
   // finds its target -- which is what the six fields lacked: they described the
   // event under its retired name and declared no current one (1.3.13).
+  // A name renamed twice is a chain (sf-image-field:select -> sf-image-field-attach,
+  // then sf-image-field-attach -> sf-input-image-attach with the tag): the row
+  // keeps the step it was written for, which the runtime follows and notes,
+  // and alias_of names the end of the chain, the canonical event.
+  const eventRows = aliasRows(component).filter((row) => row.kind === 'event' && row.to);
+  const end = (to) => {
+    const seen = new Set();
+    let name = to;
+    while (!vocabulary.has(name) && !seen.has(name)) {
+      seen.add(name);
+      const next = eventRows.find((row) => row.from === name);
+      if (!next) break;
+      name = next.to;
+    }
+    return name;
+  };
   for (const row of aliasRows(component)) {
     if (row.kind !== 'event' || !row.to || vocabulary.has(row.from)) continue;
     const event = out[row.from];
     if (!event || event.alias_of) continue;
-    const name = out[row.to] ? row.to : (out[domEvent(component, row.to)] ? domEvent(component, row.to) : null);
+    const to = end(row.to);
+    const name = out[to] ? to : (out[domEvent(component, to)] ? domEvent(component, to) : null);
     if (!name) continue;
     event.alias_of = name;
     out[name].canonical = true;

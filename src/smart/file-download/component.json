@@ -151,7 +151,7 @@
       },
       {
         "from": "sf-download-file:click",
-        "to": "sf-file-download-download",
+        "to": "sf-download-file-download",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": true,

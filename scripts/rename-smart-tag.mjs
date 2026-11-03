@@ -329,10 +329,12 @@ function rename(oldTag, newTag) {
   next.version = version;
   next.aliases = component.aliases ?? {since: today, 'remove-after': until, rows: []};
   if (next.aliases.$comment) next.aliases.$comment = renameProse(next.aliases.$comment, oldTag, newTag);
-  // The component's earlier event aliases point at the names it sends: a row
-  // to <old>-<verb> now points at <new>-<verb> (the shim sends an old name
-  // only beside the name actually dispatched), and a row naming its component
-  // names the new tag. A row from <old>-<verb> is replaced by the dated alias
+  // The component's earlier event aliases keep the `to` they were written
+  // with: a row to <old>-<verb> now ends at the dated row <old>-<verb> ->
+  // <new>-<verb>, and the shim follows the chain (core/js/aliases.js), so the
+  // older name still fires, after the one it was renamed to, and its notes
+  // name the step it was written for. A row naming its component names the
+  // new tag. A row from <old>-<verb> is replaced by the dated alias
   // written below (a manifest-only row said the DOM name did not change; now
   // it does).
   const renamedEvents = new Set(events.map((verb) => `${oldTag}-${verb}`));
@@ -344,7 +346,6 @@ function rename(oldTag, newTag) {
     return true;
   }).map((row) => {
     const out = {...row};
-    if (out.kind === 'event' && typeof out.to === 'string' && out.to.startsWith(`${oldTag}-`)) out.to = `${newTag}-${out.to.slice(oldTag.length + 1)}`;
     if (out.component === oldTag) out.component = newTag;
     return out;
   });

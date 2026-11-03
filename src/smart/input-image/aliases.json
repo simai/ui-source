@@ -17,7 +17,7 @@
     },
     {
       "from": "sf-image-field:select",
-      "to": "sf-input-image-attach",
+      "to": "sf-image-field-attach",
       "kind": "event",
       "component": "sf-input-image",
       "since": "2026-10-27",
@@ -29,7 +29,7 @@
     },
     {
       "from": "sf-image-field:remove",
-      "to": "sf-input-image-detach",
+      "to": "sf-image-field-detach",
       "kind": "event",
       "component": "sf-input-image",
       "since": "2026-10-27",
@@ -41,7 +41,7 @@
     },
     {
       "from": "sf-image-field:reject",
-      "to": "sf-input-image-rejected",
+      "to": "sf-image-field-rejected",
       "kind": "event",
       "component": "sf-input-image",
       "since": "2026-10-27",

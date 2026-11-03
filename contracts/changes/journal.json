@@ -3690,7 +3690,7 @@
         {
           "component": "sf-header-page",
           "from": "sf-page-header-star",
-          "to": "sf-header-page-toggle"
+          "to": "sf-page-header-toggle"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -3938,12 +3938,12 @@
         {
           "component": "sf-button-copy",
           "from": "sf-copy",
-          "to": "sf-button-copy-copied"
+          "to": "sf-copy-button-copied"
         },
         {
           "component": "sf-button-copy",
           "from": "sf-copy-error",
-          "to": "sf-button-copy-copy-failed"
+          "to": "sf-copy-button-copy-failed"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -4075,7 +4075,7 @@
         {
           "component": "sf-input-code",
           "from": "sf-code-input:complete",
-          "to": "sf-input-code-completed"
+          "to": "sf-code-input-completed"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -4146,7 +4146,7 @@
         {
           "component": "sf-file-download",
           "from": "sf-download-file:click",
-          "to": "sf-file-download-download"
+          "to": "sf-download-file-download"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -4227,17 +4227,17 @@
         {
           "component": "sf-input-image",
           "from": "sf-image-field:select",
-          "to": "sf-input-image-attach"
+          "to": "sf-image-field-attach"
         },
         {
           "component": "sf-input-image",
           "from": "sf-image-field:remove",
-          "to": "sf-input-image-detach"
+          "to": "sf-image-field-detach"
         },
         {
           "component": "sf-input-image",
           "from": "sf-image-field:reject",
-          "to": "sf-input-image-rejected"
+          "to": "sf-image-field-rejected"
         }
       ],
       "deprecated_on": "2026-11-03",

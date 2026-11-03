@@ -17,7 +17,7 @@
     },
     {
       "from": "sf-download-file:click",
-      "to": "sf-file-download-download",
+      "to": "sf-download-file-download",
       "kind": "event",
       "component": "sf-file-download",
       "since": "2026-10-27",
@@ -26,7 +26,7 @@
       "cancelable": true,
       "manifest": {
         "from": "sf-download-file:click",
-        "to": "download"
+        "to": "sf-download-file-download"
       },
       "section": "§8, vocabulary 1.1.5 §5.1",
       "note": "the class event's name; bx-simai.main listens to it (vocabulary §9.2). The shim sends it after sf-download-file-download, one detail, one cancel"

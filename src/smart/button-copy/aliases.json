@@ -6,7 +6,7 @@
   "aliases": [
     {
       "from": "sf-copy",
-      "to": "sf-button-copy-copied",
+      "to": "sf-copy-button-copied",
       "kind": "event",
       "component": "sf-button-copy",
       "since": "2026-10-27",
@@ -15,13 +15,13 @@
       "cancelable": false,
       "manifest": {
         "from": "sf-copy",
-        "to": "copied"
+        "to": "sf-copy-button-copied"
       },
       "section": "§8, vocabulary 1.1.5 §5.1"
     },
     {
       "from": "sf-copy-error",
-      "to": "sf-button-copy-copy-failed",
+      "to": "sf-copy-button-copy-failed",
       "kind": "event",
       "component": "sf-button-copy",
       "since": "2026-10-27",
@@ -30,7 +30,7 @@
       "cancelable": false,
       "manifest": {
         "from": "sf-copy-error",
-        "to": "copy-failed"
+        "to": "sf-copy-button-copy-failed"
       },
       "section": "§8, vocabulary 1.1.5 §5.1"
     },

@@ -148,13 +148,15 @@ test('code input: input and change are the native input\'s, complete once per co
   // The fact `completed` (sf-input-code-completed); the old
   // sf-code-input-completed and sf-code-input:complete follow it with the same detail (aliases.json).
   assert.match(source, /setTimeout\(\(\) => this\.sfEmit\('completed', \{value\}\), 0\);/u);
-  assert.ok(JSON.parse(read('src/smart/input-code/aliases.json')).aliases.some((row) => row.from === 'sf-code-input:complete' && row.to === 'sf-input-code-completed' && row.mode === 'same-detail'));
+  assert.ok(JSON.parse(read('src/smart/input-code/aliases.json')).aliases.some((row) => row.from === 'sf-code-input:complete' && row.to === 'sf-code-input-completed' && row.mode === 'same-detail'));
   assert.match(source, /if \(this\._completed !== value\) \{/u);
   const sent = new Set([...source.matchAll(/new (?:Custom|Input)?Event\('([^']+)'/gu)].map((match) => match[1]));
   // A declared event sent by its verb (sfEmit) has the DOM name <tag>-<verb>,
   // and its dated old names follow it (standard 1.3.8 §8, §16.20).
   for (const [, verb] of source.matchAll(/this\.sfEmit\('([a-z-]+)'/gu)) sent.add(`sf-input-code-${verb}`);
-  for (const row of JSON.parse(read('src/smart/input-code/aliases.json')).aliases) if (row.kind === 'event' && sent.has(row.to)) sent.add(row.from);
+  // A name renamed twice follows the one it was renamed to (a chain).
+  const rows = JSON.parse(read('src/smart/input-code/aliases.json')).aliases.filter((row) => row.kind === 'event');
+  for (let grew = true; grew;) { grew = false; for (const row of rows) if (sent.has(row.to) && !sent.has(row.from)) { sent.add(row.from); grew = true; } }
   assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
   // The element never submits a form or checks a code, and goes nowhere.
   assert.doesNotMatch(source, /\.submit\(|requestSubmit|\bfetch\(|XMLHttpRequest|sendBeacon|localStorage|innerHTML|unsafeHTML/u);

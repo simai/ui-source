@@ -183,7 +183,7 @@
     "rows": [
       {
         "from": "sf-copy",
-        "to": "sf-button-copy-copied",
+        "to": "sf-copy-button-copied",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
@@ -193,7 +193,7 @@
       },
       {
         "from": "sf-copy-error",
-        "to": "sf-button-copy-copy-failed",
+        "to": "sf-copy-button-copy-failed",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,

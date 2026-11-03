@@ -6,7 +6,7 @@
   "aliases": [
     {
       "from": "sf-page-header-star",
-      "to": "sf-header-page-toggle",
+      "to": "sf-page-header-toggle",
       "kind": "event",
       "component": "sf-header-page",
       "since": "2026-10-27",
@@ -15,7 +15,7 @@
       "cancelable": true,
       "manifest": {
         "from": "sf-page-header-star",
-        "to": "toggle"
+        "to": "sf-page-header-toggle"
       },
       "section": "§8, vocabulary 1.1.5 §5 toggle; stand 24"
     },

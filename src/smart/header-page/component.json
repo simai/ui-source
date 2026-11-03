@@ -117,7 +117,7 @@
     "rows": [
       {
         "from": "sf-page-header-star",
-        "to": "sf-header-page-toggle",
+        "to": "sf-page-header-toggle",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": true,

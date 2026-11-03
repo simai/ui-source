@@ -178,9 +178,9 @@ test('sf-input-image: vocabulary names with dated colon aliases, error is invali
   assert.deepEqual(manifest['host-states'], {'data-dragged-over': 'boolean'});
   const rows = json('src/smart/input-image/aliases.json').aliases.filter((row) => row.to);
   assert.deepEqual(rows.map((row) => [row.from, row.to]), [
-    ['sf-image-field:select', 'sf-input-image-attach'],
-    ['sf-image-field:remove', 'sf-input-image-detach'],
-    ['sf-image-field:reject', 'sf-input-image-rejected'],
+    ['sf-image-field:select', 'sf-image-field-attach'],
+    ['sf-image-field:remove', 'sf-image-field-detach'],
+    ['sf-image-field:reject', 'sf-image-field-rejected'],
     ['error', 'invalid'],
     // The tag took the name sf-input-image (2026-11-03); the old tag and the
     // events named after it are dated aliases.

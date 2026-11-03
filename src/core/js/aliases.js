@@ -185,23 +185,51 @@ function shareCancel(events) {
 // rows whose `when` matches, made from the same detail, or from the adapter's
 // detail for a split row. `own` is the component's own event when it sent an
 // old name: it is reused under that name.
+//
+// A name renamed twice is a chain: sf-image-field:select -> sf-image-field-attach
+// (2026-10-27), then sf-image-field-attach -> sf-input-image-attach with the
+// tag (2026-11-03). Each row keeps the `to` it was written with, and the old
+// names follow the new one nearest first: the attach of the former tag, then
+// the colon name before it, each from the detail of the name it follows.
 function oldEventsFor(state, element, newType, detail, flags, own) {
   const out = [];
-  const names = new Set();
-  for (const row of state.byNew.get(newType) ?? []) {
-    if (names.has(row.from) || !matches(detail, row.when)) continue;
-    const {expired, usable} = life(row);
-    if (!usable) continue;
-    let oldDetail = detail;
-    if (row.mode === 'split') {
-      oldDetail = state.adapters[row.from]?.(detail, newType);
-      if (oldDetail === undefined) continue;
+  const names = new Set([newType]);
+  const queue = [{name: newType, detail}];
+  while (queue.length) {
+    const {name, detail: nameDetail} = queue.shift();
+    for (const row of state.byNew.get(name) ?? []) {
+      if (names.has(row.from) || !matches(nameDetail, row.when)) continue;
+      const {expired, usable} = life(row);
+      if (!usable) continue;
+      let oldDetail = nameDetail;
+      if (row.mode === 'split') {
+        oldDetail = state.adapters[row.from]?.(nameDetail, name);
+        if (oldDetail === undefined) continue;
+      }
+      names.add(row.from);
+      const event = own && own.type === row.from && oldDetail === nameDetail ? own : makeEvent(element, row.from, oldDetail, flags);
+      out.push({event, row, expired, detail: oldDetail});
+      queue.push({name: row.from, detail: oldDetail});
     }
-    names.add(row.from);
-    const event = own && own.type === row.from && oldDetail === detail ? own : makeEvent(element, row.from, oldDetail, flags);
-    out.push({event, row, expired, detail: oldDetail});
   }
   return out;
+}
+
+// The current name an old one leads to through plain same-detail rows: the
+// end of its chain, or null when a step is not plain or not one name.
+function currentNameOf(state, type) {
+  const seen = new Set([type]);
+  let name = type;
+  for (;;) {
+    const rows = state.byOld.get(name);
+    if (!rows) return name === type ? null : name;
+    const targets = new Set(rows.filter((row) => row.mode === 'same-detail' && !row.when).map((row) => row.to));
+    if (targets.size !== 1 || !rows.every((row) => row.mode === 'same-detail' && !row.when)) return null;
+    const [to] = targets;
+    if (seen.has(to)) return null;
+    seen.add(to);
+    name = to;
+  }
 }
 
 // Sends the new event, then the old ones, with one cancel. The cancel is
@@ -225,7 +253,9 @@ function wrappedDispatch(state, element, event) {
   const native = state.native.dispatchEvent;
   if (!event || shared().ours.has(event)) return native.call(element, event);
   const type = event.type;
-  if (state.byNew.has(type)) {
+  // A current name is never an old one; a name in the middle of a chain is
+  // both, and is old.
+  if (state.byNew.has(type) && !state.byOld.has(type)) {
     const detail = detailOf(event);
     return deliver(state, element, event, oldEventsFor(state, element, type, detail, flagsOf(event), null));
   }
@@ -233,10 +263,10 @@ function wrappedDispatch(state, element, event) {
   if (!rows) return native.call(element, event);
   const detail = detailOf(event);
   const flags = flagsOf(event);
-  // An old name with one plain new name is promoted: the new name first.
-  const targets = new Set(rows.filter((row) => row.mode === 'same-detail' && !row.when).map((row) => row.to));
-  if (targets.size === 1 && rows.every((row) => row.mode === 'same-detail' && !row.when)) {
-    const [to] = targets;
+  // An old name with one plain new name is promoted: the current name first.
+  const current = currentNameOf(state, type);
+  if (current) {
+    const to = current;
     const fresh = makeEvent(element, to, detail, flags);
     const olds = oldEventsFor(state, element, to, detail, flags, event);
     // A strict page whose old name expired still has the component's own
