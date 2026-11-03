@@ -168,6 +168,16 @@
     "text-color/default",
     "width/default"
   ],
+  "cl-header-page": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-grow/default",
+    "flex-wrap/default",
+    "margin/default",
+    "min-width/default",
+    "text-overflow/default"
+  ],
   "cl-help-mark": [
     "display/default"
   ],
@@ -232,16 +242,6 @@
     "title/default",
     "width/default",
     "z-index/default"
-  ],
-  "cl-page-header": [
-    "align-items/default",
-    "display/default",
-    "flex-direction/default",
-    "flex-grow/default",
-    "flex-wrap/default",
-    "margin/default",
-    "min-width/default",
-    "text-overflow/default"
   ],
   "cl-pager": [
     "sr-only/default"

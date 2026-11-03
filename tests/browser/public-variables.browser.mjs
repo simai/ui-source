@@ -147,8 +147,8 @@ const DRAW = {
     html: '<sf-profile-picker label="Профиль"></sf-profile-picker>'},
   // The editors and screens (2026-10-27): a favourite with an action, so the
   // star's colour and the actions' gap have a part to reach.
-  'page-header': {css: ['badges', 'icon-buttons', 'icons', 'smart/smart/page-header/css/page-header.css'], js: 'page-header',
-    html: '<sf-page-header heading="Каталог" count="4" star><button slot="actions" type="button">Создать</button></sf-page-header>'},
+  'page-header': {css: ['badges', 'icon-buttons', 'icons', 'smart/smart/header-page/css/header-page.css'], js: 'header-page',
+    html: '<sf-header-page heading="Каталог" count="4" star><button slot="actions" type="button">Создать</button></sf-header-page>'},
   // A two-line row of a sortable list: the supporting line and the handle
   // have parts to reach; the row stands alone, so its divider is drawn.
   'list-item': {css: ['dropdown', 'icons'], js: 'list-item',

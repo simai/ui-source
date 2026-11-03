@@ -1,4 +1,4 @@
-# sf-page-header
+# sf-header-page
 
 The head of an admin page. The admin's top bar is gone, so this is where a page
 says where it is, what it is called, how many records it holds, whether it is a
@@ -7,7 +7,7 @@ only; the outer Smart host remains boxless.
 
 Tag:
 
-- `sf-page-header`
+- `sf-header-page`
 
 Attributes:
 
@@ -45,11 +45,11 @@ The interface is `component.json`, the examples `examples.json`, the words
 `lang/`.
 
 ```html
-<sf-page-header heading="Каталог решений" count="448" star="false">
+<sf-header-page heading="Каталог решений" count="448" star="false">
   <sf-breadcrumbs slot="path">
     <sf-breadcrumbs-item href="/">simai.ru</sf-breadcrumbs-item>
     <sf-breadcrumbs-item href="/data">Данные</sf-breadcrumbs-item>
   </sf-breadcrumbs>
   <sf-button slot="actions" icon-start="add">Создать</sf-button>
-</sf-page-header>
+</sf-header-page>
 ```

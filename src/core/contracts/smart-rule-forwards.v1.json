@@ -49,6 +49,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-avatars-to-avatar-group"
+    },
+    "cl-page-header": {
+      "to": "cl-header-page",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-page-header-to-header-page"
     }
   }
 }

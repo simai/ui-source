@@ -76,10 +76,10 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-page-header id=\"h\" heading=\"Каталог решений\" count=\"448\" star=\"off\"></sf-page-header>",
-          "  <sf-page-header id=\"h-on\" heading=\"Заказы\" star></sf-page-header>",
-          "  <sf-page-header id=\"h-none\" heading=\"Настройки\" level=\"install\"></sf-page-header>",
-          "  <div lang=\"en\"><sf-page-header id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-page-header></div>",
+          "  <sf-header-page id=\"h\" heading=\"Каталог решений\" count=\"448\" star=\"off\"></sf-header-page>",
+          "  <sf-header-page id=\"h-on\" heading=\"Заказы\" star></sf-header-page>",
+          "  <sf-header-page id=\"h-none\" heading=\"Настройки\" level=\"install\"></sf-header-page>",
+          "  <div lang=\"en\"><sf-header-page id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-header-page></div>",
           "</main>"
         ]
       },

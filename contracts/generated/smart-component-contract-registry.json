@@ -992,6 +992,45 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.badge",
+          "smart.icon",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-header-page",
+      "id": "smart.header-page",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/header-page/smart.manifest.json",
+      "manifest_sha256": "7f036533749b791c68d06dd1cba55a484e5b7b3ce9fa71e3c6cb7c6eed1a6acc",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+      "tags": [
+        "page-header",
+        "admin",
+        "navigation"
+      ],
+      "title": "Page header"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "interaction",
         "keyboard",
         "responsive"
@@ -1439,45 +1478,6 @@
         "modal"
       ],
       "title": "Modal"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive",
-        "i18n"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "smart.badge",
-          "smart.icon",
-          "smart.icon-button"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-page-header",
-      "id": "smart.page-header",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/page-header/smart.manifest.json",
-      "manifest_sha256": "912de061086302880be9d65e1c0eca4539ae5f8abd719ecc8afed997b1b809ff",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
-      "tags": [
-        "page-header",
-        "admin",
-        "navigation"
-      ],
-      "title": "Page header"
     },
     {
       "backend_adapters": [],

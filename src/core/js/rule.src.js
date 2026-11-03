@@ -770,7 +770,7 @@ import '../../smart/menu/rule.js';
 import '../../smart/modal/rule.js';
 import '../../smart/pagination/rule.js';
 import '../../smart/pager/rule.js';
-import '../../smart/page-header/rule.js';
+import '../../smart/header-page/rule.js';
 import '../../smart/progress-bar/rule.js';
 import '../../smart/progress-ring/rule.js';
 import '../../smart/profile-picker/rule.js';

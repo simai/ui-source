@@ -1,8 +1,8 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // The header draws a badge for its count and its install mark, and an icon
 // button for its star; a tag it renders is a tag it fetches.
-SF.RuleLoader['cl-page-header'] = {
-  tags: ['sf-page-header'],
+SF.RuleLoader['cl-header-page'] = {
+  tags: ['sf-header-page', 'sf-page-header'],
   type: 'smart',
   mode: 'smart',
   js: true,
