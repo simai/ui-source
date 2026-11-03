@@ -17,6 +17,13 @@
 //
 // sf-close -> sf-button-close is the first row, with the glyph inside a close
 // icon button as the case of another component's sheet.
+//
+// Wave R1 (2026-11-03) adds a sample of the renamed tags, each on two pages
+// that differ only in the tag (4. below): sf-datepicker, sf-context-menu,
+// sf-site-header, sf-icon-button and sf-composition-overlay. The old page loads
+// the renamed bundle from its markup alone, every element of the drawn
+// subtree has the same box and colours as on the new page, the console names
+// the old tag once, and the new page prints no tag note.
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync, readdirSync, readFileSync} from 'node:fs';
@@ -77,12 +84,34 @@ const pages = {
   ${inButton('new-in-button', 'sf-button-close')}
   ${inButton('old-in-button', 'sf-close')}
   <sf-button-close id="plain" size="1"></sf-button-close>
-  <sf-icon-button id="loader-asks-icon-button" icon="edit" aria-label="Редактировать"></sf-icon-button>
+  <sf-button-icon id="loader-asks-icon-button" icon="edit" aria-label="Редактировать"></sf-button-icon>
 </div>${tail}`,
   // The new tag alone: a page that moved hears nothing.
   'new.html': `${head('new tag only')}
 <div id="fixture"><sf-button-close id="n" size="2"></sf-button-close></div>${tail}`,
 };
+
+// 4. The R1 sample: the same markup under either name, the part that shows
+// it drew, and the folder the Loader takes it from.
+const SAMPLE = [
+  {from: 'sf-datepicker', to: 'sf-input-date', folder: 'input-date', drawn: 'sf-input input',
+    markup: (tag) => `<${tag} id="host" name="d" label="Дата" value="2026-09-03" locale="ru" style="inline-size:320px"></${tag}>`},
+  {from: 'sf-context-menu', to: 'sf-menu-context', folder: 'menu-context', drawn: '.sf-context-menu-item',
+    markup: (tag) => `<${tag} id="host" aria-label="Действия" entries='[{"id":"edit","text":"Изменить"},{"id":"copy","text":"Копировать"},{"id":"delete","text":"Удалить"}]'></${tag}>`},
+  {from: 'sf-site-header', to: 'sf-header-site', folder: 'header-site', drawn: '.sf-site-header-row',
+    markup: (tag) => `<${tag} id="host" collapse="none" size="1"></${tag}>`},
+  {from: 'sf-icon-button', to: 'sf-button-icon', folder: 'button-icon', drawn: '.sf-icon-button',
+    markup: (tag) => `<${tag} id="host" icon="edit" appearance="tonal" size="2" aria-label="Редактировать"></${tag}>`},
+  {from: 'sf-composition-overlay', to: 'sf-editor-overlay', folder: 'editor-overlay', drawn: '[data-sf-overlay="connected"]',
+    markup: (tag) => `<div id="canvas" style="position:relative;inline-size:600px;block-size:160px"><p>Абзац</p><p>Ещё абзац</p></div>
+  <${tag} id="host" for="canvas" accepts="blocks" label="Структура страницы"></${tag}>`},
+];
+for (const one of SAMPLE) {
+  for (const [kind, tag] of [['old', one.from], ['new', one.to]]) {
+    pages[`${kind}-${one.folder}.html`] = `${head(`${tag}`)}
+<div id="fixture" style="inline-size:900px">${one.markup(tag)}</div>${tail}`;
+  }
+}
 
 const types = {'.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8'};
 const server = createServer(async (request, response) => {
@@ -166,7 +195,7 @@ try {
   // 2. Old and new side by side.
   {
     const {tab, warnings, errors} = await open(browser, 'both.html',
-      () => customElements.get('sf-close') && customElements.get('sf-button-close') && customElements.get('sf-icon-button')
+      () => customElements.get('sf-close') && customElements.get('sf-button-close') && customElements.get('sf-button-icon')
         && document.querySelectorAll('#fixture .sf-close-icon').length === 5 && document.querySelector('#loader-asks-icon-button .sf-icon-button'));
     // The icon button's sheet is on the page before the glyphs are compared.
     await tab.waitForFunction(() => [...document.styleSheets].some((sheet) => /\/smart\/button-icon\/css\//u.test(sheet.href || '')), null, {timeout: 10000}).catch(() => {});
@@ -181,6 +210,57 @@ try {
     check('one console note for the old tag', notes.length === 1, {notes});
     check('no page error', errors.length === 0, {errors});
     await tab.close();
+  }
+
+  // 4. The R1 sample.
+  evidence.sample = {};
+  for (const one of SAMPLE) {
+    const ready = ([tag, drawnSelector]) => customElements.get(tag) && document.querySelector('#host')?.matches(':defined')
+      && (document.querySelector(`#host${drawnSelector}`) || document.querySelector(`#host ${drawnSelector}`));
+    const note = new RegExp(`<${one.from}> is now <${one.to}>; the old tag works until (\\d{4}-\\d{2}-\\d{2})`, 'u');
+    const shots = {};
+    for (const [kind, tag] of [['old', one.from], ['new', one.to]]) {
+      const tab = await browser.newPage({viewport: {width: 1000, height: 600}});
+      const warnings = [];
+      const errors = [];
+      const scripts = [];
+      tab.on('console', (message) => { if (message.type() === 'warning') warnings.push(message.text()); });
+      tab.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });
+      tab.on('request', (request) => { if (request.resourceType() === 'script') scripts.push(new URL(request.url()).pathname); });
+      await tab.goto(`${base}/${kind}-${one.folder}.html`);
+      const settled = await tab.waitForFunction(ready, [tag, one.drawn], {timeout: 15000}).then(() => true, () => false);
+      await tab.waitForTimeout(600);
+      // Every element the host drew, in document order: its box and colours.
+      const print = await tab.evaluate(() => {
+        const host = document.querySelector('#host');
+        const props = ['display', 'color', 'background-color', 'border-top-color', 'border-top-width', 'font-size', 'line-height', 'opacity', 'visibility'];
+        const round = (value) => Math.round(value * 100) / 100;
+        return [host, ...host.querySelectorAll('*')].slice(0, 80).map((node, index) => {
+          const {x, y, width, height} = node.getBoundingClientRect();
+          const style = getComputedStyle(node);
+          return {at: index ? node.localName : 'host', box: [round(x), round(y), round(width), round(height)],
+            ...Object.fromEntries(props.map((prop) => [prop, style.getPropertyValue(prop)]))};
+        });
+      });
+      const tagNotes = await tab.evaluate(() => (window.SF?.deprecations?.list?.() ?? []).filter((entry) => entry.kind === 'tag').map(({from, to, remove_after: until}) => ({from, to, until})));
+      shots[kind] = {settled, print, notes: warnings.filter((text) => note.test(text)), tagWarnings: warnings.filter((text) => /is now <sf-/u.test(text)), tagNotes, errors,
+        bundles: scripts.filter((path) => /\/smart\//u.test(path))};
+      await tab.close();
+    }
+    const {old, new: fresh} = shots;
+    const sameDrawing = JSON.stringify(old.print) === JSON.stringify(fresh.print);
+    const firstDiff = sameDrawing ? null : old.print.findIndex((entry, index) => JSON.stringify(entry) !== JSON.stringify(fresh.print[index]));
+    evidence.sample[one.from] = {to: one.to, elements: fresh.print.length, host: fresh.print[0]?.box, sameDrawing,
+      firstDiff: firstDiff === null ? null : {old: old.print[firstDiff], new: fresh.print[firstDiff]},
+      oldBundles: old.bundles, oldNotes: old.notes, newTagWarnings: fresh.tagWarnings, errors: [...old.errors, ...fresh.errors]};
+    const where = `${one.from} -> ${one.to}`;
+    check(`${where}: both pages draw`, old.settled && fresh.settled && fresh.print.length > 1, {old: old.settled, new: fresh.settled});
+    check(`${where}: old-tag markup alone loads smart/${one.folder}/`, old.bundles.some((path) => new RegExp(`/smart/${one.folder}/js/${one.folder}(\\.min)?\\.js$`, 'u').test(path)), {bundles: old.bundles});
+    check(`${where}: the old tag draws exactly as the new one (geometry and colours of ${fresh.print.length} elements)`, sameDrawing, evidence.sample[one.from].firstDiff ?? {});
+    check(`${where}: one console note naming the new tag and the date`, old.notes.length === 1 && note.exec(old.notes[0])?.[1] === '2027-01-01', {notes: old.notes});
+    check(`${where}: SF.deprecations notes the old tag`, old.tagNotes.some((entry) => entry.from === one.from && entry.to === one.to && entry.until === '2027-01-01'), {tagNotes: old.tagNotes});
+    check(`${where}: the new tag alone prints no tag note`, fresh.tagWarnings.length === 0 && fresh.tagNotes.length === 0, {warnings: fresh.tagWarnings, tagNotes: fresh.tagNotes});
+    check(`${where}: no page error`, old.errors.length === 0 && fresh.errors.length === 0, {errors: [...old.errors, ...fresh.errors]});
   }
 
   // 3. The new tag alone.
