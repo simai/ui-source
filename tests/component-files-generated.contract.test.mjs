@@ -48,7 +48,7 @@ const PHASE_A = [
   'pager',
   // The page's table of contents (2026-10-30).
   'contents',
-  'rich-text',
+  'input-rich',
   'input-lookup',
   // A part of the page loaded from an address (2026-11-02).
   'include',

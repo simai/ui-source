@@ -103,6 +103,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-composition-overlay-to-editor-overlay"
+    },
+    "cl-rich-text": {
+      "to": "cl-input-rich",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-rich-text-to-input-rich"
     }
   }
 }

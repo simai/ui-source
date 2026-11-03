@@ -211,6 +211,15 @@
     "justify-content/default",
     "overflow/default"
   ],
+  "cl-input-rich": [
+    "align-items/default",
+    "container/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "font-style/default",
+    "font-weight/default"
+  ],
   "cl-list-item": [
     "align-items/default",
     "background-color/default",
@@ -306,15 +315,6 @@
     "position/default",
     "resize/default",
     "text-max-width/default"
-  ],
-  "cl-rich-text": [
-    "align-items/default",
-    "container/default",
-    "display/default",
-    "flex-direction/default",
-    "flex-wrap/default",
-    "font-style/default",
-    "font-weight/default"
   ],
   "cl-search": [
     "display/default",

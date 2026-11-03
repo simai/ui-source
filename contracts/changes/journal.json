@@ -4383,6 +4383,67 @@
       },
       "owner": "ui-source",
       "source": "src/smart/composition-overlay/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/editor-overlay/component.json"
+    },
+    {
+      "id": "tag-sf-rich-text-to-sf-input-rich",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-rich-text is sf-input-rich (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-rich's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-rich, sf-rich-text), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-rich",
+          "from": "sf-rich-text",
+          "to": "sf-input-rich"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-rich-text></sf-rich-text>",
+        "after": "<sf-input-rich></sf-input-rich>"
+      },
+      "manual": "Write <sf-input-rich> for <sf-rich-text> in markup and sf-input-rich for sf-rich-text in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-rich, or both names through SF.tags.selector('sf-input-rich') while the alias lives; a class or a custom property spelled like the old tag (.sf-rich-text, --sf-rich-text-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-rich/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-rich-text-to-input-rich",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-rich is served from smart/input-rich/ since its folder took the new tag's name: js/input-rich.js, loader bundle cl-input-rich. The old path keeps working until remove_after: smart/rich-text/js/rich-text.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-rich/js/input-rich.js, the Loader forwards the bundle name cl-rich-text to cl-input-rich (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.rich-text is a dated alias of smart.input-rich, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-rich",
+          "from": "smart/rich-text/js/rich-text.js",
+          "to": "smart/input-rich/js/input-rich.js",
+          "match": "smart/rich-text/js/rich-text(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-rich-text",
+          "to": "cl-input-rich",
+          "match": "['\"]cl-rich-text['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.rich-text",
+          "to": "smart.input-rich",
+          "match": "['\"]smart\\.rich-text['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-rich/ for smart/rich-text/ and input-rich for rich-text in the file names (js/input-rich.js, js/input-rich.min.js); in a product rule's relation write cl-input-rich for cl-rich-text, and in a manifest or a package contract smart.input-rich for smart.rich-text. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/rich-text/js/rich-text.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-rich/js/input-rich.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/rich-text/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-rich/component.json"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.rich-text",
-  "version": "1.0.3",
+  "id": "smart.input-rich",
+  "version": "1.1.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -25,7 +25,7 @@
     "responsive",
     "i18n"
   ],
-  "custom_element": "sf-rich-text",
+  "custom_element": "sf-input-rich",
   "templates": [
     "default"
   ],
@@ -301,8 +301,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-rich-text>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-rich-text>",
+        "since": "1.1.0",
+        "replacement": "<sf-input-rich>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -311,38 +319,38 @@
     "source_revision": "2f9a405c6677dce34ccd79a0f615df77146e702f",
     "source_artifacts": [
       {
-        "path": "src/smart/rich-text/index.js",
-        "sha256": "7e98a111380dc921400ae7ab62b678c2681f5603f10732dfab6ddd519703d35c"
+        "path": "src/smart/input-rich/index.js",
+        "sha256": "acab015209ed9d5d7390b66fa53f9b289511a7371b7a5ecb49d2a2ba33d0cdb8"
       },
       {
-        "path": "src/smart/rich-text/js/templates/default.js",
+        "path": "src/smart/input-rich/js/templates/default.js",
         "sha256": "7e2796621280c9a6c9dfe14a279bb314cda55cdff8137cc8be15b36d7d1e5c2d"
       },
       {
-        "path": "src/smart/rich-text/js/rich-text-html.mjs",
-        "sha256": "5b509d1992919f4104534fe76af64842ddd85a52dfadcef6c16e2aea6f2875a2"
+        "path": "src/smart/input-rich/js/rich-text-html.mjs",
+        "sha256": "a910e6ded6632e3d3bf7c37db070f298686ac40d54d7550ccec850799c01545c"
       },
       {
         "path": "src/core/js/composition/html-subset.mjs",
-        "sha256": "b1fcb9499c9a9e5d2dda84ac33a2bde2c7972006635c92e2040c0f0322d495ec"
+        "sha256": "20d9de5be17653b2d2ade6c38f9c4f92447d14ab20694eb003659d271be42405"
       },
       {
-        "path": "src/smart/rich-text/scss/_smart__rich_text.scss",
-        "sha256": "a606b0ca72f3b40c28bad4fc6e17575dda6d557a763b78d0facba365774f6269"
+        "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
+        "sha256": "896bd4c6a915bd87a47d092b6f7892f76153ff8709c97e43d5dc76411db5b7e1"
       },
       {
-        "path": "src/smart/rich-text/rule.js",
-        "sha256": "0e4c663d0491d9f13c60d693ce1cbefffd13e15878cbc82d5bcb7fe9615be7b2"
+        "path": "src/smart/input-rich/rule.js",
+        "sha256": "2085d412b36c30cbef4d13ac7a713ae26b5f027af0a1ed611912ce384e3edc82"
       },
       {
-        "path": "src/smart/rich-text/docs.md",
-        "sha256": "99b519152312915820bc00224f49a9bbb1496bebca5a1b8d259f8552396a7cb1"
+        "path": "src/smart/input-rich/docs.md",
+        "sha256": "cdb515e9eef2e215c4083c6849afdf51ff5fc6791351319b89c5ac73d898b163"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-rich-text for formatted text a person writes in a form -- a page's text, a description, an announcement -- stored as the HTML subset of Larena's html@1 type.",
+    "use_when": "Use sf-input-rich for formatted text a person writes in a form -- a page's text, a description, an announcement -- stored as the HTML subset of Larena's html@1 type.",
     "do_not": [
       "Do not trust the submitted value on the server: clean it there with the same subset",
       "Do not use it for one line of text or for code; use sf-input, sf-textarea or sf-code-input",
@@ -354,7 +362,7 @@
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-rich-text label=\"Page text\" name=\"body\" value=\"<p>Hello</p>\"></sf-rich-text>",
+    "minimal_example": "<sf-input-rich label=\"Page text\" name=\"body\" value=\"<p>Hello</p>\"></sf-input-rich>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

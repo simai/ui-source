@@ -191,6 +191,8 @@ export function renamePaths(text, oldFolder, newFolder) {
   return text
     .replace(new RegExp(`smart/${escape(oldFolder)}/(js|css)/${escape(oldFolder)}((?:\\.min)?\\.(?:js|css))`, 'gu'), `smart/${newFolder}/$1/${newFolder}$2`)
     .replace(new RegExp(`smart/${escape(oldFolder)}/`, 'gu'), `smart/${newFolder}/`)
+    // A sibling folder's import: '../<old>/js/x.mjs' from src/smart/<other>/.
+    .replace(new RegExp(`(['"])\\.\\./${escape(oldFolder)}/`, 'gu'), `$1../${newFolder}/`)
     .replace(new RegExp(`(?<![\\w-])cl-${escape(oldFolder)}(?![\\w-])`, 'gu'), `cl-${newFolder}`)
     .replace(new RegExp(`(?<![\\w-])smart\\.${escape(oldFolder)}(?![\\w-])`, 'gu'), `smart.${newFolder}`);
 }

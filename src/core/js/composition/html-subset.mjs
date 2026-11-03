@@ -56,7 +56,7 @@
 // The module lives in the core runtime since content.html 1.0.0: the
 // Composition renderer sanitises a content.html block through it at render,
 // so a page that only renders a Document needs no Smart component.
-// src/smart/rich-text/js/rich-text-html.mjs re-exports it for sf-rich-text and
+// src/smart/input-rich/js/rich-text-html.mjs re-exports it for sf-rich-text and
 // the field renderers; there is one rule, here.
 
 export const RICH_TEXT_ELEMENTS = Object.freeze(['p', 'h2', 'h3', 'h4', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'blockquote', 'br']);

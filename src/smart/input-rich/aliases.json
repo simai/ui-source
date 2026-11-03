@@ -1,0 +1,18 @@
+{
+  "$comment": "Dated aliases of sf-input-rich, generated from component.json \"aliases\" by scripts/generate-component-files.mjs; read by core/js/alias-table.js and the shim. Do not edit.",
+  "component": "sf-input-rich",
+  "since": "2026-11-03",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "sf-rich-text",
+      "to": "sf-input-rich",
+      "kind": "tag",
+      "component": "sf-input-rich",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+      "note": "the element is sf-input-rich; sf-rich-text is a subclass defined beside it until the date"
+    }
+  ]
+}

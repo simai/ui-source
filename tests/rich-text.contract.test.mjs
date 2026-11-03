@@ -7,7 +7,7 @@ import {
   richTextFromPlainText,
   richTextHref,
   sanitizeRichText,
-} from '../src/smart/rich-text/js/rich-text-html.mjs';
+} from '../src/smart/input-rich/js/rich-text-html.mjs';
 
 // sf-rich-text keeps its value to the HTML subset of Larena's html@1 type:
 // p h2 h3 h4 strong em a[href] ul ol li blockquote br, href only https:,
@@ -178,12 +178,12 @@ test('nothing off the subset survives any vector', () => {
 });
 
 test('the manifest: a form field of the field family, its settings, events and words', () => {
-  const component = json('src/smart/rich-text/component.json');
-  const manifest = json('src/smart/rich-text/smart.manifest.json');
-  const en = json('src/smart/rich-text/lang/en.json');
-  const ru = json('src/smart/rich-text/lang/ru.json');
-  assert.equal(component.tag, 'sf-rich-text');
-  assert.equal(component.id, 'smart.rich-text');
+  const component = json('src/smart/input-rich/component.json');
+  const manifest = json('src/smart/input-rich/smart.manifest.json');
+  const en = json('src/smart/input-rich/lang/en.json');
+  const ru = json('src/smart/input-rich/lang/ru.json');
+  assert.equal(component.tag, 'sf-input-rich');
+  assert.equal(component.id, 'smart.input-rich');
   assert.equal(component.family, 'field');
   assert.deepEqual(Object.keys(component.settings).sort(), [
     'appearance', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
@@ -198,10 +198,10 @@ test('the manifest: a form field of the field family, its settings, events and w
   assert.equal(component.accessibility.role, 'textbox');
   for (const key of ['Mod+B', 'Mod+I', 'Mod+K', 'Mod+Z', 'Mod+Shift+Z', 'Mod+Y']) assert.ok(component.keyboard.host[key], key);
   // The generated registry entry says the same.
-  assert.equal(manifest.custom_element, 'sf-rich-text');
+  assert.equal(manifest.custom_element, 'sf-input-rich');
   assert.equal(manifest.inputs.properties.value.type, 'string');
   assert.ok(manifest.events.input && manifest.events.change);
-  assert.ok(manifest.provenance.source_artifacts.some((artifact) => artifact.path === 'src/smart/rich-text/js/rich-text-html.mjs'));
+  assert.ok(manifest.provenance.source_artifacts.some((artifact) => artifact.path === 'src/smart/input-rich/js/rich-text-html.mjs'));
   // The words: one key set in both languages, every toolbar word among them.
   assert.deepEqual(Object.keys(ru.runtime).sort(), Object.keys(en.runtime).sort());
   for (const key of ['toolbar', 'paragraph', 'heading-2', 'heading-3', 'heading-4', 'bold', 'italic', 'link', 'bulleted-list',
@@ -209,15 +209,15 @@ test('the manifest: a form field of the field family, its settings, events and w
     assert.ok(en.runtime[key] && ru.runtime[key] && en.runtime[key] !== ru.runtime[key], key);
   }
   // The rule is registered and the bundle has its own sheet.
-  assert.match(readFileSync(new URL('src/core/js/rule.src.js', root), 'utf8'), /import '\.\.\/\.\.\/smart\/rich-text\/rule\.js';/u);
-  const source = readFileSync(new URL('src/smart/rich-text/index.js', root), 'utf8');
-  assert.match(source, /SfRichText\.define\('sf-rich-text'\)/u);
+  assert.match(readFileSync(new URL('src/core/js/rule.src.js', root), 'utf8'), /import '\.\.\/\.\.\/smart\/input-rich\/rule\.js';/u);
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8');
+  assert.match(source, /SfRichText\.define\('sf-input-rich'\)/u);
   assert.match(source, /import '\.\/scss\/index\.scss';/u);
 });
 
 test('the element makes no server call and puts no string on the page uncleaned', () => {
-  const source = readFileSync(new URL('src/smart/rich-text/index.js', root), 'utf8')
-    + readFileSync(new URL('src/smart/rich-text/js/templates/default.js', root), 'utf8');
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8')
+    + readFileSync(new URL('src/smart/input-rich/js/templates/default.js', root), 'utf8');
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|WebSocket|EventSource/u);
   assert.doesNotMatch(source, /unsafeHTML/u);
   // Every innerHTML written is the cleaner's output or a history entry of it.

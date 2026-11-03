@@ -165,8 +165,8 @@ const DRAW = {
     html: '<sf-theme-generator value="#2e7d32"></sf-theme-generator>'},
   // The frame takes the fill, the border, the radius and the colour; the text
   // area the padding; the invalid instance the invalid border.
-  'rich-text': {css: ['icon-buttons', 'icons', 'smart/smart/rich-text/css/rich-text.css'], js: 'rich-text',
-    html: '<sf-rich-text label="Text" value="<p>Line</p>" rows="2"></sf-rich-text><sf-rich-text label="Error" invalid rows="2"></sf-rich-text>'},
+  'rich-text': {css: ['icon-buttons', 'icons', 'smart/smart/input-rich/css/input-rich.css'], js: 'input-rich',
+    html: '<sf-input-rich label="Text" value="<p>Line</p>" rows="2"></sf-input-rich><sf-input-rich label="Error" invalid rows="2"></sf-input-rich>'},
   // The frame at rest and invalid; a third opened from its options, so the
   // list's surface is measured on its panel (the focused frame has its own
   // fill and border, as sf-input's).

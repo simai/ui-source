@@ -780,7 +780,7 @@ import '../../smart/radio/rule.js';
 import '../../smart/range-slider/rule.js';
 import '../../smart/reference-link/rule.js';
 import '../../smart/resizer/rule.js';
-import '../../smart/rich-text/rule.js';
+import '../../smart/input-rich/rule.js';
 import '../../smart/search/rule.js';
 import '../../smart/header-site/rule.js';
 import '../../smart/skeleton/rule.js';

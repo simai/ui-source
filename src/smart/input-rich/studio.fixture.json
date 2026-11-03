@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.rich-text",
+  "component": "smart.input-rich",
   "title": "rich text reference",
-  "summary": "Deterministic reference fixture for sf-rich-text.",
+  "summary": "Deterministic reference fixture for sf-input-rich.",
   "locale": "en",
   "props": {
     "label": "Page text",

@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-rich-text'] = {
-  tags: ['sf-rich-text'],
+SF.RuleLoader['cl-input-rich'] = {
+  tags: ['sf-input-rich', 'sf-rich-text'],
   type: 'smart',
   mode: 'smart',
   js: true,

@@ -46,8 +46,8 @@ test('view, edit and cell draw html; the filter falls back to a text search', ()
   assert.match(source, /const renderer = FILTER_RENDERERS\[asked\] \|\| FILTER_RENDERERS\.text;/u);
 });
 
-test('the edit is sf-rich-text, named as the textarea is, and writes the editor\'s value back', () => {
-  const edit = element(body('renderHtmlEdit'), 'sf-rich-text');
+test('the edit is sf-input-rich, named as the textarea is, and writes the editor\'s value back', () => {
+  const edit = element(body('renderHtmlEdit'), 'sf-input-rich');
   const textarea = element(body('renderTextAreaEdit'), 'sf-textarea');
   for (const line of ['size=${EDIT_SIZE}', 'appearance="bordered"', 'name=${fieldName(field)}',
     'placeholder=${field.placeholder || nothing}', '?required=${Boolean(field.required)}',
@@ -70,7 +70,7 @@ test('the view draws markup only from the cleaned value, and nowhere else', () =
   assert.equal((source.match(/unsafeHTML\(/gu) ?? []).length, 1);
   assert.match(source, /import \{cleanHtml, htmlText\} from "\.\/html\.js";/u);
   const helpers = readFileSync(join(root, 'src/smart/field-renderers/html.js'), 'utf8');
-  assert.match(helpers, /from '\.\.\/rich-text\/js\/rich-text-html\.mjs'/u);
+  assert.match(helpers, /from '\.\.\/input-rich\/js\/rich-text-html\.mjs'/u);
   assert.match(helpers, /sanitizeRichText\(html, \{mode: 'value'\}\)/u);
 });
 

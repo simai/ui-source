@@ -405,7 +405,7 @@ export function renderFilterField(field = {}, host) {
 //   file                {value, label, mime?, href?} -- an icon from the mime
 //                       type and the label, a link when it may be opened
 //   choices             a list of option values; one tag per value on the line
-//   html                an HTML string of sf-rich-text's subset; its text, on one line
+//   html                an HTML string of sf-input-rich's subset; its text, on one line
 //
 // Every element here takes `line`, not `size`: a line element is the row's text
 // line, where a control height would make the row grow. That was measured --
@@ -1105,16 +1105,16 @@ function renderTextAreaEdit(field, value, host) {
     `;
 }
 
-// Formatted text (property-view port 1.17.0): sf-rich-text, named as the
+// Formatted text (property-view port 1.17.0): sf-input-rich, named as the
 // textarea is. The editor cleans its own value -- what it is given, every
 // paste and every edit -- so what it writes back is already the subset. The
-// value is read from the element the listener is on: sf-rich-text says input
+// value is read from the element the listener is on: sf-input-rich says input
 // and change from its editing surface inside it, which has no value of its own.
 function renderHtmlEdit(field, value, host) {
     value = scalarValue(value);
     const write = (event) => host.setFieldValue(field, event.currentTarget?.value ?? '');
     return html`
-        <sf-rich-text
+        <sf-input-rich
                 size=${EDIT_SIZE}
                 appearance="bordered"
                 name=${fieldName(field)}
@@ -1125,7 +1125,7 @@ function renderHtmlEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 @input=${write}
                 @change=${write}
-        ></sf-rich-text>
+        ></sf-input-rich>
     `;
 }
 
@@ -2118,7 +2118,7 @@ function renderTextView(field, value, host) {
     return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
 }
 
-// Formatted text shown: the value cleaned by sf-rich-text's own rule first,
+// Formatted text shown: the value cleaned by sf-input-rich's own rule first,
 // and only that cleaned string drawn as markup -- never the value as it came,
 // which a host may have stored from anywhere. What is left is the subset:
 // paragraphs, headings, emphasis, lists, quotes and links with a safe address.

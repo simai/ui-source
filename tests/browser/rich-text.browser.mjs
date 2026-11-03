@@ -30,7 +30,7 @@ const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 for (const [name, path] of Object.entries(parts)) if (!existsSync(path)) throw new Error(`${name} not found under ${out}`);
 const vectors = JSON.parse(readFileSync(new URL('../fixtures/rich-text-vectors.json', import.meta.url), 'utf8'));
-const ru = JSON.parse(readFileSync(new URL('../../src/smart/rich-text/lang/ru.json', import.meta.url), 'utf8')).runtime;
+const ru = JSON.parse(readFileSync(new URL('../../src/smart/input-rich/lang/ru.json', import.meta.url), 'utf8')).runtime;
 
 const types = {'.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.html': 'text/html'};
 let current = '';
@@ -71,8 +71,8 @@ const mod = process.platform === 'darwin' ? 'Meta' : 'Control';
 async function open(page, theme, body) {
   current = shell(theme, body);
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
-  await page.waitForFunction(() => customElements.get('sf-rich-text')
-    && [...document.querySelectorAll('sf-rich-text')].every((el) => el.querySelector('.sf-rich-text-editor') && el.querySelectorAll('button.sf-rich-text-tool').length === 12), null, {timeout: 20000});
+  await page.waitForFunction(() => customElements.get('sf-input-rich')
+    && [...document.querySelectorAll('sf-input-rich')].every((el) => el.querySelector('.sf-rich-text-editor') && el.querySelectorAll('button.sf-rich-text-tool').length === 12), null, {timeout: 20000});
   await page.waitForTimeout(300);
   if (process.env.RICH_TEXT_SHOT) await page.screenshot({path: `${process.env.RICH_TEXT_SHOT}-${theme}-${Date.now()}.png`, fullPage: true});
 }
@@ -99,13 +99,13 @@ try {
   await open(page, 'theme-light', `
     <form id="f">
       <button id="before" type="button">Before</button>
-      <sf-rich-text id="r" label="Page text" name="body" hint="Formatted text" value="<p>Start</p>"></sf-rich-text>
+      <sf-input-rich id="r" label="Page text" name="body" hint="Formatted text" value="<p>Start</p>"></sf-input-rich>
       <button id="after" type="button">After</button>
-      <sf-rich-text id="req" label="Required" name="req" required></sf-rich-text>
+      <sf-input-rich id="req" label="Required" name="req" required></sf-input-rich>
     </form>
-    <div lang="ru"><sf-rich-text id="ru" aria-label="Text"></sf-rich-text></div>`);
+    <div lang="ru"><sf-input-rich id="ru" aria-label="Text"></sf-input-rich></div>`);
   const subset = await page.evaluate((list) => {
-    const el = document.getElementById('scratch') || document.body.appendChild(Object.assign(document.createElement('sf-rich-text'), {id: 'scratch'}));
+    const el = document.getElementById('scratch') || document.body.appendChild(Object.assign(document.createElement('sf-input-rich'), {id: 'scratch'}));
     return list.map(({input, value}) => {
       el.value = input;
       return {input, expected: value, got: el.value};
@@ -259,20 +259,20 @@ try {
   // ---- geometry against sf-textarea ------------------------------------------------
   await open(page, 'theme-light', ['1/2', '1', '2'].map((size) => `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <sf-textarea data-size="${size}" size="${size}" label="Text" rows="2"></sf-textarea>
-      <sf-rich-text data-size="${size}" size="${size}" label="Text" rows="2"></sf-rich-text></div>`).join(''));
+      <sf-input-rich data-size="${size}" size="${size}" label="Text" rows="2"></sf-input-rich></div>`).join(''));
   await page.waitForFunction(() => document.querySelectorAll('sf-textarea textarea').length === 3, null, {timeout: 10000});
   // At rest: nothing hovered.
   await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
   const geometry = await page.evaluate(() => ['1/2', '1', '2'].map((size) => {
     const textarea = getComputedStyle(document.querySelector(`sf-textarea[data-size="${size}"] textarea`));
-    const frame = getComputedStyle(document.querySelector(`sf-rich-text[data-size="${size}"] .sf-rich-text-frame`));
-    const editor = getComputedStyle(document.querySelector(`sf-rich-text[data-size="${size}"] .sf-rich-text-editor`));
+    const frame = getComputedStyle(document.querySelector(`sf-input-rich[data-size="${size}"] .sf-rich-text-frame`));
+    const editor = getComputedStyle(document.querySelector(`sf-input-rich[data-size="${size}"] .sf-rich-text-editor`));
     const label = (selector) => getComputedStyle(document.querySelector(selector)).fontSize;
     return {
       size,
       textarea: [textarea.borderTopWidth, textarea.borderTopLeftRadius, textarea.borderTopColor, textarea.backgroundColor, textarea.paddingTop, textarea.paddingLeft, textarea.fontSize, textarea.lineHeight, label(`sf-textarea[data-size="${size}"] .sf-textarea-text`)],
-      richText: [frame.borderTopWidth, frame.borderTopLeftRadius, frame.borderTopColor, frame.backgroundColor, editor.paddingTop, editor.paddingLeft, editor.fontSize, editor.lineHeight, label(`sf-rich-text[data-size="${size}"] .sf-rich-text-text`)],
+      richText: [frame.borderTopWidth, frame.borderTopLeftRadius, frame.borderTopColor, frame.backgroundColor, editor.paddingTop, editor.paddingLeft, editor.fontSize, editor.lineHeight, label(`sf-input-rich[data-size="${size}"] .sf-rich-text-text`)],
     };
   }));
   for (const one of geometry) check(`frame matches sf-textarea at size ${one.size}`, JSON.stringify(one.textarea) === JSON.stringify(one.richText), one);
@@ -283,8 +283,8 @@ try {
     // Core takes the theme from the person's preference, the system's by
     // default: the dark pass asks for a dark system.
     await page.emulateMedia({colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
-    await open(page, theme, `<sf-rich-text id="c" label="Text" hint="A hint" placeholder="Write here" rows="2"></sf-rich-text>
-      <sf-rich-text id="t" label="Text" value="<p><strong>Bold</strong> and <a href='/x'>link</a></p><blockquote><p>Quote</p></blockquote>" rows="2"></sf-rich-text>`);
+    await open(page, theme, `<sf-input-rich id="c" label="Text" hint="A hint" placeholder="Write here" rows="2"></sf-input-rich>
+      <sf-input-rich id="t" label="Text" value="<p><strong>Bold</strong> and <a href='/x'>link</a></p><blockquote><p>Quote</p></blockquote>" rows="2"></sf-input-rich>`);
     await page.evaluate(() => {
       const editor = document.querySelector('#t .sf-rich-text-editor');
       editor.focus();

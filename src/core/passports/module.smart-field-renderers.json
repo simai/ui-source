@@ -16,7 +16,7 @@
     "src/smart/field-renderers/mask.js",
     "src/smart/field-renderers/registry.js"
   ],
-  "content_sha256": "f33449982310517847039434aeaf753740bf5fe8ace8fdbc3bba74627f18d7f6",
+  "content_sha256": "dde797abff8db01c0422ae605367862a54a7b85b70e9e7913648f29129e35953",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -27,8 +27,8 @@
       "range": "^1.0.0"
     },
     {
-      "id": "smart.rich-text",
-      "range": "^1.0.0"
+      "id": "smart.input-rich",
+      "range": "^1.1.0"
     }
   ]
 }

@@ -20,7 +20,7 @@ const RESETS = [
   ['src/component/quantity/scss/_css__quantity.scss', '.sf-quantity input:focus-visible', 'outline: none !important;'],
   ['src/component/verification/scss/_css__verification.scss', '.sf-verification-input:focus', 'outline: 0 !important;'],
   ['src/smart/input-lookup/scss/_smart__lookup.scss', '.sf-lookup .sf-lookup-input:focus-visible', 'outline: none !important;'],
-  ['src/smart/rich-text/scss/_smart__rich_text.scss', '.sf-rich-text .sf-rich-text-editor:focus-visible', 'outline: none !important;'],
+  ['src/smart/input-rich/scss/_smart__rich_text.scss', '.sf-rich-text .sf-rich-text-editor:focus-visible', 'outline: none !important;'],
 ];
 
 test('a field that draws the ring keeps a page rule off the bare control', () => {
@@ -41,7 +41,7 @@ test('the wrapper still draws its own ring', () => {
     ['src/component/quantity/scss/_css__quantity.scss', '.sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap'],
     ['src/component/verification/scss/_css__verification.scss', '.sf-verification:has(.sf-verification-input:focus-visible)'],
     ['src/smart/input-lookup/scss/_smart__lookup.scss', '.sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame'],
-    ['src/smart/rich-text/scss/_smart__rich_text.scss', '.sf-rich-text:not(.sf-rich-text--pointer-focus):has(.sf-rich-text-editor:focus-visible) .sf-rich-text-frame'],
+    ['src/smart/input-rich/scss/_smart__rich_text.scss', '.sf-rich-text:not(.sf-rich-text--pointer-focus):has(.sf-rich-text-editor:focus-visible) .sf-rich-text-frame'],
   ];
   for (const [path, selector] of rings) {
     const css = read(path);

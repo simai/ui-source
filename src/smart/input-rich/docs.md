@@ -1,6 +1,6 @@
 # Rich Text Smart Component
 
-`sf-rich-text` is a form field for formatted text: paragraphs, headings 2 to
+`sf-input-rich` is a form field for formatted text: paragraphs, headings 2 to
 4, bold, italic, links, bulleted and numbered lists and quotes, with a
 toolbar, undo and redo. Its value is HTML of that subset and nothing else.
 Larena stores page text as a property of type `html@1`, and this is its
@@ -10,8 +10,8 @@ Use sf-textarea for plain text, sf-input for one line and sf-code-input for
 codes.
 
 ```html
-<sf-rich-text label="Page text" name="body"
-  value="<h2>About us</h2><p>We make <strong>tools</strong>.</p>"></sf-rich-text>
+<sf-input-rich label="Page text" name="body"
+  value="<h2>About us</h2><p>We make <strong>tools</strong>.</p>"></sf-input-rich>
 ```
 
 ## The value

@@ -143,11 +143,11 @@
         "body": [
           "<main>",
           "  <form id=\"f\">",
-          "    <sf-rich-text id=\"r1\" label=\"Page text\" name=\"body\" hint=\"Formatted text\" value='<p onclick=\"x()\">Hello <b>world</b><script>alert(1)</script></p><a href=\"javascript:alert(1)\">bad</a>'></sf-rich-text>",
-          "    <sf-rich-text id=\"r2\" label=\"Required text\" name=\"required\" required></sf-rich-text>",
-          "    <sf-rich-text id=\"r3\" label=\"Disabled text\" name=\"off\" disabled value=\"<p>Off</p>\"></sf-rich-text>",
+          "    <sf-input-rich id=\"r1\" label=\"Page text\" name=\"body\" hint=\"Formatted text\" value='<p onclick=\"x()\">Hello <b>world</b><script>alert(1)</script></p><a href=\"javascript:alert(1)\">bad</a>'></sf-input-rich>",
+          "    <sf-input-rich id=\"r2\" label=\"Required text\" name=\"required\" required></sf-input-rich>",
+          "    <sf-input-rich id=\"r3\" label=\"Disabled text\" name=\"off\" disabled value=\"<p>Off</p>\"></sf-input-rich>",
           "  </form>",
-          "  <div lang=\"ru\"><sf-rich-text id=\"r4\" aria-label=\"Text\"></sf-rich-text></div>",
+          "  <div lang=\"ru\"><sf-input-rich id=\"r4\" aria-label=\"Text\"></sf-input-rich></div>",
           "</main>"
         ]
       },
