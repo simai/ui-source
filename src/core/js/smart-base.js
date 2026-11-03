@@ -1,7 +1,7 @@
 import { noteDeprecated } from './deprecations.js';
 import './internal.js';
 import { installAliases } from './aliases.js';
-import { defineTagAliases } from './tag-aliases.js';
+import { canonicalTag, defineTagAliases } from './tag-aliases.js';
 // The renamed-tag helpers, from the shared runtime: a bundle that finds an
 // element by a tag with dated aliases asks for every name through these.
 export { canonicalTag, isTag, tagNames, tagSelector } from './tag-aliases.js';
@@ -194,10 +194,15 @@ function queueDefinition(tagName, constructor) {
   scheduleFlush();
 }
 
+// A component type names its element: 'button-icon' or 'sf-button-icon'. An
+// old name of a renamed tag ('icon-button', 'sf-icon-button') draws the
+// current tag (tag-aliases.js), so a descriptor written before the rename
+// draws the element the sheets and the docs now name, and notes nothing.
 function smartTagName(type) {
-  const tagName = String(type || "").startsWith("sf-")
+  const named = String(type || "").startsWith("sf-")
     ? String(type)
     : `sf-${String(type || "")}`;
+  const tagName = canonicalTag(named);
 
   if (!/^sf-[a-z0-9-]+$/.test(tagName)) {
     throw new Error(`Invalid SF tag name: ${tagName}`);

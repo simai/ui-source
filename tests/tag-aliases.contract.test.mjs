@@ -252,3 +252,29 @@ test('SF.tags is documented, and the Smart base hands the helpers to every bundl
   const schema = readJson('contracts/schema/change-journal.v1.schema.json').$defs.record.properties;
   assert.ok(schema.kind.enum.includes('tag') && schema.rewrite.enum.includes('rename-tag'));
 });
+
+// A component type names its element ({type: 'icon-button'} in a descriptor,
+// SF.create('icon-button')). An old name draws the current tag, so a
+// descriptor written before the rename draws what the sheets and docs name.
+test('a component type with an old name draws the current tag (renderSmartElement, SF.create, litHtml)', async () => {
+  const {canonicalTag} = await import('../src/core/js/tag-aliases.js');
+  const vm = await import('node:vm');
+  const base = read('src/core/js/smart-base.js');
+  const start = base.indexOf('function smartTagName(type) {');
+  assert.ok(start > 0, 'smart-base has smartTagName');
+  const body = base.slice(start, base.indexOf('\n}\n', start) + 3);
+  const context = {canonicalTag};
+  vm.runInNewContext(`${body}\nglobalThis.smartTagName = smartTagName;`, context);
+  for (const [type, tag] of [
+    ['icon-button', 'sf-button-icon'], ['sf-icon-button', 'sf-button-icon'], ['context-menu', 'sf-menu-context'],
+    ['close', 'sf-button-close'], ['datepicker', 'sf-input-date'], ['button-icon', 'sf-button-icon'], ['button', 'sf-button'],
+  ]) assert.equal(context.smartTagName(type), tag, type);
+  assert.throws(() => context.smartTagName('Bad Name'), /Invalid SF tag name/u);
+  // renderSmartElement draws through smartTagName.
+  assert.match(base, /render\(type, props = \{\}\) \{\n    const tagName = smartTagName\(type\);/u);
+  assert.match(base, /renderSmartElement\(type, props = \{\}\) \{\n    return smartElement\(type, props\);/u);
+  // SF.create and the template helper resolve the name the same way.
+  const loader = read('src/core/js/loader.js');
+  assert.match(loader, /function createSmartElement\(name, params = \{\}\) \{\n[^\n]*\n  const tagName = canonicalTag\(normalizeSmartTagName\(name\)\);/u);
+  assert.match(loader, /SF\.__internal\.litHtml = [\s\S]{0,400}?tagName = canonicalTag\(tagName\);/u);
+});

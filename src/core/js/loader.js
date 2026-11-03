@@ -5,6 +5,7 @@ import { convertTailwindClasses } from './tailwind-map';
 import utilityModuleAliases from '../contracts/utility-module-aliases.v1.json';
 import smartRuleForwards from '../contracts/smart-rule-forwards.v1.json';
 import templateUtilities from './template-utilities.generated.json';
+import { canonicalTag } from './tag-aliases.js';
 import { resolveUtilityModule } from './utilityModuleAliases';
 import {
   initIconSubsetState,
@@ -5312,7 +5313,8 @@ function appendCreateChildren(element, children) {
 }
 
 function createSmartElement(name, params = {}) {
-  const tagName = normalizeSmartTagName(name);
+  // An old name of a renamed tag creates the current one (tag-aliases.js).
+  const tagName = canonicalTag(normalizeSmartTagName(name));
 
   if (!tagName) {
     throw new Error('SF.create(name, params): name is required');
@@ -5650,6 +5652,7 @@ SF.__internal.litHtml = (tagName, props = {}) => {
       throw new Error(`Invalid SF tag name: ${tagName}`);
     }
   }
+  tagName = canonicalTag(tagName);
 
   const tag = unsafeStatic(tagName);
   return staticHtml`<${tag} ...=${props}></${tag}>`;
