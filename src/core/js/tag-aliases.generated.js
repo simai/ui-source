@@ -4,6 +4,7 @@ export default Object.freeze([
   Object.freeze({from: 'sf-avatars', to: 'sf-avatar-group', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-close', to: 'sf-button-close', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-code-input', to: 'sf-input-code', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-composition-overlay', to: 'sf-editor-overlay', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-copy-button', to: 'sf-button-copy', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-download-file', to: 'sf-file-download', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-image-field', to: 'sf-input-image', since: '2026-11-03', remove_after: '2027-01-01'}),

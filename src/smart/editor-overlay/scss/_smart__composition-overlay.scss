@@ -1,4 +1,4 @@
-// Editor canvas overlay (sf-composition-overlay). Placed in the scroller of its
+// Editor canvas overlay (sf-editor-overlay). Placed in the scroller of its
 // canvas, the parts lie in the scrolled content and travel with it; anywhere else
 // they are fixed to the viewport. Either way above the canvas and below drawers
 // and modals; the canvas DOM is never changed. Colors come from theme tokens.

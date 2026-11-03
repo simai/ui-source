@@ -28,7 +28,7 @@
 </head>
 <body>
   <a id="before" href="#start">До холста</a>
-  <sf-composition-overlay id="overlay" for="canvas"></sf-composition-overlay>
+  <sf-editor-overlay id="overlay" for="canvas"></sf-editor-overlay>
   <div id="canvas"></div>
   <sf-drawer id="modal-drawer" label="Публикация">Подтверждение</sf-drawer>
   <script>
@@ -43,7 +43,7 @@
       const overlay = document.getElementById('overlay');
       const names = {'layout.regions': 'Раскладка', 'layout.region': 'Область', 'content.heading': 'Заголовок', 'content.paragraph': 'Абзац'};
       // sf-composition-overlay is a Smart component; the loader fetches it on demand.
-      await customElements.whenDefined('sf-composition-overlay');
+      await customElements.whenDefined('sf-editor-overlay');
       overlay.attach(document.getElementById('canvas'));
       overlay.setDocument(model, {describe: (node) => ({label: `${names[node.type] || node.type} ${node.id}`, badges: node.id === 'shell-header' ? ['Общий'] : []})});
       overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'move-down', label: 'Ниже'}, {id: 'remove', label: 'Удалить'}]);

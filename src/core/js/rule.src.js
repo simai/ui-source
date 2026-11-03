@@ -744,7 +744,7 @@ import '../../smart/color/rule.js';
 import '../../smart/popover/rule.js';
 import '../../smart/button-close/rule.js';
 import '../../smart/input-code/rule.js';
-import '../../smart/composition-overlay/rule.js';
+import '../../smart/editor-overlay/rule.js';
 import '../../smart/contents/rule.js';
 import '../../smart/context-menu/rule.js';
 import '../../smart/button-copy/rule.js';

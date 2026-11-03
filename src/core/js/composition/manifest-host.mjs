@@ -1,7 +1,7 @@
 // The editors' elements from their manifests (standard simai.smart-component
 // 1.3.8 §3, §4, §8, §16.20).
 //
-// sf-sortable, sf-inline-editor and sf-composition-overlay are plain custom
+// sf-sortable, sf-editor-inline and sf-editor-overlay are plain custom
 // elements defined by the composition modules (core/js/composition): the
 // overlay's bundle carries the drag module too, and a page may define them
 // before any Smart base is loaded. They draw nothing through the Smart base

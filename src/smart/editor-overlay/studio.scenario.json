@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.composition-overlay",
+  "component": "smart.editor-overlay",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],

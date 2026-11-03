@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.composition-overlay",
+  "component": "smart.editor-overlay",
   "title": "composition-overlay reference",
-  "summary": "Deterministic reference fixture for sf-composition-overlay.",
+  "summary": "Deterministic reference fixture for sf-editor-overlay.",
   "locale": "ru",
   "props": {
     "for": "canvas",

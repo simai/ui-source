@@ -77,9 +77,9 @@
         "body": [
           "<main>",
           "  <div id=\"canvas\" style=\"padding: 40px\"><section data-sf-composition-id=\"root\"><h2 data-sf-composition-id=\"h\">Заголовок</h2><p data-sf-composition-id=\"p\">Абзац</p></section></div>",
-          "  <sf-composition-overlay id=\"o\" for=\"canvas\" accepts=\"blocks\"></sf-composition-overlay>",
+          "  <sf-editor-overlay id=\"o\" for=\"canvas\" accepts=\"blocks\"></sf-editor-overlay>",
           "</main>",
-          "<script>window.addEventListener('load', () => customElements.whenDefined('sf-composition-overlay').then(() => { const o = document.getElementById('o'); o.setDocument({schema: 'simai.composition.document.v1', id: 'd', profile: 'ui-layout', root: {id: 'root', type: 'layout.section', slots: {default: [{id: 'h', type: 'content.heading'}, {id: 'p', type: 'content.paragraph'}]}}}, {describe: (node) => ({label: node.id})}); o.actions = [{id: 'remove', label: 'Удалить'}]; }));</script>"
+          "<script>window.addEventListener('load', () => customElements.whenDefined('sf-editor-overlay').then(() => { const o = document.getElementById('o'); o.setDocument({schema: 'simai.composition.document.v1', id: 'd', profile: 'ui-layout', root: {id: 'root', type: 'layout.section', slots: {default: [{id: 'h', type: 'content.heading'}, {id: 'p', type: 'content.paragraph'}]}}}, {describe: (node) => ({label: node.id})}); o.actions = [{id: 'remove', label: 'Удалить'}]; }));</script>"
         ]
       },
       "checks": [

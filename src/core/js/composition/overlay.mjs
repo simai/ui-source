@@ -1,5 +1,6 @@
 import { isPlainObject } from './canonical.mjs';
 import { pageText } from '../page-language.js';
+import { defineTagAliases } from '../tag-aliases.js';
 import { activeSortableSession, registerSortableDropTarget } from './sortable.mjs';
 import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 
@@ -19,21 +20,32 @@ import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 // through the iframe's position, borders, padding, scale and the frame's own
 // scroll, and a plain-string inline edit happens on the element inside the frame.
 
-// The names sf-composition-overlay's component.json declares (standard 1.3.8
+// The names sf-editor-overlay's component.json declares (standard 1.3.8
 // §8, vocabulary 1.1.5): select {ids, id}, apply {action, scope: entry, ids}
 // (one entry's own action, §18.3), insert, move {ids, id, parent, position}
 // (one manual move) and change {id, value, previous} for a plain-string edit.
 // select, move and insert keep their names and add the vocabulary's fields to
 // the former ones (node_id, parent_id stay for the composition host); apply
 // and change are new names, followed by sf-composition-overlay-action and
-// -edit with their former details until 2026-12-01 (aliases.json).
+// -edit with their former details until 2026-12-01 (aliases.json). Since
+// 2026-11-03 the tag is sf-editor-overlay: each name is also sent under the
+// former tag (sf-composition-overlay-*, the same detail) until 2027-01-01.
 export const OVERLAY_EVENTS = Object.freeze({
+  select: 'sf-editor-overlay-select',
+  action: 'sf-editor-overlay-apply',
+  insert: 'sf-editor-overlay-insert',
+  move: 'sf-editor-overlay-move',
+  edit: 'sf-editor-overlay-change',
+});
+
+export const OVERLAY_EVENTS_FORMER_TAG = Object.freeze({
   select: 'sf-composition-overlay-select',
   action: 'sf-composition-overlay-apply',
   insert: 'sf-composition-overlay-insert',
   move: 'sf-composition-overlay-move',
   edit: 'sf-composition-overlay-change',
 });
+const FORMER_TAG_NAME = new Map(Object.keys(OVERLAY_EVENTS).map((key) => [OVERLAY_EVENTS[key], OVERLAY_EVENTS_FORMER_TAG[key]]));
 
 export const OVERLAY_EVENTS_LEGACY = Object.freeze({
   action: 'sf-composition-overlay-action',
@@ -249,11 +261,11 @@ function moveDetail(id, descriptor) {
   return { node_id: id, ...descriptor, ids: [id], id, parent: descriptor.parent_id ?? null, position: descriptor.index };
 }
 
-// base: the class made from sf-composition-overlay's component.json
+// base: the class made from sf-editor-overlay's component.json
 // (manifest-host.mjs); without it the overlay is a plain element.
 export function defineCompositionOverlay(registry = globalThis.customElements, { base = null } = {}) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
-  const existing = registry.get('sf-composition-overlay');
+  const existing = registry.get('sf-editor-overlay');
   if (existing) return existing;
 
   class SfCompositionOverlay extends (base || globalThis.HTMLElement) {
@@ -320,7 +332,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
 
     get messages() {
       // In the page's language through pageText, as every component's words are.
-      const words = Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, this, 'sf-composition-overlay')]));
+      const words = Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, this, 'sf-editor-overlay')]));
       return { ...words, ...(this.customMessages || {}) };
     }
 
@@ -633,8 +645,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       return Boolean(dragSession && groups.includes(dragSession.group));
     }
 
+    // The overlay's aliases.json sends the name under the former tag after
+    // it; an overlay defined without its manifest sends it here.
     emit(type, detail) {
-      this.dispatchEvent(new globalThis.CustomEvent(type, { bubbles: true, composed: true, detail: Object.freeze(detail) }));
+      const frozen = Object.freeze(detail);
+      const allowed = this.dispatchEvent(new globalThis.CustomEvent(type, { bubbles: true, composed: true, detail: frozen }));
+      if (!this.__sfAliases && FORMER_TAG_NAME.has(type)) this.dispatchEvent(new globalThis.CustomEvent(FORMER_TAG_NAME.get(type), { bubbles: true, composed: true, detail: frozen }));
+      return allowed;
     }
 
     // A renamed event: the overlay's aliases.json sends the former name after
@@ -644,6 +661,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const event = new globalThis.CustomEvent(OVERLAY_EVENTS[key], { bubbles: true, composed: true, cancelable, detail: Object.freeze(detail) });
       let allowed = this.dispatchEvent(event);
       if (!this.__sfAliases) {
+        const former = new globalThis.CustomEvent(OVERLAY_EVENTS_FORMER_TAG[key], { bubbles: true, composed: true, cancelable, detail: event.detail });
+        allowed = this.dispatchEvent(former) && allowed;
+        if (former.defaultPrevented) event.preventDefault();
         const legacy = new globalThis.CustomEvent(OVERLAY_EVENTS_LEGACY[key], { bubbles: true, composed: true, cancelable, detail: Object.freeze(LEGACY_DETAIL[key](detail)) });
         allowed = this.dispatchEvent(legacy) && allowed;
       }
@@ -960,7 +980,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.live.textContent = `${format(this.messages.selected, { label })}, ${format(this.messages.position, { index: siblings.indexOf(node) + 1, total: siblings.length })}`;
       }
       if (focus) this.tree.focus();
-      if (emit) this.dispatchEvent(new globalThis.CustomEvent(OVERLAY_EVENTS.select, { bubbles: true, composed: true, detail: Object.freeze({ ids: id === null ? [] : [id], id, node_id: id }) }));
+      if (emit) this.emit(OVERLAY_EVENTS.select, { ids: id === null ? [] : [id], id, node_id: id });
       return this;
     }
 
@@ -1159,7 +1179,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const target = { parent_id: button.dataset.parent, slot: button.dataset.slot, index: Number(button.dataset.index) };
       this.setInsertionTarget(target);
       this.positionInsertions();
-      this.dispatchEvent(new globalThis.CustomEvent(OVERLAY_EVENTS.insert, { bubbles: true, composed: true, detail: Object.freeze({ ...target, parent: target.parent_id }) }));
+      this.emit(OVERLAY_EVENTS.insert, { ...target, parent: target.parent_id });
     }
 
     renderTree() {
@@ -1793,7 +1813,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       return true;
     }
 
-    /** Ends the inline edit: commit emits sf-composition-overlay-edit (cancelable) when the text changed; cancel restores it. */
+    /** Ends the inline edit: commit emits sf-editor-overlay-change, then sf-composition-overlay-change and -edit (cancelable) when the text changed; cancel restores it. */
     finishEdit(commit) {
       const editing = this.editing;
       if (!editing) return;
@@ -1818,8 +1838,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
   }
 
-  registry.define('sf-composition-overlay', SfCompositionOverlay);
+  registry.define('sf-editor-overlay', SfCompositionOverlay);
+  // The former tag sf-composition-overlay is a dated alias (a subclass, noted once).
+  defineTagAliases(SfCompositionOverlay, 'sf-editor-overlay', { define: (name, Class) => registry.define(name, Class) });
   return SfCompositionOverlay;
 }
 
-export default { OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes, shortcutMatches };
+export default { OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes, shortcutMatches };

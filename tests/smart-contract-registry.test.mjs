@@ -18,7 +18,7 @@ test("whole composite manifests are generated into the searchable registry", () 
   // count that drifted -- a component appearing in the registry by accident is
   // exactly what this would otherwise miss.
   assert.equal(registry.entries.length, 66);
-  for (const id of ["smart.sortable", "smart.composition-overlay", "smart.editor-inline"]) assert.ok(registry.entries.some((entry) => entry.id === id), id);
+  for (const id of ["smart.sortable", "smart.editor-overlay", "smart.editor-inline"]) assert.ok(registry.entries.some((entry) => entry.id === id), id);
   // The Pro components are not part of the free registry (package pro).
   for (const id of ["smart.admin-menu", "smart.data-view", "smart.data-view-composite", "smart.property-view"]) {
     assert.ok(!registry.entries.some((entry) => entry.id === id), `${id} is in package pro`);

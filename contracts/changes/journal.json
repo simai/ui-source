@@ -4287,6 +4287,102 @@
       },
       "owner": "ui-source",
       "source": "src/smart/image-field/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-image/component.json"
+    },
+    {
+      "id": "tag-sf-composition-overlay-to-sf-editor-overlay",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-composition-overlay is sf-editor-overlay (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-editor-overlay's class, the Loader's rule lists it, the Framework's sheets match :is(sf-editor-overlay, sf-composition-overlay), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-composition-overlay-select, sf-composition-overlay-apply, sf-composition-overlay-insert, sf-composition-overlay-move, sf-composition-overlay-change).",
+      "items": [
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay",
+          "to": "sf-editor-overlay"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-select",
+          "to": "sf-editor-overlay-select"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-apply",
+          "to": "sf-editor-overlay-apply"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-insert",
+          "to": "sf-editor-overlay-insert"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-move",
+          "to": "sf-editor-overlay-move"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-change",
+          "to": "sf-editor-overlay-change"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-action",
+          "to": "sf-editor-overlay-apply"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-edit",
+          "to": "sf-editor-overlay-change"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-composition-overlay></sf-composition-overlay>",
+        "after": "<sf-editor-overlay></sf-editor-overlay>"
+      },
+      "manual": "Write <sf-editor-overlay> for <sf-composition-overlay> in markup and sf-editor-overlay for sf-composition-overlay in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-editor-overlay, or both names through SF.tags.selector('sf-editor-overlay') while the alias lives; a class or a custom property spelled like the old tag (.sf-composition-overlay, --sf-composition-overlay-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/editor-overlay/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-composition-overlay-to-editor-overlay",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-editor-overlay is served from smart/editor-overlay/ since its folder took the new tag's name: js/editor-overlay.js, loader bundle cl-editor-overlay. The old path keeps working until remove_after: smart/composition-overlay/js/composition-overlay.js is a forwarding script that notes the path in SF.deprecations and loads smart/editor-overlay/js/editor-overlay.js, the Loader forwards the bundle name cl-composition-overlay to cl-editor-overlay (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.composition-overlay is a dated alias of smart.editor-overlay, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-editor-overlay",
+          "from": "smart/composition-overlay/js/composition-overlay.js",
+          "to": "smart/editor-overlay/js/editor-overlay.js",
+          "match": "smart/composition-overlay/js/composition-overlay(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-composition-overlay",
+          "to": "cl-editor-overlay",
+          "match": "['\"]cl-composition-overlay['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.composition-overlay",
+          "to": "smart.editor-overlay",
+          "match": "['\"]smart\\.composition-overlay['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/editor-overlay/ for smart/composition-overlay/ and editor-overlay for composition-overlay in the file names (js/editor-overlay.js, js/editor-overlay.min.js); in a product rule's relation write cl-editor-overlay for cl-composition-overlay, and in a manifest or a package contract smart.editor-overlay for smart.composition-overlay. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/composition-overlay/js/composition-overlay.js\"></script>",
+        "after": "<script src=\"/distr/smart/editor-overlay/js/editor-overlay.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/composition-overlay/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/editor-overlay/component.json"
     }
   ]
 }

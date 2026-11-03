@@ -663,4 +663,4 @@ export function defineInlineEditor(registry = globalThis.customElements, { base 
   return SfInlineEditor;
 }
 
-export default { INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };
+export default { INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };

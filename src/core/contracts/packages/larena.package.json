@@ -186,7 +186,7 @@
       "folder": "mail-canvas",
       "requires": [
         "smart.button-group",
-        "smart.composition-overlay"
+        "smart.editor-overlay"
       ]
     },
     {

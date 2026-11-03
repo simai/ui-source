@@ -7,7 +7,7 @@
 // makes from it; the edited element sends sf-inline-editor-input, -change and
 // -cancel {id, content}, the former sf-inline-edit-* following until
 // 2026-12-01.
-import { INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset } from '../../core/js/composition/inline-editor.mjs';
+import { INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset } from '../../core/js/composition/inline-editor.mjs';
 import { manifestHost } from '../../core/js/composition/manifest-host.mjs';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -16,5 +16,5 @@ import ru from './lang/ru.json';
 import './scss/index.scss';
 
 globalThis.SF = globalThis.SF || {};
-globalThis.SF.InlineEditor = Object.freeze({ INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, readInlineDom, renderInlineDom, startInlineEdit, textOffset });
+globalThis.SF.InlineEditor = Object.freeze({ INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, readInlineDom, renderInlineDom, startInlineEdit, textOffset });
 defineInlineEditor(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});

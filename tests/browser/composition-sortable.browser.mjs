@@ -44,9 +44,9 @@ async function mouseDrag(fromSelector, to, { steps = 12, hold = 0 } = {}) {
 await open();
 
 // The editor surfaces are Smart components fetched from the Smart root on demand.
-const editorBundles = await page.evaluate(() => performance.getEntriesByType('resource').map((entry) => entry.name).filter((name) => /\/smart\/(sortable|composition-overlay|editor-inline|inline-editor)\//u.test(name)).map((name) => name.replace(/^.*\/smart\//u, '')).sort());
+const editorBundles = await page.evaluate(() => performance.getEntriesByType('resource').map((entry) => entry.name).filter((name) => /\/smart\/(sortable|editor-overlay|composition-overlay|editor-inline|inline-editor)\//u.test(name)).map((name) => name.replace(/^.*\/smart\//u, '')).sort());
 observations.editorBundles = editorBundles;
-check(['composition-overlay/css/composition-overlay.css', 'composition-overlay/js/composition-overlay.js', 'sortable/css/sortable.css', 'sortable/js/sortable.js'].every((file) => editorBundles.includes(file)), 'sortable and overlay load their own Smart JS and CSS', editorBundles);
+check(['editor-overlay/css/editor-overlay.css', 'editor-overlay/js/editor-overlay.js', 'sortable/css/sortable.css', 'sortable/js/sortable.js'].every((file) => editorBundles.includes(file)), 'sortable and overlay load their own Smart JS and CSS', editorBundles);
 check(!editorBundles.some((file) => /^(editor-inline|inline-editor)\//u.test(file)), 'the inline editor is not fetched on a page without sf-editor-inline', editorBundles);
 check(await page.evaluate(() => getComputedStyle(document.querySelector('sf-sortable')).display === 'block'), 'Smart sortable styles apply');
 check(await page.evaluate(() => {

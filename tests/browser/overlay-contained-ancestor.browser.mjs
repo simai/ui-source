@@ -33,7 +33,7 @@ const page_html = `<!doctype html><html lang="ru" class="theme-light"><head><met
 </style></head><body>
 <div class="bar"></div>
 <div class="well contained" id="well">
-  <sf-composition-overlay id="ov" frame="f" label="Письмо"></sf-composition-overlay>
+  <sf-editor-overlay id="ov" frame="f" label="Письмо"></sf-editor-overlay>
   <iframe id="f" sandbox="allow-same-origin" width="400" height="300"
     srcdoc='<body style="margin:0"><div data-b="one" style="height:80px">one</div><div data-b="two" style="height:80px">two</div></body>'></iframe>
 </div>
@@ -62,7 +62,7 @@ try {
   const page = await browser.newPage({locale: 'ru-RU', viewport: {width: 900, height: 700}});
   page.on('pageerror', (error) => failures.push({name: 'page error', said: error.message}));
   await page.goto(`http://127.0.0.1:${server.address().port}/probe`);
-  await page.waitForFunction(() => customElements.get('sf-composition-overlay'), null, {timeout: 25000});
+  await page.waitForFunction(() => customElements.get('sf-editor-overlay'), null, {timeout: 25000});
   await page.waitForTimeout(400);
   const read = async (contained) => page.evaluate(async (keep) => {
     const well = document.getElementById('well');

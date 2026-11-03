@@ -35,7 +35,7 @@
 </head>
 <body>
   <header><a id="before" href="#start">До холста</a></header>
-  <sf-composition-overlay id="overlay" frame="letter"></sf-composition-overlay>
+  <sf-editor-overlay id="overlay" frame="letter"></sf-editor-overlay>
   <div id="scroller">
     <div id="zoombox"><iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Письмо"></iframe></div>
     <div class="lab-spacer"></div>
@@ -122,7 +122,7 @@
     core.src = `${assets}/core/js/core.js`;
     core.onload = async () => {
       // sf-composition-overlay is a Smart component; the loader fetches it on demand.
-      await customElements.whenDefined('sf-composition-overlay');
+      await customElements.whenDefined('sf-editor-overlay');
       const overlay = document.getElementById('overlay');
       const first = loaded();
       frame.srcdoc = letterHtml('Летняя распродажа');

@@ -38,7 +38,7 @@ const PHASE_A = [
   'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
   'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'country-code', 'tag', 'pagination',
   'input-image', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
-  'file-upload', 'composition-overlay',
+  'file-upload', 'editor-overlay',
   // new in the 1.4 form
   'progress-ring',
   // Made in the 1.4 form from the start (2026-10-28).

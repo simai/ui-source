@@ -181,7 +181,7 @@ check(lightBackground !== view.toolbarBackground, 'toolbar colors follow the the
 // The host removes the selected node: the overlay deselects it, announces the
 // change and hides the toolbar and insertion places instead of leaving them behind.
 const removal = await page.evaluate(async () => {
-  const overlay = document.querySelector('sf-composition-overlay');
+  const overlay = document.querySelector('sf-editor-overlay');
   const element = document.querySelector('#canvas [data-sf-composition-id="main-lead"]');
   const before = window.lab.events.length;
   element.remove();
@@ -198,7 +198,7 @@ check(removal.toolbarHidden && removal.insertions === 0 && removal.events.some((
 // parent (here the first node of the new Document) selected.
 await open();
 const keyboardRemoval = await page.evaluate(async () => {
-  const overlay = document.querySelector('sf-composition-overlay');
+  const overlay = document.querySelector('sf-editor-overlay');
   document.querySelector('#canvas [data-sf-composition-id="main-lead"]').click();
   await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
   document.querySelector('.sf-composition-overlay-toolbar button').focus();

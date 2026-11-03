@@ -52,7 +52,7 @@ test('editor surfaces are Smart components, not part of Core', async () => {
   const entries = {
     // Each over the class its component.json makes (standard 1.3.8,
     // core/js/composition/manifest-host.mjs).
-    'composition-overlay': ['sf-composition-overlay', /defineCompositionOverlay\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
+    'editor-overlay': ['sf-editor-overlay', /defineCompositionOverlay\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
     sortable: ['sf-sortable', /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest/u],
     'editor-inline': ['sf-editor-inline', /defineInlineEditor\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
   };
@@ -122,9 +122,11 @@ test('Smart manifests declare every event state the code emits', async () => {
   const emitted = new Set([...sortable.matchAll(/state: '([a-z]+)'|finish\([^,]+, '([a-z]+)'\)/gu)].map((match) => match[1] || match[2]));
   const manifest = JSON.parse(await readFile(new URL('../src/smart/sortable/smart.manifest.json', import.meta.url), 'utf8'));
   assert.deepEqual([...emitted].sort(), [...manifest.events['sf-sortable-state'].payload.properties.state.enum].sort());
-  const { OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY } = await import('../src/core/js/composition/overlay.mjs');
-  const overlayManifest = JSON.parse(await readFile(new URL('../src/smart/composition-overlay/smart.manifest.json', import.meta.url), 'utf8'));
-  assert.deepEqual([...Object.values(OVERLAY_EVENTS), ...Object.values(OVERLAY_EVENTS_LEGACY)].sort(), Object.keys(overlayManifest.events).sort());
+  // The overlay's names, the same names under its former tag
+  // sf-composition-overlay (until 2027-01-01) and the 2026-12-01 legacy ones.
+  const { OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY } = await import('../src/core/js/composition/overlay.mjs');
+  const overlayManifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
+  assert.deepEqual([...Object.values(OVERLAY_EVENTS), ...Object.values(OVERLAY_EVENTS_FORMER_TAG), ...Object.values(OVERLAY_EVENTS_LEGACY)].sort(), Object.keys(overlayManifest.events).sort());
   // The inline editor sends its names, then the names under its former tag
   // sf-inline-editor (until 2027-01-01) and, until 2026-12-01, the former ones
   // (standard 1.3.8 §16.20): the manifest names all three.
@@ -214,19 +216,19 @@ test('framed mode is an opt-in beside the Composition Document mode', async () =
   assert.match(source, /this\.sendRenamed\('edit', \{ id: editing\.id, value, previous: editing\.previous \}, true\)/u);
   // Disconnect stops listening to the frame's document and window.
   assert.match(source, /unbind\(\) \{\n\s+this\.finishEdit\(false\);\n\s+this\.frameConnection\?\.abort\(\);/u);
-  const entry = await readFile(new URL('../src/smart/composition-overlay/index.js', import.meta.url), 'utf8');
-  assert.match(entry, /SF\.CompositionOverlay = Object\.freeze\(\{ OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, overlayNodes \}\)/u);
-  const manifest = JSON.parse(await readFile(new URL('../src/smart/composition-overlay/smart.manifest.json', import.meta.url), 'utf8'));
+  const entry = await readFile(new URL('../src/smart/editor-overlay/index.js', import.meta.url), 'utf8');
+  assert.match(entry, /SF\.CompositionOverlay = Object\.freeze\(\{ OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, overlayNodes \}\)/u);
+  const manifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   for (const method of ['attach', 'attachFrame', 'setDocument', 'setNodes', 'edit', 'refresh', 'select']) assert.ok(manifest.methods[method], method);
   assert.equal(manifest.inputs.properties.frame.type, 'string');
   // The former edit event keeps its payload beside the new change (standard 1.3.8 §16.20).
   assert.deepEqual(manifest.events['sf-composition-overlay-edit'].payload.required, ['node_id', 'value', 'previous']);
-  assert.deepEqual(manifest.events['sf-composition-overlay-change'].payload.required, ['id', 'value', 'previous']);
+  assert.deepEqual(manifest.events['sf-editor-overlay-change'].payload.required, ['id', 'value', 'previous']);
   assert.deepEqual(Object.keys(manifest.contracts.nodes.items.properties).sort(), ['editable', 'element', 'id', 'kind', 'label', 'parent', 'rect']);
   // The Document mode's events keep their payloads: the vocabulary's fields
   // and, beside them, the ones the composition host reads (component.json
   // carries both since the registry is generated, standard 1.4).
-  for (const field of ['parent_id', 'slot', 'index', 'parent']) assert.ok(manifest.events['sf-composition-overlay-insert'].payload.required.includes(field), `insert ${field}`);
-  for (const field of ['node_id', 'parent_id', 'index', 'ids', 'id', 'parent', 'position']) assert.ok(manifest.events['sf-composition-overlay-move'].payload.required.includes(field), `move ${field}`);
-  assert.ok(manifest.events['sf-composition-overlay-select'].payload.properties.node_id, 'select node_id');
+  for (const field of ['parent_id', 'slot', 'index', 'parent']) assert.ok(manifest.events['sf-editor-overlay-insert'].payload.required.includes(field), `insert ${field}`);
+  for (const field of ['node_id', 'parent_id', 'index', 'ids', 'id', 'parent', 'position']) assert.ok(manifest.events['sf-editor-overlay-move'].payload.required.includes(field), `move ${field}`);
+  assert.ok(manifest.events['sf-editor-overlay-select'].payload.properties.node_id, 'select node_id');
 });

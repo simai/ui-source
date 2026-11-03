@@ -38,7 +38,7 @@ const pages = {
     #well { height: 500px; overflow: auto; padding: 56px 24px 24px; scroll-behavior: auto; background: #f4f4f8; ${attrs.get('contain') ? 'contain: layout;' : ''} }
     #letter { display: block; width: 600px; margin-inline: auto; border: 0; background: #fff }
   </style></head><body><div class="bar"></div><div id="well">
-    <sf-composition-overlay id="ov" label="Письмо" ${attrs.get('side') ? 'placement="side"' : ''}></sf-composition-overlay>
+    <sf-editor-overlay id="ov" label="Письмо" ${attrs.get('side') ? 'placement="side"' : ''}></sf-editor-overlay>
     <iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Письмо"></iframe>
   </div></body></html>`,
   // No room above the first block: the toolbar must still leave it alone.
@@ -47,7 +47,7 @@ const pages = {
     #well { height: 500px; overflow: auto; }
     #letter { display: block; width: 600px; margin-inline: auto; border: 0 }
   </style></head><body><div id="well">
-    <sf-composition-overlay id="ov" label="Письмо"></sf-composition-overlay>
+    <sf-editor-overlay id="ov" label="Письмо"></sf-editor-overlay>
     <iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Письмо"></iframe>
   </div></body></html>`,
   // Outside the scroller the overlay follows by script, as before.
@@ -55,7 +55,7 @@ const pages = {
     html, body { margin: 0; height: 100% }
     #well { height: 500px; overflow: auto; padding: 56px 24px 24px }
     #letter { display: block; width: 600px; margin-inline: auto; border: 0 }
-  </style></head><body><sf-composition-overlay id="ov" label="Письмо"></sf-composition-overlay><div id="well">
+  </style></head><body><sf-editor-overlay id="ov" label="Письмо"></sf-editor-overlay><div id="well">
     <iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Письмо"></iframe>
   </div></body></html>`,
   // A Composition canvas on the page itself, with {id, label} callers.
@@ -64,7 +64,7 @@ const pages = {
     #canvas { padding: 120px 40px 900px; }
     #canvas p { margin: 0; height: 100px; background: #eee; border-bottom: 1px solid #ccc }
   </style></head><body>
-    <sf-composition-overlay id="ov" for="canvas"></sf-composition-overlay>
+    <sf-editor-overlay id="ov" for="canvas"></sf-editor-overlay>
     <div id="canvas"><section data-sf-composition-id="root"><p data-sf-composition-id="a">A</p><p data-sf-composition-id="b">B</p><p data-sf-composition-id="c">C</p></section></div>
   </body></html>`,
 };
@@ -104,7 +104,7 @@ const check = (value, name, details = null) => { if (!value) failures.push({name
 // patches its letter does, and tells the overlay the new order.
 const prepareFrame = async (page, path, {actions = ACTIONS} = {}) => {
   await page.goto(`${base}${path}`);
-  await page.waitForFunction(() => customElements.get('sf-composition-overlay'), null, {timeout: 25000});
+  await page.waitForFunction(() => customElements.get('sf-editor-overlay'), null, {timeout: 25000});
   await page.evaluate(async ({letter, actions}) => {
     const frame = document.getElementById('letter');
     const overlay = document.getElementById('ov');
@@ -114,7 +114,7 @@ const prepareFrame = async (page, path, {actions = ACTIONS} = {}) => {
     frame.style.height = `${doc.documentElement.offsetHeight}px`;
     window.lab = {loads: 0, heard: [], positions: 0};
     frame.addEventListener('load', () => { window.lab.loads += 1; });
-    for (const verb of ['select', 'apply', 'insert', 'move']) overlay.addEventListener(`sf-composition-overlay-${verb}`, (event) => window.lab.heard.push([verb, event.detail]));
+    for (const verb of ['select', 'apply', 'insert', 'move']) overlay.addEventListener(`sf-editor-overlay-${verb}`, (event) => window.lab.heard.push([verb, event.detail]));
     const position = overlay.position;
     overlay.position = function counted() { window.lab.positions += 1; return position.call(this); };
     window.lab.block = (id) => doc.querySelector(`[data-b="${id}"]`);
@@ -470,12 +470,12 @@ try {
 
   // {id, label} callers: the same text buttons, the same events, on a canvas too.
   await page.goto(`${base}/canvas`);
-  await page.waitForFunction(() => customElements.get('sf-composition-overlay'), null, {timeout: 25000});
+  await page.waitForFunction(() => customElements.get('sf-editor-overlay'), null, {timeout: 25000});
   const plain = await page.evaluate(async () => {
     const overlay = document.getElementById('ov');
     const before = document.getElementById('canvas').innerHTML;
     const heard = [];
-    overlay.addEventListener('sf-composition-overlay-apply', (event) => heard.push(event.detail));
+    overlay.addEventListener('sf-editor-overlay-apply', (event) => heard.push(event.detail));
     overlay.addEventListener('sf-composition-overlay-action', (event) => heard.push(event.detail));
     overlay.attach(document.getElementById('canvas'));
     overlay.setDocument({schema: 'simai.composition.document.v1', id: 'd', profile: 'ui-layout', root: {id: 'root', type: 'layout.section', slots: {default: [{id: 'a', type: 'content.paragraph'}, {id: 'b', type: 'content.paragraph'}, {id: 'c', type: 'content.paragraph'}]}}}, {describe: (node) => ({label: node.id})});

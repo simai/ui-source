@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-composition-overlay'] = {
-  tags: ['sf-composition-overlay'],
+SF.RuleLoader['cl-editor-overlay'] = {
+  tags: ['sf-editor-overlay', 'sf-composition-overlay'],
   type: 'smart',
   mode: 'smart',
   js: true,

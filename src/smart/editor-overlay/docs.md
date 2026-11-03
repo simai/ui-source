@@ -1,4 +1,4 @@
-# sf-composition-overlay
+# sf-editor-overlay
 
 Smart Composition overlay — слой редактора поверх отрисованного Composition
 Document: рамки при наведении и выборе, панель действий над блоком, одно место
@@ -7,17 +7,17 @@ Document: рамки при наведении и выборе, панель д�
 и его digest одинаковы с открытым и закрытым редактором.
 
 Код загружается по требованию: загрузчик Framework подключает
-`smart/composition-overlay` только на страницах с тегом `sf-composition-overlay`.
+`smart/composition-overlay` только на страницах с тегом `sf-editor-overlay`.
 
 ## Базовое использование
 
 ```html
-<sf-composition-overlay id="overlay" for="canvas" accepts="blocks"></sf-composition-overlay>
+<sf-editor-overlay id="overlay" for="canvas" accepts="blocks"></sf-editor-overlay>
 <div id="canvas"><!-- SF.Composition.render(document).html --></div>
 ```
 
 ```js
-await customElements.whenDefined('sf-composition-overlay');
+await customElements.whenDefined('sf-editor-overlay');
 overlay.attach(canvas);
 overlay.setDocument(document, {describe: (node) => ({label: titleOf(node), badges: node.shared ? ['Общий'] : []})});
 overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'remove', label: 'Удалить'}]);
@@ -166,12 +166,12 @@ needs no script of its own (`sandbox="allow-same-origin"` is enough): the
 overlay listens to the frame's document from the host page.
 
 ```html
-<sf-composition-overlay id="overlay" frame="letter" label="Letter"></sf-composition-overlay>
+<sf-editor-overlay id="overlay" frame="letter" label="Letter"></sf-editor-overlay>
 <iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Letter"></iframe>
 ```
 
 ```js
-await customElements.whenDefined('sf-composition-overlay');
+await customElements.whenDefined('sf-editor-overlay');
 const frame = document.getElementById('letter');
 frame.addEventListener('load', () => {
   const doc = frame.contentDocument;

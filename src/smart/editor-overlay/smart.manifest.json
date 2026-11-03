@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.composition-overlay",
-  "version": "1.3.2",
+  "id": "smart.editor-overlay",
+  "version": "1.4.0",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -18,7 +18,7 @@
     "responsive",
     "theme"
   ],
-  "custom_element": "sf-composition-overlay",
+  "custom_element": "sf-editor-overlay",
   "templates": [
     "default"
   ],
@@ -423,7 +423,7 @@
     }
   },
   "events": {
-    "sf-composition-overlay-select": {
+    "sf-editor-overlay-select": {
       "summary": "A node was selected (or the selection cleared): vocabulary 1.1.5 §5 select; the detail keeps node_id for the composition host",
       "payload": {
         "type": "object",
@@ -442,9 +442,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-composition-overlay-apply": {
+    "sf-editor-overlay-apply": {
       "summary": "An action of the toolbar was chosen for the selected node: one entry's own action (vocabulary §5 apply, standard §18.3)",
       "payload": {
         "type": "object",
@@ -471,7 +472,7 @@
       },
       "canonical": true
     },
-    "sf-composition-overlay-insert": {
+    "sf-editor-overlay-insert": {
       "summary": "An insertion point was chosen, or a library item dropped on the canvas: the place {parent, slot, index} and the item when one was dragged; the detail keeps parent_id for the composition host",
       "payload": {
         "type": "object",
@@ -506,9 +507,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-composition-overlay-move": {
+    "sf-editor-overlay-move": {
       "summary": "A node was moved to a place by pointer or keyboard: one manual move (vocabulary §5 move, {id, parent, position}); the detail keeps node_id, parent_id and index for the composition host",
       "payload": {
         "type": "object",
@@ -546,9 +548,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-composition-overlay-change": {
+    "sf-editor-overlay-change": {
       "summary": "A plain-string edit was committed; cancelled, the text shows what it showed before",
       "payload": {
         "type": "object",
@@ -587,7 +590,7 @@
           }
         }
       },
-      "alias_of": "sf-composition-overlay-apply"
+      "alias_of": "sf-editor-overlay-apply"
     },
     "sf-composition-overlay-edit": {
       "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back. Its detail is the former one, {node_id, value, previous}, not sf-composition-overlay-change's {id, value, previous}.",
@@ -610,7 +613,42 @@
           }
         }
       },
-      "alias_of": "sf-composition-overlay-change"
+      "alias_of": "sf-editor-overlay-change"
+    },
+    "sf-composition-overlay-select": {
+      "summary": "Dated alias of sf-editor-overlay-select until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-select"
+    },
+    "sf-composition-overlay-apply": {
+      "summary": "Dated alias of sf-editor-overlay-apply until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-apply"
+    },
+    "sf-composition-overlay-insert": {
+      "summary": "Dated alias of sf-editor-overlay-insert until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-insert"
+    },
+    "sf-composition-overlay-move": {
+      "summary": "Dated alias of sf-editor-overlay-move until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-move"
+    },
+    "sf-composition-overlay-change": {
+      "summary": "Dated alias of sf-editor-overlay-change until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-change"
     }
   },
   "state": {
@@ -729,8 +767,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-composition-overlay>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-composition-overlay>",
+        "since": "1.4.0",
+        "replacement": "<sf-editor-overlay>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -739,24 +785,24 @@
     "source_revision": "38559ce2a0e50b559ede7c7030676e11862d62d2",
     "source_artifacts": [
       {
-        "path": "src/smart/composition-overlay/index.js",
-        "sha256": "3f54d4c0f11d5a20b44b511ee085fd9036ea2974e7d395f186dfdc57b6d656f4"
+        "path": "src/smart/editor-overlay/index.js",
+        "sha256": "522bc3f0db8944de6ca3854f8050e2e30cf5751ba99df91f753d88c7d54ba1d6"
       },
       {
-        "path": "src/smart/composition-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "3685cf68006098528466622bfc0eb72fa403ef90a1843d8bde19c89706d72bf5"
+        "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",
+        "sha256": "dae085132d8514aad7eea32b775feecec01a6a3ad10d270e50299a8aa76bd3c3"
       },
       {
-        "path": "src/smart/composition-overlay/rule.js",
-        "sha256": "38c8f44b95db27ea8fadcdaad1e19fca4aeb710a0ee8c53e814ae5b4a363ba84"
+        "path": "src/smart/editor-overlay/rule.js",
+        "sha256": "1d2896589fe69491200ecfa5a3a208d055b87a54809f4661395a802e0b82c64b"
       },
       {
-        "path": "src/smart/composition-overlay/docs.md",
-        "sha256": "ebd91d04f18da117fed4a48fda62d7414f46a8ac8a3e31f86a3d2746525e0f71"
+        "path": "src/smart/editor-overlay/docs.md",
+        "sha256": "d156d10d125aec8adf04199a03741f2c039a5345544f994cba986acc7266b9fc"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "608bf1f6a0f546157a7543cd1617750dcbcf52db488ee5b2c528d66f0b65242c"
+        "sha256": "c47c16c8988eedcdab7cbfe4c65b92f02fa5aa155a7d1729360f9aa8a3bd6901"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
@@ -795,7 +841,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-composition-overlay id=\"overlay\" for=\"canvas\" accepts=\"blocks\"></sf-composition-overlay><div id=\"canvas\"></div>",
+    "minimal_example": "<sf-editor-overlay id=\"overlay\" for=\"canvas\" accepts=\"blocks\"></sf-editor-overlay><div id=\"canvas\"></div>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

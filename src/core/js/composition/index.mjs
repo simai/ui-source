@@ -31,7 +31,7 @@ import { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor, defineFragmentBoun
 
 const DOCUMENT_SCHEMA = 'simai.composition.document.v1';
 
-// The editor surfaces (sf-composition-overlay, sf-sortable, sf-inline-editor)
+// The editor surfaces (sf-editor-overlay, sf-sortable, sf-editor-inline)
 // are Smart components loaded on demand, so pages that only render stay small.
 // startInlineEdit keeps its Core name and delegates to the loaded editor.
 function startInlineEdit(element, options) {

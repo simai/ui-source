@@ -497,45 +497,6 @@
     {
       "backend_adapters": [],
       "capabilities": [
-        "interaction",
-        "keyboard",
-        "responsive",
-        "theme"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "smart.icon-button",
-          "smart.sortable",
-          "smart.tooltip"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-composition-overlay",
-      "id": "smart.composition-overlay",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "1eea4a0a8e4cbdb449353fc34f259ae47257ca231f1aa9af0332593aca40d00b",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
-      "tags": [
-        "composition",
-        "editor",
-        "overlay"
-      ],
-      "title": "Composition overlay"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
         "render",
         "interaction",
         "keyboard",
@@ -786,7 +747,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-inline/smart.manifest.json",
-      "manifest_sha256": "bcad4d1b32a5285b6ed232c1cad219b1dc155797043fbdfd726ba936da73f206",
+      "manifest_sha256": "aa47aa00636b863d860108a736dcfe1848e324c927956782c4f35bda8bb38275",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -800,6 +761,45 @@
         "text"
       ],
       "title": "Inline editor"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive",
+        "theme"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon-button",
+          "smart.sortable",
+          "smart.tooltip"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-editor-overlay",
+      "id": "smart.editor-overlay",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
+      "manifest_sha256": "df3d9e91dae8329ef3110ae139d7d3920904d21dbc01c18b51a0c441bdae6cdf",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
+      "tags": [
+        "composition",
+        "editor",
+        "overlay"
+      ],
+      "title": "Composition overlay"
     },
     {
       "backend_adapters": [],

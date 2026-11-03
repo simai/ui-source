@@ -53,7 +53,7 @@ const page = `<!doctype html><html lang="ru" class="theme-light"><head>
 <div id="region"><div class="sf-toast"></div></div>
 <div id="bar" class="sf-progress-bar" data-value="40"></div>
 <sf-spinner></sf-spinner>
-<sf-composition-overlay id="overlay"></sf-composition-overlay>
+<sf-editor-overlay id="overlay"></sf-editor-overlay>
 <script src="/distr/core/js/core.js"></script></body></html>`;
 
 const types = new Map([['.js', 'text/javascript'], ['.css', 'text/css'], ['.json', 'application/json'], ['.svg', 'image/svg+xml']]);
@@ -136,7 +136,7 @@ try {
   }
 
   report.language = await tab.evaluate(async () => {
-    await customElements.whenDefined('sf-composition-overlay');
+    await customElements.whenDefined('sf-editor-overlay');
     const overlay = document.querySelector('#overlay');
     const russian = overlay.messages;
     window.SF.language.use('en');
