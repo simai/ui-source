@@ -21,13 +21,14 @@ $table-active-bg: var(--sf-surface-transparent-select);
 $table-hover-color: var(--sf-on-surface);
 $table-hover-bg: var(--sf-surface-transparent-hover);
 
-// The cells on the space ladder (duplication audit 2026-11-03, A-4): the
-// half step was .5rem and the small table's quarter .25rem, the same lengths
-// on a phone, and now follow the ladder's adaptive steps like every control.
-$table-cell-padding-y: var(--sf-space-1\/2);
-$table-cell-padding-x: var(--sf-space-1\/2);
-$table-cell-padding-y-sm: var(--sf-space-1\/4);
-$table-cell-padding-x-sm: var(--sf-space-1\/4);
+// The cells keep their fixed lengths. Moving them to the adaptive space
+// ladder (duplication audit 2026-11-03, A-4) shifted every table that
+// inherits them -- the Pro view tables by 4px off the field-label axis at
+// 1440px -- so the ladder waits for a change that measures its consumers.
+$table-cell-padding-y: .5rem;
+$table-cell-padding-x: .5rem;
+$table-cell-padding-y-sm: .25rem;
+$table-cell-padding-x-sm: .25rem;
 
 $table-array-layout: (
     auto: auto,
