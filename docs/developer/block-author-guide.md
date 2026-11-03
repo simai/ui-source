@@ -346,8 +346,11 @@ Framework utility it becomes:
 The runtime prints the classes mobile first, a prefix only where the value
 changes, and puts them on the element that carries the node's
 `data-sf-composition-id`: `grid-col-1 md:grid-col-2 lg:grid-col-3 gap-6`. At
-the phone a value equal to the property's `default` prints nothing: the
-block draws its default without a class. The renderer writes no grid, gap,
+the phone a value equal to the property's `default` prints nothing when
+every screen keeps it: the block draws its default without a class. Once a
+wider screen differs, the phone's value (the default when unset) is printed
+as the base (core.runtime 1.26.0, G-36): `{"md": 3}` prints `grid-col-1
+md:grid-col-3`, never `md:grid-col-3` alone. The renderer writes no grid, gap,
 padding or visibility of its own and never an inline style for them; it gets
 the printed classes as `utilities` if it needs to know them. The block's own
 look (its colours, a picture's ratio) stays its sheet.
@@ -357,7 +360,7 @@ The parameter form shows the phone's value and lists the screens that differ
 a per-screen switch. `layout.area`, the text area of a layout, declares its
 `padding` and `hidden` this way, and `layout.columns` (1.1.0) its `columns`
 and `gap`: `{"columns": {"xs": 1, "md": 2, "lg": 3}, "gap": {"xs": 2, "md":
-4}}` draws `grid md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4`. A Document
+4}}` draws `grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4`. A Document
 written for `layout.columns` 1.0.0 (one integer for every screen, no gap)
 stays valid and draws that many columns on every screen with the type's own
 gap (`gap-4`).
@@ -440,7 +443,7 @@ columns draws no parts, as before; `padding_y: 0` prints `p-y-0`.
 A utility declaration may itself name a `part`, and `x-simai-utility` may be a
 list of declarations (one per part); a value may become several classes
 (`"grid grid-col-{value}"`), and a class a wider screen shares with a narrower
-one is not printed again (`md:grid md:grid-col-2 lg:grid-col-3`).
+one is not printed again (`{"md": 2, "lg": 3}` prints `grid grid-col-1 md:grid-col-2 lg:grid-col-3`).
 
 ## Smart elements in a block
 

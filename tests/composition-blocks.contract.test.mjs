@@ -162,7 +162,7 @@ test('layout.area: a text area whose padding and visibility are utilities per sc
   const area = { id: 'a', type: 'layout.area', props: { padding: { xs: 2, lg: 4 }, hidden: { md: true, lg: false } }, slots: { default: [paragraph('p', 'Text.')] } };
   const { html, diagnostics } = await render(layout(area));
   assert.deepEqual(diagnostics, []);
-  assert.equal(html, '<main data-sf-composition-id="root"><div class="md:hidden lg:block p-2 lg:p-4" data-sf-composition-area="" data-sf-composition-id="a"><p data-sf-composition-id="p">Text.</p></div></main>');
+  assert.equal(html, '<main data-sf-composition-id="root"><div class="block md:hidden lg:block p-2 lg:p-4" data-sf-composition-area="" data-sf-composition-id="a"><p data-sf-composition-id="p">Text.</p></div></main>');
   // The parameter form shows the phone's value and the screens that differ.
   const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.area');
   const projected = Composition.projectEditorFields(editor, BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.area'), area);
@@ -202,7 +202,7 @@ test('layout.columns 1.1.0: columns and gap per screen; a 1.0.0 Document stays v
   const responsive = layout(columns({ columns: { xs: 1, md: 2, lg: 3 }, gap: { xs: 2, md: 4 } }));
   assert.equal(validate(responsive).valid, true);
   const drawn = await render(responsive);
-  assert.match(drawn.html, /<div class="sf-composition-columns grid md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4" data-sf-composition-id="c">/u, 'mobile first, a prefix only where the value changes, no inline style');
+  assert.match(drawn.html, /<div class="sf-composition-columns grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4" data-sf-composition-id="c">/u, 'mobile first, a prefix only where the value changes, no inline style');
   assert.doesNotMatch(drawn.html, /style=/u);
   assert.equal(validate(layout(columns({ columns: { md: 13 } }))).valid, false, 'each screen\'s value is checked');
   assert.equal(validate(layout(columns({ gap: 9 }))).valid, false);
@@ -489,7 +489,7 @@ test('width reaches three elements; a section that sets width full and no space 
   assert.match(part('f'), /<section class="p-y-8" data-sf-composition-id="f"><p /u);
   // Every set at once, per screen where it makes sense.
   const all = await render(layout(section('s', { background: 'container', padding_y: { xs: 4, md: 8 }, width: 'normal', columns: { md: 2, lg: 3 }, gap: 4, align: { md: 'center' }, breakout: true, hidden: { xl: true } })));
-  assert.match(all.html, /<section class="md:text-center bg-surface-container container-breakout xl:hidden p-y-4 md:p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="md:grid md:grid-col-2 lg:grid-col-3 gap-4" data-sf-composition-part="content">/u);
+  assert.match(all.html, /<section class="md:text-center bg-surface-container container-breakout block xl:hidden p-y-4 md:p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-4" data-sf-composition-part="content">/u);
   assert.doesNotMatch(all.html, /style=/u);
   assert.equal(validate(layout(section('x', { width: 'huge' }))).valid, false);
   // The 1.0.0 form, when the Document asks for it: no parts, one class.
@@ -617,7 +617,7 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.equal(output.notices, undefined);
   const html = output.html;
   assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
-  assert.match(html, /<div data-sf-composition-id="g"><div class="grid md:grid md:grid-col-3 gap-4" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u);
+  assert.match(html, /<div data-sf-composition-id="g"><div class="grid grid-col-1 md:grid-col-3 gap-4" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u);
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
   assert.match(html, /<div data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
   assert.match(html, /<div data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
@@ -634,4 +634,17 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   const english = await render(layout({ id: 'b2', type: 'element.button' }));
   assert.match(english.html, /<sf-button text="Button"><\/sf-button>/u);
   assert.equal(validate(layout({ id: 'b3', type: 'element.button', props: { size: '3' } })).valid, false);
+});
+
+test('G-36: the phone\'s value is printed as the base once a wider screen differs, even when it is the default', () => {
+  const columns = extendRegistry().types.get('layout.columns');
+  const node = (props) => ({ id: 'c', type: 'layout.columns', props });
+  assert.deepEqual(utilityClasses(node({ columns: { xs: 1, md: 2 } }), columns), ['grid-col-1', 'md:grid-col-2']);
+  assert.deepEqual(utilityClasses(node({ columns: { md: 3 } }), columns), ['grid-col-1', 'md:grid-col-3'], 'unset at the phone: the default is the base');
+  // The default on every screen still prints nothing.
+  assert.deepEqual(utilityClasses(node({ columns: 1 }), columns), []);
+  assert.deepEqual(utilityClasses(node({ columns: { xs: 1, lg: 1 } }), columns), []);
+  const area = extendRegistry().types.get('layout.area');
+  assert.deepEqual(utilityClasses({ id: 'a', type: 'layout.area', props: { hidden: { md: true } } }, area), ['block', 'md:hidden']);
+  assert.deepEqual(utilityClasses({ id: 'a', type: 'layout.area', props: { hidden: false } }, area), []);
 });

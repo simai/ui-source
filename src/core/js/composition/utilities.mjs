@@ -99,8 +99,9 @@ export function utilityClass(declaration, value) {
  * The classes a node's layout parameters print, mobile first, by part: '' is
  * the block's own element, any other key an inner element the renderer marks
  * `data-sf-composition-part="<part>"`. At the phone a value equal to the
- * property's default prints nothing (the type draws its default without a
- * class); at a wider breakpoint a class is printed only where the value
+ * property's default prints nothing when no wider screen differs (the
+ * type draws its default without a class); once one differs the base is
+ * printed too; at a wider breakpoint a class is printed only where the value
  * differs from the narrower one. A value may become several classes.
  */
 export function utilityPartClasses(node, manifest) {
@@ -122,10 +123,15 @@ export function utilityPartClasses(node, manifest) {
       // printed again.
       let previous;
       let effective = [];
+      // Mobile first: the phone's value is the base the wider screens change.
+      // Equal to the default it prints nothing only when every screen keeps
+      // it; once a wider screen differs, the base is printed too (G-36:
+      // {xs: 1, md: 2} printed md:grid-col-2 without grid-col-1).
+      const varies = UTILITY_BREAKPOINTS.some((breakpoint) => values[breakpoint] !== values[UTILITY_BREAKPOINTS[0]]);
       UTILITY_BREAKPOINTS.forEach((breakpoint, index) => {
         const value = values[breakpoint];
         if (index === 0) {
-          if (!('default' in schema && value === schema.default)) {
+          if (varies || !('default' in schema && value === schema.default)) {
             effective = tokens(utilityClass(declaration, value));
             classes.push(...prefixed('xs', effective.join(' ')));
           }
