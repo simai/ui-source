@@ -101,6 +101,8 @@ try {
       const m = await tab.evaluate(() => {
         const node = (id) => document.querySelector(`[data-sf-composition-id="${id}"]`);
         const box = (element) => { const rect = element.getBoundingClientRect(); return {left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height}; };
+        // A smart element's host may draw no box of its own (display: contents): what it draws is its widest descendant.
+        const drawn = (element) => [element, ...element.querySelectorAll('*')].map(box).reduce((best, next) => (next.width * next.height > best.width * best.height ? next : best));
         const probe = document.createElement('div');
         document.body.append(probe);
         const length = (value) => { probe.style.cssText = `position:absolute;width:${value}`; return parseFloat(getComputedStyle(probe).width); };
@@ -116,8 +118,8 @@ try {
           box: box(node('box-p')), sectionText: box(node('first-p')),
           button: (() => { const inner = node('button').querySelector('button'); return inner ? {box: box(inner), words: inner.textContent.replace(/\s+/gu, ' ').trim()} : null; })(),
           iconButton: (() => { const inner = node('icon-button').querySelector('button'); return inner ? {box: box(inner), label: inner.getAttribute('aria-label') || node('icon-button').querySelector('[aria-label]')?.getAttribute('aria-label')} : null; })(),
-          badge: {box: box(node('badge').firstElementChild), words: node('badge').textContent.replace(/\s+/gu, ' ').trim()},
-          icon: box(node('icon').firstElementChild),
+          badge: {box: drawn(node('badge').firstElementChild), words: node('badge').textContent.replace(/\s+/gu, ' ').trim()},
+          icon: drawn(node('icon').firstElementChild),
           line: {box: box(node('line')), border: parseFloat(getComputedStyle(node('line')).borderTopWidth) + parseFloat(getComputedStyle(node('line')).borderBottomWidth) + parseFloat(getComputedStyle(node('line')).height)},
           gap: box(node('gap')),
           sideways: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -141,7 +143,7 @@ try {
       check('the container is centred', near(m.box.left - m.root.left, m.root.right - m.box.right, 2), {box: m.box});
       if (width >= 1024) check('the container is narrower than the section', m.box.width < m.sectionText.width - 40, {box: m.box.width, section: m.sectionText.width});
       // The elements.
-      check('element.button draws sf-button with its words', m.button && m.button.box.width > 40 && m.button.box.height >= 24 && m.button.words.includes('Подробнее') && m.button.words.includes('arrow_forward') === false, {button: m.button});
+      check('element.button draws sf-button with its words and the icon after them', m.button && m.button.box.width > 40 && m.button.box.height >= 24 && m.button.words.startsWith('Подробнее') && m.button.words.endsWith('arrow_forward'), {button: m.button});
       check('element.button-icon draws a labelled button', m.iconButton && m.iconButton.box.width >= 24 && near(m.iconButton.box.width, m.iconButton.box.height, 2) && m.iconButton.label === 'Нравится', {iconButton: m.iconButton});
       check('element.badge draws its Russian word unset', m.badge.box.width > 20 && m.badge.box.height > 10 && m.badge.words === 'Метка', {badge: m.badge});
       check('element.icon draws a glyph', m.icon.width >= 16 && m.icon.height >= 16, {icon: m.icon});
