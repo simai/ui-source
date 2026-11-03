@@ -1,5 +1,10 @@
 # Component packages
 
+> For components outside the free SIMAI Framework, the draft standard
+> `simai.component-set` 1.0.0 supersedes this one: see
+> [component-sets.md](component-sets.md). A set's package folder still follows
+> the rules below.
+
 A component package is a set of Smart components served from its own base and
 carrying its own rules, loaded by the same Loader as everything else. It is how
 the Framework is extended: a component lives with its owner, and a product or
