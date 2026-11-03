@@ -15,8 +15,10 @@ import { newBlock } from '../kits/block/new.mjs';
 // that does not build, and a block that does not keep an unknown type opaque.
 
 const kit = fileURLToPath(new URL('../kits/block/', import.meta.url));
-const sample = join(kit, 'examples/sample-quote');
-const cards = join(kit, 'examples/sample-cards');
+// The samples ship in the release (distr/core/kits/block/, 2026-11-04).
+const samples = fileURLToPath(new URL('../src/core/kits/block/', import.meta.url));
+const sample = join(samples, 'sample-quote');
+const cards = join(samples, 'sample-cards');
 const framework = await loadFramework();
 const scratch = mkdtempSync(join(tmpdir(), 'sf-block-kit-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));

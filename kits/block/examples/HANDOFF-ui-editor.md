@@ -8,7 +8,9 @@ run is yours.
 
 ## What to load
 
-Everything is in `kits/block/examples/sample-quote/`:
+Everything is in `src/core/kits/block/sample-quote/` (moved from
+`kits/block/examples/` on 2026-11-04; the release ships it at
+`distr/core/kits/block/sample-quote/`):
 
 - `type.json`: the type manifest of `sample.quote` 1.1.0 (registered renderer
   `sample.quote`, asset `sample/quote`; 1.1.0 adds its catalogue place and a

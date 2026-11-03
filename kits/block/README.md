@@ -11,8 +11,8 @@ the structured-content conformance cases. The guide is
 | `template/` | the block a developer copies: `product.block-name` |
 | `new.mjs` | `node kits/block/new.mjs <product>.<name> <folder>`: the template under the block's name |
 | `check.mjs` | `node kits/block/check.mjs <folder> [--framework <dir>] [--json] [--update]`: the conformance check |
-| `examples/sample-quote/` | `sample.quote`, a block made from the kit alone |
-| `examples/sample-cards/` | `sample.cards`, a data block: catalogue place, variants, layout parameters as utilities per screen, a named place and a host binding |
+| `../../src/core/kits/block/sample-quote/` | `sample.quote`, a block made from the kit alone |
+| `../../src/core/kits/block/sample-cards/` | `sample.cards`, a data block: catalogue place, variants, layout parameters as utilities per screen, a named place and a host binding |
 
 `--framework <dir>` names the SIMAI Framework the block is checked against:
 its `src/` folder, or a built `distr/` (the folder that holds

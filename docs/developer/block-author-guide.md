@@ -14,8 +14,13 @@ edited by the same editors. There is no format of its own: a block is
   version 1): Documents holding it and what they draw.
 
 The kit is in `kits/block/`: a template to start from, a generator, and a check
-a developer runs on a block. `kits/block/examples/sample-quote/` is a block
+a developer runs on a block. `src/core/kits/block/sample-quote/` is a block
 made from the kit alone.
+
+The samples ship in the release, every file as it is, under
+`distr/core/kits/block/<sample>/` (since 2026-11-04), so a host loads them
+from the published package, for example
+`https://cdn.jsdelivr.net/npm/@simai-studio/ui@<version>/distr/core/kits/block/sample-quote/type.json`.
 
 ## Quick start
 
@@ -44,7 +49,7 @@ the report as JSON.
 | `style.css` | CSS | the block's own sheet, one of its assets |
 | `cases/*.json` | `simai.composition.structured-content-conformance-case` v1 | a Document and what it draws |
 
-`kits/block/examples/sample-cards/` shows what the one block editor reads
+`src/core/kits/block/sample-cards/` shows what the one block editor reads
 from a block (since core.runtime 1.23.0, type manifest schema 1.3.0): its
 place in the catalogue, its variants, layout parameters as SIMAI Framework
 utilities, a named place and data from a host. The sections from
@@ -721,7 +726,7 @@ not pass. A warning (`WARN`) names something worth adding: a parameter with
 no field, a choice no case draws, a missing word, no case the block refuses.
 
 ```text
-SIMAI Framework block check: sample.quote 1.1.0 (kits/block/examples/sample-quote)
+SIMAI Framework block check: sample.quote 1.1.0 (src/core/kits/block/sample-quote)
   PASS  manifest  the type and editor manifests are valid
   PASS  renderer  the renderer is registered and draws the block
   PASS  form      the parameter form builds from the editor manifest
