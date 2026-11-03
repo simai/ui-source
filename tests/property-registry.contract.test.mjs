@@ -57,7 +57,9 @@ test('the password renderers never put the value into markup and write only type
   assert.match(edit, /input-type="password"/u);
   assert.match(edit, /autocomplete="new-password"/u);
   assert.match(edit, /spellcheck="false"/u);
-  assert.match(edit, /aria-pressed="false"/u);
+  // A toggle through sf-button-icon's pressed setting (aria-pressed on the
+  // native button, sf-button-icon 1.4.0).
+  assert.match(edit, /pressed="false"/u);
   assert.match(edit, /aria-label=\$\{setText\(host, 'showPassword'\)\}/u);
   // No value binding of any kind, and no data-* carrying anything.
   assert.doesNotMatch(edit, /[\s.]value=|data-|console\./u);

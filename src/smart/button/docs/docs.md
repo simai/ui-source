@@ -55,6 +55,9 @@ Main attributes:
 - `native-type`
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
+- `pressed` — a toggle button: present, it writes `aria-pressed` on the native
+  button and, while on, the selected look (`pressed="false"` says off);
+  absent, the button is not a toggle and nothing is said
 - `shortcut` — a key combination drawn at the end of the button, see below
 - `shortcut-listen` — the button is pressed by its shortcut, see below
 - `aria-label` — a host attribute, passed to the native button

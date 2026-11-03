@@ -865,7 +865,7 @@ function renderPhoneEdit(field, value, host) {
 //
 // The typed text lives in the input and nowhere else: no `value` attribute on
 // sf-input, no data-*, no text node, no log. «Показать» is an icon button that
-// switches the input's type and says so with aria-pressed; it changes the DOM
+// switches the input's type and says so with its pressed setting (aria-pressed); it changes the DOM
 // directly, so a host's re-render (its attributes are static in the template)
 // leaves the person's choice as it is.
 function isPasswordField(field) {
@@ -885,9 +885,9 @@ function togglePasswordShown(event) {
     const button = event.currentTarget;
     const input = button?.closest?.('.sf-field-password')?.querySelector?.('sf-input');
     if (!input) return;
-    const shown = button.getAttribute('aria-pressed') !== 'true';
+    const shown = button.getAttribute('pressed') === 'false';
     input.setAttribute('input-type', shown ? 'text' : 'password');
-    button.setAttribute('aria-pressed', shown ? 'true' : 'false');
+    button.setAttribute('pressed', shown ? '' : 'false');
     button.setAttribute('icon', shown ? 'visibility_off' : 'visibility');
 }
 
@@ -921,7 +921,7 @@ function renderPasswordEdit(field, value, host) {
                     appearance="link"
                     scheme="on-surface"
                     icon="visibility"
-                    aria-pressed="false"
+                    pressed="false"
                     aria-label=${setText(host, 'showPassword')}
                     @click=${togglePasswordShown}
             ></sf-button-icon>

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -56,6 +56,7 @@
         "shortcut",
         "shortcut-listen",
         "expanded",
+        "pressed",
         "aria-label"
       ],
       "presentation": {
@@ -268,6 +269,11 @@
         "type": "boolean",
         "default": false,
         "description": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
+      },
+      "pressed": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
       },
       "aria-label": {
         "type": "string",
@@ -570,7 +576,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "f7aef104118a8724eb87990f595b900e001d7f4b7ea2523855c90e4f1cd43db7"
+        "sha256": "109555a0435ad6bda399ea74f79e54f6a2d4dea5f1965643d30b280b2a131eb2"
       }
     ],
     "generated_runtime": [

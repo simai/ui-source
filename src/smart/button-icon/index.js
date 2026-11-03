@@ -27,6 +27,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   'loading',
   'disabled',
   'native-type',
+  'pressed',
   'button-attributes',
   'aria-label',
   ...ANCHORED_BADGE_ATTRIBUTES,
@@ -72,6 +73,17 @@ class SfIconButton extends IconButtonElement {
     return this.getAttribute('root-class') || '';
   }
 
+  // pressed is optional: absent, the button is not a toggle and says nothing;
+  // present, aria-pressed and the selected look follow it.
+  get pressed() {
+    return this.hasAttribute('pressed') ? super.pressed : undefined;
+  }
+
+  set pressed(value) {
+    if (value === undefined || value === null) this.removeAttribute('pressed');
+    else this.setAttribute('pressed', value ? '' : 'false');
+  }
+
   templateContext() {
     const props = this.getPropsContext();
 
@@ -91,6 +103,7 @@ class SfIconButton extends IconButtonElement {
       nativeType: this.nativeType,
       radius: this.radius,
       ariaLabel: this.getAttribute('aria-label') || '',
+      pressed: this.pressed,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       badge: this.badgeState?.(),
       component: this,

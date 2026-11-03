@@ -84,6 +84,9 @@ export function renderButtonTemplate(context) {
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',
+        // A toggle that is on wears the selected look the class sheet gives a
+        // real two-state button (active with aria-pressed).
+        context.pressed ? 'active' : '',
     ].filter(Boolean);
 
     return html`
@@ -95,6 +98,7 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
+                aria-pressed=${context.pressed === undefined ? nothing : String(Boolean(context.pressed))}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
         >
             ${overlayContent}

@@ -58,6 +58,9 @@ Main attributes:
   native `disabled`
 - `disabled`
 - `native-type`
+- `pressed` — a toggle button: present, it writes `aria-pressed` on the native
+  button and, while on, the selected look (`pressed="false"` says off);
+  absent, the button is not a toggle and nothing is said
 - `aria-label`
 - `badge-count`, `badge-dot`, `badge-cap` (99), `badge-label` -- a count or a
   dot at the button's top end corner, sized by `size` (1/3 and 1/2: a dot

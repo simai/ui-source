@@ -50,6 +50,8 @@ export function renderIconButtonTemplate(context) {
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-icon-button-state-loading' : '',
+        // A toggle that is on wears the selected look (active with aria-pressed).
+        context.pressed ? 'active' : '',
     ].filter(Boolean);
 
     // Loading shows the spinner in place of the icon, at the icon's size
@@ -72,6 +74,7 @@ export function renderIconButtonTemplate(context) {
                 ?disabled=${disabled || loading}
                 aria-label=${ariaLabel ? nameWithBadge(ariaLabel, badge?.phrase) : nothing}
                 aria-busy=${loading ? 'true' : nothing}
+                aria-pressed=${context.pressed === undefined ? nothing : String(Boolean(context.pressed))}
         >
             ${iconContent}${renderAnchoredBadge(badge)}${ariaLabel ? nothing : renderAnchoredBadgeText(badge, false)}
         </button>

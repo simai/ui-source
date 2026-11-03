@@ -179,6 +179,15 @@ const sfButtonIconMeta = {
       "default": "",
       "description": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
     },
+    "pressed": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+    },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",

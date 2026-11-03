@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -169,6 +169,11 @@
       "type": "boolean",
       "optional": true,
       "summary": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
+    },
+    "pressed": {
+      "type": "boolean",
+      "optional": true,
+      "summary": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     }
   },
   "values": {},
@@ -413,7 +418,8 @@
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.1.4: a text attribute, even an empty one, is the label: emptying it empties the button instead of falling back to a text-child label (simai.main, a toolbar clearing its labels on a narrow screen, 2026-10-28).",
-    "version 1.2.0: a minor (§4.10): the settings shortcut and shortcut-listen and the scheme value on-surface-variant are added. shortcut draws the combination at the end of the button as kbd keys (one <kbd class=\"sf-kbd--group\"> holding a <kbd> per key, aria-hidden, the native button's aria-keyshortcuts says it), muted (--sf-on-surface-variant), with the label taking the free room (flex 1) so text-position start reads like a field. The key box is the kbd sheet's (its variables, read with the same values as fallbacks, so the first paint holds before the lazily fetched kbd sheet). shortcut-listen presses the native button (a click, so sf-button-press follows) on the combination; a combination without a modifier is not heard in an editable field, and a disabled or loading button is never pressed. on-surface-variant: the search trigger of the Docara prototypes (search-and-settings.html) wanted the on-surface family with a quieter label; the template writes both scheme classes, sf-button--on-surface and sf-button--on-surface-variant, so every on-surface rule (fill, edge, type) holds and one rule moves the label and the icon to --sf-on-surface-variant."
+    "version 1.2.0: a minor (§4.10): the settings shortcut and shortcut-listen and the scheme value on-surface-variant are added. shortcut draws the combination at the end of the button as kbd keys (one <kbd class=\"sf-kbd--group\"> holding a <kbd> per key, aria-hidden, the native button's aria-keyshortcuts says it), muted (--sf-on-surface-variant), with the label taking the free room (flex 1) so text-position start reads like a field. The key box is the kbd sheet's (its variables, read with the same values as fallbacks, so the first paint holds before the lazily fetched kbd sheet). shortcut-listen presses the native button (a click, so sf-button-press follows) on the combination; a combination without a modifier is not heard in an editable field, and a disabled or loading button is never pressed. on-surface-variant: the search trigger of the Docara prototypes (search-and-settings.html) wanted the on-surface family with a quieter label; the template writes both scheme classes, sf-button--on-surface and sf-button--on-surface-variant, so every on-surface rule (fill, edge, type) holds and one rule moves the label and the icon to --sf-on-surface-variant.",
+    "version 1.3.0: a minor (§4.10): the setting pressed is added (stage 1 of the component sets, duplication audit A-10). Present, the native button carries aria-pressed (\"true\" or \"false\") and, while on, the class sheet's active state, the selected look the buttons component documents for a real two-state button; absent, the button is not a toggle and nothing is said. A page that wrote aria-pressed on the host keeps it: the host forwards it as before."
   ],
   "x-rule": {
     "$comment-after": [

@@ -208,6 +208,15 @@ const sfButtonMeta = {
       "default": "false",
       "description": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
     },
+    "pressed": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+    },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",

@@ -40,6 +40,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   "disabled",
   "native-type",
   "expanded",
+  "pressed",
   "shortcut",
   "shortcut-listen",
   "aria-label",
@@ -155,6 +156,17 @@ class SfButton extends ButtonElement {
     else this.setAttribute("expanded", value ? "" : "false");
   }
 
+  // pressed is optional too: absent, the button is not a toggle and says
+  // nothing; present, aria-pressed and the selected look follow it.
+  get pressed() {
+    return this.hasAttribute("pressed") ? super.pressed : undefined;
+  }
+
+  set pressed(value) {
+    if (value === undefined || value === null) this.removeAttribute("pressed");
+    else this.setAttribute("pressed", value ? "" : "false");
+  }
+
   templateContext() {
     // A child parsed after connectedCallback is still the label.
     this.captureTextChildren?.();
@@ -178,6 +190,7 @@ class SfButton extends ButtonElement {
       radius: this.radius,
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
+      pressed: this.pressed,
       // The shortcut's key caps and its aria-keyshortcuts, in this platform's
       // words (js/shortcut.js).
       shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),

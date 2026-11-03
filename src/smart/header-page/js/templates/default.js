@@ -25,7 +25,7 @@ export function renderPageHeaderTemplate(context) {
             class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
             icon="star"
             ?filled=${on}
-            aria-pressed=${String(on)}
+            pressed=${on ? '' : 'false'}
             aria-label=${on ? text('unstar') : text('star')}
             title=${on ? text('unstar') : text('star')}
             @click=${() => component.toggleStar()}></sf-button-icon>`
