@@ -171,12 +171,35 @@
     "src/core/js/vendor/material-color-utilities/utils/math_utils.js",
     "src/core/js/vendor/material-color-utilities/utils/string_utils.js",
     "src/core/js/workspace.js",
+    "src/core/kits/block/sample-cards/cases/cards-default.json",
+    "src/core/kits/block/sample-cards/cases/cards-plain.json",
+    "src/core/kits/block/sample-cards/cases/cards-responsive.json",
+    "src/core/kits/block/sample-cards/cases/invalid-binding-target.json",
+    "src/core/kits/block/sample-cards/cases/invalid-cols-screen.json",
+    "src/core/kits/block/sample-cards/cases/invalid-intro-media.json",
+    "src/core/kits/block/sample-cards/editor.json",
+    "src/core/kits/block/sample-cards/renderer.mjs",
+    "src/core/kits/block/sample-cards/style.css",
+    "src/core/kits/block/sample-cards/type.json",
+    "src/core/kits/block/sample-cards/words.json",
+    "src/core/kits/block/sample-quote/cases/invalid-align-unknown.json",
+    "src/core/kits/block/sample-quote/cases/invalid-author-missing.json",
+    "src/core/kits/block/sample-quote/cases/invalid-child-type.json",
+    "src/core/kits/block/sample-quote/cases/invalid-empty.json",
+    "src/core/kits/block/sample-quote/cases/quote-center-large.json",
+    "src/core/kits/block/sample-quote/cases/quote-default.json",
+    "src/core/kits/block/sample-quote/cases/quote-source-unsafe.json",
+    "src/core/kits/block/sample-quote/editor.json",
+    "src/core/kits/block/sample-quote/renderer.mjs",
+    "src/core/kits/block/sample-quote/style.css",
+    "src/core/kits/block/sample-quote/type.json",
+    "src/core/kits/block/sample-quote/words.json",
     "src/core/rule.js",
     "src/core/smart-base.js",
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "f40be6f7bc64b4dc5580ea38084765214843993d8ef1222cacab1149cdfa5743",
+  "content_sha256": "60509b268f39c0e4f479aacda05b475055e2b4b1e6d90c91dca61f3773ec8029",
   "dependencies": [
     {
       "id": "core.styles",
@@ -185,6 +208,18 @@
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.1.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.1.0"
     }
   ]
 }
