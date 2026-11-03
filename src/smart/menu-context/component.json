@@ -566,7 +566,7 @@
       ]
     },
     {
-      "name": "cl-icon-button",
+      "name": "cl-button-icon",
       "lazy": true
     }
   ],

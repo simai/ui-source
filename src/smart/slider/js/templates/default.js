@@ -140,22 +140,22 @@ function renderArrows(context) {
 
   return html`
     <div class="sf-slider-arrows sf-slider-arrows--size-2">
-      <sf-icon-button
+      <sf-button-icon
         root-class="sf-slider-button-prev"
         icon="keyboard_arrow_left"
         size=${buttonSize}
         appearance=${buttonOptions.type}
         scheme=${buttonOptions.scheme}
         aria-label=${context.previousLabel}
-      ></sf-icon-button>
-      <sf-icon-button
+      ></sf-button-icon>
+      <sf-button-icon
         root-class="sf-slider-button-next"
         icon="keyboard_arrow_right"
         size=${buttonSize}
         appearance=${buttonOptions.type}
         scheme=${buttonOptions.scheme}
         aria-label=${context.nextLabel}
-      ></sf-icon-button>
+      ></sf-button-icon>
     </div>
   `;
 }

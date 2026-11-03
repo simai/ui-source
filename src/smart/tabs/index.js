@@ -2,6 +2,7 @@ import { html, nothing, render } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
+import { isTag } from '../../core/js/tag-aliases.js';
 import { renderTabsTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -208,7 +209,7 @@ class SfTabs extends TabsElement {
   get tabTargets() {
     const targets = [];
     for (const element of Array.from(this.tabList?.children || [])) {
-      const target = element.matches('sf-button,sf-icon-button')
+      const target = (element.matches('sf-button') || isTag(element, 'sf-button-icon'))
         ? element.querySelector(':scope > button')
         : element.matches('[role="tab"]') ? element : null;
       const index = tabIndexOf(element);
@@ -646,7 +647,7 @@ class SfTabs extends TabsElement {
       return;
     }
     const width = (host) => {
-      const box = host.matches('sf-button,sf-icon-button')
+      const box = (host.matches('sf-button') || isTag(host, 'sf-button-icon'))
         ? host.querySelector(':scope > .sf-button, :scope > .sf-icon-button, :scope > button')
         : host;
       return box?.getBoundingClientRect().width ?? 0;

@@ -115,7 +115,7 @@ function renderTab(item, context) {
       `;
   } else {
       return html`
-          <sf-icon-button
+          <sf-button-icon
                   appearance="primary"
                   size=${context.size}
                   scheme=${context.scheme}
@@ -126,7 +126,7 @@ function renderTab(item, context) {
                   data-tab=${String(item.index)}
                   ?disabled=${item.disabled}
           >
-          </sf-icon-button>
+          </sf-button-icon>
       `;
   }
 }
@@ -171,9 +171,9 @@ export function renderTabsTemplate(context) {
                             icon-end="expand_more" text=${context.moreText} aria-haspopup="menu"></sf-button>`
           : nothing}
         ${context.configurable
-          ? html`<sf-icon-button class="sf-tabs-settings" appearance="link" scheme="on-surface" size=${context.size}
+          ? html`<sf-button-icon class="sf-tabs-settings" appearance="link" scheme="on-surface" size=${context.size}
                                  icon="tune" aria-label=${context.customizeText} title=${context.customizeText}
-                                 aria-haspopup="dialog"></sf-icon-button>`
+                                 aria-haspopup="dialog"></sf-button-icon>`
           : nothing}
       </div>
 

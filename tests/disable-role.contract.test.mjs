@@ -87,7 +87,7 @@ test('the disabled content role paints a fill only where the fill is the content
     // so the fill does not show through (2026-11-01).
     'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable)) var(--sf-thumb-handle--ring-color, var(--sf-surface-0));',
     'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-disable);',
-    'src/smart/icon-button/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
+    'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
   ].sort());
 });
 

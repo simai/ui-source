@@ -44,7 +44,7 @@ async page => {
       await page.waitForFunction(previous => document.querySelector('sf-input-date[open] .sf-datepicker-day:focus')?.dataset.date !== previous, before);
       const after = await page.locator('sf-input-date[open] .sf-datepicker-day:focus').getAttribute('data-date');
       const datepicker = page.locator('sf-input-date').first();
-      await datepicker.locator('sf-icon-button[aria-label="Следующий месяц"] button').click();
+      await datepicker.locator('sf-button-icon[aria-label="Следующий месяц"] button').click();
       await page.waitForFunction(() => document.querySelector('sf-input-date[open]')?.getAttribute('month') === '9');
       await page.keyboard.press('Escape');
       await page.waitForTimeout(60);

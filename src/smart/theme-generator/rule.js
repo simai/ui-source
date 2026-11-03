@@ -11,7 +11,7 @@ SF.RuleLoader['cl-theme-generator'] = {
     { name: 'cl-input-color' },
     { name: 'cl-input' },
     { name: 'cl-button' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     { name: 'cl-icon' },
   ],
 };

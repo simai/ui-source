@@ -158,7 +158,7 @@
         cursor: default;
     }
 
-    // An icon action is sf-icon-button at 1/2; the box holds its size until the
+    // An icon action is sf-button-icon at 1/2; the box holds its size until the
     // button has drawn, and the toolbar never changes width.
     .sf-composition-overlay-tool {
         flex: none;

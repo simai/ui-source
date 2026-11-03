@@ -7,7 +7,7 @@ SF.RuleLoader['cl-alert'] = {
   relation: [
     { name: 'alerts' },
     { name: 'buttons' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     { name: 'cl-icon' },
   ],
 };

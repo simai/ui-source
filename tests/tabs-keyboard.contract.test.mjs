@@ -99,7 +99,7 @@ test('Tabs all-disabled and independent instances keep valid local semantics', (
 test('Tabs template links panels and gives icon-only tabs their text name, without host tabstops', () => {
   assert.match(template, /aria-labelledby=\$\{`\$\{context.tabsId\}--tab-\$\{item.index\}`\}/);
   assert.match(template, /aria-label=\$\{item.label\}/);
-  for (const tag of ['sf-button', 'sf-icon-button']) {
+  for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
     assert.doesNotMatch(branch, /tabindex=|aria-selected=/);
   }
@@ -151,7 +151,7 @@ test('Tabs documents legacy appearance semantics without reinterpreting or restr
   assert.equal(scheme.enum, undefined);
   assert.match(scheme.description, /default, outline or link/);
   assert.match(scheme.description, /not a semantic color selector/);
-  for (const tag of ['sf-button', 'sf-icon-button']) {
+  for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
     assert.match(branch, /appearance="primary"/);
     assert.match(branch, /scheme=\$\{context.scheme\}/);

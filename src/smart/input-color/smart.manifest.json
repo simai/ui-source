@@ -25,7 +25,7 @@
   "composition": {
     "uses": [
       "component.icons",
-      "smart.icon-button"
+      "smart.button-icon"
     ],
     "public_parts": [
       "swatch",
@@ -376,11 +376,11 @@
       },
       {
         "path": "src/smart/input-color/rule.js",
-        "sha256": "d5511140992e6d61a690c323216dee565511fcaddfb6738354eabbbb257ce3f3"
+        "sha256": "9f227d89726e47268b67f49ed2dec0c1bb2cd4225681aaa9908d430db1867a1e"
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "291f9a92b1feda341bb9973d2993781e08f88c8bec0049529056968427e1790c"
+        "sha256": "309e75b57513a65dce99ecd67611b9f743b4d61f2c7b9d47febecccffe0948a8"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",

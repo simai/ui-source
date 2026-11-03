@@ -105,7 +105,7 @@ try {
   report.tag = await tab.evaluate(() => {
     const tag = document.querySelector('#tag');
     const toggle = tag.querySelector('button[aria-pressed]');
-    const remove = tag.querySelector('sf-icon-button');
+    const remove = tag.querySelector('sf-button-icon');
     return {
       kind: tag.kind,
       toggle: Boolean(toggle),

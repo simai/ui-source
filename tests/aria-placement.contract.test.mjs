@@ -33,7 +33,7 @@ test('file upload: each progress bar is named after its file', async () => {
 
 test('tabs: an icon-only tab is named on its inner button, not on the host', async () => {
   const template = await read('smart/tabs/js/templates/default.js');
-  const icon = template.slice(template.indexOf('<sf-icon-button'), template.indexOf('</sf-icon-button>'));
+  const icon = template.slice(template.indexOf('<sf-button-icon'), template.indexOf('</sf-button-icon>'));
   assert.doesNotMatch(icon, /aria-label=/);
   assert.match(icon, /data-tab-label=/);
   assert.match(await read('smart/tabs/index.js'), /tab\.setAttribute\('aria-label', item\.label\)/);

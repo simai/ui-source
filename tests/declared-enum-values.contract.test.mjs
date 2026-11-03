@@ -90,7 +90,7 @@ const KNOWN_ATTRIBUTES = [];
 const KNOWN = [
   // sf-button's ghost is a dated value alias of link (compatibility.aliases), not an appearance.
   'src/smart/tabs/js/templates/default.js: <sf-button appearance="primary"> — default, link, outline, surface, tonal',
-  'src/smart/tabs/js/templates/default.js: <sf-icon-button appearance="primary"> — default, ghost, link, outline, surface, tonal',
+  'src/smart/tabs/js/templates/default.js: <sf-button-icon appearance="primary"> — default, ghost, link, outline, surface, tonal',
 ];
 
 // And an attribute a component does not declare is the same mistake wearing a

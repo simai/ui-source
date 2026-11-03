@@ -94,11 +94,11 @@ function renderCourse(context) {
 function renderCounter(context) {
   const {component, list: items, at: current, size, placeText: place, words} = context;
   return html`
-    <sf-icon-button class="sf-pager-back" size=${size} appearance="outline" scheme="on-surface" icon="chevron_left"
-      aria-label=${words.prevItem} ?disabled=${current <= 0} @click=${() => component.press('prev')}></sf-icon-button>
+    <sf-button-icon class="sf-pager-back" size=${size} appearance="outline" scheme="on-surface" icon="chevron_left"
+      aria-label=${words.prevItem} ?disabled=${current <= 0} @click=${() => component.press('prev')}></sf-button-icon>
     <span class="sf-pager-place" role="status">${place}</span>
-    <sf-icon-button class="sf-pager-forward" size=${size} appearance="outline" scheme="on-surface" icon="chevron_right"
-      aria-label=${words.nextItem} ?disabled=${current >= items.length - 1} @click=${() => component.press('next')}></sf-icon-button>
+    <sf-button-icon class="sf-pager-forward" size=${size} appearance="outline" scheme="on-surface" icon="chevron_right"
+      aria-label=${words.nextItem} ?disabled=${current >= items.length - 1} @click=${() => component.press('next')}></sf-button-icon>
   `;
 }
 

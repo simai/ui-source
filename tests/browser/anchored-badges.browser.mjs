@@ -16,7 +16,7 @@
 //     badge at the start side;
 //   - the runtime follows a count that changes, and gives an owner its own
 //     name back when the badge hides;
-//   - sf-avatar, sf-icon and sf-icon-button take badge-count, badge-dot,
+//   - sf-avatar, sf-icon and sf-button-icon take badge-count, badge-dot,
 //     badge-cap and badge-label, in Russian and English, plural forms right;
 //   - a compact sf-menu and a compact admin menu put a row's counter on its
 //     icon; the online indicator keeps the bottom end beside a count.
@@ -31,7 +31,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/badges/css/badges.css', 'component/component/menu/css/menu.css',
   'component/component/admin-menu/css/admin-menu.css', 'component/component/context-menu/css/context-menu.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/badges/js/badges.js',
-  'smart/smart/icon/js/icon.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/icon-button/js/icon-button.js'];
+  'smart/smart/icon/js/icon.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/button-icon/js/button-icon.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const SHAPES = ['round', 'square', 'rounded'];
 const KINDS = ['avatar', 'icon', 'icon-button'];
@@ -59,7 +59,7 @@ async function open({width = 1000, body = '', theme = 'light', lang = 'ru'} = {}
   await page.setContent(`<!doctype html><html lang="${lang}" class="theme-${theme}"><head><meta charset="utf-8"></head><body style="margin:16px">${body}</body></html>`);
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => window.SF?.AnchoredBadge && customElements.get('sf-avatar') && customElements.get('sf-icon-button') && customElements.get('sf-icon'));
+  await page.waitForFunction(() => window.SF?.AnchoredBadge && customElements.get('sf-avatar') && customElements.get('sf-button-icon') && customElements.get('sf-icon'));
   await page.waitForTimeout(300);
   return page;
 }
@@ -258,9 +258,9 @@ try {
       <sf-avatar id="sa" size="2" text="АБ" aria-label="Анна Белова" badge-count="3"></sf-avatar>
       <sf-avatar id="sa-small" size="1/2" text="АБ" aria-label="Анна Белова" badge-count="5"></sf-avatar>
       <sf-avatar id="sa-online" size="3" text="АБ" aria-label="Анна Белова" status="online" badge-count="2"></sf-avatar>
-      <sf-icon-button id="sib" icon="notifications" aria-label="Уведомления" badge-count="120"></sf-icon-button>
-      <sf-icon-button id="sib-cap" icon="notifications" aria-label="Уведомления" badge-count="12" badge-cap="9" size="2"></sf-icon-button>
-      <sf-icon-button id="sib-zero" icon="notifications" aria-label="Уведомления" badge-count="0"></sf-icon-button>
+      <sf-button-icon id="sib" icon="notifications" aria-label="Уведомления" badge-count="120"></sf-button-icon>
+      <sf-button-icon id="sib-cap" icon="notifications" aria-label="Уведомления" badge-count="12" badge-cap="9" size="2"></sf-button-icon>
+      <sf-button-icon id="sib-zero" icon="notifications" aria-label="Уведомления" badge-count="0"></sf-button-icon>
       <sf-icon id="si" icon="mail" label="Почта" badge-dot></sf-icon>
       <sf-icon id="si-count" icon="mail" label="Почта" size="5" badge-count="1"></sf-icon>
       <sf-icon id="si-label" icon="mail" label="Заявки" badge-count="3" badge-label="{count} заявка|{count} заявки|{count} заявок"></sf-icon>`});

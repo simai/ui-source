@@ -6,7 +6,7 @@ SF.RuleLoader['cl-search'] = {
   js: true,
   css: true,
   relation: [
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     { name: 'icons' },
     { name: 'kbd' },
   ],

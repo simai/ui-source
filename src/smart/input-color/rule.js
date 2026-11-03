@@ -10,6 +10,6 @@ SF.RuleLoader['cl-input-color'] = {
   css: true,
   relation: [
     { name: 'icons' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
   ],
 };

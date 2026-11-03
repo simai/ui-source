@@ -26,8 +26,8 @@
   "composition": {
     "uses": [
       "smart.badge",
-      "smart.icon",
-      "smart.icon-button"
+      "smart.button-icon",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -231,7 +231,7 @@
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "7eb5f7af0d4f71094ccc9a973602f3db418ca9be12bd1c91213f367146e10133"
+        "sha256": "95022a03cd88a85c23eab188674dd2a385fbde7a5a127493dbf91f9a8f821624"
       }
     ],
     "generated_runtime": [

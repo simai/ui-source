@@ -3,7 +3,7 @@
 //
 // A page whose origin already had the icon face draws its icon buttons with
 // their glyphs from the first frame they are on screen. On effects.simai.io
-// (pair ui-2d39b617a719) the header's sf-icon-button squares painted empty for
+// (pair ui-2d39b617a719) the header's sf-button-icon squares painted empty for
 // some 340 ms on every load, a warm cache included (language switch en -> ru,
 // Chromium and WebKit): the Loader wiped the subset it remembered on a page
 // that sets no cacheVersion, so it asked the subset service again after boot,
@@ -55,7 +55,7 @@ const page = (lang, extra = '', icons = HEADER_ICONS) => `<!doctype html><html l
     icons: {preload: ${JSON.stringify(HEADER_ICONS)}${extra}}};
 </script></head><body style="margin:16px">
 <header style="display:flex;gap:8px;align-items:center">
-  ${icons.map((icon) => `<sf-icon-button icon="${icon}" aria-label="${icon}"></sf-icon-button>`).join('\n  ')}
+  ${icons.map((icon) => `<sf-button-icon icon="${icon}" aria-label="${icon}"></sf-button-icon>`).join('\n  ')}
   <i class="sf-icon" aria-hidden="true">home</i>
 </header>
 <script src="/distr/core/js/core.js"></script></body></html>`;
@@ -161,7 +161,7 @@ const SAMPLER = `(() => {
     const transparent = /rgba\\(0, 0, 0, 0\\)|transparent/u.test(style.webkitTextFillColor || '');
     return {
       text: el.textContent.trim(),
-      owner: el.closest('sf-icon-button') ? 'sf-icon-button' : 'static',
+      owner: el.closest('sf-button-icon') ? 'sf-button-icon' : 'static',
       shown: fontSize > 0,
       drawn: fontSize > 0 && Math.abs(width - fontSize) <= 1.5 && faceLoaded && !transparent,
       spelled: fontSize > 0 && !transparent && Math.abs(width - fontSize) > 1.5,
@@ -171,7 +171,7 @@ const SAMPLER = `(() => {
   const start = performance.now();
   const step = () => {
     const at = performance.now();
-    const squares = [...document.querySelectorAll('header sf-icon-button')].filter((host) => {
+    const squares = [...document.querySelectorAll('header sf-button-icon')].filter((host) => {
       const box = (host.querySelector('button') || host).getBoundingClientRect();
       return box.width > 0 && box.height > 0;
     }).length;
@@ -189,7 +189,7 @@ const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...
 // square, and when every one of them first drew its glyph (ms since
 // navigation start); the frames in between are the empty squares.
 const summarise = (frames) => {
-  const buttons = (frame) => frame.icons.filter((icon) => icon.owner === 'sf-icon-button');
+  const buttons = (frame) => frame.icons.filter((icon) => icon.owner === 'sf-button-icon');
   const allShown = frames.find((frame) => frame.squares === HEADER_ICONS.length);
   const allDrawn = frames.find((frame) => buttons(frame).length === HEADER_ICONS.length
     && buttons(frame).every((icon) => icon.drawn));
@@ -255,7 +255,7 @@ try {
     const grown = await load(tab, `${base}/fr/`, log);
     const frames = await tab.evaluate(() => window.__iconFrames);
     const squaresAt = frames.find((frame) => frame.squares === HEADER_ICONS.length + 1)?.at ?? null;
-    const known = (frame) => frame.icons.filter((icon) => HEADER_ICONS.includes(icon.text) && icon.owner === 'sf-icon-button');
+    const known = (frame) => frame.icons.filter((icon) => HEADER_ICONS.includes(icon.text) && icon.owner === 'sf-button-icon');
     const knownLate = frames.filter((frame) => frame.at >= (squaresAt ?? Infinity)
       && (known(frame).length < HEADER_ICONS.length || known(frame).some((icon) => !icon.drawn)));
     const spelled = frames.filter((frame) => frame.icons.some((icon) => icon.text === GROWN_ICON && icon.spelled));

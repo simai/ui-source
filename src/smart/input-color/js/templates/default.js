@@ -73,7 +73,7 @@ export function renderColorTemplate(context) {
 
             ${context.clearable && isSet && !context.hasInheritedValue
                     ? html`
-                        <sf-icon-button
+                        <sf-button-icon
                                 appearance="link"
                                 size=${size}
                                 icon="restart_alt"
@@ -81,7 +81,7 @@ export function renderColorTemplate(context) {
                                 aria-label=${context.clearLabel}
                                 ?disabled=${disabled}
                                 @click=${() => context.component.clear()}
-                        ></sf-icon-button>`
+                        ></sf-button-icon>`
                     : nothing}
         </div>
     `;
@@ -109,7 +109,7 @@ function renderThemeTemplate(context) {
                         @input=${(event) => context.component._pickerInput(event)}
                         @change=${(event) => context.component._pickerChange(event)}
                 >
-                <sf-icon-button
+                <sf-button-icon
                         size=${size}
                         icon="palette"
                         data-action="theme"
@@ -117,14 +117,14 @@ function renderThemeTemplate(context) {
                         title=${context.themeLabel}
                         ?disabled=${disabled}
                         @click=${() => context.component._openPicker()}
-                ></sf-icon-button>
+                ></sf-button-icon>
             </span>
             ${context.hiddenName
                     ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
                     : nothing}
             ${context.clearable && isSet
                     ? html`
-                        <sf-icon-button
+                        <sf-button-icon
                                 appearance="link"
                                 size=${size}
                                 icon="restart_alt"
@@ -133,7 +133,7 @@ function renderThemeTemplate(context) {
                                 title=${context.themeResetLabel}
                                 ?disabled=${disabled}
                                 @click=${() => context.component.clear()}
-                        ></sf-icon-button>`
+                        ></sf-button-icon>`
                     : nothing}
         </div>
     `;

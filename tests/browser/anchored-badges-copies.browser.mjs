@@ -4,14 +4,14 @@
 // Anchored badges with many copies of the badges script (simai/ui-source#12
 // follow-up). The released pair crashed a tab: the Loader inserted a
 // dependency's script once per plugin naming it -- sf-avatar, sf-icon,
-// sf-icon-button and sf-badge all name badges -- and each copy of the
+// sf-button-icon and sf-badge all name badges -- and each copy of the
 // anchored-badge runtime ran its own observer and remembered its own writes,
 // so each took another copy's name for the author's and appended
 // «, 3 непрочитанных» again, without end.
 //
 // The page loads through the real Loader: class-based anchored badges in an
 // aria-labelled link, an aria-labelled button, an .sf-avatar and an
-// .sf-badge-anchor, beside <sf-avatar>, <sf-icon>, <sf-icon-button> and
+// .sf-badge-anchor, beside <sf-avatar>, <sf-icon>, <sf-button-icon> and
 // <sf-badge> with their own badge inputs (four plugins that name badges --
 // the owner docs thread's reproduction is this mix). Then the badges script is
 // injected twice more by hand. What it holds:
@@ -84,7 +84,7 @@ ${instrument}
   <span id="anchor" class="sf-badge-anchor sf-badge-anchor--size-1 sf-badge-anchor--round" role="img" aria-label="Почта"><i class="sf-icon sf-icon--size-3" aria-hidden="true">mail</i>${badge()}</span>
   <sf-avatar id="s-avatar" size="2" text="АБ" aria-label="Анна Белова" badge-count="3"></sf-avatar>
   <sf-icon id="s-icon" icon="mail" label="Почта" badge-count="3"></sf-icon>
-  <sf-icon-button id="s-button" icon="notifications" aria-label="Уведомления" badge-count="5"></sf-icon-button>
+  <sf-button-icon id="s-button" icon="notifications" aria-label="Уведомления" badge-count="5"></sf-button-icon>
   <sf-badge id="s-badge" text="Новое"></sf-badge>
 </div>
 <script src="/distr/core/js/core.js"></script></body></html>`;
@@ -133,7 +133,7 @@ try {
   let crashed = false;
   tab.on('crash', () => { crashed = true; });
   await tab.goto(`${base}/page.html`);
-  await within(tab.waitForFunction(() => window.SF?.AnchoredBadge && customElements.get('sf-avatar') && customElements.get('sf-icon-button')
+  await within(tab.waitForFunction(() => window.SF?.AnchoredBadge && customElements.get('sf-avatar') && customElements.get('sf-button-icon')
     && customElements.get('sf-icon') && customElements.get('sf-badge')
     && Object.values(window.SF ?? {}).some((one) => one && typeof one === 'object' && 'mutationObserver' in one && one.searchEnd), null, {timeout: 15000}), 20000, 'the page loads');
   await tab.waitForTimeout(500);
@@ -224,7 +224,7 @@ try {
   };
   evidence.smartNames = smartNames;
   check('sf-avatar: «Анна Белова, 3 непрочитанных»', smartNames.avatar === 'Анна Белова, 3 непрочитанных', smartNames);
-  check('sf-icon-button: «Уведомления, 5 непрочитанных»', smartNames.iconButton === 'Уведомления, 5 непрочитанных', smartNames);
+  check('sf-button-icon: «Уведомления, 5 непрочитанных»', smartNames.iconButton === 'Уведомления, 5 непрочитанных', smartNames);
   const stable = await within(tab.evaluate(async () => {
     const before = window.__badgeProbe.labelWrites;
     let records = 0;

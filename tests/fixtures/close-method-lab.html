@@ -39,7 +39,7 @@
     <section class="grid gap-2" aria-label="Smart Close">
       <sf-button-close id="smart-glyph" size="1"></sf-button-close>
       <sf-button-close id="smart-invalid" size="unknown"></sf-button-close>
-      <sf-icon-button id="smart-action" variant="close" type="link" scheme="on-surface" size="1" aria-label="Закрыть Smart уведомление"></sf-icon-button>
+      <sf-button-icon id="smart-action" variant="close" type="link" scheme="on-surface" size="1" aria-label="Закрыть Smart уведомление"></sf-button-icon>
     </section>
 
     <p id="activation-count" aria-live="polite">Активаций: 0</p>
@@ -47,7 +47,7 @@
 
   <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
   <script src="../../source/output/close-browser/smart/button-close/js/button-close.js"></script>
-  <script src="../../source/output/close-browser/smart/icon-button/js/icon-button.js"></script>
+  <script src="../../source/output/close-browser/smart/button-icon/js/button-icon.js"></script>
   <script>
     let activations = 0;
     document.querySelector('#actions button').addEventListener('click', () => {

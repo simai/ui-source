@@ -916,7 +916,7 @@ function renderPasswordEdit(field, value, host) {
                     @input=${write}
                     @change=${write}
             ></sf-input>
-            <sf-icon-button
+            <sf-button-icon
                     size=${EDIT_SIZE}
                     appearance="link"
                     scheme="on-surface"
@@ -924,7 +924,7 @@ function renderPasswordEdit(field, value, host) {
                     aria-pressed="false"
                     aria-label=${setText(host, 'showPassword')}
                     @click=${togglePasswordShown}
-            ></sf-icon-button>
+            ></sf-button-icon>
         </span>
     `;
 }

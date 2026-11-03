@@ -16,11 +16,11 @@ export function renderCopyButtonTemplate(context) {
                  root-style=${context.rootStyle || nothing}
                  aria-disabled=${context.phase === 'pending' ? 'true' : nothing}
                  @click=${() => context.component.copy()}></sf-button>`
-        : html`<sf-icon-button size=${common.size} appearance=${common.appearance} scheme=${common.scheme}
+        : html`<sf-button-icon size=${common.size} appearance=${common.appearance} scheme=${common.scheme}
                  icon=${icon} aria-label=${context.name} title=${context.name}
                  root-style=${context.rootStyle || nothing}
                  aria-disabled=${context.phase === 'pending' ? 'true' : nothing}
-                 @click=${() => context.component.copy()}></sf-icon-button>`}
+                 @click=${() => context.component.copy()}></sf-button-icon>`}
       <span class="sf-copy-button-status" role="status" aria-live="polite" aria-atomic="true">${context.message}</span>
     </span>
   `;

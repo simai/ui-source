@@ -59,7 +59,7 @@
       "name": "cl-badge"
     },
     {
-      "name": "cl-icon-button"
+      "name": "cl-button-icon"
     },
     {
       "name": "cl-icon"
@@ -174,7 +174,7 @@
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json (a catalogue with a count and a star) plus an install page, a favourite, a path and an action, and a header without a star.",
     "css-variables: five public variables of a sheet of its own (scss/): the gap between the path and the line, the line's gap, the actions' gap, the heading's colour and the favourite star's colour. The gaps were utilities in the template; they are the sheet's now, so a page can change them. Listed in src/core/contracts/public-variables.v1.json.",
-    "source-drift: the shipped manifest differs from 5100227 only in its provenance hashes and the rule's relation names (cl-badge, cl-icon-button, cl-icon); the interface is the same, nothing to carry.",
+    "source-drift: the shipped manifest differs from 5100227 only in its provenance hashes and the rule's relation names (cl-badge, cl-button-icon, cl-icon); the interface is the same, nothing to carry.",
     "version 1.1.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",

@@ -11,6 +11,7 @@ export default Object.freeze([
   Object.freeze({from: 'sf-country-code', to: 'sf-input-country', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-datepicker', to: 'sf-input-date', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-download-file', to: 'sf-file-download', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-icon-button', to: 'sf-button-icon', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-image-field', to: 'sf-input-image', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-inline-editor', to: 'sf-editor-inline', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-lookup', to: 'sf-input-lookup', since: '2026-11-03', remove_after: '2027-01-01'}),

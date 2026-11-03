@@ -4,7 +4,7 @@
 //
 // sf-tag 1.1.6 on the built bytes, loaded by the real Loader: the remove
 // button keeps to the label's line at every size. Measured before: the tag
-// asked sf-icon-button for size 1/4 at 1/2 and 1/3 (a size it does not have,
+// asked sf-button-icon for size 1/4 at 1/2 and 1/3 (a size it does not have,
 // so it drew size 1), and the button kept the tag's insets as padding, so a
 // removable tag stood 40px at 1/3 against 24 without the button, 38 at 1/2
 // against 32, 50 at 2 against 48, and an inline one 20.39 on a 16px line.
@@ -13,7 +13,7 @@
 // - a removable tag is as tall as the same tag without the button;
 // - an inline tag is the line high;
 // - the target (the button's ::after) is at least 24px square (WCAG 2.2, 2.5.8);
-// - the button asks for a size sf-icon-button has;
+// - the button asks for a size sf-button-icon has;
 // - beside a label that is a button (interactive, checkbox) the target stays off
 //   it: a click on the end of the label reaches the label, not the remove.
 // All of it at three viewport widths, because the text ladder moves with the
@@ -57,7 +57,7 @@ await new Promise((settle) => server.once('listening', settle));
 const base = `http://127.0.0.1:${server.address().port}`;
 
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
-const BUTTON_SIZES = JSON.parse(readFileSync(new URL('../../src/smart/icon-button/component.json', import.meta.url), 'utf8')).settings.size.values;
+const BUTTON_SIZES = JSON.parse(readFileSync(new URL('../../src/smart/button-icon/component.json', import.meta.url), 'utf8')).settings.size.values;
 const island = (data) => `<script type="application/json" data-sf-settings>${JSON.stringify(data)}</script>`;
 const row = (size) => `<div data-size="${size}" style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
   <sf-tag data-case="plain" kind="default" text="Billing" size="${size}"></sf-tag>
@@ -96,7 +96,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
   await page.waitForFunction((n) => customElements.get('sf-tag') && customElements.get('sf-input-lookup')
-    && document.querySelectorAll('sf-tag sf-icon-button > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
+    && document.querySelectorAll('sf-tag sf-button-icon > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
   for (const width of [1280, 900, 375]) {
     await page.setViewportSize({width, height: 2400});
     await page.waitForTimeout(400);
@@ -105,7 +105,7 @@ try {
       const measure = (host) => {
         const tag = host.querySelector('.sf-tag');
         const label = tag.querySelector('.sf-tag-container');
-        const iconButton = tag.querySelector(':scope > sf-icon-button');
+        const iconButton = tag.querySelector(':scope > sf-button-icon');
         const button = iconButton?.querySelector(':scope > .sf-icon-button');
         const after = button ? getComputedStyle(button, '::after') : null;
         const box = button?.getBoundingClientRect();
@@ -121,7 +121,7 @@ try {
       // What a click reaches at the last pixel of a label that is a button.
       const labelEnd = (host) => {
         const action = host.querySelector('.sf-tag-action').getBoundingClientRect();
-        const button = host.querySelector('sf-icon-button > .sf-icon-button');
+        const button = host.querySelector('sf-button-icon > .sf-icon-button');
         const box = button.getBoundingClientRect();
         const reach = parseFloat(getComputedStyle(button, '::after').width);
         // Two pixels in: boxes snap to whole pixels when hit, so the pixel on
@@ -158,7 +158,7 @@ try {
         }
         check(`${name} at ${where}: a close button`, Boolean(got.close), {got});
         if (!got.close) continue;
-        check(`${name} at ${where}: asks for a size sf-icon-button has`, BUTTON_SIZES.includes(got.asks), {asks: got.asks});
+        check(`${name} at ${where}: asks for a size sf-button-icon has`, BUTTON_SIZES.includes(got.asks), {asks: got.asks});
         check(`${name} at ${where}: the close box is no taller than the line`, got.close.height <= got.line + EPS, {close: got.close, line: got.line});
         check(`${name} at ${where}: a target of at least 24px`, got.target && got.target.height >= 24 - EPS && got.target.width >= 24 - EPS, {target: got.target});
       }

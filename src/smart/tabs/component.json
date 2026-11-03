@@ -228,7 +228,7 @@
       "name": "cl-button"
     },
     {
-      "name": "cl-icon-button"
+      "name": "cl-button-icon"
     },
     {
       "name": "cl-menu-context",

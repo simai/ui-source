@@ -1,3 +1,5 @@
+import { tagSelector } from '../../../core/js/tag-aliases.js';
+
 const SLIDER_SELECTOR = '.sf-slider';
 const SLIDER_BOUND_FLAG = 'sfSliderBound';
 const SLIDER_WAITING_FLAG = 'sfSliderWaiting';
@@ -406,7 +408,7 @@ function getSlidesCount(element) {
 
 function hasPendingSmartArrowRender(root) {
   const arrowHosts = Array.from(
-    root.querySelectorAll?.('sf-icon-button[root-class*="sf-slider-button-"]') ||
+    root.querySelectorAll?.(`${tagSelector('sf-button-icon')}[root-class*="sf-slider-button-"]`) ||
       [],
   );
 

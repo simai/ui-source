@@ -28,9 +28,9 @@ async page => {
       window.__nestedAlertCounts = counts;
     });
     await page.locator('#inner-notice').getByRole('button', {name: 'Вложенное действие', exact: true}).click();
-    const defaultLabel = await page.locator('#inner-notice sf-icon-button button').getAttribute('aria-label');
+    const defaultLabel = await page.locator('#inner-notice sf-button-icon button').getAttribute('aria-label');
     if (defaultLabel !== 'Close alert') failures.push({width, theme, issue: 'default close name', defaultLabel});
-    await page.locator('#inner-notice sf-icon-button button').click();
+    await page.locator('#inner-notice sf-button-icon button').click();
     const nested = await page.evaluate(() => ({...window.__nestedAlertCounts, outerConnected: !!document.querySelector('#outer-notice'), innerConnected: !!document.querySelector('#inner-notice')}));
     if (nested.outerAction || nested.outerClose || nested.innerAction !== 1 || nested.innerClose !== 1 || nested.bubbledAction !== 1 || nested.bubbledClose !== 1 || !nested.outerConnected || nested.innerConnected) failures.push({width, theme, issue: 'nested owner callbacks and DOM bubbling', nested});
     await page.evaluate(() => document.querySelector('#outer-notice').remove());
@@ -50,7 +50,7 @@ async page => {
       const host = page.locator('#notice');
       await host.getByRole('button', {name: 'Открыть', exact: true}).click();
       await host.getByRole('button', {name: 'Отменить', exact: true}).click();
-      const close = host.locator('sf-icon-button button');
+      const close = host.locator('sf-button-icon button');
       await close.waitFor();
       const name = await close.getAttribute('aria-label');
       if (name !== 'Закрыть уведомление') failures.push({width, theme, activation, issue: 'close has localized accessible name', name});
@@ -66,7 +66,7 @@ async page => {
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
         el.style.setProperty('padding-inline', 'var(--sf-space-2)');
       });
-      await page.locator('#notice sf-icon-button button').click();
+      await page.locator('#notice sf-button-icon button').click();
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const reconnected = await page.evaluate(() => ({connected: window.__alertProbe.isConnected, closes: window.__alertProbe.__events.closes}));
       if (reconnected.connected || reconnected.closes !== 2) failures.push({width, theme, activation, issue: 'reconnect keeps one handler', reconnected});

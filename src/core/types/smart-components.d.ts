@@ -82,6 +82,8 @@ export type SmartComponentCreateName =
     | 'sf-button'
     | 'icon-button'
     | 'sf-icon-button'
+    | 'button-icon'
+    | 'sf-button-icon'
     | 'slider'
     | 'sf-slider'
     | 'modal'
@@ -136,7 +138,7 @@ export type SmartComponentCreateResult<TName extends string> =
                                                 ? HTMLSfCheckboxElement
                                                 : TName extends 'button' | 'sf-button'
                                                     ? HTMLSfButtonElement
-                                                    : TName extends 'icon-button' | 'sf-icon-button'
+                                                    : TName extends 'icon-button' | 'sf-icon-button' | 'button-icon' | 'sf-button-icon'
                                                         ? HTMLSfIconButtonElement
                                                         : TName extends 'slider' | 'sf-slider'
                                                             ? HTMLSfSliderElement
@@ -903,6 +905,7 @@ declare global {
     'sf-checkbox': HTMLSfCheckboxElement;
     'sf-button': HTMLSfButtonElement;
     'sf-icon-button': HTMLSfIconButtonElement;
+    'sf-button-icon': HTMLSfIconButtonElement;
     'sf-slider': HTMLSfSliderElement;
     'sf-modal': HTMLSfModalElement;
     'sf-gallery': HTMLSfGalleryElement;

@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {noteDeprecated} from '../../core/js/deprecations';
+import {tagSelector} from '../../core/js/tag-aliases.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {hasLayerAbove} from '../../core/js/layer-stack';
 import {renderPopoverTemplate} from './js/templates/default';
@@ -238,7 +239,7 @@ class SfPopover extends PopoverElement {
         const trigger = this.querySelector('[slot="trigger"]');
         const control = trigger?.matches?.('button, a[href], [tabindex]')
             ? trigger
-            : trigger?.querySelector?.('button, a[href], [tabindex], sf-button, sf-icon-button');
+            : trigger?.querySelector?.(`button, a[href], [tabindex], sf-button, ${tagSelector('sf-button-icon')}`);
         if (control) {
             control.setAttribute('aria-expanded', this.open ? 'true' : 'false');
             control.setAttribute('aria-haspopup', this.surfaceRole === 'group' ? 'true' : this.surfaceRole);

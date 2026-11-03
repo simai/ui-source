@@ -61,7 +61,7 @@ const page = `<!doctype html><html lang="en" class="theme-light"><head><meta cha
   <span class="sf-icon sf-icon--size-5" data-probe="settings" aria-hidden="true">settings</span>
   <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--primary sf-icon-button--size-1 flex items-cross-center" aria-label="Mail"><i class="sf-icon" data-probe="mail" aria-hidden="true">mail</i></button>
   <sf-icon icon="favorite" label="Favourite"></sf-icon>
-  <sf-icon-button icon="notifications" aria-label="Notifications"></sf-icon-button>
+  <sf-button-icon icon="notifications" aria-label="Notifications"></sf-button-icon>
   <button type="button" id="theme" class="sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--primary sf-icon-button--size-1 flex items-cross-center" aria-label="Theme"><i class="sf-icon" id="theme-glyph" aria-hidden="true">light_mode</i></button>
 </div>
 <script>
@@ -159,7 +159,7 @@ const READ = () => [...document.querySelectorAll('.sf-icon')].map((el) => {
   const family = style.fontFamily.split(',')[0].trim();
   return {
     text,
-    owner: el.closest('sf-icon-button') ? 'sf-icon-button' : el.closest('sf-icon') ? 'sf-icon' : 'static',
+    owner: el.closest('sf-button-icon') ? 'sf-button-icon' : el.closest('sf-icon') ? 'sf-icon' : 'static',
     width: Math.round(width * 10) / 10,
     fontSize,
     glyph: fontSize > 0 && Math.abs(width - fontSize) <= 1.5,
@@ -173,8 +173,8 @@ try {
   const errors = [];
   tab.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });
   await tab.goto(`${base}/page.html`);
-  await tab.waitForFunction(() => customElements.get('sf-icon') && customElements.get('sf-icon-button')
-    && document.querySelectorAll('sf-icon .sf-icon, sf-icon-button .sf-icon').length >= 2, null, {timeout: 15000});
+  await tab.waitForFunction(() => customElements.get('sf-icon') && customElements.get('sf-button-icon')
+    && document.querySelectorAll('sf-icon .sf-icon, sf-button-icon .sf-icon').length >= 2, null, {timeout: 15000});
   // Every icon on the page drawn from the first subset.
   await tab.waitForFunction(`(${READ})().every((icon) => icon.glyph && icon.faceLoaded)`, null, {timeout: 10000})
     .catch(() => {});

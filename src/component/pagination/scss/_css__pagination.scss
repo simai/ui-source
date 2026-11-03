@@ -261,7 +261,7 @@
 /* A direction is a button, not a cell: its item box would otherwise take a gap
    of its own even while it is hidden, and the row of numbers moved by a few
    pixels between the middle pages and the ends. */
-.sf-pagination .sf-pagination-list .sf-pagination-item:has(sf-icon-button) {
+.sf-pagination .sf-pagination-list .sf-pagination-item:has(:is(sf-button-icon, sf-icon-button)) {
   display: contents;
 }
 

@@ -50,7 +50,7 @@ test('Smart Alert declares exact variants, composition and short behavior hooks'
   assert.match(template, /data-close/);
   assert.match(template, /flex flex-wrap items-center/);
   assert.match(runtime, /dismissAlertElement\(this\._boundRoot \|\| this, this\)/);
-  assert.match(rule, /name: 'cl-icon-button'/);
+  assert.match(rule, /name: 'cl-button-icon'/);
   assert.match(rule, /name: 'cl-icon'/);
   // The axes are named: status for what the alert reports, appearance for how it
   // looks. The legacy names still answer, which the axes rule checks.
@@ -58,7 +58,7 @@ test('Smart Alert declares exact variants, composition and short behavior hooks'
   assert.deepEqual(manifest.inputs.properties.type.enum, manifest.inputs.properties.status.enum);
   assert.deepEqual(manifest.inputs.properties.appearance.enum, ['default', 'outlined', 'flat']);
   assert.deepEqual(manifest.inputs.properties.variant.enum, manifest.inputs.properties.appearance.enum);
-  assert.deepEqual(manifest.composition.uses, ['component.alerts', 'component.buttons', 'smart.icon', 'smart.icon-button']);
+  assert.deepEqual(manifest.composition.uses, ['component.alerts', 'component.buttons', 'smart.button-icon', 'smart.icon']);
   assert.deepEqual(manifest.contracts.canonical_behavior_attributes.enum, ['data-action', 'data-close']);
 });
 

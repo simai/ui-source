@@ -22,9 +22,9 @@ export function renderSiteHeaderTemplate(context) {
   ].filter(Boolean).join(' ');
   return html`<header class=${classes} style=${context.rootStyle || nothing}>
     <div class="sf-site-header-row container w-full m-inline-auto">
-      <sf-icon-button class="sf-site-header-menu-button" icon="menu" size=${size} appearance="link" scheme="on-surface"
+      <sf-button-icon class="sf-site-header-menu-button" icon="menu" size=${size} appearance="link" scheme="on-surface"
         aria-label=${menuLabel} aria-haspopup="dialog" aria-controls=${panelId} aria-expanded=${String(Boolean(open))}
-        @click=${() => component.toggle()}></sf-icon-button>
+        @click=${() => component.toggle()}></sf-button-icon>
       ${hasSlot('brand') ? html`<div class="sf-site-header-brand">${slot('brand')}</div>` : nothing}
       <div class="sf-site-header-scrim" aria-hidden="true" @click=${() => component.close({reason: 'outside'})}></div>
       <div class="sf-site-header-panel" id=${panelId}
@@ -33,8 +33,8 @@ export function renderSiteHeaderTemplate(context) {
         @click=${(event) => component.onPanelClick(event)}>
         <div class="sf-site-header-panel-head">
           <span class="sf-site-header-panel-heading" id=${headingId}>${label}</span>
-          <sf-icon-button class="sf-site-header-close-button" icon="close" size=${size} appearance="link" scheme="on-surface"
-            aria-label=${closeLabel} @click=${() => component.close({reason: 'close'})}></sf-icon-button>
+          <sf-button-icon class="sf-site-header-close-button" icon="close" size=${size} appearance="link" scheme="on-surface"
+            aria-label=${closeLabel} @click=${() => component.close({reason: 'close'})}></sf-button-icon>
         </div>
         ${hasSlot('nav') ? html`<div class="sf-site-header-nav">${slot('nav')}</div>` : nothing}
         ${hasSlot('actions') ? html`<div class="sf-site-header-actions">${slot('actions')}</div>` : nothing}

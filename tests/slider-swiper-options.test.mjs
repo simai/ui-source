@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const source = await readFile(new URL('../src/component/slider/js/_slider.js', import.meta.url), 'utf8');
-const collect = new Function('Element', `${source.split('function normalizeAutoplayOptions')[0]}\nreturn collectSwiperDataOptions;`)(class Element {});
+// The head of the file up to the options reader, without its imports.
+const head = source.split('function normalizeAutoplayOptions')[0].replace(/^import .*\n/gmu, '');
+const collect = new Function('Element', `${head}\nreturn collectSwiperDataOptions;`)(class Element {});
 
 test('Top-level Swiper options are not mistaken for unrelated nested prefixes', () => {
   assert.deepEqual(collect({dataset: {swiperInitialSlide: '2', swiperSlidesPerGroup: '3', swiperCenteredSlides: 'true'}}), {

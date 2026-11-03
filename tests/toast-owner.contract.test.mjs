@@ -50,14 +50,14 @@ test('Smart Toast declares exact roles, composition and concise behavior inputs'
   assert.match(template, /data-duration=/);
   assert.match(runtime, /bindToast\(this\._boundRoot, this\)/);
   assert.match(runtime, /dismissToast\(this\._boundRoot, this\)/);
-  assert.match(rule, /name: 'cl-icon-button'/);
+  assert.match(rule, /name: 'cl-button-icon'/);
   assert.match(rule, /name: 'cl-icon'/);
   // The axis is named status and speaks the shared vocabulary; type still answers.
   assert.deepEqual(manifest.inputs.properties.status.enum, ['neutral', 'info', 'success', 'warning', 'error']);
   assert.deepEqual(manifest.inputs.properties.type.enum, manifest.inputs.properties.status.enum);
   assert.deepEqual(manifest.inputs.properties.role.enum, ['', 'status', 'alert']);
   // Generated from the Loader relations, sorted (standard 1.4): the close glyph's sheet too.
-  assert.deepEqual(manifest.composition.uses, ['component.buttons', 'component.close', 'component.toast', 'smart.icon', 'smart.icon-button']);
+  assert.deepEqual(manifest.composition.uses, ['component.buttons', 'component.close', 'component.toast', 'smart.button-icon', 'smart.icon']);
   assert.deepEqual(manifest.contracts.canonical_behavior_attributes.enum, ['data-action', 'data-close', 'data-duration']);
 });
 

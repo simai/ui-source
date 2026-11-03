@@ -6,6 +6,6 @@ SF.RuleLoader['cl-slider'] = {
   js: true,
   relation: [
     { name: 'slider' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
   ],
 };

@@ -15,14 +15,14 @@ for CSS/SVG decorations.
 
 Tag:
 
-- `sf-icon-button`
+- `sf-button-icon`
 
 Loading model:
 
-- detected by `tags: ['sf-icon-button']` in `src/smart/icon-button/rule.js`
-- loaded as smart bundle `cl-icon-button` (`cl-icon-buttons` is its dated alias
+- detected by `tags: ['sf-button-icon']` in `src/smart/button-icon/rule.js`
+- loaded as smart bundle `cl-button-icon` (`cl-icon-buttons` is its dated alias
   until 2026-12-01, and `smart/icon-buttons/js/icon-buttons.js` a forwarding
-  script that loads `smart/icon-button/js/icon-button.js`; change journal
+  script that loads `smart/button-icon/js/button-icon.js`; change journal
   `path-smart-icon-buttons-to-icon-button`)
 - base styles and base component JS are loaded through relation with `icon-buttons`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
@@ -89,8 +89,8 @@ Runtime helpers:
 
 Metadata:
 
-- `src/smart/icon-button/meta.mjs`
-- `src/smart/icon-button/component.json` — the interface (standard 1.3.8)
+- `src/smart/button-icon/meta.mjs`
+- `src/smart/button-icon/component.json` — the interface (standard 1.3.8)
 
 ## Lifecycle events
 
@@ -118,21 +118,21 @@ Supported light-DOM slot names:
 Example:
 
 ```html
-<sf-icon-button aria-label="Custom icon">
+<sf-button-icon aria-label="Custom icon">
   <span slot="icon"><i class="sf-icon">favorite</i></span>
-</sf-icon-button>
+</sf-button-icon>
 ```
 
 Close variant:
 
 ```html
-<sf-icon-button
+<sf-button-icon
   variant="close"
   size="1/3"
   type="link"
   scheme="on-surface"
   aria-label="Close"
-></sf-icon-button>
+></sf-button-icon>
 ```
 
 ## Host attributes
@@ -149,7 +149,7 @@ const toggle = menu.querySelector('[data-sf-admin-search-toggle]');  // the butt
 menu.querySelectorAll('[data-sf-admin-search-toggle]').length;       // 1
 toggle.focus();                      // natively focusable
 toggle.getBoundingClientRect();      // it has a box, so a drag can read one
-toggle.closest('sf-icon-button');    // the host, when that is what you want
+toggle.closest('sf-button-icon');    // the host, when that is what you want
 ```
 
 A Smart host lays out as `display: contents` and generates no box, so it is
@@ -165,7 +165,7 @@ control together.
 way:
 
 ```js
-const host = menu.querySelector('sf-icon-button');
+const host = menu.querySelector('sf-button-icon');
 host.focus();
 menu.contains(document.activeElement);   // true
 ```

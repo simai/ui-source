@@ -24,7 +24,7 @@
     "uses": [
       "component.context-menu",
       "smart.button",
-      "smart.icon-button",
+      "smart.button-icon",
       "smart.tabs"
     ],
     "public_parts": []
@@ -885,7 +885,7 @@
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "0b225058b49262e71ead8b99275cfeccb24a96fb484dcbc2a449691047d1af6b"
+        "sha256": "c2b2962aded01b14068f15e5391ddbe2c4276447831526582236c77f27597eb8"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",

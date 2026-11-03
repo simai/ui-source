@@ -1,7 +1,7 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-const sfIconButtonMeta = {
-  "tag": "sf-icon-button",
-  "source": "src/smart/icon-button/component.json",
+const sfButtonIconMeta = {
+  "tag": "sf-button-icon",
+  "source": "src/smart/button-icon/component.json",
   "attributes": {
     "template": {
       "kind": "custom",
@@ -220,5 +220,5 @@ const sfIconButtonMeta = {
   }
 };
 
-export {sfIconButtonMeta};
-export default sfIconButtonMeta;
+export {sfButtonIconMeta};
+export default sfButtonIconMeta;

@@ -39,7 +39,7 @@
     {
       "name": "icon",
       "title": "Значок на телефоне, без подсказок клавиш",
-      "children": "<sf-icon-button icon=\"search\" appearance=\"link\" scheme=\"on-surface\" aria-label=\"Поиск\"></sf-icon-button>",
+      "children": "<sf-button-icon icon=\"search\" appearance=\"link\" scheme=\"on-surface\" aria-label=\"Поиск\"></sf-button-icon>",
       "settings": {
         "keys": false,
         "popular": false,

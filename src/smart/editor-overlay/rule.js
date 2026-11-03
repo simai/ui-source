@@ -7,7 +7,7 @@ SF.RuleLoader['cl-editor-overlay'] = {
   css: true,
   relation: [
     { name: 'cl-sortable' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     { name: 'cl-tooltip' },
   ],
 };

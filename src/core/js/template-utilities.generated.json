@@ -63,6 +63,11 @@
     "pointer-events/default",
     "text-align/default"
   ],
+  "cl-button-icon": [
+    "align-items/default",
+    "display/default",
+    "pointer-events/default"
+  ],
   "cl-checkbox": [
     "cursor/default",
     "display/default",
@@ -158,11 +163,6 @@
   ],
   "cl-icon": [
     "font-weight/default"
-  ],
-  "cl-icon-button": [
-    "align-items/default",
-    "display/default",
-    "pointer-events/default"
   ],
   "cl-input": [
     "align-items/default",

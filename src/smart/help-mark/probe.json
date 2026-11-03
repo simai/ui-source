@@ -21,7 +21,7 @@
       "covers": "accessibility.role button, accessibility.name label",
       "steps": [
         {
-          "check": "(() => { const b = document.querySelector('#h sf-icon-button button'); return b.getAttribute('aria-label') === 'Подробнее: код решения' && b.getAttribute('aria-expanded') === 'false' && document.querySelector('#h .sf-help-mark-panel').hidden; })()"
+          "check": "(() => { const b = document.querySelector('#h sf-button-icon button'); return b.getAttribute('aria-label') === 'Подробнее: код решения' && b.getAttribute('aria-expanded') === 'false' && document.querySelector('#h .sf-help-mark-panel').hidden; })()"
         }
       ]
     },
@@ -31,7 +31,7 @@
       "covers": "settings.label default-from runtime.label",
       "steps": [
         {
-          "check": "document.querySelector('#h-old sf-icon-button button').getAttribute('aria-label') === 'Подробнее'"
+          "check": "document.querySelector('#h-old sf-button-icon button').getAttribute('aria-label') === 'Подробнее'"
         }
       ]
     },
@@ -41,7 +41,7 @@
       "covers": "keyboard Enter toggle:open, events.opened, aliases.json sf-help-mark-open, host-states data-open",
       "steps": [
         {
-          "script": "(() => { document.querySelector('#h sf-icon-button button').focus(); return true; })()"
+          "script": "(() => { document.querySelector('#h sf-button-icon button').focus(); return true; })()"
         },
         {
           "user": "keyboard:Enter",
@@ -80,7 +80,7 @@
           }
         },
         {
-          "script": "(() => { document.querySelector('#h sf-icon-button button').focus(); return true; })()"
+          "script": "(() => { document.querySelector('#h sf-button-icon button').focus(); return true; })()"
         },
         {
           "user": "keyboard:Escape",
@@ -98,7 +98,7 @@
           }
         },
         {
-          "check": "document.querySelector('#h .sf-help-mark-panel').hidden && !document.querySelector('#h').hasAttribute('data-open') && document.activeElement === document.querySelector('#h sf-icon-button button')"
+          "check": "document.querySelector('#h .sf-help-mark-panel').hidden && !document.querySelector('#h').hasAttribute('data-open') && document.activeElement === document.querySelector('#h sf-button-icon button')"
         }
       ]
     },

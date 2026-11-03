@@ -2,9 +2,9 @@
 // Usage: node this-file /absolute/path/to/output
 // A theme toggle (.sf-theme-button without data-theme) shows the theme it
 // switches to: a moon on a light page, a sun on a dark one -- on an
-// sf-icon-button host and on a native button's .sf-icon -- and an author's
+// sf-button-icon host and on a native button's .sf-icon -- and an author's
 // own glyph stays (ui-effects site, 2026-10-28). A choice (data-theme) stays a
-// choice after its sf-icon-button has started and handed data-theme to the
+// choice after its sf-button-icon has started and handed data-theme to the
 // button it draws: before, its glyph flipped and a click toggled the theme in
 // about one run of three, whenever the host started before the read.
 import {createServer} from 'node:http';
@@ -19,10 +19,10 @@ const page = (lang) => `<!doctype html><html lang="${lang}"><head><meta charset=
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body>
-<sf-icon-button id="host" class="sf-theme-button" aria-label="Тёмная тема"></sf-icon-button>
+<sf-button-icon id="host" class="sf-theme-button" aria-label="Тёмная тема"></sf-button-icon>
 <button id="native" type="button" class="sf-theme-button" aria-label="Тёмная тема"><i class="sf-icon" aria-hidden="true">dark_mode</i></button>
-<sf-icon-button id="own" class="sf-theme-button" icon="palette" aria-label="Тема"></sf-icon-button>
-<sf-icon-button id="choice" class="sf-theme-button" data-theme="dark" icon="dark_mode" aria-label="Тёмная"></sf-icon-button>
+<sf-button-icon id="own" class="sf-theme-button" icon="palette" aria-label="Тема"></sf-button-icon>
+<sf-button-icon id="choice" class="sf-theme-button" data-theme="dark" icon="dark_mode" aria-label="Тёмная"></sf-button-icon>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
 const server = createServer((request, response) => {
@@ -52,8 +52,8 @@ try {
     .catch(() => failures.push('the toggle never got a glyph'));
   // Read only once every host has started, so the moved data-theme is what the
   // runtime sees every run, not in a race with the component's start.
-  await tab.waitForFunction(() => [...document.querySelectorAll('sf-icon-button')].every((host) => host.querySelector(':scope > button')), null, {timeout: 15000})
-    .catch(() => failures.push('an sf-icon-button never drew its button'));
+  await tab.waitForFunction(() => [...document.querySelectorAll('sf-button-icon')].every((host) => host.querySelector(':scope > button')), null, {timeout: 15000})
+    .catch(() => failures.push('an sf-button-icon never drew its button'));
   const glyphs = () => tab.evaluate(() => ({
     host: document.querySelector('#host').getAttribute('icon'),
     native: document.querySelector('#native .sf-icon').textContent.trim(),

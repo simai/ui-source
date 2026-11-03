@@ -4,8 +4,8 @@ async page => {
   const assets = ['buttons', 'icon-buttons', 'close', 'button-group', 'badges', 'progress-bar', 'progress-scale', 'spinner', 'reference-link', 'download-file', 'alert', 'toast'];
   const cases = [
     ['sf-button', '.sf-button', {text: 'Продолжить'}],
-    ['sf-icon-button', '.sf-icon-button', {icon: 'edit', 'aria-label': 'Редактировать'}],
-    ['sf-icon-button', '.sf-icon-button', {variant: 'close', 'aria-label': 'Закрыть'}],
+    ['sf-button-icon', '.sf-icon-button', {icon: 'edit', 'aria-label': 'Редактировать'}],
+    ['sf-button-icon', '.sf-icon-button', {variant: 'close', 'aria-label': 'Закрыть'}],
     ['sf-button-close', '.sf-close', {}],
     ['sf-button-group', '.sf-button-group', {items: 'list::Список|cards::Карточки', value: 'list', 'aria-label': 'Вид'}],
     ['sf-badge', '.sf-badge', {text: 'Новое'}],
@@ -74,7 +74,7 @@ async page => {
       failures.push(...result.failures.map(f => ({tag, attrs, width, theme, ...f})));
       const host = page.locator(`main > ${tag}`), root = host.locator(selector).first();
       const check = (ok, name, actual) => {if (!ok) failures.push({tag, attrs, width, theme, name, actual});};
-      if (tag === 'sf-button' || tag === 'sf-icon-button') {
+      if (tag === 'sf-button' || tag === 'sf-button-icon') {
         await root.click(); await root.press('Space');
         check(await host.evaluate(e => e.__clicks === 2), 'one activation per pointer/key action', await host.evaluate(e => e.__clicks));
         await host.evaluate(e => e.setAttribute('disabled', ''));

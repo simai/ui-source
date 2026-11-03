@@ -140,7 +140,7 @@
   }
 
   sf-button:has(.sf-button--outline[class*="segment-"])
-  + sf-icon-button
+  + :is(sf-button-icon, sf-icon-button)
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
   .sf-button.sf-button--outline[class*="segment-"]
   + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
@@ -163,7 +163,7 @@
   }
 
 
-  sf-button:has(+ sf-icon-button .sf-icon-button--outline[class*="segment-"])
+  sf-button:has(+ :is(sf-button-icon, sf-icon-button) .sf-icon-button--outline[class*="segment-"])
   .sf-button[class*="segment-"]:not(.sf-button--outline),
   .sf-button[class*="segment-"]:not(.sf-button--outline)
   :has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {

@@ -349,7 +349,7 @@ try {
   const removeName = await page.evaluate(() => {
     const tag = document.querySelector('#m sf-tag');
     const button = tag.querySelector('button');
-    return button?.getAttribute('aria-label') || tag.querySelector('sf-icon-button')?.getAttribute('aria-label');
+    return button?.getAttribute('aria-label') || tag.querySelector('sf-button-icon')?.getAttribute('aria-label');
   });
   check('a chip\'s remove button is named Remove <label>', removeName === 'Remove Anna Petrova', {removeName});
   await page.evaluate(() => document.querySelector('#m sf-tag button').click());

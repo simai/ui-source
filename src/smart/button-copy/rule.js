@@ -7,7 +7,7 @@ SF.RuleLoader['cl-button-copy'] = {
   css: true,
   relation: [
     { name: 'cl-button' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     { name: 'cl-icon' },
   ],
 };

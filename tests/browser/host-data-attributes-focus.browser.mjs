@@ -38,7 +38,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js',
+  'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js',
   'component/component/buttons/js/buttons.js', 'component/component/icon-buttons/js/icon-buttons.js'];
 
 const failures = [];
@@ -55,7 +55,7 @@ async function open(body) {
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:16px">${body}</body></html>`);
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => ['sf-button', 'sf-icon-button'].every((tag) => customElements.get(tag)));
+  await page.waitForFunction(() => ['sf-button', 'sf-button-icon'].every((tag) => customElements.get(tag)));
   // What an author wrote on a host, without the runtime's own state marks
   // (data-sf-started is the base value started, §4.1, and stays on the host).
   await page.evaluate(() => {
@@ -72,7 +72,7 @@ try {
   {
     const page = await open(`<div id="shell">
       <sf-button id="close" text="Закрыть" data-action="close" data-add="block" title="Закрыть панель" aria-describedby="hint"></sf-button>
-      <sf-icon-button id="toggle" icon="search" aria-label="Поиск" data-sf-admin-search-toggle data-column-key="f2"></sf-icon-button>
+      <sf-button-icon id="toggle" icon="search" aria-label="Поиск" data-sf-admin-search-toggle data-column-key="f2"></sf-button-icon>
     </div>`);
 
     const found = await page.evaluate(() => {
@@ -86,7 +86,7 @@ try {
         columnAll: tags('[data-column-key="f2"]'),
         firstIsControl: first('[data-add]') === document.querySelector('#close button'),
         backToHost: first('[data-add]')?.closest('sf-button')?.id || null,
-        backToIconHost: first('[data-column-key="f2"]')?.closest('sf-icon-button')?.id || null,
+        backToIconHost: first('[data-column-key="f2"]')?.closest('sf-button-icon')?.id || null,
         onHost: {
           action: document.querySelector('#close').getAttribute('data-action'),
           dataset: authored(document.querySelector('#close')),
@@ -108,7 +108,7 @@ try {
       found.columnAll.length === 1 && found.columnAll[0] === 'button', found);
     check('the first match of a data-* selector is the control', found.firstIsControl === true, found);
     check('closest() gets back to the sf-button host', found.backToHost === 'close', found);
-    check('closest() gets back to the sf-icon-button host', found.backToIconHost === 'toggle', found);
+    check('closest() gets back to the sf-button-icon host', found.backToIconHost === 'toggle', found);
     check('the host no longer carries the attribute', found.onHost.action === null
       && Object.keys(found.onHost.dataset).length === 0, found);
     check('aria-* and title still reach the native control', found.copied.title === 'Закрыть панель'
@@ -245,7 +245,7 @@ try {
   // 3. Focus through the host: the host takes none itself.
   {
     const page = await open(`<div id="menu">
-      <sf-icon-button id="toggle" icon="search" aria-label="Поиск" data-sf-admin-search-toggle></sf-icon-button>
+      <sf-button-icon id="toggle" icon="search" aria-label="Поиск" data-sf-admin-search-toggle></sf-button-icon>
       <sf-button id="save" text="Сохранить"></sf-button>
     </div>`);
 

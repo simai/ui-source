@@ -4,7 +4,7 @@
 //
 // sf-pager on the built bytes, at a desktop and a phone width:
 // - every appearance draws (cards, row, steps, course, counter) and sits on
-//   the ladder: the buttons are as tall as an sf-button / sf-icon-button of
+//   the ladder: the buttons are as tall as an sf-button / sf-button-icon of
 //   the same size, a picture is the text line it stands on, the parts of a
 //   row share one centre line, a missing card keeps its column;
 // - Next and Back move (sf-pager-navigate, then sf-pager-change), a page that
@@ -51,8 +51,8 @@ const live = () => `${head(true)}<body>
 <div class="box"><sf-pager id="counter" appearance="counter" current="2" keys>${island(RECORDS)}</sf-pager></div>
 <div class="box"><sf-pager id="half" appearance="counter" size="1/2">${island(RECORDS.slice(0, 5))}</sf-pager></div>
 <div class="box"><sf-pager id="steps-half" appearance="steps" size="1/2" current="0">${island(STEPS)}</sf-pager></div>
-<div class="box" id="refs"><sf-button id="ref-b1" size="1" text="Ref"></sf-button> <sf-icon-button id="ref-i1" size="1" icon="add" aria-label="ref"></sf-icon-button>
-<sf-button id="ref-bh" size="1/2" text="Ref"></sf-button> <sf-icon-button id="ref-ih" size="1/2" icon="add" aria-label="ref"></sf-icon-button></div>
+<div class="box" id="refs"><sf-button id="ref-b1" size="1" text="Ref"></sf-button> <sf-button-icon id="ref-i1" size="1" icon="add" aria-label="ref"></sf-button-icon>
+<sf-button id="ref-bh" size="1/2" text="Ref"></sf-button> <sf-button-icon id="ref-ih" size="1/2" icon="add" aria-label="ref"></sf-button-icon></div>
 <input id="field" type="text" aria-label="Поле">
 </body></html>`;
 
@@ -184,10 +184,10 @@ try {
     if (!near(m.course.action?.h, m.ref.b1?.h)) at(`course: Начать is ${m.course.action?.h}, an sf-button is ${m.ref.b1?.h}`);
     if (!near(m.course.number?.cy, m.course.action?.cy) || !near(m.course.text?.cy, m.course.action?.cy)) at('course: number, text and button are not on one centre line');
     // counter
-    if (!near(m.counter.back?.h, m.ref.i1?.h) || !near(m.counter.back?.w, m.ref.i1?.w)) at(`counter: icon button ${m.counter.back?.w}x${m.counter.back?.h}, sf-icon-button 1 is ${m.ref.i1?.w}x${m.ref.i1?.h}`);
+    if (!near(m.counter.back?.h, m.ref.i1?.h) || !near(m.counter.back?.w, m.ref.i1?.w)) at(`counter: icon button ${m.counter.back?.w}x${m.counter.back?.h}, sf-button-icon 1 is ${m.ref.i1?.w}x${m.ref.i1?.h}`);
     if (!near(m.counter.place?.cy, m.counter.back?.cy) || !near(m.counter.forward?.cy, m.counter.back?.cy)) at('counter: the place is not on the buttons\' centre line');
     if (m.counter.text !== '3 из 12' || m.counter.backLabel !== 'Предыдущая запись') at(`counter: ${m.counter.text}, ${m.counter.backLabel}`);
-    if (!near(m.counter.halfBack?.h, m.ref.ih?.h)) at(`counter 1/2: ${m.counter.halfBack?.h}, sf-icon-button 1/2 is ${m.ref.ih?.h}`);
+    if (!near(m.counter.halfBack?.h, m.ref.ih?.h)) at(`counter 1/2: ${m.counter.halfBack?.h}, sf-button-icon 1/2 is ${m.ref.ih?.h}`);
     if (m.counter.halfDisabled !== true) at('counter 1/2: Back is not disabled on the first record');
 
     if (width === 1280) {

@@ -21,12 +21,12 @@ const out = resolve(process.argv[2]);
 const styles = [
   'core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/inputs/css/inputs.css', 'component/component/buttons/css/buttons.css',
-  'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/icon-button/css/icon-button.css',
+  'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/button-icon/css/button-icon.css',
   'smart/smart/input/css/input.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js',
+  'smart/smart/button-icon/js/button-icon.js', 'smart/smart/input/js/input.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
 
@@ -93,7 +93,7 @@ try {
       return {
         host: box.querySelector('sf-input'),
         input: box.querySelector('sf-input input'),
-        button: box.querySelector('sf-icon-button button'),
+        button: box.querySelector('sf-button-icon button'),
         field: box.querySelector('.sf-input-field'),
       };
     };
@@ -166,7 +166,7 @@ try {
     holder.append(box);
     render(set.renderEditField(fields.fresh, null, host), box);
     await tick(300);
-    english.buttonName = box.querySelector('sf-icon-button button')?.getAttribute('aria-label');
+    english.buttonName = box.querySelector('sf-button-icon button')?.getAttribute('aria-label');
     box.remove();
     document.documentElement.lang = 'ru';
 
@@ -184,7 +184,7 @@ try {
       await tick(300);
       const height = (node) => Math.round(node?.getBoundingClientRect().height ?? -1);
       ladder[size] = {plain: height(plain.querySelector('.sf-input-field')), field: height(secret.querySelector('.sf-input-field')),
-        button: height(secret.querySelector('sf-icon-button button'))};
+        button: height(secret.querySelector('sf-button-icon button'))};
       pair.remove();
     }
 

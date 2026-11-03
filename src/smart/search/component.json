@@ -2,7 +2,7 @@
   "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "search",
   "settings": {
@@ -238,7 +238,7 @@
   },
   "relations": [
     {
-      "name": "cl-icon-button"
+      "name": "cl-button-icon"
     },
     {
       "name": "icons"

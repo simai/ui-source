@@ -29,8 +29,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icon",
-      "smart.icon-button"
+      "smart.button-icon",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -351,15 +351,15 @@
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "a200e847b9f953517417b6280e2df25d567ac783759057b28db89fe97c829c3e"
+        "sha256": "216ebfb7c9fbb256fddcbb4879e06c2535247b3aea980a1e1fe214206b87fc80"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "f0e8d7415b23a0a436c5d97c240fe9acb22fb922625837a2255da024a7577ac8"
+        "sha256": "7a034f536f95c224de45c62573b086c38e127c799e5953765a4ea6332504dccd"
       },
       {
         "path": "src/smart/header-site/rule.js",
-        "sha256": "526a34e34568159b49c59c1417f4ac81d97d9d546ff43b3e672596abf29d3ea4"
+        "sha256": "4a1c878751674ecb6698b52cc5f96c4bd25481ae98a75550a39f3ef2422d99db"
       },
       {
         "path": "src/smart/header-site/docs.md",

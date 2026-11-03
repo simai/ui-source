@@ -10,7 +10,7 @@
 //
 // The page loads through the real Loader with the subset disabled, holding
 // `<i class="sf-icon">`, an icon inside a button, `<sf-icon>` and
-// `<sf-icon-button>`; more of each is added after load. The local font file is
+// `<sf-button-icon>`; more of each is added after load. The local font file is
 // held back for a while first. What it holds:
 //   1. no flash: while the font is held back, no icon is marked loaded and none
 //      is drawn at a non-zero font size (the ligature text never shows);
@@ -49,7 +49,7 @@ const page = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
   <span class="sf-icon sf-icon--size-5" aria-hidden="true">home</span>
   <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--primary sf-icon-button--size-1 flex items-cross-center" aria-label="Почта"><i class="sf-icon" aria-hidden="true">mail</i></button>
   <sf-icon icon="settings" label="Настройки"></sf-icon>
-  <sf-icon-button icon="notifications" aria-label="Уведомления"></sf-icon-button>
+  <sf-button-icon icon="notifications" aria-label="Уведомления"></sf-button-icon>
 </div>
 <div id="after" style="display:flex;gap:16px;align-items:center"></div>
 <script src="/distr/core/js/core.js"></script></body></html>`;
@@ -95,7 +95,7 @@ const readIcons = (tab) => tab.evaluate(() => [...document.querySelectorAll('.sf
   const box = el.getBoundingClientRect();
   return {
     where: el.closest('#before') ? 'before' : 'after',
-    owner: el.closest('sf-icon-button') ? 'sf-icon-button' : el.closest('sf-icon') ? 'sf-icon' : 'static',
+    owner: el.closest('sf-button-icon') ? 'sf-button-icon' : el.closest('sf-icon') ? 'sf-icon' : 'static',
     text: el.textContent.trim(),
     loaded: el.classList.contains('sf-icon-loaded'),
     width: Math.round(box.width * 10) / 10,
@@ -111,8 +111,8 @@ try {
   tab.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });
   tab.on('request', (request) => { if (/icons\.simai\.io/u.test(request.url())) subsetRequests.push(request.url()); });
   await tab.goto(`${base}/page.html`);
-  await tab.waitForFunction(() => customElements.get('sf-icon') && customElements.get('sf-icon-button')
-    && document.querySelectorAll('sf-icon .sf-icon, sf-icon-button .sf-icon').length >= 2, null, {timeout: 15000});
+  await tab.waitForFunction(() => customElements.get('sf-icon') && customElements.get('sf-button-icon')
+    && document.querySelectorAll('sf-icon .sf-icon, sf-button-icon .sf-icon').length >= 2, null, {timeout: 15000});
 
   // 1. Held back: nothing is marked loaded, nothing is drawn.
   await tab.waitForTimeout(600);
@@ -129,7 +129,7 @@ try {
     const after = document.getElementById('after');
     after.insertAdjacentHTML('beforeend', '<span class="sf-icon" aria-hidden="true">verified</span>'
       + '<sf-icon icon="verified"></sf-icon>'
-      + '<sf-icon-button icon="delete" aria-label="Удалить"></sf-icon-button>');
+      + '<sf-button-icon icon="delete" aria-label="Удалить"></sf-button-icon>');
   });
   releaseFont();
   await tab.waitForFunction(() => [...document.querySelectorAll('.sf-icon')].every((el) => el.classList.contains('sf-icon-loaded')),
@@ -140,7 +140,7 @@ try {
     const after = document.getElementById('after');
     after.insertAdjacentHTML('beforeend', '<i class="sf-icon sf-icon--size-5" aria-hidden="true">star</i>'
       + '<sf-icon icon="home" size="5"></sf-icon>'
-      + '<sf-icon-button icon="edit" aria-label="Изменить"></sf-icon-button>');
+      + '<sf-button-icon icon="edit" aria-label="Изменить"></sf-button-icon>');
     const late = document.createElement('span');
     late.className = 'sf-icon';
     late.textContent = 'check';
@@ -151,7 +151,7 @@ try {
   // 2. Every icon is loaded and drawn.
   const drawn = await readIcons(tab);
   evidence.drawn = drawn;
-  const expected = {before: {static: 3, 'sf-icon': 1, 'sf-icon-button': 1}, after: {static: 3, 'sf-icon': 2, 'sf-icon-button': 2}};
+  const expected = {before: {static: 3, 'sf-icon': 1, 'sf-button-icon': 1}, after: {static: 3, 'sf-icon': 2, 'sf-button-icon': 2}};
   for (const [where, owners] of Object.entries(expected)) {
     for (const [owner, count] of Object.entries(owners)) {
       const found = drawn.filter((icon) => icon.where === where && icon.owner === owner).length;

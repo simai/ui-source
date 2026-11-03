@@ -94,7 +94,7 @@ export function renderAlertTemplate(context) {
 
       ${context.closable
         ? html`
-                  <sf-icon-button
+                  <sf-button-icon
                           kind="close"
                           size="1"
                           appearance="link"
@@ -102,7 +102,7 @@ export function renderAlertTemplate(context) {
                           data-close
                           data-alert-close
                           aria-label=${context.closeLabel || 'Close alert'}
-                  ></sf-icon-button>
+                  ></sf-button-icon>
           `
         : nothing}
     </div>

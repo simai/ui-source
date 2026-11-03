@@ -1247,7 +1247,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       const root = doc.createElement('span');
       root.className = 'sf-composition-overlay-tool sf-tooltip-anchor';
-      const button = doc.createElement('sf-icon-button');
+      const button = doc.createElement('sf-button-icon');
       button.setAttribute('size', '1/2');
       button.setAttribute('appearance', 'ghost');
       button.setAttribute('scheme', 'on-surface-variant');

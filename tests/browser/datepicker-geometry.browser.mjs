@@ -15,7 +15,7 @@ const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/input-date/css/input-date.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
+  'smart/smart/button-icon/js/button-icon.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
 
 const day = (n, classes = '', info = '') => `<button class="sf-datepicker-day ${classes} flex flex-col content-main-center items-cross-center" type="button" data-n="${n}"><span class="sf-datepicker-day-date">${n}</span>${info ? `<span class="sf-datepicker-day-info">${info}</span>` : ''}</button>`;
 const WEEK = `<div class="sf-datepicker flex flex-col" id="week"><div class="sf-datepicker-row grid grid-col-7">
@@ -79,8 +79,8 @@ try {
         weekday: Math.round(dp.querySelector('.sf-datepicker-weekday').getBoundingClientRect().height),
         half: Math.round(document.querySelector('#half button').getBoundingClientRect().height),
         dayHeight: Math.round(dp.querySelector('.sf-datepicker-day').getBoundingClientRect().height),
-        head: [centre(head.querySelector('sf-icon-button button')), centre(head.querySelector('.sf-datepicker-month-toggle button')),
-          centre([...head.querySelectorAll('sf-icon-button button')].pop())],
+        head: [centre(head.querySelector('sf-button-icon button')), centre(head.querySelector('.sf-datepicker-month-toggle button')),
+          centre([...head.querySelectorAll('sf-button-icon button')].pop())],
       };
     });
     seen[theme] = got;

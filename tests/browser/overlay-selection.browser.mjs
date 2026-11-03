@@ -151,8 +151,8 @@ const prepareFrame = async (page, path, {actions = ACTIONS} = {}) => {
     overlay.setActions(actions);
     await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
   }, {letter, actions});
-  // sf-icon-button and sf-tooltip load from setActions on, before the first selection.
-  if (actions.some((action) => action.icon)) await page.waitForFunction(() => customElements.get('sf-icon-button') && customElements.get('sf-tooltip') && document.querySelector('.sf-composition-overlay-toolbar button'), null, {timeout: 25000});
+  // sf-button-icon and sf-tooltip load from setActions on, before the first selection.
+  if (actions.some((action) => action.icon)) await page.waitForFunction(() => customElements.get('sf-button-icon') && customElements.get('sf-tooltip') && document.querySelector('.sf-composition-overlay-toolbar button'), null, {timeout: 25000});
 };
 const settle = (page) => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
 const well = (page, top) => page.evaluate((top) => { document.getElementById('well').scrollTop = top; }, top);

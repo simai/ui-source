@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -23,7 +23,7 @@
   "composition": {
     "uses": [
       "component.slider",
-      "smart.icon-button"
+      "smart.button-icon"
     ],
     "public_parts": []
   },
@@ -319,7 +319,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "45d1e67d7c4918bf7abbd1816ba94b2c21bc2102d2cad69d4ba343e15cbfe899"
+        "sha256": "236fc7789ef9d9e716b09f5db7c548663a04cdadbd3b6dacfc22b80766862d3c"
       }
     ],
     "generated_runtime": [

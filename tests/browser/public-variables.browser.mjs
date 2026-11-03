@@ -32,7 +32,7 @@ const DRAW = {
   input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
   tag: {css: ['tags'], js: 'tag', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
-  'icon-button': {css: ['icon-buttons'], js: 'icon-button', html: '<sf-icon-button icon="add" aria-label="Добавить" size="1"></sf-icon-button>'},
+  'icon-button': {css: ['icon-buttons'], js: 'button-icon', html: '<sf-button-icon icon="add" aria-label="Добавить" size="1"></sf-button-icon>'},
   checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
   'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
@@ -269,7 +269,7 @@ try {
     }
     // js names one module, or several when a component draws with another
     // (sf-gallery's inline view is sf-slider).
-    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js', ...[].concat(draw.js).map((js) => `smart/smart/${js}/js/${js}.js`)]) {
+    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js', ...[].concat(draw.js).map((js) => `smart/smart/${js}/js/${js}.js`)]) {
       await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
     }
     await page.waitForTimeout(700);

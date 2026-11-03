@@ -25,7 +25,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icon-button",
+      "smart.button-icon",
       "smart.sortable",
       "smart.tooltip"
     ],
@@ -790,11 +790,11 @@
       },
       {
         "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "dae085132d8514aad7eea32b775feecec01a6a3ad10d270e50299a8aa76bd3c3"
+        "sha256": "7966a790c5ad940affc4a446be59fe65ef97f7c519037999a8c11a24fcb393c4"
       },
       {
         "path": "src/smart/editor-overlay/rule.js",
-        "sha256": "1d2896589fe69491200ecfa5a3a208d055b87a54809f4661395a802e0b82c64b"
+        "sha256": "9d3ac5228b1ba97fb462a0fa9570a9265fd4391ef5938648b71142fb41bdec83"
       },
       {
         "path": "src/smart/editor-overlay/docs.md",
@@ -802,7 +802,7 @@
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "c47c16c8988eedcdab7cbfe4c65b92f02fa5aa155a7d1729360f9aa8a3bd6901"
+        "sha256": "480d8782a30537cf444ccaa95d6c1d72a4e7644e57addac5b90af0d77d9b758e"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",

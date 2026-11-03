@@ -106,7 +106,7 @@ function renderClose(context) {
     return context.component?.hasSlotContent?.('close')
         ? context.component.getSlotContent('close')
         : html`
-                <sf-icon-button
+                <sf-button-icon
                         kind="close"
                         size="${closeSize(context.size)}"
                         appearance="link"
@@ -117,7 +117,7 @@ function renderClose(context) {
                             e.stopPropagation();
                             context.component.onClose();
                         }}"
-                ></sf-icon-button>
+                ></sf-button-icon>
         `;
 }
 

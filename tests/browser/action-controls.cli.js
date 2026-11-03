@@ -10,7 +10,7 @@ async page => {
 
   const url = 'http://127.0.0.1:8768/tests/fixtures/action-focus-lab.html';
   await page.goto(url);
-  await page.waitForFunction(() => customElements.get('sf-icon-button'));
+  await page.waitForFunction(() => customElements.get('sf-button-icon'));
   await page.waitForFunction(() => document.querySelector('#smart-runtime-icon button'));
 
   const staticContract = await page.evaluate(() => {

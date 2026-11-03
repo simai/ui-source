@@ -33,7 +33,7 @@ test('full Tabs join mixed ordinary and Smart actions without a double seam', ()
   );
   assert.match(
     smartCss,
-    /> :is\(sf-button, sf-icon-button\):not\(:first-child\) > :is\(\.sf-button, \.sf-icon-button\)/,
+    /> :is\(sf-button, :is\(sf-button-icon, sf-icon-button\)\):not\(:first-child\) > :is\(\.sf-button, \.sf-icon-button\)/,
   );
   assert.match(
     smartCss,

@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
+import { tagSelector } from '../../core/js/tag-aliases.js';
 import { renderGalleryTemplate } from './js/templates/default';
 import { normalizeSlideContent } from '../../component/slider/js/_slide-content';
 import manifest from './component.json';
@@ -132,7 +133,7 @@ const LIGHTBOX_BACKGROUND_CLOSE_IGNORE_SELECTOR = [
   '[data-sf-gallery-open]',
   '[data-sf-modal-close]',
   'sf-button',
-  'sf-icon-button',
+  tagSelector('sf-button-icon'),
   '.sf-slider-controls',
   '.sf-slider-arrows',
   '.sf-slider-dots',

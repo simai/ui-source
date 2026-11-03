@@ -7,7 +7,7 @@ SF.RuleLoader['cl-tabs'] = {
   relation: [
     { name: 'tabs' },
     { name: 'cl-button' },
-    { name: 'cl-icon-button' },
+    { name: 'cl-button-icon' },
     // «Ещё» and the settings open the standard menu; the settings reorder with
     // sf-sortable and show and hide with sf-checkbox (owner, 2026-10-14).
     { name: 'cl-menu-context', lazy: true },

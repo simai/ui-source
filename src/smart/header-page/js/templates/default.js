@@ -21,14 +21,14 @@ export function renderPageHeaderTemplate(context) {
         ? html`<sf-badge appearance="outline" scheme="tertiary" size="1/2" text=${text('all-sites')}></sf-badge>`
         : nothing}
       ${star === true || star === false
-        ? html`<sf-icon-button size="1/2" appearance="ghost" scheme="on-surface"
+        ? html`<sf-button-icon size="1/2" appearance="ghost" scheme="on-surface"
             class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
             icon="star"
             ?filled=${on}
             aria-pressed=${String(on)}
             aria-label=${on ? text('unstar') : text('star')}
             title=${on ? text('unstar') : text('star')}
-            @click=${() => component.toggleStar()}></sf-icon-button>`
+            @click=${() => component.toggleStar()}></sf-button-icon>`
         : nothing}
       <span class="grow"></span>
       ${hasHostSlot('actions') ? html`<div class="sf-page-header-actions flex items-cross-center">${hostSlot('actions')}</div>` : nothing}

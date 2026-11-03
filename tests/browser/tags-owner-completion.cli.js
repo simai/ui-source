@@ -72,10 +72,10 @@ async page => {
               toggleTag: toggleRoot.tagName,
               toggleType: toggleRoot.getAttribute('type'),
               togglePressed: toggleRoot.getAttribute('aria-pressed'),
-              toggleClose: toggleRoot.querySelectorAll('button, sf-icon-button').length,
+              toggleClose: toggleRoot.querySelectorAll('button, sf-button-icon').length,
               removableTag: removableRoot.tagName,
-              removableButtons: removableRoot.querySelectorAll('sf-icon-button').length,
-              closeName: removableRoot.querySelector('sf-icon-button')?.getAttribute('aria-label'),
+              removableButtons: removableRoot.querySelectorAll('sf-button-icon').length,
+              closeName: removableRoot.querySelector('sf-button-icon')?.getAttribute('aria-label'),
               decorationsHidden: [...document.querySelectorAll('.sf-tag-check, .sf-tag-icon, .sf-tag-color-icon, .sf-dot, .sf-avatar')]
                 .every(node => node.getAttribute('aria-hidden') === 'true'),
             };
@@ -88,7 +88,7 @@ async page => {
 
           await page.locator('#toggle > button').click();
           await page.waitForFunction(() => document.getElementById('toggle').hasAttribute('active'));
-          await page.locator('#removable sf-icon-button').click();
+          await page.locator('#removable sf-button-icon').click();
           await page.locator('#disabled > button').click({ force: true }).catch(() => {});
           const events = await page.evaluate(() => ({
             values: window.__tagEvents,

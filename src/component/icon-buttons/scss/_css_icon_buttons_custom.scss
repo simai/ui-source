@@ -1,7 +1,7 @@
 @layer sf.override {
 
-  sf-icon-button:has(.sf-icon-button--outline[class*="segment-"])
-  + sf-icon-button
+  :is(sf-button-icon, sf-icon-button):has(.sf-icon-button--outline[class*="segment-"])
+  + :is(sf-button-icon, sf-icon-button)
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
   .sf-icon-button.sf-icon-button--outline[class*="segment-"]
   + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
@@ -12,7 +12,7 @@
   }
 
 
-  sf-icon-button:has(.sf-icon-button--outline[class*="segment-"])
+  :is(sf-button-icon, sf-icon-button):has(.sf-icon-button--outline[class*="segment-"])
   + sf-button
   .sf-button[class*="segment-"]:not(.sf-button--outline),
   .sf-icon-button.sf-icon-button--outline[class*="segment-"]
@@ -24,7 +24,7 @@
   }
 
 
-  sf-icon-button:has(+ sf-icon-button .sf-icon-button--outline[class*="segment-"])
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button-icon, sf-icon-button) .sf-icon-button--outline[class*="segment-"])
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {
     --sf-icon-button--border-top-width: var(--sf-px);
@@ -33,7 +33,7 @@
     --sf-icon-button--border-inline-start-width: var(--sf-px);
   }
 
-  sf-icon-button:has(+ sf-button .sf-button--outline[class*="segment-"])
+  :is(sf-button-icon, sf-icon-button):has(+ sf-button .sf-button--outline[class*="segment-"])
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
   .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-button.sf-button--outline[class*="segment-"]) {
     --sf-icon-button--border-top-width: var(--sf-px);
@@ -127,7 +127,7 @@
 }
 
 @layer sf.components {
-  /* on-surface-variant (sf-icon-button scheme): the on-surface family one step
+  /* on-surface-variant (sf-button-icon scheme): the on-surface family one step
      quieter. The control carries sf-icon-button--on-surface as well, so its
      fill and edge are on-surface's; here the glyph takes
      --sf-on-surface-variant (a tonal control has already turned that role to

@@ -35,7 +35,7 @@ const PHASE_A = [
   'accordion', 'resizer', 'tabs', 'icon', 'gallery', 'steps', 'profile-picker', 'slider-range', 'theme-generator',
   'input-date', 'tree',
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones
-  'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
+  'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'button-icon',
   'button-group', 'input', 'input-textarea', 'dropdown', 'list-item', 'file-preview', 'input-country', 'tag', 'pagination',
   'input-image', 'drawer', 'menu-context', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'input-quantity',
   'file-upload', 'editor-overlay',

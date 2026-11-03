@@ -1,17 +1,17 @@
 {
-  "component": "sf-icon-button",
+  "component": "sf-button-icon",
   "probe": "sf-icon-button against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-icon-button id=\"ib\" icon=\"settings\" aria-label=\"Настройки\"></sf-icon-button>",
-      "  <sf-icon-button id=\"ib-close\" kind=\"close\" aria-label=\"Закрыть\"></sf-icon-button>",
-      "  <sf-icon-button id=\"ib-old\" variant=\"close\" type=\"tonal\" tightness=\"low\" aria-label=\"Старые имена\"></sf-icon-button>",
-      "  <sf-icon-button id=\"ib-badge\" icon=\"notifications\" badge-count=\"3\" size=\"2\" aria-label=\"Уведомления\"></sf-icon-button>",
-      "  <sf-icon-button id=\"ib-load\" icon=\"refresh\" loading aria-label=\"Обновить\"></sf-icon-button>",
-      "  <sf-icon-button id=\"ib-bad\" icon=\"add\" appearance=\"primary\" size=\"7\" aria-label=\"Неизвестно\"></sf-icon-button>",
+      "  <sf-button-icon id=\"ib\" icon=\"settings\" aria-label=\"Настройки\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-close\" kind=\"close\" aria-label=\"Закрыть\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-old\" variant=\"close\" type=\"tonal\" tightness=\"low\" aria-label=\"Старые имена\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-badge\" icon=\"notifications\" badge-count=\"3\" size=\"2\" aria-label=\"Уведомления\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-load\" icon=\"refresh\" loading aria-label=\"Обновить\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-bad\" icon=\"add\" appearance=\"primary\" size=\"7\" aria-label=\"Неизвестно\"></sf-button-icon>",
       "</main>"
     ]
   },
@@ -59,7 +59,7 @@
           }
         },
         {
-          "check": "['variant', 'type', 'tightness'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-icon-button' && note.from === from && note.remove_after === '2026-12-01'))"
+          "check": "['variant', 'type', 'tightness'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2026-12-01'))"
         }
       ]
     },

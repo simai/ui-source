@@ -92,7 +92,7 @@ try {
       slideLabels: [...car.querySelectorAll('.swiper-slide')].map((slide) => slide.getAttribute('aria-label')),
       wrapper: Math.round(car.querySelector('.swiper-wrapper').getBoundingClientRect().height),
       thumbActive: [...document.querySelectorAll('#s .sf-slider-thumbnails .swiper-slide')].findIndex((slide) => slide.classList.contains('swiper-slide-thumb-active')),
-      arrows: [...document.querySelectorAll('#s sf-icon-button')].map((button) => button.getAttribute('aria-label')),
+      arrows: [...document.querySelectorAll('#s sf-button-icon')].map((button) => button.getAttribute('aria-label')),
     };
   });
   if (!seen.kbdCss) failures.push('<kbd> got no CSS');

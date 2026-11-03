@@ -12,10 +12,15 @@
 // - its sheet, css/icon-buttons.css, is sf-icon-button's sheet, built from the same
 //   sources as css/icon-button.css.
 //
+// Since 2026-11-03 sf-icon-button is a dated alias of sf-button-icon and
+// smart/icon-button/ is itself a forwarding path to smart/button-icon/
+// (path-smart-icon-button-to-button-icon); this file still leads to
+// smart/icon-button/, which leads on, so each record stays true.
+//
 // The Loader forwards the old bundle name, cl-icon-buttons, to cl-icon-button
 // (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
 import {noteDeprecated} from '../../core/js/deprecations.js';
-import '../icon-button/js/templates/default.css';
+import '../button-icon/js/templates/default.css';
 
 const FROM = 'smart/icon-buttons/';
 const TO = 'smart/icon-button/';

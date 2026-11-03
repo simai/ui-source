@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
+import { tagSelector } from '../../core/js/tag-aliases.js';
 import {
   bindSlider,
   refreshSlider,
@@ -98,7 +99,7 @@ class SfSlider extends SliderElement {
     const arrowHosts = () =>
       Array.from(
         root?.querySelectorAll?.(
-          'sf-icon-button[root-class*="sf-slider-button-"]',
+          `${tagSelector('sf-button-icon')}[root-class*="sf-slider-button-"]`,
         ) || [],
       );
 

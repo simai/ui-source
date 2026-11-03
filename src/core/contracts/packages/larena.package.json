@@ -26,10 +26,10 @@
         "component.inputs",
         "smart.badge",
         "smart.button",
+        "smart.button-icon",
         "smart.dropdown",
         "smart.empty-state",
         "smart.icon",
-        "smart.icon-button",
         "smart.input",
         "smart.menu-context",
         "smart.profile-picker",
@@ -118,11 +118,11 @@
       "folder": "content-editor",
       "requires": [
         "smart.button",
+        "smart.button-icon",
         "smart.dropdown",
         "smart.editor-inline",
         "smart.file-upload",
         "smart.icon",
-        "smart.icon-button",
         "smart.input",
         "smart.menu-context",
         "smart.popover",
@@ -140,11 +140,11 @@
         "smart.avatar",
         "smart.badge",
         "smart.button",
+        "smart.button-icon",
         "smart.checkbox",
         "smart.dropdown",
         "smart.empty-state",
         "smart.file-preview",
-        "smart.icon-button",
         "smart.input",
         "smart.input-color",
         "smart.input-country",
@@ -171,10 +171,10 @@
       "requires": [
         "component.icons",
         "smart.button",
+        "smart.button-icon",
         "smart.checkbox",
         "smart.data-view",
         "smart.dropdown",
-        "smart.icon-button",
         "smart.pagination",
         "smart.toast"
       ]
@@ -198,9 +198,9 @@
         "component.accordion",
         "smart.breadcrumbs",
         "smart.button",
+        "smart.button-icon",
         "smart.dropdown",
         "smart.icon",
-        "smart.icon-button",
         "smart.input",
         "smart.input-image",
         "smart.input-textarea",
@@ -217,9 +217,9 @@
       "folder": "mail-letters",
       "requires": [
         "smart.button",
+        "smart.button-icon",
         "smart.dropdown",
         "smart.empty-state",
-        "smart.icon-button",
         "smart.input",
         "smart.menu-context"
       ]
@@ -244,9 +244,9 @@
       "folder": "mail-structure",
       "requires": [
         "smart.button",
+        "smart.button-icon",
         "smart.empty-state",
         "smart.icon",
-        "smart.icon-button",
         "smart.menu-context",
         "smart.sortable"
       ]
@@ -258,7 +258,7 @@
       "folder": "message-log",
       "requires": [
         "smart.button",
-        "smart.icon-button",
+        "smart.button-icon",
         "utility.sr-only"
       ]
     },
@@ -275,6 +275,7 @@
         "smart.button",
         "smart.button-copy",
         "smart.button-group",
+        "smart.button-icon",
         "smart.checkbox",
         "smart.data-view",
         "smart.data-view-composite",
@@ -285,7 +286,6 @@
         "smart.file-upload",
         "smart.help-mark",
         "smart.icon",
-        "smart.icon-button",
         "smart.input",
         "smart.input-color",
         "smart.input-country",

@@ -63,7 +63,7 @@ function renderPageField(context, component) {
 function renderDirection(context, {kind, icon, label, page}) {
   return html`
     <li class="sf-pagination-item">
-      <sf-icon-button
+      <sf-button-icon
         class=${`sf-pagination-direction sf-pagination-direction--${kind}`}
         size=${context.size}
         appearance="link"
@@ -72,7 +72,7 @@ function renderDirection(context, {kind, icon, label, page}) {
         title=${label}
         aria-label=${label}
         @click=${page}
-      ></sf-icon-button>
+      ></sf-button-icon>
     </li>
   `;
 }
@@ -348,7 +348,7 @@ export function renderPaginationTemplate(context) {
                     ></sf-checkbox>
                   `
                 : ""}
-              <sf-icon-button
+              <sf-button-icon
                 class="sf-pagination-actions-clear"
                 size=${context.size}
                 appearance="link"
@@ -357,7 +357,7 @@ export function renderPaginationTemplate(context) {
                 title=${context.clearSelectionLabel}
                 aria-label=${context.clearSelectionLabel}
                 @click=${() => component.clearSelection()}
-              ></sf-icon-button>
+              ></sf-button-icon>
             </div>
           `
         : ""}

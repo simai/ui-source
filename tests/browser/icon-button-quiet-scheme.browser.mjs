@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// scheme="on-surface-variant" on sf-icon-button, on the built bytes: the
+// scheme="on-surface-variant" on sf-button-icon, on the built bytes: the
 // on-surface family one step quieter. The glyph takes --sf-on-surface-variant
 // wherever the glyph is the control -- outline, link, surface, ghost -- and a
 // close control's cross with it; a tonal control takes its container's quieter
@@ -20,15 +20,15 @@ const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 const APPEARANCES = ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'];
 const SCHEMES = ['on-surface', 'on-surface-variant'];
-const control = (scheme, appearance) => `<sf-icon-button icon="share" aria-label="Поделиться" scheme="${scheme}" appearance="${appearance}"></sf-icon-button>`;
+const control = (scheme, appearance) => `<sf-button-icon icon="share" aria-label="Поделиться" scheme="${scheme}" appearance="${appearance}"></sf-button-icon>`;
 const PAGE = `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body>
 <div id="grid">${SCHEMES.flatMap((scheme) => APPEARANCES.map((appearance) => control(scheme, appearance))).join('')}</div>
-<sf-icon-button id="cross" kind="close" scheme="on-surface-variant" appearance="link" aria-label="Закрыть"></sf-icon-button>
-<sf-icon-button id="loud-cross" kind="close" scheme="on-surface" appearance="link" aria-label="Закрыть"></sf-icon-button>
-<sf-icon-button id="off" icon="share" scheme="on-surface-variant" appearance="link" aria-label="Поделиться" disabled></sf-icon-button>
+<sf-button-icon id="cross" kind="close" scheme="on-surface-variant" appearance="link" aria-label="Закрыть"></sf-button-icon>
+<sf-button-icon id="loud-cross" kind="close" scheme="on-surface" appearance="link" aria-label="Закрыть"></sf-button-icon>
+<sf-button-icon id="off" icon="share" scheme="on-surface-variant" appearance="link" aria-label="Поделиться" disabled></sf-button-icon>
 <!-- The roles as the browser paints them, so a measured colour is compared with
      a colour and not with the light-dark() pair a variable declares. -->
 <span id="role-variant" style="color: var(--sf-on-surface-variant)"></span>
@@ -63,12 +63,12 @@ try {
   const errors = [];
   tab.on('pageerror', (error) => errors.push(error.message));
   await tab.goto(`${origin}/`);
-  await tab.waitForFunction(() => document.querySelectorAll('#grid sf-icon-button .sf-icon').length === 12
+  await tab.waitForFunction(() => document.querySelectorAll('#grid sf-button-icon .sf-icon').length === 12
     && document.querySelector('#cross .sf-close-icon') && document.querySelector('#off .sf-icon'), null, {timeout: 30000});
   const seen = await tab.evaluate(() => {
     const colour = (node) => (node ? getComputedStyle(node).color : null);
     const grid = {};
-    for (const host of document.querySelectorAll('#grid sf-icon-button')) {
+    for (const host of document.querySelectorAll('#grid sf-button-icon')) {
       const button = host.querySelector('button');
       grid[`${host.getAttribute('scheme')}/${host.getAttribute('appearance')}`] = {
         glyph: colour(button.querySelector('.sf-icon')),

@@ -25,7 +25,7 @@ when pressed. A trigger that stands elsewhere on the page is named by `for`
 (an id, or several separated by spaces):
 
 ```html
-<sf-icon-button id="search-button" icon="search" aria-label="Поиск"></sf-icon-button>
+<sf-button-icon id="search-button" icon="search" aria-label="Поиск"></sf-button-icon>
 <sf-search for="search-button" index="/search-index.json"></sf-search>
 ```
 

@@ -169,7 +169,7 @@ try {
       () => customElements.get('sf-close') && customElements.get('sf-button-close') && customElements.get('sf-icon-button')
         && document.querySelectorAll('#fixture .sf-close-icon').length === 5 && document.querySelector('#loader-asks-icon-button .sf-icon-button'));
     // The icon button's sheet is on the page before the glyphs are compared.
-    await tab.waitForFunction(() => [...document.styleSheets].some((sheet) => /\/smart\/icon-button\/css\//u.test(sheet.href || '')), null, {timeout: 10000}).catch(() => {});
+    await tab.waitForFunction(() => [...document.styleSheets].some((sheet) => /\/smart\/button-icon\/css\//u.test(sheet.href || '')), null, {timeout: 10000}).catch(() => {});
     const alone = {new: await drawn(tab, '#new'), old: await drawn(tab, '#old')};
     const inside = {new: await drawn(tab, '#new-in-button'), old: await drawn(tab, '#old-in-button'), plain: await drawn(tab, '#plain')};
     const notes = warnings.filter((text) => NOTE.test(text));

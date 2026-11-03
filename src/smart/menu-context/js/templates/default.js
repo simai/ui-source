@@ -373,10 +373,10 @@ function renderSearch(context) {
 // never grows with the depth (owner, 2026-10-30).
 function renderDrillHead(context) {
     return html`<div class="sf-context-menu-drill-head">
-        <sf-icon-button class="sf-context-menu-back" icon="arrow_back" appearance="link" scheme="on-surface"
+        <sf-button-icon class="sf-context-menu-back" icon="arrow_back" appearance="link" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"}
                 aria-label=${context.backLabel} title=${context.backLabel}
-                @click=${() => context.component.drillBack()}></sf-icon-button>
+                @click=${() => context.component.drillBack()}></sf-button-icon>
         <span class="sf-context-menu-level-title">${context.level?.label ?? ""}</span>
     </div>`;
 }
@@ -445,10 +445,10 @@ function renderPanelHead(context) {
                     event.stopPropagation();
                     context.component.chooseTab(Number(event.detail?.current ?? 0));
                 }}></sf-tabs>
-        ${context.closable ? html`<sf-icon-button class="sf-context-menu-close" appearance="link" scheme="on-surface"
+        ${context.closable ? html`<sf-button-icon class="sf-context-menu-close" appearance="link" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"} icon="close"
                 aria-label=${context.closeLabel} title=${context.closeLabel}
-                @click=${() => context.component.requestClose()}></sf-icon-button>` : nothing}
+                @click=${() => context.component.requestClose()}></sf-button-icon>` : nothing}
     </div>`;
 }
 

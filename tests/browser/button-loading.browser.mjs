@@ -9,14 +9,14 @@
 //   - sf-button without an icon: the spinner lies over the label, centred on
 //     it; the label keeps its place (text fill transparent) and the button its
 //     width; the label is still the accessible name;
-//   - an icon-only sf-button and sf-icon-button: the spinner replaces the icon;
+//   - an icon-only sf-button and sf-button-icon: the spinner replaces the icon;
 //   - sf-button-group, default and segmented, with text, icon and icon-only
 //     items: the same, and no item changes width;
 //   - aria-busy="true" and native disabled on every loading button;
 //   - the spinner takes the disabled ink, or --sf-loader--color;
 //   - the arc moves without end, and under reduced motion it is a still arc;
 //   - the slot is right without the spinner sheet (the button sheets draw it);
-//   - toggling loading on sf-button and sf-icon-button brings the icon back;
+//   - toggling loading on sf-button and sf-button-icon brings the icon back;
 //   - the ordinary constructors draw the same spinner;
 //   - no stripes: the old layer paints nothing unless a page still sets
 //     --sf-button-loading-stripe, which is read until the sweep.
@@ -30,7 +30,7 @@ const SPINNER_SHEET = 'component/component/spinner/css/spinner.css';
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/button-group/css/button-group.css', SPINNER_SHEET];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'component/component/button-group/js/button-group.js', 'smart/smart/button-group/js/button-group.js',
+  'smart/smart/button-icon/js/button-icon.js', 'component/component/button-group/js/button-group.js', 'smart/smart/button-group/js/button-group.js',
   'component/component/buttons/js/buttons.js', 'component/component/icon-buttons/js/icon-buttons.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 
@@ -49,7 +49,7 @@ async function open({width = 1000, body = '', reducedMotion = 'no-preference', s
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:16px">${body}</body></html>`);
   for (const path of SHEETS.filter((path) => spinnerSheet || path !== SPINNER_SHEET)) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => ['sf-button', 'sf-icon-button', 'sf-button-group'].every((tag) => customElements.get(tag)));
+  await page.waitForFunction(() => ['sf-button', 'sf-button-icon', 'sf-button-group'].every((tag) => customElements.get(tag)));
   await page.waitForTimeout(600);
   return page;
 }
@@ -95,8 +95,8 @@ try {
       <sf-button size="${size}" text="Сохранить" loading class="k-text s-load"></sf-button>
       <sf-button size="${size}" icon="save" aria-label="Сохранить" class="k-only s-rest"></sf-button>
       <sf-button size="${size}" icon="save" aria-label="Сохранить" loading class="k-only s-load"></sf-button>
-      <sf-icon-button size="${size}" icon="save" aria-label="Сохранить" class="k-iconbutton s-rest"></sf-icon-button>
-      <sf-icon-button size="${size}" icon="save" aria-label="Сохранить" loading class="k-iconbutton s-load"></sf-icon-button>
+      <sf-button-icon size="${size}" icon="save" aria-label="Сохранить" class="k-iconbutton s-rest"></sf-button-icon>
+      <sf-button-icon size="${size}" icon="save" aria-label="Сохранить" loading class="k-iconbutton s-load"></sf-button-icon>
       <sf-button-group size="${size}" aria-label="Действие" value="b" ${items(WITH_ICON)} class="k-group s-rest"></sf-button-group>
       <sf-button-group size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(WITH_ICON))} class="k-group s-load"></sf-button-group>
       <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(TEXT)} class="k-segtext s-rest"></sf-button-group>
@@ -176,7 +176,7 @@ try {
   {
     const page = await open({body: `<sf-button id="text" text="Отправить" loading></sf-button>
       <sf-button id="tinted" text="Отправить" icon="send" loading style="--sf-loader--color: rgb(200, 0, 0)"></sf-button>
-      <sf-icon-button id="iconbutton" icon="save" aria-label="Сохранить" loading></sf-icon-button>
+      <sf-button-icon id="iconbutton" icon="save" aria-label="Сохранить" loading></sf-button-icon>
       <span id="disable" style="color: var(--sf-on-disable)">x</span>`});
     const named = await page.getByRole('button', {name: 'Отправить', exact: true}).count();
     const busyNamed = await page.locator('#text').getByRole('button', {name: 'Отправить', exact: true}).count();
@@ -200,7 +200,7 @@ try {
   {
     const page = await open({reducedMotion: 'reduce', body: `<sf-button text="Сохранить" loading></sf-button>
       <sf-button text="Сохранить" icon="save" loading></sf-button>
-      <sf-icon-button icon="save" aria-label="Сохранить" loading></sf-icon-button>
+      <sf-button-icon icon="save" aria-label="Сохранить" loading></sf-button-icon>
       <sf-button-group appearance="segmented" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))}></sf-button-group>`});
     const still = await page.evaluate(() => [...document.querySelectorAll('.sf-loader-ring-accent')].map((node) => {
       const style = getComputedStyle(node);
@@ -216,11 +216,11 @@ try {
     const page = await open({width, spinnerSheet: false, body: SIZES.map((size) => `<div data-row="${size}">
       <sf-button size="${size}" icon="save" text="Сохранить"></sf-button>
       <sf-button size="${size}" text="Сохранить" loading class="text"></sf-button>
-      <sf-icon-button size="${size}" icon="save" aria-label="Сохранить" loading></sf-icon-button></div>`).join('')});
+      <sf-button-icon size="${size}" icon="save" aria-label="Сохранить" loading></sf-button-icon></div>`).join('')});
     const rows = await page.evaluate((sizes) => sizes.map((size) => {
       const row = document.querySelector(`[data-row="${size}"]`);
       const box = (node) => { const rect = node.getBoundingClientRect(); return [rect.width, rect.height]; };
-      return {size, icon: box(row.querySelector('.sf-icon')), text: box(row.querySelector('sf-button.text .sf-loader-container')), iconButton: box(row.querySelector('sf-icon-button .sf-loader-container'))};
+      return {size, icon: box(row.querySelector('.sf-icon')), text: box(row.querySelector('sf-button.text .sf-loader-container')), iconButton: box(row.querySelector('sf-button-icon .sf-loader-container'))};
     }), SIZES);
     evidence[`withoutSpinnerSheet@${width}`] = rows;
     check(`without the spinner sheet the slot is the icon's box at ${width}px`, rows.every((row) => near(row.text[0], row.icon[0]) && near(row.text[1], row.icon[1])
@@ -230,7 +230,7 @@ try {
 
   // 5. Toggling loading brings the icon back; the ordinary constructors draw the same spinner.
   {
-    const page = await open({body: `<sf-button id="b" icon="save" text="Сохранить"></sf-button><sf-icon-button id="ib" icon="save" aria-label="Сохранить"></sf-icon-button><div id="ordinary"></div>`});
+    const page = await open({body: `<sf-button id="b" icon="save" text="Сохранить"></sf-button><sf-button-icon id="ib" icon="save" aria-label="Сохранить"></sf-button-icon><div id="ordinary"></div>`});
     const state = () => page.evaluate(() => ['b', 'ib'].map((id) => {
       const button = document.querySelector(`#${id} button`);
       return {id, spinner: Boolean(button.querySelector('.sf-loader-container')), icon: Boolean(button.querySelector('.sf-icon')), busy: button.getAttribute('aria-busy'), disabled: button.disabled};
@@ -277,7 +277,7 @@ try {
   {
     const page = await open({body: `<sf-button id="plain" text="Сохранить" loading></sf-button>
       <sf-button id="legacy" text="Сохранить" loading style="--sf-button-loading-stripe: rgb(255, 0, 0)"></sf-button>
-      <sf-icon-button id="legacy-icon" icon="save" aria-label="Сохранить" loading style="--sf-icon-button-loading-stripe: rgb(0, 0, 255)"></sf-icon-button>`});
+      <sf-button-icon id="legacy-icon" icon="save" aria-label="Сохранить" loading style="--sf-icon-button-loading-stripe: rgb(0, 0, 255)"></sf-button-icon>`});
     const stripes = await page.evaluate(() => Object.fromEntries(['plain', 'legacy', 'legacy-icon'].map((id) => {
       const style = getComputedStyle(document.querySelector(`#${id} button`), '::after');
       return [id, {image: style.backgroundImage, animation: style.animationName}];

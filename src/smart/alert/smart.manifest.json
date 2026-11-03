@@ -24,8 +24,8 @@
     "uses": [
       "component.alerts",
       "component.buttons",
-      "smart.icon",
-      "smart.icon-button"
+      "smart.button-icon",
+      "smart.icon"
     ],
     "public_parts": []
   },

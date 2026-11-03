@@ -311,6 +311,9 @@ function rename(oldTag, newTag) {
   write(`src/smart/${oldFolder}/index.js`, forwardingStub({oldTag, newTag, oldFolder, newFolder, since: today, until, journalId: pathRecord,
     sheet: sheets.length ? `js/templates/${sheets[0]}` : null}));
   forwards.forwards[`cl-${oldFolder}`] = {to: `cl-${newFolder}`, since: today, remove_after: until, journal: pathRecord};
+  // An earlier forward to the old bundle goes straight to the new one: the
+  // Loader forwards once.
+  for (const row of Object.values(forwards.forwards)) if (row.to === `cl-${oldFolder}`) row.to = `cl-${newFolder}`;
   write(forwardsFile, json(forwards));
 
   // 2. component.json.

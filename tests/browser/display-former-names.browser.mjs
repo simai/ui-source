@@ -32,8 +32,8 @@ const out = resolve(process.argv[2]);
 const RENAMES = [
   {old: 'buttons', name: 'button', tag: 'sf-button', sheet: false,
     markup: '<sf-button id="old" text="Купить"></sf-button>', renders: 'button'},
-  {old: 'icon-buttons', name: 'icon-button', tag: 'sf-icon-button', sheet: true,
-    markup: '<sf-icon-button id="old" icon="close" label="Закрыть"></sf-icon-button>', renders: 'button'},
+  {old: 'icon-buttons', name: 'icon-button', tag: 'sf-button-icon', sheet: true,
+    markup: '<sf-button-icon id="old" icon="close" label="Закрыть"></sf-button-icon>', renders: 'button'},
   {old: 'icons', name: 'icon', tag: 'sf-icon', sheet: false,
     markup: '<sf-icon id="old" icon="home"></sf-icon>', renders: null},
   {old: 'badges', name: 'badge', tag: 'sf-badge', sheet: false,
@@ -128,7 +128,7 @@ const legacyDisplay = `(() => {
   customElements.define('sf-legacy-display', class extends HTMLElement {
     connectedCallback() {
       this.dataset.definedFirst = tags.filter((tag) => customElements.get(tag)).join(' ');
-      this.innerHTML = '<sf-button text="Да"></sf-button><sf-icon-button icon="close" label="Нет"></sf-icon-button>'
+      this.innerHTML = '<sf-button text="Да"></sf-button><sf-button-icon icon="close" label="Нет"></sf-button-icon>'
         + '<sf-icon icon="home"></sf-icon><sf-badge text="3"></sf-badge><sf-tag text="Тег"></sf-tag>';
     }
   });

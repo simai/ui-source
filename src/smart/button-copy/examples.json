@@ -99,7 +99,7 @@
           "covers": "settings.label, accessibility.name label",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#c sf-icon-button button'); return b && b.getAttribute('aria-label') === 'Скопировать команду'; })()"
+              "check": "(() => { const b = document.querySelector('#c sf-button-icon button'); return b && b.getAttribute('aria-label') === 'Скопировать команду'; })()"
             }
           ]
         },
@@ -109,7 +109,7 @@
           "covers": "settings.text, lang runtime.copy",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#c-text sf-button button'); return b && b.querySelector('.sf-button-text-container').textContent.trim() === 'Копировать' && document.querySelector('#c-target sf-icon-button button').getAttribute('aria-label') === 'Копировать'; })()"
+              "check": "(() => { const b = document.querySelector('#c-text sf-button button'); return b && b.querySelector('.sf-button-text-container').textContent.trim() === 'Копировать' && document.querySelector('#c-target sf-button-icon button').getAttribute('aria-label') === 'Копировать'; })()"
             }
           ]
         },
@@ -245,7 +245,7 @@
           "covers": "settings.duration min 0, settings.size enum",
           "steps": [
             {
-              "check": "document.querySelector('#c-dur sf-icon-button').getAttribute('size') === '1/2'",
+              "check": "document.querySelector('#c-dur sf-button-icon').getAttribute('size') === '1/2'",
               "expect": {
                 "values": {
                   "#c-dur.duration": 2000,

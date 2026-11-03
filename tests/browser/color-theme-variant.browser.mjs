@@ -50,7 +50,7 @@ try {
       const input = document.querySelector('#c .sf-color-input');
       return {
         name: native?.getAttribute('aria-label') ?? null,
-        icon: document.querySelector('#c button[data-action="theme"]')?.closest('sf-icon-button')?.getAttribute('icon') ?? null,
+        icon: document.querySelector('#c button[data-action="theme"]')?.closest('sf-button-icon')?.getAttribute('icon') ?? null,
         visible: Boolean(native && native.getBoundingClientRect().width > 0),
         hex: Boolean(document.querySelector('#c .sf-color-text')),
         inputTab: input?.tabIndex ?? null,

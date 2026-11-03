@@ -34,7 +34,7 @@ test('template context: the resolved names the templates read are passed', async
   const expected = {
     badge: ['iconStart', 'iconEnd'],
     button: ['iconStart', 'iconEnd', 'type'],
-    'icon-button': ['type', 'variant'],
+    'button-icon': ['type', 'variant'],
     input: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],
     skeleton: ['variant', 'type'],

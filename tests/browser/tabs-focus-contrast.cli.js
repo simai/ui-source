@@ -19,7 +19,7 @@ async page => {
           host.setAttribute('variant', icons ? 'icons' : 'buttons');
           host.setAttribute('items', 'Обзор::icon=home|История::icon=history'); main.append(host);
         } else {
-          const tag = icons ? 'sf-icon-button' : 'sf-button';
+          const tag = icons ? 'sf-button-icon' : 'sf-button';
           main.insertAdjacentHTML('beforeend', `<div id="contrast-tabs" class="sf-tabs ${type ? `sf-tabs--${type}` : ''} ${type === 'vertical' ? 'flex' : ''}"><div class="sf-tabs-top-container"><div class="sf-tabs-top flex ${type === 'vertical' ? 'flex-col' : ''}">${[0, 1].map(i => `<button type="button" tabindex="${i ? '-1' : '0'}" class="${tag} ${tag}--${scheme} ${tag}--primary ${tag}--size-1 ${icons ? 'sf-icon-button--icon' : ''} ${i ? '' : 'selected'}" aria-label="${i ? 'История' : 'Обзор'}">${icons ? '<i class="sf-icon" aria-hidden="true">home</i>' : '<span class="sf-button-text-container">Обзор</span>'}</button>`).join('')}</div></div><div class="sf-tabs-main-container">Содержимое</div></div>`);
         }
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));

@@ -10,6 +10,6 @@ SF.RuleLoader['cl-menu-context'] = {
     // The tabs and the close button draw only a panel's head: fetched after the
     // page is ready, not held up front for every menu.
     { name: 'cl-tabs', lazy: true },
-    { name: 'cl-icon-button', lazy: true },
+    { name: 'cl-button-icon', lazy: true },
   ],
 };

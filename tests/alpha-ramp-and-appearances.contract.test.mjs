@@ -229,10 +229,10 @@ test('the appearances are part of the public API, and documented', () => {
   // has one source. If the two ever drift, Studio and the runtime would disagree
   // about what exists. sf-button's ghost reads as link: a dated value alias
   // (compatibility.aliases appearance=ghost), not an appearance of its own;
-  // sf-icon-button keeps ghost.
+  // sf-button-icon keeps ghost.
   const expected = {
     button: ['default', 'tonal', 'outline', 'link', 'surface'],
-    'icon-button': ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'],
+    'button-icon': ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'],
   };
   for (const [component, values] of Object.entries(expected)) {
     const manifest = JSON.parse(read(`src/smart/${component}/smart.manifest.json`));

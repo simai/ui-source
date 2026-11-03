@@ -32,8 +32,8 @@
     "uses": [
       "component.datepicker",
       "smart.button",
+      "smart.button-icon",
       "smart.icon",
-      "smart.icon-button",
       "smart.input"
     ],
     "public_parts": []
@@ -661,11 +661,11 @@
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "9497e4c03e3ae76b4f0ad5109cc7afe6dd6e735881b911bf75d35bf387a9d073"
+        "sha256": "07a4431f694ad30e34b78dfa493e3aa4729c834a1b0067f4033784a8ce72b12c"
       },
       {
         "path": "src/smart/input-date/rule.js",
-        "sha256": "11c7ecf49a99bf5443cbbcac1f2828dc44de4ecd6c038da49098177f341d1bb0"
+        "sha256": "7d163d5b9a341a6055b174ea308f358858e7a92c668e6840b791e6cc5ef42bc7"
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",

@@ -25,8 +25,8 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon",
-      "smart.icon-button"
+      "smart.button-icon",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -353,7 +353,7 @@
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
-        "sha256": "58a760eef42f4016576a0252b021b0329d97a75a93ea7bb9c17460b7a831309e"
+        "sha256": "33d0d47795c72858a79e570f672840280a0ebd39b284df075ca8828845c63115"
       },
       {
         "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
@@ -361,7 +361,7 @@
       },
       {
         "path": "src/smart/button-copy/rule.js",
-        "sha256": "7bd783c9f1c503eea2e89d88e2b3bd9a59c94966137091c33fc9ade7ff5e89f4"
+        "sha256": "a75be26a863ab4c8755421410701036c28dde8d35975d40d16cca498ca0d1469"
       },
       {
         "path": "src/smart/button-copy/docs.md",

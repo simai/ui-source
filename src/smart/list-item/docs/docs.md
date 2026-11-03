@@ -126,7 +126,7 @@ that box leaves an empty host behind.
   <sf-list-item pinned interactive size="1/2" text="Letter settings" value="settings"></sf-list-item>
   <sf-list-item sortable-item="hero" interactive size="1/2" kind="icon" icon="title"
                 text="Heading" supporting="Hello" value="hero">
-    <sf-icon-button slot="trailing" icon="more_horiz" tabindex="-1" aria-label="Actions"></sf-icon-button>
+    <sf-button-icon slot="trailing" icon="more_horiz" tabindex="-1" aria-label="Actions"></sf-button-icon>
   </sf-list-item>
   <sf-list-item sortable-item="text" interactive size="1/2" kind="icon" icon="notes"
                 text="Text" supporting="Paragraph" value="text"></sf-list-item>
