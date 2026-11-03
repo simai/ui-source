@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.copy-button",
+  "component": "smart.button-copy",
   "title": "copy button reference",
-  "summary": "Deterministic reference fixture for sf-copy-button.",
+  "summary": "Deterministic reference fixture for sf-button-copy.",
   "locale": "ru",
   "props": {
     "value": "npm i @simai/ui",

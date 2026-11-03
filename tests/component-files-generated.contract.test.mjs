@@ -31,7 +31,7 @@ const PENDING_META = {};
 // writes from them. Every Smart component of this repository is listed.
 const PHASE_A = [
   'button-close', 'help-mark', 'reference-link', 'avatar', 'avatar-group', 'slider', 'breadcrumbs', 'empty-state', 'download-file',
-  'color', 'switch', 'header-page', 'menu', 'editor-inline', 'sortable', 'copy-button', 'code-input', 'radio', 'checkbox',
+  'color', 'switch', 'header-page', 'menu', 'editor-inline', 'sortable', 'button-copy', 'code-input', 'radio', 'checkbox',
   'accordion', 'resizer', 'tabs', 'icon', 'gallery', 'steps', 'profile-picker', 'range-slider', 'theme-generator',
   'datepicker', 'tree',
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones

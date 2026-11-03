@@ -67,6 +67,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-inline-editor-to-editor-inline"
+    },
+    "cl-copy-button": {
+      "to": "cl-button-copy",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-copy-button-to-button-copy"
     }
   }
 }

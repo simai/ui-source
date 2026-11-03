@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-copy-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/copy-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
-  "id": "smart.copy-button",
-  "tag": "sf-copy-button",
-  "version": "1.1.8",
+  "$comment": "The source of sf-button-copy's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/copy-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.button-copy",
+  "tag": "sf-button-copy",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -177,13 +177,13 @@
     }
   },
   "aliases": {
-    "$comment": "Dated aliases of sf-copy-button for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "$comment": "Dated aliases of sf-button-copy for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
     "since": "2026-10-27",
     "remove-after": "2026-12-01",
     "rows": [
       {
         "from": "sf-copy",
-        "to": "sf-copy-button-copied",
+        "to": "sf-button-copy-copied",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
@@ -193,13 +193,43 @@
       },
       {
         "from": "sf-copy-error",
-        "to": "sf-copy-button-copy-failed",
+        "to": "sf-button-copy-copy-failed",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
         "manifest": true,
         "section": "§8, vocabulary 1.1.5 §5.1",
         "summary": "The value was not copied; on denied the text was selected for Ctrl+C."
+      },
+      {
+        "from": "sf-copy-button",
+        "to": "sf-button-copy",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.2.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-button-copy; sf-copy-button is a subclass defined beside it until the date"
+      },
+      {
+        "from": "sf-copy-button-copied",
+        "to": "sf-button-copy-copied",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-copy-button-copy-failed",
+        "to": "sf-button-copy-copy-failed",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
       }
     ]
   },
@@ -235,7 +265,8 @@
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.3: the control sits in a line of text by its middle (--sf-copy-button-vertical-align, default middle, now on the wrapper .sf-copy-button: the host is display: contents, so the variable never reached a box). Aligned by its baseline it took the icon glyph's, and an sf-icon is font-size 0 until the icon runtime marks it loaded: the button rode 1 px lower and the line under it grew by 1 px until then, which first-paint gate 24 saw only when the full run loaded the page late enough.",
     "version 1.1.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.8: the copy and its fallback are core's (core/js/clipboard.js, SF.copyText, core.runtime 1.20.0), shared with the clipboard class (reuse audit 2026-11-02, finding 11). The same order -- the Clipboard API on a secure page, execCommand over a hidden field where it is absent or refused -- and the same outcomes."
+    "version 1.1.8: the copy and its fallback are core's (core/js/clipboard.js, SF.copyText, core.runtime 1.20.0), shared with the clipboard class (reuse audit 2026-11-02, finding 11). The same order -- the Clipboard API on a secure page, execCommand over a hidden field where it is absent or refused -- and the same outcomes.",
+    "version 1.2.0: the tag is sf-button-copy (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.button-copy and the bundle cl-button-copy follow it. sf-copy-button stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-button-copy, sf-copy-button) (change journal tag-sf-copy-button-to-sf-button-copy, path-smart-copy-button-to-button-copy)."
   ],
   "x-registry": {
     "capabilities": [
@@ -320,7 +351,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-copy-button to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
+      "use_when": "Use sf-button-copy to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not leave several icon-only copy buttons named only «Копировать»"
@@ -331,7 +362,7 @@
         "accessibility",
         "provenance"
       ],
-      "minimal_example": "<sf-copy-button value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
+      "minimal_example": "<sf-button-copy value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-button-copy>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

@@ -3912,6 +3912,87 @@
       },
       "owner": "ui-source",
       "source": "src/smart/inline-editor/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/editor-inline/component.json"
+    },
+    {
+      "id": "tag-sf-copy-button-to-sf-button-copy",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-copy-button is sf-button-copy (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-button-copy's class, the Loader's rule lists it, the Framework's sheets match :is(sf-button-copy, sf-copy-button), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-copy-button-copied, sf-copy-button-copy-failed).",
+      "items": [
+        {
+          "component": "sf-button-copy",
+          "from": "sf-copy-button",
+          "to": "sf-button-copy"
+        },
+        {
+          "component": "sf-button-copy",
+          "from": "sf-copy-button-copied",
+          "to": "sf-button-copy-copied"
+        },
+        {
+          "component": "sf-button-copy",
+          "from": "sf-copy-button-copy-failed",
+          "to": "sf-button-copy-copy-failed"
+        },
+        {
+          "component": "sf-button-copy",
+          "from": "sf-copy",
+          "to": "sf-button-copy-copied"
+        },
+        {
+          "component": "sf-button-copy",
+          "from": "sf-copy-error",
+          "to": "sf-button-copy-copy-failed"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-copy-button></sf-copy-button>",
+        "after": "<sf-button-copy></sf-button-copy>"
+      },
+      "manual": "Write <sf-button-copy> for <sf-copy-button> in markup and sf-button-copy for sf-copy-button in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-button-copy, or both names through SF.tags.selector('sf-button-copy') while the alias lives; a class or a custom property spelled like the old tag (.sf-copy-button, --sf-copy-button-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/button-copy/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-copy-button-to-button-copy",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-button-copy is served from smart/button-copy/ since its folder took the new tag's name: js/button-copy.js, loader bundle cl-button-copy. The old path keeps working until remove_after: smart/copy-button/js/copy-button.js is a forwarding script that notes the path in SF.deprecations and loads smart/button-copy/js/button-copy.js, the Loader forwards the bundle name cl-copy-button to cl-button-copy (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.copy-button is a dated alias of smart.button-copy, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-button-copy",
+          "from": "smart/copy-button/js/copy-button.js",
+          "to": "smart/button-copy/js/button-copy.js",
+          "match": "smart/copy-button/js/copy-button(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-copy-button",
+          "to": "cl-button-copy",
+          "match": "['\"]cl-copy-button['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.copy-button",
+          "to": "smart.button-copy",
+          "match": "['\"]smart\\.copy-button['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/button-copy/ for smart/copy-button/ and button-copy for copy-button in the file names (js/button-copy.js, js/button-copy.min.js); in a product rule's relation write cl-button-copy for cl-copy-button, and in a manifest or a package contract smart.button-copy for smart.copy-button. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/copy-button/js/copy-button.js\"></script>",
+        "after": "<script src=\"/distr/smart/button-copy/js/button-copy.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/copy-button/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button-copy/component.json"
     }
   ]
 }

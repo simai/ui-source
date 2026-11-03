@@ -10,8 +10,8 @@ import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/copy-button/css/copy-button.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js', 'smart/smart/copy-button/js/copy-button.js'];
+const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/button-copy/css/button-copy.css'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js', 'smart/smart/button-copy/js/button-copy.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();
@@ -35,11 +35,11 @@ try {
   await page.goto(`${origin}/`);
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><body style="margin:20px">
     <code id="token">sk_test_42</code>
-    <sf-copy-button id="by-target" target="#token" label="Скопировать ключ" duration="5000"></sf-copy-button>
-    <sf-copy-button id="by-value" value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-copy-button>
-    <sf-copy-button id="missing" target="#nowhere"></sf-copy-button>
-    <sf-copy-button id="refused" target="#token"></sf-copy-button>
-    <sf-copy-button id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000" appearance="tonal" root-style="--sf-icon-button--box-shadow: 0 0 0 3px red"></sf-copy-button>
+    <sf-button-copy id="by-target" target="#token" label="Скопировать ключ" duration="5000"></sf-button-copy>
+    <sf-button-copy id="by-value" value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-button-copy>
+    <sf-button-copy id="missing" target="#nowhere"></sf-button-copy>
+    <sf-button-copy id="refused" target="#token"></sf-button-copy>
+    <sf-button-copy id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000" appearance="tonal" root-style="--sf-icon-button--box-shadow: 0 0 0 3px red"></sf-button-copy>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   // Core takes its distr from its own script URL when sfPath is unset
@@ -47,7 +47,7 @@ try {
   // distr, so the page names the distr this probe routes.
   await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-copy-button'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-button-copy'), null, {timeout: 8000});
   await page.waitForTimeout(400);
   await page.evaluate(() => {
     window.events = [];

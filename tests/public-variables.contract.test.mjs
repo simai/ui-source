@@ -32,7 +32,7 @@ const FOLDERS = {
   icon: 'icons',
   'reference-link': 'reference-link',
   'download-file': 'download-file',
-  'copy-button': 'smart/copy-button',
+  'copy-button': 'smart/button-copy',
   'help-mark': 'smart/help-mark',
   // Display group B, with its move to standard 1.3.8 (2026-10-27): the class
   // sheets the Smart elements draw with, or a sheet of the element's own.

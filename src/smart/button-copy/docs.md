@@ -1,12 +1,12 @@
 # Smart Copy Button
 
-`<sf-copy-button>` копирует значение и сообщает о результате: значок на миг
+`<sf-button-copy>` копирует значение и сообщает о результате: значок на миг
 становится галочкой, а «Скопировано» вежливо объявляется для чтения с экрана.
 
 ```html
 <code id="token">sk_test_51H…</code>
-<sf-copy-button target="#token" label="Скопировать ключ"></sf-copy-button>
-<sf-copy-button value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-copy-button>
+<sf-button-copy target="#token" label="Скопировать ключ"></sf-button-copy>
+<sf-button-copy value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-button-copy>
 ```
 
 Что копируется:

@@ -1,0 +1,70 @@
+{
+  "$comment": "Dated aliases of sf-button-copy for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-button-copy",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-copy",
+      "to": "sf-button-copy-copied",
+      "kind": "event",
+      "component": "sf-button-copy",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-copy",
+        "to": "copied"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1"
+    },
+    {
+      "from": "sf-copy-error",
+      "to": "sf-button-copy-copy-failed",
+      "kind": "event",
+      "component": "sf-button-copy",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-copy-error",
+        "to": "copy-failed"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1"
+    },
+    {
+      "from": "sf-copy-button",
+      "to": "sf-button-copy",
+      "kind": "tag",
+      "component": "sf-button-copy",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+      "note": "the element is sf-button-copy; sf-copy-button is a subclass defined beside it until the date"
+    },
+    {
+      "from": "sf-copy-button-copied",
+      "to": "sf-button-copy-copied",
+      "kind": "event",
+      "component": "sf-button-copy",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-copy-button-copy-failed",
+      "to": "sf-button-copy-copy-failed",
+      "kind": "event",
+      "component": "sf-button-copy",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    }
+  ]
+}

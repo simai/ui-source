@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.copy-button",
-  "version": "1.1.8",
+  "id": "smart.button-copy",
+  "version": "1.2.0",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -17,7 +17,7 @@
     "keyboard",
     "responsive"
   ],
-  "custom_element": "sf-copy-button",
+  "custom_element": "sf-button-copy",
   "templates": [
     "default"
   ],
@@ -127,7 +127,7 @@
     }
   },
   "events": {
-    "sf-copy-button-copied": {
+    "sf-button-copy-copied": {
       "summary": "copied (vocabulary).",
       "payload": {
         "type": "object",
@@ -150,7 +150,7 @@
       },
       "canonical": true
     },
-    "sf-copy-button-copy-failed": {
+    "sf-button-copy-copy-failed": {
       "summary": "copy-failed (vocabulary).",
       "payload": {
         "type": "object",
@@ -191,7 +191,7 @@
           }
         }
       },
-      "alias_of": "sf-copy-button-copied"
+      "alias_of": "sf-button-copy-copied"
     },
     "sf-copy-error": {
       "summary": "The value was not copied; on denied the text was selected for Ctrl+C.",
@@ -211,7 +211,21 @@
           }
         }
       },
-      "alias_of": "sf-copy-button-copy-failed"
+      "alias_of": "sf-button-copy-copy-failed"
+    },
+    "sf-copy-button-copied": {
+      "summary": "Dated alias of sf-button-copy-copied until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-button-copy-copied"
+    },
+    "sf-copy-button-copy-failed": {
+      "summary": "Dated alias of sf-button-copy-copy-failed until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-button-copy-copy-failed"
     }
   },
   "state": {
@@ -316,8 +330,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-copy-button>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-copy-button>",
+        "since": "1.2.0",
+        "replacement": "<sf-button-copy>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -326,30 +348,30 @@
     "source_revision": "b26e52222c029f1caa6258d719d93b101a2d3b5d",
     "source_artifacts": [
       {
-        "path": "src/smart/copy-button/index.js",
-        "sha256": "3eb01f0474bc5da7829f5294477a538562b112e1f88fb3ada057269623b4720d"
+        "path": "src/smart/button-copy/index.js",
+        "sha256": "f11354f72e5953edd6e0ea166494d93a2a8b707321c43924f6ee932520fc7614"
       },
       {
-        "path": "src/smart/copy-button/js/templates/default.js",
+        "path": "src/smart/button-copy/js/templates/default.js",
         "sha256": "58a760eef42f4016576a0252b021b0329d97a75a93ea7bb9c17460b7a831309e"
       },
       {
-        "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
-        "sha256": "161b82c334b985461453b47c562699b35c63c4fdc9c35bcfeead66d4ad427bd1"
+        "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
+        "sha256": "18f0a1c6cdec509d89d5bac957a93a7971e4db704a5e1e914ff629b8d45ece5d"
       },
       {
-        "path": "src/smart/copy-button/rule.js",
-        "sha256": "19dd28b1b70a351e32f6eea91cec1dcf3c221348b9b326c8e04f291f0877da08"
+        "path": "src/smart/button-copy/rule.js",
+        "sha256": "7bd783c9f1c503eea2e89d88e2b3bd9a59c94966137091c33fc9ade7ff5e89f4"
       },
       {
-        "path": "src/smart/copy-button/docs.md",
-        "sha256": "bdcc27b61f12dd83b3166259d79088e9c944a565dca753f718b55fd8003e4f2f"
+        "path": "src/smart/button-copy/docs.md",
+        "sha256": "e7eead5e40d792bb7f01f357dd5597e25b6f335ea51f25695814bbc7fae22335"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-copy-button to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
+    "use_when": "Use sf-button-copy to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not leave several icon-only copy buttons named only «Копировать»"
@@ -360,7 +382,7 @@
       "accessibility",
       "provenance"
     ],
-    "minimal_example": "<sf-copy-button value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
+    "minimal_example": "<sf-button-copy value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-button-copy>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

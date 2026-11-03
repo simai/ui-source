@@ -57,8 +57,8 @@ test('a fallback that copied nothing rejects, and a throwing one rethrows', asyn
   await assert.rejects(copyText('x', {document: {defaultView: {}}}), {message: 'copy_unsupported'});
 });
 
-test('sf-copy-button and the clipboard class copy through the core helper', () => {
-  const button = readFileSync(new URL('../src/smart/copy-button/index.js', import.meta.url), 'utf8');
+test('sf-button-copy and the clipboard class copy through the core helper', () => {
+  const button = readFileSync(new URL('../src/smart/button-copy/index.js', import.meta.url), 'utf8');
   assert.match(button, /import \{copyText\} from '\.\.\/\.\.\/core\/js\/clipboard\.js'/u);
   assert.doesNotMatch(button, /execCommand/u);
   assert.equal(globalThis.SF?.copyText, copyText);

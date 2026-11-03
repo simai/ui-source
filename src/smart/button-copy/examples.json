@@ -83,12 +83,12 @@
         "body": [
           "<main>",
           "  <code id=\"token\">sk_test_51H</code>",
-          "  <sf-copy-button id=\"c\" value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
-          "  <sf-copy-button id=\"c-text\" value=\"A-1042\" text=\"Копировать\"></sf-copy-button>",
-          "  <sf-copy-button id=\"c-target\" target=\"#token\"></sf-copy-button>",
-          "  <sf-copy-button id=\"c-missing\" target=\"#nowhere\"></sf-copy-button>",
-          "  <sf-copy-button id=\"c-both\" value=\"x\" target=\"#token\"></sf-copy-button>",
-          "  <sf-copy-button id=\"c-dur\" value=\"y\" duration=\"-5\" size=\"9\"></sf-copy-button>",
+          "  <sf-button-copy id=\"c\" value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-text\" value=\"A-1042\" text=\"Копировать\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-target\" target=\"#token\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-missing\" target=\"#nowhere\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-both\" value=\"x\" target=\"#token\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-dur\" value=\"y\" duration=\"-5\" size=\"9\"></sf-button-copy>",
           "</main>"
         ]
       },

@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-copy-button'] = {
-  tags: ['sf-copy-button'],
+SF.RuleLoader['cl-button-copy'] = {
+  tags: ['sf-button-copy', 'sf-copy-button'],
   type: 'smart',
   mode: 'smart',
   js: true,
