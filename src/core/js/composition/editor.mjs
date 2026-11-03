@@ -175,9 +175,21 @@ export function validateEditorManifest(editorManifest, typeManifest, options = {
   return { valid: diagnostics.length === 0, diagnostics };
 }
 
-function nodeValue(node, field) {
+const BREAKPOINT_KEYS = new Set(['xs', 'sm', 'md', 'lg', 'xl', 'xxl']);
+
+function nodeValue(node, field, typeManifest) {
   const plane = node?.[field.plane];
-  if (isPlainObject(plane) && field.target in plane) return { value: plane[field.target], source: 'node' };
+  if (isPlainObject(plane) && field.target in plane) {
+    const value = plane[field.target];
+    // A layout parameter held per screen (x-simai-utility responsive): the
+    // field shows the phone's value and lists the screens that differ, for a
+    // per-screen switch.
+    const responsive = field.plane === 'props' && typeManifest?.props_schema?.properties?.[field.target]?.['x-simai-utility']?.responsive === true;
+    if (responsive && isPlainObject(value) && Object.keys(value).every((key) => BREAKPOINT_KEYS.has(key))) {
+      return { value: 'xs' in value ? value.xs : ('default' in field ? field.default : null), source: 'xs' in value ? 'node' : 'default', screens: value };
+    }
+    return { value, source: 'node' };
+  }
   if ('default' in field) return { value: field.default, source: 'default' };
   return { value: null, source: 'unset' };
 }
@@ -187,7 +199,7 @@ export function projectEditorFields(editorManifest, typeManifest, node, options 
   if (!checked.valid) return { valid: false, fields: [], diagnostics: checked.diagnostics };
   const diagnostics = [];
   const fields = editorManifest.fields.map((field) => {
-    const current = nodeValue(node, field);
+    const current = nodeValue(node, field, typeManifest);
     if (current.source !== 'unset' && field.choices && !field.choices.some((choice) => stableStringify(choice) === stableStringify(current.value))) {
       diagnostics.push(diagnostic('editor_choice_unknown', `node:${node?.id || ''}.${field.plane}.${field.target}`, 'Current value is not an allowed choice'));
     }

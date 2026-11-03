@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   BUILTIN_EDITOR_MANIFESTS,
+  BUILTIN_TYPE_MANIFESTS,
   Composition,
   EDITOR_FIELD_WORDS,
   editorFieldMessages,
@@ -15,7 +16,10 @@ import { language } from '../src/core/js/page-language.js';
 // simai/ui-source#65: a host that draws a parameters form from a built-in
 // editor manifest finds a word for every label, help and choice in ru and en.
 
-const everyKey = () => [...new Set(BUILTIN_EDITOR_MANIFESTS.flatMap((manifest) => manifest.fields.flatMap(editorFieldKeys)))];
+// The words of a type's named places (one block editor, 2026-11-03) are read
+// from the same dictionary: a slot's label_key and empty_key.
+const slotKeys = () => BUILTIN_TYPE_MANIFESTS.flatMap((manifest) => Object.values(manifest.slots || {}).flatMap((slot) => [slot.label_key, slot.empty_key].filter(Boolean)));
+const everyKey = () => [...new Set([...BUILTIN_EDITOR_MANIFESTS.flatMap((manifest) => manifest.fields.flatMap(editorFieldKeys)), ...slotKeys()])];
 
 test('every label_key, help_key and stable choice of the built-in editor manifests has a word in en and ru', () => {
   const keys = everyKey();

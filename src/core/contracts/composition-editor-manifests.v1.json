@@ -225,6 +225,60 @@
       "fields": [
         {
           "capability_hints": [
+            "composition.props.padding"
+          ],
+          "constraints": {
+            "max": 8,
+            "min": 0
+          },
+          "group": "basic",
+          "help_key": "sf.composition.layout_area.padding_help",
+          "key": "padding",
+          "label_key": "sf.composition.layout_area.padding",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "props",
+          "property": {
+            "type": "integer",
+            "version": 1
+          },
+          "target": "padding",
+          "visibility": "visible"
+        },
+        {
+          "capability_hints": [
+            "composition.props.hidden"
+          ],
+          "constraints": {},
+          "default": false,
+          "group": "basic",
+          "help_key": "sf.composition.layout_area.hidden_help",
+          "key": "hidden",
+          "label_key": "sf.composition.layout_area.hidden",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "props",
+          "property": {
+            "type": "boolean",
+            "version": 1
+          },
+          "target": "hidden",
+          "visibility": "visible"
+        }
+      ],
+      "schema": "simai.composition.editor-manifest",
+      "schema_version": 1,
+      "type": "layout.area",
+      "type_version": "1.0.0"
+    },
+    {
+      "fields": [
+        {
+          "capability_hints": [
             "composition.props.ordered"
           ],
           "constraints": {},

@@ -9,6 +9,9 @@ import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER } from '../src/core/js/composition/editor-words.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
 import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
+import { BUILTIN_CATALOGUE, CATALOGUE_GROUPS, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
+import { BINDING_STATES, DATA_SHAPES, SOURCE_PORT } from '../src/core/js/composition/data.mjs';
+import { UTILITY_BREAKPOINTS } from '../src/core/js/composition/utilities.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = resolve(root, 'src/core/contracts/composition-types.v1.json');
@@ -16,6 +19,11 @@ const editorOutputPath = resolve(root, 'src/core/contracts/composition-editor-ma
 const portOutputPath = resolve(root, 'src/core/contracts/composition-ports.v1.json');
 const kindOutputPath = resolve(root, 'src/core/contracts/composition-editor-field-kinds.v1.json');
 const wordsOutputPath = resolve(root, 'src/core/contracts/composition-editor-words.v1.json');
+// The one block editor's tables (2026-11-03), for a host without JavaScript:
+// the catalogue groups and where the SIMAI Framework's types stand, the data
+// shapes with the states a data block draws and the source port's requests,
+// and the breakpoints a layout parameter is held by.
+const blocksOutputPath = resolve(root, 'src/core/contracts/composition-blocks.v1.json');
 const output = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.type-registry', 1),
   entries: BUILTIN_TYPE_MANIFESTS,
@@ -41,10 +49,17 @@ const wordsOutput = `${JSON.stringify(JSON.parse(stableStringify({
   owner: EDITOR_WORDS_OWNER,
   words: EDITOR_FIELD_WORDS,
 })), null, 2)}\n`;
+const blocksOutput = `${JSON.stringify(JSON.parse(stableStringify({
+  ...schemaFields('simai.composition.blocks', 1),
+  catalogue: { groups: CATALOGUE_GROUPS, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE },
+  utilities: { keyword: 'x-simai-utility', breakpoints: UTILITY_BREAKPOINTS, modifiers_extension: 'simai.composition:modifiers' },
+  data: { shapes: DATA_SHAPES, states: BINDING_STATES, extension: 'simai.composition:data', runtime_owner: 'section', source_port: SOURCE_PORT },
+  composed: { extension: 'simai.composition:composed', renderer: 'composed', text_path: '<node id>/<field>' },
+})), null, 2)}\n`;
 const current = (path) => { try { return readFileSync(path, 'utf8'); } catch { return null; } };
 
 if (process.argv.includes('--check')) {
-  if (current(outputPath) !== output || current(editorOutputPath) !== editorOutput || current(portOutputPath) !== portOutput || current(kindOutputPath) !== kindOutput || current(wordsOutputPath) !== wordsOutput) {
+  if (current(outputPath) !== output || current(editorOutputPath) !== editorOutput || current(portOutputPath) !== portOutput || current(kindOutputPath) !== kindOutput || current(wordsOutputPath) !== wordsOutput || current(blocksOutputPath) !== blocksOutput) {
     process.stderr.write('composition_contract_registry_drift\n');
     process.exitCode = 1;
   } else {
@@ -56,5 +71,6 @@ if (process.argv.includes('--check')) {
   writeFileSync(portOutputPath, portOutput);
   writeFileSync(kindOutputPath, kindOutput);
   writeFileSync(wordsOutputPath, wordsOutput);
-  process.stdout.write(`${outputPath}\n${editorOutputPath}\n${portOutputPath}\n${kindOutputPath}\n${wordsOutputPath}\n`);
+  writeFileSync(blocksOutputPath, blocksOutput);
+  process.stdout.write(`${outputPath}\n${editorOutputPath}\n${portOutputPath}\n${kindOutputPath}\n${wordsOutputPath}\n${blocksOutputPath}\n`);
 }

@@ -77,7 +77,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language).",
+      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language); since core.runtime 1.22.0 the one block editor's contracts: the catalogue and variants, layout parameters as utilities, own modifiers, site blocks, named places and the data source port (docs/developer/block-author-guide.md).",
       "members": [
         "checkFragmentDescriptor",
         "publishEffects",
@@ -91,7 +91,22 @@
         "validateFieldValue",
         "applyFieldValue",
         "parseFieldSubmission",
-        "editorFieldMessages"
+        "editorFieldMessages",
+        "catalogue",
+        "catalogueEntry",
+        "instantiateVariant",
+        "slotAccepts",
+        "slotPlaces",
+        "utilityClasses",
+        "checkModifiers",
+        "defineComposedType",
+        "composedInstance",
+        "expandComposed",
+        "upgradeComposed",
+        "validateTypeManifest",
+        "createSourcePort",
+        "checkSourceAnswer",
+        "bindingSettings"
       ]
     },
     {

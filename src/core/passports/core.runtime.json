@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.21.1",
+  "version": "1.22.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -13,6 +13,7 @@
     "src/core/contracts/adaptive-sizing.schema.json",
     "src/core/contracts/adaptive-sizing.v1.json",
     "src/core/contracts/composite-host-port.v1.schema.json",
+    "src/core/contracts/composition-blocks.v1.json",
     "src/core/contracts/composition-document.v1.schema.json",
     "src/core/contracts/composition-editor-field-kind.v1.schema.json",
     "src/core/contracts/composition-editor-field-kinds.v1.json",
@@ -90,6 +91,9 @@
     "src/core/js/clipboard.js",
     "src/core/js/composition/builtins.mjs",
     "src/core/js/composition/canonical.mjs",
+    "src/core/js/composition/catalogue.mjs",
+    "src/core/js/composition/composed.mjs",
+    "src/core/js/composition/data.mjs",
     "src/core/js/composition/editor-words.mjs",
     "src/core/js/composition/editor.mjs",
     "src/core/js/composition/fields.mjs",
@@ -107,6 +111,7 @@
     "src/core/js/composition/schema-name.mjs",
     "src/core/js/composition/sortable-inserter.mjs",
     "src/core/js/composition/sortable.mjs",
+    "src/core/js/composition/utilities.mjs",
     "src/core/js/control-spacing.js",
     "src/core/js/core-modules.js",
     "src/core/js/deprecations.js",
@@ -166,7 +171,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "eff41e55a6e7b447b56f52b7f534c8e183c864ab4fce17bf914d3d4399e2b097",
+  "content_sha256": "83e4321321014b8b025d1004583b9815e8f34c9a8ddaa6843034a62df12f0bd1",
   "dependencies": [
     {
       "id": "core.styles",

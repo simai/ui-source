@@ -1,0 +1,414 @@
+{
+  "catalogue": {
+    "builtin": {
+      "content.alert": "text",
+      "content.card": "structure",
+      "content.code": "text",
+      "content.details": "structure",
+      "content.diagram": "media",
+      "content.divider": "text",
+      "content.document": null,
+      "content.figure": "media",
+      "content.file": "media",
+      "content.grid": "structure",
+      "content.heading": "text",
+      "content.html": "media",
+      "content.list": "text",
+      "content.list-item": null,
+      "content.math": "text",
+      "content.media": "media",
+      "content.outlet": null,
+      "content.paragraph": "text",
+      "content.quote": "text",
+      "content.step": null,
+      "content.steps": "structure",
+      "content.tab": null,
+      "content.table": "data",
+      "content.tabs": "structure",
+      "layout.area": "structure",
+      "layout.columns": "structure",
+      "layout.page": null,
+      "layout.region": null,
+      "layout.regions": null,
+      "layout.scope": null,
+      "layout.section": "structure"
+    },
+    "groups": [
+      "text",
+      "media",
+      "structure",
+      "page-parts",
+      "marketing",
+      "data",
+      "forms"
+    ],
+    "tabs": [
+      "text",
+      "blocks"
+    ]
+  },
+  "composed": {
+    "extension": "simai.composition:composed",
+    "renderer": "composed",
+    "text_path": "<node id>/<field>"
+  },
+  "data": {
+    "extension": "simai.composition:data",
+    "runtime_owner": "section",
+    "shapes": {
+      "cards": {
+        "list": "items",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "badge": {
+                    "maxLength": 60,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "date": {
+                    "maxLength": 40,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "id": {
+                    "maxLength": 120,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "image": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "alt": {
+                        "maxLength": 1000,
+                        "type": "string"
+                      },
+                      "src": {
+                        "maxLength": 2048,
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "src"
+                    ],
+                    "type": "object"
+                  },
+                  "text": {
+                    "maxLength": 5000,
+                    "type": "string"
+                  },
+                  "title": {
+                    "maxLength": 500,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "url": {
+                    "maxLength": 2048,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title"
+                ],
+                "type": "object"
+              },
+              "maxItems": 500,
+              "type": "array"
+            },
+            "page": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "pages": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "per_page": {
+              "maximum": 500,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "total": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "summary": "A list of records for cards, with the page it is when the host pages it."
+      },
+      "gallery": {
+        "list": "items",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "alt": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "caption": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "src": {
+                    "maxLength": 2048,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "src"
+                ],
+                "type": "object"
+              },
+              "maxItems": 500,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "summary": "Pictures with their captions."
+      },
+      "item": {
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "badge": {
+              "maxLength": 60,
+              "minLength": 1,
+              "type": "string"
+            },
+            "date": {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            "image": {
+              "additionalProperties": false,
+              "properties": {
+                "alt": {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                "src": {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "src"
+              ],
+              "type": "object"
+            },
+            "text": {
+              "maxLength": 5000,
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            },
+            "url": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "type": "object"
+        },
+        "summary": "One record: a title, and optionally a text, an address, a picture, a date and a badge."
+      },
+      "menu": {
+        "list": "items",
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "children": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "maxLength": 200,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "url": {
+                          "maxLength": 2048,
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "url"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 100,
+                    "type": "array"
+                  },
+                  "label": {
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "url": {
+                    "maxLength": 2048,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "url"
+                ],
+                "type": "object"
+              },
+              "maxItems": 200,
+              "type": "array"
+            }
+          },
+          "required": [
+            "items"
+          ],
+          "type": "object"
+        },
+        "summary": "Links of a menu, one level of children under each."
+      },
+      "pagination": {
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "page": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "pages": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "per_page": {
+              "maximum": 500,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "total": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "page",
+            "pages"
+          ],
+          "type": "object"
+        },
+        "summary": "Where a paged list is: the page, how many there are, and the total. A runtime state a list publishes."
+      },
+      "section_title": {
+        "schema": {
+          "additionalProperties": false,
+          "properties": {
+            "subtitle": {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "type": "object"
+        },
+        "summary": "The title of a section and a line under it."
+      }
+    },
+    "source_port": {
+      "requests": {
+        "fields": {
+          "input": [
+            "source"
+          ],
+          "summary": "Which fields a source has: [{key, label, type?}]."
+        },
+        "preview": {
+          "input": [
+            "binding",
+            "settings",
+            "shape"
+          ],
+          "summary": "Data for a binding to show in the editor, in the binding's shape (demo data when the source is not reachable)."
+        },
+        "sources": {
+          "input": [
+            "shape"
+          ],
+          "summary": "Which sources give this shape: [{id, label, shapes, presets?}]."
+        }
+      },
+      "schema": "simai.composition.source-port",
+      "schema_version": 1
+    },
+    "states": [
+      "loading",
+      "empty",
+      "error",
+      "ready",
+      "preview"
+    ]
+  },
+  "schema": "simai.composition.blocks",
+  "schema_version": 1,
+  "utilities": {
+    "breakpoints": [
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl",
+      "xxl"
+    ],
+    "keyword": "x-simai-utility",
+    "modifiers_extension": "simai.composition:modifiers"
+  }
+}

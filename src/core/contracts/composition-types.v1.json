@@ -1012,6 +1012,76 @@
     {
       "assets": [],
       "capabilities": [
+        "html",
+        "content-area"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "hidden": {
+            "default": false,
+            "type": "boolean",
+            "x-simai-utility": {
+              "responsive": true,
+              "values": {
+                "false": "block",
+                "true": "hidden"
+              }
+            }
+          },
+          "padding": {
+            "maximum": 8,
+            "minimum": 0,
+            "type": "integer",
+            "x-simai-utility": {
+              "class": "p-{value}",
+              "responsive": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.area"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {
+        "default": {
+          "categories": [
+            "content",
+            "smart"
+          ],
+          "empty_key": "sf.composition.layout_area.empty",
+          "label_key": "sf.composition.layout_area.content",
+          "max": 500,
+          "min": 0
+        }
+      },
+      "type": "layout.area",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
         "html"
       ],
       "category": "content",

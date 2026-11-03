@@ -1,5 +1,5 @@
 import { localeText, pageLocale } from '../page-language.js';
-import { BUILTIN_EDITOR_MANIFESTS } from './builtins.mjs';
+import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
 
 // The words of the built-in editor manifests (simai/ui-source#65): every
 // label_key, help_key and `<label_key>.<choice>` of a choice that is a stable
@@ -29,6 +29,14 @@ const EN = {
   ...words('layout_columns', {
     columns: 'Columns',
     columns_help: 'How many columns the content is split into',
+  }),
+  ...words('layout_area', {
+    content: 'Text',
+    empty: 'Start writing or press / for a block',
+    padding: 'Padding',
+    padding_help: 'Space inside the area, from 0 to 8 steps',
+    hidden: 'Hidden',
+    hidden_help: 'The area is not shown on this screen',
   }),
   ...words('content_heading', {
     level: 'Heading level',
@@ -181,6 +189,14 @@ const RU = {
   ...words('layout_columns', {
     columns: 'Колонки',
     columns_help: 'На сколько колонок делится содержимое',
+  }),
+  ...words('layout_area', {
+    content: 'Текст',
+    empty: 'Начните писать или нажмите / для блока',
+    padding: 'Отступ',
+    padding_help: 'Пространство внутри области, от 0 до 8 шагов',
+    hidden: 'Скрыть',
+    hidden_help: 'Область не показывается на этом экране',
   }),
   ...words('content_heading', {
     level: 'Уровень заголовка',
@@ -346,10 +362,17 @@ export function editorFieldKeys(field) {
  * registered for `sf-composition` wins over the shipped one; a key with no
  * word in any language is left out, so the host's own words or the key show.
  */
-export function editorFieldMessages(manifests = BUILTIN_EDITOR_MANIFESTS, { node = null, locale } = {}) {
-  const list = Array.isArray(manifests) ? manifests : [manifests];
+export function editorFieldMessages(manifests, { node = null, locale } = {}) {
+  const list = manifests === undefined ? BUILTIN_EDITOR_MANIFESTS : Array.isArray(manifests) ? manifests : [manifests];
   const language = locale || pageLocale(node);
   const messages = {};
+  // Without a manifest, the words of the built-in types' named places too
+  // (a slot's label_key and empty_key; one block editor, 2026-11-03).
+  if (manifests === undefined) {
+    for (const slot of BUILTIN_TYPE_MANIFESTS.flatMap((manifest) => Object.values(manifest.slots || {}))) {
+      for (const key of [slot.label_key, slot.empty_key].filter(Boolean)) messages[key] = localeText(EDITOR_FIELD_WORDS, key, language, EDITOR_WORDS_OWNER);
+    }
+  }
   for (const manifest of list) {
     for (const field of manifest?.fields || []) {
       for (const key of editorFieldKeys(field)) {
