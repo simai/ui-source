@@ -24,7 +24,7 @@
    - the name is the field's text, the size line one rung smaller, the label
      and the help text the rungs sf-textarea uses for them. */
 .sf-image-field {
-  container: :is(sf-input-image, sf-image-field) / inline-size;
+  container: sf-image-field / inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -234,7 +234,7 @@
 /* A column narrower than the row: the buttons go under the name, at its start.
    24rem is where a thumbnail, a name of eight characters and the two buttons
    of a size 1 field stop fitting on one line. */
-@container :is(sf-input-image, sf-image-field) (inline-size < 24rem) {
+@container sf-image-field (inline-size < 24rem) {
   .sf-image-field-well {
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas: "thumb body" "thumb actions";
