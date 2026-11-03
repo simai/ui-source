@@ -59,6 +59,15 @@
         "type": "object"
       },
       "mode": "composite",
+      "parameter_sets": [
+        "background",
+        "spacing",
+        "width",
+        "grid",
+        "alignment",
+        "breakout",
+        "visibility"
+      ],
       "presentation": {
         "modifiers": [
           "contained",
@@ -98,7 +107,7 @@
         }
       },
       "type": "layout.section",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [

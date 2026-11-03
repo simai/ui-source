@@ -26,7 +26,9 @@
 // of a block: its catalogue place and variants, its layout parameters as
 // SIMAI Framework utilities, its named places, the data it takes (every state
 // drawn, a failure kept inside the block), and a site block's tree and form
-// (each exposed parameter drawn by its target type's editor field).
+// (each exposed parameter drawn by its target type's editor field); the
+// parameter sets it names (their parts drawn) and the smart elements its
+// renderer prints (their manifests' inputs only).
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
@@ -287,7 +289,12 @@ export async function checkBlock(folder, options = {}) {
   // A group that could not run says why instead of passing.
   const skipped = new Map();
   const skip = (group, reason) => { if (!skipped.has(group)) skipped.set(group, reason); };
-  const { type, editor } = block;
+  const { type } = block;
+  // A type's parameter sets bring their props and their fields (core.runtime
+  // 1.23.0, parameter-sets.mjs): the checks read the type and the form with them.
+  const setsAware = typeof composition.expandParameterSets === 'function';
+  const expanded = setsAware && isObject(type) ? composition.expandParameterSets(type) : type;
+  const editor = setsAware && isObject(block.editor) && isObject(type) ? composition.withParameterSetFields(block.editor, type) : block.editor;
   const result = (extra = {}) => {
     const groups = GROUPS.map(([id, title]) => {
       const own = problems.filter((entry) => entry.group === id).map((entry) => Object.fromEntries(Object.entries(entry).filter(([key]) => key !== 'group')));
@@ -344,18 +351,18 @@ export async function checkBlock(folder, options = {}) {
   if (blocksAware && !isObject(type.catalogue)) warn('manifest', 'catalogue_missing', 'type.json $.catalogue', `No catalogue place: the editor files it under the group ${namespace}`);
   // Every class a layout parameter can print is a SIMAI Framework utility.
   if (blocksAware) {
-    for (const [key, schema] of Object.entries(type.props_schema?.properties || {})) {
+    for (const [key, schema] of Object.entries(expanded?.props_schema?.properties || {})) {
       const space = composition.utilityClassSpace(schema);
       if (space === null) warn('manifest', 'utility_space_open', `type.json $.props_schema.properties.${key}`, 'The values are not a closed list: the printed classes cannot all be checked');
       else if (space.length && !framework.utilityRules) warn('manifest', 'utility_rules_missing', `type.json $.props_schema.properties.${key}`, 'No utility rules under the Framework checked against');
       else for (const name of space) if (!Object.values(framework.utilityRules || {}).some((rule) => rule instanceof RegExp && rule.test(name))) add('manifest', 'utility_class_unknown', `type.json $.props_schema.properties.${key}`, `${name} is no SIMAI Framework utility`);
     }
   }
-  if (editor !== undefined) {
-    const checked = composition.validateEditorManifest(editor, type);
+  if (block.editor !== undefined) {
+    const checked = composition.validateEditorManifest(block.editor, type);
     checked.diagnostics.forEach(({ code, path, message }) => add('manifest', code, `editor.json ${path}`, message));
-    composition.validateFieldKinds(editor).forEach(({ code, path, message }) => add('manifest', code, `editor.json ${path}`, message));
-    (Array.isArray(editor.fields) ? editor.fields : []).forEach((field, index) => {
+    composition.validateFieldKinds(block.editor).forEach(({ code, path, message }) => add('manifest', code, `editor.json ${path}`, message));
+    (Array.isArray(block.editor.fields) ? block.editor.fields : []).forEach((field, index) => {
       if (field?.owner === 'simai/framework') add('manifest', 'editor_owner_foreign', `editor.json $.fields[${index}].owner`, 'simai/framework owns the built-in fields; a block names its own owner');
     });
   }
@@ -408,6 +415,21 @@ export async function checkBlock(folder, options = {}) {
           for (const child of children) if (countIds(drawn.html, child.id) === 0) add('renderer', 'renderer_slot_dropped', `node:${child.id}`, 'A child in a slot is not drawn: the renderer must place slots.<name>');
         }
       }
+      // A set with parts (width, grid) places classes on inner elements: the
+      // renderer marks them data-sf-composition-part when those parameters are set.
+      const sets = setsAware && Array.isArray(type.parameter_sets) ? type.parameter_sets.filter((name) => composition.PARAMETER_SETS[name]) : [];
+      const probeProps = {
+        ...(sets.includes('width') ? { width: 'narrow' } : {}),
+        ...(sets.includes('grid') ? { columns: { md: 2 }, gap: 2 } : {}),
+      };
+      if (Object.keys(probeProps).length) {
+        const [{ node }] = nodesOfType(document.root, type.type);
+        const probe = JSON.parse(JSON.stringify(document));
+        const [target] = nodesOfType(probe.root, type.type);
+        target.node.props = { ...(node.props || {}), ...probeProps };
+        const parted = await composition.render(probe, { registry });
+        (parted.notices || []).filter((entry) => entry.code === 'utility_part_missing').forEach((entry) => add('renderer', 'renderer_part_missing', entry.path, `${entry.message}: draw <div data-sf-composition-part="${entry.part}"> around the slots when the parameter is set`));
+      }
     }
   }
 
@@ -446,7 +468,8 @@ export async function checkBlock(folder, options = {}) {
     else if (!isObject(words) || words.schema !== WORDS_SCHEMA || words.schema_version !== 1 || !isObject(words.words) || !isObject(words.words.en)) add('form', 'words_invalid', 'words.json', `words.json is ${WORDS_SCHEMA} with schema_version 1 and words.en`);
     else {
       messages = words.words.en;
-      const wanted = fields.flatMap((field) => [field.label_key, field.help_key, ...(field.choices || []).filter((choice) => typeof choice === 'string' && /^[a-z][a-z0-9_]*$/u.test(choice)).map((choice) => `${field.label_key}.${choice}`)]).filter(Boolean);
+      // The words of a parameter set's fields are the SIMAI Framework's.
+      const wanted = fields.filter((field) => field.owner !== 'simai/framework').flatMap((field) => [field.label_key, field.help_key, ...(field.choices || []).filter((choice) => typeof choice === 'string' && /^[a-z][a-z0-9_]*$/u.test(choice)).map((choice) => `${field.label_key}.${choice}`)]).filter(Boolean);
       for (const [locale, entries] of Object.entries(words.words)) for (const key of wanted) if (!isObject(entries) || typeof entries[key] !== 'string') warn('form', 'word_missing', `words.json words.${locale}`, `${key} has no word`);
     }
   }
@@ -517,6 +540,8 @@ export async function checkBlock(folder, options = {}) {
       if (!Array.isArray(entry.expect.assets) || !sameJson(actual.assets, [...entry.expect.assets].sort(), stable)) add('output', 'case_assets_mismatch', file, `drawn ${JSON.stringify(actual.assets)}, expected ${JSON.stringify(entry.expect.assets)}`);
       if (!valid && drawn.html !== '') add('output', 'case_invalid_drawn', file, 'An invalid Document drew something');
       unsafeOutput(drawn.html).forEach((item) => add('output', item.code, `${file} ${item.path}`, item.message));
+      // A smart element the renderer printed takes only its manifest's inputs.
+      if (typeof composition.checkPrintedElements === 'function') composition.checkPrintedElements(drawn.html).forEach((item) => add('output', item.code, `${file} ${item.path}`, item.message));
     }
     if (!options.update && caseEntries.length && !caseEntries.some(({ entry }) => entry.expect?.valid === false)) warn('output', 'cases_no_invalid', 'cases/', 'No case shows a Document the block refuses');
     // Every choice of every parameter is drawn by some case; a parameter left

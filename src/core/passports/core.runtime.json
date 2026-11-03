@@ -96,6 +96,8 @@
     "src/core/js/composition/data.mjs",
     "src/core/js/composition/editor-words.mjs",
     "src/core/js/composition/editor.mjs",
+    "src/core/js/composition/elements.generated.mjs",
+    "src/core/js/composition/elements.mjs",
     "src/core/js/composition/fields.mjs",
     "src/core/js/composition/file-size.mjs",
     "src/core/js/composition/fragments.mjs",
@@ -105,6 +107,7 @@
     "src/core/js/composition/inline-model.mjs",
     "src/core/js/composition/manifest-host.mjs",
     "src/core/js/composition/overlay.mjs",
+    "src/core/js/composition/parameter-sets.mjs",
     "src/core/js/composition/recipe.mjs",
     "src/core/js/composition/regions.mjs",
     "src/core/js/composition/routing.mjs",
@@ -171,7 +174,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "92893d4a113f11293339330b19daca46c007cde9c4615ed03e1feb0c7a7313fb",
+  "content_sha256": "ad1926f0a96ceb3b1abe96056f2f28ce03d51f75d96ccb2cc67be77f76cdc253",
   "dependencies": [
     {
       "id": "core.styles",

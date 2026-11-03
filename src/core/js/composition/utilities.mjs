@@ -23,19 +23,35 @@ export const MODIFIERS_EXTENSION = 'simai.composition:modifiers';
 const MAX_MODIFIERS = 50;
 const CLASS_PATTERN = /^[a-z0-9][a-z0-9:/_.-]{0,99}$/u;
 const TEMPLATE_PATTERN = /^[a-z][a-z0-9-]*\{value\}$/u;
-const DECLARATION_FIELDS = new Set(['class', 'values', 'responsive']);
+const PART_PATTERN = /^[a-z][a-z0-9-]{0,31}$/u;
+const DECLARATION_FIELDS = new Set(['class', 'values', 'responsive', 'part']);
+/** The attribute a renderer marks an inner element with, so a parameter's classes reach it (`part`). */
+export const PART_ATTRIBUTE = 'data-sf-composition-part';
 
 const diagnostic = (code, path, message, details = {}) => ({ code, path, message, ...details });
 const prefix = (breakpoint) => (breakpoint === 'xs' ? '' : `${breakpoint}:`);
 
-/** The utility a props_schema property declares, or null. */
+/**
+ * The utility declarations of a props_schema property: one object, or a list
+ * when the value also reaches inner elements of the block (each with its
+ * `part`; parameter sets, 2026-11-03). Empty when there is none.
+ */
+export function declarationsOf(schema) {
+  if (!isPlainObject(schema)) return [];
+  const value = schema[UTILITY_KEYWORD];
+  if (isPlainObject(value)) return [value];
+  if (Array.isArray(value)) return value.filter(isPlainObject);
+  return [];
+}
+
+/** The utility a props_schema property declares on the block's own element (its first declaration), or null. */
 export function utilityOf(schema) {
-  return isPlainObject(schema) && isPlainObject(schema[UTILITY_KEYWORD]) ? schema[UTILITY_KEYWORD] : null;
+  return declarationsOf(schema)[0] ?? null;
 }
 
 /** Whether a property takes a value per breakpoint. */
 export function isResponsive(schema) {
-  return utilityOf(schema)?.responsive === true;
+  return declarationsOf(schema).some((declaration) => declaration.responsive === true);
 }
 
 /** A value held per breakpoint: an object whose keys are breakpoint names. */
@@ -67,46 +83,65 @@ export function valuesByBreakpoint(value, schema = {}) {
   return out;
 }
 
-/** The class one value becomes, without a prefix; '' when it becomes none. */
+const tokens = (value) => String(value).split(' ').filter(Boolean);
+const prefixed = (breakpoint, name) => tokens(name).map((token) => `${prefix(breakpoint)}${token}`);
+
+/** The class (or space-separated classes) one value becomes, without a prefix; '' when it becomes none. */
 export function utilityClass(declaration, value) {
   if (value === undefined || value === null || !isPlainObject(declaration)) return '';
   if (isPlainObject(declaration.values) && Object.hasOwn(declaration.values, String(value))) return declaration.values[String(value)];
-  if (typeof declaration.class === 'string') return declaration.class.replace('{value}', String(value));
+  if (typeof declaration.class === 'string') return declaration.class.replaceAll('{value}', String(value));
   return '';
 }
 
 /**
- * The classes a node's layout parameters print, mobile first. At the phone a
- * value equal to the property's default prints nothing (the type draws its
- * default without a class); at a wider breakpoint a class is printed only
- * where the value differs from the narrower one.
+ * The classes a node's layout parameters print, mobile first, by part: '' is
+ * the block's own element, any other key an inner element the renderer marks
+ * `data-sf-composition-part="<part>"`. At the phone a value equal to the
+ * property's default prints nothing (the type draws its default without a
+ * class); at a wider breakpoint a class is printed only where the value
+ * differs from the narrower one. A value may become several classes.
  */
-export function utilityClasses(node, manifest) {
+export function utilityPartClasses(node, manifest) {
+  const parts = {};
   const properties = manifest?.props_schema?.properties;
-  if (!isPlainObject(properties)) return [];
+  if (!isPlainObject(properties)) return parts;
   const props = isPlainObject(node?.props) ? node.props : {};
-  const classes = [];
   for (const [key, schema] of Object.entries(properties)) {
-    const declaration = utilityOf(schema);
-    if (!declaration || !(key in props)) continue;
-    // A parameter that is not responsive holds one value for every screen.
-    const values = valuesByBreakpoint(declaration.responsive === true ? props[key] : (isPlainObject(props[key]) ? undefined : props[key]), schema);
-    let previous;
-    UTILITY_BREAKPOINTS.forEach((breakpoint, index) => {
-      const value = values[breakpoint];
-      if (index === 0) {
-        if (!('default' in schema && value === schema.default)) {
-          const name = utilityClass(declaration, value);
-          if (name) classes.push(name);
+    if (!(key in props)) continue;
+    for (const declaration of declarationsOf(schema)) {
+      const part = typeof declaration.part === 'string' ? declaration.part : '';
+      const classes = parts[part] || (parts[part] = []);
+      // A parameter that is not responsive holds one value for every screen.
+      const values = valuesByBreakpoint(declaration.responsive === true ? props[key] : (isPlainObject(props[key]) ? undefined : props[key]), schema);
+      // `effective` are the classes in force at the narrower screen: a class
+      // a wider value shares with it (grid in grid grid-col-{value}) is not
+      // printed again.
+      let previous;
+      let effective = [];
+      UTILITY_BREAKPOINTS.forEach((breakpoint, index) => {
+        const value = values[breakpoint];
+        if (index === 0) {
+          if (!('default' in schema && value === schema.default)) {
+            effective = tokens(utilityClass(declaration, value));
+            classes.push(...prefixed('xs', effective.join(' ')));
+          }
+        } else if (value !== previous) {
+          const next = tokens(utilityClass(declaration, value));
+          classes.push(...prefixed(breakpoint, next.filter((token) => !effective.includes(token)).join(' ')));
+          effective = next;
         }
-      } else if (value !== previous) {
-        const name = utilityClass(declaration, value);
-        if (name) classes.push(`${prefix(breakpoint)}${name}`);
-      }
-      previous = value;
-    });
+        previous = value;
+      });
+    }
   }
-  return [...new Set(classes)];
+  for (const part of Object.keys(parts)) parts[part] = [...new Set(parts[part])];
+  return parts;
+}
+
+/** The classes a node's layout parameters print on the block's own element. */
+export function utilityClasses(node, manifest) {
+  return utilityPartClasses(node, manifest)[''] || [];
 }
 
 /**
@@ -115,8 +150,8 @@ export function utilityClasses(node, manifest) {
  * (an integer range of more than 100 steps).
  */
 export function utilityClassSpace(schema) {
-  const declaration = utilityOf(schema);
-  if (!declaration) return [];
+  const declarations = declarationsOf(schema);
+  if (!declarations.length) return [];
   let values = null;
   if (Array.isArray(schema.enum)) values = schema.enum;
   else if (schema.type === 'boolean') values = [true, false];
@@ -124,11 +159,10 @@ export function utilityClassSpace(schema) {
     values = Array.from({ length: schema.maximum - schema.minimum + 1 }, (_, index) => schema.minimum + index);
   }
   if (!values) return null;
-  const breakpoints = declaration.responsive === true ? UTILITY_BREAKPOINTS : ['xs'];
-  return [...new Set(values.flatMap((value) => breakpoints.map((breakpoint) => {
-    const name = utilityClass(declaration, value);
-    return name ? `${prefix(breakpoint)}${name}` : '';
-  }).filter(Boolean)))];
+  return [...new Set(declarations.flatMap((declaration) => {
+    const breakpoints = declaration.responsive === true ? UTILITY_BREAKPOINTS : ['xs'];
+    return values.flatMap((value) => breakpoints.flatMap((breakpoint) => prefixed(breakpoint, utilityClass(declaration, value))));
+  }))];
 }
 
 /** The problems of a props_schema's utility declarations (a type manifest check). */
@@ -138,24 +172,35 @@ export function validateUtilityDeclarations(manifest, path = '$.props_schema') {
   if (!isPlainObject(properties)) return diagnostics;
   for (const [key, schema] of Object.entries(properties)) {
     if (!isPlainObject(schema) || !(UTILITY_KEYWORD in schema)) continue;
-    const at = `${path}.properties.${key}.${UTILITY_KEYWORD}`;
-    const declaration = schema[UTILITY_KEYWORD];
-    if (!isPlainObject(declaration)) {
-      diagnostics.push(diagnostic('utility_declaration_invalid', at, 'A utility declaration is an object'));
-      continue;
-    }
-    for (const field of Object.keys(declaration)) if (!DECLARATION_FIELDS.has(field)) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.${field}`, `Unknown utility field ${field}`));
-    const hasClass = declaration.class !== undefined;
-    const hasValues = declaration.values !== undefined;
-    if (!hasClass && !hasValues) diagnostics.push(diagnostic('utility_declaration_invalid', at, 'A utility names a class template or a class per value'));
-    if (hasClass && (typeof declaration.class !== 'string' || !TEMPLATE_PATTERN.test(declaration.class))) diagnostics.push(diagnostic('utility_template_invalid', `${at}.class`, 'The class template is a utility name ending in {value}, with no prefix'));
-    if (hasValues) {
-      if (!isPlainObject(declaration.values)) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.values`, 'values maps each value to a class'));
-      else for (const [value, name] of Object.entries(declaration.values)) {
-        if (typeof name !== 'string' || (name !== '' && (!CLASS_PATTERN.test(name) || name.includes(':')))) diagnostics.push(diagnostic('utility_template_invalid', `${at}.values.${value}`, 'A value becomes one class with no prefix, or none'));
+    const declared = schema[UTILITY_KEYWORD];
+    const list = Array.isArray(declared) ? declared : [declared];
+    if (Array.isArray(declared) && (declared.length === 0 || declared.length > 8)) diagnostics.push(diagnostic('utility_declaration_invalid', `${path}.properties.${key}.${UTILITY_KEYWORD}`, 'A list holds one to eight declarations'));
+    const partsSeen = new Set();
+    list.forEach((declaration, index) => {
+      const at = `${path}.properties.${key}.${UTILITY_KEYWORD}${Array.isArray(declared) ? `[${index}]` : ''}`;
+      if (!isPlainObject(declaration)) {
+        diagnostics.push(diagnostic('utility_declaration_invalid', at, 'A utility declaration is an object'));
+        return;
       }
-    }
-    if (declaration.responsive !== undefined && typeof declaration.responsive !== 'boolean') diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.responsive`, 'responsive is true or false'));
+      for (const field of Object.keys(declaration)) if (!DECLARATION_FIELDS.has(field)) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.${field}`, `Unknown utility field ${field}`));
+      const part = declaration.part ?? '';
+      if (declaration.part !== undefined && (typeof declaration.part !== 'string' || !PART_PATTERN.test(declaration.part))) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.part`, 'A part is a lowercase name'));
+      else if (partsSeen.has(part)) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.part`, 'One declaration per part'));
+      partsSeen.add(part);
+      const hasClass = declaration.class !== undefined;
+      const hasValues = declaration.values !== undefined;
+      if (!hasClass && !hasValues) diagnostics.push(diagnostic('utility_declaration_invalid', at, 'A utility names a class template or a class per value'));
+      // A template is one or more classes, at least one ending in {value}.
+      const templateTokens = typeof declaration.class === 'string' ? declaration.class.split(' ') : [];
+      if (hasClass && (typeof declaration.class !== 'string' || !templateTokens.some((token) => TEMPLATE_PATTERN.test(token)) || templateTokens.some((token) => !TEMPLATE_PATTERN.test(token) && (!CLASS_PATTERN.test(token) || token.includes(':'))))) diagnostics.push(diagnostic('utility_template_invalid', `${at}.class`, 'The class template is utility names with no prefix, one ending in {value}'));
+      if (hasValues) {
+        if (!isPlainObject(declaration.values)) diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.values`, 'values maps each value to a class'));
+        else for (const [value, name] of Object.entries(declaration.values)) {
+          if (typeof name !== 'string' || (name !== '' && name.split(' ').some((token) => !CLASS_PATTERN.test(token) || token.includes(':')))) diagnostics.push(diagnostic('utility_template_invalid', `${at}.values.${value}`, 'A value becomes classes with no prefix (space-separated), or none'));
+        }
+      }
+      if (declaration.responsive !== undefined && typeof declaration.responsive !== 'boolean') diagnostics.push(diagnostic('utility_declaration_invalid', `${at}.responsive`, 'responsive is true or false'));
+    });
     const scalarSchema = Array.isArray(schema.enum) || ['integer', 'number', 'string', 'boolean'].includes(schema.type);
     if (!scalarSchema) diagnostics.push(diagnostic('utility_value_not_scalar', `${path}.properties.${key}`, 'A layout parameter holds one scalar value per breakpoint'));
   }
@@ -251,6 +296,37 @@ export function modifierNotices(node, options = {}) {
 
 function escapeAttribute(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+}
+
+/**
+ * Adds classes to the inner element a renderer marks `data-sf-composition-part="<part>"`,
+ * the first one after the node's own element (a renderer draws its parts
+ * around its slots, so the node's parts come before its children's).
+ * Returns {html, found}.
+ */
+export function withPartClasses(html, id, part, classes) {
+  if (typeof html !== 'string') return { html, found: false };
+  const at = html.indexOf(`data-sf-composition-id="${escapeAttribute(id)}"`);
+  if (at === -1) return { html, found: false };
+  const marker = html.indexOf(`${PART_ATTRIBUTE}="${escapeAttribute(part)}"`, at);
+  // The part belongs to this node only if no other node's element comes first.
+  const next = html.indexOf('data-sf-composition-id="', at + 1);
+  if (marker === -1 || (next !== -1 && next < marker)) return { html, found: false };
+  if (!classes.length) return { html, found: true };
+  const start = html.lastIndexOf('<', marker);
+  const end = html.indexOf('>', marker);
+  const tag = html.slice(start, end);
+  const existing = tag.match(/\sclass="([^"]*)"/u);
+  let replaced;
+  if (existing) {
+    const own = existing[1].split(/\s+/u).filter(Boolean);
+    replaced = tag.replace(existing[0], ` class="${escapeAttribute([...own, ...classes.filter((name) => !own.includes(name))].join(' '))}"`);
+  } else {
+    const name = tag.match(/^<[A-Za-z][A-Za-z0-9-]*/u);
+    if (!name) return { html, found: false };
+    replaced = `${name[0]} class="${escapeAttribute(classes.join(' '))}"${tag.slice(name[0].length)}`;
+  }
+  return { html: html.slice(0, start) + replaced + html.slice(end), found: true };
 }
 
 /**

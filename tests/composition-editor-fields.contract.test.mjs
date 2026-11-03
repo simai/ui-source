@@ -15,7 +15,9 @@ import {
 import { BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const propertyTypes = [{ type: 'string', version: 2 }, { type: 'integer', version: 1 }];
+// boolean@1 (toggle) since layout.section 1.1.0 takes the breakout and visibility
+// parameter sets; the editor-fields capability registers it since its 1.0.0.
+const propertyTypes = [{ type: 'string', version: 2 }, { type: 'integer', version: 1 }, { type: 'boolean', version: 1 }];
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const fixture = async () => JSON.parse(await readFile(path.resolve(root, 'tests/fixtures/composition/editor-fields.json'), 'utf8'));
 const cases = async () => JSON.parse(await readFile(path.resolve(root, 'tests/fixtures/composition/editor-manifest-cases.json'), 'utf8'));

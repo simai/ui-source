@@ -1,5 +1,7 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
 import { isSchema } from './schema-name.mjs';
+import { expandParameterSets } from './parameter-sets.mjs';
+import { isResponsive } from './utilities.mjs';
 
 const SCHEMA = 'simai.composition.editor-manifest.v1';
 const MANIFEST_FIELDS = new Set(['schema', 'schema_version', 'type', 'type_version', 'applies_to', 'fields']);
@@ -97,8 +99,10 @@ function validateAppliesTo(value, typeManifest, diagnostics) {
   }
 }
 
-export function validateEditorManifest(editorManifest, typeManifest, options = {}) {
+export function validateEditorManifest(editorManifest, given, options = {}) {
   const diagnostics = [];
+  // A type's parameter sets are its props too (parameter-sets.mjs).
+  const typeManifest = isPlainObject(given) ? expandParameterSets(given) : given;
   if (!isPlainObject(editorManifest)) return { valid: false, diagnostics: [diagnostic('editor_manifest_invalid', '$', 'Editor manifest must be an object')] };
   unknownFields(editorManifest, MANIFEST_FIELDS, '$', diagnostics);
   scanForbidden(editorManifest, '$', diagnostics);
@@ -184,7 +188,7 @@ function nodeValue(node, field, typeManifest) {
     // A layout parameter held per screen (x-simai-utility responsive): the
     // field shows the phone's value and lists the screens that differ, for a
     // per-screen switch.
-    const responsive = field.plane === 'props' && typeManifest?.props_schema?.properties?.[field.target]?.['x-simai-utility']?.responsive === true;
+    const responsive = field.plane === 'props' && isResponsive(typeManifest?.props_schema?.properties?.[field.target]);
     if (responsive && isPlainObject(value) && Object.keys(value).every((key) => BREAKPOINT_KEYS.has(key))) {
       return { value: 'xs' in value ? value.xs : ('default' in field ? field.default : null), source: 'xs' in value ? 'node' : 'default', screens: value };
     }
@@ -194,7 +198,8 @@ function nodeValue(node, field, typeManifest) {
   return { value: null, source: 'unset' };
 }
 
-export function projectEditorFields(editorManifest, typeManifest, node, options = {}) {
+export function projectEditorFields(editorManifest, given, node, options = {}) {
+  const typeManifest = isPlainObject(given) ? expandParameterSets(given) : given;
   const checked = validateEditorManifest(editorManifest, typeManifest, options);
   if (!checked.valid) return { valid: false, fields: [], diagnostics: checked.diagnostics };
   const diagnostics = [];

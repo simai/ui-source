@@ -108,7 +108,16 @@
         "createSourcePort",
         "checkSourceAnswer",
         "bindingSettings",
-        "demoData"
+        "demoData",
+        "PARAMETER_SETS",
+        "expandParameterSets",
+        "parameterSetFields",
+        "withParameterSetFields",
+        "utilityPartClasses",
+        "PRINTED_ELEMENTS",
+        "printElement",
+        "checkPrintedElements",
+        "elementInputs"
       ]
     },
     {

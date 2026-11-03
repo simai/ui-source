@@ -324,6 +324,96 @@ written for `layout.columns` 1.0.0 (one integer for every screen, no gap)
 stays valid and draws that many columns on every screen with the type's own
 gap (`gap-4`).
 
+## Parameter sets
+
+A block that takes the usual layout parameters names their **sets** instead
+of declaring them again:
+
+```json
+"parameter_sets": ["background", "spacing", "width", "grid", "alignment", "breakout", "visibility"]
+```
+
+| Set | Parameters | Prints |
+| --- | --- | --- |
+| `background` | `background`: surface, container, primary, secondary, tertiary | `bg-surface`, `bg-surface-container`, `bg-primary-container`, … |
+| `spacing` | `padding_y`, `padding_x`: 0..8, per screen | `p-y-*`, `p-x-*` |
+| `width` | `width`: narrow, normal, wide, full (default) | on three elements, see below |
+| `grid` | `columns` 1..12 (default 1), `gap` 0..8, per screen | `grid grid-col-*`, `gap-*` on the `content` part |
+| `alignment` | `align`: start, center, end, per screen | `text-*` |
+| `breakout` | `breakout`: true or false | `container-breakout` |
+| `visibility` | `hidden`: true or false, per screen | `hidden` / `block` |
+
+A registry (`extendRegistry`) adds the sets' properties to the type's
+`props_schema`; the stored `type.json` keeps the names. A property the type
+declares itself under a set's name is refused (`parameter_set_conflict`).
+The fields come with the sets and their words are the SIMAI Framework's:
+`SF.Composition.withParameterSetFields(editor, type)` adds them after the
+block's own fields (the check does the same), so `editor.json` lists only the
+block's own.
+
+`width` and `grid` place classes on **parts**, inner elements the renderer
+marks with `data-sf-composition-part`, because the container utilities work
+across elements (measured, `docs/foundation-container-width.md`): a
+container is centred by `m-inline-auto`, `max-container-N` widens a container
+that is its descendant, and `container max-w-prose` on one element depends on
+the order of the sheets.
+
+| width | block element | `frame` | `content` |
+| --- | --- | --- | --- |
+| narrow | | `container m-inline-auto` | `max-w-prose m-inline-auto` |
+| normal | | `container m-inline-auto` | |
+| wide | `max-container-7` | `container m-inline-auto` | |
+| full | | | |
+
+The renderer draws the parts around its slots when those parameters are set,
+before any child:
+
+```js
+const framed = ['width', 'columns', 'gap'].some((key) => node.props?.[key] !== undefined);
+const inner = framed
+  ? `<div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div>`
+  : (slots.default || '');
+return `<section data-sf-composition-id="${escapeHtml(node.id)}">${inner}</section>`;
+```
+
+A part the renderer does not draw gets nothing: its classes are left out and
+reported (`utility_part_missing`; the check: `renderer_part_missing`).
+`layout.section` 1.1.0 takes all seven sets this way.
+
+A utility declaration may itself name a `part`, and `x-simai-utility` may be a
+list of declarations (one per part); a value may become several classes
+(`"grid grid-col-{value}"`), and a class a wider screen shares with a narrower
+one is not printed again (`md:grid md:grid-col-2 lg:grid-col-3`).
+
+## Smart elements in a block
+
+A renderer may print `sf-button`, `sf-button-icon`, `sf-badge`, `sf-icon` and
+the `sf-divider` class component, with the inputs their `smart.manifest.json`
+declares and nothing else:
+
+```js
+export default function render({ node, elements }) {
+  return `<div data-sf-composition-id="${escapeHtml(node.id)}">${elements.print('sf-button', { text: node.data.action, appearance: 'tonal' })}</div>`;
+}
+```
+
+`elements.print(name, inputs)` (and `SF.Composition.printElement`) writes the
+attributes in a fixed order, leaves out a value equal to the input's default
+and prints a boolean only when true. An input the manifest does not take, a
+value it refuses or a missing label (`sf-button` needs `text` or
+`aria-label`, `sf-button-icon` an `aria-label`) prints nothing and is a
+render diagnostic. Not printed: `root-style` (an inline style), `root-class`
+(free classes), `template`, runtime state and the legacy and alias names (the
+manifest marks them). `PRINTED_ELEMENTS` names the elements and
+`elementInputs(name)` their inputs; the table is generated from the manifests
+(`src/core/js/composition/elements.generated.mjs`).
+
+HTML a renderer writes by hand is read the same way:
+`SF.Composition.checkPrintedElements(html)` reports every attribute those
+manifests do not take, an inline style and a refused value; the check runs it
+over every case (output group). `class`, `id`, `slot` and `data-*` stay host
+attributes.
+
 ## Own modifiers
 
 Every block has one more field the author may fill: classes of their own,

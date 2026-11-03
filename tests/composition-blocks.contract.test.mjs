@@ -8,6 +8,12 @@ import {
   BUILTIN_CATALOGUE,
   BUILTIN_TYPE_MANIFESTS,
   Composition,
+  PARAMETER_SETS,
+  PRINTED_ELEMENTS,
+  checkPrintedElements,
+  elementInputs,
+  parameterSetFields,
+  printElement,
   UTILITY_BREAKPOINTS,
   catalogue,
   catalogueEntry,
@@ -438,8 +444,100 @@ test('demo data of every shape is that shape, for a preview without a source', (
   assert.equal(Composition.demoData('cards', { count: 2 }).items.length, 2);
 });
 
+// --------------------------------------------- parameter sets and their parts
+
+test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fields have words', () => {
+  assert.deepEqual(Object.keys(PARAMETER_SETS), ['background', 'spacing', 'width', 'grid', 'alignment', 'breakout', 'visibility']);
+  for (const [name, set] of Object.entries(PARAMETER_SETS)) {
+    for (const [key, schema] of Object.entries(set.properties)) {
+      const space = utilityClassSpace(schema);
+      assert.ok(Array.isArray(space) && space.length, `${name}.${key}`);
+      for (const value of space) assert.ok(known(value), `${name}.${key}: ${value}`);
+    }
+    const fields = parameterSetFields({ parameter_sets: [name] });
+    assert.equal(fields.length, set.fields.length);
+    const words = Composition.editorFieldMessages({ fields });
+    for (const field of fields) assert.notEqual(words[field.label_key], undefined, field.label_key);
+  }
+  // A type that names a set gets its props through a registry; the stored manifest keeps the names.
+  const section = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
+  assert.equal(section.version, '1.1.0');
+  assert.deepEqual(Object.keys(section.props_schema.properties || {}), []);
+  assert.deepEqual(Object.keys(extendRegistry().types.get('layout.section').props_schema.properties).sort(), ['align', 'background', 'breakout', 'columns', 'gap', 'hidden', 'padding_x', 'padding_y', 'width']);
+  const own = { ...section, parameter_sets: ['alignment', 'shadow', 'alignment'], props_schema: { type: 'object', additionalProperties: false, properties: { align: { enum: ['left'] } } } };
+  assert.deepEqual(codes(validateTypeManifest(own)).filter((code) => code.startsWith('parameter_set')).sort(), ['parameter_set_conflict', 'parameter_set_duplicate', 'parameter_set_unknown']);
+});
+
+test('width reaches three elements; a section without the sets draws as 1.0.0 did', async () => {
+  const section = (id, props) => ({ id, type: 'layout.section', props, slots: { default: [paragraph(`${id}-p`, 'Text')] } });
+  const drawn = await render(layout(section('n', { width: 'narrow' }), section('m', { width: 'normal' }), section('w', { width: 'wide' }), section('f', { width: 'full' })));
+  assert.equal(drawn.notices, undefined);
+  const part = (id) => drawn.html.slice(drawn.html.lastIndexOf('<section', drawn.html.indexOf(`data-sf-composition-id="${id}"`)), drawn.html.indexOf(`data-sf-composition-id="${id}-p"`));
+  assert.match(part('n'), /<section data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(part('m'), /<section data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
+  // max-container-N widens a .container that is its descendant, never one on the same element.
+  assert.match(part('w'), /<section class="max-container-7" data-sf-composition-id="w"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  assert.match(part('f'), /<section data-sf-composition-id="f"><div data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
+  // Every set at once, per screen where it makes sense.
+  const all = await render(layout(section('s', { background: 'container', padding_y: { xs: 4, md: 8 }, width: 'normal', columns: { md: 2, lg: 3 }, gap: 4, align: { md: 'center' }, breakout: true, hidden: { xl: true } })));
+  assert.match(all.html, /<section class="md:text-center bg-surface-container container-breakout xl:hidden p-y-4 md:p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="md:grid md:grid-col-2 lg:grid-col-3 gap-4" data-sf-composition-part="content">/u);
+  assert.doesNotMatch(all.html, /style=/u);
+  assert.equal(validate(layout(section('x', { width: 'huge' }))).valid, false);
+  // The 1.0.0 form: no parts, no classes.
+  assert.equal((await render(layout(section('o')))).html, '<main data-sf-composition-id="root"><section data-sf-composition-id="o"><p data-sf-composition-id="o-p">Text</p></section></main>');
+  // The editor manifest follows the type with the sets' fields.
+  const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.section');
+  assert.equal(editor.type_version, '1.1.0');
+  assert.deepEqual(editor.fields.map(({ key }) => key), ['surface', 'background', 'padding_y', 'padding_x', 'width', 'columns', 'gap', 'align', 'breakout', 'hidden']);
+  const projected = Composition.projectEditorFields(editor, BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section'), section('s', { padding_y: { xs: 4, md: 8 } }));
+  assert.deepEqual(projected.diagnostics, []);
+  assert.deepEqual(projected.fields.find(({ key }) => key === 'padding_y').screens, { xs: 4, md: 8 });
+});
+
+test('a renderer that draws no part gets a notice, and its classes go nowhere else', async () => {
+  const type = { ...BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.area'), type: 'demo.box', version: '1.0.0', parameter_sets: ['width'], renderer: { kind: 'registered', name: 'demo.box' }, catalogue: { group: 'structure' } };
+  const registry = extendRegistry([type], { 'demo.box': ({ node, slots }) => `<div data-sf-composition-id="${node.id}">${slots.default || ''}</div>` });
+  const inner = { id: 'inner', type: 'layout.section', props: { width: 'narrow' }, slots: { default: [] } };
+  const drawn = await render(layout({ id: 'b', type: 'demo.box', props: { width: 'narrow' }, slots: { default: [] } }), { registry });
+  assert.deepEqual(drawn.notices.map(({ code, part }) => [code, part]), [['utility_part_missing', 'frame'], ['utility_part_missing', 'content']]);
+  assert.doesNotMatch(drawn.html, /container|max-w-prose/u);
+  assert.ok(inner);
+});
+
+// ----------------------------------------------------------- printed elements
+
+test('a block prints smart elements with their manifest inputs, and nothing else', async () => {
+  assert.deepEqual([...PRINTED_ELEMENTS].sort(), ['sf-badge', 'sf-button', 'sf-button-icon', 'sf-divider', 'sf-icon']);
+  // The inputs are the manifests' own, without styles, free classes and alias names.
+  for (const [element, folder] of [['sf-button', 'button'], ['sf-button-icon', 'button-icon'], ['sf-badge', 'badge'], ['sf-icon', 'icon']]) {
+    const manifest = JSON.parse(readFileSync(new URL(`src/smart/${folder}/smart.manifest.json`, root), 'utf8'));
+    const inputs = elementInputs(element).properties;
+    for (const [key, schema] of Object.entries(inputs)) {
+      assert.ok(key in manifest.inputs.properties, `${element} ${key}`);
+      for (const word of ['type', 'enum', 'default', 'minimum', 'maximum']) if (word in schema) assert.deepEqual(schema[word], manifest.inputs.properties[key][word], `${element} ${key}.${word}`);
+    }
+    for (const key of ['root-style', 'root-class', 'template']) assert.equal(key in inputs, false, `${element} ${key}`);
+  }
+  assert.equal('type' in elementInputs('sf-button').properties, false, 'the legacy name for appearance is not printed');
+  assert.deepEqual(printElement('sf-button', { text: 'Buy', appearance: 'tonal', size: '1', disabled: false, loading: true }), { html: '<sf-button appearance="tonal" loading text="Buy"></sf-button>', diagnostics: [] });
+  assert.equal(printElement('sf-button', { text: '"><script>' }).html, '<sf-button text="&quot;&gt;&lt;script&gt;"></sf-button>');
+  assert.deepEqual(codes(printElement('sf-button', { text: 'x', appearance: 'neon', 'root-style': 'color:red' })), ['element_input_unknown', 'schema_enum']);
+  assert.deepEqual(codes(printElement('sf-button-icon', { icon: 'close' })), ['element_label_missing']);
+  assert.deepEqual(codes(printElement('sf-marquee', {})), ['element_unknown']);
+  assert.equal(printElement('sf-divider', { orientation: 'vertical' }).html, '<hr class="sf-divider sf-divider-vertical" aria-orientation="vertical">');
+  // A renderer prints through `elements`; a refused element prints nothing and is reported.
+  const type = { ...BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.area'), type: 'demo.cta', version: '1.0.0', renderer: { kind: 'registered', name: 'demo.cta' }, catalogue: { group: 'marketing' } };
+  const registry = extendRegistry([type], { 'demo.cta': ({ node, elements }) => `<div data-sf-composition-id="${node.id}">${elements.print('sf-button', { text: 'Go', appearance: 'outline' })}${elements.print('sf-badge', { status: 'danger', text: 'x' })}</div>` });
+  const drawn = await render(layout({ id: 'c', type: 'demo.cta', slots: { default: [] } }), { registry });
+  assert.equal(drawn.html, '<main data-sf-composition-id="root"><div data-sf-composition-id="c"><sf-button appearance="outline" text="Go"></sf-button></div></main>');
+  assert.deepEqual(drawn.diagnostics.map(({ code, path }) => [code, path]), [['schema_enum', 'node:c.status']]);
+  // HTML a renderer wrote by hand is read the same way.
+  assert.deepEqual(checkPrintedElements('<sf-badge text="New" status="success" class="m-1" data-x="1"></sf-badge>'), []);
+  assert.deepEqual(checkPrintedElements('<sf-icon icon="star" weight="900" onclick="x()" style="color:red"></sf-icon><sf-button-icon icon="close"></sf-button-icon>').map(({ code }) => code), ['element_input_unknown', 'element_inline_style', 'schema_maximum', 'element_label_missing']);
+});
+
 test('SF.Composition publishes the one block editor helpers', () => {
-  for (const name of ['catalogue', 'catalogueEntry', 'instantiateVariant', 'utilityClasses', 'checkModifiers', 'defineComposedType', 'upgradeComposed', 'slotAccepts', 'createSourcePort', 'validateTypeManifest', 'DATA_SHAPES']) {
+  for (const name of ['catalogue', 'catalogueEntry', 'instantiateVariant', 'utilityClasses', 'checkModifiers', 'defineComposedType', 'upgradeComposed', 'slotAccepts', 'createSourcePort', 'validateTypeManifest', 'DATA_SHAPES', 'PARAMETER_SETS', 'withParameterSetFields', 'printElement', 'checkPrintedElements', 'PRINTED_ELEMENTS']) {
     assert.ok(name in Composition, name);
   }
 });

@@ -80,7 +80,8 @@ test('a Composition document is read in both forms', () => {
 test('an editor manifest is read in both forms', () => {
   const editor = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.section');
   const type = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  const options = {propertyTypes: [{type: 'string', version: 2}, {type: 'integer', version: 1}]};
+  // boolean@1 (toggle): layout.section 1.1.0 takes the breakout and visibility parameter sets.
+  const options = {propertyTypes: [{type: 'string', version: 2}, {type: 'integer', version: 1}, {type: 'boolean', version: 1}]};
   const read = forms(editor, 'simai.composition.editor-manifest');
   assert.equal(validateEditorManifest(read.old, type, options).valid, true);
   assert.deepEqual(validateEditorManifest(read.current, type, options).diagnostics, []);

@@ -246,3 +246,43 @@ test('a site block made by the block builder passes as a block: builtin composed
   writeFileSync(join(folder, 'type.json'), JSON.stringify({ ...manifest, props_schema: { ...manifest.props_schema, properties: {} } }));
   assert.ok(codes(await checkBlock(folder, { framework }), 'manifest').includes('composed_schema_drift'));
 });
+
+test('a block takes parameter sets: their props and fields come with them, the renderer draws their parts', async () => {
+  const template = join(kit, 'template');
+  const withSets = (renderer) => variant(({ json, text }) => {
+    json('type.json', (type) => ({ ...type, mode: 'composite', parameter_sets: ['width', 'background', 'grid'] }));
+    text('renderer.mjs', () => renderer);
+  }, template);
+  const parted = withSets(`const e = (v) => String(v).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
+export default function render({ node, slots, elements }) {
+  const framed = ['width', 'columns', 'gap'].some((key) => node.props?.[key] !== undefined);
+  const body = \`<h3>\${e(node.data.title)}</h3>\${slots.default || ''}\${elements ? elements.print('sf-badge', { text: 'New' }) : ''}\`;
+  return \`<section data-sf-composition-id="\${e(node.id)}">\${framed ? \`<div data-sf-composition-part="frame"><div data-sf-composition-part="content">\${body}</div></div>\` : body}</section>\`;
+}
+`);
+  await checkBlock(parted, { framework, update: true });
+  const report = await checkBlock(parted, { framework });
+  assert.deepEqual(failed(report), [], JSON.stringify(report.groups));
+  assert.deepEqual(report.warnings.filter(({ group }) => group === 'form'), [], 'the sets\' fields bring the SIMAI Framework\'s words');
+  // The renderer that forgets the parts: the classes have nowhere to go.
+  const flat = withSets(`export default ({ node, slots }) => \`<section data-sf-composition-id="\${node.id}">\${slots.default || ''}</section>\`;\n`);
+  await checkBlock(flat, { framework, update: true });
+  assert.deepEqual([...new Set(codes(await checkBlock(flat, { framework }), 'renderer'))], ['renderer_part_missing']);
+  // An unknown set, and a set whose parameter the type declares itself.
+  const unknown = variant(({ json }) => json('type.json', (type) => ({ ...type, parameter_sets: ['shadow'] })), template);
+  assert.ok(codes(await checkBlock(unknown, { framework }), 'manifest').includes('parameter_set_unknown'));
+  const clash = variant(({ json }) => json('type.json', (type) => ({ ...type, parameter_sets: ['alignment'], props_schema: { ...type.props_schema, properties: { ...type.props_schema.properties, align: { enum: ['left'] } } } })), template);
+  assert.ok(codes(await checkBlock(clash, { framework }), 'manifest').includes('parameter_set_conflict'));
+});
+
+test('a smart element a renderer prints takes only its manifest inputs', async () => {
+  const template = join(kit, 'template');
+  const printing = (html) => variant(({ text }) => text('renderer.mjs', () => `export default ({ node, slots }) => \`<section data-sf-composition-id="\${node.id}">${html}\${slots.default || ''}</section>\`;\n`), template);
+  const good = printing('<sf-button text="Buy" appearance="tonal"></sf-button><sf-icon icon="star" filled></sf-icon>');
+  await checkBlock(good, { framework, update: true });
+  assert.deepEqual(failed(await checkBlock(good, { framework })), []);
+  const bad = printing('<sf-button type="tonal" style="color:red"></sf-button><sf-badge status="danger" text="x"></sf-badge>');
+  await checkBlock(bad, { framework, update: true });
+  const found = codes(await checkBlock(bad, { framework }), 'output');
+  for (const code of ['element_input_unknown', 'element_inline_style', 'element_label_missing', 'schema_enum']) assert.ok(found.includes(code), `${code} in ${found}`);
+});

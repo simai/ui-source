@@ -39,7 +39,9 @@ import {
   ownModifiers,
   utilityClassSpace,
   utilityClasses,
+  utilityPartClasses,
   validateUtilityDeclarations,
+  withPartClasses,
   valueSchema,
   valuesByBreakpoint,
   withClasses,
@@ -55,6 +57,16 @@ import {
   slotPlaces,
   validateCatalogueFields,
 } from './catalogue.mjs';
+import { PRINTED_ELEMENTS, checkPrintedElements as checkPrintedElementsWith, elementInputs, printElement as printElementWith } from './elements.mjs';
+import {
+  PARAMETER_SETS,
+  PARAMETER_SET_NAMES,
+  expandParameterSets,
+  parameterSetFields,
+  parameterSetParts,
+  validateParameterSets,
+  withParameterSetFields,
+} from './parameter-sets.mjs';
 import {
   COMPOSED_EXTENSION,
   MAX_COMPOSED_DEPTH,
@@ -321,7 +333,8 @@ export function createRegistry(manifests = BUILTIN_TYPE_MANIFESTS, renderers = {
     // Either form of the format name (schema-name.mjs).
     if (!isPlainObject(manifest) || !isSchema(manifest, 'simai.composition.type-manifest', 1)) throw new TypeError('composition_manifest_invalid');
     if (types.has(manifest.type)) throw new TypeError(`composition_manifest_duplicate:${manifest.type}`);
-    types.set(manifest.type, canonical(manifest));
+    // A type's parameter sets join its props (parameter-sets.mjs).
+    types.set(manifest.type, canonical(expandParameterSets(manifest)));
   }
   return { types, renderers: new Map(Object.entries(renderers)) };
 }
@@ -667,7 +680,13 @@ function renderMedia(node, slots) {
 
 const BUILTIN_RENDERERS = {
   'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
-  'layout.section': ({ node, slots }) => `<section data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</section>`,
+  'layout.section': ({ node, slots }) => {
+    // 1.1.0: a section given a width or columns draws the frame and content
+    // parts its parameter sets place classes on; one without draws as before.
+    const framed = ['width', 'columns', 'gap'].some((key) => node.props?.[key] !== undefined);
+    const inner = framed ? `<div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div>` : (slots.default || '');
+    return `<section data-sf-composition-id="${escapeHtml(node.id)}">${inner}</section>`;
+  },
   'layout.columns': ({ node, slots }) => {
     const columns = Number.isInteger(node.props?.columns) ? ` data-composition-columns="${node.props.columns}"` : '';
     // A grid of one column on the phone unless columns says otherwise; the
@@ -803,7 +822,8 @@ export async function render(document, context = {}) {
     // utilities on the block's element (utilities.mjs).
     const own = modifierNotices(node, { rules: context.options?.utilityRules });
     notices.push(...own.notices);
-    const utilities = [...new Set([...utilityClasses(node, manifest), ...own.kept])];
+    const byPart = utilityPartClasses(node, manifest);
+    const utilities = [...new Set([...(byPart[''] || []), ...own.kept])];
     let renderer = registry.renderers.get(manifest.renderer.name) || BUILTIN_RENDERERS[manifest.renderer.name];
     if (!renderer && manifest.renderer.kind === 'custom-element' && manifest.renderer.name) {
       renderer = ({ node: current, slots: currentSlots, endpoint }) => {
@@ -818,8 +838,26 @@ export async function render(document, context = {}) {
       return '';
     }
     if (node.type === 'layout.scope') hydration.push({ id: node.id, type: node.type, element: 'sf-composition-scope' });
-    const html = await renderer({ node, slots, context, resolvedBindings, ...(bindingStates ? { bindingStates } : {}), utilities, manifest, routes: routes.get(node.id), endpoint: endpointName(node), outlet: node.type === 'content.outlet' ? outlet : undefined, locale: normalized.document.locale ?? 'en' });
-    return withClasses(html, node.id, utilities);
+    // The smart elements a block may print, held to their manifests (elements.mjs).
+    const elements = {
+      print: (name, inputs) => {
+        const printed = printElementWith(name, inputs, validateJsonSchema, `node:${node.id}`);
+        diagnostics.push(...printed.diagnostics);
+        return printed.html;
+      },
+    };
+    const html = await renderer({ node, slots, context, elements, resolvedBindings, ...(bindingStates ? { bindingStates } : {}), utilities, manifest, routes: routes.get(node.id), endpoint: endpointName(node), outlet: node.type === 'content.outlet' ? outlet : undefined, locale: normalized.document.locale ?? 'en' });
+    let drawn = withClasses(html, node.id, utilities);
+    // A parameter that reaches an inner element (a set's part): the renderer
+    // marks it data-sf-composition-part; classes for a part it did not draw
+    // are reported, never placed elsewhere.
+    for (const [part, classes] of Object.entries(byPart)) {
+      if (part === '' || !classes.length) continue;
+      const placed = withPartClasses(drawn, node.id, part, classes);
+      if (placed.found) drawn = placed.html;
+      else notices.push(diagnostic('utility_part_missing', `node:${node.id}`, `${node.type} draws no ${part} part; ${classes.join(' ')} is left out`, { part }));
+    }
+    return drawn;
   };
   const html = await renderNode(normalized.document.root);
   const assets = outletAssets.length ? [...new Set([...normalized.dependencies.assets, ...outletAssets])].sort() : normalized.dependencies.assets;
@@ -854,12 +892,13 @@ export function validateTypeManifest(manifest, registry = undefined, options = {
   const diagnostics = [];
   if (!isPlainObject(manifest) || !isSchema(manifest, 'simai.composition.type-manifest', 1)) return { valid: false, diagnostics: [diagnostic('composition_manifest_invalid', '$', 'A type manifest is simai.composition.type-manifest with schema_version 1')] };
   diagnostics.push(...validateCatalogueFields(manifest));
-  diagnostics.push(...validateUtilityDeclarations(manifest));
+  diagnostics.push(...validateParameterSets(manifest));
+  diagnostics.push(...validateUtilityDeclarations(expandParameterSets(manifest)));
   diagnostics.push(...validateDataDeclarations(manifest, options.shapes));
   let resolved = normalizeRegistry(registry);
   if (resolved.types.get(manifest.type) !== manifest) {
     const others = [...resolved.types.values()].filter((entry) => entry.type !== manifest.type);
-    resolved = { types: new Map([...others, manifest].map((entry) => [entry.type, entry])), renderers: resolved.renderers };
+    resolved = { types: new Map([...others, expandParameterSets(manifest)].map((entry) => [entry.type, entry])), renderers: resolved.renderers };
   }
   if (isComposed(manifest)) {
     const again = defineComposed({ ...manifest, root: manifest.composed.root }, resolved, (document, current) => validate(document, current, options));
@@ -901,6 +940,16 @@ export function composedEditorFields(manifest, instance = undefined, options = {
 /** Every instance of a site block moved to its type's current version; what the new version no longer has is reported. */
 export function upgradeComposed(document, registry = undefined) {
   return upgradeComposedWith(document, normalizeRegistry(registry), fits);
+}
+
+/** The markup of a smart element a block prints, from its manifest inputs: {html, diagnostics} (elements.mjs). */
+export function printElement(name, inputs = {}) {
+  return printElementWith(name, inputs, validateJsonSchema);
+}
+
+/** The problems of the smart elements in HTML a renderer wrote: attributes their manifests do not take (elements.mjs). */
+export function checkPrintedElements(html) {
+  return checkPrintedElementsWith(html, validateJsonSchema);
 }
 
 /** The problems of a host's answer to one source-port request. */
@@ -993,6 +1042,14 @@ export const Composition = Object.freeze({
   createSourcePort,
   defineComposedType,
   demoData,
+  PARAMETER_SETS,
+  PRINTED_ELEMENTS,
+  checkPrintedElements,
+  elementInputs,
+  expandParameterSets,
+  parameterSetFields,
+  printElement,
+  withParameterSetFields,
   expandComposed,
   instantiateVariant,
   ownModifiers,
@@ -1001,6 +1058,7 @@ export const Composition = Object.freeze({
   upgradeComposed,
   utilityClasses,
   utilityClassSpace,
+  utilityPartClasses,
   validateTypeManifest,
   valuesByBreakpoint,
 });
@@ -1027,3 +1085,5 @@ export { MODIFIERS_EXTENSION, UTILITY_BREAKPOINTS, checkModifiers, ownModifiers,
 export { BUILTIN_CATALOGUE, CATALOGUE_GROUPS, CATALOGUE_TABS, catalogue, catalogueEntry, instantiateVariant, slotAccepts, slotPlaces };
 export { COMPOSED_EXTENSION, composedInstance, composedPart, composedTextPaths, expandComposed };
 export { BINDING_STATES, DATA_EXTENSION, DATA_SHAPES, RUNTIME_OWNER, SOURCE_PORT, bindingSettings, createShapeRegistry, demoData };
+export { PARAMETER_SETS, PARAMETER_SET_NAMES, expandParameterSets, parameterSetFields, parameterSetParts, utilityPartClasses, validateParameterSets, withParameterSetFields };
+export { PRINTED_ELEMENTS, elementInputs };

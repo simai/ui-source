@@ -1,6 +1,9 @@
 import { inlineComponentSchemas } from './inline-model.mjs';
 import { REGION_ACCEPTS, REGION_LANDMARKS, REGION_PLACEMENTS } from './regions.mjs';
 import { schemaFields } from './schema-name.mjs';
+import { parameterSetFields } from './parameter-sets.mjs';
+
+const SECTION_SETS = Object.freeze(['background', 'spacing', 'width', 'grid', 'alignment', 'breakout', 'visibility']);
 
 // Text runs, links of text runs, and since content.heading and
 // content.paragraph 1.1.0 the inline component atoms: one shape per declared
@@ -151,12 +154,17 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.section',
-    version: '1.0.0',
+    // 1.1.0 (2026-11-03): the parameter sets of the one block editor --
+    // background, spacing, width, columns, alignment, edge to edge and
+    // visibility, all SIMAI Framework utilities (parameter-sets.mjs). A
+    // section without them draws as 1.0.0 did.
+    version: '1.1.0',
     category: 'layout',
     mode: 'composite',
     profiles: ['ui-layout'],
     data_schema: emptyObjectSchema,
     props_schema: emptyObjectSchema,
+    parameter_sets: SECTION_SETS,
     presentation: {
       views: ['default'],
       presets: ['surface', 'contrast'],
@@ -620,7 +628,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.section',
-    type_version: '1.0.0',
+    type_version: '1.1.0',
     fields: [
       {
         key: 'surface',
@@ -638,6 +646,8 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
         permission_hints: ['composition.node.update'],
         owner: 'simai/framework',
       },
+      // 1.1.0: the fields of its parameter sets.
+      ...parameterSetFields({ parameter_sets: SECTION_SETS }),
     ],
   },
   {
