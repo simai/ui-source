@@ -54,11 +54,11 @@ test('editor surfaces are Smart components, not part of Core', async () => {
     // core/js/composition/manifest-host.mjs).
     'composition-overlay': ['sf-composition-overlay', /defineCompositionOverlay\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
     sortable: ['sf-sortable', /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest/u],
-    'inline-editor': ['sf-inline-editor', /defineInlineEditor\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
+    'editor-inline': ['sf-editor-inline', /defineInlineEditor\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
   };
   for (const [name, [tag, define]] of Object.entries(entries)) {
     const rule = await readFile(new URL(`../src/smart/${name}/rule.js`, import.meta.url), 'utf8');
-    assert.match(rule, new RegExp(`SF\\.RuleLoader\\['cl-${name}'\\][^]*tags: \\['${tag}'\\]`, 'u'));
+    assert.match(rule, new RegExp(`SF\\.RuleLoader\\['cl-${name}'\\][^]*tags: \\['${tag}'[,\\]]`, 'u'));
     assert.match(await readFile(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8'), define);
   }
 });
@@ -125,11 +125,12 @@ test('Smart manifests declare every event state the code emits', async () => {
   const { OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY } = await import('../src/core/js/composition/overlay.mjs');
   const overlayManifest = JSON.parse(await readFile(new URL('../src/smart/composition-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   assert.deepEqual([...Object.values(OVERLAY_EVENTS), ...Object.values(OVERLAY_EVENTS_LEGACY)].sort(), Object.keys(overlayManifest.events).sort());
-  // The inline editor sends its names and, until 2026-12-01, the former ones
-  // after them (standard 1.3.8 §16.20): the manifest names both.
-  const { INLINE_EVENTS, INLINE_EVENTS_LEGACY } = await import('../src/core/js/composition/inline-editor.mjs');
-  const inlineManifest = JSON.parse(await readFile(new URL('../src/smart/inline-editor/smart.manifest.json', import.meta.url), 'utf8'));
-  assert.deepEqual([...Object.values(INLINE_EVENTS), ...Object.values(INLINE_EVENTS_LEGACY)].sort(), Object.keys(inlineManifest.events).sort());
+  // The inline editor sends its names, then the names under its former tag
+  // sf-inline-editor (until 2027-01-01) and, until 2026-12-01, the former ones
+  // (standard 1.3.8 §16.20): the manifest names all three.
+  const { INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY } = await import('../src/core/js/composition/inline-editor.mjs');
+  const inlineManifest = JSON.parse(await readFile(new URL('../src/smart/editor-inline/smart.manifest.json', import.meta.url), 'utf8'));
+  assert.deepEqual([...Object.values(INLINE_EVENTS), ...Object.values(INLINE_EVENTS_FORMER_TAG), ...Object.values(INLINE_EVENTS_LEGACY)].sort(), Object.keys(inlineManifest.events).sort());
 });
 
 // Framed canvas (simai/ui-source#22): a same-origin iframe fed a flat node list.

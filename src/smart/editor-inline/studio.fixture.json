@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.inline-editor",
+  "component": "smart.editor-inline",
   "title": "inline-editor reference",
-  "summary": "Deterministic reference fixture for sf-inline-editor.",
+  "summary": "Deterministic reference fixture for sf-editor-inline.",
   "locale": "ru",
   "props": {},
   "children": [

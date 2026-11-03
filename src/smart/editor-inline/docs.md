@@ -1,4 +1,4 @@
-# sf-inline-editor
+# sf-editor-inline
 
 Smart Inline editor — правка текста `content.heading` и `content.paragraph`
 прямо на холсте. Поддерживает strong, em, code, ссылки и inline-атомы — то,
@@ -6,18 +6,18 @@ Smart Inline editor — правка текста `content.heading` и `content.
 несут нормализованную модель content, а не HTML.
 
 Код загружается по требованию: достаточно поставить на странице редактора
-`<sf-inline-editor>`. Элемент ничего не показывает; после загрузки
+`<sf-editor-inline>`. Элемент ничего не показывает; после загрузки
 `SF.Composition.startInlineEdit` работает как раньше, до загрузки — бросает
 `inline_editor_not_loaded`.
 
 ## Базовое использование
 
 ```html
-<sf-inline-editor></sf-inline-editor>
+<sf-editor-inline></sf-editor-inline>
 ```
 
 ```js
-await customElements.whenDefined('sf-inline-editor');
+await customElements.whenDefined('sf-editor-inline');
 canvas.addEventListener('dblclick', (event) => {
   const element = event.target.closest('[data-sf-composition-id]');
   const node = nodeById(element.dataset.sfCompositionId);
@@ -26,7 +26,7 @@ canvas.addEventListener('dblclick', (event) => {
 document.addEventListener('sf-inline-editor-change', (event) => save(event.detail.id, event.detail.content));
 ```
 
-`document.querySelector('sf-inline-editor').edit(element, options)` — тот же
+`document.querySelector('sf-editor-inline').edit(element, options)` — тот же
 вызов. Возвращает `{element, commit(), cancel(), value()}`.
 
 ## Параметры
@@ -54,7 +54,7 @@ document.addEventListener('sf-inline-editor-change', (event) => save(event.detai
 `INLINE_EVENTS_LEGACY` — прежние.
 
 События отправляются на редактируемый элемент и всплывают до `document`;
-сам `<sf-inline-editor>` скрыт и роли не имеет.
+сам `<sf-editor-inline>` скрыт и роли не имеет.
 
 ## Inline-атомы
 

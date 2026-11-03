@@ -28,14 +28,14 @@ test('an unknown toolbar mode is refused before the element is touched', () => {
   }
 });
 
-test('the option is part of sf-inline-editor 1.3.0: its edit action, its script API and its sheet', async () => {
+test('the option is part of sf-editor-inline 1.4.0 (sf-inline-editor 1.3.0): its edit action, its script API and its sheet', async () => {
   const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
-  const manifest = JSON.parse(await read('src/smart/inline-editor/component.json'));
-  assert.equal(manifest.version, '1.3.0');
+  const manifest = JSON.parse(await read('src/smart/editor-inline/component.json'));
+  assert.equal(manifest.version, '1.4.0');
   assert.match(manifest.actions.edit.summary, /toolbar \(session: [^)]+; selection: [^)]+\)/u);
-  assert.match(await read('src/smart/inline-editor/index.js'), /SF\.InlineEditor = Object\.freeze\(\{[^}]*INLINE_TOOLBAR_MODES/u);
+  assert.match(await read('src/smart/editor-inline/index.js'), /SF\.InlineEditor = Object\.freeze\(\{[^}]*INLINE_TOOLBAR_MODES/u);
   // A hidden bar is not drawn: the sheet's display: flex would otherwise win over [hidden].
-  assert.match(await read('src/smart/inline-editor/scss/_smart__inline-editor.scss'), /\.sf-inline-editor-toolbar\[hidden\]\s*\{\s*display: none;/u);
+  assert.match(await read('src/smart/editor-inline/scss/_smart__inline-editor.scss'), /\.sf-inline-editor-toolbar\[hidden\]\s*\{\s*display: none;/u);
   const source = await read('src/core/js/composition/inline-editor.mjs');
   assert.match(source, /const toolbarMode = options\.toolbar \?\? 'session';/u, 'the default is unchanged');
 });

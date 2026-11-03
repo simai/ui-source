@@ -847,6 +847,41 @@
       "capabilities": [
         "interaction",
         "keyboard",
+        "theme"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-editor-inline",
+      "id": "smart.editor-inline",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/editor-inline/smart.manifest.json",
+      "manifest_sha256": "bcad4d1b32a5285b6ed232c1cad219b1dc155797043fbdfd726ba936da73f206",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
+      "tags": [
+        "composition",
+        "editor",
+        "inline",
+        "text"
+      ],
+      "title": "Inline editor"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "interaction",
+        "keyboard",
         "responsive"
       ],
       "composition": {
@@ -1266,41 +1301,6 @@
         "ajax"
       ],
       "title": "Include"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "interaction",
-        "keyboard",
-        "theme"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": []
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-inline-editor",
-      "id": "smart.inline-editor",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/inline-editor/smart.manifest.json",
-      "manifest_sha256": "779b4027a50d50718bb214318df54a33cf5058d37d5f0175c55ee27b74282061",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
-      "tags": [
-        "composition",
-        "editor",
-        "inline",
-        "text"
-      ],
-      "title": "Inline editor"
     },
     {
       "backend_adapters": [],

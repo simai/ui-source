@@ -1,20 +1,56 @@
-// Smart entry for the inline text editor. The loader fetches this bundle when
-// the page has an <sf-inline-editor> element; SF.Composition.startInlineEdit
-// in Core delegates here once it is loaded.
+// The distribution path of sf-editor-inline (formerly sf-inline-editor) until 2027-01-01 (change
+// journal path-smart-inline-editor-to-editor-inline). The folder took the new tag's name: sf-editor-inline is
+// served from smart/editor-inline/ (js/editor-inline.js). A page or a doc that still names
+// smart/inline-editor/js/inline-editor.js keeps loading a working element, under either tag:
 //
-// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
-// the carrier is defined over the class core/js/composition/manifest-host.mjs
-// makes from it; the edited element sends sf-inline-editor-input, -change and
-// -cancel {id, content}, the former sf-inline-edit-* following until
-// 2026-12-01.
-import { INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset } from '../../core/js/composition/inline-editor.mjs';
-import { manifestHost } from '../../core/js/composition/manifest-host.mjs';
-import manifest from './component.json';
-import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
-import './scss/index.scss';
+// - this bundle carries no element of its own (every bundle carries its own
+//   copy of the modules it imports, so a second class here would be a second
+//   class for one tag); it notes the old path in SF.deprecations and adds the
+//   script of smart/editor-inline/ beside its own, unless sf-editor-inline is defined or that
+//   script is already on the page;
+// - the Loader forwards the old bundle name, cl-inline-editor, to cl-editor-inline
+//   (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
+// Written by scripts/rename-smart-tag.mjs.
+import {noteDeprecated} from '../../core/js/deprecations.js';
 
-globalThis.SF = globalThis.SF || {};
-globalThis.SF.InlineEditor = Object.freeze({ INLINE_EVENTS, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, readInlineDom, renderInlineDom, startInlineEdit, textOffset });
-defineInlineEditor(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
+const FROM = 'smart/inline-editor/';
+const TO = 'smart/editor-inline/';
+const OWN = /\/inline-editor\/js\/inline-editor(\.min)?\.js(?=$|[?#])/u;
+
+function forward() {
+  const doc = globalThis.document;
+  if (!doc || !globalThis.customElements) return;
+  noteDeprecated({
+    component: 'sf-editor-inline',
+    kind: 'path',
+    from: FROM,
+    to: TO,
+    tag: 'sf-editor-inline',
+    since: '2026-11-03',
+    remove_after: '2027-01-01',
+  });
+  if (customElements.get('sf-editor-inline')) return;
+  // The old path this file was loaded by: document.currentScript while a
+  // classic script runs, else the page's script element that names it (a
+  // module script has no currentScript).
+  const own = [doc.currentScript?.src || '', ...[...doc.querySelectorAll('script[src]')].map((script) => script.src)]
+    .find((src) => OWN.test(src)) || '';
+  let src = '';
+  if (OWN.test(own)) {
+    src = own.replace(OWN, '/editor-inline/js/editor-inline$1.js');
+  } else {
+    // Loaded as a module or by a script of the page: the smart root the
+    // Loader uses (sfSmartPath, else sfPath), as it composes <root>/smart/.
+    const root = String(globalThis.sfSmartPath || globalThis.sfPath || '').trim().replace(/\/+$/u, '');
+    if (!root) return;
+    src = `${root}/smart/editor-inline/js/editor-inline.js`;
+  }
+  const loaded = [...doc.querySelectorAll('script[src]')].some((script) => /\/editor-inline\/js\/editor-inline(\.min)?\.js(?=$|[?#])/u.test(script.src));
+  if (loaded) return;
+  const script = doc.createElement('script');
+  script.src = src;
+  script.dataset.sfForwardedFrom = FROM;
+  (doc.currentScript?.parentNode || doc.head || doc.documentElement).appendChild(script);
+}
+
+forward();

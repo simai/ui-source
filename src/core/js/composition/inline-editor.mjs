@@ -1,4 +1,5 @@
 import { pageText } from '../page-language.js';
+import { defineTagAliases } from '../tag-aliases.js';
 import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentView, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
@@ -7,13 +8,20 @@ import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineCom
 // original DOM; commit restores it too and lets the host re-render the saved
 // value, so the canvas always returns to host-rendered HTML.
 
-// The names sf-inline-editor's component.json declares (standard 1.3.8 §8,
+// The names sf-editor-inline's component.json declares (standard 1.3.8 §8,
 // vocabulary 1.1.5): input while the text changes, change when it is
 // committed, cancel when it is put back -- {id, content}, data only. The
 // edited element is the host's, which carries no shim, so each event is
-// followed here by its former name with its former detail ({node_id,
-// content}) until 2026-12-01.
+// followed here by the name it had under the former tag sf-inline-editor
+// (the same detail, until 2027-01-01), then by its former name with its
+// former detail ({node_id, content}) until 2026-12-01.
 export const INLINE_EVENTS = Object.freeze({
+  input: 'sf-editor-inline-input',
+  commit: 'sf-editor-inline-change',
+  cancel: 'sf-editor-inline-cancel',
+});
+
+export const INLINE_EVENTS_FORMER_TAG = Object.freeze({
   input: 'sf-inline-editor-input',
   commit: 'sf-inline-editor-change',
   cancel: 'sf-inline-editor-cancel',
@@ -28,7 +36,9 @@ export const INLINE_EVENTS_LEGACY = Object.freeze({
 function emitInline(element, key, id, content) {
   const detail = content === undefined ? { id } : { id, content };
   const legacy = content === undefined ? { node_id: id } : { node_id: id, content };
-  element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS[key], { bubbles: true, composed: true, detail: Object.freeze(detail) }));
+  const frozen = Object.freeze(detail);
+  element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS[key], { bubbles: true, composed: true, detail: frozen }));
+  element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS_FORMER_TAG[key], { bubbles: true, composed: true, detail: frozen }));
   element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS_LEGACY[key], { bubbles: true, composed: true, detail: Object.freeze(legacy) }));
 }
 
@@ -75,7 +85,7 @@ const format = (template, values) => template.replace(/\{(\w+)\}/gu, (_, key) =>
 // them: the editor read <html lang> alone and offered only English or Russian,
 // so SF.language.use() and a product's own dictionary never reached it
 // (documentation trial, 2026-10-12).
-const words = (node) => Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, node, 'sf-inline-editor')]));
+const words = (node) => Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, node, 'sf-editor-inline')]));
 
 /** Reads inline content from any DOM subtree; foreign markup and styles are dropped. */
 export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collapse = false } = {}) {
@@ -626,16 +636,16 @@ export function startInlineEdit(element, options = {}) {
 }
 
 /**
- * <sf-inline-editor> is the loadable carrier of the inline editor: placing it
+ * <sf-editor-inline> is the loadable carrier of the inline editor: placing it
  * on a page lets the Smart loader fetch this code on demand. It renders
  * nothing; edit(element, options) is startInlineEdit.
  */
 //
-// base: the class made from sf-inline-editor's component.json
+// base: the class made from sf-editor-inline's component.json
 // (manifest-host.mjs); without it the carrier is a plain element.
 export function defineInlineEditor(registry = globalThis.customElements, { base = null } = {}) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
-  const existing = registry.get('sf-inline-editor');
+  const existing = registry.get('sf-editor-inline');
   if (existing) return existing;
   class SfInlineEditor extends (base || globalThis.HTMLElement) {
     connectedCallback() {
@@ -647,7 +657,9 @@ export function defineInlineEditor(registry = globalThis.customElements, { base 
       return startInlineEdit(element, options);
     }
   }
-  registry.define('sf-inline-editor', SfInlineEditor);
+  registry.define('sf-editor-inline', SfInlineEditor);
+  // The former tag sf-inline-editor is a dated alias (a subclass, noted once).
+  defineTagAliases(SfInlineEditor, 'sf-editor-inline', { define: (name, Class) => registry.define(name, Class) });
   return SfInlineEditor;
 }
 

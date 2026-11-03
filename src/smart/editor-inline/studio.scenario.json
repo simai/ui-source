@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.inline-editor",
+  "component": "smart.editor-inline",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],

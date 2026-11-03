@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.inline-editor",
-  "version": "1.3.0",
+  "id": "smart.editor-inline",
+  "version": "1.4.0",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -18,7 +18,7 @@
     "keyboard",
     "theme"
   ],
-  "custom_element": "sf-inline-editor",
+  "custom_element": "sf-editor-inline",
   "templates": [
     "default"
   ],
@@ -99,7 +99,7 @@
     }
   },
   "events": {
-    "sf-inline-editor-input": {
+    "sf-editor-inline-input": {
       "summary": "The text changed while it is edited; sent on the edited element",
       "payload": {
         "type": "object",
@@ -122,7 +122,7 @@
       },
       "canonical": true
     },
-    "sf-inline-editor-change": {
+    "sf-editor-inline-change": {
       "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element",
       "payload": {
         "type": "object",
@@ -145,7 +145,7 @@
       },
       "canonical": true
     },
-    "sf-inline-editor-cancel": {
+    "sf-editor-inline-cancel": {
       "summary": "The edit was put back (Escape): the element shows its HTML from before; sent on the edited element",
       "payload": {
         "type": "object",
@@ -184,7 +184,7 @@
           }
         }
       },
-      "alias_of": "sf-inline-editor-input"
+      "alias_of": "sf-editor-inline-input"
     },
     "sf-inline-edit-commit": {
       "summary": "Dated alias of sf-inline-editor-change until 2026-12-01: Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document. Its detail is the former one, {node_id, content}, not sf-inline-editor-change's {id, content}.",
@@ -206,7 +206,7 @@
           }
         }
       },
-      "alias_of": "sf-inline-editor-change"
+      "alias_of": "sf-editor-inline-change"
     },
     "sf-inline-edit-cancel": {
       "summary": "Dated alias of sf-inline-editor-cancel until 2026-12-01: Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document. Its detail is the former one, {node_id}, not sf-inline-editor-cancel's {id}.",
@@ -221,7 +221,28 @@
           }
         }
       },
-      "alias_of": "sf-inline-editor-cancel"
+      "alias_of": "sf-editor-inline-cancel"
+    },
+    "sf-inline-editor-input": {
+      "summary": "Dated alias of sf-editor-inline-input until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-inline-input"
+    },
+    "sf-inline-editor-change": {
+      "summary": "Dated alias of sf-editor-inline-change until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-inline-change"
+    },
+    "sf-inline-editor-cancel": {
+      "summary": "Dated alias of sf-editor-inline-cancel until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-inline-cancel"
     }
   },
   "state": {
@@ -333,8 +354,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-inline-editor>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-inline-editor>",
+        "since": "1.4.0",
+        "replacement": "<sf-editor-inline>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -343,24 +372,24 @@
     "source_revision": "ae623308b55789be87e4cbcf4e444a5567f66e4f",
     "source_artifacts": [
       {
-        "path": "src/smart/inline-editor/index.js",
-        "sha256": "3804fd88fd43c4420c2054c8d93eec939d1e2be326bd8569214fdc515f9f251b"
+        "path": "src/smart/editor-inline/index.js",
+        "sha256": "2755ecdf1f65d2b1a93068b4fc67897b793af1a6241221f535ff497d956c640d"
       },
       {
-        "path": "src/smart/inline-editor/scss/_smart__inline-editor.scss",
+        "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
         "sha256": "a9249e67c844cb7b16973c375718bc8723c74abd73a851c52ae84619f7c9cab1"
       },
       {
-        "path": "src/smart/inline-editor/rule.js",
-        "sha256": "246e60f710f620830782fc9b5a73d55486e8d30b35ceb7bbdcec7d95ff4aec71"
+        "path": "src/smart/editor-inline/rule.js",
+        "sha256": "b186d6138620a9f5992b538e6a585543c57f388658701504bcfb16cf6a0f0c2d"
       },
       {
-        "path": "src/smart/inline-editor/docs.md",
-        "sha256": "b488945dd4c1c5429c4c83a576961dc6fb773b7a3b127dd272dc1f0cec8008da"
+        "path": "src/smart/editor-inline/docs.md",
+        "sha256": "b7ed02f586bc9adec87474c7dcd1e544707ec83ae01285a76b7085a790ae7681"
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "e440de7a3ceac1a1e0d8cf33b226df7c4edb6cb1c6eb8f6dd440299c9cf46a2c"
+        "sha256": "b8a374103b84c88be39ed7cfe2e3a34c0ab61771fa9e7e9ad6701eff3ed27ca8"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
@@ -375,7 +404,7 @@
       "Do not copy generated ui-smart code",
       "Do not save HTML; events carry the content model",
       "Do not offer lists; the content model has none",
-      "Do not call startInlineEdit before sf-inline-editor is defined"
+      "Do not call startInlineEdit before sf-editor-inline is defined"
     ],
     "required_reads": [
       "contracts",
@@ -384,7 +413,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-inline-editor></sf-inline-editor><script>await customElements.whenDefined('sf-inline-editor'); SF.Composition.startInlineEdit(paragraph, {content, nodeId: 'p1', label: 'Paragraph'});</script>",
+    "minimal_example": "<sf-editor-inline></sf-editor-inline><script>await customElements.whenDefined('sf-editor-inline'); SF.Composition.startInlineEdit(paragraph, {content, nodeId: 'p1', label: 'Paragraph'});</script>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

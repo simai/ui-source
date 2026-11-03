@@ -24,7 +24,7 @@
 <body>
   <a id="before" href="#start">До холста</a>
   <div id="canvas"></div>
-  <sf-inline-editor></sf-inline-editor>
+  <sf-editor-inline></sf-editor-inline>
   <script>
     const core = document.createElement('script');
     core.src = `${assets}/core/js/core.js`;
@@ -67,7 +67,7 @@
       });
       window.lab.model = () => structuredClone(model);
       // The inline editor is a Smart component; Core startInlineEdit delegates once it is loaded.
-      await customElements.whenDefined('sf-inline-editor');
+      await customElements.whenDefined('sf-editor-inline');
       await draw();
       document.documentElement.dataset.ready = 'true';
     };

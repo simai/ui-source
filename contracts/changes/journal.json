@@ -3686,6 +3686,11 @@
           "component": "sf-header-page",
           "from": "sf-page-header-toggle",
           "to": "sf-header-page-toggle"
+        },
+        {
+          "component": "sf-header-page",
+          "from": "sf-page-header-star",
+          "to": "sf-header-page-toggle"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -3816,6 +3821,97 @@
       },
       "owner": "ui-source",
       "source": "src/smart/site-header/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/header-site/component.json"
+    },
+    {
+      "id": "tag-sf-inline-editor-to-sf-editor-inline",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-inline-editor is sf-editor-inline (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-editor-inline's class, the Loader's rule lists it, the Framework's sheets match :is(sf-editor-inline, sf-inline-editor), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-inline-editor-input, sf-inline-editor-change, sf-inline-editor-cancel).",
+      "items": [
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-editor",
+          "to": "sf-editor-inline"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-editor-input",
+          "to": "sf-editor-inline-input"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-editor-change",
+          "to": "sf-editor-inline-change"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-editor-cancel",
+          "to": "sf-editor-inline-cancel"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-edit-input",
+          "to": "sf-editor-inline-input"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-edit-commit",
+          "to": "sf-editor-inline-change"
+        },
+        {
+          "component": "sf-editor-inline",
+          "from": "sf-inline-edit-cancel",
+          "to": "sf-editor-inline-cancel"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-inline-editor></sf-inline-editor>",
+        "after": "<sf-editor-inline></sf-editor-inline>"
+      },
+      "manual": "Write <sf-editor-inline> for <sf-inline-editor> in markup and sf-editor-inline for sf-inline-editor in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-editor-inline, or both names through SF.tags.selector('sf-editor-inline') while the alias lives; a class or a custom property spelled like the old tag (.sf-inline-editor, --sf-inline-editor-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/editor-inline/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-inline-editor-to-editor-inline",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-editor-inline is served from smart/editor-inline/ since its folder took the new tag's name: js/editor-inline.js, loader bundle cl-editor-inline. The old path keeps working until remove_after: smart/inline-editor/js/inline-editor.js is a forwarding script that notes the path in SF.deprecations and loads smart/editor-inline/js/editor-inline.js, the Loader forwards the bundle name cl-inline-editor to cl-editor-inline (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.inline-editor is a dated alias of smart.editor-inline, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-editor-inline",
+          "from": "smart/inline-editor/js/inline-editor.js",
+          "to": "smart/editor-inline/js/editor-inline.js",
+          "match": "smart/inline-editor/js/inline-editor(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-inline-editor",
+          "to": "cl-editor-inline",
+          "match": "['\"]cl-inline-editor['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.inline-editor",
+          "to": "smart.editor-inline",
+          "match": "['\"]smart\\.inline-editor['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/editor-inline/ for smart/inline-editor/ and editor-inline for inline-editor in the file names (js/editor-inline.js, js/editor-inline.min.js); in a product rule's relation write cl-editor-inline for cl-inline-editor, and in a manifest or a package contract smart.editor-inline for smart.inline-editor. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/inline-editor/js/inline-editor.js\"></script>",
+        "after": "<script src=\"/distr/smart/editor-inline/js/editor-inline.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/inline-editor/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/editor-inline/component.json"
     }
   ]
 }

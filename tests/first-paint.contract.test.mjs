@@ -41,7 +41,7 @@ test('a drawn component prints its markup as static, never its runtime marks', (
     for (const example of component.examples.filter((one) => one.template !== 'skeleton')) {
       const html = readFileSync(exampleFiles(component, example).html, 'utf8');
       assert.doesNotMatch(html, /data-sf-started|data-sf-style-ready|data-sf-snap-page|<!--\?lit/u, `${component.folder}/${example.name}`);
-      if (component.folder !== 'sortable' && component.folder !== 'resizer' && component.folder !== 'inline-editor') {
+      if (component.folder !== 'sortable' && component.folder !== 'resizer' && component.folder !== 'editor-inline') {
         assert.match(html, /data-sf-static/u, `${component.folder}/${example.name}: static markup`);
       }
     }

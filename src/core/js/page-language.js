@@ -33,6 +33,8 @@
 // was published from core's copy, the table read its own, and registering a
 // language changed nothing on screen. Only a browser shows that, and it did
 // (2026-10-11).
+import {canonicalTag} from './tag-aliases.js';
+
 const STORE = (() => {
   const root = typeof globalThis !== 'undefined' ? globalThis : {};
   const key = '__sfPageLanguage';
@@ -44,6 +46,12 @@ const STORE = (() => {
 
 const LISTENERS = STORE.listeners;
 const REGISTERED = STORE.registered;
+
+// Words are kept under a component's current tag: a product that registered
+// them for a renamed tag (sf-datepicker, now sf-input-date) keeps its words
+// while the old tag is a dated alias, whichever name the element was written
+// with (core/js/tag-aliases.js).
+const wordsOf = (component) => REGISTERED.get(canonicalTag(component));
 
 const normalise = (value) => String(value ?? '').trim().toLowerCase().replace('_', '-');
 
@@ -210,7 +218,7 @@ export function pageText(dictionary, key, node, component) {
  */
 export function localeText(dictionary, key, locale, component) {
   for (const candidate of chain(locale || 'en')) {
-    const added = component ? REGISTERED.get(component)?.get(candidate)?.[key] : undefined;
+    const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
     if (added !== undefined) return added;
     const shipped = dictionary?.[candidate]?.[key];
     if (shipped !== undefined) return shipped;
@@ -270,7 +278,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
   if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
   const formerKeys = former === undefined || former === null ? [] : [].concat(former);
   for (const candidate of order) {
-    const registered = owner ? REGISTERED.get(owner)?.get(candidate) : undefined;
+    const registered = owner ? wordsOf(owner)?.get(candidate) : undefined;
     let added = registered?.[key];
     if (added === undefined && registered) {
       const old = formerKeys.find((name) => registered[name] !== undefined && registered[name] !== null);
@@ -342,7 +350,7 @@ export const language = {
    * restating the rest, and `null` removes what it added.
    */
   register(component, value, words) {
-    const name = String(component ?? '').toLowerCase();
+    const name = canonicalTag(component ?? '');
     const code = normalise(value);
     if (!name || !code) throw new TypeError('a component and a language are required');
     if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
@@ -363,8 +371,7 @@ export const language = {
 
   /** The languages something has registered words for. */
   known(component) {
-    const name = String(component ?? '').toLowerCase();
-    return [...(REGISTERED.get(name)?.keys() ?? [])];
+    return [...(wordsOf(component ?? '')?.keys() ?? [])];
   },
 
   /** Every component something has been registered for. */

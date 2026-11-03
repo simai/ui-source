@@ -17,7 +17,7 @@
   },
   "roles": {
     "menu": {"part": "sf-button", "settings": {"text": "Меню", "appearance": "outline"}},
-    "head": {"part": "sf-page-header", "bind": {"settings.heading": "heading", "settings.star": "star"}},
+    "head": {"part": "sf-header-page", "bind": {"settings.heading": "heading", "settings.star": "star"}},
     "search": {"part": "sf-input", "settings": {"label": "Поиск", "placeholder": "Название записи"}}
   },
   "rules": [],

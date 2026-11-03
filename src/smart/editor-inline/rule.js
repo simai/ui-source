@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-inline-editor'] = {
-  tags: ['sf-inline-editor'],
+SF.RuleLoader['cl-editor-inline'] = {
+  tags: ['sf-editor-inline', 'sf-inline-editor'],
   type: 'smart',
   mode: 'smart',
   js: true,

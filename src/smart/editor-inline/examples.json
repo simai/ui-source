@@ -71,7 +71,7 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-inline-editor id=\"ed\"></sf-inline-editor>",
+          "  <sf-editor-inline id=\"ed\"></sf-editor-inline>",
           "  <p id=\"p1\">Текст <strong>абзаца</strong></p>",
           "  <h2 id=\"h1\">Заголовок</h2>",
           "</main>"

@@ -61,6 +61,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-site-header-to-header-site"
+    },
+    "cl-inline-editor": {
+      "to": "cl-editor-inline",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-inline-editor-to-editor-inline"
     }
   }
 }

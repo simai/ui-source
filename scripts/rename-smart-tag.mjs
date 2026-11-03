@@ -177,6 +177,8 @@ export function renameJsonCode(value, from, to) {
   if (Array.isArray(value)) return value.map((item) => renameJsonCode(item, from, to));
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, renameJsonCode(item, from, to)]));
   if (typeof value !== 'string') return value;
+  // A string that is the tag (an assembly's part, a list of tags) names it.
+  if (value === from) return to;
   return renameSelectorCalls(value.replace(markup(from), (match, slash) => `<${slash}${to}`), from, to);
 }
 
@@ -411,6 +413,9 @@ function rename(oldTag, newTag) {
 
   // 5. The journal.
   const eventItems = events.map((verb) => ({component: newTag, from: `${oldTag}-${verb}`, to: `${newTag}-${verb}`}));
+  // The component's earlier event aliases are now the new tag's: recorded
+  // under it, so the journal still holds every alias the manifest declares.
+  const earlierItems = earlier.filter((row) => row.kind === 'event' && row.to).map((row) => ({component: newTag, from: row.from, to: row.to}));
   appendRecords([
     {
       id: tagRecord,
@@ -418,7 +423,7 @@ function rename(oldTag, newTag) {
       stage: 'compat',
       kind: 'tag',
       summary: `${oldTag} is ${newTag} (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of ${newTag}'s class, the Loader's rule lists it, the Framework's sheets match :is(${newTag}, ${oldTag}), and the first old-tag element of a page is noted in SF.deprecations and once on the console.${events.length ? ` The events named after the tag are renamed with it and the old names are dated aliases (${events.map((verb) => `${oldTag}-${verb}`).join(', ')}).` : ''}`,
-      items: [{component: newTag, from: oldTag, to: newTag}, ...eventItems],
+      items: [{component: newTag, from: oldTag, to: newTag}, ...eventItems, ...earlierItems],
       deprecated_on: today,
       remove_after: until,
       rewrite: 'rename-tag',

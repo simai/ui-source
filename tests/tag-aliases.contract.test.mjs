@@ -153,8 +153,17 @@ for (const row of rows) {
 
   test(`${where}: defined, loaded and declared under both names`, () => {
     const index = read(`src/smart/${folder}/index.js`);
-    assert.match(index, new RegExp(`\\.define\\(\\s*['"]${escape(to)}['"]\\s*\\)`, 'u'), `${where}: index.js defines the new tag`);
-    assert.match(read('src/core/js/smart-base.js'), /defineTagAliases\(this, resolvedTagName, \{ define: queueDefinition \}\)/u, 'the Smart base defines the old tags with the new one');
+    const defines = new RegExp(`\\.define\\(\\s*['"]${escape(to)}['"]`, 'u');
+    if (defines.test(index)) {
+      assert.match(read('src/core/js/smart-base.js'), /defineTagAliases\(this, resolvedTagName, \{ define: queueDefinition \}\)/u, 'the Smart base defines the old tags with the new one');
+    } else {
+      // An editor surface over a plain host (core/js/composition/*.mjs, called
+      // by index.js) defines its tag there, and its old tags beside it.
+      const imported = [...index.matchAll(/from '\.\.\/\.\.\/(core\/js\/composition\/[\w-]+\.mjs)'/gu)].map((match) => read(`src/${match[1]}`));
+      const definer = imported.find((text) => defines.test(text));
+      assert.ok(definer, `${where}: index.js, or the composition module it calls, defines the new tag`);
+      assert.match(definer, new RegExp(`defineTagAliases\\(\\w+, '${escape(to)}'`, 'u'), `${where}: and defines the old tags beside it`);
+    }
     const tags = {};
     new Function('SF', read(`src/smart/${folder}/rule.js`))({RuleLoader: tags});
     const rule = Object.values(tags)[0];

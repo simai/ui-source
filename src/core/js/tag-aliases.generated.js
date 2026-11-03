@@ -3,6 +3,7 @@
 export default Object.freeze([
   Object.freeze({from: 'sf-avatars', to: 'sf-avatar-group', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-close', to: 'sf-button-close', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-inline-editor', to: 'sf-editor-inline', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-page-header', to: 'sf-header-page', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-site-header', to: 'sf-header-site', since: '2026-11-03', remove_after: '2027-01-01'}),
 ]);

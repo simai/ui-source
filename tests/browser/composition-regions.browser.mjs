@@ -37,7 +37,7 @@ const overflow = () => page.evaluate(() => ({ viewport: innerWidth, scrollWidth:
 // Narrow, light, LTR: one column in DOM order.
 await open({ width: 390 });
 // A page that only renders a Document carries no editor code.
-check(await page.evaluate(() => ['sf-sortable', 'sf-composition-overlay', 'sf-inline-editor'].every((tag) => !customElements.get(tag)) && !window.SF.Sortable && !window.SF.InlineEditor), 'Core alone defines no editor surfaces');
+check(await page.evaluate(() => ['sf-sortable', 'sf-composition-overlay', 'sf-editor-inline', 'sf-inline-editor'].every((tag) => !customElements.get(tag)) && !window.SF.Sortable && !window.SF.InlineEditor), 'Core alone defines no editor surfaces');
 let b = await boxes();
 observations.narrow = b;
 const names = ['header', 'navigation', 'main', 'aside', 'footer'];

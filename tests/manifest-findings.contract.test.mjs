@@ -30,8 +30,8 @@ test('an old event name declares the detail it arrives with', () => {
       for (const field of fresh) assert.ok(old.includes(field), `${name} ${row.from} carries ${field} of ${row.to}`);
     }
   }
-  // inline-editor and composition-overlay keep the former detail, and say so.
-  for (const [name, olds] of [['inline-editor', ['sf-inline-edit-input', 'sf-inline-edit-commit', 'sf-inline-edit-cancel']],
+  // editor-inline and composition-overlay keep the former detail, and say so.
+  for (const [name, olds] of [['editor-inline', ['sf-inline-edit-input', 'sf-inline-edit-commit', 'sf-inline-edit-cancel']],
     ['composition-overlay', ['sf-composition-overlay-action', 'sf-composition-overlay-edit']]]) {
     for (const old of olds) assert.match(manifest(name).events[old].summary, /Its detail is the former one/u, `${name} ${old}`);
   }
