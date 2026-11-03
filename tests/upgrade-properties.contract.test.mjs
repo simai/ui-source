@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 // A value set on an element before its class was defined reaches the setter
-// once the element connects: sf-property-view bound .profiles to a lazily
+// once the element connects: sf-view-properties bound .profiles to a lazily
 // registered sf-profile-picker, and the own value hid the setter, so the
 // picker drew empty (simai.main, 2026-10-28).
 const {upgradeOwnProperties} = await import('../src/core/js/upgrade-properties.js');

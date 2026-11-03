@@ -22,7 +22,7 @@ page controls remain on one line.
 
 The page row's height is published on `:root`, one value per step of the size
 ladder, so a page can hold the room of a list and its pages before either draws
-(`sf-table` publishes its rows the same way):
+(`sf-view-table` publishes its rows the same way):
 
     --sf-pagination-block-size-1/2
     --sf-pagination-block-size-1

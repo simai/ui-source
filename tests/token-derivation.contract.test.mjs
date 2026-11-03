@@ -47,7 +47,7 @@ const EXCEPTIONS = new Map([
 
 // Every sheet the Framework ships, not only the hand-written SCSS. The smart
 // components carry plain .css templates, and the first version of this contract
-// read only .scss -- which is how an 8px written out inside sf-table's template
+// read only .scss -- which is how an 8px written out inside sf-view-table's template
 // walked past it (owner, 2026-10-09).
 const STYLESHEETS = ['.scss', '.css'];
 const stylesheets = (directory) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {

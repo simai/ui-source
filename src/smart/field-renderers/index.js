@@ -638,7 +638,7 @@ const CELL_RENDERERS = {
 // A consumer found this on their stand: the words were written into the set, so
 // an English admin saw «Да». The set must not decide what a value is called in
 // anyone's language. They come from the field, which is where the rest of the
-// Framework keeps its text -- sf-table declares fourteen such inputs -- and the
+// Framework keeps its text -- sf-view-table declares fourteen such inputs -- and the
 // Russian stays only as the fallback, so nothing already published changes.
 // The field's own words win, as they must: what «true» is called belongs to
 // whoever owns the interface. The fallback used to be Russian whatever the page
@@ -2078,7 +2078,7 @@ export function renderEditField(field = {}, value, host, options = {}) {
 // It renders lit templates rather than the host-shaped values the cell template
 // returns, because its consumer is a record view rendering into its own layout,
 // exactly as the edit template's is. The cell template returns host shapes only
-// because sf-table already had a path for those.
+// because sf-view-table already had a path for those.
 //
 // `line` and not `size` for everything that sits beside a label on one text
 // line -- a badge, a tag, an avatar, a reference link. A size would give those a

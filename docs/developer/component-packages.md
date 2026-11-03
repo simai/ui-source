@@ -8,7 +8,7 @@ to the Framework (owner's decisions of 2026-10-11). The standard is
 `simai.component-package` 1.0.0 (`contracts/standards/simai.component-package/`).
 
 The SIMAI Framework Pro components are the first package, `pro`:
-`sf-table`, `sf-data-view`, `sf-property-view`, `sf-admin-menu` and the rest
+`sf-view-table`, `sf-view`, `sf-view-properties`, `sf-admin-menu` and the rest
 are not in Core's rule list or in `ui`; they live in the component folder of
 `simai/ui-pro` and arrive this way. Larena is one of their consumers. They
 went to a package named `pro` on 2026-10-11, to `larena` the same day, and
@@ -29,6 +29,33 @@ in `SF.deprecations` (kind `option`, component `loader`). A page that declares
 both names gets `pro` and a warning that `larena` is ignored. A Framework pair
 from before 2026-11-02 knows only the name the page declares, so over such a
 pair the page and the package must use the same name.
+
+### A package element's former tag
+
+A package component renamed with a dated tag alias (rename plan R2,
+2026-11-03: `sf-table` is `sf-view-table`, `sf-data-view` is `sf-view`,
+`sf-property-view` is `sf-view-properties`, `sf-content-editor` is
+`sf-editor-content`, `sf-thread-list` is `sf-chat-threads`,
+`sf-change-confirm` is `sf-confirm-change`) keeps its former tag until the
+alias's `remove_after`, the way a Framework component does
+(`src/core/js/tag-aliases.js`):
+
+- The package reference lists it: the item names the new `element`,
+  `rule_name`, `folder` and `id`, and `element_aliases` holds each former tag
+  with `since`, `remove_after` and its change journal record. The package's
+  rule lists the element first and its former tags after it, which the package
+  receipt checks against the release (ui-builder `write-package-receipt.py`).
+- The runtime's tag table (`tag-aliases.generated.js`, written by
+  `scripts/tag-alias-table.mjs`) carries the reference's rows, so
+  `SF.tags.selector('sf-view-table')`, `SF.create('sf-table')` and the
+  language registry know the former tag before the package has run. An old tag
+  the page still has as an element of its own (a package built before the
+  rename beside a newer pair) is left as it is.
+- The Loader forwards the former bundle name (`cl-table` -> `cl-view-table`,
+  `src/core/contracts/smart-rule-forwards.v1.json`) to the package's rule once
+  the package's rules are registered; a package that still registers the former
+  name itself keeps its own rule. The package build serves only folders that
+  hold a rule, so the former file path under the package base is not served.
 
 ## Where Smart comes from without a package
 
@@ -99,7 +126,7 @@ The file is a plain script with one call:
 SF.RuleLoader.registerPackage('pro', {
   rules: {
     'cl-table': {
-      tags: ['sf-table'],
+      tags: ['sf-view-table'],
       type: 'smart',
       mode: 'smart',
       js: true,

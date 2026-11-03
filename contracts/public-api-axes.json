@@ -304,7 +304,7 @@
       "property": "data-state",
       "package": "pro",
       "reason": "a lifecycle state of the data — auto, loading, populated, empty, error — not a status the control reports about the world. The word error appears in both, which is why the exemption is written down rather than inferred.",
-      "kept_for": "sf-table lives in the SIMAI Framework Pro package (package pro, the component folder in simai/ui-pro; package larena from 2026-10-11 to 2026-11-02), and no free component declares data-state. The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
+      "kept_for": "sf-view-table lives in the SIMAI Framework Pro package (package pro, the component folder in simai/ui-pro; package larena from 2026-10-11 to 2026-11-02), and no free component declares data-state. The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
     },
     {
       "component": "icon",

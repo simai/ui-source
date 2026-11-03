@@ -1,14 +1,18 @@
-// Generated from the `tag` rows of src/smart/*/aliases.json by scripts/tag-alias-table.mjs; do not edit.
-// The Framework's dated tag aliases, read by core/js/tag-aliases.js.
+// Generated from the `tag` rows of src/smart/*/aliases.json and the element_aliases of
+// src/core/contracts/packages/*.package.json by scripts/tag-alias-table.mjs; do not edit.
+// The dated tag aliases of the Framework and of its component packages, read by core/js/tag-aliases.js.
 export default Object.freeze([
   Object.freeze({from: 'sf-avatars', to: 'sf-avatar-group', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-change-confirm', to: 'sf-confirm-change', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-close', to: 'sf-button-close', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-code-input', to: 'sf-input-code', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-color', to: 'sf-input-color', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-composition-overlay', to: 'sf-editor-overlay', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-content-editor', to: 'sf-editor-content', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-context-menu', to: 'sf-menu-context', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-copy-button', to: 'sf-button-copy', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-country-code', to: 'sf-input-country', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-data-view', to: 'sf-view', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-datepicker', to: 'sf-input-date', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-download-file', to: 'sf-file-download', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-icon-button', to: 'sf-button-icon', since: '2026-11-03', remove_after: '2027-01-01'}),
@@ -16,9 +20,12 @@ export default Object.freeze([
   Object.freeze({from: 'sf-inline-editor', to: 'sf-editor-inline', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-lookup', to: 'sf-input-lookup', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-page-header', to: 'sf-header-page', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-property-view', to: 'sf-view-properties', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-quantity', to: 'sf-input-quantity', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-range-slider', to: 'sf-slider-range', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-rich-text', to: 'sf-input-rich', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-site-header', to: 'sf-header-site', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-table', to: 'sf-view-table', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-textarea', to: 'sf-input-textarea', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-thread-list', to: 'sf-chat-threads', since: '2026-11-03', remove_after: '2027-01-01'}),
 ]);

@@ -3,7 +3,7 @@
 
 @layer sf.components {
 /* The page row's box, published so a page can hold the room of a list and
-   its pages before they draw (sf-table publishes its rows the same way):
+   its pages before they draw (sf-view-table publishes its rows the same way):
    the control height of the step, the row's padding above and below it, and
    the line under it. One value per step of the size ladder (size 1/2 and 1),
    from the tokens the row is drawn with, never a number typed into a page.

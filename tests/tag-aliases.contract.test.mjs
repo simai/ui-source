@@ -46,6 +46,13 @@ const rows = components.flatMap(({folder, component}) => (component.aliases?.row
 
 // The alias machinery names an old tag on purpose: the runtime, the table, the
 // forwarding folder of a moved path, the journal and this test's companions.
+// A published contract that pins its markup by hash keeps the tag it was
+// published with: composition routing 1.0.0 locked the sf-table port manifest
+// and its corpus (src/core/contracts/composition-routing-v1/contract.lock.json),
+// and the routing renders <sf-table>, which draws as sf-view-table while the
+// alias lives. The next routing version names the new tag.
+const FROZEN = [/^src\/core\/contracts\/composition-routing-v1\//u, /^tests\/fixtures\/composition-capabilities\//u, /^tests\/composition-routing\.contract\.test\.mjs$/u];
+const frozen = (file) => FROZEN.some((pattern) => pattern.test(file));
 const machinery = (file, row) => [
   'src/core/js/tag-aliases.js', 'src/core/js/tag-aliases.generated.js', 'src/core/js/alias-table.js',
   `src/smart/${row.from.replace(/^sf-/u, '')}/index.js`,
@@ -156,7 +163,11 @@ for (const row of rows) {
   test(`${where}: defined, loaded and declared under both names`, () => {
     const index = read(`src/smart/${folder}/index.js`);
     const defines = new RegExp(`\\.define\\(\\s*['"]${escape(to)}['"]`, 'u');
-    if (defines.test(index)) {
+    if (new RegExp(`customElements\\.define\\(\\s*['"]${escape(to)}['"]`, 'u').test(index)) {
+      // An element that is not a Smart base element (a package's composite,
+      // sf-view) defines its tag itself, and its old tags beside it.
+      assert.match(index, new RegExp(`defineTagAliases\\(\\w+, ['"]${escape(to)}['"]`, 'u'), `${where}: index.js defines the old tags beside customElements.define`);
+    } else if (defines.test(index)) {
       assert.match(read('src/core/js/smart-base.js'), /defineTagAliases\(this, resolvedTagName, \{ define: queueDefinition \}\)/u, 'the Smart base defines the old tags with the new one');
     } else {
       // An editor surface over a plain host (core/js/composition/*.mjs, called
@@ -212,7 +223,7 @@ for (const row of rows) {
     const comparison = new RegExp(`(?:localName|tagName)[^;\\n]{0,40}(?:===|!==|==|!=)\\s*['"\`]${escape(from)}['"\`]`, 'giu');
     for (const file of [...sources, ...walk(resolve(root, 'tests'))]) {
       // The probes of former names write the old markup on purpose.
-      if (machinery(file, row) || /tag-aliases\.(?:contract|browser)|display-former-names\.browser/u.test(file)) continue;
+      if (machinery(file, row) || /tag-aliases\.(?:contract|browser)|former-names\.browser/u.test(file) || frozen(file)) continue;
       if (!/\.(?:m?js|cjs|html|md|json)$/u.test(file)) continue;
       let text = read(file);
       if (!text.includes(from)) continue;
@@ -294,4 +305,106 @@ test('every Smart component whose aliases.json carries more than tag rows hands 
     if (!/import\s+aliases\s+from\s+['"]\.\/aliases\.json['"]/u.test(source) || !/[{(,\s]aliases\s*[,})]|^\s*aliases,?$|\.aliases\b/mu.test(source.replace(/^import.*$/gmu, ''))) missing.push(entry.name);
   }
   assert.deepEqual(missing, []);
+});
+
+// A component package's element renamed with a dated alias (rename plan R2:
+// the Pro components, simai/ui-pro): its folder is not in ui-source, so what
+// ui-source holds is the reference's element_aliases, the journal's records,
+// the runtime's table and the Loader's forward of the former bundle name. The
+// package's own half (its aliases.json, rule, sheets) is checked where the
+// package is tested, in the overlay, by the tests above.
+const packageDirectory = 'src/core/contracts/packages';
+const references = readdirSync(resolve(root, packageDirectory)).filter((name) => name.endsWith('.package.json'))
+  .map((name) => ({name, reference: readJson(`${packageDirectory}/${name}`)}));
+const packageRows = references.filter(({reference}) => !reference.alias_of)
+  .flatMap(({name, reference}) => reference.provides.flatMap((item) => (item.element_aliases ?? []).map((row) => ({...row, item, name}))));
+
+test('package element aliases: the static table reads them, and a folder laid over ui-source must agree', async () => {
+  const {packageTagAliasRows} = await import('../scripts/tag-alias-table.mjs');
+  const rows = packageTagAliasRows();
+  assert.deepEqual(rows.map((row) => `${row.from}>${row.to}`).sort(), packageRows.map((row) => `${row.from}>${row.item.element}`).sort());
+  for (const row of packageRows) assert.ok(read(TABLE).includes(`from: '${row.from}', to: '${row.item.element}'`), `${row.from}: the static table carries it`);
+  // A refused row stops the table: a bad date, an old tag that is not a tag.
+  const {mkdtempSync, mkdirSync, writeFileSync, rmSync} = await import('node:fs');
+  const {tmpdir} = await import('node:os');
+  const scratch = mkdtempSync(join(tmpdir(), 'tag-alias-table-'));
+  try {
+    mkdirSync(join(scratch, packageDirectory), {recursive: true});
+    mkdirSync(join(scratch, 'src/smart/widget'), {recursive: true});
+    const reference = (aliases) => JSON.stringify({package: 'demo', provides: [{id: 'smart.widget', element: 'sf-widget', rule_name: 'cl-widget', folder: 'widget', requires: [], element_aliases: aliases}]});
+    writeFileSync(join(scratch, packageDirectory, 'demo.package.json'), reference([{from: 'sf-old-widget', since: '2026-11-03', remove_after: '2027-01-01'}]));
+    const folder = (rows) => writeFileSync(join(scratch, 'src/smart/widget/aliases.json'), JSON.stringify({component: 'sf-widget', aliases: rows}));
+    folder([{from: 'sf-old-widget', to: 'sf-widget', kind: 'tag', since: '2026-11-03', remove_after: '2027-01-01'}]);
+    assert.deepEqual(tagAliasRows(scratch).map((row) => `${row.from}>${row.to} ${row.package}`), ['sf-old-widget>sf-widget demo'], 'read once, from the reference');
+    folder([]);
+    assert.throws(() => tagAliasRows(scratch), /the package reference says sf-old-widget>sf-widget/u, 'a laid folder that disagrees');
+    rmSync(join(scratch, 'src/smart/widget/aliases.json'));
+    writeFileSync(join(scratch, packageDirectory, 'demo.package.json'), reference([{from: 'sf-old-widget', since: '2026-11-03', remove_after: '2026-11-01'}]));
+    assert.throws(() => tagAliasRows(scratch), /remove-after-before-since/u);
+  } finally {
+    rmSync(scratch, {recursive: true, force: true});
+  }
+});
+
+for (const row of packageRows) {
+  const {from, item, name} = row;
+  const to = item.element;
+  const where = `${from} -> ${to} (${name})`;
+  const oldFolder = from.replace(/^sf-/u, '');
+
+  test(`${where}: dated by the policy, recorded in the journal, forwarded by the Loader`, () => {
+    assert.match(row.since, /^\d{4}-\d{2}-\d{2}$/u);
+    assert.equal(row.remove_after, removeAfter(row.since, policy), `${where}: remove_after follows the policy`);
+    const record = journal.records.find((entry) => entry.id === row.journal);
+    assert.ok(record, `${where}: element_aliases names the journal record ${row.journal}`);
+    assert.equal(record.kind, 'tag');
+    assert.equal(record.rewrite, 'rename-tag');
+    assert.equal(record.deprecated_on, row.since);
+    assert.equal(record.extended_to || record.remove_after, row.remove_after);
+    assert.ok(record.items.some((entry) => entry.from === from && entry.to === to && entry.component === to), `${where}: the record's item`);
+    // Every event the record renames is <old>-<verb> -> <new>-<verb>.
+    for (const entry of record.items.filter((one) => one.from.startsWith(`${from}-`) && one.to.startsWith(`${to}-`))) {
+      assert.equal(entry.from.slice(from.length), entry.to.slice(to.length), `${where}: ${entry.from} keeps its verb`);
+    }
+    // The former bundle name forwards to the package rule, with its record.
+    assert.notEqual(oldFolder, item.folder, `${where}: the folder follows the tag`);
+    assert.equal(item.rule_name, `cl-${item.folder}`);
+    assert.equal(item.id, `smart.${item.folder}`, `${where}: the id follows the folder`);
+    const forward = forwards[`cl-${oldFolder}`];
+    assert.equal(forward?.to, item.rule_name, `${where}: cl-${oldFolder} forwards to ${item.rule_name}`);
+    assert.equal(forward.since, row.since);
+    assert.equal(forward.remove_after, row.remove_after);
+    const pathRecord = journal.records.find((entry) => entry.id === forward.journal);
+    assert.ok(pathRecord?.items.some((entry) => entry.component === 'loader' && entry.from === `cl-${oldFolder}` && entry.to === item.rule_name), `${where}: the forward's record`);
+    assert.ok(pathRecord.items.some((entry) => entry.component === 'registry' && entry.to === item.id), `${where}: the former registry id is recorded`);
+    assert.ok(!existsSync(resolve(root, `src/smart/${oldFolder}`)) && !existsSync(resolve(root, `src/smart/${item.folder}`)), `${where}: no package folder in the free source`);
+  });
+}
+
+
+// A pair whose table knows sf-table -> sf-view-table may meet a package built
+// before the rename (rules naming sf-table alone, an element of that name):
+// the old name is then that element's own and is not rewritten, so SF.create
+// and a descriptor still draw what the page can upgrade.
+test('canonicalTag leaves an old tag the page still has as an element of its own', async () => {
+  const {canonicalTag} = await import('../src/core/js/tag-aliases.js');
+  const saved = {customElements: globalThis.customElements, SF: globalThis.SF};
+  const defined = new Map();
+  globalThis.customElements = {get: (name) => defined.get(name), define: (name, Class) => defined.set(name, Class)};
+  try {
+    globalThis.SF = {...(saved.SF ?? {}), Loader: undefined};
+    assert.equal(canonicalTag('sf-table'), 'sf-view-table', 'nothing known: the current name');
+    globalThis.SF.Loader = {getCustomElementRules: () => ({'sf-table': 'cl-table'})};
+    assert.equal(canonicalTag('sf-table'), 'sf-table', 'only the old tag has a rule: a package from before the rename');
+    globalThis.SF.Loader = {getCustomElementRules: () => ({'sf-view-table': 'cl-view-table', 'sf-table': 'cl-view-table'})};
+    assert.equal(canonicalTag('sf-table'), 'sf-view-table', 'the renamed package lists both');
+    class Alias {}
+    Alias.sfTagAliasOf = 'sf-view-table';
+    defined.set('sf-table', Alias);
+    assert.equal(canonicalTag('sf-table'), 'sf-view-table', 'the alias subclass is not an element of its own');
+    defined.set('sf-table', class Own {});
+    assert.equal(canonicalTag('sf-table'), 'sf-table', 'an element of its own under the old name');
+  } finally {
+    Object.assign(globalThis, saved);
+  }
 });

@@ -197,7 +197,7 @@ the next one.
   instead: Arial's glyph widths differ from Inter's per letter, not by a
   scale. Two independent write runs give byte-identical snapshots.
 - **The clock is frozen** (decision 2026-10-28). A component that reads the
-  date (sf-thread-list groups conversations by today, yesterday and earlier)
+  date (sf-chat-threads groups conversations by today, yesterday and earlier)
   would print a different snapshot every midnight. The snapshot and gate 24
   fix `Date` and `Date.now()` at one instant before any page code runs
   (Playwright `page.clock.setFixedTime`; timers and `performance.now()` keep

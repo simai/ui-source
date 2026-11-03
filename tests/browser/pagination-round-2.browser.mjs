@@ -118,7 +118,7 @@ try {
   // is the card's job now — a sticky box cannot leave the box that contains it,
   // and the consumer saw the whole row floating over its own rows when the row
   // was made to stick. That arrangement is measured in data-view-reloads
-  // (package pro, with sf-data-view).
+  // (package pro, with sf-view).
   const card = await open(
     `<div id="card" style="width:900px;border:1px solid #ccc;display:flex;flex-direction:column">
        <sf-pagination id="p" top="false" total="450" page-size="10" current="1" selected-count="3"

@@ -311,7 +311,7 @@ class SfPagination extends PaginationElement {
   }
 
   // Whether the total is the number itself or an estimate (vocabulary 1.1.5
-  // total-exact; standard 1.3.8 gate 29). sf-data-view says false from the
+  // total-exact; standard 1.3.8 gate 29). sf-view says false from the
   // port's `total_exact`: the row then reads «~N», and neither the last page
   // nor the page count is offered as a fact; the count link asks for the
   // number when the host can count.
@@ -887,7 +887,7 @@ class SfPagination extends PaginationElement {
       }
 
       // Off for a boolean that is on by default is written, not removed:
-      // without the attribute it reads as on again. sf-data-view sends
+      // without the attribute it reads as on again. sf-view sends
       // countKnown and totalExact false this way.
       if (value === false && DEFAULT_ON.has(attr)) {
         this.setAttribute(attr, "false");

@@ -11,7 +11,7 @@
 // it back. A sentinel password is searched for in the whole document's markup
 // in every state: it must never appear there.
 //
-// The harness is the host, holding changes the way sf-property-view does: only
+// The harness is the host, holding changes the way sf-view-properties does: only
 // the fields written through setFieldValue, `undefined` withdrawing one.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -57,7 +57,7 @@ try {
     const entry = set.registry.find((one) => one.type === 'string');
     const variant = entry?.variants.find((one) => one.id === 'password') ?? null;
 
-    // The host: a change map like sf-property-view's, and the save payload it sends.
+    // The host: a change map like sf-view-properties's, and the save payload it sends.
     const changed = new Map();
     const host = {
       setFieldValue: (field, value) => {

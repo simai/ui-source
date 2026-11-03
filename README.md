@@ -14,8 +14,8 @@ edited directly.
 Documentation (Russian): https://ui.simai.io/
 
 The Framework is extended through component packages: a component lives with
-its owner. The SIMAI Framework Pro components (`sf-table`, `sf-data-view`,
-`sf-property-view`, `sf-admin-menu` and the rest) are the package `pro` (until
+its owner. The SIMAI Framework Pro components (`sf-view-table`, `sf-view`,
+`sf-view-properties`, `sf-admin-menu` and the rest) are the package `pro` (until
 2027-01-01 also loadable under its former name `larena`), built from the
 component folder of `simai/ui-pro` against a pinned revision of this
 repository and published as releases of `simai/ui-pro`; see

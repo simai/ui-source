@@ -4,7 +4,7 @@
 // A page that knows the first call a port-fed element will send declares it
 // in the element, as a JSON island:
 //
-//   <sf-data-view id="list" …>
+//   <sf-view id="list" …>
 //     <script type="application/json" data-sf-port>{
 //       "port": "simai.dataview-port", "version": "1.12.0",
 //       "url": "/admin/catalog/port", "capabilities": ["row-actions", …],
@@ -21,7 +21,7 @@
 // asking again. One request, while the component's code is still loading.
 //
 // The island stays where it is: the element reads its capabilities and its
-// first query from it (sf-data-view 1.5.0), so the first draw is final.
+// first query from it (sf-view 1.5.0), so the first draw is final.
 //
 // Where the port comes from:
 //   url        Core's own adapter on the standard wire: POST {intent, payload,

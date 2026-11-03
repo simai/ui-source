@@ -134,7 +134,7 @@
       const at = part.indexOf(':');
       if (at < 0) return part.trim() !== '';
       const name = part.slice(0, at).trim();
-      // A custom property the code wrote from a measurement (sf-table's
+      // A custom property the code wrote from a measurement (sf-view-table's
       // --sf-table--content-inline-size: 530px) is a measured size too.
       return !((GEOMETRY.test(name.toLowerCase()) || name.startsWith('--')) && measured(part.slice(at + 1)));
     });

@@ -91,7 +91,7 @@ export function readConfig(argv = process.argv, env = process.env) {
 
 /**
  * The clock of a first-paint page is frozen (dispatcher decision 2026-10-28):
- * a component that reads the date (sf-thread-list groups by today, yesterday
+ * a component that reads the date (sf-chat-threads groups by today, yesterday
  * and earlier) would otherwise print a different snapshot every midnight.
  * Before any page code runs, Date and Date.now give one instant -- the
  * example's "first-paint": {"now": "<ISO>"}, else the run configuration's

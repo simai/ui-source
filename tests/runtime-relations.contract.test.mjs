@@ -32,9 +32,9 @@ const followed = (relation, forwards = forwardingRules()) => new Set([...relatio
 // family: the table's manifest declares `smart.data-view` while living in
 // src/smart/table, and the composite around it declares
 // `smart.data-view-composite` while living in src/smart/data-view. Keyed by
-// directory, sf-data-view's `uses: smart.data-view` resolved to sf-data-view
+// directory, sf-view's `uses: smart.data-view` resolved to sf-view
 // itself and the check asked a composite to fetch itself. It stayed invisible
-// only because no composite had a rule until sf-property-view needed one.
+// only because no composite had a rule until sf-view-properties needed one.
 const layerKeys = (layer) => {
   const keys = new Map();
   for (const entry of readdirSync(resolve(root, `src/${layer}`), {withFileTypes: true})) {
