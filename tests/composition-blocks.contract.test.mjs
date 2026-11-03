@@ -264,6 +264,34 @@ test('a site block is a type made of blocks; an instance stores only its version
   assert.ok(codes(cyclic).includes('composed_cycle'));
 });
 
+test('a site block\'s form is its exposed list with the target types\' editor fields', () => {
+  const definition = promoDefinition('1.0.0', { exposed: [{ key: 'title_level', path: 'title', target: 'data.level' }, { key: 'area_hidden', path: 'box', target: 'props.hidden' }] });
+  const { manifest } = defineComposedType(definition);
+  const registry = extendRegistry([manifest]);
+  const instance = { ...composedInstance(manifest, 'promo-1'), props: { padding: { xs: 2, lg: 6 } } };
+  const form = Composition.composedEditorFields(manifest, instance, { registry });
+  assert.deepEqual(form.diagnostics, []);
+  assert.equal(form.valid, true);
+  // An editor manifest v1 of the site block's version, made from the type; never stored.
+  assert.deepEqual([form.manifest.type, form.manifest.type_version], ['site.promo', '1.0.0']);
+  assert.deepEqual(Composition.validateEditorManifest(form.manifest, manifest).diagnostics, []);
+  assert.deepEqual(form.fields.map(({ key, destination, label_key: label, value, source }) => [key, destination, label, value, source]), [
+    ['padding', 'props.padding', 'site.promo.padding', 2, 'node'],
+    ['title_level', 'props.title_level', 'sf.composition.content_heading.level', 2, 'default'],
+    ['area_hidden', 'props.area_hidden', 'sf.composition.layout_area.hidden', false, 'default'],
+  ]);
+  assert.deepEqual(form.fields[0].screens, { xs: 2, lg: 6 }, 'a per-screen value keeps its screens');
+  assert.deepEqual(form.origins.padding, { path: 'box', type: 'layout.area', target: 'props.padding' });
+  // Without an instance the form shows the tree's values as defaults.
+  assert.equal(Composition.composedEditorFields(manifest, undefined, { registry }).fields[0].value, 4);
+  // A target whose type declares no editor field has no form field, and says so.
+  const bare = defineComposedType(promoDefinition('1.0.0', { exposed: [{ key: 'lead_text', path: 'lead', target: 'data.content' }] })).manifest;
+  const partial = Composition.composedEditorFields(bare, undefined, { registry: extendRegistry([bare]) });
+  assert.deepEqual(partial.diagnostics.map(({ code, key }) => [code, key]), [['composed_editor_field_missing', 'lead_text']]);
+  assert.deepEqual(partial.fields.map(({ key }) => key), ['padding']);
+  assert.deepEqual(codes(Composition.composedEditorFields(BUILTIN_TYPE_MANIFESTS[0])), ['composed_type_required']);
+});
+
 test('a new version reaches every instance; the author\'s texts and values stay', async () => {
   const v1 = defineComposedType(promoDefinition('1.0.0')).manifest;
   const instances = ['a', 'b'].map((id) => ({ ...composedInstance(v1, id), props: { padding: 1 }, data: { texts: { 'title/content': text(`Title ${id}`), 'lead/content': text(`Lead ${id}`) } } }));

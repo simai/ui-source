@@ -58,6 +58,7 @@ import {
 import {
   COMPOSED_EXTENSION,
   MAX_COMPOSED_DEPTH,
+  composedEditorManifest as composedEditorManifestWith,
   composedInstance,
   composedPart,
   composedTextPaths,
@@ -881,6 +882,22 @@ export function defineComposedType(definition, registry = undefined, options = {
   return defineComposed(definition, normalizeRegistry(registry), (document, current) => validate(document, current, options));
 }
 
+/**
+ * A site block's parameter form: its exposed list with the target types'
+ * editor fields (composed.mjs composedEditorManifest). With an instance it
+ * also projects the instance's values, as projectEditorFields does for a type
+ * of code: {manifest, origins, fields, diagnostics, valid}.
+ */
+export function composedEditorFields(manifest, instance = undefined, options = {}) {
+  const registry = normalizeRegistry(options.registry);
+  const editors = [...BUILTIN_EDITOR_MANIFESTS, ...(options.editorManifests || [])];
+  const made = composedEditorManifestWith(manifest, registry, editors);
+  if (!made.manifest) return { valid: false, manifest: null, origins: {}, fields: [], diagnostics: made.diagnostics };
+  const projected = projectEditorFields(made.manifest, manifest, instance || { id: '', type: manifest.type }, options);
+  const diagnostics = [...made.diagnostics, ...projected.diagnostics];
+  return { valid: diagnostics.length === 0, manifest: made.manifest, origins: made.origins, fields: projected.fields, diagnostics };
+}
+
 /** Every instance of a site block moved to its type's current version; what the new version no longer has is reported. */
 export function upgradeComposed(document, registry = undefined) {
   return upgradeComposedWith(document, normalizeRegistry(registry), fits);
@@ -968,6 +985,7 @@ export const Composition = Object.freeze({
   catalogueEntry,
   checkModifiers,
   checkSourceAnswer,
+  composedEditorFields,
   composedInstance,
   composedPart,
   composedTextPaths,

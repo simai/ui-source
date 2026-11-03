@@ -167,6 +167,53 @@ export function defineComposedType(definition, registry, validateDocument) {
   return { manifest, diagnostics };
 }
 
+/**
+ * A site block's parameter form (dispatcher decision 2026-11-03): a site
+ * block has no editor manifest of its own. Its form is its `exposed` list,
+ * each entry taking the field the target type's editor manifest declares for
+ * that target, renamed to the exposed key and pointed at the instance's
+ * `props.<key>`. The words are the exposed label_key, else the target field's.
+ * `editorManifests` are the editor manifests a host knows (builtin and
+ * product). Returns {manifest, origins, diagnostics}: an editor manifest
+ * (editor-manifest v1, unchanged) of the site block's version, made fresh from
+ * the type each time and never stored, and for each field key the block and
+ * target it edits ({path, type, target}).
+ */
+export function composedEditorManifest(manifest, registry, editorManifests) {
+  const diagnostics = [];
+  if (!isComposed(manifest)) return { manifest: null, origins: {}, diagnostics: [diagnostic('composed_type_required', '$', 'Not a site block')] };
+  const byType = new Map((editorManifests || []).map((entry) => [`${entry.type}@${entry.type_version}`, entry]));
+  const fields = [];
+  const origins = {};
+  (manifest.exposed || []).forEach((entry, index) => {
+    const at = `$.exposed[${index}]`;
+    const node = nodeById(manifest.composed.root, entry.path);
+    const target = node && registry?.types?.get(node.type);
+    if (!target) return diagnostics.push(diagnostic('composed_exposed_path_unknown', at, `No block ${entry.path} in the tree`));
+    const editor = byType.get(`${target.type}@${target.version}`);
+    const [plane, name] = String(entry.target).split('.');
+    const field = editor?.fields?.find((candidate) => candidate.plane === plane && candidate.target === name);
+    if (!field) return diagnostics.push(diagnostic('composed_editor_field_missing', at, `${target.type}@${target.version} declares no editor field for ${entry.target}; the parameter has no form field`, { key: entry.key }));
+    const value = node[plane]?.[name];
+    fields.push(canonical({
+      ...field,
+      key: entry.key,
+      plane: 'props',
+      target: entry.key,
+      ...(entry.label_key ? { label_key: entry.label_key } : {}),
+      ...(value !== undefined && typeof value !== 'object' ? { default: value } : {}),
+      capability_hints: [`composition.props.${entry.key}`],
+    }));
+    origins[entry.key] = { path: entry.path, type: target.type, target: entry.target };
+    return undefined;
+  });
+  return {
+    manifest: canonical({ ...schemaFields('simai.composition.editor-manifest', 1), type: manifest.type, type_version: manifest.version, fields }),
+    origins,
+    diagnostics,
+  };
+}
+
 /** A new instance of a site block: its type and version, nothing that differs yet. */
 export function composedInstance(manifest, id) {
   return { id, type: manifest.type, extensions: { [COMPOSED_EXTENSION]: { version: manifest.version } } };

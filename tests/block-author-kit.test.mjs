@@ -228,8 +228,21 @@ test('a site block made by the block builder passes as a block: builtin composed
   await checkBlock(folder, { framework, update: true });
   const report = await checkBlock(folder, { framework });
   assert.deepEqual(failed(report), [], JSON.stringify(report.groups));
+  assert.deepEqual(report.warnings.filter(({ group }) => group === 'form'), [], 'the exposed padding takes layout.area\'s field');
   const promo = JSON.parse(readFileSync(join(folder, 'cases/promo.json'), 'utf8'));
   assert.equal(promo.expect.html, '<main data-sf-composition-id="root"><div class="p-2" data-sf-composition-area="" data-sf-composition-id="promo"><h2 data-sf-composition-id="promo:title">Spring</h2></div></main>');
+  // An exposed parameter whose target type declares no editor field has no form field: a warning.
+  const bare = composition.defineComposedType({
+    type: 'site.promo',
+    version: '1.0.0',
+    profiles: ['ui-layout'],
+    catalogue: { group: 'marketing' },
+    root: { id: 'box', type: 'layout.area', props: { padding: 4 }, slots: { default: [{ id: 'title', type: 'content.heading', data: { level: 2, content: [{ type: 'text', value: 'Sale' }] } }] } },
+    exposed: [{ key: 'padding', path: 'box', target: 'props.padding' }, { key: 'title_text', path: 'title', target: 'data.content' }],
+  }).manifest;
+  writeFileSync(join(folder, 'type.json'), JSON.stringify(bare));
+  const unformed = await checkBlock(folder, { framework });
+  assert.deepEqual(unformed.warnings.filter(({ group }) => group === 'form').map(({ code }) => code), ['composed_editor_field_missing']);
   writeFileSync(join(folder, 'type.json'), JSON.stringify({ ...manifest, props_schema: { ...manifest.props_schema, properties: {} } }));
   assert.ok(codes(await checkBlock(folder, { framework }), 'manifest').includes('composed_schema_drift'));
 });

@@ -25,7 +25,8 @@
 // Since core.runtime 1.22.0 (the one block editor, 2026-11-03) it also asks
 // of a block: its catalogue place and variants, its layout parameters as
 // SIMAI Framework utilities, its named places, the data it takes (every state
-// drawn, a failure kept inside the block), and a site block's tree.
+// drawn, a failure kept inside the block), and a site block's tree and form
+// (each exposed parameter drawn by its target type's editor field).
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
@@ -421,6 +422,19 @@ export async function checkBlock(folder, options = {}) {
   // own field: it brings no editor manifest of its own.
   if (editor === undefined) {
     if (!composed && (requiredScalars.length || Object.keys(propsProperties).length)) add('form', 'editor_manifest_missing', 'editor.json', 'A block with parameters brings an editor manifest');
+    if (composed && registry && typeof composition.composedEditorFields === 'function') {
+      // The form a host draws: the exposed list with the target types' fields.
+      const form = composition.composedEditorFields(type, undefined, { registry });
+      for (const item of form.diagnostics) {
+        if (item.code === 'composed_editor_field_missing') warn('form', item.code, `type.json ${item.path}`, item.message);
+        else add('form', item.code, `type.json ${item.path}`, item.message);
+      }
+      for (const field of form.fields) {
+        let control = '';
+        try { control = composition.renderFieldFallback(field, { instance: 'site-block', messages: {} }); } catch (error) { add('form', 'form_control_not_built', `exposed ${field.key}`, error.message); }
+        if (field.visibility !== 'hidden' && !control) add('form', 'form_control_not_built', `exposed ${field.key}`, 'The exposed parameter draws no control');
+      }
+    }
   } else {
     for (const key of requiredScalars) if (!fieldFor('data', key)) add('form', 'form_required_field_missing', `editor.json data.${key}`, `data.${key} is required and has no field: a form drawn from the manifest alone cannot make the block`);
     for (const key of Object.keys(propsProperties)) if (!fieldFor('props', key)) warn('form', 'form_prop_without_field', `editor.json props.${key}`, `props.${key} has no field`);

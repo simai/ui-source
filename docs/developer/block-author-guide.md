@@ -317,7 +317,12 @@ look (its colours, a picture's ratio) stays its sheet.
 The parameter form shows the phone's value and lists the screens that differ
 (`projectEditorFields` gives each such field `screens`), so the editor offers
 a per-screen switch. `layout.area`, the text area of a layout, declares its
-`padding` and `hidden` this way.
+`padding` and `hidden` this way, and `layout.columns` (1.1.0) its `columns`
+and `gap`: `{"columns": {"xs": 1, "md": 2, "lg": 3}, "gap": {"xs": 2, "md":
+4}}` draws `grid md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4`. A Document
+written for `layout.columns` 1.0.0 (one integer for every screen, no gap)
+stays valid and draws that many columns on every screen with the type's own
+gap (`gap-4`).
 
 ## Own modifiers
 
@@ -435,6 +440,61 @@ registry)` moves every instance to the current version and reports what it
 dropped. The check accepts a site block's `type.json` (renderer `builtin`
 `composed`) and holds its tree and its parameters to the definition
 (`composed_schema_drift`).
+
+### The form of a site block
+
+A site block has no `editor.json`. Its form is its `exposed` list, each
+parameter drawn by the field its target type's editor manifest declares for
+that target, renamed to the exposed key and pointed at the instance's
+`props.<key>`; the words are the exposed `label_key`, else the target
+field's; the default is the tree's value:
+
+```js
+const form = SF.Composition.composedEditorFields(manifest, instance, {registry, editorManifests});
+// form.manifest: an editor manifest v1 of the site block's version, made fresh, never stored
+// form.fields:   projected as projectEditorFields does (value, source, screens)
+// form.origins:  {padding: {path: 'box', type: 'layout.area', target: 'props.padding'}}
+```
+
+`editorManifests` are the product blocks' editor manifests (the SIMAI
+Framework's own are always read). A target whose type declares no field for
+it has no form field: `composed_editor_field_missing`, a warning in the
+check. Texts are not in the form; the editor edits them in place by their
+path.
+
+### Where site blocks live
+
+The host stores a site's blocks in the **site's scope**: the type manifests
+the block builder made (each version an author saved stays, so an instance
+written against an older one still names it) and their words. The SIMAI
+Framework keeps no copy and no global catalogue of them. A site moves its
+blocks with an **export file**:
+
+```json
+{
+  "schema": "simai.composition.site-blocks",
+  "schema_version": 1,
+  "site": "example.com",
+  "exported_at": "2026-11-03T12:00:00Z",
+  "types": [ { "type": "site.promo", "version": "1.1.0", "composed": {"root": {}}, "exposed": [] } ],
+  "words": { "en": {"site.promo.name": "Promo"}, "ru": {"site.promo.name": "Промо"} }
+}
+```
+
+- `types` holds whole type manifests as `defineComposedType` returned them,
+  the current version of each block (an older version only while a stored
+  Document still names it).
+- `words` holds the keys the manifests name (`catalogue.label_key`,
+  `exposed[].label_key`), per locale.
+- On import the host remakes each manifest with `defineComposedType` from its
+  `type`, `version`, `profiles`, `category`, `catalogue`, `composed.root` and
+  `exposed` against its own registry, and refuses one that differs
+  (`validateTypeManifest` reports `composed_schema_drift`) or whose tree names
+  a type the site does not have. A type already present at the same version
+  with other content is a conflict the host shows; it is never overwritten
+  silently.
+- The file holds no Documents, no data and no secrets: pages move with their
+  own export.
 
 ## Versioning
 
