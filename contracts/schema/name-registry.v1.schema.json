@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/name-registry.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework shared name registry",
+  "description": "The one public registry of Smart component names (standard simai.component-set): which owner, SIMAI Framework or one component set, holds each name family under the one prefix sf-, and the names known in each family. It holds names only: no files, versions, rules, relations or bytes. A family has one owner; a name starts with a family its owner holds. It is read from simai/ui-source main, the one documented exception to main is not a contract, so a set's CI needs no SIMAI Framework release to check against it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "schema_version", "prefix", "owners", "exceptions"],
+  "properties": {
+    "schema": {"const": "simai.framework.name-registry"},
+    "schema_version": {"const": 1},
+    "summary": {"type": "string"},
+    "prefix": {"const": "sf-"},
+    "owners": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "repository", "families", "names"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "framework, or the set id."},
+          "kind": {"enum": ["framework", "set"]},
+          "repository": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*$"},
+          "status": {"enum": ["active", "planned", "pending"], "description": "planned: the set is decided but its repository does not release under simai.component-set yet; its families and names are reserved. pending: the set awaits the owner's decision; its families are held for it so no other owner takes them meanwhile."},
+          "note": {"type": "string", "description": "Optional: why the entry is pending or planned, with its decision reference."},
+          "families": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9]*$"}
+          },
+          "names": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["element", "status"],
+              "properties": {
+                "element": {"type": "string", "pattern": "^sf-[a-z][a-z0-9]*(-[a-z0-9]+)*$"},
+                "status": {"enum": ["released", "reserved"]}
+              }
+            }
+          },
+          "source": {"type": "string", "description": "Where the names were read from when the entry was last refreshed."}
+        }
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "description": "Names that break the family rule today and are waiting for a decision. Each is explicit, dated and has an owner of the fix; a gate refuses any break not listed here.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["element", "owner", "family_owner", "reason", "since"],
+        "properties": {
+          "element": {"type": "string", "pattern": "^sf-[a-z][a-z0-9-]*$"},
+          "owner": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Who holds the element today."},
+          "family_owner": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Who owns the element's family in this registry."},
+          "reason": {"type": "string", "minLength": 1},
+          "since": {"type": "string", "format": "date"}
+        }
+      }
+    }
+  }
+}

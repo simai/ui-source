@@ -1,5 +1,10 @@
 # Component packages
 
+> For components outside the free SIMAI Framework, the draft standard
+> `simai.component-set` 1.0.0 supersedes this one: see
+> [component-sets.md](component-sets.md). A set's package folder still follows
+> the rules below.
+
 A component package is a set of Smart components served from its own base and
 carrying its own rules, loaded by the same Loader as everything else. It is how
 the Framework is extended: a component lives with its owner, and a product or
@@ -111,6 +116,14 @@ structured settings (`smart`, `preloader`, `icons`, the cache versions); the
 `sf*Path` globals are single strings and stay as they are.
 
 ## The rule file
+
+Since `core.runtime` 1.25.0 `registerPackage` also takes `api` (the rule whose
+bundle carries the package's scripted API), `aliases` (the package's own dated
+former tags) and, from a bundle, `exports` alone (read with
+`SF.package(<name>)`); `SF.RuleLoader.packageOf(<name>)` answers the package's
+base. A package may be declared by a base string, an npm version or by name
+through the compatibility index. These are the component set forms:
+`docs/developer/component-sets.md`, "One-line connection".
 
 The Loader fetches each declared package's rule file itself, before its first
 scan of the page. The page does not add it as a script. Two reasons: Core

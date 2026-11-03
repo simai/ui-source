@@ -42,6 +42,11 @@ try {
   await page.waitForTimeout(500);
   const runtime = await page.evaluate((globals) => {
     const keys = Object.keys(window.SF).map((key) => `SF.${key}`);
+    // The Framework itself reads its runtime's names from SF.__internal: a
+    // page that only loads it notes no old global name (journal
+    // global-sf-internal). Read before the member checks below, which read a
+    // dated getter (SF.Effects) themselves.
+    const oldNames = (window.SF.deprecations?.list?.() ?? []).filter((note) => note.kind === 'global').map((note) => note.from);
     const missing = [];
     for (const entry of globals) {
       const name = entry.name.slice(3);
@@ -55,10 +60,6 @@ try {
         if (value === null || value === undefined || !(member in Object(value))) missing.push(`${entry.name}.${member}`);
       }
     }
-    // The Framework itself reads its runtime's names from SF.__internal: a
-    // page that only loads it notes no old global name (journal
-    // global-sf-internal).
-    const oldNames = (window.SF.deprecations?.list?.() ?? []).filter((note) => note.kind === 'global').map((note) => note.from);
     // When each name exists, as loaded_by says: core right after core.js ran,
     // core-loader by the time the Loader announced itself.
     const early = [];

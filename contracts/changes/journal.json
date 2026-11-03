@@ -5826,6 +5826,87 @@
       },
       "owner": "ui-pro",
       "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/confirm-change/component.json"
+    },
+    {
+      "id": "global-sf-effects-to-package",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "The background effects engine moved out of Core into the free component set effects (simai/ui-effects, standard simai.component-set). Core keeps its frozen copy as a dated alias: SF.Effects still answers with the same functions, and every read is noted in SF.deprecations. A page takes the set's engine with SF.package('effects'), a Promise of the same functions (mountEffect, mountWindows, loadEffect, placeEffect, checkEffectManifest, effectSettings and the rest), after declaring the set. Core's copy takes security fixes only.",
+      "items": [
+        {
+          "component": "effects",
+          "from": "SF.Effects",
+          "to": "SF.package('effects')",
+          "match": "\\bSF\\.Effects\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "const fx = window.SF.Effects;\nfx.mountEffect(host, {manifest, module});",
+        "after": "<script src=\".../core.min.js\" data-sf-sets=\"effects\"></script>\nconst fx = await SF.package('effects');\nfx.mountEffect(host, {manifest, module});"
+      },
+      "manual": "Declare the set effects (data-sf-sets=\"effects\" on the core script, or SF_BOOT_CONFIG.packages.effects = true, a version or a base) and read the engine with await SF.package('effects') instead of SF.Effects. The functions and their arguments are the same. Core's copy and the set's are two engines: a page uses one of them, never both on one area.",
+      "owner": "ui-control",
+      "source": "src/core/js/effects.js (frozen, EFFECTS_ALIAS); src/core/js/sets.js (SF.package)"
+    },
+    {
+      "id": "attribute-data-sf-effect-to-sf-effect",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "An effect is placed with the element <sf-effect> of the set effects instead of data-sf-effect / data-sf-effect-windows on any element. Core still places data-sf-effect areas with its frozen engine until remove_after and notes each placement; the set's engine never reads data-sf-effect, so nothing is drawn twice. Settings move from data-sf-effect-settings JSON to attributes (the kebab-case of each manifest key, or setting-<key>), the theme from data-sf-effect-theme to theme, windows mode from data-sf-effect-windows to the windows attribute.",
+      "items": [
+        {
+          "component": "effects",
+          "from": "data-sf-effect",
+          "to": "<sf-effect effect>",
+          "match": "\\bdata-sf-effect(?=[\\s=>\"'])"
+        },
+        {
+          "component": "effects",
+          "from": "data-sf-effect-windows",
+          "to": "<sf-effect windows>",
+          "match": "\\bdata-sf-effect-windows\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<section data-sf-effect=\"aurora-curtain\" data-sf-effect-settings='{\"speed\": 40}'>…</section>",
+        "after": "<sf-effect effect=\"aurora-curtain\" speed=\"40\">…</sf-effect>"
+      },
+      "manual": "Declare the set effects and write the area as <sf-effect effect=\"<id>\">, its content as the element's children. Each key of data-sf-effect-settings becomes an attribute in kebab-case (linkDistance -> link-distance); a key whose kebab form is a global attribute or a reserved name (style, theme, ...) is written setting-<kebab>. data-sf-effect-theme becomes theme; data-sf-effect-windows=\"<id>\" becomes <sf-effect effect=\"<id>\" windows>, the cards keep data-sf-effect-window.",
+      "owner": "ui-control",
+      "source": "src/core/js/effects.js placeDeclared; the set effects, simai/ui-effects package/src/smart/effect"
+    },
+    {
+      "id": "option-sf-boot-config-effects-to-package",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "The effects configuration moves from SF_BOOT_CONFIG.effects to the set's declaration, SF_BOOT_CONFIG.packages.effects = {base, foreign, about}. The catalogue is the set's own, at the same commit as its bundle, so the set reads no catalogue option; Core's frozen engine still reads SF_BOOT_CONFIG.effects.catalogue, foreign and about until remove_after and notes the read.",
+      "items": [
+        {
+          "component": "effects",
+          "from": "SF_BOOT_CONFIG.effects",
+          "to": "SF_BOOT_CONFIG.packages.effects",
+          "match": "\\bSF_BOOT_CONFIG\\.effects\\b|\\beffects['\"]?\\s*:\\s*\\{[^}]{0,200}\\bcatalogue\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "window.SF_BOOT_CONFIG = {effects: {catalogue: 'https://cdn.jsdelivr.net/gh/simai/ui-effects@<commit>/catalogue/', foreign: 'refuse'}};",
+        "after": "window.SF_BOOT_CONFIG = {packages: {effects: {version: '1.0.0', foreign: 'refuse'}}};"
+      },
+      "manual": "Move foreign and about into SF_BOOT_CONFIG.packages.effects beside the set's base or version, and drop catalogue: the set reads the catalogue published with it. A page that needs another catalogue pins another release of the set.",
+      "owner": "ui-control",
+      "source": "src/core/js/effects.js effectsConfig"
     }
   ]
 }

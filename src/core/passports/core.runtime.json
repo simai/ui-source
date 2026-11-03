@@ -150,6 +150,7 @@
     "src/core/js/rule.src.js",
     "src/core/js/runtime.js",
     "src/core/js/sanitize.js",
+    "src/core/js/sets.js",
     "src/core/js/smart-base.js",
     "src/core/js/stableHash.js",
     "src/core/js/tag-aliases.generated.js",
@@ -175,7 +176,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "507f822645fe54fc496d571932b0da03b3a73ca051e6d018afb8d869a53ea5b3",
+  "content_sha256": "57eb5329ad10cf4585ec6cc5c0ff76eddb05dcf02cfe5b88a218d38a745f0f06",
   "dependencies": [
     {
       "id": "core.styles",

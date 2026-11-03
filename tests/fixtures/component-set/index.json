@@ -1,0 +1,38 @@
+{
+  "schema": "simai.framework.set-index",
+  "schema_version": 1,
+  "summary": "A fixture of the compatibility index (standard simai.component-set, one-compatibility-index): two releases of the free set effects, the second needing a newer core.runtime than this Core. It is test data; the real index is published as @simai-studio/sets.",
+  "sets": [
+    {
+      "id": "effects",
+      "title": "SIMAI Effects",
+      "repository": "simai/ui-effects",
+      "npm": "@simai-studio/effects",
+      "licence": {"class": "framework", "spdx": "Apache-2.0"},
+      "docs": "https://effects.simai.io/"
+    }
+  ],
+  "releases": [
+    {
+      "set": "effects",
+      "release": "effects-0123456789ab",
+      "version": "1.0.0",
+      "source_revision": "0123456789abcdef0123456789abcdef01234567",
+      "framework": {"core_runtime": ">=1.25.0", "source_revision": "879eac3111888818680733bf7bfea97ff7288931", "pair": "ui-b8e23367889f"},
+      "requires_sets": [],
+      "receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000001",
+      "archive_sha256": "0000000000000000000000000000000000000000000000000000000000000002",
+      "published_on": "2026-11-03"
+    },
+    {
+      "set": "effects",
+      "release": "effects-fedcba987654",
+      "version": "1.1.0",
+      "source_revision": "fedcba9876543210fedcba9876543210fedcba98",
+      "framework": {"core_runtime": ">=99.0.0", "source_revision": "879eac3111888818680733bf7bfea97ff7288931", "pair": "ui-b8e23367889f"},
+      "requires_sets": [],
+      "receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000003",
+      "published_on": "2026-11-04"
+    }
+  ]
+}

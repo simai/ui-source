@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/component-set.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework component set passport",
+  "description": "The passport of one component set (standard simai.component-set): set.json at the root of the set's package folder. A set is one repository outside the free SIMAI Framework that holds its own Smart components, its Docara documentation site and its demonstrations. The passport names the set, its licence, the SIMAI Framework it is built over, the sets it needs, the name families it owns and every component it holds. SIMAI Framework keeps no reference of a set's components: this file is the only list. The builder copies it into the build and the release beside the receipt, stamped with the release block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_version",
+    "standard",
+    "id",
+    "title",
+    "repository",
+    "licence",
+    "framework",
+    "requires_sets",
+    "families",
+    "docs",
+    "components"
+  ],
+  "properties": {
+    "schema": {
+      "const": "simai.framework.component-set"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "simai.component-set"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      },
+      "description": "The edition of simai.component-set the set conforms to."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The set id: the repository name without the ui- prefix (simai/ui-effects is effects). The same id is the package name in framework.lock.json, the name the rule file registers, the release tag prefix, the npm name @simai-studio/<id>, the page declaration and the owner in the shared name registry."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A short human title, for example SIMAI Effects."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Optional: one or two sentences on what the set holds."
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*/ui-[a-z][a-z0-9-]*$",
+      "description": "<owner>/ui-<id> on GitHub, for example simai/ui-effects."
+    },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "spdx"],
+      "properties": {
+        "class": {
+          "enum": ["simai-pro", "framework"],
+          "description": "simai-pro: the one common SIMAI Pro licence of every paid set. framework: free, under the SIMAI Framework's own licence."
+        },
+        "spdx": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The SPDX expression of the class: simai-pro is PolyForm-Small-Business-1.0.0 OR PolyForm-Noncommercial-1.0.0 OR LicenseRef-SIMAI-Commercial; framework is Apache-2.0."
+        }
+      }
+    },
+    "framework": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core_runtime", "source_revision"],
+      "properties": {
+        "core_runtime": {
+          "type": "string",
+          "pattern": "^>=[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "The lowest core.runtime passport version the set needs, as >=X.Y.Z."
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "The full simai/ui-source commit the set is built and tested against; the same commit as framework.lock.json."
+        },
+        "pair": {
+          "type": "string",
+          "pattern": "^ui-[0-9a-f]{12}$",
+          "description": "Optional in the source, written by the release: the free SIMAI Framework release (ui-<12 hex>) built from source_revision."
+        }
+      }
+    },
+    "requires_sets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "range"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "range": {
+            "type": "string",
+            "minLength": 1,
+            "description": "An npm range over the required set's @simai-studio/<id> version."
+          }
+        }
+      },
+      "description": "Other sets whose components this set's components use. No cycle, at most two levels below the set; a page declares each one itself."
+    },
+    "families": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9]*$"},
+      "description": "The name families the set owns: the first word after sf- of every element it holds. The shared name registry gives each family one owner."
+    },
+    "docs": {
+      "type": "string",
+      "pattern": "^https://[a-z0-9.-]+(/.*)?$",
+      "description": "The set's Docara documentation site, on its own subdomain."
+    },
+    "demos": {
+      "type": "string",
+      "pattern": "^https://[a-z0-9.-]+(/.*)?$",
+      "description": "Optional: where the demonstrations are served when not under docs."
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/component"},
+      "description": "Every component the set holds. SIMAI Framework keeps no copy of this list."
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "source_revision"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*-[0-9a-f]{12}$", "description": "<set>-<first 12 hex of source_revision>."},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$", "description": "The npm version of @simai-studio/<set>."},
+        "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$", "description": "The set repository commit the release is built from."}
+      },
+      "description": "Absent in the source; written into the built set.json by the release route."
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["element", "rule", "folder"],
+      "properties": {
+        "element": {
+          "type": "string",
+          "pattern": "^sf-[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+          "description": "sf-<family>[-<block>][-<variant>]; the family is one the set owns."
+        },
+        "rule": {"type": "string", "pattern": "^cl-[a-z][a-z0-9-]*$", "description": "cl-<folder>."},
+        "folder": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "The folder under src/smart."},
+        "status": {"enum": ["released", "preview"], "description": "Optional, released when absent."},
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^cl-[a-z][a-z0-9-]*$"},
+          "description": "Rules the component needs: of this set, of a required set or of SIMAI Framework."
+        },
+        "element_aliases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "since", "remove_after", "journal"],
+            "properties": {
+              "from": {"type": "string", "pattern": "^sf-[a-z][a-z0-9-]*$"},
+              "since": {"type": "string", "format": "date"},
+              "remove_after": {"type": "string", "format": "date"},
+              "journal": {"type": "string", "minLength": 1}
+            }
+          },
+          "description": "Former tags kept as dated aliases (simai.change-lifecycle), with the set's journal record."
+        }
+      }
+    }
+  }
+}

@@ -28,6 +28,13 @@
 // it runs in a sandboxed frame of its own (an opaque origin under a strict
 // content security policy, its checked settings sent by message), or, with
 // SF_BOOT_CONFIG.effects.foreign = 'refuse', not at all.
+//
+// FROZEN since core.runtime 1.25.0 (2026-11-03). The engine has moved to the
+// component set `effects` (simai/ui-effects, <sf-effect>, SF.package('effects'));
+// this copy stays as a dated alias until the journal records sweep it
+// (global-sf-effects-to-package, attribute-data-sf-effect-to-sf-effect,
+// option-sf-boot-config-effects-to-package). Only security fixes land here;
+// every other change goes to the set. Each use is noted in SF.deprecations.
 
 import {isSchema, schemaFields} from './composition/schema-name.mjs';
 import {noteDeprecated} from './deprecations.js';
@@ -287,8 +294,18 @@ const WINDOW = '[data-sf-effect-window]';
 
 const SANDBOXED = new WeakSet();
 
+// The dated alias of this engine (contracts/changes/journal.json).
+export const EFFECTS_ALIAS = Object.freeze({since: '2026-11-03', remove_after: '2027-01-01'});
+const aliasExpired = () => Date.now() > Date.parse(`${EFFECTS_ALIAS.remove_after}T23:59:59.999Z`);
+function noteAlias(note) {
+  noteDeprecated({component: 'effects', ...note, ...EFFECTS_ALIAS, ...(aliasExpired() ? {expired: true} : {})});
+}
+
 function effectsConfig() {
-  return globalThis.SF_BOOT_CONFIG?.effects ?? {};
+  const config = globalThis.SF_BOOT_CONFIG?.effects;
+  if (config === undefined) return {};
+  noteAlias({kind: 'option', from: 'SF_BOOT_CONFIG.effects', to: 'SF_BOOT_CONFIG.packages.effects'});
+  return config ?? {};
 }
 
 // SF_BOOT_CONFIG.effects.foreign: 'sandbox' (the default) or 'refuse'. Any
@@ -1603,6 +1620,7 @@ const DECLARED = `[data-sf-effect]:not([${STATE}]), [data-sf-effect-windows]:not
 
 function placeDeclared(element) {
   const windows = element.hasAttribute('data-sf-effect-windows');
+  noteAlias({kind: 'attribute', attribute: windows ? 'data-sf-effect-windows' : 'data-sf-effect', from: windows ? 'data-sf-effect-windows' : 'data-sf-effect', to: windows ? '<sf-effect windows>' : '<sf-effect effect>'});
   const reference = element.getAttribute(windows ? 'data-sf-effect-windows' : 'data-sf-effect');
   let settings = {};
   const raw = element.getAttribute('data-sf-effect-settings');
@@ -1644,7 +1662,7 @@ function watchDeclared(document) {
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.Effects = Object.freeze({
+  const api = Object.freeze({
     checkEffectManifest, checkSetting, effectSettings, effectSchemes, pairIsForeign, foreignMode,
     allowedModes, resolveTheme, pageScheme,
     mountEffect, mountWindows, loadEffect, placeEffect,
@@ -1652,6 +1670,15 @@ if (typeof window !== 'undefined') {
     get EFFECT_SCHEMA() {
       noteDeprecated({kind: 'global', from: 'SF.Effects.EFFECT_SCHEMA', to: 'SF.Effects.EFFECT_FORMAT'});
       return EFFECT_SCHEMA;
+    },
+  });
+  // A dated getter: every read is noted, SF.package('effects') replaces it.
+  Object.defineProperty(window.SF, 'Effects', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      noteAlias({kind: 'global', from: 'SF.Effects', to: "SF.package('effects')"});
+      return api;
     },
   });
   if (typeof document !== 'undefined' && document.documentElement) {

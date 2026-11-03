@@ -1,5 +1,23 @@
 # Background effects: SF.Effects
 
+> **Moving to the set `effects`** (`core.runtime` 1.25.0, 2026-11-03). The
+> engine now lives in the free component set `effects` (simai/ui-effects) and
+> a page places an effect with its element:
+>
+> ```html
+> <script src=".../distr/core/js/core.min.js" data-sf-sets="effects"></script>
+> <sf-effect effect="aurora-curtain" speed="40">…content…</sf-effect>
+> ```
+>
+> Scripts read the same functions with `await SF.package('effects')`. Core's
+> copy below is frozen (security fixes only) and stays a dated alias until
+> 2027-01-01: `SF.Effects`, `data-sf-effect*` and `SF_BOOT_CONFIG.effects` keep
+> working and each use is noted in `SF.deprecations` (journal records
+> `global-sf-effects-to-package`, `attribute-data-sf-effect-to-sf-effect`,
+> `option-sf-boot-config-effects-to-package`). The set's engine never reads
+> `data-sf-effect`, so nothing is drawn twice. See
+> `docs/developer/component-sets.md`.
+
 `SF.Effects` (core, `src/core/js/effects.js`) runs background effects under
 the standard `simai.effect` 1.4.0 (`contracts/standards/simai.effect/1.4.0`).
 An effect is an `effect.json` manifest and one module exporting
