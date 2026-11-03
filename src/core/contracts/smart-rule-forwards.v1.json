@@ -43,6 +43,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-close-to-button-close"
+    },
+    "cl-avatars": {
+      "to": "cl-avatar-group",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-avatars-to-avatar-group"
     }
   }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// sf-avatars draws every template -- default, user, label, group, profile --
+// sf-avatar-group draws every template -- default, user, label, group, profile --
 // with classes the release sheets answer (docs report on pair ui-2d39b617a719,
 // which read the retired template/*/index.html with sf-avatar-round and
 // sf-avatar--image). On the built bytes:
@@ -15,14 +15,14 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/avatars/css/avatars.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/avatars/js/avatars.js'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/avatar-group/js/avatar-group.js'];
 const IMG = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2296%22 height=%2296%22%3E%3Crect width=%2296%22 height=%2296%22 fill=%22%233b82f6%22/%3E%3C/svg%3E';
 const HOSTS = [
-  `<sf-avatars data-t="default" image-url="${IMG}" round-size="2" active></sf-avatars>`,
-  `<sf-avatars data-t="user" template="user" image-url="${IMG}" name="Анна Захарова" source="simai.ru" avatar-size="1"></sf-avatars>`,
-  `<sf-avatars data-t="label" template="label" avatar-url="${IMG}" avatar-size="2" label-text="Команда проекта" label-second-text="5 участников"></sf-avatars>`,
-  `<sf-avatars data-t="group" template="group" round-size="1" avatars-more="5"></sf-avatars>`,
-  `<sf-avatars data-t="profile" template="profile" image-url="${IMG}" profile-size="big"></sf-avatars>`,
+  `<sf-avatar-group data-t="default" image-url="${IMG}" round-size="2" active></sf-avatar-group>`,
+  `<sf-avatar-group data-t="user" template="user" image-url="${IMG}" name="Анна Захарова" source="simai.ru" avatar-size="1"></sf-avatar-group>`,
+  `<sf-avatar-group data-t="label" template="label" avatar-url="${IMG}" avatar-size="2" label-text="Команда проекта" label-second-text="5 участников"></sf-avatar-group>`,
+  `<sf-avatar-group data-t="group" template="group" round-size="1" avatars-more="5"></sf-avatar-group>`,
+  `<sf-avatar-group data-t="profile" template="profile" image-url="${IMG}" profile-size="big"></sf-avatar-group>`,
 ];
 
 const failures = [];
@@ -51,9 +51,9 @@ try {
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`});
   await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-avatars'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-avatar-group'), null, {timeout: 8000});
   await page.evaluate(() => { document.querySelector('[data-t="group"]').avatars = [{text: 'АЗ'}, {text: 'БИ'}]; });
-  await page.waitForFunction(() => [...document.querySelectorAll('sf-avatars')].every((host) => host.querySelector('.sf-avatar'))
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-avatar-group')].every((host) => host.querySelector('.sf-avatar'))
     && document.querySelectorAll('[data-t="group"] .sf-avatar').length >= 3, null, {timeout: 8000});
   await page.waitForTimeout(300);
   seen = await page.evaluate(() => {
@@ -66,7 +66,7 @@ try {
     // the online indicator element, which the sheet answers.
     const hooks = new Set(['sf-avatar-text', 'sf-avatar--status-icon-online-indicator', 'sf-avatar-badge--verified']);
     const named = (token) => hooks.has(token) || all.includes(`.${CSS.escape(token)}`);
-    return [...document.querySelectorAll('sf-avatars')].map((host) => {
+    return [...document.querySelectorAll('sf-avatar-group')].map((host) => {
       const classes = new Set([...host.querySelectorAll('[class]')].flatMap((node) => [...node.classList]));
       const avatars = [...host.querySelectorAll('.sf-avatar')].map((node) => {
         const box = node.getBoundingClientRect();

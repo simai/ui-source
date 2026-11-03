@@ -54,6 +54,8 @@ export type SmartComponentStateCallback<
 export type SmartComponentCreateName =
     | 'avatars'
     | 'sf-avatars'
+    | 'avatar-group'
+    | 'sf-avatar-group'
     | 'alert'
     | 'sf-alert'
     | 'reference-link'
@@ -104,7 +106,7 @@ export type SmartComponentCreateName =
     | 'sf-file-upload';
 
 export type SmartComponentCreateResult<TName extends string> =
-    TName extends 'avatars' | 'sf-avatars'
+    TName extends 'avatars' | 'sf-avatars' | 'avatar-group' | 'sf-avatar-group'
         ? HTMLSfAvatarsElement
         : TName extends 'alert' | 'sf-alert'
             ? HTMLSfAlertElement
@@ -880,6 +882,7 @@ declare global {
 
   interface HTMLElementTagNameMap {
     'sf-avatars': HTMLSfAvatarsElement;
+    'sf-avatar-group': HTMLSfAvatarsElement;
     'sf-alert': HTMLSfAlertElement;
     'sf-reference-link': HTMLSfReferenceLinkElement;
     'sf-range-slider': HTMLSfRangeSliderElement;

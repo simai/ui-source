@@ -314,8 +314,27 @@ function rename(oldTag, newTag) {
   next.version = version;
   next.aliases = component.aliases ?? {since: today, 'remove-after': until, rows: []};
   if (next.aliases.$comment) next.aliases.$comment = renameProse(next.aliases.$comment, oldTag, newTag);
+  // The component's earlier event aliases point at the names it sends: a row
+  // to <old>-<verb> now points at <new>-<verb> (the shim sends an old name
+  // only beside the name actually dispatched), and a row naming its component
+  // names the new tag. A row from <old>-<verb> is replaced by the dated alias
+  // written below (a manifest-only row said the DOM name did not change; now
+  // it does).
+  const renamedEvents = new Set(events.map((verb) => `${oldTag}-${verb}`));
+  const earlier = (next.aliases.rows ?? []).filter((row) => {
+    if (row.kind === 'event' && renamedEvents.has(row.from)) {
+      console.log(`${row.from} -> ${row.to}: replaced by the dated alias ${row.from} -> ${newTag}-${row.from.slice(oldTag.length + 1)}`);
+      return false;
+    }
+    return true;
+  }).map((row) => {
+    const out = {...row};
+    if (out.kind === 'event' && typeof out.to === 'string' && out.to.startsWith(`${oldTag}-`)) out.to = `${newTag}-${out.to.slice(oldTag.length + 1)}`;
+    if (out.component === oldTag) out.component = newTag;
+    return out;
+  });
   next.aliases.rows = [
-    ...(next.aliases.rows ?? []),
+    ...earlier,
     {from: oldTag, to: newTag, kind: 'tag', since: today, remove_after: until, 'since-version': version,
       section: 'rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02', note: `the element is ${newTag}; ${oldTag} is a subclass defined beside it until the date`},
     ...events.map((verb) => ({from: `${oldTag}-${verb}`, to: `${newTag}-${verb}`, kind: 'event', since: today, remove_after: until, mode: 'same-detail',

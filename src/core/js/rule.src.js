@@ -734,7 +734,7 @@ import '../../utility/z-index/xxl/rule.js';
 import '../../smart/accordion/rule.js';
 import '../../smart/alert/rule.js';
 import '../../smart/avatar/rule.js';
-import '../../smart/avatars/rule.js';
+import '../../smart/avatar-group/rule.js';
 import '../../smart/badge/rule.js';
 import '../../smart/breadcrumbs/rule.js';
 import '../../smart/button-group/rule.js';

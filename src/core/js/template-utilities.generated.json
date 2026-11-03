@@ -29,7 +29,7 @@
     "white-space/default",
     "width/default"
   ],
-  "cl-avatars": [
+  "cl-avatar-group": [
     "align-items/default",
     "display/default",
     "flex-direction/default"

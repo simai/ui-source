@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.avatars",
+  "component": "smart.avatar-group",
   "title": "Avatars reference",
-  "summary": "Deterministic reference fixture for sf-avatars.",
+  "summary": "Deterministic reference fixture for sf-avatar-group.",
   "locale": "ru",
   "props": {
     "template": "label",

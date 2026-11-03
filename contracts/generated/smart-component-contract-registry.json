@@ -132,12 +132,12 @@
         "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
         "version": 2
       },
-      "custom_element": "sf-avatars",
-      "id": "smart.avatars",
+      "custom_element": "sf-avatar-group",
+      "id": "smart.avatar-group",
       "kind": "smart",
       "lifecycle": "experimental",
-      "manifest_path": "src/smart/avatars/smart.manifest.json",
-      "manifest_sha256": "c82d8a1abd9435ae1d7482a8ea9b8134b7d6de7bae5e62238dd8122b69e3d8c7",
+      "manifest_path": "src/smart/avatar-group/smart.manifest.json",
+      "manifest_sha256": "e56d8777f4b15be4c3005af40f09ab7727c0f7735a58c55dcae31e5f3dcbd4d2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -145,7 +145,7 @@
       },
       "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
       "tags": [
-        "avatars"
+        "avatar-group"
       ],
       "title": "Avatars"
     },

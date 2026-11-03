@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.avatars",
-  "version": "1.1.4",
+  "id": "smart.avatar-group",
+  "version": "1.2.0",
   "title": "Avatars",
   "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "avatars"
+    "avatar-group"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-avatars",
+  "custom_element": "sf-avatar-group",
   "templates": [
     "default",
     "user",
@@ -212,8 +212,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-avatars>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-avatars>",
+        "since": "1.2.0",
+        "replacement": "<sf-avatar-group>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -222,21 +230,21 @@
     "source_revision": "207fcbc6ba1498cd44790dd11a8fd2f07d0127dd",
     "source_artifacts": [
       {
-        "path": "src/smart/avatars/index.js",
-        "sha256": "2fed9e95bbaba7e2654129691b886e7d71f045f809c8ca169ee6d1e4a8f8cdad"
+        "path": "src/smart/avatar-group/index.js",
+        "sha256": "ce12814aafc6892bf4e000ddd9f8b13d5d0caba606b619faf856b3853a31db14"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/avatars/js/avatars.js",
+        "path": "smart/avatar-group/js/avatar-group.js",
         "sha256": "77f83887042e2a81d159894cfcec5e57b23d2c6a10a6a3c76974275fc9e90c44"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-avatars when the interface needs the avatars behavior.",
+    "use_when": "Use sf-avatar-group when the interface needs the avatars behavior.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component"
@@ -248,7 +256,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-avatars></sf-avatars>",
+    "minimal_example": "<sf-avatar-group></sf-avatar-group>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

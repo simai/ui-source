@@ -3,7 +3,7 @@ async page => {
   page.on('pageerror', e => errors.push(e.message));
   const base = 'http://127.0.0.1:8765/ui-source/source/output/action-focus-browser';
   const cases = [
-    ...['default', 'user', 'group', 'label', 'profile'].map(template => ['sf-avatars', 'div', {template, name: 'Команда', 'label-text': 'Команда', 'avatars-more': '2'}]),
+    ...['default', 'user', 'group', 'label', 'profile'].map(template => ['sf-avatar-group', 'div', {template, name: 'Команда', 'label-text': 'Команда', 'avatars-more': '2'}]),
     ['sf-list-item', '.sf-list-item', {text: 'Пункт', selected: 'true'}],
     ['sf-pagination', '.sf-pagination', {total: '30', 'page-size': '10', current: '2', 'show-page-size': 'false'}],
     ['sf-tag', '.sf-tag', {type: 'checkbox', text: 'Дизайн', active: 'true', closable: 'false'}],
@@ -16,7 +16,7 @@ async page => {
     await page.setViewportSize({width, height: 900});
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for (const asset of ['avatars', 'pagination', 'tags', 'tooltip', 'tree-item', 'tabs', 'dropdown', 'checkbox', 'buttons', 'icon-buttons', 'dot']) await page.addStyleTag({url: `${base}/component/${asset}/css/${asset}.css`});
-    for (const asset of ['icons', 'close', 'buttons', 'icon-buttons', 'checkbox', 'list-item', 'dropdown', 'avatars', 'pagination', 'tags', 'tooltip', 'tree-item', 'tabs']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
+    for (const asset of ['icons', 'close', 'buttons', 'icon-buttons', 'checkbox', 'list-item', 'dropdown', 'avatar-group', 'pagination', 'tags', 'tooltip', 'tree-item', 'tabs']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
     await page.evaluate(theme => {document.documentElement.className = `theme-${theme}`; document.querySelector('main').replaceChildren();}, theme);
     for (const [tag, selector, attrs] of cases) {
       const result = await page.evaluate(async ({tag, selector, attrs, base}) => {
@@ -24,8 +24,8 @@ async page => {
         const check = (ok, name, actual) => {checks.push(name); if (!ok) failures.push({name, actual});};
         const wait = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
         Object.entries(attrs).forEach(([k, v]) => host.setAttribute(k, v));
-        if (tag === 'sf-avatars') {
-          const fixture = await (await fetch(`${base}/smart/avatars/studio.fixture.json`)).json();
+        if (tag === 'sf-avatar-group') {
+          const fixture = await (await fetch(`${base}/smart/avatar-group/studio.fixture.json`)).json();
           const image = fixture.props['image-url'].replaceAll('"', '%22').replaceAll(' ', '%20');
           host.setAttribute('image-url', image); host.setAttribute('avatars', JSON.stringify([{imageUrl: image}, {imageUrl: image}]));
         }
@@ -42,7 +42,7 @@ async page => {
         focus?.focus();
         check(root.classList.contains('max-w-sm'), 'initial root class', root.className);
         check(root.style.paddingInline === 'var(--sf-space-1)', 'initial root style', root.style.cssText);
-        if (tag === 'sf-avatars' && attrs.template === 'label') check(!root.querySelector('.sf-avatar').style.paddingInline, 'label does not duplicate style on nested avatar', null);
+        if (tag === 'sf-avatar-group' && attrs.template === 'label') check(!root.querySelector('.sf-avatar').style.paddingInline, 'label does not duplicate style on nested avatar', null);
         if (tag === 'sf-tree-item') check(!root.querySelector('.sf-tree-item').style.paddingInline, 'tree does not copy parent padding to children', null);
         host.removeAttribute('root-style'); host.style.setProperty('padding-inline', 'var(--sf-space-2)'); await wait();
         check(root.style.paddingInline === 'var(--sf-space-2)', 'CSSOM applies to root', root.style.cssText);

@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.avatars",
+  "component": "smart.avatar-group",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],

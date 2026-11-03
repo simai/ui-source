@@ -7,7 +7,7 @@ async page => {
     await page.setViewportSize({width, height: 900});
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for (const asset of ['avatars', 'dropdown', 'tooltip']) await page.addStyleTag({url: `${base}/component/${asset}/css/${asset}.css`});
-    for (const asset of ['icons', 'avatars', 'list-item', 'tooltip']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
+    for (const asset of ['icons', 'avatar-group', 'list-item', 'tooltip']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
     await page.evaluate(async ({base, theme}) => {
       document.documentElement.className = `theme-${theme}`;
       const response = await fetch(`${base}/examples/collection-customization.html`);

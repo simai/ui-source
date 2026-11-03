@@ -1,6 +1,6 @@
 # Smart Avatars
 
-`sf-avatars` draws ready combinations of avatars from `sf-avatar`'s parts and
+`sf-avatar-group` draws ready combinations of avatars from `sf-avatar`'s parts and
 the avatars sheet: a person with a source, a stacked group with a remainder,
 an avatar with two lines of label, and a profile avatar with a verified badge.
 For a single avatar that is a control, with a name or a card, use `sf-avatar`.
@@ -38,11 +38,11 @@ names (`tiny`, `extra_small`, `small`, `big`, `extra_big`).
   `profile_size`).
 
 ```html
-<sf-avatars template="label" avatar-url="/img/team.png" label-text="Команда проекта"
-  label-second-text="5 участников"></sf-avatars>
+<sf-avatar-group template="label" avatar-url="/img/team.png" label-text="Команда проекта"
+  label-second-text="5 участников"></sf-avatar-group>
 
-<sf-avatars template="group" round-size="1" avatars-more="5"
-  avatars='[{"text": "АЗ"}, {"text": "БИ"}, {"imageUrl": "/img/v.png"}]'></sf-avatars>
+<sf-avatar-group template="group" round-size="1" avatars-more="5"
+  avatars='[{"text": "АЗ"}, {"text": "БИ"}, {"imageUrl": "/img/v.png"}]'></sf-avatar-group>
 ```
 
 The look is the avatar sheet's public variables: `--sf-avatar-background-color`,

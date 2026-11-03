@@ -95,11 +95,11 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-avatars id=\"lbl\" template=\"label\" label-text=\"Команда проекта\" label-second-text=\"5 участников\" avatar-size=\"2\"></sf-avatars>",
-          "  <sf-avatars id=\"grp\" template=\"group\" round-size=\"1\" avatars-more=\"5\" avatars='[{\"text\": \"АЗ\"}, {\"text\": \"БИ\"}]'></sf-avatars>",
-          "  <sf-avatars id=\"usr\" template=\"user\" name=\"Анна Захарова\" source=\"simai.ru\"></sf-avatars>",
-          "  <sf-avatars id=\"old\" template=\"user\" data='{\"name\": \"Из data\", \"source\": \"old.example\"}'></sf-avatars>",
-          "  <sf-avatars id=\"dot\" active round-size=\"big\"></sf-avatars>",
+          "  <sf-avatar-group id=\"lbl\" template=\"label\" label-text=\"Команда проекта\" label-second-text=\"5 участников\" avatar-size=\"2\"></sf-avatar-group>",
+          "  <sf-avatar-group id=\"grp\" template=\"group\" round-size=\"1\" avatars-more=\"5\" avatars='[{\"text\": \"АЗ\"}, {\"text\": \"БИ\"}]'></sf-avatar-group>",
+          "  <sf-avatar-group id=\"usr\" template=\"user\" name=\"Анна Захарова\" source=\"simai.ru\"></sf-avatar-group>",
+          "  <sf-avatar-group id=\"old\" template=\"user\" data='{\"name\": \"Из data\", \"source\": \"old.example\"}'></sf-avatar-group>",
+          "  <sf-avatar-group id=\"dot\" active round-size=\"big\"></sf-avatar-group>",
           "</main>"
         ]
       },
@@ -153,7 +153,7 @@
           "covers": "aliases.json data -> fields",
           "steps": [
             {
-              "check": "document.querySelector('#old .sf-avatar-label-group-title')?.textContent.trim() === 'Из data' && document.querySelector('#old').hasAttribute('fields') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-avatars' && note.from === 'data' && note.remove_after === '2026-12-01')",
+              "check": "document.querySelector('#old .sf-avatar-label-group-title')?.textContent.trim() === 'Из data' && document.querySelector('#old').hasAttribute('fields') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-avatar-group' && note.from === 'data' && note.remove_after === '2026-12-01')",
               "expect": {
                 "values": {
                   "#old.name": "Из data"
@@ -168,7 +168,7 @@
           "covers": "accessibility.role none",
           "steps": [
             {
-              "check": "!document.querySelector('main sf-avatars button, main sf-avatars [tabindex]') && document.querySelector('#dot .sf-avatar').classList.contains('sf-avatar--size-2')",
+              "check": "!document.querySelector('main sf-avatar-group button, main sf-avatar-group [tabindex]') && document.querySelector('#dot .sf-avatar').classList.contains('sf-avatar--size-2')",
               "expect": {
                 "values": {
                   "#dot.active": true

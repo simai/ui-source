@@ -27,13 +27,13 @@ test('documentation styles use the local Framework monospace contract', async ()
 
 test('legacy Smart transport remains source-backed without physical inline placement', async () => {
   const [avatarsSource, sliderTemplate, ...avatarTemplates] = await Promise.all([
-    read('src/smart/avatars/index.js'),
+    read('src/smart/avatar-group/index.js'),
     read('src/smart/slider/template/default/index.html'),
-    read('src/smart/avatars/template/default/index.html'),
-    read('src/smart/avatars/template/group/index.html'),
-    read('src/smart/avatars/template/label/index.html'),
-    read('src/smart/avatars/template/profile/index.html'),
-    read('src/smart/avatars/template/user/index.html'),
+    read('src/smart/avatar-group/template/default/index.html'),
+    read('src/smart/avatar-group/template/group/index.html'),
+    read('src/smart/avatar-group/template/label/index.html'),
+    read('src/smart/avatar-group/template/profile/index.html'),
+    read('src/smart/avatar-group/template/user/index.html'),
   ]);
 
   assert.match(avatarsSource, /import '\.\.\/\.\.\/component\/avatars\/scss\/index\.scss';/);

@@ -2,7 +2,7 @@
 // Usage: node this-file /absolute/path/to/output
 // The classes and parts the component pass found drawing nothing: the
 // Verification, VerificationForm and FileUpload classes built no markup; an
-// emoji's skin and an icon button's loading had no effect; sf-avatars wrote
+// emoji's skin and an icon button's loading had no effect; sf-avatar-group wrote
 // classes no sheet answers. A page that loads Core and lets the Loader bring them.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
@@ -19,8 +19,8 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <div class="sf-verification-form" hidden></div><div class="sf-file-upload" hidden></div>
 <span class="sf-emoji" hidden>x</span><a class="sf-download-file" hidden></a>
 <button type="button" class="sf-icon-button sf-icon-button--size-1 loading" id="busy"><i class="sf-icon">add</i></button>
-<sf-avatars id="group" template="group" avatars='[{"imageUrl":"data:image/gif;base64,R0lGODlhAQABAAAAACw="},{"text":"АБ"}]' avatars-more="5"></sf-avatars>
-<sf-avatars id="label" template="label" avatar-url="data:image/gif;base64,R0lGODlhAQABAAAAACw=" label-text="Анна" label-second-text="Дизайнер"></sf-avatars>
+<sf-avatar-group id="group" template="group" avatars='[{"imageUrl":"data:image/gif;base64,R0lGODlhAQABAAAAACw="},{"text":"АБ"}]' avatars-more="5"></sf-avatar-group>
+<sf-avatar-group id="label" template="label" avatar-url="data:image/gif;base64,R0lGODlhAQABAAAAACw=" label-text="Анна" label-second-text="Дизайнер"></sf-avatar-group>
 <main id="made"></main>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
@@ -47,8 +47,8 @@ try {
   const tab = await browser.newPage({viewport: {width: 1000, height: 800}});
   await tab.goto(`http://127.0.0.1:${server.address().port}/`);
   await tab.waitForFunction(() => ['VerificationForm', 'Verification', 'FileUpload', 'Emoji'].every((name) => window.SF?.Loader?.ComponentRegistry?.[name])
-    && customElements.get('sf-avatars') && document.querySelector('#label .sf-avatar-label-group'), null, {timeout: 15000})
-    .catch(() => failures.push('the classes or sf-avatars never arrived'));
+    && customElements.get('sf-avatar-group') && document.querySelector('#label .sf-avatar-label-group'), null, {timeout: 15000})
+    .catch(() => failures.push('the classes or sf-avatar-group never arrived'));
   await tab.waitForTimeout(400);
   const seen = await tab.evaluate(() => {
     const registry = window.SF.Loader.ComponentRegistry;
@@ -77,8 +77,8 @@ try {
   if (seen.emoji !== '\u{1F44D}\u{1F3FD}') failures.push(`emoji skin 3 gave ${JSON.stringify(seen.emoji)}`);
   if (!/gradient/.test(seen.busy || '')) failures.push('a loading icon button draws no stripes');
   const sized = (size) => size && size[0] > 8 && size[0] === size[1];
-  if (seen.group.avatars.length !== 3 || !seen.group.avatars.every(sized) || seen.group.buttons || seen.group.more !== '+5') failures.push('sf-avatars group is not three round sized avatars without buttons ending in +5');
-  if (!sized(seen.label.avatar) || seen.label.title !== 'Анна') failures.push('sf-avatars label has no sized avatar beside its text');
+  if (seen.group.avatars.length !== 3 || !seen.group.avatars.every(sized) || seen.group.buttons || seen.group.more !== '+5') failures.push('sf-avatar-group group is not three round sized avatars without buttons ending in +5');
+  if (!sized(seen.label.avatar) || seen.label.title !== 'Анна') failures.push('sf-avatar-group label has no sized avatar beside its text');
 } finally {
   await browser.close();
   server.close();
