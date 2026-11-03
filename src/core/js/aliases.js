@@ -191,6 +191,12 @@ function shareCancel(events) {
 // tag (2026-11-03). Each row keeps the `to` it was written with, and the old
 // names follow the new one nearest first: the attach of the former tag, then
 // the colon name before it, each from the detail of the name it follows.
+//
+// The chain goes on only through a plain step (same-detail, no `when`): a
+// split row's old name is an event of another shape, and when it is also a
+// current event of the component (chat-window's sf-chat-window-answer is the
+// 0.3 shape of settled and its own answer event) its old names belong to its
+// own dispatch, not to the event it was made from.
 function oldEventsFor(state, element, newType, detail, flags, own) {
   const out = [];
   const names = new Set([newType]);
@@ -209,7 +215,7 @@ function oldEventsFor(state, element, newType, detail, flags, own) {
       names.add(row.from);
       const event = own && own.type === row.from && oldDetail === nameDetail ? own : makeEvent(element, row.from, oldDetail, flags);
       out.push({event, row, expired, detail: oldDetail});
-      queue.push({name: row.from, detail: oldDetail});
+      if (row.mode === 'same-detail' && !row.when) queue.push({name: row.from, detail: oldDetail});
     }
   }
   return out;
@@ -253,9 +259,11 @@ function wrappedDispatch(state, element, event) {
   const native = state.native.dispatchEvent;
   if (!event || shared().ours.has(event)) return native.call(element, event);
   const type = event.type;
-  // A current name is never an old one; a name in the middle of a chain is
-  // both, and is old.
-  if (state.byNew.has(type) && !state.byOld.has(type)) {
+  // A name in the middle of a plain chain is old: it is promoted to the end
+  // of the chain. A name that is both a current event and the old name of a
+  // split or conditional row (chat-window's answer, the 0.3 shape of settled)
+  // is current: it sends its own old names, its `when` and adapters with them.
+  if (state.byNew.has(type) && (!state.byOld.has(type) || !currentNameOf(state, type))) {
     const detail = detailOf(event);
     return deliver(state, element, event, oldEventsFor(state, element, type, detail, flagsOf(event), null));
   }

@@ -438,3 +438,52 @@ test('a chain: each older name follows the one it was renamed to, nearest first,
   dispatchAliased(element, 'sf-image-field:select', {detail});
   assert.deepEqual(seen.map(([type]) => type), ['sf-input-image-attach', 'sf-image-field-attach', 'sf-image-field:select']);
 });
+
+test('a current event that is also the split old name of another keeps its own conditional split rows: when, adapter, one cancel', () => {
+  // chat-window: sf-chat-window-answer is the element's own answer event and
+  // the 0.3 shape of sf-chat-window-settled; chat-port:decide is the former
+  // name of answer for the intent proposal.decide only, its detail made by the
+  // element's adapter.
+  const table = {tag: 'sf-chat-window', aliases: [
+    row({from: 'chat-port:decide', to: 'sf-chat-window-answer', kind: 'event', mode: 'split', cancelable: true, when: {intent: 'proposal.decide'}}),
+    row({from: 'sf-chat-window-answer', to: 'sf-chat-window-settled', kind: 'event', mode: 'split'}),
+  ]};
+  const adapters = {
+    'chat-port:decide': (detail) => (detail?.intent === 'proposal.decide' ? {request_id: detail.requestId, ...detail.payload} : undefined),
+    'sf-chat-window-answer': (detail) => (detail ? {request_id: detail.requestId, intent: detail.intent, answer: detail.answer} : undefined),
+  };
+  const {element, handle} = fresh('sf-chat-window', table, {adapters});
+  assert.equal(handle.refused.length, 0);
+  const seen = [];
+  for (const type of ['sf-chat-window-settled', 'sf-chat-window-answer', 'chat-port:decide']) {
+    element.addEventListener(type, (event) => seen.push([event.type, event.detail, event.cancelable]));
+  }
+
+  // The matching intent: answer first, then the former name with the adapter's detail.
+  const decide = {requestId: 'r1', intent: 'proposal.decide', payload: {code: 'p1', decision: 'confirm'}};
+  assert.equal(dispatchAliased(element, 'sf-chat-window-answer', {detail: decide, cancelable: true}), true);
+  assert.deepEqual(seen.map(([type]) => type), ['sf-chat-window-answer', 'chat-port:decide']);
+  assert.equal(seen[0][1], decide);
+  assert.deepEqual(seen[1][1], {request_id: 'r1', code: 'p1', decision: 'confirm'});
+  assert.ok(seen.every(([, , cancelable]) => cancelable === true));
+  assert.deepEqual(events().map(({from, to}) => [from, to]), [['chat-port:decide', 'sf-chat-window-answer']]);
+
+  // A refusal on the former name cancels the answer.
+  seen.length = 0;
+  const refuse = (event) => event.preventDefault();
+  element.addEventListener('chat-port:decide', refuse);
+  assert.equal(dispatchAliased(element, 'sf-chat-window-answer', {detail: decide, cancelable: true}), false);
+  element.removeEventListener('chat-port:decide', refuse);
+
+  // Another intent: no former name.
+  seen.length = 0;
+  dispatchAliased(element, 'sf-chat-window-answer', {detail: {requestId: 'r2', intent: 'message.send', payload: {}}, cancelable: true});
+  assert.deepEqual(seen.map(([type]) => type), ['sf-chat-window-answer']);
+
+  // settled sends its 0.3 answer shape, and the chain stops at the split step:
+  // the answer made from settled does not send chat-port:decide a second time.
+  seen.length = 0;
+  dispatchAliased(element, 'sf-chat-window-settled', {detail: {requestId: 'r1', intent: 'proposal.decide', payload: {code: 'p1'}, answer: 'applied'}});
+  assert.deepEqual(seen.map(([type]) => type), ['sf-chat-window-settled', 'sf-chat-window-answer']);
+  assert.deepEqual(seen[1][1], {request_id: 'r1', intent: 'proposal.decide', answer: 'applied'});
+});
