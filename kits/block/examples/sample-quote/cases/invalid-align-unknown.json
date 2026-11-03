@@ -1,0 +1,62 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-align-unknown",
+  "summary": "align is start or center.",
+  "covers": [
+    "sample.quote"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "q",
+              "type": "sample.quote",
+              "data": {
+                "author": "A"
+              },
+              "props": {
+                "align": "end"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "q1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Text."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "schema_enum",
+        "path": "$.root.slots.default[0].props.align"
+      }
+    ],
+    "assets": []
+  }
+}

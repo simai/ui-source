@@ -1,0 +1,57 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "quote-source-unsafe",
+  "summary": "An address that is not safe draws no link: the renderer checks it.",
+  "covers": [
+    "sample.quote"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "q",
+              "type": "sample.quote",
+              "data": {
+                "author": "Ada <Lovelace>",
+                "source": "javascript:alert(1)"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "q1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Text & more."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><figure class=\"sample-quote sample-quote--start sample-quote--default\" data-sf-composition-id=\"q\"><blockquote class=\"sample-quote-text\"><p data-sf-composition-id=\"q1\">Text &amp; more.</p></blockquote><figcaption class=\"sample-quote-caption\"><span class=\"sample-quote-author\">Ada &lt;Lovelace&gt;</span></figcaption></figure></article>",
+    "diagnostics": [],
+    "assets": [
+      "sample/quote"
+    ]
+  }
+}

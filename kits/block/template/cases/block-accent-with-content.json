@@ -1,0 +1,59 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "block-accent-with-content",
+  "summary": "The accent tone, a paragraph in the slot.",
+  "covers": [
+    "product.block-name"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "b",
+              "type": "product.block-name",
+              "data": {
+                "title": "Title"
+              },
+              "props": {
+                "tone": "accent"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><section class=\"product-block-name product-block-name--accent\" data-sf-composition-id=\"b\"><h3 class=\"product-block-name-title\">Title</h3><p data-sf-composition-id=\"b1\">Body.</p></section></article>",
+    "diagnostics": [],
+    "assets": [
+      "product/block-name"
+    ]
+  }
+}

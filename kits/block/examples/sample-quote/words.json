@@ -1,0 +1,39 @@
+{
+  "owner": "sample.quote",
+  "schema": "simai.composition.editor-words",
+  "schema_version": 1,
+  "words": {
+    "en": {
+      "sample.quote.author": "Author",
+      "sample.quote.author_help": "Who said it",
+      "sample.quote.role": "Role",
+      "sample.quote.role_help": "A position or a company",
+      "sample.quote.source": "Source",
+      "sample.quote.source_help": "An address where the words were said",
+      "sample.quote.align": "Alignment",
+      "sample.quote.align_help": "Where the quote stands",
+      "sample.quote.align.start": "At the start",
+      "sample.quote.align.center": "In the centre",
+      "sample.quote.size": "Size",
+      "sample.quote.size_help": "How large the words are",
+      "sample.quote.size.default": "Regular",
+      "sample.quote.size.large": "Large"
+    },
+    "ru": {
+      "sample.quote.author": "Автор",
+      "sample.quote.author_help": "Кто это сказал",
+      "sample.quote.role": "Должность",
+      "sample.quote.role_help": "Должность или компания",
+      "sample.quote.source": "Источник",
+      "sample.quote.source_help": "Адрес, где прозвучали эти слова",
+      "sample.quote.align": "Выравнивание",
+      "sample.quote.align_help": "Где стоит цитата",
+      "sample.quote.align.start": "В начале",
+      "sample.quote.align.center": "По центру",
+      "sample.quote.size": "Размер",
+      "sample.quote.size_help": "Насколько крупный текст",
+      "sample.quote.size.default": "Обычный",
+      "sample.quote.size.large": "Крупный"
+    }
+  }
+}

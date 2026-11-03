@@ -1,0 +1,61 @@
+{
+  "schema": "simai.composition.editor-manifest",
+  "schema_version": 1,
+  "type": "product.block-name",
+  "type_version": "1.0.0",
+  "fields": [
+    {
+      "key": "title",
+      "plane": "data",
+      "target": "title",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 200
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "label_key": "product.block_name.title",
+      "help_key": "product.block_name.title_help",
+      "capability_hints": [
+        "composition.data.title"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "product/block-name"
+    },
+    {
+      "key": "tone",
+      "plane": "props",
+      "target": "tone",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 16
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "choices": [
+        "neutral",
+        "accent"
+      ],
+      "default": "neutral",
+      "label_key": "product.block_name.tone",
+      "help_key": "product.block_name.tone_help",
+      "capability_hints": [
+        "composition.props.tone"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "product/block-name"
+    }
+  ]
+}

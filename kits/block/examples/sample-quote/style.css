@@ -1,0 +1,39 @@
+/* sample.quote's sheet, the asset sample/quote: a host loads it beside the
+   SIMAI Framework when a Document's render result lists the asset. It reads
+   only the Framework's public variables, so the quote follows the theme. */
+.sample-quote {
+  margin: 0;
+  padding-inline-start: var(--sf-space-4, 1rem);
+  border-inline-start: 0.25rem solid var(--sf-primary, currentColor);
+  color: var(--sf-on-surface, inherit);
+}
+
+.sample-quote--center {
+  padding-inline: var(--sf-space-4, 1rem);
+  border-inline-start: 0;
+  text-align: center;
+}
+
+.sample-quote-text {
+  margin: 0;
+}
+
+.sample-quote--large .sample-quote-text {
+  font-size: var(--sf-text-size-4, 1.25rem);
+}
+
+.sample-quote-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1, 0.25rem) var(--sf-space-2, 0.5rem);
+  margin-block-start: var(--sf-space-2, 0.5rem);
+  color: var(--sf-on-surface-variant, inherit);
+}
+
+.sample-quote--center .sample-quote-caption {
+  justify-content: center;
+}
+
+.sample-quote-author {
+  font-weight: 600;
+}

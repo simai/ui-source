@@ -1,0 +1,138 @@
+{
+  "schema": "simai.composition.editor-manifest",
+  "schema_version": 1,
+  "type": "sample.quote",
+  "type_version": "1.0.0",
+  "fields": [
+    {
+      "key": "author",
+      "plane": "data",
+      "target": "author",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 120
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "label_key": "sample.quote.author",
+      "help_key": "sample.quote.author_help",
+      "capability_hints": [
+        "composition.data.author"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "sample/quote"
+    },
+    {
+      "key": "role",
+      "plane": "data",
+      "target": "role",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 120
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "label_key": "sample.quote.role",
+      "help_key": "sample.quote.role_help",
+      "capability_hints": [
+        "composition.data.role"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "sample/quote"
+    },
+    {
+      "key": "source",
+      "plane": "data",
+      "target": "source",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 2048
+      },
+      "group": "advanced",
+      "visibility": "collapsed",
+      "label_key": "sample.quote.source",
+      "help_key": "sample.quote.source_help",
+      "capability_hints": [
+        "composition.data.source"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "sample/quote"
+    },
+    {
+      "key": "align",
+      "plane": "props",
+      "target": "align",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 16
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "choices": [
+        "start",
+        "center"
+      ],
+      "default": "start",
+      "label_key": "sample.quote.align",
+      "help_key": "sample.quote.align_help",
+      "capability_hints": [
+        "composition.props.align"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "sample/quote"
+    },
+    {
+      "key": "size",
+      "plane": "props",
+      "target": "size",
+      "property": {
+        "type": "string",
+        "version": 2
+      },
+      "constraints": {
+        "min_length": 1,
+        "max_length": 16
+      },
+      "group": "basic",
+      "visibility": "visible",
+      "choices": [
+        "default",
+        "large"
+      ],
+      "default": "default",
+      "label_key": "sample.quote.size",
+      "help_key": "sample.quote.size_help",
+      "capability_hints": [
+        "composition.props.size"
+      ],
+      "permission_hints": [
+        "composition.node.update"
+      ],
+      "owner": "sample/quote"
+    }
+  ]
+}
