@@ -11,6 +11,14 @@
     inherits: false;
 }
 
+// The page's width for a breakout, computed on <body> and inherited as a
+// length (a container unit would otherwise resolve at each breakout).
+@property --sf-container-breakout--page {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 100vw;
+}
+
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -41,4 +49,34 @@
 .container-flush {
     --sf-container--inset: 0px;
 }
+
+// Breakout (2026-11-03, the one block editor): a block inside a centred
+// container that spans the page's whole width -- a cover picture, a map, a
+// strip of logos. Its margins reach out by half of what the page is wider
+// than the container's content box, on both sides, so it is the same in a
+// right-to-left page. The page's width is the root's content box (the
+// viewport without a classic scrollbar, so the page never scrolls sideways),
+// measured once on <body> and inherited as a length; a product whose page is
+// narrower sets --sf-container-breakout-page. A container inside the breakout
+// centres its content again.
+.container-breakout {
+    width: auto;
+    max-width: none;
+    margin-inline-start: calc(50% - var(--sf-container-breakout-page, var(--sf-container-breakout--page, 100vw)) / 2);
+    margin-inline-end: calc(50% - var(--sf-container-breakout-page, var(--sf-container-breakout--page, 100vw)) / 2);
+}
+}
+
+// The root is the query container whose inline size is the page's width, only
+// while the page holds a breakout. inline-size containment of the root leaves
+// its width as it is (the viewport sets it); it adds no layout containment,
+// so fixed and sticky elements are unaffected.
+@layer sf.utilities {
+    html:has(.container-breakout) {
+        container-type: inline-size;
+    }
+
+    html:has(.container-breakout) body {
+        --sf-container-breakout--page: 100cqi;
+    }
 }

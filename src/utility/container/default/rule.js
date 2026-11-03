@@ -1,1 +1,1 @@
-SF.RuleLoader['container/default'] = new RegExp("^(?:container|container-flush)(?![\\s\\S])");
+SF.RuleLoader['container/default'] = new RegExp("^(?:container|container-(?:breakout|flush))(?![\\s\\S])");
