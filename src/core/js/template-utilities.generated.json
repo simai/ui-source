@@ -102,11 +102,6 @@
     "overflow/default",
     "position/default"
   ],
-  "cl-download-file": [
-    "cursor/default",
-    "display/default",
-    "transition-property/default"
-  ],
   "cl-drawer": [
     "display/default",
     "justify-content/default",
@@ -130,6 +125,11 @@
   ],
   "cl-empty-state": [
     "display/default"
+  ],
+  "cl-file-download": [
+    "cursor/default",
+    "display/default",
+    "transition-property/default"
   ],
   "cl-file-upload": [
     "align-items/default",

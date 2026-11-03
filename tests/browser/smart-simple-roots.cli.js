@@ -13,8 +13,8 @@ async page => {
     ['sf-progress-scale', '.sf-progress-scale', {value: '42', 'show-text': ''}],
     ['sf-spinner', '.sf-loader-container', {width: '48', label: 'Загрузка'}],
     ['sf-reference-link', '.sf-reference-link', {href: '#help', label: 'Справка', text: 'Описание'}],
-    ['sf-download-file', '.sf-download-file', {'file-name': 'Документ.pdf'}],
-    ['sf-download-file', '.sf-download-file', {'file-name': 'Документ.pdf', href: '#file'}],
+    ['sf-file-download', '.sf-download-file', {'file-name': 'Документ.pdf'}],
+    ['sf-file-download', '.sf-download-file', {'file-name': 'Документ.pdf', href: '#file'}],
     ['sf-alert', '.sf-alert', {title: 'Готово', 'action-text': 'Подробнее'}],
     ['sf-toast', '.sf-toast', {title: 'Сохранено', 'action-text': 'Отменить'}],
   ];
@@ -95,7 +95,7 @@ async page => {
         await host.evaluate(e => e.setAttribute('disabled', ''));
         await page.waitForFunction(() => !document.querySelector('sf-button-group button[tabindex="0"]'));
         check(await host.locator('button[tabindex="0"]').count() === 0, 'disabled group has no tab stop', null);
-      } else if (tag === 'sf-alert' || tag === 'sf-toast' || (tag === 'sf-download-file' && !attrs.href)) {
+      } else if (tag === 'sf-alert' || tag === 'sf-toast' || (tag === 'sf-file-download' && !attrs.href)) {
         await root.locator(tag === 'sf-alert' ? '[data-alert-action]' : tag === 'sf-toast' ? '[data-toast-action]' : ':scope').click();
         check(await host.evaluate(e => e.__actions === 1), 'one action event after repeated render', await host.evaluate(e => e.__actions));
       } else if (tag === 'sf-progress-bar' || tag === 'sf-progress-scale') {

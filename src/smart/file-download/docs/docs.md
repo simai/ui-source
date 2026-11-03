@@ -4,7 +4,7 @@ The default template applies shared `root-class`, `style` and `root-style`
 settings to its root. Use Framework utilities and semantic tokens; the outer
 Smart host remains boxless. Styling does not replace component state or actions.
 
-`sf-download-file` is a smart wrapper over the base `download-file` component.
+`sf-file-download` is a smart wrapper over the base `download-file` component.
 With `href` it renders a native anchor; without `href` it renders a button for
 an application-owned action. `disabled` renders a disabled button and no live
 destination.
@@ -40,12 +40,12 @@ file.addEventListener('sf-download-file-download', (event) => {
 ## Example
 
 ```html
-<sf-download-file
+<sf-file-download
   size="1"
   file-name="logo.svg"
   href="/assets/img/logo.svg"
   download
-></sf-download-file>
+></sf-file-download>
 ```
 
 If `file-size` is omitted, the base component will try to resolve it from `Content-Length`.

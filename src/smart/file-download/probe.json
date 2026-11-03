@@ -1,15 +1,15 @@
 {
-  "component": "sf-download-file",
+  "component": "sf-file-download",
   "probe": "sf-download-file against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-download-file id=\"d\" file-name=\"Отчёт.pdf\" file-size=\"2,4 МБ\" href=\"/fixture/report\" download></sf-download-file>",
-      "  <sf-download-file id=\"d-btn\" file-name=\"Выгрузка.csv\" file-size=\"—\"></sf-download-file>",
-      "  <sf-download-file id=\"d-off\" file-name=\"Архив.zip\" file-size=\"120 МБ\" href=\"/fixture/zip\" disabled></sf-download-file>",
-      "  <sf-download-file id=\"d-bad\" file-name=\"x.txt\" file-size=\"1 КБ\" size=\"7\"></sf-download-file>",
+      "  <sf-file-download id=\"d\" file-name=\"Отчёт.pdf\" file-size=\"2,4 МБ\" href=\"/fixture/report\" download></sf-file-download>",
+      "  <sf-file-download id=\"d-btn\" file-name=\"Выгрузка.csv\" file-size=\"—\"></sf-file-download>",
+      "  <sf-file-download id=\"d-off\" file-name=\"Архив.zip\" file-size=\"120 МБ\" href=\"/fixture/zip\" disabled></sf-file-download>",
+      "  <sf-file-download id=\"d-bad\" file-name=\"x.txt\" file-size=\"1 КБ\" size=\"7\"></sf-file-download>",
       "</main>"
     ]
   },

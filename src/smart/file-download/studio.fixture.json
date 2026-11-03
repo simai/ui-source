@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.download-file",
+  "component": "smart.file-download",
   "title": "Download File reference",
-  "summary": "Deterministic reference fixture for sf-download-file.",
+  "summary": "Deterministic reference fixture for sf-file-download.",
   "locale": "ru",
   "props": {
     "file-name": "Отчёт за август.pdf",

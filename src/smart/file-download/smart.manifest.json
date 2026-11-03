@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.download-file",
-  "version": "1.1.6",
+  "id": "smart.file-download",
+  "version": "1.2.0",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "download-file"
+    "file-download"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-download-file",
+  "custom_element": "sf-file-download",
   "templates": [
     "default"
   ],
@@ -130,7 +130,7 @@
   },
   "methods": {},
   "events": {
-    "sf-download-file-download": {
+    "sf-file-download-download": {
       "summary": "download (vocabulary).",
       "payload": {
         "type": "object",
@@ -171,7 +171,14 @@
           }
         }
       },
-      "alias_of": "sf-download-file-download"
+      "alias_of": "sf-file-download-download"
+    },
+    "sf-download-file-download": {
+      "summary": "Dated alias of sf-file-download-download until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-file-download-download"
     }
   },
   "state": {
@@ -262,8 +269,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-download-file>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-download-file>",
+        "since": "1.2.0",
+        "replacement": "<sf-file-download>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -272,21 +287,21 @@
     "source_revision": "497a081882171aa36a3089c3235148998b5cebc7",
     "source_artifacts": [
       {
-        "path": "src/smart/download-file/index.js",
-        "sha256": "8a99cf5b0a7e1aeed3c93ec9b56a76ff1101cddde81af0402cc273f6de20b05e"
+        "path": "src/smart/file-download/index.js",
+        "sha256": "0498cd7de1756bd54808ba5ad96c23c74152434a6786c45a88efdb57623638c7"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/download-file/js/download-file.js",
+        "path": "smart/file-download/js/file-download.js",
         "sha256": "5832578dd6cd97a6bc69f235343c032db297a60e5f92b8917e73bdcd79dc9f20"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-download-file for one downloadable resource or an application-owned file preparation action.",
+    "use_when": "Use sf-file-download for one downloadable resource or an application-owned file preparation action.",
     "do_not": [
       "Do not use a button when a stable resource href already exists",
       "Do not leave href on an unavailable file",
@@ -301,7 +316,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-download-file file-name=\"Report.pdf\" file-size=\"2.4 MB\" href=\"/files/report.pdf\" download></sf-download-file>",
+    "minimal_example": "<sf-file-download file-name=\"Report.pdf\" file-size=\"2.4 MB\" href=\"/files/report.pdf\" download></sf-file-download>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

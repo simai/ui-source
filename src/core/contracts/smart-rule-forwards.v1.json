@@ -85,6 +85,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-code-input-to-input-code"
+    },
+    "cl-download-file": {
+      "to": "cl-file-download",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-download-file-to-file-download"
     }
   }
 }

@@ -16,7 +16,7 @@ async page => {
   await page.setViewportSize({width: 1280, height: 900});
   await page.emulateMedia({forcedColors: 'none', reducedMotion: 'reduce', colorScheme: 'light'});
   await page.goto('http://127.0.0.1:8768/tests/fixtures/reference-download-method-lab.html');
-  await page.waitForFunction(() => window.SF_PENDING_COMPONENTS?.some(([name]) => name === 'DownloadFile') && customElements.get('sf-reference-link') && customElements.get('sf-download-file'));
+  await page.waitForFunction(() => window.SF_PENDING_COMPONENTS?.some(([name]) => name === 'DownloadFile') && customElements.get('sf-reference-link') && customElements.get('sf-file-download'));
 
   const presentation = await page.evaluate(() => {
     const reference = document.getElementById('reference');
@@ -84,7 +84,7 @@ async page => {
     smartReference.setAttribute('label', 'Smart руководство');
     smartReference.setAttribute('text', '/smart/reference/');
     smartReference.setAttribute('href', '#smart-reference-target');
-    const smartDownload = document.createElement('sf-download-file');
+    const smartDownload = document.createElement('sf-file-download');
     smartDownload.id = 'smart-download';
     smartDownload.setAttribute('file-name', 'Smart.pdf');
     smartDownload.setAttribute('file-size', '3 МБ');

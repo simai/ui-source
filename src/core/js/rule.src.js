@@ -750,7 +750,7 @@ import '../../smart/context-menu/rule.js';
 import '../../smart/button-copy/rule.js';
 import '../../smart/country-code/rule.js';
 import '../../smart/datepicker/rule.js';
-import '../../smart/download-file/rule.js';
+import '../../smart/file-download/rule.js';
 import '../../smart/drawer/rule.js';
 import '../../smart/dropdown/rule.js';
 import '../../smart/empty-state/rule.js';

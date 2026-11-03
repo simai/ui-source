@@ -29,9 +29,9 @@ test('Reference Link owns native navigation, complete geometry and BEM aliases',
 test('Download File owns native/button semantics, canonical structure and tokens', async () => {
   const runtime = await read('src/component/download-file/js/_download-file.js');
   const css = await read('src/component/download-file/scss/_css_download-file.scss');
-  const template = await read('src/smart/download-file/js/templates/default.js');
-  const rule = await read('src/smart/download-file/rule.js');
-  const manifest = JSON.parse(await read('src/smart/download-file/smart.manifest.json'));
+  const template = await read('src/smart/file-download/js/templates/default.js');
+  const rule = await read('src/smart/file-download/rule.js');
+  const manifest = JSON.parse(await read('src/smart/file-download/smart.manifest.json'));
 
   assert.match(runtime, /createElement\('span'\)/);
   assert.match(runtime, /sf-download-file__body/);

@@ -702,42 +702,6 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.download-file",
-          "component.icons",
-          "smart.icon"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-download-file",
-      "id": "smart.download-file",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/download-file/smart.manifest.json",
-      "manifest_sha256": "2f18f8958e902c7301ef62355872596b66e57704ddafe2a20b6b1c303b8b6448",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "Native file download or application-owned file preparation action.",
-      "tags": [
-        "download-file"
-      ],
-      "title": "Download File"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
           "component.close",
           "component.icon-buttons"
         ]
@@ -874,6 +838,42 @@
         "placeholder"
       ],
       "title": "Empty state"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.download-file",
+          "component.icons",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-file-download",
+      "id": "smart.file-download",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/file-download/smart.manifest.json",
+      "manifest_sha256": "06f26639b2d78602d42c4e384bf0f96d5a84d67e58b0640a0428103f880c51f0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Native file download or application-owned file preparation action.",
+      "tags": [
+        "file-download"
+      ],
+      "title": "Download File"
     },
     {
       "backend_adapters": [],
