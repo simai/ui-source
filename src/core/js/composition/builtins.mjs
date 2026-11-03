@@ -285,7 +285,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.paragraph',
-    version: '1.1.0',
+    version: '1.2.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -296,7 +296,10 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       properties: { content: inlineContentSchema },
     },
     props_schema: emptyObjectSchema,
-    presentation: { views: ['default'], presets: [], modifiers: ['lead', 'muted'] },
+    // G-39 (1.2.0): the prototype's lead is 19/30 px in the variant ink; the
+    // SIMAI Framework's large body text role (20/28 px, 16/24 on the phone) in
+    // on-surface-variant. Muted is the variant ink alone.
+    presentation: { views: ['default'], presets: [], modifiers: ['lead', 'muted'], modifier_utilities: { lead: ['text-large', 'color-on-surface-variant'], muted: ['color-on-surface-variant'] } },
     slots: {},
     renderer: { kind: 'builtin', name: 'content.paragraph' },
     assets: [],
@@ -458,8 +461,10 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   // goes. Its parameters are the element's inputs (smart.manifest.json, held
   // by elements.print); the type's defaults are the prototype's.
   elementManifest('element.button', 'smart/button', {
-    // Unset, the button reads «Button» in the Document's language until the author writes.
-    data_schema: closed({ text: plainText(200) }),
+    // Unset, the button reads «Button» in the Document's language until the
+    // author writes. With an address it is a link with the button's look
+    // (sf-button 1.4.0 href); the Document's URL rule holds it.
+    data_schema: closed({ text: plainText(200), href: urlSchema }),
     props_schema: closed({
       appearance: { enum: ['default', 'tonal', 'outline', 'link', 'surface'], default: 'default' },
       scheme: { enum: ['primary', 'secondary', 'on-surface', 'on-surface-variant'], default: 'primary' },
@@ -933,6 +938,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   ]),
   contentEditor('element.button', [
     contentField('element.button', 'text', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('element.button', 'href', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('element.button', 'appearance', 'props', 'choice', { choices: ['default', 'tonal', 'outline', 'link', 'surface'], default: 'default' }),
     contentField('element.button', 'size', 'props', 'choice', { choices: ['1/2', '1', '2'], default: '1' }),
     contentField('element.button', 'icon', 'props', 'text', { constraints: { min_length: 1, max_length: 64 } }),

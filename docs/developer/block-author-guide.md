@@ -440,6 +440,20 @@ screen), so an editor shows the value the page draws.
 draws its text at the sheet's edge. A section that sets `width: "full"` and no
 columns draws no parts, as before; `padding_y: 0` prints `p-y-0`.
 
+The blocks in a section's or a container's content part stand one rhythm
+apart: `space-y-3` (24 px at the desktop, 16 px on the phone; the blocks' own
+margins collapse into it). A `gap` the Document sets is the rhythm, per screen
+(`{"xs": 2, "lg": 5}` prints `space-y-2 lg:space-y-5`); with `columns` the
+content is a grid and its gap rules instead. A frame that prints `container`
+inside another container's frame, at any depth, also prints `container-flush`:
+a container in a section has no second gutter, so on the phone its text is as
+wide as the section's own. A `container-breakout` node leaves its container,
+and its frame keeps the gutter.
+
+`element.button` takes `data.href`: the button is then a link (`sf-button`
+1.4.0 draws an `<a>` with the button's look). Its address follows the content
+link rule (`unsafe_url` otherwise).
+
 A utility declaration may itself name a `part`, and `x-simai-utility` may be a
 list of declarations (one per part); a value may become several classes
 (`"grid grid-col-{value}"`), and a class a wider screen shares with a narrower

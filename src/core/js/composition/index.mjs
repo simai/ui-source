@@ -301,6 +301,9 @@ function validateContentRules(root, diagnostics) {
     if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !validUrl(node.data.src)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.src`, 'Image source protocol is not allowed'));
     }
+    if (node.type === 'element.button' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
+      diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'Link protocol is not allowed'));
+    }
     if (node.type === 'content.file' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'File address protocol is not allowed'));
     }
@@ -690,8 +693,29 @@ const placeholder = (locale, key) => (ELEMENT_PLACEHOLDERS[String(locale || 'en'
 const defined = (inputs) => Object.fromEntries(Object.entries(inputs).filter(([, value]) => value !== undefined && value !== ''));
 // An element stands in a block of its own: the editor selects and the
 // utilities reach the block (sf-button's host is display: contents), the
-// element draws inside it.
-const elementBlock = (node, html) => (html ? `<div${id(node)}>${html}</div>` : '');
+// element draws inside it. The block is a flex row, so an element keeps its
+// own width (the prototype's inline button) instead of the column's.
+const elementBlock = (node, html) => (html ? `<div class="flex"${id(node)}>${html}</div>` : '');
+
+// The space between the blocks of a section or a container (visual parity,
+// 2026-11-04): the prototype's 24 px at the desktop, space-3 of the SIMAI
+// Framework ladder (16 px on the phone). Blocks in a column stand one rhythm
+// apart (space-y-*, their own margins collapse into it); a gap the Document
+// sets is the rhythm, per screen. Columns make the content a grid, whose gap
+// the grid set prints: no rhythm then.
+const BLOCK_RHYTHM = 3;
+function rhythm(props) {
+  if (props.columns !== undefined) return '';
+  const values = valuesByBreakpoint(props.gap ?? BLOCK_RHYTHM);
+  const classes = [];
+  let previous;
+  UTILITY_BREAKPOINTS.forEach((breakpoint) => {
+    const value = values[breakpoint];
+    if (value !== previous && Number.isInteger(value)) classes.push(`${breakpoint === 'xs' ? '' : `${breakpoint}:`}space-y-${value}`);
+    previous = value;
+  });
+  return classes.length ? ` class="${classes.join(' ')}"` : '';
+}
 
 const BUILTIN_RENDERERS = {
   'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
@@ -702,7 +726,7 @@ const BUILTIN_RENDERERS = {
     // the Document sets its width full and gives no columns.
     const props = effectiveProps(node, manifest);
     const framed = (props.width !== undefined && props.width !== 'full') || ['columns', 'gap'].some((key) => props[key] !== undefined);
-    const inner = framed ? `<div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div>` : (slots.default || '');
+    const inner = framed ? `<div data-sf-composition-part="frame"><div${rhythm(props)} data-sf-composition-part="content">${slots.default || ''}</div></div>` : (slots.default || '');
     return `<section data-sf-composition-id="${escapeHtml(node.id)}">${inner}</section>`;
   },
   'layout.columns': ({ node, slots }) => {
@@ -727,13 +751,15 @@ const BUILTIN_RENDERERS = {
   'layout.area': ({ node, slots }) => `<div data-sf-composition-area=""${id(node)}>${slots.default || ''}</div>`,
   // The layout and element types of the one block editor (2026-11-04): the
   // block's own element, its parts, and SIMAI Framework utilities only.
-  'layout.container': ({ node, slots }) => `<div${id(node)}><div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div></div>`,
+  'layout.container': ({ node, slots, manifest }) => `<div${id(node)}><div data-sf-composition-part="frame"><div${rhythm(effectiveProps(node, manifest))} data-sf-composition-part="content">${slots.default || ''}</div></div></div>`,
   'layout.grid': ({ node, slots }) => `<div${id(node)}><div class="grid" data-sf-composition-part="content">${(slots.defaultList || []).map((child) => `<div class="min-w-0">${child}</div>`).join('')}</div></div>`,
   'layout.spacer': ({ node }) => `<div aria-hidden="true"${id(node)}></div>`,
   'element.button': ({ node, elements, locale }) => {
     const props = node.props || {};
     return elementBlock(node, elements.print('sf-button', defined({
       text: node.data?.text || placeholder(locale, 'button'),
+      // A button with an address is a link with the button's look (sf-button 1.4.0).
+      href: node.data?.href,
       appearance: props.appearance,
       scheme: props.scheme,
       size: props.size,
@@ -845,7 +871,11 @@ export async function render(document, context = {}) {
       diagnostics.push(...page.diagnostics.map((entry) => ({ ...entry, path: `$.content${entry.path.startsWith('$') ? entry.path.slice(1) : `:${entry.path}`}` })));
     }
   }
-  const renderNode = async (node, depth = 0) => {
+  // `inside`: an ancestor already stands in a centred container (its frame
+  // part prints `container`). A frame inside one takes container-flush, so a
+  // container in a section has no second gutter; a breakout leaves the
+  // container and its own frame keeps the gutter (2026-11-04).
+  const renderNode = async (node, depth = 0, inside = false) => {
     const manifest = registry.types.get(node.type);
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
@@ -856,12 +886,16 @@ export async function render(document, context = {}) {
       for (const [id, entry] of inner.byNode) data.byNode.set(id, entry);
       data.links.push(...inner.links);
       diagnostics.push(...inner.diagnostics);
-      return renderNode(expanded, depth + 1);
+      return renderNode(expanded, depth + 1, inside);
     }
+    const byPart = utilityPartClasses(node, manifest);
+    const ownFrame = (byPart.frame || []).includes('container');
+    const outer = inside && !(byPart[''] || []).includes('container-breakout');
+    if (outer && ownFrame) byPart.frame.push('container-flush');
     const slots = {};
     for (const [name, children] of Object.entries(node.slots || {})) {
       const rendered = [];
-      for (const child of children) rendered.push(await renderNode(child, depth));
+      for (const child of children) rendered.push(await renderNode(child, depth, outer || ownFrame));
       slots[name] = rendered.join('');
       slots[`${name}List`] = rendered;
     }
@@ -880,8 +914,7 @@ export async function render(document, context = {}) {
     // utilities on the block's element (utilities.mjs).
     const own = modifierNotices(node, { rules: context.options?.utilityRules });
     notices.push(...own.notices);
-    const byPart = utilityPartClasses(node, manifest);
-    const utilities = [...new Set([...(byPart[''] || []), ...own.kept])];
+    const utilities = [...new Set([...(byPart[''] || []), ...modifierUtilities(node, manifest), ...own.kept])];
     let renderer = registry.renderers.get(manifest.renderer.name) || BUILTIN_RENDERERS[manifest.renderer.name];
     if (!renderer && manifest.renderer.kind === 'custom-element' && manifest.renderer.name) {
       renderer = ({ node: current, slots: currentSlots, endpoint }) => {
@@ -952,6 +985,7 @@ export function validateTypeManifest(manifest, registry = undefined, options = {
   diagnostics.push(...validateCatalogueFields(manifest));
   diagnostics.push(...validateParameterSets(manifest));
   diagnostics.push(...validateParameterDefaults(manifest, fits));
+  diagnostics.push(...validateModifierUtilities(manifest));
   diagnostics.push(...validateUtilityDeclarations(expandParameterSets(manifest)));
   diagnostics.push(...validateDataDeclarations(manifest, options.shapes));
   let resolved = normalizeRegistry(registry);
@@ -973,6 +1007,28 @@ export function validateTypeManifest(manifest, registry = undefined, options = {
     }
   }
   return { valid: diagnostics.length === 0, diagnostics };
+}
+
+// presentation.modifier_utilities (type manifest 1.5.0, G-39 2026-11-04): the
+// SIMAI Framework classes a declared modifier prints on the block's element. A
+// modifier with no entry prints nothing, as before.
+const MODIFIER_CLASS = /^[a-z0-9][a-z0-9:/_.-]{0,99}$/u;
+function modifierUtilities(node, manifest) {
+  const table = manifest?.presentation?.modifier_utilities;
+  if (!isPlainObject(table) || !Array.isArray(node?.presentation?.modifiers)) return [];
+  return node.presentation.modifiers.flatMap((modifier) => (Array.isArray(table[modifier]) ? table[modifier] : []));
+}
+function validateModifierUtilities(manifest) {
+  const table = manifest?.presentation?.modifier_utilities;
+  if (table === undefined) return [];
+  if (!isPlainObject(table)) return [diagnostic('modifier_utilities_invalid', '$.presentation.modifier_utilities', 'Modifier utilities are an object of class lists')];
+  const declared = manifest.presentation.modifiers || [];
+  const diagnostics = [];
+  for (const [modifier, classes] of Object.entries(table)) {
+    if (!declared.includes(modifier)) diagnostics.push(diagnostic('modifier_utilities_unknown', `$.presentation.modifier_utilities.${modifier}`, `Modifier ${modifier} is not declared`));
+    if (!Array.isArray(classes) || !classes.every((value) => typeof value === 'string' && MODIFIER_CLASS.test(value))) diagnostics.push(diagnostic('modifier_utilities_invalid', `$.presentation.modifier_utilities.${modifier}`, 'A modifier prints a list of classes'));
+  }
+  return diagnostics;
 }
 
 /** A site block's type manifest from what the block builder saved (composed.mjs). */

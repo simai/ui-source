@@ -101,6 +101,18 @@
         },
         "modifiers": {
           "$ref": "#/$defs/stringList"
+        },
+        "modifier_utilities": {
+          "type": "object",
+          "description": "1.5.0: the SIMAI Framework classes each declared modifier prints on the block's element.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9:/_.-]{0,99}$"
+            },
+            "maxItems": 8
+          }
         }
       }
     },

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -53,6 +53,7 @@
         "loading",
         "disabled",
         "native-type",
+        "href",
         "shortcut",
         "shortcut-listen",
         "expanded",
@@ -254,6 +255,11 @@
           "submit",
           "reset"
         ]
+      },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "An address: the button draws a link (an <a href>) with the button's look; role link, Enter and the browser's link keys follow it. A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, expanded and pressed do not apply; disabled or loading, the link has no href and says aria-disabled."
       },
       "shortcut": {
         "type": "string",
@@ -576,7 +582,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "109555a0435ad6bda399ea74f79e54f6a2d4dea5f1965643d30b280b2a131eb2"
+        "sha256": "b0b8d753d59611ae781a4f1e0af76dee36af8c75dfeb5b79075f08099cbe6740"
       }
     ],
     "generated_runtime": [

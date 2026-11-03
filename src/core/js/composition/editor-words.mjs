@@ -233,6 +233,8 @@ const EN = {
   ...words('element_button', {
     text: 'Text',
     text_help: 'The words on the button',
+    href: 'Link',
+    href_help: 'Where the button leads; empty, it is a button',
     appearance: 'Look',
     appearance_help: 'How the button stands out',
     'appearance.default': 'Filled',
@@ -548,6 +550,8 @@ const RU = {
   ...words('element_button', {
     text: 'Текст',
     text_help: 'Слова на кнопке',
+    href: 'Ссылка',
+    href_help: 'Куда ведёт кнопка; пусто — это просто кнопка',
     appearance: 'Вид',
     appearance_help: 'Насколько кнопка заметна',
     'appearance.default': 'Заливка',

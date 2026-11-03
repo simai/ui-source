@@ -89,6 +89,37 @@ export function renderButtonTemplate(context) {
         context.pressed ? 'active' : '',
     ].filter(Boolean);
 
+    const content = html`
+            ${overlayContent}
+            ${startContent}
+            ${textContent ? html`<span
+                    class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
+        ${textContent}
+      </span>` : ''}
+            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.chars ? `sf-button-shortcut-key--chars-${cap.chars}` : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
+`;
+
+    // href (1.4.0): a link with the button's look. The browser's own link
+    // follows it (Enter, the context menu, a new tab); a button's states that
+    // a link has no words for -- native-type, expanded, pressed -- do not
+    // apply. Disabled or loading, the link has no href, so it is not reached
+    // or followed, and says aria-disabled.
+    if (context.href) {
+        const inactive = Boolean(disabled || loading);
+        return html`
+        <a
+                href=${inactive ? nothing : context.href}
+                class=${rootClasses.join(' ')}
+                style=${context.rootStyle || nothing}
+                role=${inactive ? 'link' : nothing}
+                aria-disabled=${inactive ? 'true' : nothing}
+                aria-label=${ariaLabel || nothing}
+                aria-busy=${loading ? 'true' : nothing}
+                aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
+        >${content}</a>
+    `;
+    }
+
     return html`
         <button
                 type=${nativeType}
@@ -100,14 +131,6 @@ export function renderButtonTemplate(context) {
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
                 aria-pressed=${context.pressed === undefined ? nothing : String(Boolean(context.pressed))}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
-        >
-            ${overlayContent}
-            ${startContent}
-            ${textContent ? html`<span
-                    class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
-        ${textContent}
-      </span>` : ''}
-            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.chars ? `sf-button-shortcut-key--chars-${cap.chars}` : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
-        </button>
+        >${content}</button>
     `;
 }

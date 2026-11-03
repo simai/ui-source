@@ -184,6 +184,12 @@ const sfButtonMeta = {
       "default": "button",
       "description": "Native button type attribute."
     },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An address: the button draws a link (an <a href>) with the button's look; role link, Enter and the browser's link keys follow it. A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, expanded and pressed do not apply; disabled or loading, the link has no href and says aria-disabled."
+    },
     "shortcut": {
       "kind": "custom",
       "valueType": "string",

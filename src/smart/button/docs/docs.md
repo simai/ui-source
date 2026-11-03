@@ -53,6 +53,12 @@ Main attributes:
 - `loading`
 - `disabled`
 - `native-type`
+- `href` — a link with the button's look (1.4.0): the element draws
+  `<a href>` with the button's classes; the role is link, Enter and the
+  browser's link keys follow it. A relative address, a fragment, http(s),
+  `mailto:` and `tel:` are taken; any other scheme draws a button. Disabled
+  or loading, the link loses its `href` and says `aria-disabled`.
+  `native-type`, `expanded` and `pressed` do not apply to a link
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native

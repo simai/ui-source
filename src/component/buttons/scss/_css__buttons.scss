@@ -28,6 +28,14 @@
 }
 
 @layer sf.components {
+  /* A button drawn as a link (sf-button href, 2026-11-04) has the button's
+     own ink: the browser gives a link its link colour and an underline, a
+     button ButtonText and none. The visible ink is the text and icon's own. */
+  a.sf-button {
+    color: ButtonText;
+    text-decoration: none;
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-button {
     /* Public variables (core/contracts/public-variables.v1.json): names with a

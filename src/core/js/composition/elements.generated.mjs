@@ -133,6 +133,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "href": {
+          "default": "",
+          "type": "string"
+        },
         "icon": {
           "default": "",
           "type": "string"
@@ -256,7 +260,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.3.0"
+    "version": "1.4.0"
   },
   "sf-button-icon": {
     "inputs": {

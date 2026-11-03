@@ -837,6 +837,30 @@
         },
         {
           "capability_hints": [
+            "composition.data.href"
+          ],
+          "constraints": {
+            "max_length": 2048,
+            "min_length": 1
+          },
+          "group": "basic",
+          "help_key": "sf.composition.element_button.href_help",
+          "key": "href",
+          "label_key": "sf.composition.element_button.href",
+          "owner": "simai/framework",
+          "permission_hints": [
+            "composition.node.update"
+          ],
+          "plane": "data",
+          "property": {
+            "type": "string",
+            "version": 2
+          },
+          "target": "href",
+          "visibility": "visible"
+        },
+        {
+          "capability_hints": [
             "composition.props.appearance"
           ],
           "choices": [

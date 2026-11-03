@@ -182,7 +182,7 @@ test('a Document that uses none of it draws as before', async () => {
   assert.equal(before.runtime, undefined);
   // layout.section 1.2.0 (2026-11-04): unset, a section stands in the page
   // container with space above and below (its parameter defaults).
-  assert.equal(before.html, '<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content"><p data-sf-composition-id="p">Hi</p></div></div></section></main>');
+  assert.equal(before.html, '<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content"><p data-sf-composition-id="p">Hi</p></div></div></section></main>');
 });
 
 test('layout.columns 1.1.0: columns and gap per screen; a 1.0.0 Document stays valid', async () => {
@@ -420,7 +420,7 @@ test('data at render: the host gives the data, the list publishes its page, ever
   const loading = await render(document, { registry, resolveBinding: () => undefined });
   assert.match(loading.html, /data-state="loading"/u);
   const failed = await render(document, { registry, resolveBinding: () => { throw new Error('database down'); } });
-  assert.match(failed.html, /<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/div><\/div><\/section><\/main>/u, 'the page still draws');
+  assert.match(failed.html, /<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/div><\/div><\/section><\/main>/u, 'the page still draws');
   assert.deepEqual(failed.diagnostics.map(({ code, path }) => [code, path]), [['binding_failed', 'node:list']]);
   const malformed = await render(document, { registry, resolveBinding: () => ({ items: [{ name: 'no title' }] }) });
   assert.match(malformed.html, /data-state="error"/u);
@@ -481,8 +481,8 @@ test('width reaches three elements; a section that sets width full and no space 
   const drawn = await render(layout(section('n', { width: 'narrow' }), section('m', { width: 'normal' }), section('w', { width: 'wide' }), section('f', { width: 'full' })));
   assert.equal(drawn.notices, undefined);
   const part = (id) => drawn.html.slice(drawn.html.lastIndexOf('<section', drawn.html.indexOf(`data-sf-composition-id="${id}"`)), drawn.html.indexOf(`data-sf-composition-id="${id}-p"`));
-  assert.match(part('n'), /<section class="p-y-8" data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
-  assert.match(part('m'), /<section class="p-y-8" data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
+  assert.match(part('n'), /<section class="p-y-8" data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(part('m'), /<section class="p-y-8" data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content">/u);
   // max-container-N widens a .container that is its descendant, never one on the same element.
   assert.match(part('w'), /<section class="p-y-8 max-container-7" data-sf-composition-id="w"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
   // Full: the Document's own width wins over the type's default, no frame part.
@@ -616,13 +616,13 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.deepEqual(output.diagnostics, []);
   assert.equal(output.notices, undefined);
   const html = output.html;
-  assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto container-flush" data-sf-composition-part="frame"><div class="space-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u, 'a container in a section has no second gutter');
   assert.match(html, /<div data-sf-composition-id="g"><div class="grid grid-col-1 md:grid-col-3 gap-4" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u);
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
-  assert.match(html, /<div data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
-  assert.match(html, /<div data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
-  assert.match(html, /<div data-sf-composition-id="bd"><sf-badge appearance="tonal" scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
-  assert.match(html, /<div data-sf-composition-id="i"><sf-icon icon="star" size="4"><\/sf-icon><\/div>/u);
+  assert.match(html, /<div class="flex" data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
+  assert.match(html, /<div class="flex" data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
+  assert.match(html, /<div class="flex" data-sf-composition-id="bd"><sf-badge appearance="tonal" scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
+  assert.match(html, /<div class="flex" data-sf-composition-id="i"><sf-icon icon="star" size="4"><\/sf-icon><\/div>/u);
   assert.deepEqual(checkPrintedElements(html), []);
   assert.doesNotMatch(html, /style=/u);
   for (const type of NEW_TYPES) {
@@ -647,4 +647,72 @@ test('G-36: the phone\'s value is printed as the base once a wider screen differ
   const area = extendRegistry().types.get('layout.area');
   assert.deepEqual(utilityClasses({ id: 'a', type: 'layout.area', props: { hidden: { md: true } } }, area), ['block', 'md:hidden']);
   assert.deepEqual(utilityClasses({ id: 'a', type: 'layout.area', props: { hidden: false } }, area), []);
+});
+
+test('blocks in a section or a container stand one rhythm apart; a nested container has no second gutter; a button can be a link', async () => {
+  const section = (id, props, children) => ({ id, type: 'layout.section', ...(props ? { props } : {}), slots: { default: children } });
+  const container = (id, props) => ({ id, type: 'layout.container', ...(props ? { props } : {}), slots: { default: [paragraph(`${id}-p`, 'Text')] } });
+  // The rhythm: space-3 unset, the Document's gap per screen, none with columns (the grid gap rules).
+  const drawn = await render(layout(
+    section('a', undefined, [paragraph('a-p', 'Text')]),
+    section('b', { gap: { xs: 2, lg: 5 } }, [paragraph('b-p', 'Text')]),
+    section('c', { columns: { md: 2 } }, [paragraph('c-p', 'Text')]),
+  ));
+  assert.match(drawn.html, /data-sf-composition-id="a"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content">/u);
+  assert.match(drawn.html, /data-sf-composition-id="b"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-2 lg:space-y-5 gap-2 lg:gap-5" data-sf-composition-part="content">/u);
+  assert.match(drawn.html, /data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="grid grid-col-1 md:grid-col-2" data-sf-composition-part="content">/u);
+  // A container inside a container's frame takes container-flush, at any depth; out of a breakout it keeps its gutter.
+  const nested = await render(layout(
+    section('s', undefined, [{ id: 'g', type: 'layout.grid', slots: { default: [container('deep')] } }]),
+    { id: 'w', type: 'layout.container', slots: { default: [section('k', { breakout: true }, [paragraph('k-p', 'Text')])] } },
+    container('alone'),
+  ));
+  assert.match(nested.html, /data-sf-composition-id="deep"><div class="container m-inline-auto container-flush" data-sf-composition-part="frame">/u);
+  assert.match(nested.html, /data-sf-composition-id="k"><div class="container m-inline-auto" data-sf-composition-part="frame">/u, 'a breakout leaves the container: its frame keeps the gutter');
+  assert.match(nested.html, /data-sf-composition-id="alone"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  // href: the button prints an anchor input; an unsafe address is refused.
+  const link = await render(layout({ id: 'l', type: 'element.button', data: { text: 'Docs', href: '/docs/' } }));
+  assert.match(link.html, /<sf-button href="\/docs\/" text="Docs"><\/sf-button>/u);
+  assert.deepEqual(checkPrintedElements(link.html), []);
+  assert.ok(codes(validate(layout({ id: 'u', type: 'element.button', data: { text: 'x', href: 'javascript:alert(1)' } }))).includes('unsafe_url'));
+  assert.equal(validate(layout({ id: 'v', type: 'element.button', data: { text: 'x', href: 'https://simai.io/' } })).valid, true);
+});
+
+test('G-36 holds for any type: a host type\'s own defaults and its parameter_defaults print the phone\'s base', async () => {
+  const cards = manifest('acme.cards', {
+    props_schema: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        cols: { type: 'integer', minimum: 1, maximum: 12, default: 1, 'x-simai-utility': { class: 'grid grid-col-{value}', responsive: true } },
+        gap: { type: 'integer', minimum: 0, maximum: 8, default: 4, 'x-simai-utility': { class: 'gap-{value}', responsive: true } },
+      },
+    },
+    parameter_defaults: { cols: { xs: 1, md: 3 } },
+    slots: { default: { min: 0, max: 12, categories: ['content'] } },
+  });
+  const registry = extendRegistry([cards], { 'acme.cards': ({ node, slots }) => `<div data-sf-composition-id="${node.id}">${slots.default || ''}</div>` });
+  assert.deepEqual(validateTypeManifest(cards, registry).diagnostics, []);
+  const node = (props) => ({ id: 'c', type: 'acme.cards', ...(props ? { props } : {}) });
+  assert.deepEqual(utilityClasses(node(), cards), ['grid', 'grid-col-1', 'md:grid-col-3'], 'unset: the type\'s parameter_defaults, the base printed');
+  assert.deepEqual(utilityClasses(node({ cols: { lg: 2 } }), cards), ['grid', 'grid-col-1', 'lg:grid-col-2'], 'the Document\'s value replaces the default whole; the schema default is the base');
+  assert.deepEqual(utilityClasses(node({ cols: 1, gap: { xs: 4, md: 6 } }), cards), ['gap-4', 'md:gap-6'], 'the default everywhere prints nothing; a gap that differs prints its base');
+  assert.deepEqual(utilityClasses(node({ cols: 1, gap: 4 }), cards), []);
+  const { html } = await render(layout(node()), { registry });
+  assert.match(html, /<div class="grid grid-col-1 md:grid-col-3" data-sf-composition-id="c">/u);
+});
+
+test('G-39: a paragraph\'s lead and muted modifiers print the SIMAI Framework text roles', async () => {
+  const lead = { id: 'l', type: 'content.paragraph', presentation: { modifiers: ['lead'] }, data: { content: [{ type: 'text', value: 'Lead' }] } };
+  const muted = { id: 'm', type: 'content.paragraph', presentation: { modifiers: ['muted'] }, data: { content: [{ type: 'text', value: 'Muted' }] } };
+  const { html, diagnostics } = await render(layout(lead, muted));
+  assert.deepEqual(diagnostics, []);
+  assert.match(html, /<p class="text-large color-on-surface-variant" data-sf-composition-id="l">Lead<\/p>/u);
+  assert.match(html, /<p class="color-on-surface-variant" data-sf-composition-id="m">Muted<\/p>/u);
+  assert.ok(known('color-on-surface-variant'));
+  assert.match(readFileSync(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8'), /\.text-large\b/u, 'text-large is the core sheet\'s large body text role');
+  const paragraph = extendRegistry().types.get('content.paragraph');
+  assert.equal(paragraph.version, '1.2.0');
+  const broken = { ...paragraph, presentation: { ...paragraph.presentation, modifier_utilities: { loud: ['text-5'], lead: ['Bad Class'] } } };
+  assert.deepEqual(codes(validateTypeManifest(broken)).filter((code) => code.startsWith('modifier_utilities')).sort(), ['modifier_utilities_invalid', 'modifier_utilities_unknown']);
 });

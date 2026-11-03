@@ -793,6 +793,15 @@
       },
       "mode": "leaf",
       "presentation": {
+        "modifier_utilities": {
+          "lead": [
+            "text-large",
+            "color-on-surface-variant"
+          ],
+          "muted": [
+            "color-on-surface-variant"
+          ]
+        },
         "modifiers": [
           "lead",
           "muted"
@@ -819,7 +828,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.paragraph",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "assets": [],
@@ -1507,6 +1516,11 @@
       "data_schema": {
         "additionalProperties": false,
         "properties": {
+          "href": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
           "text": {
             "maxLength": 200,
             "minLength": 1,

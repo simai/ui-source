@@ -120,7 +120,8 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
   }
   assert.deepEqual(types.get('content.outlet').profiles, ['ui-layout'], 'the outlet stands in a layout only');
   assert.deepEqual(types.get('content.document').profiles, ['structured-content'], 'the content root is no layout node');
-  for (const type of ['content.heading', 'content.paragraph']) assert.equal(types.get(type).version, '1.1.0', `${type} is unchanged`);
+  assert.equal(types.get('content.heading').version, '1.1.0', 'content.heading is unchanged');
+  assert.equal(types.get('content.paragraph').version, '1.2.0', 'content.paragraph 1.2.0 prints its modifiers (G-39)');
 });
 
 test('the generated registry file is the builtins', async () => {

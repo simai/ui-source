@@ -39,6 +39,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   "segment",
   "disabled",
   "native-type",
+  "href",
   "expanded",
   "pressed",
   "shortcut",
@@ -49,6 +50,15 @@ const COMPONENT_ATTRIBUTES = new Set([
   "id",
   "slot",
 ]);
+
+// href (1.4.0) takes the addresses a link may follow: a relative one, a
+// fragment, http(s), mailto and tel. Any other scheme (javascript:, data:)
+// draws the button as a button.
+const SAFE_HREF = /^(?:[^:/?#]*(?:[/?#]|$)|https?:|mailto:|tel:)/iu;
+function linkAddress(value) {
+  const href = String(value || "").trim();
+  return href && SAFE_HREF.test(href) ? href : "";
+}
 
 function applyButtonAttributes(host, button) {
   host?.forwardHostAttributes(button, {
@@ -187,6 +197,7 @@ class SfButton extends ButtonElement {
       size: this.size,
       iconPosition: this.iconPosition,
       nativeType: this.nativeType,
+      href: linkAddress(this.getAttribute("href")),
       radius: this.radius,
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
@@ -248,7 +259,7 @@ class SfButton extends ButtonElement {
     const target = event.composedPath?.()[0] ?? event.target;
     if (!isCommandShortcut(parsed) && isEditableTarget(target)) return;
     const button = this.querySelector(".sf-button");
-    if (!button || button.disabled || !button.getClientRects().length) return;
+    if (!button || button.disabled || button.getAttribute("aria-disabled") === "true" || !button.getClientRects().length) return;
     event.preventDefault();
     button.click();
   }
@@ -260,7 +271,8 @@ class SfButton extends ButtonElement {
   handlePress(event) {
     const button = this.querySelector(".sf-button");
     if (!button || !(event.target instanceof Node) || !button.contains(event.target)) return;
-    if (button.disabled) return;
+    // A link that is off (href, disabled or loading: 1.4.0) is not pressed either.
+    if (button.disabled || button.getAttribute("aria-disabled") === "true") return;
     this.sfEmit("press", {});
   }
 
@@ -312,6 +324,7 @@ class SfButton extends ButtonElement {
       loading: this.loading,
       disabled: this.disabled,
       nativeType: this.nativeType,
+      href: this.getAttribute("href") || "",
       shortcut: this.shortcut,
       shortcutListen: this.shortcutListen,
       ariaLabel: this.getAttribute("aria-label") || "",

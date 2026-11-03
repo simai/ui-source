@@ -13,7 +13,17 @@
 //     narrower centred measure on the desktop), layout.grid (three columns on
 //     the desktop, one on the phone, a gap between) and layout.spacer (the
 //     height of space-6);
-//   - the page never scrolls sideways.
+//   - the page never scrolls sideways;
+//   - blocks in a section stand one rhythm apart: space-3, the prototype's
+//     24 px at the desktop (16 px on the phone);
+//   - a container inside a section has no second gutter: its text is exactly
+//     as wide as the section's own (366 px at 390);
+//   - sf-button 1.4.0 href: element.button with an address draws an <a> with
+//     the look of the button beside it (no underline), reached by Tab and
+//     followed by Enter; disabled, the link has no href, says aria-disabled
+//     and is not reached; an unsafe scheme draws a button;
+//   - G-39: a lead paragraph is the large body text (20 px at the desktop,
+//     the prototype's 19, 16 on the phone) in the variant ink.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -34,6 +44,7 @@ const document = {
     {id: 'first', type: 'layout.section', slots: {default: [
       {id: 'first-h', type: 'content.heading', data: {level: 2, content: text('Как здесь работать')}},
       paragraph('first-p', long),
+      {id: 'lead', type: 'content.paragraph', presentation: {modifiers: ['lead']}, data: {content: text('Одна-две строки о главном.')}},
     ]}},
     {id: 'own', type: 'layout.section', props: {width: 'full', padding_y: 0}, slots: {default: [paragraph('own-p', 'Своя ширина и свои отступы.')]}},
     {id: 'cards', type: 'layout.section', props: {background: 'container'}, slots: {default: [
@@ -42,6 +53,7 @@ const document = {
     {id: 'parts', type: 'layout.section', slots: {default: [
       {id: 'box', type: 'layout.container', slots: {default: [paragraph('box-p', long)]}},
       {id: 'button', type: 'element.button', data: {text: 'Подробнее'}, props: {icon: 'arrow_forward', icon_position: 'end'}},
+      {id: 'link', type: 'element.button', data: {text: 'Подробнее', href: '#docs'}, props: {icon: 'arrow_forward', icon_position: 'end'}},
       {id: 'icon-button', type: 'element.button-icon', data: {label: 'Нравится'}},
       {id: 'badge', type: 'element.badge'},
       {id: 'icon', type: 'element.icon', props: {size: '4'}},
@@ -58,7 +70,8 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script>
-<style>body{margin:0;background:var(--sf-surface-0)}</style></head><body>${output.html}</body></html>`;
+<style>body{margin:0;background:var(--sf-surface-0)}</style></head><body>${output.html}
+<div id="raw"><sf-button id="raw-off" href="#off" disabled text="Выключено"></sf-button><sf-button id="raw-unsafe" href="javascript:alert(1)" text="Небезопасно"></sf-button></div></body></html>`;
 
 const types = {'.js': 'text/javascript', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.woff2': 'font/woff2'};
 const server = createServer((request, response) => {
@@ -93,7 +106,7 @@ try {
       // The section's own utilities, the smart elements and the icon font settle.
       await tab.waitForFunction(() => parseFloat(getComputedStyle(document.querySelector('[data-sf-composition-id="first"]')).paddingTop) > 0, null, {timeout: 20000})
         .catch(() => failures.push({name: `${label}: the section's utilities never arrived`}));
-      await tab.waitForFunction(() => ['sf-button', 'sf-button-icon', 'sf-badge', 'sf-icon'].every((name) => customElements.get(name)) && document.querySelector('[data-sf-composition-id="button"] button'), null, {timeout: 20000})
+      await tab.waitForFunction(() => ['sf-button', 'sf-button-icon', 'sf-badge', 'sf-icon'].every((name) => customElements.get(name)) && document.querySelector('[data-sf-composition-id="button"] button') && document.querySelector('#raw-unsafe .sf-button'), null, {timeout: 20000})
         .catch(() => failures.push({name: `${label}: the smart elements never drew`}));
       await tab.waitForFunction(() => !document.documentElement.hasAttribute('data-sf-icons'), null, {timeout: 15000}).catch(() => {});
       await tab.evaluate(() => document.fonts.ready);
@@ -110,7 +123,23 @@ try {
         const root = document.documentElement.getBoundingClientRect();
         const result = {
           root: {left: root.left, right: root.right},
-          space8: length('var(--sf-space-8)'), space6: length('var(--sf-space-6)'),
+          space8: length('var(--sf-space-8)'), space6: length('var(--sf-space-6)'), space3: length('var(--sf-space-3)'),
+          rhythm: {heading: node('first-h').getBoundingClientRect().bottom, text: node('first-p').getBoundingClientRect().top, box: node('box').getBoundingClientRect().bottom, button: node('button').getBoundingClientRect().top},
+          lead: {size: parseFloat(style('lead').fontSize), line: parseFloat(style('lead').lineHeight), color: style('lead').color, body: parseFloat(style('first-p').fontSize), bodyColor: style('first-p').color},
+          firstTop: node('first-h').getBoundingClientRect().top - node('first').getBoundingClientRect().top,
+          link: (() => {
+            const anchor = node('link').querySelector('.sf-button');
+            const button = node('button').querySelector('.sf-button');
+            // The root's own font and colour are the browser's (a button's, a link's); the ink drawn is the label's.
+            const look = (element) => { const s = getComputedStyle(element); const label = getComputedStyle(element.querySelector('.sf-button-text-container')); return {background: s.backgroundColor, color: s.color, height: s.height, width: s.width, padding: s.padding, radius: s.borderRadius, display: s.display, decoration: s.textDecorationLine, label: `${label.font} ${label.color} ${label.textDecorationLine}`}; };
+            const off = document.querySelector('#raw-off .sf-button');
+            const unsafe = document.querySelector('#raw-unsafe .sf-button');
+            return {
+              tag: anchor?.localName, href: anchor?.getAttribute('href'), look: anchor && look(anchor), buttonLook: button && look(button),
+              off: {tag: off?.localName, href: off?.hasAttribute('href'), role: off?.getAttribute('role'), disabled: off?.getAttribute('aria-disabled')},
+              unsafe: {tag: unsafe?.localName, href: unsafe?.hasAttribute('href')},
+            };
+          })(),
           first: {box: box(node('first')), padTop: parseFloat(style('first').paddingTop), padBottom: parseFloat(style('first').paddingBottom), heading: box(node('first-h')), text: box(node('first-p'))},
           own: {box: box(node('own')), padTop: parseFloat(style('own').paddingTop), text: box(node('own-p')), frame: !!node('own').querySelector('[data-sf-composition-part]')},
           cards: [1, 2, 3].map((n) => box(node(`card-${n}`))),
@@ -150,6 +179,36 @@ try {
       check('content.divider draws a line', m.line.box.width > 100 && m.line.border >= 1, {line: m.line});
       check('layout.spacer is space-6 high', near(m.gap.height, m.space6), {gap: m.gap.height, space6: m.space6});
       check('the page does not scroll sideways', m.sideways <= 0, {sideways: m.sideways});
+      // The rhythm between blocks: space-3 (24 px at 1440, the prototype's value).
+      check('a heading and the text after it stand space-3 apart', near(m.rhythm.text - m.rhythm.heading, m.space3), {gap: m.rhythm.text - m.rhythm.heading, space3: m.space3});
+      check('a container and the block after it stand space-3 apart', near(m.rhythm.button - m.rhythm.box, m.space3), {gap: m.rhythm.button - m.rhythm.box, space3: m.space3});
+      if (width === 1440) check('the rhythm is the prototype\'s 24 px at the desktop', near(m.space3, 24), {space3: m.space3});
+      // No second gutter: the container's text is exactly as wide as the section's own.
+      check('a container in a section is as wide as the section\'s text on the phone', width >= 1024 || near(m.box.width, m.sectionText.width), {box: m.box.width, section: m.sectionText.width});
+      if (width === 390) check('the phone measure is 366 px', near(m.box.width, 366), {box: m.box.width});
+      // G-39: the lead paragraph.
+      check('a lead paragraph is the large body text in the variant ink', near(m.lead.size, width >= 1024 ? 20 : 16) && m.lead.size > m.lead.body && m.lead.color !== m.lead.bodyColor, {lead: m.lead});
+      // sf-button href.
+      const same = m.link.look && m.link.buttonLook && ['background', 'color', 'height', 'width', 'padding', 'radius', 'display', 'label'].every((key) => m.link.look[key] === m.link.buttonLook[key]);
+      check('a button keeps its own width, as the prototype\'s inline button', m.button && m.button.box.width < m.sectionText.width / 2, {button: m.button?.box.width, section: m.sectionText.width});
+      check('a button with href draws a link', m.link.tag === 'a' && m.link.href === '#docs', {link: m.link});
+      check('the link has the button\'s look, no underline', same && m.link.look.decoration === 'none', {look: m.link.look, buttonLook: m.link.buttonLook});
+      check('disabled, the link has no href and says aria-disabled', m.link.off.tag === 'a' && !m.link.off.href && m.link.off.role === 'link' && m.link.off.disabled === 'true', {off: m.link.off});
+      check('an unsafe scheme draws a button', m.link.unsafe.tag === 'button' && !m.link.unsafe.href, {unsafe: m.link.unsafe});
+      // The keyboard: Tab reaches the link (never the disabled one), Enter follows it.
+      await tab.evaluate(() => { document.querySelector('[data-sf-composition-id="button"] .sf-button').focus(); });
+      const reached = [];
+      for (let step = 0; step < 6; step += 1) {
+        await tab.keyboard.press('Tab');
+        reached.push(await tab.evaluate(() => document.activeElement?.closest('[data-sf-composition-id], #raw-off')?.getAttribute('data-sf-composition-id') || document.activeElement?.closest('#raw-off')?.id || document.activeElement?.localName));
+        if (reached.at(-1) === 'link') break;
+      }
+      check('Tab reaches the link next', reached[0] === 'link', {reached});
+      await tab.keyboard.press('Enter');
+      await tab.waitForFunction(() => location.hash === '#docs', null, {timeout: 3000}).catch(() => {});
+      check('Enter follows the link', await tab.evaluate(() => location.hash) === '#docs');
+      const offReached = await tab.evaluate(() => { const off = document.querySelector('#raw-off .sf-button'); off.focus(); return document.activeElement === off; });
+      check('the disabled link is not focusable', !offReached);
       if (process.env.PARITY_SHOTS) await tab.screenshot({path: join(process.env.PARITY_SHOTS, `composition-parity-${theme}-${width}.png`), fullPage: true});
       await tab.close();
     }

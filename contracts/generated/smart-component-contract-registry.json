@@ -261,6 +261,7 @@
             "loading",
             "disabled",
             "native-type",
+            "href",
             "shortcut",
             "shortcut-listen",
             "expanded",
@@ -292,7 +293,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "3de5a307eb2e369f589467b583f5f6cef829af536d24bbbd94e89bb75cc379c1",
+      "manifest_sha256": "55cf1240a5648ed3fd1d8f2c910cf235cf69c21fe2eec14713ec21aad8746039",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
