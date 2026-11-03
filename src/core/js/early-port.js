@@ -11,7 +11,7 @@
 //       "first": {"intent": "query.change", "payload": {"query": {…}}}
 //     }</script>
 //     …
-//   </sf-data-view>
+//   </sf-view>
 //
 // Core reads the island when it runs (DOMContentLoaded at the latest, before
 // any component's code), sends `first` once, and keeps the answer's promise
