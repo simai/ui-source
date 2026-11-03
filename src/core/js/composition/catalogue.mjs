@@ -11,12 +11,35 @@
 
 import { canonical, isPlainObject } from './canonical.mjs';
 
-/** The fixed groups, in catalogue order. A product adds its own group by its namespace. */
-export const CATALOGUE_GROUPS = Object.freeze(['text', 'media', 'structure', 'page-parts', 'marketing', 'data', 'forms']);
+/**
+ * The fixed groups, in catalogue order. A product adds its own group by its
+ * namespace. Since the visual parity pass (2026-11-04) Elements (smart
+ * elements a block prints) and Layout (sections, containers, grids) replace
+ * Structure, which said nothing to an author.
+ */
+export const CATALOGUE_GROUPS = Object.freeze(['text', 'media', 'elements', 'layout', 'page-parts', 'marketing', 'data', 'forms']);
+/** Former group names a type may still give, and the group each now means (dated aliases). */
+export const CATALOGUE_GROUP_ALIASES = Object.freeze({ structure: Object.freeze({ group: 'layout', until: '2027-01-01' }) });
+/**
+ * Each fixed group's icon (a SIMAI Framework icon name) and word
+ * (sf.composition.catalogue.group.<group>, editor-words.mjs): the catalogue's
+ * sections draw an icon and a name from here.
+ */
+export const CATALOGUE_GROUP_TABLE = Object.freeze({
+  text: Object.freeze({ icon: 'notes', label_key: 'sf.composition.catalogue.group.text' }),
+  media: Object.freeze({ icon: 'image', label_key: 'sf.composition.catalogue.group.media' }),
+  elements: Object.freeze({ icon: 'interests', label_key: 'sf.composition.catalogue.group.elements' }),
+  layout: Object.freeze({ icon: 'view_quilt', label_key: 'sf.composition.catalogue.group.layout' }),
+  'page-parts': Object.freeze({ icon: 'web', label_key: 'sf.composition.catalogue.group.page_parts' }),
+  marketing: Object.freeze({ icon: 'campaign', label_key: 'sf.composition.catalogue.group.marketing' }),
+  data: Object.freeze({ icon: 'dataset', label_key: 'sf.composition.catalogue.group.data' }),
+  forms: Object.freeze({ icon: 'edit_square', label_key: 'sf.composition.catalogue.group.forms' }),
+});
 /** The two tabs the catalogue opens on: what is written into a text flow, and what a page is built from. */
 export const CATALOGUE_TABS = Object.freeze(['text', 'blocks']);
 const TEXT_TAB_GROUPS = new Set(['text', 'media']);
-const CATALOGUE_FIELDS = new Set(['group', 'tab', 'label_key', 'help_key', 'keywords', 'preview', 'order']);
+const CATALOGUE_FIELDS = new Set(['group', 'tab', 'label_key', 'help_key', 'keywords', 'preview', 'order', 'icon']);
+const ICON_NAME = /^[a-z0-9][a-z0-9_]{0,63}$/u;
 const VARIANT_FIELDS = new Set(['id', 'label_key', 'preview', 'props', 'data', 'presentation', 'slots']);
 const SLOT_EXTRA_FIELDS = new Set(['label_key', 'empty_key', 'groups']);
 const STABLE_KEY = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/u;
@@ -28,9 +51,12 @@ const NODE_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/u;
 // listed as null stands only inside its parent or as a root and is not offered.
 export const BUILTIN_CATALOGUE = Object.freeze({
   'layout.page': null,
-  'layout.section': 'structure',
-  'layout.columns': 'structure',
-  'layout.area': 'structure',
+  'layout.section': 'layout',
+  'layout.columns': 'layout',
+  'layout.area': 'layout',
+  'layout.container': 'layout',
+  'layout.grid': 'layout',
+  'layout.spacer': 'layout',
   'layout.regions': null,
   'layout.region': null,
   'layout.scope': null,
@@ -41,7 +67,7 @@ export const BUILTIN_CATALOGUE = Object.freeze({
   'content.list-item': null,
   'content.quote': 'text',
   'content.code': 'text',
-  'content.divider': 'text',
+  'content.divider': 'elements',
   'content.alert': 'text',
   'content.math': 'text',
   'content.table': 'data',
@@ -50,14 +76,52 @@ export const BUILTIN_CATALOGUE = Object.freeze({
   'content.file': 'media',
   'content.html': 'media',
   'content.diagram': 'media',
-  'content.details': 'structure',
-  'content.tabs': 'structure',
+  'content.details': 'text',
+  'content.tabs': 'text',
   'content.tab': null,
-  'content.steps': 'structure',
+  'content.steps': 'text',
   'content.step': null,
-  'content.grid': 'structure',
-  'content.card': 'structure',
+  'content.grid': 'layout',
+  'content.card': 'elements',
   'content.outlet': null,
+  'element.button': 'elements',
+  'element.button-icon': 'elements',
+  'element.badge': 'elements',
+  'element.icon': 'elements',
+});
+
+// The icon of each offered built-in type (a SIMAI Framework icon name, as the
+// prototype draws the catalogue; a type's own catalogue.icon wins).
+export const BUILTIN_CATALOGUE_ICONS = Object.freeze({
+  'layout.section': 'crop_landscape',
+  'layout.columns': 'view_column',
+  'layout.area': 'edit_note',
+  'layout.container': 'width_normal',
+  'layout.grid': 'grid_on',
+  'layout.spacer': 'height',
+  'content.heading': 'title',
+  'content.paragraph': 'notes',
+  'content.list': 'format_list_bulleted',
+  'content.quote': 'format_quote',
+  'content.code': 'code',
+  'content.divider': 'horizontal_rule',
+  'content.alert': 'info',
+  'content.math': 'function',
+  'content.table': 'table',
+  'content.figure': 'image',
+  'content.media': 'art_track',
+  'content.file': 'download',
+  'content.html': 'html',
+  'content.diagram': 'schema',
+  'content.details': 'expand_circle_down',
+  'content.tabs': 'tab',
+  'content.steps': 'format_list_numbered',
+  'content.grid': 'grid_view',
+  'content.card': 'crop_portrait',
+  'element.button': 'smart_button',
+  'element.button-icon': 'add_circle',
+  'element.badge': 'label',
+  'element.icon': 'star',
 });
 
 // Documents and manifests are JSON: a copy through JSON is a deep copy.
@@ -67,12 +131,17 @@ const namespaceOf = (type) => String(type || '').split('.')[0];
 
 /** Whether a group name may stand in a type's catalogue entry: a fixed group, or the type's own namespace. */
 export function groupAllowed(group, type) {
-  return CATALOGUE_GROUPS.includes(group) || (typeof group === 'string' && group === namespaceOf(type));
+  return CATALOGUE_GROUPS.includes(group) || Object.hasOwn(CATALOGUE_GROUP_ALIASES, group) || (typeof group === 'string' && group === namespaceOf(type));
+}
+
+/** The group a name stands for now: a dated alias gives its new group. */
+export function catalogueGroup(group) {
+  return typeof group === 'string' && Object.hasOwn(CATALOGUE_GROUP_ALIASES, group) ? CATALOGUE_GROUP_ALIASES[group].group : group;
 }
 
 /**
  * A type's catalogue entry, or null when the type is not offered:
- * {type, group, tab, label_key?, help_key?, keywords, preview?, order, variants}.
+ * {type, group, tab, icon?, label_key?, help_key?, keywords, preview?, order, variants}.
  * A product type without `catalogue` falls into its namespace's group.
  */
 export function catalogueEntry(manifest) {
@@ -84,12 +153,15 @@ export function catalogueEntry(manifest) {
     else group = namespaceOf(manifest.type);
   }
   if (!group) return null;
+  group = catalogueGroup(group);
+  const icon = own?.icon ?? BUILTIN_CATALOGUE_ICONS[manifest.type];
   const tab = own?.tab ?? (TEXT_TAB_GROUPS.has(group) ? 'text' : 'blocks');
   return canonical({
     type: manifest.type,
     version: manifest.version,
     group,
     tab,
+    ...(icon ? { icon } : {}),
     ...(own?.label_key ? { label_key: own.label_key } : {}),
     ...(own?.help_key ? { help_key: own.help_key } : {}),
     keywords: isPlainObject(own?.keywords) ? own.keywords : {},
@@ -138,7 +210,7 @@ export function slotAccepts(registry, parentManifest, slotName, childType) {
   if (slot.categories && !slot.categories.includes(child.category)) return false;
   if (slot.groups) {
     const entry = catalogueEntry(child);
-    if (!entry || !slot.groups.includes(entry.group)) return false;
+    if (!entry || !slot.groups.map(catalogueGroup).includes(entry.group)) return false;
   }
   return true;
 }
@@ -220,6 +292,7 @@ export function validateCatalogueFields(manifest) {
         diagnostics.push(diagnostic('catalogue_keywords_invalid', '$.catalogue.keywords', 'keywords are up to 20 words per locale'));
       }
       if (entry.order !== undefined && (!Number.isInteger(entry.order) || entry.order < 0 || entry.order > 1000)) diagnostics.push(diagnostic('catalogue_order_invalid', '$.catalogue.order', 'order is 0 to 1000'));
+      if (entry.icon !== undefined && (typeof entry.icon !== 'string' || !ICON_NAME.test(entry.icon))) diagnostics.push(diagnostic('catalogue_icon_invalid', '$.catalogue.icon', 'icon is a SIMAI Framework icon name'));
       if (entry.preview !== undefined && (typeof entry.preview !== 'string' || !entry.preview || entry.preview.length > 2048)) diagnostics.push(diagnostic('catalogue_preview_invalid', '$.catalogue.preview', 'preview is an image address'));
     }
   }

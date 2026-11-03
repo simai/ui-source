@@ -2,15 +2,15 @@
   "catalogue": {
     "builtin": {
       "content.alert": "text",
-      "content.card": "structure",
+      "content.card": "elements",
       "content.code": "text",
-      "content.details": "structure",
+      "content.details": "text",
       "content.diagram": "media",
-      "content.divider": "text",
+      "content.divider": "elements",
       "content.document": null,
       "content.figure": "media",
       "content.file": "media",
-      "content.grid": "structure",
+      "content.grid": "layout",
       "content.heading": "text",
       "content.html": "media",
       "content.list": "text",
@@ -21,27 +21,106 @@
       "content.paragraph": "text",
       "content.quote": "text",
       "content.step": null,
-      "content.steps": "structure",
+      "content.steps": "text",
       "content.tab": null,
       "content.table": "data",
-      "content.tabs": "structure",
-      "layout.area": "structure",
-      "layout.columns": "structure",
+      "content.tabs": "text",
+      "element.badge": "elements",
+      "element.button": "elements",
+      "element.button-icon": "elements",
+      "element.icon": "elements",
+      "layout.area": "layout",
+      "layout.columns": "layout",
+      "layout.container": "layout",
+      "layout.grid": "layout",
       "layout.page": null,
       "layout.region": null,
       "layout.regions": null,
       "layout.scope": null,
-      "layout.section": "structure"
+      "layout.section": "layout",
+      "layout.spacer": "layout"
+    },
+    "group_aliases": {
+      "structure": {
+        "group": "layout",
+        "until": "2027-01-01"
+      }
+    },
+    "group_table": {
+      "data": {
+        "icon": "dataset",
+        "label_key": "sf.composition.catalogue.group.data"
+      },
+      "elements": {
+        "icon": "interests",
+        "label_key": "sf.composition.catalogue.group.elements"
+      },
+      "forms": {
+        "icon": "edit_square",
+        "label_key": "sf.composition.catalogue.group.forms"
+      },
+      "layout": {
+        "icon": "view_quilt",
+        "label_key": "sf.composition.catalogue.group.layout"
+      },
+      "marketing": {
+        "icon": "campaign",
+        "label_key": "sf.composition.catalogue.group.marketing"
+      },
+      "media": {
+        "icon": "image",
+        "label_key": "sf.composition.catalogue.group.media"
+      },
+      "page-parts": {
+        "icon": "web",
+        "label_key": "sf.composition.catalogue.group.page_parts"
+      },
+      "text": {
+        "icon": "notes",
+        "label_key": "sf.composition.catalogue.group.text"
+      }
     },
     "groups": [
       "text",
       "media",
-      "structure",
+      "elements",
+      "layout",
       "page-parts",
       "marketing",
       "data",
       "forms"
     ],
+    "icons": {
+      "content.alert": "info",
+      "content.card": "crop_portrait",
+      "content.code": "code",
+      "content.details": "expand_circle_down",
+      "content.diagram": "schema",
+      "content.divider": "horizontal_rule",
+      "content.figure": "image",
+      "content.file": "download",
+      "content.grid": "grid_view",
+      "content.heading": "title",
+      "content.html": "html",
+      "content.list": "format_list_bulleted",
+      "content.math": "function",
+      "content.media": "art_track",
+      "content.paragraph": "notes",
+      "content.quote": "format_quote",
+      "content.steps": "format_list_numbered",
+      "content.table": "table",
+      "content.tabs": "tab",
+      "element.badge": "label",
+      "element.button": "smart_button",
+      "element.button-icon": "add_circle",
+      "element.icon": "star",
+      "layout.area": "edit_note",
+      "layout.columns": "view_column",
+      "layout.container": "width_normal",
+      "layout.grid": "grid_on",
+      "layout.section": "crop_landscape",
+      "layout.spacer": "height"
+    },
     "tabs": [
       "text",
       "blocks"
@@ -901,6 +980,7 @@
     }
   },
   "parameter_sets": {
+    "defaults_field": "parameter_defaults",
     "field": "parameter_sets",
     "part_attribute": "data-sf-composition-part",
     "sets": {

@@ -9,7 +9,7 @@ import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER } from '../src/core/js/composition/editor-words.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
 import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
-import { BUILTIN_CATALOGUE, CATALOGUE_GROUPS, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
+import { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
 import { BINDING_STATES, DATA_SHAPES, SOURCE_PORT } from '../src/core/js/composition/data.mjs';
 import { UTILITY_BREAKPOINTS } from '../src/core/js/composition/utilities.mjs';
 import { parameterSetTable } from '../src/core/js/composition/parameter-sets.mjs';
@@ -82,11 +82,13 @@ const wordsOutput = `${JSON.stringify(JSON.parse(stableStringify({
 })), null, 2)}\n`;
 const blocksOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.blocks', 1),
-  catalogue: { groups: CATALOGUE_GROUPS, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE, variant_extension: 'simai.composition:variant' },
+  // Since 2026-11-04: each group's icon and word, the groups' dated aliases,
+  // and each offered built-in type's icon (a type's own catalogue.icon wins).
+  catalogue: { groups: CATALOGUE_GROUPS, group_table: CATALOGUE_GROUP_TABLE, group_aliases: CATALOGUE_GROUP_ALIASES, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE, icons: BUILTIN_CATALOGUE_ICONS, variant_extension: 'simai.composition:variant' },
   utilities: { keyword: 'x-simai-utility', breakpoints: UTILITY_BREAKPOINTS, modifiers_extension: 'simai.composition:modifiers' },
   data: { shapes: DATA_SHAPES, states: BINDING_STATES, extension: 'simai.composition:data', runtime_owner: 'section', source_port: SOURCE_PORT },
   composed: { extension: 'simai.composition:composed', renderer: 'composed', text_path: '<node id>/<field>' },
-  parameter_sets: { field: 'parameter_sets', part_attribute: 'data-sf-composition-part', sets: parameterSetTable() },
+  parameter_sets: { field: 'parameter_sets', defaults_field: 'parameter_defaults', part_attribute: 'data-sf-composition-part', sets: parameterSetTable() },
   elements: elementTable,
 })), null, 2)}\n`;
 const current = (path) => { try { return readFileSync(path, 'utf8'); } catch { return null; } };

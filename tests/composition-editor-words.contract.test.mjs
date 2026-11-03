@@ -10,7 +10,7 @@ import {
   projectEditorFields,
   renderFieldFallback,
 } from '../src/core/js/composition/index.mjs';
-import { editorFieldKeys } from '../src/core/js/composition/editor-words.mjs';
+import { catalogueWordKeys, editorFieldKeys } from '../src/core/js/composition/editor-words.mjs';
 import { language } from '../src/core/js/page-language.js';
 
 // simai/ui-source#65: a host that draws a parameters form from a built-in
@@ -19,7 +19,8 @@ import { language } from '../src/core/js/page-language.js';
 // The words of a type's named places (one block editor, 2026-11-03) are read
 // from the same dictionary: a slot's label_key and empty_key.
 const slotKeys = () => BUILTIN_TYPE_MANIFESTS.flatMap((manifest) => Object.values(manifest.slots || {}).flatMap((slot) => [slot.label_key, slot.empty_key].filter(Boolean)));
-const everyKey = () => [...new Set([...BUILTIN_EDITOR_MANIFESTS.flatMap((manifest) => manifest.fields.flatMap(editorFieldKeys)), ...slotKeys()])];
+// And the catalogue's (2026-11-04): the groups, the types and variants that name themselves.
+const everyKey = () => [...new Set([...BUILTIN_EDITOR_MANIFESTS.flatMap((manifest) => manifest.fields.flatMap(editorFieldKeys)), ...slotKeys(), ...catalogueWordKeys()])];
 
 test('every label_key, help_key and stable choice of the built-in editor manifests has a word in en and ru', () => {
   const keys = everyKey();
@@ -51,6 +52,10 @@ test('editorFieldMessages resolves a manifest in a named language and in the pag
   const node = { closest: () => ({ getAttribute: () => 'ru' }) };
   assert.equal(editorFieldMessages(figure, { node })['sf.composition.content_figure.alt'], 'Описание картинки', 'the language of the node');
   assert.equal(Object.keys(editorFieldMessages()).length, everyKey().length, 'no manifest: every built-in one');
+  const catalogueRu = editorFieldMessages(undefined, { locale: 'ru' });
+  assert.equal(catalogueRu['sf.composition.catalogue.group.elements'], 'Элементы');
+  assert.equal(catalogueRu['sf.composition.catalogue.group.layout'], 'Макет');
+  assert.equal(catalogueRu['sf.composition.catalogue.type.element_button_icon'], 'Кнопка-значок');
   assert.equal(Composition.editorFieldMessages, editorFieldMessages);
   assert.deepEqual(editorFieldMessages({ fields: [{ label_key: 'host.own.label', help_key: 'host.own.help', choices: ['a'] }] }, { locale: 'ru' }), {}, 'a host key is left to the host');
 });

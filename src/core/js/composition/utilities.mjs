@@ -15,6 +15,7 @@
 // knows is left out of the HTML and reported: a notice, never a refusal.
 
 import { isPlainObject } from './canonical.mjs';
+import { effectiveProps } from './parameter-sets.mjs';
 
 /** The SIMAI Framework's breakpoints, narrowest first (core/js/breakpoints.js; xs has no prefix). */
 export const UTILITY_BREAKPOINTS = Object.freeze(['xs', 'sm', 'md', 'lg', 'xl', 'xxl']);
@@ -106,7 +107,9 @@ export function utilityPartClasses(node, manifest) {
   const parts = {};
   const properties = manifest?.props_schema?.properties;
   if (!isPlainObject(properties)) return parts;
-  const props = isPlainObject(node?.props) ? node.props : {};
+  // A property the node leaves unset prints the type's parameter default
+  // (parameter_defaults, type manifest 1.5.0); the node's own value wins.
+  const props = effectiveProps(node, manifest);
   for (const [key, schema] of Object.entries(properties)) {
     if (!(key in props)) continue;
     for (const declaration of declarationsOf(schema)) {

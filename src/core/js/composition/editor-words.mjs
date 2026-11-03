@@ -1,5 +1,6 @@
 import { localeText, pageLocale } from '../page-language.js';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
+import { CATALOGUE_GROUP_TABLE } from './catalogue.mjs';
 
 // The words of the built-in editor manifests (simai/ui-source#65): every
 // label_key, help_key and `<label_key>.<choice>` of a choice that is a stable
@@ -224,6 +225,116 @@ const EN = {
     label: 'Caption',
     label_help: 'The formula\'s name for screen readers',
   }),
+  // The layout and element types of the one block editor (2026-11-04).
+  ...words('layout_spacer', {
+    size: 'Height',
+    size_help: 'From 1 to 8 steps, per screen',
+  }),
+  ...words('element_button', {
+    text: 'Text',
+    text_help: 'The words on the button',
+    appearance: 'Look',
+    appearance_help: 'How the button stands out',
+    'appearance.default': 'Filled',
+    'appearance.tonal': 'Tonal',
+    'appearance.outline': 'Outlined',
+    'appearance.link': 'Link',
+    'appearance.surface': 'On the surface',
+    size: 'Size',
+    size_help: 'Small, regular or large',
+    icon: 'Icon',
+    icon_help: 'A SIMAI Framework icon name, such as arrow_forward',
+    icon_position: 'Icon side',
+    icon_position_help: 'Before or after the words',
+    'icon_position.start': 'Before',
+    'icon_position.end': 'After',
+    scheme: 'Colour',
+    scheme_help: 'The colour role of the button',
+    'scheme.primary': 'Primary',
+    'scheme.secondary': 'Secondary',
+  }),
+  ...words('element_button_icon', {
+    icon: 'Icon',
+    icon_help: 'A SIMAI Framework icon name, such as favorite',
+    label: 'Label for screen readers',
+    label_help: 'What the button does, said aloud',
+    appearance: 'Look',
+    appearance_help: 'How the button stands out',
+    'appearance.default': 'Filled',
+    'appearance.tonal': 'Tonal',
+    'appearance.outline': 'Outlined',
+    'appearance.surface': 'On the surface',
+    'appearance.ghost': 'No background',
+    size: 'Size',
+    size_help: 'Small, regular or large',
+    scheme: 'Colour',
+    scheme_help: 'The colour role of the button',
+    'scheme.primary': 'Primary',
+    'scheme.secondary': 'Secondary',
+  }),
+  ...words('element_badge', {
+    text: 'Text',
+    text_help: 'The words on the badge',
+    appearance: 'Look',
+    appearance_help: 'How the badge stands out',
+    'appearance.main': 'Filled',
+    'appearance.tonal': 'Tonal',
+    'appearance.outline': 'Outlined',
+    scheme: 'Colour',
+    scheme_help: 'The colour role of the badge',
+    'scheme.neutral': 'Neutral',
+    'scheme.primary': 'Primary',
+    'scheme.secondary': 'Secondary',
+    'scheme.tertiary': 'Tertiary',
+    size: 'Size',
+    size_help: 'From small to regular',
+    icon: 'Icon',
+    icon_help: 'A SIMAI Framework icon name before the words',
+  }),
+  ...words('element_icon', {
+    icon: 'Icon',
+    icon_help: 'A SIMAI Framework icon name, such as star',
+    size: 'Size',
+    size_help: 'A step of the size ladder',
+    label: 'Label for screen readers',
+    label_help: 'Leave empty when the icon only decorates',
+  }),
+  // The catalogue: groups, the built-in types that name themselves, variants.
+  ...words('catalogue.group', {
+    text: 'Text',
+    media: 'Media',
+    elements: 'Elements',
+    layout: 'Layout',
+    page_parts: 'Page parts',
+    marketing: 'Marketing',
+    data: 'Data',
+    forms: 'Forms',
+  }),
+  ...words('catalogue.type', {
+    layout_container: 'Container',
+    layout_grid: 'Grid',
+    layout_spacer: 'Empty space',
+    element_button: 'Button',
+    element_button_icon: 'Icon button',
+    element_badge: 'Badge',
+    element_icon: 'Icon',
+  }),
+  ...words('catalogue.variant', {
+    'layout_section.plain': 'Empty',
+    'layout_section.soft': 'On a soft background',
+    'layout_section.accent': 'On an accent background',
+    'layout_section.text': 'With a text area',
+    'layout_section.two_columns': 'Two columns',
+    'layout_container.narrow': 'Narrow, for text',
+    'layout_container.normal': 'Page width',
+    'layout_container.soft': 'On a soft background',
+    'layout_grid.cards_2': 'Two cards',
+    'layout_grid.cards_3': 'Three cards',
+    'layout_grid.cards_4': 'Four cards',
+    'element_button.plain': 'Button',
+    'element_button.icon': 'With an icon',
+    'element_button.outline': 'Outlined',
+  }),
 };
 
 const RU = {
@@ -430,6 +541,114 @@ const RU = {
     label: 'Подпись',
     label_help: 'Название формулы для программ чтения с экрана',
   }),
+  ...words('layout_spacer', {
+    size: 'Высота',
+    size_help: 'От 1 до 8 шагов, для каждого экрана',
+  }),
+  ...words('element_button', {
+    text: 'Текст',
+    text_help: 'Слова на кнопке',
+    appearance: 'Вид',
+    appearance_help: 'Насколько кнопка заметна',
+    'appearance.default': 'Заливка',
+    'appearance.tonal': 'Тональная',
+    'appearance.outline': 'Контур',
+    'appearance.link': 'Ссылка',
+    'appearance.surface': 'На поверхности',
+    size: 'Размер',
+    size_help: 'Маленькая, обычная или крупная',
+    icon: 'Значок',
+    icon_help: 'Имя значка SIMAI Framework, например arrow_forward',
+    icon_position: 'Где значок',
+    icon_position_help: 'До или после слов',
+    'icon_position.start': 'Слева',
+    'icon_position.end': 'Справа',
+    scheme: 'Цвет',
+    scheme_help: 'Цветовая роль кнопки',
+    'scheme.primary': 'Основной',
+    'scheme.secondary': 'Дополнительный',
+  }),
+  ...words('element_button_icon', {
+    icon: 'Значок',
+    icon_help: 'Имя значка SIMAI Framework, например favorite',
+    label: 'Подпись для экранного диктора',
+    label_help: 'Что делает кнопка, вслух',
+    appearance: 'Вид',
+    appearance_help: 'Насколько кнопка заметна',
+    'appearance.default': 'Заливка',
+    'appearance.tonal': 'Тональная',
+    'appearance.outline': 'Контур',
+    'appearance.surface': 'На поверхности',
+    'appearance.ghost': 'Без фона',
+    size: 'Размер',
+    size_help: 'Маленькая, обычная или крупная',
+    scheme: 'Цвет',
+    scheme_help: 'Цветовая роль кнопки',
+    'scheme.primary': 'Основной',
+    'scheme.secondary': 'Дополнительный',
+  }),
+  ...words('element_badge', {
+    text: 'Текст',
+    text_help: 'Слова на метке',
+    appearance: 'Вид',
+    appearance_help: 'Насколько метка заметна',
+    'appearance.main': 'Заливка',
+    'appearance.tonal': 'Тональная',
+    'appearance.outline': 'Контур',
+    scheme: 'Цвет',
+    scheme_help: 'Цветовая роль метки',
+    'scheme.neutral': 'Нейтральный',
+    'scheme.primary': 'Основной',
+    'scheme.secondary': 'Дополнительный',
+    'scheme.tertiary': 'Третий',
+    size: 'Размер',
+    size_help: 'От маленькой до обычной',
+    icon: 'Значок',
+    icon_help: 'Имя значка SIMAI Framework перед словами',
+  }),
+  ...words('element_icon', {
+    icon: 'Значок',
+    icon_help: 'Имя значка SIMAI Framework, например star',
+    size: 'Размер',
+    size_help: 'Шаг шкалы размеров',
+    label: 'Подпись для экранного диктора',
+    label_help: 'Оставьте пустой, если значок только украшает',
+  }),
+  ...words('catalogue.group', {
+    text: 'Текст',
+    media: 'Медиа',
+    elements: 'Элементы',
+    layout: 'Макет',
+    page_parts: 'Части страницы',
+    marketing: 'Маркетинг',
+    data: 'Данные',
+    forms: 'Формы',
+  }),
+  ...words('catalogue.type', {
+    layout_container: 'Контейнер',
+    layout_grid: 'Сетка',
+    layout_spacer: 'Пустое место',
+    element_button: 'Кнопка',
+    element_button_icon: 'Кнопка-значок',
+    element_badge: 'Метка',
+    element_icon: 'Значок',
+  }),
+  ...words('catalogue.variant', {
+    'layout_section.plain': 'Пустая',
+    'layout_section.soft': 'На мягком фоне',
+    'layout_section.accent': 'На акцентном фоне',
+    'layout_section.text': 'С областью текста',
+    'layout_section.two_columns': 'Две колонки',
+    'layout_container.narrow': 'Узкий, для текста',
+    'layout_container.normal': 'Шириной страницы',
+    'layout_container.soft': 'На мягком фоне',
+    'layout_grid.cards_2': 'Две карточки',
+    'layout_grid.cards_3': 'Три карточки',
+    'layout_grid.cards_4': 'Четыре карточки',
+    'element_button.plain': 'Кнопка',
+    'element_button.icon': 'Со значком',
+    'element_button.outline': 'Контурная',
+  }),
 };
 
 export const EDITOR_FIELD_WORDS = Object.freeze({ en: Object.freeze(EN), ru: Object.freeze(RU) });
@@ -437,6 +656,16 @@ export const EDITOR_FIELD_WORDS = Object.freeze({ en: Object.freeze(EN), ru: Obj
 const STABLE_SEGMENT = /^[a-z][a-z0-9_]*$/u;
 
 /** Every word key a field reads: its label, its help and its stable choices. */
+/** The keys of the catalogue's words: the fixed groups, and the built-in types and variants that name one. */
+export function catalogueWordKeys() {
+  const keys = Object.values(CATALOGUE_GROUP_TABLE).map(({ label_key: key }) => key);
+  for (const manifest of BUILTIN_TYPE_MANIFESTS) {
+    keys.push(...[manifest.catalogue?.label_key, manifest.catalogue?.help_key].filter(Boolean));
+    for (const variant of manifest.variants || []) if (variant.label_key) keys.push(variant.label_key);
+  }
+  return [...new Set(keys)];
+}
+
 export function editorFieldKeys(field) {
   if (!field || typeof field.label_key !== 'string') return [];
   const keys = [field.label_key];
@@ -461,10 +690,13 @@ export function editorFieldMessages(manifests, { node = null, locale } = {}) {
   const messages = {};
   // Without a manifest, the words of the built-in types' named places too
   // (a slot's label_key and empty_key; one block editor, 2026-11-03).
+  // And the catalogue's words (2026-11-04): each group's name, and the name
+  // of each built-in type and variant that gives a label_key.
   if (manifests === undefined) {
     for (const slot of BUILTIN_TYPE_MANIFESTS.flatMap((manifest) => Object.values(manifest.slots || {}))) {
       for (const key of [slot.label_key, slot.empty_key].filter(Boolean)) messages[key] = localeText(EDITOR_FIELD_WORDS, key, language, EDITOR_WORDS_OWNER);
     }
+    for (const key of catalogueWordKeys()) messages[key] = localeText(EDITOR_FIELD_WORDS, key, language, EDITOR_WORDS_OWNER);
   }
   for (const manifest of list) {
     for (const field of manifest?.fields || []) {
@@ -477,4 +709,4 @@ export function editorFieldMessages(manifests, { node = null, locale } = {}) {
   return messages;
 }
 
-export default { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, editorFieldKeys, editorFieldMessages };
+export default { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, catalogueWordKeys, editorFieldKeys, editorFieldMessages };

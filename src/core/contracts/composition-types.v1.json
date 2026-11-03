@@ -59,6 +59,10 @@
         "type": "object"
       },
       "mode": "composite",
+      "parameter_defaults": {
+        "padding_y": 8,
+        "width": "normal"
+      },
       "parameter_sets": [
         "background",
         "spacing",
@@ -107,7 +111,53 @@
         }
       },
       "type": "layout.section",
-      "version": "1.1.0"
+      "variants": [
+        {
+          "id": "plain",
+          "label_key": "sf.composition.catalogue.variant.layout_section.plain"
+        },
+        {
+          "id": "soft",
+          "label_key": "sf.composition.catalogue.variant.layout_section.soft",
+          "props": {
+            "background": "container"
+          }
+        },
+        {
+          "id": "accent",
+          "label_key": "sf.composition.catalogue.variant.layout_section.accent",
+          "props": {
+            "background": "primary"
+          }
+        },
+        {
+          "id": "text",
+          "label_key": "sf.composition.catalogue.variant.layout_section.text",
+          "props": {
+            "width": "narrow"
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "area",
+                "type": "layout.area"
+              }
+            ]
+          }
+        },
+        {
+          "id": "two-columns",
+          "label_key": "sf.composition.catalogue.variant.layout_section.two_columns",
+          "props": {
+            "columns": {
+              "md": 2,
+              "xs": 1
+            },
+            "gap": 6
+          }
+        }
+      ],
+      "version": "1.2.0"
     },
     {
       "assets": [
@@ -1100,6 +1150,726 @@
         }
       },
       "type": "layout.area",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "layout",
+        "icon": "width_normal",
+        "keywords": {
+          "en": [
+            "container",
+            "width",
+            "wrapper"
+          ],
+          "ru": [
+            "контейнер",
+            "ширина",
+            "обёртка"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.layout_container",
+        "order": 140
+      },
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "parameter_defaults": {
+        "width": "narrow"
+      },
+      "parameter_sets": [
+        "width",
+        "spacing",
+        "background",
+        "visibility"
+      ],
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.container"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 500,
+          "min": 0
+        }
+      },
+      "type": "layout.container",
+      "variants": [
+        {
+          "id": "narrow",
+          "label_key": "sf.composition.catalogue.variant.layout_container.narrow"
+        },
+        {
+          "id": "normal",
+          "label_key": "sf.composition.catalogue.variant.layout_container.normal",
+          "props": {
+            "width": "normal"
+          }
+        },
+        {
+          "id": "soft",
+          "label_key": "sf.composition.catalogue.variant.layout_container.soft",
+          "props": {
+            "background": "container",
+            "padding_x": 4,
+            "padding_y": 4
+          }
+        }
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "layout",
+        "icon": "grid_on",
+        "keywords": {
+          "en": [
+            "grid",
+            "tiles",
+            "gallery",
+            "cells"
+          ],
+          "ru": [
+            "сетка",
+            "плитка",
+            "галерея",
+            "ячейки"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.layout_grid",
+        "order": 150
+      },
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "parameter_defaults": {
+        "columns": {
+          "md": 3,
+          "xs": 1
+        },
+        "gap": 4
+      },
+      "parameter_sets": [
+        "grid",
+        "visibility"
+      ],
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.grid"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 48,
+          "min": 0
+        }
+      },
+      "type": "layout.grid",
+      "variants": [
+        {
+          "id": "cards-2",
+          "label_key": "sf.composition.catalogue.variant.layout_grid.cards_2",
+          "props": {
+            "columns": {
+              "md": 2,
+              "xs": 1
+            }
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "card-1",
+                "type": "content.card"
+              },
+              {
+                "id": "card-2",
+                "type": "content.card"
+              }
+            ]
+          }
+        },
+        {
+          "id": "cards-3",
+          "label_key": "sf.composition.catalogue.variant.layout_grid.cards_3",
+          "props": {
+            "columns": {
+              "md": 3,
+              "xs": 1
+            }
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "card-1",
+                "type": "content.card"
+              },
+              {
+                "id": "card-2",
+                "type": "content.card"
+              },
+              {
+                "id": "card-3",
+                "type": "content.card"
+              }
+            ]
+          }
+        },
+        {
+          "id": "cards-4",
+          "label_key": "sf.composition.catalogue.variant.layout_grid.cards_4",
+          "props": {
+            "columns": {
+              "md": 4,
+              "xs": 1
+            }
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "card-1",
+                "type": "content.card"
+              },
+              {
+                "id": "card-2",
+                "type": "content.card"
+              },
+              {
+                "id": "card-3",
+                "type": "content.card"
+              },
+              {
+                "id": "card-4",
+                "type": "content.card"
+              }
+            ]
+          }
+        }
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "layout",
+        "icon": "height",
+        "keywords": {
+          "en": [
+            "spacer",
+            "space",
+            "gap"
+          ],
+          "ru": [
+            "пустое место",
+            "отступ",
+            "промежуток"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.layout_spacer",
+        "order": 160
+      },
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "leaf",
+      "parameter_defaults": {
+        "size": 6
+      },
+      "parameter_sets": [
+        "visibility"
+      ],
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "size": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer",
+            "x-simai-utility": {
+              "class": "p-top-{value}",
+              "responsive": true
+            }
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.spacer"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "layout.spacer",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/button"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "elements",
+        "icon": "smart_button",
+        "keywords": {
+          "en": [
+            "button",
+            "link",
+            "call to action",
+            "cta"
+          ],
+          "ru": [
+            "кнопка",
+            "ссылка",
+            "призыв"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.element_button",
+        "order": 100
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "appearance": {
+            "default": "default",
+            "enum": [
+              "default",
+              "tonal",
+              "outline",
+              "link",
+              "surface"
+            ]
+          },
+          "icon": {
+            "pattern": "^[a-z0-9][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "icon_position": {
+            "default": "start",
+            "enum": [
+              "start",
+              "end"
+            ]
+          },
+          "scheme": {
+            "default": "primary",
+            "enum": [
+              "primary",
+              "secondary",
+              "on-surface",
+              "on-surface-variant"
+            ]
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "element.button"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "element.button",
+      "variants": [
+        {
+          "id": "plain",
+          "label_key": "sf.composition.catalogue.variant.element_button.plain"
+        },
+        {
+          "id": "icon",
+          "label_key": "sf.composition.catalogue.variant.element_button.icon",
+          "props": {
+            "icon": "arrow_forward",
+            "icon_position": "end"
+          }
+        },
+        {
+          "id": "outline",
+          "label_key": "sf.composition.catalogue.variant.element_button.outline",
+          "props": {
+            "appearance": "outline"
+          }
+        }
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/button-icon"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "elements",
+        "icon": "add_circle",
+        "keywords": {
+          "en": [
+            "icon button",
+            "icon",
+            "button"
+          ],
+          "ru": [
+            "кнопка-значок",
+            "значок",
+            "иконка",
+            "кнопка"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.element_button_icon",
+        "order": 110
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "appearance": {
+            "default": "tonal",
+            "enum": [
+              "default",
+              "tonal",
+              "outline",
+              "surface",
+              "ghost"
+            ]
+          },
+          "icon": {
+            "default": "favorite",
+            "pattern": "^[a-z0-9][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "scheme": {
+            "default": "primary",
+            "enum": [
+              "primary",
+              "secondary",
+              "on-surface",
+              "on-surface-variant"
+            ]
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "element.button-icon"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "element.button-icon",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/badge"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "elements",
+        "icon": "label",
+        "keywords": {
+          "en": [
+            "badge",
+            "tag",
+            "status",
+            "label"
+          ],
+          "ru": [
+            "метка",
+            "бейдж",
+            "тег",
+            "статус"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.element_badge",
+        "order": 120
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "appearance": {
+            "default": "tonal",
+            "enum": [
+              "main",
+              "tonal",
+              "outline"
+            ]
+          },
+          "icon": {
+            "pattern": "^[a-z0-9][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "scheme": {
+            "default": "primary",
+            "enum": [
+              "neutral",
+              "primary",
+              "secondary",
+              "tertiary"
+            ]
+          },
+          "size": {
+            "default": "1/2",
+            "enum": [
+              "1/3",
+              "1/2",
+              "1"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "element.badge"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "element.badge",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/icon"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "elements",
+        "icon": "star",
+        "keywords": {
+          "en": [
+            "icon",
+            "symbol",
+            "pictogram"
+          ],
+          "ru": [
+            "значок",
+            "иконка",
+            "пиктограмма"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.element_icon",
+        "order": 130
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "icon": {
+            "default": "star",
+            "pattern": "^[a-z0-9][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "size": {
+            "default": "2",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "element.icon"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "element.icon",
       "version": "1.0.0"
     },
     {

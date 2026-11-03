@@ -389,6 +389,7 @@
               "max": 8,
               "min": 0
             },
+            "default": 8,
             "group": "basic",
             "help_key": "sf.composition.set_spacing.padding_y_help",
             "key": "padding_y",
@@ -443,7 +444,7 @@
               "max_length": 32,
               "min_length": 1
             },
-            "default": "full",
+            "default": "normal",
             "group": "basic",
             "help_key": "sf.composition.set_width.width_help",
             "key": "width",
@@ -587,7 +588,7 @@
         "schema": "simai.composition.editor-manifest",
         "schema_version": 1,
         "type": "layout.section",
-        "type_version": "1.1.0"
+        "type_version": "1.2.0"
       }
     },
     {

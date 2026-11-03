@@ -4,6 +4,17 @@ import { schemaFields } from './schema-name.mjs';
 import { parameterSetFields } from './parameter-sets.mjs';
 
 const SECTION_SETS = Object.freeze(['background', 'spacing', 'width', 'grid', 'alignment', 'breakout', 'visibility']);
+// What a section prints when the Document leaves it unset (layout.section
+// 1.2.0, visual parity 2026-11-04, as the accepted prototype draws it): space
+// above and below (p-y-8) and the page container (width normal: frame
+// container m-inline-auto), so in the default theme no text touches the
+// page's edge. A section that sets its own values keeps them.
+const SECTION_DEFAULTS = Object.freeze({ width: 'normal', padding_y: 8 });
+// A layout grid stands in one column on the phone and three from the tablet.
+const GRID_DEFAULTS = Object.freeze({ columns: Object.freeze({ xs: 1, md: 3 }), gap: 4 });
+const CONTAINER_DEFAULTS = Object.freeze({ width: 'narrow' });
+const catalogueWord = (type) => `sf.composition.catalogue.type.${type.replace('.', '_').replaceAll('-', '_')}`;
+const variantWord = (type, id) => `sf.composition.catalogue.variant.${type.replace('.', '_').replaceAll('-', '_')}.${id.replaceAll('-', '_')}`;
 
 // Text runs, links of text runs, and since content.heading and
 // content.paragraph 1.1.0 the inline component atoms: one shape per declared
@@ -133,6 +144,40 @@ export const CONTENT_ITEM_PARENTS = Object.freeze({
   'content.step': 'content.steps',
 });
 
+// A SIMAI Framework icon name (Material Symbols): what sf-icon draws.
+const iconName = { type: 'string', pattern: '^[a-z0-9][a-z0-9_]{0,63}$' };
+// A layout type of the one block editor: a ui-layout block with parameter sets.
+const layoutManifest = (type, fields) => ({
+  ...schemaFields('simai.composition.type-manifest', 1),
+  type,
+  version: '1.0.0',
+  category: 'layout',
+  mode: 'composite',
+  profiles: ['ui-layout'],
+  data_schema: emptyObjectSchema,
+  props_schema: emptyObjectSchema,
+  presentation: { views: ['default'], presets: [], modifiers: [] },
+  renderer: { kind: 'builtin', name: type },
+  assets: [],
+  capabilities: ['html'],
+  ...fields,
+});
+// An element type: one smart element, printed from its inputs.
+const elementManifest = (type, asset, fields) => ({
+  ...schemaFields('simai.composition.type-manifest', 1),
+  type,
+  version: '1.0.0',
+  category: 'smart',
+  mode: 'leaf',
+  profiles: ['ui-layout'],
+  presentation: { views: ['default'], presets: [], modifiers: [] },
+  slots: {},
+  renderer: { kind: 'builtin', name: type },
+  assets: [asset],
+  capabilities: ['html'],
+  ...fields,
+});
+
 export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
@@ -156,15 +201,25 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     type: 'layout.section',
     // 1.1.0 (2026-11-03): the parameter sets of the one block editor --
     // background, spacing, width, columns, alignment, edge to edge and
-    // visibility, all SIMAI Framework utilities (parameter-sets.mjs). A
-    // section without them draws as 1.0.0 did.
-    version: '1.1.0',
+    // visibility, all SIMAI Framework utilities (parameter-sets.mjs).
+    // 1.2.0 (2026-11-04): the section prints its spacing and width by default
+    // (parameter_defaults: p-y-8, the page container), and offers variants.
+    // A Document that sets them keeps its own values.
+    version: '1.2.0',
     category: 'layout',
     mode: 'composite',
     profiles: ['ui-layout'],
     data_schema: emptyObjectSchema,
     props_schema: emptyObjectSchema,
     parameter_sets: SECTION_SETS,
+    parameter_defaults: SECTION_DEFAULTS,
+    variants: [
+      { id: 'plain', label_key: variantWord('layout.section', 'plain') },
+      { id: 'soft', label_key: variantWord('layout.section', 'soft'), props: { background: 'container' } },
+      { id: 'accent', label_key: variantWord('layout.section', 'accent'), props: { background: 'primary' } },
+      { id: 'text', label_key: variantWord('layout.section', 'text'), props: { width: 'narrow' }, slots: { default: [{ id: 'area', type: 'layout.area' }] } },
+      { id: 'two-columns', label_key: variantWord('layout.section', 'two-columns'), props: { columns: { xs: 1, md: 2 }, gap: 6 } },
+    ],
     presentation: {
       views: ['default'],
       presets: ['surface', 'contrast'],
@@ -361,6 +416,95 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: [],
     capabilities: ['html', 'content-area'],
   },
+  // Layout types of the one block editor (visual parity, 2026-11-04; G-21):
+  // a container that holds part of a section in its own width, a grid of
+  // equal cells, and an empty space. Each prints SIMAI Framework utilities
+  // only, through its parameter sets and props.
+  layoutManifest('layout.container', {
+    parameter_sets: ['width', 'spacing', 'background', 'visibility'],
+    parameter_defaults: CONTAINER_DEFAULTS,
+    slots: { default: { min: 0, max: 500, categories: ['layout', 'content', 'smart'] } },
+    catalogue: { group: 'layout', icon: 'width_normal', label_key: catalogueWord('layout.container'), keywords: { en: ['container', 'width', 'wrapper'], ru: ['контейнер', 'ширина', 'обёртка'] }, order: 140 },
+    variants: [
+      { id: 'narrow', label_key: variantWord('layout.container', 'narrow') },
+      { id: 'normal', label_key: variantWord('layout.container', 'normal'), props: { width: 'normal' } },
+      { id: 'soft', label_key: variantWord('layout.container', 'soft'), props: { background: 'container', padding_y: 4, padding_x: 4 } },
+    ],
+  }),
+  layoutManifest('layout.grid', {
+    parameter_sets: ['grid', 'visibility'],
+    parameter_defaults: GRID_DEFAULTS,
+    slots: { default: { min: 0, max: 48, categories: ['layout', 'content', 'smart'] } },
+    catalogue: { group: 'layout', icon: 'grid_on', label_key: catalogueWord('layout.grid'), keywords: { en: ['grid', 'tiles', 'gallery', 'cells'], ru: ['сетка', 'плитка', 'галерея', 'ячейки'] }, order: 150 },
+    variants: [2, 3, 4].map((count) => ({
+      id: `cards-${count}`,
+      label_key: variantWord('layout.grid', `cards-${count}`),
+      props: { columns: { xs: 1, md: count } },
+      slots: { default: Array.from({ length: count }, (_, index) => ({ id: `card-${index + 1}`, type: 'content.card' })) },
+    })),
+  }),
+  layoutManifest('layout.spacer', {
+    mode: 'leaf',
+    props_schema: closed({
+      size: { type: 'integer', minimum: 1, maximum: 8, 'x-simai-utility': { class: 'p-top-{value}', responsive: true } },
+    }),
+    parameter_sets: ['visibility'],
+    parameter_defaults: { size: 6 },
+    slots: {},
+    catalogue: { group: 'layout', icon: 'height', label_key: catalogueWord('layout.spacer'), keywords: { en: ['spacer', 'space', 'gap'], ru: ['пустое место', 'отступ', 'промежуток'] }, order: 160 },
+  }),
+  // Elements (visual parity, 2026-11-04; G-20): the smart elements a block
+  // prints, each a type of its own so an author places it anywhere a block
+  // goes. Its parameters are the element's inputs (smart.manifest.json, held
+  // by elements.print); the type's defaults are the prototype's.
+  elementManifest('element.button', 'smart/button', {
+    // Unset, the button reads «Button» in the Document's language until the author writes.
+    data_schema: closed({ text: plainText(200) }),
+    props_schema: closed({
+      appearance: { enum: ['default', 'tonal', 'outline', 'link', 'surface'], default: 'default' },
+      scheme: { enum: ['primary', 'secondary', 'on-surface', 'on-surface-variant'], default: 'primary' },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+      icon: iconName,
+      icon_position: { enum: ['start', 'end'], default: 'start' },
+    }),
+    catalogue: { group: 'elements', icon: 'smart_button', label_key: catalogueWord('element.button'), keywords: { en: ['button', 'link', 'call to action', 'cta'], ru: ['кнопка', 'ссылка', 'призыв'] }, order: 100 },
+    variants: [
+      { id: 'plain', label_key: variantWord('element.button', 'plain') },
+      { id: 'icon', label_key: variantWord('element.button', 'icon'), props: { icon: 'arrow_forward', icon_position: 'end' } },
+      { id: 'outline', label_key: variantWord('element.button', 'outline'), props: { appearance: 'outline' } },
+    ],
+  }),
+  elementManifest('element.button-icon', 'smart/button-icon', {
+    // The label is what a screen reader says: an icon button has no words.
+    // Unset, it says «Button» in the Document's language.
+    data_schema: closed({ label: plainText(120) }),
+    props_schema: closed({
+      icon: { ...iconName, default: 'favorite' },
+      appearance: { enum: ['default', 'tonal', 'outline', 'surface', 'ghost'], default: 'tonal' },
+      scheme: { enum: ['primary', 'secondary', 'on-surface', 'on-surface-variant'], default: 'primary' },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'elements', icon: 'add_circle', label_key: catalogueWord('element.button-icon'), keywords: { en: ['icon button', 'icon', 'button'], ru: ['кнопка-значок', 'значок', 'иконка', 'кнопка'] }, order: 110 },
+  }),
+  elementManifest('element.badge', 'smart/badge', {
+    data_schema: closed({ text: plainText(120) }),
+    props_schema: closed({
+      appearance: { enum: ['main', 'tonal', 'outline'], default: 'tonal' },
+      scheme: { enum: ['neutral', 'primary', 'secondary', 'tertiary'], default: 'primary' },
+      size: { enum: ['1/3', '1/2', '1'], default: '1/2' },
+      icon: iconName,
+    }),
+    catalogue: { group: 'elements', icon: 'label', label_key: catalogueWord('element.badge'), keywords: { en: ['badge', 'tag', 'status', 'label'], ru: ['метка', 'бейдж', 'тег', 'статус'] }, order: 120 },
+  }),
+  elementManifest('element.icon', 'smart/icon', {
+    // The label names the icon for a screen reader; without it the icon only decorates.
+    data_schema: closed({ label: plainText(120) }),
+    props_schema: closed({
+      icon: { ...iconName, default: 'star' },
+      size: { enum: ['1', '2', '3', '4', '5'], default: '2' },
+    }),
+    catalogue: { group: 'elements', icon: 'star', label_key: catalogueWord('element.icon'), keywords: { en: ['icon', 'symbol', 'pictogram'], ru: ['значок', 'иконка', 'пиктограмма'] }, order: 130 },
+  }),
   // The root of a structured-content Document: the page's blocks in order,
   // under the page's title (the accepted content editor prototype writes
   // this root).
@@ -628,7 +772,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.section',
-    type_version: '1.1.0',
+    type_version: '1.2.0',
     fields: [
       {
         key: 'surface',
@@ -646,8 +790,9 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
         permission_hints: ['composition.node.update'],
         owner: 'simai/framework',
       },
-      // 1.1.0: the fields of its parameter sets.
-      ...parameterSetFields({ parameter_sets: SECTION_SETS }),
+      // 1.1.0: the fields of its parameter sets; 1.2.0: width and the space
+      // above and below default to what the section prints unset.
+      ...parameterSetFields({ parameter_sets: SECTION_SETS, parameter_defaults: SECTION_DEFAULTS }),
     ],
   },
   {
@@ -778,6 +923,40 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   contentEditor('layout.area', [
     contentField('layout.area', 'padding', 'props', 'integer', { constraints: { min: 0, max: 8 } }),
     contentField('layout.area', 'hidden', 'props', 'toggle', { default: false }),
+  ]),
+  // The layout and element types of the one block editor (2026-11-04).
+  contentEditor('layout.container', parameterSetFields({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })),
+  contentEditor('layout.grid', parameterSetFields({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })),
+  contentEditor('layout.spacer', [
+    contentField('layout.spacer', 'size', 'props', 'integer', { constraints: { min: 1, max: 8 }, default: 6 }),
+    ...parameterSetFields({ parameter_sets: ['visibility'] }),
+  ]),
+  contentEditor('element.button', [
+    contentField('element.button', 'text', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('element.button', 'appearance', 'props', 'choice', { choices: ['default', 'tonal', 'outline', 'link', 'surface'], default: 'default' }),
+    contentField('element.button', 'size', 'props', 'choice', { choices: ['1/2', '1', '2'], default: '1' }),
+    contentField('element.button', 'icon', 'props', 'text', { constraints: { min_length: 1, max_length: 64 } }),
+    contentField('element.button', 'icon_position', 'props', 'choice', { choices: ['start', 'end'], default: 'start' }),
+    contentField('element.button', 'scheme', 'props', 'choice', { ...advanced, choices: ['primary', 'secondary'], default: 'primary' }),
+  ]),
+  contentEditor('element.button-icon', [
+    contentField('element.button-icon', 'icon', 'props', 'text', { constraints: { min_length: 1, max_length: 64 }, default: 'favorite' }),
+    contentField('element.button-icon', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 120 } }),
+    contentField('element.button-icon', 'appearance', 'props', 'choice', { choices: ['default', 'tonal', 'outline', 'surface', 'ghost'], default: 'tonal' }),
+    contentField('element.button-icon', 'size', 'props', 'choice', { choices: ['1/2', '1', '2'], default: '1' }),
+    contentField('element.button-icon', 'scheme', 'props', 'choice', { ...advanced, choices: ['primary', 'secondary'], default: 'primary' }),
+  ]),
+  contentEditor('element.badge', [
+    contentField('element.badge', 'text', 'data', 'text', { constraints: { min_length: 1, max_length: 120 } }),
+    contentField('element.badge', 'appearance', 'props', 'choice', { choices: ['main', 'tonal', 'outline'], default: 'tonal' }),
+    contentField('element.badge', 'scheme', 'props', 'choice', { choices: ['neutral', 'primary', 'secondary', 'tertiary'], default: 'primary' }),
+    contentField('element.badge', 'size', 'props', 'choice', { choices: ['1/3', '1/2', '1'], default: '1/2' }),
+    contentField('element.badge', 'icon', 'props', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+  ]),
+  contentEditor('element.icon', [
+    contentField('element.icon', 'icon', 'props', 'text', { constraints: { min_length: 1, max_length: 64 }, default: 'star' }),
+    contentField('element.icon', 'size', 'props', 'choice', { choices: ['1', '2', '3', '4', '5'], default: '2' }),
+    contentField('element.icon', 'label', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 120 } }),
   ]),
   contentEditor('content.list', [
     contentField('content.list', 'ordered', 'props', 'toggle', { default: false }),

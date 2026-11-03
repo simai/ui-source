@@ -22,6 +22,12 @@ the `surface` field is unchanged, and the fields of its parameter sets
 The toggles need `boolean@1` registered by the host, as `layout.region`'s
 `sticky` already did.
 
+1.2.0 (2026-11-04, visual parity): the `layout.section` editor manifest
+follows its type to `layout.section@1.2.0`. No field is added or removed; the
+`width` field defaults to `normal` and `padding_y` to `8`, the values the
+section prints when a Document leaves them unset (the type's
+`parameter_defaults`). A Document that sets them keeps its own values.
+
 ## Файлы
 
 - README.md — этот текст, нормативный.

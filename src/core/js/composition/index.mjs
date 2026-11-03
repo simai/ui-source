@@ -48,7 +48,10 @@ import {
 } from './utilities.mjs';
 import {
   BUILTIN_CATALOGUE,
+  BUILTIN_CATALOGUE_ICONS,
   CATALOGUE_GROUPS,
+  CATALOGUE_GROUP_ALIASES,
+  CATALOGUE_GROUP_TABLE,
   CATALOGUE_TABS,
   catalogue,
   catalogueEntry,
@@ -61,9 +64,11 @@ import { PRINTED_ELEMENTS, checkPrintedElements as checkPrintedElementsWith, ele
 import {
   PARAMETER_SETS,
   PARAMETER_SET_NAMES,
+  effectiveProps,
   expandParameterSets,
   parameterSetFields,
   parameterSetParts,
+  validateParameterDefaults,
   validateParameterSets,
   withParameterSetFields,
 } from './parameter-sets.mjs';
@@ -678,12 +683,25 @@ function renderMedia(node, slots) {
   return `<div class="grid grid-col-1 md:grid-col-2 gap-3 items-cross-center"${id(node)}>${parts}</div>`;
 }
 
+// The words an element prints until the author writes its own, in the
+// Document's language (English when there is none for it).
+const ELEMENT_PLACEHOLDERS = Object.freeze({ en: { button: 'Button', badge: 'Badge' }, ru: { button: 'Кнопка', badge: 'Метка' } });
+const placeholder = (locale, key) => (ELEMENT_PLACEHOLDERS[String(locale || 'en').toLowerCase().split('-')[0]] || ELEMENT_PLACEHOLDERS.en)[key];
+const defined = (inputs) => Object.fromEntries(Object.entries(inputs).filter(([, value]) => value !== undefined && value !== ''));
+// An element stands in a block of its own: the editor selects and the
+// utilities reach the block (sf-button's host is display: contents), the
+// element draws inside it.
+const elementBlock = (node, html) => (html ? `<div${id(node)}>${html}</div>` : '');
+
 const BUILTIN_RENDERERS = {
   'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
-  'layout.section': ({ node, slots }) => {
+  'layout.section': ({ node, slots, manifest }) => {
     // 1.1.0: a section given a width or columns draws the frame and content
-    // parts its parameter sets place classes on; one without draws as before.
-    const framed = ['width', 'columns', 'gap'].some((key) => node.props?.[key] !== undefined);
+    // parts its parameter sets place classes on. 1.2.0: its width defaults to
+    // the page container (parameter_defaults), so a section draws them unless
+    // the Document sets its width full and gives no columns.
+    const props = effectiveProps(node, manifest);
+    const framed = (props.width !== undefined && props.width !== 'full') || ['columns', 'gap'].some((key) => props[key] !== undefined);
     const inner = framed ? `<div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div>` : (slots.default || '');
     return `<section data-sf-composition-id="${escapeHtml(node.id)}">${inner}</section>`;
   },
@@ -707,6 +725,46 @@ const BUILTIN_RENDERERS = {
   },
   'layout.scope': ({ node, slots, routes }) => `<sf-composition-scope data-sf-composition-id="${escapeHtml(node.id)}" data-sf-routes="${escapeHtml(routesAttribute(routes || []))}">${slots.default || ''}</sf-composition-scope>`,
   'layout.area': ({ node, slots }) => `<div data-sf-composition-area=""${id(node)}>${slots.default || ''}</div>`,
+  // The layout and element types of the one block editor (2026-11-04): the
+  // block's own element, its parts, and SIMAI Framework utilities only.
+  'layout.container': ({ node, slots }) => `<div${id(node)}><div data-sf-composition-part="frame"><div data-sf-composition-part="content">${slots.default || ''}</div></div></div>`,
+  'layout.grid': ({ node, slots }) => `<div${id(node)}><div class="grid" data-sf-composition-part="content">${(slots.defaultList || []).map((child) => `<div class="min-w-0">${child}</div>`).join('')}</div></div>`,
+  'layout.spacer': ({ node }) => `<div aria-hidden="true"${id(node)}></div>`,
+  'element.button': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return elementBlock(node, elements.print('sf-button', defined({
+      text: node.data?.text || placeholder(locale, 'button'),
+      appearance: props.appearance,
+      scheme: props.scheme,
+      size: props.size,
+      icon: props.icon,
+      'icon-position': props.icon ? props.icon_position : undefined,
+    })));
+  },
+  'element.button-icon': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return elementBlock(node, elements.print('sf-button-icon', defined({
+      icon: props.icon ?? 'favorite',
+      'aria-label': node.data?.label || placeholder(locale, 'button'),
+      appearance: props.appearance ?? 'tonal',
+      scheme: props.scheme,
+      size: props.size,
+    })));
+  },
+  'element.badge': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return elementBlock(node, elements.print('sf-badge', defined({
+      text: node.data?.text || placeholder(locale, 'badge'),
+      appearance: props.appearance ?? 'tonal',
+      scheme: props.scheme ?? 'primary',
+      size: props.size ?? '1/2',
+      icon: props.icon,
+    })));
+  },
+  'element.icon': ({ node, elements }) => {
+    const props = node.props || {};
+    return elementBlock(node, elements.print('sf-icon', defined({ icon: props.icon ?? 'star', size: props.size ?? '2', label: node.data?.label })));
+  },
   'content.document': ({ node, slots }) => `<article${id(node)}>${node.data?.title ? `<h1>${escapeHtml(node.data.title)}</h1>` : ''}${slots.default || ''}</article>`,
   'content.list': ({ node, slots }) => {
     const ordered = node.props?.ordered === true;
@@ -893,6 +951,7 @@ export function validateTypeManifest(manifest, registry = undefined, options = {
   if (!isPlainObject(manifest) || !isSchema(manifest, 'simai.composition.type-manifest', 1)) return { valid: false, diagnostics: [diagnostic('composition_manifest_invalid', '$', 'A type manifest is simai.composition.type-manifest with schema_version 1')] };
   diagnostics.push(...validateCatalogueFields(manifest));
   diagnostics.push(...validateParameterSets(manifest));
+  diagnostics.push(...validateParameterDefaults(manifest, fits));
   diagnostics.push(...validateUtilityDeclarations(expandParameterSets(manifest)));
   diagnostics.push(...validateDataDeclarations(manifest, options.shapes));
   let resolved = normalizeRegistry(registry);
@@ -1024,7 +1083,10 @@ export const Composition = Object.freeze({
   // modifiers, site blocks, named places and data.
   BINDING_STATES,
   BUILTIN_CATALOGUE,
+  BUILTIN_CATALOGUE_ICONS,
   CATALOGUE_GROUPS,
+  CATALOGUE_GROUP_ALIASES,
+  CATALOGUE_GROUP_TABLE,
   CATALOGUE_TABS,
   DATA_SHAPES,
   SOURCE_PORT,
@@ -1046,6 +1108,7 @@ export const Composition = Object.freeze({
   PRINTED_ELEMENTS,
   checkPrintedElements,
   elementInputs,
+  effectiveProps,
   expandParameterSets,
   parameterSetFields,
   printElement,
@@ -1082,8 +1145,8 @@ export { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor, defineFragmentBoun
 export { INLINE_MARKS, inlineText, marksIn, normalizeInline, replaceRange, setLink, startInlineEdit, toggleMark };
 export { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue };
 export { MODIFIERS_EXTENSION, UTILITY_BREAKPOINTS, checkModifiers, ownModifiers, utilityClassSpace, utilityClasses, valuesByBreakpoint };
-export { BUILTIN_CATALOGUE, CATALOGUE_GROUPS, CATALOGUE_TABS, catalogue, catalogueEntry, instantiateVariant, slotAccepts, slotPlaces };
+export { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS, catalogue, catalogueEntry, instantiateVariant, slotAccepts, slotPlaces };
 export { COMPOSED_EXTENSION, composedInstance, composedPart, composedTextPaths, expandComposed };
 export { BINDING_STATES, DATA_EXTENSION, DATA_SHAPES, RUNTIME_OWNER, SOURCE_PORT, bindingSettings, createShapeRegistry, demoData };
-export { PARAMETER_SETS, PARAMETER_SET_NAMES, expandParameterSets, parameterSetFields, parameterSetParts, utilityPartClasses, validateParameterSets, withParameterSetFields };
+export { PARAMETER_SETS, PARAMETER_SET_NAMES, effectiveProps, expandParameterSets, parameterSetFields, parameterSetParts, utilityPartClasses, validateParameterSets, withParameterSetFields };
 export { PRINTED_ELEMENTS, elementInputs };

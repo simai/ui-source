@@ -23,6 +23,12 @@
 import { canonical, isPlainObject } from './canonical.mjs';
 
 export const PARAMETER_SETS_FIELD = 'parameter_sets';
+// The values a type prints when a node does not set them (type manifest
+// 1.5.0, visual parity 2026-11-04): a section stands in the page container
+// with space above and below unless the Document says otherwise. Keyed by a
+// props_schema property that prints a utility (a set's or the type's own); a
+// node's own value, scalar or per screen, replaces it whole.
+export const PARAMETER_DEFAULTS_FIELD = 'parameter_defaults';
 export const PARAMETER_SET_OWNER = 'simai/framework';
 
 // A background is named by its role; the class is the role's container fill.
@@ -128,6 +134,19 @@ export function parameterSetsOf(manifest) {
   return Array.isArray(names) ? names.filter((name) => typeof name === 'string') : [];
 }
 
+/** The values a type prints for the properties a node leaves unset (an empty object when none). */
+export function parameterDefaultsOf(manifest) {
+  const defaults = manifest?.[PARAMETER_DEFAULTS_FIELD];
+  return isPlainObject(defaults) ? defaults : {};
+}
+
+/** A node's props with its type's parameter defaults under them: what the node prints. */
+export function effectiveProps(node, manifest) {
+  const own = isPlainObject(node?.props) ? node.props : {};
+  const defaults = parameterDefaultsOf(manifest);
+  return Object.keys(defaults).length ? { ...defaults, ...own } : own;
+}
+
 /** The parts a type's renderer draws for its sets. */
 export function parameterSetParts(manifest) {
   return [...new Set(parameterSetsOf(manifest).flatMap((name) => PARAMETER_SETS[name]?.parts || []))];
@@ -188,7 +207,17 @@ export function validateParameterSets(manifest) {
   return diagnostics;
 }
 
-function setField(name, field) {
+// The field's default: the type's parameter default when it gives one (its
+// phone value when it differs per screen), else the set's.
+function fieldDefault(field, defaults) {
+  if (!Object.hasOwn(defaults, field.key)) return 'default' in field ? { default: field.default } : {};
+  const value = defaults[field.key];
+  if (!isPlainObject(value)) return { default: value };
+  if ('xs' in value) return { default: value.xs };
+  return 'default' in field ? { default: field.default } : {};
+}
+
+function setField(name, field, defaults = {}) {
   const property = field.kind === 'choice' ? { type: 'string', version: 2 }
     : field.kind === 'integer' ? { type: 'integer', version: 1 } : { type: 'boolean', version: 1 };
   const schema = PARAMETER_SETS[name].properties[field.key];
@@ -203,7 +232,7 @@ function setField(name, field) {
     group: 'basic',
     visibility: 'visible',
     ...(field.choices ? { choices: field.choices } : {}),
-    ...('default' in field ? { default: field.default } : {}),
+    ...fieldDefault(field, defaults),
     label_key: `sf.composition.set_${name}.${field.key}`,
     help_key: `sf.composition.set_${name}.${field.key}_help`,
     capability_hints: [`composition.props.${field.key}`],
@@ -214,7 +243,8 @@ function setField(name, field) {
 
 /** The editor fields of a type's sets, in set order. */
 export function parameterSetFields(manifest) {
-  return parameterSetsOf(manifest).filter((name) => Object.hasOwn(PARAMETER_SETS, name)).flatMap((name) => PARAMETER_SETS[name].fields.map((field) => setField(name, field)));
+  const defaults = parameterDefaultsOf(manifest);
+  return parameterSetsOf(manifest).filter((name) => Object.hasOwn(PARAMETER_SETS, name)).flatMap((name) => PARAMETER_SETS[name].fields.map((field) => setField(name, field, defaults)));
 }
 
 /**
@@ -238,6 +268,26 @@ export function parameterSetTable() {
     parts,
     fields: fields.map((field) => setField(name, field)),
   }]));
+}
+
+/**
+ * The problems of a type's `parameter_defaults`, read on the manifest with its
+ * sets expanded: each key a property that prints a utility, each value one it
+ * takes (`fits(value, schema)`), scalar or per screen.
+ */
+export function validateParameterDefaults(manifest, fits = () => true) {
+  if (!(PARAMETER_DEFAULTS_FIELD in (manifest || {}))) return [];
+  const at = `$.${PARAMETER_DEFAULTS_FIELD}`;
+  const defaults = manifest[PARAMETER_DEFAULTS_FIELD];
+  if (!isPlainObject(defaults)) return [{ code: 'parameter_defaults_invalid', path: at, message: 'parameter_defaults is an object of property values' }];
+  const properties = isPlainObject(expandParameterSets(manifest)?.props_schema?.properties) ? expandParameterSets(manifest).props_schema.properties : {};
+  const diagnostics = [];
+  for (const [key, value] of Object.entries(defaults)) {
+    const schema = properties[key];
+    if (!schema || !schema['x-simai-utility']) diagnostics.push({ code: 'parameter_default_unknown', path: `${at}.${key}`, message: `${key} is no property of the type that prints a utility` });
+    else if (!fits(value, schema)) diagnostics.push({ code: 'parameter_default_invalid', path: `${at}.${key}`, message: `${key} does not take this value` });
+  }
+  return diagnostics;
 }
 
 export default { PARAMETER_SETS, expandParameterSets, parameterSetFields, validateParameterSets, withParameterSetFields };

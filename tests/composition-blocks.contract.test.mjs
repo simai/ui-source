@@ -88,7 +88,12 @@ test('every built-in type has a place in the catalogue or is kept out of it', ()
   assert.deepEqual(Object.keys(tabs).sort(), ['blocks', 'text']);
   assert.ok(tabs.text.text.some((entry) => entry.type === 'content.paragraph'));
   assert.ok(tabs.text.media.some((entry) => entry.type === 'content.figure'));
-  assert.ok(tabs.blocks.structure.some((entry) => entry.type === 'layout.area'));
+  // 2026-11-04: Elements and Layout replace Structure; every offered type has an icon.
+  assert.ok(tabs.blocks.layout.some((entry) => entry.type === 'layout.area'));
+  for (const type of ['layout.section', 'layout.columns', 'layout.container', 'layout.grid', 'layout.spacer']) assert.ok(tabs.blocks.layout.some((entry) => entry.type === type), type);
+  for (const type of ['element.button', 'element.button-icon', 'element.badge', 'element.icon', 'content.divider']) assert.ok(tabs.blocks.elements.some((entry) => entry.type === type), type);
+  assert.equal(tabs.blocks.structure, undefined);
+  for (const entry of entries) assert.match(entry.icon ?? '', /^[a-z0-9_]+$/u, entry.type);
   for (const hidden of ['layout.page', 'content.list-item', 'content.outlet']) assert.equal(entries.some((entry) => entry.type === hidden), false, hidden);
 });
 
@@ -175,7 +180,9 @@ test('a Document that uses none of it draws as before', async () => {
   const before = await render(document);
   assert.equal(before.notices, undefined);
   assert.equal(before.runtime, undefined);
-  assert.equal(before.html, '<main data-sf-composition-id="root"><section data-sf-composition-id="s"><p data-sf-composition-id="p">Hi</p></section></main>');
+  // layout.section 1.2.0 (2026-11-04): unset, a section stands in the page
+  // container with space above and below (its parameter defaults).
+  assert.equal(before.html, '<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content"><p data-sf-composition-id="p">Hi</p></div></div></section></main>');
 });
 
 test('layout.columns 1.1.0: columns and gap per screen; a 1.0.0 Document stays valid', async () => {
@@ -413,7 +420,7 @@ test('data at render: the host gives the data, the list publishes its page, ever
   const loading = await render(document, { registry, resolveBinding: () => undefined });
   assert.match(loading.html, /data-state="loading"/u);
   const failed = await render(document, { registry, resolveBinding: () => { throw new Error('database down'); } });
-  assert.match(failed.html, /<main data-sf-composition-id="root"><section data-sf-composition-id="s"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/section><\/main>/u, 'the page still draws');
+  assert.match(failed.html, /<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/div><\/div><\/section><\/main>/u, 'the page still draws');
   assert.deepEqual(failed.diagnostics.map(({ code, path }) => [code, path]), [['binding_failed', 'node:list']]);
   const malformed = await render(document, { registry, resolveBinding: () => ({ items: [{ name: 'no title' }] }) });
   assert.match(malformed.html, /data-state="error"/u);
@@ -461,33 +468,38 @@ test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fie
   }
   // A type that names a set gets its props through a registry; the stored manifest keeps the names.
   const section = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(section.version, '1.1.0');
+  assert.equal(section.version, '1.2.0');
+  assert.deepEqual(section.parameter_defaults, { width: 'normal', padding_y: 8 });
   assert.deepEqual(Object.keys(section.props_schema.properties || {}), []);
   assert.deepEqual(Object.keys(extendRegistry().types.get('layout.section').props_schema.properties).sort(), ['align', 'background', 'breakout', 'columns', 'gap', 'hidden', 'padding_x', 'padding_y', 'width']);
   const own = { ...section, parameter_sets: ['alignment', 'shadow', 'alignment'], props_schema: { type: 'object', additionalProperties: false, properties: { align: { enum: ['left'] } } } };
   assert.deepEqual(codes(validateTypeManifest(own)).filter((code) => code.startsWith('parameter_set')).sort(), ['parameter_set_conflict', 'parameter_set_duplicate', 'parameter_set_unknown']);
 });
 
-test('width reaches three elements; a section without the sets draws as 1.0.0 did', async () => {
+test('width reaches three elements; a section that sets width full and no space draws as 1.0.0 did', async () => {
   const section = (id, props) => ({ id, type: 'layout.section', props, slots: { default: [paragraph(`${id}-p`, 'Text')] } });
   const drawn = await render(layout(section('n', { width: 'narrow' }), section('m', { width: 'normal' }), section('w', { width: 'wide' }), section('f', { width: 'full' })));
   assert.equal(drawn.notices, undefined);
   const part = (id) => drawn.html.slice(drawn.html.lastIndexOf('<section', drawn.html.indexOf(`data-sf-composition-id="${id}"`)), drawn.html.indexOf(`data-sf-composition-id="${id}-p"`));
-  assert.match(part('n'), /<section data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
-  assert.match(part('m'), /<section data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
+  assert.match(part('n'), /<section class="p-y-8" data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(part('m'), /<section class="p-y-8" data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
   // max-container-N widens a .container that is its descendant, never one on the same element.
-  assert.match(part('w'), /<section class="max-container-7" data-sf-composition-id="w"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
-  assert.match(part('f'), /<section data-sf-composition-id="f"><div data-sf-composition-part="frame"><div data-sf-composition-part="content">/u);
+  assert.match(part('w'), /<section class="p-y-8 max-container-7" data-sf-composition-id="w"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  // Full: the Document's own width wins over the type's default, no frame part.
+  assert.match(part('f'), /<section class="p-y-8" data-sf-composition-id="f"><p /u);
   // Every set at once, per screen where it makes sense.
   const all = await render(layout(section('s', { background: 'container', padding_y: { xs: 4, md: 8 }, width: 'normal', columns: { md: 2, lg: 3 }, gap: 4, align: { md: 'center' }, breakout: true, hidden: { xl: true } })));
   assert.match(all.html, /<section class="md:text-center bg-surface-container container-breakout xl:hidden p-y-4 md:p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="md:grid md:grid-col-2 lg:grid-col-3 gap-4" data-sf-composition-part="content">/u);
   assert.doesNotMatch(all.html, /style=/u);
   assert.equal(validate(layout(section('x', { width: 'huge' }))).valid, false);
-  // The 1.0.0 form: no parts, no classes.
-  assert.equal((await render(layout(section('o')))).html, '<main data-sf-composition-id="root"><section data-sf-composition-id="o"><p data-sf-composition-id="o-p">Text</p></section></main>');
-  // The editor manifest follows the type with the sets' fields.
+  // The 1.0.0 form, when the Document asks for it: no parts, one class.
+  assert.equal((await render(layout(section('o', { width: 'full', padding_y: 0 })))).html, '<main data-sf-composition-id="root"><section class="p-y-0" data-sf-composition-id="o"><p data-sf-composition-id="o-p">Text</p></section></main>');
+  // The editor manifest follows the type with the sets' fields; width and
+  // the space above and below default to what the section prints unset.
   const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(editor.type_version, '1.1.0');
+  assert.equal(editor.type_version, '1.2.0');
+  assert.equal(editor.fields.find(({ key }) => key === 'width').default, 'normal');
+  assert.equal(editor.fields.find(({ key }) => key === 'padding_y').default, 8);
   assert.deepEqual(editor.fields.map(({ key }) => key), ['surface', 'background', 'padding_y', 'padding_x', 'width', 'columns', 'gap', 'align', 'breakout', 'hidden']);
   const projected = Composition.projectEditorFields(editor, BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section'), section('s', { padding_y: { xs: 4, md: 8 } }));
   assert.deepEqual(projected.diagnostics, []);
@@ -540,4 +552,86 @@ test('SF.Composition publishes the one block editor helpers', () => {
   for (const name of ['catalogue', 'catalogueEntry', 'instantiateVariant', 'utilityClasses', 'checkModifiers', 'defineComposedType', 'upgradeComposed', 'slotAccepts', 'createSourcePort', 'validateTypeManifest', 'DATA_SHAPES', 'PARAMETER_SETS', 'withParameterSetFields', 'printElement', 'checkPrintedElements', 'PRINTED_ELEMENTS']) {
     assert.ok(name in Composition, name);
   }
+});
+
+// ------------------------------- visual parity: built-in Elements and Layout (2026-11-04)
+
+const NEW_TYPES = ['layout.container', 'layout.grid', 'layout.spacer', 'element.button', 'element.button-icon', 'element.badge', 'element.icon'];
+
+test('every built-in type manifest, its variants and its parameter defaults pass the type check', () => {
+  for (const type of BUILTIN_TYPE_MANIFESTS) assert.deepEqual(validateTypeManifest(type).diagnostics, [], type.type);
+  for (const type of NEW_TYPES) {
+    const entry = BUILTIN_TYPE_MANIFESTS.find((manifest) => manifest.type === type);
+    assert.equal(entry.version, '1.0.0', type);
+    // Its own catalogue place agrees with the built-in table.
+    assert.equal(entry.catalogue.group, BUILTIN_CATALOGUE[type], type);
+    assert.equal(entry.catalogue.icon, Composition.BUILTIN_CATALOGUE_ICONS[type], type);
+    assert.ok(Composition.BUILTIN_EDITOR_MANIFESTS.some((editor) => editor.type === type), `${type} has an editor manifest`);
+  }
+  const section = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
+  assert.deepEqual(section.variants.map(({ id }) => id), ['plain', 'soft', 'accent', 'text', 'two-columns']);
+  assert.deepEqual(catalogueEntry(section).variants.map(({ id }) => id), ['plain', 'soft', 'accent', 'text', 'two-columns']);
+  assert.deepEqual(instantiateVariant(section, 'text', { id: 's1' }).slots.default.map(({ id, type }) => `${id} ${type}`), ['s1-area layout.area']);
+  // A default names a property that prints a utility, with a value it takes.
+  assert.deepEqual(codes(validateTypeManifest({ ...section, parameter_defaults: { width: 'huge', shadow: 2 } })).sort(), ['parameter_default_invalid', 'parameter_default_unknown']);
+  assert.deepEqual(codes(validateTypeManifest({ ...section, catalogue: { group: 'layout', icon: 'Not An Icon' } })), ['catalogue_icon_invalid']);
+});
+
+test('the catalogue groups: Elements and Layout with icons and words; structure is a dated alias of layout', () => {
+  assert.deepEqual(Composition.CATALOGUE_GROUPS, ['text', 'media', 'elements', 'layout', 'page-parts', 'marketing', 'data', 'forms']);
+  assert.deepEqual(Object.keys(Composition.CATALOGUE_GROUP_TABLE), Composition.CATALOGUE_GROUPS);
+  assert.deepEqual(Composition.CATALOGUE_GROUP_ALIASES, { structure: { group: 'layout', until: '2027-01-01' } });
+  const old = manifest('acme.band', { catalogue: { group: 'structure' }, slots: { default: { min: 0, max: 5, groups: ['structure'] } } });
+  assert.deepEqual(validateTypeManifest(old, extendRegistry([old], { 'acme.band': draw('div') })).diagnostics, []);
+  assert.equal(catalogueEntry(old).group, 'layout');
+  const registry = extendRegistry([old], { 'acme.band': draw('div') });
+  assert.equal(slotAccepts(registry, old, 'default', 'layout.grid'), true, 'a slot that names structure takes the layout group');
+  assert.equal(slotAccepts(registry, old, 'default', 'element.button'), false);
+});
+
+test('a section prints its type defaults unset; the Document\'s own values win, per screen too', async () => {
+  const section = (id, props) => ({ id, type: 'layout.section', ...(props ? { props } : {}), slots: { default: [paragraph(`${id}-p`, 'Text')] } });
+  const drawn = await render(layout(section('a'), section('b', { padding_y: { xs: 4, lg: 8 } }), section('c', { width: 'wide', padding_y: 2 })));
+  assert.match(drawn.html, /<section class="p-y-8" data-sf-composition-id="a"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  assert.match(drawn.html, /<section class="p-y-4 lg:p-y-8" data-sf-composition-id="b"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  assert.match(drawn.html, /<section class="p-y-2 max-container-7" data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
+  const type = extendRegistry().types.get('layout.section');
+  assert.deepEqual(Composition.effectiveProps({ id: 'x', type: 'layout.section', props: { width: 'narrow' } }, type), { width: 'narrow', padding_y: 8 });
+});
+
+test('the Elements and Layout types draw SIMAI Framework utilities and smart elements only', async () => {
+  const document = layout({
+    id: 's', type: 'layout.section', slots: { default: [
+      { id: 'c', type: 'layout.container', slots: { default: [paragraph('c-p', 'Narrow')] } },
+      { id: 'g', type: 'layout.grid', slots: { default: [{ id: 'g1', type: 'content.card' }, { id: 'g2', type: 'content.card' }] } },
+      { id: 'sp', type: 'layout.spacer' },
+      { id: 'b', type: 'element.button', data: { text: 'Подробнее' }, props: { icon: 'arrow_forward', icon_position: 'end' } },
+      { id: 'bi', type: 'element.button-icon', data: { label: 'Нравится' } },
+      { id: 'bd', type: 'element.badge' },
+      { id: 'i', type: 'element.icon', props: { size: '4' } },
+    ] },
+  });
+  document.locale = 'ru';
+  const output = await render(document);
+  assert.deepEqual(output.diagnostics, []);
+  assert.equal(output.notices, undefined);
+  const html = output.html;
+  assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(html, /<div data-sf-composition-id="g"><div class="grid md:grid md:grid-col-3 gap-4" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u);
+  assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
+  assert.match(html, /<div data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
+  assert.match(html, /<div data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
+  assert.match(html, /<div data-sf-composition-id="bd"><sf-badge appearance="tonal" scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
+  assert.match(html, /<div data-sf-composition-id="i"><sf-icon icon="star" size="4"><\/sf-icon><\/div>/u);
+  assert.deepEqual(checkPrintedElements(html), []);
+  assert.doesNotMatch(html, /style=/u);
+  for (const type of NEW_TYPES) {
+    const entry = extendRegistry().types.get(type);
+    for (const property of Object.values(entry.props_schema.properties)) for (const name of utilityClassSpace(property)) assert.ok(known(name), `${type}: ${name}`);
+  }
+  assert.deepEqual(output.assets, ['component/card', 'smart/badge', 'smart/button', 'smart/button-icon', 'smart/icon']);
+  // An English Document, and a value the element refuses.
+  const english = await render(layout({ id: 'b2', type: 'element.button' }));
+  assert.match(english.html, /<sf-button text="Button"><\/sf-button>/u);
+  assert.equal(validate(layout({ id: 'b3', type: 'element.button', props: { size: '3' } })).valid, false);
 });
