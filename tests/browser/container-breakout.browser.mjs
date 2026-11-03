@@ -29,7 +29,9 @@ const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...
 const near = (a, b, tolerance = 1) => Math.abs(a - b) <= tolerance;
 
 const text = (value) => [{type: 'text', value}];
-const section = (id, props, children) => ({id, type: 'layout.section', props, slots: {default: children || [{id: `${id}-p`, type: 'content.paragraph', data: {content: text('Lorem ipsum dolor sit amet. '.repeat(12))}}]}});
+// No space above and below (layout.section 1.2.0 prints p-y-8 unset): the
+// sticky check scrolls to a fixed offset measured without it.
+const section = (id, props, children) => ({id, type: 'layout.section', props: {padding_y: 0, ...props}, slots: {default: children || [{id: `${id}-p`, type: 'content.paragraph', data: {content: text('Lorem ipsum dolor sit amet. '.repeat(12))}}]}});
 const {html} = await render({schema: 'simai.composition.document', schema_version: 1, id: 'probe', profile: 'ui-layout', root: {id: 'root', type: 'layout.page', slots: {default: [
   section('narrow', {width: 'narrow'}), section('normal', {width: 'normal'}), section('wide', {width: 'wide'}), section('full', {width: 'full'}),
   section('page', {width: 'normal'}, [section('band', {breakout: true, background: 'container', width: 'normal'})]),
