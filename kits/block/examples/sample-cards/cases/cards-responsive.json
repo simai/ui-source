@@ -1,0 +1,94 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "cards-responsive",
+  "summary": "Three columns on the desktop, two on the tablet, one on the phone, with a title in the intro place.",
+  "covers": [
+    "sample.cards"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "sample.cards",
+              "props": {
+                "cols": {
+                  "xs": 1,
+                  "md": 2,
+                  "lg": 3
+                },
+                "gap": {
+                  "xs": 2,
+                  "lg": 4
+                },
+                "tone": "accent"
+              },
+              "bindings": [
+                {
+                  "owner": "host",
+                  "ref": "catalogue.news",
+                  "target": "items",
+                  "revision": "r1"
+                }
+              ],
+              "extensions": {
+                "simai.composition:data": {
+                  "items": {
+                    "shape": "cards",
+                    "mapping": {
+                      "title": "NAME",
+                      "image": "PREVIEW_PICTURE"
+                    },
+                    "sort": [
+                      {
+                        "field": "date",
+                        "direction": "desc"
+                      }
+                    ],
+                    "limit": 6,
+                    "page_param": "page",
+                    "empty_text": "No news yet"
+                  }
+                }
+              },
+              "slots": {
+                "intro": [
+                  {
+                    "id": "h",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 2,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "News"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><section class=\"sample-cards sample-cards--accent grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2 lg:gap-4\" data-state=\"loading\" data-sf-composition-id=\"c\"><div class=\"sample-cards-intro\"><h2 data-sf-composition-id=\"h\">News</h2></div><div class=\"sample-cards-card sample-cards-card--loading\" aria-busy=\"true\"></div></section></article>",
+    "diagnostics": [],
+    "assets": [
+      "sample/cards"
+    ]
+  }
+}

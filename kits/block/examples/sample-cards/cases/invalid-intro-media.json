@@ -1,0 +1,52 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-intro-media",
+  "summary": "The intro place takes text blocks, not a picture.",
+  "covers": [
+    "sample.cards"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "sample.cards",
+              "slots": {
+                "intro": [
+                  {
+                    "id": "f",
+                    "type": "content.figure",
+                    "data": {
+                      "src": "/a.webp",
+                      "alt": ""
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "slot_child_group_forbidden",
+        "path": "$.root.slots.default[0].slots.intro[0]"
+      }
+    ],
+    "assets": []
+  }
+}

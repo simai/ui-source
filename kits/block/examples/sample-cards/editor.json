@@ -1,0 +1,21 @@
+{
+  "schema": "simai.composition.editor-manifest",
+  "schema_version": 1,
+  "type": "sample.cards",
+  "type_version": "1.0.0",
+  "fields": [
+    {"key": "cols", "plane": "props", "target": "cols", "property": {"type": "integer", "version": 1},
+     "constraints": {"min": 1, "max": 4}, "group": "basic", "visibility": "visible", "default": 1,
+     "label_key": "sample.cards.cols", "help_key": "sample.cards.cols_help",
+     "capability_hints": ["composition.props.cols"], "permission_hints": ["composition.node.update"], "owner": "sample/cards"},
+    {"key": "gap", "plane": "props", "target": "gap", "property": {"type": "integer", "version": 1},
+     "constraints": {"min": 0, "max": 8}, "group": "advanced", "visibility": "collapsed", "default": 3,
+     "label_key": "sample.cards.gap", "help_key": "sample.cards.gap_help",
+     "capability_hints": ["composition.props.gap"], "permission_hints": ["composition.node.update"], "owner": "sample/cards"},
+    {"key": "tone", "plane": "props", "target": "tone", "property": {"type": "string", "version": 2},
+     "constraints": {"min_length": 1, "max_length": 16}, "group": "basic", "visibility": "visible",
+     "choices": ["plain", "accent"], "default": "plain",
+     "label_key": "sample.cards.tone", "help_key": "sample.cards.tone_help",
+     "capability_hints": ["composition.props.tone"], "permission_hints": ["composition.node.update"], "owner": "sample/cards"}
+  ]
+}

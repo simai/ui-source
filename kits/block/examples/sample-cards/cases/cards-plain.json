@@ -1,0 +1,41 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "cards-plain",
+  "summary": "The plain tone with one column on every screen.",
+  "covers": [
+    "sample.cards"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "ui-layout",
+      "root": {
+        "id": "root",
+        "type": "layout.page",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "sample.cards",
+              "props": {
+                "cols": 1,
+                "tone": "plain"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<main data-sf-composition-id=\"root\"><section class=\"sample-cards sample-cards--plain grid grid-col-1\" data-state=\"empty\" data-sf-composition-id=\"c\"><p class=\"sample-cards-state\">Nothing here yet</p></section></main>",
+    "diagnostics": [],
+    "assets": [
+      "sample/cards"
+    ]
+  }
+}

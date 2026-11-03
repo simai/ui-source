@@ -17,7 +17,9 @@
       "sample.quote.size": "Size",
       "sample.quote.size_help": "How large the words are",
       "sample.quote.size.default": "Regular",
-      "sample.quote.size.large": "Large"
+      "sample.quote.size.large": "Large",
+      "sample.quote.name": "Quote",
+      "sample.quote.centred": "Centred quote"
     },
     "ru": {
       "sample.quote.author": "Автор",
@@ -33,7 +35,9 @@
       "sample.quote.size": "Размер",
       "sample.quote.size_help": "Насколько крупный текст",
       "sample.quote.size.default": "Обычный",
-      "sample.quote.size.large": "Крупный"
+      "sample.quote.size.large": "Крупный",
+      "sample.quote.name": "Цитата",
+      "sample.quote.centred": "Цитата по центру"
     }
   }
 }

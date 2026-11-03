@@ -16,11 +16,19 @@
 //
 //   node kits/block/check.mjs <block folder> [--framework <dir>] [--json] [--update]
 //
-// --framework names the folder that holds core/js/composition/ (this
-// checkout's src/ by default, or distr/ of a released simai/ui); --update
-// writes each case's expect from what the renderer draws now, for review.
+// --framework names the folder that holds core/js/composition/: the SIMAI
+// Framework's src/ (this checkout's by default) or distr/ of a released
+// simai/ui, not a checkout root; a checkout root is read as its src/.
+// --update writes each case's expect from what the renderer draws now, for
+// review.
+//
+// Since core.runtime 1.22.0 (the one block editor, 2026-11-03) it also asks
+// of a block: its catalogue place and variants, its layout parameters as
+// SIMAI Framework utilities, its named places, the data it takes (every state
+// drawn, a failure kept inside the block), and a site block's tree.
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import vm from 'node:vm';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -42,6 +50,8 @@ const SCHEMA_KEYWORDS = new Set([
   'type', 'const', 'enum', 'oneOf', 'minLength', 'maxLength', 'pattern', 'minimum', 'maximum',
   'minItems', 'maxItems', 'uniqueItems', 'items', 'required', 'additionalProperties', 'properties',
   'title', 'description', 'default', 'examples', '$comment',
+  // A layout parameter's utility (utilities.mjs): read by the renderer.
+  'x-simai-utility',
 ]);
 const GROUPS = Object.freeze([
   ['manifest', 'the type and editor manifests are valid'],
@@ -56,22 +66,59 @@ const HOSTILE_URL = 'javascript:alert(1)';
 const FORBIDDEN_ELEMENTS = new Set(['script', 'iframe', 'frame', 'frameset', 'object', 'embed', 'applet', 'base', 'meta', 'link', 'style', 'form', 'noscript', 'template']);
 const URL_ATTRIBUTES = new Set(['href', 'src', 'srcset', 'action', 'formaction', 'poster', 'cite', 'xlink:href', 'background', 'ping']);
 
+// Demo data with every text made hostile markup and every address javascript:.
+const hostile = (value, key = '') => {
+  if (Array.isArray(value)) return value.map((entry) => hostile(entry));
+  if (value !== null && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, entry]) => [name, hostile(entry, name)]));
+  if (typeof value !== 'string') return value;
+  return /(?:^|_)(?:url|src|href)$/u.test(key) ? HOSTILE_URL : HOSTILE_MARKUP;
+};
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const sameJson = (left, right, stable) => stable(left) === stable(right);
 
+/**
+ * The folder --framework names: one that holds core/js/composition/ (the
+ * SIMAI Framework's src/ or a built distr/). A checkout root is read as its
+ * src/; anything else is refused with what was expected.
+ */
+export function frameworkRoot(root = DEFAULT_FRAMEWORK) {
+  const holds = (folder) => existsSync(join(folder, 'core', 'js', 'composition', 'index.mjs'));
+  if (holds(root)) return root;
+  if (holds(join(root, 'src'))) return join(root, 'src');
+  throw new Error(`block_check_framework_missing: --framework names the SIMAI Framework's src folder or a built distr (the folder holding core/js/composition/index.mjs); ${root} holds neither it nor a src/ with it`);
+}
+
+// The utility rules of the Framework checked against (utility/*/*/rule.js, as
+// the RuleLoader holds them); null when the folder carries none.
+function loadUtilityRules(root) {
+  const folder = join(root, 'utility');
+  if (!existsSync(folder)) return null;
+  const SF = { RuleLoader: {} };
+  for (const name of readdirSync(folder)) {
+    const unit = join(folder, name);
+    let variants = [];
+    try { variants = readdirSync(unit); } catch { continue; }
+    for (const variant of variants) {
+      const file = join(unit, variant, 'rule.js');
+      if (existsSync(file)) vm.runInNewContext(readFileSync(file, 'utf8'), { SF, RegExp });
+    }
+  }
+  return Object.values(SF.RuleLoader).some((rule) => rule instanceof RegExp) ? SF.RuleLoader : null;
+}
+
 /** Loads the SIMAI Framework the block is checked against. */
-export async function loadFramework(root = DEFAULT_FRAMEWORK) {
+export async function loadFramework(given = DEFAULT_FRAMEWORK) {
+  const root = frameworkRoot(given);
   const at = (path) => join(root, 'core', path);
-  const index = at('js/composition/index.mjs');
-  if (!existsSync(index)) throw new Error(`block_check_framework_missing: no core/js/composition/index.mjs under ${root}`);
-  const composition = await import(pathToFileURL(index).href);
+  const composition = await import(pathToFileURL(at('js/composition/index.mjs')).href);
   const canonical = await import(pathToFileURL(at('js/composition/canonical.mjs')).href);
   return {
     root,
     composition,
     stable: canonical.stableStringify,
     typeSchema: readJson(at('contracts/composition-type-manifest.v1.schema.json')),
+    utilityRules: loadUtilityRules(root),
   };
 }
 
@@ -260,7 +307,8 @@ export async function checkBlock(folder, options = {}) {
   const namespace = String(type.type || '').split('.')[0];
   if (RESERVED_NAMESPACES.includes(namespace) && !options.allowReservedNamespace) add('manifest', 'type_namespace_reserved', 'type.json $.type', `${namespace}.* belongs to the SIMAI Framework; a product block is <product>.<name>`);
   if (composition.BUILTIN_TYPE_MANIFESTS.some((entry) => entry.type === type.type)) add('manifest', 'type_taken', 'type.json $.type', `${type.type} is a SIMAI Framework type`);
-  if (type.renderer?.kind === 'builtin') add('manifest', 'renderer_kind_builtin', 'type.json $.renderer.kind', 'Only the SIMAI Framework draws builtin types; a block is registered or a custom element');
+  const composed = isObject(type.composed);
+  if (type.renderer?.kind === 'builtin' && !(composed && type.renderer.name === 'composed')) add('manifest', 'renderer_kind_builtin', 'type.json $.renderer.kind', 'Only the SIMAI Framework draws builtin types; a block is registered or a custom element (a site block: builtin composed)');
   for (const plane of ['data_schema', 'props_schema']) {
     const schema = type[plane];
     if (!isObject(schema)) continue;
@@ -282,6 +330,25 @@ export async function checkBlock(folder, options = {}) {
   } catch (error) {
     registryProblem = error.message;
     add('manifest', 'type_not_registrable', 'type.json', error.message);
+  }
+  // The one block editor's fields (catalogue, variants, utilities, named
+  // places, data, a site block's tree), on a Framework that knows them.
+  const blocksAware = typeof composition.validateTypeManifest === 'function';
+  if (blocksAware && !registryProblem) {
+    composition.validateTypeManifest(type, composition.extendRegistry([type], {}), { utilityRules: framework.utilityRules }).diagnostics
+      .forEach(({ code, path, message }) => add('manifest', code, `type.json ${path}`, message));
+  } else if (!blocksAware && ['catalogue', 'variants', 'composed', 'exposed', 'data_bindings', 'runtime'].some((key) => key in type)) {
+    skip('manifest', 'this SIMAI Framework predates the one block editor contracts (core.runtime 1.22.0)');
+  }
+  if (blocksAware && !isObject(type.catalogue)) warn('manifest', 'catalogue_missing', 'type.json $.catalogue', `No catalogue place: the editor files it under the group ${namespace}`);
+  // Every class a layout parameter can print is a SIMAI Framework utility.
+  if (blocksAware) {
+    for (const [key, schema] of Object.entries(type.props_schema?.properties || {})) {
+      const space = composition.utilityClassSpace(schema);
+      if (space === null) warn('manifest', 'utility_space_open', `type.json $.props_schema.properties.${key}`, 'The values are not a closed list: the printed classes cannot all be checked');
+      else if (space.length && !framework.utilityRules) warn('manifest', 'utility_rules_missing', `type.json $.props_schema.properties.${key}`, 'No utility rules under the Framework checked against');
+      else for (const name of space) if (!Object.values(framework.utilityRules || {}).some((rule) => rule instanceof RegExp && rule.test(name))) add('manifest', 'utility_class_unknown', `type.json $.props_schema.properties.${key}`, `${name} is no SIMAI Framework utility`);
+    }
   }
   if (editor !== undefined) {
     const checked = composition.validateEditorManifest(editor, type);
@@ -350,8 +417,10 @@ export async function checkBlock(folder, options = {}) {
   const requiredScalars = (type.data_schema?.required || []).filter((key) => scalar(dataProperties[key]));
   const fields = Array.isArray(editor?.fields) ? editor.fields : [];
   const fieldFor = (plane, key) => fields.find((field) => field.plane === plane && field.target === key);
+  // A site block's form is its exposed parameters, each drawn by its target's
+  // own field: it brings no editor manifest of its own.
   if (editor === undefined) {
-    if (requiredScalars.length || Object.keys(propsProperties).length) add('form', 'editor_manifest_missing', 'editor.json', 'A block with parameters brings an editor manifest');
+    if (!composed && (requiredScalars.length || Object.keys(propsProperties).length)) add('form', 'editor_manifest_missing', 'editor.json', 'A block with parameters brings an editor manifest');
   } else {
     for (const key of requiredScalars) if (!fieldFor('data', key)) add('form', 'form_required_field_missing', `editor.json data.${key}`, `data.${key} is required and has no field: a form drawn from the manifest alone cannot make the block`);
     for (const key of Object.keys(propsProperties)) if (!fieldFor('props', key)) warn('form', 'form_prop_without_field', `editor.json props.${key}`, `props.${key} has no field`);
@@ -470,6 +539,43 @@ export async function checkBlock(folder, options = {}) {
     }
   }
 
+  // Data: the block draws every state the host can leave it in, and a source
+  // that fails stays inside the block (the page still draws).
+  const takesData = isObject(type.data_bindings) || isObject(type.runtime?.accepts);
+  if (registry && validCase && takesData && typeof composition.demoData === 'function') {
+    const { document } = validCase.entry.input;
+    const nodes = nodesOfType(document.root, type.type);
+    const bound = structuredClone(document);
+    for (const { path } of nodes) {
+      const target = nodeAt(bound, path);
+      const targets = Object.keys(type.data_bindings || {});
+      const own = (target.bindings || []).filter((binding) => binding.owner !== 'section' && targets.includes(binding.target)).map((binding) => binding.target);
+      target.bindings = [...(target.bindings || []), ...targets.filter((key) => !own.includes(key)).map((key) => ({ owner: 'kit', ref: 'kit.demo', target: key }))];
+    }
+    const states = [
+      ['ready', (binding, { shape }) => composition.demoData(shape)],
+      ['preview', (binding, { shape }) => composition.demoData(shape), true],
+      ['empty', (binding, { shape }) => composition.demoData(shape, { count: 0 })],
+      ['loading', () => undefined],
+      ['error', () => { throw new Error('kit: the source is down'); }],
+      // A host's answer is text, never markup: the block escapes it and checks its addresses.
+      ['ready with hostile host data', (binding, { shape }) => hostile(composition.demoData(shape))],
+    ];
+    if (composition.validate(bound, registry).valid) {
+      for (const [state, resolveBinding, preview] of states) {
+        let drawn;
+        try {
+          drawn = await composition.render(bound, { registry, resolveBinding, preview: preview === true });
+        } catch (error) {
+          add('output', 'data_state_failed', `state ${state}`, `Drawing the ${state} state threw: ${error.message}`);
+          continue;
+        }
+        for (const { node } of nodes) if (countIds(drawn.html, node.id) !== 1) add('output', 'data_state_not_drawn', `state ${state} node:${node.id}`, `The block draws nothing in the ${state} state: every data block draws loading, empty, error and preview`);
+        unsafeOutput(drawn.html).forEach((item) => add('output', item.code, `state ${state}: ${item.path}`, item.message));
+      }
+    } else add('output', 'data_binding_refused', 'cases/', 'A host binding of each declared target is refused by validate');
+  }
+
   // -------------------------------------------------------------- 5. unknown
   if (registry && validCase) {
     const { document } = validCase.entry.input;
@@ -535,7 +641,16 @@ async function main(argv) {
   const json = flag('--json');
   const update = flag('--update');
   if (flag('--help') || args.length !== 1) {
-    process.stdout.write('node kits/block/check.mjs <block folder> [--framework <dir holding core/>] [--json] [--update]\n');
+    process.stdout.write([
+      'node kits/block/check.mjs <block folder> [--framework <dir>] [--json] [--update]',
+      '',
+      '  --framework <dir>  the SIMAI Framework to check against: its src/ folder or a built distr/',
+      '                     (the folder holding core/js/composition/index.mjs); a checkout root is read',
+      '                     as its src/. Default: this checkout\'s src/.',
+      '  --json             the report as JSON',
+      '  --update           write each case\'s expect from what the block draws now, for review',
+      '',
+    ].join('\n'));
     return args.length === 1 ? 0 : 2;
   }
   const report = await checkBlock(args[0], { framework: framework && resolve(framework), update });

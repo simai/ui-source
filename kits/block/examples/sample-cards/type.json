@@ -1,0 +1,34 @@
+{
+  "schema": "simai.composition.type-manifest",
+  "schema_version": 1,
+  "type": "sample.cards",
+  "version": "1.0.0",
+  "category": "content",
+  "mode": "composite",
+  "profiles": ["structured-content", "ui-layout"],
+  "data_schema": {"type": "object", "additionalProperties": false, "properties": {}},
+  "props_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "cols": {"type": "integer", "minimum": 1, "maximum": 4, "x-simai-utility": {"class": "grid-col-{value}", "responsive": true}},
+      "gap": {"type": "integer", "minimum": 0, "maximum": 8, "default": 3, "x-simai-utility": {"class": "gap-{value}", "responsive": true}},
+      "tone": {"enum": ["plain", "accent"]}
+    }
+  },
+  "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+  "slots": {
+    "intro": {"min": 0, "max": 5, "categories": ["content"], "groups": ["text"], "label_key": "sample.cards.intro", "empty_key": "sample.cards.intro_empty"}
+  },
+  "renderer": {"kind": "registered", "name": "sample.cards"},
+  "assets": ["sample/cards"],
+  "capabilities": ["html"],
+  "catalogue": {"group": "data", "label_key": "sample.cards.name", "keywords": {"en": ["cards", "news", "list"], "ru": ["карточки", "новости", "список"]}},
+  "variants": [
+    {"id": "three-columns", "label_key": "sample.cards.three_columns", "props": {"cols": {"xs": 1, "md": 2, "lg": 3}},
+     "slots": {"intro": [{"id": "title", "type": "content.heading", "data": {"level": 2, "content": [{"type": "text", "value": "News"}]}}]}},
+    {"id": "list", "label_key": "sample.cards.list", "props": {"cols": 1, "gap": 2}}
+  ],
+  "data_bindings": {"items": {"shapes": ["cards"], "empty_key": "sample.cards.empty"}},
+  "runtime": {"publishes": {"pagination": {"shape": "pagination", "binding": "items"}}}
+}

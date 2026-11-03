@@ -1,0 +1,45 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-cols-screen",
+  "summary": "A value per screen is keyed by the SIMAI Framework breakpoints.",
+  "covers": [
+    "sample.cards"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "sample.cards",
+              "props": {
+                "cols": {
+                  "tablet": 2
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "breakpoint_unknown",
+        "path": "$.root.slots.default[0].props.cols"
+      }
+    ],
+    "assets": []
+  }
+}

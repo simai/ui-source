@@ -12,6 +12,14 @@ the structured-content conformance cases. The guide is
 | `new.mjs` | `node kits/block/new.mjs <product>.<name> <folder>`: the template under the block's name |
 | `check.mjs` | `node kits/block/check.mjs <folder> [--framework <dir>] [--json] [--update]`: the conformance check |
 | `examples/sample-quote/` | `sample.quote`, a block made from the kit alone |
+| `examples/sample-cards/` | `sample.cards`, a data block: catalogue place, variants, layout parameters as utilities per screen, a named place and a host binding |
+
+`--framework <dir>` names the SIMAI Framework the block is checked against:
+its `src/` folder, or a built `distr/` (the folder that holds
+`core/js/composition/index.mjs`), not a checkout root. A checkout root is read
+as its `src/`; a folder that holds neither is refused
+(`block_check_framework_missing`, exit code 2). Without it the check uses
+this checkout's `src/`.
 
 The kit stands outside the SIMAI Framework source tree (`src/`): it is not
 built into the distribution and moves no unit's version. Its tests are

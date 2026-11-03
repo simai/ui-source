@@ -27,8 +27,11 @@ node kits/block/check.mjs ../acme-blocks/price-card            # BLOCK_CHECK_PAS
 ```
 
 The check runs against this checkout's `src/` by default; `--framework
-<dir>` runs it against another SIMAI Framework, for instance a released
-distribution (`--framework ../ui/distr`). `--json` prints the report as JSON.
+<dir>` runs it against another SIMAI Framework: its `src/` folder or a built
+distribution (`--framework ../ui/distr`), the folder that holds
+`core/js/composition/index.mjs`. A checkout root is read as its `src/`; any
+other folder is refused (`block_check_framework_missing`). `--json` prints
+the report as JSON.
 
 ## The files of a block
 
@@ -40,6 +43,12 @@ distribution (`--framework ../ui/distr`). `--json` prints the report as JSON.
 | `renderer.mjs` | an ES module | `export default ({node, slots, locale}) => html` |
 | `style.css` | CSS | the block's own sheet, one of its assets |
 | `cases/*.json` | `simai.composition.structured-content-conformance-case` v1 | a Document and what it draws |
+
+`kits/block/examples/sample-cards/` shows what the one block editor reads
+from a block (since core.runtime 1.22.0, type manifest schema 1.3.0): its
+place in the catalogue, its variants, layout parameters as SIMAI Framework
+utilities, a named place and data from a host. The sections from
+"The catalogue and variants" on describe them.
 
 ## Namespaces
 
@@ -224,6 +233,209 @@ the output of hostile values put into every text, address and inline field
 (`output_element_forbidden`, `output_event_handler`, `output_unsafe_url`,
 `output_unsafe_style`).
 
+## The catalogue and variants
+
+The one block editor (owner, 2026-11-03) offers blocks from one catalogue
+with two tabs: **Text** (what is written into a text flow) and **Blocks**
+(what a page is built from). A type says where it stands:
+
+```json
+"catalogue": {"group": "data", "label_key": "sample.cards.name",
+              "keywords": {"en": ["cards", "news"], "ru": ["карточки", "новости"]}}
+```
+
+- `group` is one of the fixed groups `text`, `media`, `structure`,
+  `page-parts`, `marketing`, `data`, `forms`, or the type's own namespace
+  (`acme` for `acme.*`): a product adds its own group and never edits the
+  fixed list (`catalogue_group_unknown`). `category` keeps its meaning
+  (`layout`, `content`, `component`, `smart`: what a slot accepts).
+- `tab` is `text` or `blocks`; by default `text` for the text and media
+  groups, `blocks` otherwise.
+- `label_key`, `help_key`, `keywords` per locale (search reads names,
+  keywords and the group in both languages), `preview` (an image address)
+  and `order` (0 to 1000).
+
+A type without `catalogue` falls into its namespace's group; the check warns
+(`catalogue_missing`). The SIMAI Framework's own types stand in the table
+`BUILTIN_CATALOGUE` (`src/core/contracts/composition-blocks.v1.json`).
+
+A **variant** is a named starting state of a type: parameters, data and the
+child blocks it is inserted with. A new kind of header is a variant, not a
+new type; a new type is needed only when the data or the renderer differs.
+
+```json
+"variants": [
+  {"id": "three-columns", "label_key": "sample.cards.three_columns",
+   "props": {"cols": {"xs": 1, "md": 2, "lg": 3}},
+   "slots": {"intro": [{"id": "title", "type": "content.heading", "data": {"level": 2, "content": [{"type": "text", "value": "News"}]}}]}}
+]
+```
+
+`SF.Composition.instantiateVariant(type, id, {id})` makes the node to insert:
+every child gets a new id (`<id>-<child id>`) and a runtime link between them
+follows. The check makes each variant into a node and validates it as a
+Document of the type's first profile: a variant the type refuses fails the
+`manifest` group (`$.variants.<id>...`). A saved block (a site's snapshot)
+is the host's, not the manifest's.
+
+## Layout parameters as utilities
+
+A layout parameter keeps a **value** in the Document, never a class: `cols:
+3`, on the tablet 2, on the phone 1. The parameter declares the SIMAI
+Framework utility it becomes:
+
+```json
+"cols": {"type": "integer", "minimum": 1, "maximum": 4,
+         "x-simai-utility": {"class": "grid-col-{value}", "responsive": true}},
+"gap":  {"type": "integer", "minimum": 0, "maximum": 8, "default": 3,
+         "x-simai-utility": {"class": "gap-{value}", "responsive": true}},
+"hidden": {"type": "boolean", "default": false,
+         "x-simai-utility": {"values": {"true": "hidden", "false": "block"}, "responsive": true}}
+```
+
+- `class` is a utility name ending in `{value}`; `values` maps each value to
+  one class (or none). The names are the SIMAI Framework's own:
+  `grid-col-*` (grid-template-columns), `col-span-*`, `gap-*`, `p-*`,
+  `p-x-*`, `p-y-*`, `grid`, `flex`, `block`, `hidden`. The check prints every
+  class a parameter can print, at every screen, and holds each to the
+  utility rules (`utility_class_unknown`).
+- `responsive: true` lets the node hold one value per screen, keyed by the
+  SIMAI Framework breakpoints `xs` (the phone, no prefix), `sm`, `md` (the
+  tablet), `lg` (the desktop), `xl`, `xxl`: `{"cols": {"xs": 1, "md": 2,
+  "lg": 3}}`. A scalar stands for every screen. Each value is checked by the
+  property's schema; another key is refused (`breakpoint_unknown`).
+
+The runtime prints the classes mobile first, a prefix only where the value
+changes, and puts them on the element that carries the node's
+`data-sf-composition-id`: `grid-col-1 md:grid-col-2 lg:grid-col-3 gap-6`. At
+the phone a value equal to the property's `default` prints nothing: the
+block draws its default without a class. The renderer writes no grid, gap,
+padding or visibility of its own and never an inline style for them; it gets
+the printed classes as `utilities` if it needs to know them. The block's own
+look (its colours, a picture's ratio) stays its sheet.
+
+The parameter form shows the phone's value and lists the screens that differ
+(`projectEditorFields` gives each such field `screens`), so the editor offers
+a per-screen switch. `layout.area`, the text area of a layout, declares its
+`padding` and `hidden` this way.
+
+## Own modifiers
+
+Every block has one more field the author may fill: classes of their own,
+with a screen prefix (`md:p-x-3`, `hidden`, `lg:gap-2`). They live in the
+node's extension, not in its props:
+
+```json
+"extensions": {"simai.composition:modifiers": {"utilities": ["md:p-x-3", "lg:gap-2"]}}
+```
+
+Each class is checked against the RuleLoader's utility rules (`SF.RuleLoader`
+on a page, `options.utilityRules` on a server). A class no rule knows is left
+out of the HTML and reported in the result's `notices`
+(`modifier_unknown`); it never refuses the Document. Without the rules
+nothing unchecked is printed (`modifier_rules_unavailable`). A block needs
+nothing for this: the classes join the element with its node id, as the
+layout utilities do. `SF.Composition.checkModifiers(classes, {rules})` is the
+editor's check while the author types.
+
+## Named places
+
+A block with places (a split hero: text and a picture) gives each place a
+slot. Each slot says what it accepts and how the editor names it:
+
+```json
+"slots": {
+  "intro": {"min": 0, "max": 5, "categories": ["content"], "groups": ["text"],
+            "label_key": "sample.cards.intro", "empty_key": "sample.cards.intro_empty"}
+}
+```
+
+- `types`, `categories` and, since schema 1.3.0, `groups` (catalogue groups)
+  decide what may stand there; a child of another group is refused
+  (`slot_child_group_forbidden`). The editor hides what a place cannot
+  accept: `SF.Composition.catalogue(registry, {parent, slot})` lists only
+  those, and a tab with nothing that fits is left out.
+- `label_key` names the place; `empty_key` is what an empty place offers
+  (“A picture or a video”). `slotPlaces(type)` lists them.
+
+## Data from a host
+
+A block never fetches. It declares which **shape** of data it takes, and the
+host decides where the data comes from:
+
+```json
+"data_bindings": {"items": {"shapes": ["cards"], "empty_key": "sample.cards.empty"}},
+"runtime": {"publishes": {"pagination": {"shape": "pagination", "binding": "items"}}}
+```
+
+- **Shapes** are small named contracts: `item`, `cards`, `gallery`,
+  `section_title`, `menu`, and the runtime state `pagination`
+  (`SF.Composition.DATA_SHAPES`). A host adds its own as `<owner>.<name>`
+  (`createShapeRegistry`) and never changes these.
+- **A binding** is the node's `bindings` entry of composition-document v1:
+  `{owner, ref, target, revision}`, `ref` naming a source the host defines,
+  `target` a key of `data_bindings`. What the host needs beside it lives in
+  the extension `simai.composition:data`, keyed by the target: `shape`,
+  `preset`, `mapping` (shape field to source field, e.g. `{"image":
+  "PREVIEW_PICTURE"}`), `filter`, `sort`, `limit`, `page_param`, `params`
+  (`{from: url | context | route, key}`) and `empty_text`. Only the host reads
+  the query.
+- **The source port** is what an editor asks a host: which sources give this
+  shape, which fields a source has, and preview data for a binding.
+  `SF.Composition.createSourcePort({sources, fields, preview})` checks every
+  answer; Bitrix, Larena and the mail editor each implement the three
+  functions.
+- **Runtime links**: a pagination binds to the list's state with `{owner:
+  "section", ref: "<list id>#pagination", target: "pagination"}`; the runtime
+  resolves it inside the same section, never the host. The publishing type
+  declares `runtime.publishes`, the accepting one `runtime.accepts`.
+
+At render the host gives the data through `resolveBinding(binding, {node,
+shape, settings})`. The renderer gets `resolvedBindings.<target>` and
+`bindingStates.<target>`, one of `loading` (no answer yet), `empty`,
+`error`, `ready` and `preview` (`render(..., {preview: true})`, demo data in
+the editor). A source that throws, or answers outside its shape, leaves its
+block in `error` (`binding_failed`, `binding_shape_mismatch`) and the page
+still draws. The render result lists the runtime links in `runtime` for the
+page to keep them live.
+
+The check draws a data block in every state, with demo data of its shape
+(`SF.Composition.demoData(shape)`) and with a hostile answer (markup in every
+text, `javascript:` in every address): the block draws its element in each
+state (`data_state_not_drawn`), and a host's answer is text the renderer
+escapes and addresses it checks.
+
+## Site blocks
+
+The editor's block builder makes a **site block**: a type of the site's
+catalogue (`site.*`) composed of existing blocks, with the parameters an
+author may set. It is not written by hand:
+
+```js
+const {manifest, diagnostics} = SF.Composition.defineComposedType({
+  type: 'site.promo', version: '1.0.0', profiles: ['ui-layout'],
+  catalogue: {group: 'marketing', label_key: 'site.promo.name'},
+  root: {id: 'box', type: 'layout.area', props: {padding: 4}, slots: {default: [/* heading "title", paragraph "lead" */]}},
+  exposed: [{key: 'padding', path: 'box', target: 'props.padding'}],
+}, registry);
+```
+
+The manifest's `composed.root` is the tree and `exposed` the parameters;
+their schema is their target's, their default the tree's value, and the
+renderer is the SIMAI Framework's `composed`. On a page an instance is
+closed: it stores its type, the version it was written against (extension
+`simai.composition:composed`), the exposed values in `props` and the texts
+by path in `data.texts` (`"title/content": [...]`), nothing else. It draws
+the type's **current** tree, so a new version reaches every instance while
+the author's texts and values stay; the drawn ids are `<instance
+id>:<tree id>`, so an editor maps a click back to a text path
+(`composedPart`). A text whose block a new version removed is kept and not
+drawn (`composed_text_orphaned`); `SF.Composition.upgradeComposed(document,
+registry)` moves every instance to the current version and reports what it
+dropped. The check accepts a site block's `type.json` (renderer `builtin`
+`composed`) and holds its tree and its parameters to the definition
+(`composed_schema_drift`).
+
 ## Versioning
 
 `version` in `type.json` is the block's version, and `type_version` in
@@ -274,10 +486,10 @@ Framework's own Composition runtime:
 
 | Group | Asks |
 |:---|:---|
-| `manifest` | `type.json` against the published schema, the namespace, closed schemas with the validator's keywords, `editor.json` by `validateEditorManifest` and the field kinds |
+| `manifest` | `type.json` against the published schema, the namespace, closed schemas with the validator's keywords, the catalogue place, each variant as a Document, every utility a parameter prints, the data shapes, a site block's tree; `editor.json` by `validateEditorManifest` and the field kinds |
 | `renderer` | `renderer.mjs` exports a function; unregistered the type draws nothing, registered it draws the block with its id and its slots |
 | `form` | every required scalar has a field, the form builds for every node in the cases, every offered value keeps the Document valid, the words |
-| `output` | every case under the conformance kit's rule: `valid`, the HTML (`contracts/conformance/structured-content/README.md`, "Comparing HTML"), the diagnostics, the assets; every output and every hostile value drawn safely |
+| `output` | every case under the conformance kit's rule: `valid`, the HTML (`contracts/conformance/structured-content/README.md`, "Comparing HTML"), the diagnostics, the assets; every output and every hostile value drawn safely; a data block in every state |
 | `unknown` | the opaque rule above |
 
 A group that cannot run says so (`SKIP`, with the reason) and the block does
@@ -285,15 +497,15 @@ not pass. A warning (`WARN`) names something worth adding: a parameter with
 no field, a choice no case draws, a missing word, no case the block refuses.
 
 ```text
-SIMAI Framework block check: sample.quote 1.0.0 (kits/block/examples/sample-quote)
+SIMAI Framework block check: sample.quote 1.1.0 (kits/block/examples/sample-quote)
   PASS  manifest  the type and editor manifests are valid
   PASS  renderer  the renderer is registered and draws the block
   PASS  form      the parameter form builds from the editor manifest
   PASS  output    JSON to HTML gives the expected output, and the output is safe
   PASS  unknown   an unknown type stays safe, the block is kept byte for byte
-BLOCK_CHECK_PASS sample.quote@1.0.0 groups=5 cases=7 warnings=0
+BLOCK_CHECK_PASS sample.quote@1.1.0 groups=5 cases=7 warnings=0
 ```
 
 The exit code is 0 when the block passes, 1 when it does not, 2 when the
 check could not run. `tests/block-author-kit.test.mjs` runs the check on the
-sample and the template and on broken copies of the sample.
+samples and the template and on broken copies of the samples.

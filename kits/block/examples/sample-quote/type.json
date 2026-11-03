@@ -2,7 +2,7 @@
   "schema": "simai.composition.type-manifest",
   "schema_version": 1,
   "type": "sample.quote",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "category": "content",
   "mode": "composite",
   "profiles": ["structured-content", "ui-layout"],
@@ -30,5 +30,10 @@
   },
   "renderer": {"kind": "registered", "name": "sample.quote"},
   "assets": ["sample/quote"],
-  "capabilities": ["html"]
+  "capabilities": ["html"],
+  "catalogue": {"group": "text", "label_key": "sample.quote.name", "keywords": {"en": ["quote", "citation"], "ru": ["цитата"]}},
+  "variants": [
+    {"id": "centred", "label_key": "sample.quote.centred", "data": {"author": "Author"}, "props": {"align": "center", "size": "large"},
+     "slots": {"default": [{"id": "text", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "A quote."}]}}]}}
+  ]
 }

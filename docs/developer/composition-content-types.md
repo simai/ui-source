@@ -172,6 +172,28 @@ otherwise); it is validated and rendered with the same registry, its
 diagnostics are reported under `$.content`, and its assets join the layout's.
 An invalid page draws nothing in the outlet.
 
+## Text areas in a layout
+
+For the one block editor (owner, 2026-11-03) a page keeps layout and content
+in one Document: the author writes in `layout.area` nodes, and a page may
+hold several. A text area takes content and Smart blocks (`categories:
+content, smart`), not layout, and draws a plain `<div
+data-sf-composition-area>`. Its `padding` (0 to 8) and `hidden` are layout
+parameters held per screen and printed as SIMAI Framework utilities, never
+inline styles:
+
+```json
+{"id": "main", "type": "layout.area", "props": {"padding": {"xs": 2, "lg": 4}, "hidden": {"md": true, "lg": false}}}
+```
+
+draws `<div class="md:hidden lg:block p-2 lg:p-4" data-sf-composition-area=""
+data-sf-composition-id="main">`. Which nodes an author may write in is the
+host's right to grant; the editor reads `layout.area` (capability
+`content-area`) as the places it offers. `content.outlet` stays for a layout
+that draws a separate page Document. The rules of layout parameters, own
+modifiers, named places, site blocks and data are in
+`block-author-guide.md`.
+
 ## Editor manifests
 
 Each type with parameters has an editor manifest

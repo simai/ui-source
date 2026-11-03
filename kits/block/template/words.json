@@ -9,7 +9,9 @@
       "product.block_name.tone": "Tone",
       "product.block_name.tone_help": "Plain or accented",
       "product.block_name.tone.neutral": "Plain",
-      "product.block_name.tone.accent": "Accent"
+      "product.block_name.tone.accent": "Accent",
+      "product.block_name.name": "Block name",
+      "product.block_name.accent": "Accented"
     },
     "ru": {
       "product.block_name.title": "Заголовок",
@@ -17,7 +19,9 @@
       "product.block_name.tone": "Тон",
       "product.block_name.tone_help": "Обычный или акцентный",
       "product.block_name.tone.neutral": "Обычный",
-      "product.block_name.tone.accent": "Акцент"
+      "product.block_name.tone.accent": "Акцент",
+      "product.block_name.name": "Название блока",
+      "product.block_name.accent": "С акцентом"
     }
   }
 }

@@ -1,0 +1,39 @@
+{
+  "owner": "sample.cards",
+  "schema": "simai.composition.editor-words",
+  "schema_version": 1,
+  "words": {
+    "en": {
+      "sample.cards.name": "Cards from a source",
+      "sample.cards.three_columns": "Three columns with a title",
+      "sample.cards.list": "One column",
+      "sample.cards.intro": "Title and text",
+      "sample.cards.intro_empty": "Add a title",
+      "sample.cards.empty": "Nothing here yet",
+      "sample.cards.cols": "Columns",
+      "sample.cards.cols_help": "How many cards stand in a row, per screen",
+      "sample.cards.gap": "Gap",
+      "sample.cards.gap_help": "Space between the cards, 0 to 8 steps",
+      "sample.cards.tone": "Tone",
+      "sample.cards.tone_help": "Plain or accented cards",
+      "sample.cards.tone.plain": "Plain",
+      "sample.cards.tone.accent": "Accent"
+    },
+    "ru": {
+      "sample.cards.name": "Карточки из источника",
+      "sample.cards.three_columns": "Три колонки с заголовком",
+      "sample.cards.list": "Одна колонка",
+      "sample.cards.intro": "Заголовок и текст",
+      "sample.cards.intro_empty": "Добавьте заголовок",
+      "sample.cards.empty": "Здесь пока пусто",
+      "sample.cards.cols": "Колонки",
+      "sample.cards.cols_help": "Сколько карточек в ряду, для каждого экрана",
+      "sample.cards.gap": "Промежуток",
+      "sample.cards.gap_help": "Расстояние между карточками, от 0 до 8 шагов",
+      "sample.cards.tone": "Тон",
+      "sample.cards.tone_help": "Обычные или акцентные карточки",
+      "sample.cards.tone.plain": "Обычный",
+      "sample.cards.tone.accent": "Акцент"
+    }
+  }
+}

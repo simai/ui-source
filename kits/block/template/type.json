@@ -27,5 +27,9 @@
   },
   "renderer": {"kind": "registered", "name": "product.block-name"},
   "assets": ["product/block-name"],
-  "capabilities": ["html"]
+  "capabilities": ["html"],
+  "catalogue": {"group": "marketing", "label_key": "product.block_name.name"},
+  "variants": [
+    {"id": "accent", "label_key": "product.block_name.accent", "data": {"title": "Title"}, "props": {"tone": "accent"}}
+  ]
 }

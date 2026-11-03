@@ -10,8 +10,9 @@ run is yours.
 
 Everything is in `kits/block/examples/sample-quote/`:
 
-- `type.json`: the type manifest of `sample.quote` 1.0.0 (registered renderer
-  `sample.quote`, asset `sample/quote`);
+- `type.json`: the type manifest of `sample.quote` 1.1.0 (registered renderer
+  `sample.quote`, asset `sample/quote`; 1.1.0 adds its catalogue place and a
+  variant for the one block editor, and draws every case as 1.0.0 did);
 - `editor.json`: its editor manifest (author, role, source; align, size);
 - `words.json`: the field words, en and ru, owner `sample.quote`;
 - `renderer.mjs`: `export default ({node, slots}) => html`;

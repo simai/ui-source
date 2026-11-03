@@ -1,0 +1,45 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "cards-default",
+  "summary": "Cards bound to a host source, drawn while the answer is on its way.",
+  "covers": [
+    "sample.cards"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "sample.cards",
+              "bindings": [
+                {
+                  "owner": "host",
+                  "ref": "catalogue.news",
+                  "target": "items",
+                  "revision": "r1"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><section class=\"sample-cards sample-cards--plain grid\" data-state=\"loading\" data-sf-composition-id=\"c\"><div class=\"sample-cards-card sample-cards-card--loading\" aria-busy=\"true\"></div></section></article>",
+    "diagnostics": [],
+    "assets": [
+      "sample/cards"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+/* sample.cards's sheet, the asset sample/cards. The grid and the gap are
+   SIMAI Framework utilities the runtime prints from the block's parameters;
+   the sheet draws only the cards' own look, from the Framework's public
+   variables. */
+.sample-cards-intro {
+  grid-column: 1 / -1;
+}
+
+.sample-cards-card {
+  padding: var(--sf-space-4, 1rem);
+  border-radius: var(--sf-radius-2, 0.5rem);
+  background: var(--sf-surface-1, transparent);
+  color: var(--sf-on-surface, inherit);
+}
+
+.sample-cards--accent .sample-cards-card {
+  background: var(--sf-primary-container, transparent);
+}
+
+.sample-cards-card--loading {
+  min-block-size: 6rem;
+  opacity: 0.5;
+}
+
+.sample-cards-picture {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.sample-cards-title,
+.sample-cards-text {
+  margin: 0;
+}
+
+.sample-cards-state {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--sf-on-surface-variant, inherit);
+}
