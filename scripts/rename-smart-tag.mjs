@@ -118,13 +118,16 @@ function walk(dir, out = []) {
 // A tag as a word: not part of a longer name, not a class (.sf-x), an id
 // (#sf-x), a custom property (--sf-x) or a Sass variable.
 const word = (tag) => new RegExp(`(?<![\\w.#$@%/-])${escape(tag)}(?![\\w-])`, 'gu');
+// In prose a former event name of the tag (sf-x:verb) is a name of its own,
+// not the tag; in a selector sf-x:hover is the tag.
+const proseWord = (tag) => new RegExp(`(?<![\\w.#$@%/-])${escape(tag)}(?![\\w-]|:\\w)`, 'gu');
 const markup = (tag) => new RegExp(`<(/?)${escape(tag)}(?![\\w-])`, 'gu');
 
 // Markup everywhere; the word only outside class="..." values.
 export function renameProse(text, from, to) {
   let out = text.replace(markup(from), (match, slash) => `<${slash}${to}`);
   const parts = out.split(/(class=(?:\\?"[^"\\]*\\?"|'[^']*'))/u);
-  out = parts.map((part, index) => (index % 2 ? part : part.replace(word(from), to))).join('');
+  out = parts.map((part, index) => (index % 2 ? part : part.replace(proseWord(from), to))).join('');
   return out;
 }
 
@@ -144,7 +147,7 @@ export function renameSheet(text, from, to) {
 // literals are reported, not rewritten.
 export function renameScript(text, from, to, {comments = false} = {}) {
   return text.split('\n').map((line) => {
-    if (comments && /^\s*(?:\/\/|\/\*|\*)/u.test(line)) return line.replace(markup(from), (match, slash) => `<${slash}${to}`).replace(word(from), to);
+    if (comments && /^\s*(?:\/\/|\/\*|\*)/u.test(line)) return line.replace(markup(from), (match, slash) => `<${slash}${to}`).replace(proseWord(from), to);
     return line
       .replace(markup(from), (match, slash) => `<${slash}${to}`)
       .replace(new RegExp(`(\\.define\\(\\s*['"\`])${escape(from)}(['"\`])`, 'gu'), `$1${to}$2`);
@@ -173,12 +176,13 @@ export function renameJson(value, from, to, key = '') {
 }
 
 // Another component's JSON: markup anywhere, selectors in code strings.
-export function renameJsonCode(value, from, to) {
-  if (Array.isArray(value)) return value.map((item) => renameJsonCode(item, from, to));
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, renameJsonCode(item, from, to)]));
+export function renameJsonCode(value, from, to, key = '') {
+  if (Array.isArray(value)) return value.map((item) => renameJsonCode(item, from, to, key));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, renameJsonCode(item, from, to, name)]));
   if (typeof value !== 'string') return value;
-  // A string that is the tag (an assembly's part, a list of tags) names it.
-  if (value === from) return to;
+  // An assembly's part names the element it places. Elsewhere a string that
+  // is the tag may be a record of the past (an alias table's tag), so it stays.
+  if (value === from && key === 'part') return to;
   return renameSelectorCalls(value.replace(markup(from), (match, slash) => `<${slash}${to}`), from, to);
 }
 

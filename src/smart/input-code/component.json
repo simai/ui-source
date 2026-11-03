@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-code-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/code-input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
-  "id": "smart.code-input",
-  "tag": "sf-code-input",
-  "version": "1.1.4",
+  "$comment": "The source of sf-input-code's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/code-input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.input-code",
+  "tag": "sf-input-code",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -209,7 +209,7 @@
     }
   },
   "aliases": {
-    "$comment": "Dated aliases of sf-code-input for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "$comment": "Dated aliases of sf-input-code for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
     "since": "2026-10-27",
     "remove-after": "2026-12-01",
     "rows": [
@@ -223,7 +223,7 @@
       },
       {
         "from": "sf-code-input:complete",
-        "to": "sf-code-input-completed",
+        "to": "sf-input-code-completed",
         "kind": "event",
         "mode": "same-detail",
         "cancelable": false,
@@ -245,6 +245,26 @@
         "section": "§17.2",
         "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
         "summary": "Legacy name for invalid, still honoured."
+      },
+      {
+        "from": "sf-code-input",
+        "to": "sf-input-code",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.2.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-input-code; sf-code-input is a subclass defined beside it until the date"
+      },
+      {
+        "from": "sf-code-input-completed",
+        "to": "sf-input-code-completed",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
       }
     ]
   },
@@ -276,11 +296,12 @@
     "form: the host submits the code through ElementInternals; the input carries no name (§17.1 item 6).",
     "ids: the label, position line and message ids come from the field's instance path (field.base), not the module counter it had (§7.1.1, simai/ui-source#41).",
     "words: digit, character and group are lang runtime words read with sfWord; CODE_INPUT_TEXT stays in code.mjs for its unit tests only.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0: the tag is sf-input-code (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-code and the bundle cl-input-code follow it. sf-code-input stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-code, sf-code-input) (change journal tag-sf-code-input-to-sf-input-code, path-smart-code-input-to-input-code)."
   ],
   "x-rule": {
     "$comment": [
-      "sf-code-input loads on demand like any other Smart element. It draws the",
+      "sf-input-code loads on demand like any other Smart element. It draws the",
       "class verification's markup, so the class verification is what it draws",
       "with: its sheet (and its runtime, which leaves the element's field alone),",
       "and the sr-only utility for the line that says which cell the caret is in."
@@ -398,7 +419,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-code-input for a one-time code a person types or pastes -- from a text message, an authenticator app, an email -- as a field of a native form.",
+      "use_when": "Use sf-input-code for a one-time code a person types or pastes -- from a text message, an authenticator app, an email -- as a field of a native form.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not use it for a PIN or password the person chooses: that is sf-input with input-type password",
@@ -412,7 +433,7 @@
         "accessibility",
         "provenance"
       ],
-      "minimal_example": "<sf-code-input label=\"Код из сообщения\" name=\"code\" hint=\"Мы отправили шесть цифр на +7 900 000-00-00\"></sf-code-input>",
+      "minimal_example": "<sf-input-code label=\"Код из сообщения\" name=\"code\" hint=\"Мы отправили шесть цифр на +7 900 000-00-00\"></sf-input-code>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

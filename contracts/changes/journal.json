@@ -4054,6 +4054,77 @@
       },
       "owner": "ui-source",
       "source": "src/smart/lookup/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-lookup/component.json"
+    },
+    {
+      "id": "tag-sf-code-input-to-sf-input-code",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-code-input is sf-input-code (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-code's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-code, sf-code-input), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-code-input-completed).",
+      "items": [
+        {
+          "component": "sf-input-code",
+          "from": "sf-code-input",
+          "to": "sf-input-code"
+        },
+        {
+          "component": "sf-input-code",
+          "from": "sf-code-input-completed",
+          "to": "sf-input-code-completed"
+        },
+        {
+          "component": "sf-input-code",
+          "from": "sf-code-input:complete",
+          "to": "sf-input-code-completed"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-code-input></sf-code-input>",
+        "after": "<sf-input-code></sf-input-code>"
+      },
+      "manual": "Write <sf-input-code> for <sf-code-input> in markup and sf-input-code for sf-code-input in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-code, or both names through SF.tags.selector('sf-input-code') while the alias lives; a class or a custom property spelled like the old tag (.sf-code-input, --sf-code-input-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-code/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-code-input-to-input-code",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-code is served from smart/input-code/ since its folder took the new tag's name: js/input-code.js, loader bundle cl-input-code. The old path keeps working until remove_after: smart/code-input/js/code-input.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-code/js/input-code.js, the Loader forwards the bundle name cl-code-input to cl-input-code (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.code-input is a dated alias of smart.input-code, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-code",
+          "from": "smart/code-input/js/code-input.js",
+          "to": "smart/input-code/js/input-code.js",
+          "match": "smart/code-input/js/code-input(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-code-input",
+          "to": "cl-input-code",
+          "match": "['\"]cl-code-input['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.code-input",
+          "to": "smart.input-code",
+          "match": "['\"]smart\\.code-input['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-code/ for smart/code-input/ and input-code for code-input in the file names (js/input-code.js, js/input-code.min.js); in a product rule's relation write cl-input-code for cl-code-input, and in a manifest or a package contract smart.input-code for smart.code-input. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/code-input/js/code-input.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-code/js/input-code.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/code-input/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-code/component.json"
     }
   ]
 }

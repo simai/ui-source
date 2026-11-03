@@ -17,7 +17,7 @@ import {
   currentCell,
   normaliseCode,
   positionWords,
-} from '../src/smart/code-input/code.mjs';
+} from '../src/smart/input-code/code.mjs';
 
 // sf-code-input (owner, 2026-10-25): a one-time code as a form field with its
 // own value, paste and errors, drawn as the class verification
@@ -25,12 +25,12 @@ import {
 // reader of the source cannot tell from one file is held here; the page itself
 // is measured by tests/browser/code-input-smart.browser.mjs.
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const source = read('src/smart/code-input/index.js');
-const template = read('src/smart/code-input/js/templates/default.js');
-const sheet = read('src/smart/code-input/scss/_smart__code_input.scss');
+const source = read('src/smart/input-code/index.js');
+const template = read('src/smart/input-code/js/templates/default.js');
+const sheet = read('src/smart/input-code/scss/_smart__code_input.scss');
 const classSheet = read('src/component/verification/scss/_css__verification.scss');
 const classRuntime = read('src/component/verification/js/_verification.js');
-const manifest = JSON.parse(read('src/smart/code-input/smart.manifest.json'));
+const manifest = JSON.parse(read('src/smart/input-code/smart.manifest.json'));
 
 test('code input: a mode keeps its characters, a code its length', () => {
   assert.equal(CODE_LENGTH_DEFAULT, 6);
@@ -95,7 +95,7 @@ test('code input: each cell is spoken by its place, in Russian and English', () 
   // The words the element says are its language files' (standard 1.3.8 §11),
   // the same as code.mjs keeps for these unit checks.
   assert.match(source, /text\(key\) \{\n    return this\.sfWord\(key\);/u);
-  for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/code-input/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
+  for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/input-code/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
   assert.match(source, /this\.text\(this\.mode === 'numeric' \? 'digit' : 'character'\)/u);
 });
 
@@ -120,7 +120,7 @@ test('code input: the class markup, one native input, the class runtime kept off
     assert.ok(classSheet.includes(`.sf-verification--size-${size.replace('/', '\\/')}`), size);
   }
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
-  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-code-input'\)/u);
+  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-code'\)/u);
   // The class runtime binds nothing to a field another owner draws.
   assert.match(template, /data-sf-verification-owner="smart"/u);
   assert.match(classRuntime, /function ownedElsewhere\(root\) \{\n  return Boolean\(root\?\.dataset\?\.sfVerificationOwner\);/u);
@@ -145,16 +145,16 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(source, /this\.addEventListener\('input', this\.onInput, true\);/u);
   assert.match(source, /input\.dispatchEvent\(new InputEvent\('input', \{bubbles: true, inputType: 'insertFromPaste'\}\)\);/u);
   assert.match(source, /if \(changed && !this\._changeSent\) input\.dispatchEvent\(new Event\('change', \{bubbles: true\}\)\);/u);
-  // The fact `completed` (sf-code-input-completed); the old
-  // sf-code-input:complete follows it with the same detail (aliases.json).
+  // The fact `completed` (sf-input-code-completed); the old
+  // sf-code-input-completed and sf-code-input:complete follow it with the same detail (aliases.json).
   assert.match(source, /setTimeout\(\(\) => this\.sfEmit\('completed', \{value\}\), 0\);/u);
-  assert.ok(JSON.parse(read('src/smart/code-input/aliases.json')).aliases.some((row) => row.from === 'sf-code-input:complete' && row.to === 'sf-code-input-completed' && row.mode === 'same-detail'));
+  assert.ok(JSON.parse(read('src/smart/input-code/aliases.json')).aliases.some((row) => row.from === 'sf-code-input:complete' && row.to === 'sf-input-code-completed' && row.mode === 'same-detail'));
   assert.match(source, /if \(this\._completed !== value\) \{/u);
   const sent = new Set([...source.matchAll(/new (?:Custom|Input)?Event\('([^']+)'/gu)].map((match) => match[1]));
   // A declared event sent by its verb (sfEmit) has the DOM name <tag>-<verb>,
   // and its dated old names follow it (standard 1.3.8 §8, §16.20).
-  for (const [, verb] of source.matchAll(/this\.sfEmit\('([a-z-]+)'/gu)) sent.add(`sf-code-input-${verb}`);
-  for (const row of JSON.parse(read('src/smart/code-input/aliases.json')).aliases) if (row.kind === 'event' && sent.has(row.to)) sent.add(row.from);
+  for (const [, verb] of source.matchAll(/this\.sfEmit\('([a-z-]+)'/gu)) sent.add(`sf-input-code-${verb}`);
+  for (const row of JSON.parse(read('src/smart/input-code/aliases.json')).aliases) if (row.kind === 'event' && sent.has(row.to)) sent.add(row.from);
   assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
   // The element never submits a form or checks a code, and goes nowhere.
   assert.doesNotMatch(source, /\.submit\(|requestSubmit|\bfetch\(|XMLHttpRequest|sendBeacon|localStorage|innerHTML|unsafeHTML/u);
@@ -173,10 +173,10 @@ test('code input: its own sheet draws only the required star, from tokens', () =
 });
 
 test('code input: the loader knows it and asks for what it draws with', () => {
-  const rule = read('src/smart/code-input/rule.js');
-  assert.match(rule, /SF\.RuleLoader\['cl-code-input'\] = \{\n  tags: \['sf-code-input'\],/u);
+  const rule = read('src/smart/input-code/rule.js');
+  assert.match(rule, /SF\.RuleLoader\['cl-input-code'\] = \{\n  tags: \['sf-input-code', 'sf-code-input'\],/u);
   assert.match(rule, /\{ name: 'verification' \},\n    \{ name: 'sr-only\/default' \},/u);
-  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/code-input\/rule\.js';/u);
+  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-code\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['component.verification']);
   assert.deepEqual(manifest.inputs.properties.mode.enum, [...CODE_MODES]);
   // A number setting is a number in the generated registry (standard 1.4).
@@ -208,6 +208,6 @@ test('code input: the class verification\'s public variables wrap the values it 
   for (const state of ['.sf-verification-cell.current {', '.sf-verification-form-wrap .sf-verification:hover {']) {
     assert.doesNotMatch(classSheet.slice(classSheet.indexOf(state)).split('}')[0], /--sf-verification-[a-z]+-?[a-z]*[,)]/u, state);
   }
-  const docs = read('src/smart/code-input/docs.md');
+  const docs = read('src/smart/input-code/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
 });

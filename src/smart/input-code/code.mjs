@@ -1,4 +1,4 @@
-// The parts of sf-code-input that are about the code, not the page: which
+// The parts of sf-input-code that are about the code, not the page: which
 // characters a mode keeps, how long a code is, what an edit makes of the value
 // and how a cell is spoken. Kept apart from the element so the contract tests
 // run them in Node, as sf-accordion's sections.mjs is.

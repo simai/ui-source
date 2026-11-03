@@ -79,6 +79,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-lookup-to-input-lookup"
+    },
+    "cl-code-input": {
+      "to": "cl-input-code",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-code-input-to-input-code"
     }
   }
 }

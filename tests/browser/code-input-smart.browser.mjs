@@ -30,9 +30,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css',
-  'component/component/verification/css/verification.css', 'smart/smart/code-input/css/code-input.css'];
+  'component/component/verification/css/verification.css', 'smart/smart/input-code/css/input-code.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js',
-  'component/component/verification/js/verification.js', 'smart/smart/code-input/js/code-input.js'];
+  'component/component/verification/js/verification.js', 'smart/smart/input-code/js/input-code.js'];
 const SIZES = [['1/2', '--sf-title-height-4'], ['1', '--sf-title-height-6'], ['2', '--sf-title-height-7']];
 
 const failures = [];
@@ -45,26 +45,26 @@ try {
   const page = await browser.newPage({viewport: {width: 1000, height: 900}});
   page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', said: error.message}); });
   const sized = SIZES.map(([size]) => `<div data-row="${size}" style="display:grid;gap:16px">
-      ${['bordered', 'filled'].map((appearance) => `<sf-code-input data-size="${size}" data-appearance="${appearance}" size="${size}" appearance="${appearance}" label="Код" value="12"></sf-code-input>`).join('')}
+      ${['bordered', 'filled'].map((appearance) => `<sf-input-code data-size="${size}" data-appearance="${appearance}" size="${size}" appearance="${appearance}" label="Код" value="12"></sf-input-code>`).join('')}
     </div>`).join('');
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:0;padding:16px;display:grid;gap:24px">
     <form id="form">
-      <sf-code-input id="basic" label="Код из сообщения" name="code" required hint="Шесть цифр из сообщения"></sf-code-input>
+      <sf-input-code id="basic" label="Код из сообщения" name="code" required hint="Шесть цифр из сообщения"></sf-input-code>
       <button id="after" type="button">Дальше</button>
     </form>
-    <sf-code-input id="alpha" label="Код из письма" mode="alphanumeric" length="4"></sf-code-input>
-    <sf-code-input id="masked" label="Код" mask value="12"></sf-code-input>
-    <sf-code-input id="invalid" label="Код" value="111111" invalid error-message="Неверный код" hint="Шесть цифр"></sf-code-input>
-    <sf-code-input id="controlled" label="Код" value="12"></sf-code-input>
-    <sf-code-input id="disabled" label="Код" disabled value="12"></sf-code-input>
-    <sf-code-input id="readonly" label="Код" readonly value="12"></sf-code-input>
-    <div lang="en"><sf-code-input id="en" length="4" aria-label="Sign-in code"></sf-code-input></div>
+    <sf-input-code id="alpha" label="Код из письма" mode="alphanumeric" length="4"></sf-input-code>
+    <sf-input-code id="masked" label="Код" mask value="12"></sf-input-code>
+    <sf-input-code id="invalid" label="Код" value="111111" invalid error-message="Неверный код" hint="Шесть цифр"></sf-input-code>
+    <sf-input-code id="controlled" label="Код" value="12"></sf-input-code>
+    <sf-input-code id="disabled" label="Код" disabled value="12"></sf-input-code>
+    <sf-input-code id="readonly" label="Код" readonly value="12"></sf-input-code>
+    <div lang="en"><sf-input-code id="en" length="4" aria-label="Sign-in code"></sf-input-code></div>
     <span id="error-ink" style="color:var(--sf-error)">x</span>
     ${sized}
   </body></html>`);
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-code-input')
+  await page.waitForFunction(() => customElements.get('sf-input-code')
     && document.querySelectorAll('#basic .sf-verification-cell').length === 6
     && document.querySelectorAll('#en .sf-verification-cell').length === 4, null, {timeout: 8000});
   await page.evaluate(() => document.fonts.ready);
@@ -75,7 +75,7 @@ try {
     document.addEventListener('verification:complete', () => { window.__classEvents += 1; });
     for (const type of ['input', 'change', 'sf-code-input:complete']) {
       document.addEventListener(type, (event) => {
-        const host = event.target.closest?.('sf-code-input');
+        const host = event.target.closest?.('sf-input-code');
         window.__events.push({type, host: host?.id ?? null, value: event.detail?.value ?? host?.querySelector('input')?.value ?? null,
           target: event.target.localName});
       });
@@ -282,7 +282,7 @@ try {
       };
       const rows = sizes.map(([size, name]) => {
         const row = document.querySelector(`[data-row="${size}"]`);
-        const fields = [...row.querySelectorAll('sf-code-input')].map((host) => {
+        const fields = [...row.querySelectorAll('sf-input-code')].map((host) => {
           const cells = [...host.querySelectorAll('.sf-verification-cell')].map((cell) => cell.getBoundingClientRect());
           const style = getComputedStyle(host.querySelector('.sf-verification-cell'));
           const group = host.querySelector('.sf-verification-form').getBoundingClientRect();

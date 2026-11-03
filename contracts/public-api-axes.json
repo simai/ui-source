@@ -62,7 +62,7 @@
       "state": "canonical_from_the_start"
     },
     {
-      "component": "code-input",
+      "component": "input-code",
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start",
@@ -363,7 +363,7 @@
     "controls": [
       "button-group",
       "checkbox",
-      "code-input",
+      "input-code",
       "country-code",
       "datepicker",
       "dropdown",

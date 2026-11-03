@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.code-input",
+  "component": "smart.input-code",
   "title": "Code Input reference",
-  "summary": "Deterministic reference fixture for sf-code-input.",
+  "summary": "Deterministic reference fixture for sf-input-code.",
   "locale": "ru",
   "props": {
     "label": "Код из сообщения",

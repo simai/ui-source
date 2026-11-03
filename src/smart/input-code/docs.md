@@ -1,14 +1,14 @@
 # Smart Code Input
 
-`<sf-code-input>` — поле одноразового кода из сообщения, приложения или письма:
+`<sf-input-code>` — поле одноразового кода из сообщения, приложения или письма:
 поле формы со своим значением, вставкой и ошибками. Элемент рисует разметку
 классового кода подтверждения (`.sf-verification-form`), поэтому выглядит так
 же, как он: те же ячейки, размеры, виды, ошибка и недоступность.
 
 ```html
 <form>
-  <sf-code-input label="Код из сообщения" name="code" required
-                 hint="Мы отправили шесть цифр на +7 900 000-00-00"></sf-code-input>
+  <sf-input-code label="Код из сообщения" name="code" required
+                 hint="Мы отправили шесть цифр на +7 900 000-00-00"></sf-input-code>
 </form>
 ```
 
@@ -87,7 +87,7 @@ document.addEventListener('sf-code-input:complete', async (event) => {
 пишет справа налево.
 
 Слова на других языках добавляются через `SF.language` для компонента
-`sf-code-input`: ключи `digit`, `character` (`{n}` — ячейка, `{m}` — длина) и
+`sf-input-code`: ключи `digit`, `character` (`{n}` — ячейка, `{m}` — длина) и
 `group` — имя группы без подписи и `aria-label`.
 
 ## Настройка

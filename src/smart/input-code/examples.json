@@ -121,7 +121,7 @@
           {
             "id": "typed-code-submits",
             "covers": "values.value, form.submits",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "user": [
               "type:123456",
               "tab"
@@ -144,7 +144,7 @@
           {
             "id": "completed-new-then-old-event",
             "covers": "events.completed: sf-code-input-completed then sf-code-input:complete once each, one detail, a dated journal note (§8, §16.20)",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "listen": [
               "sf-code-input-completed",
               "sf-code-input:complete"
@@ -175,7 +175,7 @@
           {
             "id": "letters-are-refused-in-numeric-mode",
             "covers": "settings.mode numeric",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "user": "type:a1b2",
             "expect": {
               "value": "12"
@@ -184,7 +184,7 @@
           {
             "id": "setting-value-is-silent",
             "covers": "§8: a value set from outside sends nothing",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "property": {
               "name": "value",
               "value": "42"
@@ -200,7 +200,7 @@
           {
             "id": "required-empty-blocks-submit",
             "covers": "form.required, form.validity value-missing",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" required></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" required></sf-input-code>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -214,7 +214,7 @@
           {
             "id": "incomplete-code-is-pattern-mismatch",
             "covers": "form.validity pattern-mismatch",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"12\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"12\"></sf-input-code>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -226,7 +226,7 @@
           {
             "id": "end-goes-to-the-last-cell",
             "covers": "keyboard End to:last",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123\"></sf-input-code>",
             "user": "keyboard:End",
             "expect": {
               "texts": {
@@ -237,7 +237,7 @@
           {
             "id": "home-goes-to-the-first-cell",
             "covers": "keyboard Home to:first",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123\"></sf-input-code>",
             "user": [
               "keyboard:End",
               "keyboard:Home"
@@ -251,7 +251,7 @@
           {
             "id": "arrow-left-goes-back-a-cell",
             "covers": "keyboard ArrowLeft focus:prev",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123\"></sf-input-code>",
             "user": [
               "keyboard:End",
               "keyboard:ArrowLeft"
@@ -265,7 +265,7 @@
           {
             "id": "arrow-right-goes-on-a-cell",
             "covers": "keyboard ArrowRight focus:next",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123\"></sf-input-code>",
             "user": [
               "keyboard:Home",
               "keyboard:ArrowRight"
@@ -279,7 +279,7 @@
           {
             "id": "backspace-clears-and-steps-back",
             "covers": "keyboard Backspace focus:prev",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123\"></sf-input-code>",
             "user": [
               "keyboard:End",
               "keyboard:Backspace"
@@ -294,16 +294,16 @@
           {
             "id": "tab-reaches-the-input",
             "covers": "keyboard Tab reach",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "user": "tab",
             "expect": {
-              "focus": "sf-code-input .sf-verification-input"
+              "focus": "sf-input-code .sf-verification-input"
             }
           },
           {
             "id": "disabled-leaves-the-form",
             "covers": "form.disabled (§17.1 item 3)",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123456\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123456\"></sf-input-code>",
             "setting": {
               "name": "disabled",
               "value": true
@@ -320,7 +320,7 @@
           {
             "id": "form-reset-returns-the-default",
             "covers": "form.reset (§17.1 item 4), no events",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" default-value=\"123\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" default-value=\"123\"></sf-input-code>",
             "given": [
               {
                 "user": [
@@ -341,7 +341,7 @@
           {
             "id": "ids-from-the-instance-path",
             "covers": "§7.1.1, simai/ui-source#41: no counter id",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "form": "reset",
             "expect": {
               "box": {
@@ -355,7 +355,7 @@
           {
             "id": "custom-validity-blocks-submit",
             "covers": "form.validity custom-error (§17.2)",
-            "field": "<sf-code-input name=\"code\" label=\"Код\" value=\"123456\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"123456\"></sf-input-code>",
             "action": {
               "name": "set-custom-validity",
               "with": "Неверный код"
@@ -371,7 +371,7 @@
           {
             "id": "legacy-error-is-invalid",
             "covers": "aliases.json error -> invalid (§17.2)",
-            "field": "<sf-code-input name=\"code\" label=\"Код\"></sf-code-input>",
+            "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
             "setting": {
               "name": "error",
               "value": true

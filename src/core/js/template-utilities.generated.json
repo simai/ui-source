@@ -69,9 +69,6 @@
     "flex-direction/default",
     "transition-property/default"
   ],
-  "cl-code-input": [
-    "sr-only/default"
-  ],
   "cl-color": [
     "display/default"
   ],
@@ -201,6 +198,9 @@
     "flex-direction/default",
     "text-align/default",
     "transition-property/default"
+  ],
+  "cl-input-code": [
+    "sr-only/default"
   ],
   "cl-input-lookup": [
     "align-items/default",

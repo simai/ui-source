@@ -76,8 +76,8 @@ const DRAW = {
   // filled: the fill varies with the appearance, the border is the bordered
   // one's, and a character in the cells has a colour to take. Neither has
   // focus, so the current cell is the only one drawn in its own colour.
-  verification: {css: ['verification', 'smart/smart/code-input/css/code-input.css'], js: 'code-input',
-    html: '<sf-code-input label="Код" value="12" size="1"></sf-code-input><sf-code-input label="Код" value="12" appearance="filled" size="1"></sf-code-input><sf-code-input label="Код" value="12" invalid size="1"></sf-code-input>'},
+  verification: {css: ['verification', 'smart/smart/input-code/css/input-code.css'], js: 'input-code',
+    html: '<sf-input-code label="Код" value="12" size="1"></sf-input-code><sf-input-code label="Код" value="12" appearance="filled" size="1"></sf-input-code><sf-input-code label="Код" value="12" invalid size="1"></sf-input-code>'},
   // Group B of the form fields, with their move to standard 1.3.8
   // (2026-10-27). Each state a variable colours is drawn: the country list
   // open, a colour on a preset and one with nothing chosen, a value shown as
