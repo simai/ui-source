@@ -1,15 +1,15 @@
 # Smart Image Field
 
-`<sf-image-field>` — поле формы для одного изображения: логотипа, обложки,
+`<sf-input-image>` — поле формы для одного изображения: логотипа, обложки,
 картинки в блоке. Показывает миниатюру, имя файла и размер, кнопки
 «Заменить…» и «Убрать». Файл можно перетащить прямо на поле — он заменит
 изображение. Пустое поле предлагает выбрать изображение или перетащить его.
 
 ```html
-<sf-image-field label="Логотип" name="logo" hint="PNG или SVG, до 1 МБ"
-  value='{"value":"42","label":"logo.png","mime":"image/png","size":2048,"href":"/upload/logo.png"}'></sf-image-field>
+<sf-input-image label="Логотип" name="logo" hint="PNG или SVG, до 1 МБ"
+  value='{"value":"42","label":"logo.png","mime":"image/png","size":2048,"href":"/upload/logo.png"}'></sf-input-image>
 
-<sf-image-field label="Обложка" name="cover" required></sf-image-field>
+<sf-input-image label="Обложка" name="cover" required></sf-input-image>
 ```
 
 ## Значение

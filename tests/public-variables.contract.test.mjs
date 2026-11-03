@@ -15,7 +15,7 @@ const FOLDERS = {
   tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
   'button-group': 'button-group', accordion: 'accordion', menu: 'menu', verification: 'verification',
   // A Smart component that carries its own sheet: the path from src/.
-  'image-field': 'smart/image-field',
+  'image-field': 'smart/input-image',
   // sf-quantity draws the class component's markup, so the class sheet reads them.
   quantity: 'quantity',
   // Group B of the form fields, with their move to standard 1.3.8 (2026-10-27).

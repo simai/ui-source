@@ -1949,7 +1949,7 @@ function renderImageEdit(field, value, host) {
     const stored = storedFiles(value)[0] ?? null;
     const asList = Array.isArray(value);
     return html`
-        <sf-image-field
+        <sf-input-image
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 accept=${field.accept ? String(field.accept) : nothing}
@@ -1966,7 +1966,7 @@ function renderImageEdit(field, value, host) {
                         host.startFieldUpload(field, [{name: file.name, state: 'process', progress: 0, file}]);
                     }
                 }}
-        ></sf-image-field>
+        ></sf-input-image>
     `;
 }
 

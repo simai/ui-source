@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-import {acceptsFile, formatFileSize, normaliseImageValue} from '../src/smart/image-field/value.mjs';
+import {acceptsFile, formatFileSize, normaliseImageValue} from '../src/smart/input-image/value.mjs';
 import {FIELD_SIZES} from '../src/component/field-size.js';
 
 // sf-image-field (simai/ui-source#27): one image in a form -- a thumbnail with
@@ -11,10 +11,10 @@ import {FIELD_SIZES} from '../src/component/field-size.js';
 // Framework for it. What a reader of the source cannot tell from one file is
 // held here; the page itself is measured by tests/browser/image-field.browser.mjs.
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const source = read('src/smart/image-field/index.js');
-const template = read('src/smart/image-field/js/templates/default.js');
-const sheet = read('src/smart/image-field/scss/_smart__image_field.scss');
-const manifest = JSON.parse(read('src/smart/image-field/smart.manifest.json'));
+const source = read('src/smart/input-image/index.js');
+const template = read('src/smart/input-image/js/templates/default.js');
+const sheet = read('src/smart/input-image/scss/_smart__image_field.scss');
+const manifest = JSON.parse(read('src/smart/input-image/smart.manifest.json'));
 
 test('image field: the value is the Framework\'s file shape, from an object, JSON or an address', () => {
   const stored = {value: 42, label: 'logo.png', mime: 'image/png', size: 2048, href: '/upload/logo.png'};
@@ -41,7 +41,7 @@ test('image field: a drop takes what the dialog would have offered, images by de
   assert.ok(acceptsFile('', pdf), 'an empty list takes any file');
   assert.equal(manifest.inputs.properties.accept.default, 'image/*');
   assert.match(source, /const DEFAULT_ACCEPT = 'image\/\*';/u);
-  assert.equal(JSON.parse(read('src/smart/image-field/component.json')).settings.accept.default, 'image/*');
+  assert.equal(JSON.parse(read('src/smart/input-image/component.json')).settings.accept.default, 'image/*');
   // A refused drop is said, not silently dropped: rejected (standard 1.3.8,
   // vocabulary §9.1), and sf-image-field:reject after it (aliases.json).
   assert.match(source, /reject\(rejected, 'drop'\)/u);
@@ -59,8 +59,8 @@ test('image field: a size reads in the page\'s language', () => {
 
 test('image field: the words are Russian and English, and the visible words begin each name', () => {
   // The words are the language files' (standard 1.3.8 §11).
-  const ru = JSON.parse(read('src/smart/image-field/lang/ru.json')).runtime;
-  const en = JSON.parse(read('src/smart/image-field/lang/en.json')).runtime;
+  const ru = JSON.parse(read('src/smart/input-image/lang/ru.json')).runtime;
+  const en = JSON.parse(read('src/smart/input-image/lang/en.json')).runtime;
   assert.deepEqual(Object.keys(ru).sort(), Object.keys(en).sort());
   for (const [key, word] of [['replace', 'Заменить…'], ['remove', 'Убрать'], ['choose', 'Выбрать…'], ['replace-name', 'Заменить изображение'], ['remove-name', 'Убрать изображение'], ['quoted', '«%s»']]) {
     assert.equal(ru[key], word, key);
@@ -107,18 +107,18 @@ test('image field: input and change once each per choice or removal, with the Fi
   // The manifest says the same events the source sends: its own, those it
   // sends by verb (sfEmit), and the old names the shim sends after them.
   const sent = new Set([...source.matchAll(/new CustomEvent\('([^']+)'/gu)].map((match) => match[1]));
-  for (const [, verb] of source.matchAll(/this\.sfEmit\('([^']+)'/gu)) sent.add(`sf-image-field-${verb}`);
-  for (const row of JSON.parse(read('src/smart/image-field/aliases.json')).aliases) if (row.kind === 'event') sent.add(row.from);
+  for (const [, verb] of source.matchAll(/this\.sfEmit\('([^']+)'/gu)) sent.add(`sf-input-image-${verb}`);
+  for (const row of JSON.parse(read('src/smart/input-image/aliases.json')).aliases) if (row.kind === 'event') sent.add(row.from);
   sent.add('input').add('change');
   assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
   assert.equal(manifest.events.change.canonical, true);
   const axes = JSON.parse(read('contracts/public-api-axes.json')).change_event.controls;
-  assert.ok(axes.includes('image-field'));
+  assert.ok(axes.includes('input-image'));
 });
 
 test('image field: sizes are the form sizes and every measure is a ladder step', () => {
   assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
-  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-image-field'\)/u);
+  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-image'\)/u);
   // The thumbnail is the control height one rung up; the inset the field's
   // own vertical padding; the buttons one rung down.
   const rungs = {'1\\/2': ['1\\/2', '1'], '1': ['1', '2'], '2': ['2', '3']};
@@ -135,10 +135,10 @@ test('image field: sizes are the form sizes and every measure is a ladder step',
 });
 
 test('image field: the loader knows it and asks for what it draws with', () => {
-  const rule = read('src/smart/image-field/rule.js');
-  assert.match(rule, /SF\.RuleLoader\['cl-image-field'\] = \{\n  tags: \['sf-image-field'\],/u);
+  const rule = read('src/smart/input-image/rule.js');
+  assert.match(rule, /SF\.RuleLoader\['cl-input-image'\] = \{\n  tags: \['sf-input-image', 'sf-image-field'\],/u);
   assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-icon' \},/u);
-  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/image-field\/rule\.js';/u);
+  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-image\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.icon']);
 });
 
@@ -171,6 +171,6 @@ test('image field: the public variables wrap the values it drew before', () => {
     assert.doesNotMatch(block, /--sf-image-field-[a-z]/u, state);
   }
   // The docs list every one of them.
-  const docs = read('src/smart/image-field/docs.md');
+  const docs = read('src/smart/input-image/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
 });

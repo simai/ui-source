@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.image-field",
-  "version": "1.1.8",
+  "id": "smart.input-image",
+  "version": "1.2.0",
   "title": "Image field",
   "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
   "kind": "smart",
@@ -21,7 +21,7 @@
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-image-field",
+  "custom_element": "sf-input-image",
   "templates": [
     "default"
   ],
@@ -317,7 +317,7 @@
         "additionalProperties": true
       }
     },
-    "sf-image-field-attach": {
+    "sf-input-image-attach": {
       "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:select follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
@@ -352,7 +352,7 @@
       },
       "canonical": true
     },
-    "sf-image-field-detach": {
+    "sf-input-image-detach": {
       "summary": "The person removed the image; detail carries the value it held. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:remove follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
@@ -372,7 +372,7 @@
       },
       "canonical": true
     },
-    "sf-image-field-rejected": {
+    "sf-input-image-rejected": {
       "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
@@ -419,7 +419,7 @@
           }
         }
       },
-      "alias_of": "sf-image-field-attach"
+      "alias_of": "sf-input-image-attach"
     },
     "sf-image-field:remove": {
       "summary": "The person removed the image; detail carries the value it held. Legacy name: sent after sf-image-field-detach with the same detail until 2026-12-01 (aliases.json).",
@@ -434,7 +434,7 @@
           }
         }
       },
-      "alias_of": "sf-image-field-detach"
+      "alias_of": "sf-input-image-detach"
     },
     "sf-image-field:reject": {
       "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Legacy name: sent after sf-image-field-rejected with the same detail until 2026-12-01 (aliases.json).",
@@ -452,7 +452,28 @@
           }
         }
       },
-      "alias_of": "sf-image-field-rejected"
+      "alias_of": "sf-input-image-rejected"
+    },
+    "sf-image-field-attach": {
+      "summary": "Dated alias of sf-input-image-attach until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-image-attach"
+    },
+    "sf-image-field-detach": {
+      "summary": "Dated alias of sf-input-image-detach until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-image-detach"
+    },
+    "sf-image-field-rejected": {
+      "summary": "Dated alias of sf-input-image-rejected until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-image-rejected"
     }
   },
   "state": {
@@ -563,8 +584,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-image-field>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-image-field>",
+        "since": "1.2.0",
+        "replacement": "<sf-input-image>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -573,38 +602,38 @@
     "source_revision": "366e507c7bbbb5f409347f8f62cf0c9ce87a0354",
     "source_artifacts": [
       {
-        "path": "src/smart/image-field/index.js",
-        "sha256": "09a0c8f95fd38d7f48a781ff51efe0d7a95d0f144e3895bc36e602d534890209"
+        "path": "src/smart/input-image/index.js",
+        "sha256": "61a3e931f829cf1fe160ea095b1565d1adadca082c3881b632911eff7294ccac"
       },
       {
-        "path": "src/smart/image-field/value.mjs",
-        "sha256": "8d5662fcb002b0dd4cadd40de0488ffcfa25ffcfdd32dfe21b94bf63cec60a76"
+        "path": "src/smart/input-image/value.mjs",
+        "sha256": "2bfab097f5e4c0e1f6e92edd37e3b0de2371446e9d2f9ed388c83cd49bcd3ab8"
       },
       {
         "path": "src/core/js/composition/file-size.mjs",
         "sha256": "8989facd3b0cbdeb292cbfe992913fc4d8c15c7d3dd946746b6f7e8586386486"
       },
       {
-        "path": "src/smart/image-field/js/templates/default.js",
+        "path": "src/smart/input-image/js/templates/default.js",
         "sha256": "ac26343dcabea7bf346c49fcf542c1ad25fb27dffdfcd73a98171fe729ea444a"
       },
       {
-        "path": "src/smart/image-field/scss/_smart__image_field.scss",
-        "sha256": "1410f21416c9bc8d4b307d3299d55311730bb8586260e20876fe706b05a04366"
+        "path": "src/smart/input-image/scss/_smart__image_field.scss",
+        "sha256": "d568dd14bedddcfd7470a709e3a37692d99d3a1def6e00e7a6ea411dd7427f53"
       },
       {
-        "path": "src/smart/image-field/rule.js",
-        "sha256": "d9b93b6ff58153820cb02273d76647c174386f393aba6e2f0c979e0cc6ea954c"
+        "path": "src/smart/input-image/rule.js",
+        "sha256": "589ee77e79af9c334015828a753f0df6b265bcaef8baee32e4f999e095a84fcf"
       },
       {
-        "path": "src/smart/image-field/docs.md",
-        "sha256": "3a1cb4064e56747199a000d1155e5dc98979ac53ead25128bf95d69b20e9e646"
+        "path": "src/smart/input-image/docs.md",
+        "sha256": "937c72664a524aca7ae7abbd8d869f3efa80819d5dc617e24e218e1137cf2388"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-image-field for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",
+    "use_when": "Use sf-input-image for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not use it for several files or a transfer list: that is sf-file-upload",
@@ -618,7 +647,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-image-field label=\"Логотип\" name=\"logo\" value='{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}'></sf-image-field>",
+    "minimal_example": "<sf-input-image label=\"Логотип\" name=\"logo\" value='{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}'></sf-input-image>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

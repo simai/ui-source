@@ -380,7 +380,7 @@ class SfQuantity extends FormField(QuantityElement) {
     return this._committed === undefined ? this.readValue(this.getAttribute('value')) : this._committed;
   }
 
-  // `input` and `change` on the host, as sf-image-field sends them: detail
+  // `input` and `change` on the host, as sf-input-image sends them: detail
   // carries the number (null when empty), the text the field shows, the form
   // name and what made the change -- typing, commit, button, keyboard or reset.
   _emit(type, source) {

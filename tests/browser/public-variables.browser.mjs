@@ -55,8 +55,8 @@ const DRAW = {
   // A Smart element with a sheet of its own: a css entry with a slash is a
   // path in the output. Empty, so the glyph's thumbnail is drawn without an
   // image to wait for.
-  'image-field': {css: ['buttons', 'smart/smart/image-field/css/image-field.css'], js: 'image-field',
-    html: '<sf-image-field label="Логотип" size="1"></sf-image-field>'},
+  'image-field': {css: ['buttons', 'smart/smart/input-image/css/input-image.css'], js: 'input-image',
+    html: '<sf-input-image label="Логотип" size="1"></sf-input-image>'},
   // The class accordion's sheet, drawn by sf-accordion in each appearance: the
   // fill and radius are the default one's, the border the outline's, and the
   // first section is open so its content has a colour to take.

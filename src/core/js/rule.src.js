@@ -761,7 +761,7 @@ import '../../smart/help-mark/rule.js';
 import '../../smart/icon-button/rule.js';
 import '../../smart/icon/rule.js';
 import '../../smart/include/rule.js';
-import '../../smart/image-field/rule.js';
+import '../../smart/input-image/rule.js';
 import '../../smart/editor-inline/rule.js';
 import '../../smart/input/rule.js';
 import '../../smart/list-item/rule.js';

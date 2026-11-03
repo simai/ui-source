@@ -1,4 +1,4 @@
-// The parts of sf-image-field that are about data, not the page: which files
+// The parts of sf-input-image that are about data, not the page: which files
 // the field accepts, the shape its value takes and how a size reads. Kept
 // apart from the element so the contract tests can run them in Node, as
 // sf-resizer's engine.mjs is.

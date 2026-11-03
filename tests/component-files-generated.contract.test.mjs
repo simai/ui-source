@@ -37,7 +37,7 @@ const PHASE_A = [
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones
   'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
   'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'country-code', 'tag', 'pagination',
-  'image-field', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
+  'input-image', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
   'file-upload', 'composition-overlay',
   // new in the 1.4 form
   'progress-ring',
@@ -89,7 +89,7 @@ test('every Smart component folder of this repository is in the 1.4 form', () =>
 test('an object setting is a property input, as a list is (context-menu search, image-field value)', () => {
   const manifest = (name) => JSON.parse(results.find((result) => result.component === name).generated['smart.manifest.json']);
   assert.equal(manifest('context-menu').inputs.properties.search.type, 'object');
-  assert.deepEqual({type: manifest('image-field').inputs.properties.value.type, default: manifest('image-field').inputs.properties.value.default}, {type: 'object', default: null});
+  assert.deepEqual({type: manifest('input-image').inputs.properties.value.type, default: manifest('input-image').inputs.properties.value.default}, {type: 'object', default: null});
 });
 
 test('a native event name with a detail (x-detail) describes that detail (dropdown, quantity change)', () => {

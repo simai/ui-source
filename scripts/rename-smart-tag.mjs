@@ -405,7 +405,8 @@ function rename(oldTag, newTag) {
     // of folders) is a person's to read: the word may be something else.
     if (/^(tests|scripts)\//u.test(file) && ['.js', '.mjs', '.cjs'].includes(extension) && new RegExp(`['"]${escape(oldFolder)}['"]`, 'u').test(out)) leftovers.push(`${file}: names '${oldFolder}' (a folder list?)`);
     const folder = /^src\/smart\/([^/]+)\//u.exec(file)?.[1];
-    if (folder && out !== text) touched.add(folder);
+    // A folder of shared helpers (src/smart/field-renderers) is no component.
+    if (folder && out !== text && existsSync(abs(`src/smart/${folder}/component.json`))) touched.add(folder);
   }
   // The former folders are service directories of the Studio scripts.
   for (const file of ['scripts/generate-smart-studio-artifacts.mjs', 'scripts/refresh-smart-studio-provenance.mjs']) {

@@ -91,6 +91,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-download-file-to-file-download"
+    },
+    "cl-image-field": {
+      "to": "cl-input-image",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-image-field-to-input-image"
     }
   }
 }

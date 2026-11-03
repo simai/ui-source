@@ -24,8 +24,8 @@ import {existsSync, readFileSync} from 'node:fs';
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'smart/smart/image-field/css/image-field.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/image-field/js/image-field.js'];
+const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'smart/smart/input-image/css/input-image.css'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/input-image/js/input-image.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 
@@ -57,26 +57,26 @@ try {
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:0;padding:16px">
     <button id="before" type="button">До</button>
     <form id="form" style="display:grid;gap:24px;max-width:640px">
-      <sf-image-field id="filled" label="Логотип" name="logo" hint="PNG или SVG" value='${stored('logo.svg', 900, 300, 2048)}'></sf-image-field>
-      <sf-image-field id="empty" label="Обложка" name="cover" required></sf-image-field>
-      <sf-image-field id="err" label="Баннер" invalid error-message="Нужно изображение шире 600 px" value='${stored('banner.svg', 300, 100, 1500)}'></sf-image-field>
-      <sf-image-field id="ro" label="Только чтение" readonly value='${stored('ro.svg', 40, 40, 900)}'></sf-image-field>
-      <sf-image-field id="dis" label="Отключено" disabled value='${stored('dis.svg', 40, 40, 900)}'></sf-image-field>
-      <sf-image-field id="s-half" size="1/2" label="1/2" value='${stored('half.svg', 40, 40, 900)}'></sf-image-field>
-      <sf-image-field id="s-one" size="1" label="1" value='${stored('one.svg', 40, 40, 900)}'></sf-image-field>
-      <sf-image-field id="s-two" size="2" label="2" value='${stored('two.svg', 40, 40, 900)}'></sf-image-field>
+      <sf-input-image id="filled" label="Логотип" name="logo" hint="PNG или SVG" value='${stored('logo.svg', 900, 300, 2048)}'></sf-input-image>
+      <sf-input-image id="empty" label="Обложка" name="cover" required></sf-input-image>
+      <sf-input-image id="err" label="Баннер" invalid error-message="Нужно изображение шире 600 px" value='${stored('banner.svg', 300, 100, 1500)}'></sf-input-image>
+      <sf-input-image id="ro" label="Только чтение" readonly value='${stored('ro.svg', 40, 40, 900)}'></sf-input-image>
+      <sf-input-image id="dis" label="Отключено" disabled value='${stored('dis.svg', 40, 40, 900)}'></sf-input-image>
+      <sf-input-image id="s-half" size="1/2" label="1/2" value='${stored('half.svg', 40, 40, 900)}'></sf-input-image>
+      <sf-input-image id="s-one" size="1" label="1" value='${stored('one.svg', 40, 40, 900)}'></sf-input-image>
+      <sf-input-image id="s-two" size="2" label="2" value='${stored('two.svg', 40, 40, 900)}'></sf-input-image>
     </form>
     <button id="after" type="button">После</button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-image-field') && customElements.get('sf-button'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-image') && customElements.get('sf-button'), null, {timeout: 8000});
   await page.waitForTimeout(800);
   await page.evaluate(() => {
     window.__events = [];
     for (const type of ['input', 'change', 'sf-image-field:select', 'sf-image-field:remove', 'sf-image-field:reject']) {
       document.addEventListener(type, (event) => {
-        const host = event.target.closest?.('sf-image-field');
+        const host = event.target.closest?.('sf-input-image');
         if (!host) return;
         window.__events.push({type, id: host.id, target: event.target === host, source: event.detail?.source ?? null,
           file: event.detail?.file?.name ?? null, label: event.detail?.value?.label ?? null});
@@ -137,7 +137,7 @@ try {
     await page.keyboard.press('Tab');
     order.push(await page.evaluate(() => {
       const element = document.activeElement;
-      const host = element?.closest?.('sf-image-field');
+      const host = element?.closest?.('sf-input-image');
       return host ? `${host.id}:${element.closest('sf-button')?.className.split(' ')[0] ?? element.className}` : element?.id;
     }));
   }

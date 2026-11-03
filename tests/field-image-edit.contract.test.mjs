@@ -34,7 +34,7 @@ test('only a single image is drawn with sf-image-field', () => {
 
 test('the image field takes the field as the other controls do', () => {
   const edit = body('renderImageEdit');
-  const element = edit.slice(edit.indexOf('<sf-image-field'), edit.indexOf('></sf-image-field>'));
+  const element = edit.slice(edit.indexOf('<sf-input-image'), edit.indexOf('></sf-input-image>'));
   assert.match(element, /size=\$\{EDIT_SIZE\}/u);
   assert.match(element, /name=\$\{fieldName\(field\)\}/u);
   // A property, never the attribute: a File does not survive JSON, and a
@@ -73,11 +73,11 @@ test('view and cell of an image already show the image, and are unchanged', () =
 });
 
 test('sf-image-field takes a value set before it was defined, and a name without a label', () => {
-  const component = readFileSync(join(root, 'src/smart/image-field/index.js'), 'utf8');
+  const component = readFileSync(join(root, 'src/smart/input-image/index.js'), 'utf8');
   assert.match(component, /if \(Object\.prototype\.hasOwnProperty\.call\(this, 'value'\)\) \{\n\s+const early = this\.value;\n\s+delete this\.value;\n\s+this\._value = normaliseImageValue\(early\);/u);
   assert.match(component, /ariaLabel: \{attribute: 'aria-label', default: ''\},/u);
   assert.match(component, /get ariaLabel\(\) \{ return this\.getProp\('ariaLabel'\) \|\| ''; \}/u);
   assert.match(component, /group: this\.label \|\| this\.ariaLabel \|\| words\.group,/u);
-  const manifest = JSON.parse(readFileSync(join(root, 'src/smart/image-field/smart.manifest.json'), 'utf8'));
+  const manifest = JSON.parse(readFileSync(join(root, 'src/smart/input-image/smart.manifest.json'), 'utf8'));
   assert.equal(manifest.inputs.properties['aria-label']?.type, 'string');
 });

@@ -1,6 +1,6 @@
 {
   "probe": "sf-image-field against component.json (standard simai.smart-component 1.3.8 §4.4, §5.3, §7.1.1, §8, §16.20, §17.1, §17.2; vocabulary 1.1.5 §9.1)",
-  "component": "sf-image-field",
+  "component": "sf-input-image",
   "page": {
     "lang": "ru",
     "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
@@ -20,7 +20,7 @@
     {
       "id": "a-chosen-file-is-attached-and-submitted",
       "covers": "events input, change, attach {files} then the old sf-image-field:select (dated); form.submits the File from the host (§17.1)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "user": "files:.sf-image-field-input=logo.png|image/png",
       "expect": {
         "events": [
@@ -67,7 +67,7 @@
         ],
         "deprecations": [
           {
-            "component": "sf-image-field",
+            "component": "sf-input-image",
             "kind": "event",
             "from": "sf-image-field:select",
             "to": "sf-image-field-attach",
@@ -89,7 +89,7 @@
     {
       "id": "a-refused-file-is-rejected",
       "covers": "events.rejected, then the old sf-image-field:reject (dated)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "user": "files:.sf-image-field-input=brief.pdf|application/pdf",
       "expect": {
         "events": [
@@ -128,7 +128,7 @@
     {
       "id": "remove-detaches",
       "covers": "events.detach, then the old sf-image-field:remove (dated); the form gets nothing",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "user": "click:sf-button.sf-image-field-remove button",
       "expect": {
         "value": null,
@@ -172,7 +172,7 @@
     {
       "id": "a-stored-image-submits-its-id",
       "covers": "form.submits: the stored image's id",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "form": "submit",
       "expect": {
         "submitted": true,
@@ -184,7 +184,7 @@
     {
       "id": "required-blocks-submit",
       "covers": "form.required, validity value-missing (§17.2)",
-      "field": "<sf-image-field label=\"Обложка\" name=\"cover\" required></sf-image-field>",
+      "field": "<sf-input-image label=\"Обложка\" name=\"cover\" required></sf-input-image>",
       "form": "submit",
       "expect": {
         "submitted": false,
@@ -203,7 +203,7 @@
     {
       "id": "set-error-blocks-submit",
       "covers": "actions.set-error {message} sets custom-error (§17.2): the form does not submit",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "action": {
         "name": "set-error",
         "with": {
@@ -234,7 +234,7 @@
     {
       "id": "error-is-invalid",
       "covers": "aliases.json setting error -> invalid (§17.2), dated",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "setting": {
         "name": "error",
         "value": true
@@ -261,7 +261,7 @@
     {
       "id": "nothing-while-disabled",
       "covers": "form.disabled (§17.1 item 3)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" disabled></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" disabled></sf-input-image>",
       "form": "submit",
       "expect": {
         "submitted": true,
@@ -273,7 +273,7 @@
     {
       "id": "read-only-still-submits",
       "covers": "form.readonly (§17.1 item 3)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" readonly></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" readonly></sf-input-image>",
       "form": "submit",
       "expect": {
         "submitted": true,
@@ -285,7 +285,7 @@
     {
       "id": "form-reset-returns-the-default",
       "covers": "form.reset (§17.1 item 4): no events",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "given": [
         {
           "user": "click:sf-button.sf-image-field-remove button"
@@ -305,7 +305,7 @@
     {
       "id": "enter-opens-the-dialog",
       "covers": "keyboard.host Enter open",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "given": [
         {
           "user": "focus:sf-button.sf-image-field-choose button"
@@ -319,7 +319,7 @@
     {
       "id": "space-opens-the-dialog",
       "covers": "keyboard.host Space open",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "given": [
         {
           "user": "focus:sf-button.sf-image-field-choose button"
@@ -333,7 +333,7 @@
     {
       "id": "choose-answers-an-outcome",
       "covers": "actions.choose applied (§4.4)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "action": {
         "name": "choose"
       },
@@ -347,7 +347,7 @@
     {
       "id": "a-file-held-over-is-a-host-state",
       "covers": "host-states data-dragged-over (§5.3)",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'a.png', {type: 'image/png'})); el.querySelector('.sf-image-field-well').dispatchEvent(new DragEvent('dragover', {bubbles: true, cancelable: true, dataTransfer: transfer}));",
       "expect": {
         "host": {
@@ -360,7 +360,7 @@
     {
       "id": "a-drop-attaches",
       "covers": "a dropped file: attach {source: drop}; the host state ends",
-      "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'drop.png', {type: 'image/png'})); const well = el.querySelector('.sf-image-field-well'); well.dispatchEvent(new DragEvent('dragover', {bubbles: true, cancelable: true, dataTransfer: transfer})); well.dispatchEvent(new DragEvent('drop', {bubbles: true, cancelable: true, dataTransfer: transfer}));",
       "expect": {
         "host": {
@@ -401,7 +401,7 @@
     {
       "id": "ids-come-from-the-instance-path",
       "covers": "§7.1.1: no counter in the ids the template writes",
-      "field": "<sf-image-field id=\"brand-logo\" label=\"Логотип\" name=\"logo\"></sf-image-field>",
+      "field": "<sf-input-image id=\"brand-logo\" label=\"Логотип\" name=\"logo\"></sf-input-image>",
       "script": "return [...el.querySelectorAll('[id]')].every((node) => node.id.startsWith('page-brand-logo'));",
       "expect": {
         "returns": true

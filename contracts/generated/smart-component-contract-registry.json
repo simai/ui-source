@@ -1184,47 +1184,6 @@
       "capabilities": [
         "render",
         "interaction",
-        "keyboard",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "smart.button",
-          "smart.icon"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-image-field",
-      "id": "smart.image-field",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/image-field/smart.manifest.json",
-      "manifest_sha256": "81dc01a611549cdc0979a882cd899fe2b1adffb5b463ed00b29f972f311da34a",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
-      "tags": [
-        "image",
-        "file",
-        "field",
-        "upload",
-        "form"
-      ],
-      "title": "Image field"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "interaction",
         "theme",
         "i18n"
       ],
@@ -1344,6 +1303,47 @@
         "form-field"
       ],
       "title": "Code input"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-image",
+      "id": "smart.input-image",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-image/smart.manifest.json",
+      "manifest_sha256": "06aa8cf1376de65c10945d498c8654c841120cf76475a93f28a4463cf740f92f",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
+      "tags": [
+        "image",
+        "file",
+        "field",
+        "upload",
+        "form"
+      ],
+      "title": "Image field"
     },
     {
       "backend_adapters": [],
@@ -1816,7 +1816,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/quantity/smart.manifest.json",
-      "manifest_sha256": "c7ee2d33e5afaeedecac6dfbca78f651c647d754a0d0486c5e2ff9151190ba50",
+      "manifest_sha256": "eed9669d5c84a63b9968bcfe8a5036af8ef2ca216e1c4d93fcade644228ba49d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

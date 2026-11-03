@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.image-field",
+  "component": "smart.input-image",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],
