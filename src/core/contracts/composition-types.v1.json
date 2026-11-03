@@ -131,9 +131,23 @@
         "additionalProperties": false,
         "properties": {
           "columns": {
+            "default": 1,
             "maximum": 12,
             "minimum": 1,
-            "type": "integer"
+            "type": "integer",
+            "x-simai-utility": {
+              "class": "grid-col-{value}",
+              "responsive": true
+            }
+          },
+          "gap": {
+            "maximum": 8,
+            "minimum": 0,
+            "type": "integer",
+            "x-simai-utility": {
+              "class": "gap-{value}",
+              "responsive": true
+            }
           }
         },
         "type": "object"
@@ -156,7 +170,7 @@
         }
       },
       "type": "layout.columns",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],

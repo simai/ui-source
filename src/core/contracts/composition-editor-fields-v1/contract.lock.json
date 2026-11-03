@@ -6,14 +6,15 @@
   },
   "compatibility": {
     "editor_manifest": "simai.composition.editor-manifest.v1 unchanged",
-    "existing_fields": "layout.section, layout.columns and content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)",
+    "existing_fields": "layout.section and content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)",
     "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
+    "layout_columns": "the layout.columns manifest follows its type to 1.1.0: the columns field unchanged, an additive gap field (integer 0..8); dispatcher decision 2026-11-03 (one block editor, Part A)",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:974d88bca4cbb6075e3265454ecf9ce115b7bf79108f69f76420a503e6e57111",
+  "contractDigest": "sha256:e6793a1b663ced58dd5fc1f5b935dd91f40c15611b61b34b6793e34d62573403",
   "manifests": {
     "editor:content.heading@1.1.0": "sha256:1276721858634c130a8f74f9e0e3f1928c6f2a70f4ff044375a62c12e03a1edb",
-    "editor:layout.columns@1.0.0": "sha256:24c7fa4dc173efa6bb86507aaeea8d99cfaed7a58c0f0d25643fc66d8afd956b",
+    "editor:layout.columns@1.1.0": "sha256:6d59ef7e408c7cad4b5117c9594d4aa32b14c8e7197716175847996c577d10cb",
     "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
     "editor:layout.section@1.0.0": "sha256:9cc6a6c2cde719d55de567f2474a038f5cff27adad927f261929ec7a21f96073",
     "field-kind:choice@1": "sha256:990d5ace0ec0587d0d8c2f37fb45378f65ad338802da80a9e5ee5fef09721f72",
@@ -22,10 +23,10 @@
     "field-kind:toggle@1": "sha256:c44dc5e62c2f45154497a89710fcb889670feb60c1659064fb72ef9ccca04d5c"
   },
   "normativeFiles": {
-    "README.md": "sha256:659434665869b7b6627c6bbb17922c99a4ac1876ff922d0452d5059504479a8e",
-    "fixtures/field-kinds.json": "sha256:ba5fcf5fc152a3cb5dfbf7f1c4c02b56bbb8ff9642c3f999cfe15c86df507a48"
+    "README.md": "sha256:c0cef6d97dd6a93e1aed9a86b2eec7439455fe86dde0af64271fcfdbeedaa320",
+    "fixtures/field-kinds.json": "sha256:c7ea7522bd9cb4279a8ffba5c60ad8eeb67df8bfb32fd3e3a60d72e630f67f1a"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.0.1"
+  "version": "1.1.0"
 }

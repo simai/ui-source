@@ -172,7 +172,10 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.columns',
-    version: '1.0.0',
+    // 1.1.0: columns and gap take a value per screen and print SIMAI Framework
+    // grid utilities (one block editor, owner 2026-11-03); a 1.0.0 value (one
+    // integer for every screen, no gap) stays valid.
+    version: '1.1.0',
     category: 'layout',
     mode: 'composite',
     profiles: ['ui-layout'],
@@ -181,7 +184,8 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       type: 'object',
       additionalProperties: false,
       properties: {
-        columns: { type: 'integer', minimum: 1, maximum: 12 },
+        columns: { type: 'integer', minimum: 1, maximum: 12, default: 1, 'x-simai-utility': { class: 'grid-col-{value}', responsive: true } },
+        gap: { type: 'integer', minimum: 0, maximum: 8, 'x-simai-utility': { class: 'gap-{value}', responsive: true } },
       },
     },
     presentation: { views: ['default'], presets: [], modifiers: ['equal', 'responsive'] },
@@ -639,7 +643,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.columns',
-    type_version: '1.0.0',
+    type_version: '1.1.0',
     fields: [
       {
         key: 'columns',
@@ -653,6 +657,21 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
         label_key: 'sf.composition.layout_columns.columns',
         help_key: 'sf.composition.layout_columns.columns_help',
         capability_hints: ['composition.props.columns'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+      {
+        key: 'gap',
+        plane: 'props',
+        target: 'gap',
+        property: { type: 'integer', version: 1 },
+        constraints: { min: 0, max: 8 },
+        group: 'basic',
+        visibility: 'visible',
+        default: 4,
+        label_key: 'sf.composition.layout_columns.gap',
+        help_key: 'sf.composition.layout_columns.gap_help',
+        capability_hints: ['composition.props.gap'],
         permission_hints: ['composition.node.update'],
         owner: 'simai/framework',
       },

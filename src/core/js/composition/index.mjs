@@ -669,7 +669,11 @@ const BUILTIN_RENDERERS = {
   'layout.section': ({ node, slots }) => `<section data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</section>`,
   'layout.columns': ({ node, slots }) => {
     const columns = Number.isInteger(node.props?.columns) ? ` data-composition-columns="${node.props.columns}"` : '';
-    return `<div class="sf-composition-columns" data-sf-composition-id="${escapeHtml(node.id)}"${columns}>${(slots.columnsList || []).map((child) => `<div class="sf-composition-column">${child}</div>`).join('')}</div>`;
+    // A grid of one column on the phone unless columns says otherwise; the
+    // columns and gap utilities are added from the props (1.1.0). No gap given
+    // keeps the type's own gap.
+    const gap = node.props?.gap === undefined ? ' gap-4' : '';
+    return `<div class="sf-composition-columns grid${gap}" data-sf-composition-id="${escapeHtml(node.id)}"${columns}>${(slots.columnsList || []).map((child) => `<div class="sf-composition-column">${child}</div>`).join('')}</div>`;
   },
   'content.heading': ({ node }) => `<h${node.data.level || 2} data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</h${node.data.level || 2}>`,
   'content.paragraph': ({ node }) => `<p data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</p>`,

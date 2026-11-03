@@ -9,7 +9,7 @@ server-fallback rules. The normative text, fixtures and lock live in
 | Kind | Property | Example field |
 | --- | --- | --- |
 | `choice` | string with choices | `layout.region.placement`, `layout.section.surface` |
-| `integer` | integer@1 | `layout.columns.columns`, `content.heading.level` |
+| `integer` | integer@1 | `layout.columns.columns`, `layout.columns.gap` (1.1.0), `content.heading.level` |
 | `text` (new) | string@2 without choices | `layout.region.label` |
 | `toggle` (new) | boolean@1 | `layout.region.sticky` |
 

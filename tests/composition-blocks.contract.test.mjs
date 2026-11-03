@@ -165,11 +165,41 @@ test('layout.area: a text area whose padding and visibility are utilities per sc
 });
 
 test('a Document that uses none of it draws as before', async () => {
-  const fixture = JSON.parse(readFileSync(new URL('tests/fixtures/composition/columns.json', root), 'utf8'));
-  const before = await render(fixture);
+  const document = layout({ id: 's', type: 'layout.section', slots: { default: [{ id: 'p', type: 'content.paragraph', data: { content: text('Hi') } }] } });
+  const before = await render(document);
   assert.equal(before.notices, undefined);
   assert.equal(before.runtime, undefined);
-  assert.doesNotMatch(before.html, /grid-col|data-sf-composition-area/u);
+  assert.equal(before.html, '<main data-sf-composition-id="root"><section data-sf-composition-id="s"><p data-sf-composition-id="p">Hi</p></section></main>');
+});
+
+test('layout.columns 1.1.0: columns and gap per screen; a 1.0.0 Document stays valid', async () => {
+  const type = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.columns');
+  assert.equal(type.version, '1.1.0');
+  for (const property of Object.values(type.props_schema.properties)) for (const name of utilityClassSpace(property)) assert.ok(known(name), name);
+  // The 1.0.0 fixture: one integer for every screen, no gap.
+  const fixture = JSON.parse(readFileSync(new URL('tests/fixtures/composition/columns.json', root), 'utf8'));
+  const checked = validate(fixture);
+  assert.equal(checked.valid, true);
+  assert.equal(checked.notices, undefined);
+  const old = await render(fixture);
+  assert.equal(old.notices, undefined);
+  assert.match(old.html, /^<div class="sf-composition-columns grid gap-4 grid-col-2" data-sf-composition-id="columns" data-composition-columns="2">/u);
+  // Three on the desktop, two on the tablet, one on the phone; a smaller gap on the phone.
+  const columns = (props) => ({ id: 'c', type: 'layout.columns', props, slots: { columns: [{ id: 'a', type: 'content.paragraph', data: { content: text('A') } }] } });
+  const responsive = layout(columns({ columns: { xs: 1, md: 2, lg: 3 }, gap: { xs: 2, md: 4 } }));
+  assert.equal(validate(responsive).valid, true);
+  const drawn = await render(responsive);
+  assert.match(drawn.html, /<div class="sf-composition-columns grid md:grid-col-2 lg:grid-col-3 gap-2 md:gap-4" data-sf-composition-id="c">/u, 'mobile first, a prefix only where the value changes, no inline style');
+  assert.doesNotMatch(drawn.html, /style=/u);
+  assert.equal(validate(layout(columns({ columns: { md: 13 } }))).valid, false, 'each screen\'s value is checked');
+  assert.equal(validate(layout(columns({ gap: 9 }))).valid, false);
+  // The editor manifest follows the type and adds the gap field.
+  const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.columns');
+  assert.equal(editor.type_version, '1.1.0');
+  assert.deepEqual(editor.fields.map(({ key }) => key), ['columns', 'gap']);
+  const projected = Composition.projectEditorFields(editor, type, responsive.root.slots.default[0]);
+  assert.deepEqual(projected.diagnostics, []);
+  assert.deepEqual(projected.fields.map(({ key, value, screens }) => [key, value, screens]), [['columns', 1, { xs: 1, md: 2, lg: 3 }], ['gap', 2, { xs: 2, md: 4 }]]);
 });
 
 // ------------------------------------------------------------ 3. own modifiers

@@ -29,6 +29,8 @@ const EN = {
   ...words('layout_columns', {
     columns: 'Columns',
     columns_help: 'How many columns the content is split into',
+    gap: 'Gap',
+    gap_help: 'Space between the columns, from 0 to 8 steps',
   }),
   ...words('layout_area', {
     content: 'Text',
@@ -189,6 +191,8 @@ const RU = {
   ...words('layout_columns', {
     columns: 'Колонки',
     columns_help: 'На сколько колонок делится содержимое',
+    gap: 'Промежуток',
+    gap_help: 'Расстояние между колонками, от 0 до 8 шагов',
   }),
   ...words('layout_area', {
     content: 'Текст',

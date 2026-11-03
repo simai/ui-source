@@ -353,6 +353,7 @@
       "expect": "valid",
       "id": "manifest.existing.layout.columns",
       "kinds": [
+        "integer",
         "integer"
       ],
       "manifest": {
@@ -381,12 +382,37 @@
             },
             "target": "columns",
             "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.gap"
+            ],
+            "constraints": {
+              "max": 8,
+              "min": 0
+            },
+            "default": 4,
+            "group": "basic",
+            "help_key": "sf.composition.layout_columns.gap_help",
+            "key": "gap",
+            "label_key": "sf.composition.layout_columns.gap",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "integer",
+              "version": 1
+            },
+            "target": "gap",
+            "visibility": "visible"
           }
         ],
         "schema": "simai.composition.editor-manifest",
         "schema_version": 1,
         "type": "layout.columns",
-        "type_version": "1.0.0"
+        "type_version": "1.1.0"
       }
     },
     {
