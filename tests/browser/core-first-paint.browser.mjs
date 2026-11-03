@@ -5,7 +5,7 @@
 // §5.4, §7.2.1; simai/ui-source#39, #40, #47). Every script is held back
 // SCRIPT_DELAY ms, so the page is seen before its code, and every frame is
 // recorded:
-//   a. static markup printed inside <sf-switch> and <sf-quantity> (taken from
+//   a. static markup printed inside <sf-switch> and <sf-input-quantity> (taken from
 //      the live elements of this build and marked data-sf-static) is visible
 //      in the first frame after the sheets; the elements then take over with
 //      one instance each, the text below never moves, and no frame shows two
@@ -114,7 +114,7 @@ const WATCH = `(() => {
       const record = {t: Math.round(performance.now()), body: getComputedStyle(document.body).opacity};
       for (const [key, root] of [['switch', '.sf-switch-toggler'], ['quantity', '.sf-quantity-wrap']]) {
         const all = [...stage.querySelectorAll(root)];
-        const host = stage.querySelector(key === 'switch' ? 'sf-switch' : 'sf-quantity');
+        const host = stage.querySelector(key === 'switch' ? 'sf-switch' : 'sf-input-quantity');
         record[key] = {
           count: all.length,
           visible: all.filter(shown).length,
@@ -156,12 +156,12 @@ try {
   const SWITCH = 'label="Уведомления" checked name="notify" value="on"';
   const QUANTITY = 'label="Количество" value="3" min="0" max="10" name="count"';
   pages['/live.html'] = `${boot()}</head><body style="margin:0">
-<main id="stage" style="padding:16px;inline-size:360px"><sf-switch ${SWITCH}></sf-switch><sf-quantity ${QUANTITY}></sf-quantity></main>
+<main id="stage" style="padding:16px;inline-size:360px"><sf-switch ${SWITCH}></sf-switch><sf-input-quantity ${QUANTITY}></sf-input-quantity></main>
 ${core}</body></html>`;
   let {context, page} = await fresh();
   await page.goto(`${origin}/live.html`);
   await loaderReady(page);
-  await page.waitForFunction(() => ['sf-switch', 'sf-quantity'].every((tag) => {
+  await page.waitForFunction(() => ['sf-switch', 'sf-input-quantity'].every((tag) => {
     const host = document.querySelector(tag);
     return host?.matches(':defined') && host.firstElementChild && !host.querySelector('[data-sf-style-pending]') && !host.hasAttribute('data-sf-style-pending');
   }), null, {timeout: 15000});
@@ -180,7 +180,7 @@ ${core}</body></html>`;
       }).join('');
     return {
       switch: markup(document.querySelector('sf-switch')),
-      quantity: markup(document.querySelector('sf-quantity')),
+      quantity: markup(document.querySelector('sf-input-quantity')),
       sheets: [...document.querySelectorAll('link[rel="stylesheet"]')].map((link) => new URL(link.href).pathname),
     };
   });
@@ -190,14 +190,14 @@ ${core}</body></html>`;
   pages['/static.html'] = `${boot()}
 ${live.sheets.filter((href) => !href.endsWith('/core.css')).map((href) => `<link rel="stylesheet" href="${href}">`).join('\n')}
 </head><body style="margin:0">
-<main id="stage" style="padding:16px;inline-size:360px"><sf-switch ${SWITCH}>${live.switch}</sf-switch><sf-quantity ${QUANTITY}>${live.quantity}</sf-quantity></main>
+<main id="stage" style="padding:16px;inline-size:360px"><sf-switch ${SWITCH}>${live.switch}</sf-switch><sf-input-quantity ${QUANTITY}>${live.quantity}</sf-input-quantity></main>
 <p id="after" style="margin:0 16px">Текст под полями</p>
-<div style="padding:16px"><sf-switch id="bare" label="Без разметки"></sf-switch><sf-quantity id="shape" data-sf-skeleton="line"></sf-quantity></div>
+<div style="padding:16px"><sf-switch id="bare" label="Без разметки"></sf-switch><sf-input-quantity id="shape" data-sf-skeleton="line"></sf-input-quantity></div>
 ${core}</body></html>`;
   ({context, page} = await fresh());
   await page.goto(`${origin}/static.html`);
   await loaderReady(page);
-  await page.waitForFunction(() => ['#stage sf-switch', '#stage sf-quantity', '#bare', '#shape'].every((selector) => document.querySelector(selector)?.matches(':defined')), null, {timeout: 15000});
+  await page.waitForFunction(() => ['#stage sf-switch', '#stage sf-input-quantity', '#bare', '#shape'].every((selector) => document.querySelector(selector)?.matches(':defined')), null, {timeout: 15000});
   await page.waitForTimeout(800);
   const frames = await page.evaluate(() => window.__frames);
   const settled = await page.evaluate(() => ({

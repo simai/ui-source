@@ -148,7 +148,7 @@
       --sf-dropdown-placeholder--color: CanvasText;
       color: CanvasText;
     }
-    sf-quantity[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
       --sf-quantity-placeholder--color: CanvasText;
       color: CanvasText;
     }

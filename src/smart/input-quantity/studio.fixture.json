@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.quantity",
+  "component": "smart.input-quantity",
   "title": "quantity reference",
-  "summary": "Deterministic reference fixture for sf-quantity.",
+  "summary": "Deterministic reference fixture for sf-input-quantity.",
   "locale": "ru",
   "props": {
     "label": "Количество",

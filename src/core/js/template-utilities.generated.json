@@ -211,6 +211,14 @@
     "justify-content/default",
     "overflow/default"
   ],
+  "cl-input-quantity": [
+    "display/default",
+    "filter-blur/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default"
+  ],
   "cl-input-rich": [
     "align-items/default",
     "container/default",
@@ -287,14 +295,6 @@
     "flex-direction/default",
     "grid-template-columns/default",
     "overflow/default"
-  ],
-  "cl-quantity": [
-    "display/default",
-    "filter-blur/default",
-    "flex-direction/default",
-    "flex-wrap/default",
-    "justify-content/default",
-    "place-items/default"
   ],
   "cl-radio": [
     "align-items/default",

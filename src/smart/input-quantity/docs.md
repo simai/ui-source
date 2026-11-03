@@ -1,15 +1,15 @@
 # Smart Quantity
 
-`<sf-quantity>` — числовое поле формы с кнопками «−» и «+»: количество,
+`<sf-input-quantity>` — числовое поле формы с кнопками «−» и «+»: количество,
 сумма, целое число в карточке записи. Значение — число или пусто. Границы,
 шаг и число знаков после запятой задаются атрибутами; набирать можно только
 то, что может стать числом.
 
 ```html
-<sf-quantity label="Количество" name="count" value="2" min="0" max="99"></sf-quantity>
+<sf-input-quantity label="Количество" name="count" value="2" min="0" max="99"></sf-input-quantity>
 
-<sf-quantity label="Цена" name="price" value="2567.5" min="0" step="0.01"
-  hint="В рублях, с копейками"></sf-quantity>
+<sf-input-quantity label="Цена" name="price" value="2567.5" min="0" step="0.01"
+  hint="В рублях, с копейками"></sf-input-quantity>
 ```
 
 Поле рисуется разметкой классового компонента `quantity`, поэтому выглядит

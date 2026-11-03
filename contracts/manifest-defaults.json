@@ -76,17 +76,17 @@
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "quantity",
+      "component": "input-quantity",
       "prop": "locale",
       "reason": "Follows the page when not set: the document's lang, so the decimal mark is a comma on a Russian page."
     },
     {
-      "component": "quantity",
+      "component": "input-quantity",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "quantity",
+      "component": "input-quantity",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     }

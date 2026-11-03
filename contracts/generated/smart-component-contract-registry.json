@@ -592,7 +592,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "4d521baf8de6481802c116d11443d1a679a7521f1f71cb78baf85fd08a71c03e",
+      "manifest_sha256": "8439bcb982663ddc8ac74349d2a2409c04040d4e30c86be6c6a7ce0d96b5428d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1129,7 +1129,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "afbf3f884ab7810d60647fd3213d0d3bf43007ab52f63aa73838a33156c54c0b",
+      "manifest_sha256": "98e5741bec81ec099f5286006cabe0cbf7fda69001b65dcc49e49e909032a2a9",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1210,7 +1210,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "ad54b149d3f229f66396699e02bc3cf990ee50e2b3e187b3769d09a155cf41c1",
+      "manifest_sha256": "7ba25da900cb3bd9f5187b19d2d53b6b8c4f9c0ef12fc622b507c780144f7261",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1398,6 +1398,48 @@
         "form"
       ],
       "title": "Lookup"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icon-buttons",
+          "component.icons",
+          "component.quantity"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-quantity",
+      "id": "smart.input-quantity",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-quantity/smart.manifest.json",
+      "manifest_sha256": "25127ec8a81688b87950953a025cd8717219ac178c149c3ce85efdb84fa4a2ca",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
+      "tags": [
+        "quantity",
+        "number",
+        "stepper",
+        "field",
+        "form"
+      ],
+      "title": "Quantity"
     },
     {
       "backend_adapters": [],
@@ -1842,48 +1884,6 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
-        "interaction",
-        "keyboard",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "component.icon-buttons",
-          "component.icons",
-          "component.quantity"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-quantity",
-      "id": "smart.quantity",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/quantity/smart.manifest.json",
-      "manifest_sha256": "cc8745e843749ea3078958d4bfc1ffad759d75321c38f9ee61e9f80eda573326",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
-      "tags": [
-        "quantity",
-        "number",
-        "stepper",
-        "field",
-        "form"
-      ],
-      "title": "Quantity"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
         "theme",
         "responsive"
       ],
@@ -2282,7 +2282,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "2d826c51d5880fc9acf7f745e9075a46f8053fa211b53534c1d7351455f29c4e",
+      "manifest_sha256": "d1b666f121bcd8536638fb3bd4abf8793f71d0c62aba6dc53f3e67c65e7b9c07",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2403,7 +2403,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/textarea/smart.manifest.json",
-      "manifest_sha256": "e9844a688d8f0cbe70d5223e3e1d30efae4a39a404fcc82cc1d68a3cd09903e1",
+      "manifest_sha256": "fb73912f50deffdaba30268cfb066570887898269adb3f02e5874970aa2c261f",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

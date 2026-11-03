@@ -1,4 +1,4 @@
-// The parts of sf-quantity that are about numbers, not the page: how typed text
+// The parts of sf-input-quantity that are about numbers, not the page: how typed text
 // reads in the page's language, how a value is written back, where a step
 // lands and where the bounds hold it. Kept apart from the element so the
 // contract tests run them in Node, as sf-image-field's value.mjs is.

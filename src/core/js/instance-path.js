@@ -11,7 +11,7 @@
 // `<path with every non-word run as ->--<local name>`. A counter is never an
 // id: the field ids used to come from a module-scope counter, and every
 // bundle that carries the field code (eight of them) had its own, so a class
-// sf-quantity and an <sf-quantity> on one page both took
+// sf-quantity and an <sf-input-quantity> on one page both took
 // `sf-quantity-1-control` and a label pointed at the other field. Ids that
 // follow creation order also swap when two instances swap, and server markup
 // (§5.4) cannot repeat them. A path is read from the page, so every bundle

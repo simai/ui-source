@@ -88,25 +88,25 @@ test('a hold is one rule in one sheet, dropped when the tag is defined', async (
   assert.equal(fake.win.SF.__internal.pendingTags, pending);
 
   assert.equal(pending.hold('sf-switch', {asked: true}), true);
-  assert.equal(pending.hold('sf-quantity'), true);
+  assert.equal(pending.hold('sf-input-quantity'), true);
   assert.equal(pending.hold('not a tag'), false);
   assert.equal(fake.appended.length, 1, 'one sheet');
   const [sheet] = fake.appended;
   assert.equal(sheet.id, PENDING_TAGS_ID);
   assert.equal(sheet.attrs['data-sf-observer'], 'ignore', 'the Loader does not read its own sheet');
-  assert.equal(sheet.textContent, `${pendingTagRule('sf-switch')}\n${pendingTagRule('sf-quantity')}`);
+  assert.equal(sheet.textContent, `${pendingTagRule('sf-switch')}\n${pendingTagRule('sf-input-quantity')}`);
 
   fake.define('sf-switch');
   await new Promise((settle) => setTimeout(settle, 0));
-  assert.deepEqual(pending.held(), ['sf-quantity']);
-  assert.equal(sheet.textContent, pendingTagRule('sf-quantity'));
+  assert.deepEqual(pending.held(), ['sf-input-quantity']);
+  assert.equal(sheet.textContent, pendingTagRule('sf-input-quantity'));
 
-  fake.define('sf-quantity');
+  fake.define('sf-input-quantity');
   await new Promise((settle) => setTimeout(settle, 0));
   assert.deepEqual(pending.held(), []);
   assert.equal(fake.appended.length, 0, 'no sheet once nothing is held');
   assert.equal(pending.hold('sf-switch'), false, 'a defined tag is never held');
-  for (const tag of ['sf-switch', 'sf-quantity']) pending.release(tag);
+  for (const tag of ['sf-switch', 'sf-input-quantity']) pending.release(tag);
 });
 
 test('nothing stays hidden when a module fails: the hold times out, and a module the Loader asked for says so', async () => {
@@ -160,14 +160,14 @@ test('Core holds every undefined sf- element met while the page is parsed, until
   assert.deepEqual(pending.held(), ['sf-switch'], 'only sf- tags: a package tag is held by the Loader, which knows its rule');
   assert.deepEqual(observer.options, {childList: true, subtree: true});
 
-  observer.callback([{addedNodes: [element('sf-quantity'), {nodeType: 3}]}]);
-  assert.deepEqual(pending.held(), ['sf-switch', 'sf-quantity']);
+  observer.callback([{addedNodes: [element('sf-input-quantity'), {nodeType: 3}]}]);
+  assert.deepEqual(pending.held(), ['sf-switch', 'sf-input-quantity']);
 
-  pending.hold('sf-quantity', {asked: true});
+  pending.hold('sf-input-quantity', {asked: true});
   listeners['sf-loader-ready']();
   assert.equal(observer.disconnected, true);
-  assert.deepEqual(pending.held(), ['sf-quantity'], 'what the Loader asked for stays held until defined');
-  pending.release('sf-quantity');
+  assert.deepEqual(pending.held(), ['sf-input-quantity'], 'what the Loader asked for stays held until defined');
+  pending.release('sf-input-quantity');
 });
 
 // ---------- #40: static markup ----------

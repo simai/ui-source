@@ -476,10 +476,14 @@ function rename(oldTag, newTag) {
   run(process.execPath, ['scripts/tag-alias-table.mjs', '--write']);
   run(process.execPath, ['scripts/generate-template-utilities.mjs']);
 
-  // 7. Versions, then the registry and the passports that carry them.
+  // 7. Versions, then the registry and the passports that carry them. The
+  // provenance is refreshed first, so a component whose manifest names a
+  // shared file the rename edited moves its version too; the generator then
+  // runs over every folder, as a bump may land outside the touched ones.
+  refreshSourceArtifacts();
   bumpVersions(touched, newFolder);
-  run(process.execPath, ['scripts/generate-component-files.mjs', '--write', ...components]);
-  refreshSourceArtifacts(touched);
+  run(process.execPath, ['scripts/generate-component-files.mjs', '--write']);
+  refreshSourceArtifacts();
   run(process.execPath, ['scripts/sf-contract.mjs', 'build']);
   run(process.execPath, ['scripts/linkage.mjs', 'passports', '--write']);
 
@@ -493,10 +497,12 @@ function rename(oldTag, newTag) {
 }
 
 // The manifest's provenance names the source files it was made from by hash
-// (sf-contract build refuses a drift): the moved and edited index.js. The
-// generated runtime it names is the last build's and is restamped by the next.
-function refreshSourceArtifacts(folders) {
-  for (const name of folders) {
+// (sf-contract build refuses a drift): the moved and edited index.js, and a
+// shared sheet such as helpers/inherited-value.css that another component's
+// manifest names. The generated runtime it names is the last build's and is
+// restamped by the next.
+function refreshSourceArtifacts() {
+  for (const name of smartFolders()) {
     const file = `src/smart/${name}/smart.manifest.json`;
     if (!existsSync(abs(file))) continue;
     const manifest = readJson(file);

@@ -14,6 +14,7 @@ export default Object.freeze([
   Object.freeze({from: 'sf-inline-editor', to: 'sf-editor-inline', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-lookup', to: 'sf-input-lookup', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-page-header', to: 'sf-header-page', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-quantity', to: 'sf-input-quantity', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-range-slider', to: 'sf-slider-range', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-rich-text', to: 'sf-input-rich', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-site-header', to: 'sf-header-site', since: '2026-11-03', remove_after: '2027-01-01'}),

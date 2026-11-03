@@ -6,6 +6,7 @@ import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import { pageLocale, pageText } from '../../../core/js/page-language';
+import { tagSelector } from '../../../core/js/tag-aliases.js';
 
 const QUANTITY_TEXT = {
   en: { decrement: 'Decrease value', increment: 'Increase value' },
@@ -627,12 +628,12 @@ function unbindQuantity(root) {
   delete root.dataset[BOUND_FLAG];
 }
 
-// sf-quantity draws this markup and runs it itself (src/smart/quantity): a
-// root inside it is its owner's, and this binder would add a second set of
-// handlers to its steppers. The country code's binder leaves its owner alone
+// sf-input-quantity (formerly sf-quantity) draws this markup and runs it
+// itself (src/smart/input-quantity): a root inside it is its owner's, and this
+// binder would add a second set of handlers to its steppers. The country code's binder leaves its owner alone
 // the same way.
 function isSmartOwned(root) {
-  return Boolean(root.closest?.('sf-quantity'));
+  return Boolean(root.closest?.(tagSelector('sf-input-quantity')));
 }
 
 function initExistingQuantities(target = document) {

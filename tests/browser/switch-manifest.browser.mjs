@@ -13,7 +13,7 @@
 //   SF.language.use('ru'), a section with lang="en" speaks English, and
 //   changing the section's lang at runtime redraws the switch in it;
 // - ids (§7.1.1, simai/ui-source#41): a class sf-quantity and an
-//   <sf-quantity> share no id, and each label points at its own field;
+//   <sf-input-quantity> share no id, and each label points at its own field;
 // - the boot preloader (§5.4): never shown on a page with static markup,
 //   taken down at DOMContentLoaded when asked for at once, and still shown on
 //   a bare page.
@@ -50,8 +50,8 @@ const pages = {
   '/ids': `${head()}<body>
 <label class="sf-quantity sf-quantity--size-1" id="class-q-host"><span class="sf-quantity-label"><span class="sf-quantity-text">Класс</span></span><span class="sf-quantity-wrap"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Меньше"><i class="sf-icon">remove</i></button><input type="text" value="1" step="1" min="0" max="9"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Больше"><i class="sf-icon">add</i></button></span></label>
 <label class="sf-quantity sf-quantity--size-1"><span class="sf-quantity-label"><span class="sf-quantity-text">Класс без id</span></span><span class="sf-quantity-wrap"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Меньше"><i class="sf-icon">remove</i></button><input type="text" value="1" step="1" min="0" max="9"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Больше"><i class="sf-icon">add</i></button></span></label>
-<sf-quantity label="Smart" value="2"></sf-quantity>
-<sf-quantity id="named" label="Smart с id" value="3"></sf-quantity>
+<sf-input-quantity label="Smart" value="2"></sf-input-quantity>
+<sf-input-quantity id="named" label="Smart с id" value="3"></sf-input-quantity>
 </body></html>`,
   '/static': `${head()}<body><sf-switch label="Статичный"><div data-sf-static><label class="sf-switch"><span class="sf-switch-toggler"><input type="checkbox" role="switch"></span></label></div></sf-switch><p>Текст</p></body></html>`,
   '/static-now': `${head('window.SF_BOOT_CONFIG={preloader:{delay:0}};')}<body><sf-skeleton data-sf-skeleton="rows"></sf-skeleton><p>Текст</p></body></html>`,
@@ -184,11 +184,11 @@ try {
   // ---------- ids ----------
   {
     const tab = await open('/ids');
-    await tab.waitForFunction(() => customElements.get('sf-quantity') && document.querySelectorAll('sf-quantity .sf-quantity input').length === 2
-      && [...document.querySelectorAll('label.sf-quantity:not(sf-quantity *) input')].every((input) => input.id), null, {timeout: 15000});
+    await tab.waitForFunction(() => customElements.get('sf-input-quantity') && document.querySelectorAll('sf-input-quantity .sf-quantity input').length === 2
+      && [...document.querySelectorAll('label.sf-quantity:not(sf-input-quantity *) input')].every((input) => input.id), null, {timeout: 15000});
     await settle(tab);
     const ids = await tab.evaluate(() => {
-      const inputs = [...document.querySelectorAll('.sf-quantity input[type="text"], sf-quantity input')];
+      const inputs = [...document.querySelectorAll('.sf-quantity input[type="text"], sf-input-quantity input')];
       const all = [...document.querySelectorAll('[id]')].map((node) => node.id);
       const labels = [...document.querySelectorAll('label[for]')].map((label) => ({for: label.getAttribute('for'), own: label.querySelector('input')?.id ?? null}));
       return {inputs: [...new Set(inputs)].map((input) => input.id), duplicates: all.filter((id, index) => all.indexOf(id) !== index), labels};

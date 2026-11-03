@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.quantity",
-  "version": "1.2.3",
+  "id": "smart.input-quantity",
+  "version": "1.3.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -21,7 +21,7 @@
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-quantity",
+  "custom_element": "sf-input-quantity",
   "templates": [
     "default"
   ],
@@ -546,8 +546,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-quantity>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-quantity>",
+        "since": "1.3.0",
+        "replacement": "<sf-input-quantity>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -556,30 +564,30 @@
     "source_revision": "d949e0253f672652b706a70c107ed9c4711c3613",
     "source_artifacts": [
       {
-        "path": "src/smart/quantity/index.js",
-        "sha256": "e5fa38a5c5ef9010c4a86ba2abe13e7bc7d5d6054459f8ffb7f5b3d6a6891d68"
+        "path": "src/smart/input-quantity/index.js",
+        "sha256": "9e6e060f3608538e763255ff38b519390a715296301de82d0e75848e2a8e71b2"
       },
       {
-        "path": "src/smart/quantity/value.mjs",
-        "sha256": "d92a6b780e9366ec47ff3b4b144edd3077d108997b5db16a3985b6816e046b18"
+        "path": "src/smart/input-quantity/value.mjs",
+        "sha256": "8167c02321c5fa3f6abdb19897f58c303be64ce6d1e7a8391bae2edd52af548e"
       },
       {
-        "path": "src/smart/quantity/js/templates/default.js",
+        "path": "src/smart/input-quantity/js/templates/default.js",
         "sha256": "ac388b6b5770a7578a52381477f5e1cde32b1005493c1825bfa90392232fd576"
       },
       {
-        "path": "src/smart/quantity/rule.js",
-        "sha256": "b8bbb9d8ec142c8eeef78b8423e45deb82f7d8f9dfa45de0eda06144d20594e6"
+        "path": "src/smart/input-quantity/rule.js",
+        "sha256": "94f813277eb02c9007f5acb45d65fda587433e59fa7dcaf0b0725716e03339f0"
       },
       {
-        "path": "src/smart/quantity/docs.md",
-        "sha256": "42205948250175b9b3e0c4f35c7a2c6d1286dd02285b84c812ad2077295a68fd"
+        "path": "src/smart/input-quantity/docs.md",
+        "sha256": "6f8df9e90f1c9dd684fc57e652f9b970074b15377a878c265080503256a95c64"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",
+    "use_when": "Use sf-input-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not use it for a range picked by dragging: that is sf-range-slider",
@@ -592,7 +600,7 @@
       "accessibility",
       "provenance"
     ],
-    "minimal_example": "<sf-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+    "minimal_example": "<sf-input-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-input-quantity>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

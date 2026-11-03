@@ -135,7 +135,7 @@
           {
             "id": "form-value-point-box-comma",
             "covers": "values.value, form.submits (§17.1 item 2)",
-            "field": "<sf-quantity label=\"Цена\" name=\"price\" value=\"2567.5\" min=\"0\" step=\"0.01\" grouping=\"false\"></sf-quantity>",
+            "field": "<sf-input-quantity label=\"Цена\" name=\"price\" value=\"2567.5\" min=\"0\" step=\"0.01\" grouping=\"false\"></sf-input-quantity>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -163,7 +163,7 @@
           {
             "id": "setting-value-is-silent",
             "covers": "§8: a value set from outside sends nothing",
-            "field": "<sf-quantity name=\"count\" value=\"2\" step=\"0.5\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\" step=\"0.5\"></sf-input-quantity>",
             "setting": {
               "name": "value",
               "value": "3.5"
@@ -182,7 +182,7 @@
           {
             "id": "typing-russian-comma-enter-commits",
             "covers": "events.input, events.change, keyboard Enter commit",
-            "field": "<sf-quantity name=\"price\" step=\"0.01\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"price\" step=\"0.01\"></sf-input-quantity>",
             "user": [
               "type:12,5",
               "keyboard:Enter"
@@ -223,7 +223,7 @@
           {
             "id": "escape-reverts-the-typing",
             "covers": "keyboard Escape revert",
-            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"4\"></sf-input-quantity>",
             "user": [
               "type:7",
               "keyboard:Escape"
@@ -241,7 +241,7 @@
           {
             "id": "arrow-up-steps",
             "covers": "keyboard ArrowUp step:+1, events input then change",
-            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:ArrowUp",
             "expect": {
               "events": [
@@ -264,7 +264,7 @@
           {
             "id": "arrow-down-steps",
             "covers": "keyboard ArrowDown step:-1",
-            "field": "<sf-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:ArrowDown",
             "expect": {
               "value": 1,
@@ -276,7 +276,7 @@
           {
             "id": "page-up-steps-ten",
             "covers": "keyboard PageUp step:+page",
-            "field": "<sf-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:PageUp",
             "expect": {
               "value": 12
@@ -285,7 +285,7 @@
           {
             "id": "page-down-steps-ten",
             "covers": "keyboard PageDown step:-page",
-            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:PageDown",
             "expect": {
               "value": 12
@@ -294,7 +294,7 @@
           {
             "id": "home-goes-to-min",
             "covers": "keyboard Home to:min, data-at-min",
-            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:Home",
             "expect": {
               "value": 0,
@@ -313,7 +313,7 @@
           {
             "id": "end-goes-to-max",
             "covers": "keyboard End to:max, data-at-max",
-            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "keyboard:End",
             "expect": {
               "value": 99,
@@ -328,16 +328,16 @@
           {
             "id": "tab-reaches-the-box",
             "covers": "keyboard Tab reach (the steppers are out of the tab order)",
-            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\"></sf-input-quantity>",
             "user": "tab",
             "expect": {
-              "focus": "sf-quantity .sf-quantity-wrap input"
+              "focus": "sf-input-quantity .sf-quantity-wrap input"
             }
           },
           {
             "id": "plus-stops-at-max",
             "covers": "settings.max, events.change source button, data-at-max (#46 item 4)",
-            "field": "<sf-quantity name=\"count\" value=\"98\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"98\" max=\"99\"></sf-input-quantity>",
             "user": "click:button[aria-label='Увеличить значение']",
             "expect": {
               "events": [
@@ -369,7 +369,7 @@
           {
             "id": "required-empty-blocks-submit",
             "covers": "form.required, validity value-missing on the host",
-            "field": "<sf-quantity label=\"Количество\" name=\"count\" required></sf-quantity>",
+            "field": "<sf-input-quantity label=\"Количество\" name=\"count\" required></sf-input-quantity>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -383,7 +383,7 @@
           {
             "id": "typed-past-max-is-range-overflow",
             "covers": "form.validity range-overflow before the commit clamps",
-            "field": "<sf-quantity name=\"count\" min=\"0\" max=\"99\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" min=\"0\" max=\"99\"></sf-input-quantity>",
             "user": "type:150",
             "expect": {
               "checkValidity": false,
@@ -395,7 +395,7 @@
           {
             "id": "set-error-blocks-submit",
             "covers": "actions.set-error, form.validity custom-error (§17.2)",
-            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"5\" hint=\"От 0 до 99\"></sf-quantity>",
+            "field": "<sf-input-quantity label=\"Количество\" name=\"count\" value=\"5\" hint=\"От 0 до 99\"></sf-input-quantity>",
             "action": {
               "name": "set-error",
               "with": {
@@ -427,7 +427,7 @@
           {
             "id": "set-error-empty-clears",
             "covers": "actions.set-error with no message",
-            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"5\"></sf-quantity>",
+            "field": "<sf-input-quantity label=\"Количество\" name=\"count\" value=\"5\"></sf-input-quantity>",
             "given": [
               {
                 "action": {
@@ -459,7 +459,7 @@
           {
             "id": "step-up-answers-an-outcome",
             "covers": "actions.step-up {count}, silent",
-            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\"></sf-input-quantity>",
             "action": {
               "name": "step-up",
               "with": {
@@ -480,7 +480,7 @@
           {
             "id": "clear-empties",
             "covers": "actions.clear",
-            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\"></sf-input-quantity>",
             "action": {
               "name": "clear"
             },
@@ -498,7 +498,7 @@
           {
             "id": "form-reset-returns-the-attribute",
             "covers": "form.reset (§17.1 item 4), no events",
-            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"2\"></sf-input-quantity>",
             "given": [
               {
                 "user": [
@@ -522,7 +522,7 @@
           {
             "id": "inherited-submits-empty",
             "covers": "trait field-inherit: shown, never the value",
-            "field": "<sf-quantity name=\"count\" inherited-value=\"5\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" inherited-value=\"5\"></sf-input-quantity>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -547,7 +547,7 @@
           {
             "id": "reset-to-inherited-new-then-old-event",
             "covers": "sf-field-reset then sf-field:reset once each, input and change source reset, a dated journal note",
-            "field": "<sf-quantity name=\"count\" value=\"7\" inherited-value=\"5\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"7\" inherited-value=\"5\"></sf-input-quantity>",
             "listen": [
               "sf-field-reset",
               "sf-field:reset",
@@ -562,14 +562,14 @@
               "events": [
                 {
                   "type": "sf-field-reset",
-                  "tag": "sf-quantity",
+                  "tag": "sf-input-quantity",
                   "value": "7",
                   "inheritedValue": "5",
                   "name": "count"
                 },
                 {
                   "type": "sf-field:reset",
-                  "tag": "sf-quantity",
+                  "tag": "sf-input-quantity",
                   "value": "7",
                   "inheritedValue": "5",
                   "name": "count"
@@ -607,7 +607,7 @@
           {
             "id": "required-not-met-by-inherited",
             "covers": "§20.2: an inherited number does not satisfy required",
-            "field": "<sf-quantity name=\"count\" required inherited-value=\"5\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" required inherited-value=\"5\"></sf-input-quantity>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -619,7 +619,7 @@
           {
             "id": "disabled-leaves-the-form",
             "covers": "form.disabled",
-            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"4\"></sf-input-quantity>",
             "setting": {
               "name": "disabled",
               "value": true
@@ -642,7 +642,7 @@
           {
             "id": "legacy-error-is-invalid",
             "covers": "aliases.json error -> invalid (§17.2)",
-            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "field": "<sf-input-quantity name=\"count\" value=\"4\"></sf-input-quantity>",
             "setting": {
               "name": "error",
               "value": true

@@ -4719,6 +4719,72 @@
       },
       "owner": "ui-source",
       "source": "src/smart/country-code/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-country/component.json"
+    },
+    {
+      "id": "tag-sf-quantity-to-sf-input-quantity",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-quantity is sf-input-quantity (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-quantity's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-quantity, sf-quantity), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-quantity",
+          "from": "sf-quantity",
+          "to": "sf-input-quantity"
+        },
+        {
+          "component": "sf-input-quantity",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-quantity></sf-quantity>",
+        "after": "<sf-input-quantity></sf-input-quantity>"
+      },
+      "manual": "Write <sf-input-quantity> for <sf-quantity> in markup and sf-input-quantity for sf-quantity in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-quantity, or both names through SF.tags.selector('sf-input-quantity') while the alias lives; a class or a custom property spelled like the old tag (.sf-quantity, --sf-quantity-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-quantity/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-quantity-to-input-quantity",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-quantity is served from smart/input-quantity/ since its folder took the new tag's name: js/input-quantity.js, loader bundle cl-input-quantity. The old path keeps working until remove_after: smart/quantity/js/quantity.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-quantity/js/input-quantity.js, the Loader forwards the bundle name cl-quantity to cl-input-quantity (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.quantity is a dated alias of smart.input-quantity, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-quantity",
+          "from": "smart/quantity/js/quantity.js",
+          "to": "smart/input-quantity/js/input-quantity.js",
+          "match": "smart/quantity/js/quantity(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-quantity",
+          "to": "cl-input-quantity",
+          "match": "['\"]cl-quantity['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.quantity",
+          "to": "smart.input-quantity",
+          "match": "['\"]smart\\.quantity['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-quantity/ for smart/quantity/ and input-quantity for quantity in the file names (js/input-quantity.js, js/input-quantity.min.js); in a product rule's relation write cl-input-quantity for cl-quantity, and in a manifest or a package contract smart.input-quantity for smart.quantity. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/quantity/js/quantity.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-quantity/js/input-quantity.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/quantity/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-quantity/component.json"
     }
   ]
 }

@@ -36,11 +36,11 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/icons/css/icons.css',
   'smart/smart/input/css/input.css', 'smart/smart/textarea/css/textarea.css', 'smart/smart/dropdown/css/dropdown.css',
   'smart/smart/input-color/css/input-color.css', 'smart/smart/switch/css/switch.css',
-  'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css'];
+  'component/component/quantity/css/quantity.css', 'smart/smart/input-quantity/css/input-quantity.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/list-item/js/list-item.js',
   'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js', 'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/input-color/js/input-color.js', 'smart/smart/switch/js/switch.js', 'smart/smart/quantity/js/quantity.js'];
+  'smart/smart/input-color/js/input-color.js', 'smart/smart/switch/js/switch.js', 'smart/smart/input-quantity/js/input-quantity.js'];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
 
@@ -58,7 +58,7 @@ const markup = `<!doctype html><html lang="ru" class="theme-light"><head><meta c
   <sf-input-color id="color" name="brand" label="Цвет" inherited-value="#336699"></sf-input-color>
   <sf-switch id="toggle" name="notify" value="yes" label="Уведомления" inherited-value="true"></sf-switch>
   <sf-input id="hint" label="Поиск" placeholder="Например, Казань"></sf-input>
-  <sf-quantity id="count" label="Штук" inherited-value="3"></sf-quantity>
+  <sf-input-quantity id="count" label="Штук" inherited-value="3"></sf-input-quantity>
   ${['1/2', '1', '2'].map((size) => `
   <sf-input id="input-${size.replace('/', '-')}" size="${size}" label="Поле" inherited-value="По умолчанию" value="Своё"></sf-input>
   <sf-input id="plain-${size.replace('/', '-')}" size="${size}" label="Поле" value="Своё"></sf-input>

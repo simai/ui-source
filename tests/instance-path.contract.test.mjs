@@ -6,7 +6,7 @@ import test from 'node:test';
 // §7.1.1; simai/ui-source#41): never a module counter, the same answer from
 // every bundle, and class markup told apart from the Smart element of the
 // same name. The browser half is tests/browser/switch-manifest.browser.mjs
-// (a class quantity and an <sf-quantity> on one page).
+// (a class quantity and an <sf-input-quantity> on one page).
 
 const {instancePath, partId} = await import('../src/core/js/instance-path.js');
 const {createFieldContract} = await import('../src/component/field-contract.js');
@@ -69,7 +69,7 @@ test('swapping two instances swaps nothing but their order; an id is kept per in
 });
 
 test('no Smart field writes an id from a module counter', () => {
-  for (const path of ['src/component/field-contract.js', 'src/smart/quantity/index.js']) {
+  for (const path of ['src/component/field-contract.js', 'src/smart/input-quantity/index.js']) {
     const source = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
     assert.doesNotMatch(source, /\blet \w*[Ss]equence\b|\+\+\w*[Ss]equence/u, path);
   }

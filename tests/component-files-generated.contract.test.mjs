@@ -37,7 +37,7 @@ const PHASE_A = [
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones
   'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
   'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'input-country', 'tag', 'pagination',
-  'input-image', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
+  'input-image', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'input-quantity',
   'file-upload', 'editor-overlay',
   // new in the 1.4 form
   'progress-ring',
@@ -95,7 +95,7 @@ test('an object setting is a property input, as a list is (context-menu search, 
 test('a native event name with a detail (x-detail) describes that detail (dropdown, quantity change)', () => {
   const manifest = (name) => JSON.parse(results.find((result) => result.component === name).generated['smart.manifest.json']);
   assert.deepEqual(Object.keys(manifest('dropdown').events.change.payload.properties), ['value', 'label', 'values', 'item', 'multiple']);
-  assert.equal(manifest('quantity').events.input.payload.type, 'object');
+  assert.equal(manifest('input-quantity').events.input.payload.type, 'object');
   assert.equal(manifest('switch').events.change.payload.type, 'null');
 });
 

@@ -30,13 +30,13 @@ const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css',
-  'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css',
+  'component/component/quantity/css/quantity.css', 'smart/smart/input-quantity/css/input-quantity.css',
   'component/component/inputs/css/inputs.css', 'smart/smart/input/css/input.css',
   // The layout utilities the templates write (flex, flex-col, items-center…):
   // the Loader would bring them; this page adds the modules by hand.
   ...['display', 'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'place-items']
     .map((name) => `utility/utility/${name}/default/css/default.css`)];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/quantity/js/quantity.js',
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/input-quantity/js/input-quantity.js',
   'smart/smart/input/js/input.js'];
 // Holds a stepper down until the box reads what `done` asks for, then releases
 // it. The hold ends on the page's own state, with a bound of its own, so a
@@ -100,26 +100,26 @@ try {
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:0;padding:16px">
     <button id="before" type="button">До</button>
     <form id="form" style="display:grid;gap:24px;max-width:640px">
-      <sf-quantity id="count" label="Количество" name="count" value="3" min="0" max="10" hint="От 0 до 10"></sf-quantity>
-      <sf-quantity id="price" label="Цена" name="price" value="2567.5" min="0" step="0.5" precision="2"></sf-quantity>
-      <sf-quantity id="need" label="Обязательно" name="need" required></sf-quantity>
-      <sf-quantity id="err" label="С ошибкой" value="12" invalid error-message="Не больше 10"></sf-quantity>
-      <sf-quantity id="ro" label="Только чтение" value="4" readonly></sf-quantity>
-      <sf-quantity id="dis" label="Отключено" name="dis" value="4" disabled></sf-quantity>
-      <sf-quantity id="inh" label="Наследуется" name="inh" inherited-value="5"></sf-quantity>
-      <sf-quantity id="s-half" size="1/2" label="1/2" value="3"></sf-quantity>
-      <sf-quantity id="s-one" size="1" label="1" value="3"></sf-quantity>
-      <sf-quantity id="s-two" size="2" label="2" value="3"></sf-quantity>
+      <sf-input-quantity id="count" label="Количество" name="count" value="3" min="0" max="10" hint="От 0 до 10"></sf-input-quantity>
+      <sf-input-quantity id="price" label="Цена" name="price" value="2567.5" min="0" step="0.5" precision="2"></sf-input-quantity>
+      <sf-input-quantity id="need" label="Обязательно" name="need" required></sf-input-quantity>
+      <sf-input-quantity id="err" label="С ошибкой" value="12" invalid error-message="Не больше 10"></sf-input-quantity>
+      <sf-input-quantity id="ro" label="Только чтение" value="4" readonly></sf-input-quantity>
+      <sf-input-quantity id="dis" label="Отключено" name="dis" value="4" disabled></sf-input-quantity>
+      <sf-input-quantity id="inh" label="Наследуется" name="inh" inherited-value="5"></sf-input-quantity>
+      <sf-input-quantity id="s-half" size="1/2" label="1/2" value="3"></sf-input-quantity>
+      <sf-input-quantity id="s-one" size="1" label="1" value="3"></sf-input-quantity>
+      <sf-input-quantity id="s-two" size="2" label="2" value="3"></sf-input-quantity>
     </form>
  <div id="beside" style="display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:640px;margin-top:24px">${['1/2', '1', '2'].map((size) => `<div style="display:flex;gap:16px;align-items:flex-start">
-      <sf-quantity data-beside="${size}" size="${size}" label="Число" value="3" style="flex:1;min-width:0"></sf-quantity>
+      <sf-input-quantity data-beside="${size}" size="${size}" label="Число" value="3" style="flex:1;min-width:0"></sf-input-quantity>
       <sf-input data-beside="${size}" size="${size}" label="Число" value="3" style="flex:1;min-width:0"></sf-input></div>`).join('')}</div>
     <div id="classes" style="display:grid;gap:24px;max-width:640px;margin-top:24px">${['1/2', '1', '2'].map(classMarkup).join('')}</div>
     <button id="after" type="button">После</button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => note({case: `no sheet ${path}`}));
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-quantity') && customElements.get('sf-input'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-quantity') && customElements.get('sf-input'), null, {timeout: 8000});
   await page.waitForTimeout(800);
   await page.evaluate(() => {
     window.__events = [];
@@ -336,7 +336,7 @@ try {
       // centred in the field) from the top of the field, and the ladder's
       // control heights the steppers must equal one rung down.
       ladder: Object.fromEntries(Object.keys(sizes).map((size) => {
-        const quantity = document.querySelector(`sf-quantity[data-beside="${size}"]`);
+        const quantity = document.querySelector(`sf-input-quantity[data-beside="${size}"]`);
         const input = document.querySelector(`sf-input[data-beside="${size}"]`);
         const line = (field, box) => {
           const rect = box.getBoundingClientRect();

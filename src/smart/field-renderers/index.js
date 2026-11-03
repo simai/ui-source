@@ -1131,7 +1131,7 @@ function renderHtmlEdit(field, value, host) {
 }
 
 // A number edited with steps (owner, 2026-10-25): an integer or a number whose
-// variant is `stepper` gets sf-quantity -- «−» and «+», the arrow keys, the
+// variant is `stepper` gets sf-input-quantity -- «−» and «+», the arrow keys, the
 // bounds the field names -- and every other number keeps the plain sf-input
 // below. The bounds, the step and (for a number) the digits are the field's
 // own keys, read by this variant alone: a renderer still does not enforce a
@@ -1161,7 +1161,7 @@ function renderStepperEdit(field, value, host) {
         : '0';
     const write = (event) => host.setFieldValue(field, event.detail?.value ?? null);
     return html`
-        <sf-quantity
+        <sf-input-quantity
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${stepperNumber(scalarValue(value))}
@@ -1174,7 +1174,7 @@ function renderStepperEdit(field, value, host) {
                 ?disabled=${field.readonly === true}
                 @input=${write}
                 @change=${write}
-        ></sf-quantity>
+        ></sf-input-quantity>
     `;
 }
 

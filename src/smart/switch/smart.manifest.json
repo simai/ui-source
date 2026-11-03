@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -432,7 +432,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "3983ecdf92bcc55a303b430e5b6347a19ea545214cbe89e214682c70d8563389"
+        "sha256": "f1b1981b112c29340955574d1f6cfa9451cb0eb29fdc986ab12905d200dbbb11"
       }
     ],
     "generated_runtime": [

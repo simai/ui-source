@@ -370,7 +370,7 @@
       "file-upload",
       "input-image",
       "input",
-      "quantity",
+      "input-quantity",
       "radio",
       "slider-range",
       "switch",

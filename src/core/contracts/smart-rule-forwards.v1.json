@@ -133,6 +133,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-country-code-to-input-country"
+    },
+    "cl-quantity": {
+      "to": "cl-input-quantity",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-quantity-to-input-quantity"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.textarea",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -460,7 +460,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "3983ecdf92bcc55a303b430e5b6347a19ea545214cbe89e214682c70d8563389"
+        "sha256": "f1b1981b112c29340955574d1f6cfa9451cb0eb29fdc986ab12905d200dbbb11"
       }
     ],
     "generated_runtime": [

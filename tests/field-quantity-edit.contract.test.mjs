@@ -41,7 +41,7 @@ test('the registry names the stepper variant for both number types, and the keys
 
 test('the stepper takes the field as the other controls do', () => {
   const edit = body('renderStepperEdit');
-  const element = edit.slice(edit.indexOf('<sf-quantity'), edit.indexOf('></sf-quantity>'));
+  const element = edit.slice(edit.indexOf('<sf-input-quantity'), edit.indexOf('></sf-input-quantity>'));
   assert.match(element, /size=\$\{EDIT_SIZE\}/u);
   assert.match(element, /name=\$\{fieldName\(field\)\}/u);
   assert.match(element, /value=\$\{stepperNumber\(scalarValue\(value\)\)\}/u);

@@ -12,7 +12,7 @@ import {
   readNumber,
   roundTo,
   stepFrom,
-} from '../src/smart/quantity/value.mjs';
+} from '../src/smart/input-quantity/value.mjs';
 import {FIELD_SIZES} from '../src/component/field-size.js';
 
 // sf-quantity (owner, 2026-10-25): a number field with «−» and «+» over the class
@@ -20,9 +20,9 @@ import {FIELD_SIZES} from '../src/component/field-size.js';
 // What a reader of the source cannot tell from one file is held here; the page
 // itself is measured by tests/browser/quantity-smart.browser.mjs.
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const source = read('src/smart/quantity/index.js');
-const template = read('src/smart/quantity/js/templates/default.js');
-const manifest = JSON.parse(read('src/smart/quantity/smart.manifest.json'));
+const source = read('src/smart/input-quantity/index.js');
+const template = read('src/smart/input-quantity/js/templates/default.js');
+const manifest = JSON.parse(read('src/smart/input-quantity/smart.manifest.json'));
 const classSource = read('src/component/quantity/js/_quantity.js');
 const sheet = read('src/component/quantity/scss/_css__quantity.scss');
 
@@ -80,14 +80,14 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   // manifest's, `error` is a dated alias of `invalid` (§17.2).
   assert.match(source, /base: InheritedValueField\(SfBaseElement\),/u);
   assert.match(source, /class SfQuantity extends FormField\(QuantityElement\)/u);
-  const declared = JSON.parse(read('src/smart/quantity/component.json'));
+  const declared = JSON.parse(read('src/smart/input-quantity/component.json'));
   for (const prop of ['label', 'hint', 'placeholder', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'min', 'max', 'step', 'precision']) {
     assert.ok(declared.settings[prop], prop);
   }
-  assert.ok(JSON.parse(read('src/smart/quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
+  assert.ok(JSON.parse(read('src/smart/input-quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
   assert.match(source, /inheritedValue: \{attribute: 'inherited-value', default: ''\}/u);
   assert.match(source, /ariaLabel: \{attribute: 'aria-label', default: ''\}/u);
-  assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-quantity'\); \}/u);
+  assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-quantity'\); \}/u);
   assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
   assert.match(source, /createFieldContract\(this, \{\n      prefix: 'sf-quantity',/u);
   // The seams the inherited-value mixin asks for.
@@ -117,11 +117,11 @@ test('quantity: the control is a WAI-ARIA spinbutton and the steppers are named 
   assert.match(stepper, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
   // The words are the class component's, in both languages, in the language
   // files (standard 1.3.8 §11); the labels default to them.
-  const en = JSON.parse(read('src/smart/quantity/lang/en.json')).runtime;
-  const ru = JSON.parse(read('src/smart/quantity/lang/ru.json')).runtime;
+  const en = JSON.parse(read('src/smart/input-quantity/lang/en.json')).runtime;
+  const ru = JSON.parse(read('src/smart/input-quantity/lang/ru.json')).runtime;
   assert.deepEqual([en.decrement, en.increment], ['Decrease value', 'Increase value']);
   assert.deepEqual([ru.decrement, ru.increment], ['Уменьшить значение', 'Увеличить значение']);
-  const settings = JSON.parse(read('src/smart/quantity/component.json')).settings;
+  const settings = JSON.parse(read('src/smart/input-quantity/component.json')).settings;
   assert.equal(settings['decrement-label']['default-from'], 'runtime.decrement');
   assert.equal(settings['increment-label']['default-from'], 'runtime.increment');
   // The APG keys.
@@ -154,7 +154,7 @@ test('quantity: input and change on the host with one detail shape; the box\'s o
   assert.deepEqual(manifest.events.change.payload, manifest.events.input.payload);
   assert.deepEqual(Object.keys(manifest.events.change.payload.properties), ['value', 'text', 'name', 'source']);
   const axes = JSON.parse(read('contracts/public-api-axes.json')).change_event.controls;
-  assert.ok(axes.includes('quantity'));
+  assert.ok(axes.includes('input-quantity'));
 });
 
 test('quantity: it draws the class markup, and the class binder leaves it alone', () => {
@@ -171,7 +171,7 @@ test('quantity: it draws the class markup, and the class binder leaves it alone'
   assert.ok(template.includes(`count: '${classes(utility['.sf-quantity .sf-quantity-count'])}'`));
   // No sheet of its own beyond the inherited value's: the class sheet draws it.
   assert.doesNotMatch(source, /import '\.\/scss/u);
-  assert.match(classSource, /function isSmartOwned\(root\) \{\n  return Boolean\(root\.closest\?\.\('sf-quantity'\)\);/u);
+  assert.match(classSource, /function isSmartOwned\(root\) \{\n  return Boolean\(root\.closest\?\.\(tagSelector\('sf-input-quantity'\)\)\);/u);
   assert.match(classSource, /if \(!isSmartOwned\(root\)\) bindQuantity\(root\);/u);
   assert.match(classSource, /node\.matches\?\.\(QUANTITY_SELECTOR\) && !isSmartOwned\(node\)/u);
   // The help and error line the Smart field draws has its rule in the class sheet.
@@ -180,10 +180,10 @@ test('quantity: it draws the class markup, and the class binder leaves it alone'
 });
 
 test('quantity: the loader knows it and asks for what it draws with', () => {
-  const rule = read('src/smart/quantity/rule.js');
-  assert.match(rule, /SF\.RuleLoader\['cl-quantity'\] = \{\n  tags: \['sf-quantity'\],/u);
+  const rule = read('src/smart/input-quantity/rule.js');
+  assert.match(rule, /SF\.RuleLoader\['cl-input-quantity'\] = \{\n  tags: \['sf-input-quantity', 'sf-quantity'\],/u);
   assert.match(rule, /\{ name: 'quantity' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},/u);
-  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/quantity\/rule\.js';/u);
+  assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-quantity\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.quantity']);
 });
 
@@ -224,6 +224,6 @@ test('quantity: the public variables wrap the values the class sheet drew before
     const block = sheet.slice(sheet.indexOf(state)).split('}')[0];
     assert.doesNotMatch(block, /--sf-quantity-[a-z]+(?:-[a-z]+)*:/u, state);
   }
-  const docs = read('src/smart/quantity/docs.md');
+  const docs = read('src/smart/input-quantity/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
 });
