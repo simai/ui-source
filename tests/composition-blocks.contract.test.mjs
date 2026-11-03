@@ -373,6 +373,13 @@ test('the source port: an editor asks the host for sources, fields and a preview
   assert.throws(() => createSourcePort({ sources() {} }), /composition_source_port_incomplete/u);
 });
 
+test('demo data of every shape is that shape, for a preview without a source', () => {
+  for (const name of Object.keys(Composition.DATA_SHAPES)) {
+    assert.deepEqual(checkSourceAnswer('preview', Composition.demoData(name), { shape: name }), [], name);
+  }
+  assert.equal(Composition.demoData('cards', { count: 2 }).items.length, 2);
+});
+
 test('SF.Composition publishes the one block editor helpers', () => {
   for (const name of ['catalogue', 'catalogueEntry', 'instantiateVariant', 'utilityClasses', 'checkModifiers', 'defineComposedType', 'upgradeComposed', 'slotAccepts', 'createSourcePort', 'validateTypeManifest', 'DATA_SHAPES']) {
     assert.ok(name in Composition, name);

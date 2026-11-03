@@ -261,6 +261,42 @@ export function validateDataRules(root, registry, shapes, diagnostics) {
   }
 }
 
+/**
+ * Demo data of a shape, for a preview when no source is reachable and for a
+ * check that a block draws every state: each required field filled, a list
+ * with `count` records.
+ */
+export function demoData(shapeName, options = {}) {
+  const shape = normalizeShapes(options.shapes).get(shapeName);
+  if (!shape) throw new TypeError(`composition_shape_unknown:${shapeName}`);
+  const count = Number.isInteger(options.count) ? options.count : 3;
+  const fill = (schema, index) => {
+    if (!isPlainObject(schema)) return null;
+    if (schema.enum) return schema.enum[0];
+    if (schema.type === 'object') {
+      const keys = new Set([...(schema.required || []), ...Object.keys(schema.properties || {}).filter((key) => ['title', 'text', 'alt', 'label', 'url', 'src'].includes(key))]);
+      return Object.fromEntries([...keys].filter((key) => schema.properties?.[key]).map((key) => [key, fill(schema.properties[key], index, key)]));
+    }
+    if (schema.type === 'array') return Array.from({ length: Math.min(count, schema.maxItems ?? count) }, (_, at) => fill(schema.items, at + 1));
+    if (schema.type === 'integer' || schema.type === 'number') return Math.max(schema.minimum ?? 1, 1);
+    if (schema.type === 'boolean') return false;
+    return `Example ${index || 1}`;
+  };
+  const data = fill(shape.schema, 1);
+  for (const [key, value] of Object.entries(data)) if (/(?:url|src)$/u.test(key) && typeof value === 'string') data[key] = '#';
+  const fixAddresses = (value) => {
+    if (Array.isArray(value)) return value.forEach(fixAddresses);
+    if (!isPlainObject(value)) return undefined;
+    for (const key of Object.keys(value)) {
+      if (['url', 'src'].includes(key)) value[key] = key === 'src' ? '/example.webp' : '#';
+      else fixAddresses(value[key]);
+    }
+    return undefined;
+  };
+  fixAddresses(data);
+  return data;
+}
+
 // ------------------------------------------------------------- at render
 
 function isEmpty(data, shape) {

@@ -76,6 +76,7 @@ import {
   bindingSettings,
   checkSourceAnswer as checkSourceAnswerWith,
   createShapeRegistry,
+  demoData,
   resolveData,
   takesData,
   validateDataDeclarations,
@@ -969,6 +970,7 @@ export const Composition = Object.freeze({
   createShapeRegistry,
   createSourcePort,
   defineComposedType,
+  demoData,
   expandComposed,
   instantiateVariant,
   ownModifiers,
@@ -1002,4 +1004,4 @@ export { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderField
 export { MODIFIERS_EXTENSION, UTILITY_BREAKPOINTS, checkModifiers, ownModifiers, utilityClassSpace, utilityClasses, valuesByBreakpoint };
 export { BUILTIN_CATALOGUE, CATALOGUE_GROUPS, CATALOGUE_TABS, catalogue, catalogueEntry, instantiateVariant, slotAccepts, slotPlaces };
 export { COMPOSED_EXTENSION, composedInstance, composedPart, composedTextPaths, expandComposed };
-export { BINDING_STATES, DATA_EXTENSION, DATA_SHAPES, RUNTIME_OWNER, SOURCE_PORT, bindingSettings, createShapeRegistry };
+export { BINDING_STATES, DATA_EXTENSION, DATA_SHAPES, RUNTIME_OWNER, SOURCE_PORT, bindingSettings, createShapeRegistry, demoData };

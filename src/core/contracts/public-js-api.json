@@ -106,7 +106,8 @@
         "validateTypeManifest",
         "createSourcePort",
         "checkSourceAnswer",
-        "bindingSettings"
+        "bindingSettings",
+        "demoData"
       ]
     },
     {
