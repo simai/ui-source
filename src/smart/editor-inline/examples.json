@@ -84,7 +84,7 @@
           "covers": "accessibility.role none, actions.edit (the port)",
           "steps": [
             {
-              "check": "document.querySelector('#ed').hidden === true && !document.querySelector('#ed').getAttribute('role') && typeof window.SF.InlineEditor.startInlineEdit === 'function' && window.SF.InlineEditor.INLINE_EVENTS.commit === 'sf-inline-editor-change'"
+              "check": "document.querySelector('#ed').hidden === true && !document.querySelector('#ed').getAttribute('role') && typeof window.SF.InlineEditor.startInlineEdit === 'function' && window.SF.InlineEditor.INLINE_EVENTS.commit === 'sf-editor-inline-change'"
             }
           ]
         },

@@ -24,6 +24,7 @@ import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
+import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
@@ -38,6 +39,9 @@ const SiteHeaderElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
   source: 'ru',
+  // The events of the former tag name (sf-site-header-*) follow the current
+  // ones through the shim until the date in aliases.json.
+  aliases,
   actions: {
     open() { return this.runOpen(); },
     close({reason} = {}) { return this.runClose({reason}); },

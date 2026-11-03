@@ -240,8 +240,8 @@
       "expect": {
         "box": {
           "attributes": {
-            "id": "sf-code-input-1--control",
-            "aria-describedby": "sf-code-input-1--position"
+            "id": "sf-input-code-1--control",
+            "aria-describedby": "sf-input-code-1--position"
           }
         }
       }

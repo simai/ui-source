@@ -278,3 +278,20 @@ test('a component type with an old name draws the current tag (renderSmartElemen
   assert.match(loader, /function createSmartElement\(name, params = \{\}\) \{\n[^\n]*\n  const tagName = canonicalTag\(normalizeSmartTagName\(name\)\);/u);
   assert.match(loader, /SF\.__internal\.litHtml = [\s\S]{0,400}?tagName = canonicalTag\(tagName\);/u);
 });
+
+test('every Smart component whose aliases.json carries more than tag rows hands the table to its element', async () => {
+  const {readdir, readFile} = await import('node:fs/promises');
+  const root = new URL('../src/smart/', import.meta.url);
+  const missing = [];
+  for (const entry of await readdir(root, {withFileTypes: true})) {
+    if (!entry.isDirectory()) continue;
+    let table;
+    try { table = JSON.parse(await readFile(new URL(`${entry.name}/aliases.json`, root), 'utf8')); } catch { continue; }
+    const shimmed = (table.aliases ?? []).filter((row) => row.kind !== 'tag');
+    if (!shimmed.length) continue;
+    let source = '';
+    try { source = await readFile(new URL(`${entry.name}/index.js`, root), 'utf8'); } catch { /* a stub */ }
+    if (!/import\s+aliases\s+from\s+['"]\.\/aliases\.json['"]/u.test(source) || !/[{(,\s]aliases\s*[,})]|^\s*aliases,?$|\.aliases\b/mu.test(source.replace(/^import.*$/gmu, ''))) missing.push(entry.name);
+  }
+  assert.deepEqual(missing, []);
+});

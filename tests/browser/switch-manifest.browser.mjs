@@ -195,7 +195,7 @@ try {
     });
     check('ids: no two elements share an id (#41)', ids.duplicates.length === 0, ids);
     check('ids: each class label points at its own field', ids.labels.every((label) => label.own === null || label.for === label.own), ids);
-    check('ids: class and Smart ids differ by kind, Smart ids follow the path', ids.inputs.includes('sf-quantity-1--control')
+    check('ids: class and Smart ids differ by kind, Smart ids follow the path', ids.inputs.includes('sf-input-quantity-1--control')
       && ids.inputs.includes('page-named--control') && ids.inputs.some((id) => id.startsWith('class-sf-quantity-') || id.startsWith('page-class-q-host')), ids);
     results.ids = ids.inputs;
     await tab.close();
