@@ -1,0 +1,31 @@
+{
+  "schema": "simai.composition.type-manifest",
+  "schema_version": 1,
+  "type": "product.block-name",
+  "version": "1.0.0",
+  "category": "content",
+  "mode": "composite",
+  "profiles": ["structured-content", "ui-layout"],
+  "data_schema": {
+    "type": "object",
+    "required": ["title"],
+    "additionalProperties": false,
+    "properties": {
+      "title": {"type": "string", "minLength": 1, "maxLength": 200}
+    }
+  },
+  "props_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "tone": {"enum": ["neutral", "accent"]}
+    }
+  },
+  "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+  "slots": {
+    "default": {"min": 0, "max": 50, "categories": ["content"]}
+  },
+  "renderer": {"kind": "registered", "name": "product.block-name"},
+  "assets": ["product/block-name"],
+  "capabilities": ["html"]
+}

@@ -1,0 +1,23 @@
+{
+  "owner": "product.block-name",
+  "schema": "simai.composition.editor-words",
+  "schema_version": 1,
+  "words": {
+    "en": {
+      "product.block_name.title": "Title",
+      "product.block_name.title_help": "The heading of the block",
+      "product.block_name.tone": "Tone",
+      "product.block_name.tone_help": "Plain or accented",
+      "product.block_name.tone.neutral": "Plain",
+      "product.block_name.tone.accent": "Accent"
+    },
+    "ru": {
+      "product.block_name.title": "Заголовок",
+      "product.block_name.title_help": "Заголовок блока",
+      "product.block_name.tone": "Тон",
+      "product.block_name.tone_help": "Обычный или акцентный",
+      "product.block_name.tone.neutral": "Обычный",
+      "product.block_name.tone.accent": "Акцент"
+    }
+  }
+}

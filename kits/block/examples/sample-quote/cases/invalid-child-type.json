@@ -1,0 +1,51 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-child-type",
+  "summary": "The quote holds paragraphs only.",
+  "covers": [
+    "sample.quote"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "q",
+              "type": "sample.quote",
+              "data": {
+                "author": "A"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "d",
+                    "type": "content.divider"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "slot_child_type_forbidden",
+        "path": "$.root.slots.default[0].slots.default[0]"
+      }
+    ],
+    "assets": []
+  }
+}

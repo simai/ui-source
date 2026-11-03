@@ -1,0 +1,16 @@
+/* product.block-name's sheet, the asset product/block-name: a host loads it
+   when a render result lists the asset. Read the SIMAI Framework's public
+   variables, so the block follows the theme. */
+.product-block-name {
+  padding: var(--sf-space-4, 1rem);
+  border-radius: var(--sf-radius--surface, 0.5rem);
+  background: var(--sf-surface-container, transparent);
+}
+
+.product-block-name--accent {
+  border-inline-start: 0.25rem solid var(--sf-primary, currentColor);
+}
+
+.product-block-name-title {
+  margin: 0 0 var(--sf-space-2, 0.5rem);
+}

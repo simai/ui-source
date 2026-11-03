@@ -1,0 +1,40 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "block-default",
+  "summary": "The title alone, the default tone.",
+  "covers": [
+    "product.block-name"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "b",
+              "type": "product.block-name",
+              "data": {
+                "title": "Title"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><section class=\"product-block-name product-block-name--neutral\" data-sf-composition-id=\"b\"><h3 class=\"product-block-name-title\">Title</h3></section></article>",
+    "diagnostics": [],
+    "assets": [
+      "product/block-name"
+    ]
+  }
+}

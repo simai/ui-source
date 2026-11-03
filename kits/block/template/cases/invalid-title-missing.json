@@ -1,0 +1,40 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-title-missing",
+  "summary": "The title is required.",
+  "covers": [
+    "product.block-name"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "b",
+              "type": "product.block-name"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "schema_required",
+        "path": "$.root.slots.default[0].data.title"
+      }
+    ],
+    "assets": []
+  }
+}
