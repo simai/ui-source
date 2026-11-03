@@ -22,6 +22,8 @@
 //     the look of the button beside it (no underline), reached by Tab and
 //     followed by Enter; disabled, the link has no href, says aria-disabled
 //     and is not reached; an unsafe scheme draws a button;
+//   - the section's padding alone sets the inset: its first block (an h2)
+//     starts at the padding, its last block ends at it (core.styles 1.2.0);
 //   - G-39: a lead paragraph is the large body text (20 px at the desktop,
 //     the prototype's 19, 16 on the phone) in the variant ink.
 import {createServer} from 'node:http';
@@ -127,6 +129,8 @@ try {
           rhythm: {heading: node('first-h').getBoundingClientRect().bottom, text: node('first-p').getBoundingClientRect().top, box: node('box').getBoundingClientRect().bottom, button: node('button').getBoundingClientRect().top},
           lead: {size: parseFloat(style('lead').fontSize), line: parseFloat(style('lead').lineHeight), color: style('lead').color, body: parseFloat(style('first-p').fontSize), bodyColor: style('first-p').color},
           firstTop: node('first-h').getBoundingClientRect().top - node('first').getBoundingClientRect().top,
+          lastBottom: node('first').getBoundingClientRect().bottom - node('lead').getBoundingClientRect().bottom,
+          gridTops: [1, 2, 3].map((n) => node(`card-${n}`).parentElement.getBoundingClientRect().top),
           link: (() => {
             const anchor = node('link').querySelector('.sf-button');
             const button = node('button').querySelector('.sf-button');
@@ -183,6 +187,9 @@ try {
       check('a heading and the text after it stand space-3 apart', near(m.rhythm.text - m.rhythm.heading, m.space3), {gap: m.rhythm.text - m.rhythm.heading, space3: m.space3});
       check('a container and the block after it stand space-3 apart', near(m.rhythm.button - m.rhythm.box, m.space3), {gap: m.rhythm.button - m.rhythm.box, space3: m.space3});
       if (width === 1440) check('the rhythm is the prototype\'s 24 px at the desktop', near(m.space3, 24), {space3: m.space3});
+      // The inset is the padding alone: no heading margin on top, no paragraph margin below.
+      check('the first block (h2) starts at the section\'s padding', near(m.firstTop, m.first.padTop) && near(m.firstTop, m.space8), {firstTop: m.firstTop, padTop: m.first.padTop, space8: m.space8});
+      check('the last block ends at the section\'s padding', near(m.lastBottom, m.first.padBottom), {lastBottom: m.lastBottom, padBottom: m.first.padBottom});
       // No second gutter: the container's text is exactly as wide as the section's own.
       check('a container in a section is as wide as the section\'s text on the phone', width >= 1024 || near(m.box.width, m.sectionText.width), {box: m.box.width, section: m.sectionText.width});
       if (width === 390) check('the phone measure is 366 px', near(m.box.width, 366), {box: m.box.width});

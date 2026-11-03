@@ -79,6 +79,27 @@
     }
 }
 
+// The content part of a section or a container (layout.section 1.2.0,
+// layout.container; visual parity 2026-11-04): the part's padding alone sets
+// the inset. Its first block has no block-start margin and its last no
+// block-end margin -- a heading's own margin used to add to the section's
+// padding (an h2 stood 32 px lower than the prototype's). Between the blocks
+// the rhythm (space-y-*, a utility) rules. In a grid every cell starts at
+// its row: the grid's gap is the space. A utility on a block still wins.
+@layer sf.components {
+    :where([data-sf-composition-part="content"]) > :first-child {
+        margin-block-start: 0;
+    }
+
+    :where([data-sf-composition-part="content"]) > :last-child {
+        margin-block-end: 0;
+    }
+
+    :where([data-sf-composition-part="content"].grid) > * {
+        margin-block: 0;
+    }
+}
+
 // A routing scope is a non-visual common parent; it must not change layout.
 @layer sf.components {
     sf-composition-scope {

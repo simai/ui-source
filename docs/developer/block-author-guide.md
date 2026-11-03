@@ -453,7 +453,10 @@ content is a grid and its gap rules instead. A frame that prints `container`
 inside another container's frame, at any depth, also prints `container-flush`:
 a container in a section has no second gutter, so on the phone its text is as
 wide as the section's own. A `container-breakout` node leaves its container,
-and its frame keeps the gutter.
+and its frame keeps the gutter. The content part's padding alone sets the
+inset: its first block has no block-start margin and its last no block-end
+margin (core.styles 1.2.0), so a heading at the top of a section starts at
+the section's padding; in a grid every cell starts at its row.
 
 `element.button` takes `data.href`: the button is then a link (`sf-button`
 1.4.0 draws an `<a>` with the button's look). Its address follows the content
