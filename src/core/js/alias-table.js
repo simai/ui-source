@@ -21,6 +21,12 @@
 //
 // A row that does not hold is refused with a reason, never thrown: the rest of
 // the table still installs, and the refusals are reported.
+//
+// A `tag` row renames the element itself ({from: 'sf-close', to:
+// 'sf-button-close', kind: 'tag', since, remove_after}). It is not installed on
+// an element: the Smart base defines the old tag as a subclass when it defines
+// the new one (core/js/tag-aliases.js), so readAliasTable leaves it out and
+// readTagAliases reads it.
 
 export const ALIAS_KINDS = Object.freeze(['event', 'setting', 'attribute', 'action', 'value']);
 export const ALIAS_MODES = Object.freeze(['same-detail', 'detail-adds', 'split']);
@@ -48,6 +54,10 @@ export function aliasExpired(row, now = Date.now()) {
 export function propertyOf(attribute) {
   return String(attribute).replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
 }
+
+export const TAG_ALIAS_KIND = 'tag';
+// A custom element name of the Framework or of a package: lower case, a hyphen.
+const ELEMENT = /^[a-z][a-z0-9]*-[a-z0-9-]+$/u;
 
 function primitive(value) {
   return value === null || ['string', 'number', 'boolean'].includes(typeof value);
@@ -114,6 +124,7 @@ export function readAliasTable(table, {tag = ''} = {}) {
   const refuse = (index, row, reason) => refused.push({index, from: row?.from ?? null, to: row?.to ?? null, kind: row?.kind ?? null, reason});
   const seen = new Map();
   list.forEach((row, index) => {
+    if (row?.kind === TAG_ALIAS_KIND) return;
     const reason = checkRow(row);
     if (reason) return refuse(index, row, reason);
     const one = normal(row, owner);
@@ -144,4 +155,34 @@ export function readAliasTable(table, {tag = ''} = {}) {
   }
   refused.sort((a, b) => a.index - b.index);
   return {tag: owner, rows: kept, refused};
+}
+
+// The `tag` rows of a table: -> {tag, rows: [{from, to, since, remove_after}],
+// refused: [{index, from, to, reason}]}. A row renames the table's own tag:
+// its `to` is that tag when the table names one.
+export function readTagAliases(table, {tag = ''} = {}) {
+  const list = Array.isArray(table) ? table : table?.aliases;
+  const owner = (!Array.isArray(table) && typeof table?.component === 'string' && table.component)
+    || (!Array.isArray(table) && typeof table?.tag === 'string' && table.tag) || tag || '';
+  const rows = [];
+  const refused = [];
+  if (!Array.isArray(list)) return {tag: owner, rows, refused};
+  const seen = new Set();
+  list.forEach((row, index) => {
+    if (row?.kind !== TAG_ALIAS_KIND) return;
+    const refuse = (reason) => refused.push({index, from: row.from ?? null, to: row.to ?? null, reason});
+    if (typeof row.from !== 'string' || !ELEMENT.test(row.from)) return refuse('bad-old-tag');
+    if (typeof row.to !== 'string' || !ELEMENT.test(row.to)) return refuse('bad-new-tag');
+    if (row.from === row.to) return refuse('same-name');
+    if (owner && row.to !== owner) return refuse('not-this-tag');
+    const start = dateOf(row.since);
+    const end = dateOf(row.remove_after);
+    if (Number.isNaN(start)) return refuse('bad-since');
+    if (Number.isNaN(end)) return refuse('bad-remove-after');
+    if (end < start) return refuse('remove-after-before-since');
+    if (seen.has(row.from)) return refuse('duplicate');
+    seen.add(row.from);
+    rows.push(Object.freeze({from: row.from, to: row.to, since: row.since, remove_after: row.remove_after}));
+  });
+  return {tag: owner, rows, refused};
 }

@@ -2,6 +2,9 @@ import './public-path';
 import './internal.js';
 import './core-modules.js';
 import './aliases.js';
+// Dated tag aliases: SF.tags answers for a renamed element's old names
+// from the first script on (core/js/tag-aliases.js).
+import './tag-aliases.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';

@@ -1,6 +1,10 @@
 import { noteDeprecated } from './deprecations.js';
 import './internal.js';
 import { installAliases } from './aliases.js';
+import { defineTagAliases } from './tag-aliases.js';
+// The renamed-tag helpers, from the shared runtime: a bundle that finds an
+// element by a tag with dated aliases asks for every name through these.
+export { canonicalTag, isTag, tagNames, tagSelector } from './tag-aliases.js';
 import { upgradeOwnProperties } from './upgrade-properties.js';
 import { connectPort as connectHostPort, portOf } from './host-port.js';
 import { html, nothing, render } from "lit";
@@ -518,6 +522,10 @@ class SfBaseElement extends HTMLElement {
     }
 
     queueDefinition(resolvedTagName, this);
+    // Dated tag aliases (the component's aliases.json, kind "tag"): each old
+    // tag is a subclass defined in the same batch, so markup with either name
+    // upgrades together (core/js/tag-aliases.js).
+    defineTagAliases(this, resolvedTagName, { define: queueDefinition });
     return this;
   }
 

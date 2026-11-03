@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -143,6 +143,8 @@
     "src/core/js/sanitize.js",
     "src/core/js/smart-base.js",
     "src/core/js/stableHash.js",
+    "src/core/js/tag-aliases.generated.js",
+    "src/core/js/tag-aliases.js",
     "src/core/js/tailwind-map.js",
     "src/core/js/template-utilities.generated.json",
     "src/core/js/theme-palette.js",
@@ -164,7 +166,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "4846e6a48cb4e583854405268016f1265bac5a0b89d986ed2c64e1a0a9a693af",
+  "content_sha256": "e5f5d4c8dc16f95a6f590e68fd05f750345b7c5b1c35dda6ae2c5512067ebb47",
   "dependencies": [
     {
       "id": "core.styles",

@@ -6,7 +6,8 @@
 // what changed, what to write instead and whether the rewrite is mechanical.
 //
 // Without --apply it only reports. With --apply it rewrites what is mechanical
-// (an attribute, a value, an event name, a class, a token, a utility) and leaves
+// (an attribute, a value, an event name, a class, a token, a utility, an
+// element's tag in markup and in a sheet) and leaves
 // the rest as a list of manual items, each with its record's instruction and a
 // before/after example: that list is the brief for a person or an AI. --since
 // limits the run to records deprecated on or after a date, e.g. the date of the
@@ -132,6 +133,9 @@ for (const record of journal.records) {
   }
 }
 
+const STYLE_FILES = /\.(?:css|scss|sass|less)$/u;
+const SCRIPT_FILES = /\.(?:m?js|cjs|ts|tsx|jsx|vue|php)$/u;
+
 function rulesFor(record) {
   const rules = [];
   // A class or a token is matched by its name alone, whatever component the item
@@ -180,6 +184,18 @@ function rulesFor(record) {
       const [before] = item.from.split('*');
       const [after] = (item.to || '').split('*');
       rules.push({item, mechanical: mechanical || Boolean(item.to), pattern: new RegExp(`(?<![\\w-])${escape(before)}([\\w/.-]+)`, 'gu'), replace: (match, rest) => `${after}${rest}`});
+    } else if (record.kind === 'tag') {
+      // A renamed element (rename-tag). Markup names it as an element, and
+      // that is mechanical: <sf-close ...> and </sf-close>.
+      const old = escape(item.from);
+      rules.push({item, mechanical, pattern: new RegExp(`<(/?)${old}(?![\\w-])`, 'gu'), replace: (match, slash) => `<${slash}${item.to}`});
+      // A sheet names it as a type selector; a class (.sf-close), a custom
+      // property (--sf-close-color) or an id is another name and is left.
+      rules.push({item, mechanical, files: STYLE_FILES, pattern: new RegExp(`(?<![\\w.#$@%-])${old}(?![\\w-])`, 'gu'), replace: () => item.to});
+      // A script names it in a string -- a selector, createElement, a
+      // localName comparison -- or names a class of the same spelling, so a
+      // person decides (the Framework's own code asks SF.tags / tagSelector).
+      rules.push({item, mechanical: false, files: SCRIPT_FILES, pattern: new RegExp(`(['"\`])(?:[^'"\`\\n]*[\\s>+~,(])?${old}(?![\\w-])`, 'gu')});
     } else if (record.kind === 'component' || record.kind === 'option' || record.kind === 'utility') {
       const word = item.from.split(' ')[0];
       rules.push({item, mechanical: false, pattern: new RegExp(`(?<![\\w-])${escape(word)}(?![\\w-])`, 'gu')});
@@ -289,6 +305,7 @@ for (const file of files) {
       continue;
     }
     for (const rule of rulesFor(record)) {
+      if (rule.files && !rule.files.test(file)) continue;
       for (const match of source.matchAll(rule.pattern)) {
         const line = source.slice(0, match.index).split('\n').length;
         report.push({file: relative(resolve(project), file), line, record: record.id, stage: record.stage, from: rule.item.from, to: rule.item.to ?? null, mechanical: rule.mechanical});

@@ -323,6 +323,20 @@
       "summary": "Old names still accepted and what replaced them, as the change journal declares them."
     },
     {
+      "name": "SF.tags",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Dated tag aliases: a Smart component renamed to a new tag keeps its old tag until remove_after. names(tag) lists the tag and its open old names, selector(tag) is a selector matching all of them, is(element, tag) tests an element, canonical(tag) gives the current name of an old one, list() every open alias.",
+      "members": [
+        "names",
+        "selector",
+        "is",
+        "canonical",
+        "list"
+      ]
+    },
+    {
       "name": "SF.aliases",
       "status": "public",
       "kind": "object",

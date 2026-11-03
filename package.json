@@ -52,7 +52,10 @@
     "test:linkage": "node --test tests/linkage.contract.test.mjs",
     "component-files:check": "node scripts/generate-component-files.mjs --check",
     "component-files:report": "node scripts/report-component-files.mjs --package ../ui-pro/components",
-    "test:component-files": "node --test tests/component-files-generated.contract.test.mjs"
+    "test:component-files": "node --test tests/component-files-generated.contract.test.mjs",
+    "tag-aliases:write": "node scripts/tag-alias-table.mjs --write",
+    "tag-aliases:check": "node scripts/tag-alias-table.mjs --check",
+    "test:tag-aliases": "node --test tests/tag-aliases.contract.test.mjs"
   },
   "author": "Rim Zabarov",
   "license": "Apache-2.0",

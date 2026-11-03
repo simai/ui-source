@@ -38,6 +38,40 @@ date the policy did not produce, a deleted record, and a compat record past
 its day. `tests/browser/change-lifecycle.browser.mjs` holds the same coverage
 for the aliases the built classes declare, and the runtime note.
 
+## Renaming a tag
+
+A Smart component that takes a new tag (the naming decision of 2026-11-02:
+`sf-[set]-<block>[-<variant>]`) keeps the old tag as a dated alias:
+
+- a row `{"from": "<old>", "to": "<new>", "kind": "tag", "since", "remove_after"}`
+  in the component's `aliases` (component.json, generated into aliases.json),
+  and a journal record `kind: tag`, `rewrite: rename-tag`;
+- the Smart base defines the old tag as a subclass of the new tag's class, in
+  the same definition batch, and the Loader's rule lists both tags, so markup
+  with the old tag alone loads and draws the component
+  (`src/core/js/tag-aliases.js`). The first old-tag element on a page is noted
+  in `SF.deprecations` and named once on the console with the new tag and the
+  date;
+- a sheet selector that names the tag names both, `:is(<new>, <old>)`, in
+  source, for as long as the alias lives;
+- code that finds the element by name asks `tagSelector('<new>')` or
+  `isTag(element, '<new>')` from the Smart base (`SF.tags` outside a bundle);
+- events whose name carries the tag (`<old>-<verb>`) are renamed with it and
+  keep their old names as event aliases;
+- the folder takes the new tag's name, the id follows it (`smart.<new folder>`),
+  and the old distribution path, bundle name and id are a second record
+  (`path-smart-<old>-to-<new>`), with a forwarding script and a Loader forward,
+  as for any moved folder.
+
+`node scripts/rename-smart-tag.mjs <old> <new> --previous <inventory>` does all
+of it and lists what it cannot decide (a script string that may be a class of
+the same spelling). `tests/tag-aliases.contract.test.mjs` holds every row to
+its record, its dates, its definition, its rule and manifest, its sheet
+coverage, and no source naming the old tag as a tag;
+`tests/browser/tag-aliases.browser.mjs` proves on a build that old-tag markup
+loads, draws as the new tag does and is noted once. On the sweep day
+`node scripts/rename-smart-tag.mjs --sweep <old>` takes it out again.
+
 ## Moving a component to a package
 
 A component that leaves the free Framework for a component package

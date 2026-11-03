@@ -73,7 +73,7 @@ const same = (a, b) => canon(a) === canon(b);
 
 export const ALIAS_ROW_ORDER = ['from', 'to', 'kind', 'setting', 'component', 'since', 'remove_after', 'mode', 'cancelable', 'manifest', 'section', 'note', 'when'];
 // Fields of a row that only the generators read (never shipped to the shim).
-const ALIAS_AUTHOR_ONLY = new Set(['summary', 'values', 'default', 'signature']);
+const ALIAS_AUTHOR_ONLY = new Set(['summary', 'values', 'default', 'signature', 'since-version']);
 
 export function aliasRows(component) {
   const a = component.aliases;
@@ -112,9 +112,16 @@ export function genAliases(component) {
 
 // --------------------------------------------------------------------- rule.js
 
+// The old tags a component still answers to (aliases rows of kind "tag"):
+// the Loader's rule lists them after the tag, so markup with an old tag alone
+// loads the bundle that defines both (core/js/tag-aliases.js).
+export function tagAliasesOf(component) {
+  return aliasRows(component).filter((row) => row.kind === 'tag' && row.to === component.tag);
+}
+
 export function ruleObject(component, folderFiles = []) {
   const extra = component['x-rule'] ?? {};
-  const rule = {tags: [component.tag], type: 'smart', mode: 'smart', js: true};
+  const rule = {tags: [component.tag, ...tagAliasesOf(component).map((row) => row.from)], type: 'smart', mode: 'smart', js: true};
   const hasCss = Boolean(component.styles) || folderFiles.some((file) => file.endsWith('.css') || file.endsWith('.scss'));
   // x-rule.css (phase 1 bridge): true/false as rule.js writes it, null when
   // rule.js names no css although the folder holds a sheet.
@@ -517,10 +524,14 @@ export function genManifest(component, lang, stamp = {}) {
     compatibility: {
       contract_schema: {id: 'https://simai.io/contracts/smart-component-manifest.v2.schema.json', version: 2},
       runtime_pair: stamp.runtime_pair ?? null,
-      aliases: [...(reg.compatibility?.aliases ?? []), ...valueAliases(aliases).map((row) => `${row.setting}=${row.from}`)],
+      // An old tag is written as markup names it, <sf-close>, beside the
+      // setting=value aliases; its deprecation names the version the rename
+      // came with and the new tag.
+      aliases: [...(reg.compatibility?.aliases ?? []), ...valueAliases(aliases).map((row) => `${row.setting}=${row.from}`), ...tagAliasesOf(component).map((row) => `<${row.from}>`)],
       // A deprecation names the component version the alias came with: only
       // when component.json says it (aliases["since-version"]).
-      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : [])],
+      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : []),
+        ...tagAliasesOf(component).map((row) => ({path: `<${row.from}>`, since: row['since-version'] ?? component.version, replacement: `<${row.to}>`}))],
       replacement: reg.compatibility?.replacement ?? null,
       migrations: reg.compatibility?.migrations ?? [],
     },

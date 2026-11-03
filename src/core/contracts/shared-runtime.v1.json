@@ -49,9 +49,11 @@
       "exports": [
         "ALIAS_KINDS",
         "ALIAS_MODES",
+        "TAG_ALIAS_KIND",
         "aliasExpired",
         "propertyOf",
-        "readAliasTable"
+        "readAliasTable",
+        "readTagAliases"
       ]
     },
     "aliases": {
@@ -205,11 +207,15 @@
       "source": "core/js/smart-base.js",
       "exports": [
         "applySmartProps",
+        "canonicalTag",
         "createSmartElement",
         "default",
+        "isTag",
         "normalizeEnum",
         "parseJsonAttribute",
         "smartElement",
+        "tagNames",
+        "tagSelector",
         "toAttributeName",
         "toBoolean",
         "toNumber"
