@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-site-header's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
-  "id": "smart.site-header",
-  "tag": "sf-site-header",
-  "version": "1.2.3",
+  "$comment": "The source of sf-header-site's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
+  "id": "smart.header-site",
+  "tag": "sf-header-site",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -267,7 +267,8 @@
     "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one, so the bar's height a page reads is the internal --sf-site-header--block-size the sheet computes.",
     "words (§11): label, menu-label and close-label default to the language files' runtime words.",
     "version 1.1.0: navigation-align (owner decision by recommendation, 2026-11-01), start (the default, the 1.0 bar) or center, the nav of a Docara-like header. A sheet rule, nothing measured, so the first paint is right without the script: the brand and the end of the bar (the tools; the actions and the tools when there are actions) share the room the nav leaves, each at least its own width, so the nav stands at the bar's true centre while both sides fit and moves aside rather than overlap them; with actions the nav is centred in the room between the brand and the actions. Collapsed, nothing changes: the nav is in the side panel. The same at size 1/2 and 1.",
-    "version 1.2.3: collapse reads its step from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.20.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps."
+    "version 1.2.3: collapse reads its step from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.20.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps.",
+    "version 1.3.0: the tag is sf-header-site (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.header-site and the bundle cl-header-site follow it. sf-site-header stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-header-site, sf-site-header) (change journal tag-sf-site-header-to-sf-header-site, path-smart-site-header-to-header-site)."
   ],
   "x-registry": {
     "capabilities": [
@@ -335,7 +336,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-site-header as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+      "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
       "do_not": [
         "Do not draw a header of your own on a SIMAI site",
         "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",
@@ -346,7 +347,7 @@
         "events",
         "ownership"
       ],
-      "minimal_example": "<sf-site-header><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-site-header>",
+      "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-header-site>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
@@ -361,5 +362,61 @@
       ],
       "focus": "The open panel takes focus (the current page's link, else its first link, else its close button), keeps Tab inside while it is the top layer and gives focus back to the menu button when it closes."
     }
+  },
+  "aliases": {
+    "since": "2026-11-03",
+    "remove-after": "2027-01-01",
+    "rows": [
+      {
+        "from": "sf-site-header",
+        "to": "sf-header-site",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-header-site; sf-site-header is a subclass defined beside it until the date"
+      },
+      {
+        "from": "sf-site-header-open",
+        "to": "sf-header-site-open",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-site-header-opened",
+        "to": "sf-header-site-opened",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-site-header-close",
+        "to": "sf-header-site-close",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-site-header-closed",
+        "to": "sf-header-site-closed",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      }
+    ]
   }
 }

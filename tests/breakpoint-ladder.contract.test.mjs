@@ -60,7 +60,7 @@ test('the script ladder equals the sheet ladder, step for step', async () => {
 });
 
 test('components that switch in script take the step from the script ladder', async () => {
-  for (const file of ['src/smart/contents/index.js', 'src/smart/site-header/index.js', 'src/smart/search/index.js']) {
+  for (const file of ['src/smart/contents/index.js', 'src/smart/header-site/index.js', 'src/smart/search/index.js']) {
     const source = await read(file);
     assert.match(source, /import \{breakpointMedia\} from '\.\.\/\.\.\/core\/js\/breakpoints\.js'/u, file);
     assert.doesNotMatch(source, /'(32|44|60|72|80)rem'/u, `${file} writes no step of its own`);

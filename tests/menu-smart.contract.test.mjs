@@ -276,17 +276,17 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
 // 2026-11-01): the nav at the centre of the bar, a sheet rule so the first
 // paint is centred; tests/browser/menu-navigation.browser.mjs measures it.
 test('site header: navigation-align centres the nav without measuring', () => {
-  const component = JSON.parse(read('src/smart/site-header/component.json'));
+  const component = JSON.parse(read('src/smart/header-site/component.json'));
   const setting = component.settings['navigation-align'];
   assert.deepEqual(setting.values, ['start', 'center']);
   assert.equal(setting.default, 'start');
-  assert.match(read('src/smart/site-header/index.js'), /navigationAlign: this\.navigationAlign,/u);
-  assert.match(read('src/smart/site-header/js/templates/default.js'), /navigationAlign === 'center' \? 'sf-site-header--navigation-center' : ''/u);
-  const headerSheet = read('src/smart/site-header/scss/_smart__site_header.scss');
+  assert.match(read('src/smart/header-site/index.js'), /navigationAlign: this\.navigationAlign,/u);
+  assert.match(read('src/smart/header-site/js/templates/default.js'), /navigationAlign === 'center' \? 'sf-site-header--navigation-center' : ''/u);
+  const headerSheet = read('src/smart/header-site/scss/_smart__site_header.scss');
   assert.match(headerSheet, /\.sf-site-header--navigation-center \.sf-site-header-row:where\(:not\(:has\(\.sf-site-header-actions\)\)\) \{\n  display: grid;\n  grid-template-columns: minmax\(max-content, 1fr\) minmax\(0, max-content\) minmax\(max-content, 1fr\);/u);
   // Collapsed, the bar is a row again whatever the setting says.
   const collapsed = headerSheet.slice(headerSheet.indexOf('@mixin collapsed {'));
   assert.match(collapsed, /^@mixin collapsed \{\n[^\n]*\n  \.sf-site-header-row \{\n    display: flex;\n  \}/u);
   assert.ok(headerSheet.indexOf('@mixin collapsed {') > headerSheet.indexOf('.sf-site-header--navigation-center'));
-  assert.match(read('src/smart/site-header/docs.md'), /navigation-align="center"/u);
+  assert.match(read('src/smart/header-site/docs.md'), /navigation-align="center"/u);
 });

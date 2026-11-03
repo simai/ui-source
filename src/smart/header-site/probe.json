@@ -1,13 +1,13 @@
 {
-  "component": "sf-site-header",
+  "component": "sf-header-site",
   "probe": "sf-site-header against component.json (standard simai.smart-component 1.3.11 §12, §19, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
-      "<sf-site-header id=\"wide\" collapse=\"none\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a id=\"wide-link\" href=\"#framework\">Framework</a> <a href=\"#docara\">Docara</a></nav><a slot=\"actions\" id=\"wide-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"wide-tool\" type=\"button\">Тема</button></sf-site-header>",
-      "<sf-site-header id=\"narrow\" collapse=\"always\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"#framework\">Framework</a> <a id=\"narrow-current\" href=\"#docara\" aria-current=\"page\">Docara</a></nav><a slot=\"actions\" id=\"narrow-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"narrow-tool\" type=\"button\">Тема</button></sf-site-header>",
-      "<div lang=\"en\"><sf-site-header id=\"en\" collapse=\"always\"><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Sections\"><a href=\"#a\">A</a></nav></sf-site-header></div>",
+      "<sf-header-site id=\"wide\" collapse=\"none\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a id=\"wide-link\" href=\"#framework\">Framework</a> <a href=\"#docara\">Docara</a></nav><a slot=\"actions\" id=\"wide-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"wide-tool\" type=\"button\">Тема</button></sf-header-site>",
+      "<sf-header-site id=\"narrow\" collapse=\"always\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"#framework\">Framework</a> <a id=\"narrow-current\" href=\"#docara\" aria-current=\"page\">Docara</a></nav><a slot=\"actions\" id=\"narrow-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"narrow-tool\" type=\"button\">Тема</button></sf-header-site>",
+      "<div lang=\"en\"><sf-header-site id=\"en\" collapse=\"always\"><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Sections\"><a href=\"#a\">A</a></nav></sf-header-site></div>",
       "<main><p>Страница</p></main>"
     ]
   },

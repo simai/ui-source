@@ -1,0 +1,62 @@
+{
+  "$comment": "Dated aliases of sf-header-site, generated from component.json \"aliases\" by scripts/generate-component-files.mjs; read by core/js/alias-table.js and the shim. Do not edit.",
+  "component": "sf-header-site",
+  "since": "2026-11-03",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "sf-site-header",
+      "to": "sf-header-site",
+      "kind": "tag",
+      "component": "sf-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+      "note": "the element is sf-header-site; sf-site-header is a subclass defined beside it until the date"
+    },
+    {
+      "from": "sf-site-header-open",
+      "to": "sf-header-site-open",
+      "kind": "event",
+      "component": "sf-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-site-header-opened",
+      "to": "sf-header-site-opened",
+      "kind": "event",
+      "component": "sf-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-site-header-close",
+      "to": "sf-header-site-close",
+      "kind": "event",
+      "component": "sf-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-site-header-closed",
+      "to": "sf-header-site-closed",
+      "kind": "event",
+      "component": "sf-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.site-header",
+  "component": "smart.header-site",
   "title": "site header reference",
-  "summary": "Deterministic reference fixture for sf-site-header.",
+  "summary": "Deterministic reference fixture for sf-header-site.",
   "locale": "ru",
   "props": {
     "collapse": "lg",

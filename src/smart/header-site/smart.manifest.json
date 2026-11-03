@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.site-header",
-  "version": "1.2.3",
+  "id": "smart.header-site",
+  "version": "1.3.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -22,7 +22,7 @@
     "navigation",
     "i18n"
   ],
-  "custom_element": "sf-site-header",
+  "custom_element": "sf-header-site",
   "templates": [
     "default"
   ],
@@ -145,25 +145,27 @@
     }
   },
   "events": {
-    "sf-site-header-open": {
+    "sf-header-site-open": {
       "summary": "The side panel is about to open: a request a page may cancel",
       "payload": {
         "type": "object",
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-site-header-opened": {
+    "sf-header-site-opened": {
       "summary": "The side panel opened; a page that fills the sheet slot late does it here",
       "payload": {
         "type": "object",
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-site-header-close": {
+    "sf-header-site-close": {
       "summary": "The side panel is about to close, and why: its close button, Escape, a press on the scrim, or the action (a link chosen in the panel and a window widened past the breakpoint say api)",
       "payload": {
         "type": "object",
@@ -182,9 +184,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-site-header-closed": {
+    "sf-header-site-closed": {
       "summary": "The side panel closed, and why",
       "payload": {
         "type": "object",
@@ -203,7 +206,36 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
+    },
+    "sf-site-header-open": {
+      "summary": "Dated alias of sf-header-site-open until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-header-site-open"
+    },
+    "sf-site-header-opened": {
+      "summary": "Dated alias of sf-header-site-opened until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-header-site-opened"
+    },
+    "sf-site-header-close": {
+      "summary": "Dated alias of sf-header-site-close until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-header-site-close"
+    },
+    "sf-site-header-closed": {
+      "summary": "Dated alias of sf-header-site-closed until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-header-site-closed"
     }
   },
   "state": {
@@ -296,8 +328,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-site-header>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-site-header>",
+        "since": "1.3.0",
+        "replacement": "<sf-header-site>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -306,30 +346,30 @@
     "source_revision": "6a9c2b4be8830445e16ef8d01a347591dd18263a",
     "source_artifacts": [
       {
-        "path": "src/smart/site-header/index.js",
-        "sha256": "17415fc37ec8d16d657001079aa03f49140c55405037dca438ef0e80d0746f6f"
+        "path": "src/smart/header-site/index.js",
+        "sha256": "67906d1de34cf22f16e2ae8720907e51629ae1a9bd29f2c0d7c12c1b3ef1080c"
       },
       {
-        "path": "src/smart/site-header/js/templates/default.js",
+        "path": "src/smart/header-site/js/templates/default.js",
         "sha256": "a200e847b9f953517417b6280e2df25d567ac783759057b28db89fe97c829c3e"
       },
       {
-        "path": "src/smart/site-header/scss/_smart__site_header.scss",
+        "path": "src/smart/header-site/scss/_smart__site_header.scss",
         "sha256": "f0e8d7415b23a0a436c5d97c240fe9acb22fb922625837a2255da024a7577ac8"
       },
       {
-        "path": "src/smart/site-header/rule.js",
-        "sha256": "a130787f6b879851d96b2f47bc355958217810fe205c8c1e344d5204c64eadee"
+        "path": "src/smart/header-site/rule.js",
+        "sha256": "526a34e34568159b49c59c1417f4ac81d97d9d546ff43b3e672596abf29d3ea4"
       },
       {
-        "path": "src/smart/site-header/docs.md",
-        "sha256": "2f22632d6b272f60b263aacd2ebbc9b27f918846fb8c1f597fcd419123add881"
+        "path": "src/smart/header-site/docs.md",
+        "sha256": "1d186f597bfddeabddfc2dad2b057172fe5b1fb4dec0a19e5ea9231f070f85f1"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-site-header as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+    "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
     "do_not": [
       "Do not draw a header of your own on a SIMAI site",
       "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",
@@ -340,7 +380,7 @@
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-site-header><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-site-header>",
+    "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-header-site>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

@@ -42,7 +42,7 @@ const PHASE_A = [
   // new in the 1.4 form
   'progress-ring',
   // Made in the 1.4 form from the start (2026-10-28).
-  'site-header',
+  'header-site',
   // Made in the 1.4 form from the start (2026-10-30).
   'search',
   'pager',

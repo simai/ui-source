@@ -181,9 +181,9 @@ const DRAW = {
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   // Collapsed and open, so the side panel is on the stage: its width is the
   // only part that takes --sf-site-header-sheet-inline-size.
-  'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
-    open: '(async () => { const header = document.querySelector("sf-site-header"); await header.updateComplete?.catch?.(() => {}); header.open(); await new Promise((settle) => setTimeout(settle, 200)); })()',
-    html: '<sf-site-header collapse="always"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+  'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/header-site/css/header-site.css'], js: 'header-site',
+    open: '(async () => { const header = document.querySelector("sf-header-site"); await header.updateComplete?.catch?.(() => {}); header.open(); await new Promise((settle) => setTimeout(settle, 200)); })()',
+    html: '<sf-header-site collapse="always"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-header-site>'},
   // The window open with a query, so a title carries its mark: the field and
   // the card take the background, the card the radius, the scrim its colour.
   search: {css: ['icon-buttons', 'icons', 'kbd', 'smart/smart/search/css/search.css'], js: 'search',

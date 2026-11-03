@@ -178,6 +178,12 @@
     "min-width/default",
     "text-overflow/default"
   ],
+  "cl-header-site": [
+    "container/default",
+    "margin/default",
+    "position/default",
+    "width/default"
+  ],
   "cl-help-mark": [
     "display/default"
   ],
@@ -313,12 +319,6 @@
   "cl-search": [
     "display/default",
     "sr-only/default"
-  ],
-  "cl-site-header": [
-    "container/default",
-    "margin/default",
-    "position/default",
-    "width/default"
   ],
   "cl-skeleton": [
     "animation/default",

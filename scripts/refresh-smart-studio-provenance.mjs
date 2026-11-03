@@ -14,7 +14,7 @@ const root = process.cwd();
 // ui-control's ledger as a question for the registry's owner.
 // inputs, icons, buttons, icon-buttons, badges and tags are former distribution paths of Smart elements, forwarding
 // bundles until 2026-12-01 (change journal path-smart-<old>-to-<new>), not elements.
-const serviceDirectories = new Set(['helpers', 'field-renderers', 'inputs', 'icons', 'buttons', 'icon-buttons', 'badges', 'tags', 'close', 'avatars', 'page-header']);
+const serviceDirectories = new Set(['helpers', 'field-renderers', 'inputs', 'icons', 'buttons', 'icon-buttons', 'badges', 'tags', 'close', 'avatars', 'page-header', 'site-header']);
 const runtimeRoot = path.resolve(root, '../ui-smart');
 const uiRoot = path.resolve(root, '../ui');
 

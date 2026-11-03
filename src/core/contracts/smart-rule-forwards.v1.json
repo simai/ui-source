@@ -55,6 +55,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-page-header-to-header-page"
+    },
+    "cl-site-header": {
+      "to": "cl-header-site",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-site-header-to-header-site"
     }
   }
 }

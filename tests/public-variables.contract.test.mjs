@@ -51,7 +51,7 @@ const FOLDERS = {
   // The editors and screens, with their move to standard 1.3.8 (2026-10-27).
   'page-header': 'smart/header-page',
   // The top bar of a SIMAI site (2026-10-28): a sheet of its own.
-  'site-header': 'smart/site-header',
+  'site-header': 'smart/header-site',
   // The site search window (2026-10-30): a sheet of its own.
   search: 'smart/search',
   // Neighbouring pages and steps (2026-10-30): a sheet of its own.

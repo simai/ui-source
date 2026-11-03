@@ -25,7 +25,7 @@ const page = ({size, align, appearance}) => `<!doctype html><html lang="ru"><hea
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0">
-<sf-site-header id="h" size="${size}"${align ? ` navigation-align="${align}"` : ''}>
+<sf-header-site id="h" size="${size}"${align ? ` navigation-align="${align}"` : ''}>
   <a slot="brand" id="brand" href="/gallery/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI Effects</span></a>
   <sf-menu id="m" orientation="horizontal" collapse="none" current-from-location${appearance ? ` appearance="${appearance}"` : ''}>
     <nav aria-label="Разделы"><ul>
@@ -35,7 +35,7 @@ const page = ({size, align, appearance}) => `<!doctype html><html lang="ru"><hea
     </ul></nav>
   </sf-menu>
   <button slot="tools" id="tool" type="button">Тема</button>
-</sf-site-header>
+</sf-header-site>
 <main><p>Страница</p></main>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};

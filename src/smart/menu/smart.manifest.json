@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -556,7 +556,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "c018a6487294ca9a2975a72544ed4e112dc1e88d8fc52fd7cb75dcf30c6d1ad5"
+        "sha256": "2bb6f87ffa2acb515191d9dab46aa05a34925a872ca01425fcfd97a070b67a63"
       }
     ],
     "generated_runtime": []

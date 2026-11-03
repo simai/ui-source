@@ -97,7 +97,7 @@
 Ветки, панели строки, кнопка «Меню» и клавиатура — те же, что у `default`.
 
 ```html
-<sf-site-header navigation-align="center">
+<sf-header-site navigation-align="center">
   <a slot="brand" href="/">SIMAI</a>
   <sf-menu orientation="horizontal" appearance="navigation" collapse="none" current-from-location>
     <nav aria-label="Разделы">
@@ -108,7 +108,7 @@
       </ul>
     </nav>
   </sf-menu>
-</sf-site-header>
+</sf-header-site>
 ```
 
 Та же навигация в боковой панели — колонкой:

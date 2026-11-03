@@ -295,7 +295,7 @@ test('a layer that locks the page and brings no lock takes the default one, one 
 test('the components keep one list of what takes focus, and no lock or outside listener of their own', async () => {
   const stack = await modalBundle;
   assert.match(stack.FOCUSABLE, /\[contenteditable="true"\]/);
-  for (const path of ['src/smart/drawer/index.js', 'src/smart/site-header/index.js', 'src/smart/search/index.js', 'src/core/js/workspace.js']) {
+  for (const path of ['src/smart/drawer/index.js', 'src/smart/header-site/index.js', 'src/smart/search/index.js', 'src/core/js/workspace.js']) {
     const code = await read(path);
     assert.doesNotMatch(code, /const FOCUSABLE(_SELECTOR)? = /, `${path} keeps a list of its own`);
     assert.doesNotMatch(code, /^\s+lockPage\(/mu, `${path} writes a page lock of its own`);

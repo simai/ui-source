@@ -1031,6 +1031,48 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive",
+        "navigation",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-header-site",
+      "id": "smart.header-site",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/header-site/smart.manifest.json",
+      "manifest_sha256": "7a4182bfbb84ae22e625c03053ea5d3af6c185aa0ed735ff00af10cb280aedea",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
+      "tags": [
+        "site-header",
+        "header",
+        "navigation",
+        "banner"
+      ],
+      "title": "Site header"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "interaction",
         "keyboard",
         "responsive"
@@ -1427,7 +1469,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "f891d2c9503934984fd123e8fa2d05fc635cb397ca06cda2e1bbffe89275d021",
+      "manifest_sha256": "261572c9f909e893c771d091261a24d2d27170c81150ee3392dfdfacf80b2160",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2025,48 +2067,6 @@
         "dialog"
       ],
       "title": "Site search"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "interaction",
-        "keyboard",
-        "theme",
-        "responsive",
-        "navigation",
-        "i18n"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "smart.icon",
-          "smart.icon-button"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-site-header",
-      "id": "smart.site-header",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/site-header/smart.manifest.json",
-      "manifest_sha256": "01a2d3865d9896c957297fadba09748d247c58cc292786442c6a7516a958fa52",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
-      "tags": [
-        "site-header",
-        "header",
-        "navigation",
-        "banner"
-      ],
-      "title": "Site header"
     },
     {
       "backend_adapters": [],

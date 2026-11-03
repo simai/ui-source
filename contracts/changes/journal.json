@@ -3735,6 +3735,87 @@
       },
       "owner": "ui-source",
       "source": "src/smart/page-header/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/header-page/component.json"
+    },
+    {
+      "id": "tag-sf-site-header-to-sf-header-site",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-site-header is sf-header-site (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-header-site's class, the Loader's rule lists it, the Framework's sheets match :is(sf-header-site, sf-site-header), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-site-header-open, sf-site-header-opened, sf-site-header-close, sf-site-header-closed).",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "sf-site-header",
+          "to": "sf-header-site"
+        },
+        {
+          "component": "sf-header-site",
+          "from": "sf-site-header-open",
+          "to": "sf-header-site-open"
+        },
+        {
+          "component": "sf-header-site",
+          "from": "sf-site-header-opened",
+          "to": "sf-header-site-opened"
+        },
+        {
+          "component": "sf-header-site",
+          "from": "sf-site-header-close",
+          "to": "sf-header-site-close"
+        },
+        {
+          "component": "sf-header-site",
+          "from": "sf-site-header-closed",
+          "to": "sf-header-site-closed"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-site-header></sf-site-header>",
+        "after": "<sf-header-site></sf-header-site>"
+      },
+      "manual": "Write <sf-header-site> for <sf-site-header> in markup and sf-header-site for sf-site-header in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-header-site, or both names through SF.tags.selector('sf-header-site') while the alias lives; a class or a custom property spelled like the old tag (.sf-site-header, --sf-site-header-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/header-site/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-site-header-to-header-site",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-header-site is served from smart/header-site/ since its folder took the new tag's name: js/header-site.js, loader bundle cl-header-site. The old path keeps working until remove_after: smart/site-header/js/site-header.js is a forwarding script that notes the path in SF.deprecations and loads smart/header-site/js/header-site.js, the Loader forwards the bundle name cl-site-header to cl-header-site (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.site-header is a dated alias of smart.header-site, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "smart/site-header/js/site-header.js",
+          "to": "smart/header-site/js/header-site.js",
+          "match": "smart/site-header/js/site-header(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-site-header",
+          "to": "cl-header-site",
+          "match": "['\"]cl-site-header['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.site-header",
+          "to": "smart.header-site",
+          "match": "['\"]smart\\.site-header['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/header-site/ for smart/site-header/ and header-site for site-header in the file names (js/header-site.js, js/header-site.min.js); in a product rule's relation write cl-header-site for cl-site-header, and in a manifest or a package contract smart.header-site for smart.site-header. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/site-header/js/site-header.js\"></script>",
+        "after": "<script src=\"/distr/smart/header-site/js/header-site.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/site-header/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/header-site/component.json"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Smart Site Header
 
-`<sf-site-header>` — верхняя полоса сайта SIMAI: бренд, разделы, ссылки и
+`<sf-header-site>` — верхняя полоса сайта SIMAI: бренд, разделы, ссылки и
 инструменты в одну строку по ширине контейнера. На узком экране разделы и
 ссылки уходят в боковую панель, которую открывает кнопка меню. Одна шапка для
 всех сайтов SIMAI: каталога эффектов, сайтов документации на Docara и
@@ -10,7 +10,7 @@
 его разметка в слотах, нарисованная компонентами SIMAI Framework.
 
 ```html
-<sf-site-header>
+<sf-header-site>
   <a slot="brand" href="/"><svg …></svg><span>SIMAI</span></a>
   <nav aria-label="Разделы">
     <a href="/framework/">Framework</a>
@@ -18,7 +18,7 @@
   </nav>
   <a slot="actions" href="https://github.com/simai">GitHub</a>
   <sf-button-group slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
-</sf-site-header>
+</sf-header-site>
 ```
 
 ## Слоты
@@ -79,7 +79,7 @@
 текущая страница — серая плашка.
 
 ```html
-<sf-site-header size="1/2" navigation-align="center">
+<sf-header-site size="1/2" navigation-align="center">
   <a slot="brand" href="/"><svg …></svg><span>SIMAI Effects</span></a>
   <sf-menu orientation="horizontal" appearance="navigation" collapse="none" current-from-location>
     <nav aria-label="Разделы">
@@ -91,7 +91,7 @@
     </nav>
   </sf-menu>
   <sf-button-group slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
-</sf-site-header>
+</sf-header-site>
 ```
 
 ## Клавиатура и экранный диктор

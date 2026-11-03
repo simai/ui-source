@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// sf-site-header on the built bytes, at a desktop and a phone width: wide, the
+// sf-header-site on the built bytes, at a desktop and a phone width: wide, the
 // brand, the nav and the tools stand in the bar and the menu button is not
 // shown; at 375 px the nav and the actions leave the bar, the menu button opens
 // them as a side panel (aria-expanded true), Escape closes it and gives focus
@@ -18,7 +18,7 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body>
-<sf-site-header id="h">
+<sf-header-site id="h">
   <a slot="brand" id="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a>
   <nav aria-label="Разделы" id="nav">
     <a id="link-a" href="#framework">Framework</a>
@@ -26,7 +26,7 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
   </nav>
   <a slot="actions" id="action" href="#github">GitHub</a>
   <button slot="tools" id="tool" type="button">Тема</button>
-</sf-site-header>
+</sf-header-site>
 <main><p>Страница</p></main>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
@@ -61,7 +61,7 @@ try {
   {
     const tab = await browser.newPage({viewport: {width: 1280, height: 800}});
     await tab.goto(`http://127.0.0.1:${server.address().port}/page`);
-    await tab.waitForFunction(() => customElements.get('sf-site-header') && document.querySelector('#h > header.sf-site-header'), null, {timeout: 15000})
+    await tab.waitForFunction(() => customElements.get('sf-header-site') && document.querySelector('#h > header.sf-site-header'), null, {timeout: 15000})
       .catch(() => failures.push('1280: the header never drew'));
     const wide = {
       brand: await shown(tab, '#brand'),
@@ -92,7 +92,7 @@ try {
   {
     const tab = await browser.newPage({viewport: {width: 375, height: 800}});
     await tab.goto(`http://127.0.0.1:${server.address().port}/page`);
-    await tab.waitForFunction(() => customElements.get('sf-site-header') && document.querySelector('#h .sf-site-header-menu-button button'), null, {timeout: 15000})
+    await tab.waitForFunction(() => customElements.get('sf-header-site') && document.querySelector('#h .sf-site-header-menu-button button'), null, {timeout: 15000})
       .catch(() => failures.push('375: the menu button never drew'));
     const closed = {
       brand: await shown(tab, '#brand'),
