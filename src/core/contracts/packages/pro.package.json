@@ -24,12 +24,12 @@
         "component.inputs",
         "smart.badge",
         "smart.button",
-        "smart.context-menu",
         "smart.dropdown",
         "smart.empty-state",
         "smart.icon",
         "smart.icon-button",
         "smart.input",
+        "smart.menu-context",
         "smart.profile-picker",
         "smart.resizer",
         "smart.sortable"
@@ -63,8 +63,8 @@
       "rule_name": "cl-chat-interlocutor",
       "folder": "chat-interlocutor",
       "requires": [
-        "smart.context-menu",
         "smart.icon",
+        "smart.menu-context",
         "utility.sr-only"
       ]
     },
@@ -80,8 +80,8 @@
         "smart.avatar",
         "smart.badge",
         "smart.change-confirm",
-        "smart.context-menu",
-        "smart.icon"
+        "smart.icon",
+        "smart.menu-context"
       ]
     },
     {
@@ -99,11 +99,11 @@
         "smart.chat-composer",
         "smart.chat-interlocutor",
         "smart.chat-message",
-        "smart.context-menu",
         "smart.empty-state",
         "smart.icon",
         "smart.input",
         "smart.input-lookup",
+        "smart.menu-context",
         "smart.message-log",
         "smart.progress-bar",
         "smart.thread-list"
@@ -116,13 +116,13 @@
       "folder": "content-editor",
       "requires": [
         "smart.button",
-        "smart.context-menu",
         "smart.dropdown",
         "smart.editor-inline",
         "smart.file-upload",
         "smart.icon",
         "smart.icon-button",
         "smart.input",
+        "smart.menu-context",
         "smart.popover",
         "smart.progress-bar",
         "smart.switch"
@@ -139,7 +139,6 @@
         "smart.badge",
         "smart.button",
         "smart.checkbox",
-        "smart.context-menu",
         "smart.dropdown",
         "smart.empty-state",
         "smart.file-preview",
@@ -149,6 +148,7 @@
         "smart.input-country",
         "smart.input-date",
         "smart.list-item",
+        "smart.menu-context",
         "smart.modal",
         "smart.pagination",
         "smart.radio",
@@ -196,13 +196,13 @@
         "component.accordion",
         "smart.breadcrumbs",
         "smart.button",
-        "smart.context-menu",
         "smart.dropdown",
         "smart.icon",
         "smart.icon-button",
         "smart.input",
         "smart.input-image",
         "smart.input-textarea",
+        "smart.menu-context",
         "smart.sortable",
         "smart.switch",
         "smart.tabs"
@@ -215,11 +215,11 @@
       "folder": "mail-letters",
       "requires": [
         "smart.button",
-        "smart.context-menu",
         "smart.dropdown",
         "smart.empty-state",
         "smart.icon-button",
-        "smart.input"
+        "smart.input",
+        "smart.menu-context"
       ]
     },
     {
@@ -242,10 +242,10 @@
       "folder": "mail-structure",
       "requires": [
         "smart.button",
-        "smart.context-menu",
         "smart.empty-state",
         "smart.icon",
         "smart.icon-button",
+        "smart.menu-context",
         "smart.sortable"
       ]
     },
@@ -313,8 +313,8 @@
       "requires": [
         "smart.avatar",
         "smart.badge",
-        "smart.context-menu",
         "smart.icon",
+        "smart.menu-context",
         "utility.sr-only"
       ]
     }

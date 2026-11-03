@@ -6,6 +6,7 @@ export default Object.freeze([
   Object.freeze({from: 'sf-code-input', to: 'sf-input-code', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-color', to: 'sf-input-color', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-composition-overlay', to: 'sf-editor-overlay', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-context-menu', to: 'sf-menu-context', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-copy-button', to: 'sf-button-copy', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-country-code', to: 'sf-input-country', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-datepicker', to: 'sf-input-date', since: '2026-11-03', remove_after: '2027-01-01'}),

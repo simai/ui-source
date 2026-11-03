@@ -3,10 +3,10 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {URL} from 'node:url';
 
-const manifest = JSON.parse(readFileSync(new URL('../src/smart/context-menu/smart.manifest.json', import.meta.url)));
-const fixture = JSON.parse(readFileSync(new URL('../src/smart/context-menu/studio.fixture.json', import.meta.url)));
+const manifest = JSON.parse(readFileSync(new URL('../src/smart/menu-context/smart.manifest.json', import.meta.url)));
+const fixture = JSON.parse(readFileSync(new URL('../src/smart/menu-context/studio.fixture.json', import.meta.url)));
 const ordinaryDocs = readFileSync(new URL('../src/component/context-menu/docs/docs.md', import.meta.url), 'utf8');
-const smartDocs = readFileSync(new URL('../src/smart/context-menu/docs/docs.md', import.meta.url), 'utf8');
+const smartDocs = readFileSync(new URL('../src/smart/menu-context/docs/docs.md', import.meta.url), 'utf8');
 const generator = readFileSync(new URL('../scripts/generate-smart-studio-artifacts.mjs', import.meta.url), 'utf8');
 
 test('Context Menu machine contract matches its array source property and required name', () => {

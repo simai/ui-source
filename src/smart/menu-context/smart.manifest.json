@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.context-menu",
-  "version": "1.5.4",
+  "id": "smart.menu-context",
+  "version": "1.6.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "context-menu"
+    "menu-context"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-context-menu",
+  "custom_element": "sf-menu-context",
   "templates": [
     "default"
   ],
@@ -464,7 +464,7 @@
     }
   },
   "events": {
-    "sf-context-menu-select": {
+    "sf-menu-context-select": {
       "summary": "An entry was chosen, at any depth. Cancel it to keep the menu open.",
       "payload": {
         "type": "object",
@@ -500,9 +500,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-change": {
+    "sf-menu-context-change": {
       "summary": "A person asks to change a value row's setting: the request, sent before the value is written. Raised after select and only when select was not cancelled; a command row raises select alone. Cancelled, nothing changes and the row keeps the value it had -- the view never shows a value its host did not take.",
       "payload": {
         "type": "object",
@@ -531,9 +532,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-changed": {
+    "sf-menu-context-changed": {
       "summary": "The fact of change: the value is written into its entry and the row shows it. A host that only persists what a person did listens to this one and nothing else. reset raises it once for each row it moved; set-value and set-all raise nothing, as a value set from outside is not reported back (standard §8).",
       "payload": {
         "type": "object",
@@ -562,36 +564,40 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-reset": {
+    "sf-menu-context-reset": {
       "summary": "The person asked for the declared values back: the request. Cancelled, the current values stay; otherwise the menu shows the declared ones, says changed once for each row that moved, and waits for the host to persist them, as sf-tabs-settings-reset does.",
       "payload": {
         "type": "object",
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-open": {
+    "sf-menu-context-open": {
       "summary": "Opened through openFor(). Bubbles and is composed; carries no detail.",
       "payload": {
         "type": "object",
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-opened": {
+    "sf-menu-context-opened": {
       "summary": "opened (vocabulary).",
       "payload": {
         "type": "object",
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-close": {
+    "sf-menu-context-close": {
       "summary": "A menu opened through openFor() was closed. Bubbles and is composed; carries no detail.",
       "payload": {
         "type": "object",
@@ -614,9 +620,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-closed": {
+    "sf-menu-context-closed": {
       "summary": "closed (vocabulary).",
       "payload": {
         "type": "object",
@@ -635,9 +642,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-search": {
+    "sf-menu-context-search": {
       "summary": "The query of a search the host answers (search.remote).",
       "payload": {
         "type": "object",
@@ -650,9 +658,10 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
-    "sf-context-menu-tab": {
+    "sf-menu-context-tab": {
       "summary": "A tab of the panel was chosen; the host shows its rows.",
       "payload": {
         "type": "object",
@@ -669,7 +678,78 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
+    },
+    "sf-context-menu-select": {
+      "summary": "Dated alias of sf-menu-context-select until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-select"
+    },
+    "sf-context-menu-change": {
+      "summary": "Dated alias of sf-menu-context-change until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-change"
+    },
+    "sf-context-menu-changed": {
+      "summary": "Dated alias of sf-menu-context-changed until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-changed"
+    },
+    "sf-context-menu-reset": {
+      "summary": "Dated alias of sf-menu-context-reset until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-reset"
+    },
+    "sf-context-menu-open": {
+      "summary": "Dated alias of sf-menu-context-open until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-open"
+    },
+    "sf-context-menu-opened": {
+      "summary": "Dated alias of sf-menu-context-opened until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-opened"
+    },
+    "sf-context-menu-close": {
+      "summary": "Dated alias of sf-menu-context-close until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-close"
+    },
+    "sf-context-menu-closed": {
+      "summary": "Dated alias of sf-menu-context-closed until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-closed"
+    },
+    "sf-context-menu-search": {
+      "summary": "Dated alias of sf-menu-context-search until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-search"
+    },
+    "sf-context-menu-tab": {
+      "summary": "Dated alias of sf-menu-context-tab until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-menu-context-tab"
     }
   },
   "state": {
@@ -772,7 +852,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "<sf-context-menu>"
+    ],
     "deprecations": [
       {
         "path": "position",
@@ -783,6 +865,11 @@
         "path": "tooltip",
         "since": "1.3.0",
         "replacement": "none: a menu has no tail"
+      },
+      {
+        "path": "<sf-context-menu>",
+        "since": "1.6.0",
+        "replacement": "<sf-menu-context>"
       }
     ],
     "replacement": null,
@@ -793,16 +880,16 @@
     "source_revision": "c2b654290ec4475b15f51e869fda4d351ee020b2",
     "source_artifacts": [
       {
-        "path": "src/smart/context-menu/index.js",
-        "sha256": "9ce36d20d6e019eb5cfb41bbcb52bec144bbd9c6e6d36c8a123e864cd1f80252"
+        "path": "src/smart/menu-context/index.js",
+        "sha256": "b669e869d1662a6ffa0420b6e131bb88bd7778e84cdc4e4da35f5b69dcb13f56"
       },
       {
-        "path": "src/smart/context-menu/js/templates/default.js",
+        "path": "src/smart/menu-context/js/templates/default.js",
         "sha256": "0b225058b49262e71ead8b99275cfeccb24a96fb484dcbc2a449691047d1af6b"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "b135d44aebdbcd79a0e3b216e7363f69604600b34c241e58d954d09248f48f34"
+        "sha256": "5b89903de9bd4c62d4b15d9c7d92f13c391925d4589e3d04003a1c8f3830462a"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
@@ -813,7 +900,7 @@
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/context-menu/js/context-menu.js",
+        "path": "smart/menu-context/js/menu-context.js",
         "sha256": "35d99046348af776c3273085fb93a488e6097023d64b65245d34e6334579d3c8"
       }
     ]
@@ -835,7 +922,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<button id=\"more\" type=\"button\">Ещё</button><sf-context-menu id=\"menu\" popup aria-label=\"Действия\"></sf-context-menu><script>menu.entries=[{id:\"rename\",text:\"Переименовать\",icon:\"edit\"},{type:\"separator\"},{id:\"delete\",text:\"Удалить\",icon:\"delete\",danger:true}];more.onclick=()=>menu.toggleFor(more);</script>",
+    "minimal_example": "<button id=\"more\" type=\"button\">Ещё</button><sf-menu-context id=\"menu\" popup aria-label=\"Действия\"></sf-menu-context><script>menu.entries=[{id:\"rename\",text:\"Переименовать\",icon:\"edit\"},{type:\"separator\"},{id:\"delete\",text:\"Удалить\",icon:\"delete\",danger:true}];more.onclick=()=>menu.toggleFor(more);</script>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

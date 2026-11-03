@@ -22,7 +22,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js',
   'smart/smart/sortable/js/sortable.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
 ];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
@@ -74,7 +74,7 @@ try {
     await page.setContent(page_(width === 390 ? 310 : 600));
     for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
     for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-    await page.waitForFunction(() => customElements.get('sf-sortable') && customElements.get('sf-context-menu'), null, {timeout: 8000});
+    await page.waitForFunction(() => customElements.get('sf-sortable') && customElements.get('sf-menu-context'), null, {timeout: 8000});
     await page.evaluate(() => {
       window.intents = [];
       window.inserts = [];
@@ -112,7 +112,7 @@ try {
       return control ? {index: Number(control.dataset.index), shown: control.hasAttribute('data-shown') || control.matches(':focus-within'),
         label: control.querySelector('button').getAttribute('aria-label')} : null;
     });
-    const menuOpen = () => page.evaluate(() => [...document.querySelectorAll('sf-context-menu')].some((menu) => menu.isOpen));
+    const menuOpen = () => page.evaluate(() => [...document.querySelectorAll('sf-menu-context')].some((menu) => menu.isOpen));
 
     // 1. A list without inserter items is the list it was.
     const plain = await page.evaluate(() => ({
@@ -198,7 +198,7 @@ try {
     check(await menuOpen(), `${tag}: Enter on the point opens the inserter, the search focused`, await active());
     await page.keyboard.type('кноп');
     await page.waitForTimeout(80);
-    const filtered = await page.evaluate(() => [...document.querySelectorAll('sf-context-menu .sf-context-menu-item')].filter((row) => row.getClientRects().length).map((row) => row.querySelector('.sf-context-menu-item-label')?.textContent.trim()));
+    const filtered = await page.evaluate(() => [...document.querySelectorAll('sf-menu-context .sf-context-menu-item')].filter((row) => row.getClientRects().length).map((row) => row.querySelector('.sf-context-menu-item-label')?.textContent.trim()));
     check(JSON.stringify(filtered) === '["Кнопка"]', `${tag}: typing filters the kinds locally`, filtered);
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('Enter');
@@ -269,7 +269,7 @@ try {
     await page.mouse.click(plus.x + plus.width / 2, plus.y + plus.height / 2);
     await page.waitForTimeout(250);
     check(await menuOpen(), `${tag}: a click on the point opens the inserter`, null);
-    await page.locator('sf-context-menu .sf-context-menu-item', {hasText: 'Заголовок'}).first().click();
+    await page.locator('sf-menu-context .sf-context-menu-item', {hasText: 'Заголовок'}).first().click();
     await page.waitForTimeout(150);
     inserts = await page.evaluate(() => window.inserts);
     check(inserts.at(-1)?.index === r2Index && inserts.at(-1)?.item === 'heading', `${tag}: a pointer choice inserts at the hovered gap`, inserts.at(-1));

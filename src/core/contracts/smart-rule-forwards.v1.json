@@ -145,6 +145,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-textarea-to-input-textarea"
+    },
+    "cl-context-menu": {
+      "to": "cl-menu-context",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-context-menu-to-menu-context"
     }
   }
 }

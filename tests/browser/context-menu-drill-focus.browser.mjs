@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// A drilling sf-context-menu, entered by a real mouse press on the built bytes:
+// A drilling sf-menu-context, entered by a real mouse press on the built bytes:
 // the row that held the focus leaves with its level, so the focus has to move
 // into the level or Escape and the arrows are heard by nobody.
 // - opened with openFor: Escape goes back a level, then closes;
@@ -23,10 +23,10 @@ const PAGE = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body>
 <button id="open" type="button">Открыть</button>
-<sf-context-menu id="owned" popup submenu="drill" aria-label="Настройки"></sf-context-menu>
-<sf-context-menu id="placed" submenu="drill" aria-label="Настройки"></sf-context-menu>
+<sf-menu-context id="owned" popup submenu="drill" aria-label="Настройки"></sf-menu-context>
+<sf-menu-context id="placed" submenu="drill" aria-label="Настройки"></sf-menu-context>
 <script>
-customElements.whenDefined('sf-context-menu').then(() => {
+customElements.whenDefined('sf-menu-context').then(() => {
   for (const id of ['owned', 'placed']) document.getElementById(id).entries = ${JSON.stringify(ENTRIES)};
   document.getElementById('open').addEventListener('click', (event) => document.getElementById('owned').openFor(event.currentTarget));
 });

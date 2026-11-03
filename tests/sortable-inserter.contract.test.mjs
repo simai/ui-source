@@ -132,10 +132,10 @@ test('a choice is reported, cancelable, and never creates the item', async () =>
 test('the inserter is the standard menu, and Escape is its layer alone', async () => {
   const [source, menu] = await Promise.all([
     read('src/core/js/composition/sortable-inserter.mjs'),
-    read('src/smart/context-menu/index.js'),
+    read('src/smart/menu-context/index.js'),
   ]);
-  assert.match(source, /createElement\('sf-context-menu'\)/);
-  assert.match(source, /Loader\?\.ensure\?\.\(\['sf-context-menu'\]\)/);
+  assert.match(source, /createElement\('sf-menu-context'\)/);
+  assert.match(source, /Loader\?\.ensure\?\.\(\['sf-menu-context'\]\)/);
   assert.match(source, /surface\.search = \{ placeholder: text\('search'\), empty: text\('empty'\) \};/);
   assert.match(source, /surface\.openFor\(button,/);
   // No Escape of its own on the document: the menu owns it and holds the
@@ -158,8 +158,8 @@ test('the rule, the manifest and both documents name the inserter', async () => 
     read('src/smart/sortable/scss/_smart__sortable.scss'),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.match(rule, /\{ name: 'icon-buttons', lazy: true \},\n    \{ name: 'icons', lazy: true \},\n    \{ name: 'cl-context-menu', lazy: true \},/);
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'smart.context-menu']);
+  assert.match(rule, /\{ name: 'icon-buttons', lazy: true \},\n    \{ name: 'icons', lazy: true \},\n    \{ name: 'cl-menu-context', lazy: true \},/);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'smart.menu-context']);
   assert.equal(manifest.inputs.properties['inserter-items'].default, '');
   assert.deepEqual(manifest.events['sf-sortable-insert'].payload.required, ['index', 'item', 'to']);
   assert.ok(manifest.accessibility.keyboard.includes('+'));

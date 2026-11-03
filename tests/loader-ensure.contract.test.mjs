@@ -39,7 +39,7 @@ function registry() {
   };
 }
 
-function ensureLoader(customElements, rules = {'sf-context-menu': 'cl-context-menu', 'sf-radio': 'cl-radio'}) {
+function ensureLoader(customElements, rules = {'sf-menu-context': 'cl-menu-context', 'sf-radio': 'cl-radio'}) {
   function SFLoaderPlugin() { this.fetched = []; }
   SFLoaderPlugin.prototype.getCustomElementRules = () => rules;
   SFLoaderPlugin.prototype.ensurePlugin = function (name) { this.fetched.push(name); return true; };
@@ -50,10 +50,10 @@ function ensureLoader(customElements, rules = {'sf-context-menu': 'cl-context-me
 
 test('a tag already defined settles at once and asks for nothing', async () => {
   const customElements = registry();
-  customElements.define('sf-context-menu');
+  customElements.define('sf-menu-context');
   const loader = ensureLoader(customElements);
-  const result = await loader.ensure(['context-menu']);
-  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-context-menu'], missing: []});
+  const result = await loader.ensure(['menu-context']);
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-menu-context'], missing: []});
   assert.equal(loader.fetched.length, 0, 'no fetch');
   assert.equal(customElements.asked, 0, 'no wait');
 });
@@ -61,11 +61,11 @@ test('a tag already defined settles at once and asks for nothing', async () => {
 test('a tag is fetched through its rule and settles ready when it is defined', async () => {
   const customElements = registry();
   const loader = ensureLoader(customElements);
-  const pending = loader.ensure('sf-context-menu', {timeout: 1000});
-  assert.deepEqual(loader.fetched, ['cl-context-menu']);
-  setTimeout(() => customElements.define('sf-context-menu'), 5);
+  const pending = loader.ensure('sf-menu-context', {timeout: 1000});
+  assert.deepEqual(loader.fetched, ['cl-menu-context']);
+  setTimeout(() => customElements.define('sf-menu-context'), 5);
   const result = await pending;
-  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-context-menu'], missing: []});
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-menu-context'], missing: []});
 });
 
 test('the timeout reports the tags still missing and never rejects', async () => {
@@ -73,22 +73,22 @@ test('the timeout reports the tags still missing and never rejects', async () =>
   customElements.define('sf-radio');
   const loader = ensureLoader(customElements);
   const started = Date.now();
-  const result = await loader.ensure(['sf-radio', 'sf-context-menu', 'acme-counter'], {timeout: 20});
+  const result = await loader.ensure(['sf-radio', 'sf-menu-context', 'acme-counter'], {timeout: 20});
   assert.ok(Date.now() - started < 1000, 'settled by the timeout');
-  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-radio'], missing: ['sf-context-menu', 'acme-counter']});
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-radio'], missing: ['sf-menu-context', 'acme-counter']});
   // A package's own name with no rule yet is waited for as it is, not as sf-acme-counter.
-  assert.deepEqual(loader.fetched, ['cl-context-menu']);
+  assert.deepEqual(loader.fetched, ['cl-menu-context']);
 });
 
 test('concurrent callers share one wait per tag, and each keeps its own timeout', async () => {
   const customElements = registry();
   const loader = ensureLoader(customElements);
-  const short = loader.ensure(['sf-context-menu'], {timeout: 10});
-  const long = loader.ensure(['sf-context-menu', 'sf-context-menu'], {timeout: 1000});
+  const short = loader.ensure(['sf-menu-context'], {timeout: 10});
+  const long = loader.ensure(['sf-menu-context', 'sf-menu-context'], {timeout: 1000});
   assert.equal(customElements.asked, 1, 'one whenDefined for two callers');
-  assert.deepEqual(JSON.parse(JSON.stringify(await short)), {ready: [], missing: ['sf-context-menu']});
-  customElements.define('sf-context-menu');
-  assert.deepEqual(JSON.parse(JSON.stringify(await long)), {ready: ['sf-context-menu'], missing: []}, 'a name given twice is reported once');
+  assert.deepEqual(JSON.parse(JSON.stringify(await short)), {ready: [], missing: ['sf-menu-context']});
+  customElements.define('sf-menu-context');
+  assert.deepEqual(JSON.parse(JSON.stringify(await long)), {ready: ['sf-menu-context'], missing: []}, 'a name given twice is reported once');
 });
 
 // The portal scan, over a small element tree.

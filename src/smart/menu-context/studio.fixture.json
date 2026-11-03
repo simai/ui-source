@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.context-menu",
+  "component": "smart.menu-context",
   "title": "Context Menu reference",
-  "summary": "Deterministic reference fixture for sf-context-menu.",
+  "summary": "Deterministic reference fixture for sf-menu-context.",
   "locale": "ru",
   "props": {
     "position": "bottom-start",

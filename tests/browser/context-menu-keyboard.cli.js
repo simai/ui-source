@@ -14,13 +14,13 @@ async page => {
     await page.evaluate(({theme,dir}) => {
       document.documentElement.className = `theme-${theme}`; document.documentElement.dir = dir;
       const main = document.querySelector('main');
-      main.innerHTML = '<button id="before">Перед меню</button><sf-context-menu aria-label="Действия"></sf-context-menu><button id="after">После меню</button>';
+      main.innerHTML = '<button id="before">Перед меню</button><sf-menu-context aria-label="Действия"></sf-menu-context><button id="after">После меню</button>';
       window.actions = 0;
-      main.querySelector('sf-context-menu').items = ['Открыть','Недоступно','Сохранить'].map((text,i) => ({component:'sf-button',props:{text,disabled:i===1,'@click':()=>window.actions++}}));
+      main.querySelector('sf-menu-context').items = ['Открыть','Недоступно','Сохранить'].map((text,i) => ({component:'sf-button',props:{text,disabled:i===1,'@click':()=>window.actions++}}));
     }, {theme,dir});
-    await page.waitForSelector('sf-context-menu sf-button button');
-    await page.waitForFunction(() => document.querySelectorAll('sf-context-menu sf-button button').length === 3);
-    const buttons = page.locator('sf-context-menu sf-button button');
+    await page.waitForSelector('sf-menu-context sf-button button');
+    await page.waitForFunction(() => document.querySelectorAll('sf-menu-context sf-button button').length === 3);
+    const buttons = page.locator('sf-menu-context sf-button button');
     await buttons.first().focus();
     await page.keyboard.press('ArrowDown');
     const down = await buttons.nth(2).evaluate(e=>e===document.activeElement);
@@ -36,9 +36,9 @@ async page => {
     await page.keyboard.press('Tab');
     const tabLeaves = await page.locator('#after').evaluate(e=>e===document.activeElement);
     const semantics = await buttons.evaluateAll(all=>all.every(e=>e.getAttribute('role')==='menuitem')&&all.filter(e=>e.tabIndex===0).length===1);
-    const hostPassive = await page.locator('sf-context-menu sf-button').evaluateAll(all=>all.every(e=>!e.hasAttribute('role')&&!e.hasAttribute('tabindex')));
+    const hostPassive = await page.locator('sf-menu-context sf-button').evaluateAll(all=>all.every(e=>!e.hasAttribute('role')&&!e.hasAttribute('tabindex')));
     const dynamic = await page.evaluate(async () => {
-      const host = document.querySelector('sf-context-menu'), content = host.querySelector('.sf-context-menu-content');
+      const host = document.querySelector('sf-menu-context'), content = host.querySelector('.sf-context-menu-content');
       const tick = () => new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
       const item = document.createElement('button'); item.textContent = 'Дополнительное действие';
       const input = document.createElement('input'); input.setAttribute('aria-label','Поле приложения');
@@ -57,8 +57,8 @@ async page => {
       return {projected,inputUntouched,addedToOrder,inputKeysUntouched,authorOverride,cleanup};
     });
     await page.evaluate(async base => {document.querySelector('main').innerHTML = await (await fetch(`${base}/examples/context-menu-keyboard/index.html`)).text();}, base);
-    await page.waitForSelector('sf-context-menu .sf-context-menu-content button');
-    const sample = page.locator('sf-context-menu .sf-context-menu-content button');
+    await page.waitForSelector('sf-menu-context .sf-context-menu-content button');
+    const sample = page.locator('sf-menu-context .sf-context-menu-content button');
     await sample.first().focus(); await page.keyboard.press('ArrowDown');
     const exampleKeyboard = await sample.nth(2).evaluate(e=>e===document.activeElement);
     const exampleName = await page.getByRole('menu',{name:'Действия с документом',exact:true}).count()===1;
@@ -79,7 +79,7 @@ async page => {
     const forcedFocus = await sample.nth(2).evaluate(e=>getComputedStyle(e).outlineStyle==='solid'&&parseFloat(getComputedStyle(e).outlineOffset)<0);
     await page.emulateMedia({forcedColors:'none'});
     const roleOptOut = await page.evaluate(async()=>{
-      const host=document.querySelector('sf-context-menu');host.setAttribute('role','group');
+      const host=document.querySelector('sf-menu-context');host.setAttribute('role','group');
       await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
       const buttons=[...host.querySelectorAll('.sf-context-menu-content button')];
       buttons[0].focus();const e=new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true});buttons[0].dispatchEvent(e);

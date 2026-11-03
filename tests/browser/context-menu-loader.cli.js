@@ -17,23 +17,23 @@ async page => {
     await page.evaluate(themeName => {
       document.documentElement.className = `theme-${themeName}`;
     }, theme);
-    await page.waitForFunction(() => customElements.get('sf-context-menu') && customElements.get('sf-button'));
-    await page.waitForFunction(() => document.querySelectorAll('sf-context-menu sf-button button').length === 2);
+    await page.waitForFunction(() => customElements.get('sf-menu-context') && customElements.get('sf-button'));
+    await page.waitForFunction(() => document.querySelectorAll('sf-menu-context sf-button button').length === 2);
 
     const state = await page.evaluate(async () => {
-      const host = document.querySelector('sf-context-menu');
+      const host = document.querySelector('sf-menu-context');
       const root = host.querySelector(':scope > .sf-context-menu');
       const buttons = [...host.querySelectorAll('sf-button button')];
-      const late = document.createElement('sf-context-menu');
+      const late = document.createElement('sf-menu-context');
       late.setAttribute('aria-label', 'Поздние действия');
       late.innerHTML = '<button slot="content" type="button">Позднее действие</button>';
       document.querySelector('main').append(late);
-      await customElements.whenDefined('sf-context-menu');
+      await customElements.whenDefined('sf-menu-context');
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const lateButton = late.querySelector('.sf-context-menu-content > button');
       return {
         loader: Boolean(window.SF?.Loader),
-        contextDefined: Boolean(customElements.get('sf-context-menu')),
+        contextDefined: Boolean(customElements.get('sf-menu-context')),
         buttonDefined: Boolean(customElements.get('sf-button')),
         rootPainted: Boolean(root) && getComputedStyle(root).display !== 'inline',
         buttonPainted: buttons.length === 2 && buttons.every(button => getComputedStyle(button).display !== 'inline'),
@@ -45,7 +45,7 @@ async page => {
     });
     const requiredAssets = [
       '/component/context-menu/css/context-menu.css',
-      '/smart/context-menu/js/context-menu.js',
+      '/smart/menu-context/js/menu-context.js',
       '/component/buttons/css/buttons.css',
       '/smart/button/js/button.js'
     ];

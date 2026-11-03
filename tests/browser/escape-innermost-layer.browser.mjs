@@ -43,7 +43,7 @@ const modules = [
   'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/input-date/js/input-date.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
   'smart/smart/popover/js/popover.js',
   'smart/smart/drawer/js/drawer.js',
   'smart/smart/modal/js/modal.js',

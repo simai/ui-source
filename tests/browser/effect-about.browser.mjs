@@ -2,12 +2,12 @@
 // Usage: node this-file /absolute/path/to/output
 // simai.effect 1.4, the about menu, on the built Framework (core, component
 // and smart outputs under the root): a right-click on an effect's own
-// background opens a small English sf-context-menu -- the effect's name and
+// background opens a small English sf-menu-context -- the effect's name and
 // version, "By <author>", a link to its page in SIMAI Effects for an effect
 // of that catalogue (the homepage its manifest names for a foreign one), and
 // "Pause motion" / "Resume motion", which pause the placement as its handle
 // does. Checked:
-// - sf-context-menu is not asked for before the first right-click that opens
+// - sf-menu-context is not asked for before the first right-click that opens
 //   the menu;
 // - inline: the background opens it; a right-click on text, a link, a button
 //   or a panel with its own background inside the area keeps the browser's
@@ -88,7 +88,7 @@ const point = (page, how, id) => page.evaluate(({how, id}) => {
 }, {how, id});
 
 const menu = (page) => page.evaluate(() => {
-  const element = document.querySelector('sf-context-menu[data-sf-effect-about]');
+  const element = document.querySelector('sf-menu-context[data-sf-effect-about]');
   if (!element?.isOpen) return {open: false};
   const text = (selector) => element.querySelector(selector)?.textContent.trim() ?? null;
   return {
@@ -114,14 +114,14 @@ const rightClick = async (page, at, {shift = false} = {}) => {
   const seen = await page.evaluate(() => window.__menus);
   return {prevented: seen.length === 1 ? seen[0].prevented : seen};
 };
-const waitOpen = (page) => page.waitForFunction(() => document.querySelector('sf-context-menu[data-sf-effect-about]')?.isOpen === true, null, {timeout: 10000})
+const waitOpen = (page) => page.waitForFunction(() => document.querySelector('sf-menu-context[data-sf-effect-about]')?.isOpen === true, null, {timeout: 10000})
   .then(() => true, () => false);
 const closeMenu = async (page) => {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(150);
 };
 const choose = async (page, id) => {
-  await page.locator(`sf-context-menu[data-sf-effect-about] [data-sf-entry]`).filter({hasText: id}).first().click();
+  await page.locator(`sf-menu-context[data-sf-effect-about] [data-sf-entry]`).filter({hasText: id}).first().click();
   await page.waitForTimeout(300);
 };
 
@@ -147,8 +147,8 @@ try {
   const {page, requests, errors} = await openPage(browser, out, {theme: 'theme-light', body, head, serve, distr: true});
   await settled(page);
   await page.waitForTimeout(300);
-  const asked = () => requests.filter((url) => /context-menu/u.test(url));
-  expect('nothing of sf-context-menu is loaded before a right-click', [await page.evaluate(() => Boolean(customElements.get('sf-context-menu'))), asked().length], [false, 0]);
+  const asked = () => requests.filter((url) => /menu-context|context-menu/u.test(url));
+  expect('nothing of sf-menu-context is loaded before a right-click', [await page.evaluate(() => Boolean(customElements.get('sf-menu-context'))), asked().length], [false, 0]);
 
   // Rule 1 first, before anything is loaded: content keeps the browser's menu.
   expect('text in the area keeps the browser menu', await rightClick(page, await point(page, 'text', 'heading')), {prevented: false});
@@ -160,7 +160,7 @@ try {
   // Rule 3, per area and per part.
   expect('data-sf-effect-about="false" on an area keeps the browser menu', await rightClick(page, await point(page, 'centre', 'off')), {prevented: false});
   expect('data-sf-effect-about="false" on a part keeps the browser menu', await rightClick(page, await point(page, 'centre', 'quiet')), {prevented: false});
-  expect('still nothing loaded after right-clicks on content', [await page.evaluate(() => Boolean(customElements.get('sf-context-menu'))), asked().length], [false, 0]);
+  expect('still nothing loaded after right-clicks on content', [await page.evaluate(() => Boolean(customElements.get('sf-menu-context'))), asked().length], [false, 0]);
 
   // The background opens the menu.
   expect('the background prevents the browser menu', await rightClick(page, await point(page, 'corner', 'inline')), {prevented: true});
@@ -169,7 +169,7 @@ try {
     open: true, label: 'About this background', lang: 'en', heading: 'sample-bands 1.0.0', note: 'By SIMAI Framework (kit fixture)',
     items: [{text: 'Open in SIMAI Effects', href: 'https://effects.simai.io/effect/sample-bands/'}, {text: 'Pause motion', href: null}],
   });
-  expect('sf-context-menu was loaded by that right-click', asked().length > 0, true);
+  expect('sf-menu-context was loaded by that right-click', asked().length > 0, true);
   // A transparent wrapper beside a link is background too.
   await closeMenu(page);
   expect('Escape closes the menu', (await menu(page)).open, false);
@@ -237,7 +237,7 @@ try {
   await settled(off.page);
   expect('with effects.about = false the background keeps the browser menu', await rightClick(off.page, await point(off.page, 'corner', 'inline')), {prevented: false});
   expect('with effects.about = false a window card keeps it', await rightClick(off.page, await point(off.page, 'centre', 'w2')), {prevented: false});
-  expect('with effects.about = false nothing is loaded', [await off.page.evaluate(() => Boolean(customElements.get('sf-context-menu'))), off.requests.filter((url) => /context-menu/u.test(url)).length], [false, 0]);
+  expect('with effects.about = false nothing is loaded', [await off.page.evaluate(() => Boolean(customElements.get('sf-menu-context'))), off.requests.filter((url) => /menu-context|context-menu/u.test(url)).length], [false, 0]);
   if (off.errors.length) failures.push({case: 'no page errors (about off)', got: off.errors});
 } finally {
   await browser.close();

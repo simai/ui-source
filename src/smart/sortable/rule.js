@@ -13,6 +13,6 @@ SF.RuleLoader['cl-sortable'] = {
   relation: [
     { name: 'icon-buttons', lazy: true },
     { name: 'icons', lazy: true },
-    { name: 'cl-context-menu', lazy: true },
+    { name: 'cl-menu-context', lazy: true },
   ],
 };

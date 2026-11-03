@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// The standard menu (owner, 2026-10-12): sf-context-menu given entries and
+// The standard menu (owner, 2026-10-12): sf-menu-context given entries and
 // opened through openFor(). What it measures is what every hand-made menu in
 // the admin did differently -- where it opens, how it closes, where the focus
 // goes, and that its rows keep one geometry.
@@ -18,7 +18,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
 ].map((p) => join(out, p));
 
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
@@ -37,12 +37,12 @@ try {
     '<!doctype html><html class="theme-light" lang="ru"><body style="margin:0;padding:40px">'
     + '<div style="overflow:hidden;block-size:60px;position:relative">'
     + '<button id="trigger" type="button">Действия</button></div>'
-    + '<sf-context-menu id="menu" popup aria-label="Действия"></sf-context-menu>'
+    + '<sf-menu-context id="menu" popup aria-label="Действия"></sf-menu-context>'
     + '</body></html>',
   );
   for (const path of styles) await page.addStyleTag({path}).catch(() => {});
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-context-menu'));
+  await page.waitForFunction(() => customElements.get('sf-menu-context'));
   await page.evaluate(() => {
     const menu = document.getElementById('menu');
     menu.entries = [
@@ -106,7 +106,7 @@ try {
   await page.keyboard.press('ArrowRight');
   await page.waitForTimeout(250);
   const sub = await page.evaluate(() => {
-    const menus = document.querySelectorAll('sf-context-menu');
+    const menus = document.querySelectorAll('sf-menu-context');
     const child = menus[1]?.querySelector('.sf-context-menu');
     const row = document.querySelector('#menu [data-sf-entry="2"]');
     const first = child?.querySelector('.sf-context-menu-item');
@@ -123,7 +123,7 @@ try {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(100);
   const back = await page.evaluate(() => ({
-    count: document.querySelectorAll('sf-context-menu').length,
+    count: document.querySelectorAll('sf-menu-context').length,
     focus: document.activeElement?.dataset?.sfEntry ?? null,
     open: document.getElementById('menu').isOpen,
   }));
@@ -205,7 +205,7 @@ try {
   await page.click('#menu [aria-haspopup="menu"]');
   await page.waitForTimeout(250);
   const squeezed = await page.evaluate(() => {
-    const child = document.querySelectorAll('sf-context-menu')[1];
+    const child = document.querySelectorAll('sf-menu-context')[1];
     const content = child?.querySelector('.sf-context-menu-content');
     if (content) content.style.maxBlockSize = '80px';
     const rows = [...(child?.querySelectorAll('.sf-context-menu-item') ?? [])];
@@ -219,7 +219,7 @@ try {
   await page.keyboard.type('ger');
   await page.waitForTimeout(150);
   const found = await page.evaluate(() => {
-    const child = document.querySelectorAll('sf-context-menu')[1];
+    const child = document.querySelectorAll('sf-menu-context')[1];
     return {
       rows: [...child.querySelectorAll('.sf-context-menu-item-label')].map((node) => node.textContent.trim()),
       value: child.querySelector('.sf-context-menu-search-input')?.value,
@@ -282,7 +282,7 @@ try {
 
   // The host-rendered menu keeps its old contract: no lifecycle of its own.
   const host = await page.evaluate(async () => {
-    const legacy = document.createElement('sf-context-menu');
+    const legacy = document.createElement('sf-menu-context');
     legacy.setAttribute('aria-label', 'Old');
     legacy.innerHTML = '<sf-button slot="content" text="One"></sf-button>';
     document.body.append(legacy);

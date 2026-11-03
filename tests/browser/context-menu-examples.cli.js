@@ -25,9 +25,9 @@ async page => {
       ]);
       document.querySelector('main').innerHTML = `${positions}<div class="p-4">${plain}</div>`;
     }, {base, theme, dir});
-    await page.waitForFunction(() => document.querySelectorAll('sf-context-menu > .sf-context-menu').length === 13);
+    await page.waitForFunction(() => document.querySelectorAll('sf-menu-context > .sf-context-menu').length === 13);
     const state = await page.evaluate(() => {
-      const menus = [...document.querySelectorAll('sf-context-menu')];
+      const menus = [...document.querySelectorAll('sf-menu-context')];
       const rects = menus.map(menu => menu.getBoundingClientRect());
       return {
         count: menus.length,

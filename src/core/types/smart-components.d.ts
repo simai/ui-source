@@ -92,6 +92,8 @@ export type SmartComponentCreateName =
     | 'sf-dropdown'
     | 'context-menu'
     | 'sf-context-menu'
+    | 'menu-context'
+    | 'sf-menu-context'
     | 'input'
     | 'sf-input'
     | 'textarea'
@@ -144,7 +146,7 @@ export type SmartComponentCreateResult<TName extends string> =
                                                                     ? HTMLSfGalleryElement
                                                                     : TName extends 'dropdown' | 'sf-dropdown'
                                                                         ? HTMLSfDropdownElement
-                                                                        : TName extends 'context-menu' | 'sf-context-menu'
+                                                                        : TName extends 'context-menu' | 'sf-context-menu' | 'menu-context' | 'sf-menu-context'
                                                                             ? HTMLSfContextMenuElement
                                                                             : TName extends 'input' | 'sf-input'
                                                                                 ? HTMLSfInputElement

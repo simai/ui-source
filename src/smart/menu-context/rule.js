@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-context-menu'] = {
-  tags: ['sf-context-menu'],
+SF.RuleLoader['cl-menu-context'] = {
+  tags: ['sf-menu-context', 'sf-context-menu'],
   type: 'smart',
   mode: 'smart',
   js: true,

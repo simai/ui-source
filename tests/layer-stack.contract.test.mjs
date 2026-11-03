@@ -300,7 +300,7 @@ test('the components keep one list of what takes focus, and no lock or outside l
     assert.doesNotMatch(code, /const FOCUSABLE(_SELECTOR)? = /, `${path} keeps a list of its own`);
     assert.doesNotMatch(code, /^\s+lockPage\(/mu, `${path} writes a page lock of its own`);
   }
-  for (const path of ['src/smart/help-mark/index.js', 'src/smart/context-menu/index.js', 'src/smart/menu/index.js', 'src/smart/profile-picker/index.js']) {
+  for (const path of ['src/smart/help-mark/index.js', 'src/smart/menu-context/index.js', 'src/smart/menu/index.js', 'src/smart/profile-picker/index.js']) {
     assert.doesNotMatch(await read(path), /addEventListener\(['"]pointerdown['"]/u, `${path} binds an outside press of its own`);
   }
 });

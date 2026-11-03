@@ -41,7 +41,7 @@
       },
       "slots": {
         "trigger": "<button type=\"button\">Ещё</button>",
-        "content": "<sf-context-menu></sf-context-menu>"
+        "content": "<sf-menu-context></sf-menu-context>"
       },
       "expect": {
         "open": false

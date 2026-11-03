@@ -141,17 +141,17 @@ test('sf-dropdown: change carries data only; sf-dropdown:change keeps root throu
   assert.match(interaction, /node\.id = partId\(instancePath\(owner, \{kind: 'sf-dropdown'\}\), local\)/);
 });
 
-test('sf-context-menu, sf-toast, sf-tooltip: their manifests and events', () => {
-  const menu = json('src/smart/context-menu/component.json');
+test('sf-menu-context, sf-toast, sf-tooltip: their manifests and events', () => {
+  const menu = json('src/smart/menu-context/component.json');
   // The settings rows the compact settings folded in (owner's decision,
   // 2026-10-29): change is the cancelable request, changed the fact, reset
   // the whole panel going back to its defaults.
   assert.deepEqual(Object.keys(menu.events), ['select', 'change', 'changed', 'reset', 'open', 'opened', 'close', 'closed', 'search', 'tab']);
   assert.ok(menu.settings.entries.of.submenu, 'entries name their fields (§4.2)');
-  const menuSource = read('src/smart/context-menu/index.js');
+  const menuSource = read('src/smart/menu-context/index.js');
   assert.doesNotMatch(menuSource, /get role\(\)/);
   assert.match(menuSource, /if \(ask && !this\.sfEmit\("close", \{reason, unsaved: false\}, \{cancelable: true\}\)\) return false;/);
-  assert.match(read('src/core/js/composition/sortable-inserter.mjs'), /'sf-context-menu-closed'/);
+  assert.match(read('src/core/js/composition/sortable-inserter.mjs'), /'sf-menu-context-closed'/);
   const toast = json('src/smart/toast/component.json');
   assert.deepEqual(Object.keys(toast.events), ['action', 'close', 'closed']);
   const toastSource = read('src/smart/toast/index.js');

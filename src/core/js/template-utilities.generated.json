@@ -74,13 +74,6 @@
     "position/default",
     "width/default"
   ],
-  "cl-context-menu": [
-    "display/default",
-    "flex-direction/default",
-    "flex/default",
-    "position/default",
-    "text-decoration/default"
-  ],
   "cl-drawer": [
     "display/default",
     "justify-content/default",
@@ -245,6 +238,13 @@
     "gap/default",
     "justify-content/default",
     "place-items/default"
+  ],
+  "cl-menu-context": [
+    "display/default",
+    "flex-direction/default",
+    "flex/default",
+    "position/default",
+    "text-decoration/default"
   ],
   "cl-modal": [
     "align-items/default",

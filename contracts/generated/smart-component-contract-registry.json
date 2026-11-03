@@ -503,43 +503,6 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.context-menu",
-          "smart.button",
-          "smart.icon-button",
-          "smart.tabs"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-context-menu",
-      "id": "smart.context-menu",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/context-menu/smart.manifest.json",
-      "manifest_sha256": "9728a77cfeced13a8d41d7279d1a561693bcd8eff3fdf2a4b1175f5b6e793185",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
-      "tags": [
-        "context-menu"
-      ],
-      "title": "Context Menu"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
           "component.close",
           "component.icon-buttons"
         ]
@@ -1625,6 +1588,43 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.context-menu",
+          "smart.button",
+          "smart.icon-button",
+          "smart.tabs"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-menu-context",
+      "id": "smart.menu-context",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/menu-context/smart.manifest.json",
+      "manifest_sha256": "af2e6284620895debe3da2b71c91fb351f95bf5c77a0127ea8649d1d7b22064f",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
+      "tags": [
+        "menu-context"
+      ],
+      "title": "Context Menu"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
           "component.icon-buttons",
           "component.modal",
           "component.spinner"
@@ -1760,7 +1760,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "554bc6867eba6abc756547a916bf94f447a90e636c476bb3039a103bba2eecdd",
+      "manifest_sha256": "98e4151f886a973b61de91448d7790d667f2e98b888a664116b37501ef270aea",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2192,7 +2192,7 @@
         "uses": [
           "component.icon-buttons",
           "component.icons",
-          "smart.context-menu"
+          "smart.menu-context"
         ]
       },
       "contract_schema": {
@@ -2204,7 +2204,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/sortable/smart.manifest.json",
-      "manifest_sha256": "fbda291d2f6130ebd9c46ba3c7fc0fc0e565b721368701c2a501540c6586b883",
+      "manifest_sha256": "c8d3423597cfa64ceac44477f04556511d4e9b9b2b3b77fbcccca776425ea6d8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2349,8 +2349,8 @@
           "component.tabs",
           "smart.button",
           "smart.checkbox",
-          "smart.context-menu",
           "smart.icon-button",
+          "smart.menu-context",
           "smart.sortable"
         ]
       },
@@ -2363,7 +2363,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "0c8e5b7eb839769db1e06be83e6c35c9880ad7c46d5d5ce18cf086e306f36a94",
+      "manifest_sha256": "46898da709e62f4a9f6bfe7d1befb5be019ff721f108559e0da9fcc67e03b962",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

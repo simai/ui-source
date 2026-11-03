@@ -35,36 +35,36 @@ async page => {
       const main = document.querySelector('main');
       main.innerHTML = '<div id="matrix" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:64px;padding:64px"></div><div id="aliases"></div><div id="plain"></div>';
       for (const position of positions) {
-        const menu = document.createElement('sf-context-menu');
+        const menu = document.createElement('sf-menu-context');
         menu.setAttribute('position', position);
         menu.setAttribute('aria-label', position);
         menu.innerHTML = `<button slot="content" type="button" class="sf-button sf-button--link sf-button--on-surface"><span class="sf-button-text-container">${position}</span></button>`;
         main.querySelector('#matrix').append(menu);
       }
       for (const alias of Object.keys(aliases)) {
-        const menu = document.createElement('sf-context-menu');
+        const menu = document.createElement('sf-menu-context');
         menu.setAttribute('position', alias);
         menu.setAttribute('aria-label', alias);
         menu.innerHTML = '<button slot="content" type="button" class="sf-button sf-button--link sf-button--on-surface"><span class="sf-button-text-container">alias</span></button>';
         main.querySelector('#aliases').append(menu);
       }
-      const plain = document.createElement('sf-context-menu');
+      const plain = document.createElement('sf-menu-context');
       plain.setAttribute('position', 'bottom-inline-start');
       plain.setAttribute('aria-label', 'Без указателя');
       // Legacy markup with a tail: the stylesheet must hide it.
       plain.innerHTML = '<div class="sf-context-menu"><div class="relative"><div class="sf-context-menu-tooltip"></div><div class="sf-context-menu-content"></div></div></div>';
       main.querySelector('#plain').append(plain);
     }, {theme, dir, positions, aliases});
-    await page.waitForFunction(count => document.querySelectorAll('#matrix > sf-context-menu > .sf-context-menu').length === count, positions.length);
+    await page.waitForFunction(count => document.querySelectorAll('#matrix > sf-menu-context > .sf-context-menu').length === count, positions.length);
 
     const normal = await page.evaluate(({positions, aliases}) => {
-      const matrix = [...document.querySelectorAll('#matrix > sf-context-menu')].map((host, index) => {
+      const matrix = [...document.querySelectorAll('#matrix > sf-menu-context')].map((host, index) => {
         const root = host.querySelector(':scope > .sf-context-menu');
         const position = positions[index];
         // Tail-to-edge placement dropped: no tail since 2026-10-12.
         return {position, normalized: host.position, positionClass: root.classList.contains(`sf-context-menu--position-${position}`), tailRendered: Boolean(root.querySelector('.sf-context-menu-tooltip'))};
       });
-      const aliasValues = [...document.querySelectorAll('#aliases > sf-context-menu')].map(host => ({alias: host.getAttribute('position'), normalized: host.position}));
+      const aliasValues = [...document.querySelectorAll('#aliases > sf-menu-context')].map(host => ({alias: host.getAttribute('position'), normalized: host.position}));
       return {
         matrix,
         aliases: aliasValues,
@@ -79,7 +79,7 @@ async page => {
     await page.emulateMedia({forcedColors: 'active', reducedMotion: 'reduce'});
     await page.waitForFunction(() => matchMedia('(forced-colors: active)').matches);
     const forced = await page.evaluate(() => {
-      const menu = document.querySelector('#matrix > sf-context-menu');
+      const menu = document.querySelector('#matrix > sf-menu-context');
       const content = menu.querySelector('.sf-context-menu-content');
       const contentStyle = getComputedStyle(content);
       // Tail border and shadow checks dropped: no tail since 2026-10-12.

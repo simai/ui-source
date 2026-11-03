@@ -121,7 +121,7 @@ try {
       </div>
       <sf-input-textarea data-reference size="${size}" rows="1" aria-label="Образец"></sf-input-textarea>
       <div class="composer" data-kind="plain">
-        <label class="sf-input-textarea sf-textarea--size-${size} sf-textarea--flush flex flex-col">
+        <label class="sf-textarea sf-textarea--size-${size} sf-textarea--flush flex flex-col">
           <textarea data-auto-grow data-max-rows="${MAX}" placeholder="Сообщение" aria-label="Сообщение"></textarea>
         </label>
         <sf-button size="${size}" icon="send" text="Отправить"></sf-button>

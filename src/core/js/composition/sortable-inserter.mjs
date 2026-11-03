@@ -9,7 +9,7 @@
 // The component reports the choice and creates nothing: the host hears
 // sf-sortable-insert with the place and the kind, builds the item and puts it
 // in the list, exactly as it applies sf-sortable-intent. The inserter is the
-// Framework's standard menu (sf-context-menu, opened with openFor and its own
+// Framework's standard menu (sf-menu-context, opened with openFor and its own
 // local search), so its rows, its keys, its top layer and its Escape are the
 // ones every other menu has; nothing here draws a second popover.
 //
@@ -294,12 +294,12 @@ export function createSortableInserter(list) {
   async function standardMenu() {
     if (menu?.isConnected) return menu;
     const registry = globalThis.customElements;
-    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
-    if (!registry.get('sf-context-menu')) return null;
-    menu = document_().createElement('sf-context-menu');
+    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
+    if (!registry.get('sf-menu-context')) return null;
+    menu = document_().createElement('sf-menu-context');
     menu.setAttribute('popup', '');
-    menu.addEventListener('sf-context-menu-select', onSelect);
-    menu.addEventListener('sf-context-menu-closed', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
+    menu.addEventListener('sf-menu-context-select', onSelect);
+    menu.addEventListener('sf-menu-context-closed', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
     // Enter in the search takes the first row it left: whoever typed the name
     // of what they want has chosen it. The menu's own Enter is a row's.
     menu.addEventListener('keydown', (event) => {

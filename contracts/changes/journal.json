@@ -4851,6 +4851,117 @@
       },
       "owner": "ui-source",
       "source": "src/smart/textarea/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-textarea/component.json"
+    },
+    {
+      "id": "tag-sf-context-menu-to-sf-menu-context",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-context-menu is sf-menu-context (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-menu-context's class, the Loader's rule lists it, the Framework's sheets match :is(sf-menu-context, sf-context-menu), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-context-menu-select, sf-context-menu-change, sf-context-menu-changed, sf-context-menu-reset, sf-context-menu-open, sf-context-menu-opened, sf-context-menu-close, sf-context-menu-closed, sf-context-menu-search, sf-context-menu-tab).",
+      "items": [
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu",
+          "to": "sf-menu-context"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-select",
+          "to": "sf-menu-context-select"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-change",
+          "to": "sf-menu-context-change"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-changed",
+          "to": "sf-menu-context-changed"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-reset",
+          "to": "sf-menu-context-reset"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-open",
+          "to": "sf-menu-context-open"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-opened",
+          "to": "sf-menu-context-opened"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-close",
+          "to": "sf-menu-context-close"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-closed",
+          "to": "sf-menu-context-closed"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-search",
+          "to": "sf-menu-context-search"
+        },
+        {
+          "component": "sf-menu-context",
+          "from": "sf-context-menu-tab",
+          "to": "sf-menu-context-tab"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-context-menu></sf-context-menu>",
+        "after": "<sf-menu-context></sf-menu-context>"
+      },
+      "manual": "Write <sf-menu-context> for <sf-context-menu> in markup and sf-menu-context for sf-context-menu in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-menu-context, or both names through SF.tags.selector('sf-menu-context') while the alias lives; a class or a custom property spelled like the old tag (.sf-context-menu, --sf-context-menu-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/menu-context/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-context-menu-to-menu-context",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-menu-context is served from smart/menu-context/ since its folder took the new tag's name: js/menu-context.js, loader bundle cl-menu-context. The old path keeps working until remove_after: smart/context-menu/js/context-menu.js is a forwarding script that notes the path in SF.deprecations and loads smart/menu-context/js/menu-context.js, the Loader forwards the bundle name cl-context-menu to cl-menu-context (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.context-menu is a dated alias of smart.menu-context, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-menu-context",
+          "from": "smart/context-menu/js/context-menu.js",
+          "to": "smart/menu-context/js/menu-context.js",
+          "match": "smart/context-menu/js/context-menu(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-context-menu",
+          "to": "cl-menu-context",
+          "match": "['\"]cl-context-menu['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.context-menu",
+          "to": "smart.menu-context",
+          "match": "['\"]smart\\.context-menu['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/menu-context/ for smart/context-menu/ and menu-context for context-menu in the file names (js/menu-context.js, js/menu-context.min.js); in a product rule's relation write cl-menu-context for cl-context-menu, and in a manifest or a package contract smart.menu-context for smart.context-menu. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/context-menu/js/context-menu.js\"></script>",
+        "after": "<script src=\"/distr/smart/menu-context/js/menu-context.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/context-menu/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/menu-context/component.json"
     }
   ]
 }

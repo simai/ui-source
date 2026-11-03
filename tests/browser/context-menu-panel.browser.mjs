@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// sf-context-menu as a panel with tabs (owner, 2026-10-15), on the built bytes:
+// sf-menu-context as a panel with tabs (owner, 2026-10-15), on the built bytes:
 // - the head (tabs and the close button) stays put while the body scrolls,
 //   and so does the footer;
 // - the panel's width is its own: a footer button's longer label and another
@@ -15,7 +15,7 @@ const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/tabs/css/tabs.css', 'component/component/context-menu/css/context-menu.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/tabs/js/tabs.js', 'smart/smart/context-menu/js/context-menu.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/tabs/js/tabs.js', 'smart/smart/menu-context/js/menu-context.js'];
 
 const failures = [];
 const note = (detail) => failures.push(detail);
@@ -34,10 +34,10 @@ try {
   await page.goto(`${origin}/`);
   const rows = Array.from({length: 40}, (_, i) => `<label class="sf-context-menu-row"><span>⋮</span><span class="sf-context-menu-row-text">Поле номер ${i} с довольно длинным названием</span><input type="checkbox"></label>`).join('');
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:20px">
-    <sf-context-menu id="m" size="1" tabs="Поля|Вид" closable role="dialog" aria-label="Настройки">
+    <sf-menu-context id="m" size="1" tabs="Поля|Вид" closable role="dialog" aria-label="Настройки">
       <div slot="content" id="rows">${rows}</div>
       <sf-button slot="footer" id="apply" size="1" text="Применить"></sf-button>
-    </sf-context-menu>
+    </sf-menu-context>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// sf-context-menu rows are touch targets under a coarse pointer
+// sf-menu-context rows are touch targets under a coarse pointer
 // (simai/ui-source#25, ui-chat): at size 1/2 a row was 24-32px under a finger.
 // The standard menu (entries, opened through openFor()) of sizes 1/2 and 1, and
 // a hand-written menu of .sf-button rows, measured on the built bytes:
@@ -11,7 +11,7 @@
 //   - fine pointer: at 390px no row takes the touch floor, and at 1440px every
 //     one-line row is exactly the control height of the menu's size, as before --
 //     except the options of a quiet choice row, which stand one step down the
-//     ladder inside the row (sf-context-menu 1.5.0, owner 2026-10-30).
+//     ladder inside the row (sf-menu-context 1.5.0, owner 2026-10-30).
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -26,7 +26,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
@@ -42,8 +42,8 @@ const measure = async (browser, label, options) => {
   page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: `${label}: page error`, said: error.message}); });
   await page.setContent(`<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;padding:16px">
     <button id="t-half" type="button">Меню 1/2</button> <button id="t-one" type="button">Меню 1</button>
-    <sf-context-menu id="half" popup aria-label="Действия"></sf-context-menu>
-    <sf-context-menu id="one" popup size="1" aria-label="Действия"></sf-context-menu>
+    <sf-menu-context id="half" popup aria-label="Действия"></sf-menu-context>
+    <sf-menu-context id="one" popup size="1" aria-label="Действия"></sf-menu-context>
     <div class="sf-context-menu sf-context-menu--entries" id="plain" style="position:absolute;inset-block-start:400px;inset-inline-start:16px">
       <div class="relative"><div class="sf-context-menu-content flex flex-col">
         <button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-1/2"><span class="sf-button-text-container">Переименовать</span></button>
@@ -53,7 +53,7 @@ const measure = async (browser, label, options) => {
   </body></html>`);
   for (const path of styles) await page.addStyleTag({path});
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-context-menu'));
+  await page.waitForFunction(() => customElements.get('sf-menu-context'));
   const rows = [];
   for (const [id, trigger, size] of [['half', 't-half', '1/2'], ['one', 't-one', '1']]) {
     await page.evaluate(({id, trigger}) => {

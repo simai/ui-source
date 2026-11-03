@@ -17,15 +17,15 @@ async page => {
   }
   await page.evaluate(() => {
     const main = document.querySelector('main');
-    main.innerHTML = '<button id="before">До меню</button><sf-context-menu position="bottom-inline-start" aria-label="Действия с документом"></sf-context-menu><button id="after">После меню</button>';
+    main.innerHTML = '<button id="before">До меню</button><sf-menu-context position="bottom-inline-start" aria-label="Действия с документом"></sf-menu-context><button id="after">После меню</button>';
     window.contextActions = 0;
-    main.querySelector('sf-context-menu').items = ['Открыть', 'Недоступно', 'Сохранить'].map((text, index) => ({
+    main.querySelector('sf-menu-context').items = ['Открыть', 'Недоступно', 'Сохранить'].map((text, index) => ({
       component: 'sf-button',
       props: {text, type: 'link', scheme: 'on-surface', disabled: index === 1, '@click': () => window.contextActions++}
     }));
   });
-  await page.waitForFunction(() => document.querySelectorAll('sf-context-menu sf-button button').length === 3);
-  const menu = page.locator('sf-context-menu');
+  await page.waitForFunction(() => document.querySelectorAll('sf-menu-context sf-button button').length === 3);
+  const menu = page.locator('sf-menu-context');
   const buttons = menu.locator('sf-button button');
   check('Smart root has required accessible menu name', await page.getByRole('menu', {name: 'Действия с документом', exact: true}).count() === 1);
   check('native actions receive menuitem semantics and one roving tab stop', await buttons.evaluateAll(nodes => nodes.every(node => node.getAttribute('role') === 'menuitem') && nodes.filter(node => node.tabIndex === 0).length === 1));

@@ -47,7 +47,7 @@
 /* A menu opened through openFor() is the platform's popover while open, and
    nothing while closed. The user agent's popover box (centred, bordered,
    padded, painted Canvas) is undone so the menu keeps its own. */
-sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
+:is(sf-menu-context, sf-context-menu)[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   display: none;
 }
 

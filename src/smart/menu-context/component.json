@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
-  "id": "smart.context-menu",
-  "tag": "sf-context-menu",
-  "version": "1.5.4",
+  "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.menu-context",
+  "tag": "sf-menu-context",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -638,7 +638,7 @@
     }
   },
   "aliases": {
-    "$comment": "Dated aliases of sf-context-menu for the shim (core/js/aliases.js, standard §16 item 20). mode: host-attribute (no shim), manifest-only (the DOM name does not change; its meaning does), retired (no new name; kept until the date).",
+    "$comment": "Dated aliases of sf-menu-context for the shim (core/js/aliases.js, standard §16 item 20). mode: host-attribute (no shim), manifest-only (the DOM name does not change; its meaning does), retired (no new name; kept until the date).",
     "since": "2026-10-27",
     "remove-after": "2026-12-01",
     "rows": [
@@ -659,24 +659,6 @@
         "note": "stays a host attribute (menu by default); no shim"
       },
       {
-        "from": "sf-context-menu-open",
-        "to": null,
-        "kind": "event",
-        "mode": "manifest-only",
-        "section": "§19.3, vocabulary §4",
-        "note": "the same DOM name is the cancelable request now (sent before opening); the fact is sf-context-menu-opened",
-        "summary": "Opened through openFor(). Bubbles and is composed; carries no detail."
-      },
-      {
-        "from": "sf-context-menu-close",
-        "to": null,
-        "kind": "event",
-        "mode": "manifest-only",
-        "section": "§19.3, vocabulary §4",
-        "note": "the same DOM name is the cancelable request now ({reason, unsaved}, sent before closing); the fact is sf-context-menu-closed",
-        "summary": "A menu opened through openFor() was closed. Bubbles and is composed; carries no detail."
-      },
-      {
         "from": "position",
         "to": null,
         "kind": "setting",
@@ -693,6 +675,116 @@
         "section": "compatibility.deprecations 1.3.0",
         "note": "a menu has no tail; read until the date",
         "summary": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
+      },
+      {
+        "from": "sf-context-menu",
+        "to": "sf-menu-context",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.6.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-menu-context; sf-context-menu is a subclass defined beside it until the date"
+      },
+      {
+        "from": "sf-context-menu-select",
+        "to": "sf-menu-context-select",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-change",
+        "to": "sf-menu-context-change",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-changed",
+        "to": "sf-menu-context-changed",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-reset",
+        "to": "sf-menu-context-reset",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-open",
+        "to": "sf-menu-context-open",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-opened",
+        "to": "sf-menu-context-opened",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-close",
+        "to": "sf-menu-context-close",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-closed",
+        "to": "sf-menu-context-closed",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-search",
+        "to": "sf-menu-context-search",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-context-menu-tab",
+        "to": "sf-menu-context-tab",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag"
       }
     ],
     "since-version": "1.3.0"
@@ -735,7 +827,8 @@
     "version 1.5.0 values: a setting's declared value is the value its entry carried when the host set the entries; reset puts those back. The snapshot is taken once, when the entries arrive, and never again from a value the person changed -- a declared value re-read after a change is not a declared value. A change is written by the row's own path, which also fixes a choice row inside a submenu or a group: the old write looked the row up by identity in the top-level list and found nothing there.",
     "version 1.5.0 choice-drill: a choice of more or longer options than fit at a row's end is view: \"drill\" -- the chosen option under the label, a chevron, and the options as a level of the panel with a check mark on the chosen one; choosing one goes back to the rows, where the row now reads the new value. It is the same entry, the same id and the same change/changed pair as the quiet row, so a panel may move a row between the two looks without touching its host. The level holds no entries of its own, so nothing opens below it, and a flyout menu, which has no level to open, draws the quiet row.",
     "version 1.5.0 panel-width: a drilling panel's width is fixed and public -- --sf-context-menu-inline-size, 280px by default (the ladder's f7 + a8), the width the owner reviewed in the prototype. A fixed width is the point of drilling: the panel neither grows with a level's longest word nor with a value, so a long label wraps and a long value is cut with the whole of it in title. openFor(anchor, {width}) still overrides it, as it does for a panel with tabs.",
-    "version 1.5.4: a header's initials without a picture are sf-avatar's rule (helpers/text.js getInitials, smart helpers 1.0.4; reuse audit 2026-11-02, finding 10): a preposition after the first word is skipped, a hyphenated single name reads as its parts and a letter outside the basic plane is whole. The row and header avatar markup is unchanged."
+    "version 1.5.4: a header's initials without a picture are sf-avatar's rule (helpers/text.js getInitials, smart helpers 1.0.4; reuse audit 2026-11-02, finding 10): a preposition after the first word is skipped, a hyphenated single name reads as its parts and a letter outside the basic plane is whole. The row and header avatar markup is unchanged.",
+    "version 1.6.0: the tag is sf-menu-context (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.menu-context and the bundle cl-menu-context follow it. sf-context-menu stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-menu-context, sf-context-menu) (change journal tag-sf-context-menu-to-sf-menu-context, path-smart-context-menu-to-menu-context)."
   ],
   "x-registry": {
     "item_contract": {
@@ -894,7 +987,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<button id=\"more\" type=\"button\">Ещё</button><sf-context-menu id=\"menu\" popup aria-label=\"Действия\"></sf-context-menu><script>menu.entries=[{id:\"rename\",text:\"Переименовать\",icon:\"edit\"},{type:\"separator\"},{id:\"delete\",text:\"Удалить\",icon:\"delete\",danger:true}];more.onclick=()=>menu.toggleFor(more);</script>",
+      "minimal_example": "<button id=\"more\" type=\"button\">Ещё</button><sf-menu-context id=\"menu\" popup aria-label=\"Действия\"></sf-menu-context><script>menu.entries=[{id:\"rename\",text:\"Переименовать\",icon:\"edit\"},{type:\"separator\"},{id:\"delete\",text:\"Удалить\",icon:\"delete\",danger:true}];more.onclick=()=>menu.toggleFor(more);</script>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

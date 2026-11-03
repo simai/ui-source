@@ -718,11 +718,11 @@ class SfTabs extends TabsElement {
   async standardMenu(field, select) {
     // The standard menu is a relation of the tabs fetched when first used
     // (SF.Loader.ensure: asked for, waited for up to 3 s, never thrown).
-    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
+    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
     if (this[field]?.isConnected) return this[field];
-    const menu = document.createElement('sf-context-menu');
+    const menu = document.createElement('sf-menu-context');
     menu.setAttribute('popup', '');
-    menu.addEventListener('sf-context-menu-select', (event) => select?.(event.detail?.id, event));
+    menu.addEventListener('sf-menu-context-select', (event) => select?.(event.detail?.id, event));
     (this.closest('dialog[open]') || document.body).append(menu);
     this[field] = menu;
     return menu;
@@ -758,8 +758,8 @@ class SfTabs extends TabsElement {
     // The list's elements are asked for now, not waited for: the Loader also
     // finds them in the menu once it is drawn.
     globalThis.SF?.Loader?.ensure?.(['sf-sortable', 'sf-checkbox']);
-    await globalThis.SF?.Loader?.ensure?.(['sf-context-menu']);
-    const menu = document.createElement('sf-context-menu');
+    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
+    const menu = document.createElement('sf-menu-context');
     menu.setAttribute('popup', '');
     menu.setAttribute('aria-label', this.text('customize'));
     menu.setAttribute('role', 'dialog');

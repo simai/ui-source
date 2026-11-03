@@ -45,8 +45,8 @@ const DRAW = {
   avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
   // A drilling panel beside the flyout menu: the fixed width is a drilling
   // panel's (submenu="drill"), so one has to be on the stage to measure it.
-  'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>'
-    + '<sf-context-menu submenu="drill" aria-label="Настройки" entries=\'[{"id":"sound","type":"switch","text":"Звук","value":true},{"id":"lang","text":"Язык","value":"Русский","submenu":[{"id":"ru","text":"Русский"}]}]\'></sf-context-menu>',
+  'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'menu-context', html: '<button id="anchor" type="button">Меню</button><sf-menu-context id="menu" popup aria-label="Меню"></sf-menu-context>'
+    + '<sf-menu-context submenu="drill" aria-label="Настройки" entries=\'[{"id":"sound","type":"switch","text":"Звук","value":true},{"id":"lang","text":"Язык","value":"Русский","submenu":[{"id":"ru","text":"Русский"}]}]\'></sf-menu-context>',
     open: 'const m = document.getElementById("menu"); m.entries = [{id: "a", text: "Открыть"}, {id: "b", text: "Удалить"}]; m.toggleFor(document.getElementById("anchor"))'},
   // The variables belong to the segmented appearance; a count is drawn on a
   // segment that is not selected, so the count's own colour has a part to reach.

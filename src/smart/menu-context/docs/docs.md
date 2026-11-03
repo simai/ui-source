@@ -1,6 +1,6 @@
 # Smart Context Menu
 
-`<sf-context-menu>` добавляет к поверхности Context Menu проверенное управление
+`<sf-menu-context>` добавляет к поверхности Context Menu проверенное управление
 фокусом для плоского списка действий. Компоненту обязательно задают доступное имя
 через `aria-label`.
 
@@ -18,7 +18,7 @@
 
 ```html
 <button id="more" type="button">Ещё</button>
-<sf-context-menu id="menu" popup aria-label="Действия со страницей"></sf-context-menu>
+<sf-menu-context id="menu" popup aria-label="Действия со страницей"></sf-menu-context>
 <script>
   menu.entries = [
     {type: 'heading', text: 'Страница'},
@@ -80,11 +80,11 @@
 кнопки делят ширину поровну.
 
 ```html
-<sf-context-menu popup size="1/2" aria-label="Настройки">
+<sf-menu-context popup size="1/2" aria-label="Настройки">
   <div slot="content" class="sf-context-menu-body">…</div>
   <sf-button slot="footer" size="1/2" appearance="outline" scheme="on-surface" text="Сбросить"></sf-button>
   <sf-button slot="footer" size="1/2" text="Применить"></sf-button>
-</sf-context-menu>
+</sf-menu-context>
 ```
 
 ### Подменю в той же панели
@@ -96,7 +96,7 @@
 раздувалась на каждом уровне.
 
 ```html
-<sf-context-menu id="menu" popup submenu="drill" width="280px" aria-label="Вид"></sf-context-menu>
+<sf-menu-context id="menu" popup submenu="drill" width="280px" aria-label="Вид"></sf-menu-context>
 ```
 
 У пункта с подменю значение `value` в этом случае стоит под названием: длинное
@@ -239,7 +239,7 @@ menu.addEventListener('sf-context-menu-search', async (event) => {
 обрезается многоточием.
 
 ```html
-<sf-context-menu size="1" tabs="Поля|Вид" closable role="dialog" aria-label="Настройки списка">
+<sf-menu-context size="1" tabs="Поля|Вид" closable role="dialog" aria-label="Настройки списка">
   <div slot="content">
     <label class="sf-context-menu-row">
       <i class="sf-icon">drag_indicator</i>
@@ -248,7 +248,7 @@ menu.addEventListener('sf-context-menu-search', async (event) => {
     </label>
   </div>
   <sf-button slot="footer" text="Сбросить"></sf-button>
-</sf-context-menu>
+</sf-menu-context>
 ```
 
 ## Меню, которым управляет хост

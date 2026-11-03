@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const source = readFileSync(new URL('../src/smart/context-menu/index.js', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/smart/menu-context/index.js', import.meta.url), 'utf8');
 
 test('context menu scopes native item semantics to the default menu template', () => {
   // The host's role (standard 1.3.8 §3.1), read without shadowing the element's own role.

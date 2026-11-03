@@ -36,7 +36,7 @@ ${SIZES.map((size) => `<sf-input-textarea data-field="textarea ${size}" size="${
   <sf-list-item kind="text" text="Казань"></sf-list-item>
 </sf-dropdown>
 <button id="trigger" type="button">Меню</button>
-<sf-context-menu id="menu" popup aria-label="Язык"></sf-context-menu>
+<sf-menu-context id="menu" popup aria-label="Язык"></sf-menu-context>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml'};
 const server = createServer((request, response) => {
@@ -68,7 +68,7 @@ const measure = async (options) => {
   await page.waitForFunction(() => document.querySelectorAll('sf-input input').length >= 5
     && document.querySelectorAll('sf-input-textarea textarea').length === 5
     && document.querySelector('sf-input-date input') && document.querySelector('#dropdown button[aria-haspopup]')
-    && customElements.get('sf-context-menu'), null, {timeout: 20000});
+    && customElements.get('sf-menu-context'), null, {timeout: 20000});
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);
   const fields = await page.evaluate(() => [...document.querySelectorAll('[data-field]')].map((host) => {

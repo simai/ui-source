@@ -115,7 +115,7 @@ test('the capture-phase surfaces act only as the innermost layer', async () => {
 test('the other surfaces that own Escape hold the mark too', async () => {
   for (const [path, held, released] of [
     // These three declare their outside press with the mark (layer stack).
-    ['src/smart/context-menu/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
+    ['src/smart/menu-context/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
     ['src/smart/profile-picker/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
     ['src/smart/help-mark/index.js', 'holdOpenSurfaceMark(this, true, {', 'holdOpenSurfaceMark(this, false)'],
     ['src/component/country-code/js/_country_code.js', 'holdOpenSurfaceMark(root, open)', 'holdOpenSurfaceMark(root, false)'],

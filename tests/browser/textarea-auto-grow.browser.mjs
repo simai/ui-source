@@ -114,7 +114,7 @@ try {
         <div><sf-button size="${KEPT[size] ?? size}" icon="search" text="Кнопка"></sf-button></div>
         <sf-input size="${size}" placeholder="Поле"></sf-input>
         <sf-input-textarea size="${size}" auto-grow max-rows="${MAX}" placeholder="Сообщение"></sf-input-textarea>
-        <label data-plain class="sf-input-textarea sf-textarea--size-${size} sf-textarea--bordered flex flex-col">
+        <label data-plain class="sf-textarea sf-textarea--size-${size} sf-textarea--bordered flex flex-col">
           <textarea data-auto-grow data-max-rows="${MAX}" placeholder="Сообщение"></textarea>
         </label>
       </div>`).join('');

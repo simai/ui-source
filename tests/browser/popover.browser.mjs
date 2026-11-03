@@ -18,7 +18,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
   'smart/smart/popover/js/popover.js',
 ].map((p) => join(out, p));
 
@@ -49,7 +49,7 @@ try {
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
   await page.waitForTimeout(1200);
 
-  const unupgraded = await page.evaluate(() => ['sf-popover', 'sf-context-menu']
+  const unupgraded = await page.evaluate(() => ['sf-popover', 'sf-menu-context']
     .filter((tag) => !customElements.get(tag)));
   if (unupgraded.length) {
     console.error(JSON.stringify({unupgraded}, null, 2));

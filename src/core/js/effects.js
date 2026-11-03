@@ -871,14 +871,14 @@ let aboutMenu = null;
 let aboutAnchor = null;
 let aboutChoice = null;
 
-const MENU_TAG = 'sf-context-menu';
+const MENU_TAG = 'sf-menu-context';
 
 // Whether sf-context-menu is defined or can be loaded: when it can be
 // neither, the browser keeps its own menu.
 function menuAvailable() {
   if (globalThis.customElements?.get(MENU_TAG)) return true;
   const loader = globalThis.SF?.Loader;
-  return Boolean(loader?.getCustomElementRules?.()?.[MENU_TAG] || loader?.findPlugins?.['cl-context-menu']);
+  return Boolean(loader?.getCustomElementRules?.()?.[MENU_TAG] || loader?.findPlugins?.['cl-menu-context']);
 }
 
 async function menuElement(document) {
@@ -889,7 +889,7 @@ async function menuElement(document) {
   const menu = document.createElement(MENU_TAG);
   menu.setAttribute('popup', '');
   menu.setAttribute('data-sf-effect-about', '');
-  menu.addEventListener('sf-context-menu-select', (event) => {
+  menu.addEventListener('sf-menu-context-select', (event) => {
     const id = event.detail?.id;
     const choice = aboutChoice;
     if (id === 'sf-effect-motion' && choice) {
@@ -907,7 +907,7 @@ async function menuElement(document) {
   menu.addEventListener('click', (event) => {
     if (event.target?.closest?.('a[data-sf-entry]')) event.preventDefault();
   });
-  menu.addEventListener('sf-context-menu-closed', () => {
+  menu.addEventListener('sf-menu-context-closed', () => {
     aboutAnchor?.remove();
     aboutAnchor = null;
     aboutChoice = null;

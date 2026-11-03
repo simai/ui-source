@@ -25,14 +25,14 @@ async page => {
     }, {base, theme, dir});
     await page.getByRole('button', {name: 'Настройки меню', exact: true}).click();
     await page.getByRole('button', {name: 'Личные настройки', exact: true}).click();
-    await page.waitForFunction(() => document.querySelector('sf-context-menu')?.contains(document.activeElement));
+    await page.waitForFunction(() => document.querySelector('sf-menu-context')?.contains(document.activeElement));
 
     await cdp.send('Emulation.setPageScaleFactor', {pageScaleFactor: 2});
     await page.waitForFunction(() => visualViewport?.scale === 2);
     await page.waitForTimeout(200);
     const state = await page.evaluate(() => {
       const viewport = visualViewport;
-      const root = document.querySelector('sf-context-menu .sf-context-menu');
+      const root = document.querySelector('sf-menu-context .sf-context-menu');
       const rect = root.getBoundingClientRect();
       const ruler = document.createElement('i');
       ruler.style.cssText = 'position:fixed;inline-size:var(--sf-context-menu-viewport-space);block-size:0';
@@ -44,7 +44,7 @@ async page => {
         narrowed: viewport.width < innerWidth && viewport.height < innerHeight,
         fitsInline: rect.left >= viewport.offsetLeft + viewportSpace - 1 && rect.right <= viewport.offsetLeft + viewport.width - viewportSpace + 1,
         fitsBlock: rect.top >= viewport.offsetTop + viewportSpace - 1 && rect.bottom <= viewport.offsetTop + viewport.height - viewportSpace + 1,
-        focusPreserved: document.querySelector('sf-context-menu').contains(document.activeElement)
+        focusPreserved: document.querySelector('sf-menu-context').contains(document.activeElement)
       };
     });
     const row = {theme, dir, ...state};

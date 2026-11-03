@@ -2,7 +2,7 @@
 // Usage: node this-file /absolute/path/to/output
 // One dropping panel, two sizes (owner, 2026-10-14). Measured on the built
 // bytes:
-// - sf-context-menu rows are as tall as a field of the menu's size: 32px at
+// - sf-menu-context rows are as tall as a field of the menu's size: 32px at
 //   1/2 (the default), 40px at size="1"; a submenu takes its parent's size;
 // - width="trigger" opens the menu exactly as wide as the control;
 // - a slotted footer stands under the rows, its two buttons sharing the width;
@@ -29,7 +29,7 @@ const modules = [
   'smart/smart/button/js/button.js',
   'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/menu-context/js/menu-context.js',
 ];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
@@ -61,18 +61,18 @@ try {
   page.on('pageerror', (error) => console.error('pageerror', error.message));
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><body style="margin:40px">
     <button id="small" type="button" style="width:90px">Ещё</button>
-    <sf-context-menu id="menu-small" popup aria-label="Малое"></sf-context-menu>
+    <sf-menu-context id="menu-small" popup aria-label="Малое"></sf-menu-context>
     <button id="large" type="button" style="width:90px;margin-left:300px">Ещё</button>
-    <sf-context-menu id="menu-large" popup size="1" aria-label="Большое"></sf-context-menu>
+    <sf-menu-context id="menu-large" popup size="1" aria-label="Большое"></sf-menu-context>
     <button id="wide" type="button" style="width:256px;margin-left:600px">Сайт</button>
-    <sf-context-menu id="menu-wide" popup width="trigger" aria-label="Сайты"></sf-context-menu>
+    <sf-menu-context id="menu-wide" popup width="trigger" aria-label="Сайты"></sf-menu-context>
     <div style="height:300px"></div>
     <button id="panel-trigger" type="button" style="width:90px">Окно</button>
-    <sf-context-menu id="panel" popup aria-label="Окно">
+    <sf-menu-context id="panel" popup aria-label="Окно">
       <div slot="content" class="sf-context-menu-body"><p style="margin:0">Строка</p></div>
       <sf-button slot="footer" size="1/2" appearance="outline" scheme="on-surface" text="Сбросить"></sf-button>
       <sf-button slot="footer" size="1/2" text="Применить"></sf-button>
-    </sf-context-menu>
+    </sf-menu-context>
     <div id="skeleton" class="sf-skeleton" style="width:200px">
       <div class="sf-skeleton-text sf-skeleton-text--size-1"></div>
       <div class="sf-skeleton-text sf-skeleton-text--size-1"></div>
@@ -85,7 +85,7 @@ try {
   // distr, so the page names the distr this probe routes.
   await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-context-menu') && customElements.get('sf-dropdown'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-menu-context') && customElements.get('sf-dropdown'), null, {timeout: 8000});
 
   const entries = [
     {id: 'a', text: 'Переименовать', icon: 'edit'},

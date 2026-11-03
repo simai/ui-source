@@ -22,7 +22,7 @@ const styles = ['core/core/css/core.css', 'component/component/buttons/css/butto
   'component/component/tabs/css/tabs.css', 'smart/smart/tabs/css/tabs.css', 'component/component/context-menu/css/context-menu.css',
   'component/component/checkbox/css/checkbox.css', 'smart/smart/sortable/css/sortable.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/checkbox/js/checkbox.js', 'smart/smart/context-menu/js/context-menu.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/checkbox/js/checkbox.js', 'smart/smart/menu-context/js/menu-context.js',
   'smart/smart/sortable/js/sortable.js', 'smart/smart/tabs/js/tabs.js'];
 
 const failures = [];
@@ -119,10 +119,10 @@ try {
   if (!keys.onMore || keys.back !== keys.last) note({case: 'the arrows reach «Ещё» and come back', got: keys});
   await page.click('#more .sf-tabs-more button');
   await page.waitForTimeout(600);
-  const menu = await page.evaluate(() => [...document.querySelectorAll('sf-context-menu .sf-context-menu-item-label')].map((node) => node.textContent.trim()));
+  const menu = await page.evaluate(() => [...document.querySelectorAll('sf-menu-context .sf-context-menu-item-label')].map((node) => node.textContent.trim()));
   const hiddenLabels = ['Первая', 'Вторая', 'Третья', 'Четвёртая', 'Пятая', 'Шестая', 'Седьмая', 'Восьмая'].filter((_, at) => !more.shown.includes(at));
   if (menu.join() !== hiddenLabels.join()) note({case: 'the «Ещё» menu lists what does not fit', got: menu, expected: hiddenLabels});
-  await page.evaluate(() => [...document.querySelectorAll('sf-context-menu .sf-context-menu-item')].pop()?.click());
+  await page.evaluate(() => [...document.querySelectorAll('sf-menu-context .sf-context-menu-item')].pop()?.click());
   await page.waitForTimeout(300);
   const chosen = await page.evaluate(() => document.getElementById('more').getAttribute('active-index'));
   if (chosen !== '7') note({case: 'choosing in «Ещё» activates the tab', got: chosen});
@@ -169,7 +169,7 @@ try {
     const rows = [...document.querySelectorAll('.sf-tabs-settings-row')];
     return {rows: rows.map((row) => row.textContent.trim().replace(/\s+/gu, ' ')), boxes: rows.map((row) => Boolean(row.querySelector('sf-checkbox'))),
       movable: rows.map((row) => row.hasAttribute('data-sf-sortable-item') && Boolean(row.querySelector('[data-sf-sortable-handle]'))),
-      footer: Boolean(document.querySelector('.sf-tabs-settings-body')?.closest('sf-context-menu')?.querySelector('.sf-context-menu-footer'))};
+      footer: Boolean(document.querySelector('.sf-tabs-settings-body')?.closest('sf-menu-context')?.querySelector('.sf-context-menu-footer'))};
   });
   if (list.rows.length !== 4 || list.boxes.join() !== 'false,true,true,true' || list.movable.join() !== 'false,true,true,true' || !list.footer) note({case: 'the settings list', got: list});
   await page.evaluate(() => {
