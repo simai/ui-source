@@ -49,7 +49,7 @@ const PHASE_A = [
   // The page's table of contents (2026-10-30).
   'contents',
   'rich-text',
-  'lookup',
+  'input-lookup',
   // A part of the page loaded from an address (2026-11-02).
   'include',
 ];

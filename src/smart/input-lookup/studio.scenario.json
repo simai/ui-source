@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.lookup",
+  "component": "smart.input-lookup",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [

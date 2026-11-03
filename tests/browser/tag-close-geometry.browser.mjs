@@ -66,15 +66,15 @@ const row = (size) => `<div data-size="${size}" style="display:flex;flex-wrap:wr
   <sf-tag data-case="inline" kind="default" text="Billing" size="${size}" inline closable></sf-tag>
   <sf-tag data-case="interactive" kind="default" interactive text="Billing" size="${size}" closable></sf-tag>
   <sf-tag data-case="checkbox" kind="checkbox" text="Billing" size="${size}" closable></sf-tag>
-  <sf-lookup data-case="lookup" size="${size}" multiple label="People" name="people-${size.replace('/', '-')}" value='["a"]'>${island({options: [{value: 'a', label: 'Anna Petrova'}]})}</sf-lookup>
+  <sf-input-lookup data-case="lookup" size="${size}" multiple label="People" name="people-${size.replace('/', '-')}" value='["a"]'>${island({options: [{value: 'a', label: 'Anna Petrova'}]})}</sf-input-lookup>
 </div>`;
 const WRAP_SIZES = ['1/2', '1', '2'];
 const WRAP_PEOPLE = ['Anna Petrova', 'Boris Ivanov', 'Vera Smirnova', 'Gleb Orlov', 'Dina Sokolova', 'Egor Volkov'].map((label, index) => ({value: `p${index}`, label}));
 const wrapped = (size) => `<div data-wrap="${size}" style="display:grid;gap:8px;inline-size:220px">
   <sf-input data-field="input" size="${size}" label="Text"></sf-input>
-  <sf-lookup data-field="empty" size="${size}" multiple label="Text"></sf-lookup>
-  <sf-lookup data-field="one-row" size="${size}" multiple label="Text" value='["short"]'>${island({options: [{value: 'short', label: 'Anna'}]})}</sf-lookup>
-  <sf-lookup data-field="wrapped" size="${size}" multiple label="Text" value='${JSON.stringify(WRAP_PEOPLE.map(({value}) => value))}'>${island({options: WRAP_PEOPLE})}</sf-lookup>
+  <sf-input-lookup data-field="empty" size="${size}" multiple label="Text"></sf-input-lookup>
+  <sf-input-lookup data-field="one-row" size="${size}" multiple label="Text" value='["short"]'>${island({options: [{value: 'short', label: 'Anna'}]})}</sf-input-lookup>
+  <sf-input-lookup data-field="wrapped" size="${size}" multiple label="Text" value='${JSON.stringify(WRAP_PEOPLE.map(({value}) => value))}'>${island({options: WRAP_PEOPLE})}</sf-input-lookup>
 </div>`;
 current = `<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false},icons:{enabled:false}};</script>
@@ -95,7 +95,7 @@ const evidence = [];
 try {
   const page = await browser.newPage();
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
-  await page.waitForFunction((n) => customElements.get('sf-tag') && customElements.get('sf-lookup')
+  await page.waitForFunction((n) => customElements.get('sf-tag') && customElements.get('sf-input-lookup')
     && document.querySelectorAll('sf-tag sf-icon-button > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
   for (const width of [1280, 900, 375]) {
     await page.setViewportSize({width, height: 2400});

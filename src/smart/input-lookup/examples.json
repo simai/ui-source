@@ -442,11 +442,11 @@
         "body": [
           "<main>",
           "  <form id=\"f\">",
-          "    <sf-lookup id=\"l1\" label=\"Members\" name=\"members\" multiple max-items=\"2\" hint=\"People\"><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}, {\"value\": \"u2\", \"label\": \"Boris Ivanov\", \"caption\": \"Development\", \"avatar\": {\"initials\": \"BI\"}}, {\"value\": \"u3\", \"label\": \"Vera Smirnova\", \"caption\": \"Support\", \"avatar\": {\"initials\": \"VS\"}}, {\"value\": \"u4\", \"label\": \"Gleb Orlov\", \"caption\": \"Sales\"}], \"exclude\": [\"u4\"], \"value\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}]}</script></sf-lookup>",
-          "    <sf-lookup id=\"l2\" label=\"City\" name=\"city\" required value='{\"value\":\"kazan\",\"label\":\"Kazan\"}'><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"kazan\", \"label\": \"Kazan\"}, {\"value\": \"moscow\", \"label\": \"Moscow\"}, {\"value\": \"samara\", \"label\": \"Samara\"}]}</script></sf-lookup>",
-          "    <sf-lookup id=\"l3\" label=\"Person\" name=\"person\" min-length=\"2\" debounce=\"0\"></sf-lookup>",
+          "    <sf-input-lookup id=\"l1\" label=\"Members\" name=\"members\" multiple max-items=\"2\" hint=\"People\"><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}, {\"value\": \"u2\", \"label\": \"Boris Ivanov\", \"caption\": \"Development\", \"avatar\": {\"initials\": \"BI\"}}, {\"value\": \"u3\", \"label\": \"Vera Smirnova\", \"caption\": \"Support\", \"avatar\": {\"initials\": \"VS\"}}, {\"value\": \"u4\", \"label\": \"Gleb Orlov\", \"caption\": \"Sales\"}], \"exclude\": [\"u4\"], \"value\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}]}</script></sf-input-lookup>",
+          "    <sf-input-lookup id=\"l2\" label=\"City\" name=\"city\" required value='{\"value\":\"kazan\",\"label\":\"Kazan\"}'><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"kazan\", \"label\": \"Kazan\"}, {\"value\": \"moscow\", \"label\": \"Moscow\"}, {\"value\": \"samara\", \"label\": \"Samara\"}]}</script></sf-input-lookup>",
+          "    <sf-input-lookup id=\"l3\" label=\"Person\" name=\"person\" min-length=\"2\" debounce=\"0\"></sf-input-lookup>",
           "  </form>",
-          "  <div lang=\"ru\"><sf-lookup id=\"l4\" aria-label=\"Person\" min-length=\"3\"></sf-lookup></div>",
+          "  <div lang=\"ru\"><sf-input-lookup id=\"l4\" aria-label=\"Person\" min-length=\"3\"></sf-input-lookup></div>",
           "</main>"
         ]
       },

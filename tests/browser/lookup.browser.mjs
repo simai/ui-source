@@ -34,7 +34,7 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 for (const [name, path] of Object.entries(parts)) if (!existsSync(path)) throw new Error(`${name} not found under ${out}`);
-const ru = JSON.parse(readFileSync(new URL('../../src/smart/lookup/lang/ru.json', import.meta.url), 'utf8')).runtime;
+const ru = JSON.parse(readFileSync(new URL('../../src/smart/input-lookup/lang/ru.json', import.meta.url), 'utf8')).runtime;
 
 const types = {'.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.html': 'text/html'};
 let current = '';
@@ -81,8 +81,8 @@ const island = (data) => `<script type="application/json" data-sf-settings>${JSO
 async function open(page, theme, body, count) {
   current = shell(theme, body);
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
-  await page.waitForFunction((n) => customElements.get('sf-lookup')
-    && document.querySelectorAll('sf-lookup .sf-lookup-input').length === n, count, {timeout: 20000});
+  await page.waitForFunction((n) => customElements.get('sf-input-lookup')
+    && document.querySelectorAll('sf-input-lookup .sf-lookup-input').length === n, count, {timeout: 20000});
   await page.waitForTimeout(300);
 }
 
@@ -113,7 +113,7 @@ try {
   // ---- the search against a provider the probe controls ------------------------
   await open(page, 'theme-light', `
     <form id="f">
-      <sf-lookup id="p" label="Person" name="person" hint="Type a name" debounce="150"></sf-lookup>
+      <sf-input-lookup id="p" label="Person" name="person" hint="Type a name" debounce="150"></sf-input-lookup>
       <button id="after" type="button">After</button>
     </form>`, 1);
   await page.evaluate(() => {
@@ -158,10 +158,10 @@ try {
   // A line of the host under the rows, gone with the next search; on a field of
   // its own, so the calls counted above stay as they are.
   const noticed = await page.evaluate(async () => {
-    const field = document.createElement('sf-lookup');
+    const field = document.createElement('sf-input-lookup');
     field.setAttribute('label', 'Notice');
     document.body.append(field);
-    await customElements.whenDefined('sf-lookup');
+    await customElements.whenDefined('sf-input-lookup');
     await field.updateComplete;
     const settle = () => new Promise((done) => setTimeout(done, 250));
     let notice = 'First 20 shown';
@@ -274,10 +274,10 @@ try {
   // ---- multiple, inline options, exclude, max-items, keyboard ---------------------
   await open(page, 'theme-light', `
     <form id="g">
-      <sf-lookup id="m" label="Members" name="members" multiple max-items="3" value='[{"value":"u1","label":"Anna Petrova"}]'>${island({options: PEOPLE, exclude: ['u4']})}</sf-lookup>
-      <sf-lookup id="r" label="Required" name="req" required>${island({options: PEOPLE})}</sf-lookup>
+      <sf-input-lookup id="m" label="Members" name="members" multiple max-items="3" value='[{"value":"u1","label":"Anna Petrova"}]'>${island({options: PEOPLE, exclude: ['u4']})}</sf-input-lookup>
+      <sf-input-lookup id="r" label="Required" name="req" required>${island({options: PEOPLE})}</sf-input-lookup>
     </form>
-    <div lang="ru"><sf-lookup id="ru" aria-label="Человек" min-length="3"></sf-lookup></div>`, 3);
+    <div lang="ru"><sf-input-lookup id="ru" aria-label="Человек" min-length="3"></sf-input-lookup></div>`, 3);
   await page.evaluate(() => {
     const el = document.getElementById('m');
     window.__said = [];
@@ -379,10 +379,10 @@ try {
   // ---- geometry against sf-input -------------------------------------------------
   await open(page, 'theme-light', ['1/2', '1', '2'].map((size) => `<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px">
       <sf-input data-size="${size}" size="${size}" label="Text"></sf-input>
-      <sf-lookup data-size="${size}" data-kind="empty" size="${size}" label="Text"></sf-lookup>
-      <sf-lookup data-size="${size}" data-kind="single" size="${size}" label="Text" value='{"value":1,"label":"Anna"}'></sf-lookup>
-      <sf-lookup data-size="${size}" data-kind="chip" size="${size}" label="Text" multiple value='[{"value":1,"label":"Anna","avatar":{"initials":"AP"}}]'></sf-lookup></div>`).join(''), 9);
-  await page.waitForFunction(() => document.querySelectorAll('sf-input input').length === 3 && document.querySelectorAll('sf-lookup sf-tag .sf-tag').length === 3, null, {timeout: 10000});
+      <sf-input-lookup data-size="${size}" data-kind="empty" size="${size}" label="Text"></sf-input-lookup>
+      <sf-input-lookup data-size="${size}" data-kind="single" size="${size}" label="Text" value='{"value":1,"label":"Anna"}'></sf-input-lookup>
+      <sf-input-lookup data-size="${size}" data-kind="chip" size="${size}" label="Text" multiple value='[{"value":1,"label":"Anna","avatar":{"initials":"AP"}}]'></sf-input-lookup></div>`).join(''), 9);
+  await page.waitForFunction(() => document.querySelectorAll('sf-input input').length === 3 && document.querySelectorAll('sf-input-lookup sf-tag .sf-tag').length === 3, null, {timeout: 10000});
   await page.mouse.move(0, 0);
   await page.waitForTimeout(400);
   const geometry = await page.evaluate(() => ['1/2', '1', '2'].map((size) => {
@@ -395,7 +395,7 @@ try {
         // Where the text starts inside the frame.
         Math.round(inputElement.getBoundingClientRect().left + parseFloat(text.paddingLeft) - frameElement.getBoundingClientRect().left)];
     };
-    const lookup = (kind) => document.querySelector(`sf-lookup[data-size="${size}"][data-kind="${kind}"]`);
+    const lookup = (kind) => document.querySelector(`sf-input-lookup[data-size="${size}"][data-kind="${kind}"]`);
     const height = (element) => Math.round(element.getBoundingClientRect().height * 100) / 100;
     return {
       size,
@@ -417,7 +417,7 @@ try {
   evidence.geometry = geometry;
 
   // ---- the list's place -----------------------------------------------------------
-  await open(page, 'theme-light', `<sf-lookup id="w" label="Members" multiple>${island({options: PEOPLE})}</sf-lookup>`, 1);
+  await open(page, 'theme-light', `<sf-input-lookup id="w" label="Members" multiple>${island({options: PEOPLE})}</sf-input-lookup>`, 1);
   await page.click('#w .sf-lookup-input');
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(300);
@@ -432,9 +432,9 @@ try {
   // ---- contrast, light and dark ---------------------------------------------------
   for (const theme of ['theme-light', 'theme-dark']) {
     await page.emulateMedia({colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
-    await open(page, theme, `<sf-lookup id="c" label="Members" hint="A hint" placeholder="Find a person" multiple value='[{"value":"u2","label":"Boris Ivanov"}]'>${island({options: PEOPLE})}</sf-lookup>
-      <sf-lookup id="h" label="Person" hint="A hint" placeholder="Find a person"></sf-lookup>
-      <sf-lookup id="fl" label="Person" appearance="filled" placeholder="Find a person"></sf-lookup>`, 3);
+    await open(page, theme, `<sf-input-lookup id="c" label="Members" hint="A hint" placeholder="Find a person" multiple value='[{"value":"u2","label":"Boris Ivanov"}]'>${island({options: PEOPLE})}</sf-input-lookup>
+      <sf-input-lookup id="h" label="Person" hint="A hint" placeholder="Find a person"></sf-input-lookup>
+      <sf-input-lookup id="fl" label="Person" appearance="filled" placeholder="Find a person"></sf-input-lookup>`, 3);
     await page.evaluate(() => { const el = document.getElementById('h'); el.provider = async () => ({items: []}); });
     await page.click('#c .sf-lookup-input');
     await page.keyboard.press('ArrowDown');

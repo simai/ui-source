@@ -3993,6 +3993,67 @@
       },
       "owner": "ui-source",
       "source": "src/smart/copy-button/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button-copy/component.json"
+    },
+    {
+      "id": "tag-sf-lookup-to-sf-input-lookup",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-lookup is sf-input-lookup (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-lookup's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-lookup, sf-lookup), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-lookup",
+          "from": "sf-lookup",
+          "to": "sf-input-lookup"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-lookup></sf-lookup>",
+        "after": "<sf-input-lookup></sf-input-lookup>"
+      },
+      "manual": "Write <sf-input-lookup> for <sf-lookup> in markup and sf-input-lookup for sf-lookup in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-lookup, or both names through SF.tags.selector('sf-input-lookup') while the alias lives; a class or a custom property spelled like the old tag (.sf-lookup, --sf-lookup-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-lookup/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-lookup-to-input-lookup",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-lookup is served from smart/input-lookup/ since its folder took the new tag's name: js/input-lookup.js, loader bundle cl-input-lookup. The old path keeps working until remove_after: smart/lookup/js/lookup.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-lookup/js/input-lookup.js, the Loader forwards the bundle name cl-lookup to cl-input-lookup (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.lookup is a dated alias of smart.input-lookup, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-lookup",
+          "from": "smart/lookup/js/lookup.js",
+          "to": "smart/input-lookup/js/input-lookup.js",
+          "match": "smart/lookup/js/lookup(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-lookup",
+          "to": "cl-input-lookup",
+          "match": "['\"]cl-lookup['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.lookup",
+          "to": "smart.input-lookup",
+          "match": "['\"]smart\\.lookup['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-lookup/ for smart/lookup/ and input-lookup for lookup in the file names (js/input-lookup.js, js/input-lookup.min.js); in a product rule's relation write cl-input-lookup for cl-lookup, and in a manifest or a package contract smart.input-lookup for smart.lookup. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/lookup/js/lookup.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-lookup/js/input-lookup.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/lookup/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-lookup/component.json"
     }
   ]
 }

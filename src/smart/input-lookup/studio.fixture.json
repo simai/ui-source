@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.lookup",
+  "component": "smart.input-lookup",
   "title": "lookup reference",
-  "summary": "Deterministic reference fixture for sf-lookup.",
+  "summary": "Deterministic reference fixture for sf-input-lookup.",
   "locale": "en",
   "props": {
     "label": "Members",

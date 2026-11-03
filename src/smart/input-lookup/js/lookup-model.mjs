@@ -1,4 +1,4 @@
-// sf-lookup's model, without a document: the value, the items an answer
+// sf-input-lookup's model, without a document: the value, the items an answer
 // brings, the list a query shows, a choice and the search's states. The
 // element (../index.js) keeps the instance's state and draws it; everything
 // here is a plain function of its arguments, so tests/lookup.contract.test.mjs

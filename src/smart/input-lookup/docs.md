@@ -1,6 +1,6 @@
 # Lookup Smart Component
 
-`sf-lookup` is a form field that picks people or objects from a search the
+`sf-input-lookup` is a form field that picks people or objects from a search the
 host answers: the person types, sees rows with a picture, a name and a
 caption, and chooses one or several. Chosen items are removable chips; the
 list says when it waits for more letters, searches, finds nothing, is
@@ -10,9 +10,9 @@ Use sf-dropdown for a short fixed list without search, sf-search for site
 search.
 
 ```html
-<sf-lookup label="Members" name="members" multiple max-items="49"></sf-lookup>
+<sf-input-lookup label="Members" name="members" multiple max-items="49"></sf-input-lookup>
 <script>
-  const lookup = document.querySelector('sf-lookup');
+  const lookup = document.querySelector('sf-input-lookup');
   lookup.provider = async (query, {cursor, limit, signal}) => {
     const response = await fetch(`/api/people?q=${encodeURIComponent(query)}&cursor=${cursor ?? ''}&limit=${limit}`, {signal});
     return response.json(); // {items, nextCursor} or {status: 'unavailable'}

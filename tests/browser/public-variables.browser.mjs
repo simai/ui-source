@@ -170,8 +170,8 @@ const DRAW = {
   // The frame at rest and invalid; a third opened from its options, so the
   // list's surface is measured on its panel (the focused frame has its own
   // fill and border, as sf-input's).
-  lookup: {css: ['tags', 'avatars', 'icon-buttons', 'icons', 'smart/smart/lookup/css/lookup.css'], js: 'lookup',
-    html: '<sf-lookup label="Город" value="moscow"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"}]}</script></sf-lookup><sf-lookup label="Ошибка" invalid></sf-lookup><sf-lookup id="lk" label="Список"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"},{"value":"kazan","label":"Казань"}]}</script></sf-lookup>',
+  lookup: {css: ['tags', 'avatars', 'icon-buttons', 'icons', 'smart/smart/input-lookup/css/input-lookup.css'], js: 'input-lookup',
+    html: '<sf-input-lookup label="Город" value="moscow"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"}]}</script></sf-input-lookup><sf-input-lookup label="Ошибка" invalid></sf-input-lookup><sf-input-lookup id="lk" label="Список"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"},{"value":"kazan","label":"Казань"}]}</script></sf-input-lookup>',
     open: 'const l = document.getElementById("lk"); l.querySelector("input").focus(); l.search("")'},
   // The error row (an address that cannot load: the page is about:blank)
   // takes the gap, padding, border, radius and message colour; the second,

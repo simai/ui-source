@@ -103,7 +103,7 @@
         "smart.empty-state",
         "smart.icon",
         "smart.input",
-        "smart.lookup",
+        "smart.input-lookup",
         "smart.message-log",
         "smart.progress-bar",
         "smart.thread-list"

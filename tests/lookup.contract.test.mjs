@@ -18,27 +18,27 @@ import {
   sameValue,
   searchPlan,
   withoutExcluded,
-} from '../src/smart/lookup/js/lookup-model.mjs';
+} from '../src/smart/input-lookup/js/lookup-model.mjs';
 
 // sf-lookup, the people and object picker: its manifest and the pure parts of
-// its model (src/smart/lookup/js/lookup-model.mjs) -- the value, exclude,
+// its model (src/smart/input-lookup/js/lookup-model.mjs) -- the value, exclude,
 // max-items, the answers the provider gives and the states they make. The
 // browser probe tests/browser/lookup.browser.mjs runs the element itself.
 
 const root = new URL('..', import.meta.url);
 const json = (path) => JSON.parse(readFileSync(new URL(path, root), 'utf8'));
-const component = json('src/smart/lookup/component.json');
-const manifest = json('src/smart/lookup/smart.manifest.json');
-const en = json('src/smart/lookup/lang/en.json').runtime;
-const ru = json('src/smart/lookup/lang/ru.json').runtime;
+const component = json('src/smart/input-lookup/component.json');
+const manifest = json('src/smart/input-lookup/smart.manifest.json');
+const en = json('src/smart/input-lookup/lang/en.json').runtime;
+const ru = json('src/smart/input-lookup/lang/ru.json').runtime;
 
 const anna = {value: 'u1', label: 'Anna', caption: 'Design', avatar: {initials: 'AP'}};
 const boris = {value: 'u2', label: 'Boris'};
 const vera = {value: 'u3', label: 'Vera', caption: 'Support'};
 
 test('the manifest declares the settings, the value, the events and the form of the design draft', () => {
-  assert.equal(component.id, 'smart.lookup');
-  assert.equal(component.tag, 'sf-lookup');
+  assert.equal(component.id, 'smart.input-lookup');
+  assert.equal(component.tag, 'sf-input-lookup');
   assert.equal(component.family, 'field');
   for (const name of ['name', 'label', 'placeholder', 'hint', 'multiple', 'max-items', 'min-length', 'max-results', 'debounce',
     'maxlength', 'options', 'exclude', 'provider', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'size', 'appearance']) {
@@ -56,8 +56,8 @@ test('the manifest declares the settings, the value, the events and the form of 
   assert.deepEqual(Object.keys(component.events).sort(), ['change', 'input']);
   assert.equal(component.form.submits, 'value');
   assert.equal(component.accessibility.role, 'combobox');
-  assert.equal(manifest.id, 'smart.lookup');
-  assert.equal(manifest.custom_element.tag ?? manifest.custom_element, 'sf-lookup');
+  assert.equal(manifest.id, 'smart.input-lookup');
+  assert.equal(manifest.custom_element.tag ?? manifest.custom_element, 'sf-input-lookup');
   assert.deepEqual(manifest.state.machines.search, STATES);
 });
 
@@ -216,10 +216,10 @@ test('the arrows step and stop at the ends, Home and End go to them', () => {
 });
 
 test('the examples hold a studio example and a conformance page of checks', () => {
-  const examples = json('src/smart/lookup/examples.json');
+  const examples = json('src/smart/input-lookup/examples.json');
   assert.ok(examples.examples.some((example) => example.studio));
   const page = examples.pages.find((one) => one.name === 'conformance');
   assert.ok(page.checks.length >= 8);
-  const probe = json('src/smart/lookup/probe.json');
+  const probe = json('src/smart/input-lookup/probe.json');
   assert.ok(probe);
 });

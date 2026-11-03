@@ -73,6 +73,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-copy-button-to-button-copy"
+    },
+    "cl-lookup": {
+      "to": "cl-input-lookup",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-lookup-to-input-lookup"
     }
   }
 }

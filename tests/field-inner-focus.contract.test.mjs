@@ -19,7 +19,7 @@ const RESETS = [
   ['src/component/country-code/scss/_css_country_code.scss', '.sf-country-code .sf-country-code-field input:focus-visible', 'outline: none !important;'],
   ['src/component/quantity/scss/_css__quantity.scss', '.sf-quantity input:focus-visible', 'outline: none !important;'],
   ['src/component/verification/scss/_css__verification.scss', '.sf-verification-input:focus', 'outline: 0 !important;'],
-  ['src/smart/lookup/scss/_smart__lookup.scss', '.sf-lookup .sf-lookup-input:focus-visible', 'outline: none !important;'],
+  ['src/smart/input-lookup/scss/_smart__lookup.scss', '.sf-lookup .sf-lookup-input:focus-visible', 'outline: none !important;'],
   ['src/smart/rich-text/scss/_smart__rich_text.scss', '.sf-rich-text .sf-rich-text-editor:focus-visible', 'outline: none !important;'],
 ];
 
@@ -40,7 +40,7 @@ test('the wrapper still draws its own ring', () => {
     ['src/component/country-code/scss/_css_country_code.scss', '.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-country-code-field'],
     ['src/component/quantity/scss/_css__quantity.scss', '.sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap'],
     ['src/component/verification/scss/_css__verification.scss', '.sf-verification:has(.sf-verification-input:focus-visible)'],
-    ['src/smart/lookup/scss/_smart__lookup.scss', '.sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame'],
+    ['src/smart/input-lookup/scss/_smart__lookup.scss', '.sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame'],
     ['src/smart/rich-text/scss/_smart__rich_text.scss', '.sf-rich-text:not(.sf-rich-text--pointer-focus):has(.sf-rich-text-editor:focus-visible) .sf-rich-text-frame'],
   ];
   for (const [path, selector] of rings) {

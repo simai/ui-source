@@ -1,0 +1,18 @@
+{
+  "$comment": "Dated aliases of sf-input-lookup, generated from component.json \"aliases\" by scripts/generate-component-files.mjs; read by core/js/alias-table.js and the shim. Do not edit.",
+  "component": "sf-input-lookup",
+  "since": "2026-11-03",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "sf-lookup",
+      "to": "sf-input-lookup",
+      "kind": "tag",
+      "component": "sf-input-lookup",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+      "note": "the element is sf-input-lookup; sf-lookup is a subclass defined beside it until the date"
+    }
+  ]
+}

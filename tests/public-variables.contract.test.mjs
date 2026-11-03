@@ -67,7 +67,7 @@ const FOLDERS = {
   // sf-rich-text (2026-10-30): a sheet of its own, sf-textarea's set of names.
   'rich-text': 'smart/rich-text',
   // sf-lookup (2026-10-30): a sheet of its own, sf-input's set and the list's surface.
-  lookup: 'smart/lookup',
+  lookup: 'smart/input-lookup',
   // sf-include (2026-11-02): a sheet of its own, the placeholder's height and the error row.
   include: 'smart/include',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
