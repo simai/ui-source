@@ -7,12 +7,12 @@ import {fileURLToPath} from 'node:url';
 // A manifest's provenance.source_artifacts is authored by hand: the provenance
 // refresh only re-hashes the paths already listed, it never discovers them. So a
 // manifest created by copying another one keeps the other component's files and
-// the refresh happily re-hashes them for ever. sf-property-view shipped one pair
+// the refresh happily re-hashes them for ever. sf-view-properties shipped one pair
 // claiming it was built from src/smart/data-view/index.js, and every check passed,
 // because every hash was correct -- of the wrong files.
 //
 // A component must name its own sources. It may also name a file outside its
-// directory, which is honest when it genuinely builds from one -- sf-table names
+// directory, which is honest when it genuinely builds from one -- sf-view-table names
 // src/smart/pagination/index.js -- so the rule is that its own directory must be
 // named at least once and nothing may be claimed that does not exist.
 

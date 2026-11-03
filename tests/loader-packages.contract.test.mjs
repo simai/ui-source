@@ -28,6 +28,7 @@ const slices = [
   between('SFLoaderPlugin.prototype.pathPluginJs =', 'SFLoaderPlugin.prototype.shouldSkipPluginCss ='),
   between('SFLoaderPlugin.prototype.revalidateMissingPlugins =', 'SFLoaderPlugin.prototype.registerComponent ='),
   between('SFLoaderPlugin.prototype.getPersistentMissingFiles =', 'SFLoaderPlugin.prototype.getAssetVersion ='),
+  between('SFLoaderPlugin.prototype.forwardedRule =', 'SFLoaderPlugin.prototype.setRelation ='),
 ].join('\n');
 
 function harness({prepared = false, declared = {}} = {}) {
@@ -321,4 +322,34 @@ test('the alias is the journal record and nothing else', () => {
   assert.match(source, new RegExp(`since: '${record.deprecated_on}'`));
   assert.deepEqual(record.items.map((item) => item.to),
     ['SF_BOOT_CONFIG.packages.pro', "SF.RuleLoader.registerPackage('pro')"]);
+});
+
+// A former bundle name may lead to a package's rule (rename plan R2: cl-table ->
+// cl-view-table, package pro; contracts/smart-rule-forwards.v1.json). The forward
+// is the stub the constructor installs (no tags, no assets, one relation); the
+// package's rule arrives with its rule file and the forward then resolves from
+// the package base. A package built before the rename registers cl-table itself:
+// it takes the stub's place, and its own rule is used, not forwarded.
+test('a forward leads to a package rule, and a package that still owns the former name keeps it', () => {
+  const stub = {tags: [], type: 'smart', mode: 'smart', js: false, css: false, relation: [{name: 'cl-view-table'}]};
+  const renamed = harness({declared: {pro: {base: '/pro'}}});
+  renamed.loader.ruleForwards = {'cl-table': 'cl-view-table'};
+  renamed.rules['cl-table'] = {...stub};
+  renamed.loader.registerPackage('pro', {rules: {'cl-view-table': {tags: ['sf-view-table', 'sf-table'], type: 'smart', js: true}}});
+  assert.equal(renamed.loader.forwardedRule('cl-table'), 'cl-view-table');
+  assert.equal(renamed.loader.isPluginResolvable('cl-view-table'), true);
+  assert.equal(renamed.loader.pathPluginJs('cl-view-table', true, 'default', 'smart'), '/pro/view-table/js/view-table.js');
+  assert.equal(renamed.loader.forwardedRule('cl-spinner'), null, 'a name with no forward is itself');
+
+  const before = harness({declared: {pro: {base: '/pro'}}});
+  before.loader.ruleForwards = {'cl-table': 'cl-view-table'};
+  before.rules['cl-table'] = {...stub};
+  before.loader.registerPackage('pro', {rules: {'cl-table': {tags: ['sf-table'], type: 'smart', js: true}}});
+  assert.equal(before.rules['cl-table'].package, 'pro', 'the package takes the stub\'s place');
+  assert.equal(before.loader.forwardedRule('cl-table'), null, 'and its own rule is not forwarded');
+
+  // Both readers of a relation go through it: the relation walk and the sheets.
+  assert.match(source, /const forwardTo = named\?\.name && this\.forwardedRule\(named\.name\);/u);
+  assert.match(source, /const target = this\.forwardedRule\(relation\.name\) \|\| relation\.name;/u);
+  assert.doesNotMatch(source.replace(/SFLoaderPlugin\.prototype\.forwardedRule = [\s\S]*?\n\};/u, ''), /this\.ruleForwards\?\.\[/u, 'no reader skips the package check');
 });

@@ -23,10 +23,13 @@
 //   (scripts/rename-smart-tag.mjs writes it, --sweep takes it out; the
 //   contract test tests/tag-aliases.contract.test.mjs holds both).
 //
-// The Framework's own aliases are a static table (tag-aliases.generated.js,
-// written from every component's aliases.json by scripts/tag-alias-table.mjs),
-// so a lookup finds an old tag before the renamed component's bundle has run.
-// A package's component adds its rows when it is defined. Every copy of this
+// The aliases are a static table (tag-aliases.generated.js, written by
+// scripts/tag-alias-table.mjs from every component's aliases.json and from the
+// element_aliases of the component package references,
+// contracts/packages/*.package.json), so a lookup finds an old tag before the
+// renamed component's bundle has run, a package's (sf-table, rename plan R2)
+// as well as the Framework's. A package's component adds its rows again when it
+// is defined, which matters only for a package the pair does not reference. Every copy of this
 // module shares one state on the page (a global symbol); the Smart bundles
 // reach it through the shared runtime (smart-base re-exports it).
 import {noteDeprecated} from './deprecations.js';
@@ -78,10 +81,20 @@ export function isTag(element, tag) {
   return Boolean(name) && tagNames(tag).includes(name);
 }
 
-// The current name of a tag: 'sf-button-close' for 'sf-close'.
+// The current name of a tag: 'sf-button-close' for 'sf-close'. An old tag the
+// page still has as an element of its own stays itself: a component package
+// built before its rename (rules naming sf-table alone) beside a pair whose
+// table already knows the new name, where the new tag would never upgrade.
 export function canonicalTag(tag) {
   const name = String(tag || '').toLowerCase();
-  return state().byOld.get(name)?.to ?? name;
+  const row = state().byOld.get(name);
+  if (!row) return name;
+  const own = globalThis.customElements?.get?.(name);
+  if (own && !own.sfTagAliasOf) return name;
+  let rules = null;
+  try { rules = globalThis.SF?.Loader?.getCustomElementRules?.() ?? null; } catch { rules = null; }
+  if (rules && rules[name] && !rules[row.to]) return name;
+  return row.to;
 }
 
 // Every open row: [{from, to, since, remove_after}].

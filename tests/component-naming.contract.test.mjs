@@ -32,7 +32,7 @@ test('the contract accepts a product name it does not own', () => {
   const schema = JSON.parse(readFileSync(resolve(root, 'contracts/schema/smart-component-manifest.v2.schema.json'), 'utf8'));
   const element = new RegExp(schema.properties.custom_element.pattern, 'u');
   const type = new RegExp(schema.properties.composition.properties.declarative.properties.type.pattern, 'u');
-  for (const name of ['sf-table', 'lr-records-list', 'docara-page-tree']) {
+  for (const name of ['sf-view-table', 'lr-records-list', 'docara-page-tree']) {
     assert.ok(element.test(name), `element ${name}`);
   }
   for (const name of ['smart.data-view', 'larena.records-list', 'docara.page-tree']) {

@@ -29,7 +29,7 @@ function loader(rules) {
   SFLoaderPlugin.prototype.mutate = (fn) => fn();
   SFLoaderPlugin.prototype.getLoader = () => {};
   const context = {SFLoaderPlugin, globalThis: {}, setTimeout: (fn) => fn()};
-  vm.runInNewContext(`${slice('SFLoaderPlugin.prototype.setRelation =', 'SFLoaderPlugin.prototype.sortPlugins =')}
+  vm.runInNewContext(`${slice('SFLoaderPlugin.prototype.forwardedRule =', 'SFLoaderPlugin.prototype.sortPlugins =')}
 ${slice('SFLoaderPlugin.prototype.ensurePlugin =', 'SFLoaderPlugin.prototype.ensureSmartElementLoaded =')}`, context);
   return new SFLoaderPlugin();
 }

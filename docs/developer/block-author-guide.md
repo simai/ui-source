@@ -45,7 +45,7 @@ the report as JSON.
 | `cases/*.json` | `simai.composition.structured-content-conformance-case` v1 | a Document and what it draws |
 
 `kits/block/examples/sample-cards/` shows what the one block editor reads
-from a block (since core.runtime 1.22.0, type manifest schema 1.3.0): its
+from a block (since core.runtime 1.23.0, type manifest schema 1.3.0): its
 place in the catalogue, its variants, layout parameters as SIMAI Framework
 utilities, a named place and data from a host. The sections from
 "The catalogue and variants" on describe them.

@@ -300,11 +300,11 @@
       "kept_for": "sf-chart-heatmap lives in the chart package (simai/ui-chart). The package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one (ui-chart msg-4445239656ac4dc3b461, 2026-11-03)."
     },
     {
-      "component": "table",
+      "component": "view-table",
       "property": "data-state",
       "package": "pro",
       "reason": "a lifecycle state of the data — auto, loading, populated, empty, error — not a status the control reports about the world. The word error appears in both, which is why the exemption is written down rather than inferred.",
-      "kept_for": "sf-table lives in the SIMAI Framework Pro package (package pro, the component folder in simai/ui-pro; package larena from 2026-10-11 to 2026-11-02), and no free component declares data-state. The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
+      "kept_for": "sf-view-table lives in the SIMAI Framework Pro package (package pro, the component folder in simai/ui-pro; package larena from 2026-10-11 to 2026-11-02), and no free component declares data-state. It is keyed by the package folder, view-table since rename plan R2 (table before 2026-11-03). The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
     },
     {
       "component": "icon",

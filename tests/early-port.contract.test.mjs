@@ -85,7 +85,7 @@ const DECLARED = {
 
 // An element that takes its port by the base action, as the Smart base gives it.
 function listElement(world, declared = DECLARED, {island = true, raw = null} = {}) {
-  const element = node(world, 'sf-data-view', {attrs: {id: 'list'}});
+  const element = node(world, 'sf-view', {attrs: {id: 'list'}});
   if (island) node(world, 'script', {attrs: {type: 'application/json', 'data-sf-port': ''}, text: raw ?? JSON.stringify(declared), parent: element});
   node(world, 'sf-pagination', {attrs: {slot: 'pagination'}, parent: element});
   element.connected = [];
@@ -110,9 +110,9 @@ test('one request: the first call leaves when core runs, the element takes it wh
   assert.deepEqual(world.calls[0].body, {intent: 'query.change', payload: {query: QUERY, sequence: 0}, page: '/admin/catalog'});
   assert.equal(world.calls[0].init.credentials, 'same-origin');
   assert.ok(islandOf(element), 'the island stays: the element reads its capabilities and first query from it');
-  assert.deepEqual([...api.firstTags()].sort(), ['sf-data-view', 'sf-pagination']);
+  assert.deepEqual([...api.firstTags()].sort(), ['sf-pagination', 'sf-view']);
 
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   assert.equal(element.connected.length, 1, 'core handed the port in the definition task');
   const port = element.connected[0];
@@ -139,7 +139,7 @@ test('a query that changed before the element took the answer asks again, and th
   world.answers.push(() => new Promise((resolve) => { release = resolve; }));
   const element = listElement(world);
   installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   const port = element.connected[0];
   // The person kept page size 40: the view's first query is not the declared one.
@@ -156,7 +156,7 @@ test('an early answer too old, or from a page restored from the back/forward cac
   const world = fakeWindow();
   const element = listElement(world);
   installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   world.win.clock = 10001;
   await element.connected[0].raise('query.change', {sequence: 1, query: {...QUERY}});
@@ -166,7 +166,7 @@ test('an early answer too old, or from a page restored from the back/forward cac
   const restored = listElement(again);
   installEarlyPort(again.win);
   again.win.dispatch('pageshow', {persisted: true});
-  again.define('sf-data-view');
+  again.define('sf-view');
   await tick();
   await restored.connected[0].raise('query.change', {sequence: 1, query: {...QUERY}});
   assert.equal(again.calls.length, 2, 'restored from the cache: asked again');
@@ -179,7 +179,7 @@ test('a later call answered out of turn: the early answer keeps its own sequence
   world.answers.push(() => new Promise((resolve) => { release = resolve; }));
   const element = listElement(world);
   installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   const port = element.connected[0];
   const first = port.raise('query.change', {sequence: 1, query: {...QUERY}, reason: 'connected'});
@@ -195,7 +195,7 @@ test('an early call that failed is asked again, not reported as the element\'s f
   world.answers.push(() => new Error('offline'));
   const element = listElement(world);
   installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   const answer = await element.connected[0].raise('query.change', {sequence: 1, query: {...QUERY}});
   assert.equal(answer.answer, 'applied');
@@ -207,7 +207,7 @@ test('a malformed island is warned about and changes nothing: no call, no port, 
     const world = fakeWindow();
     const element = listElement(world, null, {raw});
     const api = installEarlyPort(world.win);
-    world.define('sf-data-view');
+    world.define('sf-view');
     await tick();
     assert.equal(world.calls.length, 0, raw);
     assert.equal(element.connected.length, 0, raw);
@@ -218,7 +218,7 @@ test('a malformed island is warned about and changes nothing: no call, no port, 
   const world = fakeWindow();
   const element = listElement(world, {...DECLARED, first: {payload: {}}});
   installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   assert.equal(world.calls.length, 0);
   assert.equal(element.connected.length, 1);
@@ -229,7 +229,7 @@ test('no island, no change: nothing is sent, connected or preferred', async () =
   const world = fakeWindow();
   const element = listElement(world, null, {island: false});
   const api = installEarlyPort(world.win);
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   assert.equal(world.calls.length, 0);
   assert.equal(element.connected.length, 0);
@@ -243,7 +243,7 @@ test('a port the page connected first is left alone', async () => {
   const element = listElement(world);
   installEarlyPort(world.win);
   element.sfPort = {port: 'simai.dataview-port', raise() {}};
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   assert.equal(element.connected.length, 0);
 });
@@ -260,7 +260,7 @@ test('an island without a url takes its port from the page\'s registry, register
     raise: async (intent, payload) => { raised.push([intent, payload]); return {answer: 'applied', sequence: payload.sequence, data: {}}; }};
   assert.equal(api.register('simai.dataview-port', adapter), true);
   assert.equal(raised.length, 1, 'the early call is the adapter\'s');
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   const port = element.connected[0];
   assert.deepEqual(port.capabilities, ['row-actions']);
@@ -279,7 +279,7 @@ test('connect: false starts the call only; the page\'s own adapter takes it; fir
   const api = installEarlyPort(world.win);
   assert.deepEqual(world.calls[0].body, {scope_ref: 's1', structure_id: 9, query: QUERY});
   assert.equal(world.calls[0].init.headers['x-csrf-token'], 'tok');
-  world.define('sf-data-view');
+  world.define('sf-view');
   await tick();
   assert.equal(element.connected.length, 0);
   const taken = api.take({port: DECLARED.port, version: DECLARED.version, url: DECLARED.url, intent: 'query.change', payload: {query: {...QUERY}, sequence: 5}});

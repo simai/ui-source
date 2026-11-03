@@ -22,7 +22,7 @@
 // --update writes each case's expect from what the renderer draws now, for
 // review.
 //
-// Since core.runtime 1.22.0 (the one block editor, 2026-11-03) it also asks
+// Since core.runtime 1.23.0 (the one block editor, 2026-11-03) it also asks
 // of a block: its catalogue place and variants, its layout parameters as
 // SIMAI Framework utilities, its named places, the data it takes (every state
 // drawn, a failure kept inside the block), and a site block's tree and form
@@ -339,7 +339,7 @@ export async function checkBlock(folder, options = {}) {
     composition.validateTypeManifest(type, composition.extendRegistry([type], {}), { utilityRules: framework.utilityRules }).diagnostics
       .forEach(({ code, path, message }) => add('manifest', code, `type.json ${path}`, message));
   } else if (!blocksAware && ['catalogue', 'variants', 'composed', 'exposed', 'data_bindings', 'runtime'].some((key) => key in type)) {
-    skip('manifest', 'this SIMAI Framework predates the one block editor contracts (core.runtime 1.22.0)');
+    skip('manifest', 'this SIMAI Framework predates the one block editor contracts (core.runtime 1.23.0)');
   }
   if (blocksAware && !isObject(type.catalogue)) warn('manifest', 'catalogue_missing', 'type.json $.catalogue', `No catalogue place: the editor files it under the group ${namespace}`);
   // Every class a layout parameter can print is a SIMAI Framework utility.

@@ -3,8 +3,11 @@ import './internal.js';
 import { installAliases } from './aliases.js';
 import { canonicalTag, defineTagAliases } from './tag-aliases.js';
 // The renamed-tag helpers, from the shared runtime: a bundle that finds an
-// element by a tag with dated aliases asks for every name through these.
-export { canonicalTag, isTag, tagNames, tagSelector } from './tag-aliases.js';
+// element by a tag with dated aliases asks for every name through these. An
+// element that is not a Smart base element (a package's composite that calls
+// customElements.define itself, sf-view) defines its old tags beside its own
+// with defineTagAliases.
+export { canonicalTag, defineTagAliases, isTag, tagNames, tagSelector } from './tag-aliases.js';
 import { upgradeOwnProperties } from './upgrade-properties.js';
 import { connectPort as connectHostPort, portOf } from './host-port.js';
 import { html, nothing, render } from "lit";
@@ -2893,7 +2896,7 @@ class SfBaseElement extends HTMLElement {
     this.removeAttribute("data-sf-first-paint");
     Array.from(this.children).forEach((child) => child.removeAttribute("data-sf-held"));
     // A host printed as a static node of another's picture and adopted live
-    // (sf-data-view takes its printed sf-table and sf-pagination as its
+    // (sf-view takes its printed sf-view-table and sf-pagination as its
     // slotted children) is no longer static markup once it draws. The mark
     // stays only while the element around it can still replace its picture:
     // a Smart parent that has not drawn yet, and the node is not slotted page

@@ -210,6 +210,7 @@
         "canonicalTag",
         "createSmartElement",
         "default",
+        "defineTagAliases",
         "isTag",
         "normalizeEnum",
         "parseJsonAttribute",

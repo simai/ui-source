@@ -105,7 +105,7 @@ function node(localName, {attrs = {}, parent = null} = {}) {
 
 function portalLoader(customElements) {
   function SFLoaderPlugin() { this.scanned = []; }
-  const rules = {'sf-table': 'cl-table', 'sf-sortable': 'cl-sortable', 'sf-radio': 'cl-radio', 'sf-modal': 'cl-modal'};
+  const rules = {'sf-view-table': 'cl-view-table', 'sf-sortable': 'cl-sortable', 'sf-radio': 'cl-radio', 'sf-modal': 'cl-modal'};
   SFLoaderPlugin.prototype.getSmartElementRuleName = (el) => rules[el?.localName] || '';
   SFLoaderPlugin.prototype.scanCustomElements = function (root) { this.scanned.push(root); };
   const context = {SFLoaderPlugin, customElements, WeakSet};
@@ -118,10 +118,10 @@ class SmartBase { captureSlotTemplates() {} }
 test('a Smart element in a portal does not wait for the element the portal sits in', () => {
   const customElements = registry();
   const loader = portalLoader(customElements);
-  const table = node('sf-table');
+  const table = node('sf-view-table');
   const portal = node('form', {parent: table});
   const radio = node('sf-radio', {parent: portal});
-  assert.equal(loader.shouldDeferNestedSmartElement(radio), true, 'unmarked: it waits for sf-table');
+  assert.equal(loader.shouldDeferNestedSmartElement(radio), true, 'unmarked: it waits for sf-view-table');
   const unwatch = loader.watch(portal);
   assert.equal(portal.attrs['data-sf-portal'], '');
   assert.equal(loader.scanned.at(-1), portal, 'watch reads the portal at once');

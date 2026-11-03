@@ -33,10 +33,10 @@ test('a package element named short resolves once it is defined, before its rule
 
 test('a short Framework name still resolves to its sf- element', async () => {
   const {whenDefined, define} = runtime();
-  const done = whenDefined(['data-view', 'button']);
-  define('sf-data-view');
+  const done = whenDefined(['view', 'button']);
+  define('sf-view');
   define('sf-button');
-  assert.deepEqual(await done, ['sf-data-view', 'sf-button']);
+  assert.deepEqual(await done, ['sf-view', 'sf-button']);
 });
 
 test('a name the package rules know is waited for as written', async () => {

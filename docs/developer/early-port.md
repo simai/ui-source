@@ -13,7 +13,7 @@ Core runtime 1.2.0 (`src/core/js/early-port.js`, `SF.EarlyPort`).
 ## The island
 
 ```html
-<sf-data-view id="list" aria-label="Каталог">
+<sf-view id="list" aria-label="Каталог">
   <script type="application/json" data-sf-port>{
     "port": "simai.dataview-port",
     "version": "1.12.0",
@@ -31,7 +31,7 @@ Core runtime 1.2.0 (`src/core/js/early-port.js`, `SF.EarlyPort`).
 | `port` | the port id (required) |
 | `version` | the port's version; the element refuses a version it does not take |
 | `url` | the port's endpoint on the standard wire: `POST {intent, payload, page}`, same-origin with cookies, a JSON answer. Without `url` the port comes from the page's registry (below) |
-| `capabilities` | what the port offers; the element draws by them before the port answers (sf-data-view 1.5.0), so its first draw is final |
+| `capabilities` | what the port offers; the element draws by them before the port answers (sf-view 1.5.0), so its first draw is final |
 | `first` | `{intent, payload}`: the call the element sends first, without `sequence` and `reason`. Optional `body`: the request body sent as is instead of the standard one (a product's own wire) |
 | `connect` | `false`: Core starts the call only; the page connects its own adapter, which asks `SF.EarlyPort.take(…)` first |
 | `csrf` | `"meta:<name>"`: the content of `<meta name="<name>">` goes in `X-CSRF-TOKEN` |

@@ -116,12 +116,26 @@ test('every Smart rule forward is a former name that leads to a rule', () => {
     for (const match of source.matchAll(/SF\.RuleLoader\[['"]([^'"]+)['"]\]/gu)) ruleKeys.add(match[1]);
     for (const name of relationsOf(source)) relations.add(name);
   }
+  // A forward may lead to a component package's rule (rename plan R2): the
+  // package reference names it, and the forward's former name is the rule name
+  // of the item's former tag (cl-table for sf-table -> sf-view-table).
+  const packageRules = new Map();
+  const packages = resolve(root, 'src/core/contracts/packages');
+  for (const file of readdirSync(packages).filter((one) => one.endsWith('.package.json'))) {
+    const reference = JSON.parse(readFileSync(resolve(packages, file), 'utf8'));
+    if (reference.alias_of) continue;
+    for (const item of reference.provides) packageRules.set(item.rule_name, item);
+  }
   const forwards = forwardingRules();
   assert.ok(forwards.size >= 6, 'the forwards contract is read');
   for (const [name, to] of forwards) {
     assert.notEqual(name, to, `${name} forwards to itself`);
     assert.ok(!ruleKeys.has(name), `${name} is a forward and a rule`);
-    assert.ok(ruleKeys.has(to), `${name} forwards to ${to}, which is not a rule`);
+    const item = packageRules.get(to);
+    assert.ok(ruleKeys.has(to) || item, `${name} forwards to ${to}, which is not a rule`);
+    if (item && !ruleKeys.has(to)) {
+      assert.ok((item.element_aliases ?? []).some((row) => `cl-${row.from.replace(/^sf-/u, '')}` === name), `${name} -> ${to}: the package reference lists the former tag whose bundle it was`);
+    }
     assert.ok(!relations.has(name), `a ui-source rule still relates to the former name ${name}`);
   }
 });

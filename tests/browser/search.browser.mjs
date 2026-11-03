@@ -45,7 +45,7 @@ const INDEX = {
     {group: 'pages', title: 'Таблица в рамке', path: 'Утилиты › Таблицы', href: '#table', icon: 'table'},
     {group: 'pages', title: 'Таблицы данных', path: ['SIMAI Pro', 'Данные'], url: '#data', icon: 'dataset'},
     {group: 'pages', title: 'Тёмная тема', path: 'Основы › Темы', href: '#dark', icon: 'dark_mode'},
-    {group: 'components', title: 'sf-table', path: 'SIMAI Pro', text: 'таблица данных', href: '#sf-table', icon: 'widgets'},
+    {group: 'components', title: 'sf-view-table', path: 'SIMAI Pro', text: 'таблица данных', href: '#sf-table', icon: 'widgets'},
     {group: 'components', title: 'sf-button', path: 'Смарт-компонент', text: 'кнопка', href: '#sf-button', icon: 'widgets'},
     {group: 'actions', title: 'Сменить тему', path: 'Команда', action: 'theme', icon: 'contrast', shortcut: '⇧⌘L'},
   ],
@@ -75,7 +75,7 @@ let recent = ['таблица', 'тема'];
 const results = [
   {id: 'a', group: 'pages', title: 'Таблица в рамке', path: 'Утилиты', kind: 'page', url: '#a'},
   {id: 'b', group: 'pages', title: 'Таблицы данных', path: 'Данные', kind: 'page', url: '#b'},
-  {id: 'c', group: 'components', title: 'sf-table', path: 'Pro', kind: 'page', url: '#c'},
+  {id: 'c', group: 'components', title: 'sf-view-table', path: 'Pro', kind: 'page', url: '#c'},
   {id: 'theme', group: 'actions', title: 'Сменить тему', kind: 'action', shortcut: 'T'},
 ];
 window.host = {port: 'simai.search-port', version: '1.0.0', capabilities: caps,
@@ -258,7 +258,7 @@ try {
       scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => `${n.textContent.replace(/\s+/gu, '')}:${n.getAttribute('aria-pressed')}`),
       focused: document.activeElement === document.querySelector('.sf-search-input'),
     }));
-    expect('scope-filters', scoped.rows.join('|') === 'sf-table' && scoped.captions === 0 && scoped.scopes.join('|') === 'Все3:false|Страницы2:false|Компоненты1:true' && scoped.focused, scoped);
+    expect('scope-filters', scoped.rows.join('|') === 'sf-view-table' && scoped.captions === 0 && scoped.scopes.join('|') === 'Все3:false|Страницы2:false|Компоненты1:true' && scoped.focused, scoped);
     await tab.click('.sf-search-scope >> nth=0');
 
     // Geometry, measured on the open window (rows: two lines and one line).

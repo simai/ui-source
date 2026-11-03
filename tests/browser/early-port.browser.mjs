@@ -30,7 +30,7 @@ const ISLAND = (query = QUERY) => JSON.stringify({
 });
 
 // The element: takes its port by connect-port and sends its first query at
-// once, as sf-data-view does (query from `data-query`, else the declared one).
+// once, as sf-view does (query from `data-query`, else the declared one).
 const ELEMENT = `
   window.__probe = {raised: [], answers: [], warnings: []};
   const warn = console.warn.bind(console);

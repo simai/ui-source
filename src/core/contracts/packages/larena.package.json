@@ -38,16 +38,6 @@
       ]
     },
     {
-      "id": "smart.change-confirm",
-      "element": "sf-change-confirm",
-      "rule_name": "cl-change-confirm",
-      "folder": "change-confirm",
-      "requires": [
-        "smart.button",
-        "smart.icon"
-      ]
-    },
-    {
       "id": "smart.chat-composer",
       "element": "sf-chat-composer",
       "rule_name": "cl-chat-composer",
@@ -81,9 +71,30 @@
         "component.inputs",
         "smart.avatar",
         "smart.badge",
-        "smart.change-confirm",
+        "smart.confirm-change",
         "smart.icon",
         "smart.menu-context"
+      ]
+    },
+    {
+      "id": "smart.chat-threads",
+      "element": "sf-chat-threads",
+      "element_aliases": [
+        {
+          "from": "sf-thread-list",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-thread-list-to-sf-chat-threads"
+        }
+      ],
+      "rule_name": "cl-chat-threads",
+      "folder": "chat-threads",
+      "requires": [
+        "smart.avatar",
+        "smart.badge",
+        "smart.icon",
+        "smart.menu-context",
+        "utility.sr-only"
       ]
     },
     {
@@ -97,25 +108,51 @@
         "component.icon-buttons",
         "component.inputs",
         "smart.button",
-        "smart.change-confirm",
         "smart.chat-composer",
         "smart.chat-interlocutor",
         "smart.chat-message",
+        "smart.chat-threads",
+        "smart.confirm-change",
         "smart.empty-state",
         "smart.icon",
         "smart.input",
         "smart.input-lookup",
         "smart.menu-context",
         "smart.message-log",
-        "smart.progress-bar",
-        "smart.thread-list"
+        "smart.progress-bar"
       ]
     },
     {
-      "id": "smart.content-editor",
-      "element": "sf-content-editor",
-      "rule_name": "cl-content-editor",
-      "folder": "content-editor",
+      "id": "smart.confirm-change",
+      "element": "sf-confirm-change",
+      "element_aliases": [
+        {
+          "from": "sf-change-confirm",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-change-confirm-to-sf-confirm-change"
+        }
+      ],
+      "rule_name": "cl-confirm-change",
+      "folder": "confirm-change",
+      "requires": [
+        "smart.button",
+        "smart.icon"
+      ]
+    },
+    {
+      "id": "smart.editor-content",
+      "element": "sf-editor-content",
+      "element_aliases": [
+        {
+          "from": "sf-content-editor",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-content-editor-to-sf-editor-content"
+        }
+      ],
+      "rule_name": "cl-editor-content",
+      "folder": "editor-content",
       "requires": [
         "smart.button",
         "smart.button-icon",
@@ -128,55 +165,6 @@
         "smart.popover",
         "smart.progress-bar",
         "smart.switch"
-      ]
-    },
-    {
-      "id": "smart.data-view",
-      "element": "sf-table",
-      "rule_name": "cl-table",
-      "folder": "table",
-      "requires": [
-        "component.icons",
-        "smart.avatar",
-        "smart.badge",
-        "smart.button",
-        "smart.button-icon",
-        "smart.checkbox",
-        "smart.dropdown",
-        "smart.empty-state",
-        "smart.file-preview",
-        "smart.input",
-        "smart.input-color",
-        "smart.input-country",
-        "smart.input-date",
-        "smart.list-item",
-        "smart.menu-context",
-        "smart.modal",
-        "smart.pagination",
-        "smart.radio",
-        "smart.reference-link",
-        "smart.resizer",
-        "smart.slider-range",
-        "smart.sortable",
-        "smart.spinner",
-        "smart.tabs",
-        "smart.tag"
-      ]
-    },
-    {
-      "id": "smart.data-view-composite",
-      "element": "sf-data-view",
-      "rule_name": "cl-data-view",
-      "folder": "data-view",
-      "requires": [
-        "component.icons",
-        "smart.button",
-        "smart.button-icon",
-        "smart.checkbox",
-        "smart.data-view",
-        "smart.dropdown",
-        "smart.pagination",
-        "smart.toast"
       ]
     },
     {
@@ -263,10 +251,42 @@
       ]
     },
     {
-      "id": "smart.property-view",
-      "element": "sf-property-view",
-      "rule_name": "cl-property-view",
-      "folder": "property-view",
+      "id": "smart.view",
+      "element": "sf-view",
+      "element_aliases": [
+        {
+          "from": "sf-data-view",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-data-view-to-sf-view"
+        }
+      ],
+      "rule_name": "cl-view",
+      "folder": "view",
+      "requires": [
+        "component.icons",
+        "smart.button",
+        "smart.button-icon",
+        "smart.checkbox",
+        "smart.dropdown",
+        "smart.pagination",
+        "smart.toast",
+        "smart.view-table"
+      ]
+    },
+    {
+      "id": "smart.view-properties",
+      "element": "sf-view-properties",
+      "element_aliases": [
+        {
+          "from": "sf-property-view",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-property-view-to-sf-view-properties"
+        }
+      ],
+      "rule_name": "cl-view-properties",
+      "folder": "view-properties",
       "requires": [
         "component.accordion",
         "component.icons",
@@ -277,8 +297,6 @@
         "smart.button-group",
         "smart.button-icon",
         "smart.checkbox",
-        "smart.data-view",
-        "smart.data-view-composite",
         "smart.drawer",
         "smart.dropdown",
         "smart.empty-state",
@@ -304,20 +322,50 @@
         "smart.tabs",
         "smart.tag",
         "smart.tree",
-        "smart.tree-item"
+        "smart.tree-item",
+        "smart.view",
+        "smart.view-table"
       ]
     },
     {
-      "id": "smart.thread-list",
-      "element": "sf-thread-list",
-      "rule_name": "cl-thread-list",
-      "folder": "thread-list",
+      "id": "smart.view-table",
+      "element": "sf-view-table",
+      "element_aliases": [
+        {
+          "from": "sf-table",
+          "since": "2026-11-03",
+          "remove_after": "2027-01-01",
+          "journal": "tag-sf-table-to-sf-view-table"
+        }
+      ],
+      "rule_name": "cl-view-table",
+      "folder": "view-table",
       "requires": [
+        "component.icons",
         "smart.avatar",
         "smart.badge",
-        "smart.icon",
+        "smart.button",
+        "smart.button-icon",
+        "smart.checkbox",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.file-preview",
+        "smart.input",
+        "smart.input-color",
+        "smart.input-country",
+        "smart.input-date",
+        "smart.list-item",
         "smart.menu-context",
-        "utility.sr-only"
+        "smart.modal",
+        "smart.pagination",
+        "smart.radio",
+        "smart.reference-link",
+        "smart.resizer",
+        "smart.slider-range",
+        "smart.sortable",
+        "smart.spinner",
+        "smart.tabs",
+        "smart.tag"
       ]
     }
   ]

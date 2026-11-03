@@ -206,17 +206,17 @@ test('the first render replaces static markup in the same task, and keeps slots'
   host.prepareRenderContainer();
   assert.ok(host.children.includes(printed), 'only the first render takes static markup');
 
-  // An adopted live host printed as a static node (sf-data-view's slotted
-  // sf-table) is live once it draws: the mark goes (stand 24, U1). Inside a
+  // An adopted live host printed as a static node (sf-view's slotted
+  // sf-view-table) is live once it draws: the mark goes (stand 24, U1). Inside a
   // Smart parent that has not drawn, the parent may still replace it.
   host.attrs = {'data-sf-static': '', slot: 'content'};
-  host.parentElement = {localName: 'sf-data-view', isRendered: false};
+  host.parentElement = {localName: 'sf-view', isRendered: false};
   host.endFirstPaint();
   assert.equal(host.hasAttribute('data-sf-static'), false, 'a slotted adopted host loses the mark');
   host.attrs = {'data-sf-static': ''};
   host.endFirstPaint();
   assert.equal(host.hasAttribute('data-sf-static'), true, 'a picture node of an undrawn Smart parent keeps it');
-  host.parentElement = {localName: 'sf-data-view', isRendered: true};
+  host.parentElement = {localName: 'sf-view', isRendered: true};
   host.endFirstPaint();
   assert.equal(host.hasAttribute('data-sf-static'), false, 'once the parent drew, the mark goes');
 

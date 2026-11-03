@@ -2048,7 +2048,7 @@ SFLoaderPlugin.prototype.getSmartElementRuleName = function (el) {
 };
 
 // A portal root: a box a Smart element renders into from its own code, outside
-// its own render -- sf-table's window form, sf-drawer's panel at the end of the
+// its own render -- sf-view-table's window form, sf-drawer's panel at the end of the
 // body, a menu a component appends to the page. What is drawn there is the
 // owner's output, not source it still has to capture, so a Smart element in a
 // portal does not wait for an ancestor outside it (simai/ui-pro table,
@@ -2079,7 +2079,7 @@ SFLoaderPlugin.prototype.findNearestSmartParent = function (el) {
 // either. A parent defined over another base -- sf-sortable is a composition
 // host -- captures nothing and sends no sf-after-render, and its children used
 // to wait for ever: sf-checkbox in sf-tabs' settings list and sf-radio in
-// sf-table's template rows were loaded only because each was asked for by
+// sf-view-table's template rows were loaded only because each was asked for by
 // name. Such a parent holds nothing; one not defined yet is read again when
 // its definition arrives, whichever base it turns out to have.
 function capturesSource(constructor) {
@@ -2855,6 +2855,18 @@ SFLoaderPlugin.prototype.setExistCookie = function (
   }
   this.setModule(name);
 };
+// The rule a former bundle name leads to (contracts/smart-rule-forwards.v1.json),
+// or null. The target may be a component package's rule (cl-table ->
+// cl-view-table, package pro): it resolves from the package once its rules are
+// registered. A package that registers the former name itself (a package built
+// before the rename) took the forward's place in findPlugins: its own rule is
+// used and the name is not forwarded.
+SFLoaderPlugin.prototype.forwardedRule = function (name) {
+  const to = name && this.ruleForwards?.[name];
+  if (!to) return null;
+  if (this.findPlugins?.[name]?.package !== undefined) return null;
+  return to;
+};
 SFLoaderPlugin.prototype.setRelation = function (
     relation,
     name,
@@ -2867,10 +2879,8 @@ SFLoaderPlugin.prototype.setRelation = function (
   visited.add(name);
 
   relation.forEach((named) => {
-    const forwardTo = named?.name && this.ruleForwards?.[named.name];
-    const rel = forwardTo && this.findPlugins?.[named.name]?.package === undefined
-        ? {...named, name: forwardTo}
-        : named;
+    const forwardTo = named?.name && this.forwardedRule(named.name);
+    const rel = forwardTo ? {...named, name: forwardTo} : named;
     if (!rel?.name || !this.isPluginResolvable(rel.name)) {
       return;
     }
@@ -5124,7 +5134,7 @@ function normalizeWhenDefinedInput(input = []) {
 
 // A short name the rules do not know yet may be a package's own element whose
 // rules have not loaded (acme-counter) or a Framework one (data-view ->
-// sf-data-view). It used to be read as the Framework's, and
+// sf-view). It used to be read as the Framework's, and
 // SF.whenDefined('acme-counter') waited forever for sf-acme-counter. Until the
 // rules say, whichever of the two is defined first is the element; a name with
 // no hyphen can only be the Framework's.
@@ -5395,7 +5405,7 @@ SFLoaderPlugin.prototype.styleSheetsOfRule = function (requested, visited = new 
       : [];
   [...(Array.isArray(rule.relation) ? rule.relation : []), ...drawnWith].forEach((relation) => {
     if (!relation?.name || relation.lazy === true) return;
-    const target = this.ruleForwards?.[relation.name] || relation.name;
+    const target = this.forwardedRule(relation.name) || relation.name;
     sheets.push(...this.styleSheetsOfRule(target, visited));
   });
   return sheets;

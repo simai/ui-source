@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.8.5",
+  "version": "1.8.6",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -871,7 +871,7 @@
         "changes": [
           "A docked drawer without the room (dock host or window narrower than its dock-breakpoint) floats over the page as a modal panel: scrim, focus kept inside, page lock, Escape, focus returned to its opener. A docked column is unchanged.",
           "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before.",
-          "A modal drawer's Tab cycle runs through the panel and then its edge (close, copy-link, open-full of sf-property-view); a focus on the edge counts as inside."
+          "A modal drawer's Tab cycle runs through the panel and then its edge (close, copy-link, open-full of sf-view-properties); a focus on the edge counts as inside."
         ]
       }
     ]

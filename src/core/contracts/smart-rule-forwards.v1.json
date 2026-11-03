@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "$comment": "Former Smart bundle names the Loader still answers to. A forward is not a rule in the distribution (a rule of type smart is a Smart component to the registry, and a forward has no element); the Loader installs it at start as a rule with no tags, no assets and one relation, the new name, unless a rule of that name is already defined, and a relation that names a forward is taken as its target, so the element waits for the bundle itself. Each forward is dated and has a change journal record; remove it on remove_after.",
+  "$comment": "Former Smart bundle names the Loader still answers to. A forward is not a rule in the distribution (a rule of type smart is a Smart component to the registry, and a forward has no element); the Loader installs it at start as a rule with no tags, no assets and one relation, the new name, unless a rule of that name is already defined, and a relation that names a forward is taken as its target, so the element waits for the bundle itself. Each forward is dated and has a change journal record; remove it on remove_after. A forward may lead to a component package's rule (cl-table -> cl-view-table, package pro, rename plan R2): the Loader follows it once the package's rules are registered, and a package that still registers the former name itself (one built before the rename) keeps its own rule, which the forward then leaves alone.",
   "forwards": {
     "cl-inputs": {
       "to": "cl-input",
@@ -157,6 +157,42 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-icon-button-to-button-icon"
+    },
+    "cl-data-view": {
+      "to": "cl-view",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-data-view-to-view"
+    },
+    "cl-table": {
+      "to": "cl-view-table",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-table-to-view-table"
+    },
+    "cl-property-view": {
+      "to": "cl-view-properties",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-property-view-to-view-properties"
+    },
+    "cl-content-editor": {
+      "to": "cl-editor-content",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-content-editor-to-editor-content"
+    },
+    "cl-thread-list": {
+      "to": "cl-chat-threads",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-thread-list-to-chat-threads"
+    },
+    "cl-change-confirm": {
+      "to": "cl-confirm-change",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-change-confirm-to-confirm-change"
     }
   }
 }

@@ -284,7 +284,7 @@ class SfTree extends TreeElement {
   // An entry takes records dragged from a list -- accept-records -- and files
   // from the computer -- accept-files. The tree moves and uploads nothing
   // itself; it asks: move {ids, parent} and attach {files, parent}. The
-  // records travel as application/x-sf-records+json, which sf-table writes.
+  // records travel as application/x-sf-records+json, which sf-view-table writes.
   dropKind(event) {
     const types = [...(event.dataTransfer?.types ?? [])];
     if (this.acceptRecords && types.includes(RECORDS_TYPE)) return 'records';

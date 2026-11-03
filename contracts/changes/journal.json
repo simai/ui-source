@@ -5029,6 +5029,803 @@
       },
       "owner": "ui-source",
       "source": "src/smart/icon-button/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button-icon/component.json"
+    },
+    {
+      "id": "tag-sf-data-view-to-sf-view",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-data-view is sf-view (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-view's class, the package rule lists it after the new tag, the package's sheets match :is(sf-view, sf-data-view), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-data-view-open, sf-data-view-deleted, sf-data-view-answer, sf-data-view-state, sf-data-view-tree, sf-data-view-files-drop, sf-data-view-saved-view-intent, sf-data-view-list-open). The component's earlier former event names are recorded here under the new tag; each still fires after the name it was renamed to.",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "sf-data-view",
+          "to": "sf-view"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-open",
+          "to": "sf-view-open"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-deleted",
+          "to": "sf-view-deleted"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-answer",
+          "to": "sf-view-answer"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-state",
+          "to": "sf-view-state"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-tree",
+          "to": "sf-view-tree"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-files-drop",
+          "to": "sf-view-files-drop"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-saved-view-intent",
+          "to": "sf-view-saved-view-intent"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-list-open",
+          "to": "sf-view-list-open"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-table-tree-intent",
+          "to": "sf-data-view-tree"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-data-view></sf-data-view>",
+        "after": "<sf-view></sf-view>"
+      },
+      "manual": "Write <sf-view> for <sf-data-view> in markup and sf-view for sf-data-view in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-view-<verb> for sf-data-view-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-view, or both names through SF.tags.selector('sf-view') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-data-view, --sf-data-view-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/view/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-data-view-to-view",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-view is served from the pro package's smart/view/ since its folder took the new tag's name: js/view.js, package rule cl-view, registry id smart.view. Until remove_after the Loader forwards the bundle name cl-data-view to cl-view (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-data-view), and smart.data-view-composite is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/data-view/js/data-view.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "smart/data-view/js/data-view.js",
+          "to": "smart/view/js/view.js",
+          "match": "smart/data-view/js/data-view(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-view",
+          "from": "smart/data-view/css/data-view.css",
+          "to": "smart/view/css/view.css",
+          "match": "smart/data-view/css/data-view(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-data-view",
+          "to": "cl-view",
+          "match": "['\"]cl-data-view['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.data-view-composite",
+          "to": "smart.view",
+          "match": "['\"]smart\\.data-view-composite['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/view/ for smart/data-view/ and view for data-view in the file names under the pro package base (js/view.js, js/view.min.js, css/view.css); in a rule's relation write cl-view for cl-data-view, and in a manifest, a recipe or a package contract smart.view for smart.data-view-composite. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/data-view/js/data-view.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/view/js/view.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/view/component.json"
+    },
+    {
+      "id": "tag-sf-table-to-sf-view-table",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-table is sf-view-table (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-view-table's class, the package rule lists it after the new tag, the package's sheets match :is(sf-view-table, sf-table), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-table-select, sf-table-apply, sf-table-save, sf-table-column-settings-reset, sf-table-create, sf-table-filter-change, sf-table-query, sf-table-refresh, sf-table-search-change, sf-table-sort-change, sf-table-template-delete, sf-table-template-save, sf-table-template-select, sf-table-toolbar-action, sf-table-reference-open, sf-table-expand, sf-table-load-more, sf-table-rows-drag, sf-table-move, sf-table-cell-set, sf-table-view-change, sf-table-window). The component's earlier former event names are recorded here under the new tag; each still fires after the name it was renamed to.",
+      "items": [
+        {
+          "component": "sf-view-table",
+          "from": "sf-table",
+          "to": "sf-view-table"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-select",
+          "to": "sf-view-table-select"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-apply",
+          "to": "sf-view-table-apply"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-save",
+          "to": "sf-view-table-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-column-settings-reset",
+          "to": "sf-view-table-column-settings-reset"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-create",
+          "to": "sf-view-table-create"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-filter-change",
+          "to": "sf-view-table-filter-change"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-query",
+          "to": "sf-view-table-query"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-refresh",
+          "to": "sf-view-table-refresh"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-search-change",
+          "to": "sf-view-table-search-change"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-sort-change",
+          "to": "sf-view-table-sort-change"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-template-delete",
+          "to": "sf-view-table-template-delete"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-template-save",
+          "to": "sf-view-table-template-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-template-select",
+          "to": "sf-view-table-template-select"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-toolbar-action",
+          "to": "sf-view-table-toolbar-action"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-reference-open",
+          "to": "sf-view-table-reference-open"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-expand",
+          "to": "sf-view-table-expand"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-load-more",
+          "to": "sf-view-table-load-more"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-rows-drag",
+          "to": "sf-view-table-rows-drag"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-move",
+          "to": "sf-view-table-move"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-cell-set",
+          "to": "sf-view-table-cell-set"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-view-change",
+          "to": "sf-view-table-view-change"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-window",
+          "to": "sf-view-table-window"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-action-intent",
+          "to": "sf-table-apply"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-create-intent",
+          "to": "sf-table-create"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-port-output",
+          "to": "sf-table-select"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-query-intent",
+          "to": "sf-table-query"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-retry",
+          "to": "sf-table-refresh"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-tree-toggle",
+          "to": "sf-table-expand"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-tree-more",
+          "to": "sf-table-load-more"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-rows-reorder",
+          "to": "sf-table-move"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table-column-settings-change",
+          "to": "sf-table-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "sf-table:column-settings-change",
+          "to": "sf-table-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "onColumnSettingsChange",
+          "to": "sf-table-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "onSearchEnd",
+          "to": "sf-table-search-change"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "onTemplateSave",
+          "to": "sf-table-template-save"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "onFilterUpdate",
+          "to": "sf-table-filter-change"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-table></sf-table>",
+        "after": "<sf-view-table></sf-view-table>"
+      },
+      "manual": "Write <sf-view-table> for <sf-table> in markup and sf-view-table for sf-table in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-view-table-<verb> for sf-table-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-view-table, or both names through SF.tags.selector('sf-view-table') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-table, --sf-table-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/view-table/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-table-to-view-table",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-view-table is served from the pro package's smart/view-table/ since its folder took the new tag's name: js/view-table.js, package rule cl-view-table, registry id smart.view-table. Until remove_after the Loader forwards the bundle name cl-table to cl-view-table (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-table), and smart.data-view is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/table/js/table.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-view-table",
+          "from": "smart/table/js/table.js",
+          "to": "smart/view-table/js/view-table.js",
+          "match": "smart/table/js/table(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-view-table",
+          "from": "smart/table/css/table.css",
+          "to": "smart/view-table/css/view-table.css",
+          "match": "smart/table/css/table(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-table",
+          "to": "cl-view-table",
+          "match": "['\"]cl-table['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.data-view",
+          "to": "smart.view-table",
+          "match": "['\"]smart\\.data-view['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/view-table/ for smart/table/ and view-table for table in the file names under the pro package base (js/view-table.js, js/view-table.min.js, css/view-table.css); in a rule's relation write cl-view-table for cl-table, and in a manifest, a recipe or a package contract smart.view-table for smart.data-view. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/table/js/table.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/view-table/js/view-table.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/view-table/component.json"
+    },
+    {
+      "id": "tag-sf-property-view-to-sf-view-properties",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-property-view is sf-view-properties (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-view-properties's class, the package rule lists it after the new tag, the package's sheets match :is(sf-view-properties, sf-property-view), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-property-view-close, sf-property-view-open-full, sf-property-view-saved, sf-property-view-failed, sf-property-view-open, sf-property-view-delete, sf-property-view-created, sf-property-view-cancel, sf-property-view-state, sf-property-view-address-copy, sf-property-view-favourite). The component's earlier former event names are recorded here under the new tag; each still fires after the name it was renamed to.",
+      "items": [
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view",
+          "to": "sf-view-properties"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-close",
+          "to": "sf-view-properties-close"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-open-full",
+          "to": "sf-view-properties-open-full"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-saved",
+          "to": "sf-view-properties-saved"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-failed",
+          "to": "sf-view-properties-failed"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-open",
+          "to": "sf-view-properties-open"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-delete",
+          "to": "sf-view-properties-delete"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-created",
+          "to": "sf-view-properties-created"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-cancel",
+          "to": "sf-view-properties-cancel"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-state",
+          "to": "sf-view-properties-state"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-address-copy",
+          "to": "sf-view-properties-address-copy"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-favourite",
+          "to": "sf-view-properties-favourite"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-open-record",
+          "to": "sf-property-view-open"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "sf-property-view-delete-record",
+          "to": "sf-property-view-delete"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-property-view></sf-property-view>",
+        "after": "<sf-view-properties></sf-view-properties>"
+      },
+      "manual": "Write <sf-view-properties> for <sf-property-view> in markup and sf-view-properties for sf-property-view in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-view-properties-<verb> for sf-property-view-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-view-properties, or both names through SF.tags.selector('sf-view-properties') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-property-view, --sf-property-view-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/view-properties/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-property-view-to-view-properties",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-view-properties is served from the pro package's smart/view-properties/ since its folder took the new tag's name: js/view-properties.js, package rule cl-view-properties, registry id smart.view-properties. Until remove_after the Loader forwards the bundle name cl-property-view to cl-view-properties (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-property-view), and smart.property-view is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/property-view/js/property-view.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-view-properties",
+          "from": "smart/property-view/js/property-view.js",
+          "to": "smart/view-properties/js/view-properties.js",
+          "match": "smart/property-view/js/property-view(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-view-properties",
+          "from": "smart/property-view/css/property-view.css",
+          "to": "smart/view-properties/css/view-properties.css",
+          "match": "smart/property-view/css/property-view(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-property-view",
+          "to": "cl-view-properties",
+          "match": "['\"]cl-property-view['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.property-view",
+          "to": "smart.view-properties",
+          "match": "['\"]smart\\.property-view['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/view-properties/ for smart/property-view/ and view-properties for property-view in the file names under the pro package base (js/view-properties.js, js/view-properties.min.js, css/view-properties.css); in a rule's relation write cl-view-properties for cl-property-view, and in a manifest, a recipe or a package contract smart.view-properties for smart.property-view. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/property-view/js/property-view.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/view-properties/js/view-properties.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/view-properties/component.json"
+    },
+    {
+      "id": "tag-sf-content-editor-to-sf-editor-content",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-content-editor is sf-editor-content (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-editor-content's class, the package rule lists it after the new tag, the package's sheets match :is(sf-editor-content, sf-content-editor), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-content-editor-select, sf-content-editor-leave, sf-content-editor-params, sf-content-editor-file).",
+      "items": [
+        {
+          "component": "sf-editor-content",
+          "from": "sf-content-editor",
+          "to": "sf-editor-content"
+        },
+        {
+          "component": "sf-editor-content",
+          "from": "sf-content-editor-select",
+          "to": "sf-editor-content-select"
+        },
+        {
+          "component": "sf-editor-content",
+          "from": "sf-content-editor-leave",
+          "to": "sf-editor-content-leave"
+        },
+        {
+          "component": "sf-editor-content",
+          "from": "sf-content-editor-params",
+          "to": "sf-editor-content-params"
+        },
+        {
+          "component": "sf-editor-content",
+          "from": "sf-content-editor-file",
+          "to": "sf-editor-content-file"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-content-editor></sf-content-editor>",
+        "after": "<sf-editor-content></sf-editor-content>"
+      },
+      "manual": "Write <sf-editor-content> for <sf-content-editor> in markup and sf-editor-content for sf-content-editor in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-editor-content-<verb> for sf-content-editor-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-editor-content, or both names through SF.tags.selector('sf-editor-content') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-content-editor, --sf-content-editor-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/editor-content/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-content-editor-to-editor-content",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-editor-content is served from the pro package's smart/editor-content/ since its folder took the new tag's name: js/editor-content.js, package rule cl-editor-content, registry id smart.editor-content. Until remove_after the Loader forwards the bundle name cl-content-editor to cl-editor-content (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-content-editor), and smart.content-editor is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/content-editor/js/content-editor.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-editor-content",
+          "from": "smart/content-editor/js/content-editor.js",
+          "to": "smart/editor-content/js/editor-content.js",
+          "match": "smart/content-editor/js/content-editor(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-editor-content",
+          "from": "smart/content-editor/css/content-editor.css",
+          "to": "smart/editor-content/css/editor-content.css",
+          "match": "smart/content-editor/css/content-editor(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-content-editor",
+          "to": "cl-editor-content",
+          "match": "['\"]cl-content-editor['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.content-editor",
+          "to": "smart.editor-content",
+          "match": "['\"]smart\\.content-editor['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/editor-content/ for smart/content-editor/ and editor-content for content-editor in the file names under the pro package base (js/editor-content.js, js/editor-content.min.js, css/editor-content.css); in a rule's relation write cl-editor-content for cl-content-editor, and in a manifest, a recipe or a package contract smart.editor-content for smart.content-editor. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/content-editor/js/content-editor.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/editor-content/js/editor-content.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/editor-content/component.json"
+    },
+    {
+      "id": "tag-sf-thread-list-to-sf-chat-threads",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-thread-list is sf-chat-threads (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-chat-threads's class, the package rule lists it after the new tag, the package's sheets match :is(sf-chat-threads, sf-thread-list), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-thread-list-create, sf-thread-list-open, sf-thread-list-rename, sf-thread-list-archive, sf-thread-list-restore, sf-thread-list-apply, sf-thread-list-load-more, sf-thread-list-toggle). The component's earlier former event names are recorded here under the new tag; each still fires after the name it was renamed to.",
+      "items": [
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list",
+          "to": "sf-chat-threads"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-create",
+          "to": "sf-chat-threads-create"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-open",
+          "to": "sf-chat-threads-open"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-rename",
+          "to": "sf-chat-threads-rename"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-archive",
+          "to": "sf-chat-threads-archive"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-restore",
+          "to": "sf-chat-threads-restore"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-apply",
+          "to": "sf-chat-threads-apply"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-load-more",
+          "to": "sf-chat-threads-load-more"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-toggle",
+          "to": "sf-chat-threads-toggle"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-select",
+          "to": "sf-thread-list-open"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-unarchive",
+          "to": "sf-thread-list-restore"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-action",
+          "to": "sf-thread-list-apply"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "sf-thread-list-view",
+          "to": "sf-thread-list-toggle"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-thread-list></sf-thread-list>",
+        "after": "<sf-chat-threads></sf-chat-threads>"
+      },
+      "manual": "Write <sf-chat-threads> for <sf-thread-list> in markup and sf-chat-threads for sf-thread-list in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-chat-threads-<verb> for sf-thread-list-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-chat-threads, or both names through SF.tags.selector('sf-chat-threads') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-thread-list, --sf-thread-list-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/chat-threads/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-thread-list-to-chat-threads",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-chat-threads is served from the pro package's smart/chat-threads/ since its folder took the new tag's name: js/chat-threads.js, package rule cl-chat-threads, registry id smart.chat-threads. Until remove_after the Loader forwards the bundle name cl-thread-list to cl-chat-threads (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-thread-list), and smart.thread-list is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/thread-list/js/thread-list.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-chat-threads",
+          "from": "smart/thread-list/js/thread-list.js",
+          "to": "smart/chat-threads/js/chat-threads.js",
+          "match": "smart/thread-list/js/thread-list(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-chat-threads",
+          "from": "smart/thread-list/css/thread-list.css",
+          "to": "smart/chat-threads/css/chat-threads.css",
+          "match": "smart/thread-list/css/thread-list(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-thread-list",
+          "to": "cl-chat-threads",
+          "match": "['\"]cl-thread-list['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.thread-list",
+          "to": "smart.chat-threads",
+          "match": "['\"]smart\\.thread-list['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/chat-threads/ for smart/thread-list/ and chat-threads for thread-list in the file names under the pro package base (js/chat-threads.js, js/chat-threads.min.js, css/chat-threads.css); in a rule's relation write cl-chat-threads for cl-thread-list, and in a manifest, a recipe or a package contract smart.chat-threads for smart.thread-list. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/thread-list/js/thread-list.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/chat-threads/js/chat-threads.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/chat-threads/component.json"
+    },
+    {
+      "id": "tag-sf-change-confirm-to-sf-confirm-change",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-change-confirm is sf-confirm-change (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]; rename plan R2, the Pro package's own components). The old tag works until remove_after: the package reference lists it in element_aliases (src/core/contracts/packages/pro.package.json), the runtime's tag table carries it before the package runs, the Smart base defines it as a subclass of sf-confirm-change's class, the package rule lists it after the new tag, the package's sheets match :is(sf-confirm-change, sf-change-confirm), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-change-confirm-answer, sf-change-confirm-expired). The component's earlier former event names are recorded here under the new tag; each still fires after the name it was renamed to.",
+      "items": [
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm",
+          "to": "sf-confirm-change"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm-answer",
+          "to": "sf-confirm-change-answer"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm-expired",
+          "to": "sf-confirm-change-expired"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm-accept",
+          "to": "sf-change-confirm-answer"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm-decline",
+          "to": "sf-change-confirm-answer"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm-expire",
+          "to": "sf-change-confirm-expired"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-change-confirm></sf-change-confirm>",
+        "after": "<sf-confirm-change></sf-confirm-change>"
+      },
+      "manual": "Write <sf-confirm-change> for <sf-change-confirm> in markup and sf-confirm-change for sf-change-confirm in a sheet's type selector (sf-upgrade --apply does both), and listen to sf-confirm-change-<verb> for sf-change-confirm-<verb>. A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-confirm-change, or both names through SF.tags.selector('sf-confirm-change') while the alias lives; a class, a custom property or a stored preference key spelled like the old tag (.sf-change-confirm, --sf-change-confirm-*) is not the tag and stays.",
+      "owner": "ui-pro",
+      "source": "simai/ui-pro components/src/smart/confirm-change/component.json (aliases), src/core/contracts/packages/pro.package.json (element_aliases), src/core/js/tag-aliases.generated.js; ui-control control/RENAME-PLAN-2026-11-03.md (R2)"
+    },
+    {
+      "id": "path-smart-change-confirm-to-confirm-change",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-confirm-change is served from the pro package's smart/confirm-change/ since its folder took the new tag's name: js/confirm-change.js, package rule cl-confirm-change, registry id smart.confirm-change. Until remove_after the Loader forwards the bundle name cl-change-confirm to cl-confirm-change (src/core/contracts/smart-rule-forwards.v1.json; a package built before the rename keeps its own cl-change-confirm), and smart.change-confirm is the former registry id. The package build serves only the folders that hold a rule, so the old file path smart/change-confirm/js/change-confirm.js under the package base is not served: a page that loads the package through the Loader needs no change, one that names the file moves to the new path.",
+      "items": [
+        {
+          "component": "sf-confirm-change",
+          "from": "smart/change-confirm/js/change-confirm.js",
+          "to": "smart/confirm-change/js/confirm-change.js",
+          "match": "smart/change-confirm/js/change-confirm(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "smart/change-confirm/css/change-confirm.css",
+          "to": "smart/confirm-change/css/confirm-change.css",
+          "match": "smart/change-confirm/css/change-confirm(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-change-confirm",
+          "to": "cl-confirm-change",
+          "match": "['\"]cl-change-confirm['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.change-confirm",
+          "to": "smart.confirm-change",
+          "match": "['\"]smart\\.change-confirm['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/confirm-change/ for smart/change-confirm/ and confirm-change for change-confirm in the file names under the pro package base (js/confirm-change.js, js/confirm-change.min.js, css/confirm-change.css); in a rule's relation write cl-confirm-change for cl-change-confirm, and in a manifest, a recipe or a package contract smart.confirm-change for smart.change-confirm. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/assets/pro/smart/change-confirm/js/change-confirm.js\"></script>",
+        "after": "<script src=\"/assets/pro/smart/confirm-change/js/confirm-change.js\"></script>"
+      },
+      "owner": "ui-pro",
+      "source": "src/core/contracts/smart-rule-forwards.v1.json, src/core/contracts/packages/pro.package.json; simai/ui-pro components/src/smart/confirm-change/component.json"
     }
   ]
 }
