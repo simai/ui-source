@@ -125,7 +125,7 @@ try {
     window.__events = [];
     for (const type of ['input', 'change']) {
       document.addEventListener(type, (event) => {
-        const host = event.target.closest?.('sf-quantity');
+        const host = event.target.closest?.('sf-input-quantity');
         if (!host) return;
         window.__events.push({type, id: host.id, target: event.target === host, value: event.detail?.value, source: event.detail?.source ?? null});
       });
@@ -179,7 +179,7 @@ try {
     await page.keyboard.press('Tab');
     order.push(await page.evaluate(() => {
       const element = document.activeElement;
-      const host = element?.closest?.('sf-quantity');
+      const host = element?.closest?.('sf-input-quantity');
       return host ? `${host.id}:${element.getAttribute('role') ?? element.tagName.toLowerCase()}` : element?.id;
     }));
   }

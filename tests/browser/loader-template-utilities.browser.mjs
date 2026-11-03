@@ -17,7 +17,7 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const table = JSON.parse(readFileSync(new URL('../../src/core/js/template-utilities.generated.json', import.meta.url), 'utf8'));
 const LATENCY = 40;
-const ON_PAGE = ['tabs', 'help-mark', 'datepicker'];
+const ON_PAGE = ['tabs', 'help-mark', 'input-date'];
 
 const failures = [];
 const note = (detail) => failures.push(detail);

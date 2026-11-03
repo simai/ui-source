@@ -75,7 +75,7 @@ const MEASURE = `async (kind) => {
     const style = getComputedStyle(field);
     const button = box.querySelector('sf-button > button');
     const result = {size: row.dataset.size, kind,
-      root: [...field.closest('.sf-textarea').classList].filter((name) => name.startsWith('sf-input-textarea')),
+      root: [...field.closest('.sf-textarea').classList].filter((name) => name.startsWith('sf-textarea')),
       border: [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat),
       background: style.backgroundColor, shadow: style.boxShadow, outline: style.outlineStyle,
       padding: {top: parseFloat(style.paddingTop), bottom: parseFloat(style.paddingBottom),

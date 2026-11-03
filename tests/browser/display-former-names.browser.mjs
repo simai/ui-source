@@ -19,6 +19,13 @@
 //      smart/<old>/. The forwards are not in the distribution's rule.json,
 //      where a rule of type smart is a Smart component to the registry
 //      (src/core/contracts/smart-rule-forwards.v1.json).
+//
+// Since 2026-11-03 (rename wave R1) icon-button is itself a former name: the
+// element is sf-button-icon in smart/button-icon/. The old page still writes
+// <sf-icon-button> and smart/icon-buttons/, which notes its own step
+// (smart/icon-buttons/ -> smart/icon-button/, `via`) and leads on to
+// smart/button-icon/; cl-icon-buttons forwards to cl-button-icon, and neither
+// former bundle name is a rule.
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync, readFileSync} from 'node:fs';
@@ -32,8 +39,8 @@ const out = resolve(process.argv[2]);
 const RENAMES = [
   {old: 'buttons', name: 'button', tag: 'sf-button', sheet: false,
     markup: '<sf-button id="old" text="Купить"></sf-button>', renders: 'button'},
-  {old: 'icon-buttons', name: 'icon-button', tag: 'sf-button-icon', sheet: true,
-    markup: '<sf-button-icon id="old" icon="close" label="Закрыть"></sf-button-icon>', renders: 'button'},
+  {old: 'icon-buttons', via: 'icon-button', name: 'button-icon', tag: 'sf-icon-button', sheet: true,
+    markup: '<sf-icon-button id="old" icon="close" label="Закрыть"></sf-icon-button>', renders: 'button'},
   {old: 'icons', name: 'icon', tag: 'sf-icon', sheet: false,
     markup: '<sf-icon id="old" icon="home"></sf-icon>', renders: null},
   {old: 'badges', name: 'badge', tag: 'sf-badge', sheet: false,
@@ -67,14 +74,15 @@ const failures = [];
 const report = {ruleJson: {}, oldPath: {}, oldRelation: null};
 
 const rules = JSON.parse(readFileSync(join(out, 'core', 'rule', 'rule.json'), 'utf8'));
-for (const {old, name} of RENAMES) {
+for (const {old, via, name} of RENAMES) {
+  const formers = via ? [old, via] : [old];
   const got = {
     [`cl-${name}`]: rules.some((rule) => rule.name === `cl-${name}`),
-    [`cl-${old}`]: rules.some((rule) => rule.name === `cl-${old}`),
+    ...Object.fromEntries(formers.map((former) => [`cl-${former}`, rules.some((rule) => rule.name === `cl-${former}`)])),
   };
   report.ruleJson[name] = got;
-  if (!got[`cl-${name}`] || got[`cl-${old}`]) {
-    failures.push({case: 'rule inventory', got, expected: `cl-${name} is a rule, cl-${old} is not`});
+  if (!got[`cl-${name}`] || formers.some((former) => got[`cl-${former}`])) {
+    failures.push({case: 'rule inventory', got, expected: `cl-${name} is a rule, ${formers.map((former) => `cl-${former}`).join(' and ')} not`});
   }
 }
 
@@ -128,7 +136,7 @@ const legacyDisplay = `(() => {
   customElements.define('sf-legacy-display', class extends HTMLElement {
     connectedCallback() {
       this.dataset.definedFirst = tags.filter((tag) => customElements.get(tag)).join(' ');
-      this.innerHTML = '<sf-button text="Да"></sf-button><sf-button-icon icon="close" label="Нет"></sf-button-icon>'
+      this.innerHTML = '<sf-button text="Да"></sf-button><sf-icon-button icon="close" label="Нет"></sf-icon-button>'
         + '<sf-icon icon="home"></sf-icon><sf-badge text="3"></sf-badge><sf-tag text="Тег"></sf-tag>';
     }
   });
@@ -175,7 +183,7 @@ const origin = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch();
 try {
   // 1. The old pages.
-  for (const {old, name, tag, renders} of RENAMES) {
+  for (const {old, via, name, tag, renders} of RENAMES) {
     const context = await browser.newContext();
     const page = await context.newPage();
     page.on('pageerror', (error) => failures.push({case: `old path ${old}`, said: error.message}));
@@ -191,19 +199,22 @@ try {
       failures.push({case: `old path ${old}`, expected: `${tag} is defined, upgraded${renders ? ` and renders its ${renders}` : ''}`});
     }
     await page.waitForTimeout(300);
-    const got = await page.evaluate(({old, name}) => {
+    const got = await page.evaluate(({old, via, name}) => {
       const notes = [...(window.SF?.__deprecationNotes?.values() ?? [])];
       return {
-        notedPath: notes.some((note) => note.kind === 'path' && note.from === `smart/${old}/` && note.to === `smart/${name}/`),
+        notedPath: notes.some((note) => note.kind === 'path' && note.from === `smart/${old}/` && note.to === `smart/${via ?? name}/`),
         newScripts: [...document.querySelectorAll('script[src]')]
           .map((script) => new URL(script.src).pathname)
           .filter((path) => path.startsWith(`/distr/smart/${name}/js/${name}`)).length,
       };
-    }, {old, name});
+    }, {old, via: via ?? null, name});
     got.requested = requests.filter((path) => path.startsWith(`/distr/smart/${name}/`) || path.startsWith(`/distr/smart/${old}/`));
     report.oldPath[old] = got;
     if (!got.notedPath) {
-      failures.push({case: `old path ${old}`, got, expected: `smart/${old}/ -> smart/${name}/ in the deprecation notes`});
+      failures.push({case: `old path ${old}`, got, expected: `smart/${old}/ -> smart/${via ?? name}/ in the deprecation notes`});
+    }
+    if (!got.newScripts) {
+      failures.push({case: `old path ${old}`, got, expected: `smart/${name}/js/${name}.js is on the page`});
     }
     await context.close();
   }

@@ -9,7 +9,7 @@ if (!process.argv[3]) throw new Error('Smart output root and distr root are requ
 const smartRoot = resolve(process.argv[2]);
 const distrRoot = resolve(process.argv[3]);
 // Folders named as their tags (standard 1.3.8 §3, §21).
-const bundles = ['icon', 'icon-button', 'pagination', 'button', 'modal', 'context-menu'];
+const bundles = ['icon', 'button-icon', 'pagination', 'button', 'modal', 'menu-context'];
 const tags = ['sf-icon', 'sf-button-icon', 'sf-pagination', 'sf-button', 'sf-modal', 'sf-menu-context'];
 const browser = await chromium.launch();
 const failures = [];

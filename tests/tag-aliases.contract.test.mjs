@@ -211,7 +211,8 @@ for (const row of rows) {
     const call = /(?:querySelector(?:All)?|closest|matches|createElement)\(\s*(['"`])((?:(?!\1)[^\\\n]|\\.)*)\1/gu;
     const comparison = new RegExp(`(?:localName|tagName)[^;\\n]{0,40}(?:===|!==|==|!=)\\s*['"\`]${escape(from)}['"\`]`, 'giu');
     for (const file of [...sources, ...walk(resolve(root, 'tests'))]) {
-      if (machinery(file, row) || /tag-aliases\.(?:contract|browser)/u.test(file)) continue;
+      // The probes of former names write the old markup on purpose.
+      if (machinery(file, row) || /tag-aliases\.(?:contract|browser)|display-former-names\.browser/u.test(file)) continue;
       if (!/\.(?:m?js|cjs|html|md|json)$/u.test(file)) continue;
       let text = read(file);
       if (!text.includes(from)) continue;
