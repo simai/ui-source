@@ -111,7 +111,7 @@
       "covers": "actions.answer, actions.open",
       "steps": [
         {
-          "script": "(window.__o = [document.querySelector('#d').answer({accepted: true}).outcome, document.querySelector('#d').answer('maybe').reason], document.querySelector('#d').open(), window.__o.push(document.querySelector('#d').answer({accepted: false}).outcome), true)",
+          "script": "(document.querySelector('#d').state = 'accepted', window.__o = [document.querySelector('#d').answer({accepted: true}).outcome, document.querySelector('#d').answer('maybe').reason], document.querySelector('#d').open(), window.__o.push(document.querySelector('#d').answer({accepted: false}).outcome), true)",
           "wait": 100,
           "check": "window.__o.join(',') === 'refused,unknown,applied'"
         }

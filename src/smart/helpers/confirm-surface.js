@@ -117,7 +117,9 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
                 // Which answer is on its way: true, false, or null when the
                 // host set pending itself.
                 pressed: shown === "pending" ? this._pressed : null,
-                disabled: this.getProp("disabled") || shown !== "open",
+                // Not named `disabled`: that is the setting, and this is more --
+                // the setting, or any state but open.
+                answersLocked: this.getProp("disabled") || shown !== "open",
             };
         }
 
@@ -282,7 +284,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
                             text=${context.acceptText}
                             data-action="accept"
                             ?loading=${context.pressed === true}
-                            ?disabled=${context.disabled && context.pressed !== true}
+                            ?disabled=${context.answersLocked && context.pressed !== true}
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
@@ -292,7 +294,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
                             text=${context.declineText}
                             data-action="decline"
                             ?loading=${context.pressed === false}
-                            ?disabled=${context.disabled && context.pressed !== false}
+                            ?disabled=${context.answersLocked && context.pressed !== false}
                             @click=${() => component.cancel()}
                     ></sf-button>
                 </div>
