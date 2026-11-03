@@ -5,7 +5,7 @@ const source=fs.readFileSync(new URL('../src/component/country-code/js/_country_
 test('Country Code owns live handlers, not copied rendered markers',()=>{
   assert.match(source,/function bindCountryCode[\s\S]*?typeof root\.__sfCountryCodeInput === 'function'/);
   assert.match(source,/mutation\.removedNodes\.forEach/);
-  assert.match(source,/!root\.isConnected && !root\.closest\('sf-country-code'\)\) unbindCountryCode\(root\)/);
+  assert.match(source,/!root\.isConnected && !root\.closest\(tagSelector\('sf-input-country'\)\)\) unbindCountryCode\(root\)/);
   assert.match(source,/flagObserver\?\.unobserve\(img\)/);
 });
 test('Country Code maintains generated references independently of author references',()=>{

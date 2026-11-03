@@ -19,7 +19,7 @@ async page => {
       const params = {label: 'Телефон', value: '+49 1511234567', countries: customCountries, useMask: true, useCountryMasks: !fixedMask, maskPattern: fixedMask ? fixedPattern : '', multiCountry: mode !== 'fixed-smart'};
       const parent = document.getElementById('test-form');
       if (mode.includes('smart')) {
-        const host = document.createElement('sf-country-code');
+        const host = document.createElement('sf-input-country');
         for (const [key, value] of Object.entries({label: params.label, value: params.value, 'use-mask': 'true', 'use-country-masks': String(!fixedMask), 'mask-pattern': params.maskPattern, 'multi-country': String(params.multiCountry)})) host.setAttribute(key, value);
         host.countries = customCountries; parent.append(host);
       } else if (mode === 'base') {
@@ -47,7 +47,7 @@ async page => {
       checks.codeOnly = root.dataset.dialCode === '+999' && pattern() === expected(2);
       checks.optionIdentity = mode === 'fixed-smart' || root.querySelector('[aria-selected="true"]')?.dataset.code === '+999';
       if (mode.includes('smart')) {
-        const host = document.querySelector('sf-country-code'), done = new Promise(resolve => host.addEventListener('sf-after-render', resolve, {once: true}));
+        const host = document.querySelector('sf-input-country'), done = new Promise(resolve => host.addEventListener('sf-after-render', resolve, {once: true}));
         host.setAttribute('hint', 'Свой список стран'); await done;
       } else { root.remove(); await settle(); document.getElementById('test-form').append(root); }
       await settle(); checks.rebind = root.dataset.dialCode === '+999' && pattern() === expected(2);

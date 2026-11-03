@@ -836,7 +836,7 @@ function fieldName(field) {
 // stays true. Counted on a running Larena site, which declares one.
 function renderPhoneEdit(field, value, host) {
     return html`
-        <sf-country-code
+        <sf-input-country
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${scalarValue(value) ?? ''}
@@ -846,7 +846,7 @@ function renderPhoneEdit(field, value, host) {
                 use-mask="true"
                 show-code="true"
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? event.target?.value ?? '')}
-        ></sf-country-code>
+        ></sf-input-country>
     `;
 }
 

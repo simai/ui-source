@@ -4,7 +4,7 @@ import test from 'node:test';
 const read=path=>readFile(new URL(`../src/${path}`,import.meta.url),'utf8');
 const js=await read('component/country-code/js/_country_code.js');
 const css=await read('component/country-code/scss/_css_country_code.scss');
-const template=await read('smart/country-code/js/templates/default.js');
+const template=await read('smart/input-country/js/templates/default.js');
 const map=JSON.parse(await read('component/country-code/json/country-code.utility.json'));
 
 test('Country constructor applies the authoritative row/flag layout without compressing list items',()=>{

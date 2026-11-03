@@ -13,7 +13,7 @@ const {readManifest} = await import('../src/core/js/element-manifest.js');
 const {readAliasTable} = await import('../src/core/js/alias-table.js');
 
 const COMPONENTS = {
-  'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
+  'input-country': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss', variables: 'country-code'},
   'input-color': {class: 'SfColor', sheets: 'src/smart/input-color/js/templates', variables: 'color'},
   'slider-range': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss', variables: 'range-slider'},
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
@@ -106,15 +106,15 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
   });
 }
 
-test('sf-country-code: the host is the form control; the inner tel input carries no name and joins no form (§17.1)', () => {
-  const source = read('src/smart/country-code/index.js');
+test('sf-input-country: the host is the form control; the inner tel input carries no name and joins no form (§17.1)', () => {
+  const source = read('src/smart/input-country/index.js');
   assert.match(source, /class SfCountryCode extends FormField\(CountryCodeElement\)/u);
   assert.match(source, /controlName: this\.sfInternals \? '' : this\.name/u);
   assert.match(source, /controlForm: this\.sfInternals \? '' : this\.getAttribute\('form'\)/u);
-  const manifest = json('src/smart/country-code/component.json');
+  const manifest = json('src/smart/input-country/component.json');
   assert.equal(manifest.settings.form, undefined, 'form is a host attribute, read by the browser');
   assert.deepEqual(manifest.form.validity, ['value-missing', 'custom-error']);
-  assert.equal(json('src/smart/country-code/lang/ru.json').runtime['value-missing'], 'Введите номер телефона.');
+  assert.equal(json('src/smart/input-country/lang/ru.json').runtime['value-missing'], 'Введите номер телефона.');
 });
 
 test('sf-input-color: shown is the base value; the painted colour is effective-value, a dated documentary rename (§4.1, §4.3)', () => {

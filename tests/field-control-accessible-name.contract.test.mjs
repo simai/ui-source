@@ -15,7 +15,7 @@ test('the renderer set gives a labelled field a name, not a second label', async
   for (const [renderer, tag] of [
     ['renderDateEdit', 'sf-input-date'],
     ['renderBooleanEdit', 'sf-switch'],
-    ['renderPhoneEdit', 'sf-country-code'],
+    ['renderPhoneEdit', 'sf-input-country'],
   ]) {
     const start = source.indexOf(`function ${renderer}(`);
     assert.ok(start > 0, `${renderer} must exist`);
@@ -41,7 +41,7 @@ test('the controls carry the name to the element that is read', async () => {
   const switchTemplate = await read('src/smart/switch/js/templates/default.js');
   assert.ok(switchTemplate.includes('aria-label=${!labelContent && ariaLabel ? ariaLabel : nothing}'));
 
-  const country = await read('src/smart/country-code/js/templates/default.js');
+  const country = await read('src/smart/input-country/js/templates/default.js');
   assert.ok(country.includes('aria-label=${!label && ariaLabel ? ariaLabel : nothing}'));
   // No label, no label row: the row left an empty line above every phone field
   // in a panel that draws the labels itself.
@@ -54,7 +54,7 @@ test('the controls carry the name to the element that is read', async () => {
 });
 
 test('every control that takes the name declares it', async () => {
-  for (const name of ['input', 'switch', 'country-code', 'input-date']) {
+  for (const name of ['input', 'switch', 'input-country', 'input-date']) {
     const source = await read(`src/smart/${name}/index.js`);
     assert.match(source, /ariaLabel: \{\s*attribute: 'aria-label', default: ''\s*\}/u, `${name} prop`);
     assert.match(source, /get ariaLabel\(\) \{\s*return this\.getProp\('ariaLabel'\) \|\| '';/u, `${name} getter`);

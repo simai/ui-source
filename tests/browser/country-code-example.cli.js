@@ -6,7 +6,7 @@ async page => {
     await page.setViewportSize({width, height: 900});
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for (const n of ['buttons','country-code']) await page.addStyleTag({url: `${base}/component/${n}/css/${n}.css`});
-    await page.addScriptTag({url: `${base}/smart/country-code/js/country-code.js`});
+    await page.addScriptTag({url: `${base}/smart/input-country/js/input-country.js`});
     await page.evaluate(async ({base, theme}) => {
       document.documentElement.className = `theme-${theme}`;
       const response = await fetch(`${base}/examples/country-code-customization.html`);
@@ -16,19 +16,19 @@ async page => {
       await document.fonts.load('24px "Material Symbols Outlined"');
       main.querySelectorAll('.sf-icon').forEach(e => e.classList.add('sf-icon-loaded'));
     }, {base, theme});
-    await page.locator('sf-country-code input').fill('+7 9991234567');
-    const before = await page.locator('sf-country-code').evaluate(e => ({...e.state, padding:getComputedStyle(e.querySelector('.sf-country-code')).paddingTop}));
+    await page.locator('sf-input-country input').fill('+7 9991234567');
+    const before = await page.locator('sf-input-country').evaluate(e => ({...e.state, padding:getComputedStyle(e.querySelector('.sf-country-code')).paddingTop}));
     await page.getByRole('button', {name:'Изменить отступ', exact:true}).click();
-    await page.waitForFunction(padding => getComputedStyle(document.querySelector('sf-country-code .sf-country-code')).paddingTop !== padding, before.padding);
-    const after = await page.locator('sf-country-code').evaluate(async e => {
+    await page.waitForFunction(padding => getComputedStyle(document.querySelector('sf-input-country .sf-country-code')).paddingTop !== padding, before.padding);
+    const after = await page.locator('sf-input-country').evaluate(async e => {
       await Promise.all(document.getAnimations().filter(a => a.effect?.getComputedTiming().iterations !== Infinity).map(a => a.finished.catch(() => {})));
       return {...e.state,padding:getComputedStyle(e.querySelector('.sf-country-code')).paddingTop, overflow:document.documentElement.scrollWidth>innerWidth};
     });
     if (after.value !== before.value || after.iso2 !== before.iso2 || after.padding === before.padding || after.overflow) failures.push({width,theme,before,after});
-    await page.locator('sf-country-code .sf-country-code-left').focus();
+    await page.locator('sf-input-country .sf-country-code-left').focus();
     await page.keyboard.press('Enter');
     await page.keyboard.press('End');
-    const keyboard = await page.locator('sf-country-code').evaluate(e => {
+    const keyboard = await page.locator('sf-input-country').evaluate(e => {
       const items=[...e.querySelectorAll('.sf-country-code-item')],wrap=e.querySelector('.sf-country-code-items');
       const focused=document.activeElement,box=wrap.getBoundingClientRect(),rect=focused.getBoundingClientRect();
       return {last:focused===items.at(-1),visible:rect.top>=box.top-1&&rect.bottom<=box.bottom+1,value:e.state.value};

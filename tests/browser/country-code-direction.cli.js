@@ -10,7 +10,7 @@ async page => {
     for(const layer of ['component','smart'])await page.addScriptTag({url:`${base}/${layer}/country-code/js/country-code.js`});
     await page.evaluate(({mode,dir,mask})=>{
       document.documentElement.dir=dir;const main=document.querySelector('main');main.replaceChildren();
-      if(mode==='smart'){const host=document.createElement('sf-country-code');for(const [k,v] of Object.entries({iso2:'RU',value:'+7 9991234567','use-mask':String(mask)}))host.setAttribute(k,v);main.append(host);}
+      if(mode==='smart'){const host=document.createElement('sf-input-country');for(const [k,v] of Object.entries({iso2:'RU',value:'+7 9991234567','use-mask':String(mask)}))host.setAttribute(k,v);main.append(host);}
       else{const C=window.__sfComponentClasses.CountryCode||new Map(window.SF_PENDING_COMPONENTS||[]).get('CountryCode');main.append(new C({param:{iso2:'RU',value:'+7 9991234567',useMask:mask}}).render());}
     },{mode,dir,mask});
     await page.waitForFunction(mask=>{const r=document.querySelector('.sf-country-code');return r?.__sfCountryCodeInput&&(!mask||r.__sfCountryMask);},mask);

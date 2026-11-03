@@ -7,12 +7,12 @@ async page => {
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     await page.addStyleTag({url:`${base}/component/country-code/css/country-code.css`});
     await page.addScriptTag({url:`${base}/component/country-code/js/country-code.js`});
-    await page.addScriptTag({url:`${base}/smart/country-code/js/country-code.js`});
+    await page.addScriptTag({url:`${base}/smart/input-country/js/input-country.js`});
     await page.evaluate(({smart,theme,dir}) => {
       document.documentElement.className=`theme-${theme}`; document.documentElement.dir=dir;
       const main=document.querySelector('main'); main.replaceChildren();
       const countries=[{iso2:'RU',dialCode:'+7',nameEn:'Russia',label:'Russia (+7)'},{iso2:'DE',dialCode:'+49',nameEn:'Germany',label:'Germany (+49)'},{iso2:'US',dialCode:'+1',nameEn:'United States',label:'United States (+1)'}];
-      if(smart){const e=document.createElement('sf-country-code');e.setAttribute('label','Phone');e.setAttribute('hint','Contact number');e.setAttribute('locale','en');e.setAttribute('iso2','RU');e.countries=countries;main.append(e);}
+      if(smart){const e=document.createElement('sf-input-country');e.setAttribute('label','Phone');e.setAttribute('hint','Contact number');e.setAttribute('locale','en');e.setAttribute('iso2','RU');e.countries=countries;main.append(e);}
       else {const C=window.__sfComponentClasses.CountryCode||new Map(window.SF_PENDING_COMPONENTS||[]).get('CountryCode');window.instance=new C({param:{label:'Phone',hint:'Contact number',locale:'en',iso2:'RU',countries}});main.append(instance.render());}
       const after=document.createElement('button');after.textContent='After';main.append(after);
       window.countryEvents={input:0,change:0};

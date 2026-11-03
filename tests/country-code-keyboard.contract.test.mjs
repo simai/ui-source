@@ -20,7 +20,7 @@ test('Country Code focus uses semantic width and role color only for focus-visib
   assert.match(css,/forced-colors: active/);
 });
 test('Country Code machine keyboard contract describes explicit selection and cancellation',()=>{
-  const manifest=JSON.parse(fs.readFileSync(new URL('../src/smart/country-code/smart.manifest.json',import.meta.url),'utf8'));
+  const manifest=JSON.parse(fs.readFileSync(new URL('../src/smart/input-country/smart.manifest.json',import.meta.url),'utf8'));
   for(const key of ['Enter','Space','Escape','ArrowDown','ArrowUp','Home','End','Typeahead']) assert.ok(manifest.accessibility.keyboard.includes(key));
   assert.equal(manifest.lifecycle,'experimental');
 });

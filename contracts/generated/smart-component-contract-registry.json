@@ -540,40 +540,6 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.country-code"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-country-code",
-      "id": "smart.country-code",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/country-code/smart.manifest.json",
-      "manifest_sha256": "510b3ea75fa978e3af7c37337085b3da53524594540055fa116f6040f54217de",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
-      "tags": [
-        "country-code"
-      ],
-      "title": "Country Code"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
           "component.close",
           "component.icon-buttons"
         ]
@@ -1257,6 +1223,40 @@
         "property"
       ],
       "title": "Color"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.country-code"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-country",
+      "id": "smart.input-country",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-country/smart.manifest.json",
+      "manifest_sha256": "7f64805049f679ae223f87cd7b42fd214f84fd8c608077c0ab9368ee4305b98f",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
+      "tags": [
+        "input-country"
+      ],
+      "title": "Country Code"
     },
     {
       "backend_adapters": [],

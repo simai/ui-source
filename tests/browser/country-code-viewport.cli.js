@@ -11,7 +11,7 @@ async page => {
     await page.evaluate(({mode,dir,place})=>{
       document.documentElement.dir=dir;const main=document.querySelector('main');main.replaceChildren();
       main.style.cssText=`position:fixed;left:24px;right:24px;padding:0;${place==='bottom'?'bottom:24px':`top:${place==='top'?24:240}px`}`;
-      if(mode==='smart'){const host=document.createElement('sf-country-code');host.setAttribute('label','Телефон');host.setAttribute('hint','Выберите страну');host.setAttribute('iso2','RU');main.append(host);}
+      if(mode==='smart'){const host=document.createElement('sf-input-country');host.setAttribute('label','Телефон');host.setAttribute('hint','Выберите страну');host.setAttribute('iso2','RU');main.append(host);}
       else{const C=window.__sfComponentClasses.CountryCode||new Map(window.SF_PENDING_COMPONENTS||[]).get('CountryCode');main.append(new C({param:{label:'Телефон',hint:'Выберите страну',iso2:'RU'}}).render());}
     },{mode,dir,place});
     await page.locator('.sf-country-code-left').focus();await page.keyboard.press('Enter');await page.keyboard.press('End');

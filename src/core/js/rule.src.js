@@ -748,7 +748,7 @@ import '../../smart/editor-overlay/rule.js';
 import '../../smart/contents/rule.js';
 import '../../smart/context-menu/rule.js';
 import '../../smart/button-copy/rule.js';
-import '../../smart/country-code/rule.js';
+import '../../smart/input-country/rule.js';
 import '../../smart/input-date/rule.js';
 import '../../smart/file-download/rule.js';
 import '../../smart/drawer/rule.js';

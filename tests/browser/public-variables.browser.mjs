@@ -82,8 +82,8 @@ const DRAW = {
   // (2026-10-27). Each state a variable colours is drawn: the country list
   // open, a colour on a preset and one with nothing chosen, a value shown as
   // text, a file held over the second area, a chosen day and a chosen range.
-  'country-code': {css: ['country-code'], js: 'country-code',
-    html: '<sf-country-code label="Телефон" value="+7 999 123-45-67" size="1"></sf-country-code>',
+  'country-code': {css: ['country-code'], js: 'input-country',
+    html: '<sf-input-country label="Телефон" value="+7 999 123-45-67" size="1"></sf-input-country>',
     open: 'document.querySelector(".sf-country-code").classList.add("open")'},
   color: {css: ['smart/smart/input-color/css/input-color.css'], js: 'input-color',
     html: '<sf-input-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-input-color><sf-input-color label="Цвет"></sf-input-color>'},

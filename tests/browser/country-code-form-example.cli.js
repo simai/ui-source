@@ -5,7 +5,7 @@ async page=>{
     await page.setViewportSize({width,height:850});await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for(const c of ['buttons','country-code'])await page.addStyleTag({url:`${base}/component/${c}/css/${c}.css`});
     await page.addScriptTag({url:`${base}/component/country-code/js/country-code.js`});
-    await page.addScriptTag({url:`${base}/smart/country-code/js/country-code.js`});
+    await page.addScriptTag({url:`${base}/smart/input-country/js/input-country.js`});
     await page.evaluate(async({base,theme,mode})=>{document.documentElement.className=`theme-${theme}`;const r=await fetch(`${base}/examples/country-code-form-${mode}.html`);if(!r.ok)throw Error('Missing example');const main=document.querySelector('main');main.innerHTML=await r.text();for(const script of [...main.querySelectorAll('script')]){const live=document.createElement('script');live.textContent=script.textContent;script.replaceWith(live);}}, {base,theme,mode});
     await page.locator('input[name="phone"]').fill('+7 1234567890');
     await page.getByRole('button',{name:'Проверить значение',exact:true}).click();

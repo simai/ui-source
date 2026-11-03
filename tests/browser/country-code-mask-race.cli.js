@@ -13,11 +13,11 @@ async page => {
       }};
     });
     await page.addScriptTag({url: `${base}/component/country-code/js/country-code.js`});
-    await page.addScriptTag({url: `${base}/smart/country-code/js/country-code.js`});
+    await page.addScriptTag({url: `${base}/smart/input-country/js/input-country.js`});
     await page.evaluate(smart => {
       const main = document.querySelector('main'); main.replaceChildren();
       if (smart) {
-        const host = document.createElement('sf-country-code'); host.id = 'race-country';
+        const host = document.createElement('sf-input-country'); host.id = 'race-country';
         host.setAttribute('use-mask', 'true'); host.setAttribute('iso2', 'RU'); host.setAttribute('value', '+7 9991234567'); main.append(host);
       } else {
         const Constructor = window.__sfComponentClasses.CountryCode || new Map(window.SF_PENDING_COMPONENTS || []).get('CountryCode');

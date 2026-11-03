@@ -127,6 +127,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-color-to-input-color"
+    },
+    "cl-country-code": {
+      "to": "cl-input-country",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-country-code-to-input-country"
     }
   }
 }

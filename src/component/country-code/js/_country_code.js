@@ -8,8 +8,9 @@ import BundledPosition from '../../../core/js/position.js';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { pageLanguage, pageText } from '../../../core/js/page-language';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
+import { tagSelector } from '../../../core/js/tag-aliases.js';
 // Every word this part says. A product adds a language with
-// SF.language.register('sf-country-code', code, words); the locale here is
+// SF.language.register('sf-input-country', code, words); the locale here is
 // also what the number itself is formatted by, which is why it stays.
 const COUNTRY_CODE_TEXT = {
   en: {
@@ -68,7 +69,7 @@ function syncCountryFieldReferences(root, input) {
   if (label?.textContent.trim() || input.hasAttribute('aria-labelledby')) {
     if (generatedName && input.getAttribute('aria-label') === generatedName) input.removeAttribute('aria-label');
   } else if (!authorName) {
-    const name = pageText(COUNTRY_CODE_TEXT, 'phoneLabel', root, 'sf-country-code');
+    const name = pageText(COUNTRY_CODE_TEXT, 'phoneLabel', root, 'sf-input-country');
     if (input.getAttribute('aria-label') !== name) input.setAttribute('aria-label', name);
     countryGeneratedNames.set(input, name);
   }
@@ -81,7 +82,7 @@ function syncCountryRequired(root, input) {
   const value = String(input.value || '').trim();
   const local = config.showCode ? extractLocalPart(value, root.dataset.dialCode) : value;
   const missing = input.required && value !== '' && !/\d/.test(local);
-  const message = missing ? pageText(COUNTRY_CODE_TEXT, 'phoneRequired', root, 'sf-country-code') : '';
+  const message = missing ? pageText(COUNTRY_CODE_TEXT, 'phoneRequired', root, 'sf-input-country') : '';
   input.setCustomValidity(message);
   countryRequiredMessages.set(input, message);
 }
@@ -108,7 +109,7 @@ function syncCountryAccessibility(root) {
   const config = root.__sfCountryConfig || {};
   const open = root.classList.contains('open');
   const selected = root.__sfCountrySelected;
-  const countryName = pageText(COUNTRY_CODE_TEXT, 'countryLabel', root, 'sf-country-code');
+  const countryName = pageText(COUNTRY_CODE_TEXT, 'countryLabel', root, 'sf-input-country');
   syncCountryFieldReferences(root, input);
   root.querySelectorAll('.sf-country-code-required, .sf-country-code-left .sf-icon').forEach(node => node.setAttribute('aria-hidden', 'true'));
   if (toggle) {
@@ -1016,7 +1017,7 @@ function initExistingCountryCodes(target = document) {
   target.querySelectorAll(COUNTRY_CODE_SELECTOR).forEach(root => {
     // The Smart owner binds its own root after render. Ordinary auto-init must
     // not claim it first with a different bundled module's reset state.
-    if (!root.closest('sf-country-code')) bindCountryCode(root);
+    if (!root.closest(tagSelector('sf-input-country'))) bindCountryCode(root);
   });
 }
 
@@ -1251,11 +1252,11 @@ const countryCodeObserver = new MutationObserver((mutations) => {
       if (!(node instanceof Element)) return;
       const roots = [...node.querySelectorAll(COUNTRY_CODE_SELECTOR)];
       if (node.matches(COUNTRY_CODE_SELECTOR)) roots.unshift(node);
-      for (const root of roots) if (!root.isConnected && !root.closest('sf-country-code')) unbindCountryCode(root);
+      for (const root of roots) if (!root.isConnected && !root.closest(tagSelector('sf-input-country'))) unbindCountryCode(root);
     });
     mutation.addedNodes.forEach((node) => {
       if (!(node instanceof Element)) return;
-      if (node.matches?.(COUNTRY_CODE_SELECTOR) && !node.closest('sf-country-code')) {
+      if (node.matches?.(COUNTRY_CODE_SELECTOR) && !node.closest(tagSelector('sf-input-country'))) {
         bindCountryCode(node);
       }
       initExistingCountryCodes(node);

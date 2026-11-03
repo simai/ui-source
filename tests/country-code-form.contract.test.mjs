@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
 const code=fs.readFileSync(new URL('../src/component/country-code/js/_country_code.js',import.meta.url),'utf8');
-const template=fs.readFileSync(new URL('../src/smart/country-code/js/templates/default.js',import.meta.url),'utf8');
+const template=fs.readFileSync(new URL('../src/smart/input-country/js/templates/default.js',import.meta.url),'utf8');
 test('Country Code native submission contract is present in both renderers',()=>{
   assert.match(code,/input\.type = 'tel'/);assert.match(code,/input\.name = String\(name\)/);assert.match(code,/input\.defaultValue = String\(value/);
   assert.match(template,/name=\$\{context\.controlName \|\| nothing\}/);assert.match(template,/form=\$\{context\.controlForm \|\| nothing\}/);assert.match(template,/\?required=\$\{required\}/);assert.match(template,/\.defaultValue=\$\{value\}/);
@@ -12,7 +12,7 @@ test('Country Code uses the shared reset subscription with matched release',()=>
   assert.match(code,/from '\.\.\/\.\.\/form-reset-helper'/);
   assert.match(code,/bindFormReset\(input,/);assert.match(code,/root\.__sfCountryReleaseReset\?\.\(\)/);
   assert.match(code,/applyCountrySelection\(root, country, 'reset'\)/);
-  assert.match(code,/if \(!root\.closest\('sf-country-code'\)\) bindCountryCode\(root\)/);
+  assert.match(code,/if \(!root\.closest\(tagSelector\('sf-input-country'\)\)\) bindCountryCode\(root\)/);
 });
 function validation(){
   // The words come from the shared language rule now, so the sandbox has to

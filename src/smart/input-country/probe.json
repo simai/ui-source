@@ -1,6 +1,6 @@
 {
   "probe": "sf-country-code against component.json (standard simai.smart-component 1.3.8 §4, §17.1, §17.2, §4.8 keys)",
-  "component": "sf-country-code",
+  "component": "sf-input-country",
   "page": {
     "lang": "ru",
     "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
@@ -14,7 +14,7 @@
     {
       "id": "host-submits-the-tel-text",
       "covers": "form.value, form.submits, §17.1 items 1 and 6",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-input-country>",
       "form": "submit",
       "expect": {
         "submitted": true,
@@ -31,7 +31,7 @@
     {
       "id": "nothing-while-disabled",
       "covers": "form.disabled, §17.1 item 3",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\" disabled></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\" disabled></sf-input-country>",
       "form": "submit",
       "expect": {
         "submitted": true,
@@ -43,7 +43,7 @@
     {
       "id": "required-blocks-submit",
       "covers": "form.required, validity value-missing (§17.2)",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" required></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" required></sf-input-country>",
       "form": "submit",
       "expect": {
         "submitted": false,
@@ -59,7 +59,7 @@
     {
       "id": "custom-error-blocks-submit",
       "covers": "validity custom-error, setCustomValidity (§17.1 item 5)",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-input-country>",
       "script": "el.setCustomValidity('Номер занят'); form.requestSubmit();",
       "expect": {
         "submitted": false,
@@ -77,7 +77,7 @@
     {
       "id": "typing-reaches-the-form",
       "covers": "events.input, events.change (native), the current value (§4.3); the dial code the class script re-detects while typing is its own (seen: +7 typed to the end reads +61, on the old pair too)",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-6\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-6\"></sf-input-country>",
       "given": [
         {
           "script": "const input = el.querySelector(\"input[type=tel]\"); input.focus(); input.setSelectionRange(input.value.length, input.value.length);"
@@ -100,7 +100,7 @@
     {
       "id": "reset-returns-the-default",
       "covers": "form.reset (§17.1 item 4)",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-input-country>",
       "given": [
         {
           "script": "const input = el.querySelector('input[type=tel]'); input.value = '+7 111'; input.dispatchEvent(new Event('input', {bubbles: true}));"
@@ -118,7 +118,7 @@
     {
       "id": "enter-opens-escape-closes",
       "covers": "keyboard.host Enter open, Escape close",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\"></sf-input-country>",
       "given": [
         {
           "user": [
@@ -137,7 +137,7 @@
     {
       "id": "arrow-down-opens-the-list",
       "covers": "keyboard.host ArrowDown open; keyboard.panel ArrowDown focus:next",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\"></sf-input-country>",
       "given": [
         {
           "user": "focus:.sf-country-code-left"
@@ -157,7 +157,7 @@
     {
       "id": "the-form-attribute-names-the-form",
       "covers": "the host attribute form (aliases.json host-attribute row)",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 1\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 1\"></sf-input-country>",
       "script": "const other = document.createElement('form'); other.id = 'other'; document.body.append(other); el.setAttribute('form', 'other'); return el.form && el.form.id;",
       "expect": {
         "returns": "other"
@@ -166,7 +166,7 @@
     {
       "id": "space-opens",
       "covers": "keyboard.host Space open",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\"></sf-input-country>",
       "given": [
         {
           "user": "focus:.sf-country-code-left"
@@ -182,7 +182,7 @@
     {
       "id": "list-home-end-arrow-up",
       "covers": "keyboard.panel End focus:last, Home focus:first, ArrowUp focus:prev; keyboard.host ArrowUp open",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\" max-items=\"5\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\" max-items=\"5\"></sf-input-country>",
       "given": [
         {
           "user": [
@@ -206,7 +206,7 @@
     {
       "id": "enter-in-the-list",
       "covers": "keyboard.panel Enter select, Space select",
-      "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+      "field": "<sf-input-country name=\"phone\" label=\"Телефон\"></sf-input-country>",
       "given": [
         {
           "user": [

@@ -10,7 +10,7 @@ async page => {
     await page.evaluate(({mode,smart,mask,external})=>{
       const main=document.querySelector('main');main.innerHTML='<form id="phone-form"></form><form id="other-form"></form>';
       const parent=external?main:document.getElementById('phone-form');
-      if(smart){const e=document.createElement('sf-country-code');for(const [k,v]of Object.entries({label:'Телефон',name:'phone',value:'+7 9991234567',iso2:'RU',required:'true','use-mask':String(mask),...(external?{form:'phone-form'}:{})}))e.setAttribute(k,v);parent.append(e);}
+      if(smart){const e=document.createElement('sf-input-country');for(const [k,v]of Object.entries({label:'Телефон',name:'phone',value:'+7 9991234567',iso2:'RU',required:'true','use-mask':String(mask),...(external?{form:'phone-form'}:{})}))e.setAttribute(k,v);parent.append(e);}
       else if(mode==='markup') parent.insertAdjacentHTML('beforeend',`<label class="sf-country-code" data-iso2="RU" data-use-mask="${mask}"><span class="sf-country-code-text">Телефон</span><span class="sf-country-code-field"><span class="sf-country-code-left"></span><input type="tel" name="phone" value="+7 9991234567" required ${external?'form="phone-form"':''}></span></label>`);
       else {const C=window.__sfComponentClasses.CountryCode||new Map(window.SF_PENDING_COMPONENTS||[]).get('CountryCode');window.instance=new C({param:{label:'Телефон',name:'phone',value:'+7 9991234567',iso2:'RU',required:true,useMask:mask,form:external?'phone-form':''}});parent.append(instance.render());}
       window.events={input:0,change:0};for(const key of ['input','change'])main.addEventListener(key,e=>{if(e.target.matches('input'))events[key]++;});
@@ -22,7 +22,7 @@ async page => {
       const initial={value:input.value,iso2:r.dataset.iso2};
       const result={type:input.type,required:input.required,name:input.name,associated:input.form===form,submitted:new FormData(form).get('phone')===input.value};
       SF.CountryCode.setState(r,{iso2:'DE',value:'+7 5555555555',open:true});await settle();
-      if(smart){const e=document.querySelector('sf-country-code'),done=new Promise(resolve=>e.addEventListener('sf-after-render',resolve,{once:true}));e.setAttribute('hint','Новая подсказка');await done;await settle();}
+      if(smart){const e=document.querySelector('sf-input-country'),done=new Promise(resolve=>e.addEventListener('sf-after-render',resolve,{once:true}));e.setAttribute('hint','Новая подсказка');await done;await settle();}
       const edited={value:input.value,iso2:r.dataset.iso2};
       form.addEventListener('reset',e=>e.preventDefault(),{once:true});form.reset();await settle();
       result.cancelled=edited.value===input.value&&edited.iso2===r.dataset.iso2;
@@ -34,7 +34,7 @@ async page => {
       document.getElementById('other-form').reset();await settle();result.newOwner=input.value===initial.value&&r.dataset.iso2===initial.iso2;
       result.explicitDefaults=true;
       if(smart){
-        const e=document.querySelector('sf-country-code'),done=new Promise(resolve=>e.addEventListener('sf-after-render',resolve,{once:true}));
+        const e=document.querySelector('sf-input-country'),done=new Promise(resolve=>e.addEventListener('sf-after-render',resolve,{once:true}));
         e.setAttribute('iso2','DE');e.setAttribute('value','+49 1511234567');await done;await settle();
         const expected=input.value;SF.CountryCode.setState(r,{iso2:'RU'});await settle();input.form.reset();await settle();
         result.explicitDefaults=r.dataset.iso2==='DE'&&input.value===expected;

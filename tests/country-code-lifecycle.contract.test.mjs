@@ -4,8 +4,8 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../src/component/country-code/js/_country_code.js', import.meta.url), 'utf8');
-const smart = await readFile(new URL('../src/smart/country-code/index.js', import.meta.url), 'utf8');
-const template = await readFile(new URL('../src/smart/country-code/js/templates/default.js', import.meta.url), 'utf8');
+const smart = await readFile(new URL('../src/smart/input-country/index.js', import.meta.url), 'utf8');
+const template = await readFile(new URL('../src/smart/input-country/js/templates/default.js', import.meta.url), 'utf8');
 function runtime() {
   const requests = [], destroyed = [];
   const context = vm.createContext({window: {SF: {Mask: {

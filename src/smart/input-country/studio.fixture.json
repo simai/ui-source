@@ -1,9 +1,9 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.country-code",
+  "component": "smart.input-country",
   "title": "Country Code reference",
-  "summary": "Deterministic reference fixture for sf-country-code.",
+  "summary": "Deterministic reference fixture for sf-input-country.",
   "locale": "ru",
   "props": {
     "label": "Телефон",

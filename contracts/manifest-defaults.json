@@ -6,7 +6,7 @@
   "checked_by": "tests/browser/manifest-defaults.browser.mjs",
   "derived": [
     {
-      "component": "country-code",
+      "component": "input-country",
       "prop": "locale",
       "reason": "Follows the page when not set: ru on a Russian page, en otherwise."
     },

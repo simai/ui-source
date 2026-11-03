@@ -4658,6 +4658,67 @@
       },
       "owner": "ui-source",
       "source": "src/smart/color/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-color/component.json"
+    },
+    {
+      "id": "tag-sf-country-code-to-sf-input-country",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-country-code is sf-input-country (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-country's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-country, sf-country-code), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-country",
+          "from": "sf-country-code",
+          "to": "sf-input-country"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-country-code></sf-country-code>",
+        "after": "<sf-input-country></sf-input-country>"
+      },
+      "manual": "Write <sf-input-country> for <sf-country-code> in markup and sf-input-country for sf-country-code in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-country, or both names through SF.tags.selector('sf-input-country') while the alias lives; a class or a custom property spelled like the old tag (.sf-country-code, --sf-country-code-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-country/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-country-code-to-input-country",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-country is served from smart/input-country/ since its folder took the new tag's name: js/input-country.js, loader bundle cl-input-country. The old path keeps working until remove_after: smart/country-code/js/country-code.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-country/js/input-country.js, the Loader forwards the bundle name cl-country-code to cl-input-country (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.country-code is a dated alias of smart.input-country, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-country",
+          "from": "smart/country-code/js/country-code.js",
+          "to": "smart/input-country/js/input-country.js",
+          "match": "smart/country-code/js/country-code(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-country-code",
+          "to": "cl-input-country",
+          "match": "['\"]cl-country-code['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.country-code",
+          "to": "smart.input-country",
+          "match": "['\"]smart\\.country-code['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-country/ for smart/country-code/ and input-country for country-code in the file names (js/input-country.js, js/input-country.min.js); in a product rule's relation write cl-input-country for cl-country-code, and in a manifest or a package contract smart.input-country for smart.country-code. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/country-code/js/country-code.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-country/js/input-country.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/country-code/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-country/component.json"
     }
   ]
 }

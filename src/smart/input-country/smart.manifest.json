@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.country-code",
-  "version": "1.1.4",
+  "id": "smart.input-country",
+  "version": "1.2.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "country-code"
+    "input-country"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-country-code",
+  "custom_element": "sf-input-country",
   "templates": [
     "default"
   ],
@@ -279,8 +279,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-country-code>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-country-code>",
+        "since": "1.2.0",
+        "replacement": "<sf-input-country>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -289,21 +297,21 @@
     "source_revision": "a38447c031988137d3ebead71d2397ceaf6b1b14",
     "source_artifacts": [
       {
-        "path": "src/smart/country-code/index.js",
-        "sha256": "f40903f83db10cb6216731971a2afb47bad4fa87b47b0b2ee7fd378a2a5dfb72"
+        "path": "src/smart/input-country/index.js",
+        "sha256": "b5dbea3c9d77259537a521ccda47e686c21a1b63d3feb2b3649672a583a8dab8"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/country-code/js/country-code.js",
+        "path": "smart/input-country/js/input-country.js",
         "sha256": "8d9d0b4cc5347158c208d15130edfa6d14e39e6b5e0e451d395fc3eeeb6fd216"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-country-code when the interface needs the country code behavior.",
+    "use_when": "Use sf-input-country when the interface needs the country code behavior.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component"
@@ -315,7 +323,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-country-code></sf-country-code>",
+    "minimal_example": "<sf-input-country></sf-input-country>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

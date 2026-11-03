@@ -21,12 +21,12 @@ try {
     await page.goto('about:blank');
     await page.evaluate((lang) => { if (lang) document.documentElement.lang = lang; }, lang);
     await page.addScriptTag({path: join(distrRoot, 'core', 'js', 'smart-base.js')});
-    for (const name of ['tag', 'country-code']) await page.addScriptTag({path: join(smartRoot, name, 'js', `${name}.js`)});
+    for (const name of ['tag', 'input-country']) await page.addScriptTag({path: join(smartRoot, name, 'js', `${name}.js`)});
     const seen = await page.evaluate(async () => {
-      document.body.innerHTML = '<sf-tag kind="default" closable text="A"></sf-tag><sf-country-code></sf-country-code>';
+      document.body.innerHTML = '<sf-tag kind="default" closable text="A"></sf-tag><sf-input-country></sf-input-country>';
       await new Promise((settle) => setTimeout(settle, 300));
       const tag = document.querySelector('sf-tag');
-      const phone = document.querySelector('sf-country-code');
+      const phone = document.querySelector('sf-input-country');
       return {
         tag: tag.closeLabel,
         tagRendered: [...document.querySelectorAll('.sf-tag [aria-label], sf-tag [aria-label]')].map((node) => node.getAttribute('aria-label')).join(' | '),
@@ -37,7 +37,7 @@ try {
     const where = lang ? `lang="${lang}"` : 'no lang';
     if (seen.tag !== words.tag) failures.push(`${where}: sf-tag closeLabel ${seen.tag}, expected ${words.tag}`);
     if (!seen.tagRendered.includes(words.tag)) failures.push(`${where}: sf-tag renders "${seen.tagRendered}", expected ${words.tag}`);
-    if (seen.phone !== (lang || 'en')) failures.push(`${where}: sf-country-code locale ${seen.phone}`);
+    if (seen.phone !== (lang || 'en')) failures.push(`${where}: sf-input-country locale ${seen.phone}`);
   }
 } finally {
   await browser.close();

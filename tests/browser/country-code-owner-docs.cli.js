@@ -32,7 +32,7 @@ async page => {
     await page.addStyleTag({url: `${productBase}/component/country-code/css/country-code.css`});
     await page.addScriptTag({url: `${productBase}/${smart ? 'smart' : 'component'}/country-code/js/country-code.js`});
     if (smart) {
-      await page.waitForFunction(() => customElements.get('sf-country-code') && [...document.querySelectorAll('sf-country-code')].every(host => host.querySelector('.sf-country-code')));
+      await page.waitForFunction(() => customElements.get('sf-input-country') && [...document.querySelectorAll('sf-input-country')].every(host => host.querySelector('.sf-country-code')));
     } else {
       await page.waitForFunction(() => [...document.querySelectorAll('.sf-country-code')].every(root => root.__sfCountryCodeInput));
     }

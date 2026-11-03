@@ -13,7 +13,7 @@ async page => {
       const main=document.querySelector('main');main.replaceChildren(); main.className='grid gap-3';
       for (const size of ['1/3','1/2','1','2','3']) {
         let host;
-        if (mode==='smart') {host=document.createElement('sf-country-code');for (const [k,v] of Object.entries({size, label:'Рабочий телефон', hint:'Укажите номер с кодом страны', placeholder:'Номер телефона', iso2:'RU'}))host.setAttribute(k,v);}
+        if (mode==='smart') {host=document.createElement('sf-input-country');for (const [k,v] of Object.entries({size, label:'Рабочий телефон', hint:'Укажите номер с кодом страны', placeholder:'Номер телефона', iso2:'RU'}))host.setAttribute(k,v);}
         else {const C=window.__sfComponentClasses.CountryCode||new Map(window.SF_PENDING_COMPONENTS||[]).get('CountryCode'); host=new C({param:{size,label:'Рабочий телефон',hint:'Укажите номер с кодом страны',placeholder:'Номер телефона',iso2:'RU',maxItems:2}}).render();}
         host.id=`field-${size.replace('/','-')}`;main.append(host);
       }

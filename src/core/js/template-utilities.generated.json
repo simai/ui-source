@@ -81,12 +81,6 @@
     "position/default",
     "text-decoration/default"
   ],
-  "cl-country-code": [
-    "display/default",
-    "flex-direction/default",
-    "place-items/default",
-    "transition-property/default"
-  ],
   "cl-drawer": [
     "display/default",
     "justify-content/default",
@@ -189,6 +183,12 @@
   ],
   "cl-input-color": [
     "display/default"
+  ],
+  "cl-input-country": [
+    "display/default",
+    "flex-direction/default",
+    "place-items/default",
+    "transition-property/default"
   ],
   "cl-input-date": [
     "align-content/default",

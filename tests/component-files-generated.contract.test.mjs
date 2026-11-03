@@ -36,7 +36,7 @@ const PHASE_A = [
   'input-date', 'tree',
   // waves 3 to 6: the meta.mjs families, the small conflicts, the large ones
   'skeleton', 'tooltip', 'alert', 'progress-bar', 'progress-scale', 'badge', 'button', 'icon-button',
-  'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'country-code', 'tag', 'pagination',
+  'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'input-country', 'tag', 'pagination',
   'input-image', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
   'file-upload', 'editor-overlay',
   // new in the 1.4 form
