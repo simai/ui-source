@@ -51,7 +51,7 @@
       "reason": "The page language's text when not set: \"Steps\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "color",
+      "component": "input-color",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
     },

@@ -21,10 +21,10 @@ const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/inputs/css/inputs.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/input/css/input.css',
-  'smart/smart/color/css/color.css', 'smart/smart/theme-generator/css/theme-generator.css'];
+  'smart/smart/input-color/css/input-color.css', 'smart/smart/theme-generator/css/theme-generator.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/button/js/button.js', 'smart/smart/input/js/input.js',
-  'smart/smart/color/js/color.js', 'smart/smart/theme-generator/js/theme-generator.js'];
+  'smart/smart/input-color/js/input-color.js', 'smart/smart/theme-generator/js/theme-generator.js'];
 const absent = modules.filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build module(s) not found under ${out}: ${absent.join(', ')}`);
 
@@ -66,7 +66,7 @@ try {
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-theme-generator')
     && document.querySelector('#plain [data-palette="primary"] [data-tone="40"]')
-    && document.querySelector('#plain sf-color .sf-color-input'), null, {timeout: 8000});
+    && document.querySelector('#plain sf-input-color .sf-color-input'), null, {timeout: 8000});
   await page.evaluate(() => {
     window.__seen = [];
     const keep = (event) => window.__seen.push({type: event.type, id: event.target.id, value: event.detail.value, hue: event.detail.hue,
@@ -90,7 +90,7 @@ try {
   }
 
   // 2. A colour chosen through the sf-color: preview moves, one commit.
-  await page.evaluate((color) => document.querySelector('#plain sf-color').setValue(color), GREEN);
+  await page.evaluate((color) => document.querySelector('#plain sf-input-color').setValue(color), GREEN);
   await settle();
   const chosen = {primary40: await preview('plain'), events: await taken(), inlineOnRoot: await inline('html'),
     css: await page.evaluate(() => document.getElementById('plain').toCSS('.x').slice(0, 4))};

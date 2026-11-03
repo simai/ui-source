@@ -469,8 +469,8 @@ function renderColorCell(field, value) {
     // colour should look the same in a cell as it does in a card, which is what a
     // general part is for.
     return html`
-        <sf-color size="1/2" appearance="plain" value=${String(hex)}
-                  label=${field.label || field.key || ''} disabled></sf-color>
+        <sf-input-color size="1/2" appearance="plain" value=${String(hex)}
+                  label=${field.label || field.key || ''} disabled></sf-input-color>
     `;
 }
 
@@ -483,14 +483,14 @@ function renderColorView(field, value) {
     const inherited = field.inheritedValue ?? '';
     if (!hex && !inherited) return nothing;
     return html`
-        <sf-color
+        <sf-input-color
                 size="1"
                 appearance="plain"
                 value=${hex ? String(hex) : nothing}
                 inherited-value=${inherited ? String(inherited) : nothing}
                 label=${field.label || field.key || ''}
                 disabled
-        ></sf-color>
+        ></sf-input-color>
     `;
 }
 
@@ -498,7 +498,7 @@ function renderColorEdit(field, value, host) {
     const hex = scalarValue(value);
     const inherited = field.inheritedValue ?? '';
     return html`
-        <sf-color
+        <sf-input-color
                 size=${EDIT_SIZE}
                 appearance="bordered"
                 name=${fieldName(field)}
@@ -509,7 +509,7 @@ function renderColorEdit(field, value, host) {
                 ?disabled=${field.readonly === true}
                 label=${field.label || field.key || ''}
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? '')}
-        ></sf-color>
+        ></sf-input-color>
     `;
 }
 

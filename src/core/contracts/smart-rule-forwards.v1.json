@@ -121,6 +121,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-datepicker-to-input-date"
+    },
+    "cl-color": {
+      "to": "cl-input-color",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-color-to-input-color"
     }
   }
 }

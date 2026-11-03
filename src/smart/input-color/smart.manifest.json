@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.color",
-  "version": "1.4.2",
+  "id": "smart.input-color",
+  "version": "1.5.0",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -17,7 +17,7 @@
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-color",
+  "custom_element": "sf-input-color",
   "templates": [
     "default"
   ],
@@ -353,8 +353,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-color>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-color>",
+        "since": "1.5.0",
+        "replacement": "<sf-input-color>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -363,20 +371,20 @@
     "source_revision": "0d9999504a77d3dbbedc0b7fe881b9152a8a1830",
     "source_artifacts": [
       {
-        "path": "src/smart/color/index.js",
-        "sha256": "3d11f5a15f8f88a186424bd0c90fb8274ab94d744481bc4fc764cc237977f79c"
+        "path": "src/smart/input-color/index.js",
+        "sha256": "c5f4932847aba6b9d2bcd29e51d8004c6338b08186d310e219c0322f5d8fdbcd"
       },
       {
-        "path": "src/smart/color/rule.js",
-        "sha256": "f33c39c38338a58b4f73f43636e96b7bff63379d1914b683cc8b89e6b28faaf3"
+        "path": "src/smart/input-color/rule.js",
+        "sha256": "d5511140992e6d61a690c323216dee565511fcaddfb6738354eabbbb257ce3f3"
       },
       {
-        "path": "src/smart/color/js/templates/default.js",
+        "path": "src/smart/input-color/js/templates/default.js",
         "sha256": "291f9a92b1feda341bb9973d2993781e08f88c8bec0049529056968427e1790c"
       },
       {
-        "path": "src/smart/color/js/templates/default.css",
-        "sha256": "6d7a921f1210f34085320b8cc25af708198e1dd89be0ccd08e974ffbff449523"
+        "path": "src/smart/input-color/js/templates/default.css",
+        "sha256": "3dc034cb3a603afe4652b9bcc8604fbd6e2c3d2f59e3fdeb4fd09056576aea21"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
@@ -390,7 +398,7 @@
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",
+    "use_when": "Use sf-input-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",
     "do_not": [
       "Do not draw the inherited colour as the value: pass it as inherited-value so «not set» stays distinguishable",
       "Do not listen to input for saving; save on change, which fires once per committed colour",
@@ -404,7 +412,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-color label=\"Brand colour\" clearable inherited-value=\"#1f6feb\" swatches=\"#1f6feb|Brand blue, #e5534b|Alert\"></sf-color>",
+    "minimal_example": "<sf-input-color label=\"Brand colour\" clearable inherited-value=\"#1f6feb\" swatches=\"#1f6feb|Brand blue, #e5534b|Alert\"></sf-input-color>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

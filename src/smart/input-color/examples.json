@@ -93,7 +93,7 @@
       "name": "conformance",
       "x-probe": {
         "probe": "sf-color against component.json (standard simai.smart-component 1.3.8 §4.1, §4.3, §4.4, §8, §16.20, §17.1, §20.2)",
-        "component": "sf-color",
+        "component": "sf-input-color",
         "page": {
           "lang": "ru",
           "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
@@ -109,7 +109,7 @@
           {
             "id": "swatch-press-commits",
             "covers": "events.input, events.change {value, name}, form.submits",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
             "user": "click:.sf-color-preset[aria-label='Красный']",
             "expect": {
               "value": "#d1242f",
@@ -137,7 +137,7 @@
           {
             "id": "enter-on-a-swatch-selects",
             "covers": "keyboard.host Enter select",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
             "given": [
               {
                 "user": "focus:.sf-color-preset[aria-label='Синий']"
@@ -154,7 +154,7 @@
           {
             "id": "space-on-a-swatch-selects",
             "covers": "keyboard.host Space select",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
             "given": [
               {
                 "user": "focus:.sf-color-preset[aria-label='Красный']"
@@ -168,7 +168,7 @@
           {
             "id": "inherited-submits-empty",
             "covers": "§20.2: the form value is empty and the host carries data-inherited; effective-value is the inherited colour; shown is the base value",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" inherited-value=\"#D1242F\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" inherited-value=\"#D1242F\"></sf-input-color>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -190,7 +190,7 @@
           {
             "id": "reset-to-inherited-sends-the-new-name-first",
             "covers": "aliases.json sf-field:reset -> sf-field-reset (same-detail, dated), then input and change",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" inherited-value=\"#d1242f\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" inherited-value=\"#d1242f\"></sf-input-color>",
             "script": "return el.resetToInherited();",
             "expect": {
               "returns": true,
@@ -198,14 +198,14 @@
               "events": [
                 {
                   "type": "sf-field-reset",
-                  "tag": "sf-color",
+                  "tag": "sf-input-color",
                   "value": "#1a7f37",
                   "inheritedValue": "#d1242f",
                   "name": "accent"
                 },
                 {
                   "type": "sf-field:reset",
-                  "tag": "sf-color",
+                  "tag": "sf-input-color",
                   "value": "#1a7f37",
                   "inheritedValue": "#d1242f",
                   "name": "accent"
@@ -221,7 +221,7 @@
               ],
               "deprecations": [
                 {
-                  "component": "sf-color",
+                  "component": "sf-input-color",
                   "kind": "event",
                   "from": "sf-field:reset",
                   "to": "sf-field-reset",
@@ -239,7 +239,7 @@
           {
             "id": "clear-answers-an-outcome",
             "covers": "actions.clear (§4.4)",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" clearable></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" clearable></sf-input-color>",
             "action": {
               "name": "clear"
             },
@@ -263,7 +263,7 @@
           {
             "id": "clear-with-nothing-is-refused",
             "covers": "actions.clear refused {reason}",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\"></sf-input-color>",
             "action": {
               "name": "clear"
             },
@@ -278,7 +278,7 @@
           {
             "id": "value-from-code-is-silent",
             "covers": "§8: a value set from outside is not reported back",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\"></sf-input-color>",
             "property": {
               "name": "value",
               "value": "ABCDEF"
@@ -294,7 +294,7 @@
           {
             "id": "nothing-while-disabled",
             "covers": "form.disabled (§17.1 item 3)",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" disabled></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" disabled></sf-input-color>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -306,7 +306,7 @@
           {
             "id": "form-reset-returns-the-default",
             "covers": "form.reset (§17.1 item 4): no events",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" swatches=\"#d1242f|Красный\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" swatches=\"#d1242f|Красный\"></sf-input-color>",
             "given": [
               {
                 "user": "click:.sf-color-preset"
@@ -324,7 +324,7 @@
           {
             "id": "custom-error-blocks-submit",
             "covers": "validity custom-error (§17.2)",
-            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\"></sf-color>",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\"></sf-input-color>",
             "script": "el.setCustomValidity('Слишком светлый'); form.requestSubmit();",
             "expect": {
               "submitted": false,

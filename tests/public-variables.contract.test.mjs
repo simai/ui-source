@@ -21,7 +21,7 @@ const FOLDERS = {
   // Group B of the form fields, with their move to standard 1.3.8 (2026-10-27).
   'country-code': 'country-code',
   // A Smart component whose sheet sits beside its template.
-  color: 'smart/color/js/templates',
+  color: 'smart/input-color/js/templates',
   'range-slider': 'range-slider',
   'file-upload': 'file-upload',
   datepicker: 'datepicker',

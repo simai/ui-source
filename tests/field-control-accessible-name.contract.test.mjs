@@ -27,7 +27,7 @@ test('the renderer set gives a labelled field a name, not a second label', async
   }
   // sf-color's own `label` is an accessible name already -- it draws no label
   // text -- so the colour renderers are right as they are.
-  assert.match(source, /<sf-color[\s\S]{0,400}label=\$\{field\.label \|\| field\.key \|\| ''\}/u);
+  assert.match(source, /<sf-input-color[\s\S]{0,400}label=\$\{field\.label \|\| field\.key \|\| ''\}/u);
 });
 
 // A name passed to a Smart host named nothing: the host is not the control, and

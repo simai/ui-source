@@ -4586,6 +4586,78 @@
       },
       "owner": "ui-source",
       "source": "src/smart/datepicker/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-date/component.json"
+    },
+    {
+      "id": "tag-sf-color-to-sf-input-color",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-color is sf-input-color (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-color's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-color, sf-color), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "from": "sf-color",
+          "to": "sf-input-color"
+        },
+        {
+          "component": "sf-input-color",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-color></sf-color>",
+        "after": "<sf-input-color></sf-input-color>"
+      },
+      "manual": "Write <sf-input-color> for <sf-color> in markup and sf-input-color for sf-color in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-color, or both names through SF.tags.selector('sf-input-color') while the alias lives; a class or a custom property spelled like the old tag (.sf-color, --sf-color-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-color/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-color-to-input-color",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-color is served from smart/input-color/ since its folder took the new tag's name: js/input-color.js, loader bundle cl-input-color. The old path keeps working until remove_after: smart/color/js/color.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-color/js/input-color.js, the Loader forwards the bundle name cl-color to cl-input-color (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.color is a dated alias of smart.input-color, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "from": "smart/color/js/color.js",
+          "to": "smart/input-color/js/input-color.js",
+          "match": "smart/color/js/color(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-input-color",
+          "from": "smart/color/css/color.css",
+          "to": "smart/input-color/css/input-color.css",
+          "match": "smart/color/css/color(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-color",
+          "to": "cl-input-color",
+          "match": "['\"]cl-color['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.color",
+          "to": "smart.input-color",
+          "match": "['\"]smart\\.color['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-color/ for smart/color/ and input-color for color in the file names (js/input-color.js, js/input-color.min.js, css/input-color.css); in a product rule's relation write cl-input-color for cl-color, and in a manifest or a package contract smart.input-color for smart.color. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/color/js/color.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-color/js/input-color.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/color/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-color/component.json"
     }
   ]
 }

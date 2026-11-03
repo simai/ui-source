@@ -21,13 +21,13 @@ export function renderThemeGeneratorTemplate(context) {
       <div class="sf-theme-generator-choice">
         <div class="sf-theme-generator-color">
           <span class="sf-theme-generator-label" aria-hidden="true">${text.color}</span>
-          <sf-color size=${size} label=${text.color}
+          <sf-input-color size=${size} label=${text.color}
                     value=${context.value || nothing}
                     inherited-value=${context.inheritedValue}
                     inherited-text=${text.inherited}
                     swatches=${context.swatches || nothing}
                     @input=${(event) => component._colorInput(event)}
-                    @change=${(event) => component._colorChange(event)}></sf-color>
+                    @change=${(event) => component._colorChange(event)}></sf-input-color>
         </div>
         <sf-button class="sf-theme-generator-reset" size=${size} appearance="outline" scheme="on-surface"
                    icon-start="restart_alt" text=${text.reset}

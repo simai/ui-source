@@ -10,9 +10,9 @@ import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const styles = ['core/core/css/core.css', 'smart/smart/color/css/color.css'];
+const styles = ['core/core/css/core.css', 'smart/smart/input-color/css/input-color.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/color/js/color.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input-color/js/input-color.js'];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
 
@@ -30,13 +30,13 @@ try {
   });
   await page.goto(`${origin}/`);
   await page.setContent('<!doctype html><html class="theme-light" lang="en"><body>'
-    + '<form id="form"><sf-color id="color" name="brand" label="Brand" clearable inherited-value="#336699"'
-    + ' swatches="#1f6feb|Brand blue, #e5534b|Alert, #111 #222"></sf-color></form></body></html>');
+    + '<form id="form"><sf-input-color id="color" name="brand" label="Brand" clearable inherited-value="#336699"'
+    + ' swatches="#1f6feb|Brand blue, #e5534b|Alert, #111 #222"></sf-input-color></form></body></html>');
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   // Drawn and past its style gate (core.runtime 1.0.7): the element's after-render
   // work, its form value among it, runs once its sheets are applied.
-  await page.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#color[data-sf-style-ready] .sf-color'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-color') && document.querySelector('#color[data-sf-style-ready] .sf-color'), null, {timeout: 8000});
 
   const measured = await page.evaluate(async () => {
     const settle = () => new Promise((done) => setTimeout(done, 50));

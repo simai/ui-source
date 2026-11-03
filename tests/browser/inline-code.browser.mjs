@@ -8,7 +8,7 @@
 // --sf-radius--ui, .875em and the mono family. A <code> the Framework draws or
 // that sits in a block or a control is left as it was: inside an sf-button's
 // text, a highlighted block (sf-highlight), pre > code, kbd, samp, a code
-// carrying an sf- class, and a Smart component's own markup (sf-color's value).
+// carrying an sf- class, and a Smart component's own markup (sf-input-color's value).
 // The rule weighs what a bare `code` does: a utility and an unlayered site rule
 // both win over it.
 import {resolve, join} from 'node:path';
@@ -21,7 +21,7 @@ const THEMES = ['light', 'dark'];
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/highlight/css/highlight.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/button/js/button.js', 'component/component/highlight/js/highlight.js', 'smart/smart/color/js/color.js'];
+  'smart/smart/button/js/button.js', 'component/component/highlight/js/highlight.js', 'smart/smart/input-color/js/input-color.js'];
 
 const failures = [];
 const evidence = {};
@@ -43,7 +43,7 @@ const BODY = `
   <pre><code class="language-js" id="in-highlighted">const c = 3;</code></pre>
   <p>Press <kbd id="kbd"><code id="in-kbd">Ctrl</code></kbd> and <samp><code id="in-samp">ok</code></samp>.</p>
   <p>Classed <code class="sf-doc-code" id="classed">x</code></p>
-  <sf-color id="color" value="#1a7f37"></sf-color>
+  <sf-input-color id="color" value="#1a7f37"></sf-input-color>
 
   <p>Utility <code class="bg-transparent" id="with-utility">x</code></p>
   <p class="site">Site <code id="site-rule">x</code></p>`;
@@ -62,7 +62,7 @@ async function open(theme) {
   await page.goto('http://inline-code.test/');
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
-  await page.waitForFunction(() => customElements.get('sf-button') && customElements.get('sf-color'));
+  await page.waitForFunction(() => customElements.get('sf-button') && customElements.get('sf-input-color'));
   await page.waitForFunction(() => document.querySelector('#btn-host > button') && document.querySelector('#color .sf-color-text code'));
   await page.waitForTimeout(500);
   return page;

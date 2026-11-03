@@ -16,7 +16,7 @@ const page = (lang) => `<!doctype html><html lang="${lang}"><head><meta charset=
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body>
-<sf-color id="c" variant="theme" name="theme" clearable></sf-color>
+<sf-input-color id="c" variant="theme" name="theme" clearable></sf-input-color>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
 const server = createServer((request, response) => {
@@ -43,7 +43,7 @@ try {
   for (const [lang, word] of [['ru', 'Цвет темы'], ['en', 'Theme colour']]) {
     const tab = await browser.newPage();
     await tab.goto(`http://127.0.0.1:${server.address().port}/${lang}`);
-    await tab.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#c button[data-action="theme"]'), null, {timeout: 15000})
+    await tab.waitForFunction(() => customElements.get('sf-input-color') && document.querySelector('#c button[data-action="theme"]'), null, {timeout: 15000})
       .catch(() => failures.push(`${lang}: the theme button never drew`));
     const button = await tab.evaluate(() => {
       const native = document.querySelector('#c button[data-action="theme"]');

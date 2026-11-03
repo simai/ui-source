@@ -14,7 +14,7 @@ const {readAliasTable} = await import('../src/core/js/alias-table.js');
 
 const COMPONENTS = {
   'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
-  color: {class: 'SfColor', sheets: 'src/smart/color/js/templates'},
+  'input-color': {class: 'SfColor', sheets: 'src/smart/input-color/js/templates', variables: 'color'},
   'slider-range': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss', variables: 'range-slider'},
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
   // The public variables keep the name they had under the former tag.
@@ -117,23 +117,23 @@ test('sf-country-code: the host is the form control; the inner tel input carries
   assert.equal(json('src/smart/country-code/lang/ru.json').runtime['value-missing'], 'Введите номер телефона.');
 });
 
-test('sf-color: shown is the base value; the painted colour is effective-value, a dated documentary rename (§4.1, §4.3)', () => {
-  const source = read('src/smart/color/index.js');
+test('sf-input-color: shown is the base value; the painted colour is effective-value, a dated documentary rename (§4.1, §4.3)', () => {
+  const source = read('src/smart/input-color/index.js');
   assert.doesNotMatch(source, /\n {4}get shown\(\) \{/u, 'the component no longer shadows the base value shown');
   assert.match(source, /\n {4}get effectiveValue\(\) \{/u);
   assert.match(source, /class SfColor extends FormField\(ColorElement\)/u);
   assert.match(source, /base: InheritedValueField\(SfBaseElement\)/u);
-  const manifest = json('src/smart/color/component.json');
+  const manifest = json('src/smart/input-color/component.json');
   assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value']);
   assert.deepEqual(manifest['host-states'], {'data-inherited': 'boolean'});
-  const rows = json('src/smart/color/aliases.json').aliases;
-  assert.deepEqual(rows.map((row) => [row.from, row.to]), [['sf-field:reset', 'sf-field-reset'], ['shown', 'effective-value']]);
+  const rows = json('src/smart/input-color/aliases.json').aliases;
+  assert.deepEqual(rows.map((row) => [row.from, row.to]), [['sf-field:reset', 'sf-field-reset'], ['shown', 'effective-value'], ['sf-color', 'sf-input-color']]);
   // Words come from the language files, trait words with them (§11).
   assert.doesNotMatch(source, /COLOR_TEXT|Выбрать цвет/u);
-  assert.equal(json('src/smart/color/lang/ru.json').runtime.reset, 'Сбросить к наследуемому');
+  assert.equal(json('src/smart/input-color/lang/ru.json').runtime.reset, 'Сбросить к наследуемому');
   // Without ElementInternals only: the hidden input.
   assert.match(source, /hiddenName: this\.sfInternals \? "" : this\.name/u);
-  assert.match(read('src/smart/color/js/templates/default.js'), /context\.hiddenName/u);
+  assert.match(read('src/smart/input-color/js/templates/default.js'), /context\.hiddenName/u);
 });
 
 test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled is drawn by the template (§3.1, §4.2, §5.3)', () => {

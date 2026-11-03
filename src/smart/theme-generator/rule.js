@@ -8,7 +8,7 @@ SF.RuleLoader['cl-theme-generator'] = {
   js: true,
   css: true,
   relation: [
-    { name: 'cl-color' },
+    { name: 'cl-input-color' },
     { name: 'cl-input' },
     { name: 'cl-button' },
     { name: 'cl-icon-button' },

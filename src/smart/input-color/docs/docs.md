@@ -1,6 +1,6 @@
 # Smart Color
 
-`sf-color` sets a colour anywhere one is set: a theme, a site's own look, a
+`sf-input-color` sets a colour anywhere one is set: a theme, a site's own look, a
 label, a chart series. A swatch opens the platform's colour picker; `swatches`
 offers the colours a product already has (`#hex` or `#hex|Name`, comma
 separated). The value is `#rgb`, `#rrggbb` or `#rrggbbaa`; `name` submits it
@@ -10,8 +10,8 @@ through a hidden input, empty while nothing is chosen.
 colour is committed; both carry `{value, name}`.
 
 ```html
-<sf-color name="brand" label="Brand colour" inherited-value="#336699"
-          swatches="#1f6feb|Brand blue, #e5534b|Alert"></sf-color>
+<sf-input-color name="brand" label="Brand colour" inherited-value="#336699"
+          swatches="#1f6feb|Brand blue, #e5534b|Alert"></sf-input-color>
 ```
 
 ## Inherited value
@@ -39,7 +39,7 @@ opens the platform's colour picker -- the native input lies under the button,
 out of the focus order, so there is no popover of its own.
 
 ```html
-<sf-color variant="theme" clearable></sf-color>
+<sf-input-color variant="theme" clearable></sf-input-color>
 ```
 
 - While the colour moves (`input`), the page theme follows it after 120 ms of

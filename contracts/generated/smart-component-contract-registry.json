@@ -455,49 +455,6 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [
-          "swatch",
-          "chip",
-          "text",
-          "swatches",
-          "preset"
-        ],
-        "uses": [
-          "component.icons",
-          "smart.icon-button"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-color",
-      "id": "smart.color",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/color/smart.manifest.json",
-      "manifest_sha256": "510fff59c56aebc8fd9a92c9a15e3c23005368370979046f6bf4ad8b7b0735e4",
-      "reuse_mode": "both",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
-      "tags": [
-        "input",
-        "color",
-        "property"
-      ],
-      "title": "Color"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
         "interaction",
         "keyboard",
         "theme",
@@ -1004,7 +961,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "7a4182bfbb84ae22e625c03053ea5d3af6c185aa0ed735ff00af10cb280aedea",
+      "manifest_sha256": "bc46965956502052d31954243a7f790d1a0e12fdc65bbede4336f05876d8dc71",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1257,6 +1214,49 @@
         "form-field"
       ],
       "title": "Code input"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "swatch",
+          "chip",
+          "text",
+          "swatches",
+          "preset"
+        ],
+        "uses": [
+          "component.icons",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-color",
+      "id": "smart.input-color",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-color/smart.manifest.json",
+      "manifest_sha256": "ad54b149d3f229f66396699e02bc3cf990ee50e2b3e187b3769d09a155cf41c1",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+      "tags": [
+        "input",
+        "color",
+        "property"
+      ],
+      "title": "Color"
     },
     {
       "backend_adapters": [],
@@ -1864,7 +1864,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/quantity/smart.manifest.json",
-      "manifest_sha256": "eed9669d5c84a63b9968bcfe8a5036af8ef2ca216e1c4d93fcade644228ba49d",
+      "manifest_sha256": "cc8745e843749ea3078958d4bfc1ffad759d75321c38f9ee61e9f80eda573326",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2427,10 +2427,10 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.color",
           "smart.icon",
           "smart.icon-button",
-          "smart.input"
+          "smart.input",
+          "smart.input-color"
         ]
       },
       "contract_schema": {
@@ -2442,7 +2442,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "aacc7f31927ee9eb1f9a8baad52902f49f9b65650ea373de5443e795b1e37e03",
+      "manifest_sha256": "ad51eb48c16f42cd1dc02be3cf8ef61bf36c1437cf6bbc0402bad5586b02c9f1",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

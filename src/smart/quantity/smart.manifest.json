@@ -557,7 +557,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/quantity/index.js",
-        "sha256": "3950c09c503e050d4116b52745e040f3642aa7eeababbfc75807a58933a4b789"
+        "sha256": "e5fa38a5c5ef9010c4a86ba2abe13e7bc7d5d6054459f8ffb7f5b3d6a6891d68"
       },
       {
         "path": "src/smart/quantity/value.mjs",

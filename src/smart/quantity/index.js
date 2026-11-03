@@ -417,7 +417,7 @@ class SfQuantity extends FormField(QuantityElement) {
 
   // The text box's own input and change bubble out as plain Events with no
   // detail -- a second event for each one this sends -- so they stop here, as
-  // sf-image-field's and sf-color's do.
+  // sf-input-image's and sf-input-color's do.
   onNativeInput(event) {
     event.stopPropagation();
     const input = event.target;

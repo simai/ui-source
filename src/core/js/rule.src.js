@@ -740,7 +740,7 @@ import '../../smart/breadcrumbs/rule.js';
 import '../../smart/button-group/rule.js';
 import '../../smart/button/rule.js';
 import '../../smart/checkbox/rule.js';
-import '../../smart/color/rule.js';
+import '../../smart/input-color/rule.js';
 import '../../smart/popover/rule.js';
 import '../../smart/button-close/rule.js';
 import '../../smart/input-code/rule.js';

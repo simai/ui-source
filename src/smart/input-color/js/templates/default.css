@@ -1,7 +1,7 @@
 @layer sf.components {
   /* A colour sits on the control ladder like any other input, so a colour beside a
      text field lines up with it rather than inventing its own height. */
-  sf-color {
+  :is(sf-input-color, sf-color) {
     display: block;
   }
 
@@ -109,7 +109,7 @@
   /* variant theme: an icon button that sits in a row of buttons, so the host
      is inline rather than a block field. The native input lies under the
      button for the picker to anchor at; the button takes every press. */
-  sf-color:has(> .sf-color--theme) {
+  :is(sf-input-color, sf-color):has(> .sf-color--theme) {
     display: inline-block;
     vertical-align: middle;
   }
