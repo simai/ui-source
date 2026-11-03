@@ -11,7 +11,7 @@
       "reason": "The template takes the text to display: the text attribute, else initials from the heading or the accessible name."
     },
     {
-      "component": "range-slider",
+      "component": "slider-range",
       "prop": "start",
       "reason": "The template takes the initial value (value, else start, else 0) as the slider's start; the getter returns the start attribute as given."
     },

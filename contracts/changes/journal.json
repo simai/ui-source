@@ -4444,6 +4444,77 @@
       },
       "owner": "ui-source",
       "source": "src/smart/rich-text/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-rich/component.json"
+    },
+    {
+      "id": "tag-sf-range-slider-to-sf-slider-range",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-range-slider is sf-slider-range (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-slider-range's class, the Loader's rule lists it, the Framework's sheets match :is(sf-slider-range, sf-range-slider), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-slider-range",
+          "from": "sf-range-slider",
+          "to": "sf-slider-range"
+        },
+        {
+          "component": "sf-slider-range",
+          "from": "sf-range-slider-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-slider-range",
+          "from": "onSliderChange",
+          "to": "change"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-range-slider></sf-range-slider>",
+        "after": "<sf-slider-range></sf-slider-range>"
+      },
+      "manual": "Write <sf-slider-range> for <sf-range-slider> in markup and sf-slider-range for sf-range-slider in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-slider-range, or both names through SF.tags.selector('sf-slider-range') while the alias lives; a class or a custom property spelled like the old tag (.sf-range-slider, --sf-range-slider-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/slider-range/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-range-slider-to-slider-range",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-slider-range is served from smart/slider-range/ since its folder took the new tag's name: js/slider-range.js, loader bundle cl-slider-range. The old path keeps working until remove_after: smart/range-slider/js/range-slider.js is a forwarding script that notes the path in SF.deprecations and loads smart/slider-range/js/slider-range.js, the Loader forwards the bundle name cl-range-slider to cl-slider-range (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.range-slider is a dated alias of smart.slider-range, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-slider-range",
+          "from": "smart/range-slider/js/range-slider.js",
+          "to": "smart/slider-range/js/slider-range.js",
+          "match": "smart/range-slider/js/range-slider(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-range-slider",
+          "to": "cl-slider-range",
+          "match": "['\"]cl-range-slider['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.range-slider",
+          "to": "smart.slider-range",
+          "match": "['\"]smart\\.range-slider['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/slider-range/ for smart/range-slider/ and slider-range for range-slider in the file names (js/slider-range.js, js/slider-range.min.js); in a product rule's relation write cl-slider-range for cl-range-slider, and in a manifest or a package contract smart.slider-range for smart.range-slider. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/range-slider/js/range-slider.js\"></script>",
+        "after": "<script src=\"/distr/smart/slider-range/js/slider-range.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/range-slider/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/slider-range/component.json"
     }
   ]
 }

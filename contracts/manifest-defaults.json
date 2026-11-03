@@ -31,7 +31,7 @@
       "reason": "Generated per instance when not set."
     },
     {
-      "component": "range-slider",
+      "component": "slider-range",
       "prop": "start",
       "reason": "The template takes the initial value (value, else start, else 0); the start attribute itself is empty."
     },

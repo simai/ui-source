@@ -80,7 +80,7 @@ function renderRangeFilterControl(field, host) {
     return html`
         <div class="flex gap-1/3 flex-col">
             <div class="sf-filter-operator-range flex gap-1/3 items-cross-center">
-                <sf-range-slider
+                <sf-slider-range
                         id="smart-range-slider-single"
                         min="0"
                         label="tooltip"
@@ -96,7 +96,7 @@ function renderRangeFilterControl(field, host) {
                                 operator: selectedOperator,
                             });
                         }}
-                ></sf-range-slider>
+                ></sf-slider-range>
             </div>
             <sf-dropdown
                     size=${filterSize(host)}

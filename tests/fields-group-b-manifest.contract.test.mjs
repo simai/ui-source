@@ -15,7 +15,7 @@ const {readAliasTable} = await import('../src/core/js/alias-table.js');
 const COMPONENTS = {
   'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
   color: {class: 'SfColor', sheets: 'src/smart/color/js/templates'},
-  'range-slider': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss'},
+  'slider-range': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss', variables: 'range-slider'},
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
   // The public variables keep the name they had under the former tag.
   'input-image': {class: 'SfImageField', sheets: 'src/smart/input-image/scss', variables: 'image-field'},
@@ -136,17 +136,17 @@ test('sf-color: shown is the base value; the painted colour is effective-value, 
   assert.match(read('src/smart/color/js/templates/default.js'), /context\.hiddenName/u);
 });
 
-test('sf-range-slider: prefix is prefix-text; step is a number or null; disabled is drawn by the template (§3.1, §4.2, §5.3)', () => {
-  const source = read('src/smart/range-slider/index.js');
+test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled is drawn by the template (§3.1, §4.2, §5.3)', () => {
+  const source = read('src/smart/slider-range/index.js');
   assert.doesNotMatch(source, /\n {2}get prefix\(\) \{/u, 'prefix is the browser\'s own property');
   assert.doesNotMatch(source, /classList\.toggle\('disabled'/u);
   assert.match(source, /'prefix-text',/u);
-  assert.match(read('src/smart/range-slider/js/templates/default.js'), /data-prefix=\$\{valueOrNothing\(context\.prefixText\)\}/u);
-  const manifest = json('src/smart/range-slider/component.json');
+  assert.match(read('src/smart/slider-range/js/templates/default.js'), /data-prefix=\$\{valueOrNothing\(context\.prefixText\)\}/u);
+  const manifest = json('src/smart/slider-range/component.json');
   assert.deepEqual(manifest.settings.step, {type: 'number', nullable: true, default: null});
   assert.equal(manifest.settings['prefix-text'].type, 'string');
   assert.equal(manifest.form, undefined, 'not a form control in this version');
-  const {rows} = readAliasTable(json('src/smart/range-slider/aliases.json'), {tag: 'sf-range-slider'});
+  const {rows} = readAliasTable(json('src/smart/slider-range/aliases.json'), {tag: 'sf-slider-range'});
   assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change']]);
 });
 

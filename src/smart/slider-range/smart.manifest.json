@@ -1,21 +1,21 @@
 {
   "schema_version": 2,
-  "id": "smart.range-slider",
-  "version": "1.2.2",
+  "id": "smart.slider-range",
+  "version": "1.3.0",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "range-slider"
+    "slider-range"
   ],
   "capabilities": [
     "render",
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-range-slider",
+  "custom_element": "sf-slider-range",
   "templates": [
     "default"
   ],
@@ -444,7 +444,7 @@
         "properties": {
           "component": {
             "type": "object",
-            "description": "The inner slider root, not the sf-range-slider host."
+            "description": "The inner slider root, not the sf-slider-range host."
           },
           "values": {
             "type": "array",
@@ -580,8 +580,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-range-slider>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-range-slider>",
+        "since": "1.3.0",
+        "replacement": "<sf-slider-range>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -590,21 +598,21 @@
     "source_revision": "a38447c031988137d3ebead71d2397ceaf6b1b14",
     "source_artifacts": [
       {
-        "path": "src/smart/range-slider/index.js",
-        "sha256": "93d1a367556eb01f2ca411c0ca149503f47f8953ec481c1349f1cb44d54f7d20"
+        "path": "src/smart/slider-range/index.js",
+        "sha256": "efb1ecff27e0fa3c28e3a9d869a38a11de7082c0760f98201c0d43606aa7a8d7"
       }
     ],
     "generated_runtime": [
       {
         "repository": "simai/ui-smart",
         "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
-        "path": "smart/range-slider/js/range-slider.js",
+        "path": "smart/slider-range/js/slider-range.js",
         "sha256": "4d14325fce91ca1d604d4032655634039f1c41661dffad16c913f952d2552b10"
       }
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-range-slider to choose a number or a range of two within known bounds, where the position on a track says more than a typed number.",
+    "use_when": "Use sf-slider-range to choose a number or a range of two within known bounds, where the position on a track says more than a typed number.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component"
@@ -616,7 +624,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-range-slider aria-label=\"Price\" min=\"0\" max=\"100\" value=\"20\"></sf-range-slider>",
+    "minimal_example": "<sf-slider-range aria-label=\"Price\" min=\"0\" max=\"100\" value=\"20\"></sf-slider-range>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

@@ -372,7 +372,7 @@
       "input",
       "quantity",
       "radio",
-      "range-slider",
+      "slider-range",
       "switch",
       "tag",
       "textarea"
@@ -400,7 +400,7 @@
         ]
       },
       {
-        "component": "range-slider",
+        "component": "slider-range",
         "legacy": [
           "sf-range-slider-change",
           "onSliderChange"

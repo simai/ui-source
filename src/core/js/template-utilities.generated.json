@@ -303,9 +303,6 @@
     "justify-content/default",
     "transition-property/default"
   ],
-  "cl-range-slider": [
-    "flex/default"
-  ],
   "cl-reference-link": [
     "align-items/default",
     "display/default"
@@ -331,6 +328,9 @@
     "display/default",
     "padding/default",
     "text-color/default"
+  ],
+  "cl-slider-range": [
+    "flex/default"
   ],
   "cl-steps": [
     "cursor/default",

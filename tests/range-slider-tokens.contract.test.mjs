@@ -49,8 +49,8 @@ test('the handle stands above the progress, so the fill ends under it',async()=>
 });
 
 test('Smart range consumes the shared root-style contract on render and DOM updates',async()=>{
-  const template=await readFile(new URL('../src/smart/range-slider/js/templates/default.js',import.meta.url),'utf8');
-  const source=await readFile(new URL('../src/smart/range-slider/index.js',import.meta.url),'utf8');
+  const template=await readFile(new URL('../src/smart/slider-range/js/templates/default.js',import.meta.url),'utf8');
+  const source=await readFile(new URL('../src/smart/slider-range/index.js',import.meta.url),'utf8');
   assert.ok(template.includes('style=${valueOrNothing(context.rootStyle)}'));
   assert.ok(source.includes("changedAttributes.includes('style') || changedAttributes.includes('root-style')"));
   assert.ok(source.includes('const style = this.getRootStyle();'));

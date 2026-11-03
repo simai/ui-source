@@ -56,7 +56,7 @@ async(page)=>{
   });
   if(typography.font!=='24px'||!typography.fits||typography.values.join(',')!=='20,80')throw new Error(`Typography/reveal ${JSON.stringify(typography)}`);
   const lifecycle=await page.evaluate(async()=>{
-    const e=document.createElement('sf-range-slider');
+    const e=document.createElement('sf-slider-range');
     e.setAttribute('value','37');e.setAttribute('label','text');
     e.setAttribute('style','--sf-thumb-handle--width:48px;--sf-thumb-handle--height:48px');
     document.querySelector('main').append(e);

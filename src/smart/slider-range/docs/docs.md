@@ -1,18 +1,18 @@
-# sf-range-slider
+# sf-slider-range
 
 Smart wrapper for the project-owned `range-slider` component.
 
 ## Basic Usage
 
 ```html
-<sf-range-slider
+<sf-slider-range
   min="0"
   max="100"
   start="30"
   label="tooltip"
   suffix="%"
   aria-label="Volume"
-></sf-range-slider>
+></sf-slider-range>
 ```
 
 ## Attributes

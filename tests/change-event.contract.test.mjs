@@ -57,13 +57,13 @@ test('change event: one canonical name for every value control', async () => {
   // (standard 1.3.8 §8, through sfEmit, under its native name); the shim
   // sends the old names after it (aliases.json). Its onChange listens to
   // change, the canonical name.
-  const smartSlider = await read('src/smart/range-slider/index.js');
+  const smartSlider = await read('src/smart/slider-range/index.js');
   assert.doesNotMatch(smartSlider, /new (?:Custom)?Event\(\s*['"]change['"]/);
   assert.equal(smartSlider.match(/this\.sfEmit\('change', /g)?.length, 1);
   assert.doesNotMatch(smartSlider, /dispatchAliased\(this, 'change'/);
   assert.match(smartSlider, /_handleInnerChange = \(event\) => \{\n    event\.stopPropagation\(\);/);
   assert.doesNotMatch(smartSlider, /'sf-range-slider-change': 'onSliderChange'/);
-  const sliderAliases = JSON.parse(await read('src/smart/range-slider/aliases.json')).aliases.filter((row) => row.kind === 'event');
+  const sliderAliases = JSON.parse(await read('src/smart/slider-range/aliases.json')).aliases.filter((row) => row.kind === 'event');
   assert.deepEqual(sliderAliases.map((row) => [row.from, row.to]), [['sf-range-slider-change', 'change'], ['onSliderChange', 'change']]);
   assert.match(smartSlider, /onChange\(handler, options\) \{\n    if \(typeof handler === 'function'\) \{\n      this\.addEventListener\('change', /);
 });

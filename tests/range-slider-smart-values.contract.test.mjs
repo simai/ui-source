@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
 
-const source=await readFile(new URL('../src/smart/range-slider/index.js',import.meta.url),'utf8');
+const source=await readFile(new URL('../src/smart/slider-range/index.js',import.meta.url),'utf8');
 test('automatic multiple-to-single transition uses the requested handle count',()=>{
   class Element{}
   const root=new Element();root.noUiSlider={};root.querySelectorAll=()=>[{},{}];
@@ -19,7 +19,7 @@ test('automatic multiple-to-single transition uses the requested handle count',(
   // here the maker hands the base back.
   const context=vm.createContext({SfBaseElement:Base,HTMLElement:Element,elementFromManifest:(manifest,{base})=>base,manifest:{},aliases:{},en:{},ru:{},
     setRangeSliderValue:()=>setterCalls++,getRangeSliderValue:()=>[40,75]});
-  vm.runInContext(source.slice(source.indexOf('function serializeValue'),source.indexOf("SfRangeSlider.define('sf-range-slider');"))+'\nglobalThis.Slider=SfRangeSlider;',context);
+  vm.runInContext(source.slice(source.indexOf('function serializeValue'),source.indexOf("SfRangeSlider.define('sf-slider-range');"))+'\nglobalThis.Slider=SfRangeSlider;',context);
   const slider=new context.Slider();
   slider.attrs={value:'25,75',multiple:''};slider._autoMultiple=true;
   slider.getSliderRoot=()=>root;

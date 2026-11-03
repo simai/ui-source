@@ -6,8 +6,8 @@ async(page)=>{
     const current=await page.locator(`#${id}`).evaluate(e=>{
       const root=e.matches('.sf-range-slider')?e:e.querySelector('.sf-range-slider');
       return {actual:SF.RangeSlider.getValue(root),projected:root.dataset.value,
-        attribute:e.matches('sf-range-slider')?e.getAttribute('value'):null,
-        public:e.matches('sf-range-slider')?e.value:null,
+        attribute:e.matches('sf-slider-range')?e.getAttribute('value'):null,
+        public:e.matches('sf-slider-range')?e.value:null,
         handles:root.querySelectorAll('[role="slider"]').length};
     });
     if(JSON.stringify(current.actual)!==JSON.stringify(expected))throw new Error(`${label}: ${JSON.stringify(current)}`);
@@ -25,7 +25,7 @@ async(page)=>{
     ['smart-multiple',[30,70],[30,70]],['smart-multiple','40,60',[40,60]],
     ['smart-multiple',[-20,120],[0,100]],['smart-multiple',[32,68],[30,70]],
   ]) {
-    await page.locator(`#${id}`).evaluate((e,value)=>e.matches('sf-range-slider')?e.setValue(value):SF.RangeSlider.setValue(e,value),values);
+    await page.locator(`#${id}`).evaluate((e,value)=>e.matches('sf-slider-range')?e.setValue(value):SF.RangeSlider.setValue(e,value),values);
     await record(`${id} set ${JSON.stringify(values)}`,id,expected);
   }
   await page.locator('#smart-multiple').evaluate(e=>e.setAttribute('value','15,85'));

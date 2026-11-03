@@ -62,6 +62,8 @@ export type SmartComponentCreateName =
     | 'sf-reference-link'
     | 'range-slider'
     | 'sf-range-slider'
+    | 'slider-range'
+    | 'sf-slider-range'
     | 'toast'
     | 'sf-toast'
     | 'skeleton'
@@ -112,7 +114,7 @@ export type SmartComponentCreateResult<TName extends string> =
             ? HTMLSfAlertElement
             : TName extends 'reference-link' | 'sf-reference-link'
                 ? HTMLSfReferenceLinkElement
-                : TName extends 'range-slider' | 'sf-range-slider'
+                : TName extends 'range-slider' | 'sf-range-slider' | 'slider-range' | 'sf-slider-range'
                     ? HTMLSfRangeSliderElement
                     : TName extends 'toast' | 'sf-toast'
                         ? HTMLSfToastElement
@@ -886,6 +888,7 @@ declare global {
     'sf-alert': HTMLSfAlertElement;
     'sf-reference-link': HTMLSfReferenceLinkElement;
     'sf-range-slider': HTMLSfRangeSliderElement;
+    'sf-slider-range': HTMLSfRangeSliderElement;
     'sf-toast': HTMLSfToastElement;
     'sf-tag': HTMLSfTagElement;
     'sf-skeleton': HTMLSfSkeletonElement;
