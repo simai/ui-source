@@ -121,24 +121,6 @@
       ]
     },
     {
-      "id": "smart.confirm-change",
-      "element": "sf-confirm-change",
-      "element_aliases": [
-        {
-          "from": "sf-change-confirm",
-          "since": "2026-11-03",
-          "remove_after": "2027-01-01",
-          "journal": "tag-sf-change-confirm-to-sf-confirm-change"
-        }
-      ],
-      "rule_name": "cl-confirm-change",
-      "folder": "confirm-change",
-      "requires": [
-        "smart.button",
-        "smart.icon"
-      ]
-    },
-    {
       "id": "smart.editor",
       "element": "sf-editor",
       "rule_name": "cl-editor",

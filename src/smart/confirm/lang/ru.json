@@ -1,0 +1,19 @@
+{
+  "title": "Подтверждение",
+  "runtime": {
+    "accept-text": "Подтвердить",
+    "accepted-text": "Готово",
+    "accepting-text": "Выполняется…",
+    "decline-text": "Отмена",
+    "declined-text": "Отменено",
+    "declining-text": "Отменяется…",
+    "expired-text": "Время ответа истекло",
+    "question-label": "Подтверждение",
+    "until-text": "Ответить можно до {time}"
+  },
+  "events": {
+    "expired": {
+      "label": "Время истекло"
+    }
+  }
+}

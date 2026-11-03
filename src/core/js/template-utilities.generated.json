@@ -74,6 +74,12 @@
     "flex-direction/default",
     "transition-property/default"
   ],
+  "cl-confirm": [
+    "display/default"
+  ],
+  "cl-confirm-change": [
+    "display/default"
+  ],
   "cl-contents": [
     "display/default",
     "position/default",

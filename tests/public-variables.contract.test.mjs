@@ -70,6 +70,11 @@ const FOLDERS = {
   lookup: 'smart/input-lookup',
   // sf-include (2026-11-02): a sheet of its own, the placeholder's height and the error row.
   include: 'smart/include',
+  // sf-confirm and sf-confirm-change (2026-11-03, block confirm): each a sheet
+  // beside its Lit template; sf-confirm-change's variables keep the stem of its
+  // former tag, sf-change-confirm (rename plan R2), so its entry does too.
+  confirm: 'smart/confirm/js/templates',
+  'change-confirm': 'smart/confirm-change/js/templates',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // The display parts of the structured-content types (2026-11-01): CSS only.

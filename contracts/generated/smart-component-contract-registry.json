@@ -493,6 +493,81 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "confirmation",
+        "expiry",
+        "live-announcement"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-confirm",
+      "id": "smart.confirm",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/confirm/smart.manifest.json",
+      "manifest_sha256": "c46467c62d694ab6808dee63765c703718ebfe41da4c3ed6fa280a8c599519cb",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
+      "tags": [
+        "confirmation",
+        "delete",
+        "in-place"
+      ],
+      "title": "Confirmation"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "confirmation",
+        "expiry",
+        "live-announcement"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-confirm-change",
+      "id": "smart.confirm-change",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/confirm-change/smart.manifest.json",
+      "manifest_sha256": "0fb3161ec1000d938399067aab38842c8fd9bc682ed4efe5611d1dc9142eeb0e",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
+      "tags": [
+        "confirmation",
+        "change",
+        "diff",
+        "chat"
+      ],
+      "title": "Change confirmation"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "render",
         "interaction",
         "keyboard",

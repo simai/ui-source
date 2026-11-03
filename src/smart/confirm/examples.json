@@ -1,0 +1,219 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Удалить файл",
+      "settings": {
+        "question": "Удалить файл «Отчёт.pdf»? Его не будет у всех участников.",
+        "confirm-id": "f-17",
+        "accept-text": "Удалить",
+        "destructive": true
+      },
+      "expect": {
+        "name": "Удалить файл «Отчёт.pdf»? Его не будет у всех участников.",
+        "host": {
+          "state": "open"
+        }
+      },
+      "studio": {
+        "title": "Confirm reference",
+        "summary": "Deterministic reference fixture for sf-confirm: a delete asked in place.",
+        "props": {
+          "question": "Удалить файл «Отчёт.pdf»?",
+          "state": "open",
+          "confirm-id": "f-17",
+          "accept-text": "Удалить",
+          "destructive": true
+        },
+        "children": []
+      }
+    },
+    {
+      "name": "card",
+      "title": "В карточке, с пояснением",
+      "settings": {
+        "question": "Вернуть вид раздела к настройкам сайта?",
+        "confirm-id": "view-1",
+        "accept-text": "Вернуть",
+        "appearance": "card"
+      },
+      "slots": {
+        "description": "<p>Ваши колонки и порядок полей пропадут.</p>"
+      },
+      "expect": {
+        "name": "Вернуть вид раздела к настройкам сайта?"
+      }
+    },
+    {
+      "name": "untitled",
+      "title": "Без вопроса",
+      "settings": {
+        "confirm-id": "u-1"
+      },
+      "expect": {
+        "name": "Подтверждение"
+      }
+    },
+    {
+      "name": "pending",
+      "title": "Ответ отправлен",
+      "settings": {
+        "question": "Удалить файл «Отчёт.pdf»?",
+        "confirm-id": "f-17",
+        "accept-text": "Удалить",
+        "destructive": true,
+        "state": "pending"
+      },
+      "expect": {
+        "name": "Удалить файл «Отчёт.pdf»?"
+      }
+    },
+    {
+      "name": "accepted",
+      "title": "Итог",
+      "settings": {
+        "question": "Удалить файл «Отчёт.pdf»?",
+        "confirm-id": "f-17",
+        "state": "accepted"
+      },
+      "expect": {
+        "name": "Удалить файл «Отчёт.pdf»?"
+      }
+    },
+    {
+      "name": "expired",
+      "title": "Время вышло",
+      "settings": {
+        "question": "Принять приглашение в чат «Продажи»?",
+        "confirm-id": "i-3",
+        "state": "expired"
+      },
+      "expect": {
+        "name": "Принять приглашение в чат «Продажи»?"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-confirm against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-confirm id=\"c\" question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" destructive></sf-confirm>",
+          "  <sf-confirm id=\"d\" confirm-id=\"u-1\"></sf-confirm>",
+          "  <button id=\"page-confirm\" type=\"button\" data-sf-action=\"d.confirm\">Да</button>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-tab-enter-confirms",
+          "title": "Tab reaches the first answer; Enter confirms: sf-confirm-answer {id, accepted: true} once; the question is pending and the focus is on its status line",
+          "covers": "keyboard.host Tab reach, Enter select, events.answer, accessibility.name question, destructive",
+          "steps": [
+            {
+              "script": "(document.activeElement?.blur?.(), true)",
+              "wait": 60,
+              "check": "document.querySelector('#c section').getAttribute('role') === 'group' && document.querySelector('#c section').getAttribute('aria-labelledby') === document.querySelector('#c .sf-confirm__question').id && document.querySelector('#c button[data-action=\"accept\"]').classList.contains('sf-button--error')"
+            },
+            {
+              "user": "keyboard:Tab",
+              "wait": 80,
+              "check": "document.activeElement === document.querySelector('#c button[data-action=\"accept\"]')"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-confirm-answer",
+                    "count": 1,
+                    "detail": {
+                      "id": "f-17",
+                      "accepted": true
+                    }
+                  }
+                ]
+              },
+              "check": "document.querySelector('#c').state === 'pending' && document.activeElement === document.querySelector('#c .sf-confirm__status')"
+            }
+          ]
+        },
+        {
+          "id": "p2-escape-declines-refused",
+          "title": "Escape inside the open question declines; a page that cancels the answer keeps the question open and the first answer takes the focus back",
+          "covers": "keyboard.host Escape cancel, events.answer cancelable",
+          "steps": [
+            {
+              "script": "(document.querySelector('#c').state = 'open', document.addEventListener('sf-confirm-answer', (event) => event.preventDefault(), {once: true}), true)",
+              "wait": 120
+            },
+            {
+              "script": "(document.querySelector('#c button[data-action=\"decline\"]').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-confirm-answer",
+                    "count": 1,
+                    "detail": {
+                      "id": "f-17",
+                      "accepted": false
+                    }
+                  }
+                ]
+              },
+              "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"accept\"]')"
+            }
+          ]
+        },
+        {
+          "id": "p3-page-trigger-and-outcome",
+          "title": "a page button data-sf-action=\"d.confirm\" confirms the question without words; the host's outcome leaves only «Готово»",
+          "covers": "actions.confirm (§8 one page trigger, §19.4), accessibility.name runtime.question-label",
+          "steps": [
+            {
+              "user": "click:#page-confirm",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-confirm-answer",
+                    "count": 1,
+                    "detail": {
+                      "id": "u-1",
+                      "accepted": true
+                    }
+                  }
+                ]
+              },
+              "check": "document.querySelector('#d').state === 'pending' && document.querySelector('#d section').getAttribute('aria-label') === 'Подтверждение'"
+            },
+            {
+              "script": "(document.querySelector('#d').state = 'accepted', true)",
+              "wait": 200,
+              "check": "document.querySelector('#d .sf-confirm__status span').textContent.trim() === 'Готово' && document.querySelector('#d .sf-confirm__actions').hidden"
+            }
+          ]
+        },
+        {
+          "id": "p4-actions-answer-outcomes",
+          "title": "answer {accepted} answers applied while open and refused closed once settled; an unknown answer is refused unknown",
+          "covers": "actions.answer, actions.open",
+          "steps": [
+            {
+              "script": "(window.__o = [document.querySelector('#d').answer({accepted: true}).outcome, document.querySelector('#d').answer('maybe').reason], document.querySelector('#d').open(), window.__o.push(document.querySelector('#d').answer({accepted: false}).outcome), true)",
+              "wait": 100,
+              "check": "window.__o.join(',') === 'refused,unknown,applied'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

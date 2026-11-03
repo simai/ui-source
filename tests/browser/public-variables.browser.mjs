@@ -178,6 +178,12 @@ const DRAW = {
   // with no address, waits with its placeholder, which takes the block size.
   include: {css: ['skeleton', 'buttons', 'icons', 'smart/smart/include/css/include.css'], js: ['include', 'skeleton'],
     html: '<sf-include src="/missing/part"></sf-include><sf-include lines="2"></sf-include>'},
+  // Block confirm (2026-11-03): the card form of the plain question takes the
+  // inset, corner, fill and edge; the change card its values' grounds.
+  confirm: {css: ['buttons', 'smart/smart/confirm/css/confirm.css'], js: 'confirm',
+    html: '<sf-confirm appearance="card" question="Удалить файл?" accept-text="Удалить" destructive></sf-confirm>'},
+  'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
+    html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   // Collapsed and open, so the side panel is on the stage: its width is the
   // only part that takes --sf-site-header-sheet-inline-size.

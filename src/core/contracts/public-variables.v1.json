@@ -3675,6 +3675,95 @@
           "since": "2026-11-01"
         }
       ]
+    },
+    {
+      "component": "confirm",
+      "selector": "sf-confirm, .sf-confirm",
+      "variables": [
+        {
+          "name": "--sf-confirm-gap",
+          "role": "gap",
+          "summary": "The space between the question, the description and the answers.",
+          "default": "var(--sf-space-1\\/3)",
+          "since": "2026-11-03"
+        },
+        {
+          "name": "--sf-confirm-inset",
+          "role": "padding",
+          "summary": "The card's padding (appearance card).",
+          "default": "var(--sf-space-1\\/2) var(--sf-space-1)",
+          "since": "2026-11-03"
+        },
+        {
+          "name": "--sf-confirm-radius",
+          "role": "radius",
+          "summary": "The card's corner (appearance card).",
+          "default": "var(--sf-radius-2)",
+          "since": "2026-11-03"
+        },
+        {
+          "name": "--sf-confirm-background-color",
+          "role": "background",
+          "summary": "The card's fill (appearance card).",
+          "default": "transparent",
+          "since": "2026-11-03"
+        },
+        {
+          "name": "--sf-confirm-border-color",
+          "role": "border-color",
+          "summary": "The card's edge (appearance card).",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-03"
+        }
+      ]
+    },
+    {
+      "component": "change-confirm",
+      "selector": "sf-confirm-change, .sf-change-confirm",
+      "variables": [
+        {
+          "name": "--sf-change-confirm-radius",
+          "role": "radius",
+          "summary": "The card's corner.",
+          "default": "var(--sf-radius-2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-change-confirm-inset",
+          "role": "padding",
+          "summary": "The card's padding.",
+          "default": "var(--sf-space-1\\/2) var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-change-confirm-gap",
+          "role": "gap",
+          "summary": "The space between the card's rows.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-change-confirm-before-background-color",
+          "role": "background",
+          "summary": "The ground of the value as it was.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-change-confirm-after-background-color",
+          "role": "background",
+          "summary": "The ground of the value as it will be.",
+          "default": "var(--sf-primary-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-change-confirm-after-color",
+          "role": "color",
+          "summary": "The text of the value as it will be.",
+          "default": "var(--sf-on-primary-container)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

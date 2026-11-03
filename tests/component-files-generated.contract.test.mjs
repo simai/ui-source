@@ -52,6 +52,10 @@ const PHASE_A = [
   'input-lookup',
   // A part of the page loaded from an address (2026-11-02).
   'include',
+  // Block confirm (2026-11-03): the plain question, and the change question
+  // moved in from package pro.
+  'confirm',
+  'confirm-change',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

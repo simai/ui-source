@@ -1,0 +1,19 @@
+{
+  "title": "Confirmation",
+  "runtime": {
+    "accept-text": "Confirm",
+    "accepted-text": "Done",
+    "accepting-text": "Working…",
+    "decline-text": "Cancel",
+    "declined-text": "Cancelled",
+    "declining-text": "Cancelling…",
+    "expired-text": "The time to answer has passed",
+    "question-label": "Confirmation",
+    "until-text": "Answer by {time}"
+  },
+  "events": {
+    "expired": {
+      "label": "Expired"
+    }
+  }
+}

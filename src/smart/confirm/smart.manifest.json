@@ -1,0 +1,345 @@
+{
+  "schema_version": 2,
+  "id": "smart.confirm",
+  "version": "1.0.0",
+  "title": "Confirmation",
+  "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "confirmation",
+    "delete",
+    "in-place"
+  ],
+  "capabilities": [
+    "confirmation",
+    "expiry",
+    "live-announcement"
+  ],
+  "custom_element": "sf-confirm",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "question": {
+        "type": "string",
+        "default": "",
+        "description": "The question, said in place: what will happen, as a sentence («Удалить файл «Отчёт.pdf»?»). It names the group; without one the group is named «Подтверждение»."
+      },
+      "state": {
+        "type": "string",
+        "default": "open",
+        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown.",
+        "enum": [
+          "open",
+          "pending",
+          "accepted",
+          "declined",
+          "expired"
+        ]
+      },
+      "expires-at": {
+        "type": "string",
+        "default": "",
+        "description": "ISO 8601. Past it an open question reads as expired and says so once with sf-confirm-expired."
+      },
+      "confirm-id": {
+        "type": "string",
+        "default": "",
+        "description": "The host's name for the question (the row, the record), carried back in every event."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+      },
+      "destructive": {
+        "type": "boolean",
+        "default": false,
+        "description": "The acceptance destroys something (a delete): the accepting answer wears the error status."
+      },
+      "appearance": {
+        "type": "string",
+        "default": "inline",
+        "description": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset.",
+        "enum": [
+          "inline",
+          "card"
+        ]
+      },
+      "accept-text": {
+        "type": "string",
+        "description": "The accepting answer; empty is Confirm in the page's language."
+      },
+      "decline-text": {
+        "type": "string",
+        "description": "The declining answer; empty is Cancel in the page's language."
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "open": {
+      "summary": "Puts the question again; asked by an assembly it answers {accepted, reason, value} when the person answers or the time runs out.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "answer": {
+      "summary": "Answer as the person would: accepted true confirms, false declines. Refused unknown, closed, disabled or prevented.",
+      "arguments": [
+        {
+          "name": "accepted",
+          "schema": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "confirm": {
+      "summary": "The acceptance; data-sf-action=\"<id>.confirm\".",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "cancel": {
+      "summary": "The declining answer; data-sf-action=\"<id>.cancel\". Escape inside an open question is the same answer.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    }
+  },
+  "events": {
+    "sf-confirm-answer": {
+      "summary": "The person answered (vocabulary answer). Cancel it to keep the question open.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "accepted"
+        ],
+        "properties": {
+          "id": {
+            "description": "confirm-id"
+          },
+          "accepted": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-confirm-expired": {
+      "summary": "An open question passed expires-at; said once per time.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "description": "confirm-id"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "answer": [
+        "open",
+        "pending",
+        "accepted",
+        "declined",
+        "expired"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "loading",
+      "success",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "applying the answer",
+      "access decisions"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "question and description (drawn as text)"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space",
+      "Escape"
+    ],
+    "focus": "A group named by its question. The status line is a polite live region, present before it speaks; when a press takes the answers away, focus moves to it instead of falling to the page, and back to the first answer when the host cancels. Escape inside an open question declines."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "en",
+      "ru"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": []
+  },
+  "readiness": {
+    "level": "host-required",
+    "required_checks": [
+      "manifest",
+      "loader-rule",
+      "confirm-contract",
+      "confirm-browser"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "bcb1d6505c6c90dfe1f1d044e1f6d1f0210de31d",
+    "source_artifacts": [
+      {
+        "path": "src/smart/confirm/index.js",
+        "sha256": "a96ba85d06175e5a33bea6ff4c45f34112ca81054db4f8b8636ad72c9214b090"
+      },
+      {
+        "path": "src/smart/confirm/js/templates/default.js",
+        "sha256": "e92841fa939ea34f785f849b6e7ae7f49d1df8303a5785f8c204de1e0993d12d"
+      },
+      {
+        "path": "src/smart/confirm/js/templates/default.css",
+        "sha256": "f8ec469f63ef4c66f17d6e5542bf54e7a0932d55b7f28f49ba4eb6cc06f36b9d"
+      },
+      {
+        "path": "src/smart/confirm/rule.js",
+        "sha256": "cb11aae85d13442cb01e35a0e5e7918634b2b9d2f4b421c9867c5cf3e4cd3c6e"
+      },
+      {
+        "path": "src/smart/confirm/docs.md",
+        "sha256": "1bea3681329624df806518ffc33575cfb8ca1fda8d0a32ed62ddbc2e8963cfa7"
+      },
+      {
+        "path": "src/smart/confirm/component.json",
+        "sha256": "eeb2802f0dde04150acf9d9f137e343f796d8839dbc8b9f6903afe00c3b722ec"
+      },
+      {
+        "path": "src/smart/confirm/lang/en.json",
+        "sha256": "632be05065f2fa97122bd51390cf0403b5e33b3d43b57e9242387a261ebf0c04"
+      },
+      {
+        "path": "src/smart/confirm/lang/ru.json",
+        "sha256": "3929949b8b81017dd280b5a5718df535c7cf459ddf45d6aaf361f459c25e46c3"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-confirm wherever a person must say yes or no in place before something happens -- a delete in its row, a member removed, a setting reset. For values shown as they were and as they will be use sf-confirm-change; for a question that must block the page use sf-modal confirm().",
+    "do_not": [
+      "Do not apply anything in the element; answer the event and set state",
+      "Do not leave it pending: set accepted, declined, or open again",
+      "Do not pass markup in the question; it is text"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-confirm question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" destructive></sf-confirm>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "node scripts/run-browser-probes.mjs <output>"
+    ]
+  }
+}
