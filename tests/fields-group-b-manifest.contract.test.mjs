@@ -20,7 +20,7 @@ const COMPONENTS = {
   // The public variables keep the name they had under the former tag.
   'input-image': {class: 'SfImageField', sheets: 'src/smart/input-image/scss', variables: 'image-field'},
   'file-upload': {class: 'SfFileUpload', sheets: 'src/component/file-upload/scss'},
-  datepicker: {class: 'SfDatepicker', sheets: 'src/component/datepicker/scss'},
+  'input-date': {class: 'SfDatepicker', sheets: 'src/component/datepicker/scss', variables: 'datepicker'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -212,8 +212,8 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
   assert.match(read('src/component/file-upload/scss/_css__file_upload.scss'), /sf-file-upload\[data-dragged-over\] > \.sf-file-upload:not\(\[disabled\]\):not\(\.disabled\) \{/u);
 });
 
-test('sf-datepicker: a leaf with outcome actions; the form gets the ISO date; the panel id from the path (§4.4, §7.1.1, §17.1)', () => {
-  const source = read('src/smart/datepicker/index.js');
+test('sf-input-date: a leaf with outcome actions; the form gets the ISO date; the panel id from the path (§4.4, §7.1.1, §17.1)', () => {
+  const source = read('src/smart/input-date/index.js');
   assert.match(source, /class SfDatepicker extends FormField\(DatepickerElement\)/u);
   for (const method of ['openPanel', 'closePanel', 'togglePanel', 'choosePreset', 'chooseCustomRange']) {
     assert.doesNotMatch(source, new RegExp(`\\n {4}${method}\\(`, 'u'), `${method} is generated from the manifest's action`);
@@ -221,10 +221,10 @@ test('sf-datepicker: a leaf with outcome actions; the form gets the ISO date; th
   assert.match(source, /this\.sfEmit\('change', detail\)/u);
   assert.doesNotMatch(source, /new CustomEvent\('(?:change|sf-datepicker-change)'|emitComponentEvent\('change'/u);
   assert.doesNotMatch(source, /DATEPICKER_TEXT|datepickerSequence/u);
-  assert.match(source, /partId\(instancePath\(this, \{kind: 'sf-datepicker'\}\), 'panel'\)/u);
+  assert.match(source, /partId\(instancePath\(this, \{kind: 'sf-input-date'\}\), 'panel'\)/u);
   assert.match(source, /if \(startValue && endValue\) return `\$\{startValue\}\/\$\{endValue\}`;/u);
   assert.match(source, /boxName: this\.sfInternals \? '' : this\.inputName/u);
-  const manifest = json('src/smart/datepicker/component.json');
+  const manifest = json('src/smart/input-date/component.json');
   assert.equal(manifest.kind, 'leaf');
   assert.ok(manifest['x-decisions'].some((line) => line.startsWith('assembly: it stays a leaf')));
   assert.deepEqual(Object.keys(manifest.actions), ['open-panel', 'close-panel', 'toggle-panel', 'choose-preset', 'choose-custom-range']);

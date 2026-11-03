@@ -4515,6 +4515,77 @@
       },
       "owner": "ui-source",
       "source": "src/smart/range-slider/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/slider-range/component.json"
+    },
+    {
+      "id": "tag-sf-datepicker-to-sf-input-date",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-datepicker is sf-input-date (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-date's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-date, sf-datepicker), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-input-date",
+          "from": "sf-datepicker",
+          "to": "sf-input-date"
+        },
+        {
+          "component": "sf-input-date",
+          "from": "sf-datepicker-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-input-date",
+          "from": "sf-change",
+          "to": "change"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-datepicker></sf-datepicker>",
+        "after": "<sf-input-date></sf-input-date>"
+      },
+      "manual": "Write <sf-input-date> for <sf-datepicker> in markup and sf-input-date for sf-datepicker in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-input-date, or both names through SF.tags.selector('sf-input-date') while the alias lives; a class or a custom property spelled like the old tag (.sf-datepicker, --sf-datepicker-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/input-date/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-datepicker-to-input-date",
+      "recorded_on": "2026-11-03",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input-date is served from smart/input-date/ since its folder took the new tag's name: js/input-date.js, loader bundle cl-input-date. The old path keeps working until remove_after: smart/datepicker/js/datepicker.js is a forwarding script that notes the path in SF.deprecations and loads smart/input-date/js/input-date.js, the Loader forwards the bundle name cl-datepicker to cl-input-date (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.datepicker is a dated alias of smart.input-date, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-input-date",
+          "from": "smart/datepicker/js/datepicker.js",
+          "to": "smart/input-date/js/input-date.js",
+          "match": "smart/datepicker/js/datepicker(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-datepicker",
+          "to": "cl-input-date",
+          "match": "['\"]cl-datepicker['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.datepicker",
+          "to": "smart.input-date",
+          "match": "['\"]smart\\.datepicker['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input-date/ for smart/datepicker/ and input-date for datepicker in the file names (js/input-date.js, js/input-date.min.js); in a product rule's relation write cl-input-date for cl-datepicker, and in a manifest or a package contract smart.input-date for smart.datepicker. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/datepicker/js/datepicker.js\"></script>",
+        "after": "<script src=\"/distr/smart/input-date/js/input-date.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/datepicker/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/input-date/component.json"
     }
   ]
 }

@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 test('datepicker tolerates the first render before the nested input ref is ready', async () => {
-  const source = await readFile(path.join(root, 'src/smart/datepicker/index.js'), 'utf8');
+  const source = await readFile(path.join(root, 'src/smart/input-date/index.js'), 'utf8');
   assert.match(source, /refs\.input\?\.value\?\.querySelector/);
 });
 

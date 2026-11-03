@@ -106,8 +106,8 @@ const DRAW = {
     open: 'const [, ok, failed] = document.querySelectorAll("sf-button-copy"); ok.setPhase("success", ""); failed.setPhase("error", "")'},
   'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
     html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
-  datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'datepicker',
-    html: '<sf-datepicker input="false" value="2026-09-03"></sf-datepicker><sf-datepicker input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-datepicker>'},
+  datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'input-date',
+    html: '<sf-input-date input="false" value="2026-09-03"></sf-input-date><sf-input-date input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-input-date>'},
   // The navigation family, with its move to standard 1.3.8 (2026-10-27): a
   // trail with a plain crumb, a link and the current page (the link's hover
   // colour is a state the probe does not reach); steps with one completed and

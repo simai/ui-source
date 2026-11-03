@@ -1,0 +1,1817 @@
+import SfBaseElement, {toNumber} from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {instancePath, partId} from '../../core/js/instance-path';
+import {fieldSize} from '../../component/field-size';
+import {FormField} from '../helpers/form-field';
+import {renderDatepickerTemplate} from './js/templates/default';
+import BundledPosition from '../../core/js/position.js';
+import {pageLocale} from '../../core/js/page-language';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
+
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const YEARS_PAGE_SIZE = 18;
+
+function padDatePart(value) {
+    return String(value).padStart(2, '0');
+}
+
+function formatIsoDate(date) {
+    return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`;
+}
+
+function formatDateValue(date, format = 'YYYY.MM.DD') {
+    if (!date) {
+        return '';
+    }
+
+    const tokens = {
+        YYYY: String(date.getFullYear()),
+        YY: String(date.getFullYear()).slice(-2),
+        MM: padDatePart(date.getMonth() + 1),
+        DD: padDatePart(date.getDate()),
+    };
+
+    return String(format || 'YYYY.MM.DD').replace(
+        /YYYY|YY|MM|DD/g,
+        (token) => tokens[token] || token,
+    );
+}
+
+function isValidDate(date) {
+    return date instanceof Date && !Number.isNaN(date.getTime());
+}
+
+// A year has four digits: 1000 to 9999. Without the bound a glued paste such
+// as «20.11.202630.10.2026» read as year 202630 and was stored as a date
+// nobody meant.
+const MIN_YEAR = 1000;
+const MAX_YEAR = 9999;
+
+function calendarDate(year, month, day) {
+    if (!Number.isInteger(year) || year < MIN_YEAR || year > MAX_YEAR) {
+        return null;
+    }
+
+    const date = new Date(year, month - 1, day);
+    // new Date reads years below 100 as 19xx; the bound above keeps them out.
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    return date;
+}
+
+function parseDate(value) {
+    if (!value) {
+        return null;
+    }
+
+    const match = String(value).match(ISO_DATE_RE);
+    if (!match) {
+        return null;
+    }
+
+    const [, year, month, day] = match;
+    return calendarDate(Number(year), Number(month), Number(day));
+}
+
+// The declared format as an anchored pattern: YYYY is four digits, YY two,
+// DD and MM one or two, and whatever stands between them in the format is a
+// separator -- any of . / - , or a space, so «20/11/2026» lands in a
+// DD.MM.YYYY field. The whole text has to be one date: it read every run of
+// digits it found and took the first three, so two dates glued together, a
+// date with something after it or a five-digit year all made a date.
+const FORMAT_TOKEN_RE = /YYYY|YY|MM|DD/g;
+const formatPatterns = new Map();
+
+function formatPattern(format) {
+    const key = String(format || 'DD.MM.YYYY');
+    if (formatPatterns.has(key)) return formatPatterns.get(key);
+    const tokens = key.match(FORMAT_TOKEN_RE) || [];
+    const digits = {YYYY: '(\\d{4})', YY: '(\\d{2})', MM: '(\\d{1,2})', DD: '(\\d{1,2})'};
+    const source = key
+        .split(FORMAT_TOKEN_RE)
+        .map((literal) => (literal ? '[\\s./,-]+' : ''))
+        .reduce((pattern, literal, index) => pattern + literal + (index < tokens.length ? digits[tokens[index]] : ''), '');
+    const usable = tokens.length === 3
+        && tokens.includes('MM') && tokens.includes('DD')
+        && (tokens.includes('YYYY') || tokens.includes('YY'));
+    const pattern = usable ? {re: new RegExp(`^${source}$`), tokens} : null;
+    formatPatterns.set(key, pattern);
+    return pattern;
+}
+
+function parseDateValue(value, format = 'DD.MM.YYYY') {
+    if (!value) {
+        return null;
+    }
+
+    if (value instanceof Date) {
+        return isValidDate(value)
+            ? new Date(value.getFullYear(), value.getMonth(), value.getDate())
+            : null;
+    }
+
+    const text = String(value).trim();
+    if (ISO_DATE_RE.test(text)) {
+        return parseDate(text);
+    }
+
+    const pattern = formatPattern(format);
+    const match = pattern ? text.match(pattern.re) : null;
+    if (!match) {
+        return null;
+    }
+
+    const values = {};
+    pattern.tokens.forEach((token, index) => {
+        values[token] = Number(match[index + 1]);
+    });
+
+    const year = values.YYYY ?? values.YY + 2000;
+    return calendarDate(year, values.MM, values.DD);
+}
+
+function normalizeMonth(value, fallback = 0) {
+    const month = toNumber(value, fallback);
+
+    if (!Number.isFinite(month)) {
+        return fallback;
+    }
+
+    return Math.max(0, Math.min(11, month));
+}
+
+function sameDay(first, second) {
+    return (
+        first &&
+        second &&
+        first.getFullYear() === second.getFullYear() &&
+        first.getMonth() === second.getMonth() &&
+        first.getDate() === second.getDate()
+    );
+}
+
+function compareDates(first, second) {
+    if (!first || !second) {
+        return 0;
+    }
+
+    const firstTime = new Date(
+        first.getFullYear(),
+        first.getMonth(),
+        first.getDate(),
+    ).getTime();
+    const secondTime = new Date(
+        second.getFullYear(),
+        second.getMonth(),
+        second.getDate(),
+    ).getTime();
+
+    return firstTime - secondTime;
+}
+
+function shiftDateByMonth(date, direction) {
+    const targetMonth = new Date(date.getFullYear(), date.getMonth() + direction, 1);
+    const lastDay = new Date(
+        targetMonth.getFullYear(),
+        targetMonth.getMonth() + 1,
+        0,
+    ).getDate();
+
+    targetMonth.setDate(Math.min(date.getDate(), lastDay));
+    return targetMonth;
+}
+
+function isBetweenDates(date, startDate, endDate) {
+    if (!date || !startDate || !endDate) {
+        return false;
+    }
+
+    return compareDates(date, startDate) > 0 && compareDates(date, endDate) < 0;
+}
+
+function normalizeLocale(value = '', node = null) {
+    const locale = String(value || '').trim();
+
+    if (locale) {
+        return locale;
+    }
+
+    // The nearest [lang] first, then the document's: the rule every component
+    // follows, rather than this one's own reading of it. A date picker inside a
+    // region marked `lang="en"` on a Russian page used to name its months in
+    // Russian, because only the document was ever consulted.
+    //
+    // The region is kept -- `pageLocale`, not `pageLanguage` -- because this
+    // value also goes to Intl, and `ru-RU` and `en-GB` name months and start
+    // weeks differently from `ru` and `en`. Below this there used to be a fall
+    // back to the browser's own language and then to `ru-RU`: unreachable
+    // wherever a document exists, and a Russian default everywhere else, which
+    // is the opposite of the rule (peer session, 2026-10-11).
+    return pageLocale(node ?? globalThis.document?.documentElement ?? null);
+}
+
+function capitalizeFirstLetter(value = '') {
+    const text = String(value || '');
+
+    if (!text) {
+        return '';
+    }
+
+    return `${text.charAt(0).toLocaleUpperCase()}${text.slice(1)}`;
+}
+
+function getMonthLabel(month, locale) {
+    try {
+        return capitalizeFirstLetter(
+            new Intl.DateTimeFormat(locale, {month: 'long'}).format(
+                new Date(2026, month, 1),
+            ),
+        );
+    } catch {
+        return String(month + 1);
+    }
+}
+
+function getDateLabel(date, locale) {
+    try {
+        return new Intl.DateTimeFormat(locale, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        }).format(date);
+    } catch {
+        return formatIsoDate(date);
+    }
+}
+
+function getWeekdays(locale, weekStart = 1) {
+    const sunday = new Date(2026, 0, 4);
+    return Array.from({length: 7}, (_, index) => {
+        const day = new Date(sunday);
+        day.setDate(sunday.getDate() + ((weekStart + index) % 7));
+        try {
+            return new Intl.DateTimeFormat(locale, {weekday: 'short'}).format(day);
+        } catch {
+            return String((weekStart + index) % 7);
+        }
+    });
+}
+
+// Quick ranges (owner, 2026-10-15). A relative one is resolved against today
+// in the person's own time zone, every time it is drawn, so a host that stores
+// «last 7 days» gets the last seven days tomorrow too. Weeks start where the
+// grid starts them.
+const RELATIVE_PRESETS = ['today', 'yesterday', 'last-7-days', 'last-30-days', 'this-week', 'this-month', 'last-month'];
+
+function addDays(date, days) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+function resolveRelativePreset(id, today, weekStart = 1) {
+    const day = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    switch (id) {
+        case 'today': return [day, day];
+        case 'yesterday': return [addDays(day, -1), addDays(day, -1)];
+        case 'last-7-days': return [addDays(day, -6), day];
+        case 'last-30-days': return [addDays(day, -29), day];
+        case 'this-week': return [addDays(day, -((day.getDay() - weekStart + 7) % 7)), day];
+        case 'this-month': return [new Date(day.getFullYear(), day.getMonth(), 1), day];
+        case 'last-month': return [new Date(day.getFullYear(), day.getMonth() - 1, 1), new Date(day.getFullYear(), day.getMonth(), 0)];
+        default: return null;
+    }
+}
+
+function presetTextKey(id) {
+    return `preset_${String(id).replace(/-([a-z0-9])/g, (_, letter) => letter.toUpperCase())}`;
+}
+
+// Every word this picker says, in the languages it ships with. A product adds
+// any other through SF.language.register('sf-input-date', code, words) -- which
+// an if/else on «ru» did not allow at all.
+// Every word is lang/<locale>.json runtime (standard 1.3.8 §11); the code's
+// camelCase keys read as the files' kebab-case ones.
+const wordKey = (key) => String(key).replace(/_/gu, '-').replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
+
+function getLabels(node) {
+    const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear', 'presets', 'customRange'];
+    return Object.fromEntries(keys.map((key) => [key, node.sfWord(wordKey(key))]));
+}
+
+// sf-input-date from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §4.4, §7.1.1, §8, §11, §16.20, §17.1). It stays a leaf: the one
+// interactive part it places is its own text box. The settings are attributes
+// and properties made by core/js/element-manifest.js, the panel actions answer
+// an outcome, change leaves once (the shim sends sf-datepicker-change and
+// sf-change after it), and the host is the form control through
+// ElementInternals.
+const DatepickerElement = elementFromManifest(manifest, {
+    base: SfBaseElement,
+    lang: {en, ru},
+    source: 'ru',
+    aliases,
+    actions: {
+        'open-panel'({options} = {}) {
+            if (this.disabled) return 'disabled';
+            this._openPanel(options || {});
+            return 'applied';
+        },
+        'close-panel'({options} = {}) {
+            if (!this.open) return 'unchanged';
+            this._closePanel(options || {});
+            return 'applied';
+        },
+        'toggle-panel'() {
+            if (!this.open && this.disabled) return 'disabled';
+            this._togglePanel();
+            return 'applied';
+        },
+        'choose-preset'({item} = {}) {
+            if (this.disabled) return 'disabled';
+            if (!item || item.disabled || !this.range) return 'unavailable-preset';
+            this._choosePreset(item);
+            return 'applied';
+        },
+        'choose-custom-range'() {
+            if (this.disabled) return 'disabled';
+            if (!this.range) return 'not-a-range';
+            this._chooseCustomRange();
+            return 'applied';
+        },
+    },
+});
+
+class SfDatepicker extends FormField(DatepickerElement) {
+    constructor() {
+        super();
+        this._input = null;
+        this._documentClickHandler = this.handleDocumentClick.bind(this);
+        this._documentKeydownHandler = this.handleDocumentKeydown.bind(this);
+        this._viewportHandler = this.positionPanel.bind(this);
+        this._focusCalendarOnOpen = false;
+        this._focusDateAfterRender = false;
+
+        this.state = {
+            openAbove: false,
+            yearPageStart: null,
+            activeDate: '',
+        }
+        this.refs = {
+            input: this.createRef(),
+            datePickerRoot: this.createRef(),
+            datePickerPanel: this.createRef(),
+        }
+    }
+
+    static get props() {
+        // The manifest's settings, read as the component always read them:
+        // its own entries win where they keep an attribute's old reading.
+        return {
+            ...super.props,
+            templateName: {attribute: 'template', default: 'default'},
+            value: {default: ''},
+            date: {default: ''},
+            startValue: {attribute: 'start-value', default: ''},
+            endValue: {attribute: 'end-value', default: ''},
+            maxDate: {default: ''},
+            minDate: {default: ''},
+            range: {type: Boolean, default: false},
+            month: {type: Number, default: null},
+            year: {type: Number, default: null},
+            context: {default: ''},
+            // No default: the page's language says it (see get weekStart).
+            weekStart: {type: Number, default: null},
+            locale: {default: ''},
+            format: {default: 'DD.MM.YYYY'},
+            rootClass: {default: ''},
+            closeOnSelect: {type: Boolean, default: true},
+            input: {type: Boolean, default: true},
+            open: {type: Boolean, default: false},
+            portal: {type: Boolean, default: true},
+            inputType: {attribute: 'input-type', default: 'bordered'},
+            size: {default: '1'},
+            inputSize: {attribute: 'input-size', default: '1'},
+            inputName: {attribute: 'input-name', default: ''},
+            // Read by inputName after input-name; declared so the manifest names it.
+            name: {attribute: 'name', default: ''},
+            placeholder: {default: ''},
+            label: {default: ''},
+            ariaLabel: {attribute: 'aria-label', default: ''},
+            // A date can be typed; a host that wants the grid alone says so.
+            readonly: {type: Boolean, default: false},
+            disabled: {type: Boolean, default: false},
+            required: {type: Boolean, default: false},
+            // Said by the host and drawn by the field: the red border and
+            // aria-invalid on the native input, and the message under it.
+            // Removing it puts both back (Larena acceptance, 2026-10-22).
+            invalid: {type: Boolean, default: false},
+            errorMessage: {attribute: 'error-message', default: ''},
+            iconStart: {type: String, attribute: 'icon-start', default: null},
+            leftIcon: {attribute: 'left-icon', default: 'calendar_today'},
+            inputRootClass: {attribute: 'input-root-class', default: ''},
+            mask: {type: Boolean, default: false},
+            maskPattern: {attribute: 'mask-pattern', default: ''},
+            maskLazy: {attribute: 'mask-lazy', default: false},
+            maskPlaceholderChar: {attribute: 'mask-placeholder-char', default: '_'},
+            maskOptions: {attribute: 'mask-options', default: ''},
+            // Quick ranges, range mode only: built-in ids, comma separated, or
+            // the property as [{id, label, relative} | {id, label, range: [from, to]}].
+            presets: {default: ''},
+            // The chosen quick range. Set by a host, it wins over start-value and
+            // end-value: a stored «last-7-days» is resolved when drawn.
+            preset: {default: ''},
+        };
+    }
+
+    // The panel's id comes from the instance path (§7.1.1), never from a counter.
+    get _panelId() {
+        return partId(instancePath(this, {kind: 'sf-input-date'}), 'panel');
+    }
+
+    connectedCallback() {
+        // What a form reset returns to (§17.1 item 4): the value as written.
+        if (!this._written) {
+            this._written = Object.fromEntries(['date', 'start-value', 'end-value', 'preset']
+                .map((name) => [name, this.getAttribute(name)]));
+        }
+        this.upgradeProperty('value');
+        this.upgradeProperty('presets');
+        super.connectedCallback();
+    }
+
+    upgradeProperty(name) {
+        if (!Object.prototype.hasOwnProperty.call(this, name)) {
+            return;
+        }
+
+        const value = this[name];
+        delete this[name];
+        this[name] = value;
+    }
+
+    get componentName() {
+        return 'datepicker';
+    }
+
+    get templateName() {
+        return this.getAttribute('template') || 'default';
+    }
+
+    get selectedDate() {
+        return parseDateValue(this.date, this.format);
+    }
+
+    get primaryDate() {
+        const preset = this.activePreset;
+        if (preset) return preset.to;
+        return this.selectedDate || this.startDate;
+    }
+
+    get presets() {
+        return this._presetList ?? (this.getAttribute('presets') || '');
+    }
+
+    set presets(next) {
+        if (Array.isArray(next)) {
+            this._presetList = next;
+            this.requestComponentUpdate('presets');
+            return;
+        }
+        this._presetList = null;
+        this.setState({presets: next ? String(next) : ''});
+    }
+
+    get preset() {
+        return this.getAttribute('preset') || '';
+    }
+
+    set preset(next) {
+        this.setState({preset: next ? String(next) : ''});
+    }
+
+    // Each quick range resolved for today: its dates, clamped to min and max,
+    // and disabled when nothing of it is left.
+    get presetItems() {
+        if (!this.range) return [];
+        const raw = Array.isArray(this.presets)
+            ? this.presets
+            : String(this.presets).split(/[\s,]+/).filter(Boolean);
+        const today = new Date();
+        const min = this.setMinDate();
+        const max = this.setMaxDate();
+        return raw.map((entry) => {
+            const item = typeof entry === 'string' ? {id: entry, relative: entry} : {...entry};
+            if (!item?.id) return null;
+            let dates = null;
+            if (item.relative) dates = resolveRelativePreset(item.relative, today, this.weekStart);
+            else if (Array.isArray(item.range)) {
+                const from = parseDateValue(item.range[0], this.format);
+                const to = parseDateValue(item.range[1], this.format);
+                if (from && to) dates = compareDates(from, to) <= 0 ? [from, to] : [to, from];
+            }
+            if (!dates) return null;
+            let [from, to] = dates;
+            if (min && compareDates(from, min) < 0) from = min;
+            if (max && compareDates(to, max) > 0) to = max;
+            const disabled = compareDates(from, to) > 0;
+            const label = item.label
+                || (RELATIVE_PRESETS.includes(item.id) ? this.sfWord(wordKey(presetTextKey(item.id))) : item.id);
+            return {id: String(item.id), label, relative: item.relative || null, from, to, disabled,
+                pressed: this.preset === String(item.id)};
+        }).filter(Boolean);
+    }
+
+    get activePreset() {
+        const id = this.preset;
+        if (!id || !this.range) return null;
+        const item = this.presetItems.find((one) => one.id === id);
+        return item && !item.disabled ? item : null;
+    }
+
+    get startDate() {
+        return parseDateValue(this.startValue, this.format);
+    }
+
+    get endDate() {
+        return parseDateValue(this.endValue, this.format);
+    }
+
+    // `value` is the initial value; `date` is the component's own. The getter
+    // read `date || value`, so once a date set by the `value` attribute was
+    // cleared -- the person emptied the field, or code set '' -- the attribute
+    // came back and the old date with it: the value could not be cleared, and
+    // the change said the old date (field renderers' date editor, ui-admin's
+    // datetime). A present `date`, even empty, is the value now.
+    get date() {
+        if (this.hasAttribute('date')) return this.getAttribute('date') || '';
+        return this.getAttribute('value') || '';
+    }
+
+    // An empty date removes the `date` attribute, which let `value` back in; a
+    // cleared value over an initial one is kept as date="".
+    setState(nextState = {}, callback = null) {
+        super.setState(nextState, callback);
+        const has = (key) => nextState && typeof nextState === 'object'
+            && Object.prototype.hasOwnProperty.call(nextState, key);
+        const clears = has('date') && !nextState.date;
+        if (clears && this.hasAttribute('value')) this.setAttribute('date', '');
+        // The grid's month written by the component itself (a date chosen, an
+        // arrow, the month list), not by a host: the next opening may move it.
+        if (has('year') || has('month')) this._gridMoved = true;
+        return this;
+    }
+
+    // The month a value is in, as the state that shows it; nothing for a value
+    // that is not a date, so an emptied value leaves the grid where it was.
+    monthOf(value) {
+        const date = parseDateValue(value, this.format);
+        return date ? {year: date.getFullYear(), month: date.getMonth()} : {};
+    }
+
+    // The day the grid opens on: the value's, or today's when there is none --
+    // inside min-date and max-date either way.
+    get anchorDate() {
+        const candidate = this.primaryDate || new Date();
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(candidate, minDate) < 0) return minDate;
+        if (maxDate && compareDates(candidate, maxDate) > 0) return maxDate;
+        return candidate;
+    }
+
+    // The calendar opens on the month of the value it holds (Larena acceptance,
+    // 2026-10-22: 15.11.2026 typed, the grid opened on August -- the month it
+    // was left on). The grid kept the year and month it was last moved to, and
+    // a value set by a property, by the attribute or by typing did not move it
+    // unless the change came through the component's own selection path. So on
+    // opening: text typed but not yet committed is committed first; then the
+    // grid goes to the value's month, or -- with no value -- back to today's
+    // when the component had moved it (a month a host set stays). Inside
+    // min-date/max-date either way. The focused day follows.
+    showValueMonth() {
+        this.commitTypedText();
+        const primaryDate = this.primaryDate;
+        if (primaryDate) {
+            const anchor = this.anchorDate;
+            this.setState({year: anchor.getFullYear(), month: anchor.getMonth(), context: ''});
+        } else if (this._gridMoved) {
+            this.setState({year: '', month: '', context: ''});
+        }
+        this._gridMoved = false;
+        this.set({activeDate: formatIsoDate(this.anchorDate)});
+        return this;
+    }
+
+    // What stands in the field, read as a date if it is one. Opening the
+    // calendar without leaving the field (a click on it, ArrowDown) fires no
+    // change, so the typed date was not the value yet. Text that is not a date
+    // is left as it is: the change on leaving the field decides about it.
+    commitTypedText() {
+        if (!this.typed || !this._input) return this;
+        const text = String(this._input.value ?? '').trim();
+        if (!text || text === this.displayValue || !parseDateValue(text, this.format)) return this;
+        this.handleInputChange({target: this._input});
+        return this;
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        // A host that changes the value attribute moves the grid to it: an
+        // inline calendar is never opened, so opening cannot do it there.
+        if (name === 'value' && oldValue !== null && oldValue !== newValue && this.primaryDate) {
+            const date = this.primaryDate;
+            this.setState({year: date.getFullYear(), month: date.getMonth()});
+        }
+    }
+
+    get value() {
+        return this.range ? [this.startValue, this.endValue] : this.date;
+    }
+
+    // The value property takes what its getter gives back (component.json
+    // x-registry.inputs.value): an ISO date string, or [start, end] for a range.
+    // The object {start|startValue|date, end|endValue} older callers pass is
+    // still read as that pair, but it is outside the contract. Anything else is
+    // read as text (a number, a boolean) or, for any other object, cleared, and
+    // a console warning names the shape once per element.
+    set value(nextValue) {
+        if (Array.isArray(nextValue)) {
+            const [startValue = '', endValue = ''] = nextValue;
+            this.setState({
+                date: startValue || '',
+                startValue: startValue || '',
+                endValue: endValue || '',
+                ...this.monthOf(startValue || endValue),
+            });
+            return;
+        }
+
+        if (nextValue && typeof nextValue === 'object') {
+            const startValue =
+                nextValue.start || nextValue.startValue || nextValue.date || '';
+            const endValue = nextValue.end || nextValue.endValue || '';
+            if (!startValue && !endValue) this.warnValueShape(nextValue);
+            this.setState({
+                date: nextValue.date || startValue || '',
+                startValue,
+                endValue,
+                ...this.monthOf(nextValue.date || startValue || endValue),
+            });
+            return;
+        }
+
+        if (nextValue != null && typeof nextValue !== 'string') this.warnValueShape(nextValue);
+        this.setState({
+            date: nextValue ? String(nextValue) : '',
+            startValue: '',
+            endValue: '',
+            ...this.monthOf(nextValue),
+        });
+    }
+
+    warnValueShape(nextValue) {
+        if (this._valueShapeWarned) return;
+        this._valueShapeWarned = true;
+        const shape = nextValue instanceof Date ? 'Date' : typeof nextValue;
+        globalThis.console?.warn?.(`[SIMAI Framework] sf-input-date: value takes an ISO date string or [start, end]; a ${shape} was read as ${shape === 'object' || shape === 'Date' ? 'empty' : 'text'}.`);
+    }
+
+    setMaxDate() {
+        return parseDateValue(this.maxDate, this.format);
+    }
+
+    setMinDate() {
+        return parseDateValue(this.minDate, this.format);
+    }
+
+    get maxDate() {
+        return this.getAttribute('max-date') || '';
+    }
+
+    get minDate() {
+        return this.getAttribute('min-date') || '';
+    }
+
+    set date(nextValue) {
+        this.setState({
+            date: nextValue ? String(nextValue) : '',
+            ...this.monthOf(nextValue),
+        })
+    }
+
+    get startValue() {
+        const preset = this.activePreset;
+        if (preset) return formatIsoDate(preset.from);
+        return this.getAttribute('start-value') || '';
+    }
+
+    set startValue(nextValue) {
+        this.setState({
+            startValue: nextValue ? String(nextValue) : '',
+            ...this.monthOf(nextValue),
+        })
+    }
+
+    get endValue() {
+        const preset = this.activePreset;
+        if (preset) return formatIsoDate(preset.to);
+        return this.getAttribute('end-value') || '';
+    }
+
+    set endValue(nextValue) {
+        this.setState({
+            endValue: nextValue ? String(nextValue) : '',
+        })
+    }
+
+    get range() {
+        return this.getBooleanAttr('range', false);
+    }
+
+    get input() {
+        return this.getBooleanAttr('input', true);
+    }
+
+    get open() {
+        return this.getBooleanAttr('open', false);
+    }
+
+    get portal() {
+        return this.getBooleanAttr('portal', true);
+    }
+
+    get inputType() {
+        return this.getAttribute('input-type') || 'bordered';
+    }
+
+    // `size` is the canonical name, as on every field; `input-size` is its
+    // legacy name and still honoured. The canonical name wins when both are set.
+    get size() {
+        return fieldSize(this.getAttribute('size') || this.getAttribute('input-size') || '1', 'sf-input-date');
+    }
+
+    get inputSize() {
+        return this.size;
+    }
+
+    get inputName() {
+        return this.getAttribute('input-name') || this.getAttribute('name') || '';
+    }
+
+    get placeholder() {
+        return this.getAttribute('placeholder') || '';
+    }
+
+    // What the form gets (§17.1): the ISO date, never the display text; a
+    // range as start/end (an ISO 8601 interval); nothing while disabled.
+    sfFormValue() {
+        if (this.disabled) return null;
+        if (!this.range) return this.date || '';
+        const {startValue, endValue} = this;
+        if (startValue && endValue) return `${startValue}/${endValue}`;
+        return startValue || '';
+    }
+
+    fieldValidity() {
+        const empty = this.range ? !this.startValue : !this.date;
+        return {
+            valueMissing: this.required && !this.disabled && empty,
+            message: this.sfWord('value-missing'),
+            anchor: this._input || null,
+        };
+    }
+
+    // form.reset(): the value as written, without events (§17.1 item 4).
+    fieldReset() {
+        for (const [name, value] of Object.entries(this._written || {})) {
+            if (value === null) this.removeAttribute(name);
+            else this.setAttribute(name, value);
+        }
+        this.requestComponentUpdate('reset');
+    }
+
+    get label() {
+        return this.getAttribute('label') || '';
+    }
+
+    get disabled() {
+        return this.getBooleanAttr('disabled', false);
+    }
+
+    get required() {
+        return this.getBooleanAttr('required', false);
+    }
+
+    get invalid() {
+        return this.getBooleanAttr('invalid', false);
+    }
+
+    get errorMessage() {
+        return this.getAttribute('error-message') || '';
+    }
+
+    get closeOnSelect() {
+        return this.getBooleanAttr('close-on-select', true);
+    }
+
+    get leftIcon() {
+        if (this.hasAttribute('icon-start')) return this.getAttribute('icon-start');
+        return this.getAttribute('left-icon') || 'calendar_today';
+    }
+
+    get iconStart() {
+        return this.leftIcon;
+    }
+
+    get inputRootClass() {
+        return this.getAttribute('input-root-class') || '';
+    }
+
+    get mask() {
+        return this.getBooleanAttr('mask', false);
+    }
+
+    get maskPattern() {
+        return this.getAttribute('mask-pattern') || this.formatToMask(this.format);
+    }
+
+    get maskLazy() {
+        return this.hasAttribute('mask-lazy')
+            ? this.getBooleanAttr('mask-lazy', false)
+            : false;
+    }
+
+    get maskPlaceholderChar() {
+        return this.getAttribute('mask-placeholder-char') || '_';
+    }
+
+    get maskOptions() {
+        return this.getAttribute('mask-options') || '';
+    }
+
+    get year() {
+        const fallback = this.anchorDate.getFullYear();
+
+        return this.hasAttribute('year') ? this.getNumberAttr('year', fallback) : fallback;
+    }
+
+    set year(nextValue) {
+        this.setState({
+            year:
+                nextValue === null || typeof nextValue === 'undefined' || nextValue === ''
+                    ? ''
+                    : String(toNumber(nextValue, new Date().getFullYear())),
+        })
+        this._gridMoved = false;
+    }
+
+    get month() {
+        const fallback = this.anchorDate.getMonth();
+
+        return this.hasAttribute('month')
+            ? normalizeMonth(this.getAttribute('month'), fallback)
+            : fallback;
+    }
+
+    set month(nextValue) {
+        this.setState({
+            month:
+                nextValue === null || typeof nextValue === 'undefined' || nextValue === ''
+                    ? ''
+                    : String(normalizeMonth(nextValue, new Date().getMonth())),
+        })
+        this._gridMoved = false;
+    }
+
+    get contextMode() {
+        return this.getEnumAttr('context', ['month', 'year', ''], '');
+    }
+
+    // The week starts where the page's language starts it when the attribute
+    // does not say: Monday for ru, Sunday for en-US (docs trial 4: a
+    // Sunday-first locale needed a manual attribute).
+    // Any day may open the week, 0 Sunday to 6 Saturday: the grid counts from
+    // it modulo seven. Only Sunday and Monday were kept, so a Saturday-first
+    // locale (ar-EG, fa-IR) got Monday (documentation trial 6, 2026-10-18).
+    get weekStart() {
+        if (this.hasAttribute('week-start')) {
+            const day = this.getNumberAttr('week-start', 1);
+            return Number.isInteger(day) && day >= 0 && day <= 7 ? day % 7 : 1;
+        }
+        try {
+            const locale = new Intl.Locale(this.locale);
+            const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
+            if (info?.firstDay) return info.firstDay % 7;
+        } catch {
+            // An unknown locale keeps the Monday the grid always had.
+        }
+        return 1;
+    }
+
+    get locale() {
+        return normalizeLocale(this.getAttribute('locale'), this);
+    }
+
+    get format() {
+        return this.getAttribute('format') || 'DD.MM.YYYY';
+    }
+
+    // The name for a field whose label is drawn outside it -- a record panel
+    // prints the label itself, and passing it to the control printed it twice.
+    get ariaLabel() {
+        return this.getProp('ariaLabel') || '';
+    }
+
+    // Read-only as the field draws it, not just the attribute: a range is always
+    // chosen on the grid (one field holding two dates has no single format to
+    // read back), so `range` alone makes the field read-only. The template reads
+    // this same value -- it once read `!this.typed`, which also counted
+    // `disabled`, so a range or disabled field drew read-only while the
+    // component said it was not.
+    get readonly() {
+        return this.range || this.getBooleanAttr('readonly', false);
+    }
+
+    // A date can be typed. The field was hard-readonly, so a host that edits a
+    // date could only pick one on the grid -- and the mask properties beside it
+    // reached a field nobody could type in (Larena storage QA, 2026-10-22).
+    // A range is still chosen on the grid -- `readonly` already says so.
+    get typed() {
+        return !this.readonly && !this.disabled;
+    }
+
+    get formattedValue() {
+        return formatDateValue(this.selectedDate, this.format);
+    }
+
+    get formattedStartValue() {
+        return formatDateValue(this.startDate, this.format);
+    }
+
+    get formattedEndValue() {
+        return formatDateValue(this.endDate, this.format);
+    }
+
+    get displayValue() {
+        if (!this.range) {
+            return this.formattedValue;
+        }
+
+        if (this.formattedStartValue && this.formattedEndValue) {
+            return `${this.formattedStartValue} - ${this.formattedEndValue}`;
+        }
+
+        return this.formattedStartValue || this.formattedEndValue || '';
+    }
+
+    get displayDate() {
+        return new Date(this.year, this.month, 1);
+    }
+
+    get isRtl() {
+        return (this.closest('[dir]')?.getAttribute('dir') || document.documentElement?.dir) === 'rtl';
+    }
+
+    get labels() {
+        return getLabels(this);
+    }
+
+    get weekdays() {
+        return getWeekdays(this.locale, this.weekStart);
+    }
+
+    get calendarLabel() {
+        try {
+            return new Intl.DateTimeFormat(this.locale, {
+                month: 'long',
+                year: 'numeric',
+            }).format(this.displayDate);
+        } catch {
+            return `${this.month + 1}.${this.year}`;
+        }
+    }
+
+    get activeDate() {
+        const candidate = parseDate(this.state.activeDate) || this.primaryDate || this.displayDate;
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(candidate, minDate) < 0) return minDate;
+        if (maxDate && compareDates(candidate, maxDate) > 0) return maxDate;
+        return candidate;
+    }
+
+    get normalizedRange() {
+        const startDate = this.startDate;
+        const endDate = this.endDate;
+
+        if (!startDate || !endDate) {
+            return {startDate, endDate};
+        }
+
+        if (compareDates(startDate, endDate) <= 0) {
+            return {startDate, endDate};
+        }
+
+        return {
+            startDate: endDate,
+            endDate: startDate,
+        };
+    }
+
+    get days() {
+        const firstDay = new Date(this.year, this.month, 1);
+        const firstWeekDay = firstDay.getDay();
+        const offset = (firstWeekDay - this.weekStart + 7) % 7;
+        const gridStartDate = new Date(this.year, this.month, 1 - offset);
+        const {startDate, endDate} = this.normalizedRange;
+        const hasRangeEnd = Boolean(this.startValue && this.endValue);
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const activeDate = this.activeDate;
+        const today = new Date();
+        return Array.from({length: 42}).map((_, index) => {
+            const date = new Date(
+                gridStartDate.getFullYear(),
+                gridStartDate.getMonth(),
+                gridStartDate.getDate() + index,
+            );
+            const time = date.getTime();
+
+            // A disabled field disables every day: a panel a host holds open,
+            // or the inline one, takes no choice (see panelDisabled).
+            const disabled = Boolean(
+                this.disabled ||
+                (minDate && time < minDate.getTime()) ||
+                (maxDate && time > maxDate.getTime()),
+            );
+            return {
+                date,
+                value: formatIsoDate(date),
+                formattedValue: formatDateValue(date, this.format),
+                label: getDateLabel(date, this.locale),
+                day: date.getDate(),
+                today: sameDay(date, today),
+                currentMonth: date.getMonth() === this.month,
+                weekend: [0, 6].includes(date.getDay()),
+                disabled: disabled,
+                selected: this.range
+                    ? sameDay(date, startDate) || sameDay(date, endDate)
+                    : sameDay(date, this.selectedDate),
+                rangeStart: this.range && hasRangeEnd && sameDay(date, startDate),
+                rangeEnd: this.range && hasRangeEnd && sameDay(date, endDate),
+                rangeSelected: this.range && hasRangeEnd && isBetweenDates(date, startDate, endDate),
+                tabIndex: !disabled && sameDay(date, activeDate) ? 0 : -1,
+            };
+        });
+    }
+
+    get months() {
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const minMonth = minDate
+            ? new Date(minDate.getFullYear(), minDate.getMonth(), 1)
+            : null;
+        const maxMonth = maxDate
+            ? new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)
+            : null;
+
+        return Array.from({length: 12}).map((_, index) => {
+            const date = new Date(this.year, index, 1);
+            const time = date.getTime();
+
+            const disabled = Boolean(
+                this.disabled ||
+                (minMonth && time < minMonth.getTime()) ||
+                (maxMonth && time > maxMonth.getTime()),
+            );
+            return {
+                index,
+                label: getMonthLabel(index, this.locale),
+                selected: index === this.month,
+                disabled
+            }
+        });
+    }
+
+    get years() {
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const start = this.yearPageStart;
+
+        return Array.from({length: YEARS_PAGE_SIZE}).map((_, index) => {
+
+            const year = start + index;
+
+            const disabled = Boolean(
+                this.disabled ||
+                (minDate && year < minDate.getFullYear()) ||
+                (maxDate && year > maxDate.getFullYear()),
+            );
+            return {
+                year,
+                disabled: disabled,
+                selected: year === this.year,
+            };
+        });
+    }
+
+    get yearPageStart() {
+        return this.state.yearPageStart ?? this.getYearPageStart(this.year);
+    }
+
+    get yearPageEnd() {
+        return this.yearPageStart + YEARS_PAGE_SIZE - 1;
+    }
+
+    getYearPageStart(year = this.year) {
+        const normalizedYear = toNumber(year, new Date().getFullYear());
+        return normalizedYear - (normalizedYear % YEARS_PAGE_SIZE);
+    }
+
+    formatToMask = (format) => {
+        let mask = String(format).replace(/[A-Za-z]/g, '0');
+        if (this.range) {
+            mask += ` - ${mask}`;
+        }
+        return mask;
+    };
+
+    setContext(nextContext = '') {
+        this.setState({
+            context: nextContext || '',
+        })
+        return this;
+    }
+
+    toggleContext(nextContext) {
+        if (this.disabled) return this;
+        const nextMode = this.contextMode === nextContext ? '' : nextContext;
+        const nextState = {
+            context: nextMode,
+        };
+
+        if (nextMode === 'year') {
+            nextState.yearPageStart = this.getYearPageStart(this.year);
+        }
+
+        this.setState(nextState);
+        return this;
+    }
+
+    shiftYearPage(direction = 1) {
+        if (this.disabled) return this;
+        this.set({
+            yearPageStart: this.yearPageStart + YEARS_PAGE_SIZE * direction,
+        });
+
+        return this;
+    }
+
+    shiftMonth(direction = 1) {
+        if (this.disabled) return this;
+        const next = new Date(this.year, this.month + direction, 1);
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && next < new Date(minDate.getFullYear(), minDate.getMonth(), 1)) return this;
+        if (maxDate && next > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)) return this;
+        this.setState({
+            year: next.getFullYear(),
+            month: next.getMonth(),
+            context: '',
+        });
+        this.set({activeDate: formatIsoDate(next)});
+        return this;
+    }
+
+    setActiveDate(value) {
+        const date = parseDate(value);
+        if (!date || this.state.activeDate === value) return this;
+        this.set({activeDate: formatIsoDate(date)});
+        return this;
+    }
+
+    moveActiveDate(days) {
+        const next = new Date(this.activeDate);
+        next.setDate(next.getDate() + days);
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(next, minDate) < 0) return this;
+        if (maxDate && compareDates(next, maxDate) > 0) return this;
+        this._focusDateAfterRender = true;
+        this.setState({
+            year: next.getFullYear(),
+            month: next.getMonth(),
+            context: '',
+        });
+        this.set({activeDate: formatIsoDate(next)});
+        return this;
+    }
+
+    _openPanel({focusCalendar = false} = {}) {
+        if (this.disabled) return this;
+        this._focusCalendarOnOpen = focusCalendar;
+        if (!this.open) this.showValueMonth();
+        else if (!this.state.activeDate) {
+            this.set({activeDate: formatIsoDate(this.activeDate)});
+        }
+        if (this.open) {
+            this.positionPanel();
+            return this;
+        }
+        this.setState({
+            open: true
+        })
+        return this;
+    }
+
+    _closePanel({restoreFocus = false} = {}) {
+        if (!this.open) {
+            return this;
+        }
+
+        this.setState({
+            open: false,
+            context: '',
+        });
+        if (restoreFocus) requestAnimationFrame(() => this._input?.focus?.());
+        return this;
+    }
+
+    _togglePanel() {
+        return this.open ? this._closePanel() : this._openPanel();
+    }
+
+    // What is typed is read through the declared format, so «14.10.2026» and
+    // «2026-10-14» both land. Text that is not a date, or a date outside the
+    // allowed range, puts the field back to the value it held: a half-typed date
+    // must not clear a stored one. An emptied field clears the value, because
+    // deleting the text is how a person says there is no date.
+    handleInputChange(event) {
+        if (!this.typed) return;
+        // The field's own change belongs to the component, not to the page: it
+        // carries the display text, and a host reading `event.target.value` on
+        // it would store «14.10.2026» where it expects the ISO value. The
+        // component says the change itself, once, through emitChange.
+        if (event?.type === 'change') event.stopPropagation();
+        const field = event?.target;
+        const text = String(field?.value ?? '').trim();
+        const restore = () => {
+            const input = field?.querySelector?.('input') || field;
+            if (input && 'value' in input) input.value = this.displayValue;
+        };
+
+        if (!text) {
+            if (!this.date) return;
+            this.setState({date: '', context: ''});
+            this.emitChange();
+            return;
+        }
+
+        const date = parseDateValue(text, this.format);
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const outOfRange = Boolean(date)
+            && ((minDate && compareDates(date, minDate) < 0)
+                || (maxDate && compareDates(date, maxDate) > 0));
+
+        if (!date || outOfRange) {
+            restore();
+            return;
+        }
+
+        const value = formatIsoDate(date);
+        if (value === this.date) {
+            restore();
+            return;
+        }
+
+        this.setState({
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            date: value,
+            context: '',
+        });
+        this.set({activeDate: value});
+        this.emitChange();
+    }
+
+    // Typing is not a change: the value is read when the field says it changed,
+    // so the keystrokes stay inside the component too.
+    handleInputInput(event) {
+        if (this.typed) event?.stopPropagation?.();
+    }
+
+    handleInputClick(event) {
+        event?.preventDefault?.();
+        event?.stopPropagation?.();
+        this._openPanel();
+    }
+
+    handleInputKeydown(event) {
+        // In a field that can be typed in, Enter commits the text and the space
+        // bar belongs to the text; ArrowDown still opens the grid.
+        if (this.typed) {
+            if (event.key !== 'ArrowDown' && event.key !== 'Enter') return;
+            event.preventDefault();
+            if (event.key === 'Enter') {
+                this.handleInputChange(event);
+                return;
+            }
+            this._openPanel({focusCalendar: true});
+            return;
+        }
+        if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return;
+        event.preventDefault();
+        this._openPanel({focusCalendar: true});
+    }
+
+    handleDayKeydown(event, day) {
+        if (this.disabled) return;
+        const horizontal = this.isRtl ? -1 : 1;
+        const keySteps = {
+            ArrowLeft: -horizontal,
+            ArrowRight: horizontal,
+            ArrowUp: -7,
+            ArrowDown: 7,
+        };
+        if (Object.prototype.hasOwnProperty.call(keySteps, event.key)) {
+            event.preventDefault();
+            this.moveActiveDate(keySteps[event.key]);
+            return;
+        }
+        if (event.key === 'Home' || event.key === 'End') {
+            event.preventDefault();
+            const date = day?.date || this.activeDate;
+            const offset = (date.getDay() - this.weekStart + 7) % 7;
+            this.moveActiveDate(event.key === 'Home' ? -offset : 6 - offset);
+            return;
+        }
+        if (event.key === 'PageUp' || event.key === 'PageDown') {
+            event.preventDefault();
+            const direction = event.key === 'PageUp' ? -1 : 1;
+            let next = shiftDateByMonth(this.activeDate, direction);
+            const minDate = this.setMinDate();
+            const maxDate = this.setMaxDate();
+            if (minDate && compareDates(next, minDate) < 0) next = minDate;
+            if (maxDate && compareDates(next, maxDate) > 0) next = maxDate;
+            this._focusDateAfterRender = true;
+            this.setState({
+                year: next.getFullYear(),
+                month: next.getMonth(),
+            });
+            this.set({activeDate: formatIsoDate(next)});
+        }
+    }
+
+    handlePanelClick(event) {
+        event?.stopPropagation?.();
+    }
+
+    handleDocumentClick(event) {
+        if (!this.open) {
+            return;
+        }
+
+        const target = event.target;
+        if (this.contains(target) || this.refs.datePickerPanel.value?.contains?.(target)) {
+            return;
+        }
+        this._closePanel();
+    }
+
+    // An open calendar owns Escape: the press closes the calendar, the focus goes
+    // back to the field, and nothing behind it -- a drawer, a modal, a record
+    // panel -- sees the press. It listened in the bubble phase and raised no
+    // mark, so a drawer listening before it and a record panel listening in
+    // capture both closed first, and the date typed into the field went with
+    // the panel (Larena admin acceptance, 2026-10-22). Now it listens in capture
+    // like every other surface that owns Escape, holds the shared open-surface
+    // mark while open, and acts only as the innermost open layer, so a calendar
+    // inside a popover closes before the popover does.
+    handleDocumentKeydown(event) {
+        if (!this.open || event.key !== 'Escape' || event.defaultPrevented) {
+            return;
+        }
+        if (!isTopOpenSurface(this)) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (this.contextMode) {
+            this.setContext('');
+            return;
+        }
+
+        this._closePanel({restoreFocus: true});
+    }
+
+    syncOverlayListeners() {
+        const open = Boolean(this.input && this.open);
+        holdOpenSurfaceMark(this, open);
+        if (open) {
+            document.addEventListener('click', this._documentClickHandler);
+            document.addEventListener('keydown', this._documentKeydownHandler, true);
+            return;
+        }
+
+        this.removeOverlayListeners();
+    }
+
+    removeOverlayListeners() {
+        holdOpenSurfaceMark(this, false);
+        document.removeEventListener('click', this._documentClickHandler);
+        document.removeEventListener('keydown', this._documentKeydownHandler, true);
+        this.stopPanelPosition();
+        window.removeEventListener('resize', this._viewportHandler);
+        document.removeEventListener('scroll', this._viewportHandler, true);
+        window.visualViewport?.removeEventListener('resize', this._viewportHandler);
+        window.visualViewport?.removeEventListener('scroll', this._viewportHandler);
+    }
+
+    positionPanel() {
+        const panel = this.refs.datePickerPanel.value;
+        // Anchor to the visible field frame, not the bare text input inside it.
+        const trigger = this._input?.closest('.sf-input-field') || this._input || this.querySelector('sf-input');
+        // A deferred call after disconnect must not start tracking detached nodes.
+        if (!this.isConnected || !this.input || !this.portal || !this.open || !panel?.isConnected || !trigger) {
+            this.stopPanelPosition();
+            return;
+        }
+        // Shared Framework geometry (SF.Position on Floating UI): below the
+        // field, flipped above when it does not fit, shifted and height-limited
+        // inside the viewport, following scroll and resize on its own.
+        if (!this._panelAnchor || this._panelAnchorPanel !== panel || this._panelAnchorTrigger !== trigger) {
+            this.stopPanelPosition();
+            Object.assign(panel.style, {overflowY: 'auto', zIndex: 'var(--sf-z-index-9)'});
+            this._panelAnchorPanel = panel;
+            this._panelAnchorTrigger = trigger;
+            this._panelAnchor = (globalThis.SF?.Position || BundledPosition).anchor(trigger, panel, {
+                side: 'block-end',
+                align: 'start',
+                onPosition: ({side}) => {
+                    const openAbove = side === 'block-start';
+                    if (Boolean(this.state.openAbove) !== openAbove) this.set({openAbove});
+                },
+            });
+            return;
+        }
+        this._panelAnchor.update();
+    }
+
+    stopPanelPosition() {
+        this._panelAnchor?.stop();
+        this._panelAnchor = null;
+        this._panelAnchorPanel = null;
+        this._panelAnchorTrigger = null;
+    }
+
+    selectDate(day) {
+        if (this.disabled || !day?.date || day.disabled) {
+            return this;
+        }
+
+        if (this.range) {
+            this.selectRangeDate(day);
+            return this;
+        }
+
+        this.setState({
+            year: day.date.getFullYear(),
+            month: day.date.getMonth(),
+            date: day.value,
+            context: '',
+        });
+        this.set({activeDate: day.value});
+        this.emitChange();
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
+        return this;
+    }
+
+    selectRangeDate(day) {
+        if (!this.startValue || (this.startValue && this.endValue)) {
+            this.setState({
+                year: day.date.getFullYear(),
+                month: day.date.getMonth(),
+                startValue: day.value,
+                endValue: '',
+                date: day.value,
+                context: '',
+                preset: '',
+            });
+            this.set({activeDate: day.value});
+            this.emitChange();
+            return this;
+        }
+
+        const startDate = this.startDate;
+        const nextState = {
+            year: day.date.getFullYear(),
+            month: day.date.getMonth(),
+            context: '',
+            preset: '',
+        };
+
+        if (startDate && compareDates(day.date, startDate) < 0) {
+            nextState.startValue = day.value;
+            nextState.endValue = this.startValue;
+            nextState.date = day.value;
+        } else {
+            nextState.endValue = day.value;
+            nextState.date = this.startValue;
+        }
+
+        this.setState(nextState);
+        this.set({activeDate: day.value});
+        this.emitChange();
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
+        return this;
+    }
+
+    // A quick range: its dates, the grid on the month it ends in, and the change
+    // said once, by the person's choice -- never by a render.
+    _choosePreset(item) {
+        if (this.disabled || !item || item.disabled) return this;
+        const from = formatIsoDate(item.from);
+        const to = formatIsoDate(item.to);
+        this.setState({
+            preset: item.id,
+            startValue: from,
+            endValue: to,
+            date: from,
+            year: item.to.getFullYear(),
+            month: item.to.getMonth(),
+            context: '',
+        });
+        this.set({activeDate: to});
+        this.emitChange();
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
+        return this;
+    }
+
+    // «Свой период»: the quick range lets go and the person picks on the grid.
+    _chooseCustomRange() {
+        if (this.disabled) return this;
+        if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
+        this._focusDateAfterRender = true;
+        this.requestComponentUpdate('custom-range');
+        return this;
+    }
+
+    // The list is one tab stop: arrows move along it, Tab goes on to the grid.
+    handlePresetKeydown(event) {
+        const keys = {ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1};
+        if (!(event.key in keys) && event.key !== 'Home' && event.key !== 'End') return;
+        const buttons = [...event.currentTarget.querySelectorAll('button:not(:disabled)')];
+        if (!buttons.length) return;
+        event.preventDefault();
+        const index = buttons.indexOf(event.target);
+        let next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : index + keys[event.key];
+        if (this.isRtl && (event.key === 'ArrowRight' || event.key === 'ArrowLeft')) next = index - keys[event.key];
+        next = (next + buttons.length) % buttons.length;
+        buttons.forEach((button, at) => button.setAttribute('tabindex', at === next ? '0' : '-1'));
+        buttons[next].focus();
+    }
+
+    selectMonth(month) {
+        if (this.disabled || !month || month.disabled) {
+            return this;
+        }
+
+        this.setState({
+            month: month.index,
+            context: '',
+        });
+        this.set({activeDate: formatIsoDate(new Date(this.year, month.index, 1))});
+
+        return this;
+    }
+
+    selectYear(year) {
+        if (this.disabled || !year || year.disabled) {
+            return this;
+        }
+
+        const nextState = {
+            year: year.year,
+            context: '',
+        };
+
+        const nextMonth = this.getClosestEnabledMonth(year.year, this.month);
+        if (nextMonth !== this.month) {
+            nextState.month = nextMonth;
+        }
+
+        this.setState(nextState);
+        this.set({activeDate: formatIsoDate(new Date(year.year, nextMonth, 1))});
+        return this;
+    }
+
+    getClosestEnabledMonth(year, month) {
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+
+        if (minDate && year === minDate.getFullYear() && month < minDate.getMonth()) {
+            return minDate.getMonth();
+        }
+
+        if (maxDate && year === maxDate.getFullYear() && month > maxDate.getMonth()) {
+            return maxDate.getMonth();
+        }
+
+        return month;
+    }
+
+    emitChange() {
+        // date and isoValue mean one thing in both modes: the ISO value. For a
+        // range that is the ISO 8601 interval start/end (the start alone while
+        // the end is not chosen); they were the formatted range and the start
+        // (docs trial 4).
+        const interval = this.startValue && this.endValue ? `${this.startValue}/${this.endValue}` : (this.startValue || '');
+        const detail = this.range
+            ? {
+                value: [this.startValue, this.endValue],
+                date: interval,
+                startValue: this.startValue,
+                endValue: this.endValue,
+                formattedValue: this.displayValue,
+                formattedStartValue: this.formattedStartValue,
+                formattedEndValue: this.formattedEndValue,
+                isoValue: interval,
+                startIsoValue: this.startValue,
+                endIsoValue: this.endValue,
+                range: true,
+                format: this.format,
+                // The quick range chosen, so a host can store «last 7 days»
+                // rather than the dates it meant today.
+                preset: this.activePreset
+                    ? (this.activePreset.relative ? {id: this.activePreset.id, relative: this.activePreset.relative} : {id: this.activePreset.id})
+                    : null,
+            }
+            : {
+                value: this.date,
+                date: this.date,
+                formattedValue: this.formattedValue,
+                isoValue: this.date,
+                range: false,
+                format: this.format,
+            };
+
+        // Once, under its native name, without the element in its detail (§8);
+        // the shim sends sf-datepicker-change and sf-change after it with the
+        // same detail (aliases.json).
+        this.sfSyncFormState();
+        this.sfEmit('change', detail);
+    }
+
+    templateContext() {
+        const props = this.getPropsContext();
+
+        return this.createTemplateContext({
+            ...props,
+            component: this,
+            date: this.date,
+            formattedValue: this.formattedValue,
+            displayValue: this.displayValue,
+            startValue: this.startValue,
+            formattedStartValue: this.formattedStartValue,
+            endValue: this.endValue,
+            formattedEndValue: this.formattedEndValue,
+            range: this.range,
+            format: this.format,
+            selectedDate: this.selectedDate,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            year: this.year,
+            month: this.month,
+            monthLabel: getMonthLabel(this.month, this.locale),
+            calendarLabel: this.calendarLabel,
+            labels: this.labels,
+            weekdays: this.weekdays,
+            panelId: this._panelId,
+            previousIcon: this.isRtl ? 'chevron_right' : 'chevron_left',
+            nextIcon: this.isRtl ? 'chevron_left' : 'chevron_right',
+            context: this.contextMode,
+            locale: this.locale,
+            days: this.days,
+            presetItems: this.presetItems,
+            months: this.months,
+            years: this.years,
+            yearPageStart: this.yearPageStart,
+            yearPageEnd: this.yearPageEnd,
+            rootClass: this.getRootClass(),
+            rootStyle: this.getRootStyle(),
+            openAbove: Boolean(this.state.openAbove),
+            input: this.input,
+            open: this.open,
+            portal: this.portal,
+            inputType: this.inputType,
+            inputSize: this.inputSize,
+            // The host is the form control where the browser has
+            // ElementInternals, so the inner text box carries no name (§17.1
+            // item 6); without them it is named, as before.
+            inputName: this.inputName,
+            boxName: this.sfInternals ? '' : this.inputName,
+            placeholder: this.placeholder,
+            label: this.label,
+            ariaLabel: this.ariaLabel,
+            readonly: this.readonly,
+            disabled: this.disabled,
+            required: this.required,
+            invalid: this.invalid,
+            errorMessage: this.errorMessage,
+            // The field's own words and marker, as on sf-input: the helper text
+            // under the control (which the field reads to it as its
+            // description) and the marker at the field's end. The settings
+            // themselves come from component.json, so `hint` and `hintIcon`
+            // are the manifest's own accessors.
+            hint: this.hint,
+            leftIcon: this.leftIcon,
+            iconStart: this.leftIcon,
+            hintIcon: this.hintIcon,
+            inputRootClass: this.inputRootClass,
+            mask: this.mask,
+            maskPattern: this.maskPattern,
+            maskLazy: this.maskLazy,
+            maskPlaceholderChar: this.maskPlaceholderChar,
+            maskOptions: this.maskOptions,
+        });
+    }
+
+    template() {
+        return renderDatepickerTemplate(this.templateContext());
+    }
+
+
+    afterRender() {
+        this._input = this.refs.input?.value?.querySelector('input') || null;
+        if (this._input) {
+            this._input.setAttribute('aria-haspopup', 'dialog');
+            this._input.setAttribute('aria-expanded', this.open ? 'true' : 'false');
+            this._input.setAttribute('aria-controls', this._panelId);
+        }
+        const monthToggle = this.querySelector('.sf-datepicker-month-toggle button');
+        const yearToggle = this.querySelector('.sf-datepicker-year-toggle button');
+        monthToggle?.setAttribute('aria-expanded', this.contextMode === 'month' ? 'true' : 'false');
+        yearToggle?.setAttribute('aria-expanded', this.contextMode === 'year' ? 'true' : 'false');
+        this.syncOverlayListeners();
+        this.sfSyncFormState();
+        requestAnimationFrame(() => {
+            this.positionPanel();
+            if (this._focusCalendarOnOpen || this._focusDateAfterRender) {
+                const active = this.querySelector(`.sf-datepicker-day[data-date="${formatIsoDate(this.activeDate)}"]`);
+                active?.focus?.();
+                this._focusCalendarOnOpen = false;
+                this._focusDateAfterRender = false;
+            }
+        });
+    }
+
+
+    onDisconnected() {
+        this.removeOverlayListeners();
+        super.onDisconnected();
+    }
+
+    get data() {
+        return {
+            value: this.value,
+            date: this.date,
+            formattedValue: this.formattedValue,
+            displayValue: this.displayValue,
+            startValue: this.startValue,
+            formattedStartValue: this.formattedStartValue,
+            endValue: this.endValue,
+            formattedEndValue: this.formattedEndValue,
+            range: this.range,
+            format: this.format,
+            year: this.year,
+            month: this.month,
+            context: this.contextMode,
+            maxDate: this.maxDate,
+            minDate: this.minDate,
+            locale: this.locale,
+            input: this.input,
+            open: this.open,
+            portal: this.portal,
+            mask: this.mask,
+            maskPattern: this.maskPattern,
+            maskOptions: this.maskOptions,
+            presets: this.presetItems.map(({id, label, relative, disabled}) => ({id, label, relative, disabled})),
+            preset: this.preset,
+        };
+    }
+}
+
+SfDatepicker.define('sf-input-date');

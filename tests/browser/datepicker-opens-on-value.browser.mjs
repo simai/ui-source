@@ -21,7 +21,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
 
 const failures = [];
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };
@@ -43,20 +43,20 @@ try {
   page.on('pageerror', (error) => failures.push({name: 'page error', said: error.message}));
   await page.goto(`${origin}/`);
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:20px">
-    <p><sf-datepicker id="typed" value="2026-08-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="clicked" value="2026-08-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="property" value="2026-08-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="attribute" value="2026-08-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="empty" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="min" min-date="2099-05-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="max" max-date="2001-02-10" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="range" range aria-label="Период"></sf-datepicker></p>
-    <div><sf-datepicker id="inline" input="false" value="2026-08-10" aria-label="Дата"></sf-datepicker></div>
-    <div><sf-datepicker id="inline-attribute" input="false" value="2026-08-10" aria-label="Дата"></sf-datepicker></div>
+    <p><sf-input-date id="typed" value="2026-08-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="clicked" value="2026-08-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="property" value="2026-08-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="attribute" value="2026-08-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="empty" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="min" min-date="2099-05-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="max" max-date="2001-02-10" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="range" range aria-label="Период"></sf-input-date></p>
+    <div><sf-input-date id="inline" input="false" value="2026-08-10" aria-label="Дата"></sf-input-date></div>
+    <div><sf-input-date id="inline-attribute" input="false" value="2026-08-10" aria-label="Дата"></sf-input-date></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-datepicker') && document.querySelector('#typed input') && document.querySelector('#range input')
+  await page.waitForFunction(() => customElements.get('sf-input-date') && document.querySelector('#typed input') && document.querySelector('#range input')
     && document.querySelector('#inline .sf-datepicker-day'), null, {timeout: 8000});
   await page.waitForTimeout(300);
   const settle = () => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(done, 30)))));

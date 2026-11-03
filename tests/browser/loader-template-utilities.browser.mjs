@@ -32,7 +32,7 @@ try {
     if (url.pathname === '/') {
       return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: `<!doctype html><html lang="ru"><head><meta charset="utf-8">
         <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'waves', pluginListVersion: 'waves', preloader: {enabled: false}, icons: {enabled: false}, theme: false};</script></head><body>
-        <sf-tabs items="А|Б|В"></sf-tabs><sf-help-mark text="x" label="y"></sf-help-mark><sf-datepicker></sf-datepicker>
+        <sf-tabs items="А|Б|В"></sf-tabs><sf-help-mark text="x" label="y"></sf-help-mark><sf-input-date></sf-input-date>
         <script src="/distr/core/js/core.js"></script></body></html>`});
     }
     const path = url.pathname.replace(/^\/distr\//u, '');

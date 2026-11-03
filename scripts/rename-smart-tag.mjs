@@ -131,12 +131,16 @@ export function renameProse(text, from, to) {
   return out;
 }
 
+export const CONTAINER_NAME = /((?:container(?:-name)?\s*:|@container)\s*[\w-]+)/u;
+
 // Sheets: comments name the new tag; a selector names both while the alias
 // lives. Strings (url(), content) are left.
 export function renameSheet(text, from, to) {
   const pieces = text.split(/(\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')/u);
   return pieces.map((piece, index) => {
-    if (!(index % 2)) return piece.replace(word(from), `:is(${to}, ${from})`);
+    // A container's name (container: <name> / ..., @container <name>) is an
+    // identifier spelled like the tag, not a selector: it stays.
+    if (!(index % 2)) return piece.split(CONTAINER_NAME).map((part, at) => (at % 2 ? part : part.replace(word(from), `:is(${to}, ${from})`))).join('');
     if (piece.startsWith('/*') || piece.startsWith('//')) return piece.replace(word(from), to);
     return piece;
   }).join('');

@@ -7,7 +7,7 @@ import test from 'node:test';
 // left on). The browser probe datepicker-opens-on-value drives it; this holds
 // the shape of the fix.
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const source = read('src/smart/datepicker/index.js');
+const source = read('src/smart/input-date/index.js');
 const between = (from, to) => source.slice(source.indexOf(from), source.indexOf(to, source.indexOf(from)));
 
 test('opening the panel commits typed text and goes to the value\'s month', () => {

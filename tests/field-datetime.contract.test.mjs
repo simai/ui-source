@@ -62,7 +62,7 @@ test('the set edits a datetime with the pair, on the ladder, named for assistive
   const start = set.indexOf('function renderDateTimeEdit(field, value, host) {');
   assert.ok(start > 0);
   const editor = set.slice(start, set.indexOf('\n}\n', start));
-  assert.match(editor, /<sf-datepicker\n\s+size=\$\{EDIT_SIZE\}[\s\S]*?\.value=\$\{stored\.date\}[\s\S]*?aria-label=\$\{named\('dateTimeDate'\)\}/u);
+  assert.match(editor, /<sf-input-date\n\s+size=\$\{EDIT_SIZE\}[\s\S]*?\.value=\$\{stored\.date\}[\s\S]*?aria-label=\$\{named\('dateTimeDate'\)\}/u);
   assert.match(editor, /<sf-input\n\s+class="sf-field-datetime-time"\n\s+size=\$\{EDIT_SIZE\}[\s\S]*?mask-pattern="00:00"[\s\S]*?aria-label=\$\{named\('dateTimeTime'\)\}/u);
   assert.match(editor, /role="group" aria-label=\$\{label\}/u);
   assert.doesNotMatch(editor.replace(/^\s*\/\/.*$/gmu, ''), /<input\b/u, 'the Framework\'s own control, not a raw input');

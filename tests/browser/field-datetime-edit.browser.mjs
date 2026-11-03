@@ -23,9 +23,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/inputs/css/inputs.css',
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
-  'component/component/datepicker/css/datepicker.css', 'smart/smart/datepicker/css/datepicker.css'];
+  'component/component/datepicker/css/datepicker.css', 'smart/smart/input-date/css/input-date.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js',
   'smart/smart/field-renderers/js/field-renderers.js'];
 
 const failures = [];
@@ -52,7 +52,7 @@ async function open(width) {
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => window.SF?.fieldRenderers?.renderEditField && window.SF?.render && customElements.get('sf-datepicker') && customElements.get('sf-input'), null, {timeout: 10000});
+  await page.waitForFunction(() => window.SF?.fieldRenderers?.renderEditField && window.SF?.render && customElements.get('sf-input-date') && customElements.get('sf-input'), null, {timeout: 10000});
   return page;
 }
 
@@ -79,23 +79,23 @@ try {
         // The reference: an sf-input of the same size, for the height.
         window.SF.render(window.SF.html`<sf-input size=${size} appearance="bordered" aria-label="ref"></sf-input>`, document.getElementById('ref'));
       }, size);
-      await page.waitForFunction(() => document.querySelector('#stored sf-datepicker input') && document.querySelector('#stored sf-input input')
+      await page.waitForFunction(() => document.querySelector('#stored sf-input-date input') && document.querySelector('#stored sf-input input')
         && document.querySelector('#ref input'), null, {timeout: 8000});
       await page.waitForTimeout(400);
 
       const layout = await page.evaluate(() => {
         const group = document.querySelector('#stored .sf-field-datetime');
-        const day = group.querySelector('sf-datepicker .sf-input-field') || group.querySelector('sf-datepicker input');
+        const day = group.querySelector('sf-input-date .sf-input-field') || group.querySelector('sf-input-date input');
         const time = group.querySelector('sf-input.sf-field-datetime-time .sf-input-field') || group.querySelector('sf-input.sf-field-datetime-time input');
         const ref = document.querySelector('#ref .sf-input-field') || document.querySelector('#ref input');
         const box = (node) => { const rect = node.getBoundingClientRect(); return {top: rect.top, height: rect.height, left: rect.left, right: rect.right}; };
-        const dayInput = group.querySelector('sf-datepicker input');
+        const dayInput = group.querySelector('sf-input-date input');
         const timeInput = group.querySelector('sf-input.sf-field-datetime-time input');
         return {day: box(day), time: box(time), ref: box(ref), group: box(group),
           role: group.getAttribute('role'), groupName: group.getAttribute('aria-label'),
           dayName: dayInput.getAttribute('aria-label') || dayInput.labels?.[0]?.textContent, timeName: timeInput.getAttribute('aria-label'),
           dayText: dayInput.value, timeText: timeInput.value, placeholder: timeInput.placeholder,
-          daySize: group.querySelector('sf-datepicker').getAttribute('size'),
+          daySize: group.querySelector('sf-input-date').getAttribute('size'),
           timeSize: group.querySelector('sf-input.sf-field-datetime-time').getAttribute('size'),
           writes: window.writes.length, scroll: document.documentElement.scrollWidth <= document.documentElement.clientWidth};
       });
@@ -121,10 +121,10 @@ try {
             invalid: group.querySelector('sf-input.sf-field-datetime-time').hasAttribute('invalid'),
             groupInvalid: group.hasAttribute('data-invalid'),
             time: group.querySelector('sf-input.sf-field-datetime-time input').value,
-            day: group.querySelector('sf-datepicker input').value};
+            day: group.querySelector('sf-input-date input').value};
         });
       };
-      const DAY = '#stored sf-datepicker input';
+      const DAY = '#stored sf-input-date input';
       const TIME = '#stored sf-input.sf-field-datetime-time input';
       const last = (got) => got.writes[got.writes.length - 1]?.[1];
 
@@ -152,8 +152,8 @@ try {
       check(at('both cleared write null'), last(none) === null && none.message === '', none);
 
       // A new value: no zone.
-      await page.fill('#fresh sf-datepicker input', '01.02.2026');
-      await page.press('#fresh sf-datepicker input', 'Enter');
+      await page.fill('#fresh sf-input-date input', '01.02.2026');
+      await page.press('#fresh sf-input-date input', 'Enter');
       await page.fill('#fresh sf-input.sf-field-datetime-time input', '12:00');
       await page.press('#fresh sf-input.sf-field-datetime-time input', 'Tab');
       await settle(page);

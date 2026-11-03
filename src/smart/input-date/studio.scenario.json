@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "keyboard-selection",
-  "component": "smart.datepicker",
+  "component": "smart.input-date",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],

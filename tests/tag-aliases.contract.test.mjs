@@ -16,7 +16,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const readJson = (path) => JSON.parse(read(path));
 const {readAliasTable, readTagAliases} = await import('../src/core/js/alias-table.js');
 const {tagAliasRows, tableSource, TABLE} = await import('../scripts/tag-alias-table.mjs');
-const {renameSheet, renameProse, renameScript, renameSelectorCalls, removeAfter} = await import('../scripts/rename-smart-tag.mjs');
+const {renameSheet, renameProse, renameScript, renameSelectorCalls, removeAfter, CONTAINER_NAME} = await import('../scripts/rename-smart-tag.mjs');
 const journal = readJson('contracts/changes/journal.json');
 const policy = readJson('contracts/lifecycle-policy.json');
 const forwards = readJson('src/core/contracts/smart-rule-forwards.v1.json').forwards;
@@ -125,6 +125,8 @@ test('the rename script: markup, sheets and selectors move; classes, properties 
     "x.className = 'sf-a flex';\nhtml`<sf-b-a></sf-b-a>`;\nA.define('sf-b-a');\n// sf-b-a here");
   assert.equal(renameSelectorCalls("q.querySelector('#i button sf-a'); e.classList.contains('sf-a'); q.closest(\".sf-a\")", 'sf-a', 'sf-b-a'),
     "q.querySelector('#i button sf-b-a'); e.classList.contains('sf-a'); q.closest(\".sf-a\")");
+  assert.equal(renameSheet('sf-a { container: sf-a / inline-size; } @container sf-a (inline-size < 2rem) { sf-a > i {} }', 'sf-a', 'sf-b-a'),
+    ':is(sf-b-a, sf-a) { container: sf-a / inline-size; } @container sf-a (inline-size < 2rem) { :is(sf-b-a, sf-a) > i {} }');
   assert.equal(removeAfter('2026-11-03'), '2027-01-01');
 });
 
@@ -192,7 +194,9 @@ for (const row of rows) {
       if (!text.includes(to) && !text.includes(from)) continue;
       // Comments and strings are not selectors.
       const code = text.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'/gu, (match) => match.replace(/[^\n]/gu, ' '));
-      const masked = code.split(group).join(' '.repeat(group.length));
+      // A container's name spelled like the tag is not a selector.
+      const masked = code.split(group).join(' '.repeat(group.length))
+        .replace(new RegExp(CONTAINER_NAME.source, 'gu'), (match) => ' '.repeat(match.length));
       for (const tag of [to, from]) {
         for (const match of masked.matchAll(word(tag))) bare.push(`${file}:${lineOf(text, match.index)} ${tag}`);
       }

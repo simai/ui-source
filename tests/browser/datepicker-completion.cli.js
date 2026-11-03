@@ -26,8 +26,8 @@ async page => {
       document.documentElement.className = `theme-${theme}`;
       document.documentElement.dir = dir;
     }, {theme, dir});
-    await page.waitForFunction(() => document.querySelectorAll('sf-datepicker .sf-datepicker').length === 1);
-    await page.waitForFunction(() => [...document.querySelectorAll('sf-datepicker .sf-icon')]
+    await page.waitForFunction(() => document.querySelectorAll('sf-input-date .sf-datepicker').length === 1);
+    await page.waitForFunction(() => [...document.querySelectorAll('sf-input-date .sf-icon')]
       .filter(icon => icon.textContent.trim())
       .every(icon => icon.classList.contains('sf-icon-loaded')));
   };
@@ -38,19 +38,19 @@ async page => {
       const input = page.getByLabel('Дата публикации');
       await input.focus();
       await page.keyboard.press('ArrowDown');
-      await page.waitForFunction(() => document.querySelector('sf-datepicker[open] .sf-datepicker-day:focus'));
-      const before = await page.locator('sf-datepicker[open] .sf-datepicker-day:focus').getAttribute('data-date');
+      await page.waitForFunction(() => document.querySelector('sf-input-date[open] .sf-datepicker-day:focus'));
+      const before = await page.locator('sf-input-date[open] .sf-datepicker-day:focus').getAttribute('data-date');
       await page.keyboard.press(dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight');
-      await page.waitForFunction(previous => document.querySelector('sf-datepicker[open] .sf-datepicker-day:focus')?.dataset.date !== previous, before);
-      const after = await page.locator('sf-datepicker[open] .sf-datepicker-day:focus').getAttribute('data-date');
-      const datepicker = page.locator('sf-datepicker').first();
+      await page.waitForFunction(previous => document.querySelector('sf-input-date[open] .sf-datepicker-day:focus')?.dataset.date !== previous, before);
+      const after = await page.locator('sf-input-date[open] .sf-datepicker-day:focus').getAttribute('data-date');
+      const datepicker = page.locator('sf-input-date').first();
       await datepicker.locator('sf-icon-button[aria-label="Следующий месяц"] button').click();
-      await page.waitForFunction(() => document.querySelector('sf-datepicker[open]')?.getAttribute('month') === '9');
+      await page.waitForFunction(() => document.querySelector('sf-input-date[open]')?.getAttribute('month') === '9');
       await page.keyboard.press('Escape');
       await page.waitForTimeout(60);
       const row = await page.evaluate(({before, after}) => {
-        const component = document.querySelector('sf-datepicker');
-        const day = document.querySelectorAll('sf-datepicker')[2].querySelector('.sf-datepicker-day-date');
+        const component = document.querySelector('sf-input-date');
+        const day = document.querySelectorAll('sf-input-date')[2].querySelector('.sf-datepicker-day-date');
         return {
           before,
           after,
@@ -61,7 +61,7 @@ async page => {
           inputCollapsed: component.querySelector('input')?.getAttribute('aria-expanded') === 'false',
           dayTypography: getComputedStyle(day).fontSize === getComputedStyle(document.body).fontSize,
           noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-          iconsRendered: [...document.querySelectorAll('sf-datepicker .sf-icon')]
+          iconsRendered: [...document.querySelectorAll('sf-input-date .sf-icon')]
             .filter(icon => icon.textContent.trim())
             .every(icon => icon.classList.contains('sf-icon-loaded') && parseFloat(getComputedStyle(icon).fontSize) > 0),
         };
@@ -73,7 +73,7 @@ async page => {
 
   await load();
   const rangeResult = await page.evaluate(async () => {
-    const component = document.querySelectorAll('sf-datepicker')[1];
+    const component = document.querySelectorAll('sf-input-date')[1];
     let changes = 0;
     component.addEventListener('sf-datepicker-change', () => changes += 1);
     component.openPanel();
@@ -91,27 +91,27 @@ async page => {
 
   await load();
   await page.evaluate(() => {
-    const component = document.querySelector('sf-datepicker');
+    const component = document.querySelector('sf-input-date');
     component.setState({year: 2026, month: 0, minDate: '', maxDate: ''});
     component.setActiveDate('2026-01-31');
     component.openPanel({focusCalendar: true});
   });
-  await page.waitForFunction(() => document.querySelector('sf-datepicker[open] .sf-datepicker-day:focus')?.dataset.date === '2026-01-31');
+  await page.waitForFunction(() => document.querySelector('sf-input-date[open] .sf-datepicker-day:focus')?.dataset.date === '2026-01-31');
   await page.keyboard.press('PageDown');
-  await page.waitForFunction(() => document.querySelector('sf-datepicker[open] .sf-datepicker-day:focus')?.dataset.date === '2026-02-28');
+  await page.waitForFunction(() => document.querySelector('sf-input-date[open] .sf-datepicker-day:focus')?.dataset.date === '2026-02-28');
   const monthEdge = {
-    clampedToLastDay: await page.locator('sf-datepicker[open] .sf-datepicker-day:focus').getAttribute('data-date') === '2026-02-28',
+    clampedToLastDay: await page.locator('sf-input-date[open] .sf-datepicker-day:focus').getAttribute('data-date') === '2026-02-28',
   };
   if (!monthEdge.clampedToLastDay) failures.push({monthEdge});
   results.push({monthEdge});
 
   const limitsAndInline = await page.evaluate(async () => {
-    const component = document.querySelector('sf-datepicker');
+    const component = document.querySelector('sf-input-date');
     component.setAttribute('min-date', '2026-09-05');
     component.setState({year: 2026, month: 8});
     component.openPanel();
     await new Promise(resolve => setTimeout(resolve, 100));
-    const inline = document.querySelectorAll('sf-datepicker')[2];
+    const inline = document.querySelectorAll('sf-input-date')[2];
     return {
       updatedLimit: component.querySelector('[data-date="2026-09-04"]')?.disabled === true,
       inlineGroup: inline.querySelector('.sf-datepicker')?.getAttribute('role') === 'group',
@@ -129,7 +129,7 @@ async page => {
   await page.waitForTimeout(120);
   const zoom = await page.evaluate(() => {
     const viewport = visualViewport;
-    const panel = document.querySelector('sf-datepicker[open] .sf-datepicker');
+    const panel = document.querySelector('sf-input-date[open] .sf-datepicker');
     const rect = panel.getBoundingClientRect();
     return {
       scale: viewport.scale,

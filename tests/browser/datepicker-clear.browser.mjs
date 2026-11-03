@@ -19,9 +19,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/inputs/css/inputs.css',
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
-  'component/component/datepicker/css/datepicker.css', 'smart/smart/datepicker/css/datepicker.css'];
+  'component/component/datepicker/css/datepicker.css', 'smart/smart/input-date/css/input-date.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
 
 const failures = [];
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };
@@ -40,19 +40,19 @@ try {
   page.on('pageerror', (error) => failures.push({name: 'page error', said: error.message}));
   await page.goto(`${origin}/`);
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:20px">
-    <p><sf-datepicker id="typed" value="2026-11-20" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="code" value="2026-11-20" aria-label="Дата"></sf-datepicker></p>
-    <p><sf-datepicker id="plain" aria-label="Дата"></sf-datepicker></p>
+    <p><sf-input-date id="typed" value="2026-11-20" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="code" value="2026-11-20" aria-label="Дата"></sf-input-date></p>
+    <p><sf-input-date id="plain" aria-label="Дата"></sf-input-date></p>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-datepicker') && document.querySelector('#typed input') && document.querySelector('#plain input'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-date') && document.querySelector('#typed input') && document.querySelector('#plain input'), null, {timeout: 8000});
   await page.waitForTimeout(400);
 
   // Every change each picker says.
   await page.evaluate(() => {
     window.said = {};
-    for (const node of document.querySelectorAll('sf-datepicker')) {
+    for (const node of document.querySelectorAll('sf-input-date')) {
       window.said[node.id] = [];
       node.addEventListener('change', (event) => { if (event.target === node) window.said[node.id].push(['change', event.detail?.value]); });
       node.addEventListener('sf-datepicker-change', (event) => window.said[node.id].push(['sf-datepicker-change', event.detail?.value]));

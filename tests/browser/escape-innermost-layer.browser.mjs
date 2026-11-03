@@ -42,7 +42,7 @@ const modules = [
   'smart/smart/input/js/input.js',
   'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/datepicker/js/datepicker.js',
+  'smart/smart/input-date/js/input-date.js',
   'smart/smart/context-menu/js/context-menu.js',
   'smart/smart/popover/js/popover.js',
   'smart/smart/drawer/js/drawer.js',
@@ -56,14 +56,14 @@ if (absent.length) {
 }
 
 const fields = (id) => ''
-  + `<sf-datepicker id="${id}-date" aria-label="Дата" format="DD.MM.YYYY"></sf-datepicker>`
+  + `<sf-input-date id="${id}-date" aria-label="Дата" format="DD.MM.YYYY"></sf-input-date>`
   + `<sf-dropdown id="${id}-list" label="Статус" size="1">`
   + '<sf-list-item text="Черновик" value="draft"></sf-list-item>'
   + '<sf-list-item text="Опубликовано" value="live"></sf-list-item>'
   + '</sf-dropdown>'
   + `<sf-popover id="${id}-pop" label="Настройки" width="22rem">`
   + `<button slot="trigger" id="${id}-pop-trigger" type="button">Настройки</button>`
-  + `<div slot="content"><sf-datepicker id="${id}-pop-date" aria-label="Срок" format="DD.MM.YYYY"></sf-datepicker></div>`
+  + `<div slot="content"><sf-input-date id="${id}-pop-date" aria-label="Срок" format="DD.MM.YYYY"></sf-input-date></div>`
   + '</sf-popover>';
 
 const html = '<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8">'
@@ -102,7 +102,7 @@ try {
   await page.goto(`${origin}/`);
   await page.waitForTimeout(1500);
 
-  const unupgraded = await page.evaluate(() => ['sf-datepicker', 'sf-dropdown', 'sf-popover', 'sf-drawer', 'sf-modal', 'sf-list-item']
+  const unupgraded = await page.evaluate(() => ['sf-input-date', 'sf-dropdown', 'sf-popover', 'sf-drawer', 'sf-modal', 'sf-list-item']
     .filter((tag) => !customElements.get(tag)));
   if (unupgraded.length) {
     console.error(JSON.stringify({unupgraded}, null, 2));

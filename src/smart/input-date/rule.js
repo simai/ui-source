@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-datepicker'] = {
-  tags: ['sf-datepicker'],
+SF.RuleLoader['cl-input-date'] = {
+  tags: ['sf-input-date', 'sf-datepicker'],
   type: 'smart',
   mode: 'smart',
   js: true,

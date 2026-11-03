@@ -14,7 +14,7 @@ const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
 test('every control of the datepicker panel follows the field\'s disabled state', async () => {
-  const template = await read('src/smart/datepicker/js/templates/default.js');
+  const template = await read('src/smart/input-date/js/templates/default.js');
   const panel = template.slice(0, template.indexOf('function renderDatepickerInput'))
     + template.slice(template.indexOf('function renderDay'));
   const controls = [...panel.matchAll(/<(button|sf-button|sf-icon-button)\b[^>]*>/gu)];
@@ -23,12 +23,12 @@ test('every control of the datepicker panel follows the field\'s disabled state'
     assert.match(tag, /\?disabled=\$\{[^}]*(context\.disabled|day\.disabled|month\.disabled|year\.disabled)/u, `a panel control without the disabled state: ${tag.slice(0, 80)}`);
   }
   // Days, months and years are disabled by the field, not only by min/max.
-  const source = await read('src/smart/datepicker/index.js');
+  const source = await read('src/smart/input-date/index.js');
   assert.equal([...source.matchAll(/const disabled = Boolean\(\s*this\.disabled \|\|/gu)].length, 3);
 });
 
 test('the paths the panel calls refuse while the field is disabled', async () => {
-  const source = await read('src/smart/datepicker/index.js');
+  const source = await read('src/smart/input-date/index.js');
   for (const method of ['toggleContext', 'shiftYearPage', 'shiftMonth', 'handleDayKeydown', 'selectDate', '_choosePreset', '_chooseCustomRange', 'selectMonth', 'selectYear']) {
     const start = source.indexOf(`    ${method}(`);
     assert.ok(start > 0, `${method} is defined`);
@@ -43,9 +43,9 @@ test('the paths the panel calls refuse while the field is disabled', async () =>
 });
 
 test('value is a string or [start, end], written in component.json', async () => {
-  const component = JSON.parse(await read('src/smart/datepicker/component.json'));
+  const component = JSON.parse(await read('src/smart/input-date/component.json'));
   assert.deepEqual(component['x-registry'].inputs.value, {type: ['string', 'array'], items: {type: 'string'}, maxItems: 2});
-  const manifest = JSON.parse(await read('src/smart/datepicker/smart.manifest.json'));
+  const manifest = JSON.parse(await read('src/smart/input-date/smart.manifest.json'));
   assert.deepEqual(manifest.inputs.properties.value.type, ['string', 'array']);
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.1.5:') && /type union/u.test(line)));
 });

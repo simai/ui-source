@@ -26,7 +26,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js',
-  'smart/smart/datepicker/js/datepicker.js', 'smart/smart/field-renderers/js/field-renderers.js'];
+  'smart/smart/input-date/js/input-date.js', 'smart/smart/field-renderers/js/field-renderers.js'];
 
 const failures = [];
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };
@@ -52,7 +52,7 @@ try {
     <sf-input id="input" label="Имя" error-message="Укажите имя"></sf-input>
     <sf-input id="input-error" label="Почта"></sf-input>
     <sf-textarea id="textarea" label="Комментарий" error-message="Напишите комментарий"></sf-textarea>
-    <sf-datepicker id="picker" label="Дата" value="2026-11-15"></sf-datepicker>
+    <sf-input-date id="picker" label="Дата" value="2026-11-15"></sf-input-date>
     <div id="set" style="max-inline-size:420px;margin-block-start:24px"></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`});
@@ -60,7 +60,7 @@ try {
   // be caught half-way.
   await page.addStyleTag({content: '*, *::before, *::after { transition: none !important; }'});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => window.SF?.fieldRenderers?.renderEditField && window.SF?.render && customElements.get('sf-datepicker')
+  await page.waitForFunction(() => window.SF?.fieldRenderers?.renderEditField && window.SF?.render && customElements.get('sf-input-date')
     && customElements.get('sf-input') && customElements.get('sf-textarea'), null, {timeout: 10000});
   await page.waitForFunction(() => document.querySelector('#input input') && document.querySelector('#textarea textarea')
     && document.querySelector('#picker input'), null, {timeout: 8000});
@@ -117,7 +117,7 @@ try {
   await cycle('sf-textarea error attribute', '#textarea',
     () => document.querySelector('#textarea').setAttribute('error', ''),
     () => document.querySelector('#textarea').removeAttribute('error'));
-  await cycle('sf-datepicker invalid attribute', '#picker',
+  await cycle('sf-input-date invalid attribute', '#picker',
     () => { const el = document.querySelector('#picker'); el.setAttribute('error-message', 'Укажите дату'); el.setAttribute('invalid', ''); },
     () => document.querySelector('#picker').removeAttribute('invalid'), 'Укажите дату');
 
@@ -133,11 +133,11 @@ try {
     window.SF.render(set.renderEditField({key: 'start', label: 'Начало', propertyType: 'datetime'}, '2026-11-15T10:30:00', host, {size: '1'}),
       document.getElementById('set'));
   });
-  await page.waitForFunction(() => document.querySelector('#set sf-datepicker input') && document.querySelector('#set sf-input.sf-field-datetime-time input'),
+  await page.waitForFunction(() => document.querySelector('#set sf-input-date input') && document.querySelector('#set sf-input.sf-field-datetime-time input'),
     null, {timeout: 8000});
   await settle();
   const TIME = '#set sf-input.sf-field-datetime-time';
-  const DAY = '#set sf-datepicker';
+  const DAY = '#set sf-input-date';
   const timeValid = await look(TIME);
   await page.fill(`${TIME} input`, '');
   await page.press(`${TIME} input`, 'Tab');

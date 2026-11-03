@@ -13,8 +13,8 @@ const readUiDoc = (path) => readFile(new URL(path, uiDocRoot), 'utf8');
 
 test('Smart Datepicker uses real Lit refs and exposes its date-value states', async () => {
   const [source, template] = await Promise.all([
-    read('src/smart/datepicker/index.js'),
-    read('src/smart/datepicker/js/templates/default.js'),
+    read('src/smart/input-date/index.js'),
+    read('src/smart/input-date/js/templates/default.js'),
   ]);
   assert.doesNotMatch(template, /:ref=/);
   assert.match(template, /ref\(context\.component\.refs\.input\)/);
@@ -23,13 +23,13 @@ test('Smart Datepicker uses real Lit refs and exposes its date-value states', as
   // change once; the shim sends sf-datepicker-change and sf-change after it
   // (standard 1.3.8 §16.20, aliases.json).
   assert.match(source, /this\.sfEmit\('change', detail\)/);
-  assert.ok(JSON.parse(await read('src/smart/datepicker/aliases.json')).aliases.some((row) => row.from === 'sf-datepicker-change' && row.to === 'change'));
+  assert.ok(JSON.parse(await read('src/smart/input-date/aliases.json')).aliases.some((row) => row.from === 'sf-datepicker-change' && row.to === 'change'));
   assert.match(source, /get closeOnSelect\(\)/);
   assert.match(source, /getBooleanAttr\('mask', false\)/);
 });
 
 test('Datepicker keyboard and calendar navigation are source-owned', async () => {
-  const source = await read('src/smart/datepicker/index.js');
+  const source = await read('src/smart/input-date/index.js');
   for (const key of ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown']) {
     assert.match(source, new RegExp(key));
   }

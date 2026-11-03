@@ -11,7 +11,7 @@
       "reason": "Follows the page when not set: ru on a Russian page, en otherwise."
     },
     {
-      "component": "datepicker",
+      "component": "input-date",
       "prop": "locale",
       "reason": "Follows the page: the document's lang, else the browser's language."
     },

@@ -96,7 +96,7 @@ test('the holders are kept in the order they opened, and the innermost is known'
 });
 
 test('an open calendar holds the mark and takes Escape in capture as the innermost layer', async () => {
-  const source = await read('src/smart/datepicker/index.js');
+  const source = await read('src/smart/input-date/index.js');
   assert.ok(source.includes("import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark'"));
   assert.ok(source.includes('holdOpenSurfaceMark(this, open)'));
   assert.ok(source.includes('holdOpenSurfaceMark(this, false)'));

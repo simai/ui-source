@@ -32,14 +32,14 @@ test('sf-textarea draws the textarea\'s error class itself, so a clear reaches i
 });
 
 test('sf-datepicker passes invalid and error-message to its field', () => {
-  const source = read('src/smart/datepicker/index.js');
+  const source = read('src/smart/input-date/index.js');
   assert.match(source, /invalid: \{type: Boolean, default: false\},/u);
   assert.match(source, /errorMessage: \{attribute: 'error-message', default: ''\},/u);
   assert.ok(source.includes('invalid: this.invalid,') && source.includes('errorMessage: this.errorMessage,'));
-  const template = read('src/smart/datepicker/js/templates/default.js');
+  const template = read('src/smart/input-date/js/templates/default.js');
   assert.ok(template.includes('?invalid=${context.invalid}'));
   assert.ok(template.includes('error-message=${context.errorMessage || nothing}'));
-  const manifest = JSON.parse(read('src/smart/datepicker/smart.manifest.json'));
+  const manifest = JSON.parse(read('src/smart/input-date/smart.manifest.json'));
   const attributes = JSON.stringify(manifest);
   assert.ok(attributes.includes('"invalid"') && attributes.includes('"error-message"'));
 });

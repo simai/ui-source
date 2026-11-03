@@ -2,6 +2,7 @@ import {html, nothing} from "lit";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageText} from "../../core/js/page-language";
+import {tagSelector} from "../../core/js/tag-aliases.js";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, normalizeTime, splitDateTime as readDateTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
@@ -223,7 +224,7 @@ function renderDateFilterControl(field, host) {
 
     return html`
         <div class="flex flex-col gap-1/3">
-            <sf-datepicker
+            <sf-input-date
                     .value=${dateValue}
                     ?range=${isBetween}
                     name="sf_filter_${field.key || 'date'}"
@@ -234,7 +235,7 @@ function renderDateFilterControl(field, host) {
                             operator: selectedOperator,
                         });
                     }}
-            ></sf-datepicker>
+            ></sf-input-date>
             <sf-dropdown
                     size=${filterSize(host)}
                     appearance="outlined"
@@ -1203,7 +1204,7 @@ function renderNumberEdit(field, value, host) {
     `;
 }
 
-// A date control has no clock. `sf-datepicker` declares a format and a date,
+// A date control has no clock. `sf-input-date` declares a format and a date,
 // and its parser is anchored (`^\d{4}-\d{2}-\d{2}$`), so a datetime value
 // falls through to a loose digit scan that reads `2026-11-27T13:26:00` as day
 // 2026 of month 11 in year 27 -- an impossible date, which renders as an empty
@@ -1228,7 +1229,7 @@ function renderDateEdit(field, value, host) {
     value = scalarValue(value);
     const {date, suffix} = splitDateTime(value);
     return html`
-        <sf-datepicker
+        <sf-input-date
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${date ?? ''}
@@ -1238,7 +1239,7 @@ function renderDateEdit(field, value, host) {
                     const next = event.detail?.value ?? event.target?.value ?? null;
                     host.setFieldValue(field, next && suffix ? `${next}${suffix}` : next);
                 }}
-        ></sf-datepicker>
+        ></sf-input-date>
     `;
 }
 
@@ -1281,7 +1282,7 @@ function renderDateTimeEdit(field, value, host) {
         if (part === 'date' && event.target !== event.currentTarget) return;
         const group = event.currentTarget?.closest?.('.sf-field-datetime');
         if (!group) return;
-        const picker = group.querySelector('sf-datepicker');
+        const picker = group.querySelector(tagSelector('sf-input-date'));
         // Not the datepicker's own field, which is an sf-input too.
         const clock = group.querySelector('sf-input.sf-field-datetime-time');
         const date = part === 'date'
@@ -1317,14 +1318,14 @@ function renderDateTimeEdit(field, value, host) {
         <div class="sf-field-datetime flex flex-col gap-1/4 min-w-0" role="group" aria-label=${label}
                 aria-describedby=${messageId} data-datetime=${field.key || 'value'}>
             <div class="flex flex-nowrap items-cross-center gap-1/3 min-w-0">
-                <sf-datepicker
+                <sf-input-date
                         size=${EDIT_SIZE}
                         name=${`${name}_date`}
                         .value=${stored.date}
                         aria-label=${named('dateTimeDate')}
                         ?required=${Boolean(field.required)}
                         @change=${(event) => commit(event, 'date')}
-                ></sf-datepicker>
+                ></sf-input-date>
                 <sf-input
                         class="sf-field-datetime-time"
                         size=${EDIT_SIZE}

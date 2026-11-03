@@ -22,10 +22,10 @@ test('navigation composition: page numbers are size 1 controls and tab indicator
    passes are a contract: every size a renderer may pass is declared, and a
    name that looks like the ladder but is not says so. */
 test('renderer inputs: datepicker size, reference size, avatar line, file-preview file size', async () => {
-  const datepicker = await manifest('datepicker');
+  const datepicker = await manifest('input-date');
   assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.match(datepicker.inputs.properties['input-size'].description, /Legacy name for size/);
-  const runtime = await read('smart/datepicker/index.js');
+  const runtime = await read('smart/input-date/index.js');
   assert.match(runtime, /this\.getAttribute\('size'\) \|\| this\.getAttribute\('input-size'\)/);
   assert.deepEqual((await manifest('reference-link')).inputs.properties.size.enum, ['', '1/2', '1', '2']);
   const reference = await read('component/reference-link/scss/_css__reference_link.scss');

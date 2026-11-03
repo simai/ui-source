@@ -1,8 +1,8 @@
 {
-  "$comment": "The source of sf-datepicker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
-  "id": "smart.datepicker",
-  "tag": "sf-datepicker",
-  "version": "1.2.1",
+  "$comment": "The source of sf-input-date's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
+  "id": "smart.input-date",
+  "tag": "sf-input-date",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -466,6 +466,16 @@
         "cancelable": false,
         "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)",
         "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      },
+      {
+        "from": "sf-datepicker",
+        "to": "sf-input-date",
+        "kind": "tag",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
+        "note": "the element is sf-input-date; sf-datepicker is a subclass defined beside it until the date"
       }
     ]
   },
@@ -503,7 +513,8 @@
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.1.5: disabled reaches the whole panel -- every day, month and year, the month and year arrows and toggles, the quick ranges and «Свой период» are disabled and their handlers and the choose-preset and choose-custom-range actions refuse (outcome disabled), so a panel a host holds open, or the inline one, changes no value while the field is disabled; readonly keeps its meaning (no typing, the grid still chooses). The value property is a type union, written in x-registry.inputs.value: an ISO date string, or [start, end] -- what the getter returns in range mode, a real feature (range, start-value, end-value) and not a leftover. The object {start|startValue|date, end|endValue} older callers pass is still read as that pair for compatibility but stays out of the contract; any other shape (a number, a boolean, an object without those keys, a Date) is read as before -- text, or cleared -- with a console warning once per element.",
     "version 1.2.0: hint and hint-icon are settings of sf-datepicker, forwarded to the inner sf-input as every other field setting is -- field parity with sf-input, asked for by the UI Kit thread (2026-10-29). hint is the helper text under the field and the control's description (aria-describedby on the native input); hint-icon is the marker at the field's end. Both are declared as sf-input declares them (string with an empty default; icon with an empty default), so a person sees one behaviour in both fields: an error-message takes the hint's place while the field is invalid and the hint comes back when invalid is removed, and hint-icon stays either way. hint is a word setting (§15.1) with an empty default, so it holds no word of its own and nothing moves to lang. Added settings behind no rename are a minor (§4.10).",
-    "text-end: not a setting of sf-datepicker, and not forwarded (dispatcher decision, 2026-10-29). The calendar trigger owns the field's end: the whole field opens the panel, so trailing text would read as part of the value while being a click target that opens a calendar. hint-icon is kept there because it is a marker a reader looks at, not text beside the date. A host that needs a unit or a suffix beside a date uses sf-input."
+    "text-end: not a setting of sf-datepicker, and not forwarded (dispatcher decision, 2026-10-29). The calendar trigger owns the field's end: the whole field opens the panel, so trailing text would read as part of the value while being a click target that opens a calendar. hint-icon is kept there because it is a marker a reader looks at, not text beside the date. A host that needs a unit or a suffix beside a date uses sf-input.",
+    "version 1.3.0: the tag is sf-input-date (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-date and the bundle cl-input-date follow it. sf-datepicker stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-date, sf-datepicker) (change journal tag-sf-datepicker-to-sf-input-date, path-smart-datepicker-to-input-date)."
   ],
   "x-registry": {
     "kind": "composite",
@@ -681,7 +692,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-datepicker for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",
+      "use_when": "Use sf-input-date for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not use color as the only selected or disabled signal",
@@ -695,7 +706,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-datepicker label=\"Дата\" value=\"2026-09-03\"></sf-datepicker>",
+      "minimal_example": "<sf-input-date label=\"Дата\" value=\"2026-09-03\"></sf-input-date>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

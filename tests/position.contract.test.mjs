@@ -32,7 +32,7 @@ test('Core publishes the helper and components reuse it or their bundled copy', 
   assert.match(position, /if \(!globalThis\.SF\.Position\) globalThis\.SF\.Position = Position;/);
   // Components prefer Core's helper and fall back to their bundled copy, so an
   // isolated bundle (no core.js) still positions its panels.
-  for (const file of ['src/component/dropdown/portal.js', 'src/smart/datepicker/index.js']) {
+  for (const file of ['src/component/dropdown/portal.js', 'src/smart/input-date/index.js']) {
     const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
     assert.match(source, /import BundledPosition from '\.\.\/\.\.\/core\/js\/position\.js';/, file);
     assert.match(source, /globalThis\.SF\?\.Position \|\| BundledPosition/, file);

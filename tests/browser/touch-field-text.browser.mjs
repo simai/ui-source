@@ -30,7 +30,7 @@ const html = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
 <script src="/distr/core/js/core.js"></script></head><body style="margin:16px">
 ${SIZES.map((size) => `<sf-input data-field="input ${size}" size="${size}" label="Поле" value="Текст"></sf-input>`).join('\n')}
 ${SIZES.map((size) => `<sf-textarea data-field="textarea ${size}" size="${size}" label="Текст" value="Текст"></sf-textarea>`).join('\n')}
-<sf-datepicker data-field="datepicker" size="1/2" label="Дата"></sf-datepicker>
+<sf-input-date data-field="datepicker" size="1/2" label="Дата"></sf-input-date>
 <sf-dropdown id="dropdown" size="1/2" mode="select" label="Город">
   <sf-list-item kind="text" text="Москва"></sf-list-item>
   <sf-list-item kind="text" text="Казань"></sf-list-item>
@@ -67,7 +67,7 @@ const measure = async (options) => {
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.waitForFunction(() => document.querySelectorAll('sf-input input').length >= 5
     && document.querySelectorAll('sf-textarea textarea').length === 5
-    && document.querySelector('sf-datepicker input') && document.querySelector('#dropdown button[aria-haspopup]')
+    && document.querySelector('sf-input-date input') && document.querySelector('#dropdown button[aria-haspopup]')
     && customElements.get('sf-context-menu'), null, {timeout: 20000});
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);

@@ -13,9 +13,9 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
-  'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/datepicker/css/datepicker.css'];
+  'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/input-date/css/input-date.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
 
 const day = (n, classes = '', info = '') => `<button class="sf-datepicker-day ${classes} flex flex-col content-main-center items-cross-center" type="button" data-n="${n}"><span class="sf-datepicker-day-date">${n}</span>${info ? `<span class="sf-datepicker-day-info">${info}</span>` : ''}</button>`;
 const WEEK = `<div class="sf-datepicker flex flex-col" id="week"><div class="sf-datepicker-row grid grid-col-7">
@@ -45,14 +45,14 @@ try {
   await page.goto(`${origin}/`);
   for (const theme of ['theme-light', 'theme-dark']) {
     await page.setContent(`<!doctype html><html lang="ru" class="${theme}"><body style="margin:20px">${WEEK}
-      <sf-datepicker id="dp" input="false" value="2026-09-15"></sf-datepicker><sf-button id="half" size="1/2" text="x"></sf-button></body></html>`);
+      <sf-input-date id="dp" input="false" value="2026-09-15"></sf-input-date><sf-button id="half" size="1/2" text="x"></sf-button></body></html>`);
     for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
     // Core takes its distr from its own script URL when sfPath is unset
     // (simai/ui-source#8); here that is the build output's core/ root, not a
     // distr, so the page names the distr this probe routes.
     await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
     for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-    await page.waitForFunction(() => customElements.get('sf-datepicker') && document.querySelector('#dp .sf-datepicker-day'), null, {timeout: 8000});
+    await page.waitForFunction(() => customElements.get('sf-input-date') && document.querySelector('#dp .sf-datepicker-day'), null, {timeout: 8000});
     await page.waitForTimeout(400);
     const got = await page.evaluate(() => {
       // rgb(r g b) in 0..255, or color(srgb r g b / a) in 0..1.

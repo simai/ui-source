@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.datepicker",
+  "component": "smart.input-date",
   "title": "Выбор даты",
   "summary": "Одиночная дата в подписанном поле с открытым календарём.",
   "locale": "ru",

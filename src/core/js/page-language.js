@@ -361,7 +361,7 @@ export const language = {
     return this;
   },
 
-  /** One language across many components: `{ 'sf-datepicker': {...}, ... }`. */
+  /** One language across many components: `{ 'sf-input-date': {...}, ... }`. */
   registerAll(value, byComponent = {}) {
     for (const [component, words] of Object.entries(byComponent)) {
       this.register(component, value, words);

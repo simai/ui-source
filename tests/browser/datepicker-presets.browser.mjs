@@ -16,9 +16,9 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
-  'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/datepicker/css/datepicker.css'];
+  'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/input-date/css/input-date.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/input-date/js/input-date.js'];
 
 const failures = [];
 const note = (detail) => failures.push(detail);
@@ -36,17 +36,17 @@ try {
   });
   await page.goto(`${origin}/`);
   await page.setContent(`<!doctype html><html lang="ru" class="theme-dark"><head><meta charset="utf-8"></head><body style="margin:20px">
-    <sf-datepicker id="dp" input="false" range presets="today,last-7-days,this-month,last-month" close-on-select="false"></sf-datepicker>
-    <sf-datepicker id="narrow" input="false" range root-style="inline-size:300px" presets="today,yesterday,last-7-days"></sf-datepicker>
-    <sf-datepicker id="stored" input="false" range preset="last-7-days" presets="last-7-days,last-month" start-value="2020-01-01" end-value="2020-01-05"></sf-datepicker>
-    <sf-datepicker id="capped" input="false" range presets="today,last-7-days,last-month"></sf-datepicker>
-    <sf-datepicker id="sat" input="false" week-start="6"></sf-datepicker>
-    <sf-datepicker id="eg" input="false" locale="ar-EG"></sf-datepicker>
-    <sf-datepicker id="us" input="false" locale="en-US"></sf-datepicker>
+    <sf-input-date id="dp" input="false" range presets="today,last-7-days,this-month,last-month" close-on-select="false"></sf-input-date>
+    <sf-input-date id="narrow" input="false" range root-style="inline-size:300px" presets="today,yesterday,last-7-days"></sf-input-date>
+    <sf-input-date id="stored" input="false" range preset="last-7-days" presets="last-7-days,last-month" start-value="2020-01-01" end-value="2020-01-05"></sf-input-date>
+    <sf-input-date id="capped" input="false" range presets="today,last-7-days,last-month"></sf-input-date>
+    <sf-input-date id="sat" input="false" week-start="6"></sf-input-date>
+    <sf-input-date id="eg" input="false" locale="ar-EG"></sf-input-date>
+    <sf-input-date id="us" input="false" locale="en-US"></sf-input-date>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-datepicker') && document.querySelector('#dp .sf-datepicker-preset'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-date') && document.querySelector('#dp .sf-datepicker-preset'), null, {timeout: 8000});
   await page.waitForTimeout(400);
 
   const got = await page.evaluate(async () => {

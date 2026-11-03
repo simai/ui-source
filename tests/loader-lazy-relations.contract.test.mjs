@@ -35,14 +35,14 @@ ${slice('SFLoaderPlugin.prototype.ensurePlugin =', 'SFLoaderPlugin.prototype.ens
 }
 
 test('a lazy relation is not waited for, and the opt-in prefetch fetches it', () => {
-  const plugin = loader({'cl-table': {}, 'cl-button': {}, 'cl-datepicker': {}});
+  const plugin = loader({'cl-table': {}, 'cl-button': {}, 'cl-input-date': {}});
   const output = {smart: {}, component: {}, utility: {}, relation: {}};
-  plugin.setRelation([{name: 'cl-button'}, {name: 'cl-datepicker', lazy: true}], 'cl-table', output);
+  plugin.setRelation([{name: 'cl-button'}, {name: 'cl-input-date', lazy: true}], 'cl-table', output);
   assert.equal(JSON.stringify(plugin.relationPlugins['cl-table']), JSON.stringify(['cl-button']));
-  assert.equal(plugin.module['cl-datepicker'], undefined, 'not loaded with the page');
-  assert.ok(plugin.lazyRelations.has('cl-datepicker'));
+  assert.equal(plugin.module['cl-input-date'], undefined, 'not loaded with the page');
+  assert.ok(plugin.lazyRelations.has('cl-input-date'));
   plugin.prefetchLazyRelations();
-  assert.equal(JSON.stringify(plugin.loaded), JSON.stringify(['cl-datepicker']));
+  assert.equal(JSON.stringify(plugin.loaded), JSON.stringify(['cl-input-date']));
 });
 
 test('ready prefetches nothing unless the page asks, and then after the announcement, in idle time', () => {

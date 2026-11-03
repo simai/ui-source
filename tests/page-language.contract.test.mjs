@@ -26,7 +26,7 @@ test('page language: no component falls back to Russian', async () => {
     // Its words are its language files now (standard 1.3.8 §11).
     'src/smart/pagination/index.js': [/this\.sfWord\("page-label"\)/, /import en from "\.\/lang\/en\.json";/],
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
-    'src/smart/datepicker/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
+    'src/smart/input-date/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
     // sf-tag's remove label is its language files' runtime.remove (standard 1.3.8 §11).
     'src/smart/tag/component.json': [/"close-label": \{\s*"type": "string",\s*"default-from": "runtime.remove"(,\s*"summary": "[^"]*")?\s*\}/],
     'src/smart/tag/lang/en.json': [/"remove": "Remove"/],
@@ -43,7 +43,7 @@ test('page language: no component falls back to Russian', async () => {
     'src/component/highlight/js/index.js': [/pageText\(HIGHLIGHT_TEXT, 'copy', block/],
     'src/component/country-code/js/_country_code.js': [/pageText\(COUNTRY_CODE_TEXT, 'phoneLabel'/],
     // Its words are the language files' (standard 1.3.8 §11).
-    'src/smart/datepicker/index.js': [/node\.sfWord\(wordKey\(key\)\)/],
+    'src/smart/input-date/index.js': [/node\.sfWord\(wordKey\(key\)\)/],
     // sf-drawer's words are its language files (standard 1.3.8 §11).
     'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import en from '\.\/lang\/en\.json';/],
     // The resizer handle read [lang] itself over its own dictionary until

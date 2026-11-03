@@ -13,7 +13,7 @@ test('the renderer set gives a labelled field a name, not a second label', async
   // The renderers of a field inside a labelled panel, not the filter controls:
   // a filter draws no label of its own, so it has nothing to double.
   for (const [renderer, tag] of [
-    ['renderDateEdit', 'sf-datepicker'],
+    ['renderDateEdit', 'sf-input-date'],
     ['renderBooleanEdit', 'sf-switch'],
     ['renderPhoneEdit', 'sf-country-code'],
   ]) {
@@ -49,12 +49,12 @@ test('the controls carry the name to the element that is read', async () => {
 
   // A date field has no input of its own: the name goes on to sf-input, and only
   // where there is no visible label to conflict with it.
-  const datepicker = await read('src/smart/datepicker/js/templates/default.js');
+  const datepicker = await read('src/smart/input-date/js/templates/default.js');
   assert.ok(datepicker.includes('aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}'));
 });
 
 test('every control that takes the name declares it', async () => {
-  for (const name of ['input', 'switch', 'country-code', 'datepicker']) {
+  for (const name of ['input', 'switch', 'country-code', 'input-date']) {
     const source = await read(`src/smart/${name}/index.js`);
     assert.match(source, /ariaLabel: \{\s*attribute: 'aria-label', default: ''\s*\}/u, `${name} prop`);
     assert.match(source, /get ariaLabel\(\) \{\s*return this\.getProp\('ariaLabel'\) \|\| '';/u, `${name} getter`);

@@ -365,7 +365,7 @@
       "checkbox",
       "input-code",
       "country-code",
-      "datepicker",
+      "input-date",
       "dropdown",
       "file-upload",
       "input-image",
@@ -386,7 +386,7 @@
         "note": "Also emitted by select() and clear()."
       },
       {
-        "component": "datepicker",
+        "component": "input-date",
         "legacy": [
           "sf-datepicker-change",
           "sf-change"

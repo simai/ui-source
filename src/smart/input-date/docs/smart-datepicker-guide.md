@@ -1,6 +1,6 @@
 # Smart Datepicker
 
-`<sf-datepicker>` combines the ordinary Datepicker surface with Framework
+`<sf-input-date>` combines the ordinary Datepicker surface with Framework
 inputs, buttons, icon buttons and icons. It owns local calendar interaction;
 the host owns persistence, timezone policy and domain validation.
 

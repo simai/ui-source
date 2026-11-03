@@ -128,7 +128,7 @@
       "name": "conformance",
       "x-probe": {
         "probe": "sf-datepicker against component.json (standard simai.smart-component 1.3.8 §4.4, §4.8 keys, §7.1.1, §8, §16.20, §17.1, §17.2)",
-        "component": "sf-datepicker",
+        "component": "sf-input-date",
         "page": {
           "lang": "ru",
           "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
@@ -143,7 +143,7 @@
           {
             "id": "a-chosen-day-changes-once-and-the-old-names-follow",
             "covers": "events.change once, then sf-datepicker-change and sf-change with one detail and dated journal entries; the form gets the ISO date",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -178,7 +178,7 @@
               ],
               "deprecations": [
                 {
-                  "component": "sf-datepicker",
+                  "component": "sf-input-date",
                   "kind": "event",
                   "from": "sf-datepicker-change",
                   "to": "change",
@@ -186,7 +186,7 @@
                   "remove_after": "2026-12-01"
                 },
                 {
-                  "component": "sf-datepicker",
+                  "component": "sf-input-date",
                   "kind": "event",
                   "from": "sf-change",
                   "to": "change",
@@ -207,7 +207,7 @@
           {
             "id": "the-form-gets-the-iso-date",
             "covers": "§17.1 item 2: the form format never depends on the display format or the language",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -222,7 +222,7 @@
           {
             "id": "a-range-submits-an-interval",
             "covers": "form.submits in range mode: start/end",
-            "field": "<sf-datepicker name=\"p\" label=\"Период\" range start-value=\"2026-09-01\" end-value=\"2026-09-07\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"p\" label=\"Период\" range start-value=\"2026-09-01\" end-value=\"2026-09-07\"></sf-input-date>",
             "form": "submit",
             "expect": {
               "submitted": true,
@@ -238,7 +238,7 @@
           {
             "id": "required-blocks-submit",
             "covers": "form.required, validity value-missing (§17.2)",
-            "field": "<sf-datepicker name=\"due\" label=\"Срок\" required></sf-datepicker>",
+            "field": "<sf-input-date name=\"due\" label=\"Срок\" required></sf-input-date>",
             "form": "submit",
             "expect": {
               "submitted": false,
@@ -257,7 +257,7 @@
           {
             "id": "nothing-while-disabled",
             "covers": "form.disabled (§17.1 item 3); open-panel refused {reason: disabled}",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" disabled></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" disabled></sf-input-date>",
             "script": "const outcome = el.openPanel(); form.requestSubmit(); return outcome;",
             "expect": {
               "returns": {
@@ -272,7 +272,7 @@
           {
             "id": "form-reset-returns-the-default",
             "covers": "form.reset (§17.1 item 4): no events",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -302,7 +302,7 @@
           {
             "id": "value-from-code-is-silent",
             "covers": "§8: a value set from outside is not reported back",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "property": {
               "name": "value",
               "value": "2026-01-02"
@@ -319,7 +319,7 @@
           {
             "id": "custom-error-blocks-submit",
             "covers": "validity custom-error (§17.2)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "script": "el.setCustomValidity('Дата занята'); form.requestSubmit();",
             "expect": {
               "submitted": false,
@@ -333,7 +333,7 @@
           {
             "id": "shift-tab-reaches-the-field",
             "covers": "keyboard.host Shift+Tab reach (and Tab)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "script": "form.querySelector(\"button[type=submit]\").focus();"
@@ -349,7 +349,7 @@
           {
             "id": "arrow-down-opens-escape-closes",
             "covers": "keyboard.host ArrowDown open, Escape close",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "user": [
@@ -375,7 +375,7 @@
           {
             "id": "arrow-down-opens-the-calendar",
             "covers": "keyboard.host ArrowDown open",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "user": "focus:input"
@@ -397,7 +397,7 @@
           {
             "id": "arrows-move-by-day-and-week",
             "covers": "keyboard.panel ArrowRight focus:next, ArrowDown step:+7, ArrowLeft focus:prev, ArrowUp step:-7",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -428,7 +428,7 @@
           {
             "id": "home-and-end-reach-the-week-ends",
             "covers": "keyboard.panel End focus:last, Home focus:first (the week)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -457,7 +457,7 @@
           {
             "id": "page-keys-move-a-month",
             "covers": "keyboard.panel PageDown step:+page, PageUp step:-page",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -489,7 +489,7 @@
           {
             "id": "enter-chooses-the-focused-day",
             "covers": "keyboard.panel Enter select",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -528,7 +528,7 @@
           {
             "id": "space-chooses-the-focused-day",
             "covers": "keyboard.panel Space select; Escape in the panel closes it",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -555,7 +555,7 @@
           {
             "id": "escape-in-the-panel-closes-it",
             "covers": "keyboard.panel Escape close",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -582,7 +582,7 @@
           {
             "id": "open-panel-answers-an-outcome",
             "covers": "actions.open-panel applied, close-panel then unchanged (§4.4)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
             "script": "const opened = el.openPanel(); const closed = el.closePanel(); const again = el.closePanel(); return [opened.outcome, closed.outcome, again.outcome, again.reason];",
             "expect": {
               "returns": [
@@ -596,7 +596,7 @@
           {
             "id": "the-panel-id-comes-from-the-instance-path",
             "covers": "§7.1.1: no counter in the ids the template writes",
-            "field": "<sf-datepicker id=\"due\" name=\"d\" label=\"Дата\" value=\"2026-09-03\"></sf-datepicker>",
+            "field": "<sf-input-date id=\"due\" name=\"d\" label=\"Дата\" value=\"2026-09-03\"></sf-input-date>",
             "given": [
               {
                 "action": {
@@ -621,7 +621,7 @@
           {
             "id": "disabled-reaches-the-inline-panel",
             "covers": "settings.disabled: the inline panel's days, arrows and month and year toggles are disabled, and the grid paths choose nothing (1.1.5)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" input=\"false\" disabled locale=\"ru\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" input=\"false\" disabled locale=\"ru\"></sf-input-date>",
             "given": [
               {
                 "wait": 300
@@ -650,7 +650,7 @@
           {
             "id": "disabled-reaches-a-panel-held-open",
             "covers": "settings.disabled: a panel the host opens with the open attribute takes no click on a day (1.1.5)",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\" disabled open></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\" disabled open></sf-input-date>",
             "given": [
               {
                 "wait": 300
@@ -670,7 +670,7 @@
           {
             "id": "disabled-refuses-the-quick-ranges",
             "covers": "settings.disabled: choose-preset and choose-custom-range refuse {reason: disabled}; every quick range and «Свой период» are disabled (1.1.5)",
-            "field": "<sf-datepicker name=\"p\" label=\"Период\" range input=\"false\" disabled presets=\"today,last-7-days\" start-value=\"2026-09-01\" end-value=\"2026-09-07\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"p\" label=\"Период\" range input=\"false\" disabled presets=\"today,last-7-days\" start-value=\"2026-09-01\" end-value=\"2026-09-07\"></sf-input-date>",
             "given": [
               {
                 "wait": 300
@@ -701,7 +701,7 @@
           {
             "id": "value-takes-a-string-or-a-pair",
             "covers": "values.value: an ISO string, [start, end] in range mode; the legacy object {start, end} is still read as the pair (1.1.5)",
-            "field": "<sf-datepicker name=\"p\" label=\"Период\" range></sf-datepicker>",
+            "field": "<sf-input-date name=\"p\" label=\"Период\" range></sf-input-date>",
             "script": "el.value = ['2026-09-01', '2026-09-07']; const pair = el.value; el.value = {start: '2026-10-01', end: '2026-10-05'}; const legacy = el.value; return [pair, legacy];",
             "wait": 300,
             "expect": {
@@ -724,7 +724,7 @@
           {
             "id": "the-hint-and-its-marker-reach-the-field",
             "covers": "settings.hint, settings.hint-icon forwarded to the inner sf-input (field parity, 1.2.0): the text under the field, read to the native input as its description, and the marker at the field's end; an error-message takes the hint's place while the field is invalid and the hint comes back when it is removed",
-            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" hint=\"Дата публикации, её можно изменить позже.\" hint-icon=\"help\"></sf-datepicker>",
+            "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" hint=\"Дата публикации, её можно изменить позже.\" hint-icon=\"help\"></sf-input-date>",
             "script": "const frame = () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))); const read = () => { const box = el.querySelector('input'); const message = el.querySelector('.sf-input-hint-text-wrap'); const described = String(box?.getAttribute('aria-describedby') || '').split(/\\s+/); return {text: message?.textContent ?? null, kind: message?.dataset.fieldMessage ?? null, described: Boolean(message && described.includes(message.id)), icon: el.querySelector('.sf-input-hint sf-icon')?.getAttribute('icon') ?? null}; }; const hint = read(); el.setAttribute('error-message', 'Выберите дату.'); el.setAttribute('invalid', ''); await frame(); const error = read(); el.removeAttribute('invalid'); await frame(); return [hint, error, read()];",
             "wait": 300,
             "expect": {

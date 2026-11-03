@@ -90,18 +90,6 @@
     "place-items/default",
     "transition-property/default"
   ],
-  "cl-datepicker": [
-    "align-content/default",
-    "align-items/default",
-    "display/default",
-    "element-position/default",
-    "flex-direction/default",
-    "gap/default",
-    "grid-template-columns/default",
-    "justify-content/default",
-    "overflow/default",
-    "position/default"
-  ],
   "cl-drawer": [
     "display/default",
     "justify-content/default",
@@ -201,6 +189,18 @@
   ],
   "cl-input-code": [
     "sr-only/default"
+  ],
+  "cl-input-date": [
+    "align-content/default",
+    "align-items/default",
+    "display/default",
+    "element-position/default",
+    "flex-direction/default",
+    "gap/default",
+    "grid-template-columns/default",
+    "justify-content/default",
+    "overflow/default",
+    "position/default"
   ],
   "cl-input-lookup": [
     "align-items/default",
