@@ -141,6 +141,26 @@
       ]
     },
     {
+      "id": "smart.editor",
+      "element": "sf-editor",
+      "rule_name": "cl-editor",
+      "folder": "editor",
+      "requires": [
+        "smart.button",
+        "smart.button-group",
+        "smart.button-icon",
+        "smart.dropdown",
+        "smart.editor-inline",
+        "smart.icon",
+        "smart.input",
+        "smart.menu-context",
+        "smart.modal",
+        "smart.skeleton",
+        "smart.switch",
+        "smart.tabs"
+      ]
+    },
+    {
       "id": "smart.editor-content",
       "element": "sf-editor-content",
       "element_aliases": [

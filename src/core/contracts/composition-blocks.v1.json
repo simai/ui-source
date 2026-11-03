@@ -45,7 +45,8 @@
     "tabs": [
       "text",
       "blocks"
-    ]
+    ],
+    "variant_extension": "simai.composition:variant"
   },
   "composed": {
     "extension": "simai.composition:composed",

@@ -82,7 +82,7 @@ const wordsOutput = `${JSON.stringify(JSON.parse(stableStringify({
 })), null, 2)}\n`;
 const blocksOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.blocks', 1),
-  catalogue: { groups: CATALOGUE_GROUPS, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE },
+  catalogue: { groups: CATALOGUE_GROUPS, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE, variant_extension: 'simai.composition:variant' },
   utilities: { keyword: 'x-simai-utility', breakpoints: UTILITY_BREAKPOINTS, modifiers_extension: 'simai.composition:modifiers' },
   data: { shapes: DATA_SHAPES, states: BINDING_STATES, extension: 'simai.composition:data', runtime_owner: 'section', source_port: SOURCE_PORT },
   composed: { extension: 'simai.composition:composed', renderer: 'composed', text_path: '<node id>/<field>' },

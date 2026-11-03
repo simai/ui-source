@@ -278,6 +278,11 @@ Document of the type's first profile: a variant the type refuses fails the
 `manifest` group (`$.variants.<id>...`). A saved block (a site's snapshot)
 is the host's, not the manifest's.
 
+An editor that inserts a block from a variant records it in the node's
+extension `simai.composition:variant` as `{"id": "<variant id>"}`,
+so any editor can show which values came from the variant. A renderer
+ignores it.
+
 ## Layout parameters as utilities
 
 A layout parameter keeps a **value** in the Document, never a class: `cols:
