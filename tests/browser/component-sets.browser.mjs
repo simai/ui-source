@@ -141,6 +141,11 @@ async function open(name) {
     const other = await settle(SF.package('other'));
     const record = SF.RuleLoader.packageOf('demo');
     const pro = SF.RuleLoader.packageOf('pro');
+    // A page whose SF.package('demo') rejects at once may read before its own
+    // bundle has run: wait a little for the card to draw.
+    for (let tries = 0; tries < 50 && document.getElementById('card') && !document.getElementById('card').hasAttribute('data-version'); tries += 1) {
+      await new Promise((done) => setTimeout(done, 100));
+    }
     const card = document.getElementById('card');
     return {
       exported: exported.value ? {version: exported.value.version, hello: exported.value.hello()} : exported,
