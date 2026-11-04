@@ -134,6 +134,12 @@
      rule it answers. */
   :root:not([data-sf-loader]) body .sf-icon:not(.sf-icon-loaded) {
     font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3))) !important;
+    /* One glyph wide while the font loads or when it cannot load: the name's
+       letters would otherwise widen rows and scroll pages sideways
+       (menu-smart, 2026-11-04). */
+    inline-size: 1em;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 
