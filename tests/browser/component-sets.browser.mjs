@@ -17,7 +17,11 @@
 // - SF_BOOT_CONFIG.packages.demo = '<base>': that base, without the index;
 // - a set the index does not know is warned about with its reason, and draws
 //   nothing; SF.package of an undeclared set rejects with the line to add;
-// - no request leaves the stand.
+// - no request leaves the stand;
+// - debug (minified: false): a set named by the index, by a version or by a
+//   base string has its passport, <base>/../set.json, read once; a plain
+//   component package declared as {base} (the Pro package's form) asks for no
+//   set.json, logs no console error and still draws (core.runtime 1.26.1).
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import {existsSync, readFileSync} from 'node:fs';
 import {extname, join, resolve, sep} from 'node:path';
@@ -43,6 +47,16 @@ const bundle = (version) => `class SfDemoCard extends HTMLElement {
 if (!customElements.get('sf-demo-card')) customElements.define('sf-demo-card', SfDemoCard);
 SF.RuleLoader.registerPackage('demo', {exports: {version: '${version}', hello: () => 'hello from demo ${version}'}});
 `;
+const proRule = `SF.RuleLoader.registerPackage("pro", {
+  rules: {"cl-pro-card": {"js": true, "mode": "smart", "tags": ["sf-pro-card"], "type": "smart"}},
+});
+`;
+const proBundle = `class SfProCard extends HTMLElement {
+  connectedCallback() { this.textContent = 'pro'; this.setAttribute('data-version', 'pro'); }
+}
+if (!customElements.get('sf-pro-card')) customElements.define('sf-pro-card', SfProCard);
+`;
+const PASSPORT = JSON.stringify({schema: 'simai.framework.component-set', id: 'demo', requires_sets: []});
 const row = (version, coreRuntime) => ({
   set: 'demo', release: `demo-${version.replaceAll('.', '').padEnd(12, 'a')}`, version, source_revision: `${version.replaceAll('.', '').padEnd(12, 'a')}${'b'.repeat(28)}`,
   framework: {core_runtime: coreRuntime, source_revision: 'c'.repeat(40), pair: 'ui-000000000000'},
@@ -67,11 +81,22 @@ const pages = {
   'version.html': page({setIndex: `${ORIGIN}missing/index.json`}, ' data-sf-sets="demo@1.0.0"'),
   'base.html': page({setIndex: `${ORIGIN}missing/index.json`, packages: {demo: `${ORIGIN}vendor/demo/dist/smart`}}),
   'unknown.html': page({}, ' data-sf-sets="ghost"', '<p>nothing to draw</p>'),
+  'debug-index.html': page({minified: false}, ' data-sf-sets="demo"'),
+  'debug-version.html': page({minified: false, setIndex: `${ORIGIN}missing/index.json`}, ' data-sf-sets="demo@1.0.0"'),
+  'debug-base.html': page({minified: false, setIndex: `${ORIGIN}missing/index.json`, packages: {demo: `${ORIGIN}vendor/demo/dist/smart`}}),
+  'debug-package.html': page({minified: false, setIndex: `${ORIGIN}missing/index.json`, packages: {pro: {base: `${ORIGIN}packages/pro/978d513/smart`}}}, '', '<sf-pro-card id="card"></sf-pro-card>'),
 };
 
 function serve(path) {
   if (pages[path]) return [TYPES['.html'], pages[path]];
   if (path === 'sets/index.json') return [TYPES['.json'], JSON.stringify(INDEX)];
+  if (/^(npm\/@simai-studio\/demo@\d+\.\d+\.\d+|vendor\/demo)\/dist\/set\.json$/u.test(path)) return [TYPES['.json'], PASSPORT];
+  const pro = /^packages\/pro\/978d513\/smart\/(.*)$/u.exec(path);
+  if (pro) {
+    if (pro[1] === 'rule.js' || pro[1] === 'rule.min.js') return [JS, proRule];
+    if (/^pro-card\/js\/pro-card(\.min)?\.js$/u.test(pro[1])) return [JS, proBundle];
+    return null;
+  }
   const npm = /^npm\/@simai-studio\/demo@(\d+\.\d+\.\d+)\/dist\/smart\/(.*)$/u.exec(path);
   const vendor = /^vendor\/demo\/dist\/smart\/(.*)$/u.exec(path);
   if (npm || vendor) {
@@ -115,6 +140,7 @@ async function open(name) {
     const exported = await settle(SF.package('demo'));
     const other = await settle(SF.package('other'));
     const record = SF.RuleLoader.packageOf('demo');
+    const pro = SF.RuleLoader.packageOf('pro');
     const card = document.getElementById('card');
     return {
       exported: exported.value ? {version: exported.value.version, hello: exported.value.hello()} : exported,
@@ -122,6 +148,7 @@ async function open(name) {
       record: record && {base: record.base, version: record.version, release: record.release, api: record.api, registered: record.registered},
       drawn: card?.getAttribute('data-version') ?? null,
       early: window.early,
+      pro: pro && {base: pro.base, registered: pro.registered},
     };
   });
   await tab.close();
@@ -150,6 +177,27 @@ check('base', 'the set draws from the base', based.drawn, 'vendor');
 const unknown = await open('unknown.html');
 check('unknown', 'a set the index does not know is warned about with its reason', unknown.warnings.some((text) => /set "ghost" could not be placed from the compatibility index \(unknown-set\)/u.test(text)), true);
 check('unknown', 'and nothing more is fetched for it', unknown.requests.filter((url) => url.includes('ghost')), []);
+
+const passports = (seen) => seen.requests.filter((url) => url.endsWith('/set.json'));
+const debugIndexed = await open('debug-index.html');
+check('debug-index', 'the set\'s passport is read once, beside its npm base', passports(debugIndexed), [`${ORIGIN}npm/@simai-studio/demo@1.2.0/dist/set.json`]);
+check('debug-index', 'the set draws', debugIndexed.drawn, '1.2.0');
+check('debug-index', 'no console error', debugIndexed.errors, []);
+
+const debugVersioned = await open('debug-version.html');
+check('debug-version', 'the set\'s passport is read beside its npm version', passports(debugVersioned), [`${ORIGIN}npm/@simai-studio/demo@1.0.0/dist/set.json`]);
+check('debug-version', 'the set draws', debugVersioned.drawn, '1.0.0');
+
+const debugBased = await open('debug-base.html');
+check('debug-base', 'the set\'s passport is read beside the base given', passports(debugBased), [`${ORIGIN}vendor/demo/dist/set.json`]);
+check('debug-base', 'the set draws', debugBased.drawn, 'vendor');
+
+const debugPackage = await open('debug-package.html');
+check('debug-package', 'a plain package asks for no set.json', passports(debugPackage), []);
+check('debug-package', 'no 404 at all', debugPackage.requests.filter((url) => !serve(new URL(url).pathname.slice(1))), []);
+check('debug-package', 'no console error', debugPackage.errors, []);
+check('debug-package', 'the package element draws', debugPackage.drawn, 'pro');
+check('debug-package', 'the package is registered from its base', debugPackage.pro, {base: `${ORIGIN}packages/pro/978d513/smart`, registered: true});
 
 await browser.close();
 const failed = checks.filter((item) => !item.pass);

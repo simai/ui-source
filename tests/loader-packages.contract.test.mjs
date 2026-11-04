@@ -509,3 +509,18 @@ test('debug: the passport beside the base names a required set the page did not 
   assert.equal(loader.packages.admin.passport.id, 'admin');
   assert.ok(warnings.some((text) => text.includes('needs set "view"') && text.includes('data-sf-sets="view"')));
 });
+
+test('debug: a plain component package ({base}) asks for no passport; a set declared by a base still does', async () => {
+  const {loader, warnings, fetched, context} = harness({declared: {pro: {base: '/packages/pro/abc/smart'}, admin: '/sets/admin/smart'}});
+  context.__passports = {'/sets/admin/set.json': {schema: 'simai.framework.component-set', id: 'admin', requires_sets: []}};
+  loader.minified = false;
+  loader.registerPackage('pro', {rules: {'cl-pro-thing': {tags: ['sf-pro-thing'], type: 'smart', js: true}}});
+  loader.registerPackage('admin', {rules: {'cl-admin-menu': {tags: ['sf-admin-menu'], type: 'smart', js: true}}});
+  await loader.loadDeclaredPackageRules();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(loader.packages.pro.set, false);
+  assert.equal(loader.packages.admin.set, true);
+  assert.deepEqual(plain(fetched).filter((url) => url.endsWith('/set.json')), ['/sets/admin/set.json']);
+  assert.equal(loader.packages.admin.passport.id, 'admin');
+  assert.equal(warnings.filter((text) => text.includes('pro')).length, 0);
+});

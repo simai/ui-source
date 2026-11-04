@@ -448,6 +448,7 @@ SFLoaderPlugin.prototype.declarePackages = function (declared) {
       rule: read?.rule || (base ? `${base}/rule.js` : ''),
       version: read?.version || '',
       byIndex: Boolean(read?.byIndex),
+      set: Boolean(read?.set),
       declared: true,
       registered: false,
     };
@@ -505,7 +506,7 @@ SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
                     + `"${pkg.name}"; it must call SF.RuleLoader.registerPackage(`
                     + `"${pkg.name}", {rules})`);
               }
-              if (!this.minified) this.readSetPassport(pkg);
+              if (!this.minified && pkg.set) this.readSetPassport(pkg);
             })
             .catch(() => {
               this.warnPackage(`rule:${pkg.name}`,
@@ -522,7 +523,10 @@ SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
 // Debug only (?sf-debug, data-sf-debug, minified: false): the set's passport,
 // <base>/../set.json, read for diagnostics. It says which sets this one needs;
 // one the page has not declared is said aloud with the line to add, and is
-// never loaded on the page's behalf.
+// never loaded on the page's behalf. Only a package the page named as a set
+// (pkg.set, sets.js readSetDeclaration) has one: a component package declared
+// as {base} carries no passport, and asking for it only drew a 404 on every
+// debug page that used one (ui-doc and the Pro package, core.runtime 1.26.1).
 SFLoaderPlugin.prototype.readSetPassport = function (pkg) {
   if (!pkg.base || typeof fetch !== 'function') return null;
   const url = `${pkg.base.replace(/\/[^/]*$/u, '')}/set.json`;

@@ -38,11 +38,12 @@ test('data-sf-sets names sets, with an optional npm version each', () => {
 });
 
 test('a declaration is a base, a version or a name for the index', () => {
-  assert.deepEqual(readSetDeclaration('/vendor/fx/smart/'), {base: '/vendor/fx/smart', rule: '', version: '', byIndex: false});
-  assert.deepEqual(readSetDeclaration('1.0.0'), {base: '', rule: '', version: '1.0.0', byIndex: false});
-  assert.deepEqual(readSetDeclaration(true), {base: '', rule: '', version: '', byIndex: true});
-  assert.deepEqual(readSetDeclaration({index: true}), {base: '', rule: '', version: '', byIndex: true});
-  assert.deepEqual(readSetDeclaration({base: 'https://x/y/', rule: 'https://x/r.js'}), {base: 'https://x/y', rule: 'https://x/r.js', version: '', byIndex: false});
+  assert.deepEqual(readSetDeclaration('/vendor/fx/smart/'), {base: '/vendor/fx/smart', rule: '', version: '', byIndex: false, set: true});
+  assert.deepEqual(readSetDeclaration('1.0.0'), {base: '', rule: '', version: '1.0.0', byIndex: false, set: true});
+  assert.deepEqual(readSetDeclaration(true), {base: '', rule: '', version: '', byIndex: true, set: true});
+  assert.deepEqual(readSetDeclaration({index: true}), {base: '', rule: '', version: '', byIndex: true, set: true});
+  assert.deepEqual(readSetDeclaration({base: 'https://x/y/', rule: 'https://x/r.js'}), {base: 'https://x/y', rule: 'https://x/r.js', version: '', byIndex: false, set: false}, 'the component-package form is a plain package');
+  assert.equal(readSetDeclaration({base: '/p/smart', version: '1.2.0'}).set, true, 'an object with a version names a set');
   assert.equal(readSetDeclaration({}), null, 'an empty object declares nothing, as before sets');
   assert.equal(readSetDeclaration(''), null);
   assert.equal(readSetDeclaration(false), null);

@@ -251,7 +251,11 @@ What a set adds at runtime, through its `rule.js` and its bundles:
 
 In debug (`?sf-debug`, `data-sf-debug`) the Loader also reads
 `<base>/../set.json` and names each required set the page has not declared.
-It never loads a required set on the page's behalf.
+It never loads a required set on the page's behalf. It reads the passport only
+of a package the page names as a set (`data-sf-sets`, `true`, a version, a
+base string, `{index: true}` or an object with a `version`); a component
+package declared as `{base}` or `{base, rule}`, such as the Pro package, has no
+passport and nothing is requested for it (core.runtime 1.26.1).
 
 ## One site per set
 
