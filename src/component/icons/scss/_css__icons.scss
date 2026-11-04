@@ -124,6 +124,17 @@
   .sf-icon {
     color: var(--sf-icon--color, var(--sf-icon-color, currentColor));
   }
+
+  /* A page with this sheet and no Loader (core.css and the icons sheet linked
+     by hand, 2026-11-04): core.css keeps an icon at font-size 0 until it is
+     marked sf-icon-loaded, and only the Loader marks it, so the icons never
+     drew. Without the Loader (no data-sf-loader on html) the face above,
+     font-display: block, keeps the name unseen while the font loads and then
+     draws the glyph: CSS alone is enough. Important in the base layer, as the
+     rule it answers. */
+  :root:not([data-sf-loader]) body .sf-icon:not(.sf-icon-loaded) {
+    font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3))) !important;
+  }
 }
 
 .sf-icon--filled,

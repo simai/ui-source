@@ -175,3 +175,15 @@ distribution it installed serves them too. Offline, the words themselves
 (`error`, `upload_file`) are what shows while a page waits for a font it cannot
 fetch — the ligature text of an icon with no font behind it.
 Projects do not need new markup or mandatory configuration.
+
+## A page without the Loader
+
+core.css holds every `.sf-icon` at font-size 0 until it is marked
+`sf-icon-loaded`, and only the Loader marks icons. A page that links core.css
+and the icons sheet by hand, with no Loader, therefore drew no icon. The
+Loader now writes `data-sf-loader` on `html` when it boots; without it the
+icons sheet (component.icons 1.1.0) lifts the hold, and its face
+(`font-display: block`) keeps the name unseen while the font loads and then
+draws the glyph. core.css alone carries no icon font: a page needs the icons
+sheet to draw icons, with or without the Loader (probe
+`tests/browser/icons-without-loader.browser.mjs`).

@@ -207,6 +207,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     };
   }
 
+  // The Loader is on the page (2026-11-04): the icons sheet then leaves the
+  // icons to the Loader's sf-icon-loaded; without it the sheet draws them
+  // once the font is in (component/icons, core.css's hold on unloaded icons).
+  if (document.documentElement) document.documentElement.setAttribute('data-sf-loader', '');
+
   // The page's spinner look (simai/ui-source#11): SF_BOOT_CONFIG.spinner names
   // it as data-sf-spinner on html would, and is written there unless the page
   // has written its own. The spinner sheet does the rest.
