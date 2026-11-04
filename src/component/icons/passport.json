@@ -15,7 +15,7 @@
     "src/component/icons/scss/_var__icons.scss",
     "src/component/icons/scss/index.scss"
   ],
-  "content_sha256": "c7f48ea7758428cec78e41d0bc75cea64891e8df8be3f5f5fe1e2e3fbe1336a2",
+  "content_sha256": "c4ef1f57b0a252dc05229a0cf3c20fd2cf57a96c83c5617a35bffac6e92f41db",
   "dependencies": [
     {
       "id": "icons.material-symbols",
