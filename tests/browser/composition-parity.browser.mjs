@@ -24,6 +24,8 @@
 //     and is not reached; an unsafe scheme draws a button;
 //   - the section's padding alone sets the inset: its first block (an h2)
 //     starts at the padding, its last block ends at it (core.styles 1.2.0);
+//   - a heading and a paragraph take alignment and visibility per screen
+//     (content.heading 1.2.0, content.paragraph 1.3.0);
 //   - G-39: a lead paragraph is the large body text (20 px at the desktop,
 //     the prototype's 19, 16 on the phone) in the variant ink.
 import {createServer} from 'node:http';
@@ -47,6 +49,11 @@ const document = {
       {id: 'first-h', type: 'content.heading', data: {level: 2, content: text('Как здесь работать')}},
       paragraph('first-p', long),
       {id: 'lead', type: 'content.paragraph', presentation: {modifiers: ['lead']}, data: {content: text('Одна-две строки о главном.')}},
+    ]}},
+    {id: 'texts', type: 'layout.section', slots: {default: [
+      {id: 'centred', type: 'content.heading', props: {align: {xs: 'center', lg: 'start'}}, data: {level: 2, content: text('По центру на телефоне')}},
+      {id: 'wide-only', type: 'content.paragraph', props: {hidden: {xs: true, lg: false}}, data: {content: text('Только на широком экране.')}},
+      {id: 'end', type: 'content.paragraph', props: {align: 'end'}, data: {content: text('Справа.')}},
     ]}},
     {id: 'own', type: 'layout.section', props: {width: 'full', padding_y: 0}, slots: {default: [paragraph('own-p', 'Своя ширина и свои отступы.')]}},
     {id: 'cards', type: 'layout.section', props: {background: 'container'}, slots: {default: [
@@ -128,6 +135,7 @@ try {
           space8: length('var(--sf-space-8)'), space6: length('var(--sf-space-6)'), space3: length('var(--sf-space-3)'),
           rhythm: {heading: node('first-h').getBoundingClientRect().bottom, text: node('first-p').getBoundingClientRect().top, box: node('box').getBoundingClientRect().bottom, button: node('button').getBoundingClientRect().top},
           lead: {size: parseFloat(style('lead').fontSize), line: parseFloat(style('lead').lineHeight), color: style('lead').color, body: parseFloat(style('first-p').fontSize), bodyColor: style('first-p').color},
+          texts: {centred: style('centred').textAlign, wideOnly: style('wide-only').display, wideBox: box(node('wide-only')).height, end: style('end').textAlign, endText: (() => { const range = document.createRange(); range.selectNodeContents(node('end')); return {right: range.getBoundingClientRect().right, box: box(node('end')).right}; })()},
           firstTop: node('first-h').getBoundingClientRect().top - node('first').getBoundingClientRect().top,
           lastBottom: node('first').getBoundingClientRect().bottom - node('lead').getBoundingClientRect().bottom,
           gridTops: [1, 2, 3].map((n) => node(`card-${n}`).parentElement.getBoundingClientRect().top),
@@ -193,6 +201,10 @@ try {
       // No second gutter: the container's text is exactly as wide as the section's own.
       check('a container in a section is as wide as the section\'s text on the phone', width >= 1024 || near(m.box.width, m.sectionText.width), {box: m.box.width, section: m.sectionText.width});
       if (width === 390) check('the phone measure is 366 px', near(m.box.width, 366), {box: m.box.width});
+      // Alignment and visibility of the text blocks, per screen.
+      check('a heading aligns per screen', m.texts.centred === (width >= 1024 ? 'start' : 'center'), {texts: m.texts});
+      check('a paragraph shows only where it is not hidden', width >= 1024 ? m.texts.wideOnly === 'block' && m.texts.wideBox > 0 : m.texts.wideOnly === 'none', {texts: m.texts});
+      check('a paragraph aligned to the end ends at its box', m.texts.end === 'end' && near(m.texts.endText.right, m.texts.endText.box), {texts: m.texts});
       // G-39: the lead paragraph.
       check('a lead paragraph is the large body text in the variant ink', near(m.lead.size, width >= 1024 ? 20 : 16) && m.lead.size > m.lead.body && m.lead.color !== m.lead.bodyColor, {lead: m.lead});
       // sf-button href.

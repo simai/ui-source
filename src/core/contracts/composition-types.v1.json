@@ -501,6 +501,10 @@
         "type": "object"
       },
       "mode": "leaf",
+      "parameter_sets": [
+        "alignment",
+        "visibility"
+      ],
       "presentation": {
         "modifiers": [],
         "presets": [],
@@ -525,7 +529,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.heading",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "assets": [],
@@ -792,6 +796,10 @@
         "type": "object"
       },
       "mode": "leaf",
+      "parameter_sets": [
+        "alignment",
+        "visibility"
+      ],
       "presentation": {
         "modifier_utilities": {
           "lead": [
@@ -828,7 +836,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.paragraph",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "assets": [],

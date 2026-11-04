@@ -458,6 +458,10 @@ inset: its first block has no block-start margin and its last no block-end
 margin (core.styles 1.2.0), so a heading at the top of a section starts at
 the section's padding; in a grid every cell starts at its row.
 
+`content.heading` 1.2.0 and `content.paragraph` 1.3.0 take the `alignment`
+and `visibility` sets (`align`: start, center, end as `text-*`; `hidden` as
+`hidden`/`block`), per screen; unset they print nothing.
+
 `element.button` takes `data.href`: the button is then a link (`sf-button`
 1.4.0 draws an `<a>` with the button's look). Its address follows the content
 link rule (`unsafe_url` otherwise).

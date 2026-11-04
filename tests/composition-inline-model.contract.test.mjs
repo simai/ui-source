@@ -166,9 +166,9 @@ test('the renderer draws atoms with every prop escaped as text', async () => {
     + '</p>');
 });
 
-test('content.heading is type version 1.1.0 and content.paragraph 1.2.0 (G-39 modifiers), the Document stays v1', () => {
-  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.heading').version, '1.1.0');
-  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.paragraph').version, '1.2.0');
-  assert.equal(BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.heading').type_version, '1.1.0');
+test('content.heading is type version 1.2.0 and content.paragraph 1.3.0 (G-39 modifiers, alignment and visibility), the Document stays v1', () => {
+  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.heading').version, '1.2.0');
+  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.paragraph').version, '1.3.0');
+  assert.equal(BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.heading').type_version, '1.2.0');
   assert.deepEqual(Object.keys(INLINE_COMPONENTS), ['badge', 'kbd', 'icon', 'button']);
 });

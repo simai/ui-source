@@ -4,6 +4,9 @@ import { schemaFields } from './schema-name.mjs';
 import { parameterSetFields } from './parameter-sets.mjs';
 
 const SECTION_SETS = Object.freeze(['background', 'spacing', 'width', 'grid', 'alignment', 'breakout', 'visibility']);
+// A heading's and a paragraph's own parameters (2026-11-04): how the text lines
+// up and on which screens it shows, per screen.
+const TEXT_SETS = Object.freeze(['alignment', 'visibility']);
 // What a section prints when the Document leaves it unset (layout.section
 // 1.2.0, visual parity 2026-11-04, as the accepted prototype draws it): space
 // above and below (p-y-8) and the page container (width normal: frame
@@ -262,7 +265,9 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.heading',
-    version: '1.1.0',
+    // 1.2.0 (2026-11-04, visual parity): alignment and visibility per screen,
+    // the SIMAI Framework sets a section takes (text-*, hidden/block).
+    version: '1.2.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -276,6 +281,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       },
     },
     props_schema: emptyObjectSchema,
+    parameter_sets: TEXT_SETS,
     presentation: { views: ['default'], presets: [], modifiers: [] },
     slots: {},
     renderer: { kind: 'builtin', name: 'content.heading' },
@@ -285,7 +291,8 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.paragraph',
-    version: '1.2.0',
+    // 1.3.0 (2026-11-04): alignment and visibility per screen, as the heading.
+    version: '1.3.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -296,6 +303,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       properties: { content: inlineContentSchema },
     },
     props_schema: emptyObjectSchema,
+    parameter_sets: TEXT_SETS,
     // G-39 (1.2.0): the prototype's lead is 19/30 px in the variant ink; the
     // SIMAI Framework's large body text role (20/28 px, 16/24 on the phone) in
     // on-surface-variant. Muted is the variant ink alone.
@@ -840,7 +848,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'content.heading',
-    type_version: '1.1.0',
+    type_version: '1.2.0',
     fields: [
       {
         key: 'level',
@@ -857,6 +865,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
         permission_hints: ['composition.node.update'],
         owner: 'simai/framework',
       },
+      ...parameterSetFields({ parameter_sets: TEXT_SETS }),
     ],
   },  {
     ...schemaFields('simai.composition.editor-manifest', 1),
@@ -930,6 +939,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('layout.area', 'hidden', 'props', 'toggle', { default: false }),
   ]),
   // The layout and element types of the one block editor (2026-11-04).
+  { ...contentEditor('content.paragraph', parameterSetFields({ parameter_sets: TEXT_SETS })), type_version: '1.3.0' },
   contentEditor('layout.container', parameterSetFields({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })),
   contentEditor('layout.grid', parameterSetFields({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })),
   contentEditor('layout.spacer', [

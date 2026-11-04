@@ -139,7 +139,7 @@
       }
     },
     {
-      "html": "<details class=\"sf-editor-field-disclosure\"><summary>sf.composition.content_heading.level</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"integer\" data-sf-field-group=\"advanced\"><label for=\"sf-field-title-level\">sf.composition.content_heading.level</label><input class=\"sf-editor-field-control\" type=\"number\" inputmode=\"numeric\" step=\"1\" min=\"1\" max=\"6\" id=\"sf-field-title-level\" name=\"title.data.level\" value=\"3\" aria-describedby=\"sf-field-title-level-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-title-level-help\">sf.composition.content_heading.level_help</small></div></details>",
+      "html": "<details class=\"sf-editor-field-disclosure\"><summary>sf.composition.content_heading.level</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"integer\" data-sf-field-group=\"advanced\"><label for=\"sf-field-title-level\">sf.composition.content_heading.level</label><input class=\"sf-editor-field-control\" type=\"number\" inputmode=\"numeric\" step=\"1\" min=\"1\" max=\"6\" id=\"sf-field-title-level\" name=\"title.data.level\" value=\"3\" aria-describedby=\"sf-field-title-level-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-title-level-help\">sf.composition.content_heading.level_help</small></div></details><div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"basic\"><label for=\"sf-field-title-align\">sf.composition.set_alignment.align</label><select class=\"sf-editor-field-control\" id=\"sf-field-title-align\" name=\"title.props.align\" aria-describedby=\"sf-field-title-align-help\"><option value=\"\" selected></option><option value=\"start\">start</option><option value=\"center\">center</option><option value=\"end\">end</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-title-align-help\">sf.composition.set_alignment.align_help</small></div><div class=\"sf-editor-field\" data-sf-field-kind=\"toggle\" data-sf-field-group=\"basic\"><input class=\"sf-editor-field-control\" type=\"checkbox\" role=\"switch\" id=\"sf-field-title-hidden\" name=\"title.props.hidden\" value=\"true\" aria-describedby=\"sf-field-title-hidden-help\"><label for=\"sf-field-title-hidden\">sf.composition.set_visibility.hidden</label><small class=\"sf-editor-field-help\" id=\"sf-field-title-hidden-help\">sf.composition.set_visibility.hidden_help</small></div>",
       "id": "fallback.existing-heading",
       "instance": "title",
       "messages": {
@@ -663,7 +663,9 @@
       "expect": "valid",
       "id": "manifest.existing.content.heading",
       "kinds": [
-        "integer"
+        "integer",
+        "choice",
+        "toggle"
       ],
       "manifest": {
         "fields": [
@@ -691,12 +693,63 @@
             },
             "target": "level",
             "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.align"
+            ],
+            "choices": [
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 32,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.set_alignment.align_help",
+            "key": "align",
+            "label_key": "sf.composition.set_alignment.align",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "align",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.hidden"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "basic",
+            "help_key": "sf.composition.set_visibility.hidden_help",
+            "key": "hidden",
+            "label_key": "sf.composition.set_visibility.hidden",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "hidden",
+            "visibility": "visible"
           }
         ],
         "schema": "simai.composition.editor-manifest",
         "schema_version": 1,
         "type": "content.heading",
-        "type_version": "1.1.0"
+        "type_version": "1.2.0"
       }
     },
     {

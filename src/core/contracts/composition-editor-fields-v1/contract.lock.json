@@ -12,9 +12,9 @@
     "layout_section": "the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:008937705a04debd112406b328389665e5b0307f4e2f20cdf6a2cf6109217db6",
+  "contractDigest": "sha256:86adeaec2f110a5655593be1d64fdba8dd9a9486b13389a965c7be1065ea12fb",
   "manifests": {
-    "editor:content.heading@1.1.0": "sha256:1276721858634c130a8f74f9e0e3f1928c6f2a70f4ff044375a62c12e03a1edb",
+    "editor:content.heading@1.2.0": "sha256:2ada1b7e8fa8eb87c62be2b441b254b4c88f03a26bc0bed68c8360ccbe66a623",
     "editor:layout.columns@1.1.0": "sha256:6d59ef7e408c7cad4b5117c9594d4aa32b14c8e7197716175847996c577d10cb",
     "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
     "editor:layout.section@1.2.0": "sha256:080040135125456e22a5cf7e2e8e3aaaa503b44dbc653aa8c2e5b64867d4d6b5",
@@ -25,7 +25,7 @@
   },
   "normativeFiles": {
     "README.md": "sha256:067cc8d15af7c3df09a3b02f1b02554c9d7e3499c156a0a8350da2ef8bc076c4",
-    "fixtures/field-kinds.json": "sha256:76f91e3c7954a0caebfc9ae738bb496db12a96fec6fd8c594258e3c4b03355d0"
+    "fixtures/field-kinds.json": "sha256:d025c2f27f647562e7026217ccf5b69c97ab1ac6969fd84b6cee17b68f6d4068"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",

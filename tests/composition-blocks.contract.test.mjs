@@ -6,6 +6,7 @@ import vm from 'node:vm';
 import { BREAKPOINTS } from '../src/core/js/breakpoints.js';
 import {
   BUILTIN_CATALOGUE,
+  BUILTIN_EDITOR_MANIFESTS,
   BUILTIN_TYPE_MANIFESTS,
   Composition,
   PARAMETER_SETS,
@@ -712,7 +713,27 @@ test('G-39: a paragraph\'s lead and muted modifiers print the SIMAI Framework te
   assert.ok(known('color-on-surface-variant'));
   assert.match(readFileSync(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8'), /\.text-large\b/u, 'text-large is the core sheet\'s large body text role');
   const paragraph = extendRegistry().types.get('content.paragraph');
-  assert.equal(paragraph.version, '1.2.0');
+  assert.equal(paragraph.version, '1.3.0');
   const broken = { ...paragraph, presentation: { ...paragraph.presentation, modifier_utilities: { loud: ['text-5'], lead: ['Bad Class'] } } };
   assert.deepEqual(codes(validateTypeManifest(broken)).filter((code) => code.startsWith('modifier_utilities')).sort(), ['modifier_utilities_invalid', 'modifier_utilities_unknown']);
+});
+
+test('a heading and a paragraph take alignment and visibility per screen, as a section does', async () => {
+  const text = (value) => [{ type: 'text', value }];
+  const heading = { id: 'h', type: 'content.heading', data: { level: 2, content: text('Title') }, props: { align: { xs: 'center', md: 'start' }, hidden: { lg: true } } };
+  const paragraph = { id: 'p', type: 'content.paragraph', presentation: { modifiers: ['lead'] }, data: { content: text('Text') }, props: { align: 'end', hidden: { xs: true, md: false } } };
+  const plain = { id: 'q', type: 'content.paragraph', data: { content: text('Plain') } };
+  const { html, diagnostics } = await render(layout(heading, paragraph, plain));
+  assert.deepEqual(diagnostics, []);
+  assert.match(html, /<h2 class="text-center md:text-start block lg:hidden" data-sf-composition-id="h">Title<\/h2>/u);
+  assert.match(html, /<p class="text-end hidden md:block text-large color-on-surface-variant" data-sf-composition-id="p">Text<\/p>/u);
+  assert.match(html, /<p data-sf-composition-id="q">Plain<\/p>/u, 'unset: nothing printed');
+  for (const name of ['text-center', 'md:text-start', 'text-end', 'hidden', 'md:block', 'lg:hidden']) assert.ok(known(name), name);
+  assert.equal(validate(layout({ ...plain, props: { align: 'justify' } })).valid, false);
+  for (const type of ['content.heading', 'content.paragraph']) {
+    const editor = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === type);
+    const targets = editor.fields.filter((field) => field.plane === 'props').map((field) => field.target);
+    assert.deepEqual(targets, ['align', 'hidden'], type);
+    assert.equal(editor.type_version, extendRegistry().types.get(type).version, type);
+  }
 });
