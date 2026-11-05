@@ -1,0 +1,26 @@
+{
+  "id": "load-unavailable-is-honest",
+  "intent": "navigation.load",
+  "summary": "An unreachable host is said to be unreachable.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "connected",
+      "site": null
+    }
+  },
+  "then": {
+    "answer": "unavailable"
+  }
+}

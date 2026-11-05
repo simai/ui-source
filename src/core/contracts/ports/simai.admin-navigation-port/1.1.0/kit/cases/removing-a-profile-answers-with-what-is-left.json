@@ -1,0 +1,30 @@
+{
+  "id": "removing-a-profile-answers-with-what-is-left",
+  "intent": "view.delete",
+  "capability": "menu-profiles",
+  "summary": "Removing a profile answers with the profiles left and the menu through the current one.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.delete",
+    "payload": {
+      "profile": "personal"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "profiles",
+      "navigation"
+    ]
+  }
+}

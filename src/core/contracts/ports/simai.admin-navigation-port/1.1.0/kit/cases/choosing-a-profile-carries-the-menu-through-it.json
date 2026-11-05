@@ -1,0 +1,29 @@
+{
+  "id": "choosing-a-profile-carries-the-menu-through-it",
+  "intent": "view.profile",
+  "capability": "menu-profiles",
+  "summary": "Choosing a profile answers with the menu drawn through it.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.profile",
+    "payload": {
+      "profile": "expert"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "navigation"
+    ]
+  }
+}

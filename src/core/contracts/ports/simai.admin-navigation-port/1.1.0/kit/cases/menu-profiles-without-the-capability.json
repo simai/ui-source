@@ -1,0 +1,31 @@
+{
+  "id": "menu-profiles-without-the-capability",
+  "intent": "view.save",
+  "capability": "menu-profiles",
+  "summary": "Without menu profiles nothing can be saved, and nothing that would save is drawn.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "profile": "personal",
+      "revision": "p1",
+      "layout": {
+        "schema_version": 1,
+        "items": {},
+        "own": []
+      }
+    }
+  },
+  "then": {
+    "answer": "unavailable"
+  }
+}

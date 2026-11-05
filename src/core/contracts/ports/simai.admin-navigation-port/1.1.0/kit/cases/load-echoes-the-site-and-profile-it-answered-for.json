@@ -1,0 +1,31 @@
+{
+  "id": "load-echoes-the-site-and-profile-it-answered-for",
+  "intent": "navigation.load",
+  "summary": "The answer names the site and profile it was given for.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "requested",
+      "site": "simai.ru",
+      "sequence": 3
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "echo"
+    ],
+    "note": "The menu draws the site in the echo, not the one it asked for. A host that cannot answer for that site answers for another and says so, rather than drawing the wrong site's rows under the right site's name."
+  }
+}

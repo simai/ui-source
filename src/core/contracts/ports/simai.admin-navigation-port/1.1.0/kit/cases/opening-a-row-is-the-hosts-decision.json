@@ -1,0 +1,29 @@
+{
+  "id": "opening-a-row-is-the-hosts-decision",
+  "intent": "item.open",
+  "summary": "What opening a row means is the host's; the answer says where it went.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "item.open",
+    "payload": {
+      "key": "data.catalog",
+      "href": "/admin/catalog"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "href"
+    ]
+  }
+}

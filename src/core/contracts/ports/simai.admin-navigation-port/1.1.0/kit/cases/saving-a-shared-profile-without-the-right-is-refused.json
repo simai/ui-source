@@ -1,0 +1,35 @@
+{
+  "id": "saving-a-shared-profile-without-the-right-is-refused",
+  "intent": "view.save",
+  "capability": "menu-profiles",
+  "summary": "Saving a shared profile without the right is refused.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "profile": "regular",
+      "revision": "r1",
+      "layout": {
+        "schema_version": 1,
+        "items": {},
+        "own": []
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

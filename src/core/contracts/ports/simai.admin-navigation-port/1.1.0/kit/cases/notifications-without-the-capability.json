@@ -1,0 +1,25 @@
+{
+  "id": "notifications-without-the-capability",
+  "intent": "notifications.load",
+  "capability": "notifications",
+  "summary": "Without a notification centre there is no notifications row.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "notifications.load",
+    "payload": {
+      "cursor": null
+    }
+  },
+  "then": {
+    "answer": "unavailable"
+  }
+}
