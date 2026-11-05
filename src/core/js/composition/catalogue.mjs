@@ -38,7 +38,8 @@ export const CATALOGUE_GROUP_TABLE = Object.freeze({
 /** The two tabs the catalogue opens on: what is written into a text flow, and what a page is built from. */
 export const CATALOGUE_TABS = Object.freeze(['text', 'blocks']);
 const TEXT_TAB_GROUPS = new Set(['text', 'media']);
-const CATALOGUE_FIELDS = new Set(['group', 'tab', 'label_key', 'help_key', 'keywords', 'preview', 'order', 'icon']);
+const CATALOGUE_FIELDS = new Set(['group', 'tab', 'label_key', 'help_key', 'keywords', 'preview', 'order', 'icon', 'also_in']);
+const ALSO_IN_LIMIT = 8;
 const ICON_NAME = /^[a-z0-9][a-z0-9_]{0,63}$/u;
 const VARIANT_FIELDS = new Set(['id', 'label_key', 'preview', 'props', 'data', 'presentation', 'slots']);
 const SLOT_EXTRA_FIELDS = new Set(['label_key', 'empty_key', 'groups']);
@@ -88,6 +89,13 @@ export const BUILTIN_CATALOGUE = Object.freeze({
   'element.button-icon': 'elements',
   'element.badge': 'elements',
   'element.icon': 'elements',
+  'form.form': 'forms',
+  'form.input': 'forms',
+  'form.textarea': 'forms',
+  'form.checkbox': 'forms',
+  'form.switch': 'forms',
+  'form.select': 'forms',
+  'form.button-submit': 'forms',
 });
 
 // The icon of each offered built-in type (a SIMAI Framework icon name, as the
@@ -122,6 +130,23 @@ export const BUILTIN_CATALOGUE_ICONS = Object.freeze({
   'element.button-icon': 'add_circle',
   'element.badge': 'label',
   'element.icon': 'star',
+  'form.form': 'contact_mail',
+  'form.input': 'input',
+  'form.textarea': 'notes',
+  'form.checkbox': 'check_box',
+  'form.switch': 'toggle_on',
+  'form.select': 'arrow_drop_down_circle',
+  'form.button-submit': 'send',
+});
+
+// The further sections a built-in type stands in beside its own (type
+// manifest 1.6.0, catalogue.also_in; the ui-editor host's G-20, 2026-11-04):
+// as the prototype offers them, a button and a divider are written into a
+// text flow as often as they are placed, so Text lists them too. A type's own
+// catalogue.also_in wins.
+export const BUILTIN_CATALOGUE_ALSO_IN = Object.freeze({
+  'element.button': Object.freeze(['text']),
+  'content.divider': Object.freeze(['text']),
 });
 
 // Documents and manifests are JSON: a copy through JSON is a deep copy.
@@ -141,8 +166,10 @@ export function catalogueGroup(group) {
 
 /**
  * A type's catalogue entry, or null when the type is not offered:
- * {type, group, tab, icon?, label_key?, help_key?, keywords, preview?, order, variants}.
+ * {type, group, also_in, tab, icon?, label_key?, help_key?, keywords, preview?, order, variants}.
  * A product type without `catalogue` falls into its namespace's group.
+ * also_in (type manifest 1.6.0) are the further groups it stands in, each
+ * once, never its own group; a dated alias gives its new group.
  */
 export function catalogueEntry(manifest) {
   if (!isPlainObject(manifest)) return null;
@@ -156,10 +183,13 @@ export function catalogueEntry(manifest) {
   group = catalogueGroup(group);
   const icon = own?.icon ?? BUILTIN_CATALOGUE_ICONS[manifest.type];
   const tab = own?.tab ?? (TEXT_TAB_GROUPS.has(group) ? 'text' : 'blocks');
+  const also = Array.isArray(own?.also_in) ? own.also_in : BUILTIN_CATALOGUE_ALSO_IN[manifest.type] ?? [];
+  const alsoIn = [...new Set(also.filter((name) => typeof name === 'string').map(catalogueGroup))].filter((name) => name !== group && groupAllowed(name, manifest.type));
   return canonical({
     type: manifest.type,
     version: manifest.version,
     group,
+    also_in: alsoIn,
     tab,
     ...(icon ? { icon } : {}),
     ...(own?.label_key ? { label_key: own.label_key } : {}),
@@ -175,10 +205,22 @@ export function catalogueEntry(manifest) {
   });
 }
 
+/** The groups a catalogue entry stands in: its own first, then also_in. */
+export function entryGroups(entry) {
+  return entry ? [entry.group, ...(Array.isArray(entry.also_in) ? entry.also_in : [])] : [];
+}
+
 /**
  * The catalogue of a registry: every offered type, by tab and group, in order.
  * With `{parent, slot}` only the types that place accepts (hidden, not
  * greyed: a mail column accepts no video); a tab with nothing is left out.
+ *
+ * `sections` (type manifest 1.6.0) is the one list of the editor's library,
+ * the + and /: [{group, count, entries}], the fixed groups in their order,
+ * then a product's own; a type stands in its group and in each also_in
+ * group, so a section's count is the types it lists; a section with nothing
+ * is left out. `entries` keeps each type once (a search names it once, under
+ * its own group); `tabs` places it by its own group only.
  */
 export function catalogue(registry, place = {}) {
   const types = registry?.types instanceof Map ? [...registry.types.values()] : [];
@@ -190,11 +232,18 @@ export function catalogue(registry, place = {}) {
   if (place.profile) entries = entries.filter((entry) => registry.types.get(entry.type).profiles.includes(place.profile));
   entries.sort((left, right) => left.order - right.order || left.type.localeCompare(right.type));
   const tabs = {};
+  const byGroup = new Map();
   for (const entry of entries) {
     tabs[entry.tab] ||= {};
     (tabs[entry.tab][entry.group] ||= []).push(entry);
+    for (const group of entryGroups(entry)) {
+      if (!byGroup.has(group)) byGroup.set(group, []);
+      byGroup.get(group).push(entry);
+    }
   }
-  return { entries, tabs };
+  const order = [...CATALOGUE_GROUPS, ...[...byGroup.keys()].filter((group) => !CATALOGUE_GROUPS.includes(group))];
+  const sections = order.filter((group) => byGroup.has(group)).map((group) => ({ group, count: byGroup.get(group).length, entries: byGroup.get(group) }));
+  return { entries, tabs, sections };
 }
 
 /**
@@ -209,8 +258,11 @@ export function slotAccepts(registry, parentManifest, slotName, childType) {
   if (slot.types && !slot.types.includes(childType)) return false;
   if (slot.categories && !slot.categories.includes(child.category)) return false;
   if (slot.groups) {
+    // A type stands in its group and its also_in groups: a slot that takes
+    // one of them takes it.
     const entry = catalogueEntry(child);
-    if (!entry || !slot.groups.map(catalogueGroup).includes(entry.group)) return false;
+    const wanted = slot.groups.map(catalogueGroup);
+    if (!entry || !entryGroups(entry).some((group) => wanted.includes(group))) return false;
   }
   return true;
 }
@@ -294,6 +346,14 @@ export function validateCatalogueFields(manifest) {
       if (entry.order !== undefined && (!Number.isInteger(entry.order) || entry.order < 0 || entry.order > 1000)) diagnostics.push(diagnostic('catalogue_order_invalid', '$.catalogue.order', 'order is 0 to 1000'));
       if (entry.icon !== undefined && (typeof entry.icon !== 'string' || !ICON_NAME.test(entry.icon))) diagnostics.push(diagnostic('catalogue_icon_invalid', '$.catalogue.icon', 'icon is a SIMAI Framework icon name'));
       if (entry.preview !== undefined && (typeof entry.preview !== 'string' || !entry.preview || entry.preview.length > 2048)) diagnostics.push(diagnostic('catalogue_preview_invalid', '$.catalogue.preview', 'preview is an image address'));
+      if (entry.also_in !== undefined) {
+        const list = entry.also_in;
+        if (!Array.isArray(list) || !list.length || list.length > ALSO_IN_LIMIT || new Set(list).size !== list.length) diagnostics.push(diagnostic('catalogue_also_in_invalid', '$.catalogue.also_in', `also_in is a list of 1 to ${ALSO_IN_LIMIT} different groups`));
+        else list.forEach((group, index) => {
+          if (!groupAllowed(group, manifest.type)) diagnostics.push(diagnostic('catalogue_group_unknown', `$.catalogue.also_in[${index}]`, `A group is one of ${CATALOGUE_GROUPS.join(', ')}, or the type's namespace ${namespaceOf(manifest.type)}`));
+          else if (catalogueGroup(group) === catalogueGroup(entry.group)) diagnostics.push(diagnostic('catalogue_also_in_invalid', `$.catalogue.also_in[${index}]`, 'also_in names groups other than the type\'s own'));
+        });
+      }
     }
   }
   if (manifest.variants !== undefined) {

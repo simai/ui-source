@@ -262,8 +262,18 @@ with two tabs: **Text** (what is written into a text flow) and **Blocks**
   group has an icon and a word too: `CATALOGUE_GROUP_TABLE`
   (`sf.composition.catalogue.group.<group>`), and each built-in type an icon
   (`BUILTIN_CATALOGUE_ICONS`).
+- `also_in` (type manifest 1.6.0) lists further groups the type stands in
+  besides its own: the catalogue lists it in each of them and counts it in
+  each, a search names it once, under `group`; a slot that takes one of its
+  groups takes it. A button is placed as often as it is written into text,
+  so `element.button` and `content.divider` stand in Text too
+  (`BUILTIN_CATALOGUE_ALSO_IN`). `catalogue(registry)` gives `sections`:
+  `[{group, count, entries}]` in the fixed order, then a product's own,
+  each section with something in it.
 - `tab` is `text` or `blocks`; by default `text` for the text and media
-  groups, `blocks` otherwise.
+  groups, `blocks` otherwise. Since 2026-11-04 the editor draws one list of
+  sections for the library, the + and / alike; `tab` stays for a reader of
+  the older catalogue.
 - `label_key`, `help_key`, `keywords` per locale (search reads names,
   keywords and the group in both languages), `preview` (an image address)
   and `order` (0 to 1000).
@@ -271,7 +281,7 @@ with two tabs: **Text** (what is written into a text flow) and **Blocks**
 A type without `catalogue` falls into its namespace's group; the check warns
 (`catalogue_missing`). The SIMAI Framework's own types stand in the table
 `BUILTIN_CATALOGUE` (`src/core/contracts/composition-blocks.v1.json`, with
-`group_table`, `group_aliases` and `icons`).
+`group_table`, `group_aliases`, `icons` and `also_in`).
 
 The SIMAI Framework's built-in Elements and Layout (2026-11-04), each with
 its editor manifest, words in English and Russian and an icon:
@@ -283,9 +293,9 @@ its editor manifest, words in English and Russian and an icon:
 | `element.badge` | elements | `sf-badge` | text; appearance, scheme, size, icon |
 | `element.icon` | elements | `sf-icon` | label; icon, size |
 | `content.divider` | elements | the `sf-divider` class | |
-| `layout.section` 1.2.0 | layout | `section`, frame and content | all seven sets; prints `p-y-8` and the page container unset |
+| `layout.section` 1.3.0 | layout | `section`, frame and content | all seven sets; prints `p-y-8` and the page container unset |
 | `layout.container` | layout | frame and content | width (narrow unset), spacing, background, visibility |
-| `layout.grid` | layout | a grid content part | grid (one column on the phone, three from the tablet, gap 4), visibility |
+| `layout.grid` 1.1.0 | layout | a grid content part | grid (three columns on every screen, gap 5, as the prototype's grids hold on the phone), visibility |
 | `layout.spacer` | layout | an empty block, `p-top-*` | size 1..8 per screen (6 unset), visibility |
 
 An element stands in a block of its own (`<div data-sf-composition-id>`
@@ -296,6 +306,29 @@ around the element): the editor selects it and the utilities reach it, as
 a text area) and two-columns; `layout.container` narrow, normal and soft;
 `layout.grid` two, three and four cards; `element.button` plain, with an
 icon and outlined.
+
+The accent variant (`layout.section` 1.3.0) sets `background: accent`: the
+primary role's own fill with on-primary text (`bg-primary color-on-primary`,
+background set 1.1.0), as the prototype draws it; inside it the core sheet
+switches the on-surface roles to on-primary, so a caption or an icon reads
+on it. `primary` stays the primary container's light fill.
+
+Forms (2026-11-04), the group `forms`:
+
+| Type | Prints | Parameters |
+| --- | --- | --- |
+| `form.form` | a `<form class="grid gap-4">` around its blocks | action (the host's address, the Document's URL rule), method; variants request (name, phone, send) and message (name, email, text, send) |
+| `form.input` | `sf-input` | label, placeholder, input_type (text, email, tel, url), required, hint, name, size |
+| `form.textarea` | `sf-input-textarea` | label, placeholder, rows 2..12, required, hint, name, size |
+| `form.checkbox` | `sf-checkbox` | label, description, checked, name, size |
+| `form.switch` | `sf-switch` | label, description, checked, name, size |
+| `form.select` | `sf-dropdown` | label, options (words separated by commas), placeholder, required, name, size |
+| `form.button-submit` | `sf-button` with `native-type="submit"` | text, appearance, size |
+
+A field without a label whose `name` is `name`, `phone`, `email` or
+`message` reads that word in the Document's language, any other «Field»; so
+the form variants carry names, not the words of one language. A field fills
+its column (a plain block); the submit button keeps its own width.
 
 A **variant** is a named starting state of a type: parameters, data and the
 child blocks it is inserted with. A new kind of header is a variant, not a
@@ -473,9 +506,11 @@ one is not printed again (`{"md": 2, "lg": 3}` prints `grid grid-col-1 md:grid-c
 
 ## Smart elements in a block
 
-A renderer may print `sf-button`, `sf-button-icon`, `sf-badge`, `sf-icon` and
-the `sf-divider` class component, with the inputs their `smart.manifest.json`
-declares and nothing else:
+A renderer may print `sf-button`, `sf-button-icon`, `sf-badge`, `sf-icon`,
+since 2026-11-04 the form fields `sf-input`, `sf-input-textarea`,
+`sf-checkbox`, `sf-switch` and `sf-dropdown` (its `options` printed as JSON
+text, which the element reads), and the `sf-divider` class component, with
+the inputs their `smart.manifest.json` declares and nothing else:
 
 ```js
 export default function render({ node, elements }) {

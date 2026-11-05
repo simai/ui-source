@@ -48,6 +48,7 @@ import {
 } from './utilities.mjs';
 import {
   BUILTIN_CATALOGUE,
+  BUILTIN_CATALOGUE_ALSO_IN,
   BUILTIN_CATALOGUE_ICONS,
   CATALOGUE_GROUPS,
   CATALOGUE_GROUP_ALIASES,
@@ -55,6 +56,8 @@ import {
   CATALOGUE_TABS,
   catalogue,
   catalogueEntry,
+  catalogueGroup,
+  entryGroups,
   instantiateVariant,
   slotAccepts,
   slotPlaces,
@@ -304,6 +307,9 @@ function validateContentRules(root, diagnostics) {
     if (node.type === 'element.button' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'Link protocol is not allowed'));
     }
+    if (node.type === 'form.form' && typeof node.data?.action === 'string' && !validUrl(node.data.action)) {
+      diagnostics.push(diagnostic('unsafe_url', `${path}.data.action`, 'Form address protocol is not allowed'));
+    }
     if (node.type === 'content.file' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'File address protocol is not allowed'));
     }
@@ -512,7 +518,7 @@ export function validate(document, registry = undefined, options = {}) {
         const childManifest = resolvedRegistry.types.get(child?.type);
         if (childManifest && slot.types && !slot.types.includes(child.type)) diagnostics.push(diagnostic('slot_child_type_forbidden', `${path}.slots.${slotName}[${index}]`, `${child.type} is not allowed in this slot`));
         if (childManifest && slot.categories && !slot.categories.includes(childManifest.category)) diagnostics.push(diagnostic('slot_child_category_forbidden', `${path}.slots.${slotName}[${index}]`, `${childManifest.category} is not allowed in this slot`));
-        if (childManifest && slot.groups && !slot.groups.includes(catalogueEntry(childManifest)?.group)) diagnostics.push(diagnostic('slot_child_group_forbidden', `${path}.slots.${slotName}[${index}]`, `${child.type} is not in a group this place accepts (${slot.groups.join(', ')})`));
+        if (childManifest && slot.groups && !entryGroups(catalogueEntry(childManifest)).some((group) => slot.groups.map(catalogueGroup).includes(group))) diagnostics.push(diagnostic('slot_child_group_forbidden', `${path}.slots.${slotName}[${index}]`, `${child.type} is not in a group this place accepts (${slot.groups.join(', ')})`));
         visit(child, `${path}.slots.${slotName}[${index}]`, depth + 1);
       });
     }
@@ -688,7 +694,17 @@ function renderMedia(node, slots) {
 
 // The words an element prints until the author writes its own, in the
 // Document's language (English when there is none for it).
-const ELEMENT_PLACEHOLDERS = Object.freeze({ en: { button: 'Button', badge: 'Badge' }, ru: { button: 'Кнопка', badge: 'Метка' } });
+const ELEMENT_PLACEHOLDERS = Object.freeze({
+  en: { button: 'Button', badge: 'Badge', send: 'Send', field: 'Field', option: 'Option', name: 'Name', phone: 'Phone', email: 'Email', message: 'Message' },
+  ru: { button: 'Кнопка', badge: 'Метка', send: 'Отправить', field: 'Поле', option: 'Вариант', name: 'Имя', phone: 'Телефон', email: 'Почта', message: 'Сообщение' },
+});
+// The fields whose name has a word of its own when they have no label (forms, 2026-11-04).
+const NAMED_FIELDS = new Set(['name', 'phone', 'email', 'message']);
+const fieldLabel = (node, locale) => node.data?.label || placeholder(locale, NAMED_FIELDS.has(node.data?.name) ? node.data.name : 'field');
+// A form field fills its column (a block, not the element block's flex row).
+const fieldBlock = (node, html) => (html ? `<div${id(node)}>${html}</div>` : '');
+// The options of a select: the words an author wrote, separated by commas.
+const optionList = (text) => [...new Set(String(text ?? '').split(',').map((word) => word.trim()).filter(Boolean))];
 const placeholder = (locale, key) => (ELEMENT_PLACEHOLDERS[String(locale || 'en').toLowerCase().split('-')[0]] || ELEMENT_PLACEHOLDERS.en)[key];
 const defined = (inputs) => Object.fromEntries(Object.entries(inputs).filter(([, value]) => value !== undefined && value !== ''));
 // An element stands in a block of its own: the editor selects and the
@@ -790,6 +806,78 @@ const BUILTIN_RENDERERS = {
   'element.icon': ({ node, elements }) => {
     const props = node.props || {};
     return elementBlock(node, elements.print('sf-icon', defined({ icon: props.icon ?? 'star', size: props.size ?? '2', label: node.data?.label })));
+  },
+  // Forms (2026-11-04): a <form> around its fields, its blocks one rhythm
+  // apart; each field one Smart element printed from its inputs.
+  'form.form': ({ node, slots }) => {
+    const action = node.data?.action ? ` action="${escapeHtml(node.data.action)}"` : '';
+    return `<form class="grid gap-4" method="${node.props?.method === 'get' ? 'get' : 'post'}"${action}${id(node)}>${slots.default || ''}</form>`;
+  },
+  'form.input': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return fieldBlock(node, elements.print('sf-input', defined({
+      label: fieldLabel(node, locale),
+      placeholder: node.data?.placeholder,
+      hint: node.data?.hint,
+      name: node.data?.name,
+      'input-type': props.input_type,
+      autocomplete: { email: 'email', tel: 'tel', url: 'url' }[props.input_type],
+      required: props.required === true || undefined,
+      size: props.size,
+    })));
+  },
+  'form.textarea': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return fieldBlock(node, elements.print('sf-input-textarea', defined({
+      label: fieldLabel(node, locale),
+      placeholder: node.data?.placeholder,
+      hint: node.data?.hint,
+      name: node.data?.name,
+      rows: props.rows,
+      required: props.required === true || undefined,
+      size: props.size,
+    })));
+  },
+  'form.checkbox': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return fieldBlock(node, elements.print('sf-checkbox', defined({
+      label: fieldLabel(node, locale),
+      description: node.data?.description,
+      name: node.data?.name,
+      checked: props.checked === true || undefined,
+      size: props.size,
+    })));
+  },
+  'form.switch': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return fieldBlock(node, elements.print('sf-switch', defined({
+      label: fieldLabel(node, locale),
+      description: node.data?.description,
+      name: node.data?.name,
+      checked: props.checked === true || undefined,
+      size: props.size,
+    })));
+  },
+  'form.select': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    const options = optionList(node.data?.options);
+    return fieldBlock(node, elements.print('sf-dropdown', defined({
+      label: fieldLabel(node, locale),
+      placeholder: node.data?.placeholder,
+      name: node.data?.name,
+      options: JSON.stringify(options.length ? options : [placeholder(locale, 'option')]),
+      required: props.required === true || undefined,
+      size: props.size,
+    })));
+  },
+  'form.button-submit': ({ node, elements, locale }) => {
+    const props = node.props || {};
+    return elementBlock(node, elements.print('sf-button', defined({
+      text: node.data?.text || placeholder(locale, 'send'),
+      'native-type': 'submit',
+      appearance: props.appearance,
+      size: props.size,
+    })));
   },
   'content.document': ({ node, slots }) => `<article${id(node)}>${node.data?.title ? `<h1>${escapeHtml(node.data.title)}</h1>` : ''}${slots.default || ''}</article>`,
   'content.list': ({ node, slots }) => {
@@ -1139,6 +1227,7 @@ export const Composition = Object.freeze({
   // modifiers, site blocks, named places and data.
   BINDING_STATES,
   BUILTIN_CATALOGUE,
+  BUILTIN_CATALOGUE_ALSO_IN,
   BUILTIN_CATALOGUE_ICONS,
   CATALOGUE_GROUPS,
   CATALOGUE_GROUP_ALIASES,
@@ -1150,6 +1239,7 @@ export const Composition = Object.freeze({
   bindingSettings,
   catalogue,
   catalogueEntry,
+  entryGroups,
   checkModifiers,
   checkSourceAnswer,
   composedEditorFields,
@@ -1201,7 +1291,7 @@ export { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor, defineFragmentBoun
 export { INLINE_MARKS, inlineText, marksIn, normalizeInline, replaceRange, setLink, startInlineEdit, toggleMark };
 export { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue };
 export { MODIFIERS_EXTENSION, UTILITY_BREAKPOINTS, checkModifiers, ownModifiers, utilityClassSpace, utilityClasses, valuesByBreakpoint };
-export { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS, catalogue, catalogueEntry, instantiateVariant, slotAccepts, slotPlaces };
+export { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ALSO_IN, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS, catalogue, catalogueEntry, entryGroups, instantiateVariant, slotAccepts, slotPlaces };
 export { COMPOSED_EXTENSION, composedInstance, composedPart, composedTextPaths, expandComposed };
 export { BINDING_STATES, DATA_EXTENSION, DATA_SHAPES, RUNTIME_OWNER, SOURCE_PORT, bindingSettings, createShapeRegistry, demoData };
 export { PARAMETER_SETS, PARAMETER_SET_NAMES, effectiveProps, expandParameterSets, parameterSetFields, parameterSetParts, utilityPartClasses, validateParameterSets, withParameterSetFields };

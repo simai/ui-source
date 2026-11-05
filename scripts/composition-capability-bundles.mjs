@@ -56,14 +56,14 @@ export const BUNDLES = Object.freeze([
   {
     directory: 'composition-editor-fields-v1',
     capability: 'simai.composition.editor-fields',
-    version: '1.2.0',
+    version: '1.3.0',
     status: 'owner-accepted-candidate',
     compatibility: {
       editor_manifest: 'simai.composition.editor-manifest.v1 unchanged',
       registry: 'additive layout.region entry in composition-editor-manifests.v1.json',
       field_kinds: 'new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json',
       existing_fields: 'the layout.section surface field and the content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)',
-      layout_section: 'the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04',
+      layout_section: 'the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04. It follows its type to 1.3.0: the background field offers accent as well (the primary fill with on-primary text, as the accent variant sets it); no field added or removed; ui-editor host, 2026-11-04',
       layout_columns: 'the layout.columns manifest follows its type to 1.1.0: the columns field unchanged, an additive gap field (integer 0..8); dispatcher decision 2026-11-03 (one block editor, Part A)',
     },
     schemas: [],

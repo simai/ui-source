@@ -359,7 +359,8 @@
               "container",
               "primary",
               "secondary",
-              "tertiary"
+              "tertiary",
+              "accent"
             ],
             "constraints": {
               "max_length": 32,
@@ -588,7 +589,7 @@
         "schema": "simai.composition.editor-manifest",
         "schema_version": 1,
         "type": "layout.section",
-        "type_version": "1.2.0"
+        "type_version": "1.3.0"
       }
     },
     {

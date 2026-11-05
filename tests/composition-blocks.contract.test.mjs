@@ -469,7 +469,7 @@ test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fie
   }
   // A type that names a set gets its props through a registry; the stored manifest keeps the names.
   const section = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(section.version, '1.2.0');
+  assert.equal(section.version, '1.3.0');
   assert.deepEqual(section.parameter_defaults, { width: 'normal', padding_y: 8 });
   assert.deepEqual(Object.keys(section.props_schema.properties || {}), []);
   assert.deepEqual(Object.keys(extendRegistry().types.get('layout.section').props_schema.properties).sort(), ['align', 'background', 'breakout', 'columns', 'gap', 'hidden', 'padding_x', 'padding_y', 'width']);
@@ -498,7 +498,7 @@ test('width reaches three elements; a section that sets width full and no space 
   // The editor manifest follows the type with the sets' fields; width and
   // the space above and below default to what the section prints unset.
   const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(editor.type_version, '1.2.0');
+  assert.equal(editor.type_version, '1.3.0');
   assert.equal(editor.fields.find(({ key }) => key === 'width').default, 'normal');
   assert.equal(editor.fields.find(({ key }) => key === 'padding_y').default, 8);
   assert.deepEqual(editor.fields.map(({ key }) => key), ['surface', 'background', 'padding_y', 'padding_x', 'width', 'columns', 'gap', 'align', 'breakout', 'hidden']);
@@ -520,13 +520,16 @@ test('a renderer that draws no part gets a notice, and its classes go nowhere el
 // ----------------------------------------------------------- printed elements
 
 test('a block prints smart elements with their manifest inputs, and nothing else', async () => {
-  assert.deepEqual([...PRINTED_ELEMENTS].sort(), ['sf-badge', 'sf-button', 'sf-button-icon', 'sf-divider', 'sf-icon']);
-  // The inputs are the manifests' own, without styles, free classes and alias names.
-  for (const [element, folder] of [['sf-button', 'button'], ['sf-button-icon', 'button-icon'], ['sf-badge', 'badge'], ['sf-icon', 'icon']]) {
+  assert.deepEqual([...PRINTED_ELEMENTS].sort(), ['sf-badge', 'sf-button', 'sf-button-icon', 'sf-checkbox', 'sf-divider', 'sf-dropdown', 'sf-icon', 'sf-input', 'sf-input-textarea', 'sf-switch']);
+  // The inputs are the manifests' own, without styles, free classes and alias
+  // names; sf-dropdown's options, a list in its manifest, print as JSON text.
+  assert.deepEqual(elementInputs('sf-dropdown').properties.options, { type: 'string' });
+  for (const [element, folder] of [['sf-button', 'button'], ['sf-button-icon', 'button-icon'], ['sf-badge', 'badge'], ['sf-icon', 'icon'], ['sf-input', 'input'], ['sf-input-textarea', 'input-textarea'], ['sf-checkbox', 'checkbox'], ['sf-switch', 'switch'], ['sf-dropdown', 'dropdown']]) {
     const manifest = JSON.parse(readFileSync(new URL(`src/smart/${folder}/smart.manifest.json`, root), 'utf8'));
     const inputs = elementInputs(element).properties;
     for (const [key, schema] of Object.entries(inputs)) {
       assert.ok(key in manifest.inputs.properties, `${element} ${key}`);
+      if (element === 'sf-dropdown' && key === 'options') continue;
       for (const word of ['type', 'enum', 'default', 'minimum', 'maximum']) if (word in schema) assert.deepEqual(schema[word], manifest.inputs.properties[key][word], `${element} ${key}.${word}`);
     }
     for (const key of ['root-style', 'root-class', 'template']) assert.equal(key in inputs, false, `${element} ${key}`);
@@ -558,12 +561,15 @@ test('SF.Composition publishes the one block editor helpers', () => {
 // ------------------------------- visual parity: built-in Elements and Layout (2026-11-04)
 
 const NEW_TYPES = ['layout.container', 'layout.grid', 'layout.spacer', 'element.button', 'element.button-icon', 'element.badge', 'element.icon'];
+const FORM_TYPES = ['form.form', 'form.input', 'form.textarea', 'form.checkbox', 'form.switch', 'form.select', 'form.button-submit'];
+// layout.grid 1.1.0 (2026-11-04): its columns hold on the phone, as the prototype's grids do.
+const VERSIONS = { 'layout.grid': '1.1.0' };
 
 test('every built-in type manifest, its variants and its parameter defaults pass the type check', () => {
   for (const type of BUILTIN_TYPE_MANIFESTS) assert.deepEqual(validateTypeManifest(type).diagnostics, [], type.type);
-  for (const type of NEW_TYPES) {
+  for (const type of [...NEW_TYPES, ...FORM_TYPES]) {
     const entry = BUILTIN_TYPE_MANIFESTS.find((manifest) => manifest.type === type);
-    assert.equal(entry.version, '1.0.0', type);
+    assert.equal(entry.version, VERSIONS[type] ?? '1.0.0', type);
     // Its own catalogue place agrees with the built-in table.
     assert.equal(entry.catalogue.group, BUILTIN_CATALOGUE[type], type);
     assert.equal(entry.catalogue.icon, Composition.BUILTIN_CATALOGUE_ICONS[type], type);
@@ -618,7 +624,7 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.equal(output.notices, undefined);
   const html = output.html;
   assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto container-flush" data-sf-composition-part="frame"><div class="space-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u, 'a container in a section has no second gutter');
-  assert.match(html, /<div data-sf-composition-id="g"><div class="grid grid-col-1 md:grid-col-3 gap-4" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u);
+  assert.match(html, /<div data-sf-composition-id="g"><div class="grid grid-col-3 gap-5" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u, 'a grid keeps its three columns on the phone, gap 5');
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
@@ -735,5 +741,91 @@ test('a heading and a paragraph take alignment and visibility per screen, as a s
     const targets = editor.fields.filter((field) => field.plane === 'props').map((field) => field.target);
     assert.deepEqual(targets, ['align', 'hidden'], type);
     assert.equal(editor.type_version, extendRegistry().types.get(type).version, type);
+  }
+});
+
+// ------------------------- the ui-editor host's G-20, the accent and the grid (2026-11-04)
+
+test('catalogue.also_in: a type stands in more than one section, counted in each, listed once', () => {
+  const { entries, sections } = catalogue(extendRegistry());
+  const names = sections.map(({ group }) => group);
+  assert.deepEqual(names, ['text', 'media', 'elements', 'layout', 'marketing', 'data', 'forms'].filter((group) => names.includes(group)));
+  assert.ok(names.includes('forms'), 'Forms has built-in types');
+  const text = sections.find(({ group }) => group === 'text');
+  assert.ok(text.entries.some(({ type }) => type === 'element.button'), 'the button stands in Text too');
+  assert.ok(text.entries.some(({ type }) => type === 'content.divider'), 'the divider stands in Text too');
+  assert.ok(sections.find(({ group }) => group === 'elements').entries.some(({ type }) => type === 'element.button'));
+  for (const section of sections) assert.equal(section.count, section.entries.length, section.group);
+  assert.equal(entries.filter(({ type }) => type === 'element.button').length, 1, 'entries hold each type once');
+  assert.deepEqual(catalogueEntry(extendRegistry().types.get('element.button')).also_in, ['text']);
+  // A product type's own also_in; its own group and unknown groups are refused.
+  const band = manifest('acme.band', { catalogue: { group: 'marketing', also_in: ['layout', 'structure'] } });
+  assert.deepEqual(validateTypeManifest(band, extendRegistry([band], { 'acme.band': draw('div') })).diagnostics, []);
+  assert.deepEqual(catalogueEntry(band).also_in, ['layout'], 'a dated alias gives its group, each group once');
+  assert.deepEqual(codes(validateTypeManifest(manifest('acme.x', { catalogue: { group: 'marketing', also_in: ['marketing'] } }))), ['catalogue_also_in_invalid']);
+  assert.deepEqual(codes(validateTypeManifest(manifest('acme.y', { catalogue: { group: 'marketing', also_in: ['nowhere'] } }))), ['catalogue_group_unknown']);
+  assert.deepEqual(codes(validateTypeManifest(manifest('acme.z', { catalogue: { group: 'marketing', also_in: [] } }))), ['catalogue_also_in_invalid']);
+  // A slot that takes Text takes the button, which stands there too.
+  const column = manifest('acme.column', { slots: { default: { min: 0, max: 5, groups: ['text'] } } });
+  const registry = extendRegistry([column], { 'acme.column': draw('div') });
+  assert.equal(slotAccepts(registry, column, 'default', 'element.button'), true);
+  assert.equal(slotAccepts(registry, column, 'default', 'element.badge'), false);
+  assert.deepEqual(validate(layout({ id: 'c', type: 'acme.column', slots: { default: [{ id: 'b', type: 'element.button' }] } }), registry).diagnostics, []);
+  assert.deepEqual(codes(validate(layout({ id: 'c', type: 'acme.column', slots: { default: [{ id: 'd', type: 'element.badge' }] } }), registry)), ['slot_child_group_forbidden']);
+});
+
+test('forms: each field prints one SIMAI Framework Smart element, the form a <form> around them', async () => {
+  const registry = extendRegistry();
+  const form = BUILTIN_TYPE_MANIFESTS.find(({ type }) => type === 'form.form');
+  for (const type of FORM_TYPES) {
+    assert.equal(catalogueEntry(registry.types.get(type)).group, 'forms', type);
+    assert.ok(Composition.BUILTIN_EDITOR_MANIFESTS.some((editor) => editor.type === type), `${type} has an editor manifest`);
+  }
+  const node = instantiateVariant(form, 'message', { id: 'f' });
+  node.data = { action: '/send/' };
+  node.slots.default.push(
+    { id: 'agree', type: 'form.checkbox', data: { label: 'Согласен с условиями', name: 'agree' } },
+    { id: 'news', type: 'form.switch', props: { checked: true } },
+    { id: 'city', type: 'form.select', data: { label: 'Город', options: 'Москва, Казань, Москва' }, props: { required: true } },
+  );
+  const document = layout(node);
+  document.locale = 'ru';
+  assert.deepEqual(validate(document).diagnostics, []);
+  const output = await render(document);
+  assert.deepEqual(output.diagnostics, []);
+  const html = output.html;
+  assert.match(html, /<form class="grid gap-4" method="post" action="\/send\/" data-sf-composition-id="f">/u);
+  assert.match(html, /<div data-sf-composition-id="f-name"><sf-input label="Имя" name="name"><\/sf-input><\/div>/u, 'a common name reads its word in the Document\'s language');
+  assert.match(html, /<sf-input autocomplete="email" input-type="email" label="Почта" name="email"><\/sf-input>/u);
+  assert.match(html, /<sf-input-textarea label="Сообщение" name="message"><\/sf-input-textarea>/u);
+  assert.match(html, /<sf-checkbox label="Согласен с условиями" name="agree"><\/sf-checkbox>/u);
+  assert.match(html, /<sf-switch checked label="Поле"><\/sf-switch>/u);
+  assert.match(html, /<sf-dropdown label="Город" options="\[&quot;Москва&quot;,&quot;Казань&quot;\]" required><\/sf-dropdown>/u, 'the options are the words, each once');
+  assert.match(html, /<div class="flex" data-sf-composition-id="f-send"><sf-button native-type="submit" text="Отправить"><\/sf-button><\/div>/u);
+  assert.deepEqual(checkPrintedElements(html), []);
+  assert.doesNotMatch(html, /style=/u);
+  assert.deepEqual(output.assets.filter((asset) => asset.startsWith('smart/')), ['smart/button', 'smart/checkbox', 'smart/dropdown', 'smart/input', 'smart/input-textarea', 'smart/switch']);
+  const english = await render(layout({ id: 'e', type: 'form.input' }, { id: 's', type: 'form.button-submit' }));
+  assert.match(english.html, /<sf-input label="Field"><\/sf-input>/u);
+  assert.match(english.html, /<sf-button native-type="submit" text="Send"><\/sf-button>/u);
+  assert.ok(codes(validate(layout({ id: 'x', type: 'form.form', data: { action: 'javascript:alert(1)' } }))).includes('unsafe_url'));
+  assert.equal(validate(layout({ id: 'y', type: 'form.input', data: { name: 'bad name' } })).valid, false);
+});
+
+test('the accent section is the primary fill with on-primary text; a grid keeps its columns on the phone', async () => {
+  const section = BUILTIN_TYPE_MANIFESTS.find(({ type }) => type === 'layout.section');
+  const accent = instantiateVariant(section, 'accent', { id: 'a' });
+  accent.slots = { default: [paragraph('a-p', 'Text')] };
+  const html = (await render(layout(accent))).html;
+  assert.match(html, /<section class="bg-primary color-on-primary p-y-8" data-sf-composition-id="a">/u);
+  assert.ok(known('bg-primary') && known('color-on-primary'));
+  assert.equal(PARAMETER_SETS.background.version, '1.1.0');
+  const sheet = readFileSync(new URL('src/core/scss/_sf_css__composition.scss', root), 'utf8');
+  assert.match(sheet, /\[data-sf-composition-id\]\.bg-primary\.color-on-primary\) \{\s*--sf-on-surface: var\(--sf-on-primary\);\s*--sf-on-surface-variant: var\(--sf-on-primary\);/u, 'the on-surface roles read on the accent');
+  const grid = BUILTIN_TYPE_MANIFESTS.find(({ type }) => type === 'layout.grid');
+  assert.deepEqual(grid.parameter_defaults, { columns: 3, gap: 5 });
+  for (const count of [2, 3, 4]) {
+    const node = instantiateVariant(grid, `cards-${count}`, { id: `g${count}` });
+    assert.match((await render(layout(node))).html, new RegExp(`<div class="grid grid-col-${count} gap-5" data-sf-composition-part="content">`, 'u'), `cards-${count}`);
   }
 });

@@ -9,7 +9,7 @@ import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER } from '../src/core/js/composition/editor-words.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
 import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
-import { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
+import { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ALSO_IN, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
 import { BINDING_STATES, DATA_SHAPES, SOURCE_PORT } from '../src/core/js/composition/data.mjs';
 import { UTILITY_BREAKPOINTS } from '../src/core/js/composition/utilities.mjs';
 import { parameterSetTable } from '../src/core/js/composition/parameter-sets.mjs';
@@ -31,7 +31,13 @@ const blocksOutputPath = resolve(root, 'src/core/contracts/composition-blocks.v1
 // switch, runtime state, an object, and the legacy and alias names (the
 // manifest says so in the input's description). The table is written as a
 // module the runtime imports and into composition-blocks.v1.json.
-const PRINTED = [['sf-button', 'button'], ['sf-button-icon', 'button-icon'], ['sf-badge', 'badge'], ['sf-icon', 'icon']];
+// Since 2026-11-04 the form fields too (form.input, form.textarea,
+// form.checkbox, form.switch, form.select).
+const PRINTED = [['sf-button', 'button'], ['sf-button-icon', 'button-icon'], ['sf-badge', 'badge'], ['sf-icon', 'icon'],
+  ['sf-input', 'input'], ['sf-input-textarea', 'input-textarea'], ['sf-checkbox', 'checkbox'], ['sf-switch', 'switch'], ['sf-dropdown', 'dropdown']];
+// An input whose value is a list in the manifest but which the element also
+// reads printed, as JSON text: sf-dropdown's options (its observed attribute).
+const PRINTED_AS_TEXT = { 'sf-dropdown': { options: { type: 'string' } } };
 const NOT_PRINTED = new Set(['template', 'root-class', 'root-style', 'loaded']);
 const ALIAS = /legacy name|compatibility alias|dated alias/iu;
 const elementsPath = resolve(root, 'src/core/js/composition/elements.generated.mjs');
@@ -41,7 +47,7 @@ const elementTable = Object.fromEntries(PRINTED.map(([element, folder]) => {
   const properties = Object.fromEntries(Object.entries(manifest.inputs.properties)
     .filter(([key, schema]) => !NOT_PRINTED.has(key) && !ALIAS.test(schema.description || '') && ['string', 'boolean', 'integer', 'number'].includes(schema.type))
     .map(([key, schema]) => [key, Object.fromEntries(Object.entries(schema).filter(([name]) => ['type', 'enum', 'default', 'minimum', 'maximum'].includes(name)))]));
-  return [element, { kind: 'custom-element', manifest: manifest.id, version: manifest.version, inputs: { type: 'object', additionalProperties: false, properties } }];
+  return [element, { kind: 'custom-element', manifest: manifest.id, version: manifest.version, inputs: { type: 'object', additionalProperties: false, properties: { ...properties, ...(PRINTED_AS_TEXT[element] ?? {}) } } }];
 }));
 // sf-divider is a class component (component.content-divider): no element,
 // an <hr> with its classes.
@@ -84,7 +90,9 @@ const blocksOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.blocks', 1),
   // Since 2026-11-04: each group's icon and word, the groups' dated aliases,
   // and each offered built-in type's icon (a type's own catalogue.icon wins).
-  catalogue: { groups: CATALOGUE_GROUPS, group_table: CATALOGUE_GROUP_TABLE, group_aliases: CATALOGUE_GROUP_ALIASES, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE, icons: BUILTIN_CATALOGUE_ICONS, variant_extension: 'simai.composition:variant' },
+  // Since type manifest 1.6.0 the further groups a built-in type stands in
+  // (also_in; a type's own catalogue.also_in wins).
+  catalogue: { groups: CATALOGUE_GROUPS, group_table: CATALOGUE_GROUP_TABLE, group_aliases: CATALOGUE_GROUP_ALIASES, tabs: CATALOGUE_TABS, builtin: BUILTIN_CATALOGUE, icons: BUILTIN_CATALOGUE_ICONS, also_in: BUILTIN_CATALOGUE_ALSO_IN, variant_extension: 'simai.composition:variant' },
   utilities: { keyword: 'x-simai-utility', breakpoints: UTILITY_BREAKPOINTS, modifiers_extension: 'simai.composition:modifiers' },
   data: { shapes: DATA_SHAPES, states: BINDING_STATES, extension: 'simai.composition:data', runtime_owner: 'section', source_port: SOURCE_PORT },
   composed: { extension: 'simai.composition:composed', renderer: 'composed', text_path: '<node id>/<field>' },

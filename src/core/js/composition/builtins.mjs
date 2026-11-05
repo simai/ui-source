@@ -13,8 +13,11 @@ const TEXT_SETS = Object.freeze(['alignment', 'visibility']);
 // container m-inline-auto), so in the default theme no text touches the
 // page's edge. A section that sets its own values keeps them.
 const SECTION_DEFAULTS = Object.freeze({ width: 'normal', padding_y: 8 });
-// A layout grid stands in one column on the phone and three from the tablet.
-const GRID_DEFAULTS = Object.freeze({ columns: Object.freeze({ xs: 1, md: 3 }), gap: 4 });
+// A layout grid keeps its columns on every screen, as the accepted prototype's
+// features and cards grids do on the phone (layout.grid 1.1.0, 2026-11-04;
+// measured there at 380: three columns, gap 20, its gap m). A Document sets
+// the phone's own value where one column is wanted.
+const GRID_DEFAULTS = Object.freeze({ columns: 3, gap: 5 });
 const CONTAINER_DEFAULTS = Object.freeze({ width: 'narrow' });
 const catalogueWord = (type) => `sf.composition.catalogue.type.${type.replace('.', '_').replaceAll('-', '_')}`;
 const variantWord = (type, id) => `sf.composition.catalogue.variant.${type.replace('.', '_').replaceAll('-', '_')}.${id.replaceAll('-', '_')}`;
@@ -149,6 +152,8 @@ export const CONTENT_ITEM_PARENTS = Object.freeze({
 
 // A SIMAI Framework icon name (Material Symbols): what sf-icon draws.
 const iconName = { type: 'string', pattern: '^[a-z0-9][a-z0-9_]{0,63}$' };
+// What a form field submits under: a form control name.
+const fieldName = { type: 'string', pattern: '^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$' };
 // A layout type of the one block editor: a ui-layout block with parameter sets.
 const layoutManifest = (type, fields) => ({
   ...schemaFields('simai.composition.type-manifest', 1),
@@ -208,7 +213,10 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     // 1.2.0 (2026-11-04): the section prints its spacing and width by default
     // (parameter_defaults: p-y-8, the page container), and offers variants.
     // A Document that sets them keeps its own values.
-    version: '1.2.0',
+    // 1.3.0 (2026-11-04): the accent variant is the primary role's own fill
+    // with on-primary text (background accent), as the prototype draws it,
+    // not the primary container's light tint.
+    version: '1.3.0',
     category: 'layout',
     mode: 'composite',
     profiles: ['ui-layout'],
@@ -219,7 +227,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     variants: [
       { id: 'plain', label_key: variantWord('layout.section', 'plain') },
       { id: 'soft', label_key: variantWord('layout.section', 'soft'), props: { background: 'container' } },
-      { id: 'accent', label_key: variantWord('layout.section', 'accent'), props: { background: 'primary' } },
+      { id: 'accent', label_key: variantWord('layout.section', 'accent'), props: { background: 'accent' } },
       { id: 'text', label_key: variantWord('layout.section', 'text'), props: { width: 'narrow' }, slots: { default: [{ id: 'area', type: 'layout.area' }] } },
       { id: 'two-columns', label_key: variantWord('layout.section', 'two-columns'), props: { columns: { xs: 1, md: 2 }, gap: 6 } },
     ],
@@ -443,6 +451,9 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     ],
   }),
   layoutManifest('layout.grid', {
+    // 1.1.0 (2026-11-04): its columns hold on the phone (three, gap 5), and
+    // its card variants keep theirs, as the prototype draws them at 380.
+    version: '1.1.0',
     parameter_sets: ['grid', 'visibility'],
     parameter_defaults: GRID_DEFAULTS,
     slots: { default: { min: 0, max: 48, categories: ['layout', 'content', 'smart'] } },
@@ -450,7 +461,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     variants: [2, 3, 4].map((count) => ({
       id: `cards-${count}`,
       label_key: variantWord('layout.grid', `cards-${count}`),
-      props: { columns: { xs: 1, md: count } },
+      props: { columns: count },
       slots: { default: Array.from({ length: count }, (_, index) => ({ id: `card-${index + 1}`, type: 'content.card' })) },
     })),
   }),
@@ -517,6 +528,105 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       size: { enum: ['1', '2', '3', '4', '5'], default: '2' },
     }),
     catalogue: { group: 'elements', icon: 'star', label_key: catalogueWord('element.icon'), keywords: { en: ['icon', 'symbol', 'pictogram'], ru: ['значок', 'иконка', 'пиктограмма'] }, order: 130 },
+  }),
+  // Forms (2026-11-04; the ui-editor host's G-20): a form and its fields,
+  // each field one SIMAI Framework Smart element printed from its inputs
+  // (sf-input, sf-input-textarea, sf-checkbox, sf-switch, sf-dropdown,
+  // sf-button with native-type submit). The form is a <form> around them;
+  // where it is sent is the host's (action), checked by the Document's URL
+  // rule. A field names what it submits (name); without a label, a field
+  // whose name is a common one (name, phone, email, message) reads its word
+  // in the Document's language, any other «Field»; so the variants carry
+  // names, not words of one language.
+  {
+    ...schemaFields('simai.composition.type-manifest', 1),
+    type: 'form.form',
+    version: '1.0.0',
+    category: 'smart',
+    mode: 'composite',
+    profiles: ['ui-layout'],
+    data_schema: closed({ action: urlSchema }),
+    props_schema: closed({ method: { enum: ['post', 'get'], default: 'post' } }),
+    presentation: { views: ['default'], presets: [], modifiers: [] },
+    slots: { default: { min: 0, max: 50, categories: ['content', 'smart'] } },
+    renderer: { kind: 'builtin', name: 'form.form' },
+    assets: [],
+    capabilities: ['html'],
+    catalogue: { group: 'forms', icon: 'contact_mail', label_key: catalogueWord('form.form'), keywords: { en: ['form', 'request', 'contact', 'feedback'], ru: ['форма', 'заявка', 'обратная связь', 'контакты'] }, order: 100 },
+    variants: [
+      {
+        id: 'request',
+        label_key: variantWord('form.form', 'request'),
+        slots: { default: [
+          { id: 'name', type: 'form.input', data: { name: 'name' } },
+          { id: 'phone', type: 'form.input', data: { name: 'phone' }, props: { input_type: 'tel' } },
+          { id: 'send', type: 'form.button-submit' },
+        ] },
+      },
+      {
+        id: 'message',
+        label_key: variantWord('form.form', 'message'),
+        slots: { default: [
+          { id: 'name', type: 'form.input', data: { name: 'name' } },
+          { id: 'email', type: 'form.input', data: { name: 'email' }, props: { input_type: 'email' } },
+          { id: 'text', type: 'form.textarea', data: { name: 'message' } },
+          { id: 'send', type: 'form.button-submit' },
+        ] },
+      },
+    ],
+  },
+  elementManifest('form.input', 'smart/input', {
+    data_schema: closed({ label: plainText(200), placeholder: plainText(200), hint: plainText(300), name: fieldName }),
+    props_schema: closed({
+      input_type: { enum: ['text', 'email', 'tel', 'url'], default: 'text' },
+      required: { type: 'boolean', default: false },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'input', label_key: catalogueWord('form.input'), keywords: { en: ['field', 'input', 'text field', 'email', 'phone'], ru: ['поле', 'ввод', 'текстовое поле', 'почта', 'телефон'] }, order: 110 },
+  }),
+  elementManifest('form.textarea', 'smart/input-textarea', {
+    data_schema: closed({ label: plainText(200), placeholder: plainText(200), hint: plainText(300), name: fieldName }),
+    props_schema: closed({
+      rows: { type: 'integer', minimum: 2, maximum: 12, default: 3 },
+      required: { type: 'boolean', default: false },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'notes', label_key: catalogueWord('form.textarea'), keywords: { en: ['text area', 'message', 'comment', 'multiline'], ru: ['многострочное поле', 'сообщение', 'комментарий'] }, order: 120 },
+  }),
+  elementManifest('form.checkbox', 'smart/checkbox', {
+    data_schema: closed({ label: plainText(300), description: plainText(300), name: fieldName }),
+    props_schema: closed({
+      checked: { type: 'boolean', default: false },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'check_box', label_key: catalogueWord('form.checkbox'), keywords: { en: ['checkbox', 'agree', 'consent', 'tick'], ru: ['флажок', 'галочка', 'согласие'] }, order: 130 },
+  }),
+  elementManifest('form.switch', 'smart/switch', {
+    data_schema: closed({ label: plainText(300), description: plainText(300), name: fieldName }),
+    props_schema: closed({
+      checked: { type: 'boolean', default: false },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'toggle_on', label_key: catalogueWord('form.switch'), keywords: { en: ['switch', 'toggle', 'on off'], ru: ['переключатель', 'вкл выкл'] }, order: 140 },
+  }),
+  elementManifest('form.select', 'smart/dropdown', {
+    // The options are words, one after another, separated by commas: what an
+    // author writes in one field. Each option submits its own words.
+    data_schema: closed({ label: plainText(200), placeholder: plainText(200), options: plainText(2000), name: fieldName }),
+    props_schema: closed({
+      required: { type: 'boolean', default: false },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'arrow_drop_down_circle', label_key: catalogueWord('form.select'), keywords: { en: ['select', 'dropdown', 'choice', 'list'], ru: ['список', 'выбор', 'выпадающий список'] }, order: 150 },
+  }),
+  elementManifest('form.button-submit', 'smart/button', {
+    // Unset, it reads «Send» in the Document's language.
+    data_schema: closed({ text: plainText(200) }),
+    props_schema: closed({
+      appearance: { enum: ['default', 'tonal', 'outline'], default: 'default' },
+      size: { enum: ['1/2', '1', '2'], default: '1' },
+    }),
+    catalogue: { group: 'forms', icon: 'send', label_key: catalogueWord('form.button-submit'), keywords: { en: ['submit', 'send', 'button'], ru: ['отправить', 'кнопка отправки', 'кнопка'] }, order: 160 },
   }),
   // The root of a structured-content Document: the page's blocks in order,
   // under the page's title (the accepted content editor prototype writes
@@ -785,7 +895,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.section',
-    type_version: '1.2.0',
+    type_version: '1.3.0',
     fields: [
       {
         key: 'surface',
@@ -941,7 +1051,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   // The layout and element types of the one block editor (2026-11-04).
   { ...contentEditor('content.paragraph', parameterSetFields({ parameter_sets: TEXT_SETS })), type_version: '1.3.0' },
   contentEditor('layout.container', parameterSetFields({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })),
-  contentEditor('layout.grid', parameterSetFields({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })),
+  { ...contentEditor('layout.grid', parameterSetFields({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })), type_version: '1.1.0' },
   contentEditor('layout.spacer', [
     contentField('layout.spacer', 'size', 'props', 'integer', { constraints: { min: 1, max: 8 }, default: 6 }),
     ...parameterSetFields({ parameter_sets: ['visibility'] }),
@@ -973,6 +1083,56 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('element.icon', 'icon', 'props', 'text', { constraints: { min_length: 1, max_length: 64 }, default: 'star' }),
     contentField('element.icon', 'size', 'props', 'choice', { choices: ['1', '2', '3', '4', '5'], default: '2' }),
     contentField('element.icon', 'label', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 120 } }),
+  ]),
+  // Forms (2026-11-04).
+  contentEditor('form.form', [
+    contentField('form.form', 'action', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
+    contentField('form.form', 'method', 'props', 'choice', { ...advanced, choices: ['post', 'get'], default: 'post' }),
+  ]),
+  contentEditor('form.input', [
+    contentField('form.input', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.input', 'placeholder', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.input', 'input_type', 'props', 'choice', { choices: ['text', 'email', 'tel', 'url'], default: 'text' }),
+    contentField('form.input', 'required', 'props', 'toggle', { default: false }),
+    contentField('form.input', 'hint', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.input', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('form.input', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
+  ]),
+  contentEditor('form.textarea', [
+    contentField('form.textarea', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.textarea', 'placeholder', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.textarea', 'rows', 'props', 'integer', { constraints: { min: 2, max: 12 }, default: 3 }),
+    contentField('form.textarea', 'required', 'props', 'toggle', { default: false }),
+    contentField('form.textarea', 'hint', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.textarea', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('form.textarea', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
+  ]),
+  contentEditor('form.checkbox', [
+    contentField('form.checkbox', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.checkbox', 'description', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.checkbox', 'checked', 'props', 'toggle', { default: false }),
+    contentField('form.checkbox', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('form.checkbox', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
+  ]),
+  contentEditor('form.switch', [
+    contentField('form.switch', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.switch', 'description', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.switch', 'checked', 'props', 'toggle', { default: false }),
+    contentField('form.switch', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('form.switch', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
+  ]),
+  contentEditor('form.select', [
+    contentField('form.select', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.select', 'options', 'data', 'text', { constraints: { min_length: 1, max_length: 2000 } }),
+    contentField('form.select', 'placeholder', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.select', 'required', 'props', 'toggle', { default: false }),
+    contentField('form.select', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('form.select', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
+  ]),
+  contentEditor('form.button-submit', [
+    contentField('form.button-submit', 'text', 'data', 'text', { constraints: { min_length: 1, max_length: 200 } }),
+    contentField('form.button-submit', 'appearance', 'props', 'choice', { choices: ['default', 'tonal', 'outline'], default: 'default' }),
+    contentField('form.button-submit', 'size', 'props', 'choice', { choices: ['1/2', '1', '2'], default: '1' }),
   ]),
   contentEditor('content.list', [
     contentField('content.list', 'ordered', 'props', 'toggle', { default: false }),

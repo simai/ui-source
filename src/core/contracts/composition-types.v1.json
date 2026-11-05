@@ -127,7 +127,7 @@
           "id": "accent",
           "label_key": "sf.composition.catalogue.variant.layout_section.accent",
           "props": {
-            "background": "primary"
+            "background": "accent"
           }
         },
         {
@@ -157,7 +157,7 @@
           }
         }
       ],
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "assets": [
@@ -1298,11 +1298,8 @@
       },
       "mode": "composite",
       "parameter_defaults": {
-        "columns": {
-          "md": 3,
-          "xs": 1
-        },
-        "gap": 4
+        "columns": 3,
+        "gap": 5
       },
       "parameter_sets": [
         "grid",
@@ -1346,10 +1343,7 @@
           "id": "cards-2",
           "label_key": "sf.composition.catalogue.variant.layout_grid.cards_2",
           "props": {
-            "columns": {
-              "md": 2,
-              "xs": 1
-            }
+            "columns": 2
           },
           "slots": {
             "default": [
@@ -1368,10 +1362,7 @@
           "id": "cards-3",
           "label_key": "sf.composition.catalogue.variant.layout_grid.cards_3",
           "props": {
-            "columns": {
-              "md": 3,
-              "xs": 1
-            }
+            "columns": 3
           },
           "slots": {
             "default": [
@@ -1394,10 +1385,7 @@
           "id": "cards-4",
           "label_key": "sf.composition.catalogue.variant.layout_grid.cards_4",
           "props": {
-            "columns": {
-              "md": 4,
-              "xs": 1
-            }
+            "columns": 4
           },
           "slots": {
             "default": [
@@ -1421,7 +1409,7 @@
           }
         }
       ],
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],
@@ -1892,6 +1880,694 @@
       "schema_version": 1,
       "slots": {},
       "type": "element.icon",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "contact_mail",
+        "keywords": {
+          "en": [
+            "form",
+            "request",
+            "contact",
+            "feedback"
+          ],
+          "ru": [
+            "форма",
+            "заявка",
+            "обратная связь",
+            "контакты"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_form",
+        "order": 100
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "method": {
+            "default": "post",
+            "enum": [
+              "post",
+              "get"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.form"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {
+        "default": {
+          "categories": [
+            "content",
+            "smart"
+          ],
+          "max": 50,
+          "min": 0
+        }
+      },
+      "type": "form.form",
+      "variants": [
+        {
+          "id": "request",
+          "label_key": "sf.composition.catalogue.variant.form_form.request",
+          "slots": {
+            "default": [
+              {
+                "data": {
+                  "name": "name"
+                },
+                "id": "name",
+                "type": "form.input"
+              },
+              {
+                "data": {
+                  "name": "phone"
+                },
+                "id": "phone",
+                "props": {
+                  "input_type": "tel"
+                },
+                "type": "form.input"
+              },
+              {
+                "id": "send",
+                "type": "form.button-submit"
+              }
+            ]
+          }
+        },
+        {
+          "id": "message",
+          "label_key": "sf.composition.catalogue.variant.form_form.message",
+          "slots": {
+            "default": [
+              {
+                "data": {
+                  "name": "name"
+                },
+                "id": "name",
+                "type": "form.input"
+              },
+              {
+                "data": {
+                  "name": "email"
+                },
+                "id": "email",
+                "props": {
+                  "input_type": "email"
+                },
+                "type": "form.input"
+              },
+              {
+                "data": {
+                  "name": "message"
+                },
+                "id": "text",
+                "type": "form.textarea"
+              },
+              {
+                "id": "send",
+                "type": "form.button-submit"
+              }
+            ]
+          }
+        }
+      ],
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/input"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "input",
+        "keywords": {
+          "en": [
+            "field",
+            "input",
+            "text field",
+            "email",
+            "phone"
+          ],
+          "ru": [
+            "поле",
+            "ввод",
+            "текстовое поле",
+            "почта",
+            "телефон"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_input",
+        "order": 110
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "hint": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$",
+            "type": "string"
+          },
+          "placeholder": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "input_type": {
+            "default": "text",
+            "enum": [
+              "text",
+              "email",
+              "tel",
+              "url"
+            ]
+          },
+          "required": {
+            "default": false,
+            "type": "boolean"
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.input"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.input",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/input-textarea"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "notes",
+        "keywords": {
+          "en": [
+            "text area",
+            "message",
+            "comment",
+            "multiline"
+          ],
+          "ru": [
+            "многострочное поле",
+            "сообщение",
+            "комментарий"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_textarea",
+        "order": 120
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "hint": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$",
+            "type": "string"
+          },
+          "placeholder": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "required": {
+            "default": false,
+            "type": "boolean"
+          },
+          "rows": {
+            "default": 3,
+            "maximum": 12,
+            "minimum": 2,
+            "type": "integer"
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.textarea"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.textarea",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/checkbox"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "check_box",
+        "keywords": {
+          "en": [
+            "checkbox",
+            "agree",
+            "consent",
+            "tick"
+          ],
+          "ru": [
+            "флажок",
+            "галочка",
+            "согласие"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_checkbox",
+        "order": 130
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "checked": {
+            "default": false,
+            "type": "boolean"
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.checkbox"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.checkbox",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/switch"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "toggle_on",
+        "keywords": {
+          "en": [
+            "switch",
+            "toggle",
+            "on off"
+          ],
+          "ru": [
+            "переключатель",
+            "вкл выкл"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_switch",
+        "order": 140
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "checked": {
+            "default": false,
+            "type": "boolean"
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.switch"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.switch",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/dropdown"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "arrow_drop_down_circle",
+        "keywords": {
+          "en": [
+            "select",
+            "dropdown",
+            "choice",
+            "list"
+          ],
+          "ru": [
+            "список",
+            "выбор",
+            "выпадающий список"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_select",
+        "order": 150
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.\\[\\]-]{0,63}$",
+            "type": "string"
+          },
+          "options": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "placeholder": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "required": {
+            "default": false,
+            "type": "boolean"
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.select"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.select",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "smart/button"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "catalogue": {
+        "group": "forms",
+        "icon": "send",
+        "keywords": {
+          "en": [
+            "submit",
+            "send",
+            "button"
+          ],
+          "ru": [
+            "отправить",
+            "кнопка отправки",
+            "кнопка"
+          ]
+        },
+        "label_key": "sf.composition.catalogue.type.form_button_submit",
+        "order": 160
+      },
+      "category": "smart",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "appearance": {
+            "default": "default",
+            "enum": [
+              "default",
+              "tonal",
+              "outline"
+            ]
+          },
+          "size": {
+            "default": "1",
+            "enum": [
+              "1/2",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "form.button-submit"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "form.button-submit",
       "version": "1.0.0"
     },
     {

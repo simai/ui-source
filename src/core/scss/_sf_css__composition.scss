@@ -100,6 +100,20 @@
     }
 }
 
+// A block on the accent fill (the background parameter's accent, 1.1.0;
+// layout.section 1.3.0's accent variant, 2026-11-04): the primary role's own
+// fill with on-primary text, as the accepted prototype draws it. The text
+// over it reads in on-primary (color-on-primary, a utility); the dimmed text
+// and the icons the Framework draws in the on-surface roles switch to it too,
+// as a container fill switches on-surface-variant (bg-surface-container), so
+// a caption or an sf-icon stays legible on the accent.
+@layer sf.components {
+    :where([data-sf-composition-id].bg-primary.color-on-primary) {
+        --sf-on-surface: var(--sf-on-primary);
+        --sf-on-surface-variant: var(--sf-on-primary);
+    }
+}
+
 // A routing scope is a non-visual common parent; it must not change layout.
 @layer sf.components {
     sf-composition-scope {

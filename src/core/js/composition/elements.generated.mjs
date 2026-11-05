@@ -402,6 +402,74 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     "manifest": "smart.button-icon",
     "version": "1.4.0"
   },
+  "sf-checkbox": {
+    "inputs": {
+      "additionalProperties": false,
+      "properties": {
+        "aria-label": {
+          "default": "",
+          "type": "string"
+        },
+        "checked": {
+          "default": false,
+          "type": "boolean"
+        },
+        "description": {
+          "default": "",
+          "type": "string"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "help": {
+          "default": "",
+          "type": "string"
+        },
+        "indeterminate": {
+          "default": false,
+          "type": "boolean"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
+        },
+        "label": {
+          "default": "",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "position": {
+          "default": "start",
+          "enum": [
+            "start",
+            "end"
+          ],
+          "type": "string"
+        },
+        "size": {
+          "default": "1",
+          "enum": [
+            "1/2",
+            "1",
+            "2"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "default": "on",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "kind": "custom-element",
+    "manifest": "smart.checkbox",
+    "version": "1.1.6"
+  },
   "sf-divider": {
     "component": "component.content-divider",
     "inputs": {
@@ -419,6 +487,112 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
       "type": "object"
     },
     "kind": "class"
+  },
+  "sf-dropdown": {
+    "inputs": {
+      "additionalProperties": false,
+      "properties": {
+        "appearance": {
+          "default": "outlined",
+          "enum": [
+            "filled",
+            "outlined"
+          ],
+          "type": "string"
+        },
+        "aria-label": {
+          "default": "",
+          "type": "string"
+        },
+        "columns": {
+          "default": 6,
+          "type": "number"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "inherited-text": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-value": {
+          "default": "",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "type": "string"
+        },
+        "layout": {
+          "default": "list",
+          "enum": [
+            "list",
+            "grid"
+          ],
+          "type": "string"
+        },
+        "mode": {
+          "default": "select",
+          "enum": [
+            "tag",
+            "select"
+          ],
+          "type": "string"
+        },
+        "multiple": {
+          "default": false,
+          "type": "boolean"
+        },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "options": {
+          "type": "string"
+        },
+        "placeholder": {
+          "default": "",
+          "type": "string"
+        },
+        "portal": {
+          "default": true,
+          "type": "boolean"
+        },
+        "required": {
+          "default": false,
+          "type": "boolean"
+        },
+        "reset-label": {
+          "default": "",
+          "type": "string"
+        },
+        "search": {
+          "default": true,
+          "type": "boolean"
+        },
+        "search-placeholder": {
+          "type": "string"
+        },
+        "size": {
+          "default": "1",
+          "enum": [
+            "1/2",
+            "1",
+            "2"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "kind": "custom-element",
+    "manifest": "smart.dropdown",
+    "version": "1.5.3"
   },
   "sf-icon": {
     "inputs": {
@@ -504,5 +678,378 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     "kind": "custom-element",
     "manifest": "smart.icon",
     "version": "1.1.5"
+  },
+  "sf-input": {
+    "inputs": {
+      "additionalProperties": false,
+      "properties": {
+        "appearance": {
+          "default": "bordered",
+          "enum": [
+            "bordered",
+            "filled",
+            "hidden"
+          ],
+          "type": "string"
+        },
+        "aria-label": {
+          "default": "",
+          "type": "string"
+        },
+        "autocomplete": {
+          "default": "",
+          "type": "string"
+        },
+        "default-value": {
+          "default": "",
+          "type": "string"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "hint": {
+          "default": "",
+          "type": "string"
+        },
+        "hint-icon": {
+          "default": "",
+          "type": "string"
+        },
+        "icon-start": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-text": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-value": {
+          "default": "",
+          "type": "string"
+        },
+        "input-type": {
+          "default": "text",
+          "enum": [
+            "text",
+            "email",
+            "password",
+            "search",
+            "tel",
+            "url"
+          ],
+          "type": "string"
+        },
+        "inputmode": {
+          "default": "",
+          "enum": [
+            "",
+            "none",
+            "text",
+            "tel",
+            "url",
+            "email",
+            "numeric",
+            "decimal",
+            "search"
+          ],
+          "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
+        },
+        "label": {
+          "default": "",
+          "type": "string"
+        },
+        "mask": {
+          "default": false,
+          "type": "boolean"
+        },
+        "mask-lazy": {
+          "default": "",
+          "type": "string"
+        },
+        "mask-options": {
+          "default": "",
+          "type": "string"
+        },
+        "mask-pattern": {
+          "default": "",
+          "type": "string"
+        },
+        "mask-placeholder-char": {
+          "default": "",
+          "type": "string"
+        },
+        "maxlength": {
+          "default": "",
+          "type": "string"
+        },
+        "minlength": {
+          "default": "",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "pattern": {
+          "default": "",
+          "type": "string"
+        },
+        "placeholder": {
+          "default": "",
+          "type": "string"
+        },
+        "readonly": {
+          "default": false,
+          "type": "boolean"
+        },
+        "required": {
+          "default": false,
+          "type": "boolean"
+        },
+        "reset-label": {
+          "default": "",
+          "type": "string"
+        },
+        "size": {
+          "default": "1",
+          "enum": [
+            "1/2",
+            "1",
+            "2"
+          ],
+          "type": "string"
+        },
+        "text-end": {
+          "default": "",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "kind": "custom-element",
+    "manifest": "smart.input",
+    "version": "1.4.4"
+  },
+  "sf-input-textarea": {
+    "inputs": {
+      "additionalProperties": false,
+      "properties": {
+        "appearance": {
+          "default": "bordered",
+          "enum": [
+            "bordered",
+            "filled",
+            "flush"
+          ],
+          "type": "string"
+        },
+        "auto-grow": {
+          "default": false,
+          "type": "boolean"
+        },
+        "autocomplete": {
+          "default": "",
+          "type": "string"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "hint": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-text": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-value": {
+          "default": "",
+          "type": "string"
+        },
+        "inputmode": {
+          "default": "",
+          "enum": [
+            "",
+            "none",
+            "text",
+            "tel",
+            "url",
+            "email",
+            "numeric",
+            "decimal",
+            "search"
+          ],
+          "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
+        },
+        "label": {
+          "default": "",
+          "type": "string"
+        },
+        "mask": {
+          "default": false,
+          "type": "boolean"
+        },
+        "mask-options": {
+          "default": "",
+          "type": "string"
+        },
+        "mask-pattern": {
+          "default": "",
+          "type": "string"
+        },
+        "max-rows": {
+          "type": "number"
+        },
+        "maxlength": {
+          "type": "number"
+        },
+        "min-rows": {
+          "default": 1,
+          "type": "number"
+        },
+        "minlength": {
+          "type": "number"
+        },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "placeholder": {
+          "default": "",
+          "type": "string"
+        },
+        "readonly": {
+          "default": false,
+          "type": "boolean"
+        },
+        "required": {
+          "default": false,
+          "type": "boolean"
+        },
+        "reset-label": {
+          "default": "",
+          "type": "string"
+        },
+        "rows": {
+          "default": 3,
+          "type": "number"
+        },
+        "size": {
+          "default": "1",
+          "enum": [
+            "1/2",
+            "1",
+            "2"
+          ],
+          "type": "string"
+        },
+        "spell-check": {
+          "default": true,
+          "type": "boolean"
+        },
+        "value": {
+          "default": "",
+          "type": "string"
+        },
+        "wrap": {
+          "default": "soft",
+          "enum": [
+            "soft",
+            "hard"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "kind": "custom-element",
+    "manifest": "smart.input-textarea",
+    "version": "1.7.0"
+  },
+  "sf-switch": {
+    "inputs": {
+      "additionalProperties": false,
+      "properties": {
+        "aria-label": {
+          "default": "",
+          "type": "string"
+        },
+        "checked": {
+          "default": false,
+          "type": "boolean"
+        },
+        "description": {
+          "default": "",
+          "type": "string"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "help": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-text": {
+          "default": "",
+          "type": "string"
+        },
+        "inherited-value": {
+          "default": "",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
+        "reset-label": {
+          "default": "",
+          "type": "string"
+        },
+        "size": {
+          "default": "1",
+          "enum": [
+            "1/2",
+            "1",
+            "2"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "default": "on",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "kind": "custom-element",
+    "manifest": "smart.switch",
+    "version": "1.2.3"
   }
 });

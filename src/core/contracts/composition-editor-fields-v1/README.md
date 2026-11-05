@@ -28,6 +28,12 @@ follows its type to `layout.section@1.2.0`. No field is added or removed; the
 section prints when a Document leaves them unset (the type's
 `parameter_defaults`). A Document that sets them keeps its own values.
 
+1.3.0 (2026-11-04, the ui-editor host): the `layout.section` editor manifest
+follows its type to `layout.section@1.3.0`. No field is added or removed; the
+`background` field offers `accent` as well (background parameter set 1.1.0:
+the primary role's fill with on-primary text), the value the section's accent
+variant now sets.
+
 ## Файлы
 
 - README.md — этот текст, нормативный.

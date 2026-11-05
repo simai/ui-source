@@ -32,12 +32,18 @@ export const PARAMETER_DEFAULTS_FIELD = 'parameter_defaults';
 export const PARAMETER_SET_OWNER = 'simai/framework';
 
 // A background is named by its role; the class is the role's container fill.
+// accent (background 1.1.0, 2026-11-04) is the primary role's own fill with
+// its on-primary text, as the accepted prototype draws an accent section: the
+// text over it, and the dimmed text and icons the Framework draws in the
+// on-surface roles, read on it (the composition sheet switches those roles
+// inside it, as bg-surface-container switches on-surface-variant).
 const BACKGROUND_CLASSES = {
   surface: 'bg-surface',
   container: 'bg-surface-container',
   primary: 'bg-primary-container',
   secondary: 'bg-secondary-container',
   tertiary: 'bg-tertiary-container',
+  accent: 'bg-primary color-on-primary',
 };
 const BACKGROUNDS = Object.keys(BACKGROUND_CLASSES);
 const step = (maximum) => ({ type: 'integer', minimum: 0, maximum });
@@ -49,7 +55,7 @@ const step = (maximum) => ({ type: 'integer', minimum: 0, maximum });
  */
 export const PARAMETER_SETS = Object.freeze({
   background: {
-    version: '1.0.0',
+    version: '1.1.0',
     summary: 'The block\'s fill: a surface or container colour role.',
     properties: {
       background: { type: 'string', enum: BACKGROUNDS, 'x-simai-utility': { values: BACKGROUND_CLASSES } },

@@ -9,25 +9,25 @@
     "existing_fields": "the layout.section surface field and the content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms)",
     "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
     "layout_columns": "the layout.columns manifest follows its type to 1.1.0: the columns field unchanged, an additive gap field (integer 0..8); dispatcher decision 2026-11-03 (one block editor, Part A)",
-    "layout_section": "the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04",
+    "layout_section": "the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04. It follows its type to 1.3.0: the background field offers accent as well (the primary fill with on-primary text, as the accent variant sets it); no field added or removed; ui-editor host, 2026-11-04",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:86adeaec2f110a5655593be1d64fdba8dd9a9486b13389a965c7be1065ea12fb",
+  "contractDigest": "sha256:c2c83bcac8b229ccf215909c365aade921e571a19d2385a28c307631b42b9222",
   "manifests": {
     "editor:content.heading@1.2.0": "sha256:2ada1b7e8fa8eb87c62be2b441b254b4c88f03a26bc0bed68c8360ccbe66a623",
     "editor:layout.columns@1.1.0": "sha256:6d59ef7e408c7cad4b5117c9594d4aa32b14c8e7197716175847996c577d10cb",
     "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
-    "editor:layout.section@1.2.0": "sha256:080040135125456e22a5cf7e2e8e3aaaa503b44dbc653aa8c2e5b64867d4d6b5",
+    "editor:layout.section@1.3.0": "sha256:30b1f62c5a1e91fbd79c326a4f15e613d29d4ba4e77917994ec5b3f5e7fd2c6f",
     "field-kind:choice@1": "sha256:990d5ace0ec0587d0d8c2f37fb45378f65ad338802da80a9e5ee5fef09721f72",
     "field-kind:integer@1": "sha256:bc053b0f7eef75d6a31b3cf61ce844a7557b7b7e20cb62cf975e6b43cdfff55e",
     "field-kind:text@1": "sha256:53f3599ca8a480f49eec4661eca856d809a433f08f9701f9591ef35b6363c83a",
     "field-kind:toggle@1": "sha256:c44dc5e62c2f45154497a89710fcb889670feb60c1659064fb72ef9ccca04d5c"
   },
   "normativeFiles": {
-    "README.md": "sha256:067cc8d15af7c3df09a3b02f1b02554c9d7e3499c156a0a8350da2ef8bc076c4",
-    "fixtures/field-kinds.json": "sha256:d025c2f27f647562e7026217ccf5b69c97ab1ac6969fd84b6cee17b68f6d4068"
+    "README.md": "sha256:eff803d9624a76e22d3644b513917137d65fd65457006273578f2be3d4c0bf52",
+    "fixtures/field-kinds.json": "sha256:14c303352efc922506f849c39c86792c5b3aed97688ef768dea837f0759ad797"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.2.0"
+  "version": "1.3.0"
 }
