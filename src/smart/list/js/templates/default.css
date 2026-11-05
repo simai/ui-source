@@ -1,0 +1,170 @@
+@layer sf.components {
+  /* sf-list. The host is display: contents; .sf-list__frame is what the page
+     places, on the Framework's plain list surface (.sf-list: its fill, edge,
+     corner and inset). The rows are sf-list-item; this sheet only lays them
+     out in their groups beside their «⋯», and makes them one surface with it:
+     the row's own fill and divider step back (its public variables), and the
+     row element of the list carries the hover and the open tint with the same
+     tokens, so the «⋯» is part of its row.
+
+     Every value is a Framework token. The public variables (component.json
+     css-variables) are read here and never set, on the list or any ancestor:
+       --sf-list-gap                      between groups
+       --sf-list-radius                   a row's corner
+       --sf-list-hover-background-color   a row under the pointer
+       --sf-list-current-background-color the open row
+       --sf-list-heading-color            a group's heading */
+  .sf-list__frame {
+    --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
+    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-container-hover));
+    --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
+    --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
+
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+  }
+
+  /* The row's height and text, per step of the ladder: what the rename field
+     takes so that a row being renamed stands as tall as the row it replaces,
+     and its text starts where the title did. */
+  .sf-list--size-1\/2 {
+    --sf-list--row-height: var(--sf-ui-1\/2--control-height);
+    --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
+    --sf-list--font-size: var(--sf-text-size-1\/2);
+    --sf-list--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-list--size-1 {
+    --sf-list--row-height: var(--sf-ui-1--control-height);
+    --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
+    --sf-list--font-size: var(--sf-text-size-1);
+    --sf-list--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-list--size-2 {
+    --sf-list--row-height: var(--sf-ui-2--control-height);
+    --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
+    --sf-list--font-size: var(--sf-text-size-2);
+    --sf-list--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-list__body,
+  .sf-list__group {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+
+  .sf-list__body { gap: var(--sf-list--group-gap); }
+
+  .sf-list__body[hidden],
+  .sf-list__next[hidden] { display: none; }
+
+  .sf-list__heading {
+    padding-block: var(--sf-space-1\/4);
+    padding-inline: var(--sf-list--text-inset);
+    color: var(--sf-list-heading-color, var(--sf-on-surface-variant));
+    font-size: var(--sf-label-medium--size);
+    line-height: var(--sf-label-medium--height);
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-list__rows {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sf-list__row {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    border-radius: var(--sf-list--row-radius);
+    overflow: clip;
+  }
+
+  /* The row's own fill and divider step back, in every state of its own: the
+     list's row is the one surface, its hover and open tint below. The fill is
+     the property, not the row's variable, which its hover and selected states
+     write; the row's public variables stay the page's. */
+  .sf-list__row > sf-list-item > .sf-list-item {
+    flex: 1;
+    min-inline-size: 0;
+    background-color: transparent;
+    --sf-list-item--border-bottom-width: 0;
+  }
+
+  .sf-list__row--current { background-color: var(--sf-list--current); }
+
+  .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
+
+  .sf-list__actions:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }
+
+  .sf-list__rename {
+    flex: 1;
+    min-inline-size: 0;
+    block-size: var(--sf-list--row-height);
+    padding-block: 0;
+    padding-inline: var(--sf-list--text-inset);
+    border: var(--sf-px) solid var(--sf-outline);
+    border-radius: var(--sf-list--row-radius);
+    background: var(--sf-surface-0);
+    color: inherit;
+    font: inherit;
+    font-size: var(--sf-list--font-size);
+    line-height: var(--sf-list--line-height);
+  }
+
+  .sf-list__rename:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }
+
+  .sf-list__empty {
+    display: flex;
+    justify-content: center;
+    padding-block: var(--sf-space-1\/2);
+  }
+
+  /* The end of the list: «Show more» and, under it, the line the next page is
+     asked by when it comes within reach. */
+  .sf-list__next {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block-start: var(--sf-space-1\/4);
+  }
+
+  .sf-list__end {
+    display: block;
+    inline-size: 100%;
+    block-size: var(--sf-px);
+  }
+
+  .sf-list__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+  }
+
+  .sf-list__skeleton > span {
+    display: block;
+    block-size: var(--sf-list--row-height);
+    border-radius: var(--sf-list--row-radius);
+    background: var(--sf-surface-container);
+  }
+}
+
+@layer sf.states {
+  /* The pointer over the row or over its «⋯»: one tint for both, the token
+     the row itself takes under the pointer. */
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); }
+
+  /* The open row is told by more than a tint: in forced colours it is marked
+     by the system highlight at its start. */
+  @media (forced-colors: active) {
+    .sf-list__row--current { border-inline-start: var(--sf-px) solid Highlight; }
+  }
+}

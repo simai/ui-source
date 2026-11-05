@@ -1,0 +1,749 @@
+{
+  "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
+  "id": "smart.list",
+  "tag": "sf-list",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "list",
+  "settings": {
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "text": {
+          "type": "string",
+          "optional": true
+        },
+        "supporting": {
+          "type": "string",
+          "optional": true
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "date": {
+          "type": "date",
+          "optional": true
+        },
+        "group": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "actions": {
+          "type": "list",
+          "optional": true
+        }
+      },
+      "entries": {
+        "key": "id",
+        "changes": "content"
+      },
+      "x-markup": "a property (a host has objects), or JSON in the attribute; drawn in the host's order -- the list does not sort",
+      "summary": "The rows, in the host's order: {id, text, supporting?, icon?, date?, group?, disabled?, actions?}."
+    },
+    "selected": {
+      "type": "id",
+      "default": "",
+      "summary": "The id of the open row: aria-current and the open tint. Controlled: a press asks open {id}, the host writes it back."
+    },
+    "group-by": {
+      "type": "enum",
+      "values": [
+        "none",
+        "day",
+        "key"
+      ],
+      "default": "none",
+      "summary": "none: one list. day: by the calendar day of each item's date in the reader's time zone (Сегодня, Вчера, a weekday, the date). key: by each item's group, in the order of groups."
+    },
+    "groups": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "key": "string",
+        "text": "string"
+      },
+      "summary": "With group-by key: the groups in order, [{key, text}]; a key not listed follows, its key as its heading."
+    },
+    "actions": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "text": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "destructive": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "summary": "The row actions in the shared menu, after «Переименовать»: [{id, text, icon?, destructive?}]. Chosen, one leaves as apply {action, scope: entry, ids}."
+    },
+    "renamable": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Rows are renamed in place: F2 and «Переименовать» in the menu; rename {id, text} says the new name."
+    },
+    "has-more": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A next page exists: «Показать ещё» shows, and the end coming into reach asks for it."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The first page is on its way: the rows' shape instead of words."
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The rows' step on the size ladder (sf-list-item size); the «⋯» and the rename field take the same."
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The list's accessible name; empty is «List» in the page's language."
+    },
+    "heading-level": {
+      "type": "number",
+      "integer": true,
+      "min": 2,
+      "max": 6,
+      "default": 3,
+      "summary": "The level of the groups' headings in the page's outline."
+    },
+    "empty-text": {
+      "type": "string",
+      "default-from": "runtime.empty-text",
+      "summary": "The empty state's heading (sf-empty-state no-data); the empty slot replaces the whole state."
+    }
+  },
+  "values": {},
+  "events": {
+    "open": {
+      "carries": {
+        "id": "id",
+        "trigger": {
+          "type": "enum",
+          "values": [
+            "pointer",
+            "keyboard"
+          ]
+        }
+      },
+      "summary": "A row is asked for (vocabulary open): a press or Enter; the host opens it and writes selected back."
+    },
+    "apply": {
+      "carries": {
+        "action": "string",
+        "scope": {
+          "type": "enum",
+          "values": [
+            "entry"
+          ]
+        },
+        "ids": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "summary": "One of the row actions was chosen: {action, scope: entry, ids} (vocabulary apply)."
+    },
+    "rename": {
+      "carries": {
+        "id": "id",
+        "text": {
+          "type": "string",
+          "schema": {
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "cancelable": true,
+      "summary": "A row was renamed in place; the new text is shown at once. Cancel it to keep the old text."
+    },
+    "load-more": {
+      "carries": {
+        "direction": {
+          "type": "enum",
+          "values": [
+            "after"
+          ]
+        },
+        "after": {
+          "type": "id",
+          "nullable": true,
+          "summary": "The id of the last row shown."
+        }
+      },
+      "cancelable": true,
+      "summary": "The next page is asked for: the end came into reach, or «Показать ещё»: {direction: after, after}. Cancelling it is moreFailed()."
+    }
+  },
+  "actions": {
+    "set-items": {
+      "with": {
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "number"
+                  ],
+                  "description": "The stable key of the item."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "The row's title, as text."
+                },
+                "supporting": {
+                  "type": "string",
+                  "description": "A quiet second line under the title."
+                },
+                "icon": {
+                  "type": "string",
+                  "description": "A glyph before the title (a Material Symbols name)."
+                },
+                "date": {
+                  "type": "string",
+                  "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+                },
+                "group": {
+                  "type": "string",
+                  "description": "With group-by key, the key of its group."
+                },
+                "disabled": {
+                  "type": "boolean",
+                  "description": "Shown, not opened, renamed or acted on."
+                },
+                "actions": {
+                  "description": "false: no row actions; a list of action ids: only those."
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "description": "Plain data; any further fields are the host's."
+            }
+          }
+        },
+        "options": {
+          "type": "object",
+          "optional": true,
+          "schema": {
+            "properties": {
+              "hasMore": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "The whole list and whether more follows, together; ends a page request.",
+      "x-returns": "{outcome: applied}"
+    },
+    "append-items": {
+      "with": {
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "number"
+                  ],
+                  "description": "The stable key of the item."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "The row's title, as text."
+                },
+                "supporting": {
+                  "type": "string",
+                  "description": "A quiet second line under the title."
+                },
+                "icon": {
+                  "type": "string",
+                  "description": "A glyph before the title (a Material Symbols name)."
+                },
+                "date": {
+                  "type": "string",
+                  "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+                },
+                "group": {
+                  "type": "string",
+                  "description": "With group-by key, the key of its group."
+                },
+                "disabled": {
+                  "type": "boolean",
+                  "description": "Shown, not opened, renamed or acted on."
+                },
+                "actions": {
+                  "description": "false: no row actions; a list of action ids: only those."
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "description": "Plain data; any further fields are the host's."
+            }
+          }
+        },
+        "options": {
+          "type": "object",
+          "optional": true,
+          "schema": {
+            "properties": {
+              "hasMore": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "The next page after what is shown; ends the page request.",
+      "x-returns": "{outcome: applied}"
+    },
+    "upsert": {
+      "with": {
+        "item": {
+          "type": "object",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number"
+                ],
+                "description": "The stable key of the item."
+              },
+              "text": {
+                "type": "string",
+                "description": "The row's title, as text."
+              },
+              "supporting": {
+                "type": "string",
+                "description": "A quiet second line under the title."
+              },
+              "icon": {
+                "type": "string",
+                "description": "A glyph before the title (a Material Symbols name)."
+              },
+              "date": {
+                "type": "string",
+                "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+              },
+              "group": {
+                "type": "string",
+                "description": "With group-by key, the key of its group."
+              },
+              "disabled": {
+                "type": "boolean",
+                "description": "Shown, not opened, renamed or acted on."
+              },
+              "actions": {
+                "description": "false: no row actions; a list of action ids: only those."
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "description": "Plain data; any further fields are the host's."
+          }
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "A new item at the start, or a changed one in its place.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "detach": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Take one item off; the focus on it goes to its neighbour.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "rename": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Start renaming a row in place, as F2 does.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "open-menu": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Open a row's actions, as its «⋯» and Shift+F10 do.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "request-more": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Ask for the next page, as reaching the end and «Показать ещё» do; nothing while a request is out.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "more-failed": {
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "The next page could not be loaded: «Показать ещё» and the end ask again.",
+      "x-returns": "{outcome: applied}"
+    }
+  },
+  "slots": {
+    "empty": {}
+  },
+  "side-effects": [],
+  "keyboard": {
+    "host": {
+      "Tab": "reach"
+    },
+    "row": {
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "open",
+      "F2": "rename",
+      "Shift+F10": "open-menu",
+      "ContextMenu": "open-menu"
+    }
+  },
+  "relations": [
+    {
+      "name": "dropdown"
+    },
+    {
+      "name": "cl-list-item"
+    },
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-empty-state"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true
+    },
+    {
+      "name": "sr-only/default"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The items arrive after the first paint when the host loads them: the derived skeleton holds their box until they do (standard 1.3.8 §5.4).",
+      "late": [
+        "items"
+      ]
+    }
+  },
+  "styles": "js/templates/default.css",
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "list",
+    "name": {
+      "from": [
+        "label",
+        "runtime.label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "F2": "open",
+      "Shift+F10": "open",
+      "ContextMenu": "open"
+    },
+    "x-keys": "one Tab stop for the whole list, every group included (sf-list-item's roving); Enter opens the row; F2 opens the rename field, where Enter keeps and Escape gives up; Shift+F10 and the menu key open the row's actions"
+  },
+  "host-states": {},
+  "css-variables": {
+    "--sf-list-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-list-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-list-hover-background-color": {
+      "type": "color",
+      "state": "hover"
+    },
+    "--sf-list-current-background-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-list-heading-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "aliases": null,
+  "x-summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
+  "x-source": {
+    "package": "ui-source",
+    "folder": "list",
+    "from": "ui-pro sf-chat-threads 1.6 (day groups, rename in place, the row menu, F2 and Shift+F10, the next page at the end, one Tab stop) and the row lists of sf-mail-letters, sf-mail-library and sf-chat-window; duplication audit 2026-11-03 A-7"
+  },
+  "x-words": [
+    "empty-text",
+    "label"
+  ],
+  "x-renamed": [],
+  "x-decisions": [
+    "block list (owner decision 2026-11-03, component sets, point 13; duplication audit 2026-11-03 A-4, A-7): sf-list is the block's main member, the list a person acts on; sf-list-feed is its feed variant, the column a person reads. sf-list-item stays the row of both this list and sf-dropdown.",
+    "rows: each item is drawn as sf-list-item interactive (kind icon when it has an icon); the row's own roving gives the whole list one Tab stop and the arrows, across groups, because the list marks one [data-sf-list] around every group.",
+    "surface: the Framework's plain list class unit .sf-list (fill, edge, corner, inset); the rows' own fill and divider step back through sf-list-item's public variables and the list's row carries the hover and the open tint with the same tokens, so the «⋯» is part of its row.",
+    "groups: group-by day uses core's calendarDayOffset and formatRelativeDay (capital) in the reader's time zone, redrawn at the reader's midnight (msUntilNextDay); group-by key follows groups. The host's order is kept inside a group; the list never sorts.",
+    "row actions: one sf-menu-context shared by every row of the list, opened by the row's «⋯» (tabindex -1, not a Tab stop), Shift+F10 or the menu key; «Переименовать» first when renamable; a destructive action wears status error. A page-wide SF.menu.open (audit A-8) can replace the list's own menu without a change to its contract.",
+    "load more: core's watchEdge (IntersectionObserver on a sentinel under the last row, never a scroll handler) and a «Показать ещё» button for the keyboard and for a browser without IntersectionObserver; load-more is cancelable, cancelling it is moreFailed().",
+    "rename (§4.3): shown at once; rename {id, text} is cancelable and a cancelled one puts the old text back.",
+    "empty: sf-empty-state kind no-data with the empty-text heading, or the empty slot whole.",
+    "a11y: ungrouped, the one list takes the label; grouped, the frame is a group named by the label and each group's rows a list named by its heading (role heading, heading-level).",
+    "words: lang/ru.json and lang/en.json."
+  ],
+  "x-rule": {
+    "$comment": [
+      "The list draws its rows as sf-list-item on the plain list surface (the dropdown",
+      "sheet holds .sf-list), the «⋯» as an icon-button class unit with an sf-icon, «Show",
+      "more» as an sf-button and the empty state as sf-empty-state; a tag it renders is a",
+      "tag it fetches. The shared row menu is fetched after the page is ready. The",
+      "loading status is visually hidden with sr-only, which a class scan can miss."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "content",
+      "selection",
+      "rename",
+      "row-actions",
+      "pagination",
+      "grouping",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "host-required",
+      "required_checks": [
+        "manifest",
+        "loader-rule",
+        "list-contract",
+        "list-browser"
+      ]
+    },
+    "tags": [
+      "list",
+      "rows",
+      "actions",
+      "rename",
+      "groups"
+    ],
+    "contracts": {
+      "item": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "The stable key of the item."
+          },
+          "text": {
+            "type": "string",
+            "description": "The row's title, as text."
+          },
+          "supporting": {
+            "type": "string",
+            "description": "A quiet second line under the title."
+          },
+          "icon": {
+            "type": "string",
+            "description": "A glyph before the title (a Material Symbols name)."
+          },
+          "date": {
+            "type": "string",
+            "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+          },
+          "group": {
+            "type": "string",
+            "description": "With group-by key, the key of its group."
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Shown, not opened, renamed or acted on."
+          },
+          "actions": {
+            "description": "false: no row actions; a list of action ids: only those."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Plain data; any further fields are the host's."
+      }
+    },
+    "state": {
+      "machines": {
+        "more": [
+          "idle",
+          "loading"
+        ],
+        "row": [
+          "shown",
+          "renaming"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "selected",
+        "empty",
+        "loading"
+      ]
+    },
+    "artifacts": {
+      "fixtures": [
+        "studio.fixture.json"
+      ],
+      "scenarios": []
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "fetching or sorting items",
+        "applying an action",
+        "access decisions"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "item text and supporting line (drawn as text)"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "en",
+        "ru"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "template"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-list for a list a person acts on -- conversations, letters, templates, files, members, versions: open a row, rename it, its actions, the next page. For a column a person reads from the newest at the end use sf-list-feed; for a choice in a field use sf-dropdown.",
+      "do_not": [
+        "Do not fetch or sort in the element; give the items in order and answer its events",
+        "Do not pass markup in text or supporting; they are text",
+        "Do not apply an action in the element; answer apply and update the items"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "accessibility"
+      ],
+      "minimal_example": "<sf-list label=\"Письма\" renamable></sf-list>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "node scripts/run-browser-probes.mjs <output>"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "focus": "One Tab stop for the whole list: the row last moved to, else the open one, else the first. Arrows, Home and End move between rows across groups; Enter opens; F2 opens the rename field and takes the focus into it, Enter keeps, Escape gives up, and the focus comes back to the row; Shift+F10 or the menu key opens the row's actions and the menu gives the focus back. A row taken off gives the focus to its neighbour."
+    },
+    "compatibility": {
+      "migrations": []
+    }
+  }
+}

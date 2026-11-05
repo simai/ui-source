@@ -149,6 +149,7 @@
     "src/core/js/preferences.js",
     "src/core/js/preloader.js",
     "src/core/js/public-path.js",
+    "src/core/js/reading-position.js",
     "src/core/js/ready.js",
     "src/core/js/region-navigation.js",
     "src/core/js/rule.js",
@@ -204,7 +205,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "9bf773ac67fdc0b678da8a8b398f95cd7678b132dfedf01fcb070a46e413912e",
+  "content_sha256": "58ae26762d326b957b9f89971f92d3049435a60183d58bbf156d84adbee0ee96",
   "dependencies": [
     {
       "id": "core.styles",

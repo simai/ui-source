@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list",
+  "title": "List reference",
+  "summary": "Deterministic reference fixture for sf-list: three letters with row actions, one open, renamed in place.",
+  "locale": "ru",
+  "props": {
+    "label": "Письма",
+    "renamable": true,
+    "selected": "l2"
+  },
+  "children": [],
+  "state": "default"
+}

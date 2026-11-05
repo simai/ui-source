@@ -1,0 +1,178 @@
+{
+  "component": "sf-list",
+  "probe": "sf-list against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <button id=\"before\" type=\"button\">до</button>",
+      "  <div style=\"inline-size: 420px\"><sf-list id=\"l\" label=\"Беседы\" group-by=\"day\" renamable has-more></sf-list></div>",
+      "</main>",
+      "<script>customElements.whenDefined('sf-list').then(() => {const list = document.querySelector('#l'); list.actions = [{id: 'delete', text: 'Удалить', icon: 'delete', destructive: true}]; const now = Date.now(); list.items = [{id: 't1', text: 'Возврат товара', date: new Date(now).toISOString()}, {id: 't2', text: 'План на квартал', date: new Date(now).toISOString()}, {id: 't3', text: 'Тарифы', date: new Date(now - 2 * 86400000).toISOString()}]; list.addEventListener('sf-list-load-more', (event) => event.preventDefault());});</script>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-one-tab-stop-across-groups",
+      "title": "the list is one Tab stop; ArrowDown goes from the last row of a group to the first of the next; Enter asks open {id, trigger: keyboard}",
+      "covers": "keyboard.host Tab, keyboard.row ArrowDown/End, events.open, group-by day",
+      "steps": [
+        {
+          "script": "(document.querySelector('#before').focus(), true)",
+          "wait": 200,
+          "check": "document.querySelectorAll('#l .sf-list__group').length === 2 && document.querySelectorAll('#l .sf-list-item[tabindex=\"0\"]').length === 1"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 80,
+          "check": "document.activeElement?.closest('.sf-list__row')?.dataset.id === 't1'"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60,
+          "check": "document.activeElement?.closest('.sf-list__row')?.dataset.id === 't2'"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60,
+          "check": "document.activeElement?.closest('.sf-list__row')?.dataset.id === 't3'"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-open",
+                "count": 1,
+                "detail": {
+                  "id": "t3",
+                  "trigger": "keyboard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2-rename-in-place",
+      "title": "F2 opens the rename field with the focus in it; Enter keeps: rename {id, text} once, the new text shown, the focus back on its row",
+      "covers": "keyboard.row F2, actions.rename, events.rename",
+      "steps": [
+        {
+          "script": "(document.querySelector('#l .sf-list__row[data-id=\"t3\"] .sf-list-item').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:F2",
+          "wait": 120,
+          "check": "document.activeElement?.classList.contains('sf-list__rename') && document.activeElement.value === 'Тарифы'"
+        },
+        {
+          "script": "(document.activeElement.value = 'Тарифы 2027', true)",
+          "wait": 30
+        },
+        {
+          "user": "keyboard:Enter",
+          "wait": 200,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-rename",
+                "count": 1,
+                "detail": {
+                  "id": "t3",
+                  "text": "Тарифы 2027"
+                }
+              }
+            ]
+          },
+          "check": "document.activeElement?.closest('.sf-list__row')?.dataset.id === 't3' && document.activeElement.textContent.includes('Тарифы 2027')"
+        }
+      ]
+    },
+    {
+      "id": "p3-menu-and-apply",
+      "title": "Shift+F10 opens the row's menu (Переименовать, Удалить); choosing Удалить is apply {action: delete, scope: entry, ids: [t3]}",
+      "covers": "keyboard.row Shift+F10, actions.open-menu, events.apply",
+      "steps": [
+        {
+          "script": "(document.querySelector('#l .sf-list__row[data-id=\"t3\"] .sf-list-item').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+F10",
+          "wait": 400,
+          "check": "document.querySelector('#l .sf-list__menu').isOpen === true && document.querySelector('#l .sf-list__menu').entries.map((entry) => entry.id).join(',') === 'rename,action:delete'"
+        },
+        {
+          "script": "(document.querySelector('#l .sf-list__menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {bubbles: true, detail: {id: 'action:delete'}})), document.querySelector('#l .sf-list__menu').close({restoreFocus: true}), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-apply",
+                "count": 1,
+                "detail": {
+                  "action": "delete",
+                  "scope": "entry",
+                  "ids": [
+                    "t3"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-load-more-and-detach",
+      "title": "request-more asks load-more {direction: after, after: t3}; the page's cancel makes it refused prevented; detach of the focused row gives the focus to its neighbour",
+      "covers": "actions.request-more, events.load-more cancelable, actions.more-failed, actions.detach",
+      "steps": [
+        {
+          "action": {
+            "name": "request-more"
+          },
+          "target": "#l",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            },
+            "events": [
+              {
+                "name": "sf-list-load-more",
+                "count": 1,
+                "detail": {
+                  "direction": "after",
+                  "after": "t3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "name": "more-failed"
+          },
+          "target": "#l",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          }
+        },
+        {
+          "script": "(document.querySelector('#l .sf-list__row[data-id=\"t3\"] .sf-list-item').focus(), document.querySelector('#l').detach({id: 't3'}).outcome)",
+          "wait": 200,
+          "expect": {
+            "returns": "applied"
+          },
+          "check": "!document.querySelector('#l .sf-list__row[data-id=\"t3\"]') && document.activeElement?.closest('.sf-list__row')?.dataset.id === 't2'"
+        }
+      ]
+    }
+  ]
+}

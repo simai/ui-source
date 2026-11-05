@@ -216,6 +216,14 @@
           "status": "released"
         },
         {
+          "element": "sf-list",
+          "status": "released"
+        },
+        {
+          "element": "sf-list-feed",
+          "status": "released"
+        },
+        {
           "element": "sf-list-item",
           "status": "released"
         },

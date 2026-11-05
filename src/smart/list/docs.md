@@ -1,0 +1,131 @@
+# sf-list
+
+Список, с которым что-то делают: беседы человека, письма, шаблоны, файлы,
+участники, версии. Строки из данных — название и тихая вторая строка, какая
+строка открыта, несколько действий со строкой. Главный элемент блока `list`
+SIMAI Framework; `sf-list-feed` — его вариант-лента, колонка, которую читают.
+
+## Что он делает и чего не делает
+
+Он владеет **расположением** — и только им:
+
+- группы по календарному дню даты записи в часовом поясе читателя («Сегодня»,
+  «Вчера», день недели, дата — `formatRelativeDay` ядра), по ключу хоста или без
+  групп; в полночь читателя группы перерисовываются;
+- какая строка открыта (`selected`), и не только оттенком;
+- одна остановка Tab на весь список, стрелки между строками — через все группы;
+- действия строки в одном меню на весь список, переименование на месте;
+- следующая страница, когда конец списка близко, и кнопка «Показать ещё»;
+- `sf-empty-state`, когда строк нет.
+
+Он ничего не загружает и не сортирует: каждая просьба уходит событием, порядок
+строк — порядок хоста.
+
+Строка — это `sf-list-item` Framework (интерактивная, с иконкой, если она
+есть), на поверхности простого списка — класса `.sf-list`.
+
+## Подключение
+
+```html
+<sf-list label="Письма" renamable></sf-list>
+```
+
+```js
+const list = document.querySelector('sf-list');
+list.actions = [
+  {id: 'copy', text: 'Копировать', icon: 'content_copy'},
+  {id: 'delete', text: 'Удалить', icon: 'delete', destructive: true},
+];
+list.setItems(await api.letters(), {hasMore: true});
+
+list.addEventListener('sf-list-open', (event) => {
+  openLetter(event.detail.id);
+  list.selected = event.detail.id;            // selected ставит хост
+});
+list.addEventListener('sf-list-apply', async ({detail: {action, ids}}) => {
+  if (action === 'delete') { await api.remove(ids[0]); list.detach({id: ids[0]}); }
+});
+list.addEventListener('sf-list-rename', async (event) => {
+  try { await api.rename(event.detail.id, event.detail.text); }
+  catch { list.upsert({...old, text: old.text}); } // не удалось — вернуть название
+});
+list.addEventListener('sf-list-load-more', async (event) => {
+  // {direction: 'after', after}: after — id последней строки
+  const page = await api.letters({after: event.detail.after});
+  list.appendItems(page.items, {hasMore: page.hasMore});
+});
+```
+
+## Настройки
+
+| Атрибут / свойство | По умолчанию | Значение |
+|:---|:---|:---|
+| `items` | `[]` | Строки в порядке хоста: `{id, text, supporting?, icon?, date?, group?, disabled?, actions?}`. |
+| `selected` | `""` | `id` открытой строки: `aria-current` и оттенок. |
+| `group-by` | `none` | `none`, `day` (по `date`), `key` (по `group`, в порядке `groups`). |
+| `groups` | `[]` | Для `group-by="key"`: `[{key, text}]` по порядку; ключ, которого нет в списке, идёт последним, заголовок — сам ключ. |
+| `actions` | `[]` | Действия строки в меню после «Переименовать»: `[{id, text, icon?, destructive?}]`. Строка сужает их полем `actions: [id…]` или убирает `actions: false`. |
+| `renamable` | `false` | Строки переименовываются на месте: F2 и пункт меню. |
+| `has-more` | `false` | Есть следующая страница: «Показать ещё» и запрос, когда конец близко. |
+| `loading` | `false` | Первая страница в пути: вместо слов — форма строк. |
+| `size` | `1` | Ступень строк: `1/2`, `1`, `2` (как у `sf-list-item`); «⋯» и поле переименования той же ступени. |
+| `label` | «Список» / «List» | Доступное имя списка. |
+| `heading-level` | `3` | Уровень заголовков групп. |
+| `empty-text` | «Здесь пока пусто» | Заголовок пустого состояния; слот `empty` заменяет состояние целиком. |
+
+## Действия
+
+Каждое отвечает исходом (`{outcome: 'applied'}` или `{outcome: 'refused', reason}`).
+
+| Действие | Значение |
+|:---|:---|
+| `setItems(items, {hasMore})` | Весь список и есть ли продолжение; завершает запрос страницы. |
+| `appendItems(items, {hasMore})` | Следующая страница после показанных. |
+| `upsert(item)` | Новая строка в начало или изменившаяся на своём месте. |
+| `detach(id)` | Убрать строку; фокус с неё переходит к соседней. |
+| `rename(id)` | Начать переименование, как F2. Отказ `not-renamable`, `unknown`, `disabled`. |
+| `openMenu(id)` | Открыть действия строки, как «⋯» и Shift+F10. Отказ `no-actions`, `unknown`. |
+| `requestMore()` | Попросить следующую страницу. Отказ `loading`, `no-more`, `prevented`. |
+| `moreFailed()` | Страница не загрузилась: «Показать ещё» и конец списка просят снова. |
+
+## События
+
+| Событие | Detail | Когда |
+|:---|:---|:---|
+| `sf-list-open` | `{id, trigger}` | Нажатие или Enter на строке; `trigger` — `pointer` или `keyboard`. |
+| `sf-list-apply` | `{action, scope: 'entry', ids}` | Выбрано действие строки. |
+| `sf-list-rename` | `{id, text}` | Строка переименована на месте; новое название видно сразу. Отмена события возвращает старое. |
+| `sf-list-load-more` | `{direction: 'after', after}` | Конец списка близко или «Показать ещё». Отмена — то же, что `moreFailed()`. |
+
+## Клавиатура и доступность
+
+Весь список — одна остановка Tab: строка, на которой были последней, иначе
+открытая, иначе первая. Стрелки, Home и End ходят между строками через группы,
+Enter открывает строку, F2 открывает поле переименования (Enter сохраняет,
+Escape отменяет, фокус возвращается на строку), Shift+F10 или клавиша меню
+открывают действия строки. «⋯» — не отдельная остановка Tab: до него доходят
+с клавиатуры через Shift+F10, мышью — нажатием.
+
+Без групп список назван `label`; с группами вся рамка — группа с именем `label`,
+а строки каждой группы — список, названный её заголовком.
+
+## Переменные
+
+| Переменная | По умолчанию |
+|:---|:---|
+| `--sf-list-gap` | `var(--sf-space-1\/3)` — между группами |
+| `--sf-list-radius` | `var(--sf-radius--ui)` — угол строки |
+| `--sf-list-hover-background-color` | `var(--sf-surface-container-hover)` |
+| `--sf-list-current-background-color` | `var(--sf-primary-container-active)` |
+| `--sf-list-heading-color` | `var(--sf-on-surface-variant)` |
+
+Поверхность — переменные простого списка `.sf-list` (`--sf-list--background-color`
+и другие).
+
+## Переход компонентов Pro
+
+`sf-chat-threads`, `sf-mail-letters`, `sf-mail-library` строят свои строки сами.
+На паре Framework с `sf-list` они могут стать тонкой обёрткой: данные набора
+переводятся в `items` (`title` → `text`, `caption` → `supporting`,
+`updated-at` → `date`), действия — в `actions`, события `sf-list-*` — в события
+набора.

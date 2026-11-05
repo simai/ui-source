@@ -1,0 +1,810 @@
+{
+  "schema_version": 2,
+  "id": "smart.list-feed",
+  "version": "1.0.0",
+  "title": "Feed",
+  "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
+  "kind": "composite",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "feed",
+    "conversation",
+    "comments",
+    "activity",
+    "log"
+  ],
+  "capabilities": [
+    "content",
+    "scroll-position",
+    "live-announcement",
+    "responsive"
+  ],
+  "custom_element": "sf-list-feed",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.button-icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates.",
+        "const": "default"
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "changes": {
+        "type": "string",
+        "default": "content",
+        "description": "How two writes of one entry compare (§18.4).",
+        "enum": [
+          "content",
+          "revision"
+        ]
+      },
+      "has-more": {
+        "type": "boolean",
+        "default": false,
+        "description": "Earlier history exists: the earlier button shows, and reaching the top asks for it."
+      },
+      "label": {
+        "type": "string",
+        "description": "The region's accessible name; empty is «Feed» in the page's language."
+      },
+      "live": {
+        "type": "string",
+        "default": "polite",
+        "description": "polite: a finished entry from someone else is announced once. off: the host announces through announce(), or nothing is.",
+        "enum": [
+          "polite",
+          "off"
+        ]
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "items": {
+          "type": "object"
+        },
+        "description": "The entries in display order, oldest first; plain data, each with an id."
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "rendering": {
+      "const": "An entry is drawn by the host's renderItem(entry, context) -> Node | string | null; a string is text. Without one, an entry is its author over the first of a run and its text, as text. The feed never parses markup."
+    },
+    "render_context": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "type": "object",
+          "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
+        },
+        "previous": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "next": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "first": {
+          "type": "boolean",
+          "description": "The first entry of its author's run."
+        },
+        "last": {
+          "type": "boolean",
+          "description": "The last entry of its author's run."
+        },
+        "own": {
+          "type": "boolean"
+        },
+        "index": {
+          "type": "integer"
+        },
+        "document": {
+          "type": "object"
+        },
+        "feed": {
+          "type": "object"
+        },
+        "growing": {
+          "type": "boolean"
+        }
+      }
+    },
+    "redraw": {
+      "const": "An entry is drawn again when its data or its view changes (compared as sorted JSON, or by revision), when its place in its run changes, or on redraw(id). Otherwise its node is kept, with focus inside it."
+    },
+    "slots": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "string",
+          "description": "Shown instead of the column while there are no entries (a greeting, an empty state)."
+        }
+      }
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "renderItem": {
+          "description": "function(entry, context) -> Node | string | null"
+        },
+        "announceItem": {
+          "description": "function(entry, context) -> string | null: what is said when the entry is new or finished; the same words for one entry are said once."
+        },
+        "items": {
+          "type": "array",
+          "description": "The entries in display order; written whole it is compared by key with what is shown."
+        }
+      }
+    },
+    "css_variables": {
+      "type": "object",
+      "properties": {
+        "--sf-list-feed-column-width": {
+          "type": "string"
+        },
+        "--sf-list-feed-inset": {
+          "type": "string"
+        },
+        "--sf-list-feed-run-gap": {
+          "type": "string"
+        },
+        "--sf-list-feed-turn-gap": {
+          "type": "string"
+        },
+        "--sf-list-feed-fade-size": {
+          "type": "string"
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+        },
+        "author": {
+          "type": "string",
+          "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+        },
+        "author-name": {
+          "type": "string",
+          "description": "The name the default renderer and the default announcement say."
+        },
+        "own": {
+          "type": "boolean",
+          "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+        },
+        "growing": {
+          "type": "boolean",
+          "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+        },
+        "text": {
+          "type": "string",
+          "description": "Plain text; the default renderer draws it as text, never as markup."
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
+    }
+  },
+  "methods": {
+    "setItems": {
+      "summary": "Replace the whole feed and show its end. What it holds is not announced.",
+      "arguments": [
+        {
+          "name": "items",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "number"
+                  ],
+                  "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+                },
+                "author": {
+                  "type": "string",
+                  "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+                },
+                "author-name": {
+                  "type": "string",
+                  "description": "The name the default renderer and the default announcement say."
+                },
+                "own": {
+                  "type": "boolean",
+                  "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+                },
+                "growing": {
+                  "type": "boolean",
+                  "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Plain text; the default renderer draws it as text, never as markup."
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
+            }
+          }
+        },
+        {
+          "name": "options",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "hasMore": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied}"
+      }
+    },
+    "prependItems": {
+      "summary": "Earlier history above, without moving what is being read; ends the earlier request.",
+      "arguments": [
+        {
+          "name": "items",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "number"
+                  ],
+                  "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+                },
+                "author": {
+                  "type": "string",
+                  "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+                },
+                "author-name": {
+                  "type": "string",
+                  "description": "The name the default renderer and the default announcement say."
+                },
+                "own": {
+                  "type": "boolean",
+                  "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+                },
+                "growing": {
+                  "type": "boolean",
+                  "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Plain text; the default renderer draws it as text, never as markup."
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
+            }
+          }
+        },
+        {
+          "name": "options",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "hasMore": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied}"
+      }
+    },
+    "upsert": {
+      "summary": "Add an entry at the end or update it in place; drawn again only when something it shows changed.",
+      "arguments": [
+        {
+          "name": "item",
+          "schema": {
+            "type": "object",
+            "description": "Plain data. Any further fields are the host renderer's; the feed reads only these.",
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number"
+                ],
+                "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+              },
+              "author": {
+                "type": "string",
+                "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+              },
+              "author-name": {
+                "type": "string",
+                "description": "The name the default renderer and the default announcement say."
+              },
+              "own": {
+                "type": "boolean",
+                "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+              },
+              "growing": {
+                "type": "boolean",
+                "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+              },
+              "text": {
+                "type": "string",
+                "description": "Plain text; the default renderer draws it as text, never as markup."
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        },
+        {
+          "name": "view",
+          "schema": {
+            "type": "object",
+            "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
+          }
+        },
+        {
+          "name": "options",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "replaces": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ],
+                "description": "The id the entry had before (a local key the server has now numbered): it keeps its place."
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "setView": {
+      "summary": "Merge into the view of an entry already shown.",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {}
+        },
+        {
+          "name": "view",
+          "schema": {
+            "type": "object",
+            "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "detach": {
+      "summary": "Take one entry off; a stream it was ends cancelled. remove() stays the browser's own.",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {}
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "cancel": {
+      "summary": "Stop drawing a growing entry now; the stream ends cancelled.",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {}
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "redraw": {
+      "summary": "Draw one entry again, or all of them, after the renderer's own inputs changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {}
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied}"
+      }
+    },
+    "requestEarlier": {
+      "summary": "Ask for earlier history, as the button and reaching the top do; nothing while a request is out.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "earlierFailed": {
+      "summary": "The host could not load earlier history: the button is pressable again.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied}"
+      }
+    },
+    "scrollToLatest": {
+      "summary": "Scroll to the last entry; with focus, focus moves to it.",
+      "arguments": [
+        {
+          "name": "options",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "instant": {
+                "type": "boolean"
+              },
+              "focus": {
+                "type": "boolean"
+              },
+              "settle": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied}"
+      }
+    },
+    "announce": {
+      "summary": "Say something once through the feed's polite live region (cut at 240 characters).",
+      "arguments": [
+        {
+          "name": "text",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "isAtLatest": {
+      "summary": "Whether the end of the feed is in view.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "sf-list-feed-load-more": {
+      "summary": "Earlier history is asked for: {direction: before, before}. Cancelling it is earlierFailed().",
+      "payload": {
+        "type": "object",
+        "required": [
+          "before"
+        ],
+        "properties": {
+          "direction": {
+            "const": "before"
+          },
+          "before": {
+            "description": "The id of the first entry shown."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-feed-begun": {
+      "summary": "A growing entry arrived (vocabulary §5.2).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-feed-chunk": {
+      "summary": "A growing entry changed and was drawn again, in place.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {},
+          "revision": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-feed-completed": {
+      "summary": "It stopped growing whole.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-feed-failed": {
+      "summary": "It stopped growing with an error: {id, reason, message}.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "reason",
+          "message"
+        ],
+        "properties": {
+          "id": {},
+          "reason": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-feed-cancelled": {
+      "summary": "The stream was stopped: cancel, wait stopped, the entry taken off, the feed replaced.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "earlier": [
+        "idle",
+        "loading"
+      ],
+      "position": [
+        "following-end",
+        "reading-above"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "loading"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "fetching or polling entries",
+      "interpreting who an author is",
+      "rendering untrusted markup",
+      "access decisions"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "entry text and author names (drawn as text by the default renderer)",
+      "whatever the host renderer draws is the host renderer's to sanitise"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "region",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End"
+    ],
+    "focus": "The scroller is a named, focusable region holding a log with aria-live off; one polite announcer says what is new once. «To the latest» moves focus to the last entry (the host's article, else the item). From a focused entry ArrowUp/ArrowDown move to the neighbour, Home/End to the first and last loaded; ArrowUp on the first asks for earlier history. Smooth scrolling follows prefers-reduced-motion."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "en",
+      "ru"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "reduced-motion"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": []
+  },
+  "readiness": {
+    "level": "host-required",
+    "required_checks": [
+      "manifest",
+      "loader-rule",
+      "list-feed-contract",
+      "list-feed-browser"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "f28a493ccaf0ac371a4bd2c721253b296795734c",
+    "source_artifacts": [
+      {
+        "path": "src/smart/list-feed/index.js",
+        "sha256": "ba16be96fe47d09966c2edf175ec23617e28bc9f2373f053fecf4551e26a5ca1"
+      },
+      {
+        "path": "src/smart/list-feed/js/templates/default.js",
+        "sha256": "a26ceb3c1e8371b63c2e59527edfb2567b569f2790fc356f9e483b2f335a7b99"
+      },
+      {
+        "path": "src/smart/list-feed/js/templates/default.css",
+        "sha256": "062c57548085c58e394afb3e765f51c7936490cf5fa86b33d5c31097bc3489c5"
+      },
+      {
+        "path": "src/smart/list-feed/rule.js",
+        "sha256": "3494726b09174ddfe745d3d78cabf36d451aae3c28ad5f6b5aa99808c390faca"
+      },
+      {
+        "path": "src/smart/list-feed/docs.md",
+        "sha256": "d7352e0adede58066b11ad8416e68de968c717ece5a490e284fcd912d1f8134b"
+      },
+      {
+        "path": "src/smart/list-feed/component.json",
+        "sha256": "e58be290088c9d5f224a5ed3e21179247b8fe6deeba0c1a05c7982432d3c20da"
+      },
+      {
+        "path": "src/smart/list-feed/lang/en.json",
+        "sha256": "13abaa6b3e75557cb6d250289912af81589eb3925bfaabc48d3e19a8f5fb54c0"
+      },
+      {
+        "path": "src/smart/list-feed/lang/ru.json",
+        "sha256": "a3cf9b521b7633cd2703a2e2dd023c59a46061123cc3b2464c3d181f788ebdc0"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-list-feed for any column the host feeds and a person reads from the newest at the end -- a conversation, comments, an activity history, an audit log -- when the reading position, history loading upwards and announcing new entries matter. For a list a person acts on (open, rename, row actions) use sf-list.",
+    "do_not": [
+      "Do not fetch or poll from the element; the host owns the entries and every request leaves as an event",
+      "Do not pass markup as entry text; draw it in renderItem with your own sanitiser",
+      "Do not encode roles such as user and assistant into the feed: authors are data (author, own)"
+    ],
+    "required_reads": [
+      "inputs",
+      "contracts",
+      "methods",
+      "events",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-list-feed label=\"Комментарии\"></sf-list-feed>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "node scripts/run-browser-probes.mjs <output>"
+    ]
+  }
+}

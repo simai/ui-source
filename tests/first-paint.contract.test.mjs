@@ -17,8 +17,9 @@ const all = components();
 test('every component has a snapshot per example, and the sheets it needs', () => {
   // 60 with sf-progress-ring, 61 with sf-site-header, 62 with sf-search, 63 with sf-settings-menu, 64 with sf-pager, 65 with sf-contents, 66 with sf-rich-text, 67 with sf-lookup;
   // 66 again when sf-settings-menu was folded into sf-context-menu (owner, 2026-10-30); 67 with sf-include; 66 when sf-toggle was swept (2026-11-02);
-  // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05).
-  assert.equal(all.length, 69);
+  // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05);
+  // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6).
+  assert.equal(all.length, 71);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);
@@ -56,7 +57,7 @@ test('late data is declared, the old shape hints are gone', () => {
     for (const name of skeleton?.late ?? []) assert.ok(component.manifest.settings?.[name], `${component.folder}: late ${name} is a setting`);
   }
   const late = Object.fromEntries(all.filter((one) => one.late.length).map((one) => [one.folder, one.late]));
-  assert.deepEqual(late, {menu: ['items'], 'profile-picker': ['profiles'], tree: ['items']});
+  assert.deepEqual(late, {list: ['items'], 'list-feed': ['items'], menu: ['items'], 'profile-picker': ['profiles'], tree: ['items']});
 });
 
 test('the element adopts its printed markup: island, late data, hand-over, held children', () => {

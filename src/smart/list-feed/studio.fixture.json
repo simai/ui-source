@@ -1,0 +1,23 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list-feed",
+  "title": "List feed reference",
+  "summary": "Deterministic reference fixture for sf-list-feed: comments under a task, drawn by the default renderer.",
+  "locale": "ru",
+  "props": {
+    "label": "Комментарии",
+    "live": "polite"
+  },
+  "children": [
+    {
+      "element": "p",
+      "props": {
+        "slot": "empty"
+      },
+      "text": "Комментариев пока нет",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

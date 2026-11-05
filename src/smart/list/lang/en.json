@@ -1,0 +1,16 @@
+{
+  "title": "List",
+  "runtime": {
+    "actions-label": "Actions: {text}",
+    "empty-text": "Nothing here yet",
+    "label": "List",
+    "loading-more-text": "Loading…",
+    "loading-text": "Loading the list",
+    "more-text": "Show more",
+    "rename-label": "New name",
+    "rename-text": "Rename",
+    "undated-text": "No date",
+    "ungrouped-text": "Other",
+    "untitled-text": "Untitled"
+  }
+}

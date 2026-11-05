@@ -58,6 +58,9 @@ const PHASE_A = [
   'confirm-change',
   // The page alert bar, a variant of block alert (2026-11-05).
   'alert-bar',
+  // Block list (2026-11-05): the list a person acts on and the feed they read.
+  'list',
+  'list-feed',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

@@ -1,0 +1,11 @@
+{
+  "title": "Лента",
+  "runtime": {
+    "earlier-text": "Показать предыдущие",
+    "latest-label": "К последней записи",
+    "loading-earlier-text": "Загружаю предыдущие записи",
+    "log-label": "Записи",
+    "region-label": "Лента",
+    "you-text": "Вы"
+  }
+}
