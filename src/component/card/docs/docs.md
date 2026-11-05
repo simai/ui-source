@@ -19,8 +19,8 @@ that element inside it, not on it.
 
 A heading inside the card is its title, the same at every width: 16 px on
 a 22 px line, semibold, whatever its level (`h2` to `h6` keep their
-meaning, not their page size). A size or weight utility on the heading still
-wins. In a narrow card (three in a row on a phone) the words wrap, a long
+meaning, not their page size); `--sf-card-title-size` and
+`--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
 word breaks at a hyphen where the language allows it (`hyphens: auto`, with
 the page's `lang`), and only a word with no hyphen point breaks anywhere.
 

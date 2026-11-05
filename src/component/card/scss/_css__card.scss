@@ -14,9 +14,10 @@
 // A heading inside a card is the card's title at every width: 16 on 22,
 // semibold -- the prototype's card title, the same on the desktop and at 380.
 // The fixed steps of the size ladder (b6, c1), not the text ramp, which steps
-// down to 14 on a phone. In the base layer, above the page's heading sizes and below the
-// utilities, so a size or weight an author sets on the heading still wins.
-@layer sf.base {
+// down to 14 on a phone. In the utilities layer, where the headers sheet
+// sets the bare h1..h6 sizes it replaces, and a class above them whatever
+// order the sheets load in; the card's own variables are the way to change it.
+@layer sf.utilities {
   .sf-card > :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--sf-card-title-size, var(--sf-b6));
     line-height: var(--sf-c1);
