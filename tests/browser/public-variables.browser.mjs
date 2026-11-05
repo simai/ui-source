@@ -243,6 +243,8 @@ const ROLES = {
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
   size: {properties: ['block-size', 'height'], value: '29px'},
+  // A text size: the card's title (sf-card).
+  'font-size': {properties: ['font-size'], value: '29px'},
   // A width a panel fixes, so its text cannot widen it.
   'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays
