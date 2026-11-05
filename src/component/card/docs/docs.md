@@ -17,6 +17,13 @@ off, so a heading or a paragraph inside does not add its page margin. The card
 has no semantics: when its content is one article or one link, the page puts
 that element inside it, not on it.
 
+A heading inside the card is its title at every width: the body size,
+semibold, one body line, whatever its level (`h2` to `h6` keep their
+meaning, not their page size). A size or weight utility on the heading still
+wins. In a narrow card (three in a row on a phone) the words wrap, a long
+word breaks at a hyphen where the language allows it (`hyphens: auto`, with
+the page's `lang`), and only a word with no hyphen point breaks anywhere.
+
 `sf-card--plain` keeps the column and drops the surface: no fill, no edge, no
 padding. Use it inside a grid of cards that needs no frames.
 
@@ -35,5 +42,7 @@ padding. Use it inside a grid of cards that needs no frames.
 | `--sf-card-padding-block` | the space above and below the content | `--sf-space-2` |
 | `--sf-card-padding-inline` | the space beside the content | `--sf-space-2` |
 | `--sf-card-gap` | between the blocks | `--sf-content--space-text` |
+| `--sf-card-title-size` | a heading's size inside the card | `--sf-text--size-1` |
+| `--sf-card-title-weight` | a heading's weight inside the card | `--sf-text--font-weight-6` |
 
 In forced colours the edge is drawn in `CanvasText`.

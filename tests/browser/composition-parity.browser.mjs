@@ -27,7 +27,11 @@
 //   - a heading and a paragraph take alignment and visibility per screen
 //     (content.heading 1.2.0, content.paragraph 1.3.0);
 //   - G-39: a lead paragraph is the large body text (20 px at the desktop,
-//     the prototype's 19, 16 on the phone) in the variant ink.
+//     the prototype's 19, 16 on the phone) in the variant ink;
+//   - a heading in a card is its title (16 px semibold) at every width, and
+//     three titled cards on a phone keep every line inside and never meet;
+//   - on the accent a primary button inverts and an outlined one takes the
+//     on-primary edge: 3:1 off the fill, the words at 4.5:1.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -58,6 +62,17 @@ const document = {
     {id: 'own', type: 'layout.section', props: {width: 'full', padding_y: 0}, slots: {default: [paragraph('own-p', 'Своя ширина и свои отступы.')]}},
     {id: 'cards', type: 'layout.section', props: {background: 'container'}, slots: {default: [
       {id: 'grid', type: 'layout.grid', slots: {default: [1, 2, 3].map((n) => ({id: `card-${n}`, type: 'content.card', slots: {default: [paragraph(`card-${n}-p`, `Карточка ${n}`)]}}))}},
+      // Cards as the prototype's features: a title and a line under it, three on a phone too.
+      {id: 'titled', type: 'layout.grid', slots: {default: [['Быстро', 'Страница собирается за минуты.'], ['Понятно', 'Короткое описание преимущества.'], ['Надёжно', 'Автор не сломает макет.']].map(([title, line], index) => ({id: `titled-${index + 1}`, type: 'content.card', slots: {default: [
+        {id: `titled-${index + 1}-h`, type: 'content.heading', data: {level: 3, content: text(title)}},
+        paragraph(`titled-${index + 1}-p`, line),
+      ]}}))}},
+    ]}},
+    // The accent variant with its buttons: they must not melt into the fill.
+    {id: 'accent', type: 'layout.section', props: {background: 'accent'}, slots: {default: [
+      {id: 'accent-h', type: 'content.heading', data: {level: 2, content: text('Готовы начать?')}},
+      {id: 'accent-button', type: 'element.button', data: {text: 'Оставить заявку'}},
+      {id: 'accent-outline', type: 'element.button', data: {text: 'Подробнее'}, props: {appearance: 'outline'}},
     ]}},
     {id: 'parts', type: 'layout.section', slots: {default: [
       {id: 'box', type: 'layout.container', slots: {default: [paragraph('box-p', long)]}},
@@ -139,6 +154,23 @@ try {
           firstTop: node('first-h').getBoundingClientRect().top - node('first').getBoundingClientRect().top,
           lastBottom: node('first').getBoundingClientRect().bottom - node('lead').getBoundingClientRect().bottom,
           gridTops: [1, 2, 3].map((n) => node(`card-${n}`).parentElement.getBoundingClientRect().top),
+          // Every text line of a titled card stays inside its card; the titles never meet.
+          titled: [1, 2, 3].map((n) => {
+            const card = box(node(`titled-${n}`));
+            const lines = [node(`titled-${n}-h`), node(`titled-${n}-p`)].map((element) => {
+              const range = document.createRange();
+              range.selectNodeContents(element);
+              const rects = [...range.getClientRects()];
+              return {left: Math.min(...rects.map((rect) => rect.left)), right: Math.max(...rects.map((rect) => rect.right)), scroll: element.scrollWidth - element.clientWidth};
+            });
+            const heading = getComputedStyle(node(`titled-${n}-h`));
+            return {card, lines, title: {size: parseFloat(heading.fontSize), weight: Number(heading.fontWeight), line: parseFloat(heading.lineHeight), box: box(node(`titled-${n}-h`))}, text: parseFloat(getComputedStyle(node(`titled-${n}-p`)).fontSize)};
+          }),
+          accent: (() => {
+            const section = getComputedStyle(node('accent')).backgroundColor;
+            const fill = (id) => { const inner = node(id).querySelector('.sf-button'); const s = getComputedStyle(inner); return {background: s.backgroundColor, border: s.borderTopColor, borderWidth: parseFloat(s.borderTopWidth), ink: getComputedStyle(inner.querySelector('.sf-button-text-container')).color}; };
+            return {section, button: fill('accent-button'), outline: fill('accent-outline')};
+          })(),
           link: (() => {
             const anchor = node('link').querySelector('.sf-button');
             const button = node('button').querySelector('.sf-button');
@@ -180,6 +212,19 @@ try {
       // prototype draws features and cards at 380 (a phone rule is the author's).
       const [a, b, c] = m.cards;
       check(width >= 1024 ? 'the grid draws three columns' : 'the grid keeps three columns on the phone, as the prototype', near(a.top, b.top) && near(b.top, c.top) && a.right < b.left && b.right < c.left && near(a.width, c.width) && c.right <= m.grid.right + 1, {cards: m.cards, grid: m.grid});
+      // A card's title is the prototype's (16 px, semibold, one body line) at every width, and in three
+      // cards on a phone no line leaves its card and the titles never meet.
+      check('a heading inside a card is its title: 16 px, semibold', m.titled.every((card) => near(card.title.size, 16) && card.title.weight >= 600 && card.title.weight < 700), {titles: m.titled.map((card) => card.title)});
+      check('no line of a card leaves it', m.titled.every((card) => card.lines.every((line) => line.left >= card.card.left - 0.5 && line.right <= card.card.right + 0.5 && line.scroll <= 0)), {titled: m.titled.map((card) => ({card: card.card, lines: card.lines}))});
+      check('the card titles do not overlap', m.titled.every((card, index) => index === 0 || card.title.box.left >= m.titled[index - 1].title.box.right), {titles: m.titled.map((card) => card.title.box)});
+      // The accent's buttons stand off its fill: the plate (a fill) or the edge (an outline) at 3:1 or more.
+      const rgb = (value) => (value.match(/[\d.]+/gu) ?? []).map(Number);
+      const lum = ([r, g, b]) => [r, g, b].map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }).reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+      const ratio = (x, y) => { const [p, q] = [lum(rgb(x)), lum(rgb(y))].sort((u, v) => v - u); return Math.round(((p + 0.05) / (q + 0.05)) * 100) / 100; };
+      const plate = ratio(m.accent.button.background, m.accent.section);
+      const edge = ratio(m.accent.outline.border, m.accent.section);
+      check('on the accent a primary button inverts: its plate stands at 3:1 or more off the fill, its words at 4.5:1 on the plate', plate >= 3 && ratio(m.accent.button.ink, m.accent.button.background) >= 4.5, {plate, ink: ratio(m.accent.button.ink, m.accent.button.background), accent: m.accent});
+      check('on the accent an outlined button\'s edge and words read at 3:1 and 4.5:1', m.accent.outline.borderWidth > 0 && edge >= 3 && ratio(m.accent.outline.ink, m.accent.section) >= 4.5, {edge, ink: ratio(m.accent.outline.ink, m.accent.section), accent: m.accent});
       // layout.container: a narrow, centred measure on the desktop.
       check('the container is centred', near(m.box.left - m.root.left, m.root.right - m.box.right, 2), {box: m.box});
       if (width >= 1024) check('the container is narrower than the section', m.box.width < m.sectionText.width - 40, {box: m.box.width, section: m.sectionText.width});

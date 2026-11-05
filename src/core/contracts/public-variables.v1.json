@@ -3577,6 +3577,20 @@
           "summary": "The space between the card's blocks.",
           "default": "var(--sf-content--space-text)",
           "since": "2026-11-01"
+        },
+        {
+          "name": "--sf-card-title-size",
+          "role": "size",
+          "summary": "The size of a heading inside the card, its title.",
+          "default": "var(--sf-text--size-1)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-card-title-weight",
+          "role": "weight",
+          "summary": "The weight of a heading inside the card, its title.",
+          "default": "var(--sf-text--font-weight-6)",
+          "since": "2026-11-05"
         }
       ]
     },

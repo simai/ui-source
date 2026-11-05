@@ -112,6 +112,43 @@
         --sf-on-surface: var(--sf-on-primary);
         --sf-on-surface-variant: var(--sf-on-primary);
     }
+
+    // A primary button on the accent would be the accent's own colour. It
+    // inverts, as the prototype draws a button on a primary section: the
+    // on-primary plate with primary ink; an outlined, link or ghost primary
+    // takes the on-primary ink and edge. Roles only, no colour of its own,
+    // and the button's public variables an author sets still win.
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary {
+        --sf-button--background-color: var(--sf-button-background-color, var(--sf-on-primary));
+    }
+
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary .sf-button-text-container {
+        --sf-button-text-container--color: var(--sf-button-color, var(--sf-primary));
+    }
+
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary .sf-icon {
+        --sf-icon--color: var(--sf-primary);
+    }
+
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--outline.sf-button--primary {
+        --sf-button--border-color: var(--sf-button-border-color, var(--sf-on-primary));
+    }
+
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container {
+        --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
+    }
+
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-icon {
+        --sf-icon--color: var(--sf-on-primary);
+    }
+}
+
+// Its hover lifts to the primary container, the tonal plate primary ink reads
+// on, not the primary hover the accent already is.
+@layer sf.states {
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):hover {
+        --sf-button--background-color: var(--sf-primary-container);
+    }
 }
 
 // A routing scope is a non-visual common parent; it must not change layout.

@@ -6,9 +6,22 @@
 // A panel that groups a few blocks of content -- a heading, a paragraph, a
 // list, an action -- on a surface of its own: a fill, a hairline edge and the
 // surface radius. Its blocks stand in one column with one gap between them,
-// so their own outer margins are taken off. sf-card--plain keeps the column
+// so their own outer margins are taken off; a heading among them is the
+// card's title. sf-card--plain keeps the column
 // and drops the surface, for a card inside a grid that needs no frame.
 // content.card renders with it.
+
+// A heading inside a card is the card's title at every width: the body size,
+// semibold, one body line -- the prototype's card title (16/600 on the desktop
+// and at 380). In the base layer, above the page's heading sizes and below the
+// utilities, so a size or weight an author sets on the heading still wins.
+@layer sf.base {
+  .sf-card > :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--sf-card-title-size, var(--sf-text--size-1));
+    line-height: var(--sf-text--height-1);
+    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
+  }
+}
 
 @layer sf.components {
   .sf-card {
@@ -24,6 +37,10 @@
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card-radius, var(--sf-radius--surface));
     overflow-wrap: break-word;
+    // A narrow card (three on a phone) breaks a long word at a hyphen where
+    // the language allows it; overflow-wrap breaks it anywhere only when no
+    // hyphen fits.
+    hyphens: auto;
   }
 
   .sf-card > * {

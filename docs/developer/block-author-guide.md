@@ -311,7 +311,14 @@ The accent variant (`layout.section` 1.3.0) sets `background: accent`: the
 primary role's own fill with on-primary text (`bg-primary color-on-primary`,
 background set 1.1.0), as the prototype draws it; inside it the core sheet
 switches the on-surface roles to on-primary, so a caption or an icon reads
-on it. `primary` stays the primary container's light fill.
+on it, and a primary button inverts (the on-primary plate with primary ink;
+an outlined or link primary takes the on-primary ink and edge), so it does
+not melt into the fill. `primary` stays the primary container's light fill.
+
+A heading inside a `content.card` is the card's title at every width (the
+`.sf-card` sheet, card 1.1.0): the body size, semibold, one body line, as the
+prototype's cards and features draw it; in a narrow card the words wrap and
+a long word breaks at a hyphen where the page's language allows it.
 
 Forms (2026-11-04), the group `forms`:
 
