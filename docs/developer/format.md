@@ -11,7 +11,35 @@ A component in this repository or in a package built on it imports the module
 (`core/js/format.js`, `core/js/breakpoints.js`, `core/js/clipboard.js`,
 `smart/helpers/text.js`); a page script uses the globals. The modules hold no
 state of their own: the Intl formatters are kept on one global every bundle's
-copy shares, and each publishes itself on `SF` only when nothing is there yet.
+copy shares. `breakpoints.js` and `clipboard.js` publish themselves on `SF`
+only when nothing is there yet; `SF.format` is published by core's entry alone
+(see below).
+
+### Importing the helpers alone (core.runtime 1.28.0)
+
+The format helpers live in modules with no top-level side effects, and a
+bundle imports what it calls from them, so it carries that and nothing else:
+
+| Module | Exports |
+| --- | --- |
+| `core/js/format-number.js` | `formatNumber`, `numberOptions` |
+| `core/js/format-date.js` | `formatDate`, `calendarDayOffset`, `msUntilNextDay`, `toDate` |
+| `core/js/format-relative.js` | `formatRelativeDay`, `formatRelativeTime` |
+| `core/js/format-file-size.js` | `formatFileSize`, `fileSizeUnits`, `FILE_SIZE_UNITS` |
+| `core/js/format-intl.js` | `formatLocale`, `toDate`, `intlFormatter` (shared by the others) |
+
+```js
+import {formatNumber, numberOptions} from '../../core/js/format-number.js';
+import {formatDate} from '../../core/js/format-date.js';
+```
+
+`core/js/format.js` keeps every export it had, gathered from those modules,
+with the `SF.format` object as its default export and `publishFormat(root)`,
+which core's `index.js` calls. Until 1.28.0 importing `format.js` published
+`SF.format` from whichever bundle ran first; that one statement kept every
+helper in every bundle that imported one (each ui-chart bundle grew by 1.3 to
+1.4 KB gzip). Importing it now changes nothing on the page, and a bundler drops
+what is not called; the modules above are still the plainer import.
 
 ## `SF.format` (`core/js/format.js`)
 

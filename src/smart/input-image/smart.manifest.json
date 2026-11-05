@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-image",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Image field",
   "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
   "kind": "smart",
@@ -607,11 +607,11 @@
       },
       {
         "path": "src/smart/input-image/value.mjs",
-        "sha256": "2bfab097f5e4c0e1f6e92edd37e3b0de2371446e9d2f9ed388c83cd49bcd3ab8"
+        "sha256": "37669e869e35f9c70624ec018159a90ea0ff1a48ab522ac0e7d713256e1615ec"
       },
       {
         "path": "src/core/js/composition/file-size.mjs",
-        "sha256": "8989facd3b0cbdeb292cbfe992913fc4d8c15c7d3dd946746b6f7e8586386486"
+        "sha256": "eb0ea52f7f3a9cb0fafb8f8419c2f054aa16de51534a9b22d0cfc5075cd25f31"
       },
       {
         "path": "src/smart/input-image/js/templates/default.js",

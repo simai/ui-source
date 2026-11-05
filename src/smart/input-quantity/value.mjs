@@ -8,7 +8,7 @@
 // character that cannot be part of a number is refused as it is typed, and the
 // value is a number or nothing -- never the text that happened to be in the box.
 
-import {formatNumber as formatCoreNumber} from '../../core/js/format.js';
+import {formatNumber as formatCoreNumber} from '../../core/js/format-number.js';
 
 const symbolCache = new Map();
 
@@ -109,7 +109,7 @@ export function parseNumber(text, {locale, allowDecimal = false, allowNegative =
 }
 
 // A value as the page's language writes it, with the field's digits: core's
-// number format (core/js/format.js, decimal-<n>; reuse audit 2026-11-02,
+// number format (core/js/format-number.js, decimal-<n>; reuse audit 2026-11-02,
 // finding 7), so a quantity reads as the same number does in a table.
 export function formatNumber(value, {locale, precision = 0, grouping = true} = {}) {
   if (typeof value !== 'number') return '';

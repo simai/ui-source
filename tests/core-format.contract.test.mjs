@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import Format, {
@@ -12,8 +13,14 @@ import Format, {
   formatRelativeTime,
   msUntilNextDay,
   numberOptions,
+  publishFormat,
 } from '../src/core/js/format.js';
 import {formatFileSize as compositionFileSize} from '../src/core/js/composition/file-size.mjs';
+import * as PureDate from '../src/core/js/format-date.js';
+import * as PureFileSize from '../src/core/js/format-file-size.js';
+import * as PureIntl from '../src/core/js/format-intl.js';
+import * as PureNumber from '../src/core/js/format-number.js';
+import * as PureRelative from '../src/core/js/format-relative.js';
 
 // The core format module (reuse audit 2026-11-02, finding 7): one rule for
 // dates, days, numbers and file sizes, in the page's language. Intl puts a
@@ -141,9 +148,46 @@ test('file sizes at the unit boundaries, in two languages', () => {
   assert.equal(plain(compositionFileSize(1468006, ['Б', 'КБ', 'МБ', 'ГБ'], 'ru')), '1,4 МБ');
 });
 
-test('SF.format publishes the module once, for every bundle', () => {
-  assert.equal(globalThis.SF?.format, Format);
+test('the format modules have no side effect on load; core publishes SF.format', () => {
+  // Importing format.js (above) published nothing: only core's entry does.
+  assert.equal(globalThis.SF?.format, undefined);
+  assert.match(readFileSync(new URL('../src/core/js/index.js', import.meta.url), 'utf8'), /^publishFormat\(\);$/mu);
+  const page = {};
+  assert.equal(publishFormat(page), Format);
+  assert.equal(page.SF.format, Format);
+  // A Format already published stays (a second copy never replaces it).
+  const other = {SF: {format: {own: true}}};
+  assert.deepEqual(publishFormat(other), {own: true});
   assert.deepEqual(Object.keys(Format).sort(), ['date', 'dayOffset', 'fileSize', 'locale', 'msUntilNextDay', 'number', 'numberOptions', 'relativeDay', 'relativeTime']);
-  // The formatters live on a global every copy of the module shares.
+  // The formatters live on a global every copy of the modules shares.
   assert.ok(globalThis.__sfFormat?.formatters instanceof Map);
+});
+
+test('the helpers alone, from modules of their own, are the same functions', () => {
+  assert.equal(formatNumber, PureNumber.formatNumber);
+  assert.equal(numberOptions, PureNumber.numberOptions);
+  assert.equal(formatDate, PureDate.formatDate);
+  assert.equal(calendarDayOffset, PureDate.calendarDayOffset);
+  assert.equal(msUntilNextDay, PureDate.msUntilNextDay);
+  assert.equal(formatRelativeDay, PureRelative.formatRelativeDay);
+  assert.equal(formatRelativeTime, PureRelative.formatRelativeTime);
+  assert.equal(formatFileSize, PureFileSize.formatFileSize);
+  assert.equal(fileSizeUnits, PureFileSize.fileSizeUnits);
+  assert.equal(formatLocale, PureIntl.formatLocale);
+  assert.equal(compositionFileSize, PureFileSize.formatFileSize);
+});
+
+test('no format module has a top-level statement a bundler must keep', () => {
+  // What a bundle keeps of a module it imports one function from (ui-chart,
+  // 2026-11-05): the module's top-level statements that are not declarations.
+  // Only imports, exports, function declarations, literal constants and
+  // calls annotated pure may stand at the top of these modules.
+  for (const name of ['format.js', 'format-intl.js', 'format-number.js', 'format-date.js', 'format-relative.js', 'format-file-size.js']) {
+    const source = readFileSync(new URL(`../src/core/js/${name}`, import.meta.url), 'utf8');
+    const code = source.replace(/\/\*[\s\S]*?\*\/|^\s*\/\/.*$/gmu, (comment) => (comment.includes('@__PURE__') ? comment : ''));
+    for (const line of code.split('\n')) {
+      if (!line.trim() || /^\s/u.test(line) || /^[})\]]/u.test(line)) continue;
+      assert.match(line, /^(?:import |export (?:\{|default Format;|function |const [A-Z_a-z]+ = (?:\/\* @__PURE__ \*\/ |\[))|export \{|function |const [A-Z_a-z]+ = (?:\/\* @__PURE__ \*\/ |\[|\d))/u, `${name}: ${line}`);
+    }
+  }
 });
