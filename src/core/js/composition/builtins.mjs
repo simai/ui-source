@@ -594,7 +594,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     catalogue: { group: 'forms', icon: 'notes', label_key: catalogueWord('form.textarea'), keywords: { en: ['text area', 'message', 'comment', 'multiline'], ru: ['многострочное поле', 'сообщение', 'комментарий'] }, order: 120 },
   }),
   elementManifest('form.checkbox', 'smart/checkbox', {
-    data_schema: closed({ label: plainText(300), description: plainText(300), name: fieldName }),
+    data_schema: closed({ label: plainText(300), hint: plainText(300), name: fieldName }),
     props_schema: closed({
       checked: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
@@ -602,7 +602,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     catalogue: { group: 'forms', icon: 'check_box', label_key: catalogueWord('form.checkbox'), keywords: { en: ['checkbox', 'agree', 'consent', 'tick'], ru: ['флажок', 'галочка', 'согласие'] }, order: 130 },
   }),
   elementManifest('form.switch', 'smart/switch', {
-    data_schema: closed({ label: plainText(300), description: plainText(300), name: fieldName }),
+    data_schema: closed({ label: plainText(300), hint: plainText(300), name: fieldName }),
     props_schema: closed({
       checked: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
@@ -1109,14 +1109,14 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   ]),
   contentEditor('form.checkbox', [
     contentField('form.checkbox', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
-    contentField('form.checkbox', 'description', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.checkbox', 'hint', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
     contentField('form.checkbox', 'checked', 'props', 'toggle', { default: false }),
     contentField('form.checkbox', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
     contentField('form.checkbox', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),
   ]),
   contentEditor('form.switch', [
     contentField('form.switch', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
-    contentField('form.switch', 'description', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
+    contentField('form.switch', 'hint', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
     contentField('form.switch', 'checked', 'props', 'toggle', { default: false }),
     contentField('form.switch', 'name', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
     contentField('form.switch', 'size', 'props', 'choice', { ...advanced, choices: ['1/2', '1', '2'], default: '1' }),

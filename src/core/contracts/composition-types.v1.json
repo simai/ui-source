@@ -2259,7 +2259,7 @@
       "data_schema": {
         "additionalProperties": false,
         "properties": {
-          "description": {
+          "hint": {
             "maxLength": 300,
             "minLength": 1,
             "type": "string"
@@ -2343,7 +2343,7 @@
       "data_schema": {
         "additionalProperties": false,
         "properties": {
-          "description": {
+          "hint": {
             "maxLength": 300,
             "minLength": 1,
             "type": "string"

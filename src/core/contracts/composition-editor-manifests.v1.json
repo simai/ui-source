@@ -1962,16 +1962,16 @@
         },
         {
           "capability_hints": [
-            "composition.data.description"
+            "composition.data.hint"
           ],
           "constraints": {
             "max_length": 300,
             "min_length": 1
           },
           "group": "basic",
-          "help_key": "sf.composition.form_checkbox.description_help",
-          "key": "description",
-          "label_key": "sf.composition.form_checkbox.description",
+          "help_key": "sf.composition.form_checkbox.hint_help",
+          "key": "hint",
+          "label_key": "sf.composition.form_checkbox.hint",
           "owner": "simai/framework",
           "permission_hints": [
             "composition.node.update"
@@ -1981,7 +1981,7 @@
             "type": "string",
             "version": 2
           },
-          "target": "description",
+          "target": "hint",
           "visibility": "visible"
         },
         {
@@ -2094,16 +2094,16 @@
         },
         {
           "capability_hints": [
-            "composition.data.description"
+            "composition.data.hint"
           ],
           "constraints": {
             "max_length": 300,
             "min_length": 1
           },
           "group": "basic",
-          "help_key": "sf.composition.form_switch.description_help",
-          "key": "description",
-          "label_key": "sf.composition.form_switch.description",
+          "help_key": "sf.composition.form_switch.hint_help",
+          "key": "hint",
+          "label_key": "sf.composition.form_switch.hint",
           "owner": "simai/framework",
           "permission_hints": [
             "composition.node.update"
@@ -2113,7 +2113,7 @@
             "type": "string",
             "version": 2
           },
-          "target": "description",
+          "target": "hint",
           "visibility": "visible"
         },
         {

@@ -842,7 +842,7 @@ const BUILTIN_RENDERERS = {
     const props = node.props || {};
     return fieldBlock(node, elements.print('sf-checkbox', defined({
       label: fieldLabel(node, locale),
-      description: node.data?.description,
+      description: node.data?.hint,
       name: node.data?.name,
       checked: props.checked === true || undefined,
       size: props.size,
@@ -852,7 +852,7 @@ const BUILTIN_RENDERERS = {
     const props = node.props || {};
     return fieldBlock(node, elements.print('sf-switch', defined({
       label: fieldLabel(node, locale),
-      description: node.data?.description,
+      description: node.data?.hint,
       name: node.data?.name,
       checked: props.checked === true || undefined,
       size: props.size,

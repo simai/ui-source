@@ -320,8 +320,8 @@ Forms (2026-11-04), the group `forms`:
 | `form.form` | a `<form class="grid gap-4">` around its blocks | action (the host's address, the Document's URL rule), method; variants request (name, phone, send) and message (name, email, text, send) |
 | `form.input` | `sf-input` | label, placeholder, input_type (text, email, tel, url), required, hint, name, size |
 | `form.textarea` | `sf-input-textarea` | label, placeholder, rows 2..12, required, hint, name, size |
-| `form.checkbox` | `sf-checkbox` | label, description, checked, name, size |
-| `form.switch` | `sf-switch` | label, description, checked, name, size |
+| `form.checkbox` | `sf-checkbox` | label, hint, checked, name, size |
+| `form.switch` | `sf-switch` | label, hint, checked, name, size |
 | `form.select` | `sf-dropdown` | label, options (words separated by commas), placeholder, required, name, size |
 | `form.button-submit` | `sf-button` with `native-type="submit"` | text, appearance, size |
 

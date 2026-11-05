@@ -350,8 +350,8 @@ const EN = {
   ...words('form_checkbox', {
     label: 'Label',
     label_help: 'The words beside the box',
-    description: 'Description',
-    description_help: 'A line under the label',
+    hint: 'Hint',
+    hint_help: 'A line under the label',
     checked: 'On at first',
     checked_help: 'Whether it starts ticked',
     name: 'Field name',
@@ -362,8 +362,8 @@ const EN = {
   ...words('form_switch', {
     label: 'Label',
     label_help: 'The words beside the box',
-    description: 'Description',
-    description_help: 'A line under the label',
+    hint: 'Hint',
+    hint_help: 'A line under the label',
     checked: 'On at first',
     checked_help: 'Whether it starts ticked',
     name: 'Field name',
@@ -771,8 +771,8 @@ const RU = {
   ...words('form_checkbox', {
     label: 'Подпись',
     label_help: 'Слова рядом с флажком',
-    description: 'Описание',
-    description_help: 'Строка под подписью',
+    hint: 'Подсказка',
+    hint_help: 'Строка под подписью',
     checked: 'Включено сразу',
     checked_help: 'Отмечено ли с самого начала',
     name: 'Имя поля',
@@ -783,8 +783,8 @@ const RU = {
   ...words('form_switch', {
     label: 'Подпись',
     label_help: 'Слова рядом с флажком',
-    description: 'Описание',
-    description_help: 'Строка под подписью',
+    hint: 'Подсказка',
+    hint_help: 'Строка под подписью',
     checked: 'Включено сразу',
     checked_help: 'Отмечено ли с самого начала',
     name: 'Имя поля',
