@@ -100,6 +100,17 @@
       "mode": "same-detail",
       "section": "§8",
       "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-composition-overlay-open",
+      "to": "sf-editor-overlay-open",
+      "kind": "event",
+      "component": "sf-editor-overlay",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; open (1.5.0) follows the tag's alias policy as the other events do"
     }
   ]
 }

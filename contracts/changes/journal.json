@@ -4293,7 +4293,7 @@
       "recorded_on": "2026-11-03",
       "stage": "compat",
       "kind": "tag",
-      "summary": "sf-composition-overlay is sf-editor-overlay (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-editor-overlay's class, the Loader's rule lists it, the Framework's sheets match :is(sf-editor-overlay, sf-composition-overlay), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-composition-overlay-select, sf-composition-overlay-apply, sf-composition-overlay-insert, sf-composition-overlay-move, sf-composition-overlay-change).",
+      "summary": "sf-composition-overlay is sf-editor-overlay (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-editor-overlay's class, the Loader's rule lists it, the Framework's sheets match :is(sf-editor-overlay, sf-composition-overlay), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-composition-overlay-select, sf-composition-overlay-apply, sf-composition-overlay-insert, sf-composition-overlay-move, sf-composition-overlay-change; sf-composition-overlay-open since sf-editor-overlay 1.5.0 added open).",
       "items": [
         {
           "component": "sf-editor-overlay",
@@ -4324,6 +4324,11 @@
           "component": "sf-editor-overlay",
           "from": "sf-composition-overlay-change",
           "to": "sf-editor-overlay-change"
+        },
+        {
+          "component": "sf-editor-overlay",
+          "from": "sf-composition-overlay-open",
+          "to": "sf-editor-overlay-open"
         },
         {
           "component": "sf-editor-overlay",

@@ -80,9 +80,9 @@ const pointer = (node, detail, x = 50, y = 70) => ({
 const key = (name, held = {}) => ({ key: name, altKey: false, shiftKey: false, metaKey: false, ctrlKey: false, prevented: false, preventDefault() { this.prevented = true; }, ...held });
 const opens = (element) => element.sent.filter((event) => event.type === OVERLAY_EVENTS.open).map((event) => event.detail);
 
-test('open is the vocabulary\'s verb on the new tag only, its detail frozen', () => {
+test('open is the vocabulary\'s verb, under the former tag too until 2027-01-01, its detail frozen', () => {
   assert.equal(OVERLAY_EVENTS.open, 'sf-editor-overlay-open');
-  assert.equal('open' in OVERLAY_EVENTS_FORMER_TAG, false, 'open came after the rename: no name under the former tag');
+  assert.equal(OVERLAY_EVENTS_FORMER_TAG.open, 'sf-composition-overlay-open');
   const detail = openDetail('p', { x: 4, y: 5, extra: 1 }, 'click');
   assert.deepEqual(detail, { ids: ['p'], id: 'p', node: 'p', point: { x: 4, y: 5 }, trigger: 'click' });
   assert.ok(Object.isFrozen(detail) && Object.isFrozen(detail.ids) && Object.isFrozen(detail.point));
@@ -97,7 +97,9 @@ test('a second click on the chosen node opens it once, at the point in canvas co
   assert.deepEqual(opens(element), [{ ids: ['p'], id: 'p', node: 'p', point: { x: 40, y: 50 }, trigger: 'click' }]);
   assert.ok(click.prevented && click.stopped, 'the click stays the editor\'s');
   assert.deepEqual(element.selected, []);
-  assert.equal(element.sent.length, 1, 'one event, no former-tag copy');
+  // Defined without its manifest, the overlay sends the former-tag name itself, the same detail.
+  assert.deepEqual(element.sent.map((event) => event.type), ['sf-editor-overlay-open', 'sf-composition-overlay-open']);
+  assert.equal(element.sent[1].detail, element.sent[0].detail);
 });
 
 test('a click on another node selects it and opens nothing', () => {
@@ -183,5 +185,5 @@ test('the manifest declares passive and open as the element does', async () => {
   const open = manifest.events['sf-editor-overlay-open'];
   assert.deepEqual(open.payload.required, ['ids', 'id', 'node', 'point', 'trigger']);
   assert.deepEqual(open.payload.properties.trigger.enum, ['click', 'dblclick', 'enter']);
-  assert.equal(manifest.events['sf-composition-overlay-open'], undefined);
+  assert.ok(manifest.events['sf-composition-overlay-open'], 'the former-tag name is declared until 2027-01-01');
 });

@@ -30,8 +30,8 @@ import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 // and change are new names, followed by sf-composition-overlay-action and
 // -edit with their former details until 2026-12-01 (aliases.json). Since
 // 2026-11-03 the tag is sf-editor-overlay: each name is also sent under the
-// former tag (sf-composition-overlay-*, the same detail) until 2027-01-01;
-// open came after the rename and has no name under the former tag.
+// former tag (sf-composition-overlay-*, the same detail) until 2027-01-01,
+// open (1.5.0) too, as the tag's alias policy asks of every event.
 export const OVERLAY_EVENTS = Object.freeze({
   select: 'sf-editor-overlay-select',
   action: 'sf-editor-overlay-apply',
@@ -47,6 +47,7 @@ export const OVERLAY_EVENTS_FORMER_TAG = Object.freeze({
   insert: 'sf-composition-overlay-insert',
   move: 'sf-composition-overlay-move',
   edit: 'sf-composition-overlay-change',
+  open: 'sf-composition-overlay-open',
 });
 const FORMER_TAG_NAME = new Map(Object.keys(OVERLAY_EVENTS_FORMER_TAG).map((key) => [OVERLAY_EVENTS[key], OVERLAY_EVENTS_FORMER_TAG[key]]));
 

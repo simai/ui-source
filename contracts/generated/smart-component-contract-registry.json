@@ -787,7 +787,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
-      "manifest_sha256": "b95a836fb3805d8116a6e55eeac62c9abf2ae27cd96751c9eb9dcf03160dcdc9",
+      "manifest_sha256": "70e90e684b933d5c89e95aa5d09b674eddacb687be8aa51cbdb637849fc36ee0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

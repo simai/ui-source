@@ -614,7 +614,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-composition-overlay-action": {
       "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen. Its detail is the former one, {action_id, node_id}, not sf-composition-overlay-apply's {action, scope, ids}.",
@@ -692,6 +693,13 @@
         "type": "object"
       },
       "alias_of": "sf-editor-overlay-change"
+    },
+    "sf-composition-overlay-open": {
+      "summary": "Dated alias of sf-editor-overlay-open until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-editor-overlay-open"
     }
   },
   "state": {
@@ -841,11 +849,11 @@
       },
       {
         "path": "src/smart/editor-overlay/docs.md",
-        "sha256": "aa501c7e8158659bcdaeea94dc8bc9fa3ff5d7b7ff5928b0e0139ae7dca4163a"
+        "sha256": "31c11e7832cb7abf8cd5f1ec2d2606376735bca1f48d744af2882759d0e8e4f7"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "1b7615c96354b681b85c743ae02ba426a84d0e360cc52927b86d6170d3fc234b"
+        "sha256": "30708278a475e0aab37a7bf42fac79d9013d7ef91f1cbb19a641812116007082"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
