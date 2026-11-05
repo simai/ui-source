@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Alert bar",
   "summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
@@ -309,7 +309,7 @@
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "f731ca61f0b98466352bf1e8bdad454fb13348756b31f63a4758ce0c327fec9f"
+        "sha256": "9b6a82db1d111f4f147e09c00b3e9204131be5632d5bcfaea8fa8c50857341de"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
@@ -317,7 +317,7 @@
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "e7757dcded4ac89f5264632732f94370b3abbff8894bc5c821233a9531f0f2e0"
+        "sha256": "682e23d16b8362f335537d02aae6c557671f05e25848c0819c373bb807182a6e"
       }
     ],
     "generated_runtime": []

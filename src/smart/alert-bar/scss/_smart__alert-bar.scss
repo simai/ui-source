@@ -112,13 +112,15 @@
   margin-inline-end: calc(var(--sf-alert-bar--text-space-x) - var(--sf-alert-bar--gap));
 }
 
+/* The text gives way first: it wraps down to its own floor (10rem), and
+   only then do the actions wrap onto a second line. */
 .sf-alert-bar-text {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 10rem;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 var(--sf-alert-bar--space-x);
-  min-inline-size: 0;
+  min-inline-size: min(10rem, 100%);
 }
 
 .sf-alert-bar-message {
@@ -138,9 +140,20 @@
 
 .sf-alert-bar-actions {
   display: flex;
-  flex: none;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--sf-alert-bar--text-space-x);
+}
+
+/* An action keeps its label's natural width: never shrunk, never cut. The
+   sf-button host is display: contents, so the native control is the item. */
+.sf-alert-bar-actions > :is(sf-button, sf-button-icon) > :is(button, a),
+.sf-alert-bar-actions > .sf-alert-bar-pager,
+.sf-alert-bar-item-actions > :is(sf-button, sf-button-icon) > :is(button, a) {
+  flex: none;
+  white-space: nowrap;
 }
 
 .sf-alert-bar-pager {

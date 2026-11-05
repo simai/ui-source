@@ -59,6 +59,10 @@ Under 600 px of the bar's own width the icon, the text and the close share
 the first line, the actions go under the text, the arrows are not drawn and
 «Все N» stands at the line's end.
 
+An action is always as wide as its label: it is never shrunk or cut with an
+ellipsis. When the bar is short of room, the message wraps first, down to
+about 10rem, and then the actions wrap onto a line of their own.
+
 ## Closing
 
 - A **warning** closes «на сутки»: `sf-alert-bar-close` carries `hide: "day"`.
