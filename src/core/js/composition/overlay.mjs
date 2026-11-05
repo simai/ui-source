@@ -23,19 +23,22 @@ import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 // The names sf-editor-overlay's component.json declares (standard 1.3.8
 // §8, vocabulary 1.1.5): select {ids, id}, apply {action, scope: entry, ids}
 // (one entry's own action, §18.3), insert, move {ids, id, parent, position}
-// (one manual move) and change {id, value, previous} for a plain-string edit.
+// (one manual move), change {id, value, previous} for a plain-string edit and
+// open {ids, id, node, point, trigger} (vocabulary §5 open, since 1.5.0).
 // select, move and insert keep their names and add the vocabulary's fields to
 // the former ones (node_id, parent_id stay for the composition host); apply
 // and change are new names, followed by sf-composition-overlay-action and
 // -edit with their former details until 2026-12-01 (aliases.json). Since
 // 2026-11-03 the tag is sf-editor-overlay: each name is also sent under the
-// former tag (sf-composition-overlay-*, the same detail) until 2027-01-01.
+// former tag (sf-composition-overlay-*, the same detail) until 2027-01-01;
+// open came after the rename and has no name under the former tag.
 export const OVERLAY_EVENTS = Object.freeze({
   select: 'sf-editor-overlay-select',
   action: 'sf-editor-overlay-apply',
   insert: 'sf-editor-overlay-insert',
   move: 'sf-editor-overlay-move',
   edit: 'sf-editor-overlay-change',
+  open: 'sf-editor-overlay-open',
 });
 
 export const OVERLAY_EVENTS_FORMER_TAG = Object.freeze({
@@ -45,7 +48,7 @@ export const OVERLAY_EVENTS_FORMER_TAG = Object.freeze({
   move: 'sf-composition-overlay-move',
   edit: 'sf-composition-overlay-change',
 });
-const FORMER_TAG_NAME = new Map(Object.keys(OVERLAY_EVENTS).map((key) => [OVERLAY_EVENTS[key], OVERLAY_EVENTS_FORMER_TAG[key]]));
+const FORMER_TAG_NAME = new Map(Object.keys(OVERLAY_EVENTS_FORMER_TAG).map((key) => [OVERLAY_EVENTS[key], OVERLAY_EVENTS_FORMER_TAG[key]]));
 
 export const OVERLAY_EVENTS_LEGACY = Object.freeze({
   action: 'sf-composition-overlay-action',
@@ -77,6 +80,7 @@ const DRAG_START = 4;
 const DRAG_EDGE = 48;
 const DRAG_STEP = 10;
 const SCROLLS = /^(auto|scroll)$/u;
+const PASSIVE_WORDS = new Set(['1', 'true', 'yes', 'on']);
 const format = (template, values) => template.replace(/\{(\w+)\}/gu, (_, key) => String(values[key] ?? ''));
 
 /** Flattens a Document into overlay nodes in document order. */
@@ -261,6 +265,19 @@ function moveDetail(id, descriptor) {
   return { node_id: id, ...descriptor, ids: [id], id, parent: descriptor.parent_id ?? null, position: descriptor.index };
 }
 
+/**
+ * The detail of open (vocabulary 1.1.5 §5 open, {id}): the node, and the point
+ * the intent came from in canvas coordinates -- from the top-left corner of the
+ * canvas element's border box, or of a framed canvas's viewport (the frame
+ * document's client coordinates). trigger is click (a second click on the
+ * chosen node), dblclick or enter; for Enter the point is the centre of the
+ * node's box. A point that cannot be measured is null.
+ */
+export function openDetail(id, point, trigger) {
+  const at = point && finite(point.x) && finite(point.y) ? Object.freeze({ x: point.x, y: point.y }) : null;
+  return Object.freeze({ ids: Object.freeze([id]), id, node: id, point: at, trigger });
+}
+
 // base: the class made from sf-editor-overlay's component.json
 // (manifest-host.mjs); without it the overlay is a plain element.
 export function defineCompositionOverlay(registry = globalThis.customElements, { base = null } = {}) {
@@ -305,6 +322,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.seamTimer = 0;
       this.gripDrag = null;
       this.actionParts = new Map();
+      // The node a first click opened, so the double click it begins opens it once.
+      this.openedByClick = null;
     }
 
     // actions, messages and insertion-target are settings of the manifest
@@ -358,12 +377,47 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     static get observedAttributes() {
-      return [...new Set([...(super.observedAttributes ?? []), 'placement'])];
+      return [...new Set([...(super.observedAttributes ?? []), 'placement', 'passive'])];
     }
 
     attributeChangedCallback(name, ...values) {
       super.attributeChangedCallback?.(name, ...values);
       if (name === 'placement') this.schedule();
+      if (name === 'passive') this.applyPassive();
+    }
+
+    /**
+     * Passive (the setting passive, since 1.5.0): the overlay takes no input on
+     * its canvas -- no click, double click, key, hover, seam or drop is read or
+     * stopped, so an editor the host placed in a chosen block gets every one --
+     * and keeps its node list and selection. Its own parts step aside: no hover
+     * frame, toolbar, insertion point or move handle, and the tree leaves the
+     * Tab order. The selected frame stays drawn. Off again, it reads input as
+     * before, with the same selection.
+     */
+    isPassive() {
+      // Read as the manifest base reads a boolean: present and empty, or a word for true.
+      const raw = this.getAttribute('passive');
+      return raw !== null && (raw === '' || PASSIVE_WORDS.has(raw.toLowerCase()));
+    }
+
+    applyPassive() {
+      if (!this.layer) return;
+      const passive = this.isPassive();
+      if (passive) {
+        // What was under way ends as a blur or Escape would end it.
+        if (this.editing) this.finishEdit(true);
+        this.moving = null;
+        this.pointerDrag?.abort();
+        this.pointerDrag = null;
+        this.endGripDrag(false);
+        this.showDropHint(null);
+        this.clearSeam();
+        this.hoverId = null;
+        this.openedByClick = null;
+      }
+      this.tree.tabIndex = passive ? -1 : 0;
+      this.schedule();
     }
 
     buildLayer() {
@@ -387,7 +441,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.tree = doc.createElement('div');
       this.tree.className = 'sf-composition-overlay-tree';
       this.tree.setAttribute('role', 'tree');
-      this.tree.tabIndex = 0;
+      this.tree.tabIndex = this.isPassive() ? -1 : 0;
       this.live = doc.createElement('div');
       this.live.className = 'sf-composition-overlay-live';
       this.live.setAttribute('aria-live', 'polite');
@@ -448,11 +502,12 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.canvas.addEventListener('pointermove', (event) => this.onPointerMove(event), passive);
         this.canvas.addEventListener('pointerleave', () => this.onPointerGone(), passive);
         this.canvas.addEventListener('click', (event) => this.onCanvasClick(event), { ...options, capture: true });
+        this.canvas.addEventListener('dblclick', (event) => this.onCanvasDoubleClick(event), options);
       }
       this.tree.addEventListener('keydown', (event) => this.onTreeKey(event), options);
       this.tree.addEventListener('focus', () => {
         this.setAttribute('data-sf-overlay-focus', '');
-        if (!this.selectedId && this.nodes.length) this.select(this.nodes[0].id);
+        if (!this.selectedId && this.nodes.length && !this.isPassive()) this.select(this.nodes[0].id);
       }, options);
       this.tree.addEventListener('blur', () => this.removeAttribute('data-sf-overlay-focus'), options);
       this.toolbar.addEventListener('click', (event) => this.onToolbarClick(event), options);
@@ -469,8 +524,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.observeGeometry();
       }
       this.unregisterDrop = registerSortableDropTarget({
-        resolve: (x, y, dragSession) => (this.acceptsDrag(dragSession) ? this.resolveDrop(x, y, null) : null),
-        keyboardTargets: (dragSession) => (this.acceptsDrag(dragSession) ? this.dropTargets(null) : []),
+        resolve: (x, y, dragSession) => (!this.isPassive() && this.acceptsDrag(dragSession) ? this.resolveDrop(x, y, null) : null),
+        keyboardTargets: (dragSession) => (!this.isPassive() && this.acceptsDrag(dragSession) ? this.dropTargets(null) : []),
         drop: (dragSession, descriptor) => this.emit(OVERLAY_EVENTS.insert, { ...descriptor, parent: descriptor.parent_id ?? null, item: dragSession.item, from: dragSession.from, mode: dragSession.mode }),
         leave: () => this.showDropHint(null),
       });
@@ -507,6 +562,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const options = { signal: this.frameConnection.signal };
       const passive = { ...options, passive: true };
       doc.addEventListener('pointermove', (event) => {
+        if (this.isPassive()) return;
         this.setHover(this.frameNodeAt(event));
         this.trackPointer(event.clientX, event.clientY, true);
       }, passive);
@@ -790,6 +846,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     // the canvas scrolls near its edges, Escape cancels. The pointer is captured,
     // so a frame under it does not swallow the moves.
     onToolbarPointerDown(event) {
+      if (this.isPassive()) return;
       const button = event.target instanceof globalThis.Element ? event.target.closest('button[data-action]') : null;
       const action = button ? this.actions.find((entry) => entry.id === button.dataset.action) : null;
       const node = this.selectedId ? this.byId.get(this.selectedId) : null;
@@ -867,7 +924,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
 
     // Moving a canvas node: pointer via the selected label, keyboard via the tree.
     onHandleDown(event) {
-      if (this.iframe) return;
+      if (this.iframe || this.isPassive()) return;
       if (event.button !== 0 || !this.selectedId || !this.byId.get(this.selectedId)?.parent) return;
       event.preventDefault();
       const moving = this.selectedId;
@@ -1001,6 +1058,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onPointerMove(event) {
+      if (this.isPassive()) return;
       this.setHover(this.nodeAt(event.target));
       this.trackPointer(event.clientX, event.clientY, false);
     }
@@ -1021,7 +1079,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     updateSeam() {
-      if (!this.pointer || !this.connection || this.editing || this.moving || this.gripDrag || this.pointerDrag || this.glide) return;
+      if (!this.pointer || !this.connection || this.isPassive() || this.editing || this.moving || this.gripDrag || this.pointerDrag || this.glide) return;
       if (this.iframe) this.view = this.frameMetrics();
       let { x, y } = this.pointer;
       if (this.pointer.inFrame) {
@@ -1094,12 +1152,75 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onCanvasClick(event) {
+      // Passive, the click is the page's: an editor in the chosen block gets it.
+      if (this.isPassive()) return;
       const id = this.nodeAt(event.target);
       if (!id) return;
       // In the editor a click selects; it never follows links or submits.
       event.preventDefault();
       event.stopPropagation();
-      this.select(id);
+      this.clickSelect(id, event, () => this.canvasPoint(event));
+    }
+
+    // A click selects; a click on the node already chosen is a request to open
+    // it. The second click of a double click opens nothing: the double click
+    // does, unless the first click already has.
+    clickSelect(id, event, point) {
+      if (id !== this.selectedId) {
+        this.openedByClick = null;
+        this.select(id);
+        return;
+      }
+      if ((event.detail ?? 0) > 1) return;
+      this.openedByClick = id;
+      this.sendOpen(id, point(), 'click');
+    }
+
+    onCanvasDoubleClick(event) {
+      if (this.isPassive()) return;
+      const id = this.nodeAt(event.target);
+      if (!id) return;
+      this.doubleClickOpen(id, () => this.canvasPoint(event));
+    }
+
+    doubleClickOpen(id, point) {
+      const opened = this.openedByClick === id;
+      this.openedByClick = null;
+      if (opened) return;
+      if (this.selectedId !== id) this.select(id);
+      this.sendOpen(id, point(), 'dblclick');
+    }
+
+    /** A pointer event's point in canvas coordinates: from the canvas element's border box corner. */
+    canvasPoint(event) {
+      const box = this.canvas?.getBoundingClientRect();
+      return box ? { x: event.clientX - box.left, y: event.clientY - box.top } : null;
+    }
+
+    /** The centre of a node's box in canvas coordinates (a framed canvas: its viewport). */
+    nodeCentre(id) {
+      const node = this.byId.get(id);
+      if (!node) return null;
+      if (node.flat) {
+        const { element, rect } = node.flat;
+        const win = this.frameDoc?.defaultView;
+        if (element) {
+          if (!element.isConnected) return null;
+          const box = element.getBoundingClientRect();
+          return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+        }
+        return win ? { x: rect.x - win.scrollX + rect.width / 2, y: rect.y - win.scrollY + rect.height / 2 } : null;
+      }
+      const box = this.element(id)?.getBoundingClientRect();
+      const canvas = this.canvas?.getBoundingClientRect();
+      return box && canvas ? { x: box.left - canvas.left + box.width / 2, y: box.top - canvas.top + box.height / 2 } : null;
+    }
+
+    // open {ids, id, node, point, trigger}: the host decides what opening is
+    // (an editor in the block, a dialog); the overlay changes nothing.
+    sendOpen(id, point, trigger) {
+      if (this.isPassive() || !this.byId.has(id)) return false;
+      return this.emit(OVERLAY_EVENTS.open, openDetail(id, point, trigger));
     }
 
     // A host-mapped key: the selected node's action whose shortcut it is. An
@@ -1114,6 +1235,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onTreeKey(event) {
+      if (this.isPassive()) return;
       if (this.moving && this.onMoveKey(event)) return;
       if (this.runShortcut(event)) return;
       if (event.key === ' ' && this.selectedId && !this.iframe) {
@@ -1137,6 +1259,15 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       } else if (event.key === 'Enter' && this.iframe && current?.flat?.editable) {
         event.preventDefault();
         this.edit(current.id);
+        return;
+      } else if (event.key === 'Enter' && current && (!current.flat?.editable)) {
+        // Enter reaches the toolbar, as before, and asks to open the chosen
+        // node: a host that opens it takes the focus from there.
+        const button = this.toolbar.querySelector('button:not(:disabled)');
+        if (!button && (event.altKey || event.metaKey || event.ctrlKey || event.shiftKey)) return;
+        event.preventDefault();
+        button?.focus();
+        if (!(event.altKey || event.metaKey || event.ctrlKey || event.shiftKey)) this.sendOpen(current.id, this.nodeCentre(current.id), 'enter');
         return;
       } else if (event.key === 'Enter' && this.toolbar.querySelector('button:not(:disabled)')) {
         event.preventDefault();
@@ -1321,7 +1452,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const label = frame.firstChild;
       if (label) {
         // The label is the move handle of a canvas whose host gives no grip.
-        label.hidden = Boolean(this.iframe) || this.actions.some((action) => action.icon === GRIP_ICON);
+        label.hidden = Boolean(this.iframe) || this.isPassive() || this.actions.some((action) => action.icon === GRIP_ICON);
         const { label: text, badges } = this.info(this.byId.get(id));
         label.textContent = badges.length ? `${text} · ${badges.join(' · ')}` : text;
       }
@@ -1382,7 +1513,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.view = this.frameMetrics();
         this.applyClip(this.view);
       }
-      this.place(this.hoverFrame, this.hoverId && this.hoverId !== this.selectedId ? this.hoverId : null);
+      this.place(this.hoverFrame, this.hoverId && this.hoverId !== this.selectedId && !this.isPassive() ? this.hoverId : null);
       const box = this.place(this.selectedFrame, this.selectedId);
       this.positionToolbar(box, travels);
       this.positionInsertions();
@@ -1391,11 +1522,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
 
     positionToolbar(box, travels) {
       const clip = this.view?.clip;
-      const visible = Boolean(box) && (!this.iframe || Boolean(clip && box.right > clip.left && box.left < clip.right && box.bottom > clip.top && box.top < clip.bottom));
+      const visible = Boolean(box) && !this.isPassive() && (!this.iframe || Boolean(clip && box.right > clip.left && box.left < clip.right && box.bottom > clip.top && box.top < clip.bottom));
       // No toolbar without a drawn selection, e.g. while the host re-renders,
       // unless it holds keyboard focus.
       if (visible) this.toolbar.hidden = this.actions.length === 0;
-      else if (!this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
+      else if (this.isPassive() || !this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
       if (!visible || this.toolbar.hidden) return;
       const port = travels ? this.scrollPort() : this.followPort();
       // The side only where the room for it is; otherwise above, as the docs say.
@@ -1484,10 +1615,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         }
         points.push({ parent, slot, index, shown });
       };
-      const target = this.insertionTarget;
-      if (this.seam) add(this.seam.parent, this.seam.slot, this.seam.index, true);
+      const target = this.isPassive() ? null : this.insertionTarget;
+      if (this.seam && !this.isPassive()) add(this.seam.parent, this.seam.slot, this.seam.index, true);
       if (target) add(target.parent_id, target.slot, target.index, true);
-      const selected = this.selectedId ? this.byId.get(this.selectedId) : null;
+      const selected = this.selectedId && !this.isPassive() ? this.byId.get(this.selectedId) : null;
       if (selected) {
         const parent = selected.parent ?? (selected.flat ? '' : null);
         if (parent !== null && this.placeAllowed({ parent_id: parent, slot: selected.slot, index: selected.index + 1 })) add(parent, selected.slot, selected.index + 1, false);
@@ -1738,24 +1869,35 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onFrameClick(event) {
+      if (this.isPassive()) return;
       if (this.editing && this.editing.element.contains(event.target)) return;
       // In the editor a click selects; it never follows links or submits. A
       // click on no node goes back to no selection (the letter itself).
       event.preventDefault();
       const id = this.frameNodeAt(event);
       if (id) event.stopPropagation();
-      this.select(id);
+      // An editable node opens by its own inline edit (double click, Enter), not by open.
+      if (id && !this.byId.get(id).flat?.editable) this.clickSelect(id, event, () => ({ x: event.clientX, y: event.clientY }));
+      else {
+        this.openedByClick = null;
+        this.select(id);
+      }
     }
 
     onFrameDoubleClick(event) {
-      if (this.editing) return;
+      if (this.isPassive() || this.editing) return;
       const id = this.frameNodeAt(event);
-      if (!id || !this.byId.get(id).flat?.editable) return;
+      if (!id) return;
+      if (!this.byId.get(id).flat?.editable) {
+        this.doubleClickOpen(id, () => ({ x: event.clientX, y: event.clientY }));
+        return;
+      }
       event.preventDefault();
       this.edit(id);
     }
 
     onFrameKey(event) {
+      if (this.isPassive()) return;
       if (this.editing) {
         if (event.isComposing) return;
         if (event.key === 'Enter' || event.key === 'Escape') {
@@ -1838,10 +1980,19 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
   }
 
+  // passive is a setting of the manifest (a property over the attribute); an
+  // overlay defined without its manifest gets the same pair here.
+  if (!('passive' in SfCompositionOverlay.prototype)) {
+    Object.defineProperty(SfCompositionOverlay.prototype, 'passive', {
+      configurable: true,
+      get() { return this.isPassive(); },
+      set(value) { this.toggleAttribute('passive', Boolean(value)); },
+    });
+  }
   registry.define('sf-editor-overlay', SfCompositionOverlay);
   // The former tag sf-composition-overlay is a dated alias (a subclass, noted once).
   defineTagAliases(SfCompositionOverlay, 'sf-editor-overlay', { define: (name, Class) => registry.define(name, Class) });
   return SfCompositionOverlay;
 }
 
-export default { OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes, shortcutMatches };
+export default { OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, openDetail, overlayNodes, shortcutMatches };

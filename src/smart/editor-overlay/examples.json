@@ -230,6 +230,176 @@
               }
             }
           ]
+        },
+        {
+          "id": "p8-open-second-click",
+          "title": "a click on the chosen node sends open {ids, id, node, point, trigger: click} once, and no select",
+          "covers": "events.open",
+          "steps": [
+            {
+              "script": "(document.getElementById('o').select('p'), true)"
+            },
+            {
+              "user": "click:#canvas [data-sf-composition-id=p]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 1,
+                    "detail": {
+                      "ids": [
+                        "p"
+                      ],
+                      "id": "p",
+                      "node": "p",
+                      "trigger": "click"
+                    }
+                  },
+                  {
+                    "name": "sf-editor-overlay-select",
+                    "count": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p9-open-double-click",
+          "title": "a double click on a node selects it and sends open once, the point in canvas coordinates",
+          "covers": "events.open",
+          "steps": [
+            {
+              "script": "(() => { const o = document.getElementById('o'); window.__opens = []; o.addEventListener('sf-editor-overlay-open', (event) => window.__opens.push(event.detail)); const h = document.querySelector('[data-sf-composition-id=h]').getBoundingClientRect(); const c = document.getElementById('canvas').getBoundingClientRect(); window.__want = {x: h.left + 5 - c.left, y: h.top + 6 - c.top}; document.querySelector('[data-sf-composition-id=h]').dispatchEvent(new MouseEvent('dblclick', {bubbles: true, cancelable: true, clientX: h.left + 5, clientY: h.top + 6})); return true; })()",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 1,
+                    "detail": {
+                      "ids": [
+                        "h"
+                      ],
+                      "id": "h",
+                      "node": "h",
+                      "trigger": "dblclick"
+                    }
+                  },
+                  {
+                    "name": "sf-editor-overlay-select",
+                    "count": 1,
+                    "detail": {
+                      "id": "h"
+                    }
+                  }
+                ]
+              },
+              "check": "window.__opens.length === 1 && Math.abs(window.__opens[0].point.x - window.__want.x) < 0.01 && Math.abs(window.__opens[0].point.y - window.__want.y) < 0.01 && document.querySelector('#o [aria-selected=true]').dataset.nodeId === 'h'"
+            }
+          ]
+        },
+        {
+          "id": "p10-open-enter",
+          "title": "Enter on the chosen node in the tree sends open once, the point the centre of the node's box",
+          "covers": "events.open, keyboard",
+          "steps": [
+            {
+              "script": "(() => { const o = document.getElementById('o'); o.select('h'); window.__opens = []; o.addEventListener('sf-editor-overlay-open', (event) => window.__opens.push(event.detail)); o.querySelector('.sf-composition-overlay-tree').focus(); return true; })()"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 1,
+                    "detail": {
+                      "ids": [
+                        "h"
+                      ],
+                      "id": "h",
+                      "node": "h",
+                      "trigger": "enter"
+                    }
+                  }
+                ]
+              },
+              "check": "(() => { const h = document.querySelector('[data-sf-composition-id=h]').getBoundingClientRect(); const c = document.getElementById('canvas').getBoundingClientRect(); const point = window.__opens[0]?.point; return window.__opens.length === 1 && Math.abs(point.x - (h.left - c.left + h.width / 2)) < 0.01 && Math.abs(point.y - (h.top - c.top + h.height / 2)) < 0.01; })()"
+            }
+          ]
+        },
+        {
+          "id": "p11-passive",
+          "title": "passive: a click in the chosen node reaches an editable inside it, nothing is selected or opened, Enter opens nothing; off again, the selection is kept and a click opens it",
+          "covers": "settings.passive, events.open",
+          "steps": [
+            {
+              "script": "(() => { const o = document.getElementById('o'); o.select('p'); const editable = document.createElement('span'); editable.id = 'ed'; editable.contentEditable = 'true'; editable.textContent = 'текст'; document.querySelector('[data-sf-composition-id=p]').append(editable); window.__reached = 0; editable.addEventListener('click', (event) => { if (!event.defaultPrevented) window.__reached += 1; }); o.passive = true; return true; })()",
+              "check": "(() => { const o = document.getElementById('o'); return o.passive === true && o.hasAttribute('passive') && o.querySelector('.sf-composition-overlay-tree').tabIndex === -1 && o.querySelector('.sf-composition-overlay-toolbar').hidden && o.querySelector('[aria-selected=true]').dataset.nodeId === 'p'; })()"
+            },
+            {
+              "user": "click:#ed",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 0
+                  },
+                  {
+                    "name": "sf-editor-overlay-select",
+                    "count": 0
+                  }
+                ]
+              },
+              "check": "window.__reached === 1 && document.activeElement && document.activeElement.id === 'ed'"
+            },
+            {
+              "script": "(() => { const ed = document.getElementById('ed'); const box = ed.getBoundingClientRect(); ed.dispatchEvent(new MouseEvent('dblclick', {bubbles: true, cancelable: true, clientX: box.left + 2, clientY: box.top + 2})); document.querySelector('#o .sf-composition-overlay-tree').focus(); return true; })()",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 0
+                  }
+                ]
+              }
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 0
+                  }
+                ]
+              }
+            },
+            {
+              "script": "(document.getElementById('o').passive = false, true)",
+              "check": "document.querySelector('#o .sf-composition-overlay-tree').tabIndex === 0 && !document.getElementById('o').hasAttribute('passive')"
+            },
+            {
+              "user": "click:#ed",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-editor-overlay-open",
+                    "count": 1,
+                    "detail": {
+                      "id": "p",
+                      "trigger": "click"
+                    }
+                  },
+                  {
+                    "name": "sf-editor-overlay-select",
+                    "count": 0
+                  }
+                ]
+              },
+              "check": "window.__reached === 1"
+            }
+          ]
         }
       ]
     }

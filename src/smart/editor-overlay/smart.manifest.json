@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-overlay",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -77,6 +77,11 @@
           "top",
           "side"
         ]
+      },
+      "passive": {
+        "type": "boolean",
+        "default": false,
+        "description": "Takes no input on the canvas while on: clicks, double clicks, keys, hover and drops reach the page (an editor the host placed in a chosen block), the selection is kept and the selected frame stays drawn; the toolbar, insertion points and move handle step aside and the tree leaves the Tab order. Off again, the overlay reads input as before"
       },
       "actions": {
         "type": "array",
@@ -573,6 +578,44 @@
       },
       "canonical": true
     },
+    "sf-editor-overlay-open": {
+      "summary": "The person asked to open a node: a second click on the chosen node, a double click on a node, or Enter on the chosen node in the tree (vocabulary 1.1.5 §5 open). Sent once per gesture and never while passive; an editable node of a framed canvas opens by its own plain-string edit instead",
+      "payload": {
+        "type": "object",
+        "required": [
+          "ids",
+          "id",
+          "node",
+          "point",
+          "trigger"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "id": {},
+          "node": {
+            "description": "The node to open; the same id as id"
+          },
+          "point": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "{x, y} in canvas coordinates: from the canvas element's border box corner, or a framed canvas's viewport (the frame document's client coordinates); the pointer for a click or a double click, the centre of the node's box for Enter; null when it cannot be measured"
+          },
+          "trigger": {
+            "enum": [
+              "click",
+              "dblclick",
+              "enter"
+            ],
+            "description": "What asked: a second click on the chosen node, a double click, or Enter in the tree"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-composition-overlay-action": {
       "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen. Its detail is the former one, {action_id, node_id}, not sf-composition-overlay-apply's {action, scope, ids}.",
       "payload": {
@@ -710,7 +753,7 @@
       "Space",
       "Escape"
     ],
-    "focus": "The tree has one treeitem per node; arrows move in document order and between parent and child, Enter opens the toolbar, Escape returns or clears. Space starts a keyboard move, arrows choose a place, Enter drops, Escape cancels. Selection and moves are announced. In framed mode the tree follows the node list order, pointer and keys inside the frame select too, Enter on an editable node starts plain-text editing in the frame (Enter commits, Escape cancels, focus returns to the tree), and Escape gives way to an inner open surface."
+    "focus": "The tree has one treeitem per node; arrows move in document order and between parent and child, Enter opens the toolbar and sends open for the chosen node, Escape returns or clears. Space starts a keyboard move, arrows choose a place, Enter drops, Escape cancels. Selection and moves are announced. In framed mode the tree follows the node list order, pointer and keys inside the frame select too, Enter on an editable node starts plain-text editing in the frame (Enter commits, Escape cancels, focus returns to the tree), and Escape gives way to an inner open surface. While passive the tree is out of the Tab order and reads no key."
   },
   "presentation": {
     "themes": [
@@ -798,11 +841,11 @@
       },
       {
         "path": "src/smart/editor-overlay/docs.md",
-        "sha256": "d156d10d125aec8adf04199a03741f2c039a5345544f994cba986acc7266b9fc"
+        "sha256": "aa501c7e8158659bcdaeea94dc8bc9fa3ff5d7b7ff5928b0e0139ae7dca4163a"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "480d8782a30537cf444ccaa95d6c1d72a4e7644e57addac5b90af0d77d9b758e"
+        "sha256": "1b7615c96354b681b85c743ae02ba426a84d0e360cc52927b86d6170d3fc234b"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
