@@ -22,7 +22,10 @@ import './notify.js';
 import './sanitize.js';
 // What every set formats, switches and copies by one rule (reuse audit
 // 2026-11-02, findings 6, 7, 11): SF.format, SF.breakpoints, SF.copyText.
-import './format.js';
+// SF.format is published here, by core alone: the format modules have no
+// top-level side effects, so a bundle carries only the helpers it calls
+// (core.runtime 1.28.0).
+import {publishFormat} from './format.js';
 import './breakpoints.js';
 import './clipboard.js';
 // The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
@@ -42,6 +45,10 @@ import {
   startPreloaderMotion,
   stopPreloaderMotion,
 } from './preloader';
+
+// SF.format, before anything below can be asked to format.
+publishFormat();
+
 // The shared Smart runtime: core/js/smart-base.js, a script of its own beside
 // core.js, holding the modules the Smart bundles are built against (they carry
 // no lit or smart-base of their own). Asked for by the bundles and by the

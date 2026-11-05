@@ -22,7 +22,7 @@
 import {html, nothing} from "lit";
 import {applied, refused} from "../../core/js/element-manifest";
 import {instancePath, partId} from "../../core/js/instance-path";
-import {calendarDayOffset, formatDate} from "../../core/js/format.js";
+import {calendarDayOffset, formatDate} from "../../core/js/format-date.js";
 
 export const CONFIRM_STATES = Object.freeze(["open", "pending", "accepted", "declined", "expired"]);
 

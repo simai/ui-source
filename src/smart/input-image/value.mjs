@@ -3,12 +3,12 @@
 // apart from the element so the contract tests can run them in Node, as
 // sf-resizer's engine.mjs is.
 
-// The size rule is core's format module (core/js/format.js, SF.format.fileSize;
+// The size rule is core's format module (core/js/format-file-size.js, SF.format.fileSize;
 // reuse audit 2026-11-02, finding 7) and the name rule the Composition
 // renderer's (composition/file-size.mjs), so a size reads the same in a field,
 // on a page and in a Pro list; this module re-exports the formatter.
 import {fileNameFromAddress as nameFromAddress} from '../../core/js/composition/file-size.mjs';
-import {formatFileSize} from '../../core/js/format.js';
+import {formatFileSize} from '../../core/js/format-file-size.js';
 
 export {formatFileSize};
 
