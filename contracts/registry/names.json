@@ -362,7 +362,7 @@
       "id": "view",
       "kind": "set",
       "repository": "simai/ui-view",
-      "status": "pending",
+      "status": "planned",
       "families": [
         "view"
       ],
@@ -380,8 +380,8 @@
           "status": "released"
         }
       ],
-      "source": "ui-pro components/src/smart at 5c92812 (package pro)",
-      "note": "A possible set of data views (table, kanban, calendar, gantt, list) awaiting the owner (dispatcher, 2026-11-03). The family view is held here, not under admin, so it moves with the decision; if the owner declines the set, view returns to admin or to SIMAI Framework."
+      "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48)",
+      "note": "The set of data views (table, kanban, calendar, gantt and further views), owner decision 2026-11-03 point 12 (ui-control decisions/2026-11-03-component-sets.md): simai/ui-view, view.simai.io, Pro licence; other sets use its views. Planned until its first release under simai.component-set."
     },
     {
       "id": "chat",
