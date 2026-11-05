@@ -33,7 +33,10 @@
     box-sizing: border-box;
     min-inline-size: 0;
     padding-block: var(--sf-card-padding-block, var(--sf-space-2));
-    padding-inline: var(--sf-card-padding-inline, var(--sf-space-2));
+    // A narrow card -- three in a row on a phone, about 100 px -- keeps room
+    // for its words: the side space is a share of the card's column (8 %)
+    // up to the full step, so a wide card is unchanged.
+    padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
     color: var(--sf-card-color, var(--sf-on-surface));
     background-color: var(--sf-card-background, var(--sf-surface-0));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));

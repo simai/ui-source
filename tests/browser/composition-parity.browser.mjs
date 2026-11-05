@@ -216,6 +216,7 @@ try {
       // cards on a phone no line leaves its card and the titles never meet.
       check('a heading inside a card is its title: 16 px, semibold', m.titled.every((card) => near(card.title.size, 16) && card.title.weight >= 600 && card.title.weight < 700), {titles: m.titled.map((card) => card.title)});
       check('no line of a card leaves it', m.titled.every((card) => card.lines.every((line) => line.left >= card.card.left - 0.5 && line.right <= card.card.right + 0.5 && line.scroll <= 0)), {titled: m.titled.map((card) => ({card: card.card, lines: card.lines}))});
+      check('a one-word card title stays on one line, three cards on a phone too', m.titled.every((card) => card.title.box.height <= card.title.line + 1), {titles: m.titled.map((card) => card.title)});
       check('the card titles do not overlap', m.titled.every((card, index) => index === 0 || card.title.box.left >= m.titled[index - 1].title.box.right), {titles: m.titled.map((card) => card.title.box)});
       // The accent's buttons stand off its fill: the plate (a fill) or the edge (an outline) at 3:1 or more.
       const rgb = (value) => (value.match(/[\d.]+/gu) ?? []).map(Number);

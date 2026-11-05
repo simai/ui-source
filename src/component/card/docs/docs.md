@@ -40,7 +40,7 @@ padding. Use it inside a grid of cards that needs no frames.
 | `--sf-card-border-width` | the edge's width | `--sf-px` |
 | `--sf-card-radius` | the corners | `--sf-radius--surface` |
 | `--sf-card-padding-block` | the space above and below the content | `--sf-space-2` |
-| `--sf-card-padding-inline` | the space beside the content | `--sf-space-2` |
+| `--sf-card-padding-inline` | the space beside the content | `--sf-space-2`, or 8 % of the card's column when that is less (a narrow card) |
 | `--sf-card-gap` | between the blocks | `--sf-content--space-text` |
 | `--sf-card-title-size` | a heading's size inside the card | `--sf-b6` (16 px at every width) |
 | `--sf-card-title-weight` | a heading's weight inside the card | `--sf-text--font-weight-6` |

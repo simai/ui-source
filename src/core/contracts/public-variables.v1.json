@@ -3568,7 +3568,7 @@
           "name": "--sf-card-padding-inline",
           "role": "padding-inline",
           "summary": "The space beside the content.",
-          "default": "var(--sf-space-2)",
+          "default": "min(var(--sf-space-2), 8%)",
           "since": "2026-11-01"
         },
         {
