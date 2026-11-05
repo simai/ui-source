@@ -1,0 +1,344 @@
+{
+  "schema_version": 2,
+  "id": "smart.alert-bar",
+  "version": "1.0.0",
+  "title": "Alert bar",
+  "summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "alert",
+    "alert-bar",
+    "banner",
+    "notice",
+    "announcement",
+    "status",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n"
+  ],
+  "custom_element": "sf-alert-bar",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.badge",
+      "smart.button",
+      "smart.button-icon",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "size": {
+        "type": "string",
+        "default": "1/2",
+        "description": "The ladder rung: the text line, the icon, the buttons and the bar's insets follow it. 1/2 is the bar above an admin header; 1 a bar on a site page with larger type",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "description": "The region's name; «Важные уведомления» / «Important notices» in the page language when not set"
+      },
+      "minimized": {
+        "type": "boolean",
+        "default": false,
+        "description": "The danger bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is danger is minimized; a page that kept the state sets it back. A danger item that was not in the list before expands the bar again"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The current conditions, each {id, level danger|warning|info, text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: danger, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; a danger item is never closed, only minimized"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "close": {
+      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for a danger item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-alert-bar-navigate": {
+      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "level",
+          "href"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-alert-bar-acknowledge": {
+      "summary": "A person pressed an item's acknowledge button («Отметить, что видели»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "level"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-alert-bar-close": {
+      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. A danger item is never closed",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "level",
+          "hide",
+          "reason"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          },
+          "hide": {
+            "enum": [
+              "day",
+              "always"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "close",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-alert-bar-minimize": {
+      "summary": "The danger bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by a danger item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page",
+      "payload": {
+        "type": "object",
+        "required": [
+          "minimized"
+        ],
+        "properties": {
+          "minimized": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "bar": [
+        "empty",
+        "shown",
+        "listed",
+        "minimized"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "open",
+      "closed"
+    ]
+  },
+  "persistence": {
+    "mode": "external-host",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "keeping what was closed or acknowledged (the host stores it and leaves the item out)",
+      "deciding who sees a condition (the host lists only what the person may see)",
+      "deciding when a condition ends (the host sets the list again)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "region",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches the action link, acknowledge, the paging arrows, «All N» and close in order",
+      "Enter or Space presses a control; Enter follows the action link",
+      "Escape closes the open list and returns focus to «All N»"
+    ],
+    "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus to the next control of the bar, so focus never falls to the page."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "f28a493ccaf0ac371a4bd2c721253b296795734c",
+    "source_artifacts": [
+      {
+        "path": "src/smart/alert-bar/index.js",
+        "sha256": "8247e18c28f77b8ea154cc90bc4c68217c55f5a5213f69b2472d7ab6f4ae09ac"
+      },
+      {
+        "path": "src/smart/alert-bar/js/templates/default.js",
+        "sha256": "cc72b2a86b50a1e613b1725f0d9e07094b0188aeda97844d529546fe6861af24"
+      },
+      {
+        "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
+        "sha256": "f731ca61f0b98466352bf1e8bdad454fb13348756b31f63a4758ce0c327fec9f"
+      },
+      {
+        "path": "src/smart/alert-bar/rule.js",
+        "sha256": "97828a1192cd46781f0341fdff9a0924ce63f1820965b8e818ff9bd48eb5cce5"
+      },
+      {
+        "path": "src/smart/alert-bar/docs.md",
+        "sha256": "e7757dcded4ac89f5264632732f94370b3abbff8894bc5c821233a9531f0f2e0"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-alert-bar once per page, above the page or admin header, for the current conditions that need action now: a disk nearly full, a failed backup, a site that does not answer, an update.",
+    "do_not": [
+      "Do not use sf-alert-bar for news that needs no action (a backup done); send it to a notification centre or a toast",
+      "Do not put two bars on one page; give one bar every condition",
+      "Do not keep closed items in the component; store the choice in the host and leave the item out",
+      "Do not use sf-alert-bar for a notice inside the page flow; sf-alert does that"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-alert-bar><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия сайта не удалась.\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"/backups/\"}, \"dismissible\": true}]}</script></sf-alert-bar>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

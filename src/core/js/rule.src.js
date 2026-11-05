@@ -733,6 +733,7 @@ import '../../utility/z-index/xl/rule.js';
 import '../../utility/z-index/xxl/rule.js';
 import '../../smart/accordion/rule.js';
 import '../../smart/alert/rule.js';
+import '../../smart/alert-bar/rule.js';
 import '../../smart/avatar/rule.js';
 import '../../smart/avatar-group/rule.js';
 import '../../smart/badge/rule.js';

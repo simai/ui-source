@@ -56,6 +56,8 @@ const PHASE_A = [
   // moved in from package pro.
   'confirm',
   'confirm-change',
+  // The page alert bar, a variant of block alert (2026-11-05).
+  'alert-bar',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

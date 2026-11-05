@@ -1,0 +1,344 @@
+@layer sf.components {
+/* sf-alert-bar (standard simai.smart-component 1.3.14 §6). One rung of the
+   ladder (docs/foundation-composition-geometry.md), 1/2 by default, 1 with
+   size="1": the text is the rung's line L, the icon that line, the buttons
+   the rung's control height H, icon-to-text the rung's text-space-x, the
+   bar's inline inset its space-x and its block inset (H - L) / 2, the inset a
+   control's label has inside the control, so the bar's text stands where a
+   button's label stands. The minimized strip is a control of the rung below.
+
+   The public variables are read with the role token as their fallback and
+   never set here. */
+.sf-alert-bar {
+  --sf-alert-bar--danger-background: var(--sf-alert-bar-danger-background, var(--sf-error));
+  --sf-alert-bar--warning-background: var(--sf-alert-bar-warning-background, var(--sf-warning));
+  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background, var(--sf-info));
+  --sf-alert-bar--list-background: var(--sf-alert-bar-list-background, var(--sf-surface-1));
+  /* The rung: 1/2. */
+  --sf-alert-bar--line: var(--sf-text-height-1\/2);
+  --sf-alert-bar--font-size: var(--sf-text-size-1\/2);
+  --sf-alert-bar--meta-line: var(--sf-text-height-1\/3);
+  --sf-alert-bar--meta-font-size: var(--sf-text-size-1\/3);
+  --sf-alert-bar--control: var(--sf-ui-1\/2--control-height);
+  --sf-alert-bar--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-alert-bar--text-space-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-alert-bar--strip-line: var(--sf-text-height-1\/3);
+  --sf-alert-bar--strip-font-size: var(--sf-text-size-1\/3);
+  --sf-alert-bar--strip-height: var(--sf-ui-1\/3--control-height);
+  --sf-alert-bar--padding-inline: var(--sf-alert-bar-padding-inline, var(--sf-alert-bar--space-x));
+  --sf-alert-bar--gap: var(--sf-alert-bar-gap, var(--sf-alert-bar--space-x));
+  --sf-alert-bar--padding-block: calc((var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2);
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  container-name: sf-alert-bar;
+  container-type: inline-size;
+  font-size: var(--sf-alert-bar--font-size);
+  line-height: var(--sf-alert-bar--line);
+}
+
+.sf-alert-bar.sf-alert-bar--size-1 {
+  --sf-alert-bar--line: var(--sf-text-height-1);
+  --sf-alert-bar--font-size: var(--sf-text-size-1);
+  --sf-alert-bar--meta-line: var(--sf-text-height-1\/2);
+  --sf-alert-bar--meta-font-size: var(--sf-text-size-1\/2);
+  --sf-alert-bar--control: var(--sf-ui-1--control-height);
+  --sf-alert-bar--space-x: var(--sf-ui-1--space-x);
+  --sf-alert-bar--text-space-x: var(--sf-ui-1--text-space-x);
+  --sf-alert-bar--strip-line: var(--sf-text-height-1\/2);
+  --sf-alert-bar--strip-font-size: var(--sf-text-size-1\/2);
+  --sf-alert-bar--strip-height: var(--sf-ui-1\/2--control-height);
+}
+
+/* The level's fill and its ink: the theme's status roles, light and dark. */
+.sf-alert-bar.sf-alert-bar--danger {
+  --sf-alert-bar--fill: var(--sf-alert-bar--danger-background);
+  --sf-alert-bar--ink: var(--sf-on-error);
+}
+
+.sf-alert-bar.sf-alert-bar--warning {
+  --sf-alert-bar--fill: var(--sf-alert-bar--warning-background);
+  --sf-alert-bar--ink: var(--sf-on-warning);
+}
+
+.sf-alert-bar.sf-alert-bar--info {
+  --sf-alert-bar--fill: var(--sf-alert-bar--info-background);
+  --sf-alert-bar--ink: var(--sf-on-info);
+}
+
+/* On the fill, the surface roles the controls read are the fill's ink: an
+   sf-button or sf-button-icon of scheme on-surface draws on the coloured bar
+   as it draws on a surface (the tonal button turns on-surface-variant the
+   same way). The fills keep to the alpha scale: tonal 16, hover +4, press +8. */
+.sf-alert-bar-row,
+.sf-alert-bar-strip {
+  --sf-on-surface: var(--sf-alert-bar--ink);
+  --sf-on-surface-variant: var(--sf-alert-bar--ink);
+  --sf-on-surface-container--variant: var(--sf-alert-bar--ink);
+  --sf-on-surface-hover: var(--sf-alert-bar--ink);
+  --sf-outline: var(--sf-alert-bar--ink);
+  --sf-outline-variant: color-mix(in srgb, var(--sf-alert-bar--ink) 48%, transparent);
+  --sf-surface-container: color-mix(in srgb, var(--sf-alert-bar--ink) 16%, transparent);
+  --sf-surface-container-hover: color-mix(in srgb, var(--sf-alert-bar--ink) 20%, transparent);
+  --sf-surface-container-active: color-mix(in srgb, var(--sf-alert-bar--ink) 24%, transparent);
+  --sf-focus--color: var(--sf-alert-bar--ink);
+  background-color: var(--sf-alert-bar--fill);
+  color: var(--sf-alert-bar--ink);
+}
+
+/* One row, wide: icon, text, actions, then close or minimize at the end. */
+.sf-alert-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-alert-bar--gap);
+  box-sizing: border-box;
+  min-block-size: calc(var(--sf-alert-bar--control) + 2 * var(--sf-alert-bar--padding-block));
+  padding-block: var(--sf-alert-bar--padding-block);
+  padding-inline: var(--sf-alert-bar--padding-inline);
+}
+
+/* A picture is the line it stands on: the icon's own size tokens. */
+.sf-alert-bar .sf-alert-bar-icon {
+  --sf-icon--font-size: var(--sf-alert-bar--line);
+  --sf-icon--width: var(--sf-alert-bar--line);
+  --sf-icon--height: var(--sf-alert-bar--line);
+  --sf-icon--color: currentColor;
+  flex: none;
+  color: inherit;
+}
+
+.sf-alert-bar-row > .sf-alert-bar-icon {
+  margin-inline-end: calc(var(--sf-alert-bar--text-space-x) - var(--sf-alert-bar--gap));
+}
+
+.sf-alert-bar-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sf-alert-bar--space-x);
+  min-inline-size: 0;
+}
+
+.sf-alert-bar-message {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sf-alert-bar-prefix {
+  font-weight: inherit;
+}
+
+.sf-alert-bar-meta {
+  font-size: var(--sf-alert-bar--meta-font-size);
+  line-height: var(--sf-alert-bar--meta-line);
+  opacity: 0.8;
+}
+
+.sf-alert-bar-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-alert-bar--text-space-x);
+}
+
+.sf-alert-bar-pager {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sf-alert-bar-position {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* sf-button and sf-button-icon lay out as display: contents: the native
+   control inside is the box, so placement rules name it. */
+.sf-alert-bar-row > :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > :is(button, a) {
+  flex: none;
+}
+
+/* Minimized: one thin strip of the rung below that keeps the colour, the
+   icon and the count, and expands the bar on a press. */
+.sf-alert-bar-strip {
+  --sf-alert-bar--line: var(--sf-alert-bar--strip-line);
+  display: flex;
+  align-items: center;
+  gap: var(--sf-alert-bar--text-space-x);
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--sf-alert-bar--strip-height);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sf-alert-bar--padding-inline);
+  border: 0;
+  font: inherit;
+  font-size: var(--sf-alert-bar--strip-font-size);
+  line-height: var(--sf-alert-bar--strip-line);
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-alert-bar-strip:hover {
+  background-image: linear-gradient(var(--sf-surface-container-hover), var(--sf-surface-container-hover));
+}
+
+.sf-alert-bar-strip:focus-visible {
+  outline-offset: calc(var(--sf-focus--width, 2px) * -1);
+}
+
+.sf-alert-bar-strip-text {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-alert-bar-strip-expand {
+  flex: none;
+  opacity: 0.8;
+}
+
+/* The list of all, under the bar: an ordinary surface in the page flow (it
+   pushes the page down, it does not float), each level a tonal badge, each
+   item its own action, acknowledge and close. */
+/* One grid for every row: the badge, text and actions columns line up
+   across the items (each item is a subgrid of the list). */
+.sf-alert-bar-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-content: start;
+  box-sizing: border-box;
+  max-block-size: 22.5rem;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border-block-end: var(--sf-px, 1px) solid var(--sf-outline-variant);
+  background-color: var(--sf-alert-bar--list-background);
+  color: var(--sf-on-surface);
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+.sf-alert-bar-item {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  gap: var(--sf-alert-bar--text-space-x) var(--sf-alert-bar--space-x);
+  padding-block: var(--sf-alert-bar--padding-block);
+  padding-inline: var(--sf-alert-bar--padding-inline);
+}
+
+.sf-alert-bar-item + .sf-alert-bar-item {
+  border-block-start: var(--sf-px, 1px) solid var(--sf-outline-variant);
+}
+
+.sf-alert-bar-item-text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-alert-bar-item-message {
+  overflow-wrap: anywhere;
+}
+
+.sf-alert-bar-item-meta {
+  color: var(--sf-on-surface-variant);
+  opacity: 1;
+}
+
+.sf-alert-bar-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sf-alert-bar--text-space-x);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-alert-bar-list {
+    animation: sf-alert-bar-list-in var(--sf-duration-fast, 120ms) var(--sf-animation, ease-out);
+  }
+
+  .sf-alert-bar-row,
+  .sf-alert-bar-strip {
+    transition: background-color var(--sf-duration-fast, 120ms) var(--sf-animation, ease-out);
+  }
+}
+
+@keyframes sf-alert-bar-list-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--sf-px, 1px) * -4));
+  }
+}
+
+/* Narrow (the bar's own width under 600 px): the icon, the text and the
+   close share the first line; the actions go under the text; no arrows,
+   «Все N» at the line's end; the list's items stack. */
+@container sf-alert-bar (max-width: 600px) {
+  .sf-alert-bar-row {
+    display: grid;
+    grid-template-columns: var(--sf-alert-bar--line) minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: var(--sf-alert-bar--text-space-x);
+    row-gap: var(--sf-alert-bar--text-space-x);
+  }
+
+  .sf-alert-bar-row > .sf-alert-bar-icon {
+    grid-column: 1;
+    grid-row: 1;
+    margin-block-start: calc((var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2);
+    margin-inline-end: 0;
+  }
+
+  /* The first line of the text stands where the close button's label
+     stands: the control's inset above it. */
+  .sf-alert-bar-text {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    padding-block-start: calc((var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2);
+  }
+
+  .sf-alert-bar-text > .sf-alert-bar-meta {
+    display: block;
+  }
+
+  .sf-alert-bar-row > :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > :is(button, a) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .sf-alert-bar-actions {
+    flex-wrap: wrap;
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
+
+  .sf-alert-bar-pager {
+    display: none;
+  }
+
+  .sf-alert-bar-all > :is(button, a) {
+    margin-inline-start: auto;
+  }
+
+  .sf-alert-bar-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-alert-bar-item {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+  .sf-alert-bar-item-actions {
+    justify-content: flex-start;
+  }
+}
+}

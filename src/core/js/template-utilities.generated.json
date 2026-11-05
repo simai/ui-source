@@ -12,6 +12,9 @@
     "flex/default",
     "place-items/default"
   ],
+  "cl-alert-bar": [
+    "sr-only/default"
+  ],
   "cl-avatar": [
     "align-items/default",
     "background-color/default",

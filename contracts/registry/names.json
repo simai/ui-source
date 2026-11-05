@@ -64,6 +64,10 @@
           "status": "released"
         },
         {
+          "element": "sf-alert-bar",
+          "status": "released"
+        },
+        {
           "element": "sf-avatar",
           "status": "released"
         },

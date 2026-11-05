@@ -83,6 +83,51 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.badge",
+          "smart.button",
+          "smart.button-icon",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-alert-bar",
+      "id": "smart.alert-bar",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/alert-bar/smart.manifest.json",
+      "manifest_sha256": "b75380a3ab8f8691e1d2d176f86e9d9b060c3daaba6b50a310f323084954862a",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+      "tags": [
+        "alert",
+        "alert-bar",
+        "banner",
+        "notice",
+        "announcement",
+        "status",
+        "admin"
+      ],
+      "title": "Alert bar"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
