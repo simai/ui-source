@@ -21,7 +21,7 @@ test('opening the panel commits typed text and goes to the value\'s month', () =
   assert.match(show, /this\.set\(\{activeDate: formatIsoDate\(this\.anchorDate\)\}\);/u);
   // Only a whole date is committed; anything else waits for the field's change.
   const commit = between('commitTypedText() {', 'attributeChangedCallback(');
-  assert.match(commit, /!parseDateValue\(text, this\.format\)\) return this;/u);
+  assert.match(commit, /!parseModeValue\(text, this\.format, this\.mode, \{typed: true\}\)\) return this;/u);
   assert.match(commit, /this\.handleInputChange\(\{target: this\._input\}\);/u);
 });
 

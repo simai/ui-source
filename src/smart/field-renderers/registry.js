@@ -47,9 +47,15 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'date', label: {ru: 'Дата', en: 'Date'},
         variants: [],
         params: ['required', 'readonly']},
+    // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
+    // and max bound the value -- an ISO date or date and time for a datetime,
+    // hh:mm for a time -- and step is the minute step, 1 to 60.
     {type: 'datetime', label: {ru: 'Дата и время', en: 'Date and time'},
         variants: [],
-        params: ['required', 'readonly']},
+        params: ['min', 'max', 'step', 'required', 'readonly']},
+    {type: 'time', label: {ru: 'Время', en: 'Time'},
+        variants: [],
+        params: ['min', 'max', 'step', 'required', 'readonly']},
     {type: 'boolean', label: {ru: 'Да или нет', en: 'Yes or no'},
         variants: [],
         params: ['trueText', 'falseText', 'required', 'readonly']},

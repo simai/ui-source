@@ -12,9 +12,8 @@
 // - sf-input-textarea: the same, on the textarea;
 // - sf-datepicker: `invalid` and `error-message` reach its field and go away
 //   with the attribute;
-// - the field set's datetime editor: a cleared time marks the time control,
-//   a time put right takes the mark off -- border and aria-invalid both; a day
-//   missing marks the day control and putting it right clears it.
+// - the field set's datetime editor (one sf-input-date in datetime mode): a
+//   partial entry is put back, never marked, and the host hears no error.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -121,52 +120,40 @@ try {
     () => { const el = document.querySelector('#picker'); el.setAttribute('error-message', 'Укажите дату'); el.setAttribute('invalid', ''); },
     () => document.querySelector('#picker').removeAttribute('invalid'), 'Укажите дату');
 
-  // The field set's own datetime editor, driven the way a person does it.
+  // The field set's own datetime editor, driven the way a person does it. It
+  // is one sf-input-date in datetime mode (1.4.0): a partial entry -- a day
+  // without its time -- is put back rather than marked, so no error is drawn,
+  // none is left behind and the host hears none.
   await page.evaluate(() => {
     const set = window.SF.fieldRenderers;
     window.errors = [];
+    window.writes = [];
     const host = {
       getFieldValue: () => '2026-11-15T10:30:00',
-      setFieldValue: () => {},
+      setFieldValue: (field, value) => { window.writes.push(value); },
       setFieldError: (field, message) => { window.errors.push(message); },
     };
     window.SF.render(set.renderEditField({key: 'start', label: 'Начало', propertyType: 'datetime'}, '2026-11-15T10:30:00', host, {size: '1'}),
       document.getElementById('set'));
   });
-  await page.waitForFunction(() => document.querySelector('#set sf-input-date input') && document.querySelector('#set sf-input.sf-field-datetime-time input'),
-    null, {timeout: 8000});
+  await page.waitForFunction(() => document.querySelector('#set sf-input-date[mode="datetime"] input'), null, {timeout: 8000});
   await settle();
-  const TIME = '#set sf-input.sf-field-datetime-time';
   const DAY = '#set sf-input-date';
-  const timeValid = await look(TIME);
-  await page.fill(`${TIME} input`, '');
-  await page.press(`${TIME} input`, 'Tab');
-  await settle();
-  const timeShown = await look(TIME);
-  check('field set: a cleared time draws the error on the time', timeShown.ariaInvalid === 'true' && timeShown.rootError
-    && timeShown.border !== timeValid.border, {timeValid, timeShown});
-  await page.fill(`${TIME} input`, '10:30');
-  await page.press(`${TIME} input`, 'Tab');
-  await settle();
-  const timeFixed = await look(TIME);
-  const note = await page.evaluate(() => { const node = document.querySelector('#set .sf-field-datetime-message'); return node.hidden ? '' : node.textContent; });
-  check('field set: 10:30 takes the border and aria-invalid away with the text', timeFixed.ariaInvalid === null && !timeFixed.rootError
-    && !timeFixed.controlError && timeFixed.border === timeValid.border && note === '', {timeValid, timeFixed, note});
-
-  const dayValid = await look(DAY);
-  await page.fill(`${DAY} input`, '');
-  await page.press(`${DAY} input`, 'Enter');
-  await settle();
-  const dayShown = await look(DAY);
-  check('field set: a time without a day marks the day', dayShown.ariaInvalid === 'true' && dayShown.border !== dayValid.border, {dayValid, dayShown});
+  const valid = await look(DAY);
   await page.fill(`${DAY} input`, '16.11.2026');
   await page.press(`${DAY} input`, 'Enter');
   await settle();
-  const dayFixed = await look(DAY);
-  check('field set: a day put right clears its mark', dayFixed.ariaInvalid === null && !dayFixed.rootError && dayFixed.border === dayValid.border,
-    {dayValid, dayFixed});
-  const errors = await page.evaluate(() => window.errors);
-  check('field set: the host hears the error and its end', JSON.stringify(errors) === JSON.stringify(['Укажите время', null, 'Укажите дату', null]), {errors});
+  const partial = await look(DAY);
+  const partialText = await page.inputValue(`${DAY} input`);
+  check('field set: a day without its time is put back, not marked', partial.ariaInvalid === null && !partial.rootError
+    && partial.border === valid.border && partialText === '15.11.2026 10:30', {valid, partial, partialText});
+  await page.fill(`${DAY} input`, '16.11.2026 10:30');
+  await page.press(`${DAY} input`, 'Enter');
+  await settle();
+  const whole = await look(DAY);
+  const heard = await page.evaluate(() => ({errors: window.errors, writes: window.writes}));
+  check('field set: a whole value is written and no error is heard', whole.ariaInvalid === null && !whole.rootError
+    && JSON.stringify(heard) === JSON.stringify({errors: [], writes: ['2026-11-16T10:30:00']}), {whole, heard});
 } finally {
   await browser.close();
 }

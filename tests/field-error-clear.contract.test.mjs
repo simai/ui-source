@@ -44,11 +44,14 @@ test('sf-datepicker passes invalid and error-message to its field', () => {
   assert.ok(attributes.includes('"invalid"') && attributes.includes('"error-message"'));
 });
 
-test('the field set\'s datetime editor marks the control at fault and takes the mark off', () => {
+// The datetime editor was a day and a time drawn as two controls, which marked
+// the one at fault and took the mark off. It is one sf-input-date in datetime
+// mode now (1.4.0): the control writes only whole values -- a typed text that
+// is not one is put back -- so there is no partial entry to mark or report.
+test('the field set\'s datetime editor is one control that never writes a partial entry', () => {
   const source = read('src/smart/field-renderers/index.js');
   const body = source.slice(source.indexOf('function renderDateTimeEdit('), source.indexOf('function renderBooleanEdit('));
-  // toggleAttribute with the condition: the same line sets and clears.
-  assert.match(body, /clock\?\.toggleAttribute\('invalid', timeWrong\);/u);
-  assert.match(body, /picker\?\.toggleAttribute\('invalid', result\.error === 'dateMissing' \|\| result\.error === 'dateInvalid'\);/u);
-  assert.match(body, /host\.setFieldError\?\.\(field, message \|\| null\);/u);
+  assert.match(body, /<sf-input-date\n\s+class="sf-field-datetime"\n\s+mode="datetime"/u);
+  assert.doesNotMatch(body.replace(/^\s*\/\/.*$/gmu, ''), /setFieldError|toggleAttribute\('invalid'/u);
+  assert.match(body, /if \(result\.error\) return;/u);
 });

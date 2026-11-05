@@ -1,20 +1,19 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // The field set edits a datetime as a day and a time (Larena acceptance,
-// 2026-10-22: «Дата и время» edited only the day; ui-admin drew the pair itself,
-// and this is its acceptance lifted into the set). On the built bytes, with the
-// harness as the host (getFieldValue, setFieldValue, setFieldError), at the
-// set's sizes 1 and 1/2, at 600px and 360px:
-// - the day (sf-datepicker) and the time (sf-input, hh:mm) stand on one row, at
-//   one height -- an sf-input's of the same size -- each with its own accessible
-//   name inside a group named by the label;
-// - the stored value shows: 15.11.2026 and 10:30; untouched, nothing is written;
-// - a changed day keeps the stored time and zone; a changed time keeps the zone;
-// - a cleared time is a field error: said under the row, the time marked
-//   invalid, the host told, the change withdrawn (undefined); putting it right
-//   clears the error; a time that is not one (25:00) is an error too;
-// - both cleared write null; back to the stored value writes undefined;
-// - a new value is ISO 8601 with the time and no zone.
+// 2026-10-22: «Дата и время» edited only the day) -- since sf-input-date 1.4.0
+// as one control, sf-input-date in datetime mode, and a time of day as
+// sf-input-date in time mode (duplication audit A-14). On the built bytes,
+// with the harness as the host (getFieldValue, setFieldValue, setFieldError),
+// at the set's sizes 1 and 1/2, at 600px and 360px:
+// - one control, at an sf-input's height of the same size, named by the label;
+// - the stored value shows: «15.11.2026 10:30»; untouched, nothing is written;
+// - a changed day keeps the stored time below the minute and the zone; a
+//   changed time keeps the zone; back to the stored value writes undefined;
+// - a day without its time is put back, never written; a cleared field writes null;
+// - a day chosen on the grid keeps the time; the time row steps the hours;
+// - a new value is ISO 8601 with the time and no zone;
+// - a time field shows hh:mm, writes the stored shape (hh:mm:00) and reads min/max/step.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -48,6 +47,7 @@ async function open(width) {
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:16px">
     <div id="stored" style="max-inline-size:420px"></div>
     <div id="fresh" style="max-inline-size:420px;margin-block-start:24px"></div>
+    <div id="alarm" style="max-inline-size:420px;margin-block-start:24px"></div>
     <div id="ref" style="max-inline-size:420px;margin-block-start:24px"></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
@@ -67,7 +67,7 @@ try {
         const set = window.SF.fieldRenderers;
         window.writes = [];
         window.errors = [];
-        window.values = {start: '2026-11-15T10:30:15+03:00', fresh: null};
+        window.values = {start: '2026-11-15T10:30:15+03:00', fresh: null, alarm: '10:30:15'};
         const host = {
           getFieldValue: (field) => window.values[field.key],
           setFieldValue: (field, value) => { window.writes.push([field.key, value]); },
@@ -75,91 +75,92 @@ try {
         };
         const draw = (id, field) => window.SF.render(set.renderEditField(field, window.values[field.key], host, {size}), document.getElementById(id));
         draw('stored', {key: 'start', label: 'Начало', propertyType: 'datetime', required: true});
-        draw('fresh', {key: 'fresh', label: 'Встреча', propertyType: 'datetime'});
-        // The reference: an sf-input of the same size, for the height.
+        draw('fresh', {key: 'fresh', label: 'Встреча', propertyType: 'datetime', step: 15});
+        draw('alarm', {key: 'alarm', label: 'Напоминание', propertyType: 'time', min: '08:00', max: '20:00', step: 5});
         window.SF.render(window.SF.html`<sf-input size=${size} appearance="bordered" aria-label="ref"></sf-input>`, document.getElementById('ref'));
       }, size);
-      await page.waitForFunction(() => document.querySelector('#stored sf-input-date input') && document.querySelector('#stored sf-input input')
+      await page.waitForFunction(() => document.querySelector('#stored sf-input-date input') && document.querySelector('#alarm sf-input-date input')
         && document.querySelector('#ref input'), null, {timeout: 8000});
       await page.waitForTimeout(400);
 
       const layout = await page.evaluate(() => {
-        const group = document.querySelector('#stored .sf-field-datetime');
-        const day = group.querySelector('sf-input-date .sf-input-field') || group.querySelector('sf-input-date input');
-        const time = group.querySelector('sf-input.sf-field-datetime-time .sf-input-field') || group.querySelector('sf-input.sf-field-datetime-time input');
-        const ref = document.querySelector('#ref .sf-input-field') || document.querySelector('#ref input');
-        const box = (node) => { const rect = node.getBoundingClientRect(); return {top: rect.top, height: rect.height, left: rect.left, right: rect.right}; };
-        const dayInput = group.querySelector('sf-input-date input');
-        const timeInput = group.querySelector('sf-input.sf-field-datetime-time input');
-        return {day: box(day), time: box(time), ref: box(ref), group: box(group),
-          role: group.getAttribute('role'), groupName: group.getAttribute('aria-label'),
-          dayName: dayInput.getAttribute('aria-label') || dayInput.labels?.[0]?.textContent, timeName: timeInput.getAttribute('aria-label'),
-          dayText: dayInput.value, timeText: timeInput.value, placeholder: timeInput.placeholder,
-          daySize: group.querySelector('sf-input-date').getAttribute('size'),
-          timeSize: group.querySelector('sf-input.sf-field-datetime-time').getAttribute('size'),
+        const box = (node) => { const rect = node.getBoundingClientRect(); return {top: rect.top, height: rect.height}; };
+        const field = (id) => document.querySelector(`#${id} sf-input-date .sf-input-field`) || document.querySelector(`#${id} sf-input-date input`);
+        const picker = (id) => document.querySelector(`#${id} sf-input-date`);
+        const input = (id) => document.querySelector(`#${id} sf-input-date input`);
+        return {day: box(field('stored')), time: box(field('alarm')), ref: box(document.querySelector('#ref .sf-input-field') || document.querySelector('#ref input')),
+          controls: document.querySelectorAll('#stored sf-input-date, #stored sf-input:not(sf-input-date sf-input)').length,
+          mode: picker('stored').getAttribute('mode'), timeMode: picker('alarm').getAttribute('mode'),
+          name: input('stored').getAttribute('aria-label') || input('stored').labels?.[0]?.textContent,
+          shown: input('stored').value, timeShown: input('alarm').value,
+          size: picker('stored').getAttribute('size'), timeSize: picker('alarm').getAttribute('size'),
+          bounds: [picker('alarm').getAttribute('min-time'), picker('alarm').getAttribute('max-time'), picker('alarm').getAttribute('minute-step'),
+            picker('fresh').getAttribute('minute-step')],
           writes: window.writes.length, scroll: document.documentElement.scrollWidth <= document.documentElement.clientWidth};
       });
-      check(at('a group named by the label'), layout.role === 'group' && layout.groupName === 'Начало', layout);
-      check(at('the day and the time are named for assistive technology'), layout.dayName === 'Начало: дата' && layout.timeName === 'Начало: время', layout);
-      check(at('both at the field\'s size'), layout.daySize === size && layout.timeSize === size, layout);
-      check(at('one row, one height: an sf-input\'s of the size'), Math.abs(layout.day.top - layout.time.top) < 0.5
-        && Math.abs(layout.day.height - layout.time.height) < 0.5 && Math.abs(layout.day.height - layout.ref.height) < 0.5
-        && layout.time.left >= layout.day.right, layout);
+      check(at('one control in datetime mode, one in time mode'), layout.controls === 1 && layout.mode === 'datetime' && layout.timeMode === 'time', layout);
+      check(at('named by the label'), layout.name === 'Начало', layout);
+      check(at('at the field\'s size and an sf-input\'s height'), layout.size === size && layout.timeSize === size
+        && Math.abs(layout.day.height - layout.ref.height) < 0.5 && Math.abs(layout.time.height - layout.ref.height) < 0.5, layout);
+      check(at('min, max and step reach the control'), JSON.stringify(layout.bounds) === JSON.stringify(['08:00', '20:00', '5', '15']), layout);
       check(at('no horizontal scroll'), layout.scroll, layout);
-      check(at('the stored value shows'), layout.dayText === '15.11.2026' && layout.timeText === '10:30', layout);
-      check(at('the placeholder says the shape'), layout.placeholder === 'чч:мм', layout);
+      check(at('the stored value shows'), layout.shown === '15.11.2026 10:30' && layout.timeShown === '10:30', layout);
       check(at('untouched writes nothing'), layout.writes === 0, layout);
 
-      const step = async (selector, text, key = 'Enter') => {
+      const step = async (selector, text) => {
         await page.fill(selector, text);
-        await page.press(selector, key);
+        await page.press(selector, 'Enter');
         await settle(page);
-        return page.evaluate(() => {
-          const group = document.querySelector('#stored .sf-field-datetime');
-          const note = group.querySelector('.sf-field-datetime-message');
-          return {writes: window.writes.splice(0), errors: window.errors.splice(0), message: note.hidden ? '' : note.textContent,
-            invalid: group.querySelector('sf-input.sf-field-datetime-time').hasAttribute('invalid'),
-            groupInvalid: group.hasAttribute('data-invalid'),
-            time: group.querySelector('sf-input.sf-field-datetime-time input').value,
-            day: group.querySelector('sf-input-date input').value};
-        });
+        return page.evaluate((selector) => ({writes: window.writes.splice(0), errors: window.errors.splice(0),
+          shown: document.querySelector(selector).value}), selector);
       };
-      const DAY = '#stored sf-input-date input';
-      const TIME = '#stored sf-input.sf-field-datetime-time input';
+      const FIELD = '#stored sf-input-date input';
       const last = (got) => got.writes[got.writes.length - 1]?.[1];
 
-      const day = await step(DAY, '16.11.2026');
-      check(at('a changed day keeps the stored time and zone'), day.writes.length === 1 && last(day) === '2026-11-16T10:30:15+03:00', day);
-      const time = await step(TIME, '18:05', 'Tab');
+      const day = await step(FIELD, '16.11.2026 10:30');
+      check(at('a changed day keeps the stored clock and zone'), day.writes.length === 1 && last(day) === '2026-11-16T10:30:15+03:00', day);
+      const time = await step(FIELD, '16.11.2026 18:05');
       check(at('a changed time keeps the zone'), last(time) === '2026-11-16T18:05:00+03:00', time);
-      const cleared = await step(TIME, '', 'Tab');
-      check(at('a cleared time is a field error, said and withdrawn'), cleared.writes.length === 1 && cleared.writes[0][1] === undefined
-        && cleared.message === 'Укажите время' && cleared.invalid && cleared.groupInvalid
-        && JSON.stringify(cleared.errors) === JSON.stringify([['start', 'Укажите время']]), cleared);
-      const wrong = await step(TIME, '25:00', 'Tab');
-      check(at('a time that is not one is an error'), wrong.message === 'Укажите время в виде чч:мм, от 00:00 до 23:59' && wrong.invalid
-        && last(wrong) === undefined, wrong);
-      const right = await step(TIME, '0930', 'Tab');
-      check(at('putting it right clears the error'), right.message === '' && !right.invalid && !right.groupInvalid
-        && JSON.stringify(right.errors) === JSON.stringify([['start', null]]) && last(right) === '2026-11-16T09:30:00+03:00' && right.time === '09:30', right);
-      const back = await step(DAY, '15.11.2026');
-      const backTime = await step(TIME, '10:30', 'Tab');
-      check(at('back to the stored value writes undefined: no change'), last(back) === '2026-11-15T09:30:00+03:00' && last(backTime) === undefined
-        && backTime.message === '', {back, backTime});
-      const noDay = await step(DAY, '');
-      check(at('a time without a day is an error'), noDay.message === 'Укажите дату' && last(noDay) === undefined && noDay.day === '', noDay);
-      const none = await step(TIME, '', 'Tab');
-      check(at('both cleared write null'), last(none) === null && none.message === '', none);
+      const partial = await step(FIELD, '17.11.2026');
+      check(at('a day without its time is put back, never written'), partial.writes.length === 0 && partial.shown === '16.11.2026 18:05'
+        && partial.errors.length === 0, partial);
+      const back = await step(FIELD, '15.11.2026 10:30');
+      check(at('back to the stored value writes undefined: no change'), back.writes.length === 1 && last(back) === undefined, back);
+      const none = await step(FIELD, '');
+      check(at('a cleared field writes null'), last(none) === null, none);
 
-      // A new value: no zone.
-      await page.fill('#fresh sf-input-date input', '01.02.2026');
-      await page.press('#fresh sf-input-date input', 'Enter');
-      await page.fill('#fresh sf-input.sf-field-datetime-time input', '12:00');
-      await page.press('#fresh sf-input.sf-field-datetime-time input', 'Tab');
+      // The grid and the time row, as a pointer and the keys use them.
+      await step(FIELD, '15.11.2026 10:30');
+      await page.click(FIELD);
+      await page.waitForSelector('#stored .sf-datepicker-day[data-date="2026-11-20"]');
+      await page.click('#stored .sf-datepicker-day[data-date="2026-11-20"]');
       await settle(page);
-      const fresh = await page.evaluate(() => window.writes.splice(0).filter(([key]) => key === 'fresh'));
-      check(at('a day alone on a new value waits for the time; then ISO 8601, no zone'), fresh.length === 2 && fresh[0][1] === undefined
-        && fresh[1][1] === '2026-02-01T12:00:00', fresh);
+      const picked = await page.evaluate(() => ({writes: window.writes.splice(0), focus: document.activeElement?.dataset?.timePart}));
+      check(at('a day on the grid keeps the time and the focus goes to the hours'), picked.writes.length === 1
+        && picked.writes[0][1] === '2026-11-20T10:30:15+03:00' && picked.focus === 'hours', picked);
+      await page.keyboard.press('ArrowUp');
+      await settle(page);
+      const stepped = await page.evaluate(() => window.writes.splice(0));
+      check(at('ArrowUp on the hours is an hour later'), stepped.length === 1 && stepped[0][1] === '2026-11-20T11:30:00+03:00', stepped);
+      await page.keyboard.press('Enter');
+      await settle(page);
+      const closed = await page.evaluate(() => ({open: document.querySelector('#stored sf-input-date').open,
+        focus: document.activeElement === document.querySelector('#stored sf-input-date input')}));
+      check(at('Enter closes the panel and returns to the field'), !closed.open && closed.focus, closed);
+
+      // A new value: no zone, on the minute step.
+      const fresh = await step('#fresh sf-input-date input', '01.02.2026 12:00');
+      check(at('a new value is ISO 8601 with the time and no zone'), fresh.writes.length === 1 && fresh.writes[0][1] === '2026-02-01T12:00:00', fresh);
+      const offStep = await step('#fresh sf-input-date input', '01.02.2026 12:07');
+      check(at('a time off the field\'s step is put back'), offStep.writes.length === 0 && offStep.shown === '01.02.2026 12:00', offStep);
+
+      // A time of day.
+      const alarm = await step('#alarm sf-input-date input', '18:05');
+      check(at('a changed time keeps the stored shape'), alarm.writes.length === 1 && alarm.writes[0][1] === '18:05:00', alarm);
+      const early = await step('#alarm sf-input-date input', '07:00');
+      check(at('a time before min is put back'), early.writes.length === 0 && early.shown === '18:05', early);
+      const again = await step('#alarm sf-input-date input', '10:30');
+      check(at('back to the stored time writes undefined'), again.writes.length === 1 && again.writes[0][1] === undefined, again);
       await page.close();
     }
   }

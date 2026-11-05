@@ -622,6 +622,202 @@
         ],
         "events": []
       }
+    },
+    {
+      "id": "datetime-a-day-keeps-the-time-and-the-focus-goes-to-the-hours",
+      "covers": "mode datetime: a chosen day keeps the time shown, change says mode and time once, the panel stays open on the hours; the form gets yyyy-mm-ddThh:mm",
+      "field": "<sf-input-date name=\"d\" label=\"Начало\" mode=\"datetime\" value=\"2026-09-03T10:30\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "action": {
+            "name": "open-panel",
+            "with": {
+              "options": {
+                "focusCalendar": true
+              }
+            }
+          },
+          "wait": 300
+        }
+      ],
+      "user": "click:.sf-datepicker-day[data-date='2026-09-10']",
+      "wait": 300,
+      "expect": {
+        "value": "2026-09-10T10:30",
+        "events": [
+          {
+            "type": "change",
+            "value": "2026-09-10T10:30",
+            "mode": "datetime",
+            "time": "10:30",
+            "range": false
+          },
+          {
+            "type": "sf-datepicker-change"
+          },
+          {
+            "type": "sf-change"
+          }
+        ],
+        "formData": {
+          "d": "2026-09-10T10:30"
+        },
+        "evaluate": {
+          "el.open": true,
+          "document.activeElement.dataset.timePart": "hours",
+          "el.querySelector('input').value": "10.09.2026 10:30"
+        }
+      }
+    },
+    {
+      "id": "datetime-arrows-step-the-hours-and-the-minute-step",
+      "covers": "the time row: ArrowUp steps the hours, ArrowRight moves to the minutes, ArrowUp there steps by minute-step; each step is one change",
+      "field": "<sf-input-date name=\"d\" label=\"Начало\" mode=\"datetime\" value=\"2026-09-03T10:30\" minute-step=\"15\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "action": {
+            "name": "open-panel",
+            "with": {
+              "options": {
+                "focusCalendar": true
+              }
+            }
+          },
+          "wait": 300
+        },
+        {
+          "user": "focus:.sf-datepicker-time-value[data-time-part='hours']"
+        }
+      ],
+      "user": [
+        "keyboard:ArrowUp",
+        "keyboard:ArrowRight",
+        "keyboard:ArrowUp"
+      ],
+      "wait": 300,
+      "expect": {
+        "value": "2026-09-03T11:45",
+        "events": [
+          {
+            "type": "change",
+            "value": "2026-09-03T11:30"
+          },
+          {
+            "type": "sf-datepicker-change"
+          },
+          {
+            "type": "sf-change"
+          },
+          {
+            "type": "change",
+            "value": "2026-09-03T11:45"
+          },
+          {
+            "type": "sf-datepicker-change"
+          },
+          {
+            "type": "sf-change"
+          }
+        ],
+        "evaluate": {
+          "document.activeElement.dataset.timePart": "minutes",
+          "document.activeElement.getAttribute('aria-valuenow')": "45",
+          "document.activeElement.getAttribute('role')": "spinbutton"
+        }
+      }
+    },
+    {
+      "id": "datetime-is-typed-in-its-format",
+      "covers": "mode datetime: DD.MM.YYYY HH:mm typed and committed with Enter is the value yyyy-mm-ddThh:mm",
+      "field": "<sf-input-date name=\"d\" label=\"Начало\" mode=\"datetime\" locale=\"ru\"></sf-input-date>",
+      "box": "input",
+      "user": [
+        "type:05.11.2026 14:20",
+        "keyboard:Enter"
+      ],
+      "wait": 300,
+      "expect": {
+        "value": "2026-11-05T14:20",
+        "events": [
+          {
+            "type": "change",
+            "value": "2026-11-05T14:20",
+            "time": "14:20"
+          },
+          {
+            "type": "sf-datepicker-change"
+          },
+          {
+            "type": "sf-change"
+          }
+        ],
+        "formData": {
+          "d": "2026-11-05T14:20"
+        }
+      }
+    },
+    {
+      "id": "time-arrow-down-opens-the-time-and-a-step-stays-in-the-window",
+      "covers": "mode time: ArrowDown on the field opens the time row on the hours; a step below min-time lands on min-time",
+      "field": "<sf-input-date name=\"t\" label=\"Напоминание\" mode=\"time\" value=\"09:30\" min-time=\"09:00\" max-time=\"18:00\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "user": [
+            "focus:input",
+            "keyboard:ArrowDown"
+          ],
+          "wait": 300
+        }
+      ],
+      "user": "keyboard:ArrowDown",
+      "wait": 300,
+      "expect": {
+        "value": "09:00",
+        "events": [
+          {
+            "type": "change",
+            "value": "09:00",
+            "mode": "time",
+            "time": "09:00"
+          },
+          {
+            "type": "sf-datepicker-change"
+          },
+          {
+            "type": "sf-change"
+          }
+        ],
+        "formData": {
+          "t": "09:00"
+        },
+        "evaluate": {
+          "document.activeElement.dataset.timePart": "hours",
+          "el.querySelector('.sf-datepicker-grid')": null,
+          "el.querySelector('input').value": "09:00"
+        }
+      }
+    },
+    {
+      "id": "time-off-the-step-is-put-back",
+      "covers": "mode time: a typed time off minute-step is not taken; the field shows the value it held and nothing is emitted",
+      "field": "<sf-input-date name=\"t\" label=\"Напоминание\" mode=\"time\" value=\"10:00\" minute-step=\"15\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "user": "focus:input"
+        },
+        {
+          "script": "el.querySelector('input').value = '10:07';"
+        }
+      ],
+      "user": "keyboard:Enter",
+      "wait": 300,
+      "expect": {
+        "value": "10:00",
+        "events": [],
+        "evaluate": {
+          "el.querySelector('input').value": "10:00"
+        }
+      }
     }
   ]
 }

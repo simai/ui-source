@@ -4,6 +4,12 @@
     "choose-month": "Выберите месяц",
     "choose-year": "Выберите год",
     "custom-range": "Свой период",
+    "earlier-hour": "Предыдущий час",
+    "earlier-minute": "Предыдущие минуты",
+    "hours": "Часы",
+    "later-hour": "Следующий час",
+    "later-minute": "Следующие минуты",
+    "minutes": "Минуты",
     "next-month": "Следующий месяц",
     "next-years": "Следующие годы",
     "preset-last-month": "Прошлый месяц",
@@ -16,6 +22,10 @@
     "presets": "Быстрый выбор",
     "previous-month": "Предыдущий месяц",
     "previous-years": "Предыдущие годы",
-    "value-missing": "Выберите дату."
+    "time": "Время",
+    "time-not-set": "Не задано",
+    "value-missing": "Выберите дату.",
+    "value-missing-datetime": "Выберите дату и время.",
+    "value-missing-time": "Выберите время."
   }
 }

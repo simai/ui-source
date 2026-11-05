@@ -113,6 +113,38 @@
     block-size: var(--sf-ui-1\/2--control-height);
   }
 
+  /* The time of day (sf-input-date mode datetime and time): one row at the
+     control height of size 1 -- a stepper, the number, a stepper, for the
+     hours and for the minutes -- each part a day's width, so the row measures
+     in the grid's own unit. Under the grid it is set off by a line; alone, it
+     is the panel, as wide as the row. */
+  .sf-datepicker .sf-datepicker-time {
+    min-block-size: var(--sf-ui-1--control-height);
+  }
+  .sf-datepicker .sf-datepicker-container > .sf-datepicker-time {
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    margin-block-start: var(--sf-space-1\/3);
+    padding-block-start: var(--sf-space-1\/3);
+  }
+  .sf-datepicker.sf-datepicker--time {
+    inline-size: auto;
+  }
+  .sf-datepicker .sf-datepicker-time-value {
+    block-size: var(--sf-ui-1--control-height);
+    inline-size: var(--sf-ui-1--control-height);
+    padding: 0;
+    font-variant-numeric: tabular-nums;
+    cursor: default;
+    user-select: none;
+  }
+  .sf-datepicker .sf-datepicker-time-separator {
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+  }
+
  .sf-datepicker .sf-datepicker-context {
    /* Opaque, to cover the days under it, in the panel's own colour. */
    --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-elevation-3--surface)));

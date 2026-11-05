@@ -1,5 +1,5 @@
 // A datetime's value, read and written back: plain functions, no rendering.
-// The edit renderer (renderDateTimeEdit in index.js) uses them, the contract
+// The edit renderers (renderDateTimeEdit and renderTimeEdit in index.js) use them, the contract
 // test runs them without a DOM, and SF.fieldRenderers.dateTime publishes them
 // so a host that draws its own pair reads and writes the same way.
 //
@@ -75,4 +75,29 @@ export function composeDateTime(original, draft) {
     const rest = sameTime ? before.rest : ':00';
     const zone = before && before.time ? before.zone : '';
     return {value: `${date}T${time}${rest}${zone}`};
+}
+
+// A time of day as a host stores it: hh:mm, or with seconds and a fraction.
+const TIME_RE = /^(\d{2}):(\d{2})((?::\d{2})(?:\.\d+)?)?$/u;
+
+// What a stored time is made of, as splitDateTime says it for a datetime.
+export function splitTime(value) {
+    const raw = rawValue(value);
+    if (raw === null || raw === undefined || raw === '') return {raw: raw ?? null, known: true, time: '', rest: ''};
+    const match = typeof raw === 'string' ? raw.trim().match(TIME_RE) : null;
+    if (!match || normalizeTime(`${match[1]}:${match[2]}`) === null) return {raw, known: false, time: '', rest: ''};
+    return {raw, known: true, time: `${match[1]}:${match[2]}`, rest: match[3] || ''};
+}
+
+// The value to write for a time, against what the field held: {value} (null
+// clears) or {error: 'timeInvalid'}. The same minute writes back the very
+// text it read; a changed one keeps the stored shape (hh:mm:00 where the
+// host stores seconds), and a new one is hh:mm.
+export function composeTime(original, text) {
+    const time = normalizeTime(text);
+    if (time === null) return {error: 'timeInvalid'};
+    if (!time) return {value: null};
+    const before = original?.known ? original : null;
+    if (before && before.time === time) return {value: before.raw};
+    return {value: before?.rest ? `${time}:00` : time};
 }
