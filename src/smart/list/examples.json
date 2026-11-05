@@ -99,6 +99,54 @@
       }
     },
     {
+      "name": "conversations",
+      "title": "Беседы: аватар, счётчик, закреплённые",
+      "settings": {
+        "label": "Беседы",
+        "items": [
+          {
+            "id": "c1",
+            "text": "Новости компании",
+            "supporting": "Пётр: отчёт за октябрь",
+            "avatar": {
+              "icon": "campaign",
+              "shape": "square"
+            },
+            "pinned": true,
+            "date": "2026-10-20T10:00:00+03:00"
+          },
+          {
+            "id": "c2",
+            "text": "Анна Белова",
+            "supporting": "Пришлю договор после обеда",
+            "avatar": {
+              "text": "АБ"
+            },
+            "count": 3,
+            "date": "2026-10-27T11:20:00+03:00"
+          },
+          {
+            "id": "c3",
+            "text": "Ассистент",
+            "supporting": "Нужен ответ на вопрос",
+            "avatar": {
+              "icon": "smart_toy"
+            },
+            "badge": {
+              "text": "Ждёт",
+              "tone": "warning"
+            },
+            "date": "2026-10-27T09:05:00+03:00"
+          }
+        ],
+        "group-by": "day",
+        "selected": "c2"
+      },
+      "expect": {
+        "name": "Беседы"
+      }
+    },
+    {
       "name": "by-key",
       "title": "По группам",
       "settings": {
@@ -353,6 +401,26 @@
                 "returns": "applied"
               },
               "check": "!document.querySelector('#l .sf-list__row[data-id=\"t3\"]') && document.activeElement?.closest('.sf-list__row')?.dataset.id === 't2'"
+            }
+          ]
+        },
+        {
+          "id": "p5-row-parts-and-pinned",
+          "title": "1.1.0: a pinned item leads under «Закреплённые» before the day groups; an avatar gives every row the leading place; a count and a badge stand at the row's end; a count that changes keeps the row and the focus on it",
+          "covers": "settings.items avatar, count, badge, pinned",
+          "steps": [
+            {
+              "script": "(document.querySelector('#l').items = [{id: 'p1', text: 'Канал', avatar: {icon: 'campaign', shape: 'square'}, pinned: true}, {id: 't1', text: 'Возврат товара', avatar: {text: 'АБ'}, count: 3, date: new Date().toISOString()}, {id: 't2', text: 'План на квартал', badge: {text: 'Ждёт', tone: 'warning'}, date: new Date().toISOString()}], true)",
+              "wait": 300,
+              "check": "document.querySelector('#l .sf-list__group')?.dataset.group === 'pinned' && document.querySelector('#l .sf-list__group .sf-list__heading')?.textContent.trim() === 'Закреплённые' && document.querySelectorAll('#l .sf-list__lead').length === 3 && document.querySelectorAll('#l sf-avatar').length === 1 && document.querySelectorAll('#l .sf-list__sign').length === 1 && document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list__count')?.textContent.includes('3') && document.querySelector('#l .sf-list__row[data-id=\"t2\"] .sf-list__badge')?.getAttribute('status') === 'warning'"
+            },
+            {
+              "script": "(document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list-item').focus(), window.__row = document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list-item'), document.querySelector('#l').upsert({id: 't1', text: 'Возврат товара', avatar: {text: 'АБ'}, count: 0, date: new Date().toISOString()}).outcome)",
+              "wait": 300,
+              "expect": {
+                "returns": "applied"
+              },
+              "check": "!document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list__count') && document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list-item') === window.__row && document.activeElement === window.__row"
             }
           ]
         }

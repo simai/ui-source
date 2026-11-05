@@ -19,6 +19,63 @@ import "./default.css";
 //
 // The rows are keyed by id, so a row that moves keeps its node and a redraw
 // does not take the focus from the row a person is on.
+//
+// A row's own parts (1.1.0) stand in sf-list-item's leading and trailing
+// places: the avatar (sf-avatar, or a sign -- a glyph in sf-avatar's class
+// markup, as sf-chat-window draws its members' signs), the badge and the
+// count (sf-badge). The row takes its slot elements once, when it connects,
+// and draws those very nodes in its own markup. So the slot elements are
+// fixed in the row's template and only what is inside them changes: a count
+// that comes and goes keeps the row, and the focus on it. A list that gains
+// its first avatar draws its rows from the other template, anew.
+
+// The steps of a row's parts beside a row of each size: a one-line row's
+// avatar takes the row's line, as its icon does, and a two-line row's avatar
+// the control height of the row's step (sf-avatar size) -- a one-line row
+// in that list keeps the line, centred in the wider place; the count and the
+// badge take the row's line (sf-badge line), so they never make a row taller.
+const BADGE_STATUS = {neutral: nothing, info: "info", success: "success", warning: "warning", error: "error"};
+
+// tone auto picks the initials' tone from the row's title (sf-avatar reads its
+// aria-label), so a conversation keeps its colour whatever its initials.
+const leadContent = (context, item) => {
+    const avatar = context.avatarOf(item);
+    const size = context.size;
+    const wide = Boolean(context.leading?.wide) && Boolean(item.supporting);
+    if (avatar?.kind === "avatar") {
+        return html`<sf-avatar
+                aria-hidden="true"
+                aria-label=${String(item.text ?? "") || nothing}
+                tone="auto"
+                size=${wide ? size : "1"}
+                line=${wide ? nothing : size}
+                shape=${avatar.shape}
+                image-url=${avatar.imageUrl || nothing}
+                text=${avatar.text || nothing}
+                ?disabled=${item.disabled === true}
+        ></sf-avatar>`;
+    }
+    if (avatar?.kind === "sign") {
+        return html`<span class="sf-list__sign sf-avatar ${wide ? `sf-avatar--size-${size}` : `sf-avatar--size-1 sf-avatar--line-${size}`} sf-avatar--placeholder ${avatar.shape === "square" ? "sf-avatar--square" : ""} inline-flex flex-none items-cross-center content-main-center"
+                          aria-hidden="true"><sf-icon icon=${avatar.icon} aria-hidden="true"></sf-icon></span>`;
+    }
+    const icon = typeof item.icon === "string" && item.icon.trim() ? item.icon.trim() : "";
+    return icon ? html`<sf-icon class="sf-list__glyph" icon=${icon} aria-hidden="true"></sf-icon>` : nothing;
+};
+
+const metaContent = (context, item) => {
+    const count = context.countOf(item);
+    const badge = context.badgeOf(item);
+    const line = context.size;
+    return html`${badge
+        ? html`<sf-badge class="sf-list__badge" line=${line} appearance="tonal"
+                         status=${BADGE_STATUS[badge.tone]} text=${badge.text}></sf-badge>`
+        : nothing}${count
+        ? html`<sf-badge class="sf-list__count" line=${line} scheme="primary"
+                         text=${count > context.countCap ? `${context.countCap}+` : String(count)}
+                         aria-label=${context.countLabel(count)}></sf-badge>`
+        : nothing}`;
+};
 
 const row = (context, item) => {
     const {component} = context;
@@ -56,9 +113,21 @@ const row = (context, item) => {
     }
 
     const menu = context.hasMenu(item);
-    return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""}" data-id=${item.id}>
-            <sf-list-item
+    // Two templates, with the leading place and without; the slot elements
+    // are the template's own, never a value of it (see above).
+    const listItem = context.leading
+        ? html`<sf-list-item
+                    interactive
+                    kind="icon"
+                    size=${context.size}
+                    value=${item.id}
+                    text=${text}
+                    supporting=${supporting || nothing}
+                    ?selected=${current}
+                    ?disabled=${disabled}
+            ><span slot="leading" class="sf-list__lead">${leadContent(context, item)}</span><span
+                    slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`
+        : html`<sf-list-item
                     interactive
                     kind=${icon ? "icon" : "text"}
                     icon=${icon || nothing}
@@ -68,7 +137,10 @@ const row = (context, item) => {
                     supporting=${supporting || nothing}
                     ?selected=${current}
                     ?disabled=${disabled}
-            ></sf-list-item>
+            ><span slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`;
+    return html`
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""}" data-id=${item.id}>
+            ${listItem}
             ${menu
                 ? html`<button
                         type="button"
@@ -93,7 +165,7 @@ const rows = (context, items, labelled) => html`
 export function renderListTemplate(context) {
     const {component} = context;
     return html`
-        <div class="sf-list sf-list__frame sf-list--size-${context.size} ${context.empty ? "sf-list--empty" : ""}"
+        <div class="sf-list sf-list__frame sf-list--size-${context.size}${context.leading?.wide ? " sf-list--lead-wide" : ""} ${context.empty ? "sf-list--empty" : ""}"
              role=${context.grouped ? "group" : nothing}
              aria-label=${context.grouped ? context.label : nothing}
              aria-busy=${context.loading ? "true" : "false"}>

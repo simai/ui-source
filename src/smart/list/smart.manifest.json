@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -21,6 +21,7 @@
     "row-actions",
     "pagination",
     "grouping",
+    "pinning",
     "responsive"
   ],
   "custom_element": "sf-list",
@@ -32,6 +33,8 @@
     "uses": [
       "component.dropdown",
       "component.icon-buttons",
+      "smart.avatar",
+      "smart.badge",
       "smart.button",
       "smart.empty-state",
       "smart.icon",
@@ -119,7 +122,7 @@
         "items": {
           "type": "object"
         },
-        "description": "The rows, in the host's order: {id, text, supporting?, icon?, date?, group?, disabled?, actions?}."
+        "description": "The rows, in the host's order: {id, text, supporting?, icon?, avatar?, date?, group?, count?, badge?, pinned?, disabled?, actions?}."
       },
       "groups": {
         "type": "array",
@@ -158,6 +161,28 @@
           "type": "string",
           "description": "A glyph before the title (a Material Symbols name)."
         },
+        "avatar": {
+          "type": "object",
+          "properties": {
+            "image-url": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "shape": {
+              "type": "string",
+              "enum": [
+                "circle",
+                "square"
+              ]
+            },
+            "icon": {
+              "type": "string"
+            }
+          },
+          "description": "The row's picture (sf-avatar): an image, the initials in text, or a sign (icon without an image); square for a group or a channel."
+        },
         "date": {
           "type": "string",
           "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
@@ -172,6 +197,36 @@
         },
         "actions": {
           "description": "false: no row actions; a list of action ids: only those."
+        },
+        "count": {
+          "type": "number",
+          "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+        },
+        "badge": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "tone": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "info",
+                "success",
+                "warning",
+                "error"
+              ]
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "description": "A short tonal badge at the row's end, before the count."
+        },
+        "pinned": {
+          "type": "boolean",
+          "description": "Leads the list, under its own heading when the list is grouped."
         }
       },
       "required": [
@@ -633,35 +688,35 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "e459a079ade09e1eebf6e5097015963eb81c04815d764612c60f8a6d79eaaea7"
+        "sha256": "e96146ace7f9e06e188eb878d0e5411eb4041598c9c3b519ca1b8e2bcaaa5e33"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "2009adfd9deb5e6baea31a3c1b67d326abae701c907dfcd4b3232f3311159043"
+        "sha256": "eb90577a2d55716bec6a979ef591b22e2ae1532b3c170388996153053725c9bc"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "795ccd3ccb49c81d91d2cddaf585c9ef8ac7224eb542c8938955ded4dfb04f0e"
+        "sha256": "081d498e4d1160fcd1bc2b68127e0c656985de79874b7216e5287f58242cf379"
       },
       {
         "path": "src/smart/list/rule.js",
-        "sha256": "55ee7a8f103df1dcd838aea4bb4cac29aa748344774d8e317b096e9c461b06ff"
+        "sha256": "57f39503a177d86850e3c8d352794c9c3a53237d7f8791af126d9c689024856a"
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "f33afacdaeeb765e60a2e4ae2fd12ef946f81839705c07d65dd2cd4e401c0f10"
+        "sha256": "361673876af9e2ddacee8b896c919e5cba5a51457e2b78546c315ed7f1cbfa9f"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "cfe80f4d24e2ef4a50f9c915b8de978d04e05577c887e436a09cb22b525f9d3b"
+        "sha256": "cb2bd220ed9fbcce543a201ebe4b38e8b79d4e147c1c2fed305ee80f20738d22"
       },
       {
         "path": "src/smart/list/lang/en.json",
-        "sha256": "ea811f43810a77de268228e45067a674dae432093478a675d7ceee8ecb93751b"
+        "sha256": "e415f13db35686dbd53b9f663292479f53816f451473c6f524678d4dc65cbb47"
       },
       {
         "path": "src/smart/list/lang/ru.json",
-        "sha256": "6d2684a24c67dca6bc666c0a792ed30f4cb12c5278151701a89bbd22a5e348be"
+        "sha256": "ca074425d5bd25ad7293f7ec3de83743db738cd51e2e806fc0c32fc33f6cf123"
       }
     ],
     "generated_runtime": []

@@ -1626,6 +1626,7 @@
         "row-actions",
         "pagination",
         "grouping",
+        "pinning",
         "responsive"
       ],
       "composition": {
@@ -1633,6 +1634,8 @@
         "uses": [
           "component.dropdown",
           "component.icon-buttons",
+          "smart.avatar",
+          "smart.badge",
           "smart.button",
           "smart.empty-state",
           "smart.icon",
@@ -1649,7 +1652,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "b984381df64f600f1cb940f6dc78a7ddf0fa05c17cf6272af889a7f3d43ebbf0",
+      "manifest_sha256": "495c6852d161c8bf3459aee0fed92ce02c747aa6adfd0529d311ceac4ecb384c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -23,6 +23,12 @@
           "type": "icon",
           "optional": true
         },
+        "avatar": {
+          "type": "object",
+          "optional": true,
+          "x-markup": "{image-url?, text?, shape?: circle|square, icon?}",
+          "summary": "The row's picture in its leading place, drawn as sf-avatar: an image, or text -- the initials the avatar shows, in a muted tone chosen from the row's title (tone auto); shape square for a group or a channel; icon without an image is a sign (a glyph in the avatar's place). A list in which no item has one has no leading place."
+        },
         "date": {
           "type": "date",
           "optional": true
@@ -38,6 +44,24 @@
         "actions": {
           "type": "list",
           "optional": true
+        },
+        "count": {
+          "type": "number",
+          "integer": true,
+          "min": 0,
+          "optional": true,
+          "summary": "A count at the row's end (unread), drawn as sf-badge primary; 0 or none draws nothing, above 99 it reads «99+»; its words are count-label («3 непрочитанных»)."
+        },
+        "badge": {
+          "type": "object",
+          "optional": true,
+          "x-markup": "{text, tone?: neutral|info|success|warning|error}",
+          "summary": "A short tonal sf-badge at the row's end, before the count; tone is a word of the Framework's status set (neutral when absent or unknown). No text draws nothing."
+        },
+        "pinned": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "The row leads, in the host's order: under its own heading «Закреплённые» before the day or key groups; ungrouped, first in the list."
         }
       },
       "entries": {
@@ -45,7 +69,7 @@
         "changes": "content"
       },
       "x-markup": "a property (a host has objects), or JSON in the attribute; drawn in the host's order -- the list does not sort",
-      "summary": "The rows, in the host's order: {id, text, supporting?, icon?, date?, group?, disabled?, actions?}."
+      "summary": "The rows, in the host's order: {id, text, supporting?, icon?, avatar?, date?, group?, count?, badge?, pinned?, disabled?, actions?}."
     },
     "selected": {
       "type": "id",
@@ -476,6 +500,12 @@
       "name": "cl-icon"
     },
     {
+      "name": "cl-avatar"
+    },
+    {
+      "name": "cl-badge"
+    },
+    {
       "name": "cl-button"
     },
     {
@@ -573,15 +603,18 @@
     "rename (§4.3): shown at once; rename {id, text} is cancelable and a cancelled one puts the old text back.",
     "empty: sf-empty-state kind no-data with the empty-text heading, or the empty slot whole.",
     "a11y: ungrouped, the one list takes the label; grouped, the frame is a group named by the label and each group's rows a list named by its heading (role heading, heading-level).",
-    "words: lang/ru.json and lang/en.json."
+    "words: lang/ru.json and lang/en.json.",
+    "version 1.1.0 (owner decision q-3b313e2246, 2026-11-06, through the UI Chat thread msg-f972819c0a4e477aaab1: sf-chat-threads of package pro becomes a thin wrapper of sf-list): bounded declarative row data drawn with the Framework's own parts, no renderer a host hands in. item.avatar {image-url?, text?, shape circle|square, icon?} in sf-list-item's leading place as sf-avatar (tone auto), a sign (icon, no image) in sf-avatar's class markup as sf-chat-window draws one; no leading place at all when no item has an avatar, and when one has, every row keeps it so the titles start on one line (a row with an icon and no avatar shows the icon there). The place is the row's line wide (the avatar takes sf-avatar line=<size>, as the row's icon does), or the control height of the row's step when any row has a second line (sf-avatar size=<size>): a one-line row keeps its control height either way. item.count (whole, above 0) as sf-badge scheme primary at the row's end, «99+» above 99, named by the word count-label in plural forms; item.badge {text, tone?} as a tonal sf-badge before it, tone the status vocabulary (neutral, info, success, warning, error) -- chat's activity words stay in package pro and map onto it. Both stand in sf-list-item's trailing place, centred on the row. item.pinned true leads under its own heading pinned-text («Закреплённые», «Pinned») before the day or key groups; ungrouped, pinned items lead the one list without a heading. Group headings by day stay core's formatRelativeDay (the chat accepts it in place of Today/Yesterday/Earlier). The slot elements are fixed in the row's template (sf-list-item takes its slot nodes once, when it connects); what changes inside them is drawn in place, so a count that comes and goes keeps the row and its focus. Additions only: a list without the new fields draws as 1.0.0 did."
   ],
   "x-rule": {
     "$comment": [
       "The list draws its rows as sf-list-item on the plain list surface (the dropdown",
       "sheet holds .sf-list), the «⋯» as an icon-button class unit with an sf-icon, «Show",
-      "more» as an sf-button and the empty state as sf-empty-state; a tag it renders is a",
-      "tag it fetches. The shared row menu is fetched after the page is ready. The",
-      "loading status is visually hidden with sr-only, which a class scan can miss."
+      "more» as an sf-button and the empty state as sf-empty-state; a row's avatar as",
+      "sf-avatar (its sign in the avatar's class markup, whose sheet sf-avatar brings) and",
+      "its count and badge as sf-badge; a tag it renders is a tag it fetches. The shared",
+      "row menu is fetched after the page is ready. The loading status is visually hidden",
+      "with sr-only, which a class scan can miss."
     ]
   },
   "x-registry": {
@@ -592,6 +625,7 @@
       "row-actions",
       "pagination",
       "grouping",
+      "pinning",
       "responsive"
     ],
     "persistence": {
@@ -639,6 +673,28 @@
             "type": "string",
             "description": "A glyph before the title (a Material Symbols name)."
           },
+          "avatar": {
+            "type": "object",
+            "properties": {
+              "image-url": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "shape": {
+                "type": "string",
+                "enum": [
+                  "circle",
+                  "square"
+                ]
+              },
+              "icon": {
+                "type": "string"
+              }
+            },
+            "description": "The row's picture (sf-avatar): an image, the initials in text, or a sign (icon without an image); square for a group or a channel."
+          },
           "date": {
             "type": "string",
             "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
@@ -653,6 +709,36 @@
           },
           "actions": {
             "description": "false: no row actions; a list of action ids: only those."
+          },
+          "count": {
+            "type": "number",
+            "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+          },
+          "badge": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "tone": {
+                "type": "string",
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "description": "A short tonal badge at the row's end, before the count."
+          },
+          "pinned": {
+            "type": "boolean",
+            "description": "Leads the list, under its own heading when the list is grouped."
           }
         },
         "required": [

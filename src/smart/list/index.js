@@ -8,13 +8,18 @@
 // variant, for a column a person reads.
 //
 // What a row *is* stays with the host. An item is data: an id, a text, and
-// optionally a supporting line, an icon, a date or a group key. The list draws
-// each one as the Framework's row, sf-list-item, and interprets none of it.
+// optionally a supporting line, an icon, a date or a group key, a picture
+// (avatar), a count, a badge and pinned. The list draws each one as the
+// Framework's row, sf-list-item, with the Framework's own parts in its leading
+// and trailing places -- sf-avatar, sf-badge -- and interprets none of it: it
+// has no renderer a host could hand it (1.1.0, owner decision q-3b313e2246,
+// 2026-11-06: sf-chat-threads becomes a thin wrapper of this list).
 //
 // It owns the arrangement and nothing else:
 //   - groups by the calendar day of each item's date in the reader's time
 //     zone («Сегодня», «Вчера», a weekday, the date -- core's
-//     formatRelativeDay), or by a key the host names, or none;
+//     formatRelativeDay), or by a key the host names, or none; pinned items
+//     lead, under their own heading «Закреплённые» when the list is grouped;
 //   - which row is open (`selected`), told by more than a tint;
 //   - one Tab stop for the whole list, arrows between rows, across groups
 //     (the row's own roving, sf-list-item);
@@ -51,6 +56,49 @@ const refused = (reason) => ({outcome: "refused", reason});
 
 // One item as the list holds it: id a string, the rest as given.
 const normalItem = (item) => ({...item, id: String(item.id)});
+
+const word = (value) => (typeof value === "string" ? value.trim() : "");
+const SHAPES = new Set(["circle", "square"]);
+// The badge's tone is a word of the Framework's status set
+// (contracts/public-api-axes.json status_vocabulary); neutral is no status.
+const TONES = new Set(["neutral", "info", "success", "warning", "error"]);
+// The largest count drawn as a number; a larger one reads «99+», as
+// sf-avatar's badge-cap does by default.
+const COUNT_CAP = 99;
+
+/**
+ * The item's picture, or null: {image-url?, text?, shape?, icon?}. A sign
+ * (icon without an image) is a glyph in the avatar's place -- a channel, an
+ * agent, a bot; an image or initials are sf-avatar's.
+ */
+function avatarOf(item) {
+    const avatar = item?.avatar;
+    if (!avatar || typeof avatar !== "object" || Array.isArray(avatar)) return null;
+    const imageUrl = word(avatar["image-url"]);
+    const icon = word(avatar.icon);
+    return {
+        kind: icon && !imageUrl ? "sign" : "avatar",
+        shape: SHAPES.has(avatar.shape) ? avatar.shape : "circle",
+        imageUrl,
+        text: word(avatar.text),
+        icon,
+    };
+}
+
+/** The item's count as a whole number above 0, else 0. */
+function countOf(item) {
+    const count = Number(item?.count);
+    return Number.isFinite(count) && count >= 1 ? Math.floor(count) : 0;
+}
+
+/** The item's badge, {text, tone}, or null: a badge with no text draws nothing. */
+function badgeOf(item) {
+    const badge = item?.badge;
+    if (!badge || typeof badge !== "object" || Array.isArray(badge)) return null;
+    const text = word(badge.text);
+    if (!text) return null;
+    return {text, tone: TONES.has(badge.tone) ? badge.tone : "neutral"};
+}
 
 // set-items(list, {hasMore}) or set-items({items, has-more}) (§4.4: one object
 // in declared order).
@@ -296,12 +344,18 @@ class SfList extends ListElement {
     // does not. By day, each item's calendar day in the reader's time zone, an
     // unreadable date its own last group; by key, the order of `groups`, then
     // any key it does not list.
+    //
+    // Pinned items lead, in the host's order: under their own heading
+    // («Закреплённые») before the day or key groups; ungrouped, first in the
+    // one list.
     arranged() {
         const by = this.groupBy;
-        if (by !== "day" && by !== "key") return [{key: "all", heading: "", items: this._items}];
+        const pinned = this._items.filter((item) => item.pinned === true);
+        const rest = pinned.length ? this._items.filter((item) => item.pinned !== true) : this._items;
+        if (by !== "day" && by !== "key") return [{key: "all", heading: "", items: [...pinned, ...rest]}];
         const groups = new Map();
         const now = new Date();
-        for (const item of this._items) {
+        for (const item of rest) {
             let key;
             let heading;
             if (by === "day") {
@@ -329,7 +383,18 @@ class SfList extends ListElement {
             const undated = list.findIndex((group) => group.key === "day:none");
             if (undated >= 0) list.push(...list.splice(undated, 1));
         }
+        if (pinned.length) list.unshift({key: "pinned", heading: this.sfWord("pinned-text"), items: pinned});
         return list;
+    }
+
+    // The leading place of the rows: none when no item has an avatar. When one
+    // has, every row keeps it, so the titles start at one line; a row without
+    // an avatar shows its icon there, or nothing. Its width is the avatar of a
+    // two-line row when any row of the list has a second line, else the row's
+    // line: a one-line row keeps its control height.
+    leading() {
+        if (!this._items.some((item) => avatarOf(item))) return null;
+        return {wide: this._items.some((item) => Boolean(item.supporting))};
     }
 
     templateContext() {
@@ -342,6 +407,12 @@ class SfList extends ListElement {
             headingLevel: this.headingLevel,
             size: this.size,
             sections: this.arranged(),
+            leading: this.leading(),
+            avatarOf,
+            countOf,
+            badgeOf,
+            countCap: COUNT_CAP,
+            countLabel: (count) => this.sfWord("count-label", {count}),
             grouped: this.groupBy === "day" || this.groupBy === "key",
             selected: this.selected,
             editing: this._editing,

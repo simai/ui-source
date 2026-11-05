@@ -15,11 +15,11 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag] of [['list', 'sf-list'], ['list-feed', 'sf-list-feed']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.1.0'], ['list-feed', 'sf-list-feed', '1.0.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
-    assert.equal(contract.version, '1.0.0', folder);
+    assert.equal(contract.version, version, folder);
     assert.ok(flat.includes(`"${tag}"`), `${tag} is in the name registry`);
     assert.match(read('src/core/js/rule.src.js'), new RegExp(`smart/${folder}/rule\\.js`, 'u'));
     assert.match(read(`src/smart/${folder}/index.js`), new RegExp(`\\.define\\("${tag}"\\)`, 'u'));
@@ -56,6 +56,44 @@ test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next pa
   // The sheet reads its public variables and sets no public variable of the row.
   const sheet = read('src/smart/list/js/templates/default.css');
   assert.doesNotMatch(sheet, /--sf-list-item-[a-z][a-z-]*\s*:/u);
+});
+
+test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn with the Framework\'s parts', () => {
+  const contract = json('src/smart/list/component.json');
+  const of = contract.settings.items.of;
+  assert.deepEqual(Object.keys(of).sort(),
+    ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
+  // Additions only: no setting, event or action of 1.0.0 changed.
+  assert.deepEqual(Object.keys(contract.settings).sort(),
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'renamable', 'selected', 'size']);
+  const item = contract['x-registry'].contracts.item.properties;
+  assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
+  // The badge's tone is the Framework's status vocabulary.
+  assert.deepEqual([...item.badge.properties.tone.enum].sort(), [...json('contracts/public-api-axes.json').status_vocabulary].sort());
+  // A tag it renders is a tag it fetches.
+  const relations = contract.relations.map((relation) => relation.name);
+  for (const name of ['cl-avatar', 'cl-badge', 'cl-list-item']) assert.ok(relations.includes(name), name);
+  assert.match(read('src/smart/list/rule.js'), /\{ name: 'cl-avatar' \},\n\s+\{ name: 'cl-badge' \}/u);
+  const template = read('src/smart/list/js/templates/default.js');
+  // The parts are the Framework's: sf-avatar, sf-badge; no renderer a host hands in.
+  assert.match(template, /<sf-avatar\n/u);
+  assert.match(template, /<sf-badge class="sf-list__count" line=\$\{line\} scheme="primary"/u);
+  assert.match(template, /<sf-badge class="sf-list__badge" line=\$\{line\} appearance="tonal"/u);
+  assert.doesNotMatch(read('src/smart/list/index.js'), /render(Row|Item|er)\s*[:=(]/u);
+  // The slot elements are the row template's own, never a value of it: the
+  // row takes its slot nodes once (smart-base captureSlotTemplates).
+  assert.match(template, /><span slot="leading" class="sf-list__lead">\$\{leadContent\(context, item\)\}<\/span><span\n\s+slot="trailing" class="sf-list__meta">\$\{metaContent\(context, item\)\}<\/span><\/sf-list-item>`/u);
+  assert.equal([...template.matchAll(/slot="trailing" class="sf-list__meta"/gu)].length, 2);
+  // Pinned leads; the words in both languages, the count in plural forms.
+  const source = read('src/smart/list/index.js');
+  assert.match(source, /list\.unshift\(\{key: "pinned", heading: this\.sfWord\("pinned-text"\), items: pinned\}\)/u);
+  assert.equal(json('src/smart/list/lang/ru.json').runtime['pinned-text'], 'Закреплённые');
+  assert.equal(json('src/smart/list/lang/en.json').runtime['pinned-text'], 'Pinned');
+  assert.deepEqual(Object.keys(json('src/smart/list/lang/ru.json').runtime['count-label']).sort(), ['few', 'many', 'one', 'other']);
+  // The changelog line.
+  assert.ok(contract['x-decisions'].some((line) => line.startsWith('version 1.1.0 (owner decision q-3b313e2246')));
+  const sheet = read('src/smart/list/js/templates/default.css');
+  assert.match(sheet, /\.sf-list__meta:empty \{ display: none; \}/u);
 });
 
 test('sf-list-feed: sf-message-log\'s behaviour under the list family\'s names, on the core reading position', () => {

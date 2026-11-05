@@ -2,11 +2,16 @@
   "title": "List",
   "runtime": {
     "actions-label": "Actions: {text}",
+    "count-label": {
+      "one": "{n} unread",
+      "other": "{n} unread"
+    },
     "empty-text": "Nothing here yet",
     "label": "List",
     "loading-more-text": "Loading…",
     "loading-text": "Loading the list",
     "more-text": "Show more",
+    "pinned-text": "Pinned",
     "rename-label": "New name",
     "rename-text": "Rename",
     "undated-text": "No date",

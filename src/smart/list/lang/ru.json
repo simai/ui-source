@@ -2,11 +2,18 @@
   "title": "Список",
   "runtime": {
     "actions-label": "Действия: {text}",
+    "count-label": {
+      "one": "{n} непрочитанное",
+      "few": "{n} непрочитанных",
+      "many": "{n} непрочитанных",
+      "other": "{n} непрочитанного"
+    },
     "empty-text": "Здесь пока пусто",
     "label": "Список",
     "loading-more-text": "Загружаю…",
     "loading-text": "Загружаю список",
     "more-text": "Показать ещё",
+    "pinned-text": "Закреплённые",
     "rename-label": "Новое название",
     "rename-text": "Переименовать",
     "undated-text": "Без даты",
