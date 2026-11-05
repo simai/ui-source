@@ -184,6 +184,13 @@ const DRAW = {
     html: '<sf-confirm appearance="card" question="Удалить файл?" accept-text="Удалить" destructive></sf-confirm>'},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
+  // Block list (2026-11-05): a grouped list with an open row, so the heading
+  // and the open tint have parts to reach; a feed with a run of one author and
+  // a turn to another, so both spacings have an entry to move.
+  list: {css: ['dropdown', 'icons', 'icon-buttons', 'buttons', 'smart/smart/list/css/list.css'], js: ['list', 'list-item'],
+    html: '<sf-list group-by="key" selected="b"><script type="application/json" data-sf-settings>{"groups":[{"key":"x","text":"Входящие"}],"items":[{"id":"a","text":"Письмо","group":"x"},{"id":"b","text":"Ответ","group":"x"}]}</script></sf-list>'},
+  'list-feed': {css: ['buttons', 'icon-buttons', 'smart/smart/list-feed/css/list-feed.css'], js: 'list-feed',
+    html: '<div style="display:flex;flex-direction:column;block-size:300px"><sf-list-feed><script type="application/json" data-sf-settings>{"items":[{"id":"1","author":"a","author-name":"Анна","text":"Один"},{"id":"2","author":"a","author-name":"Анна","text":"Два"},{"id":"3","author":"b","author-name":"Борис","text":"Три"}]}</script></sf-list-feed></div>'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   // Collapsed and open, so the side panel is on the stage: its width is the
   // only part that takes --sf-site-header-sheet-inline-size.
@@ -256,6 +263,8 @@ const ROLES = {
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},
   // The ring of an anchored badge is a spread shadow in the surface's colour.
   'ring-color': {properties: ['box-shadow'], value: 'rgb(13, 14, 15)'},
+  // The space above an entry of a feed (sf-list-feed): a run and a turn.
+  'margin-block-start': {properties: ['margin-block-start', 'margin-top'], value: '37px'},
 };
 
 const failures = [];

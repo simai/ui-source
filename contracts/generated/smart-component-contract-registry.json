@@ -1572,6 +1572,94 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "content",
+        "selection",
+        "rename",
+        "row-actions",
+        "pagination",
+        "grouping",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.dropdown",
+          "component.icon-buttons",
+          "smart.button",
+          "smart.empty-state",
+          "smart.icon",
+          "smart.list-item",
+          "smart.menu-context"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list",
+      "id": "smart.list",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list/smart.manifest.json",
+      "manifest_sha256": "b984381df64f600f1cb940f6dc78a7ddf0fa05c17cf6272af889a7f3d43ebbf0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
+      "tags": [
+        "list",
+        "rows",
+        "actions",
+        "rename",
+        "groups"
+      ],
+      "title": "List"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "content",
+        "scroll-position",
+        "live-announcement",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.button-icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list-feed",
+      "id": "smart.list-feed",
+      "kind": "composite",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list-feed/smart.manifest.json",
+      "manifest_sha256": "56a2d01dc80839acfeec4eac8db6a55f91cc9271aa539ccf940dfa5dade3d907",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
+      "tags": [
+        "feed",
+        "conversation",
+        "comments",
+        "activity",
+        "log"
+      ],
+      "title": "Feed"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "render",
         "theme",
         "responsive",

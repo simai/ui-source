@@ -25,6 +25,9 @@ import './sanitize.js';
 import './format.js';
 import './breakpoints.js';
 import './clipboard.js';
+// The reading position of a scrolling column (duplication audit 2026-11-03,
+// A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
+import './reading-position.js';
 // The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
 // SF.icons.choices.
 import './icon-choices.js';

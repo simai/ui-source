@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -144,6 +144,7 @@
     "src/core/js/preferences.js",
     "src/core/js/preloader.js",
     "src/core/js/public-path.js",
+    "src/core/js/reading-position.js",
     "src/core/js/ready.js",
     "src/core/js/region-navigation.js",
     "src/core/js/rule.js",
@@ -199,7 +200,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "98dc212347317d82d987cef2ff4ab50585d45531efe100461b7973551b664f74",
+  "content_sha256": "541dbd9ac39f5b5213f4098af10a08c57fda9655a50aa165bd16e376fab2aa4b",
   "dependencies": [
     {
       "id": "core.styles",

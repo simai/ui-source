@@ -3732,6 +3732,88 @@
       ]
     },
     {
+      "component": "list",
+      "selector": "sf-list, .sf-list__frame",
+      "variables": [
+        {
+          "name": "--sf-list-gap",
+          "role": "gap",
+          "summary": "The space between groups.",
+          "default": "var(--sf-space-1\\/3)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-radius",
+          "role": "radius",
+          "summary": "A row's corner, with its «⋯».",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-hover-background-color",
+          "role": "hover-background",
+          "summary": "A row under the pointer.",
+          "default": "var(--sf-surface-container-hover)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-current-background-color",
+          "role": "background",
+          "summary": "The open row (selected).",
+          "default": "var(--sf-primary-container-active)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-heading-color",
+          "role": "color",
+          "summary": "A group's heading.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "component": "list-feed",
+      "selector": "sf-list-feed, .sf-list-feed",
+      "variables": [
+        {
+          "name": "--sf-list-feed-column-width",
+          "role": "max-inline-size",
+          "summary": "The reading column's width.",
+          "default": "var(--sf-layout-reading-width)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-feed-inset",
+          "role": "padding-inline",
+          "summary": "The column's inline inset.",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-feed-run-gap",
+          "role": "margin-block-start",
+          "summary": "The space between entries of one author's run.",
+          "default": "var(--sf-space-1\\/4)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-feed-turn-gap",
+          "role": "margin-block-start",
+          "summary": "The space where the author changes.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-list-feed-fade-size",
+          "role": "mask-size",
+          "summary": "The fade at the top edge while earlier entries are out of view.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-05"
+        }
+      ]
+    },
+    {
       "component": "change-confirm",
       "selector": "sf-confirm-change, .sf-change-confirm",
       "variables": [

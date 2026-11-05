@@ -1,0 +1,16 @@
+{
+  "title": "Список",
+  "runtime": {
+    "actions-label": "Действия: {text}",
+    "empty-text": "Здесь пока пусто",
+    "label": "Список",
+    "loading-more-text": "Загружаю…",
+    "loading-text": "Загружаю список",
+    "more-text": "Показать ещё",
+    "rename-label": "Новое название",
+    "rename-text": "Переименовать",
+    "undated-text": "Без даты",
+    "ungrouped-text": "Другое",
+    "untitled-text": "Без названия"
+  }
+}

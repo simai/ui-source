@@ -1,0 +1,11 @@
+{
+  "title": "Feed",
+  "runtime": {
+    "earlier-text": "Show earlier",
+    "latest-label": "To the latest",
+    "loading-earlier-text": "Loading earlier entries",
+    "log-label": "Entries",
+    "region-label": "Feed",
+    "you-text": "You"
+  }
+}

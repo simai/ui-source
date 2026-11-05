@@ -262,6 +262,21 @@
       "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
     },
     {
+      "name": "SF.readingPosition",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The reading position of a scrolling column, the one rule sf-list-feed and sf-list keep a person's place by: create(scroller, {nearEnd, nearStart, onStart}) answers a controller with atEnd(), atStart(), keep(mutate) (content changed above what is read without moving it), toEnd({instant, settle, then}) (smooth unless reduced motion), hold(), release() and check() (call on scroll: onStart once the start is in reach); watchEdge(sentinel, callback, {root, margin}) reports a sentinel coming within reach and answers the way to stop; scrollerOf(node) is the box that scrolls a node (null for the page), the root a watch inside a scroller takes. NEAR_END 96, NEAR_START 240, EDGE_MARGIN 200px. docs/developer/reading-position.md.",
+      "members": [
+        "create",
+        "watchEdge",
+        "scrollerOf",
+        "NEAR_END",
+        "NEAR_START",
+        "EDGE_MARGIN"
+      ]
+    },
+    {
       "name": "SF.icons",
       "status": "public",
       "kind": "object",
