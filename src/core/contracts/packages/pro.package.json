@@ -71,7 +71,8 @@
         "smart.badge",
         "smart.confirm-change",
         "smart.icon",
-        "smart.menu-context"
+        "smart.menu-context",
+        "smart.view-properties"
       ]
     },
     {
