@@ -1,0 +1,29 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.alert-bar",
+  "title": "alert-bar reference",
+  "summary": "Deterministic reference fixture for sf-alert-bar.",
+  "locale": "ru",
+  "props": {
+    "items": [
+      {
+        "id": "backup",
+        "level": "warning",
+        "text": "Последняя копия demo-owned.test не удалась.",
+        "source": "Сайт demo-owned.test",
+        "time": "2026-10-27T00:30:00Z",
+        "action": {
+          "label": "Открыть копии",
+          "href": "#backups"
+        },
+        "acknowledge": {
+          "label": "Отметить, что видели"
+        }
+      }
+    ],
+    "size": "1/2"
+  },
+  "children": [],
+  "state": "default"
+}

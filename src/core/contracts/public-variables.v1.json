@@ -3778,6 +3778,54 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "alert-bar",
+      "selector": "sf-alert-bar, .sf-alert-bar",
+      "variables": [
+        {
+          "name": "--sf-alert-bar-danger-background",
+          "role": "background",
+          "summary": "The bar's fill when its most serious item is danger; the text keeps --sf-on-error.",
+          "default": "var(--sf-error)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-alert-bar-warning-background",
+          "role": "background",
+          "summary": "The bar's fill when its most serious item is a warning; the text keeps --sf-on-warning.",
+          "default": "var(--sf-warning)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-alert-bar-info-background",
+          "role": "background",
+          "summary": "The bar's fill when it holds only info items; the text keeps --sf-on-info.",
+          "default": "var(--sf-info)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-alert-bar-padding-inline",
+          "role": "padding-inline",
+          "summary": "The bar's inline inset, to line its text up with the header under it.",
+          "default": "var(--sf-ui-1/2--space-x)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-alert-bar-list-background",
+          "role": "background",
+          "summary": "The surface of the list of all under the bar.",
+          "default": "var(--sf-surface-1)",
+          "since": "2026-11-05"
+        },
+        {
+          "name": "--sf-alert-bar-gap",
+          "role": "gap",
+          "summary": "The space between the bar's text, its actions and its end button.",
+          "default": "var(--sf-ui-1/2--space-x)",
+          "since": "2026-11-05"
+        }
+      ]
     }
   ]
 }

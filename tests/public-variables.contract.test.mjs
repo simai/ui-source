@@ -75,6 +75,8 @@ const FOLDERS = {
   // former tag, sf-change-confirm (rename plan R2), so its entry does too.
   confirm: 'smart/confirm/js/templates',
   'change-confirm': 'smart/confirm-change/js/templates',
+  // sf-alert-bar (2026-11-05): a sheet of its own, the level fills, the inset and the list.
+  'alert-bar': 'smart/alert-bar',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // The display parts of the structured-content types (2026-11-01): CSS only.

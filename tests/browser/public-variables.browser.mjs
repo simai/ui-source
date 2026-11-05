@@ -182,6 +182,12 @@ const DRAW = {
   // inset, corner, fill and edge; the change card its values' grounds.
   confirm: {css: ['buttons', 'smart/smart/confirm/css/confirm.css'], js: 'confirm',
     html: '<sf-confirm appearance="card" question="Удалить файл?" accept-text="Удалить" destructive></sf-confirm>'},
+  // sf-alert-bar (2026-11-05): a bar per level, so each fill has a bar to
+  // paint; the second holds two items and opens its list of all, the only
+  // part that takes the list's background.
+  'alert-bar': {css: ['buttons', 'icon-buttons', 'badges', 'icons', 'smart/smart/alert-bar/css/alert-bar.css'], js: ['alert-bar', 'badge'],
+    html: ['danger', 'warning', 'info'].map((level, at) => `<sf-alert-bar id="ab-${level}"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', level, text: 'Текст', action: {label: 'Открыть', href: '#a'}}, ...(at === 1 ? [{id: 'b', level: 'info', text: 'Ещё'}] : [])]})}</script></sf-alert-bar>`).join(''),
+    open: 'document.getElementById("ab-warning").toggleList(true)'},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.

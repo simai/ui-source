@@ -1,0 +1,356 @@
+{
+  "$comment": "The source of sf-alert-bar's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the page alert bar the Larena storage thread asked for (Federation bus msg-f8fd87ae998c44438cc7), from the owner-approved prototype «Плашка важных уведомлений» (claude.ai artifact BAtvwTPsumKqguQgDwngaM, 2026-11-05).",
+  "id": "smart.alert-bar",
+  "tag": "sf-alert-bar",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "alert",
+  "settings": {
+    "items": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "danger",
+                "warning",
+                "info"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "time": {
+              "type": "string"
+            },
+            "action": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "href": {
+                  "type": "string"
+                }
+              }
+            },
+            "acknowledge": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                }
+              }
+            },
+            "dismissible": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "level",
+            "text"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The current conditions, each {id, level danger|warning|info, text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: danger, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; a danger item is never closed, only minimized"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1/2",
+      "summary": "The ladder rung: the text line, the icon, the buttons and the bar's insets follow it. 1/2 is the bar above an admin header; 1 a bar on a site page with larger type"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The region's name; «Важные уведомления» / «Important notices» in the page language when not set"
+    }
+  },
+  "values": {
+    "minimized": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The danger bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is danger is minimized; a page that kept the state sets it back. A danger item that was not in the list before expands the bar again"
+    }
+  },
+  "events": {
+    "navigate": {
+      "carries": {
+        "id": "string",
+        "level": "string",
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
+    },
+    "acknowledge": {
+      "carries": {
+        "id": "string",
+        "level": "string"
+      },
+      "cancelable": true,
+      "own-verb": true,
+      "summary": "A person pressed an item's acknowledge button («Отметить, что видели»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again"
+    },
+    "close": {
+      "carries": {
+        "id": "string",
+        "level": "string",
+        "hide": {
+          "type": "enum",
+          "values": [
+            "day",
+            "always"
+          ]
+        },
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "api"
+          ]
+        }
+      },
+      "cancelable": true,
+      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. A danger item is never closed"
+    },
+    "minimize": {
+      "carries": {
+        "minimized": "boolean"
+      },
+      "summary": "The danger bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by a danger item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page"
+    }
+  },
+  "actions": {
+    "close": {
+      "with": {
+        "id": "string"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for a danger item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-button-icon"
+    },
+    {
+      "name": "cl-badge"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The bar is a region named by label. It is no live region itself, so a bar present when the page loads is not read out and paging does not speak. Two visually hidden live regions inside it announce what appears later: a danger item that was not in the list before in the alert region (assertive), any other new item in the status region (polite). Nothing takes focus; every control is a native button or link, and Escape closes the open list and returns focus to its toggle.",
+    "role": "region",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-level": "string",
+    "data-minimized": "boolean",
+    "data-empty": "boolean"
+  },
+  "css-variables": {
+    "--sf-alert-bar-danger-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-alert-bar-warning-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-alert-bar-info-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-alert-bar-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-alert-bar-list-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-alert-bar-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "x-source": {
+    "package": "framework",
+    "folder": "alert-bar",
+    "brief": "Federation bus msg-f8fd87ae998c44438cc7 from the Larena storage thread; owner-approved prototype claude.ai artifact BAtvwTPsumKqguQgDwngaM «Плашка важных уведомлений» (2026-11-05) with the owner's decisions: levels danger, warning, info; colour of the most serious; danger→warning→info, newest first; paging and «All N» on wide screens, two lines under 600 px; warning hides 24 h, info for good, danger only minimizes; events, no storage"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-decisions": [
+    "name: sf-alert-bar, a variant of block alert (ui-control control/decisions/2026-11-02-smart-component-naming.md: sf-<block>-<variant>). sf-alert is one notice in the page flow with its own heading, two actions and a close; the bar is a list of conditions in one strip above the page, sorted, paged and minimized, so it is a component of its own in the same family, not a setting of sf-alert. It reuses sf-alert's status icons (info, warning, error) and the theme's status roles, and draws its controls with sf-button, sf-button-icon and sf-badge.",
+    "levels: danger, warning, info (owner, 2026-11-05). danger is drawn with the theme's error roles (--sf-error, --sf-on-error), as sf-alert draws its status error; the item data keeps the owner's word. Any other level is read as info.",
+    "colour: the bar is the most serious item's status colour, filled (--sf-error, --sf-warning, --sf-info with their on- roles, light and dark from the theme). Inside the bar the surface roles the controls read (on-surface, on-surface-variant, outline, the hover and active fills) are set to the fill's on- role, so sf-button and sf-button-icon of scheme on-surface draw on the coloured bar without a scheme of their own. The list under the bar is an ordinary surface with a tonal sf-badge per level.",
+    "order: danger, warning, info; inside a level the newest first by time (ISO 8601). An item without a readable time keeps its place in the host's order after the timed ones of its level.",
+    "events: navigate (vocabulary §5 navigate {id, href}) is the action link's cancelable request; the owner's «action» is this verb. close (§5 close, cancelable, as sf-alert's) carries hide day for a warning and always for an info item, so the host knows how long to keep it; dismiss is a synonym of close and is not a verb of its own. acknowledge is an own verb (§5.1): the condition was seen by the people it concerns until it happens again, which §5 read (one reader's message) does not mean. minimize (§5 minimize) is the fact after the danger bar was minimized or expanded, {minimized}. The bar stores nothing: a closed or acknowledged item leaves the bar at once, and the host leaves it out when it sets the list again.",
+    "danger: never closed. Its button minimizes the whole bar to a strip of the next rung down that keeps the level's colour, the icon and the count and expands on a press. A danger item that was not in the list before expands a minimized bar again.",
+    "paging: the first item is shown; with several, «‹ 1 of N ›» pages them (wrapping) and «All N» opens the list of all under the bar, each item with its own action, acknowledge and close. Under 600 px of the bar's own width (a container query) the icon, the text and the close share the first line, the actions go under the text, the arrows are not drawn and «All N» stands at the line's end.",
+    "a11y: the bar is a region named by label and not a live region, so a bar printed with the page is not read out (sf-alert's own guidance: no role alert on a notice present at load). Two visually hidden live regions announce what appears later: a new danger item in role alert, any other new item in role status. Nothing takes focus. When the focused control leaves (its item closed), focus goes to the next control of the bar, never to the page.",
+    "motion: the list opens with a short fade under prefers-reduced-motion: no-preference only; the colour change has no transition under reduce.",
+    "geometry: one rung (size 1/2 by default, or 1): the text the rung's line, the icon that line, the buttons the rung's control height, the bar's block inset (H − L) / 2 so the text stands where a control's label stands, its inline inset the rung's space-x, icon-to-text the rung's text-space-x. The minimized strip is a control of the rung below (1/3 or 1/2).",
+    "css-variables: six public variables (§6) -- the three level fills, the bar's inline inset, the gap between its parts and the list's background -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "external-host",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "alert",
+      "alert-bar",
+      "banner",
+      "notice",
+      "announcement",
+      "status",
+      "admin"
+    ],
+    "state": {
+      "machines": {
+        "bar": [
+          "empty",
+          "shown",
+          "listed",
+          "minimized"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "empty",
+        "open",
+        "closed"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "keeping what was closed or acknowledged (the host stores it and leaves the item out)",
+        "deciding who sees a condition (the host lists only what the person may see)",
+        "deciding when a condition ends (the host sets the list again)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-alert-bar once per page, above the page or admin header, for the current conditions that need action now: a disk nearly full, a failed backup, a site that does not answer, an update.",
+      "do_not": [
+        "Do not use sf-alert-bar for news that needs no action (a backup done); send it to a notification centre or a toast",
+        "Do not put two bars on one page; give one bar every condition",
+        "Do not keep closed items in the component; store the choice in the host and leave the item out",
+        "Do not use sf-alert-bar for a notice inside the page flow; sf-alert does that"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-alert-bar><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия сайта не удалась.\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"/backups/\"}, \"dismissible\": true}]}</script></sf-alert-bar>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches the action link, acknowledge, the paging arrows, «All N» and close in order",
+        "Enter or Space presses a control; Enter follows the action link",
+        "Escape closes the open list and returns focus to «All N»"
+      ],
+      "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus to the next control of the bar, so focus never falls to the page."
+    }
+  }
+}
