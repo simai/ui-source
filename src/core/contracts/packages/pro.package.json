@@ -116,8 +116,8 @@
         "smart.icon",
         "smart.input",
         "smart.input-lookup",
+        "smart.list-feed",
         "smart.menu-context",
-        "smart.message-log",
         "smart.progress-bar"
       ]
     },
@@ -246,9 +246,7 @@
       "rule_name": "cl-message-log",
       "folder": "message-log",
       "requires": [
-        "smart.button",
-        "smart.button-icon",
-        "utility.sr-only"
+        "smart.list-feed"
       ]
     },
     {
