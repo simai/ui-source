@@ -11,14 +11,15 @@
 // and drops the surface, for a card inside a grid that needs no frame.
 // content.card renders with it.
 
-// A heading inside a card is the card's title at every width: the body size,
-// semibold, one body line -- the prototype's card title (16/600 on the desktop
-// and at 380). In the base layer, above the page's heading sizes and below the
+// A heading inside a card is the card's title at every width: 16 on 22,
+// semibold -- the prototype's card title, the same on the desktop and at 380.
+// The fixed steps of the size ladder (b6, c1), not the text ramp, which steps
+// down to 14 on a phone. In the base layer, above the page's heading sizes and below the
 // utilities, so a size or weight an author sets on the heading still wins.
 @layer sf.base {
   .sf-card > :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--sf-card-title-size, var(--sf-text--size-1));
-    line-height: var(--sf-text--height-1);
+    font-size: var(--sf-card-title-size, var(--sf-b6));
+    line-height: var(--sf-c1);
     font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
   }
 }

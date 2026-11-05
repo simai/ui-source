@@ -3582,7 +3582,7 @@
           "name": "--sf-card-title-size",
           "role": "size",
           "summary": "The size of a heading inside the card, its title.",
-          "default": "var(--sf-text--size-1)",
+          "default": "var(--sf-b6)",
           "since": "2026-11-05"
         },
         {
