@@ -490,6 +490,10 @@
           "status": "reserved"
         },
         {
+          "element": "sf-chart-candlestick",
+          "status": "reserved"
+        },
+        {
           "element": "sf-chart-funnel",
           "status": "reserved"
         },
@@ -506,6 +510,10 @@
           "status": "reserved"
         },
         {
+          "element": "sf-chart-map",
+          "status": "reserved"
+        },
+        {
           "element": "sf-chart-metric",
           "status": "reserved"
         },
@@ -518,15 +526,39 @@
           "status": "reserved"
         },
         {
+          "element": "sf-chart-radar",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-sankey",
+          "status": "reserved"
+        },
+        {
           "element": "sf-chart-scatter",
           "status": "reserved"
         },
         {
           "element": "sf-chart-sparkline",
           "status": "reserved"
+        },
+        {
+          "element": "sf-chart-sunburst",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-timeline",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-treemap",
+          "status": "reserved"
+        },
+        {
+          "element": "sf-chart-waterfall",
+          "status": "reserved"
         }
       ],
-      "source": "ui-chart components/src/smart at 8c18d4d; ui-control decisions/2026-11-02-ui-chart-package.md and 2026-11-02-smart-component-naming.md"
+      "source": "ui-chart package/src/smart at 819d08b; ui-control decisions/2026-11-02-ui-chart-package.md and 2026-11-02-smart-component-naming.md"
     },
     {
       "id": "effects",
