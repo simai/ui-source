@@ -149,9 +149,9 @@
 
 /* An action keeps its label's natural width: never shrunk, never cut. The
    sf-button host is display: contents, so the native control is the item. */
-.sf-alert-bar-actions > :is(sf-button, sf-button-icon) > :is(button, a),
+.sf-alert-bar-actions > sf-button > :is(button, a),
 .sf-alert-bar-actions > .sf-alert-bar-pager,
-.sf-alert-bar-item-actions > :is(sf-button, sf-button-icon) > :is(button, a) {
+.sf-alert-bar-item-actions > sf-button > :is(button, a) {
   flex: none;
   white-space: nowrap;
 }
