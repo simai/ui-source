@@ -2,9 +2,8 @@ import {html, nothing} from "lit";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageText} from "../../core/js/page-language";
-import {tagSelector} from "../../core/js/tag-aliases.js";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
-import {composeDateTime, normalizeTime, splitDateTime as readDateTime} from "./datetime.js";
+import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 
@@ -620,6 +619,7 @@ const CELL_RENDERERS = {
     // it has nothing to say.
     date: renderHostFormattedCell,
     datetime: renderHostFormattedCell,
+    time: renderHostFormattedCell,
     boolean: renderBooleanCell,
     choices: renderChoicesCell,
     file: renderFileCell,
@@ -818,6 +818,7 @@ const EDIT_RENDERERS = {
     number: renderNumberEdit,
     date: renderDateEdit,
     datetime: renderDateTimeEdit,
+    time: renderTimeEdit,
     boolean: renderBooleanEdit,
     choice: renderChoiceEdit,
     choices: renderChoicesEdit,
@@ -1246,106 +1247,94 @@ function renderDateEdit(field, value, host) {
 // A datetime is edited as what it is: a day and a time of day. The date
 // editor above edits the day alone and puts the record's clock back, so a new
 // record could not get a time and «15.11.2026 10:30» typed nowhere was saved
-// as «15.11.2026» (Larena acceptance, 2026-10-22; ui-admin drew the pair
-// itself, and this is that design lifted into the set so the kit can switch).
-//
-// The day is sf-datepicker; the time is sf-input masked to hh:mm, because
-// sf-input has no time type (its types are text, email, password, search,
-// tel, url) and a raw <input type="time"> would be the one unstyled control
-// in a form. Both are drawn at the field's size, on one row, each named for
-// assistive technology («Начало: дата», «Начало: время») inside a group named
-// by the label.
+// as «15.11.2026» (Larena acceptance, 2026-10-22). The set then drew a pair --
+// sf-input-date for the day and an sf-input masked to hh:mm for the time --
+// because the picker had no clock, and sf-view-properties drew the same pair
+// itself (duplication audit A-14). sf-input-date has a time now (1.4.0,
+// mode="datetime"), so a datetime is one control: the calendar with the time
+// row under it, typed as «15.11.2026 10:30», at the field's size, named by the
+// label.
 //
 // The value round trip (datetime.js): ISO 8601 with the time; an untouched
-// field writes nothing; a changed day keeps the stored time and zone; a new
-// value has no zone (the host's local time); both cleared write null; coming
-// back to what was stored writes undefined -- no change. A day without a time,
-// a time without a day or a time that is not one is a field error: the
-// message stands under the row, the control at fault (the day or the time) is
-// marked invalid and loses the mark once it is put right, the host
-// hears it through the optional setFieldError(field, message) -- null once it
-// is put right -- and the change is withdrawn with undefined, so a save never
-// carries a value the person did not finish. The controls keep what was
-// typed: the day is bound as a property and nothing else is bound that a
-// host's re-render would put back.
-let dateTimeSequence = 0;
+// field writes nothing; a changed day keeps the stored time below the minute
+// and the zone; a changed time keeps the zone; a new value has no zone (the
+// host's local time); a cleared field writes null; coming back to what was
+// stored writes undefined -- no change. The control writes only whole values
+// (a day always has a time, a typed text that is not one is put back), so no
+// partial entry reaches the host. The day is bound as a property, so a
+// re-render with the same value does not put back what the person cleared.
+//
+// min and max (an ISO date, or a date and a time) are the control's min-date
+// and max-date; step is its minute step (1 to 60).
+function minuteStepOf(field) {
+    const step = Number(field.step);
+    return Number.isInteger(step) && step >= 1 && step <= 60 ? String(step) : '';
+}
 
 function renderDateTimeEdit(field, value, host) {
     const stored = readDateTime(value);
-    const label = String(field.label || field.key || '');
-    const name = fieldName(field);
-    const messageId = `sf-field-datetime-message-${++dateTimeSequence}`;
-    const named = (key) => setText(host, key).replace('{label}', label);
-
-    const commit = (event, part) => {
-        // The datepicker's own change, not a native one bubbling from its field.
-        if (part === 'date' && event.target !== event.currentTarget) return;
-        const group = event.currentTarget?.closest?.('.sf-field-datetime');
-        if (!group) return;
-        const picker = group.querySelector(tagSelector('sf-input-date'));
-        // Not the datepicker's own field, which is an sf-input too.
-        const clock = group.querySelector('sf-input.sf-field-datetime-time');
-        const date = part === 'date'
-            ? String(event.detail?.value ?? picker?.value ?? '')
-            : String(picker?.value ?? '');
-        const typed = String(clock?.value ?? '');
-        const result = composeDateTime(stored, {date, time: typed});
-        const message = result.error ? setText(host, `dateTime_${result.error}`) : '';
-        const note = group.querySelector('.sf-field-datetime-message');
-        if (note) {
-            note.textContent = message;
-            note.hidden = !message;
-        }
-        group.toggleAttribute('data-invalid', Boolean(message));
-        const timeWrong = result.error === 'timeMissing' || result.error === 'timeInvalid';
-        clock?.toggleAttribute('invalid', timeWrong);
-        picker?.toggleAttribute('invalid', result.error === 'dateMissing' || result.error === 'dateInvalid');
-        host.setFieldError?.(field, message || null);
-        if (result.error) {
-            host.setFieldValue(field, undefined);
-            return;
-        }
-        // A time typed without the mask («930») shows as it is read («09:30»).
-        const time = normalizeTime(typed);
-        if (clock && time && time !== typed) clock.value = time;
-        const same = result.value === null
-            ? stored.known && !stored.date
-            : result.value === stored.raw;
-        host.setFieldValue(field, same ? undefined : result.value);
-    };
-
+    const shown = stored.date ? `${stored.date}${stored.time ? `T${stored.time}` : ''}` : '';
+    const min = typeof field.min === 'string' ? field.min : '';
+    const max = typeof field.max === 'string' ? field.max : '';
+    const step = minuteStepOf(field);
     return html`
-        <div class="sf-field-datetime flex flex-col gap-1/4 min-w-0" role="group" aria-label=${label}
-                aria-describedby=${messageId} data-datetime=${field.key || 'value'}>
-            <div class="flex flex-nowrap items-cross-center gap-1/3 min-w-0">
-                <sf-input-date
-                        size=${EDIT_SIZE}
-                        name=${`${name}_date`}
-                        .value=${stored.date}
-                        aria-label=${named('dateTimeDate')}
-                        ?required=${Boolean(field.required)}
-                        @change=${(event) => commit(event, 'date')}
-                ></sf-input-date>
-                <sf-input
-                        class="sf-field-datetime-time"
-                        size=${EDIT_SIZE}
-                        appearance="bordered"
-                        root-style="flex: 0 0 6.5em; min-inline-size: 0"
-                        name=${`${name}_time`}
-                        value=${stored.time}
-                        inputmode="numeric"
-                        autocomplete="off"
-                        placeholder=${setText(host, 'dateTimePlaceholder')}
-                        mask
-                        mask-pattern="00:00"
-                        ?required=${Boolean(field.required)}
-                        aria-label=${named('dateTimeTime')}
-                        @change=${(event) => commit(event, 'time')}
-                ></sf-input>
-            </div>
-            <span id=${messageId} class=${`sf-field-datetime-message color-error text-${EDIT_SIZE === '1/2' ? '1/3' : '1/2'}`}
-                    aria-live="polite" hidden></span>
-        </div>
+        <sf-input-date
+                class="sf-field-datetime"
+                mode="datetime"
+                size=${EDIT_SIZE}
+                name=${fieldName(field)}
+                .value=${shown}
+                min-date=${min || nothing}
+                max-date=${max || nothing}
+                minute-step=${step || nothing}
+                aria-label=${field.label || field.key || ''}
+                ?required=${Boolean(field.required)}
+                @change=${(event) => {
+                    // The picker's own change, not a native one from its field.
+                    if (event.target !== event.currentTarget) return;
+                    const [date = '', time = ''] = String(event.detail?.value ?? '').split('T');
+                    const result = composeDateTime(stored, {date, time});
+                    if (result.error) return;
+                    const same = result.value === null
+                        ? stored.known && !stored.date
+                        : result.value === stored.raw;
+                    host.setFieldValue(field, same ? undefined : result.value);
+                }}
+        ></sf-input-date>
+    `;
+}
+
+// A time of day (hh:mm, or hh:mm:ss as a host stores it) is sf-input-date in
+// time mode: the time row alone, typed as «10:30». An unchanged minute writes
+// nothing and keeps the stored seconds; min and max (hh:mm) are the control's
+// min-time and max-time; step is its minute step.
+function renderTimeEdit(field, value, host) {
+    const stored = splitTime(value);
+    const min = typeof field.min === 'string' ? field.min : '';
+    const max = typeof field.max === 'string' ? field.max : '';
+    const step = minuteStepOf(field);
+    return html`
+        <sf-input-date
+                class="sf-field-time"
+                mode="time"
+                size=${EDIT_SIZE}
+                name=${fieldName(field)}
+                .value=${stored.time}
+                min-time=${min || nothing}
+                max-time=${max || nothing}
+                minute-step=${step || nothing}
+                aria-label=${field.label || field.key || ''}
+                ?required=${Boolean(field.required)}
+                @change=${(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    const result = composeTime(stored, String(event.detail?.value ?? ''));
+                    if (result.error) return;
+                    const same = result.value === null
+                        ? stored.known && !stored.time
+                        : result.value === stored.raw;
+                    host.setFieldValue(field, same ? undefined : result.value);
+                }}
+        ></sf-input-date>
     `;
 }
 
@@ -1632,13 +1621,6 @@ const SET_TEXT = {
         passwordUnset: 'Not set',
         passwordKeep: 'Set; type a new one to replace it',
         showPassword: 'Show password',
-        dateTimeDate: '{label}: date',
-        dateTimeTime: '{label}: time',
-        dateTimePlaceholder: 'hh:mm',
-        dateTime_dateMissing: 'Enter the date',
-        dateTime_dateInvalid: 'The date is not a calendar date',
-        dateTime_timeMissing: 'Enter the time',
-        dateTime_timeInvalid: 'Enter the time as hh:mm, from 00:00 to 23:59',
         maskIncomplete: 'Complete the field',
     },
     ru: {
@@ -1667,13 +1649,6 @@ const SET_TEXT = {
         passwordUnset: 'Не задан',
         passwordKeep: 'Задан; введите новый, чтобы заменить',
         showPassword: 'Показать пароль',
-        dateTimeDate: '{label}: дата',
-        dateTimeTime: '{label}: время',
-        dateTimePlaceholder: 'чч:мм',
-        dateTime_dateMissing: 'Укажите дату',
-        dateTime_dateInvalid: 'Дата указана неверно',
-        dateTime_timeMissing: 'Укажите время',
-        dateTime_timeInvalid: 'Укажите время в виде чч:мм, от 00:00 до 23:59',
         maskIncomplete: 'Заполните поле полностью',
     },
 };
@@ -2294,6 +2269,7 @@ const VIEW_RENDERERS = {
     number: renderNumberView,
     date: renderDateView,
     datetime: renderDateView,
+    time: renderDateView,
     boolean: renderBooleanView,
     choice: renderChoiceView,
     choices: renderChoicesView,
@@ -2350,8 +2326,10 @@ if (typeof window !== 'undefined') {
         renderViewField,
         FILTER_RENDERERS,
         // A datetime's value read and written back, for a host that draws its
-        // own pair: split(value), compose(stored, {date, time}), normalizeTime(text).
-        dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime},
+        // own control: split(value), compose(stored, {date, time}),
+        // normalizeTime(text); and a time of day's: splitTime(value),
+        // composeTime(stored, text).
+        dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},
         // The universal properties, each with the modes the set draws for it.
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
     };

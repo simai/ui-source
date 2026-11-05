@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Datepicker",
-  "summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
+  "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -11,12 +11,15 @@
     "calendar",
     "date",
     "datepicker",
+    "datetime",
     "form",
-    "range"
+    "range",
+    "time"
   ],
   "capabilities": [
     "date-selection",
     "date-range",
+    "time-selection",
     "keyboard-navigation",
     "popup",
     "inline",
@@ -59,7 +62,7 @@
       "date": {
         "type": "string",
         "default": "",
-        "description": "The ISO date (yyyy-mm-dd) chosen; value is read only when date is absent, so date=\"\" is a cleared value."
+        "description": "The value chosen, in the mode's ISO form: yyyy-mm-dd (date), yyyy-mm-ddThh:mm (datetime) or hh:mm (time); value is read only when date is absent, so date=\"\" is a cleared value."
       },
       "start-value": {
         "type": "string",
@@ -74,17 +77,44 @@
       "max-date": {
         "type": "string",
         "default": "",
-        "description": "The latest ISO date that can be chosen; later days are disabled."
+        "description": "The latest ISO date that can be chosen; later days are disabled. In datetime mode it may carry a time (yyyy-mm-ddThh:mm), the latest time on that day."
       },
       "min-date": {
         "type": "string",
         "default": "",
-        "description": "The earliest ISO date that can be chosen; earlier days are disabled."
+        "description": "The earliest ISO date that can be chosen; earlier days are disabled. In datetime mode it may carry a time (yyyy-mm-ddThh:mm), the earliest time on that day."
+      },
+      "mode": {
+        "type": "string",
+        "default": "date",
+        "description": "What is chosen: a date (the calendar), a date and a time (the calendar and the time row under it) or a time of day alone (the time row). The value is yyyy-mm-dd, yyyy-mm-ddThh:mm or hh:mm, the wall clock as the host writes it.",
+        "enum": [
+          "date",
+          "datetime",
+          "time"
+        ]
+      },
+      "min-time": {
+        "type": "string",
+        "default": "",
+        "description": "datetime and time: the earliest time of day that can be chosen, hh:mm."
+      },
+      "max-time": {
+        "type": "string",
+        "default": "",
+        "description": "datetime and time: the latest time of day that can be chosen, hh:mm."
+      },
+      "minute-step": {
+        "type": "integer",
+        "default": 1,
+        "description": "datetime and time: the minutes a step moves, 1 to 60, counted from the hour; a typed time off the step is not taken.",
+        "minimum": 1,
+        "maximum": 60
       },
       "range": {
         "type": "boolean",
         "default": false,
-        "description": "Pick a start and an end instead of one date."
+        "description": "Pick a start and an end instead of one date; date mode only."
       },
       "month": {
         "type": "integer",
@@ -120,7 +150,7 @@
       "format": {
         "type": "string",
         "default": "DD.MM.YYYY",
-        "description": "How the date is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one date, a four-digit year from 1000 to 9999. The value stays ISO."
+        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
       },
       "close-on-select": {
         "type": "boolean",
@@ -205,7 +235,7 @@
       "icon-start": {
         "type": "string",
         "default": "calendar_today",
-        "description": "The icon at the start of the field; the canonical name for left-icon."
+        "description": "The icon at the start of the field; the canonical name for left-icon. Defaults to calendar_today, schedule in time mode."
       },
       "left-icon": {
         "type": "string",
@@ -268,7 +298,7 @@
           "array"
         ],
         "default": "",
-        "description": "The ISO date (yyyy-mm-dd). As a property, [start, end] for a range (two ISO dates, \"\" for an end not chosen yet). The attribute is the initial value: once the date is cleared it stays empty.",
+        "description": "The value in the mode's ISO form: yyyy-mm-dd, yyyy-mm-ddThh:mm (datetime) or hh:mm (time). As a property, [start, end] for a range (two ISO dates, \"\" for an end not chosen yet). The attribute is the initial value: once it is cleared it stays empty.",
         "items": {
           "type": "string"
         },
@@ -282,7 +312,7 @@
       "aria-label": {
         "type": "string",
         "default": "",
-        "description": "Accessible name for a date field rendered without a visible label."
+        "description": "Accessible name for a date or time field rendered without a visible label."
       },
       "presets": {
         "type": "array",
@@ -293,7 +323,7 @@
     "additionalProperties": false
   },
   "item_contract": {
-    "value_format": "ISO date strings are stored in YYYY-MM-DD form; format controls only the visible field value.",
+    "value_format": "ISO values: YYYY-MM-DD in date mode, YYYY-MM-DDThh:mm in datetime mode, hh:mm in time mode (the wall clock, no zone); format controls only the visible field value.",
     "range_value": "Range mode exposes start-value and end-value and restarts the range after a completed selection.",
     "host_owned": [
       "validation beyond min-date and max-date",
@@ -315,7 +345,7 @@
             "string",
             "array"
           ],
-          "description": "The ISO date (yyyy-mm-dd), or [start, end] for a range; \"\" when cleared."
+          "description": "The value in the mode's ISO form (yyyy-mm-dd, yyyy-mm-ddThh:mm, hh:mm), or [start, end] for a range; \"\" when cleared."
         },
         "range": {
           "type": "boolean",
@@ -367,6 +397,14 @@
             "null"
           ],
           "description": "Range only: the quick range chosen, {id, relative} or {id}; null for a range picked on the grid."
+        },
+        "mode": {
+          "type": "string",
+          "description": "The mode: date, datetime or time."
+        },
+        "time": {
+          "type": "string",
+          "description": "datetime and time only: the time of day, hh:mm; \"\" for none."
         }
       }
     }
@@ -450,7 +488,7 @@
   },
   "events": {
     "change": {
-      "summary": "A date or range endpoint was selected; dispatched on the host. The name to bind.",
+      "summary": "A date, a time or a range endpoint was chosen; dispatched on the host. The name to bind.",
       "payload": {
         "type": "object",
         "required": [
@@ -462,7 +500,9 @@
           "isoValue",
           "range",
           "format",
-          "preset"
+          "preset",
+          "mode",
+          "time"
         ],
         "properties": {
           "value": {
@@ -491,6 +531,12 @@
           },
           "preset": {
             "type": "object"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
           }
         },
         "additionalProperties": true
@@ -529,6 +575,10 @@
         "single",
         "range-start",
         "range-complete"
+      ],
+      "time": [
+        "none",
+        "set"
       ]
     },
     "visual_states": [
@@ -657,11 +707,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "e14098c606cb58c33919383022e496caad1b12981f6591bee885da480ef88fed"
+        "sha256": "d9617a6c22867ee4ab8972b89a5eb66becc0c724974b20637f4312c813f1c6ad"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "07a4431f694ad30e34b78dfa493e3aa4729c834a1b0067f4033784a8ce72b12c"
+        "sha256": "b6ae521ce3d15a3437cea4f9bb5b4df68705723bb2fa616a93356d386284d558"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -669,7 +719,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "83269ca7cca18c354250bfa5ca1d07839f1f4648662a9ad0363d309ff02d62af"
+        "sha256": "8adebf92a752bf3bc15c78928c7661681eacfd76d694189a5776231b8023deb7"
       }
     ],
     "generated_runtime": [
@@ -682,7 +732,7 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-input-date for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",
+    "use_when": "Use sf-input-date for a single date, a date and a time (mode=\"datetime\"), a time of day (mode=\"time\") or a date range that benefits from calendar or time navigation. Use a plain input when free-form entry is the primary task.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not use color as the only selected or disabled signal",

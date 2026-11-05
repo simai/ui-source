@@ -16,7 +16,8 @@ the host owns persistence, timezone policy and domain validation.
   working in the calendar after a selection.
 
 Values are ISO dates (`YYYY-MM-DD`). `format` changes the visible field value,
-not the stored value.
+not the stored value. With `mode="datetime"` or `mode="time"` the field also
+holds a time of day: see «A date and a time, or a time».
 
 The `value` attribute is the initial value, as on a native input. Once the
 person or code clears the date -- emptying the field, `element.value = ''` --
@@ -47,6 +48,66 @@ are read with the same parser, so a value holding two dates is not a date.
 The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
 typed in, which is what they were always for.
+
+## A date and a time, or a time
+
+`mode` says what is chosen:
+
+- `date` (the default) -- a date, as everything above describes;
+- `datetime` -- a date and a time: the calendar, and under it the time row;
+  the value is `YYYY-MM-DDThh:mm`;
+- `time` -- a time of day alone: the panel is the time row; the value is
+  `hh:mm`, and the field's icon is `schedule`.
+
+The value is the wall clock as the host writes it, without a zone: the host owns
+the time zone. A stored value with seconds, a fraction or a zone
+(`2026-11-15T10:30:15+03:00`) is read as its day and minute; a change writes
+the minute (`2026-11-15T18:05`). A stored day alone in datetime mode reads as
+midnight. The form gets the value as it is, as a native `datetime-local` or
+`time` input sends it.
+
+The time row is the hours and the minutes, each a spinbutton between a «−»
+and a «+». ArrowUp and ArrowDown step the part -- an hour, or the minute step
+-- and wrap inside it (23 to 00) as a native time field does; Home and End take
+its first and last allowed value; digits type it, and two digits of the hours
+move on to the minutes; ArrowLeft and ArrowRight move between the parts; Enter
+closes the panel and returns to the field. The steppers are out of the tab
+order, as the spinbutton pattern has them: the keys already do what they do.
+Without a time, the first step takes the first allowed time (up) or the last
+(down). The row reads `hh:mm` left to right in every writing direction.
+
+In datetime mode a day chosen on the grid keeps the time shown -- or takes the
+first one the day allows -- and the panel stays open with the focus on the
+hours, so the time follows the day; Enter or Escape closes it. A time set
+before any day is chosen waits for the day.
+
+The field is typed as the format says: `DD.MM.YYYY HH:mm` by default in
+datetime mode, `HH:mm` in time mode, `HH` the hours 00-23 and `mm` the
+minutes. A date format given to datetime mode (`format="YYYY-MM-DD"`) gets
+` HH:mm` added. The ISO form is read too (`2026-11-05T10:30`,
+`2026-11-05 10:30`, `10:30`). The whole value has to be typed: a date without
+its time is not read as midnight.
+
+Bounds:
+
+- `min-time` and `max-time` (`hh:mm`) hold on every day;
+- in datetime mode `min-date` and `max-date` may carry a time
+  (`2026-11-05T09:00`), which holds on that day only;
+- `minute-step` (1 to 60, default 1) is the minutes a step moves, counted from
+  the hour: with 15 the minutes are 00, 15, 30 and 45.
+
+A typed time outside the bounds or off the step puts the field back to the
+value it held, as a date outside `min-date`/`max-date` does. `range` is a
+range of dates and is read in date mode only.
+
+The `change` detail carries `mode` and, in datetime and time mode, `time`
+(`hh:mm`, `''` for none) beside the usual `value`.
+
+```html
+<sf-input-date mode="datetime" label="Начало" value="2026-11-05T10:30" minute-step="15"
+    min-time="09:00" max-time="18:00"></sf-input-date>
+<sf-input-date mode="time" label="Напоминание" value="09:30"></sf-input-date>
+```
 
 ## The month the calendar opens on
 

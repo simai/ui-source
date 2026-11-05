@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {composeDateTime, normalizeTime, splitDateTime} from '../src/smart/field-renderers/datetime.js';
+import {composeDateTime, composeTime, normalizeTime, splitDateTime, splitTime} from '../src/smart/field-renderers/datetime.js';
 
 // The field set edited a datetime as a day alone (Larena acceptance,
 // 2026-10-22): a new record could not get a time. It is a day and a time now,
@@ -56,23 +56,40 @@ test('clearing both clears the value; a partial entry is an error, never a guess
   assert.deepEqual(composeDateTime(before, {date: '15.11.2026', time: '10:30'}), {error: 'dateInvalid'});
 });
 
-test('the set edits a datetime with the pair, on the ladder, named for assistive technology', () => {
+test('a stored time is split and written back the same way', () => {
+  assert.deepEqual(splitTime('10:30:15'), {raw: '10:30:15', known: true, time: '10:30', rest: ':15'});
+  assert.deepEqual(splitTime('09:05'), {raw: '09:05', known: true, time: '09:05', rest: ''});
+  assert.equal(splitTime('25:00').known, false);
+  assert.equal(splitTime(null).known, true);
+  assert.deepEqual(composeTime(splitTime('10:30:15'), '10:30'), {value: '10:30:15'});
+  assert.deepEqual(composeTime(splitTime('10:30:15'), '18:05'), {value: '18:05:00'});
+  assert.deepEqual(composeTime(splitTime('10:30'), '18:05'), {value: '18:05'});
+  assert.deepEqual(composeTime(splitTime(null), '07:45'), {value: '07:45'});
+  assert.deepEqual(composeTime(splitTime('10:30'), ''), {value: null});
+  assert.deepEqual(composeTime(splitTime('10:30'), '24:00'), {error: 'timeInvalid'});
+});
+
+// sf-input-date has a time (1.4.0, duplication audit A-14): a datetime is one
+// control in datetime mode, a time one in time mode -- not a day and an
+// sf-input masked to hh:mm beside it.
+test('the set edits a datetime and a time with sf-input-date in its mode, at the field size, named by the label', () => {
   const set = read('src/smart/field-renderers/index.js');
-  assert.match(set, /\n {4}date: renderDateEdit,\n {4}datetime: renderDateTimeEdit,\n/u);
-  const start = set.indexOf('function renderDateTimeEdit(field, value, host) {');
-  assert.ok(start > 0);
-  const editor = set.slice(start, set.indexOf('\n}\n', start));
-  assert.match(editor, /<sf-input-date\n\s+size=\$\{EDIT_SIZE\}[\s\S]*?\.value=\$\{stored\.date\}[\s\S]*?aria-label=\$\{named\('dateTimeDate'\)\}/u);
-  assert.match(editor, /<sf-input\n\s+class="sf-field-datetime-time"\n\s+size=\$\{EDIT_SIZE\}[\s\S]*?mask-pattern="00:00"[\s\S]*?aria-label=\$\{named\('dateTimeTime'\)\}/u);
-  assert.match(editor, /role="group" aria-label=\$\{label\}/u);
-  assert.doesNotMatch(editor.replace(/^\s*\/\/.*$/gmu, ''), /<input\b/u, 'the Framework\'s own control, not a raw input');
-  // A partial entry withdraws the change and is said; the host may hear it.
-  assert.match(editor, /host\.setFieldError\?\.\(field, message \|\| null\);\n\s+if \(result\.error\) \{\n\s+host\.setFieldValue\(field, undefined\);/u);
-  for (const key of ['dateTimeDate', 'dateTimeTime', 'dateTimePlaceholder', 'dateTime_dateMissing', 'dateTime_dateInvalid', 'dateTime_timeMissing', 'dateTime_timeInvalid']) {
-    assert.equal((set.match(new RegExp(`\\n {8}${key}: '`, 'gu')) ?? []).length, 2, key);
+  assert.match(set, /\n {4}date: renderDateEdit,\n {4}datetime: renderDateTimeEdit,\n {4}time: renderTimeEdit,\n/u);
+  const body = (name) => {
+    const start = set.indexOf(`function ${name}(field, value, host) {`);
+    assert.ok(start > 0, name);
+    return set.slice(start, set.indexOf('\n}\n', start));
+  };
+  for (const [name, mode, min, max] of [['renderDateTimeEdit', 'datetime', 'min-date', 'max-date'], ['renderTimeEdit', 'time', 'min-time', 'max-time']]) {
+    const editor = body(name);
+    assert.match(editor, new RegExp(`<sf-input-date\\n\\s+class="sf-field-${mode}"\\n\\s+mode="${mode}"\\n\\s+size=\\$\\{EDIT_SIZE\\}`, 'u'), name);
+    assert.match(editor, /aria-label=\$\{field\.label \|\| field\.key \|\| ''\}/u, name);
+    assert.match(editor, new RegExp(`${min}=\\$\\{min \\|\\| nothing\\}[\\s\\S]*${max}=\\$\\{max \\|\\| nothing\\}[\\s\\S]*minute-step=\\$\\{step \\|\\| nothing\\}`, 'u'), name);
+    assert.doesNotMatch(editor.replace(/^\s*\/\/.*$/gmu, ''), /<sf-input[\s>]|<input\b|mask-pattern/u, `${name}: one control`);
+    // Back to what was stored is no change.
+    assert.match(editor, /host\.setFieldValue\(field, same \? undefined : result\.value\);/u, name);
   }
-  assert.ok(set.includes("dateTimeDate: '{label}: дата'") && set.includes("dateTimeTime: '{label}: время'"));
-  assert.ok(set.includes('dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime},'));
+  assert.ok(set.includes('dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},'));
   const api = JSON.parse(read('src/core/contracts/public-js-api.json'));
   assert.ok(api.globals.find((entry) => entry.name === 'SF.fieldRenderers').members.includes('dateTime'));
 });

@@ -4,6 +4,12 @@
     "choose-month": "Choose a month",
     "choose-year": "Choose a year",
     "custom-range": "Custom range",
+    "earlier-hour": "Previous hour",
+    "earlier-minute": "Previous minutes",
+    "hours": "Hours",
+    "later-hour": "Next hour",
+    "later-minute": "Next minutes",
+    "minutes": "Minutes",
     "next-month": "Next month",
     "next-years": "Next years",
     "preset-last-month": "Last month",
@@ -16,6 +22,10 @@
     "presets": "Quick ranges",
     "previous-month": "Previous month",
     "previous-years": "Previous years",
-    "value-missing": "Choose a date."
+    "time": "Time",
+    "time-not-set": "Not set",
+    "value-missing": "Choose a date.",
+    "value-missing-datetime": "Choose a date and a time.",
+    "value-missing-time": "Choose a time."
   }
 }

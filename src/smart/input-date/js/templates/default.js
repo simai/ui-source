@@ -140,11 +140,75 @@ function renderPresets(context) {
         </div>`;
 }
 
+// A stepper beside a time part: the class markup of an icon button at the
+// field's size 1, out of the tab order as the APG spinbutton has its buttons --
+// the arrow keys already do what it does. Still a real, named button.
+const TIME_STEPPER = 'sf-datepicker-time-step sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center content-main-center';
+
+function renderTimeStepper(context, part, direction) {
+    const labels = context.labels;
+    const label = part === 'hours'
+        ? (direction < 0 ? labels.earlierHour : labels.laterHour)
+        : (direction < 0 ? labels.earlierMinute : labels.laterMinute);
+    return html`
+        <button type="button" class=${TIME_STEPPER} tabindex="-1" aria-label=${label}
+            ?disabled=${context.disabled || context.timeParts.empty}
+            @click=${() => context.component.stepTime(part, direction)}
+        ><i class="sf-icon" aria-hidden="true">${direction < 0 ? 'remove' : 'add'}</i></button>`;
+}
+
+function renderTimePart(context, part) {
+    const parts = context.timeParts;
+    const value = parts[part];
+    const shown = value === null ? '--' : String(value).padStart(2, '0');
+    return html`
+        <div class="sf-datepicker-time-part flex items-cross-center">
+            ${renderTimeStepper(context, part, -1)}
+            <span class="sf-datepicker-text sf-datepicker-time-value flex content-main-center items-cross-center"
+                role="spinbutton" data-time-part=${part}
+                tabindex=${context.disabled ? '-1' : '0'}
+                aria-label=${part === 'hours' ? context.labels.hours : context.labels.minutes}
+                aria-valuemin=${part === 'hours' ? parts.hoursMin : 0}
+                aria-valuemax=${part === 'hours' ? parts.hoursMax : parts.minutesMax}
+                aria-valuenow=${value === null ? nothing : value}
+                aria-valuetext=${value === null ? context.labels.timeNotSet : shown}
+                aria-disabled=${context.disabled ? 'true' : nothing}
+                @keydown=${(event) => context.component.handleTimeKeydown(event, part)}>${shown}</span>
+            ${renderTimeStepper(context, part, 1)}
+        </div>`;
+}
+
+// The time of day: hours and minutes, each a spinbutton between its two
+// steppers, on one row at the control height of size 1 -- under the grid in
+// datetime mode, the whole panel in time mode.
+function renderTime(context) {
+    if (!context.timeParts) return nothing;
+    return html`
+        <div class="sf-datepicker-time flex content-main-center items-cross-center gap-1/4" role="group"
+            aria-label=${context.labels.time} dir="ltr">
+            ${renderTimePart(context, 'hours')}
+            <span class="sf-datepicker-time-separator" aria-hidden="true">:</span>
+            ${renderTimePart(context, 'minutes')}
+        </div>`;
+}
+
 // The weekday row lies in the main box with the days, so a month or year
 // choice covers both: above the box it labelled columns that were not there,
 // and the choice had a row less of height than the panel gives it.
 function renderDatepickerPanel(context) {
-    const rootClasses = joinClasses('sf-datepicker inline-flex', context.presetItems.length ? 'sf-datepicker--presets' : '', context.rootClass);
+    const rootClasses = joinClasses('sf-datepicker inline-flex', context.presetItems.length ? 'sf-datepicker--presets' : '',
+        context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '', context.rootClass);
+
+    if (context.mode === 'time') {
+        return html`
+            <div ${ref(context.component.refs.datePickerPanel)} id=${context.panelId}
+                class=${rootClasses} style=${context.rootStyle || nothing}
+                role=${context.input ? 'dialog' : 'group'} aria-label=${context.labels.time}
+                aria-disabled=${context.disabled ? 'true' : nothing}
+                @click=${(event) => context.component.handlePanelClick(event)}>
+                ${renderTime(context)}
+            </div>`;
+    }
 
     return html`
         <div ${ref(context.component.refs.datePickerPanel)} id=${context.panelId}
@@ -164,6 +228,7 @@ function renderDatepickerPanel(context) {
                         ${context.days.map((day) => renderDay(day, context))}
                     </div>
                 </div>
+                ${renderTime(context)}
             </div>
         </div>`;
 }
