@@ -11,7 +11,7 @@
 //     with its words and icon), element.button-icon, element.badge (the Russian
 //     word when unset), element.icon, content.divider, layout.container (a
 //     narrower centred measure on the desktop), layout.grid (three columns on
-//     the desktop, one on the phone, a gap between) and layout.spacer (the
+//     every screen, the phone too, a gap between) and layout.spacer (the
 //     height of space-6);
 //   - the page never scrolls sideways;
 //   - blocks in a section stand one rhythm apart: space-3, the prototype's
@@ -176,10 +176,10 @@ try {
       check('the section\'s text is centred', near(m.first.text.left - m.root.left, m.root.right - m.first.text.right), {text: m.first.text});
       // A Document's own values win.
       check('a section that sets width full and padding 0 keeps them', m.own.padTop === 0 && !m.own.frame && near(m.own.text.left, m.root.left) && near(m.own.text.width, m.root.right - m.root.left), {own: m.own});
-      // layout.grid: three columns on the desktop, one on the phone.
+      // layout.grid 1.1.0: three columns on every screen, the phone too, as the
+      // prototype draws features and cards at 380 (a phone rule is the author's).
       const [a, b, c] = m.cards;
-      if (width >= 1024) check('the grid draws three columns', near(a.top, b.top) && near(b.top, c.top) && a.right < b.left && b.right < c.left && near(a.width, c.width), {cards: m.cards});
-      else check('the grid draws one column on the phone', near(a.left, b.left) && a.bottom < b.top && b.bottom < c.top && near(a.width, m.grid.width), {cards: m.cards, grid: m.grid});
+      check(width >= 1024 ? 'the grid draws three columns' : 'the grid keeps three columns on the phone, as the prototype', near(a.top, b.top) && near(b.top, c.top) && a.right < b.left && b.right < c.left && near(a.width, c.width) && c.right <= m.grid.right + 1, {cards: m.cards, grid: m.grid});
       // layout.container: a narrow, centred measure on the desktop.
       check('the container is centred', near(m.box.left - m.root.left, m.root.right - m.box.right, 2), {box: m.box});
       if (width >= 1024) check('the container is narrower than the section', m.box.width < m.sectionText.width - 40, {box: m.box.width, section: m.sectionText.width});
