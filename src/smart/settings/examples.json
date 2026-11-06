@@ -513,7 +513,7 @@
               "expect": {
                 "events": [
                   {
-                    "name": "change",
+                    "name": "sf-settings-change",
                     "count": 1,
                     "detail": {
                       "id": "theme",
@@ -522,7 +522,7 @@
                     }
                   },
                   {
-                    "name": "changed",
+                    "name": "sf-settings-changed",
                     "count": 1,
                     "detail": {
                       "id": "theme",
@@ -625,7 +625,7 @@
               "expect": {
                 "events": [
                   {
-                    "name": "changed",
+                    "name": "sf-settings-changed",
                     "count": 1,
                     "detail": {
                       "id": "night",
@@ -653,7 +653,7 @@
               "check": "(() => { const el = document.querySelector('#popup'); const button = el.querySelector('#popup-trigger button'); return el.querySelector('sf-menu-context').isOpen && button.getAttribute('aria-expanded') === 'true' && el.querySelector('sf-menu-context').contains(document.activeElement); })()"
             },
             {
-              "user": "key:Escape",
+              "user": "keyboard:Escape",
               "wait": 300,
               "check": "!document.querySelector('#popup sf-menu-context').isOpen && document.activeElement === document.querySelector('#popup-trigger button')"
             }
@@ -702,7 +702,7 @@
               "check": "(() => { const menu = document.querySelector('#named sf-menu-context'); const row = menu.querySelector('.sf-context-menu-item'); return menu.isOpen && menu.getAttribute('size') === '1' && Math.round(row.getBoundingClientRect().height) >= 40 && document.querySelector('#outside').getAttribute('aria-expanded') === 'true'; })()"
             },
             {
-              "user": "key:Escape",
+              "user": "keyboard:Escape",
               "wait": 300,
               "check": "!document.querySelector('#named sf-menu-context').isOpen"
             }
@@ -732,7 +732,7 @@
                 },
                 "events": [
                   {
-                    "name": "changed",
+                    "name": "sf-settings-changed",
                     "count": 0
                   }
                 ]
@@ -750,11 +750,11 @@
                 },
                 "events": [
                   {
-                    "name": "reset",
+                    "name": "sf-settings-reset",
                     "count": 1
                   },
                   {
-                    "name": "changed",
+                    "name": "sf-settings-changed",
                     "count": 2
                   }
                 ]
