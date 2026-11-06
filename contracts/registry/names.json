@@ -372,6 +372,10 @@
           "status": "released"
         },
         {
+          "element": "sf-view-flow",
+          "status": "reserved"
+        },
+        {
           "element": "sf-view-properties",
           "status": "released"
         },
@@ -380,7 +384,7 @@
           "status": "released"
         }
       ],
-      "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48)",
+      "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48); sf-view-flow: ui-view package/src/smart/view-flow (renamed from view-property-block, not yet released), owner decision 2026-11-06",
       "note": "The set of data views (table, kanban, calendar, gantt and further views), owner decision 2026-11-03 point 12 (ui-control decisions/2026-11-03-component-sets.md): simai/ui-view, view.simai.io, Pro licence; other sets use its views. Planned until its first release under simai.component-set."
     },
     {
