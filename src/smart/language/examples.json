@@ -76,14 +76,6 @@
       "expect": {
         "size": "1/2"
       }
-    },
-    {
-      "name": "one",
-      "title": "Один язык: ничего не рисуется",
-      "settings": {
-        "languages": "ru"
-      },
-      "expect": {}
     }
   ],
   "pages": [

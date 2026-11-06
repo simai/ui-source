@@ -35,6 +35,10 @@ import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 
+// The parts it draws, found under their current names and their former ones.
+const MENU = `:scope > ${tagSelector('sf-menu-context')}`;
+const TRIGGER = `:scope > ${tagSelector('sf-button-icon')}`;
+
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
 // A remembered choice is a preference of the person (SF.Preferences, owner
@@ -195,11 +199,11 @@ class SfLanguage extends FormField(LanguageElement) {
   }
 
   get menu() {
-    return this.querySelector(`:scope > ${tagSelector('sf-menu-context')}`);
+    return this.querySelector(MENU);
   }
 
   get trigger() {
-    return this.querySelector(`:scope > ${tagSelector('sf-button-icon')}`);
+    return this.querySelector(TRIGGER);
   }
 
   /** Opens or closes the menu of a menu or search look. */
