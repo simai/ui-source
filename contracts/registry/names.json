@@ -474,7 +474,8 @@
           "status": "released"
         }
       ],
-      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+      "source": "simai/ui-editor package/set.json at ffc306d (sf-editor 1.2.0 moved from ui-pro components/src/smart at 4032e9f)",
+      "note": "The set of the page editor, owner decision 2026-11-03 (ui-control decisions/2026-11-03-component-sets.md; plan control/SETS-SPLIT-PLAN-2026-11-05.md, editor first): simai/ui-editor, its own subdomain, Pro licence. sf-editor-content is kept as a known name while it is retired in favour of sf-editor (decision point 13). sf-editor-inline and sf-editor-overlay stay SIMAI Framework components in the family (exceptions below, plan A-3). Planned until its first release under simai.component-set."
     },
     {
       "id": "chart",
