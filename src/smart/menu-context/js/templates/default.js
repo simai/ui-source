@@ -36,8 +36,8 @@ function renderItems(items) {
 }
 
 // The standard menu: entries are data, not components. An item is a row with
-// an optional icon, a label and caption, and at its end a value, a shortcut, a
-// check or a submenu chevron; a separator is a rule; a heading names the group
+// an optional icon (or a check, on a row that is ticked), a label and caption,
+// and at its end a value, a shortcut or a submenu chevron; a separator is a rule; a heading names the group
 // of items under it. The row geometry is the profile menu's (owner, 2026-10-12):
 // as tall as a size-1/2 field, its content on the field's axis.
 const ROLE = {check: "menuitemcheckbox", radio: "menuitemradio"};
@@ -47,15 +47,20 @@ function icon(name, className) {
 }
 
 // What leads a row: an icon, or a picture of the thing itself -- a site's logo,
-// a person -- with its initials when there is no picture.
+// a person -- with its initials when there is no picture. A row ticked on and
+// off (kind: "check") leads with its check, in the column and at the width of
+// the icons: nothing is kept at the row's end for it (owner R016, 2026-11-07).
+// Unticked, it shows its own icon, if it has one.
 function renderLead(entry) {
+    if (entry.kind === "check" && entry.type !== "switch" && entry.checked) return icon("check", "sf-context-menu-item-check");
     if (entry.avatar) return html`<img class="sf-context-menu-item-avatar" src=${entry.avatar} alt="">`;
     if (entry.initials) return html`<span class="sf-context-menu-item-avatar" aria-hidden="true">${entry.initials}</span>`;
     return entry.icon ? icon(entry.icon, "sf-context-menu-item-icon") : nothing;
 }
 
 // The leading column of the level: kept for every row once any row of it has
-// something to lead with, so the labels start on one line.
+// something to lead with -- an icon, a picture, or a check it may be given --
+// so the labels start on one line.
 function renderLeadPlace(entry, lead) {
     return lead ? html`<span class="sf-context-menu-item-lead">${renderLead(entry)}</span>` : nothing;
 }
@@ -135,7 +140,8 @@ function renderChoiceDrill(entry, path, lead) {
 }
 
 // The options of a drilled choice as the level's rows: each a menuitemradio of
-// the menu with a check mark on the chosen one, found by the row's own path and
+// the menu, the chosen one on the soft fill of a chosen row and no check mark
+// (owner R016, 2026-11-07: a pick-one list), found by the row's own path and
 // its place in the list, as an option of the quiet row is.
 function renderLevelOptions(choice, context) {
     const {entry, path} = choice;
@@ -146,7 +152,7 @@ function renderLevelOptions(choice, context) {
         .filter(([option]) => !query || String(option.text ?? "").toLowerCase().includes(query));
     return shown.map(([option, at]) => html`<button
             type="button"
-            class="sf-context-menu-item sf-context-menu-level-option"
+            class=${joinClasses("sf-context-menu-item", "sf-context-menu-level-option", option.checked ? "sf-context-menu-item--chosen" : "")}
             role="menuitemradio"
             data-sf-entry=${path}
             data-sf-option=${at}
@@ -155,7 +161,6 @@ function renderLevelOptions(choice, context) {
     >
         ${lead ? html`<span class="sf-context-menu-item-lead">${option.icon ? icon(option.icon, "sf-context-menu-item-icon") : nothing}</span>` : nothing}
         ${renderItemText(option)}
-        <span class="sf-context-menu-item-check">${option.checked ? icon("check", "") : nothing}</span>
     </button>`);
 }
 
@@ -273,7 +278,7 @@ function renderGroup(entry, path, context, query) {
             ${items.map(([item, index]) => renderTile(item, `${path}/${index}`, context))}
         </div>`;
     }
-    const lead = items.some(([item]) => item.icon || item.avatar || item.initials);
+    const lead = items.some(([item]) => leads(item));
     return html`<div class="sf-context-menu-group" role="group" aria-label=${name}>
         ${items.map(([item, index]) => renderEntry(item, `${path}/${index}`, lead, context, query))}
     </div>`;
@@ -298,6 +303,10 @@ function renderEntry(entry, path, lead, context, query) {
     const toggle = entry?.type === "switch";
     const role = toggle ? "menuitemcheckbox" : ROLE[entry.kind] ?? "menuitem";
     const checkable = !toggle && role !== "menuitem";
+    // One of a pick-one list (kind: "radio") is marked by the soft fill of a
+    // chosen row, with no mark and no column kept for one, so the rows use the
+    // whole width (owner R016, 2026-11-07).
+    const chosen = role === "menuitemradio" && Boolean(entry.checked);
     const submenu = Array.isArray(entry.submenu) && entry.submenu.length > 0;
     // A drilling row shows its value under the name, where a long one is cut
     // instead of pushing the row's end about (owner, 2026-10-30).
@@ -307,6 +316,7 @@ function renderEntry(entry, path, lead, context, query) {
         toggle ? "sf-context-menu-item--switch" : "",
         entry.danger ? "sf-context-menu-item--danger" : "",
         entry.current ? "sf-context-menu-item--current" : "",
+        chosen ? "sf-context-menu-item--chosen" : "",
     );
     const body = html`
         ${renderLeadPlace(entry, lead)}
@@ -314,7 +324,6 @@ function renderEntry(entry, path, lead, context, query) {
         ${entry.value && !under && !toggle ? html`<span class="sf-context-menu-item-value">${entry.value}</span>` : nothing}
         ${entry.shortcut ? html`<kbd class="sf-context-menu-item-shortcut">${entry.shortcut}</kbd>` : nothing}
         ${toggle ? renderSwitch() : nothing}
-        ${checkable ? html`<span class="sf-context-menu-item-check">${entry.checked ? icon("check", "") : nothing}</span>` : nothing}
         ${submenu ? icon("chevron_right", "sf-context-menu-item-chevron") : nothing}
     `;
     if (entry.href && !submenu && !entry.disabled) {
@@ -340,6 +349,12 @@ function renderEntry(entry, path, lead, context, query) {
 const BLOCKS = new Set(["separator", "heading", "header", "note"]);
 
 const ROWS = (entry) => entry && !BLOCKS.has(entry.type);
+
+// A row that keeps the level's leading column: one with an icon or a picture,
+// and one that can be ticked, whose check stands there.
+function leads(entry) {
+    return Boolean(entry.icon || entry.avatar || entry.initials || (entry.kind === "check" && entry.type !== "switch"));
+}
 
 // What a search narrows to: the rows whose label or caption holds the query. A
 // group is kept while one of its own rows is: the block is where its rows live,
@@ -389,7 +404,7 @@ function renderEntries(context) {
         return html`
             ${renderDrillHead(context)}
             ${context.search ? renderSearch(context) : nothing}
-            ${renderLevelOptions(level.choice, context)}
+            ${searchList(context, renderLevelOptions(level.choice, context))}
         `;
     }
     const entries = level.entries;
@@ -398,7 +413,7 @@ function renderEntries(context) {
     // One leading column for the whole menu: when any item has an icon, every
     // item keeps the place, so the labels start on one line.
     // A group's rows keep a leading column of their own, inside the block.
-    const lead = entries.some((entry) => ROWS(entry) && entry.type !== "group" && (entry.icon || entry.avatar || entry.initials));
+    const lead = entries.some((entry) => ROWS(entry) && entry.type !== "group" && leads(entry));
     // A search the host answers (search.remote) shows the entries as the host
     // set them for the query; a local one narrows them here.
     const remote = Boolean(context.search?.remote);
@@ -406,9 +421,20 @@ function renderEntries(context) {
     return html`
         ${level.depth > 0 ? renderDrillHead(context) : nothing}
         ${context.search ? renderSearch(context) : nothing}
-        ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context, remote ? "" : query))}
-        ${context.search && query && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
+        ${searchList(context, html`
+            ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context, remote ? "" : query))}
+            ${context.search && query && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
+        `)}
     `;
+}
+
+// A menu with a search keeps the field (and a drilling level's head) where it
+// is and scrolls its rows alone, under it: the field scrolled away with the
+// list and the scrollbar ran beside it (owner R012, 2026-11-07). Without a
+// search the rows stay children of the content, as before; a panel with tabs
+// already scrolls its body alone under a head that stays.
+function searchList(context, rows) {
+    return context.search && !context.panel ? html`<div class="sf-context-menu-list">${rows}</div>` : rows;
 }
 
 function renderContent(context) {
@@ -475,6 +501,10 @@ export function renderContextMenuTemplate(context) {
         "flex",
         "flex-col",
         "flex-1",
+        // On the content, not the root: the root's class list is the one
+        // openFor() adds sf-context-menu--open to, and a level that draws a
+        // search changes the list while the menu is open.
+        context.search && context.entries && context.entries.length && !context.panel ? "sf-context-menu-content--search" : "",
         context.contentClass,
     );
 

@@ -119,6 +119,22 @@
   --sf-icon--color: var(--sf-on-secondary-container);
 }
 
+/* The chosen row of a pick-one list -- a language, a drilled choice's option:
+   the soft fill of the chosen, the fill family's first step (12 light, 24
+   dark), as a chosen option of a choice row has. No check mark and no column
+   kept for one: the rows use the whole width (owner R016, 2026-11-07). The
+   pointer over it takes the family's next step; hover elsewhere stays the
+   neutral plate and the focus stays the ring, so the three never read alike. */
+.sf-context-menu-item--chosen {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+.sf-context-menu-item--chosen:not(:disabled):hover {
+  background-color: var(--sf-secondary-container-hover);
+}
+
 .sf-context-menu-item:disabled {
   color: var(--sf-on-disable);
   --sf-icon--color: var(--sf-on-disable);
@@ -163,6 +179,8 @@
   --sf-icon--color: var(--sf-error);
 }
 
+/* A ticked row's check stands in the leading column, where the icons are,
+   at their width; nothing is kept for it at the row's end (owner R016). */
 .sf-context-menu-item-check {
   --sf-icon--color: var(--sf-primary);
 }
@@ -668,6 +686,62 @@
   color: var(--sf-on-surface-variant);
 }
 
+/* A menu with a search: the field stays where it is and only the rows scroll,
+   under it. The field and the rows were one scrolling content, so the field
+   went away with the list and the scrollbar ran beside it; and the field stood
+   a step of space from the panel's edge, too close (owner R012, R013,
+   2026-11-07). The content no longer scrolls: the field (and a drilling
+   level's head) sits on top with the ladder's step after the panel's own
+   (8px, space-1/3, where the panel has 4px) on every side of it, at both
+   sizes, and
+   the rows have a scroll area of their own that takes the rest of the menu's
+   height, the content's own padding on its sides and below, so the scrollbar
+   starts under the field. The rows keep their axis: the list is padded by the
+   same amount the content was. */
+.sf-context-menu .sf-context-menu-content.sf-context-menu-content--search {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-search {
+  flex: none;
+  padding: var(--sf-space-1\/3);
+}
+
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sf-context-menu-gap, var(--sf-px));
+  min-block-size: 0;
+  padding-block: 0 var(--sf-context-menu-content--padding-bottom);
+  padding-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: auto;
+}
+
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list > * {
+  flex-shrink: 0;
+}
+
+/* The drilling level's head stays on top with the field, where the content's
+   padding used to put it: its way back on the rows' leading axis. */
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-drill-head {
+  flex: none;
+  margin-block-start: var(--sf-context-menu-content--padding-top);
+  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+}
+
+/* The content has no padding of its own to reach past: the footer stands
+   under the scroll area as it is. */
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-footer {
+  position: static;
+  margin-block-end: 0;
+  padding-block-end: var(--sf-context-menu--block-space);
+}
+
 .sf-context-menu-heading {
   padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-a2) var(--sf-context-menu--inset-start);
   color: var(--sf-on-surface-variant);
@@ -852,7 +926,8 @@
     background-color: HighlightText;
   }
 
-  .sf-context-menu-tile--on.sf-context-menu-item {
+  .sf-context-menu-tile--on.sf-context-menu-item,
+  .sf-context-menu-item--chosen {
     outline: var(--sf-px) solid Highlight;
   }
 
