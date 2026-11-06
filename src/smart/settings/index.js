@@ -3,7 +3,7 @@
 // The items are data, each holding its own value:
 //
 //   <sf-settings look="rows">
-//     <sf-button-icon icon="tune" aria-label="Настройки"></sf-button-icon>
+//     (the page's trigger: an icon button, a link)
 //     <script type="application/json" data-sf-settings>{"items": [...]}</script>
 //   </sf-settings>
 //

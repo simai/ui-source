@@ -315,13 +315,38 @@
       "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
       "version": 2
     },
-    "runtime_pair": null,
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
     "aliases": [],
     "deprecations": [],
     "replacement": null,
     "migrations": []
   },
-  "provenance": null,
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "82cf89e23ce8f7eb9c255dcaf3b1f251943ae2af",
+    "source_artifacts": [
+      {
+        "path": "src/smart/settings/index.js",
+        "sha256": "a3791ddc59d3b7981ff3980db037367027b0ae7c4e3d9615f6be6dcf27159b67"
+      },
+      {
+        "path": "src/smart/settings/js/templates/default.js",
+        "sha256": "7fd593832bc9980ca7dae8706f69808dd950fa7b9d4f66f3b90c1ae89f71dd48"
+      },
+      {
+        "path": "src/smart/settings/rule.js",
+        "sha256": "e5c515c6afa1fb60afdb32ca31f9bb8093c02be7fd487b42a178f2e233d49908"
+      },
+      {
+        "path": "src/smart/settings/docs.md",
+        "sha256": "751e14390bc4ac47ce3a1bddf9fba76dac2f5206e9e78fdc8cdda6d7135716ba"
+      }
+    ],
+    "generated_runtime": []
+  },
   "ai_guidance": {
     "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a button or standing in a panel.",
     "do_not": [
