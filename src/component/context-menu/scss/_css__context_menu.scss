@@ -389,11 +389,15 @@
   gap: var(--sf-px);
 }
 
+/* An option is the menu's inner step, and never taller than its row leaves
+   room for: on a phone's tighter ladder the inner step is the row's own
+   height, and the row grew by its block padding (28 px in a 24 px menu). */
 .sf-context-menu-choice-option.sf-context-menu-item {
+  --sf-context-menu-choice--option-height: min(var(--sf-context-menu--inner-height), calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y) - 2 * var(--sf-a2)));
   flex: none;
   justify-content: center;
   inline-size: auto;
-  min-block-size: var(--sf-context-menu--inner-height);
+  min-block-size: var(--sf-context-menu-choice--option-height);
   padding-block: 0;
   padding-inline: var(--sf-context-menu--inner-space-x);
   border-radius: var(--sf-radius-circle);
@@ -405,7 +409,7 @@
 
 /* Options that are all icons are square on the same step. */
 .sf-context-menu-choice--icons .sf-context-menu-choice-option.sf-context-menu-item {
-  inline-size: var(--sf-context-menu--inner-height);
+  inline-size: var(--sf-context-menu-choice--option-height);
   padding-inline: 0;
   --sf-icon--font-size: var(--sf-context-menu--inner-line);
   --sf-icon--width: var(--sf-context-menu--inner-line);
