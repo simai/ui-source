@@ -838,7 +838,8 @@ class SfWizard extends WizardElement {
       one.element.hidden = one.index !== index;
       one.element.sfWizard = this;
     });
-    const progress = this.progress === 'auto' || !this.progress ? (count > ROW_LIMIT ? 'count' : 'row') : this.progress;
+    // The drawn progress: auto resolves to a row up to ROW_LIMIT steps, the count above.
+    const shape = this.progress === 'auto' || !this.progress ? (count > ROW_LIMIT ? 'count' : 'row') : this.progress;
     const primary = primaryOf(step, last);
     this.sfHostState('data-place', this.place);
     this.sfHostState('data-busy', this.busy);
@@ -849,9 +850,10 @@ class SfWizard extends WizardElement {
       place: this.place,
       size: this.size === '1/2' ? '1/2' : '1',
       heading: this.heading,
-      label: this.heading || this.label,
+      // The region's (and the modal's) accessible name.
+      name: this.heading || this.label,
       level: Math.min(Math.max(Number(this.level) || 2, 1), 6),
-      progress,
+      shape,
       steps: steps.map((one) => ({
         ...one,
         current: one.index === index,
@@ -873,7 +875,7 @@ class SfWizard extends WizardElement {
       nextHref: steps[index + 1]?.href ?? '',
       doneHref: this.doneHref,
       primary: {...primary, text: primary.text || word(primary.word)},
-      later: this.hasAttribute('later') || Boolean(this.laterHref),
+      offerLater: this.hasAttribute('later') || Boolean(this.laterHref),
       laterHref: this.laterHref,
       actionName: this.actionName || 'wizard-action',
       open: this.isOpen,

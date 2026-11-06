@@ -495,11 +495,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard/index.js",
-        "sha256": "e1695d0d3c3845d6fc5c17faf91151204b681043d22b02007bd1e3243637224e"
+        "sha256": "7975f197f51d73f6c9ccd63ed532464a2713056f31e72f41a68893507cb7020c"
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
-        "sha256": "2c47d6c3390d4506655fc997e671c0402a12725543b198d1df901351e1fb0dd5"
+        "sha256": "7815bfa79f4a6aedc269c795091bd580ea6ba3b2d2f6e2ff0c3ae85d19a923b1"
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",

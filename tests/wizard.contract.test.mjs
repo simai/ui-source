@@ -97,7 +97,7 @@ test('the window asks before it drops input; remembering is only for inline and 
 });
 
 test('accessibility: a named region, aria-current, a focusable title, a status line', () => {
-  assert.match(template, /role="region" aria-label=\$\{label \|\| nothing\}/u);
+  assert.match(template, /role="region" aria-label=\$\{name \|\| nothing\}/u);
   assert.match(template, /aria-current=\$\{step\.current \? 'step' : nothing\}/u);
   assert.match(template, /class="sf-wizard-title" id=\$\{`\$\{id\}-title`\} role="heading" aria-level=\$\{String\(level\)\} tabindex="-1"/u);
   assert.match(template, /class="sf-wizard-announce sr-only" role="status"/u);

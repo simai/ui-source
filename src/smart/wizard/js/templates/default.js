@@ -67,15 +67,15 @@ function compact(context) {
 }
 
 function head(context) {
-  const {heading, words, later, laterHref, size, progress, listOpen, component} = context;
+  const {heading, words, offerLater, laterHref, size, shape, listOpen, component} = context;
   return html`<div class="sf-wizard-head">
     <div class="sf-wizard-top">
       ${heading ? html`<p class="sf-wizard-heading">${heading}</p>` : nothing}
       <span class="sf-wizard-position">${words.position}</span>
-      ${later ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="link" scheme="on-surface-variant"
+      ${offerLater ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="link" scheme="on-surface-variant"
         text=${words.later} href=${laterHref || nothing} @click=${(event) => component.continueLater(event)}></sf-button>` : nothing}
     </div>
-    ${progress === 'row' ? stepsRow(context) : nothing}
+    ${shape === 'row' ? stepsRow(context) : nothing}
     ${compact(context)}
     ${listOpen ? stepList(context) : nothing}
   </div>`;
@@ -134,19 +134,19 @@ function footer(context) {
 }
 
 function frame(context) {
-  const {progress, size, label, place, announce, busy} = context;
+  const {shape, size, name, place, announce, busy} = context;
   const classes = [
     'sf-wizard',
     `sf-wizard--size-${size === '1' ? '1' : 'half'}`,
-    `sf-wizard--progress-${progress}`,
+    `sf-wizard--progress-${shape}`,
     `sf-wizard--place-${place}`,
     busy ? 'sf-wizard--busy' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
-  return html`<div class=${classes} data-sf-wizard=${context.id} style=${context.rootStyle || nothing} role="region" aria-label=${label || nothing}>
+  return html`<div class=${classes} data-sf-wizard=${context.id} style=${context.rootStyle || nothing} role="region" aria-label=${name || nothing}>
     ${head(context)}
     <div class="sf-wizard-main">
-      ${progress === 'column' ? html`<nav class="sf-wizard-column" aria-label=${context.words.steps}>${stepList(context, 'sf-wizard-list--column')}</nav>` : nothing}
+      ${shape === 'column' ? html`<nav class="sf-wizard-column" aria-label=${context.words.steps}>${stepList(context, 'sf-wizard-list--column')}</nav>` : nothing}
       ${body(context)}
     </div>
     ${footer(context)}
@@ -157,7 +157,7 @@ function frame(context) {
 export function renderWizardTemplate(context) {
   if (context.place !== 'modal') return frame(context);
   // Place modal: the frame in an sf-modal; closed, nothing is drawn of it.
-  return html`<sf-modal class="sf-wizard-modal" heading=${context.label} show-header="false" width="min(48rem, 100%)">
+  return html`<sf-modal class="sf-wizard-modal" heading=${context.name} show-header="false" width="min(48rem, 100%)">
     <div class="sf-wizard-window" slot="content">${frame(context)}</div>
   </sf-modal>`;
 }

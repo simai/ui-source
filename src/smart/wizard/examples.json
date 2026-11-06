@@ -463,6 +463,15 @@
           "covers": "the footer Back, values.value",
           "steps": [
             {
+              "script": "(() => { const input = document.querySelector('#three sf-input[name=\"title\"] input'); input.value = 'Мой магазин'; input.dispatchEvent(new Event('input', {bubbles: true})); return true; })()",
+              "wait": 120
+            },
+            {
+              "user": "click:#three .sf-wizard-primary button",
+              "wait": 300,
+              "check": "document.querySelector('#three').getAttribute('current') === 'template'"
+            },
+            {
               "user": "click:#three .sf-wizard-back button",
               "wait": 300,
               "check": "(() => { const w = document.querySelector('#three'); return w.getAttribute('current') === 'name' && w.querySelector('sf-input[name=\"title\"] input').value === 'Мой магазин'; })()"
