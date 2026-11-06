@@ -62,7 +62,7 @@
   --sf-step-container--line-height: var(--sf-text-height-1);
 }
 
-.sf-step.sf-step--stage-default .sf-step-container, .sf-step.sf-step--stage-completed .sf-step-container, .sf-step.sf-step--stage-error .sf-step-container {
+.sf-step.sf-step--stage-default .sf-step-container, .sf-step.sf-step--stage-completed .sf-step-container, .sf-step.sf-step--stage-skipped .sf-step-container, .sf-step.sf-step--stage-running .sf-step-container, .sf-step.sf-step--stage-error .sf-step-container {
   --sf-step-container--color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
 }
 
@@ -70,15 +70,15 @@
   --sf-icon--color: var(--sf-steps-completed-icon-color, var(--sf-success));
 }
 
-.sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
+.sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-skipped .sf-step-container, .sf-step.selected.sf-step--stage-running .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
   --sf-step-container--color: var(--sf-on-surface);
 }
 
-.sf-step.disabled.sf-step--stage-default .sf-step-container, .sf-step.disabled.sf-step--stage-completed .sf-step-container, .sf-step.disabled.sf-step--stage-error .sf-step-container {
+.sf-step.disabled.sf-step--stage-default .sf-step-container, .sf-step.disabled.sf-step--stage-completed .sf-step-container, .sf-step.disabled.sf-step--stage-skipped .sf-step-container, .sf-step.disabled.sf-step--stage-running .sf-step-container, .sf-step.disabled.sf-step--stage-error .sf-step-container {
   --sf-step-container--color: var(--sf-on-disable);
 }
 
-.sf-step.disabled.sf-step--stage-completed .sf-icon, .sf-step.disabled.sf-step--stage-error .sf-icon {
+.sf-step.disabled.sf-step--stage-completed .sf-icon, .sf-step.disabled.sf-step--stage-skipped .sf-icon, .sf-step.disabled.sf-step--stage-running .sf-icon, .sf-step.disabled.sf-step--stage-error .sf-icon {
   --sf-icon--color: var(--sf-on-disable);
 }
 
@@ -126,6 +126,25 @@
 
 .sf-step.sf-step--stage-error .sf-icon {
   --sf-icon--color: var(--sf-error);
+}
+
+/* A skipped step and a running one (sf-steps 1.2.0): the quiet icon role, not
+   a status colour. The running mark turns while its action is under way. */
+.sf-step.sf-step--stage-skipped .sf-icon,
+.sf-step.sf-step--stage-running .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-step.sf-step--stage-running .sf-icon {
+    animation: sf-step-running calc(var(--sf-duration-slow) * 4) linear infinite;
+  }
+}
+
+@keyframes sf-step-running {
+  to {
+    transform: rotate(1turn);
+  }
 }
 
 /* A disabled step dims all of it, whatever its stage and however it is

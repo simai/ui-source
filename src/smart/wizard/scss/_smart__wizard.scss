@@ -1,0 +1,457 @@
+@layer sf.components {
+/* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
+   ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
+   size="1/2": the progress, the buttons and the texts are that rung; the
+   step's title is heading-4 (heading-5 at 1/2); the frame's inset is the
+   space ladder (space-3, space-2 at 1/2). The public variables are read with
+   the role token as their fallback and never set here. */
+.sf-wizard {
+  --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-3));
+  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-3));
+  --sf-wizard--background: var(--sf-wizard-background, var(--sf-surface-1));
+  --sf-wizard--border-color: var(--sf-wizard-border-color, var(--sf-outline-variant));
+  --sf-wizard--radius: var(--sf-wizard-radius, var(--sf-radius--surface));
+  --sf-wizard--max-width: var(--sf-wizard-max-width, none);
+  /* The rung: 1. */
+  --sf-wizard--line: var(--sf-text-height-1);
+  --sf-wizard--font-size: var(--sf-text-size-1);
+  --sf-wizard--small-line: var(--sf-text-height-1\/2);
+  --sf-wizard--small-font-size: var(--sf-text-size-1\/2);
+  --sf-wizard--title-size: var(--sf-heading-4--size);
+  --sf-wizard--title-line: var(--sf-heading-4--height);
+  --sf-wizard--control: var(--sf-ui-1--control-height);
+  --sf-wizard--space-x: var(--sf-ui-1--space-x);
+  --sf-wizard--text-space-x: var(--sf-ui-1--text-space-x);
+  --sf-wizard--related: var(--sf-space-1);
+  /* The column of steps: eleven lines of the rung, a label of two or three
+     words beside its mark. */
+  --sf-wizard--column: calc(var(--sf-wizard--line) * 11);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--gap);
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: var(--sf-wizard--max-width);
+  min-inline-size: 0;
+  padding: var(--sf-wizard--padding);
+  border: var(--sf-px) solid var(--sf-wizard--border-color);
+  border-radius: var(--sf-wizard--radius);
+  background-color: var(--sf-wizard--background);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-wizard--font-size);
+  line-height: var(--sf-wizard--line);
+  container-name: sf-wizard;
+  container-type: inline-size;
+}
+
+.sf-wizard.sf-wizard--size-half {
+  --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-2));
+  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-2));
+  --sf-wizard--line: var(--sf-text-height-1\/2);
+  --sf-wizard--font-size: var(--sf-text-size-1\/2);
+  --sf-wizard--small-line: var(--sf-text-height-1\/3);
+  --sf-wizard--small-font-size: var(--sf-text-size-1\/3);
+  --sf-wizard--title-size: var(--sf-heading-5--size);
+  --sf-wizard--title-line: var(--sf-heading-5--height);
+  --sf-wizard--control: var(--sf-ui-1\/2--control-height);
+  --sf-wizard--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-wizard--text-space-x: var(--sf-ui-1\/2--text-space-x);
+}
+
+/* In a window the frame is the window's surface: no edge, no fill and no
+   inset of its own (the window's padding is the inset). */
+.sf-wizard.sf-wizard--place-modal {
+  padding: var(--sf-wizard-padding, 0);
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/* ---------------------------------------------------------------- head */
+
+.sf-wizard-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--related);
+  min-inline-size: 0;
+}
+
+.sf-wizard-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sf-wizard--space-x);
+  row-gap: 0;
+  min-block-size: var(--sf-wizard--control);
+}
+
+.sf-wizard-heading {
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--sf-on-surface);
+  font-size: var(--sf-wizard--font-size);
+  font-weight: 600;
+  line-height: var(--sf-wizard--line);
+}
+
+.sf-wizard-position {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-wizard--small-font-size);
+  line-height: var(--sf-wizard--small-line);
+  white-space: nowrap;
+}
+
+.sf-wizard-heading + .sf-wizard-position {
+  flex: none;
+}
+
+.sf-wizard-position:first-child {
+  flex: 1 1 auto;
+}
+
+/* «Продолжить позже» keeps the line's end, also when it wraps under a long
+   heading on a narrow wizard. sf-button's host draws as its children:
+   the native control is the flex item. */
+.sf-wizard-later > :is(button, a) {
+  flex: none;
+  margin-inline-start: auto;
+}
+
+/* The row: sf-steps scrolls sideways rather than wrapping into a column. */
+.sf-wizard .sf-wizard-steps .sf-steps-container {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-block: var(--sf-focus--width, 2px);
+}
+
+/* The compact line: the step's label, «Все шаги» and the bar. Drawn in the
+   count and column progress, and under 40rem always. */
+.sf-wizard-compact {
+  display: none;
+  flex-direction: column;
+  gap: var(--sf-wizard--related);
+}
+
+.sf-wizard--progress-count .sf-wizard-compact,
+.sf-wizard--progress-column .sf-wizard-compact {
+  display: flex;
+}
+
+/* Where the compact line is drawn it says «Шаг N из M»; the head's own
+   position gives way. */
+.sf-wizard--progress-count .sf-wizard-top .sf-wizard-position,
+.sf-wizard--progress-column .sf-wizard-top .sf-wizard-position {
+  display: none;
+}
+
+.sf-wizard-compact-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-wizard--space-x);
+  min-block-size: var(--sf-wizard--control);
+}
+
+.sf-wizard-compact-label {
+  min-inline-size: 0;
+  color: var(--sf-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+
+/* The list of all steps: on demand under the head, or the column. */
+.sf-wizard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sf-wizard-list-step {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-wizard--text-space-x);
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--sf-wizard--control);
+  padding-block: calc((var(--sf-wizard--control) - var(--sf-wizard--line)) / 2);
+  padding-inline: var(--sf-wizard--space-x);
+  border: 0;
+  border-radius: var(--sf-radius--ui, var(--sf-radius-1));
+  background: transparent;
+  color: var(--sf-on-surface-variant);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-wizard-list-step:not(:disabled):hover {
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  background-color: var(--sf-surface-container);
+}
+
+.sf-wizard-list-step[aria-current="step"] {
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  background-color: var(--sf-surface-container);
+  color: var(--sf-on-surface);
+  font-weight: 600;
+}
+
+.sf-wizard-list-step:disabled {
+  color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-wizard-list-step:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+/* A picture is the line it stands on: the state glyph, or the number in a
+   circle of the line's size. */
+.sf-wizard-list-mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-wizard--line);
+  block-size: var(--sf-wizard--line);
+}
+
+.sf-wizard-list-mark .sf-icon {
+  --sf-icon--font-size: var(--sf-wizard--line);
+  --sf-icon--width: var(--sf-wizard--line);
+  --sf-icon--height: var(--sf-wizard--line);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-wizard-list-item[data-state="done"] .sf-icon {
+  --sf-icon--color: var(--sf-on-surface);
+}
+
+.sf-wizard-list-step:disabled .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-wizard-list-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  border: var(--sf-px) solid currentColor;
+  border-radius: var(--sf-radius-circle);
+  font-size: var(--sf-wizard--small-font-size);
+  line-height: 1;
+}
+
+.sf-wizard-list-label {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------- main */
+
+.sf-wizard-main {
+  display: flex;
+  gap: var(--sf-wizard--gap);
+  min-inline-size: 0;
+}
+
+.sf-wizard-column {
+  display: none;
+}
+
+.sf-wizard-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sf-wizard--gap);
+  min-inline-size: 0;
+}
+
+.sf-wizard-step-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--related);
+}
+
+/* The title takes the focus after a move so a screen reader starts there;
+   it is not in the tab order and draws no ring (it is not a control). */
+.sf-wizard-title {
+  margin: 0;
+  color: var(--sf-on-surface);
+  font-size: var(--sf-wizard--title-size);
+  font-weight: 600;
+  line-height: var(--sf-wizard--title-line);
+  outline: none;
+}
+
+.sf-wizard-why {
+  margin: 0;
+  color: var(--sf-on-surface-variant);
+}
+
+/* The running line: sf-spinner of the wizard's rung with its own label
+   (the step's message or running-text) beside it, in the quiet ink. */
+.sf-wizard-running {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* The spinner's label stands beside the arc, not under it, the text's own
+   space from its picture; the page's public spinner variables stay the
+   page's. */
+.sf-wizard-running .sf-loader-container {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--sf-wizard--text-space-x);
+}
+
+.sf-wizard-running .sf-loader--text {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-wizard-live {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--gap);
+  min-inline-size: 0;
+}
+
+/* A step's form is the body's column: its fields stand the body's gap apart
+   (the step host draws as its children, display: contents). */
+.sf-wizard-live > sf-wizard-step > form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--gap);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.sf-wizard-live > sf-wizard-step > :is(p, ul, ol) {
+  margin: 0;
+}
+
+/* The plan of changes of a review step: one line per change, what and to
+   what at the start, «Изменить» (an sf-button link with
+   data-wizard-step) at the end, a hairline between the lines. */
+.sf-wizard-plan {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sf-wizard-plan > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--sf-wizard--space-x);
+  row-gap: 0;
+  box-sizing: border-box;
+  min-block-size: calc(var(--sf-wizard--control) + var(--sf-wizard--related) * 2);
+  padding-block: var(--sf-wizard--related);
+}
+
+.sf-wizard-plan > li + li {
+  border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
+}
+
+.sf-wizard-plan > li > :first-child {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.sf-wizard-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-wizard--space-x);
+  padding-block-start: var(--sf-wizard--gap);
+  border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
+}
+
+.sf-wizard-footer-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sf-wizard--space-x);
+  margin-inline-start: auto;
+}
+
+/* ---------------------------------------------------------------- widths */
+
+/* Wide (40rem of the wizard's own width and more): the column, when asked. */
+@container sf-wizard (min-width: 40rem) {
+  .sf-wizard--progress-column .sf-wizard-column {
+    display: block;
+    flex: none;
+    inline-size: var(--sf-wizard--column);
+    padding-inline-end: var(--sf-wizard--gap);
+    border-inline-end: var(--sf-px) solid var(--sf-wizard--border-color);
+  }
+
+  .sf-wizard--progress-column .sf-wizard-compact {
+    display: none;
+  }
+
+  .sf-wizard--progress-column .sf-wizard-top .sf-wizard-position {
+    display: inline;
+  }
+
+  /* The row shows every step: a list opened while narrow is not drawn. */
+  .sf-wizard--progress-row .sf-wizard-head > .sf-wizard-list,
+  .sf-wizard--progress-column .sf-wizard-head > .sf-wizard-list {
+    display: none;
+  }
+}
+
+/* Narrow (under 40rem): always the compact head -- the step's label and the
+   bar, never the row and never a column. The footer's primary takes the
+   line's end, Back its start. */
+@container sf-wizard (max-width: 39.99rem) {
+  /* sf-steps' host draws as its children (display: contents): its root
+     is what goes. */
+  .sf-wizard .sf-wizard-steps > .sf-steps {
+    display: none;
+  }
+
+  .sf-wizard .sf-wizard-compact {
+    display: flex;
+  }
+
+  .sf-wizard .sf-wizard-top .sf-wizard-position {
+    display: none;
+  }
+
+  .sf-wizard .sf-wizard-heading {
+    flex-basis: 100%;
+  }
+}
+
+}
+
+/* A touch target of at least 44px under a coarse pointer (WCAG 2.5.5, the
+   context menu's rows): the head's and the footer's controls, the steps of
+   the row and the list. The ladder stays for a mouse. */
+@media (pointer: coarse) {
+  @layer sf.states {
+    .sf-wizard .sf-wizard-footer .sf-button,
+    .sf-wizard .sf-wizard-top .sf-button,
+    .sf-wizard .sf-wizard-compact .sf-button,
+    .sf-wizard .sf-wizard-plan .sf-button,
+    .sf-wizard .sf-wizard-steps .sf-step,
+    .sf-wizard .sf-wizard-list-step {
+      min-block-size: var(--sf-d1);
+    }
+  }
+}

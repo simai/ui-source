@@ -18,6 +18,10 @@ const StepsElement = elementFromManifest(manifest, {
   aliases,
 });
 
+// The states an item may carry itself (1.2.0); they win over the one its
+// place gives it.
+const STATES = ['completed', 'skipped', 'running', 'error'];
+
 function parseItems(items = '') {
   // The list as JSON in the attribute reads like the property.
   if (typeof items === 'string' && items.trim().startsWith('[')) {
@@ -45,9 +49,11 @@ function parseItems(items = '') {
         .map((flag) => flag.trim().toLowerCase())
         .filter(Boolean);
 
+      const state = STATES.find((word) => flags.includes(word));
       return {
         label,
         disabled: flags.includes('disabled'),
+        ...(state ? { state } : {}),
       };
     });
 }
@@ -73,6 +79,8 @@ class SfSteps extends StepsElement {
       ariaLabel: { attribute: 'aria-label', default: '' },
       completedLabel: { default: '' },
       errorLabel: { default: '' },
+      skippedLabel: { default: '' },
+      runningLabel: { default: '' },
       rootClass: { default: '' },
     };
   }
@@ -130,7 +138,13 @@ class SfSteps extends StepsElement {
       const isError = errorStep === index;
       let stage = 'default';
 
-      if (isError) {
+      // An item's own state wins; without one the place decides (before
+      // current: completed) and error-step marks its step.
+      if (STATES.includes(item?.state)) {
+        stage = item.state;
+      } else if (item?.state === 'default') {
+        stage = isError ? 'error' : 'default';
+      } else if (isError) {
         stage = 'error';
       } else if (index < this.current) {
         stage = 'completed';
@@ -153,6 +167,8 @@ class SfSteps extends StepsElement {
       ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
       completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
       errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
+      skippedLabel: this.getAttribute('skipped-label') || this.sfWord('skipped-label'),
+      runningLabel: this.getAttribute('running-label') || this.sfWord('running-label'),
       component: this,
       rootClass: this.getRootClass(),
       items: this.computedItems,
@@ -172,6 +188,8 @@ class SfSteps extends StepsElement {
       ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
       completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
       errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
+      skippedLabel: this.getAttribute('skipped-label') || this.sfWord('skipped-label'),
+      runningLabel: this.getAttribute('running-label') || this.sfWord('running-label'),
       items: this.items,
       rootClass: this.getRootClass(),
     };
@@ -199,6 +217,9 @@ class SfSteps extends StepsElement {
             const flags = [];
             if (item?.disabled) {
               flags.push('disabled');
+            }
+            if (STATES.includes(item?.state)) {
+              flags.push(item.state);
             }
 
             return flags.length ? `${item.label}::${flags.join(',')}` : item.label;

@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.wizard-step",
+  "title": "wizard-step reference",
+  "summary": "Deterministic reference fixture for sf-wizard-step.",
+  "locale": "ru",
+  "props": {
+    "name": "address",
+    "label": "Адрес панели",
+    "heading": "Адрес панели",
+    "description": "По этому адресу вы будете открывать панель.",
+    "type": "form"
+  },
+  "children": [],
+  "state": "default"
+}

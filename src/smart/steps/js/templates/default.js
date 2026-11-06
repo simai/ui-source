@@ -4,6 +4,10 @@ function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
 }
 
+// A stage's glyph: completed and error keep their status colours, skipped and
+// running are the quiet on-surface-variant marks, running turning (1.2.0).
+const STAGE_ICONS = { completed: 'check_circle', error: 'error', skipped: 'do_not_disturb_on', running: 'progress_activity' };
+
 function renderStep(item, context) {
   const stepClasses = joinClasses(
     'sf-step',
@@ -16,13 +20,16 @@ function renderStep(item, context) {
     item.disabled ? 'disabled' : 'cursor-pointer',
   );
 
-  const iconName =
-    item.stage === 'completed' ? 'check_circle' : item.stage === 'error' ? 'error' : '';
+  const iconName = STAGE_ICONS[item.stage] || '';
   const statusLabel = item.stage === 'completed'
     ? context.completedLabel
     : item.stage === 'error'
       ? context.errorLabel
-      : '';
+      : item.stage === 'skipped'
+        ? context.skippedLabel
+        : item.stage === 'running'
+          ? context.runningLabel
+          : '';
   const accessibleLabel = statusLabel ? `${item.label}, ${statusLabel}` : nothing;
 
   return html`

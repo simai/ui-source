@@ -54,7 +54,8 @@
         "theme",
         "toast",
         "tooltip",
-        "tree"
+        "tree",
+        "wizard"
       ],
       "names": [
         {
@@ -347,6 +348,14 @@
         },
         {
           "element": "sf-tree-item",
+          "status": "released"
+        },
+        {
+          "element": "sf-wizard",
+          "status": "released"
+        },
+        {
+          "element": "sf-wizard-step",
           "status": "released"
         }
       ],

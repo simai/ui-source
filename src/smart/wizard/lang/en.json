@@ -1,0 +1,34 @@
+{
+  "title": "Wizard",
+  "runtime": {
+    "label": "Step-by-step setup",
+    "running-text": "Working…",
+    "position": "Step {n} of {count}",
+    "moved": "Step {n} of {count}: {step}",
+    "back": "Back",
+    "skip": "Skip",
+    "next": "Next",
+    "run": "Run",
+    "retry": "Try again",
+    "apply": "Apply",
+    "done": "Done",
+    "later": "Continue later",
+    "steps": "Steps",
+    "all-steps": "All steps",
+    "hide-steps": "Hide steps",
+    "progress": "Wizard progress",
+    "state-done": "Done",
+    "state-skipped": "Skipped",
+    "state-running": "In progress",
+    "state-error": "Error",
+    "close-question": "Close the wizard? What you entered on this step will not be saved.",
+    "close-accept": "Close",
+    "close-decline": "Stay",
+    "required": "Fill in this field."
+  },
+  "events": {
+    "close": {
+      "label": "Continue later"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "title": "Мастер",
+  "runtime": {
+    "label": "Пошаговая настройка",
+    "running-text": "Выполняется…",
+    "position": "Шаг {n} из {count}",
+    "moved": "Шаг {n} из {count}: {step}",
+    "back": "Назад",
+    "skip": "Пропустить",
+    "next": "Далее",
+    "run": "Запустить",
+    "retry": "Повторить",
+    "apply": "Применить",
+    "done": "Готово",
+    "later": "Продолжить позже",
+    "steps": "Шаги",
+    "all-steps": "Все шаги",
+    "hide-steps": "Скрыть шаги",
+    "progress": "Ход мастера",
+    "state-done": "Сделан",
+    "state-skipped": "Пропущен",
+    "state-running": "Выполняется",
+    "state-error": "Ошибка",
+    "close-question": "Закрыть мастер? Введённое на этом шаге не сохранится.",
+    "close-accept": "Закрыть",
+    "close-decline": "Остаться",
+    "required": "Заполните это поле."
+  },
+  "events": {
+    "close": {
+      "label": "Продолжить позже"
+    }
+  }
+}

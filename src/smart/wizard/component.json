@@ -1,0 +1,496 @@
+{
+  "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
+  "id": "smart.wizard",
+  "tag": "sf-wizard",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "wizard",
+  "settings": {
+    "place": {
+      "type": "enum",
+      "values": [
+        "inline",
+        "modal",
+        "pages"
+      ],
+      "default": "inline",
+      "summary": "Where the wizard shows: inline in the page; modal, a window opened by a trigger (for, or the open action); pages, a page per step -- the server prints the wizard with the current step's body, the step's form posts and the server answers with the same wizard, the errors or the next step, and nothing is kept in the browser."
+    },
+    "navigation": {
+      "type": "enum",
+      "values": [
+        "linear",
+        "free",
+        "visited"
+      ],
+      "default": "linear",
+      "summary": "Which steps a press in the progress opens: linear, any step before the first one not done or skipped; free, any step; visited, a step already done, skipped or failed, and the current one. Next always goes in order."
+    },
+    "progress": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "row",
+        "count",
+        "column"
+      ],
+      "default": "auto",
+      "summary": "How the progress is drawn: row, the steps in a row on top (sf-steps); count, «Шаг 4 из 12», a bar and the list of all steps on demand; column, a column of the steps inside the frame on the left, on a wide wizard (40rem and more of its own width, else count). auto: row up to 7 steps, count above. A narrow wizard (under 40rem) always draws the compact head: the current step and the bar."
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1",
+      "summary": "The ladder rung: the progress, the buttons, the texts and the insets follow it."
+    },
+    "heading": {
+      "type": "string",
+      "default": "",
+      "summary": "What the wizard does («Настройка сервера»), the line over the progress; none when empty."
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The region's name: the heading, else «Пошаговая настройка» / «Step-by-step setup»."
+    },
+    "level": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "max": 6,
+      "default": 2,
+      "summary": "The heading level of the step's title (role heading, aria-level)."
+    },
+    "for": {
+      "type": "string",
+      "default": "",
+      "summary": "Place modal: the id of a page element, or several separated by spaces, that opens the window when pressed."
+    },
+    "later": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Draws «Продолжить позже»: close {reason: later} with the place and the answers, the window closes or the browser goes to later-href, and remember keeps the place for the next opening."
+    },
+    "later-href": {
+      "type": "string",
+      "default": "",
+      "summary": "Where «Продолжить позже» goes; also draws the button."
+    },
+    "remember": {
+      "type": "string",
+      "default": "",
+      "summary": "Places inline and modal: a key under which the wizard keeps the current step, the steps' states and the answers in this browser (localStorage, sf-pref:sf-wizard/<key>) and opens there next time; cleared when the wizard completes. Empty: nothing is kept (the host may keep what close and change carry). Place pages keeps nothing: the server knows the place."
+    },
+    "done-href": {
+      "type": "string",
+      "default": "",
+      "summary": "Where «Готово» goes on the last step when the step has no form."
+    },
+    "action-name": {
+      "type": "string",
+      "default": "wizard-action",
+      "summary": "Place pages: the name the footer's submit buttons send their word under (next, run, retry, apply, done, skip), so the server knows which was pressed."
+    },
+    "running-text": {
+      "type": "string",
+      "default-from": "runtime.running-text",
+      "summary": "The line beside the indicator while a step runs and has no message of its own; «Выполняется…» / «Working…»."
+    },
+    "focus-title": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Place pages: the step's title takes focus once the wizard has drawn, as after a move on one page. A server prints it on the pages it answers a step's form with."
+    }
+  },
+  "values": {
+    "current": {
+      "type": "id",
+      "default": "",
+      "summary": "The name of the step shown. Empty: the first step that is neither done nor skipped, else the first. A person's move writes it and sends change."
+    },
+    "open": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Place modal: the window is open."
+    },
+    "value": {
+      "type": "object",
+      "default": {},
+      "summary": "Every answer of every step, by the step's name and the field's name: {address: {host: \"panel.example.ru\"}, notify: {email: \"…\"}}. Read-only: the wizard collects it from the steps' fields as they change; change, submit, close and completed carry it."
+    }
+  },
+  "events": {
+    "change": {
+      "x-native": false,
+      "carries": {
+        "previous": "string",
+        "current": "string",
+        "value": "object"
+      },
+      "summary": "A person moved to another step (Next, Back, Skip, a step in the progress, «Изменить» in a review); current is the step shown now. Not sent for go-to-step or when the host writes current."
+    },
+    "submit": {
+      "carries": {
+        "step": "string",
+        "action": {
+          "type": "enum",
+          "values": [
+            "next",
+            "run",
+            "retry",
+            "apply",
+            "done",
+            "skip"
+          ]
+        },
+        "values": "object",
+        "value": "object"
+      },
+      "cancelable": true,
+      "summary": "A person pressed the primary button or Skip, and the step's fields are valid (vocabulary §5 submit {values}): values are the step's answers, value all of them. A request: cancelled, the host does the work itself -- an action step's run: state running, then done or error with its message. Not cancelled: place pages posts the step's form; inline and modal mark the step done (skipped) and show the next, and the last sends completed."
+    },
+    "invalid": {
+      "carries": {
+        "step": "string",
+        "fields": "list"
+      },
+      "own-verb": true,
+      "summary": "The primary button was pressed and the step's fields are not valid: each invalid field shows its message, the first takes focus, fields lists their names. Nothing is submitted."
+    },
+    "navigate": {
+      "carries": {
+        "id": "string",
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "Place pages: a person follows a step's address (Back, a step in the progress, Next or «Готово» without a form); id is the step's name. A request: cancelled, the page moves itself; not cancelled, the browser goes there."
+    },
+    "open": {
+      "carries": {},
+      "cancelable": true,
+      "summary": "Place modal: the window is about to open (a trigger, the open action). Cancelled, it stays closed."
+    },
+    "close": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "later",
+            "close",
+            "escape",
+            "outside",
+            "api"
+          ]
+        },
+        "current": "string",
+        "steps": "list",
+        "value": "object"
+      },
+      "cancelable": true,
+      "summary": "The person leaves the wizard: «Продолжить позже» (later), or the window's close, Escape, the scrim or the action. steps carries every step's {name, state} and value the answers, so a host keeps the progress. With input not yet submitted on the step, the wizard asks first («Закрыть мастер?») and sends close only after a yes."
+    },
+    "completed": {
+      "carries": {
+        "steps": "list",
+        "value": "object"
+      },
+      "summary": "Places inline and modal: the last step was submitted; a window closes after it."
+    }
+  },
+  "actions": {
+    "open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Place modal: opens the window at the current step; refused when a page cancels sf-wizard-open or the place is not modal.",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Place modal: closes the window (reason api); refused when it is closed or a page cancels sf-wizard-close.",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "go-to-step": {
+      "with": {
+        "name": "string"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Shows the step with this name, whatever the navigation rule: refused {reason: missing} for a name the wizard does not have, {reason: current} for the step shown. Sends no change (a host's move, not a person's).",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "next": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Presses the primary button as a person would: validation, submit, the move. refused {reason: busy} while the step runs, {reason: invalid} when the fields are not valid, {reason: prevented} when submit is cancelled.",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "slots": {
+    "step": {
+      "default": true,
+      "$comment": "Each sf-wizard-step child is a step, in order; its children are the step's body, a live node the wizard places in its frame and never copies. In the printed first paint the steps stand inside the frame's body (data-sf-live), once, and the wizard adopts them from there. Place pages prints every step, with a body only in the current one."
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-wizard-step"
+    },
+    {
+      "name": "cl-steps"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-progress-bar"
+    },
+    {
+      "name": "cl-alert"
+    },
+    {
+      "name": "cl-spinner"
+    },
+    {
+      "name": "cl-confirm"
+    },
+    {
+      "name": "cl-modal"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The wizard is a region named by label. The progress is sf-steps (aria-current=step on the current step, each step's state in its name), or a list of buttons with aria-current=step. The step's title is a heading that takes focus after a move, and a visually hidden status region says «Шаг 3 из 6: Уведомления». The body is aria-busy while a step runs. Every control is a native button or link drawn by sf-button; a field that fails takes focus with its message. Place modal is sf-modal: a dialog that holds focus and returns it.",
+    "role": "region",
+    "name": {
+      "from": [
+        "label",
+        "heading",
+        "runtime.label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-place": "string",
+    "data-busy": "boolean",
+    "data-dirty": "boolean"
+  },
+  "css-variables": {
+    "--sf-wizard-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-wizard-padding": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-wizard-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-wizard-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-wizard-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-wizard-max-width": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
+  "x-source": {
+    "package": "framework",
+    "folder": "wizard",
+    "brief": "Owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md (from the Larena thread's order msg-7f7fb15568e74dc0b019 and its addendum msg-10610a4425624030a660): one universal wizard; phase 1.0 is everything but conditional steps, step groups and the drawer place."
+  },
+  "x-words": [
+    "label",
+    "running-text"
+  ],
+  "x-decisions": [
+    "name: sf-wizard, the frame, and sf-wizard-step, each step (owner): block wizard (ui-control control/decisions/2026-11-02-smart-component-naming.md). It composes sf-steps (the row), sf-progress-bar (the bar), sf-button (every control), sf-alert (a step's result), sf-spinner (the running line), sf-confirm (the question before closing) and sf-modal (place modal); it copies none of them.",
+    "steps are children (owner): each sf-wizard-step child is a step; its children are the body, live nodes placed in the frame and never copied, so a server's form keeps its fields, its errors and its listeners. The wizard draws the title (role heading, aria-level level, tabindex -1, the focus target after a move), the «why», the running line, the result and the footer from the step's attributes.",
+    "first paint without a second form (owner): the printed picture holds the steps inside the frame's body, marked data-sf-live, as the page gave them -- once -- and the frame, the progress and the footer around them as static markup. The wizard adopts the steps from there in the same task as it draws. scripts/first-paint-page.js prints a page child placed in a data-sf-live container in its place instead of copying it and printing it again held; the steps' own Smart fields keep their own printed pictures and draw when the wizard has placed them.",
+    "types (owner): info (Далее), form (fields, validation, Далее saves the step), action (Запустить; running: the indicator and every press waits; done: the result and Далее; error: the result and Повторить), review (a summary with «Изменить» -- any element with data-wizard-step=\"<name>\" opens that step -- and Применить), result (Готово, no Back). action-text replaces the type's word; the last step of any other type says Готово.",
+    "navigation (owner): linear, free, visited, read by a press in the progress and by data-wizard-step; Next and Back always go in order. optional steps get Skip and read skipped.",
+    "footer (owner): Back · (Skip) · one primary, in that order, Back at the start and the two at the end; one primary only. Under a coarse pointer every control of the head and the footer is at least 44px (--sf-d1), as the context menu's rows are.",
+    "validation: the browser's own constraint validation over the step's controls (required, type, pattern, min, a form-associated element's validity). Each invalid Framework field (an element whose manifest has the setting invalid) gets invalid and the control's validationMessage when the page gave no error-message, the first takes focus, invalid is sent; a field the person edits drops what the wizard set. A server's own errors are printed into the fields and stay.",
+    "place pages (owner): every step is printed (href, state), only the current one with its body. The primary button is an sf-button native-type submit with form (the step's form, given an id when it has none), name action-name and value its word (next, run, retry, apply, done) -- sf-button 1.5.0 carries form, name and value -- so the browser posts the step's form with the button's word and the wizard adds no field. Skip posts the same way with skip and no validation. Back and the progress are links. A step without a form moves by the next step's href, the last by done-href. An action step's form shows running at once while the server works. focus-title gives the title focus on the page the server answers with.",
+    "places inline and modal: the footer's buttons are plain buttons; Next validates, sends submit and, not cancelled, marks the step done and shows the next. A native submit inside a step (Enter in a field) goes the same way, so there is one path. Modal is an sf-modal (center, size from the frame) the wizard composes; it opens from for, the open value or the action; Escape, the scrim and its close ask first with unsaved input.",
+    "progress (owner): row up to 7 steps (sf-steps, which 1.2.0 gave skipped and running and a state per item), count above 7 («Шаг 4 из 12», sf-progress-bar, and «Все шаги» opens the list), column on request: the list in a column inside the frame on the left when the wizard is 40rem wide or more. Under 40rem of its own width (a container query) the head is compact: «Шаг N из M», the step's label and the bar; never a column outside the frame.",
+    "continue later (owner): later or later-href draws «Продолжить позже»; close {reason: later, current, steps, value}; with remember the place, the states and the answers are kept in localStorage (sf-pref:sf-wizard/<key>) and the wizard opens there next time; completed clears them. Place pages keeps nothing in the browser: its server knows the place.",
+    "closing with unsaved input (owner): input on the current step not yet submitted makes the step dirty (data-dirty); «Продолжить позже» and a window's close then ask in place with sf-confirm («Закрыть мастер? Введённое на этом шаге не сохранится.») before close is sent.",
+    "one value (owner): value holds every answer by step and field name, collected from the named controls of each step as they change (FormData order; a name given twice gives a list); change, submit, close and completed carry it.",
+    "colour: the frame is a surface (--sf-surface-1) with an outline-variant edge in place inline, the window's own surface in place modal; icons read only on-surface, on-surface-variant and on-disable; a result's colour is sf-alert's status role. Light and dark from the theme.",
+    "events: submit (vocabulary §5 submit, cancelable), navigate (§5, place pages), open and close (§5, the window; close also for later), change (the person's move), completed (a fact), invalid (own verb, §5.1). Actions open, close, go-to-step and next answer an outcome.",
+    "css-variables: six public variables (§6) -- the gap between the head, the body and the footer, the inset, the background, the edge, the corner and the maximum width -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "phase 1.0 (owner): conditional steps, step groups and the drawer place are 1.1."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "external-host",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "wizard",
+      "steps",
+      "stepper",
+      "setup",
+      "onboarding",
+      "installer",
+      "import",
+      "form"
+    ],
+    "state": {
+      "machines": {
+        "step": [
+          "not-started",
+          "current",
+          "done",
+          "skipped",
+          "running",
+          "error"
+        ],
+        "window": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "open",
+        "closed"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "running a step's action (the server, or the host after a cancelled submit)",
+        "deciding which steps there are and their order",
+        "keeping the progress beyond this browser (the host keeps what close carries)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-wizard for a process of steps a person goes through once with the product doing work between them: first-run server setup, an installer, a CSV import, a package install, creating a site.",
+      "do_not": [
+        "Do not send the person to another section to fill a step in: put the form in the step",
+        "Do not draw the steps as a page-height column outside the wizard; the progress is the row, the count or the column inside the frame",
+        "Do not put a second primary button in a step; the footer has one",
+        "Do not draw the step's title or buttons in its body; the wizard draws them from the step's attributes"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-wizard heading=\"Настройка сервера\"><sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\"><form><sf-input name=\"host\" label=\"Адрес\" required></sf-input></form></sf-wizard-step><sf-wizard-step name=\"done\" label=\"Готово\" type=\"result\"><p>Сервер готов.</p></sf-wizard-step></sf-wizard>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches «Продолжить позже», the reachable steps of the progress, the step's controls, then Back, Skip and the primary button",
+        "Enter in a field of the step submits it as the primary button does",
+        "Escape closes the window in place modal, asking first with unsaved input"
+      ],
+      "focus": "After a move the step's title (role heading, tabindex -1) takes focus and a status region says «Шаг N из M: <step>». A failed validation focuses the first invalid field."
+    }
+  }
+}

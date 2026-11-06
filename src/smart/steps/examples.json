@@ -127,6 +127,45 @@
       }
     },
     {
+      "name": "states",
+      "title": "Сделанный, пропущенный и ещё не начатый шаги",
+      "settings": {
+        "aria-label": "Настройка сервера",
+        "items": [
+          {
+            "label": "Вход",
+            "state": "completed"
+          },
+          {
+            "label": "Адрес панели",
+            "state": "completed"
+          },
+          {
+            "label": "Уведомления",
+            "state": "skipped"
+          },
+          {
+            "label": "Защита",
+            "state": "error"
+          },
+          {
+            "label": "Копии",
+            "state": "default"
+          },
+          {
+            "label": "Обновления"
+          }
+        ],
+        "current": 3
+      },
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": 3
+        }
+      }
+    },
+    {
       "name": "compact",
       "title": "Половинный размер",
       "settings": {

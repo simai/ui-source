@@ -184,6 +184,24 @@ const sfButtonMeta = {
       "default": "button",
       "description": "Native button type attribute."
     },
+    "form": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The id of the form the native button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
+    },
+    "name": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The name the native button submits its value under, as a native button's name."
+    },
+    "value": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The value the native button submits under name when it is the submitter (next, skip)."
+    },
     "href": {
       "kind": "custom",
       "valueType": "string",

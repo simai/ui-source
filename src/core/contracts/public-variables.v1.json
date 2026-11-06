@@ -3908,6 +3908,54 @@
           "since": "2026-11-05"
         }
       ]
+    },
+    {
+      "component": "wizard",
+      "selector": "sf-wizard, .sf-wizard",
+      "variables": [
+        {
+          "name": "--sf-wizard-gap",
+          "role": "gap",
+          "summary": "The space between the head, the step's parts, the body and the buttons.",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-06"
+        },
+        {
+          "name": "--sf-wizard-padding",
+          "role": "padding",
+          "summary": "The frame's inset; 0 in a window, where the window's own padding is the inset.",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-06"
+        },
+        {
+          "name": "--sf-wizard-background",
+          "role": "background",
+          "summary": "The frame's surface in a page.",
+          "default": "var(--sf-surface-1)",
+          "since": "2026-11-06"
+        },
+        {
+          "name": "--sf-wizard-border-color",
+          "role": "border-color",
+          "summary": "The frame's edge, the line above the buttons, the column's edge and the lines of a plan of changes.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-06"
+        },
+        {
+          "name": "--sf-wizard-radius",
+          "role": "radius",
+          "summary": "The frame's corner in a page.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-06"
+        },
+        {
+          "name": "--sf-wizard-max-width",
+          "role": "max-inline-size",
+          "summary": "The widest the frame grows; none fills its container.",
+          "default": "none",
+          "since": "2026-11-06"
+        }
+      ]
     }
   ]
 }

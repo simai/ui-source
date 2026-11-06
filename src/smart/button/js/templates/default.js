@@ -123,6 +123,9 @@ export function renderButtonTemplate(context) {
     return html`
         <button
                 type=${nativeType}
+                form=${context.formId || nothing}
+                name=${context.submitName || nothing}
+                value=${context.submitName || context.submitValue ? context.submitValue : nothing}
                 class=${rootClasses.join(' ')}
                 style=${context.rootStyle || nothing}
                 ?disabled=${disabled || loading}

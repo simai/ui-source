@@ -65,6 +65,9 @@ const PHASE_A = [
   'language',
   // Compact settings over sf-menu-context (owner decision 2026-11-06).
   'settings',
+  // The step-by-step wizard and its step (2026-11-06).
+  'wizard',
+  'wizard-step',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

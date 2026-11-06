@@ -25,6 +25,8 @@ Smart-обертка над `steps + step` component.
 - `aria-label`
 - `completed-label`
 - `error-label`
+- `skipped-label`
+- `running-label`
 - `root-class`
 
 `root-class`, `style` и `root-style` применяются к видимому корню `.sf-steps`.
@@ -39,7 +41,7 @@ Smart-обертка над `steps + step` component.
 шаг получает нативный `disabled`. Поэтому Enter и Space работают без
 синтетической клавиатурной обработки, а компонент не отправляет форму.
 
-`aria-label` называет группу шагов. `completed-label` и `error-label` задают
+`aria-label` называет группу шагов. `completed-label`, `skipped-label` и `error-label` задают
 локализованные подписи состояний, которые добавляются к доступному имени шага.
 Текущий шаг использует `aria-current="step"`.
 
@@ -59,9 +61,39 @@ items="Account|Profile|Verification::disabled|Done"
 Поддерживаемые flags:
 
 - `disabled`
+- `completed`, `skipped`, `running`, `error` — состояние шага (с версии 1.2.0)
 
 Тот же список можно передать массивом в свойство `items` или как JSON в
 атрибуте: `items='[{"label": "Account"}, {"label": "Done", "disabled": true}]'`.
+
+## Состояние шага
+
+С версии 1.2.0 у элемента списка может быть собственное состояние `state`:
+
+| `state` | Что значит | Значок |
+|---|---|---|
+| `default` | ещё не начат | — |
+| `completed` | сделан | `check_circle`, цвет успеха |
+| `skipped` | пропущен намеренно | `do_not_disturb_on`, `on-surface-variant` |
+| `running` | выполняется действие шага | `progress_activity`, `on-surface-variant`, вращается |
+| `error` | ошибка | `error`, цвет ошибки |
+
+Состояние, заданное в элементе, важнее вычисленного по месту: без него шаг до
+`current` считается сделанным, а `error-step` отмечает ошибку. Мастер
+(`sf-wizard`) передаёт состояние каждому шагу, поэтому шаг до текущего,
+который не сделали, читается как «ещё не начат». Подпись пропущенного шага в
+доступном имени — `skipped-label` («Пропущен» / «Skipped»), выполняющегося —
+`running-label` («Выполняется» / «In progress»). При `prefers-reduced-motion: reduce`
+значок выполнения не вращается.
+
+```html
+<sf-steps current="2" items='[
+  {"label": "Вход", "state": "completed"},
+  {"label": "Уведомления", "state": "skipped"},
+  {"label": "Защита"},
+  {"label": "Копии", "state": "default"}
+]'></sf-steps>
+```
 
 ## События и действия
 

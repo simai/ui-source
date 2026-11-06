@@ -804,6 +804,8 @@ import '../../smart/toast/rule.js';
 import '../../smart/tooltip/rule.js';
 import '../../smart/tree/rule.js';
 import '../../smart/tree-item/rule.js';
+import '../../smart/wizard/rule.js';
+import '../../smart/wizard-step/rule.js';
 import '../../component/accordion/rule.js';
 import '../../component/admin-menu/rule.js';
 import '../../component/alerts/rule.js';

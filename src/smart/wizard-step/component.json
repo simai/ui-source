@@ -1,0 +1,180 @@
+{
+  "$comment": "The source of sf-wizard-step's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes the generated files from it). One step of sf-wizard (owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): what the step is and where it stands, and its body as its children.",
+  "id": "smart.wizard-step",
+  "tag": "sf-wizard-step",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "wizard",
+  "settings": {
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The step's key: what current names, what events carry, the key of its answers in the wizard's value. Its place (step-1, step-2 …) when empty."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The step's short name in the progress («Адрес панели»)."
+    },
+    "heading": {
+      "type": "string",
+      "default": "",
+      "summary": "The step's title over its body; the label when empty."
+    },
+    "description": {
+      "type": "string",
+      "default": "",
+      "summary": "Why the step is there, one or two sentences under the title."
+    },
+    "type": {
+      "type": "enum",
+      "values": [
+        "info",
+        "form",
+        "action",
+        "review",
+        "result"
+      ],
+      "default": "info",
+      "summary": "What the step does, and so its primary button: info shows (Далее); form takes fields and validates them (Далее saves the step); action runs a long action (Запустить, then Далее; Повторить after an error); review shows what will be done with a way back to each step (Применить); result says what happened (Готово)."
+    },
+    "optional": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The step may be skipped: the wizard draws «Пропустить», and a skipped step reads skipped."
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "Place pages: the step's own address. Back and a press on the step in the progress go there."
+    },
+    "action-text": {
+      "type": "string",
+      "default": "",
+      "summary": "The primary button's label on this step («Выпустить сертификат», «Импортировать»); the type's word when empty. Retry and the move on after an action keep their own words."
+    },
+    "message": {
+      "type": "string",
+      "default": "",
+      "summary": "What the step's action came to, one sentence: drawn as sf-alert in the step, success while the step is done, error while it is error. While running, the line beside the indicator."
+    }
+  },
+  "values": {
+    "state": {
+      "type": "enum",
+      "values": [
+        "",
+        "done",
+        "skipped",
+        "running",
+        "error"
+      ],
+      "default": "",
+      "summary": "Where the step stands: empty (not started), done, skipped, running (its action is under way) or error. The host writes it; in places inline and modal the wizard also writes done and skipped when a person moves on."
+    }
+  },
+  "slots": {
+    "body": {
+      "default": true,
+      "$comment": "The children are the step's body -- a form of Framework fields, a picture, a status, a plan of changes -- and stay where the page put them: never copied."
+    }
+  },
+  "relations": [],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "Draws nothing: the body is the children, and sf-wizard draws the rest."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The step draws no box and takes no role: its children are read in the wizard's body, under the title the wizard draws.",
+    "role": "none"
+  },
+  "x-summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
+  "x-source": {
+    "package": "framework",
+    "folder": "wizard-step",
+    "brief": "Owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md): sf-wizard is the frame and each step a child sf-wizard-step with its title, «why» text and any content."
+  },
+  "x-words": [],
+  "x-decisions": [
+    "name: sf-wizard-step, a part of block wizard (sf-<block>-<variant>, ui-control control/decisions/2026-11-02-smart-component-naming.md), as sf-tree-item is of sf-tree.",
+    "it draws nothing: its children are the body and stay live nodes; sf-wizard places the step in its body and draws its title, its «why», its indicator, its result and the footer from these attributes. Alone, outside a wizard, it shows its children.",
+    "types (owner): info, form, action, review, result; each gives the primary button its word, action-text replaces it.",
+    "state is a value the host writes (done, skipped, running, error, or empty for not started); message is the result's sentence. A change is told to the wizard that holds the step, which draws it at once."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render"
+    ],
+    "state": {
+      "machines": {
+        "step": [
+          "not-started",
+          "done",
+          "skipped",
+          "running",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "running the step's action (the host or the server does)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-wizard-step only inside sf-wizard, one per step.",
+      "do_not": [
+        "Do not draw the step's title or buttons inside the body; the wizard draws them from the attributes"
+      ],
+      "required_reads": [
+        "inputs"
+      ],
+      "minimal_example": "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" description=\"По этому адресу вы будете открывать панель.\"><form><sf-input name=\"host\" label=\"Адрес\" required></sf-input></form></sf-wizard-step>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "focus": "The step takes no focus; its controls are the page's."
+    }
+  }
+}

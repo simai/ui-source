@@ -60,6 +60,16 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "states": [
+      "component/icons/css/icons.min.css",
+      "component/step/css/step.min.css",
+      "core/css/core.css",
+      "utility/cursor/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
     ]
   }
 }
