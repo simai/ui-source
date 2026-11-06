@@ -33,7 +33,8 @@
 
 </div>
 <div class="sf-wizard-main">
-<nav class="sf-wizard-column" aria-label="Шаги"><ol class="sf-wizard-list sf-wizard-list--column" aria-label="Шаги">
+<nav class="sf-wizard-column sf-scrollbar" data-mode="standard" aria-label="Шаги" data-sf-scrollbar-ready="true">
+<div class="sf-wizard-column-scroll sf-scrollbar__viewport"><ol class="sf-wizard-list sf-wizard-list--column" aria-label="Шаги">
 <li class="sf-wizard-list-item" data-state="done">
 <button type="button" class="sf-wizard-list-step" aria-label="1. Лицензия, Сделан">
 <span class="sf-wizard-list-mark" aria-hidden="true"><i class="sf-icon">check_circle</i></span>
@@ -95,7 +96,8 @@
 <span class="sf-wizard-list-label">Готово</span>
 </button>
 </li>
-</ol></nav>
+</ol></div>
+</nav>
 <div class="sf-wizard-body">
 <div class="sf-wizard-step-head">
 <div class="sf-wizard-title" role="heading" tabindex="-1" id="sf-wizard-column-1" aria-level="2">Почта</div>

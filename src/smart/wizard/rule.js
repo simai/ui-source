@@ -15,5 +15,6 @@ SF.RuleLoader['cl-wizard'] = {
     { name: 'cl-confirm' },
     { name: 'cl-modal' },
     { name: 'cl-icon' },
+    { name: 'scrollbar' },
   ],
 };

@@ -31,7 +31,7 @@ test('the manifest: places, navigation, progress, one value, seven events, four 
   assert.equal(manifest.events.invalid['own-verb'], true);
   assert.deepEqual(Object.keys(manifest.actions), ['open', 'close', 'go-to-step', 'next']);
   assert.deepEqual(manifest.relations.map((relation) => relation.name),
-    ['cl-wizard-step', 'cl-steps', 'cl-button', 'cl-progress-bar', 'cl-alert', 'cl-spinner', 'cl-confirm', 'cl-modal', 'cl-icon']);
+    ['cl-wizard-step', 'cl-steps', 'cl-button', 'cl-progress-bar', 'cl-alert', 'cl-spinner', 'cl-confirm', 'cl-modal', 'cl-icon', 'scrollbar']);
 });
 
 test('the step: five types, an optional mark, an address and a state', () => {

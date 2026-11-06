@@ -290,6 +290,9 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "scrollbar"
     }
   ],
   "templates": {

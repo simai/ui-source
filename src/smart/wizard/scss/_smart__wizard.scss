@@ -392,12 +392,30 @@
 
 /* Wide (40rem of the wizard's own width and more): the column, when asked. */
 @container sf-wizard (min-width: 40rem) {
+  /* The column never sets the wizard's height: the body does (owner,
+     2026-11-07). The column stretches to the body's height and its list
+     scrolls inside, out of the flow (absolute), so 30 steps beside a short
+     body leave the frame as tall as the body. The scroller is an sf-scrollbar
+     in standard mode, the kit's look of a native scroll area; the wizard keeps
+     the current step in view in it (afterRender), keyboard focus does the
+     same natively. */
   .sf-wizard--progress-column .sf-wizard-column {
     display: block;
+    position: relative;
     flex: none;
     inline-size: var(--sf-wizard--column);
-    padding-inline-end: var(--sf-wizard--gap);
     border-inline-end: var(--sf-px) solid var(--sf-wizard--border-color);
+  }
+
+  .sf-wizard--progress-column .sf-wizard-column-scroll {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    block-size: auto;
+    padding-inline-end: var(--sf-wizard--gap);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-block: contain;
   }
 
   .sf-wizard--progress-column .sf-wizard-compact {

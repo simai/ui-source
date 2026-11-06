@@ -32,6 +32,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.scrollbar",
       "smart.alert",
       "smart.button",
       "smart.confirm",
@@ -495,23 +496,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard/index.js",
-        "sha256": "7975f197f51d73f6c9ccd63ed532464a2713056f31e72f41a68893507cb7020c"
+        "sha256": "50606a06ee93b74e7513d69b752b6cd79bbdfba0252b544ea7ab20130572fac2"
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
-        "sha256": "7815bfa79f4a6aedc269c795091bd580ea6ba3b2d2f6e2ff0c3ae85d19a923b1"
+        "sha256": "4c8effc8176d9420f5d8981771e14fe24096b3f390a33d0d855a2ac351b90194"
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "cac9583f94aef9a0a35088d31b1d4460a00aa4edfcead219c1d746f85940daa6"
+        "sha256": "31220210b3f1180b3ebe0266125424155754371cbba5bbd1cf0746022d00fe57"
       },
       {
         "path": "src/smart/wizard/rule.js",
-        "sha256": "a4322996a231fb4d8fc86c777f5d1f8ec016ce23b9655f80997ff41127fc35fd"
+        "sha256": "61f3b41834b0da3d8d60a88f3da306f0adfd160bfeba88af77ae272eaf8951ae"
       },
       {
         "path": "src/smart/wizard/docs.md",
-        "sha256": "c27a6e41b4cc03902662f923c47b8fc02e239d4d213afe916b7556b0ab2a82f4"
+        "sha256": "4af895180574c09e093f6b33fd4d362f425d4392941f365c67ef2cc4c15d9704"
       }
     ],
     "generated_runtime": []

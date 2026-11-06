@@ -2926,6 +2926,7 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.scrollbar",
           "smart.alert",
           "smart.button",
           "smart.confirm",
@@ -2946,7 +2947,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard/smart.manifest.json",
-      "manifest_sha256": "6f7abfb19eebb9ed4423dda8157dd265e45220384054de8e7cea65fa4e1d9701",
+      "manifest_sha256": "1ff2d9e90bd4ffa553bbd8a475d670caaf33c93b685386a6ae1b35bac75c99b1",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

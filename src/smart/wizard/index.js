@@ -916,6 +916,30 @@ class SfWizard extends WizardElement {
       const frame = this.frameRoot;
       if (frame && frame !== this._listening) this.listen(frame);
     }
+    this.revealInColumn();
+  }
+
+  /**
+   * Keeps the current step in view in the column's own scroller after a move
+   * (block nearest): only the column scrolls, never the page, and a step
+   * already in view does not move. Read after layout, once per step.
+   */
+  revealInColumn() {
+    const scroller = this.find('.sf-wizard-column-scroll');
+    if (!scroller) { this._revealed = undefined; return; }
+    const key = `${this.index}:${scroller.clientHeight > 0}`;
+    if (key === this._revealed) return;
+    const settle = () => {
+      const item = scroller.querySelector('[aria-current="step"]');
+      if (!item || !scroller.isConnected || scroller.clientHeight === 0) return;
+      this._revealed = `${this.index}:true`;
+      const view = scroller.getBoundingClientRect();
+      const box = item.getBoundingClientRect();
+      if (box.top < view.top) scroller.scrollTop -= view.top - box.top;
+      else if (box.bottom > view.bottom) scroller.scrollTop += box.bottom - view.bottom;
+    };
+    if (typeof globalThis.requestAnimationFrame === 'function') globalThis.requestAnimationFrame(settle);
+    else settle();
   }
 }
 

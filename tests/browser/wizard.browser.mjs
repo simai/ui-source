@@ -41,6 +41,12 @@ const THREE = `<sf-wizard id="w" heading="Новый сайт">
 <sf-wizard-step name="done" label="Готово" type="result"><p>Сайт создан.</p></sf-wizard-step>
 </sf-wizard>`;
 
+// 30 steps beside a short body: the column must not make the wizard taller
+// (owner, 2026-11-07); it scrolls inside and keeps the current step in view.
+const THIRTY = `<sf-wizard id="w" heading="Установка" progress="column" navigation="free" current="s18">
+${Array.from({length: 30}, (_, i) => `<sf-wizard-step name="s${i + 1}" label="Шаг ${i + 1}"><p>Короткий шаг ${i + 1}.</p></sf-wizard-step>`).join('\n')}
+</sf-wizard>`;
+
 const posts = [];
 const PAGE_STEPS = ['address', 'notify', 'protection', 'done'];
 const pagesMarkup = (current) => `<sf-wizard id="w" place="pages" heading="Настройка сервера" current="${current}">
@@ -70,6 +76,7 @@ const server = createServer(async (request, response) => {
   const html = (body) => { response.writeHead(200, {'content-type': 'text/html; charset=utf-8'}); response.end(`${head(theme)}${body}</body></html>`); };
   if (path === '/three') return html(THREE);
   if (path === '/csv') return html(CSV);
+  if (path === '/thirty') return html(THIRTY);
   if (path === '/pages') return html(pagesMarkup(url.searchParams.get('step') || 'address'));
   if (path === '/post') {
     let raw = '';
@@ -264,6 +271,40 @@ for (const scheme of ['light', 'dark']) {
   const done = await tab.evaluate(() => ({detail: window.__done, open: document.getElementById('w').hasAttribute('open')}));
   ok(`${tag}: the import ends in completed with one value and the window closes`, done.detail?.value?.upload?.file === 'contacts.csv' && !done.open, JSON.stringify(done));
   ok(`${tag}: no page errors`, errors.length === 0, errors.join(' | '));
+  await context.close();
+}
+
+// ------------------------------------------------------------ column
+for (const scheme of ['light', 'dark']) {
+  const tag = `column ${scheme}`;
+  const {tab, context, errors} = await open('/thirty', {width: 1280, scheme});
+  const read = () => tab.evaluate(() => {
+    const w = document.querySelector('#w'); const scroller = w.querySelector('.sf-wizard-column-scroll');
+    const item = scroller?.querySelector('[aria-current="step"]'); const view = scroller?.getBoundingClientRect(); const box = item?.getBoundingClientRect();
+    return {
+      column: w.querySelector('.sf-wizard-column')?.getBoundingClientRect().height ?? -1,
+      body: w.querySelector('.sf-wizard-body').getBoundingClientRect().height,
+      scrolls: scroller ? scroller.scrollHeight > scroller.clientHeight : false,
+      inView: Boolean(box && box.top >= view.top - 1 && box.bottom <= view.bottom + 1),
+      head: w.querySelector('.sf-wizard-head').getBoundingClientRect().top - w.querySelector('.sf-wizard').getBoundingClientRect().top,
+      page: globalThis.scrollY,
+      look: scroller?.closest('.sf-scrollbar')?.getAttribute('data-mode') ?? '',
+    };
+  });
+  const first = await read();
+  ok(`${tag}: 30 steps beside a short body do not make the wizard taller`, first.column > 0 && first.column <= first.body + 1, JSON.stringify(first));
+  ok(`${tag}: the column scrolls inside, an sf-scrollbar in standard mode`, first.scrolls && first.look === 'standard', JSON.stringify(first));
+  ok(`${tag}: the current step (18) is in view on load, the page not scrolled`, first.inView && first.page === 0, JSON.stringify(first));
+  await tab.locator('#w .sf-wizard-column-scroll .sf-wizard-list-step').first().click();
+  await tab.waitForTimeout(700);
+  const back = await read();
+  ok(`${tag}: a move to step 1 brings it into view, the head stays`, back.inView && back.page === 0 && near(back.head, first.head), JSON.stringify(back));
+  await tab.evaluate(() => document.querySelector('#w').setAttribute('current', 's30'));
+  await tab.waitForTimeout(700);
+  const last = await read();
+  ok(`${tag}: a move to step 30 brings it into view`, last.inView && last.page === 0 && last.column <= last.body + 1, JSON.stringify(last));
+  ok(`${tag}: no page errors`, errors.length === 0, errors.join(' | '));
+  await shot(tab, `column-${scheme}`);
   await context.close();
 }
 
