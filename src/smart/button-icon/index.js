@@ -60,6 +60,14 @@ const IconButtonElement = elementFromManifest(manifest, {
 });
 
 class SfIconButton extends IconButtonElement {
+  // aria-label is the host's (§3.1), not a setting, so the manifest makes no
+  // attribute of it; it is watched here, or a name changed after the first
+  // drawing never reached the button (sf-language's «Язык: Русский» stayed
+  // after a choice, 2026-11-06). updateDom patches it.
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, 'aria-label'])];
+  }
+
   constructor() {
     super();
     this._attributeObserver = null;
