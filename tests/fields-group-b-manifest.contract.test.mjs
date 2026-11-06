@@ -160,7 +160,7 @@ test('sf-button-group: select and clear are the manifest\'s actions; change once
   assert.match(source, /hiddenName: this\.sfInternals \? '' : this\.name/u);
   const manifest = json('src/smart/button-group/component.json');
   assert.deepEqual(Object.keys(manifest.actions), ['select', 'clear']);
-  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'value', 'label', 'icon', 'count', 'icon-only', 'loading', 'disabled']);
+  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'value', 'label', 'lang', 'icon', 'count', 'icon-only', 'loading', 'disabled']);
   assert.equal(json('src/smart/button-group/lang/ru.json').runtime.system, 'Как в системе');
 });
 

@@ -23,6 +23,7 @@ function renderItem(item, index, context) {
       segment=${segmentFor(index, context.entries.length)}
       data-sf-button-group-value=${item.value}
       aria-label=${item.ariaLabel || nothing}
+      lang=${item.lang || nothing}
       class=${selected ? 'active' : nothing}
       ?disabled=${disabled}
       ?loading=${item.loading}
@@ -78,6 +79,7 @@ function renderSegment(item, context) {
       class=${classes}
       data-sf-button-group-value=${item.value}
       aria-label=${ariaLabel || nothing}
+      lang=${item.lang || nothing}
       aria-busy=${item.loading ? 'true' : nothing}
       ?disabled=${disabled}
     >

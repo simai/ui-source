@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-group",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "title": "Button group",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -166,7 +166,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "Selectable items with stable value, label, icon, count, icon-only, disabled and loading fields.",
+        "description": "Selectable items with stable value, label, lang, icon, count, icon-only, disabled and loading fields.",
         "examples": [
           [
             {
@@ -454,7 +454,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-group/index.js",
-        "sha256": "9e7befc60e6fc39820a4ec79676af6ab358ff0feddd714a6cc27dd833546d03c"
+        "sha256": "1cb400d707d6578fe3ba1b95ae139a343c68800c9908282174248f260dd9bb20"
       }
     ],
     "generated_runtime": []

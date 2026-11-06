@@ -69,6 +69,9 @@ function normalizeItems(items = []) {
         label: String(source.label ?? source.text ?? value),
         icon: String(source.icon || ''),
         ariaLabel: String(source.ariaLabel || source['aria-label'] || ''),
+        // The language the label is written in (a language picker names each
+        // language in itself): the segment carries it as lang.
+        lang: String(source.lang || '').trim(),
         // A number shown after the label in the segmented appearance; 0 is a
         // count, an absent or empty one is not.
         count: source.count === null || typeof source.count === 'undefined' ? '' : String(source.count).trim(),
