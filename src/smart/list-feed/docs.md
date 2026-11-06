@@ -153,9 +153,9 @@ feed.upsert(saved, undefined, {replaces: localKey}); // локальный кл�
 
 ## Переход с sf-message-log
 
-`sf-message-log` из пакета pro продолжает работать. Когда набор chat перейдёт на
-пару Framework с `sf-list-feed`, `sf-message-log` станет её датированным
-псевдонимом: `messages` → `items`, `renderMessage` → `renderItem`,
+`sf-message-log` из пакета pro — датированный псевдоним `sf-list-feed` (с пакета
+pro-db5cc2a375bd); он работает до 1 января 2027 года, после этой даты его
+удалят. Соответствия: `messages` → `items`, `renderMessage` → `renderItem`,
 `announceMessage` → `announceItem`, `setMessages` → `setItems`, `prependMessages` →
 `prependItems`, события `sf-message-log-*` → `sf-list-feed-*`, переменные
 `--sf-message-log-*` → `--sf-list-feed-*`, классы `.sf-message-log__*` →
