@@ -78,13 +78,12 @@ class SfPopover extends PopoverElement {
     // undone by the next render of whatever template engine put them there.
     // Nothing is moved: the children stay exactly where the consumer wrote them
     // and this says where they are.
+    // What the page set inline that a child inherits -- custom properties,
+    // colour, font -- stays on the host before its box, as on every Smart host.
     applyHostDisplayStyle() {
-        const next = 'display: inline-flex; align-items: center; position: relative;';
-        if (this.getAttribute('style') === next) return this;
-        this._syncingHostStyle = true;
-        this.setAttribute('style', next);
-        this._syncingHostStyle = false;
-        return this;
+        const next = [this.hostInheritedStyle(), 'display: inline-flex; align-items: center; position: relative;']
+            .filter(Boolean).join(' ');
+        return this.writeHostStyle(next);
     }
 
     // The base lifts every `[slot]` child out of the document at connect, for a

@@ -14,6 +14,33 @@ import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
 import { followLanguage, language } from "./page-language";
+// The properties a child takes from its parent (CSS inheritance), which a
+// boxless host passes on to its markup without having a box of its own. The
+// host keeps these, and every custom property, beside `display: contents`, so
+// an inline style set on the element (el.style.color, el.style.setProperty
+// ('--sf-...')) reaches the markup of every component -- before, only a
+// template that bound rootStyle on its root saw it, and seventeen did not
+// (sf-list-feed, sf-modal, sf-popover...). font and font-size stay on the root
+// alone: a relative size (1.2em, 120%, larger) is taken against the parent's
+// size, so held on the host and again on the root it would compound.
+const HOST_INHERITED_PROPERTIES = new Set([
+  "color", "caret-color", "accent-color", "color-scheme",
+  "cursor", "visibility", "direction", "writing-mode", "pointer-events",
+  "font-family", "font-style", "font-weight", "font-stretch", "font-variant",
+  "font-variant-caps", "font-variant-numeric", "font-variant-ligatures",
+  "font-variant-east-asian", "font-variant-alternates", "font-variant-position",
+  "font-feature-settings", "font-variation-settings", "font-kerning",
+  "font-optical-sizing", "font-synthesis", "font-synthesis-weight",
+  "font-synthesis-style", "font-synthesis-small-caps", "font-language-override",
+  "line-height", "letter-spacing", "word-spacing", "text-align", "text-align-last",
+  "text-indent", "text-transform", "text-shadow", "text-rendering",
+  "text-underline-position", "text-decoration-skip-ink", "text-wrap",
+  "white-space", "white-space-collapse", "tab-size", "hyphens", "word-break",
+  "overflow-wrap", "line-break", "quotes", "list-style-type",
+  "list-style-position", "list-style-image", "-webkit-font-smoothing",
+  "-moz-osx-font-smoothing",
+]);
+
 export function toBoolean(value, fallback = false) {
   if (value === undefined || value === null || value === "") return fallback;
   if (typeof value === "boolean") return value;
@@ -572,6 +599,7 @@ class SfBaseElement extends HTMLElement {
     this._activeRefEffects = null;
     this._hostStyle = "";
     this._syncingHostStyle = false;
+    this._appliedHostStyle = null;
     this._authorStyleElement = null;
     this._authorStyleObserver = null;
     this._styleReady = false;
@@ -2003,13 +2031,51 @@ class SfBaseElement extends HTMLElement {
     return element.style.cssText;
   }
 
+  // The author style the host's style attribute stands for. The attribute the
+  // base wrote itself (the inherited part and the host's display) stands for
+  // the whole style it was taken from, not for that part alone.
+  readHostStyleAttribute() {
+    const current = this.getAttribute("style");
+    if (current !== null && current === this._appliedHostStyle) return this._hostStyle || "";
+    return this.normalizeHostStyle(current);
+  }
+
+  // What of the author style the host keeps for its markup to inherit: the
+  // custom properties and HOST_INHERITED_PROPERTIES, with their priority.
+  hostInheritedStyle() {
+    if (!this._hostStyle) return "";
+    const source = document.createElement("div");
+    source.setAttribute("style", this._hostStyle);
+    const kept = document.createElement("div");
+    for (let index = 0; index < source.style.length; index += 1) {
+      const name = source.style[index];
+      if (!name.startsWith("--") && !HOST_INHERITED_PROPERTIES.has(name)) continue;
+      kept.style.setProperty(name, source.style.getPropertyValue(name), source.style.getPropertyPriority(name));
+    }
+    return kept.style.cssText;
+  }
+
+  // Writes the host's own style attribute without reading it back as author
+  // style.
+  writeHostStyle(nextStyle) {
+    this._appliedHostStyle = nextStyle;
+    if (this.getAttribute("style") === nextStyle) return this;
+    this._syncingHostStyle = true;
+    try {
+      this.setAttribute("style", nextStyle);
+    } finally {
+      this._syncingHostStyle = false;
+    }
+    return this;
+  }
+
   // The host is deliberately boxless; author styles belong to the template
   // root. Keep a real, stable CSSStyleDeclaration for CSSOM edits rather than
   // exposing the internal display-only declaration and losing prior edits.
   get style() {
     if (!this._authorStyleElement) {
       this._authorStyleElement = document.createElement("div");
-      this._hostStyle = this.normalizeHostStyle(this.getAttribute("style")) || this._hostStyle;
+      this._hostStyle = this.readHostStyleAttribute() || this._hostStyle;
       this.syncAuthorStyle();
       this._authorStyleObserver = new MutationObserver(() => this.flushAuthorStyle());
       this._authorStyleObserver.observe(this._authorStyleElement, {
@@ -2046,7 +2112,7 @@ class SfBaseElement extends HTMLElement {
 
   captureHostStyle() {
     this.flushAuthorStyle();
-    const normalized = this.normalizeHostStyle(this.getAttribute("style"));
+    const normalized = this.readHostStyleAttribute();
 
     if (normalized || !this._hostStyle) {
       this._hostStyle = normalized;
@@ -2057,17 +2123,9 @@ class SfBaseElement extends HTMLElement {
   }
 
   applyHostDisplayStyle() {
-    const nextStyle = "display: contents;";
+    const nextStyle = [this.hostInheritedStyle(), "display: contents;"].filter(Boolean).join(" ");
 
-    if (this.getAttribute("style") === nextStyle) {
-      return this;
-    }
-
-    this._syncingHostStyle = true;
-    this.setAttribute("style", nextStyle);
-    this._syncingHostStyle = false;
-
-    return this;
+    return this.writeHostStyle(nextStyle);
   }
 
   getRootStyle() {

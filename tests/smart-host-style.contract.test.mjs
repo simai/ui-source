@@ -11,7 +11,18 @@ test('Smart author CSSOM is stable and isolated from the boxless host style',asy
   assert.match(source,/set style\(value\)/);
   assert.doesNotMatch(source,/HTMLElement\.prototype\.[\w]+\s*=/);
   const apply=source.slice(source.indexOf('  applyHostDisplayStyle() {'),source.indexOf('  getRootStyle() {'));
-  assert.match(apply,/const nextStyle = "display: contents;"/);
+  // The host keeps what its markup inherits (custom properties, colour, the
+  // font but its size) beside display: contents, written without being read
+  // back as author style.
+  assert.match(apply,/\[this\.hostInheritedStyle\(\), "display: contents;"\]/);
+  assert.match(apply,/this\.writeHostStyle\(nextStyle\)/);
+  const inherited=source.slice(source.indexOf('  hostInheritedStyle() {'),source.indexOf('  writeHostStyle('));
+  assert.match(inherited,/name\.startsWith\("--"\)/);
+  assert.match(inherited,/HOST_INHERITED_PROPERTIES\.has\(name\)/);
+  const list=source.slice(source.indexOf('const HOST_INHERITED_PROPERTIES'),source.indexOf(']);',source.indexOf('const HOST_INHERITED_PROPERTIES')));
+  assert.match(list,/"color"/);
+  // A relative size held on the host and again on the root would compound.
+  assert.doesNotMatch(list,/"font-size"|"font"[,\s]/);
   const get=source.slice(source.indexOf('  getRootStyle() {'),source.indexOf('  setRootClass('));
   assert.match(get,/this\.flushAuthorStyle\(\)/);
   assert.match(get,/\[this\._hostStyle, this\.getAttribute\("root-style"\)\]/);
