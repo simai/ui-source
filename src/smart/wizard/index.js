@@ -473,7 +473,11 @@ class SfWizard extends WizardElement {
       if (['input', 'select', 'textarea'].includes(node.localName)) return node.willValidate !== false;
       return node.constructor?.formAssociated === true && node.willValidate;
     });
-    const invalid = controls.filter((control) => !control.checkValidity());
+    // checkValidity fires the native invalid events this wizard listens to:
+    // the wizard's own check speaks once, below.
+    this._validating = true;
+    let invalid;
+    try { invalid = controls.filter((control) => !control.checkValidity()); } finally { this._validating = false; }
     if (!invalid.length) return true;
     invalid.forEach((control) => this.markInvalid(control));
     const first = invalid[0];
@@ -539,6 +543,7 @@ class SfWizard extends WizardElement {
     const control = event.target;
     if (!this.currentStep?.element?.contains(control)) return;
     if (this.fieldOf(control)) event.preventDefault();
+    if (this._validating) return;
     this.markInvalid(control);
     if (!this._invalidSent) {
       this._invalidSent = true;
