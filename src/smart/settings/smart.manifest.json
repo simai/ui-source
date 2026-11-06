@@ -1,0 +1,344 @@
+{
+  "schema_version": 2,
+  "id": "smart.settings",
+  "version": "1.0.0",
+  "title": "Settings",
+  "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "settings",
+    "preferences",
+    "options",
+    "quick-settings",
+    "menu",
+    "switch"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n"
+  ],
+  "custom_element": "sf-settings",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.menu-context"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "look": {
+        "type": "string",
+        "default": "drill",
+        "description": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows",
+        "enum": [
+          "drill",
+          "rows",
+          "tiles"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1/2",
+        "description": "The menu's rung: rows of 32 px at 1/2, of 40 px at 1",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "for": {
+        "type": "string",
+        "default": "",
+        "description": "The id of a page element, or several separated by spaces, that opens the panel when pressed; the trigger slot is the other way. With neither the panel stands open in the page's flow"
+      },
+      "remember": {
+        "type": "string",
+        "default": "",
+        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written after every change and put back into the items before the first drawing"
+      },
+      "label": {
+        "type": "string",
+        "description": "The panel's accessible name. «Настройки» / «Settings» in the page language when not set"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "setValue": {
+      "summary": "Writes one setting's value into its item: the page's answer to a cancelled change, or a value restored on load. Raises nothing. Refused with not-found when no item carries the id, with invalid when the item cannot hold the value",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "value",
+          "schema": {}
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome}: applied; refused with not-found or invalid."
+      }
+    },
+    "setAll": {
+      "summary": "Writes a map of values -- {id: value} -- into the items that carry those ids: a panel restored from storage in one call. Raises nothing. Refused with not-found when no id of the map is an item's",
+      "arguments": [
+        {
+          "name": "values",
+          "schema": {
+            "type": "object"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome, count}: how many items were written."
+      }
+    },
+    "show": {
+      "summary": "Goes straight to one setting: a popup opens against its trigger, the drill look opens the levels down to it, and the focus goes to its row. Refused with not-found when no item carries the id; unavailable with no-trigger for a popup whose trigger is not in the page; cancelled when the menu's open was cancelled",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "Promise<object>",
+        "description": "{outcome}: applied, refused, unavailable or cancelled."
+      }
+    },
+    "reset": {
+      "summary": "Puts the declared values back -- the values the items carried when the page gave them -- after asking reset; changed goes out once for each setting that moved. A listener that cancels reset keeps the current values",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome, count}: applied with how many settings moved, or cancelled."
+      }
+    }
+  },
+  "events": {
+    "sf-settings-change": {
+      "summary": "A person asks to change a setting: the request, sent before the value is written. Cancelled, nothing changes and the row keeps the value it had until the page answers with setValue",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "previous",
+          "item"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The setting's id."
+          },
+          "value": {
+            "description": "The value asked for: a boolean for a switch, a number for a range, the option's id for a choice."
+          },
+          "previous": {
+            "description": "The value it has."
+          },
+          "item": {
+            "type": "object",
+            "description": "The item with the value asked for."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-changed": {
+      "summary": "The fact: the value is written into its item, the row shows it and remember has kept it. The page applies the setting here. reset raises it once for each setting it moved; setValue and setAll raise nothing",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "previous",
+          "item"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The setting's id."
+          },
+          "value": {
+            "description": "The value it has now."
+          },
+          "previous": {
+            "description": "The value it had."
+          },
+          "item": {
+            "type": "object",
+            "description": "The item, with its new value."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-reset": {
+      "summary": "The declared values are asked back (the reset action): the request. Cancelled, the current values stay",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "look": [
+        "drill",
+        "rows",
+        "tiles"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "closed",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "hybrid",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "applying what a setting means (a dark theme, a dense table): the page listens to changed",
+      "saving the values on a server (cancel change, save, answer with setValue)",
+      "a menu of actions or a mixed menu (sf-menu-context with its value rows)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "menu",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches the panel's one tab stop; the arrows move between rows, Home and End go to the ends",
+      "Enter or Space turns a switch, chooses an option or opens a drilling choice; Right goes in, Left and Escape go back",
+      "A slider takes the side arrows; Escape on the top level closes a popup and returns focus to the trigger"
+    ],
+    "focus": "A popup takes the focus on its first row and gives it back to the trigger when it closes; inline the focus stays where the person is."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": null,
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": null,
+  "ai_guidance": {
+    "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a button or standing in a panel.",
+    "do_not": [
+      "Do not use sf-settings for a menu of actions or a mixed menu; use sf-menu-context with its value rows",
+      "Do not use sf-settings-menu; it was removed and is not an alias",
+      "Do not keep a setting's value outside its item; read values or listen to changed",
+      "Do not use sf-settings for a long form with validation; use a form"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-settings look=\"rows\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"value\": true}]}</script></sf-settings>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

@@ -788,6 +788,7 @@ import '../../smart/reference-link/rule.js';
 import '../../smart/resizer/rule.js';
 import '../../smart/input-rich/rule.js';
 import '../../smart/search/rule.js';
+import '../../smart/settings/rule.js';
 import '../../smart/header-site/rule.js';
 import '../../smart/skeleton/rule.js';
 import '../../smart/slider/rule.js';

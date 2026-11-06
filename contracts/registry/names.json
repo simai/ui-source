@@ -42,6 +42,7 @@
         "reference",
         "resizer",
         "search",
+        "settings",
         "skeleton",
         "slider",
         "sortable",
@@ -286,6 +287,10 @@
         },
         {
           "element": "sf-search",
+          "status": "released"
+        },
+        {
+          "element": "sf-settings",
           "status": "released"
         },
         {

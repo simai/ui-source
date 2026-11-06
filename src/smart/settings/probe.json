@@ -1,0 +1,310 @@
+{
+  "component": "sf-settings",
+  "probe": "sf-settings against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main style=\"display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;padding:16px\">",
+      "  <sf-settings id=\"drill\" look=\"drill\" label=\"Настройки чтения\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
+      "  <sf-settings id=\"rows\" look=\"rows\" label=\"Вид таблицы\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"type\": \"group\", \"text\": \"Вид таблицы\", \"items\": [{\"id\": \"density\", \"type\": \"choice\", \"text\": \"Плотность\", \"value\": \"normal\", \"options\": [{\"id\": \"compact\", \"text\": \"Плотно\"}, {\"id\": \"normal\", \"text\": \"Обычно\"}]}, {\"id\": \"align\", \"type\": \"choice\", \"text\": \"Выравнивание\", \"value\": \"start\", \"options\": [{\"id\": \"start\", \"text\": \"По левому краю\", \"icon\": \"format_align_left\"}, {\"id\": \"center\", \"text\": \"По центру\", \"icon\": \"format_align_center\"}, {\"id\": \"end\", \"text\": \"По правому краю\", \"icon\": \"format_align_right\"}]}, {\"id\": \"wrap\", \"type\": \"switch\", \"text\": \"Переносить строки\", \"value\": false}, {\"id\": \"stripes\", \"type\": \"switch\", \"text\": \"Полосы через строку\", \"value\": true}]}, {\"type\": \"separator\"}, {\"id\": \"scale\", \"type\": \"range\", \"text\": \"Масштаб\", \"value\": 100, \"min\": 80, \"max\": 140, \"step\": 10, \"unit\": \"%\"}]}</script></sf-settings>",
+      "  <sf-settings id=\"tiles\" look=\"tiles\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true, \"tile\": true}, {\"id\": \"night\", \"type\": \"switch\", \"text\": \"Ночь\", \"icon\": \"dark_mode\", \"value\": false, \"tile\": true}, {\"id\": \"alerts\", \"type\": \"switch\", \"text\": \"Сигналы\", \"icon\": \"notifications\", \"value\": true, \"tile\": true}, {\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Авто\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"scale\", \"type\": \"range\", \"text\": \"Масштаб\", \"icon\": \"format_size\", \"value\": 100, \"min\": 80, \"max\": 140, \"step\": 10, \"unit\": \"%\"}]}</script></sf-settings>",
+      "  <sf-settings id=\"popup\" look=\"rows\" remember=\"probe\" label=\"Настройки чтения\"><sf-button-icon id=\"popup-trigger\" icon=\"tune\" appearance=\"link\" scheme=\"on-surface\" size=\"1/2\" aria-label=\"Настройки чтения\"></sf-button-icon><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
+      "  <button id=\"outside\" type=\"button\">Настройки</button>",
+      "  <sf-settings id=\"named\" for=\"outside\" look=\"drill\" size=\"1\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
+      "  <sf-settings id=\"long\" look=\"drill\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"digest\", \"type\": \"choice\", \"text\": \"Как часто присылать сводку по задачам проекта\", \"icon\": \"mail\", \"value\": \"week\", \"options\": [{\"id\": \"day\", \"text\": \"Каждый день утром, до начала рабочего дня\"}, {\"id\": \"week\", \"text\": \"Раз в неделю, в понедельник утром, со всеми задачами\"}]}, {\"id\": \"mentions\", \"type\": \"switch\", \"text\": \"Уведомлять, когда меня упоминают в комментариях к задачам\", \"icon\": \"alternate_email\", \"value\": true}]}</script></sf-settings>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-drill",
+      "title": "drill: one sf-menu-context, submenu drill, named by label; a choice row shows its value under the name and a chevron; a switch stays a switch row",
+      "covers": "settings.items, settings.look drill, settings.label, accessibility menu",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#drill'); const menu = el.querySelector(':scope > .sf-settings-parts > sf-menu-context'); const rows = [...el.querySelectorAll('.sf-context-menu-item')]; const theme = rows[0]; return el.getAttribute('data-look') === 'drill' && menu.getAttribute('submenu') === 'drill' && !menu.hasAttribute('popup') && el.querySelector('[role=\"menu\"]').getAttribute('aria-label') === 'Настройки чтения' && theme.getAttribute('aria-haspopup') === 'menu' && theme.querySelector('.sf-context-menu-item-under').textContent.trim() === 'Как в системе' && !!theme.querySelector('.sf-context-menu-item-chevron') && el.querySelector('[role=\"menuitemcheckbox\"]').getAttribute('aria-checked') === 'true'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-drill-choose",
+      "title": "drill: a press on a choice opens its options in the same panel; choosing Тёмная sends change then changed {id theme, value dark, previous system} and writes the item",
+      "covers": "events.change, events.changed, values",
+      "steps": [
+        {
+          "user": "click:#drill .sf-context-menu-item[aria-haspopup=\"menu\"]",
+          "wait": 300,
+          "check": "document.querySelectorAll('#drill [role=\"menuitemradio\"]').length === 3 && !!document.querySelector('#drill .sf-context-menu-drill-head')"
+        },
+        {
+          "script": "([...document.querySelectorAll('#drill [role=\"menuitemradio\"]')].find((row) => row.textContent.includes('Тёмная')).click(), true)",
+          "wait": 300,
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "id": "theme",
+                  "value": "dark",
+                  "previous": "system"
+                }
+              },
+              {
+                "name": "changed",
+                "count": 1,
+                "detail": {
+                  "id": "theme",
+                  "value": "dark",
+                  "previous": "system"
+                }
+              }
+            ]
+          },
+          "check": "document.querySelector('#drill').values.theme === 'dark' && document.querySelector('#drill').items[0].value === 'dark'"
+        }
+      ]
+    },
+    {
+      "id": "p3-cancel",
+      "title": "a cancelled change writes nothing; setValue then answers it",
+      "covers": "events.change cancelable, actions.set-value",
+      "steps": [
+        {
+          "script": "(window.__stop = (event) => event.preventDefault(), document.querySelector('#rows').addEventListener('sf-settings-change', window.__stop), document.querySelector('#rows').querySelector('[role=\"menuitemcheckbox\"]').click(), true)",
+          "wait": 200,
+          "check": "document.querySelector('#rows').values.wrap === false && document.querySelector('#rows').querySelector('[role=\"menuitemcheckbox\"]').getAttribute('aria-checked') === 'false'"
+        },
+        {
+          "script": "(document.querySelector('#rows').removeEventListener('sf-settings-change', window.__stop), true)",
+          "check": "true"
+        },
+        {
+          "action": {
+            "name": "set-value",
+            "with": {
+              "id": "wrap",
+              "value": true
+            }
+          },
+          "target": "#rows",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "wait": 200,
+          "check": "document.querySelector('#rows').values.wrap === true && document.querySelector('#rows').querySelector('[role=\"menuitemcheckbox\"]').getAttribute('aria-checked') === 'true'"
+        },
+        {
+          "action": {
+            "name": "set-value",
+            "with": {
+              "id": "nothing",
+              "value": true
+            }
+          },
+          "target": "#rows",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "not-found"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "set-value",
+            "with": {
+              "id": "density",
+              "value": "huge"
+            }
+          },
+          "target": "#rows",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "invalid"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-rows",
+      "title": "rows: a group's title is a heading, a choice is quiet pills at the row's end, a range a slider with its unit; no levels",
+      "covers": "settings.look rows",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#rows'); const menu = el.querySelector('sf-menu-context'); return el.getAttribute('data-look') === 'rows' && menu.getAttribute('submenu') === 'flyout' && el.querySelector('.sf-context-menu-heading').textContent.trim() === 'Вид таблицы' && el.querySelectorAll('.sf-context-menu-choice-option').length === 5 && el.querySelector('input[type=\"range\"]').value === '100' && el.querySelector('.sf-context-menu-range-value').textContent.trim() === '100%'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-tiles",
+      "title": "tiles: the switches marked tile stand on top as tiles, a separator, the rest as rows; a tile press toggles its switch",
+      "covers": "settings.look tiles, items.tile",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#tiles'); const tiles = [...el.querySelectorAll('.sf-context-menu-tile')]; return el.getAttribute('data-look') === 'tiles' && tiles.length === 3 && el.querySelector('.sf-context-menu-tiles').getAttribute('aria-label') === 'Быстрые настройки' && !!el.querySelector('.sf-context-menu-separator') && el.querySelectorAll('.sf-context-menu-choice-option').length === 3; })()"
+        },
+        {
+          "user": "click:#tiles .sf-context-menu-tile:nth-child(2)",
+          "wait": 200,
+          "expect": {
+            "events": [
+              {
+                "name": "changed",
+                "count": 1,
+                "detail": {
+                  "id": "night",
+                  "value": true,
+                  "previous": false
+                }
+              }
+            ]
+          },
+          "check": "document.querySelector('#tiles').values.night === true"
+        }
+      ]
+    },
+    {
+      "id": "p6-popup",
+      "title": "popup: the trigger slot opens the panel against the trigger's own button, named, the focus on the first row; Escape closes it and gives the focus back",
+      "covers": "slots.trigger, popup, keyboard Escape",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#popup'); const button = el.querySelector('#popup-trigger button'); return el.querySelector('sf-menu-context').hasAttribute('popup') && button.getAttribute('aria-haspopup') === 'menu' && button.getAttribute('aria-expanded') === 'false'; })()"
+        },
+        {
+          "user": "click:#popup-trigger button",
+          "wait": 400,
+          "check": "(() => { const el = document.querySelector('#popup'); const button = el.querySelector('#popup-trigger button'); return el.querySelector('sf-menu-context').isOpen && button.getAttribute('aria-expanded') === 'true' && el.querySelector('sf-menu-context').contains(document.activeElement); })()"
+        },
+        {
+          "user": "key:Escape",
+          "wait": 300,
+          "check": "!document.querySelector('#popup sf-menu-context').isOpen && document.activeElement === document.querySelector('#popup-trigger button')"
+        }
+      ]
+    },
+    {
+      "id": "p7-remember",
+      "title": "remember keeps the values as a preference (sf-settings/<name>) after a change",
+      "covers": "settings.remember",
+      "steps": [
+        {
+          "action": {
+            "name": "show",
+            "with": {
+              "id": "sound"
+            }
+          },
+          "target": "#popup",
+          "wait": 300,
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "check": "document.querySelector('#popup sf-menu-context').isOpen"
+        },
+        {
+          "script": "(document.querySelector('#popup').querySelector('[role=\"menuitemcheckbox\"]').click(), true)",
+          "wait": 300,
+          "check": "JSON.parse(localStorage.getItem('sf-pref:sf-settings/probe') || '{}').sound === false && document.querySelector('#popup').values.sound === false"
+        },
+        {
+          "script": "(document.querySelector('#popup sf-menu-context').close({reason: 'api'}), true)",
+          "check": "true"
+        }
+      ]
+    },
+    {
+      "id": "p8-for",
+      "title": "for names a trigger elsewhere in the page; size 1 gives 40 px rows",
+      "covers": "settings.for, settings.size",
+      "steps": [
+        {
+          "user": "click:#outside",
+          "wait": 400,
+          "check": "(() => { const menu = document.querySelector('#named sf-menu-context'); const row = menu.querySelector('.sf-context-menu-item'); return menu.isOpen && menu.getAttribute('size') === '1' && Math.round(row.getBoundingClientRect().height) >= 40 && document.querySelector('#outside').getAttribute('aria-expanded') === 'true'; })()"
+        },
+        {
+          "user": "key:Escape",
+          "wait": 300,
+          "check": "!document.querySelector('#named sf-menu-context').isOpen"
+        }
+      ]
+    },
+    {
+      "id": "p9-set-all-reset",
+      "title": "setAll writes a map and raises nothing; reset asks reset, puts the declared values back and says changed once for each that moved",
+      "covers": "actions.set-all, actions.reset, events.reset",
+      "steps": [
+        {
+          "action": {
+            "name": "set-all",
+            "with": {
+              "values": {
+                "theme": "light",
+                "font": "l",
+                "nothing": 1
+              }
+            }
+          },
+          "target": "#drill",
+          "expect": {
+            "returns": {
+              "outcome": "applied",
+              "count": 2
+            },
+            "events": [
+              {
+                "name": "changed",
+                "count": 0
+              }
+            ]
+          },
+          "check": "document.querySelector('#drill').values.font === 'l'"
+        },
+        {
+          "action": {
+            "name": "reset"
+          },
+          "target": "#drill",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "reset",
+                "count": 1
+              },
+              {
+                "name": "changed",
+                "count": 2
+              }
+            ]
+          },
+          "check": "document.querySelector('#drill').values.theme === 'system' && document.querySelector('#drill').values.font === 'm'"
+        }
+      ]
+    },
+    {
+      "id": "p10-width",
+      "title": "the panel is 280 px in every look; a long name wraps and a long value is cut with the whole of it in title",
+      "covers": "width, long names",
+      "steps": [
+        {
+          "check": "['#drill', '#rows', '#tiles', '#long'].every((id) => Math.round(document.querySelector(id + ' .sf-context-menu-content').getBoundingClientRect().width) === 280)"
+        },
+        {
+          "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const under = row.querySelector('.sf-context-menu-item-under'); return row.getBoundingClientRect().height > 40 && under.scrollWidth > under.clientWidth && under.getAttribute('title') === 'Раз в неделю, в понедельник утром, со всеми задачами'; })()"
+        }
+      ]
+    }
+  ]
+}

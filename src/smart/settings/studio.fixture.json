@@ -1,0 +1,93 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.settings",
+  "title": "settings reference",
+  "summary": "Deterministic reference fixture for sf-settings.",
+  "locale": "ru",
+  "props": {
+    "look": "drill",
+    "label": "Настройки чтения",
+    "items": [
+      {
+        "id": "theme",
+        "type": "choice",
+        "text": "Тема",
+        "icon": "contrast",
+        "value": "system",
+        "options": [
+          {
+            "id": "system",
+            "text": "Как в системе",
+            "icon": "computer"
+          },
+          {
+            "id": "light",
+            "text": "Светлая",
+            "icon": "light_mode"
+          },
+          {
+            "id": "dark",
+            "text": "Тёмная",
+            "icon": "dark_mode"
+          }
+        ]
+      },
+      {
+        "id": "lang",
+        "type": "choice",
+        "text": "Язык",
+        "icon": "translate",
+        "value": "ru",
+        "options": [
+          {
+            "id": "ru",
+            "text": "Русский"
+          },
+          {
+            "id": "en",
+            "text": "English"
+          },
+          {
+            "id": "kk",
+            "text": "Қазақша"
+          },
+          {
+            "id": "de",
+            "text": "Deutsch"
+          }
+        ]
+      },
+      {
+        "id": "font",
+        "type": "choice",
+        "text": "Размер текста",
+        "icon": "format_size",
+        "value": "m",
+        "options": [
+          {
+            "id": "s",
+            "text": "Мелкий"
+          },
+          {
+            "id": "m",
+            "text": "Обычный"
+          },
+          {
+            "id": "l",
+            "text": "Крупный"
+          }
+        ]
+      },
+      {
+        "id": "sound",
+        "type": "switch",
+        "text": "Звук",
+        "icon": "volume_up",
+        "value": true
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}
