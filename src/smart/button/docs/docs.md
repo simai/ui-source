@@ -99,6 +99,12 @@ says the combination in `aria-keyshortcuts` (`Meta+K` on a Mac, `Control+K`
 elsewhere). With a shortcut the label takes the free room, so a stretched
 button reads label … keys and `text-position` places the label.
 
+A key of one character (P, ⌘, ⇧, ↵) is a square; a key of several letters
+(Esc, Ctrl, Shift) hugs its word with the same padding on both sides. The keys
+take the colours of the button they sit on: on `default` and `tonal` the
+button's own ink (its label's on-colour, a 12% fill and a 32% edge of it), on
+`outline`, `link` and `surface` the surface container with the quieter ink.
+
 `shortcut-listen` makes the button listen: the combination pressed anywhere on
 the page presses the button, exactly as a click does (so `sf-button-press`
 follows). It is not heard when another listener already took the key, while the

@@ -96,7 +96,7 @@ export function renderButtonTemplate(context) {
                     class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.chars ? `sf-button-shortcut-key--chars-${cap.chars}` : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
+            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.square ? 'sf-button-shortcut-key--square' : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
 `;
 
     // href (1.4.0): a link with the button's look. The browser's own link

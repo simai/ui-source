@@ -12,11 +12,12 @@
 // the quieter ink; the key box the same before and after the kbd sheet (a
 // lazy relation) arrives.
 //
-// Across platforms: the search-trigger snapshot (printed on a Mac, ⌘ K) on a
-// page without any script, and the same button drawn live on a page that
-// says it is Windows (Ctrl K): the button, the keys' group and every key
-// stand in the same boxes, 0 px apart -- the modifier's cap keeps the box of
-// its wider word.
+// The snapshot and the live button: the search-trigger snapshot (printed on
+// a Mac, ⌘ K) on a page without any script stands in the same boxes as the
+// button drawn live on a Mac, 0 px apart. On a page that says it is Windows
+// the caps are Ctrl K: a key of one character is a square, a key of several
+// letters hugs its word -- the caps are true to the platform, not to its
+// widest word (docs review R010, 2026-11-06).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {dirname, extname, join, resolve} from 'node:path';
@@ -270,25 +271,45 @@ try {
     await printedTab.waitForTimeout(200);
     const printed = await geometryOf(printedTab);
     await printedTab.close();
-    const windows = await browser.newPage({viewport: {width, height: 400}});
-    await windows.addInitScript(() => {
-      Object.defineProperty(Navigator.prototype, 'platform', {get: () => 'Win32', configurable: true});
-      Object.defineProperty(Navigator.prototype, 'userAgentData', {get: () => ({platform: 'Windows', brands: [], mobile: false}), configurable: true});
-    });
-    await windows.goto(url('/live'));
-    await windows.waitForFunction(() => document.querySelector('sf-button .sf-button-shortcut kbd') && document.querySelector('sf-button .sf-icon')
-      && Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 20000})
-      .catch(() => failures.push(`${width}: the live Windows button never drew its keys with the kbd sheet`));
-    await windows.evaluate(() => document.fonts.ready);
-    await windows.waitForTimeout(200);
-    const live = await geometryOf(windows);
-    await windows.close();
-    seen[`platforms${width}`] = {printed, live};
-    if (JSON.stringify(printed.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(live.caps) !== JSON.stringify(['Ctrl', 'K'])) {
-      failures.push(`${width}: the printed caps are ${printed.caps} and the live Windows caps ${live.caps}, expected ⌘ K and Ctrl K`);
+    const drawLive = async (windows) => {
+      const tab = await browser.newPage({viewport: {width, height: 400}});
+      await tab.addInitScript((onWindows) => {
+        const platform = onWindows ? ['Win32', 'Windows'] : ['MacIntel', 'macOS'];
+        Object.defineProperty(Navigator.prototype, 'platform', {get: () => platform[0], configurable: true});
+        Object.defineProperty(Navigator.prototype, 'userAgentData', {get: () => ({platform: platform[1], brands: [], mobile: false}), configurable: true});
+      }, windows);
+      await tab.goto(url('/live'));
+      await tab.waitForFunction(() => document.querySelector('sf-button .sf-button-shortcut kbd') && document.querySelector('sf-button .sf-icon')
+        && Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 20000})
+        .catch(() => failures.push(`${width}: the live ${windows ? 'Windows' : 'Mac'} button never drew its keys with the kbd sheet`));
+      await tab.evaluate(() => document.fonts.ready);
+      await tab.waitForTimeout(200);
+      const drawn = await geometryOf(tab);
+      drawn.hug = await tab.evaluate(() => Array.from(document.querySelectorAll('sf-button .sf-button-shortcut > kbd')).map((key) => {
+        const style = getComputedStyle(key);
+        const range = document.createRange();
+        range.selectNodeContents(key);
+        return Math.round((range.getBoundingClientRect().width + parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+          + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth)) * 100) / 100;
+      }));
+      await tab.close();
+      return drawn;
+    };
+    const mac = await drawLive(false);
+    const live = await drawLive(true);
+    seen[`platforms${width}`] = {printed, mac, live};
+    if (JSON.stringify(printed.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(mac.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(live.caps) !== JSON.stringify(['Ctrl', 'K'])) {
+      failures.push(`${width}: the printed caps are ${printed.caps}, the live Mac caps ${mac.caps} and the live Windows caps ${live.caps}, expected ⌘ K, ⌘ K and Ctrl K`);
     }
     for (const part of ['button', 'group', 'keys', 'label']) {
-      if (JSON.stringify(printed[part]) !== JSON.stringify(live[part])) failures.push(`${width}: ${part} moved between the printed Mac snapshot and the live Windows button: ${JSON.stringify(printed[part])} -> ${JSON.stringify(live[part])}`);
+      if (JSON.stringify(printed[part]) !== JSON.stringify(mac[part])) failures.push(`${width}: ${part} moved between the printed Mac snapshot and the live Mac button: ${JSON.stringify(printed[part])} -> ${JSON.stringify(mac[part])}`);
+    }
+    for (const [name, drawn] of [['Mac', mac], ['Windows', live]]) {
+      drawn.keys.forEach(([, , keyWidth, keyHeight], index) => {
+        const cap = drawn.caps[index];
+        if ([...cap].length === 1 && Math.abs(keyWidth - keyHeight) > 0.5) failures.push(`${width} ${name}: the key ${cap} is ${keyWidth}x${keyHeight}, not a square`);
+        if ([...cap].length > 1 && Math.abs(keyWidth - drawn.hug[index]) > 0.5) failures.push(`${width} ${name}: the key ${cap} is ${keyWidth}px wide, its word with the padding ${drawn.hug[index]}px`);
+      });
     }
   }
 } finally {

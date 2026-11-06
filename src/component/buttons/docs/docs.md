@@ -35,6 +35,12 @@ radius class; it stays for the Smart `radius="default"` value. The utility
 class of that name and the `--sf-radius-default` token were removed on
 2026-11-02 (journal `token-radius-default`).
 
+Joined positions `segment-start`, `segment-middle` and `segment-end` square
+the corners two neighbours share and draw one line at each join: the end edge
+of the segment before it (a segment that follows another has no start edge).
+An outline segment among others owns both of its joins, so a selected outline
+segment is framed whole.
+
 Five emphases, each in an accent (`primary`) and a neutral (`on-surface`)
 scheme:
 

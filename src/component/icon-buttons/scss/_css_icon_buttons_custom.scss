@@ -1,44 +1,44 @@
 @layer sf.override {
 
-  :is(sf-button-icon, sf-icon-button):has(.sf-icon-button--outline[class*="segment-"])
-  + :is(sf-button-icon, sf-icon-button)
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
-  .sf-icon-button.sf-icon-button--outline[class*="segment-"]
-  + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
+  /* One line at a join (docs review R003, 2026-11-06), as on the button: a
+     segment that follows another has no start edge. Here, after surface has
+     written its four edges in sf.components. */
+  .sf-icon-button:is(.segment-middle, .segment-end) {
+    --sf-icon-button--border-inline-start-width: 0;
+  }
+
+  /* Any other segment beside an outline one keeps the block edges of the
+     frame, so the control stands in one height. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  + :is(sf-button-icon, sf-icon-button) > .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]
+  + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
     --sf-icon-button--border-top-width: var(--sf-px);
-    --sf-icon-button--border-inline-end-width: var(--sf-px);
     --sf-icon-button--border-bottom-width: var(--sf-px);
+  }
+
+  /* The outline segment owns both of its joins: the segment before it leaves
+     its end edge to it ... */
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
+    --sf-icon-button--border-inline-end-width: 0;
+  }
+
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-icon-button.segment-start:not(.sf-icon-button--outline),
+  .sf-icon-button.segment-start:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
     --sf-icon-button--border-inline-start-width: var(--sf-px);
   }
 
-
-  :is(sf-button-icon, sf-icon-button):has(.sf-icon-button--outline[class*="segment-"])
-  + sf-button
-  .sf-button[class*="segment-"]:not(.sf-button--outline),
-  .sf-icon-button.sf-icon-button--outline[class*="segment-"]
-  + .sf-button[class*="segment-"]:not(.sf-button--outline) {
-    --sf-button--border-top-width: var(--sf-px);
-    --sf-button--border-inline-end-width: var(--sf-px);
-    --sf-button--border-bottom-width: var(--sf-px);
-    --sf-button--border-inline-start-width: var(--sf-px);
-  }
-
-
-  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button-icon, sf-icon-button) .sf-icon-button--outline[class*="segment-"])
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {
-    --sf-icon-button--border-top-width: var(--sf-px);
-    --sf-icon-button--border-inline-end-width: var(--sf-px);
-    --sf-icon-button--border-bottom-width: var(--sf-px);
-    --sf-icon-button--border-inline-start-width: var(--sf-px);
-  }
-
-  :is(sf-button-icon, sf-icon-button):has(+ sf-button .sf-button--outline[class*="segment-"])
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-button.sf-button--outline[class*="segment-"]) {
-    --sf-icon-button--border-top-width: var(--sf-px);
-    --sf-icon-button--border-inline-end-width: var(--sf-px);
-    --sf-icon-button--border-bottom-width: var(--sf-px);
+  /* ... and draws its own start edge after one that is not an outline. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> [class*="segment-"]:not(.sf-button--outline, .sf-icon-button--outline))
+  + :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--outline[class*="segment-"],
+  [class*="segment-"]:not(.sf-button--outline, .sf-icon-button--outline)
+  + .sf-icon-button.sf-icon-button--outline[class*="segment-"] {
     --sf-icon-button--border-inline-start-width: var(--sf-px);
   }
 }

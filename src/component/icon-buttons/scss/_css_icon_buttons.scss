@@ -360,33 +360,26 @@
     --sf-icon-button--border-inline-end-width: var(--sf-px);
   }
 
+  /* One line at a join, as on the button: the end edge of the segment
+     before it; a segment that follows another has no start edge (docs
+     review R003, 2026-11-06). */
   .sf-icon-button.segment-middle {
     --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
     --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
     --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
     --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
-    --sf-icon-button--border-inline-start-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: 0;
     --sf-icon-button--border-inline-end-width: var(--sf-px);
   }
 
   .sf-icon-button.segment-end {
     --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
     --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
-    --sf-icon-button--border-inline-start-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: 0;
   }
 
-  .sf-icon-button:not(.sf-icon-button--outline).segment-end {
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
-  }
-
-  .sf-icon-button:not(.sf-icon-button--outline).segment-start {
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
     border-inline-end-color: var(--sf-white--alfa-24, transparent);
-  }
-
-  .sf-icon-button:not(.sf-icon-button--outline).segment-middle {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
   }
 
   /* Surface, built on the neutral alpha ramp. Same reading as on the button: not

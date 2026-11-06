@@ -8,12 +8,12 @@ const MODIFIERS = ['mod', 'ctrl', 'alt', 'shift', 'meta'];
 // What a person reads on a key cap, per platform.
 const MAC_CAPS = {mod: '⌘', meta: '⌘', ctrl: '⌃', alt: '⌥', shift: '⇧'};
 const OTHER_CAPS = {mod: 'Ctrl', meta: 'Win', ctrl: 'Ctrl', alt: 'Alt', shift: 'Shift'};
-// A modifier's cap reads differently per platform (⌘ or Ctrl), but a server
-// prints one of them and the visitor's browser draws the other: the cap keeps
-// the box of its wider word on every platform, in characters of the keys'
-// monospace face, so the first paint does not move (sheet:
-// .sf-button-shortcut-key--chars-N).
-const MODIFIER_CHARS = Object.fromEntries(Object.keys(OTHER_CAPS).map((name) => [name, Math.max(MAC_CAPS[name].length, OTHER_CAPS[name].length)]));
+// A cap of one character -- a letter, ⌘, ⇧, ↵ -- is a square key; a cap of
+// several letters (Esc, Ctrl, Shift) hugs its word (sheet:
+// .sf-button-shortcut-key--square). A modifier's cap is the platform's own
+// word, so a page printed on a Mac and drawn on Windows widens by the
+// difference: the keys are true to their caps, not to the widest platform
+// (docs review R010, 2026-11-06).
 const KEY_CAPS = {
   enter: '↵', return: '↵', escape: 'Esc', esc: 'Esc', tab: 'Tab', space: 'Space', backspace: '⌫', delete: 'Del',
   up: '↑', down: '↓', left: '←', right: '→', arrowup: '↑', arrowdown: '↓', arrowleft: '←', arrowright: '→',
@@ -50,8 +50,8 @@ export function parseShortcut(value) {
 }
 
 /**
- * What the keys read, one cap per key in the platform's words: {text, chars},
- * chars the width a modifier's cap keeps on every platform (null for the key).
+ * What the keys read, one cap per key in the platform's words: {text, square},
+ * square when the cap is one character.
  */
 export function shortcutCaps(parsed, apple = isApplePlatform()) {
   if (!parsed) return [];
@@ -60,11 +60,11 @@ export function shortcutCaps(parsed, apple = isApplePlatform()) {
   const modifiers = [];
   for (const name of order.filter((one) => parsed.modifiers.has(one))) {
     // On a Mac mod and meta are one key.
-    if (modifiers.some((cap) => cap.text === caps[name])) continue;
-    modifiers.push({text: caps[name], chars: MODIFIER_CHARS[name]});
+    if (modifiers.includes(caps[name])) continue;
+    modifiers.push(caps[name]);
   }
   const key = KEY_CAPS[parsed.key] ?? (parsed.key.length === 1 ? parsed.key.toUpperCase() : parsed.key.charAt(0).toUpperCase() + parsed.key.slice(1));
-  return [...modifiers, {text: key, chars: null}];
+  return [...modifiers, key].map((text) => ({text, square: [...text].length === 1}));
 }
 
 /** The value of aria-keyshortcuts (WAI-ARIA 1.2): Meta+K, Control+K, /. */

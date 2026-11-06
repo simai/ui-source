@@ -115,90 +115,64 @@
 }
 @layer sf.override {
 
-  /* An outline segment and its link siblings form one closed control. The
-     link variant previously kept only a translucent join, leaving its outer
-     top, bottom and end edges transparent. Draw the group perimeter once and
-     let the selected outline segment own both of its joins. */
+  /* Joined segments draw one line where they meet (docs review R003,
+     2026-11-06): the line at a join is the end edge of the segment before
+     it, and a segment that follows another has no start edge. Here and not
+     beside the segment rules in sf.components: surface writes its four edges
+     after them there and gave every follower its start edge back: two lines
+     at each join. sf-button-group writes its own edges over these
+     (a vertical group joins on the block axis). */
+  .sf-button:is(.segment-middle, .segment-end) {
+    --sf-button--border-inline-start-width: 0;
+  }
+
+  /* Link segments beside an outline one form one closed control: they draw
+     the group's perimeter -- top, bottom and their end edge, the first one
+     its start edge too -- in the role the group draws it, --sf-outline. */
   .sf-button.sf-button--link[class*="segment-"] {
-    /* The same perimeter the group draws, in the same role: on --sf-outline
-       the link segments of a group were a heavier line than its outline
-       segments, inside one control. */
     border-color: var(--sf-outline);
     --sf-button--border-top-width: var(--sf-px);
     --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
   }
 
-  .sf-button.sf-button--link.segment-start,
-  .sf-button.sf-button--link.segment-middle {
+  .sf-button.sf-button--link.segment-start {
     --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+  /* Any other segment beside an outline one (a button or an icon button)
+     keeps the block edges of the frame, so the control stands in one height. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  + sf-button > .sf-button[class*="segment-"]:not(.sf-button--outline),
+  :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]
+  + .sf-button[class*="segment-"]:not(.sf-button--outline),
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-button[class*="segment-"]:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+  }
+
+  /* The outline segment -- the selected one of such a control -- owns both
+     of its joins: the segment before it leaves its end edge to it ... */
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-button[class*="segment-"]:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
     --sf-button--border-inline-end-width: 0;
   }
 
-  .sf-button.sf-button--link.segment-end {
-    --sf-button--border-inline-start-width: var(--sf-px);
-    --sf-button--border-inline-end-width: var(--sf-px);
-  }
-
-  sf-button:has(.sf-button--outline[class*="segment-"])
-  + :is(sf-button-icon, sf-icon-button)
-  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
-  .sf-button.sf-button--outline[class*="segment-"]
-  + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
-    --sf-icon-button--border-top-width: var(--sf-px);
-    --sf-icon-button--border-inline-end-width: var(--sf-px);
-    --sf-icon-button--border-bottom-width: var(--sf-px);
-    --sf-icon-button--border-inline-start-width: var(--sf-px);
-  }
-
-
-  sf-button:has(.sf-button--outline[class*="segment-"])
-  + sf-button
-  .sf-button[class*="segment-"]:not(.sf-button--outline),
-  .sf-button.sf-button--outline[class*="segment-"]
-  + .sf-button[class*="segment-"]:not(.sf-button--outline) {
-    --sf-button--border-top-width: var(--sf-px);
-    --sf-button--border-inline-end-width: var(--sf-px);
-    --sf-button--border-bottom-width: var(--sf-px);
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])
+  > .sf-button.segment-start:not(.sf-button--outline),
+  .sf-button.segment-start:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"]) {
     --sf-button--border-inline-start-width: var(--sf-px);
   }
 
-
-  sf-button:has(+ :is(sf-button-icon, sf-icon-button) .sf-icon-button--outline[class*="segment-"])
-  .sf-button[class*="segment-"]:not(.sf-button--outline),
-  .sf-button[class*="segment-"]:not(.sf-button--outline)
-  :has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {
-    --sf-button--border-top-width: var(--sf-px);
-    --sf-button--border-inline-end-width: var(--sf-px);
-    --sf-button--border-bottom-width: var(--sf-px);
+  /* ... and draws its own start edge after one that is not an outline. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> [class*="segment-"]:not(.sf-button--outline, .sf-icon-button--outline))
+  + sf-button > .sf-button.sf-button--outline[class*="segment-"],
+  [class*="segment-"]:not(.sf-button--outline, .sf-icon-button--outline)
+  + .sf-button.sf-button--outline[class*="segment-"] {
     --sf-button--border-inline-start-width: var(--sf-px);
-  }
-
-
-  sf-button:has(+ sf-button .sf-button--outline[class*="segment-"])
-  .sf-button[class*="segment-"]:not(.sf-button--outline),
-  .sf-button[class*="segment-"]:not(.sf-button--outline):has(+ .sf-button.sf-button--outline[class*="segment-"]) {
-    --sf-button--border-top-width: var(--sf-px);
-    --sf-button--border-inline-end-width: var(--sf-px);
-    --sf-button--border-bottom-width: var(--sf-px);
-    --sf-button--border-inline-start-width: var(--sf-px);
-  }
-
-  /* Keep this after the compatibility rules above: the selected segment's
-     end border is the only line at this join. */
-  sf-button:has(.sf-button--outline[class*="segment-"])
-  + sf-button
-  .sf-button.sf-button--link[class*="segment-"],
-  .sf-button.sf-button--outline[class*="segment-"]
-  + .sf-button.sf-button--link[class*="segment-"] {
-    --sf-button--border-inline-start-width: 0;
-    border-inline-start-width: 0;
-  }
-
-  sf-button:has(+ sf-button .sf-button--outline[class*="segment-"])
-  .sf-button.sf-button--link[class*="segment-"],
-  .sf-button.sf-button--link[class*="segment-"]:has(+ .sf-button.sf-button--outline[class*="segment-"]) {
-    --sf-button--border-inline-end-width: 0;
-    border-inline-end-width: 0;
   }
 }
 
@@ -296,24 +270,60 @@
     white-space: nowrap;
   }
 
-  /* A modifier's cap keeps the box of its wider word on every platform -- ⌘
-     and Ctrl, ⌥ and Alt, ⇧ and Shift -- counted in characters of the keys'
-     monospace face, the glyph centred: a page printed on one platform and
-     drawn on another keeps its geometry (sf-button js/shortcut.js). */
-  .sf-button .sf-button-shortcut > kbd:is(.sf-button-shortcut-key--chars-3, .sf-button-shortcut-key--chars-4, .sf-button-shortcut-key--chars-5) {
-    inline-size: calc(var(--sf-button-shortcut--key-chars) * 1ch + 2 * var(--sf-space-1\/4) + 2 * var(--sf-kbd--border-width, var(--sf-px)));
+  /* A key of one character -- a letter, ⌘, ⇧, ↵ -- is a square of the key
+     size, the glyph centred; a key of several letters (Esc, Ctrl, Shift)
+     hugs its word with the key padding on each side. A modifier's cap used
+     to keep the box of its widest platform word, so ⇧ stood five characters
+     wide beside a square P (docs review R010, 2026-11-06). */
+  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--square {
+    inline-size: var(--sf-button-shortcut--key-size);
+    padding-inline: var(--sf-0);
   }
 
-  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-3 {
-    --sf-button-shortcut--key-chars: 3;
+  /* On a button with a fill of its own -- default and tonal -- the keys
+     take the button's ink: the on-colour its label wears, a fill of it at
+     12% and an edge at 32% over the button's fill, the inverse of the button
+     they sit on. The surface container and its variant ink, which the keys
+     keep on outline, link and surface, disappeared on a filled button: on
+     primary the key's text stood at 1.24:1, in the dark theme at 1.04:1, and
+     on a dark tonal on-surface button at 4.35:1 (docs review R009,
+     2026-11-06). The fill and the edge are steps of the fill family. */
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button-shortcut--ink: var(--sf-on-primary);
   }
 
-  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-4 {
-    --sf-button-shortcut--key-chars: 4;
+  .sf-button.sf-button--default.sf-button--secondary {
+    --sf-button-shortcut--ink: var(--sf-on-secondary);
   }
 
-  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-5 {
-    --sf-button-shortcut--key-chars: 5;
+  .sf-button.sf-button--default.sf-button--on-surface {
+    --sf-button-shortcut--ink: var(--sf-on-surface-inverse);
+  }
+
+  .sf-button.sf-button--default.sf-button--error {
+    --sf-button-shortcut--ink: var(--sf-on-error);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button-shortcut--ink: var(--sf-on-primary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary {
+    --sf-button-shortcut--ink: var(--sf-on-secondary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface {
+    --sf-button-shortcut--ink: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error {
+    --sf-button-shortcut--ink: var(--sf-on-error-container);
+  }
+
+  .sf-button:is(.sf-button--default, .sf-button--tonal):not(:disabled, .disabled) .sf-button-shortcut > kbd {
+    --sf-kbd--color: var(--sf-button-shortcut--ink);
+    --sf-kbd--background: color-mix(in srgb, var(--sf-button-shortcut--ink) 12%, transparent);
+    --sf-kbd--border-color: color-mix(in srgb, var(--sf-button-shortcut--ink) 32%, transparent);
   }
 
   .sf-button:is(:disabled, .disabled) .sf-button-shortcut > kbd {

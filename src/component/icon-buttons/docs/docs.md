@@ -29,7 +29,8 @@ radius class; it stays for the Smart `radius="default"` value. The utility
 class of that name and the `--sf-radius-default` token were removed on
 2026-11-02 (journal `token-radius-default`). Joined positions
 `segment-start`, `segment-middle`, and `segment-end` belong to Button Group
-composition and use an inset keyboard focus ring.
+composition and use an inset keyboard focus ring. A join is one line, the end
+edge of the segment before it, as on the button.
 
 ## States
 

@@ -401,6 +401,12 @@
     border-radius: var(--sf-radius-rounded);
   }
 
+  /* Joined segments draw one line where they meet, not two: the line at a
+     join is the end edge of the segment before it, and a segment that follows
+     another has no start edge of its own. Both edges at a join stood side by
+     side before, a line twice the frame's between neighbours (docs review
+     R003, 2026-11-06). An outline segment beside the others owns both of its
+     joins (sf.override, _css__buttons_custom). */
   .sf-button.segment-start {
     --sf-button--border-top-right-radius: var(--sf-radius-square);
     --sf-button--border-bottom-right-radius: var(--sf-radius-square);
@@ -412,28 +418,18 @@
     --sf-button--border-top-right-radius: var(--sf-radius-square);
     --sf-button--border-bottom-right-radius: var(--sf-radius-square);
     --sf-button--border-bottom-left-radius: var(--sf-radius-square);
-    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-inline-start-width: 0;
     --sf-button--border-inline-end-width: var(--sf-px);
   }
 
   .sf-button.segment-end {
     --sf-button--border-top-left-radius: var(--sf-radius-square);
     --sf-button--border-bottom-left-radius: var(--sf-radius-square);
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
-    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-inline-start-width: 0;
   }
 
-  .sf-button:not(.sf-button--outline).segment-end {
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
-  }
-
-  .sf-button:not(.sf-button--outline).segment-start {
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle) {
     border-inline-end-color: var(--sf-white--alfa-24, transparent);
-  }
-
-  .sf-button:not(.sf-button--outline).segment-middle {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
-    border-inline-start-color: var(--sf-white--alfa-24, transparent);
   }
 
   /* Surface, built on the neutral alpha ramp. It does not carry a colour of its
