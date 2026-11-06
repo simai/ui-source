@@ -61,6 +61,8 @@ const PHASE_A = [
   // Block list (2026-11-05): the list a person acts on and the feed they read.
   'list',
   'list-feed',
+  // The site's language picker (owner decision 2026-11-06).
+  'language',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

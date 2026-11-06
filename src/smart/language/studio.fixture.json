@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.language",
+  "title": "language reference",
+  "summary": "Deterministic reference fixture for sf-language.",
+  "locale": "ru",
+  "props": {
+    "languages": "ru en",
+    "size": "1/2"
+  },
+  "children": [],
+  "state": "default"
+}

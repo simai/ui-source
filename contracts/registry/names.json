@@ -29,6 +29,7 @@
         "icon",
         "include",
         "input",
+        "language",
         "list",
         "menu",
         "modal",
@@ -213,6 +214,10 @@
         },
         {
           "element": "sf-input-textarea",
+          "status": "released"
+        },
+        {
+          "element": "sf-language",
           "status": "released"
         },
         {

@@ -235,6 +235,9 @@
     "flex-direction/default",
     "transition-property/default"
   ],
+  "cl-language": [
+    "display/default"
+  ],
   "cl-list": [
     "align-items/default",
     "display/default",

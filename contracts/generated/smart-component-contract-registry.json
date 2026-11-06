@@ -449,7 +449,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-group/smart.manifest.json",
-      "manifest_sha256": "25766d22407cc010015ad2d08d19e00d7c2a3a30c6a45265551e0db844c82763",
+      "manifest_sha256": "3c0a21ce8b667aca0a690b914a5f488fbdc184659e18e43b59795335226830d4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -489,7 +489,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "258c76a36665bd8fbf170eebb1521e8d73ac93cd3c18a0c2a6fbe42a8908c820",
+      "manifest_sha256": "8e73397f627384d9477eecb76d7d11e4a6b23da4aa77ada572a4255c959ac0a2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1616,6 +1616,51 @@
         "input-textarea"
       ],
       "title": "Text area"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "i18n",
+        "navigation"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button-group",
+          "smart.button-icon",
+          "smart.icon",
+          "smart.menu-context"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-language",
+      "id": "smart.language",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/language/smart.manifest.json",
+      "manifest_sha256": "58a283b930cd45fcef5ebac7ffbece4ab0af01cf8d3d24956bd8aa6c59a47252",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
+      "tags": [
+        "language",
+        "locale",
+        "i18n",
+        "language-switcher",
+        "translate",
+        "header"
+      ],
+      "title": "Language"
     },
     {
       "backend_adapters": [],

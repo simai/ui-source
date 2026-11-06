@@ -1,0 +1,358 @@
+{
+  "schema_version": 2,
+  "id": "smart.language",
+  "version": "1.0.0",
+  "title": "Language",
+  "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "language",
+    "locale",
+    "i18n",
+    "language-switcher",
+    "translate",
+    "header"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n",
+    "navigation"
+  ],
+  "custom_element": "sf-language",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button-group",
+      "smart.button-icon",
+      "smart.icon",
+      "smart.menu-context"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "languages": {
+        "type": "string",
+        "default": "",
+        "description": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named by the browser (Intl.DisplayNames) in itself and in English; no dictionary ships. items, when given, takes its place"
+      },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "The address of the site in each language, as a pattern with {code}: «/{code}/» gives /ru/ and /en/. A language with its own href keeps it. A language with an href is followed, not applied in the page"
+      },
+      "mode": {
+        "type": "string",
+        "default": "auto",
+        "description": "The look. auto follows the count: two or three languages a segmented switch (inline), four to seven an icon button with a menu (menu), eight and more the menu with search (search); one language draws nothing in every mode",
+        "enum": [
+          "auto",
+          "inline",
+          "menu",
+          "search"
+        ]
+      },
+      "inline-max": {
+        "type": "integer",
+        "default": 3,
+        "description": "In auto mode, the most languages shown at once as a switch; more open a menu",
+        "minimum": 1
+      },
+      "search-from": {
+        "type": "integer",
+        "default": 8,
+        "description": "In auto mode, the number of languages from which the menu has a search field",
+        "minimum": 2
+      },
+      "compact": {
+        "type": "boolean",
+        "default": false,
+        "description": "The switch shows codes (RU · EN) instead of names; each segment keeps the name as its accessible name. The menu is not affected"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: the switch is a button group of that size, the trigger an icon button of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site",
+        "enum": [
+          "1/3",
+          "1/2",
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "apply": {
+        "type": "string",
+        "default": "page",
+        "description": "What a choice of a language without an href does after its change event: page sets it for the page (SF.language.use(code), lang and dir on <html>); none only changes the value, for a settings form the server applies",
+        "enum": [
+          "page",
+          "none"
+        ]
+      },
+      "remember": {
+        "type": "string",
+        "default": "",
+        "description": "A name to keep the choice under: the chosen code is a preference of the person (SF.Preferences key sf-language/<name>; in the browser localStorage sf-pref:sf-language/<name>, and a host that keeps preferences for its user gets it). Reading it back before the first paint is the site's (docs.md); the element shows the language of <html lang>"
+      },
+      "label": {
+        "type": "string",
+        "description": "The control's name: the switch's group and the menu are named by it, the trigger by it and the language, «Язык: Русский». «Язык» / «Language» in the page language when not set"
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "Native form field name: the element submits the chosen code with its form, a form reset restores the value it was written with, and a disabled element is left out"
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the switch or the trigger"
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The chosen language's code. Not set, the element shows the language of <html lang> when it is one of the list (the same code, else the same primary language), else the first"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the compact label (RU), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "select": {
+      "summary": "Chooses a language by its code as a press would, sending change with reason api: refused {reason: unknown} for a code not in the list, {reason: unchanged} for the shown one, {reason: disabled}, {reason: prevented} when a page cancels change",
+      "arguments": [
+        {
+          "name": "value",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome; applied carries {value}."
+      }
+    }
+  },
+  "events": {
+    "change": {
+      "summary": "A language was chosen: the request, sent before anything changes. Cancelled, nothing changes (the switch goes back) -- a site that navigates itself (a router, a Docara page that keeps its path) cancels it and goes. Not cancelled, the value is the code, remember keeps it, and the element goes to href, or with apply page applies the language to the page. The name to bind",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "previous",
+          "href",
+          "dir",
+          "reason"
+        ],
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The code chosen."
+          },
+          "previous": {
+            "type": "string",
+            "description": "The code shown before."
+          },
+          "href": {
+            "type": "string",
+            "description": "The language's address; empty when it has none."
+          },
+          "dir": {
+            "enum": [
+              "ltr",
+              "rtl"
+            ],
+            "description": "How the language is written."
+          },
+          "reason": {
+            "enum": [
+              "press",
+              "api"
+            ],
+            "description": "A person's press, or select() from code."
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "look": [
+        "none",
+        "inline",
+        "menu",
+        "search"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "closed",
+      "disabled",
+      "empty"
+    ]
+  },
+  "persistence": {
+    "mode": "hybrid",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "translating the page's own content (the site serves each language)",
+      "restoring a remembered language before the first paint (the site's inline script)",
+      "keeping the rest of the path when a site switches /ru/... to /en/... (cancel change and navigate)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "radiogroup",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Inline: Tab reaches the chosen language; the arrows, Home and End move between languages and choose",
+      "Menu: Tab reaches the trigger; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
+      "Search: the field takes focus when the menu opens; Down moves to the rows"
+    ],
+    "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "54c89e61ef9b89ed683fe530d43bdbf215fbafdd",
+    "source_artifacts": [
+      {
+        "path": "src/smart/language/index.js",
+        "sha256": "a66464f6b1000a1fa76e3c112a6e010bb7978fcf96f9c22ca23f68fb50ab9ad3"
+      },
+      {
+        "path": "src/smart/language/js/templates/default.js",
+        "sha256": "84a871f6d3b86ae8b38f9af33a7618151163fbf8e8e601a6e18ba14725de88ba"
+      },
+      {
+        "path": "src/smart/language/rule.js",
+        "sha256": "c9a18fe67990be903799df042a235d0f7d767c9cfcba4ffcd302f8a3a0fc5d03"
+      },
+      {
+        "path": "src/smart/language/docs.md",
+        "sha256": "b904afdc9b41cbadd474035d30703000c448f1b8dcdc7191f900912e20361f73"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) or in a settings form to choose the site's language from a list of codes.",
+    "do_not": [
+      "Do not draw flags or a globe for languages; the element uses the translate glyph and the names",
+      "Do not ship a dictionary of language names; the browser names them",
+      "Do not use sf-language for a country or a region; it picks languages",
+      "Do not build a separate switch for two languages and a menu for many; one element changes its look by the count"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-language languages=\"ru en\" size=\"1/2\"></sf-language>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

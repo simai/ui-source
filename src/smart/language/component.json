@@ -1,0 +1,392 @@
+{
+  "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
+  "id": "smart.language",
+  "tag": "sf-language",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "language",
+  "settings": {
+    "languages": {
+      "type": "string",
+      "default": "",
+      "summary": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named by the browser (Intl.DisplayNames) in itself and in English; no dictionary ships. items, when given, takes its place"
+    },
+    "items": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "short": {
+              "type": "string"
+            },
+            "href": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "code"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the compact label (RU), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "The address of the site in each language, as a pattern with {code}: «/{code}/» gives /ru/ and /en/. A language with its own href keeps it. A language with an href is followed, not applied in the page"
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "inline",
+        "menu",
+        "search"
+      ],
+      "default": "auto",
+      "summary": "The look. auto follows the count: two or three languages a segmented switch (inline), four to seven an icon button with a menu (menu), eight and more the menu with search (search); one language draws nothing in every mode"
+    },
+    "inline-max": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "default": 3,
+      "summary": "In auto mode, the most languages shown at once as a switch; more open a menu"
+    },
+    "search-from": {
+      "type": "number",
+      "integer": true,
+      "min": 2,
+      "default": 8,
+      "summary": "In auto mode, the number of languages from which the menu has a search field"
+    },
+    "compact": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The switch shows codes (RU · EN) instead of names; each segment keeps the name as its accessible name. The menu is not affected"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1",
+      "summary": "The ladder rung: the switch is a button group of that size, the trigger an icon button of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site"
+    },
+    "apply": {
+      "type": "enum",
+      "values": [
+        "page",
+        "none"
+      ],
+      "default": "page",
+      "summary": "What a choice of a language without an href does after its change event: page sets it for the page (SF.language.use(code), lang and dir on <html>); none only changes the value, for a settings form the server applies"
+    },
+    "remember": {
+      "type": "string",
+      "default": "",
+      "summary": "A name to keep the choice under: the chosen code is a preference of the person (SF.Preferences key sf-language/<name>; in the browser localStorage sf-pref:sf-language/<name>, and a host that keeps preferences for its user gets it). Reading it back before the first paint is the site's (docs.md); the element shows the language of <html lang>"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The control's name: the switch's group and the menu are named by it, the trigger by it and the language, «Язык: Русский». «Язык» / «Language» in the page language when not set"
+    },
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "Native form field name: the element submits the chosen code with its form, a form reset restores the value it was written with, and a disabled element is left out"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Disables the switch or the trigger"
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The chosen language's code. Not set, the element shows the language of <html lang> when it is one of the list (the same code, else the same primary language), else the first"
+    },
+    "look": {
+      "type": "enum",
+      "values": [
+        "none",
+        "inline",
+        "menu",
+        "search"
+      ],
+      "summary": "What the element draws now, by mode and the count of languages; also the host state data-look"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "value": {
+          "type": "string",
+          "summary": "The code chosen."
+        },
+        "previous": {
+          "type": "string",
+          "summary": "The code shown before."
+        },
+        "href": {
+          "type": "string",
+          "summary": "The language's address; empty when it has none."
+        },
+        "dir": {
+          "type": "enum",
+          "values": [
+            "ltr",
+            "rtl"
+          ],
+          "summary": "How the language is written."
+        },
+        "reason": {
+          "type": "enum",
+          "values": [
+            "press",
+            "api"
+          ],
+          "summary": "A person's press, or select() from code."
+        }
+      },
+      "cancelable": true,
+      "summary": "A language was chosen: the request, sent before anything changes. Cancelled, nothing changes (the switch goes back) -- a site that navigates itself (a router, a Docara page that keeps its path) cancels it and goes. Not cancelled, the value is the code, remember keeps it, and the element goes to href, or with apply page applies the language to the page. The name to bind"
+    }
+  },
+  "actions": {
+    "select": {
+      "with": {
+        "value": "string"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Chooses a language by its code as a press would, sending change with reason api: refused {reason: unknown} for a code not in the list, {reason: unchanged} for the shown one, {reason: disabled}, {reason: prevented} when a page cancels change",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome; applied carries {value}."
+      }
+    }
+  },
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "disabled": "disabled",
+    "validity": [
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "open",
+      "Space": "open"
+    },
+    "panel": {
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button-group"
+    },
+    {
+      "name": "cl-button-icon"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "Inline: sf-button-group's radio group named by label, a radio per language with its own lang, the arrows move and choose as in sf-button-group. Menu: the trigger is a native button named «Язык: Русский» (label and the current language in itself) with aria-haspopup menu and aria-expanded while open; the menu is sf-menu-context named by label, a menuitemradio per language with its own lang, the keys of sf-menu-context, Escape returns focus to the trigger. Nothing is announced: the page's language is what changes.",
+    "role": "radiogroup",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-look": "string"
+  },
+  "x-summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
+  "x-source": {
+    "package": "framework",
+    "folder": "language",
+    "brief": "Owner decision 2026-11-06 relayed by the dispatcher (Federation bus msg-3063edc9fe684dfe9909): one Smart component sf-language that changes its look by the number of languages (1 nothing, 2-3 segmented, 4-7 menu, 8+ menu with search; thresholds overridable), Material Symbols translate, names from Intl.DisplayNames, SF.language.use with lang and dir on <html>, href per language and a cancellable change for URL-switching sites, optional remember, no flags, a form field by name; reference looks: ui-doc docs/menu-sets f1b9ea2d examples/smart-components/{segmented,context-menu,dropdown}/language"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-decisions": [
+    "name: sf-language, a one-word family like sf-search (owner, 2026-11-06); the family language is the Framework's in contracts/registry/names.json. No sf-input-language: the element is itself a form field (name).",
+    "looks: by count, the owner's thresholds -- 1 none, 2-3 inline, 4-7 menu, 8+ search -- with inline-max (3) and search-from (8) to move them and mode inline|menu|search to fix one. The look is the value look and the host state data-look.",
+    "reuse: nothing is drawn by the element itself and it has no sheet. inline is sf-button-group appearance=segmented (a grouped control is the height of sf-button of the same size by the group's own rule); menu is sf-button-icon appearance=link scheme=on-surface with the Material Symbols translate glyph (not a globe; no flags) and sf-menu-context popup with radio rows; search is the menu's own local search. sf-button-group 1.2.0 gained an item's lang for this.",
+    "names: Intl.DisplayNames, no dictionary -- the name in itself (new Intl.DisplayNames([code]).of(code), with the language's own capital: «Русский», «Español»), in English for the menu's value column («Deutsch … German»), and in the page's language for the search only («нем» finds Deutsch on a Russian page). items[].label overrides the name; a code the browser cannot name shows as its code.",
+    "menu rows: the native name is the row's label, the English name its value at the row's end (left out when the two are the same, English), the radio mark on the chosen one. Each row carries lang; the English name sits inside that row, as in sf-menu-context's own language example.",
+    "search: sf-menu-context's local search over text, caption and keywords; the element puts the native name, the English name, the name in the page language and the code in keywords, so «нем», «German» and «de» all find Deutsch.",
+    "apply: change is the request, cancelable (vocabulary §5 change; the native name, the element being a form value control). Not cancelled: value is set, remember writes the code as a preference (SF.Preferences sf-language/<remember>: no Smart component touches localStorage itself, and a host that keeps preferences for its user gets it), then a language with an href is followed (location.assign) and one without is applied when apply=page: SF.language.use(code) -- which writes <html lang> -- and <html dir> from the language (Intl.Locale textInfo, else the right-to-left languages and scripts: ar, he, fa, ur, ps, sd, ug, yi, dv, ckb, syr …). Cancelled: nothing changes and the switch's plate goes back. Restoring a remembered language before the first paint is the site's (docs.md has the three lines).",
+    "value: an element written without value shows <html lang> when the list has it (the same code, else the same primary language), else the first language; after a choice the value is its own. select(value) is the action.",
+    "a11y: the trigger's accessible name and title are the word trigger, «Язык: Русский» / «Language: English» -- label and the current language in itself; every segment and row has lang; the keyboard is sf-button-group's (arrows, Home, End) and sf-menu-context's (arrows, letters, Enter, Escape back to the trigger; Down from the search field to the rows).",
+    "geometry: the parts are on the shared ladder; the element passes size through (1/3 .. 3). The menu has rungs 1/2 and 1: up to 1/2 its rows are 32 px, from 1 40 px. At 1/2 it fits sf-header-site's tools slot beside the theme switch (the same group height).",
+    "css-variables: none of its own -- it has no sheet; the parts' public variables (sf-button-group, sf-button-icon, sf-menu-context) reach it."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n",
+      "navigation"
+    ],
+    "persistence": {
+      "mode": "hybrid",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "language",
+      "locale",
+      "i18n",
+      "language-switcher",
+      "translate",
+      "header"
+    ],
+    "state": {
+      "machines": {
+        "look": [
+          "none",
+          "inline",
+          "menu",
+          "search"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "closed",
+        "disabled",
+        "empty"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "translating the page's own content (the site serves each language)",
+        "restoring a remembered language before the first paint (the site's inline script)",
+        "keeping the rest of the path when a site switches /ru/... to /en/... (cancel change and navigate)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) or in a settings form to choose the site's language from a list of codes.",
+      "do_not": [
+        "Do not draw flags or a globe for languages; the element uses the translate glyph and the names",
+        "Do not ship a dictionary of language names; the browser names them",
+        "Do not use sf-language for a country or a region; it picks languages",
+        "Do not build a separate switch for two languages and a menu for many; one element changes its look by the count"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-language languages=\"ru en\" size=\"1/2\"></sf-language>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Inline: Tab reaches the chosen language; the arrows, Home and End move between languages and choose",
+        "Menu: Tab reaches the trigger; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
+        "Search: the field takes focus when the menu opens; Down moves to the rows"
+      ],
+      "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
+    }
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "component": "sf-language",
+  "probe": "sf-language against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-language id=\"two\" languages=\"ru en\" size=\"1/2\"></sf-language>",
+      "  <sf-language id=\"compact\" languages=\"ru en de\" compact size=\"1/2\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"five\" languages=\"ru en de fr es\" size=\"1/2\"></sf-language>",
+      "  <sf-language id=\"twelve\" languages=\"ru en de fr es it pt tr pl uk ja ar\" size=\"1/2\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"rtl\" languages=\"ru en ar\"></sf-language>",
+      "  <sf-language id=\"url\" languages=\"ru en\" href=\"#/{code}/\" remember=\"probe\"></sf-language>",
+      "  <sf-language id=\"one\" languages=\"ru\"></sf-language>",
+      "  <sf-language id=\"forced\" languages=\"ru en de fr es\" mode=\"inline\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"named\" apply=\"none\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"code\": \"kk\", \"label\": \"Қазақ тілі\"}, {\"code\": \"ru\"}]}</script></sf-language>",
+      "  <form id=\"settings\"><sf-language id=\"field\" name=\"language\" languages=\"ru en de fr\" value=\"de\" apply=\"none\"></sf-language></form>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-two-inline",
+      "title": "two languages are a segmented switch named «Язык»: a radio per language, in its own name and its own lang, the page's language chosen",
+      "covers": "settings.languages, look inline, accessibility radiogroup, settings.label",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#two'); const group = el.querySelector(':scope > sf-button-group'); const radios = [...el.querySelectorAll('button[role=\"radio\"]')]; return el.getAttribute('data-look') === 'inline' && group.getAttribute('appearance') === 'segmented' && el.querySelector('[role=\"radiogroup\"]').getAttribute('aria-label') === 'Язык' && radios.length === 2 && radios[0].textContent.trim() === 'Русский' && radios[0].lang === 'ru' && radios[1].textContent.trim() === 'English' && radios[1].lang === 'en' && radios[0].getAttribute('aria-checked') === 'true' && el.value === 'ru'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-choose-applies",
+      "title": "a press on English sends one change {value en, previous ru}; the page takes it: SF.language, lang and dir on <html>",
+      "covers": "events.change, settings.apply page, SF.language.use",
+      "steps": [
+        {
+          "user": "click:#two button[role=\"radio\"][lang=\"en\"]",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "value": "en",
+                  "previous": "ru",
+                  "dir": "ltr",
+                  "href": "",
+                  "reason": "press"
+                }
+              }
+            ]
+          },
+          "check": "document.documentElement.lang === 'en' && document.documentElement.dir === 'ltr' && window.SF.language.current() === 'en' && document.querySelector('#two').value === 'en'"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "ru"
+            }
+          },
+          "target": "#two",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "check": "document.documentElement.lang === 'ru' && document.querySelector('#two button[role=\"radio\"][lang=\"ru\"]').getAttribute('aria-checked') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p3-cancel",
+      "title": "a cancelled change leaves everything as it was: the value, the page's language and the switch's plate",
+      "covers": "events.change cancelable",
+      "steps": [
+        {
+          "script": "(window.__stop = (event) => { if (event.target.id === 'two') event.preventDefault(); }, window.addEventListener('change', window.__stop, true), document.querySelector('#two button[role=\"radio\"][lang=\"en\"]').click(), true)",
+          "check": "document.documentElement.lang === 'ru' && document.querySelector('#two').value === 'ru' && document.querySelector('#two button[role=\"radio\"][lang=\"ru\"]').getAttribute('aria-checked') === 'true'"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "en"
+            }
+          },
+          "target": "#two",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            }
+          }
+        },
+        {
+          "script": "(window.removeEventListener('change', window.__stop, true), true)",
+          "check": "true"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "xx"
+            }
+          },
+          "target": "#two",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "unknown"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "ru"
+            }
+          },
+          "target": "#two",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "unchanged"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-compact",
+      "title": "compact shows the codes; each segment keeps the language's name as its accessible name",
+      "covers": "settings.compact",
+      "steps": [
+        {
+          "check": "(() => { const radios = [...document.querySelectorAll('#compact button[role=\"radio\"]')]; return radios.map((b) => b.textContent.trim()).join(' ') === 'RU EN DE' && radios[2].getAttribute('aria-label') === 'Deutsch' && radios[2].lang === 'de'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-menu",
+      "title": "five languages are the «translate» icon button named «Язык: Русский» and a menu of radio rows: the name in itself, English beside it, each row in its language",
+      "covers": "look menu, accessibility trigger name, icon translate",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#five'); const button = el.querySelector(':scope > sf-button-icon button'); return el.getAttribute('data-look') === 'menu' && button.getAttribute('aria-label') === 'Язык: Русский' && button.getAttribute('aria-haspopup') === 'menu' && el.querySelector(':scope > sf-button-icon').getAttribute('icon') === 'translate' && !el.querySelector('sf-button-group'); })()"
+        },
+        {
+          "user": "click:#five > sf-button-icon button",
+          "wait": 600,
+          "check": "(() => { const rows = [...document.querySelectorAll('#five sf-menu-context [role=\"menuitemradio\"]')]; const de = rows.find((row) => row.lang === 'de'); return rows.length === 5 && de.querySelector('.sf-context-menu-item-label').textContent.trim() === 'Deutsch' && de.querySelector('.sf-context-menu-item-value').textContent.trim() === 'German' && rows[0].getAttribute('aria-checked') === 'true' && !rows[1].querySelector('.sf-context-menu-item-value') && document.querySelector('#five > sf-button-icon button').getAttribute('aria-expanded') === 'true'; })()"
+        },
+        {
+          "user": "click:#five sf-menu-context [role=\"menuitemradio\"][lang=\"de\"]",
+          "wait": 600,
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "value": "de",
+                  "previous": "ru"
+                }
+              }
+            ]
+          },
+          "check": "document.documentElement.lang === 'de' && document.querySelector('#five > sf-button-icon button').getAttribute('aria-label') === 'Language: Deutsch' && document.activeElement === document.querySelector('#five > sf-button-icon button')"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "ru"
+            }
+          },
+          "target": "#five",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "check": "document.documentElement.lang === 'ru'"
+        }
+      ]
+    },
+    {
+      "id": "p6-search",
+      "title": "twelve languages open the menu with a search field; «нем», «German» and «de» each find Deutsch alone",
+      "covers": "look search, the menu's search, keywords",
+      "steps": [
+        {
+          "user": "click:#twelve > sf-button-icon button",
+          "wait": 600,
+          "check": "(() => { const el = document.querySelector('#twelve'); const field = el.querySelector('.sf-context-menu-search-input'); return el.getAttribute('data-look') === 'search' && field && document.activeElement === field && field.placeholder === 'Найти язык' && el.querySelectorAll('[role=\"menuitemradio\"]').length === 12; })()"
+        },
+        {
+          "script": "(() => { const menu = document.querySelector('#twelve sf-menu-context'); const found = (query) => { menu.setQuery(query); return new Promise((done) => requestAnimationFrame(() => setTimeout(() => done([...menu.querySelectorAll('[role=\"menuitemradio\"]')].map((row) => row.lang).join(' ')), 60))); }; return (async () => [await found('нем'), await found('German'), await found('de'), await found('zz')].join('|'))(); })()",
+          "check": "true",
+          "expect": {
+            "returns": "de|de|de|"
+          }
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 300,
+          "check": "document.activeElement === document.querySelector('#twelve > sf-button-icon button') && document.querySelector('#twelve > sf-button-icon button').getAttribute('aria-expanded') !== 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p7-rtl",
+      "title": "Arabic is applied right to left: dir rtl on <html>, the change says so; Russian puts ltr back",
+      "covers": "dir, events.change dir",
+      "steps": [
+        {
+          "user": "click:#rtl button[role=\"radio\"][lang=\"ar\"]",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "value": "ar",
+                  "dir": "rtl"
+                }
+              }
+            ]
+          },
+          "check": "document.documentElement.lang === 'ar' && document.documentElement.dir === 'rtl' && document.querySelector('#rtl button[role=\"radio\"][lang=\"ar\"]').textContent.trim() === 'العربية'"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "ru"
+            }
+          },
+          "target": "#rtl",
+          "check": "document.documentElement.lang === 'ru' && document.documentElement.dir === 'ltr'"
+        }
+      ]
+    },
+    {
+      "id": "p8-url",
+      "title": "a language with an href is followed, not applied, and remember keeps the code",
+      "covers": "settings.href, settings.remember",
+      "steps": [
+        {
+          "user": "click:#url button[role=\"radio\"][lang=\"en\"]",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "value": "en",
+                  "href": "#/en/"
+                }
+              }
+            ]
+          },
+          "check": "location.hash === '#/en/' && JSON.parse(localStorage.getItem('sf-pref:sf-language/probe')) === 'en' && document.documentElement.lang === 'ru'"
+        }
+      ]
+    },
+    {
+      "id": "p9-one-and-forced",
+      "title": "one language draws nothing; mode inline keeps five languages in a switch",
+      "covers": "look none, settings.mode",
+      "steps": [
+        {
+          "check": "(() => { const one = document.querySelector('#one'); const forced = document.querySelector('#forced'); return one.getAttribute('data-look') === 'none' && one.children.length === 0 && forced.getAttribute('data-look') === 'inline' && forced.querySelectorAll('button[role=\"radio\"]').length === 5 && forced.look === 'inline'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p10-items",
+      "title": "items gives a language its own label; the list is read from the island",
+      "covers": "settings.items label",
+      "steps": [
+        {
+          "check": "(() => { const radios = [...document.querySelectorAll('#named button[role=\"radio\"]')]; return radios.length === 2 && radios[0].textContent.trim() === 'Қазақ тілі' && radios[0].lang === 'kk' && document.querySelector('#named').value === 'ru'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-form",
+      "title": "in a form the element submits its code by name; a press changes it, reset brings back the written value",
+      "covers": "form, settings.name, settings.apply none",
+      "steps": [
+        {
+          "check": "new FormData(document.querySelector('#settings')).get('language') === 'de' && document.querySelector('#field').getAttribute('data-look') === 'menu'"
+        },
+        {
+          "action": {
+            "name": "select",
+            "with": {
+              "value": "fr"
+            }
+          },
+          "target": "#field",
+          "check": "new FormData(document.querySelector('#settings')).get('language') === 'fr' && document.documentElement.lang === 'ru'"
+        },
+        {
+          "script": "(document.querySelector('#settings').reset(), true)",
+          "check": "new FormData(document.querySelector('#settings')).get('language') === 'de' && document.querySelector('#field').value === 'de'"
+        }
+      ]
+    }
+  ]
+}

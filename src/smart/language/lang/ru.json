@@ -1,0 +1,9 @@
+{
+  "title": "Язык",
+  "runtime": {
+    "label": "Язык",
+    "trigger": "{label}: {name}",
+    "search": "Найти язык",
+    "empty": "Язык не найден"
+  }
+}
