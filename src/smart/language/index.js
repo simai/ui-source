@@ -36,8 +36,8 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 
 // The parts it draws, found under their current names and their former ones.
-const MENU = `:scope > ${tagSelector('sf-menu-context')}`;
-const TRIGGER = `:scope > ${tagSelector('sf-button-icon')}`;
+const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
+const TRIGGER = `:scope > .sf-language-parts > ${tagSelector('sf-button-icon')}`;
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 

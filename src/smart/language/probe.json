@@ -26,7 +26,7 @@
       "covers": "settings.languages, look inline, accessibility radiogroup, settings.label",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#two'); const group = el.querySelector(':scope > sf-button-group'); const radios = [...el.querySelectorAll('button[role=\"radio\"]')]; return el.getAttribute('data-look') === 'inline' && group.getAttribute('appearance') === 'segmented' && el.querySelector('[role=\"radiogroup\"]').getAttribute('aria-label') === 'Язык' && radios.length === 2 && radios[0].textContent.trim() === 'Русский' && radios[0].lang === 'ru' && radios[1].textContent.trim() === 'English' && radios[1].lang === 'en' && radios[0].getAttribute('aria-checked') === 'true' && el.value === 'ru'; })()"
+          "check": "(() => { const el = document.querySelector('#two'); const group = el.querySelector(':scope > .sf-language-parts > sf-button-group'); const radios = [...el.querySelectorAll('button[role=\"radio\"]')]; return el.getAttribute('data-look') === 'inline' && group.getAttribute('appearance') === 'segmented' && el.querySelector('[role=\"radiogroup\"]').getAttribute('aria-label') === 'Язык' && radios.length === 2 && radios[0].textContent.trim() === 'Русский' && radios[0].lang === 'ru' && radios[1].textContent.trim() === 'English' && radios[1].lang === 'en' && radios[0].getAttribute('aria-checked') === 'true' && el.value === 'ru'; })()"
         }
       ]
     },
@@ -147,12 +147,12 @@
       "covers": "look menu, accessibility trigger name, icon translate",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#five'); const button = el.querySelector(':scope > sf-button-icon button'); return el.getAttribute('data-look') === 'menu' && button.getAttribute('aria-label') === 'Язык: Русский' && button.getAttribute('aria-haspopup') === 'menu' && el.querySelector(':scope > sf-button-icon').getAttribute('icon') === 'translate' && !el.querySelector('sf-button-group'); })()"
+          "check": "(() => { const el = document.querySelector('#five'); const button = el.querySelector(':scope > .sf-language-parts > sf-button-icon button'); return el.getAttribute('data-look') === 'menu' && button.getAttribute('aria-label') === 'Язык: Русский' && button.getAttribute('aria-haspopup') === 'menu' && el.querySelector(':scope > .sf-language-parts > sf-button-icon').getAttribute('icon') === 'translate' && !el.querySelector('sf-button-group'); })()"
         },
         {
-          "user": "click:#five > sf-button-icon button",
+          "user": "click:#five sf-button-icon button",
           "wait": 600,
-          "check": "(() => { const rows = [...document.querySelectorAll('#five sf-menu-context [role=\"menuitemradio\"]')]; const de = rows.find((row) => row.lang === 'de'); return rows.length === 5 && de.querySelector('.sf-context-menu-item-label').textContent.trim() === 'Deutsch' && de.querySelector('.sf-context-menu-item-value').textContent.trim() === 'German' && rows[0].getAttribute('aria-checked') === 'true' && !rows[1].querySelector('.sf-context-menu-item-value') && document.querySelector('#five > sf-button-icon button').getAttribute('aria-expanded') === 'true'; })()"
+          "check": "(() => { const rows = [...document.querySelectorAll('#five sf-menu-context [role=\"menuitemradio\"]')]; const de = rows.find((row) => row.lang === 'de'); return rows.length === 5 && de.querySelector('.sf-context-menu-item-label').textContent.trim() === 'Deutsch' && de.querySelector('.sf-context-menu-item-value').textContent.trim() === 'German' && rows[0].getAttribute('aria-checked') === 'true' && !rows[1].querySelector('.sf-context-menu-item-value') && document.querySelector('#five sf-button-icon button').getAttribute('aria-expanded') === 'true'; })()"
         },
         {
           "user": "click:#five sf-menu-context [role=\"menuitemradio\"][lang=\"de\"]",
@@ -169,7 +169,7 @@
               }
             ]
           },
-          "check": "document.documentElement.lang === 'de' && document.querySelector('#five > sf-button-icon button').getAttribute('aria-label') === 'Language: Deutsch' && document.activeElement === document.querySelector('#five > sf-button-icon button')"
+          "check": "document.documentElement.lang === 'de' && document.querySelector('#five sf-button-icon button').getAttribute('aria-label') === 'Language: Deutsch' && document.activeElement === document.querySelector('#five sf-button-icon button')"
         },
         {
           "action": {
@@ -194,7 +194,7 @@
       "covers": "look search, the menu's search, keywords",
       "steps": [
         {
-          "user": "click:#twelve > sf-button-icon button",
+          "user": "click:#twelve sf-button-icon button",
           "wait": 600,
           "check": "(() => { const el = document.querySelector('#twelve'); const field = el.querySelector('.sf-context-menu-search-input'); return el.getAttribute('data-look') === 'search' && field && document.activeElement === field && field.placeholder === 'Найти язык' && el.querySelectorAll('[role=\"menuitemradio\"]').length === 12; })()"
         },
@@ -208,7 +208,7 @@
         {
           "user": "keyboard:Escape",
           "wait": 300,
-          "check": "document.activeElement === document.querySelector('#twelve > sf-button-icon button') && document.querySelector('#twelve > sf-button-icon button').getAttribute('aria-expanded') !== 'true'"
+          "check": "document.activeElement === document.querySelector('#twelve sf-button-icon button') && document.querySelector('#twelve sf-button-icon button').getAttribute('aria-expanded') !== 'true'"
         }
       ]
     },

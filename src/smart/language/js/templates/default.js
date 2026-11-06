@@ -60,8 +60,15 @@ function renderMenu(context) {
     ></sf-menu-context>`;
 }
 
+// The parts stand in a frame without a box of its own (display: contents), so
+// they lay out in the host's place. The frame is what the first paint prints
+// as static markup: the switch and the trigger inside it wait for this
+// element and take their printed picture from it, rather than drawing alone
+// before it (the switch without its languages, the trigger without its glyph).
+const frame = (parts) => html`<div class="sf-language-parts" style="display: contents">${parts}</div>`;
+
 export function renderLanguageTemplate(context) {
-  if (context.look === 'inline') return renderInline(context);
-  if (context.look === 'menu' || context.look === 'search') return renderMenu(context);
+  if (context.look === 'inline') return frame(renderInline(context));
+  if (context.look === 'menu' || context.look === 'search') return frame(renderMenu(context));
   return nothing;
 }

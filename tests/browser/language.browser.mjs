@@ -132,7 +132,7 @@ for (const theme of ['light', 'dark']) {
       } else {
         const g = await tab.evaluate(() => {
           const r = (el) => el.getBoundingClientRect();
-          const button = document.querySelector('#picker > sf-button-icon button');
+          const button = document.querySelector('#picker sf-button-icon button');
           const icon = button.querySelector('sf-icon, .sf-icon, i');
           const theme = document.querySelector('#theme .sf-button-group');
           const root = getComputedStyle(document.documentElement);
@@ -146,7 +146,7 @@ for (const theme of ['light', 'dark']) {
         ok(`${label}: the glyph is «translate» in the on-surface role, named «Язык: Русский»`, g.glyph === 'translate' && g.name === 'Язык: Русский', JSON.stringify(g));
         const onSurface = await tab.evaluate(() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-on-surface)'; document.body.append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; });
         ok(`${label}: the glyph's colour is --sf-on-surface`, rgb(g.ink) === rgb(onSurface), `${g.ink} vs ${onSurface}`);
-        await tab.click('#picker > sf-button-icon button');
+        await tab.click('#picker sf-button-icon button');
         await tab.waitForTimeout(500);
         const m = await tab.evaluate(() => {
           const r = (el) => el.getBoundingClientRect();

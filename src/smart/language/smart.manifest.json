@@ -319,11 +319,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "47b20cea9675e7e0a440450cd53b2d88baa5af87bd3bb2f82186d880f0d4bdce"
+        "sha256": "fdaa33ded4e9edc8011ba18571cc0e266c116ac3dbc647640e966ccdd4867664"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "84a871f6d3b86ae8b38f9af33a7618151163fbf8e8e601a6e18ba14725de88ba"
+        "sha256": "267c267a040bf555abe0edb446afcbf8f769d52834cf16546082b8e5c8408b65"
       },
       {
         "path": "src/smart/language/rule.js",
