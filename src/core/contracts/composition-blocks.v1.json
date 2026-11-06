@@ -1051,7 +1051,6 @@
             "type": "string"
           },
           "placeholder": {
-            "default": "",
             "type": "string"
           },
           "portal": {
@@ -1091,7 +1090,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.5.3"
+      "version": "1.6.0"
     },
     "sf-icon": {
       "inputs": {

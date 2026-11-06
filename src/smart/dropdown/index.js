@@ -251,8 +251,13 @@ class SfDropdown extends DropdownElement {
     return this.getBooleanAttr('required', false);
   }
 
+  // A field with nothing chosen says so (choice fields, Larena 2026-11-06):
+  // without a placeholder of its own it read as an empty box, and a host that
+  // could not tell «unset» from «not drawn yet» drew the first option instead.
+  // The word is the page's language; the value stays empty until a person
+  // picks, and nothing is chosen for them.
   get placeholder() {
-    return this.getAttribute('placeholder') || '';
+    return this.getAttribute('placeholder') || this.sfWord('empty');
   }
 
   // The control a person reaches is the readonly input inside the trigger, and
@@ -412,6 +417,7 @@ class SfDropdown extends DropdownElement {
       triggerText: this.triggerText,
       searchValue: this._searchValue,
       searchPlaceholder: this.searchPlaceholder,
+      placeholder: this.placeholder,
       accessibleName: this.accessibleName(),
       selectedValues: this.selectedValues,
       selectedOptions: this.selectedOptions,

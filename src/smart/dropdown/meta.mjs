@@ -84,7 +84,7 @@ const sfDropdownMeta = {
     "placeholder": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "description": "What the field reads while nothing is chosen. Empty: the text of the page's language (\"Not selected\" in English, «Не выбрано» in Russian). Nothing is chosen for the person: the value stays empty until they pick."
     },
     "portal": {
       "kind": "boolean",

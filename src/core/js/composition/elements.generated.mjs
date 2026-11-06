@@ -552,7 +552,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "placeholder": {
-          "default": "",
           "type": "string"
         },
         "portal": {
@@ -592,7 +591,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.5.3"
+    "version": "1.6.0"
   },
   "sf-icon": {
     "inputs": {

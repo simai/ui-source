@@ -1506,6 +1506,7 @@ function renderChoiceEdit(field, value, host) {
                 name=${fieldName(field)}
                 ?required=${Boolean(field.required)}
                 value=${value ?? ''}
+                placeholder=${field.placeholder || nothing}
                 aria-label=${field.label || field.key || ''}
                 .options=${editOptions(field, value, false)}
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? null)}
@@ -1556,6 +1557,7 @@ function renderChoicesEdit(field, value, host) {
                 search="false"
                 name=${fieldName(field)}
                 ?required=${Boolean(field.required)}
+                placeholder=${field.placeholder || nothing}
                 aria-label=${field.label || field.key || ''}
                 .options=${editOptions(field, value, true)}
                 @change=${(event) => {

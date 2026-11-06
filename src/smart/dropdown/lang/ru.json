@@ -1,7 +1,8 @@
 {
   "title": "Выпадающий список",
   "runtime": {
-    "search": "Поиск"
+    "search": "Поиск",
+    "empty": "Не выбрано"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

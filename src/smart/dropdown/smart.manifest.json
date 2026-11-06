@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -100,7 +100,7 @@
       },
       "placeholder": {
         "type": "string",
-        "default": ""
+        "description": "What the field reads while nothing is chosen. Empty: the text of the page's language (\"Not selected\" in English, «Не выбрано» in Russian). Nothing is chosen for the person: the value stays empty until they pick."
       },
       "portal": {
         "type": "boolean",
@@ -451,7 +451,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "d90648a12c25d9adb5e31ef09ddeda2a8d4dd0ffa96a24ce775e425c90fb8da8"
+        "sha256": "1e2d1274edc5a0c20ae89ab1a68af35ee663fb978ea6ec602a998a4f61770feb"
       },
       {
         "path": "src/smart/dropdown/rule.js",
