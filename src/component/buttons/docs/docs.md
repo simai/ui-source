@@ -22,7 +22,9 @@ the Smart `sf-button` projection.
   `secondary`;
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density: the default, `spacing-compact`, `spacing-comfortable` or
-  `spacing-spacious` (less, more and most inner space). The older
+  `spacing-spacious` (less, more and most side space). Density moves the side
+  padding only: a button of a size is as tall at every density as at every
+  appearance (one height per size, 1.4.0). The older
   `tightness-low`, `tightness-high` and `tightness-highest` are the same steps
   under names that read backwards -- `low` is the least space -- and stay as
   compatibility names. Put one density class on a button; the constructor's

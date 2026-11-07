@@ -253,19 +253,27 @@
     --sf-icon--width: var(--sf-text-height-1);
   }
 
+  /* Density (spacing) moves the side padding only: one height per size
+     whatever the look or the spacing (owner rule C01, docs review R022,
+     2026-11-07). The step is the one the size's tightness ladder already
+     gives -- the tightness value less the default one -- added to the size's
+     side padding, so compact is narrower and spacious wider at the same
+     control height. The block padding stays the size's default step, which is
+     what --sf-ui-*--control-height is made of. Before, the steps changed the
+     block padding and a compact size 1 stood 32px, a spacious one 56px. */
   .sf-button--size-1:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-1:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-1:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-2 {
@@ -282,18 +290,18 @@
   }
 
   .sf-button--size-2:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-2:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-2:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-3 {
@@ -310,18 +318,18 @@
   }
 
   .sf-button--size-3:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-3:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-3:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2 {
@@ -338,18 +346,18 @@
   }
 
   .sf-button--size-1\/2:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3 {
@@ -366,18 +374,18 @@
   }
 
   .sf-button--size-1\/3:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--outline {
