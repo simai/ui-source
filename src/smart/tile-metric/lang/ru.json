@@ -1,0 +1,22 @@
+{
+  "title": "Плитка показателя",
+  "runtime": {
+    "untitled": "Показатель",
+    "no-value": "—",
+    "loading": "Загрузка",
+    "limit": "{value} из {max}",
+    "limit-name": "{label}: заполнено",
+    "change-up": "рост",
+    "change-down": "снижение",
+    "change-flat": "без изменений",
+    "status-success": "В порядке",
+    "status-info": "Сведения",
+    "status-warning": "Внимание",
+    "status-error": "Ошибка"
+  },
+  "events": {
+    "open": {
+      "label": "Открыть"
+    }
+  }
+}

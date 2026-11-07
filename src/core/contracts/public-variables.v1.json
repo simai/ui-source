@@ -3994,6 +3994,150 @@
       ]
     },
     {
+      "component": "tile-metric",
+      "selector": "sf-tile-metric, .sf-tile-metric",
+      "variables": [
+        {
+          "name": "--sf-tile-metric-background",
+          "role": "background",
+          "summary": "The tile's fill.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-border-color",
+          "role": "border-color",
+          "summary": "The tile's hairline.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-radius",
+          "role": "radius",
+          "summary": "The tile's corner.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-padding",
+          "role": "padding",
+          "summary": "The tile's inset on every side; by default the rung's space-x less the hairline.",
+          "default": "calc(var(--sf-ui-1--space-x) - var(--sf-px))",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-value-color",
+          "role": "color",
+          "summary": "The value's colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-hover-background",
+          "role": "hover-background",
+          "summary": "The fill of a link or button tile under the pointer.",
+          "default": "var(--sf-surface-container-hover)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-min-width",
+          "role": "min-inline-size",
+          "summary": "The narrowest column of sf-tile-metric-grid, the row of tiles that wraps.",
+          "default": "14rem",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "list-attention",
+      "selector": "sf-list-attention, .sf-list-attention",
+      "variables": [
+        {
+          "name": "--sf-list-attention-background",
+          "role": "background",
+          "summary": "The list's fill; none by default, so it is no card.",
+          "default": "transparent",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between items.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-heading-color",
+          "role": "color",
+          "summary": "The heading's colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-padding-inline",
+          "role": "padding-inline",
+          "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
+          "default": "0",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-gap",
+          "role": "margin-block-end",
+          "summary": "The space under the heading.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "progress-run",
+      "selector": "sf-progress-run, .sf-progress-run",
+      "variables": [
+        {
+          "name": "--sf-progress-run-background",
+          "role": "background",
+          "summary": "The run's fill; none by default (a drawer has its own).",
+          "default": "transparent",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between steps.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-background",
+          "role": "background",
+          "summary": "The output pane's fill.",
+          "default": "var(--sf-surface-1)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-color",
+          "role": "color",
+          "summary": "The output's text colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-max-height",
+          "role": "max-block-size",
+          "summary": "The output pane's greatest height; sixteen lines by default.",
+          "default": "calc(16 * var(--sf-text-height-1/2) + 2 * var(--sf-ui-1/2--space-x))",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-padding-inline",
+          "role": "padding-inline",
+          "summary": "The inline inset of the heading, the steps, the result, the output and the actions; 0 by default.",
+          "default": "0",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
       "component": "code",
       "selector": "code",
       "variables": [

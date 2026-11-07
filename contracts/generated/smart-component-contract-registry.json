@@ -941,7 +941,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-upload/smart.manifest.json",
-      "manifest_sha256": "80b6945723140a975d31ee8a8343d3b0ae12ecc8f6f67ee588030e3a95c6a496",
+      "manifest_sha256": "b601e9e1446b25ad449ce156b905eab7c00cb7e81656afaa7585c4c65c6c355c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1720,6 +1720,50 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.badge",
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list-attention",
+      "id": "smart.list-attention",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list-attention/smart.manifest.json",
+      "manifest_sha256": "86f7dd6262e532575f2a1745c1d23c780f1b99f8f0ceb871827b174a8cdd86ed",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+      "tags": [
+        "list",
+        "attention",
+        "problems",
+        "health",
+        "status",
+        "validation-summary",
+        "admin"
+      ],
+      "title": "Needs attention"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "content",
         "scroll-position",
         "live-announcement",
@@ -2101,7 +2145,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "d4cd464b1ea4c1f733043096caba9530777f7bceac89de4b0bc97498ca9f7de9",
+      "manifest_sha256": "12f24119842a84bcbe46b2c11c4127cfeb5251870cfd489490742cb13898202a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2148,6 +2192,53 @@
         "progress-ring"
       ],
       "title": "Progress Ring"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.button-copy",
+          "smart.button-icon",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-progress-run",
+      "id": "smart.progress-run",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/progress-run/smart.manifest.json",
+      "manifest_sha256": "9369f160c8bd1195a50f358708425feb05ea0c17afcae9cdbaad977d88c047d0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
+      "tags": [
+        "progress",
+        "run",
+        "job",
+        "task",
+        "log",
+        "output",
+        "steps",
+        "admin"
+      ],
+      "title": "Progress"
     },
     {
       "backend_adapters": [],
@@ -2762,6 +2853,50 @@
         "generator"
       ],
       "title": "Theme generator"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.badge",
+          "smart.icon",
+          "smart.progress-bar"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tile-metric",
+      "id": "smart.tile-metric",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tile-metric/smart.manifest.json",
+      "manifest_sha256": "ea93d908b17cb57516d54dd78146ae4a5c2aa7040ec80e71edae443df78fa0cc",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A metric tile: a label, a value with its unit, the change against a previous period said in words and by an arrow, a limit as a meter with thresholds, a status with a short hint, a slot for a chart, a skeleton while it loads, and the whole tile as one link or button. Tiles stand in a row that wraps (sf-tile-metric-grid).",
+      "tags": [
+        "tile",
+        "metric",
+        "kpi",
+        "stat",
+        "meter",
+        "dashboard",
+        "admin"
+      ],
+      "title": "Metric tile"
     },
     {
       "backend_adapters": [],

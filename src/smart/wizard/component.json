@@ -380,7 +380,7 @@
     "events: submit (vocabulary §5 submit, cancelable), navigate (§5, place pages), open and close (§5, the window; close also for later), change (the person's move), completed (a fact), invalid (own verb, §5.1). Actions open, close, go-to-step and next answer an outcome.",
     "css-variables: six public variables (§6) -- the gap between the head, the body and the footer, the inset, the background, the edge, the corner and the maximum width -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "phase 1.0 (owner): conditional steps, step groups and the drawer place are 1.1.",
-    "version 1.0.1: the title keeps rung 3 (--sf-text--size-3, --sf-title--height-3) when the heading-4 role moves to the body size in the content heading ladder (tokens.typography 1.2.0, docs review R022); unchanged on the page."
+    "version 1.0.1 (2026-11-07): the title keeps rung 3 (--sf-text--size-3, --sf-title--height-3) when the heading-4 role moves to the body size in the content heading ladder (tokens.typography 1.2.0, docs review R022); unchanged on the page. Also: the first-paint snapshots carry sf-progress-bar 1.2.0's host state data-status and sf-badge's figure mark. Markup only; behaviour unchanged."
   ],
   "x-registry": {
     "capabilities": [

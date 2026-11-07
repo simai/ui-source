@@ -1,0 +1,355 @@
+{
+  "$comment": "The source of sf-tile-metric's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the metric tile the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 1, owner-approved panel prototype 2026-11-02), planned in the reply msg-05e76ea0bc0746a690b8 as sf-tile-metric of the free SIMAI Framework.",
+  "id": "smart.tile-metric",
+  "tag": "sf-tile-metric",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "tile",
+  "settings": {
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "What the number is, in a few words («Диск», «Подкачка», «Посетители»): the tile's accessible name. Without it the tile is named «Показатель» / «Metric»"
+    },
+    "value": {
+      "type": "number",
+      "optional": true,
+      "summary": "The number. Unset, the tile says «—»"
+    },
+    "value-text": {
+      "type": "string",
+      "default": "",
+      "summary": "The value as the page writes it («83 %», «1,2 млн»), in place of the formatted number; value still feeds the change and the limit"
+    },
+    "format": {
+      "type": "string",
+      "default": "number",
+      "summary": "How the value, the change and the limit are written, in the page language (SF.format.number words): number, integer, decimal-<n>, percent (a share 0..1), compact, currency-<CODE> or unit-<Intl unit> (unit-gigabyte, unit-percent)"
+    },
+    "unit": {
+      "type": "string",
+      "default": "",
+      "summary": "A word after the value for a unit Intl does not know («запросов/с», «сайтов»); drawn smaller, on the value's baseline"
+    },
+    "previous": {
+      "type": "number",
+      "optional": true,
+      "summary": "The value of the previous period; the change is worked out from it when delta is not given"
+    },
+    "delta": {
+      "type": "number",
+      "optional": true,
+      "summary": "The change itself, when the page has it; it wins over previous"
+    },
+    "delta-format": {
+      "type": "enum",
+      "values": [
+        "percent",
+        "absolute",
+        "both"
+      ],
+      "default": "percent",
+      "summary": "How the change is written: its share of the previous value, the difference in the value's format, or both. Without a previous value it is the difference"
+    },
+    "period-text": {
+      "type": "string",
+      "default": "",
+      "summary": "What the change is against, after it: «к прошлой неделе»"
+    },
+    "better": {
+      "type": "enum",
+      "values": [
+        "up",
+        "down",
+        "none"
+      ],
+      "default": "up",
+      "summary": "Whether a rise is good: up for visitors, down for load, errors or a queue, none when neither. The change's tone follows its meaning, not its sign"
+    },
+    "max": {
+      "type": "number",
+      "optional": true,
+      "summary": "A limit: the tile shows the value of max with a meter (a disk, a quota, licence seats)"
+    },
+    "limit-text": {
+      "type": "string",
+      "default": "",
+      "summary": "The words under the meter in place of «45 ГБ из 100 ГБ»"
+    },
+    "warning-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent of max: from it on, the meter and the tile are a warning by themselves (sf-progress-bar's warning-at). The page sets it; the tile only compares"
+    },
+    "error-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent of max: from it on, the meter and the tile are an error by themselves"
+    },
+    "status": {
+      "type": "enum",
+      "values": [
+        "neutral",
+        "success",
+        "warning",
+        "error",
+        "info"
+      ],
+      "default": "neutral",
+      "summary": "The page's statement about the number, in the shared status vocabulary: a status icon of that tone before the hint. With warning-at or error-at the tile takes the more serious of this and the threshold the limit reached"
+    },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "A short line beside the status: «серверу не хватает памяти»"
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "Makes the whole tile one link to this address"
+    },
+    "openable": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Without href: makes the whole tile one button that sends open"
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The value is on its way: the tile keeps its size, the label stays, the value, the change and the limit are skeleton bars, aria-busy is true"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The rung of the size ladder: the label and the lines under the value are the rung below, the value two rungs up, the insets the rung's. 1/2 for a dense row, 2 for a page's headline figure"
+    }
+  },
+  "values": {},
+  "events": {
+    "open": {
+      "carries": {
+        "id": "string"
+      },
+      "summary": "A person pressed an openable tile (a click, Enter or Space): open {id} of vocabulary 1.1.5 §5, id being the element's id; the host opens the details"
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
+    }
+  },
+  "slots": {
+    "chart": {
+      "$comment": "A chart under the numbers: an sf-chart-sparkline (or any small picture) as a child with slot=\"chart\". The tile keeps the child itself, so the page can feed it later."
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-progress-bar"
+    },
+    {
+      "name": "cl-badge"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "sr-only/default"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "Without href or openable the tile is a group named by its label. With href it is one link, with openable one native button; nothing interactive is inside either, so every part is phrasing content. The change says its direction in words beside the arrow, the status its word beside the icon, so colour is never the only sign. The limit is a meter (role meter, valuemin 0, valuemax max, valuenow, valuetext the limit's words); the progress bar under it is a picture of it.",
+    "role": "group",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
+    }
+  },
+  "host-states": {
+    "data-status": "string",
+    "data-loading": "boolean"
+  },
+  "css-variables": {
+    "--sf-tile-metric-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tile-metric-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tile-metric-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tile-metric-padding": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tile-metric-value-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tile-metric-hover-background": {
+      "type": "color",
+      "state": "hover"
+    },
+    "--sf-tile-metric-min-width": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "A metric tile: a label, a value with its unit, the change against a previous period said in words and by an arrow, a limit as a meter with thresholds, a status with a short hint, a slot for a chart, a skeleton while it loads, and the whole tile as one link or button. Tiles stand in a row that wraps (sf-tile-metric-grid).",
+  "x-source": {
+    "package": "framework",
+    "folder": "tile-metric",
+    "brief": "Federation bus msg-993e1e39151942c19b23 item 1 from the Larena storage thread (owner-approved panel prototype, 2026-11-02): a label, a value with a unit, an optional limit (value of max, drawn as a meter), an optional change versus a previous period, a status tone (ok/warning/error/neutral) with a short hint, a skeleton, an optional link or press, a slot for a chart, a row or grid that wraps on a phone. Used for server load, storage sizes and row counts, site traffic, queue depth, licence limits."
+  },
+  "x-words": [
+    "label",
+    "value-text",
+    "unit",
+    "period-text",
+    "limit-text",
+    "hint"
+  ],
+  "x-decisions": [
+    "name: sf-tile-metric, block tile, variant metric (ui-control control/decisions/2026-11-02-smart-component-naming.md: sf-<block>-<variant>); family tile is registered to SIMAI Framework with it. It is the Framework's metric tile without a chart of its own (component sets decision 2026-11-03, point 11: what is universal belongs to the Framework; duplication audit 2026-11-03: sf-chart-metric is the candidate to raise, Larena uses a tile without a chart). The settings keep sf-chart-metric 0.1.0's names (label, value, format, previous, delta, delta-format, period-text, better, max, limit-text, status, hint, href, openable, size), so the chart set can compose this tile and keep its own name as a variant with a sparkline.",
+    "value: formatted by core's formatNumber in the page language by a format word (SF.format.number); value-text wins for a page that writes the value itself, unit is a word after it for a unit Intl does not know. Unset value reads «—».",
+    "change: delta, else value − previous. Its tone follows better (up: a rise is positive; down: a rise is negative; none: neutral), drawn as a tonal sf-badge (success, error, neutral) with an arrow icon, and said in words for a reader («рост», «снижение», «без изменений») beside the arrow. delta-format percent (share of the previous value), absolute or both.",
+    "limit: with max, a meter of role meter (valuemin 0, valuemax max, valuenow the value, valuetext «45 ГБ из 100 ГБ» or limit-text) and an sf-progress-bar under it as its picture (aria-hidden). warning-at and error-at, in per cent of max like sf-progress-bar 1.2.0's, pass to that bar and set the tile's status by themselves: the tile draws the more serious of status and the threshold reached (the Larena prototype: swap 83 % is a warning). The thresholds are the page's; without them the tile never infers a status.",
+    "status: neutral draws nothing unless there is a hint; another status draws the status icon of sf-alert (check_circle, info, warning, error) on the hint's line, coloured by the theme's status role, and says the status word for a reader. The status drawn is the host state data-status.",
+    "target: href makes the whole tile one link, openable one native button that sends open {id}; otherwise it is a group named by its label. Nothing interactive inside either (a link in a link is invalid), so every part is a span laid out by the sheet.",
+    "loading: the label stays; the value, the change and the limit are skeleton bars of their own lines, so the tile does not move when the numbers arrive; aria-busy true and a visually hidden «Загрузка».",
+    "chart: the slot chart takes a child the page gives (an sf-chart-sparkline from the chart set); the tile moves the live node, never a copy, so the page can feed it data later. Charts are not the Framework's (owner, 2026-11-02): the tile only leaves room.",
+    "group: tiles stand in a row that wraps -- the class sf-tile-metric-grid on their parent is a grid of columns at least --sf-tile-metric-min-width wide (14rem), one column on a phone; the gap is the rung's space.",
+    "geometry: one rung S (size 1/2, 1, 2): the label, the change, the limit's words and the hint the rung below's line and type, the value two rungs up (1/2: text 2, 1: text 3, 2: text 4), the status icon the hint's line, icon-to-text the rung's text-space-x, the lines' gap the rung's text-space-x, the inset the rung's space-x less the hairline (padding gives up the border), the meter sf-progress-bar of the rung. The surface is the card's: surface-0, an outline-variant hairline, the surface radius.",
+    "css-variables: seven public variables (§6) -- the fill, the hairline, the corner, the inset, the value's colour, the hover fill of a link or button tile, and the grid's narrowest column -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "tile",
+      "metric",
+      "kpi",
+      "stat",
+      "meter",
+      "dashboard",
+      "admin"
+    ],
+    "state": {
+      "machines": {
+        "tile": [
+          "loading",
+          "empty",
+          "ready"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "loading",
+        "empty"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "loading or polling the number (the host sets value)",
+        "inventing a threshold (the host sets warning-at and error-at)",
+        "deciding whether a rise is good (the host sets better)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tile-metric for one number that matters on an admin or dashboard screen: server load, storage used of a quota, visitors against last week, queue depth, licence seats.",
+      "do_not": [
+        "Do not put buttons or links inside the tile; make the whole tile one link (href) or button (openable)",
+        "Do not compute a status from the value in the page and pass it as colour; give warning-at and error-at, or status with a hint",
+        "Do not use the tile for a list of numbers; use a description list or a table"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-tile-metric label=\"Диск\" value=\"83\" max=\"100\" format=\"unit-gigabyte\" warning-at=\"80\" error-at=\"95\" hint=\"Свободно меньше 20 %\"></sf-tile-metric>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "A link or button tile is one Tab stop; Enter follows the link, Enter or Space presses the button"
+      ],
+      "focus": "A plain tile takes no focus; a link or button tile shows the focus ring on its whole surface."
+    }
+  }
+}

@@ -1,0 +1,243 @@
+@layer sf.components {
+/* sf-tile-metric (standard simai.smart-component 1.3.14 §6). One rung S of
+   the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 or
+   2 with size: the label, the change, the limit's words and the hint are the
+   rung below's line and type, the value two rungs up, the status icon the
+   hint's line, icon-to-text and the gap between lines the rung's
+   text-space-x, the inset the rung's space-x less the hairline (padding gives
+   up the border), the meter an sf-progress-bar of the rung. The surface is
+   the card's: surface-0, an outline-variant hairline, the surface radius.
+
+   The public variables are read with the role token as their fallback and
+   never set here. */
+sf-tile-metric {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-tile-metric {
+  /* The rung: 1. */
+  --sf-tile-metric--line: var(--sf-text-height-1\/2);
+  --sf-tile-metric--font-size: var(--sf-text-size-1\/2);
+  --sf-tile-metric--value-line: var(--sf-text-height-3);
+  --sf-tile-metric--value-size: var(--sf-text-size-3);
+  --sf-tile-metric--space-x: var(--sf-ui-1--space-x);
+  --sf-tile-metric--text-space-x: var(--sf-ui-1--text-space-x);
+  --sf-tile-metric--border: var(--sf-px);
+  --sf-tile-metric--padding: var(--sf-tile-metric-padding, calc(var(--sf-tile-metric--space-x) - var(--sf-tile-metric--border)));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sf-tile-metric--text-space-x);
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 100%;
+  margin: 0;
+  padding: var(--sf-tile-metric--padding);
+  border: var(--sf-tile-metric--border) solid var(--sf-tile-metric-border-color, var(--sf-outline-variant));
+  border-radius: var(--sf-tile-metric-radius, var(--sf-radius--surface));
+  background: var(--sf-tile-metric-background, var(--sf-surface-0));
+  color: var(--sf-on-surface);
+  font: inherit;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-tile-metric--font-size);
+  line-height: var(--sf-tile-metric--line);
+  text-align: start;
+  text-decoration: none;
+}
+
+.sf-tile-metric.sf-tile-metric--size-half {
+  --sf-tile-metric--line: var(--sf-text-height-1\/3);
+  --sf-tile-metric--font-size: var(--sf-text-size-1\/3);
+  --sf-tile-metric--value-line: var(--sf-text-height-2);
+  --sf-tile-metric--value-size: var(--sf-text-size-2);
+  --sf-tile-metric--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-tile-metric--text-space-x: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-tile-metric.sf-tile-metric--size-2 {
+  --sf-tile-metric--line: var(--sf-text-height-1);
+  --sf-tile-metric--font-size: var(--sf-text-size-1);
+  --sf-tile-metric--value-line: var(--sf-text-height-4);
+  --sf-tile-metric--value-size: var(--sf-text-size-4);
+  --sf-tile-metric--space-x: var(--sf-ui-2--space-x);
+  --sf-tile-metric--text-space-x: var(--sf-ui-2--text-space-x);
+}
+
+/* A link or a button tile: one target, its whole surface. */
+.sf-tile-metric.sf-tile-metric--target {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .sf-tile-metric.sf-tile-metric--target:hover {
+    background: var(--sf-tile-metric-hover-background, var(--sf-surface-container-hover));
+  }
+}
+
+.sf-tile-metric.sf-tile-metric--target:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-tile-metric-label,
+.sf-tile-metric-period,
+.sf-tile-metric-limit,
+.sf-tile-metric-hint {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-tile-metric-label {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+/* The value and its unit on one baseline; the number never wraps inside. */
+.sf-tile-metric-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sf-tile-metric--text-space-x);
+  min-block-size: var(--sf-tile-metric--value-line);
+}
+
+.sf-tile-metric-value {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--sf-tile-metric-value-color, var(--sf-on-surface));
+  font-size: var(--sf-tile-metric--value-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--sf-text--font-weight-6, 600);
+  line-height: var(--sf-tile-metric--value-line);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-tile-metric-unit {
+  color: var(--sf-on-surface-variant);
+}
+
+/* The change, the meter's words and the hint: lines of the rung below. */
+.sf-tile-metric-delta,
+.sf-tile-metric-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sf-tile-metric--text-space-x);
+  min-block-size: var(--sf-tile-metric--line);
+}
+
+.sf-tile-metric-change {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-tile-metric-meter {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sf-tile-metric--text-space-x) / 2);
+}
+
+.sf-tile-metric-bar {
+  display: block;
+}
+
+.sf-tile-metric-limit {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The status icon is the hint's line, coloured by the status role. */
+.sf-tile-metric .sf-tile-metric-status-icon {
+  --sf-icon--font-size: var(--sf-tile-metric--line);
+  --sf-icon--width: var(--sf-tile-metric--line);
+  --sf-icon--height: var(--sf-tile-metric--line);
+  --sf-icon--color: currentColor;
+  flex: none;
+}
+
+.sf-tile-metric-status {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.sf-tile-metric-status--success .sf-tile-metric-status-icon {
+  color: var(--sf-success);
+}
+
+.sf-tile-metric-status--info .sf-tile-metric-status-icon {
+  color: var(--sf-info);
+}
+
+.sf-tile-metric-status--warning .sf-tile-metric-status-icon {
+  color: var(--sf-warning);
+}
+
+.sf-tile-metric-status--error .sf-tile-metric-status-icon {
+  color: var(--sf-error);
+}
+
+.sf-tile-metric-hint {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-tile-metric-chart {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-tile-metric-chart[hidden] {
+  display: none;
+}
+
+/* While the numbers load: a bar on each line that waits, the line's height,
+   so nothing moves when they arrive. */
+.sf-tile-metric-skeleton {
+  display: block;
+  border-radius: var(--sf-radius--ui);
+  background: var(--sf-skeleton-base, var(--sf-ui-skeleton));
+}
+
+.sf-tile-metric-skeleton--value {
+  inline-size: 60%;
+  block-size: calc(var(--sf-tile-metric--value-line) * 0.75);
+  align-self: center;
+}
+
+.sf-tile-metric-skeleton--line {
+  inline-size: 40%;
+  block-size: calc(var(--sf-tile-metric--line) * 0.75);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-tile-metric--loading .sf-tile-metric-skeleton {
+    animation: sf-tile-metric-pulse calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
+  }
+}
+
+@keyframes sf-tile-metric-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* A row of tiles that wraps: columns at least min-width wide, one column on a
+   phone; the gap is the size-1 rung's space. */
+.sf-tile-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, 14rem)), 1fr));
+  gap: var(--sf-space-1);
+  align-items: stretch;
+}
+
+@media (forced-colors: active) {
+  .sf-tile-metric {
+    border-color: CanvasText;
+  }
+
+  .sf-tile-metric-skeleton {
+    background: GrayText;
+  }
+}
+}

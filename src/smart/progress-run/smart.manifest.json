@@ -1,0 +1,415 @@
+{
+  "schema_version": 2,
+  "id": "smart.progress-run",
+  "version": "1.0.0",
+  "title": "Progress",
+  "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "progress",
+    "run",
+    "job",
+    "task",
+    "log",
+    "output",
+    "steps",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-progress-run",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.button-copy",
+      "smart.button-icon",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The job's name as a person says it («Создание сайта demo.test»): the heading and the region's name. Without it the region is named «Ход выполнения» / «Progress»"
+      },
+      "run-state": {
+        "type": "string",
+        "default": "auto",
+        "description": "The job's state (the name state is the element base's own). auto works it out from the steps: failed when one failed, running while one runs, done when every step is done or skipped, else waiting. cancelled only comes from the host, after it stopped the job",
+        "enum": [
+          "auto",
+          "running",
+          "done",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "result-text": {
+        "type": "string",
+        "default": "",
+        "description": "The result in words once the job ended: «Сайт создан» on success, the reason on a failure («Не хватает места на диске»). Without it the result says «Готово», «Не удалось» or «Отменено»"
+      },
+      "output": {
+        "type": "string",
+        "default": "",
+        "description": "The output so far, as plain text (a server prints it); the action chunk appends to it. Drawn monospace, never as markup"
+      },
+      "output-label": {
+        "type": "string",
+        "description": "The output pane's toggle; «Вывод» / «Output» when not set"
+      },
+      "file-name": {
+        "type": "string",
+        "default": "output.txt",
+        "description": "The name the output is saved under by the download button"
+      },
+      "cancelable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows Cancel while the job runs; its press asks cancel"
+      },
+      "retryable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows Retry after a failure (or a cancel); its press sends retry"
+      },
+      "hideable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows Hide once the job ended; its press asks close"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: a step's title is the rung's line, its text, time and the output the rung below's, a one-line step the rung's control height. 1/2 for a narrow drawer",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "output-open": {
+        "type": "boolean",
+        "default": false,
+        "description": "The output pane is open. A person opens and closes it with its toggle; a page may open it (a failure, say). The pane follows the newest line only while the reader is at its end"
+      },
+      "steps": {
+        "type": "array",
+        "default": [],
+        "description": "The job's steps in order, each {id, title, state waiting|running|done|failed|skipped, text?, started?, finished?, duration?}. A property, or the JSON island a server prints; the host sets the whole list again or changes one step with the action step. Time per step: duration in milliseconds, else finished − started (ISO 8601), and a running step with started counts up each second. An unknown state reads as waiting"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "chunk": {
+      "summary": "Appends text to the output (vocabulary §5.2 chunk {id, text} of a stream: a rule hands a job's output chunk on). A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
+      "arguments": [
+        {
+          "name": "text",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "clear": {
+      "summary": "Empties the output (a job started again)",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "step": {
+      "summary": "Changes one step: the fields given replace that step's (state, text, started, finished, duration). Refused {reason: missing} for an id the run does not have",
+      "arguments": [
+        {
+          "name": "id",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "state",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "text",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "started",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "finished",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "duration",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {
+    "sf-progress-run-cancel": {
+      "summary": "A person pressed Cancel while the job ran (vocabulary §5 cancel). A request: the host stops the job and sets state cancelled (or the failed step); the component changes nothing by itself",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-retry": {
+      "summary": "A person pressed Retry after a failure or a cancel (vocabulary §5 retry): the host starts the job again and sets the steps anew",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-close": {
+      "summary": "A person pressed Hide once the job ended (vocabulary §5 close). A request: not cancelled, the host removes the run or closes the drawer it stands in; the component does not hide itself",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "const": "close"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-download": {
+      "summary": "A person pressed the download button of the output (vocabulary §5 download). Not cancelled, the browser saves the output as plain text under file-name; a page that keeps the full log cancels it and serves its own file",
+      "payload": {
+        "type": "object",
+        "required": [
+          "fileName"
+        ],
+        "properties": {
+          "fileName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-toggle": {
+      "summary": "The output pane was opened or closed by its toggle: the fact after the change, {open}",
+      "payload": {
+        "type": "object",
+        "required": [
+          "open"
+        ],
+        "properties": {
+          "open": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "run": [
+        "waiting",
+        "running",
+        "done",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "closed"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "polling the job (the host sets the steps and appends the output)",
+      "running, cancelling or retrying the job (the host answers cancel and retry)",
+      "deciding that a job ended (the host sets the steps or state)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "region",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches the output toggle, the output, copy, download and the actions in order",
+      "Enter or Space presses a button"
+    ],
+    "focus": "The run never takes focus by itself."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "195fc22bad4b725cf4f5bb3778b78fb3739e5e20",
+    "source_artifacts": [
+      {
+        "path": "src/smart/progress-run/index.js",
+        "sha256": "28bed355a128001f1454f00a09f602b137a4a72b7bd4bb2b709f47b3d5555a92"
+      },
+      {
+        "path": "src/smart/progress-run/js/templates/default.js",
+        "sha256": "1c363b44454ad0739f488ff27d79662302764cdf329e9aa1da8e4eddde3b81b1"
+      },
+      {
+        "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
+        "sha256": "430e732a25b3192bcc2492d8ae1d14b88e7120feacb9a5089f068c86aac29f10"
+      },
+      {
+        "path": "src/smart/progress-run/rule.js",
+        "sha256": "f87f7025a93127489f512fd41712faf895c00c70ad1fd6dab9e104c5c94cbe3e"
+      },
+      {
+        "path": "src/smart/progress-run/docs.md",
+        "sha256": "8363a0580fff3db30961c3329d72f278c974772a3879bfbfccadbbaa12f5664f"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-progress-run for a long job a person started and waits for: creating a site, an update, a backup or a restore, an import, a publish, a package install.",
+    "do_not": [
+      "Do not poll from the component; the host sets the steps and appends the output with chunk",
+      "Do not use it for one value of progress; sf-progress-bar does that",
+      "Do not render markup in the output; it is plain text"
+    ],
+    "required_reads": [
+      "inputs",
+      "actions",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-progress-run label=\"Создание сайта\" cancelable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы\", \"state\": \"running\"}]}</script></sf-progress-run>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

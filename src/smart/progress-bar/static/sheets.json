@@ -50,6 +50,14 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
+    ],
+    "thresholds": [
+      "component/progress-bar/css/progress-bar.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
     ]
   }
 }

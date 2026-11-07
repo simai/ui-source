@@ -1,0 +1,22 @@
+{
+  "title": "Metric tile",
+  "runtime": {
+    "untitled": "Metric",
+    "no-value": "—",
+    "loading": "Loading",
+    "limit": "{value} of {max}",
+    "limit-name": "{label}: used",
+    "change-up": "up",
+    "change-down": "down",
+    "change-flat": "no change",
+    "status-success": "OK",
+    "status-info": "Info",
+    "status-warning": "Warning",
+    "status-error": "Error"
+  },
+  "events": {
+    "open": {
+      "label": "Open"
+    }
+  }
+}

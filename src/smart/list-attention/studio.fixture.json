@@ -1,0 +1,50 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list-attention",
+  "title": "list-attention reference",
+  "summary": "Deterministic reference fixture for sf-list-attention.",
+  "locale": "ru",
+  "props": {
+    "label": "Здоровье сервера",
+    "items": [
+      {
+        "id": "backup",
+        "status": "warning",
+        "title": "Последняя копия demo-owned.test не удалась",
+        "text": "27 октября, 03:30 · нет места на диске",
+        "action": {
+          "label": "Открыть копии",
+          "href": "#backups"
+        }
+      },
+      {
+        "id": "down",
+        "status": "error",
+        "title": "demo-php.test не отвечает",
+        "text": "12 минут, код 502",
+        "action": {
+          "label": "Перезапустить",
+          "event": "restart"
+        }
+      },
+      {
+        "id": "cert",
+        "status": "warning",
+        "title": "Сертификат demo-static.test истекает через 6 дней",
+        "action": {
+          "label": "Продлить",
+          "href": "#cert"
+        }
+      },
+      {
+        "id": "update",
+        "status": "info",
+        "title": "Доступна панель 0.3.1",
+        "text": "Изменения: журнал, резервные копии"
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}
