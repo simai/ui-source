@@ -227,6 +227,15 @@ export function checkPortValue(valueType, value) {
   return checked;
 }
 
+// Former port element names, each read as its new name until remove_after
+// (change journal port-element-sf-table-to-sf-view-table, beside the tag
+// record tag-sf-table-to-sf-view-table): a binding to sf-table, or a type
+// drawn by the custom element sf-table, finds the sf-view-table manifest.
+// A registry given a manifest under the old name itself keeps that manifest.
+export const PORT_ELEMENT_ALIASES = Object.freeze({
+  'sf-table': Object.freeze({ to: 'sf-view-table', journal: 'port-element-sf-table-to-sf-view-table', remove_after: '2027-01-01' }),
+});
+
 export function createPortRegistry(manifests = [], options = {}) {
   const elements = new Map();
   for (const manifest of manifests) {
@@ -238,18 +247,29 @@ export function createPortRegistry(manifests = [], options = {}) {
     }
     elements.set(manifest.element, canonical(manifest));
   }
+  // An alias stands only where its new name is registered and its old name is not.
+  const aliases = new Map(Object.entries(options.aliases ?? PORT_ELEMENT_ALIASES)
+    .map(([from, entry]) => [from, typeof entry === 'string' ? entry : entry?.to])
+    .filter(([from, to]) => typeof to === 'string' && elements.has(to) && !elements.has(from)));
   const bindings = new Map(Object.entries(options.bindings || {}));
   for (const [type, element] of bindings) {
-    if (!elements.has(element)) throw new TypeError(`composition_port_binding_unknown:${type}`);
+    if (!elements.has(element) && !aliases.has(element)) throw new TypeError(`composition_port_binding_unknown:${type}`);
   }
-  return { elements, bindings };
+  return { elements, bindings, aliases };
+}
+
+// The manifest a port registry holds for an element name, a former name read
+// as its new one (PORT_ELEMENT_ALIASES).
+export function portManifestFor(ports, element) {
+  if (!ports || typeof element !== 'string') return null;
+  return ports.elements.get(element) || ports.elements.get(ports.aliases?.get(element)) || null;
 }
 
 export function portsForType(typeManifest, ports) {
   if (!typeManifest || !ports) return null;
   const bound = ports.bindings.get(typeManifest.type);
-  if (bound) return ports.elements.get(bound) || null;
-  if (typeManifest.renderer?.kind === 'custom-element') return ports.elements.get(typeManifest.renderer.name) || null;
+  if (bound) return portManifestFor(ports, bound);
+  if (typeManifest.renderer?.kind === 'custom-element') return portManifestFor(ports, typeManifest.renderer.name);
   return null;
 }
 

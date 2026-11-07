@@ -1,15 +1,22 @@
 {
+  "element_aliases": {
+    "sf-table": {
+      "journal": "port-element-sf-table-to-sf-view-table",
+      "remove_after": "2027-01-01",
+      "to": "sf-view-table"
+    }
+  },
   "entries": [
     {
-      "component": "smart.data-view",
-      "component_version": "1.2.0",
-      "element": "sf-table",
+      "component": "smart.view-table",
+      "component_version": "1.14.0",
+      "element": "sf-view-table",
       "inputs": {
         "context": {
           "effect": "request",
-          "request_event": "sf-table-query-intent",
+          "request_event": "sf-view-table-query",
           "result_method": "applyQueryResult",
-          "summary": "Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-table-query-intent with the route sequence; the host resolves the relation and access and answers with applyQueryResult.",
+          "summary": "Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-view-table-query with the route sequence; the host resolves the relation and access and answers with applyQueryResult.",
           "value": "record-ids.v1"
         }
       },
@@ -21,7 +28,7 @@
       },
       "schema": "simai.composition.port-manifest",
       "schema_version": 1,
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   ],
   "schema": "simai.composition.port-registry",
