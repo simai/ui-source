@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.border",
   "kind": "tokens",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "summary": "Border widths, border roles and the focus ring.",
   "includes": [
@@ -14,7 +14,7 @@
     "src/core/figma_variables/figma_focus.scss",
     "src/core/scss/_sf_css__border.scss"
   ],
-  "content_sha256": "2527e360d7a6b0a79ccc93586017c95f6a2d0fdd8abf8440d9f59bdd70d51771",
+  "content_sha256": "174ad296ef76ed15cc4659e11c7ba2fa819a09b438f8854c0cd38b01f767e8d8",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
@@ -30,6 +30,10 @@
     },
     {
       "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
       "range": "^1.0.0"
     }
   ]

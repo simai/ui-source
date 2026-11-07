@@ -32,6 +32,12 @@
 	// пикселя — на плитке рядом с прямым углом эту разницу не видно.
 	--sf-radius--ui: var(--sf-radius-1\/2);
 	--sf-radius--surface: var(--sf-radius-1);
+	// The radius of an element nested in a container (simai/ui-source#31,
+	// owner decision 2026-10-23): max(--sf-radius--ui, the container's radius
+	// minus its inset). A custom property resolves where it is declared, so
+	// the derivation lives on the container (.sf-nest below); outside any
+	// container a nested element takes the control radius.
+	--sf-radius--nested: var(--sf-radius--ui);
 	--sf-focus--color: var(--sf-focus);
 	// The ring stands one pixel off the element instead of flush against it.
 	// Flush, a ring in the focus colour disappears into a control filled with the
@@ -91,6 +97,59 @@
 
 .outline-none {
 	outline-width: var(--sf-0);
+}
+
+/* The nesting rule for radii (simai/ui-source#31 item 1; owner decision
+   2026-10-23, asked by ui-chat). A container declares its own radius and the
+   inset to its content; what it holds takes
+
+     --sf-radius--nested = max(--sf-radius--ui, container radius - inset)
+
+   so an inner corner runs parallel to the outer one and never comes out
+   rounder than the corner around it. A round control (a capsule) belongs only
+   in a capsule of the same height: control + 2 x inset.
+
+   .sf-nest is the container: it draws --sf-nest-radius and pads by
+   --sf-nest-inset (defaults: the surface radius and the half step), and
+   declares --sf-radius--nested for its content; a child reads it as
+   border-radius: var(--sf-radius--nested) (or through a component's public
+   radius, e.g. --sf-highlight-radius). A custom property resolves where it
+   is declared, which is why the derivation is the container's and not
+   :root's (the ui-chat note on #31).
+
+   A container inside a container takes the outer one's nested radius as its
+   own, to four levels: the derivation alternates between two private names,
+   one inherited and one written at each level (a declaration that read and
+   wrote one name would be a cycle). A page that sets --sf-nest-radius on a
+   container of its own class wins over every default here (:where). */
+:where(.sf-nest) {
+	--sf-nest-radius: var(--sf-radius--surface);
+	--sf-nest-inset: var(--sf-space-1\/2);
+	--sf-nest--a: max(var(--sf-radius--ui), calc(var(--sf-nest-radius) - var(--sf-nest-inset)));
+	--sf-radius--nested: var(--sf-nest--a);
+	border-radius: var(--sf-nest-radius);
+	padding: var(--sf-nest-inset);
+}
+
+:where(.sf-nest .sf-nest) {
+	--sf-nest--a: inherit;
+	--sf-nest-radius: var(--sf-nest--a);
+	--sf-nest--b: max(var(--sf-radius--ui), calc(var(--sf-nest-radius) - var(--sf-nest-inset)));
+	--sf-radius--nested: var(--sf-nest--b);
+}
+
+:where(.sf-nest .sf-nest .sf-nest) {
+	--sf-nest--b: inherit;
+	--sf-nest-radius: var(--sf-nest--b);
+	--sf-nest--a: max(var(--sf-radius--ui), calc(var(--sf-nest-radius) - var(--sf-nest-inset)));
+	--sf-radius--nested: var(--sf-nest--a);
+}
+
+:where(.sf-nest .sf-nest .sf-nest .sf-nest) {
+	--sf-nest--a: inherit;
+	--sf-nest-radius: var(--sf-nest--a);
+	--sf-nest--b: max(var(--sf-radius--ui), calc(var(--sf-nest-radius) - var(--sf-nest-inset)));
+	--sf-radius--nested: var(--sf-nest--b);
 }
 
 	@each $key, $value in (
