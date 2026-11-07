@@ -242,10 +242,14 @@ try {
         await moving.close();
       }
     }
-    // Dark draws the geometry of light.
-    const light = JSON.stringify(evidence[`${viewport} theme-light`]);
-    const dark = JSON.stringify(evidence[`${viewport} theme-dark`]);
-    check(`${viewport}: dark draws the rings of light`, light === dark, {light: evidence[`${viewport} theme-light`], dark: evidence[`${viewport} theme-dark`]});
+    // Dark draws the geometry of light: the same boxes and drawn rings; the ink
+    // read from the pixels may round to the other half pixel on another ground.
+    const light = evidence[`${viewport} theme-light`];
+    const dark = evidence[`${viewport} theme-dark`];
+    const geometry = (steps) => JSON.stringify(Object.fromEntries(Object.entries(steps).map(([size, step]) => [size, [step.iconBox, Object.values(step.rings).map((ring) => [ring.box, ring.drawn])]])));
+    check(`${viewport}: dark draws the rings of light`, geometry(light) === geometry(dark), {light, dark});
+    check(`${viewport}: dark inks the rings as light does (within half a pixel)`, Object.keys(light).every((size) => near(light[size].buttonGlyphInk, dark[size].buttonGlyphInk, 0.5)
+      && Object.keys(light[size].rings).every((id) => near(light[size].rings[id].ink, dark[size].rings[id].ink, 0.5))), {light, dark});
   }
 } finally {
   await browser.close();
