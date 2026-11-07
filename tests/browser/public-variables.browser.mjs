@@ -26,13 +26,14 @@ const DRAW = {
   // A count anchored on an icon besides the label: the ring is drawn on the
   // anchored badge alone (simai/ui-source#12).
   badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
-  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
+  // A pressed toggle beside the button: the pressed variables colour its resting look.
+  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button>'},
   // A variable of a state (standard 1.3.8 §6) is measured on an instance in
   // that state, drawn beside the one at rest.
   input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
   tag: {css: ['tags'], js: 'tag', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
-  'icon-button': {css: ['icon-buttons'], js: 'button-icon', html: '<sf-button-icon icon="add" aria-label="Добавить" size="1"></sf-button-icon>'},
+  'icon-button': {css: ['icon-buttons'], js: 'button-icon', html: '<sf-button-icon icon="add" aria-label="Добавить" size="1"></sf-button-icon><sf-button-icon icon="format_bold" aria-label="Жирный" appearance="outline" scheme="on-surface" pressed size="1"></sf-button-icon>'},
   checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
   'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
