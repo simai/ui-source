@@ -19,6 +19,7 @@
 // Space, says «Скопировано» near the code, and a block of code is not taken.
 //
 // INLINE_CODE_SHOTS=<folder> saves a screenshot of each theme there.
+import {readFile} from 'node:fs/promises';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -77,14 +78,32 @@ async function open(theme) {
   // probe that adds it this way sees that one error, and it changes nothing here.
   page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', theme, said: error.message}); });
   const html = `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
+    <script>window.SF_BOOT_CONFIG = {theme: false};</script>
     <style>.site code { background-color: rgb(1, 2, 3); }
     .tone-secondary { --sf-code-color: var(--sf-secondary); }
     .tone-tertiary { --sf-code-background: var(--sf-tertiary-container); --sf-code-color: var(--sf-on-tertiary-container); }</style></head>
     <body style="margin:16px;background:var(--sf-surface-0)">${BODY}</body></html>`;
-  await page.route('http://localhost:4917/**', (route) => route.fulfill({contentType: 'text/html; charset=utf-8', body: html}));
+  // The page and the build under /dist/ on one secure origin (localhost):
+  // core.js is loaded by its address, so it knows where it stands and runs
+  // whole (copy on click is core's), and the Clipboard API is there.
+  await page.route('http://localhost:4917/**', async (route) => {
+    const {pathname} = new URL(route.request().url());
+    if (!pathname.startsWith('/dist/')) return route.fulfill({contentType: 'text/html; charset=utf-8', body: html});
+    try {
+      const body = await readFile(join(out, decodeURIComponent(pathname.slice('/dist/'.length))));
+      const type = pathname.endsWith('.css') ? 'text/css' : pathname.endsWith('.json') ? 'application/json' : 'text/javascript';
+      return route.fulfill({contentType: `${type}; charset=utf-8`, body});
+    } catch {
+      return route.fulfill({status: 404, body: ''});
+    }
+  });
   await page.goto('http://localhost:4917/');
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
-  for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
+  for (const path of SCRIPTS) {
+    if (path === 'core/core/js/core.js') await page.addScriptTag({url: `/dist/${path}`, type: 'module'});
+    else await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
+  }
+  await page.waitForFunction(() => globalThis.SF?.codeCopy);
   await page.waitForFunction(() => customElements.get('sf-button') && customElements.get('sf-input-color'));
   await page.waitForFunction(() => document.querySelector('#btn-host > button') && document.querySelector('#color .sf-color-text code'));
   await page.waitForTimeout(500);
@@ -235,6 +254,7 @@ for (const theme of THEMES) {
 
   const hover = await (async () => {
     await page.hover('#copy-me');
+    await page.waitForTimeout(300);
     return page.evaluate(() => getComputedStyle(document.getElementById('copy-me')).boxShadow);
   })();
   check(`${theme}: a hairline on hover`, /inset/u.test(hover) && /1px/u.test(hover), {got: hover});
@@ -244,16 +264,22 @@ for (const theme of THEMES) {
   check(`${theme}: a click copies`, byClick.clipboard === 'sf-button-press', byClick);
   check(`${theme}: a click says Скопировано above the code`, byClick.status?.text === 'Скопировано' && byClick.status.role === 'status' && byClick.status.shown && byClick.status.above && byClick.status.centred, byClick);
 
+  // From the keyboard: Tab from the code before it, so the ring is the
+  // keyboard's (:focus-visible).
   await page.evaluate(() => navigator.clipboard.writeText(''));
-  await page.focus('#copy-key');
+  await page.focus('#copy-me');
+  await page.keyboard.press('Tab');
+  const focused = await page.evaluate(() => document.activeElement?.id);
   const ring = await page.evaluate(() => getComputedStyle(document.getElementById('copy-key')).outlineStyle);
   await page.keyboard.press('Enter');
   await page.waitForTimeout(250);
-  const byEnter = {clipboard: await clipboard(), status: await status()};
+  const byEnter = {focused, clipboard: await clipboard(), status: await status()};
   await page.evaluate(() => navigator.clipboard.writeText(''));
+  const before = await page.evaluate(() => scrollY);
   await page.keyboard.press(' ');
   await page.waitForTimeout(250);
-  const bySpace = {clipboard: await clipboard(), scrolled: await page.evaluate(() => scrollY)};
+  const bySpace = {clipboard: await clipboard(), scrolled: (await page.evaluate(() => scrollY)) - before};
+  check(`${theme}: Tab reaches the next code`, focused === 'copy-key', {focused});
   check(`${theme}: Enter copies`, byEnter.clipboard === 'npm test' && byEnter.status?.text === 'Скопировано', byEnter);
   check(`${theme}: Space copies and does not scroll`, bySpace.clipboard === 'npm test' && bySpace.scrolled === 0, bySpace);
   check(`${theme}: the focus ring is drawn`, ring === 'solid', {got: ring});
