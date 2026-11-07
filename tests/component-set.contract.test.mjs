@@ -15,11 +15,13 @@ const root = new URL('../', import.meta.url);
 const read = (relative) => readFileSync(new URL(relative, root));
 const json = (relative) => JSON.parse(read(relative).toString('utf8'));
 
-const STANDARD = 'contracts/standards/simai.component-set/1.0.0/standard.json';
+const STANDARD = 'contracts/standards/simai.component-set/1.1.0/standard.json';
 const PASSPORT_SCHEMA = 'contracts/schema/component-set.v1.schema.json';
 const REGISTRY_SCHEMA = 'contracts/schema/name-registry.v1.schema.json';
 const REGISTRY = 'contracts/registry/names.json';
 const FIXTURE = 'tests/fixtures/component-set/set.json';
+const INDEX_SCHEMA = 'contracts/schema/set-index.v1.schema.json';
+const INDEX_FIXTURE = 'tests/fixtures/component-set/index.json';
 
 const PRO_SPDX = 'PolyForm-Small-Business-1.0.0 OR PolyForm-Noncommercial-1.0.0 OR LicenseRef-SIMAI-Commercial';
 const LICENCES = {'simai-pro': PRO_SPDX, framework: 'Apache-2.0'};
@@ -92,7 +94,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
 });
 
 test('the standards index lists the set standard', () => {
-  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.0\.0 \|/u);
+  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.1\.0 \|/u);
 });
 
 test('a set passport takes the pinned form and its own rules', () => {
@@ -115,6 +117,32 @@ test('a set passport takes the pinned form and its own rules', () => {
   assert.notDeepEqual(broken((value) => { value.families = []; return value; }), [], 'no family');
   assert.notDeepEqual(broken((value) => { value.release = {id: 'effects-main', version: '1.0.0', source_revision: passport.framework.source_revision}; return value; }), [], 'a release id without its commit');
   assert.notDeepEqual(broken((value) => { value.package_reference = 'ui-source'; return value; }), [], 'an unknown key');
+});
+
+// Standard 1.1.0 (owner decision 2026-11-07, set pair receipts): a release row
+// may list the further pairs its unchanged release was re-receipted over. The
+// row's facts never change; pairs only grows, never names the row's own pair
+// and names a pair once.
+test('the compatibility index takes its pinned form, pairs included', () => {
+  const schema = json(INDEX_SCHEMA);
+  const index = json(INDEX_FIXTURE);
+  assert.equal(schema['x-simai-version'], '1.1.0');
+  assert.deepEqual(validate(schema, index), []);
+  const listed = index.releases.filter((row) => row.pairs);
+  assert.ok(listed.length > 0, 'the fixture holds a row with pairs');
+  for (const row of listed) {
+    const pairs = row.pairs.map(({pair}) => pair);
+    assert.ok(!pairs.includes(row.framework.pair), `${row.release}: pairs never name the row's own pair`);
+    assert.equal(new Set(pairs).size, pairs.length, `${row.release}: a pair is listed once`);
+    assert.deepEqual(row.pairs.map(({received_on}) => received_on), row.pairs.map(({received_on}) => received_on).sort(), `${row.release}: in the order received`);
+    for (const {received_on: received} of row.pairs) assert.ok(received >= row.published_on, `${row.release}: received after the release`);
+  }
+  const broken = (change) => validate(schema, change(structuredClone(index)));
+  assert.notDeepEqual(broken((value) => { value.releases[0].pairs = []; return value; }), [], 'an empty pairs list');
+  assert.notDeepEqual(broken((value) => { value.releases[0].pairs[0].pair = 'ui-main'; return value; }), [], 'a pair that is not ui-<12 hex>');
+  assert.notDeepEqual(broken((value) => { value.releases[0].pairs[0].version = '1.0.1'; return value; }), [], 'an unknown key in a pair');
+  assert.notDeepEqual(broken((value) => { delete value.releases[0].pairs[0].receipt_sha256; return value; }), [], 'a pair without its receipt digest');
+  assert.notDeepEqual(broken((value) => { value.releases[0].note = 'x'; return value; }), [], 'an unknown row key');
 });
 
 test('the shared name registry takes its pinned form', () => {
