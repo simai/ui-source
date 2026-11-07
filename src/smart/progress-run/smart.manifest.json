@@ -372,15 +372,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "38b0ede9801e79c54277f593e1e4720f1d478a48b9f7f9a36bba18db9410bbb2"
+        "sha256": "28bed355a128001f1454f00a09f602b137a4a72b7bd4bb2b709f47b3d5555a92"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
-        "sha256": "adf325aefceabf9dafdf617eb7cf44c29efcc769bd28095abe720497647a63b6"
+        "sha256": "1c363b44454ad0739f488ff27d79662302764cdf329e9aa1da8e4eddde3b81b1"
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "bf08d3e4e2f0f7bffc22b14bcc2c922ceb12abf2a72a0c0560312c7b09753a61"
+        "sha256": "430e732a25b3192bcc2492d8ae1d14b88e7120feacb9a5089f068c86aac29f10"
       },
       {
         "path": "src/smart/progress-run/rule.js",

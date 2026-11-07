@@ -195,6 +195,9 @@ sf-progress-run {
   max-block-size: var(--sf-progress-run-output-max-height, calc(var(--sf-progress-run--below-line) * 16 + var(--sf-progress-run--below-space-x) * 2));
   overflow: auto;
   overscroll-behavior: contain;
+  /* A log jumps: the page's smooth scrolling would leave it behind its end
+     while lines arrive, and hold a reader's scroll back from where they put it. */
+  scroll-behavior: auto;
   padding: calc(var(--sf-progress-run--below-space-x) - var(--sf-px));
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--ui);

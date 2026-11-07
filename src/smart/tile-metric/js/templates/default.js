@@ -19,7 +19,7 @@ const BELOW = {'1/2': '1/3', 1: '1/2', 2: '1'};
 const skeleton = (part) => html`<span class=${`sf-tile-metric-skeleton sf-tile-metric-skeleton--${part}`} aria-hidden="true"></span>`;
 
 function renderDelta(context) {
-  const {delta, size} = context;
+  const {change: delta, size} = context;
   if (!delta) return nothing;
   return html`<span class="sf-tile-metric-delta">
     <sf-badge class="sf-tile-metric-change" data-tone=${delta.tone} appearance="tonal" size=${BELOW[size]}
@@ -53,11 +53,11 @@ function renderStatus(context) {
 function renderBody(context) {
   const {loading, uid} = context;
   return html`
-    <span class="sf-tile-metric-label" id=${`${uid}-label`}>${context.label}</span>
+    <span class="sf-tile-metric-label" id=${`${uid}-label`}>${context.labelShown}</span>
     <span class="sf-tile-metric-figure">
       ${loading
         ? html`${skeleton('value')}<span class="sr-only">${context.loadingWord}</span>`
-        : html`<span class="sf-tile-metric-value">${context.valueText}</span>${context.unit ? html`<span class="sf-tile-metric-unit">${context.unit}</span>` : nothing}`}
+        : html`<span class="sf-tile-metric-value">${context.valueShown}</span>${context.unit ? html`<span class="sf-tile-metric-unit">${context.unit}</span>` : nothing}`}
     </span>
     ${loading ? html`<span class="sf-tile-metric-delta">${skeleton('line')}</span>` : renderDelta(context)}
     ${renderMeter(context)}

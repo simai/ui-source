@@ -303,11 +303,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/tile-metric/index.js",
-        "sha256": "a4be3a5aa1b13f2463fe408649818abec286110f190b3bdf40c9e234fa83d13f"
+        "sha256": "c9f2904f6e2867676cc99eda63119a2df615570fc30e36901fe368da00787fcb"
       },
       {
         "path": "src/smart/tile-metric/js/templates/default.js",
-        "sha256": "d13f62a61a0f3bf211885ef7dc9a1a6cca51fe5137d480dc2a8c704462e0fe38"
+        "sha256": "8646ac23b9f30de966a96ba28c9c4cb407afd4d74287c5ba0363d492f606916d"
       },
       {
         "path": "src/smart/tile-metric/scss/_smart__tile-metric.scss",

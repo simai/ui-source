@@ -46,8 +46,8 @@ function output(context) {
       </span>` : nothing}
     </div>
     ${outputOpen ? html`<div class="sf-progress-run-output" id=${ids.output} role="log" aria-live="off" aria-label=${context.outputLabel} tabindex="0">
-      <pre class="sf-progress-run-output-text" id=${`${ids.output}-text`}>${context.output}</pre>
-      ${context.output ? nothing : html`<span class="sf-progress-run-output-empty">${words.emptyOutput}</span>`}
+      <pre class="sf-progress-run-output-text" id=${`${ids.output}-text`}>${context.outputShown}</pre>
+      ${context.outputShown ? nothing : html`<span class="sf-progress-run-output-empty">${words.emptyOutput}</span>`}
     </div>` : nothing}
   </div>`;
 }
@@ -79,7 +79,7 @@ export function renderProgressRunTemplate(context) {
     ${label ? html`<div class="sf-progress-run-heading" id=${ids.heading}>${label}</div>` : nothing}
     ${context.steps.length ? html`<ol class="sf-progress-run-steps" aria-label=${context.words.steps}>${context.steps.map((item) => step(context, item))}</ol>` : nothing}
     <div class=${`sf-progress-run-result sf-progress-run-result--${state}`} role="status">
-      ${ended ? html`${icon(icons[state], `sf-progress-run-icon--${state}`)}<span class="sf-progress-run-result-text">${context.resultText}</span>` : nothing}
+      ${ended ? html`${icon(icons[state], `sf-progress-run-icon--${state}`)}<span class="sf-progress-run-result-text">${context.resultShown}</span>` : nothing}
     </div>
     ${output(context)}
     ${actions(context)}
