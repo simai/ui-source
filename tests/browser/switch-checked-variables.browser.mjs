@@ -97,6 +97,8 @@ try {
       const checkedBare = paint(bare);
       input.disabled = true;
       bare.classList.remove('disabled');
+      // The fill changes over the switch's own duration.
+      await new Promise((done) => setTimeout(done, 400));
       const disabledBare = paint(bare);
       return {primary, onDisable, plain: paint(document.querySelector('#plain')), own: paint(document.querySelector('#own')),
         off: paint(document.querySelector('#off')), offBare, checkedBare, disabledBare};
