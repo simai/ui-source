@@ -415,7 +415,9 @@ function renderEntries(context) {
     // A group's rows keep a leading column of their own, inside the block.
     const lead = entries.some((entry) => ROWS(entry) && entry.type !== "group" && leads(entry));
     // A search the host answers (search.remote) shows the entries as the host
-    // set them for the query; a local one narrows them here.
+    // set them for the query; a local one narrows them here. A host that set no
+    // rows has found nothing, whatever the field holds -- an answer to an older
+    // query can arrive after the field was cleared -- so its note shows then too.
     const remote = Boolean(context.search?.remote);
     const shown = entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query));
     return html`
@@ -423,7 +425,7 @@ function renderEntries(context) {
         ${context.search ? renderSearch(context) : nothing}
         ${searchList(context, html`
             ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context, remote ? "" : query))}
-            ${context.search && query && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
+            ${context.search && (query || remote) && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
         `)}
     `;
 }
@@ -437,8 +439,21 @@ function searchList(context, rows) {
     return context.search && !context.panel ? html`<div class="sf-context-menu-list">${rows}</div>` : rows;
 }
 
+// Whether the menu draws entries. A menu with a search does while its entries
+// are empty: a host that answered a query with no rows took the field, and the
+// focus in it, out of the page, and the root lost its entries class -- the
+// class list openFor() wrote sf-context-menu--open into was written again
+// without it, so the surface hid and the menu looked closed (docs thread,
+// 2026-11-07). The field stays, with the empty note under it, as a local
+// search shows, and the class lists stay as they were.
+function drawsEntries(context) {
+    if (context.entries && context.entries.length) return true;
+    return Boolean(context.search && !(context.items && context.items.length)
+        && !context.component?.hasSlotContent?.("content"));
+}
+
 function renderContent(context) {
-    if (context.entries && context.entries.length) {
+    if (drawsEntries(context)) {
         return renderEntries(context);
     }
     if (context.items && context.items.length) {
@@ -488,7 +503,7 @@ export function renderContextMenuTemplate(context) {
     const rootClasses = joinClasses(
         "sf-context-menu",
         context.position ? `sf-context-menu--position-${context.position}` : "",
-        context.entries && context.entries.length ? "sf-context-menu--entries" : "",
+        drawsEntries(context) ? "sf-context-menu--entries" : "",
         context.size === "1" ? "sf-context-menu--size-1" : "",
         context.panel ? "sf-context-menu--panel" : "",
         context.drill ? "sf-context-menu--drill" : "",
@@ -504,7 +519,7 @@ export function renderContextMenuTemplate(context) {
         // On the content, not the root: the root's class list is the one
         // openFor() adds sf-context-menu--open to, and a level that draws a
         // search changes the list while the menu is open.
-        context.search && context.entries && context.entries.length && !context.panel ? "sf-context-menu-content--search" : "",
+        context.search && drawsEntries(context) && !context.panel ? "sf-context-menu-content--search" : "",
         context.contentClass,
     );
 

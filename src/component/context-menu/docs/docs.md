@@ -43,6 +43,12 @@
 бокам и снизу, поэтому пункты стоят там же, где без поиска. Проба:
 `tests/browser/context-menu-search-scroll.browser.mjs`.
 
+Прокрутка меню не уходит дальше него: у содержимого, у
+`.sf-context-menu-list` и у тела панели с вкладками стоит
+`overscroll-behavior: contain`, поэтому колесо, докрученное до конца списка,
+не прокручивает страницу или таблицу под меню. Проба:
+`tests/browser/context-menu-host-search.browser.mjs`.
+
 ## Выбранная строка
 
 `.sf-context-menu-item--chosen` — выбранная строка списка, где выбирают

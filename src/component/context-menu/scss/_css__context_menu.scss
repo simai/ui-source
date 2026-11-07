@@ -41,6 +41,10 @@
   max-inline-size: var(--sf-context-menu-available-inline-size, 100%);
   max-block-size: var(--sf-context-menu-available-block-size, 100%);
   overflow: auto;
+  /* A wheel turned past the end of the rows stays in the menu: it scrolled the
+     page or the table behind it (admin.simai.io profile language, 2026-11-07).
+     The same on the rows' area under a search and a panel's body. */
+  overscroll-behavior: contain;
   scroll-behavior: auto;
 }
 
@@ -719,6 +723,7 @@
   padding-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   scroll-behavior: auto;
 }
 
@@ -775,6 +780,7 @@
   gap: var(--sf-context-menu-gap, var(--sf-px));
   min-block-size: 0;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .sf-context-menu-footer {
