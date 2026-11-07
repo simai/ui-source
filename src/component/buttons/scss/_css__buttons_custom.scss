@@ -357,3 +357,68 @@
     --sf-kbd--color: var(--sf-on-disable);
   }
 }
+
+/* A toggle that is on (owner decision 2026-11-07, docs review R028, rule C12).
+   Not pressed, the button keeps its own look. Pressed -- sf-button writes
+   sf-button--pressed, plain markup says aria-pressed="true" -- it wears one
+   look whatever its appearance or scheme: the primary container fill, the
+   label and the icons in --sf-on-primary-container, and the icons filled
+   (below, outside the layers). Two cues, the fill and the filled glyph, so the
+   state is not told by colour alone; the same roles in both themes. The edge
+   keeps its width -- the padding has given it back, so the size's one height
+   holds (C01) -- and is transparent: the fill shows through it, which is
+   "the border takes the fill's colour" without the alpha fill drawn twice on
+   the edge. Before, the pressed toggle drew the momentary press (a grey fill
+   inside the outline) and its icon stayed outlined; beside a tonal button it
+   was not clear which one was pressed.
+   Hover and press over it step the container (+4 and +8 of the fill family,
+   the container's own -hover and -active); focus keeps the fill and draws the
+   ring; disabled wears the disabled look. The selectors repeat the block class
+   to stand over every appearance's state rule in this layer. */
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container));
+    --sf-button--border-color: transparent;
+    --sf-button--focus-ink: transparent;
+  }
+
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-button-text-container,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-icon,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
+    --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  /* Forced colours paint every fill ButtonFace, so the fill cannot say it:
+     the edge does, in Highlight, inside the control height. The filled icon
+     still says it too. */
+  @media (forced-colors: active) {
+    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+      --sf-button--border-top-width: var(--sf-px);
+      --sf-button--border-bottom-width: var(--sf-px);
+      --sf-button--border-inline-start-width: var(--sf-px);
+      --sf-button--border-inline-end-width: var(--sf-px);
+      --sf-button--border-width: var(--sf-px);
+      --sf-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+
+/* The second cue: the icons of a pressed toggle are filled. Outside the
+   layers because the glyph's own --sf-icon--fill is (component.icons); a
+   page's --sf-icon-fill still wins, as everywhere. */
+.sf-button:is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon {
+  --sf-icon--fill: 1;
+}

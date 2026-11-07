@@ -28,6 +28,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   'disabled',
   'native-type',
   'pressed',
+  'label-pressed',
   'button-attributes',
   'aria-label',
   ...ANCHORED_BADGE_ATTRIBUTES,
@@ -112,6 +113,7 @@ class SfIconButton extends IconButtonElement {
       radius: this.radius,
       ariaLabel: this.getAttribute('aria-label') || '',
       pressed: this.pressed,
+      labelPressed: this.labelPressed,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       badge: this.badgeState?.(),
       component: this,
@@ -151,7 +153,8 @@ class SfIconButton extends IconButtonElement {
     }
 
     if (changedAttributes.includes('aria-label')) {
-      const label = this.getAttribute('aria-label') || '';
+      // While a toggle with label-pressed is on, its pressed name stands.
+      const label = (this.pressed === true && this.labelPressed) || this.getAttribute('aria-label') || '';
       if (label) {
         button.setAttribute('aria-label', nameWithBadge(label, elementBadge(this).phrase));
       } else {

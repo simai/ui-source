@@ -21,11 +21,14 @@ export function renderPageHeaderTemplate(context) {
         ? html`<sf-badge appearance="outline" scheme="tertiary" size="1/2" text=${text('all-sites')}></sf-badge>`
         : nothing}
       ${star === true || star === false
+        // The star's name says what pressing it does («В избранное», «Убрать
+        // из избранного»), so it says the state too and carries no
+        // aria-pressed (1.2.2, rule C12): both at once read «Убрать из
+        // избранного, нажата». The filled glyph in its own colour shows it.
         ? html`<sf-button-icon size="1/2" appearance="ghost" scheme="on-surface"
             class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
             icon="star"
             ?filled=${on}
-            pressed=${on ? '' : 'false'}
             aria-label=${on ? text('unstar') : text('star')}
             title=${on ? text('unstar') : text('star')}
             @click=${() => component.toggleStar()}></sf-button-icon>`
