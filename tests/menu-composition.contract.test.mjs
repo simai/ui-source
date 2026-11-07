@@ -15,7 +15,9 @@ test('menu composition: a menu row gives up its border', async () => {
 test('menu composition: a context menu publishes its axis and its items take it', async () => {
   const css = await read('component/context-menu/scss/_css__context_menu_custom.scss');
   for (const size of ['1\\/2', '1', '2']) {
-    assert.ok(css.includes(`--sf-context-menu--item-inset-start-${size}: calc(var(--sf-ui-${size}--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));`), size);
+    // A row's padding at every size (owner C05, R029): the item's content
+    // --sf-space-1/2 inside its highlight, not on a field's axis.
+    assert.ok(css.includes(`--sf-context-menu--item-inset-start-${size}: var(--sf-context-menu--row-padding);`), size);
     assert.ok(css.includes(`--sf-context-menu--label-inset-${size}: calc(var(--sf-context-menu--item-inset-start-${size}) + var(--sf-ui-${size}--text-space-x));`), size);
     assert.ok(css.includes(`.sf-context-menu .sf-context-menu-content > .sf-button.sf-button--size-${size},\n.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button--size-${size} {\n  --sf-button--padding-inline-start: var(--sf-context-menu--item-inset-start-${size});\n  --sf-button--padding-inline-end: var(--sf-context-menu--item-inset-end-${size});`), size);
   }

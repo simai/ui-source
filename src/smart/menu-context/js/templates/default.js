@@ -369,7 +369,10 @@ function matches(entry, query) {
 
 function renderSearch(context) {
     const search = context.search;
+    // The panel's header (owner C06, R029): the search icon over the rows'
+    // icons, the text over their text, no frame.
     return html`<div class="sf-context-menu-search">
+        ${icon("search", "sf-context-menu-search-icon")}
         <input
                 class="sf-context-menu-search-input"
                 type="search"

@@ -1087,16 +1087,23 @@
         {
           "name": "--sf-context-menu-padding-inline",
           "role": "padding-inline",
-          "summary": "Space between the menu's edge and its rows, before and after; row content stays on its axis.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "The inset: space between the menu's edge and a row's highlight, before and after; a search header's text and a scrollbar's gaps on either side of its thumb follow it.",
+          "default": "var(--sf-space-1/4)",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-context-menu-padding-block",
           "role": "padding-block",
-          "summary": "Space above the first row and below the last.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "Space above the first row's highlight and below the last; a search header is a row's height and this space above and below.",
+          "default": "var(--sf-space-1/4)",
           "since": "2026-10-18"
+        },
+        {
+          "name": "--sf-context-menu-row-radius",
+          "role": "radius",
+          "summary": "The corner radius of a row's highlight -- hover, chosen, current -- a control's by default.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-07"
         },
         {
           "name": "--sf-context-menu-gap",
