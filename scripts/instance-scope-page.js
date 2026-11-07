@@ -15,7 +15,20 @@
 //   nodes      elements in <body> outside the stage (portals, layers);
 //   page       the attributes of <html> and <body> (a page lock, a mark);
 //   registries the layer stack, the open surfaces, the language's listeners
-//              and the [lang] watch.
+//              and the [lang] watch;
+//   bundles    the scripts under /distr/ in the page, one entry each.
+//
+// What a bundle does while it is evaluated (document.currentScript is that
+// bundle: a page-wide delegation, an observer of the document that sets up
+// the elements to come) is done once per page, whichever element asked for
+// the bundle and whenever it arrived. It is marked `once` and is not an
+// instance's: the Loader may find the markup that asks for a bundle (a class
+// a rule matches) during the warm-up or only during a later cycle -- on a
+// loaded machine it is the later -- and the bundle's own setup then arrived
+// between the two counts, read as a leak of whatever element was under test
+// (2026-11-07: spinner, clipboard, scrollbar, highlight, tooltip, alerts).
+// What an instance keeps is made again by every instance and still counts;
+// a bundle evaluated twice shows as a second entry of the same bundle.
 //
 // It also mounts the example (the host, its island, children and slots, or
 // the example's markup), removes it and places it again, and runs the
@@ -34,6 +47,13 @@
       if (match) return `${match[1].replace(/\/(?:index|bundle)?\.?m?js$/u, '').replace(/\.m?js$/u, '')}:${match[2]}`;
     }
     return 'page';
+  };
+
+  // The bundle being evaluated now, as its path; '' outside one.
+  const evaluating = () => {
+    const script = document.currentScript;
+    const src = script && script.src ? script.src : '';
+    return src.includes('/distr/') ? new URL(src, location.href).pathname : '';
   };
 
   // ---------- listeners ----------
@@ -58,7 +78,7 @@
     let one = byKey.get(key);
     if (!one) byKey.set(key, (one = new Map()));
     if (one.has(listener)) return result;
-    const entry = {target: this, type, key, listener, owner: owner()};
+    const entry = {target: this, type, key, listener, owner: owner(), once: evaluating()};
     one.set(listener, entry);
     listeners.add(entry);
     if (signal) add.call(signal, 'abort', () => drop(entry), {once: true});
@@ -94,7 +114,7 @@
         }
         : callback;
       id = set.call(window, run, ...rest);
-      timers.set(`${kind}:${id}`, {kind, owner: owner(), delay: kind === 'timeout' || kind === 'interval' ? Number(rest[0]) || 0 : 0});
+      timers.set(`${kind}:${id}`, {kind, owner: owner(), once: evaluating(), delay: kind === 'timeout' || kind === 'interval' ? Number(rest[0]) || 0 : 0});
       return id;
     };
     window[clearName] = function clearTimer(id) {
@@ -108,6 +128,7 @@
   wrapTimer('requestIdleCallback', 'cancelIdleCallback', 'idle');
 
   // ---------- observers ----------
+  const NativeMutationObserver = window.MutationObserver;
   const observers = new Set();
   for (const name of ['ResizeObserver', 'MutationObserver', 'IntersectionObserver']) {
     const Native = window[name];
@@ -115,7 +136,7 @@
     const Counted = class extends Native {
       constructor(...args) {
         super(...args);
-        this.__sfProbe = {kind: name, owner: owner(), targets: new Set()};
+        this.__sfProbe = {kind: name, owner: owner(), once: evaluating(), targets: new Set()};
         observers.add(this);
       }
       observe(target, ...rest) {
@@ -139,13 +160,31 @@
   const requests = new Set();
   const nativeFetch = window.fetch;
   window.fetch = function fetch(input, init) {
-    const entry = {url: String(input && input.url ? input.url : input), signal: (init && init.signal) || (input && input.signal) || null, owner: owner()};
+    const entry = {url: String(input && input.url ? input.url : input), signal: (init && init.signal) || (input && input.signal) || null, owner: owner(), once: evaluating()};
     requests.add(entry);
     const done = () => requests.delete(entry);
     const answer = nativeFetch.call(this, input, init);
     answer.then(done, done);
     return answer;
   };
+
+  // ---------- scripts on their way ----------
+  // A script the Loader added and that has neither run nor failed yet: the
+  // page has not settled while one is on its way.
+  const pendingScripts = new Set();
+  const watchScript = (node) => {
+    if (!(node instanceof HTMLScriptElement) || !node.src || node.__sfProbeWatched) return;
+    node.__sfProbeWatched = true;
+    pendingScripts.add(node);
+    const done = () => pendingScripts.delete(node);
+    done[OWN] = true;
+    add.call(node, 'load', done, {once: true});
+    add.call(node, 'error', done, {once: true});
+  };
+  new NativeMutationObserver((changes) => changes.forEach((change) => change.addedNodes.forEach((node) => {
+    watchScript(node);
+    if (node instanceof Element) node.querySelectorAll('script[src]').forEach(watchScript);
+  }))).observe(document.documentElement, {childList: true, subtree: true});
 
   // ---------- the example ----------
   let spec = null;
@@ -290,9 +329,9 @@
       // The Loader's <link> and <script> in <head> are the page's assets,
       // loaded once whichever element asked first.
       if (!alive(entry.target) || (entry.target instanceof Node && document.head.contains(entry.target))) continue;
-      out.push({kind: 'listener', what: `${describeTarget(entry.target)} ${entry.type}`, owner: entry.owner});
+      out.push({kind: 'listener', what: `${describeTarget(entry.target)} ${entry.type}`, owner: entry.owner, once: entry.once});
     }
-    for (const [, entry] of timers) out.push({kind: 'timer', what: entry.kind + (entry.kind === 'timeout' || entry.kind === 'interval' ? ` ${entry.delay}ms` : ''), owner: entry.owner});
+    for (const [, entry] of timers) out.push({kind: 'timer', what: entry.kind + (entry.kind === 'timeout' || entry.kind === 'interval' ? ` ${entry.delay}ms` : ''), owner: entry.owner, once: entry.once});
     // An observer is left behind when it still observes the page or the
     // removed element. One on a node of the instance's own that was never in
     // the page (the base's author-style holder) goes with the instance.
@@ -300,10 +339,10 @@
     for (const observer of observers) {
       const probe = observer.__sfProbe;
       const watched = [...probe.targets].filter((target) => !(target instanceof Node) || target.isConnected || ofRemoved(target));
-      if (watched.length) out.push({kind: 'observer', what: `${probe.kind} (${watched.length})`, owner: probe.owner});
+      if (watched.length) out.push({kind: 'observer', what: `${probe.kind} (${watched.length})`, owner: probe.owner, once: probe.once});
     }
     for (const entry of requests) {
-      if (!entry.signal || !entry.signal.aborted) out.push({kind: 'request', what: entry.url.replace(location.origin, ''), owner: entry.owner});
+      if (!entry.signal || !entry.signal.aborted) out.push({kind: 'request', what: entry.url.replace(location.origin, ''), owner: entry.owner, once: entry.once});
     }
     const stage = STAGE();
     // Every element outside the stage, under the child of <body> that holds it.
@@ -320,14 +359,19 @@
     for (const one of surfaces) out.push({kind: 'registry', what: `open surface <${one?.localName || '?'}>`, owner: 'core'});
     for (let i = 0; i < (globalThis.__sfPageLanguage?.listeners?.size ?? 0); i += 1) out.push({kind: 'registry', what: 'language listener', owner: 'core'});
     for (let i = 0; i < (globalThis.__sfLanguageWatch?.elements?.size ?? 0); i += 1) out.push({kind: 'registry', what: '[lang] watch', owner: 'core'});
+    for (const script of document.querySelectorAll('script[src]')) {
+      const path = new URL(script.src, location.href).pathname;
+      if (path.includes('/distr/')) out.push({kind: 'bundle', what: path, owner: 'page'});
+    }
     return out;
   }
 
   // Settled: no one-shot timer of a second or less, frame or idle callback is
-  // pending (a debounce, a closing animation's end). A loop keeps re-arming
-  // and is still there after `limit` ms: it is counted.
+  // pending (a debounce, a closing animation's end), and no script the Loader
+  // asked for is still on its way. A loop keeps re-arming and is still there
+  // after `limit` ms: it is counted.
   function quiet(limit = 3000) {
-    const short = () => [...timers.values()].some((one) => one.kind === 'frame' || one.kind === 'idle' || (one.kind === 'timeout' && one.delay <= 1000));
+    const short = () => pendingScripts.size > 0 || [...timers.values()].some((one) => one.kind === 'frame' || one.kind === 'idle' || (one.kind === 'timeout' && one.delay <= 1000));
     const until = performance.now() + limit;
     return new Promise((done) => {
       const look = () => (!short() || performance.now() > until ? done(short()) : nativeTimeout(look, 25));

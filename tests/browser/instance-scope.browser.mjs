@@ -20,6 +20,10 @@
 // the language's listeners and the [lang] watch. A removed instance leaves
 // nothing, so after the cycles the count is what it was after the warm-up:
 // anything that grew is reported, with the bundle and line that started it.
+// What a bundle sets up while it is evaluated (a page-wide observer or
+// delegation) is the page's, made once whenever the bundle arrives: on a loaded
+// machine the Loader may meet the markup that asks for it only in a later
+// cycle, and that setup used to be read as the element's leak.
 // The attributes of <html> and <body> (a page lock, an open-surface mark)
 // must also be back to what the page had before any element was placed.
 //
@@ -38,6 +42,13 @@ if (!out || !existsSync(join(out, 'core'))) throw new Error('Build output root i
 const only = args.slice(1).filter((one) => !one.startsWith('--'));
 const CYCLES = Number(process.env.SCOPE_CYCLES || 4);
 const CONCURRENCY = Number(process.env.SCOPE_CONCURRENCY || 6);
+// A loaded machine, made on purpose: the CPU slowed by this factor (CDP) and
+// every classic component bundle (or what SCOPE_ASSET_DELAY_MATCH matches in
+// the path) answered this many ms late. A count that changes with them is
+// a count of timing, not of what an instance keeps (both default to off).
+const THROTTLE = Number(process.env.SCOPE_CPU_THROTTLE || 0);
+const ASSET_DELAY = Number(process.env.SCOPE_ASSET_DELAY || 0);
+const ASSET_DELAYED = new RegExp(process.env.SCOPE_ASSET_DELAY_MATCH || '^/distr/component/', 'u');
 
 const pageScript = readFileSync(join(repo, 'scripts', 'instance-scope-page.js'), 'utf8');
 const pages = new Map([['/instance-scope-page.js', pageScript]]);
@@ -61,10 +72,18 @@ const examplesOf = (component) => {
 const PAGE_NOISE = /^(?:class:sf-icons-loaded|lang=.*|dir=.*|style=|data-sf-[\w-]*-events-bound=true|data-sf-(?:ready|loaded|theme[\w-]*|icons?[\w-]*|core[\w-]*|utility[\w-]*|loader[\w-]*)=.*)$/u;
 
 const keyOf = (entry) => `${entry.kind}\t${entry.what}\t${entry.owner}`;
+// What a bundle set up while it was evaluated is the page's, made once
+// whenever the bundle arrived (scripts/instance-scope-page.js): it is left out
+// of the comparison. A bundle that arrived between the counts is the page's
+// too; one that is in the page twice is not.
 function grown(before, after) {
   const counts = new Map();
-  for (const entry of before) counts.set(keyOf(entry), (counts.get(keyOf(entry)) ?? 0) - 1);
-  for (const entry of after) counts.set(keyOf(entry), (counts.get(keyOf(entry)) ?? 0) + 1);
+  const counted = (entry) => !entry.once;
+  for (const entry of before.filter(counted)) counts.set(keyOf(entry), (counts.get(keyOf(entry)) ?? 0) - 1);
+  for (const entry of after.filter(counted)) counts.set(keyOf(entry), (counts.get(keyOf(entry)) ?? 0) + 1);
+  // A bundle first in the page after the warm-up: once is the page's.
+  const had = new Set(before.filter((entry) => entry.kind === 'bundle').map(keyOf));
+  for (const entry of new Set(after.filter((one) => one.kind === 'bundle' && !had.has(keyOf(one))).map(keyOf))) counts.set(entry, counts.get(entry) - 1);
   return [...counts].filter(([, n]) => n > 0).map(([key, n]) => {
     const [kind, what, owner] = key.split('\t');
     return {kind, what, owner, grew: n};
@@ -89,7 +108,14 @@ ${coreScript}
   // Nothing leaves the test server: the icon font a page asks icons.simai.io
   // for arrives or not by the network, and the count must not depend on it.
   await context.route((url) => !url.href.startsWith(site.origin), (route) => route.abort());
+  if (ASSET_DELAY > 0) {
+    await context.route((url) => url.href.startsWith(site.origin) && ASSET_DELAYED.test(url.pathname), async (route) => {
+      await new Promise((done) => setTimeout(done, ASSET_DELAY));
+      await route.continue();
+    });
+  }
   const page = await context.newPage();
+  if (THROTTLE > 1) await (await context.newCDPSession(page)).send('Emulation.setCPUThrottlingRate', {rate: THROTTLE});
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message.split('\n')[0].slice(0, 200)));
   const problems = [];
