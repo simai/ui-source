@@ -2144,9 +2144,12 @@ function renderChoiceView(field, value) {
     if (!option) return nothing;
     const badge = optionBadgeProps(option);
 
+    // A table cell is a dense place: the badge keeps the tight side room
+    // (sf-badge tight), as it had before sf-badge 1.3.0 widened the default.
     return html`
         <sf-badge
                 line=${VIEW_LINE}
+                tight
                 appearance=${field.badgeAppearance ?? CELL_BADGE_APPEARANCE}
                 scheme=${badge.scheme}
                 style=${badge.rootStyle || nothing}

@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
-import { VALUE_TYPES, valueTypeName } from '../src/core/js/composition/routing.mjs';
+import { PORT_ELEMENT_ALIASES, VALUE_TYPES, valueTypeName } from '../src/core/js/composition/routing.mjs';
 import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER } from '../src/core/js/composition/editor-words.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
@@ -77,6 +77,9 @@ const portOutput = `${JSON.stringify(JSON.parse(stableStringify({
   // keys above keep the older labels so a reader keyed by them still finds them.
   value_type_names: Object.fromEntries(Object.keys(VALUE_TYPES).map((label) => [valueTypeName(label), label])),
   entries: BUILTIN_PORT_MANIFESTS,
+  // Former element names read as their new ones until remove_after, for a
+  // reader without JavaScript (routing.mjs PORT_ELEMENT_ALIASES).
+  element_aliases: PORT_ELEMENT_ALIASES,
 })), null, 2)}\n`;
 const kindOutput = `${JSON.stringify(fieldKindRegistry(), null, 2)}\n`;
 // The words of the built-in editor manifests, for a host without JavaScript:

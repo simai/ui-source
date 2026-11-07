@@ -1214,7 +1214,19 @@ class SfBaseElement extends HTMLElement {
         : "lit";
 
     if (mode === "dom" && this.updateDom(changedAttributes) !== false) {
+      // An element that never renders a template (static rendersNoTemplate:
+      // sf-popover keeps the page's own trigger and surface where they were
+      // written) is drawn by its first DOM update. It says so as a render
+      // does: the Loader reads the children it kept on sf-after-render, and
+      // without one the sf-dropdown in a popover's surface was never defined
+      // (simai/ui-source#70); whenRendered() settles too. Only such an
+      // element: one that patches a printed first paint by DOM before its
+      // first render (sf-progress-bar) still has that render to come, and it
+      // replaces the printed picture.
+      const first = !this._hasRendered && this.constructor.rendersNoTemplate === true;
+      if (first) this._hasRendered = true;
       this.afterUpdate(changedAttributes, mode);
+      if (first) this.emitComponentEvent("after-render", { changedAttributes });
       this.emitComponentEvent("updated", {
         changedAttributes,
         updateMode: mode,
@@ -2871,6 +2883,14 @@ class SfBaseElement extends HTMLElement {
 
     if (this.shouldClearLightDomBeforeFirstRender()) {
       this.replaceChildren();
+      // A first render that drew and was then cut short -- the element was
+      // moved while it waited for its sheets, as sf-drawer moves its content
+      // into its portal -- never set _hasRendered, so the next one clears
+      // again. Lit's part on the host survived the clear with its markers
+      // gone, and committed nothing for the same values: a static sf-icon in
+      // a docked drawer stayed empty in 2 of 8 loads (simai/ui-source#56).
+      // The cleared host starts lit afresh.
+      if (this._$litPart$ !== undefined) this._$litPart$ = undefined;
       this.endFirstPaint();
       return;
     }

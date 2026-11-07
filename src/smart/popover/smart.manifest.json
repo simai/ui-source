@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -67,6 +67,11 @@
         "type": "string",
         "default": "",
         "description": "A width of its own. Left to its content a surface takes the width of its longest line, which a list of names makes wide and ragged."
+      },
+      "offset": {
+        "type": "string",
+        "default": "",
+        "description": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before."
       },
       "dismissible": {
         "type": "boolean",
@@ -331,7 +336,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "5f2ee3db81429548aaead8457fdc4a23502713ef0cb2e2314c3c2d8cbf39b940"
+        "sha256": "508388ecca460e943450c06d0bd995ba3c3a1770fdbef4ebf8419a4f4c261c2f"
       },
       {
         "path": "src/smart/popover/rule.js",
@@ -343,7 +348,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "a875e07234779d925bd2ce53744bedd2d237bda5a09f5a73790de37c8242a15c"
+        "sha256": "4a66fbd68daff0093438bce2ad669d1ef3f67dfdfec11c83fc3050025dd73fe4"
       }
     ],
     "generated_runtime": []

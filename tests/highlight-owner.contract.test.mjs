@@ -22,6 +22,14 @@ test('Highlight exposes concise options and safe language fallback', async () =>
   assert.doesNotMatch(source, /Math\.random|\[!Copy/);
 });
 
+test('the generated code head has no fill or backdrop filter of its own (Docara, 2026-11-07)', async () => {
+  const source = await read('src/component/highlight/js/index.js');
+  const head = /head\.className = '([^']+)'/u.exec(source);
+  assert.ok(head, 'the generated head class list');
+  assert.ok(head[1].split(' ').includes('sf-highlight__head'));
+  assert.ok(!head[1].split(' ').some((name) => name.startsWith('bg-')), `no background utility on the head: ${head[1]}`);
+});
+
 test('Highlight composes native Clipboard and supports dynamic refresh', async () => {
   const [source, rule] = await Promise.all([
     read('src/component/highlight/js/index.js'),

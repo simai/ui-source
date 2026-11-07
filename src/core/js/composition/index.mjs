@@ -1,7 +1,7 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, editorFieldMessages } from './editor-words.mjs';
 import { sanitizeRichText } from './html-subset.mjs';
-import { fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
+import { fileIcon, fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
 import { isSchema, schemaFields } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
@@ -255,6 +255,17 @@ function validUrl(value) {
   }
 }
 
+// A picture the host keeps in the browser (IndexedDB, before a server store)
+// is shown from an object URL. Such an address is only ever one a host's
+// resolveSource gave at render (simai/ui-source#71), never one a Document
+// stores, and only of the page's own origin: a blob: address is the page's.
+function hostBlobUrl(value) {
+  const match = /^blob:(https?:\/\/[^/]+)\//u.exec(String(value));
+  if (!match) return false;
+  const origin = globalThis.location?.origin;
+  return !origin || origin === 'null' || origin === match[1];
+}
+
 function validateInlineContent(value, path, diagnostics) {
   if (!Array.isArray(value)) return;
   for (let index = 0; index < value.length; index += 1) {
@@ -296,12 +307,14 @@ function inlineFields(node, path) {
 // Content rules beyond a type's own schema: links and image sources follow the
 // Document's URL rule, an item type stands only in its own parent, and a
 // layout holds at most one outlet.
-function validateContentRules(root, diagnostics) {
+function validateContentRules(root, diagnostics, { hostSources = false } = {}) {
   let outlets = 0;
   const visit = (node, path, parentType) => {
     if (!isPlainObject(node)) return;
     for (const [content, contentPath] of inlineFields(node, path)) validateInlineContent(content, contentPath, diagnostics);
-    if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !validUrl(node.data.src)) {
+    // With a host source resolver the stored name is the host's (media:<id>),
+    // and the address it resolves to is checked where it is drawn.
+    if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !hostSources && !validUrl(node.data.src)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.src`, 'Image source protocol is not allowed'));
     }
     if (node.type === 'element.button' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
@@ -408,6 +421,19 @@ export function compositionTypeFromSmartManifest(manifest) {
   };
 }
 
+// How a node of an unregistered type is met: 'refuse' (the default, type_unknown
+// makes the Document invalid) or 'placeholder' (G-32).
+const UNKNOWN_MODES = new Set(['refuse', 'placeholder']);
+function unknownAsPlaceholder(options) {
+  const mode = options?.unknown ?? 'refuse';
+  if (!UNKNOWN_MODES.has(mode)) throw new TypeError(`composition_unknown_mode_invalid:${String(mode)}`);
+  return mode === 'placeholder';
+}
+
+// The placeholder of a node whose type the host does not know: its type as
+// text, its id kept for the editor's selection, nothing of its data or slots.
+const unknownPlaceholder = (node) => `<div class="sf-composition-unknown" role="note" data-sf-composition-type="${escapeHtml(node.type)}" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(node.type)}</div>`;
+
 export function validate(document, registry = undefined, options = {}) {
   const diagnostics = [];
   const notices = [];
@@ -446,7 +472,13 @@ export function validate(document, registry = undefined, options = {}) {
     else ids.add(node.id);
     const manifest = resolvedRegistry.types.get(node.type);
     if (!manifest) {
-      diagnostics.push(diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`));
+      // unknown: 'placeholder' (G-32, for an editor's canvas): a node of a
+      // type this host does not know is a notice, not a refusal; render draws
+      // it as a placeholder and the rest of the page. Its own data and slots
+      // are left unread. The default stays strict: a publishing host refuses.
+      const unknown = diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`);
+      if (unknownAsPlaceholder(options) && typeof node.type === 'string' && node.type) notices.push(unknown);
+      else diagnostics.push(unknown);
       return;
     }
     if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
@@ -530,7 +562,7 @@ export function validate(document, registry = undefined, options = {}) {
   if (nodeCount > limits.maxNodes) diagnostics.push(diagnostic('node_limit', '$.root', 'Composition has too many nodes'));
   else {
     validateRegionRules(document.root, resolvedRegistry, diagnostics);
-    validateContentRules(document.root, diagnostics);
+    validateContentRules(document.root, diagnostics, { hostSources: typeof options.resolveSource === 'function' });
     resolveRoutes(document.root, resolvedRegistry, normalizePorts(options.ports), diagnostics);
     validateDataRules(document.root, resolvedRegistry, options.shapes, diagnostics);
   }
@@ -604,23 +636,6 @@ const GRID_COLUMNS = {
 function renderImage(data) {
   const size = ['width', 'height'].filter((key) => Number.isInteger(data[key])).map((key) => ` ${key}="${data[key]}"`).join('');
   return `<img src="${escapeHtml(data.src)}" alt="${escapeHtml(data.alt)}"${size} loading="lazy" decoding="async">`;
-}
-
-// The icon of a file's kind, by its media type: sf-download-file's own glyph
-// when the type says nothing a reader would recognise.
-const FILE_ICONS = [
-  [/^application\/pdf$/u, 'picture_as_pdf'],
-  [/^image\//u, 'image'],
-  [/^video\//u, 'movie'],
-  [/^audio\//u, 'audio_file'],
-  [/^application\/(?:zip|x-zip-compressed|x-7z-compressed|x-rar-compressed|vnd\.rar|x-tar|gzip|x-gzip)$/u, 'folder_zip'],
-  [/^(?:text\/csv|application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.spreadsheet)$/u, 'table_chart'],
-  [/^(?:application\/vnd\.ms-powerpoint|application\/vnd\.openxmlformats-officedocument\.presentationml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.presentation)$/u, 'slideshow'],
-  [/^(?:text\/|application\/msword$|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.[a-z.]+$|application\/vnd\.oasis\.opendocument\.text$|application\/rtf$)/u, 'description'],
-];
-function fileIcon(mime) {
-  if (typeof mime !== 'string' || !mime) return 'download';
-  return FILE_ICONS.find(([pattern]) => pattern.test(mime))?.[1] ?? 'download';
 }
 
 // sf-download-file's row, drawn as a plain link: it downloads with no script,
@@ -931,9 +946,17 @@ const BUILTIN_RENDERERS = {
   'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
 };
 
+// context.resolveSource(src, {node}) → address: a host that keeps pictures
+// itself names them in content.figure and content.media (media:<id>) and gives
+// the address to draw at render, which may be a blob: address of the page's
+// origin (simai/ui-source#71). The address is held to the Document's URL rule
+// with that one addition; one that fails it draws nothing and is reported.
+const HOST_SOURCE_TYPES = new Set(['content.figure', 'content.media']);
+
 export async function render(document, context = {}) {
   const registry = normalizeRegistry(context.registry);
-  const normalized = await normalize(document, registry, context.options || {});
+  const resolveSource = typeof context.resolveSource === 'function' ? context.resolveSource : null;
+  const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
   const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier'));
@@ -963,8 +986,20 @@ export async function render(document, context = {}) {
   // part prints `container`). A frame inside one takes container-flush, so a
   // container in a section has no second gutter; a breakout leaves the
   // container and its own frame keeps the gutter (2026-11-04).
-  const renderNode = async (node, depth = 0, inside = false) => {
+  const renderNode = async (given, depth = 0, inside = false) => {
+    let node = given;
+    if (resolveSource && HOST_SOURCE_TYPES.has(node.type) && typeof node.data?.src === 'string') {
+      const address = await resolveSource(node.data.src, { node });
+      if (typeof address !== 'string' || !(validUrl(address) || hostBlobUrl(address))) {
+        diagnostics.push(diagnostic('unsafe_url', `node:${node.id}.data.src`, 'The resolved image source is not allowed'));
+        return '';
+      }
+      node = { ...node, data: { ...node.data, src: address } };
+    }
     const manifest = registry.types.get(node.type);
+    // Only reached under unknown: 'placeholder' (validate's notice says
+    // which node); normalize refused the Document otherwise.
+    if (!manifest) return unknownPlaceholder(node);
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {

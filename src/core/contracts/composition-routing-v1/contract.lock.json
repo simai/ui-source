@@ -6,6 +6,7 @@
   },
   "compatibility": {
     "document": "simai.composition.document.v1 unchanged",
+    "port_element": "the builtin list port is sf-view-table@1.1.0 (sf-view-table 1.14.0); sf-table@1.0.0 keeps its bytes and digest, and the name sf-table is read as sf-view-table until 2027-01-01 (port-element-sf-table-to-sf-view-table)",
     "ports": "new simai.composition.port-registry.v1 in composition-ports.v1.json",
     "recipe": "simai.composition.recipe.v1@1.0.1 unchanged",
     "registry": "additive layout.scope entry in composition-types.v1.json",
@@ -13,17 +14,18 @@
     "type_manifest": "simai.composition.type-manifest.v1 unchanged",
     "value_types": "bare names read beside the older .v1 labels (value-types-without-version); fixtures/routing.json and the sf-table manifest unchanged"
   },
-  "contractDigest": "sha256:18f8a11ba48453a92bc69750385326a7262c845177eab5e6c424520bacc9a6b1",
+  "contractDigest": "sha256:ea937e548dc6cbd7249a86c772ea3546069ac29d3db23ecd3e7c593cab0aae29",
   "manifests": {
     "port:sf-table@1.0.0": "sha256:95abeff5e459ad84d3fabfe61a50c3fdad6730e6b705264badfcd2ba28fc7e50",
+    "port:sf-view-table@1.1.0": "sha256:83f932fff473f48e55b2646cae28482a0bfec00a208dfa136590ed1eaeed578d",
     "type:layout.scope@1.0.0": "sha256:7d75a2efdd7aba65da77a362f0e6f6cfb33cd57c516569e2c58789caaca9f18d"
   },
   "normativeFiles": {
-    "README.md": "sha256:40605dd01a06892bf577c272cb589c007e43736fb204d2b6954d28cbfaeb110e",
+    "README.md": "sha256:a107e9a0367143926ad7d4eb97917904dd93d89c9f654e01f3c91000076b4af2",
     "fixtures/routing.json": "sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0",
     "fixtures/value-type-names.json": "sha256:e7367315bb5405e904f32b2d3a6c3fb7fff433cd53882bb31e4c2f750853eb4d"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

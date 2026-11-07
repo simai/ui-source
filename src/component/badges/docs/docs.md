@@ -37,6 +37,23 @@ uses the corresponding typography and UI-spacing tokens. The outline variant
 uses the Framework pixel token and a solid semantic outline. Labels remain
 short; use normal content or a different component for sentences.
 
+Every badge of one size has one height and the same side room, whatever its
+look: the outline's border (and a border given through
+`--sf-badge-border-width`) is drawn inside the size, its width taken from the
+padding, so `main`, `tonal` and `outline` badges standing side by side line up.
+On a `line-*` size, which has no block padding, the text line gives up the
+border instead.
+
+Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
+every size (owner decision 2026-11-07). `sf-badge--tight` keeps the size's own text inset
+(`--sf-ui-*--text-space-x`, the room badges had before 2026-11-07) for dense
+places -- a table, a counter, a chip in a row. `sf-badge--figure` marks a badge
+of one character, a single-figure count: it keeps the tight room, so it stays
+round (as wide as it is high) whatever the default. `sf-badge` sets it on its
+own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
+and so are anchored counts, which have a geometry of their own. Probe:
+`tests/browser/badge-geometry.browser.mjs`.
+
 ## Бейдж на якоре: счётчик и точка
 
 Счётчик или точка ставится внутрь якоря — аватара, кнопки-иконки или обёртки

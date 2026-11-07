@@ -5,6 +5,7 @@ import test from 'node:test';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { resolveFieldKind, validateFieldKinds } from '../src/core/js/composition/fields.mjs';
 import { createRegistry, extendRegistry, render, validate, validateEditorManifest } from '../src/core/js/composition/index.mjs';
+import { FILE_ICONS, fileIcon } from '../src/core/js/composition/file-size.mjs';
 
 // The first edition of the structured-content types (the content standard's
 // step 3, owner's decision 2026-10-31): each validates against its schema, each
@@ -284,6 +285,16 @@ test('diagram and math draw through a renderer the host registers, and report it
   assert.equal(inner(hosted.html), '<figure data-engine="mermaid">17</figure><div role="math" aria-label="Euler"></div>');
 });
 
+test('the content.file icon table is exported from file-size.mjs, frozen, and the renderer reads it', async () => {
+  assert.ok(Object.isFrozen(FILE_ICONS) && FILE_ICONS.every((entry) => Object.isFrozen(entry)));
+  assert.deepEqual(FILE_ICONS.map(([, icon]) => icon), ['picture_as_pdf', 'image', 'movie', 'audio_file', 'folder_zip', 'table_chart', 'slideshow', 'description']);
+  assert.equal(fileIcon(undefined), 'download');
+  assert.equal(fileIcon('application/x-unknown'), 'download');
+  assert.equal(fileIcon('application/vnd.openxmlformats-officedocument.presentationml.presentation'), 'slideshow');
+  const source = await readFile(new URL('../src/core/js/composition/index.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /FILE_ICONS/u, 'the renderer keeps no copy of the table');
+});
+
 test('content.file reads its size in the Document\'s language and its icon from the media type', async () => {
   const file = (data) => ({ id: 'fl', type: 'content.file', data: { href: '/a', ...data } });
   const drawn = async (data, locale) => {
@@ -371,4 +382,46 @@ test('every class a renderer writes is a SIMAI Framework class: a utility rule o
     }
     assert.ok(utilities.some((rule) => rule.test(name)), `${name} names a utility rule`);
   }
+});
+
+test('render takes a host source resolver: a stored picture name draws from a blob: address (simai/ui-source#71)', async () => {
+  const stored = documentOf(
+    { id: 'f', type: 'content.figure', data: { src: 'media:42', alt: 'Kept' } },
+    { id: 'm', type: 'content.media', data: { src: 'media:7', alt: '' }, slots: { default: [p('mt', 'Text')] } },
+  );
+  // Without a resolver neither a stored name nor a blob: address passes.
+  assert.deepEqual(codes(validate(stored)), ['unsafe_url']);
+  const blob = documentOf({ id: 'f', type: 'content.figure', data: { src: 'blob:https://editor.test/1b2c', alt: '' } });
+  assert.deepEqual(codes(await render(blob)), ['unsafe_url']);
+  // With one, the stored name is the host's and the answer is drawn.
+  const asked = [];
+  const resolveSource = async (src, { node }) => {
+    asked.push(`${node.id} ${src}`);
+    return `blob:https://editor.test/${src.slice('media:'.length)}`;
+  };
+  const drawn = await render(stored, { resolveSource });
+  assert.deepEqual(drawn.diagnostics, []);
+  assert.deepEqual(asked, ['f media:42', 'm media:7']);
+  assert.match(drawn.html, /<img src="blob:https:\/\/editor\.test\/42" alt="Kept"/u);
+  assert.match(drawn.html, /<img src="blob:https:\/\/editor\.test\/7" alt=""/u);
+  // An ordinary address passes through a resolver unchanged.
+  const plain = await render(documentOf({ id: 'f', type: 'content.figure', data: { src: './a.png', alt: '' } }), { resolveSource: (src) => src });
+  assert.deepEqual(plain.diagnostics, []);
+  assert.match(plain.html, /<img src="\.\/a\.png"/u);
+  // The answer is held to the URL rule: a script address draws nothing.
+  for (const answer of ['javascript:alert(1)', 'data:text/html,x', '//evil.test/a.png', 'blob:null/1', undefined]) {
+    const refused = await render(stored, { resolveSource: () => answer });
+    assert.deepEqual(refused.diagnostics.map(({ code, path }) => `${code} ${path}`), ['unsafe_url node:f.data.src', 'unsafe_url node:m.data.src'], String(answer));
+    assert.doesNotMatch(refused.html, /<img/u, String(answer));
+  }
+  // It reaches a layout's page content too.
+  const layout = {
+    schema: 'simai.composition.document', schema_version: 1, id: 'layout', profile: 'ui-layout',
+    root: { id: 'regions', type: 'layout.regions', slots: { regions: [
+      { id: 'main', type: 'layout.region', props: { name: 'main', landmark: 'main' }, slots: { default: [{ id: 'outlet', type: 'content.outlet' }] } },
+    ] } },
+  };
+  const page = await render(layout, { content: stored, resolveSource });
+  assert.deepEqual(page.diagnostics, []);
+  assert.match(page.html, /blob:https:\/\/editor\.test\/42/u);
 });

@@ -829,18 +829,48 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
 // Published typed ports. Framework owns the element protocol; the product owns
 // what a request means, data access and authorization.
 //
-// sf-table answers this port and lives in the SIMAI Framework Pro package since
-// 2026-10-11 (the component folder in simai/ui-pro, package pro). The port stays
-// here: it is a public contract of the free Framework (composition-ports.v1.json,
-// the routing contract lock), and the package's tests read it from this file in
-// their overlay of ui-source.
+// The list port is answered by sf-view-table (formerly sf-table), which lives
+// in the SIMAI Framework Pro package since 2026-10-11 (the component folder in
+// simai/ui-pro, package pro). The port stays here: it is a public contract of
+// the free Framework (composition-ports.v1.json, the routing contract lock), and
+// the package's tests read it from this file in their overlay of ui-source.
+
+// The list port as the routing contract 1.0.0 published it, under the former
+// tag. Frozen: its bytes are pinned by the lock (port:sf-table@1.0.0), so a
+// consumer that pinned 1.0.0 stays valid. Not registered by default.
+export const PORT_MANIFEST_SF_TABLE_1_0_0 = Object.freeze({
+  ...schemaFields('simai.composition.port-manifest', 1),
+  element: 'sf-table',
+  version: '1.0.0',
+  component: 'smart.data-view',
+  component_version: '1.2.0',
+  outputs: {
+    selection: {
+      value: 'record-ids.v1',
+      summary: 'Explicit current-result selection of this instance, emitted once per change, including clearing.',
+    },
+  },
+  inputs: {
+    context: {
+      value: 'record-ids.v1',
+      effect: 'request',
+      summary: 'Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-table-query-intent with the route sequence; the host resolves the relation and access and answers with applyQueryResult.',
+      request_event: 'sf-table-query-intent',
+      result_method: 'applyQueryResult',
+    },
+  },
+});
+
+// 1.1.0 (2026-11-07): the same ports under the element's own tag sf-view-table
+// (sf-view-table 1.14.0, rename plan R2) and its query event; values and
+// effects unchanged.
 export const BUILTIN_PORT_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.port-manifest', 1),
-    element: 'sf-table',
-    version: '1.0.0',
-    component: 'smart.data-view',
-    component_version: '1.2.0',
+    element: 'sf-view-table',
+    version: '1.1.0',
+    component: 'smart.view-table',
+    component_version: '1.14.0',
     outputs: {
       selection: {
         value: 'record-ids.v1',
@@ -851,13 +881,17 @@ export const BUILTIN_PORT_MANIFESTS = Object.freeze([
       context: {
         value: 'record-ids.v1',
         effect: 'request',
-        summary: 'Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-table-query-intent with the route sequence; the host resolves the relation and access and answers with applyQueryResult.',
-        request_event: 'sf-table-query-intent',
+        summary: 'Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-view-table-query with the route sequence; the host resolves the relation and access and answers with applyQueryResult.',
+        request_event: 'sf-view-table-query',
         result_method: 'applyQueryResult',
       },
     },
   },
 ]);
+
+// Former port element names (routing.mjs PORT_ELEMENT_ALIASES): a binding to
+// sf-table finds the sf-view-table manifest until the record's remove_after.
+export { PORT_ELEMENT_ALIASES as BUILTIN_PORT_ELEMENT_ALIASES } from './routing.mjs';
 
 
 
