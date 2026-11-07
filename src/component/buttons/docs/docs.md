@@ -10,19 +10,54 @@ the Smart `sf-button` projection.
 - Keep a visible, stable action label. An icon-only action belongs to the
   dedicated Icon Button component and needs an accessible name.
 - Decorative `.sf-icon` elements use `aria-hidden="true"`.
-- A real two-state button combines `active` with `aria-pressed`; visual
-  emphasis alone must not invent toggle semantics.
+- A toggle -- a button that stays pressed: bold in an editor, a filter, a
+  notification switch -- says its state with `aria-pressed="true"` or
+  `"false"` and keeps one label («Жирный»). Pressed, it wears the pressed look
+  (1.5.0, owner decision 2026-11-07, rule C12) whatever its emphasis or
+  scheme: the primary container fill (`--sf-primary-container`), the label
+  and the icons in `--sf-on-primary-container`, no visible edge (the border
+  keeps its width and is transparent over the fill, so the height of the size
+  does not move) and the icons filled (`FILL 1`): two cues, not colour alone,
+  the same roles in both themes. Hover and press over it step the container;
+  focus draws the ring; disabled wears the disabled look and keeps the filled
+  icon. `sf-button--pressed` draws the same look without `aria-pressed`.
+  With the Loader's icon subset, give the icon of a pressed toggle
+  `sf-icon--filled` too (the Smart button writes `filled` on its `sf-icon`):
+  the subset holds the filled glyph only for an icon marked filled.
+  `--sf-button-pressed-background-color` and `--sf-button-pressed-color`
+  recolour the resting pressed look.
+- A toggle whose label changes («В избранное» → «В избранном») does not carry
+  `aria-pressed`: the label already says the state, and both at once read
+  «В избранном, нажата». Write the class instead:
+
+  ```html
+  <button class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 sf-button--pressed" type="button">
+    <i class="sf-icon" aria-hidden="true">star</i>
+    <span class="sf-button-text-container">В избранном</span>
+  </button>
+  ```
+
+  and swap the label and the class together in code. `sf-button` does it with
+  `text-pressed`. The `active` class is the momentary press and the current
+  item, not a toggle.
 
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
   `sf-button--outline`, `sf-button--link`, `sf-button--surface`;
   `sf-button--ghost` is a compatibility name for `link`;
-- scheme: `primary` and `on-surface` for every emphasis; `tonal` also keeps
-  `secondary`;
+- scheme: `primary`, `on-surface` and `secondary` for every emphasis.
+  `default` and `tonal` secondary have a secondary fill of their own;
+  `outline`, `surface` and `link` secondary are the on-surface button --
+  edge, fill, padding, height, hover, press and disabled -- with the label and
+  the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
+  these three had no rule: no padding, about 32px at size 1 and the browser's
+  text colour);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density: the default, `spacing-compact`, `spacing-comfortable` or
-  `spacing-spacious` (less, more and most inner space). The older
+  `spacing-spacious` (less, more and most side space). Density moves the side
+  padding only: a button of a size is as tall at every density as at every
+  appearance (one height per size, 1.4.0). The older
   `tightness-low`, `tightness-high` and `tightness-highest` are the same steps
   under names that read backwards -- `low` is the least space -- and stay as
   compatibility names. Put one density class on a button; the constructor's

@@ -68,6 +68,10 @@ const PHASE_A = [
   // The step-by-step wizard and its step (2026-11-06).
   'wizard',
   'wizard-step',
+  // The Larena admin screens' tile, attention list and run progress (2026-11-07).
+  'tile-metric',
+  'list-attention',
+  'progress-run',
   // The Larena admin screens' description list and timeline (2026-11-08).
   'list-description',
   'list-timeline',

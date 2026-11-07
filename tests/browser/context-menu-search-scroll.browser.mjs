@@ -5,7 +5,9 @@
 // field scrolled away with the list and the scrollbar ran beside it, and the
 // field stood a step of space from the panel's edge. Measured here: the field
 // does not move while the rows scroll, the scroll area begins under the field,
-// the paddings are the ladder's (8 around the field, 0 8 8 around the rows -- the panel's inset, owner R017),
+// the header and the rows' area are the ladder's (owner C06, R029: the search is a header, a row's height and the
+// inset above and below, its icon and text over the rows' -- the inset and the row's padding before them -- a
+// hairline under it across the panel; the rows' area padded by the inset, --sf-space-1/4, on every side),
 // the rows keep the axis they have without a search, and the keys, the empty
 // note and the height cap still work -- at the top level, in a flyout submenu
 // and on a drilling level.
@@ -77,6 +79,20 @@ const MEASURE = `(surface) => {
     rowTextLeft: row ? (box(row.querySelector('.sf-context-menu-item-label, .sf-context-menu-item-text') ?? row).left - box(content).left) : null,
     rowHeight: row ? box(row).height : null,
     contentHeight: box(content)?.height ?? null,
+    searchLeft: box(search) ? box(search).left - box(content).left : null,
+    searchRight: box(search) ? box(content).right - box(search).right : null,
+    searchHeight: box(search)?.height ?? null,
+    searchLine: s ? [s.borderBottomWidth, s.borderTopWidth, s.borderLeftWidth].map(parseFloat) : null,
+    searchIconLeft: box(surface.querySelector('.sf-context-menu-search-icon'))?.left ?? null,
+    rowIconLeft: box(row?.querySelector('.sf-context-menu-item-lead'))?.left ?? null,
+    fieldTextLeft: box(field) ? box(field).left : null,
+    rowTextAbsLeft: row ? box(row.querySelector('.sf-context-menu-item-label, .sf-context-menu-item-text') ?? row).left : null,
+    hasLead: Boolean(row?.querySelector('.sf-context-menu-item-lead')),
+    border: c ? parseFloat(c.borderLeftWidth) : null,
+    tokens: (() => {
+      const read = (name) => { const n = document.createElement('span'); n.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(' + name + ')'; content.append(n); const w = n.getBoundingClientRect().width; n.remove(); return w; };
+      return {inset: read('--sf-space-1\\\\/4'), pad: read('--sf-space-1\\\\/2'), gap: read('--sf-space-1\\\\/2'), rowHeight: read('--sf-context-menu--row-height')};
+    })(),
   };
 }`;
 
@@ -121,11 +137,22 @@ function checkLayout(where, {before, after}) {
   if (after.listScrollTop <= 0) note({case: `${where}: the scroll area moved`, got: after.listScrollTop});
   if (before.contentScrolls || after.contentScrollTop !== 0 || before.contentOverflowY !== 'hidden') note({case: `${where}: the content does not scroll`, got: {scrolls: before.contentScrolls, top: after.contentScrollTop, overflow: before.contentOverflowY}});
   if (before.listTop < before.searchBottom - 0.5 || before.listTop < before.fieldBottom) note({case: `${where}: the scroll area begins under the field`, got: {field: before.fieldBottom, search: before.searchBottom, list: before.listTop}});
-  if (before.searchPadding.join() !== '8,8,8,8') note({case: `${where}: the field has 8px on every side`, got: before.searchPadding});
-  if (before.listPadding.join() !== '0,8,8,8') note({case: `${where}: the rows' area is padded 0 8 8`, got: before.listPadding});
+  const {inset, pad, rowHeight} = before.tokens;
+  const near = (a, b) => Math.abs(a - b) <= 0.5;
+  const sp = before.searchPadding;
+  if (!near(sp[0], 0) || !near(sp[2], 0) || !near(sp[1], inset + pad) || !near(sp[3], inset + pad)) note({case: `${where}: the header's text starts at the inset and the row's padding`, got: {padding: sp, inset, pad}});
+  const lp = before.listPadding;
+  if (![0, 2, 3].every((i) => near(lp[i], inset)) || !(near(lp[1], inset) || near(lp[1], 0))) note({case: `${where}: the rows' area is padded by the inset`, got: {padding: lp, inset}});
   if (before.contentPadding.join() !== '0,0,0,0') note({case: `${where}: the content has no padding of its own`, got: before.contentPadding});
-  // The field 8px from the panel's inner edge: content border 1 + 8.
-  if (Math.abs(before.fieldLeft - 9) > 0.5 || Math.abs(before.fieldRight - 9) > 0.5) note({case: `${where}: the field stands 8px inside the panel`, got: [before.fieldLeft, before.fieldRight]});
+  // The header spans the panel inside its border, a hairline under it, no frame.
+  if (!near(before.searchLeft, before.border) || !near(before.searchRight, before.border)) note({case: `${where}: the header spans the panel`, got: [before.searchLeft, before.searchRight]});
+  if (!near(before.searchLine[0], 1) || before.searchLine[1] !== 0 || before.searchLine[2] !== 0) note({case: `${where}: a hairline under the header and no frame`, got: before.searchLine});
+  if (!near(before.searchHeight, rowHeight + 2 * inset)) note({case: `${where}: the header is a row and the inset above and below`, got: {height: before.searchHeight, rowHeight, inset}});
+  if (!near(before.rowHeight, rowHeight)) note({case: `${where}: a row is a control's height`, got: {row: before.rowHeight, rowHeight}});
+  // The icon over the rows' icons (or their text), the text over their text.
+  const rowStart = before.hasLead ? before.rowIconLeft : before.rowTextAbsLeft;
+  if (!near(before.searchIconLeft, rowStart)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: before.searchIconLeft, row: rowStart}});
+  if (before.hasLead && !near(before.fieldTextLeft, before.rowTextAbsLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {field: before.fieldTextLeft, row: before.rowTextAbsLeft}});
 }
 
 const evidence = {};
@@ -266,4 +293,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   throw new Error(`${failures.length} menu search check(s) failed`);
 }
-process.stdout.write('Context menu search: PASS — the field stays, the rows scroll under it, 8 around the field, 0 8 8 around the rows, keys and empty note kept, top level, flyout and drill, light and dark, three loads each\n');
+process.stdout.write('Context menu search: PASS — the field stays, the rows scroll under it, the header over the rows icon and text, the inset around the rows, keys and empty note kept, top level, flyout and drill, light and dark, three loads each\n');

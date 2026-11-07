@@ -16,11 +16,12 @@ test("whole composite manifests are generated into the searchable registry", () 
   // was folded into sf-context-menu (owner, 2026-10-30), and sf-include 67 again; 66 when sf-toggle was swept (2026-11-02);
   // 68 with sf-confirm and sf-confirm-change, block confirm, the second moved in from package pro (2026-11-03);
   // 69 with sf-alert-bar (2026-11-05); 71 with sf-list and sf-list-feed, block list (2026-11-05); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06);
-  // 75 with sf-wizard and sf-wizard-step (2026-11-06); 77 with sf-list-description and sf-list-timeline (2026-11-08).
+  // 75 with sf-wizard and sf-wizard-step (2026-11-06); 78 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07);
+  // 80 with sf-list-description and sf-list-timeline (2026-11-08).
   // The number is pinned so an addition is an edit somebody made rather than a
   // count that drifted -- a component appearing in the registry by accident is
   // exactly what this would otherwise miss.
-  assert.equal(registry.entries.length, 77);
+  assert.equal(registry.entries.length, 80);
   for (const id of ["smart.sortable", "smart.editor-overlay", "smart.editor-inline"]) assert.ok(registry.entries.some((entry) => entry.id === id), id);
   // The Pro components are not part of the free registry (package pro).
   for (const id of ["smart.admin-menu", "smart.data-view", "smart.data-view-composite", "smart.property-view"]) {

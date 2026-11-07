@@ -21,15 +21,17 @@
 }
 
 @layer sf.states {
-/* A menu's items start their content where a field of their size starts its
-   content, the axis every list in a panel shares (a dropdown's options sit on
-   it to line up with their field): the item gives back the panel's inset and
-   adds the field border. Measured before: the content sat 3px right of a
-   dropdown list's.
-   The insets are published on the panel, so anything else a window puts in it
-   (a search field, a block of buttons) reads the same axis instead of copying
-   the arithmetic: item-inset is the content edge, label-inset where a label
-   after a picture or text in a text-only row starts. */
+/* A row's content -- its icon, or its text -- starts --sf-space-1/2 from the
+   edge of its highlight, and the highlight --sf-space-1/4 from the panel's
+   edge (owner C05, docs review R029, 2026-11-07). Every other part of a
+   window in the menu -- a heading, a note, a value row, a drilling head, a
+   header, a footer, a panel's row -- starts its content on the same line, so
+   they read the insets published here instead of copying the arithmetic:
+   inset-start / inset-end is a row's own padding, item-inset-* the padding of
+   an sf-button written as an item (every size: the axis is the row's, not
+   the button's), label-inset-* where a label after a picture starts. Before
+   R029 the axis was a field's of the menu's size, the panel's inset given
+   back. */
 /* An item is a row that starts at the axis, whatever its markup says: a button
    written without the flex class is a block, and a block button centres its
    text, so a short item's label sat further right than a long one's. A Smart
@@ -43,14 +45,21 @@
 }
 
 .sf-context-menu .sf-context-menu-content {
-  --sf-context-menu--item-inset-start-1\/2: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
-  --sf-context-menu--item-inset-end-1\/2: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  // The row (owner C05, R029): as tall as a control of the menu's step, its
+  // icon and text --sf-space-1/2 inside its highlight, the highlight rounded
+  // as a control is. The scrollbar's thumb is the inset's width (C07).
+  --sf-context-menu--row-height: var(--sf-ui-1\/2--control-height);
+  --sf-context-menu--row-padding: var(--sf-space-1\/2);
+  --sf-context-menu--row-radius: var(--sf-context-menu-row-radius, var(--sf-radius--ui));
+  --sf-context-menu--thumb: var(--sf-space-1\/4);
+  --sf-context-menu--item-inset-start-1\/2: var(--sf-context-menu--row-padding);
+  --sf-context-menu--item-inset-end-1\/2: var(--sf-context-menu--row-padding);
   --sf-context-menu--label-inset-1\/2: calc(var(--sf-context-menu--item-inset-start-1\/2) + var(--sf-ui-1\/2--text-space-x));
-  --sf-context-menu--item-inset-start-1: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
-  --sf-context-menu--item-inset-end-1: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  --sf-context-menu--item-inset-start-1: var(--sf-context-menu--row-padding);
+  --sf-context-menu--item-inset-end-1: var(--sf-context-menu--row-padding);
   --sf-context-menu--label-inset-1: calc(var(--sf-context-menu--item-inset-start-1) + var(--sf-ui-1--text-space-x));
-  --sf-context-menu--item-inset-start-2: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
-  --sf-context-menu--item-inset-end-2: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  --sf-context-menu--item-inset-start-2: var(--sf-context-menu--row-padding);
+  --sf-context-menu--item-inset-end-2: var(--sf-context-menu--row-padding);
   --sf-context-menu--label-inset-2: calc(var(--sf-context-menu--item-inset-start-2) + var(--sf-ui-2--text-space-x));
   // The menu's own size: 1/2 unless the menu says 1 (owner, 2026-10-14: a
   // dropping panel comes in sizes 1 and 1/2). Rows, the search, headings,
@@ -60,8 +69,8 @@
   --sf-context-menu--space-y: var(--sf-ui-1\/2--space-y);
   --sf-context-menu--field-space-x: var(--sf-ui-1\/2--space-x);
   --sf-context-menu--block-space: var(--sf-space-1\/3);
-  --sf-context-menu--inset-start: var(--sf-context-menu--item-inset-start-1\/2);
-  --sf-context-menu--inset-end: var(--sf-context-menu--item-inset-end-1\/2);
+  --sf-context-menu--inset-start: var(--sf-context-menu--row-padding);
+  --sf-context-menu--inset-end: var(--sf-context-menu--row-padding);
   // A control inside a row -- the pills of a quiet choice, a range's value --
   // is a step down the one ladder: it has to read as part of the row, not as
   // a second row inside it.
@@ -77,8 +86,7 @@
   --sf-context-menu--space-y: var(--sf-ui-1--space-y);
   --sf-context-menu--field-space-x: var(--sf-ui-1--space-x);
   --sf-context-menu--block-space: var(--sf-space-1\/2);
-  --sf-context-menu--inset-start: var(--sf-context-menu--item-inset-start-1);
-  --sf-context-menu--inset-end: var(--sf-context-menu--item-inset-end-1);
+  --sf-context-menu--row-height: var(--sf-ui-1--control-height);
   --sf-context-menu--inner-height: var(--sf-ui-1\/2--control-height);
   --sf-context-menu--inner-space-x: var(--sf-ui-1\/2--space-x);
   --sf-context-menu--inner-text-size: var(--sf-text-size-1\/2);

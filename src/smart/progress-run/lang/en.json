@@ -1,0 +1,36 @@
+{
+  "title": "Progress",
+  "runtime": {
+    "label": "Progress",
+    "output-label": "Output",
+    "steps": "Steps",
+    "state-waiting": "waiting",
+    "state-running": "running",
+    "state-done": "done",
+    "state-failed": "failed",
+    "state-skipped": "skipped",
+    "result-done": "Done",
+    "result-failed": "Failed",
+    "result-cancelled": "Cancelled",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "hide": "Hide",
+    "copy": "Copy the output",
+    "download": "Download the output",
+    "empty-output": "No output yet"
+  },
+  "events": {
+    "cancel": {
+      "label": "Cancel"
+    },
+    "retry": {
+      "label": "Retry"
+    },
+    "close": {
+      "label": "Hide"
+    },
+    "download": {
+      "label": "Download the output"
+    }
+  }
+}

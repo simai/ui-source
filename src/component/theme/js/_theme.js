@@ -30,9 +30,22 @@
       const requested = requestOf(button);
       const pressed = requested ? requested === preference : isDark;
       if (!requested) syncGlyph(button, isDark);
-      button.setAttribute('aria-pressed', String(pressed));
-      // The look says it too: a button shows itself pressed with .active, and
-      // aria-pressed alone left the chosen mode looking unchosen (docs trial
+      if (requested) {
+        // A choice among system, light and dark is one option of a set, not a
+        // toggle (rule C12): role radio and aria-checked, never aria-pressed,
+        // so it keeps the chosen-segment look (.active) instead of a pressed
+        // toggle's fill. On an sf-button host the attributes reach the button
+        // it draws, as aria-pressed did.
+        button.removeAttribute('aria-pressed');
+        button.setAttribute('role', 'radio');
+        button.setAttribute('aria-checked', String(pressed));
+      } else {
+        // A toggle keeps one name («Тёмная тема») and says its state with
+        // aria-pressed: a genuine on/off toggle, drawn pressed while on (C12).
+        button.setAttribute('aria-pressed', String(pressed));
+      }
+      // The look says it too: a button shows itself chosen with .active, and
+      // the ARIA state alone left the chosen mode looking unchosen (docs trial
       // 4, 2026-10-15). On an sf-button host the button is the one inside.
       button.classList.toggle('active', pressed);
       button.querySelector?.(':scope > .sf-button, :scope > .sf-icon-button')?.classList.toggle('active', pressed);

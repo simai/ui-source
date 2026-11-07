@@ -25,14 +25,15 @@
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   --sf-badge--surface: var(--sf-context-menu-content--background-color);
   border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
-  /* The panel's inset is its search field's (owner R017, 2026-11-07): 8px,
-     so the field, the rows and their hover and chosen fills, a drilling head
-     and the footer share one edge. It was 4px, and the fills stood out past
-     the field and hugged the panel's edge. */
-  --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/3));
-  --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/3));
-  --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/3));
-  --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/3));
+  /* The inset: a row's highlight stands --sf-space-1/4 from the panel's
+     edge, on every side (owner C05, docs review R029, 2026-11-07; it replaces
+     R017's 1/3). The same inset is the scrollbar's gap on either side of its
+     thumb (C07) and, twice over, what a search header adds to a row's height
+     (C06). */
+  --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
   --sf-context-menu-content--border-radius: var(--sf-context-menu-radius, var(--sf-radius--surface));
   border-radius: var(--sf-context-menu-content--border-radius);
   background-color: var(--sf-context-menu-content--background-color);
@@ -93,20 +94,21 @@
   flex-shrink: 0;
 }
 
-/* A row is as tall as a field of the menu's size -- its line and the field's
-   block padding above and below, 32px at 1/2 and 40px at 1 -- and its content
-   starts where that field's does. A caption makes it taller by its own line,
-   never by padding. */
+/* A row is as tall as a control of the menu's step (--sf-ui-<step>--control-
+   height), its highlight rounded as a control is, and its icon and text stand
+   --sf-space-1/2 from the highlight's edge, the icon --sf-space-1/2 before the
+   text (owner C05, R029). A caption makes it taller by its own line, never by
+   padding. */
 .sf-context-menu-item {
   display: flex;
   align-items: center;
   gap: var(--sf-space-1\/2);
   inline-size: 100%;
-  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  min-block-size: var(--sf-context-menu--row-height);
   padding-block: var(--sf-a2);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   border: 0;
-  border-radius: var(--sf-radius--ui);
+  border-radius: var(--sf-context-menu--row-radius);
   background: none;
   color: var(--sf-context-menu-color, var(--sf-on-surface));
   font: inherit;
@@ -244,7 +246,7 @@
   flex: none;
   align-items: center;
   gap: var(--sf-space-1\/2);
-  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  min-block-size: var(--sf-context-menu--row-height);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
 }
 
@@ -399,7 +401,7 @@
   align-items: center;
   gap: var(--sf-space-1\/2);
   inline-size: 100%;
-  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  min-block-size: var(--sf-context-menu--row-height);
   padding-block: var(--sf-a2);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   color: var(--sf-context-menu-color, var(--sf-on-surface));
@@ -419,7 +421,7 @@
    room for: on a phone's tighter ladder the inner step is the row's own
    height, and the row grew by its block padding (28 px in a 24 px menu). */
 .sf-context-menu-choice-option.sf-context-menu-item {
-  --sf-context-menu-choice--option-height: min(var(--sf-context-menu--inner-height), calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y) - 2 * var(--sf-a2)));
+  --sf-context-menu-choice--option-height: min(var(--sf-context-menu--inner-height), calc(var(--sf-context-menu--row-height) - 2 * var(--sf-a2)));
   flex: none;
   justify-content: center;
   inline-size: auto;
@@ -468,7 +470,7 @@
 .sf-context-menu-choice--band .sf-context-menu-choice-option.sf-context-menu-item {
   flex: 1 1 0;
   inline-size: 100%;
-  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  min-block-size: var(--sf-context-menu--row-height);
   padding-block: var(--sf-a2);
   padding-inline: 0;
   border-radius: 0;
@@ -673,39 +675,56 @@
   white-space: normal;
 }
 
-/* The search field is a field of the menu's size: its text starts on the
-   rows' axis. */
+/* The search is the panel's header, not a boxed field (owner C06, R029): no
+   frame and no fill; as tall as a row and the inset above and below it; its
+   icon and its text stand exactly over the rows' icon and text -- the inset and
+   the row's own padding before them -- and a hairline across the panel's whole
+   width under it. Focus draws the hairline in the primary colour, over the
+   caret. */
 .sf-context-menu-search {
-  padding-block-end: var(--sf-a4);
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  min-block-size: var(--sf-context-menu--row-height);
+  padding-inline: var(--sf-context-menu--row-padding);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-context-menu-search-icon {
+  display: flex;
+  flex: none;
+  inline-size: var(--sf-context-menu--line);
+  overflow: hidden;
+  --sf-icon--color: var(--sf-on-surface-variant);
 }
 
 .sf-context-menu-search-input {
-  inline-size: 100%;
-  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
-  padding-inline: var(--sf-context-menu--field-space-x);
-  border: var(--sf-px) solid var(--sf-outline);
-  border-radius: var(--sf-radius--ui);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
   background-color: transparent;
   color: var(--sf-on-surface);
   font: inherit;
+  appearance: none;
+  caret-color: var(--sf-primary);
 }
 
 .sf-context-menu-search-input::placeholder {
   color: var(--sf-on-surface-variant);
 }
 
-/* A menu with a search: the field stays where it is and only the rows scroll,
-   under it. The field and the rows were one scrolling content, so the field
-   went away with the list and the scrollbar ran beside it; and the field stood
-   a step of space from the panel's edge, too close (owner R012, R013,
-   2026-11-07). The content no longer scrolls: the field (and a drilling
-   level's head) sits on top with the ladder's step after the panel's own
-   (8px, space-1/3, where the panel has 4px) on every side of it, at both
-   sizes, and
-   the rows have a scroll area of their own that takes the rest of the menu's
-   height, the content's own padding on its sides and below, so the scrollbar
-   starts under the field. The rows keep their axis: the list is padded by the
-   same amount the content was. */
+/* A menu with a search: the header stays where it is and only the rows
+   scroll, under it (owner R012, C06). The content no longer scrolls: the
+   header (and a drilling level's head) sits on top across the panel's whole
+   width, and the rows have a scroll area of their own that takes the rest of
+   the menu's height, padded by the panel's inset on every side, so the rows
+   stand where they stand without a search and the scrollbar starts under the
+   header's line. The header is a row and the inset above and below it; its
+   icon and text start at the inset and the row's padding, over the rows'. */
 .sf-context-menu .sf-context-menu-content.sf-context-menu-content--search {
   gap: 0;
   padding: 0;
@@ -714,7 +733,8 @@
 
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-search {
   flex: none;
-  padding: var(--sf-space-1\/3);
+  min-block-size: calc(var(--sf-context-menu--row-height) + var(--sf-context-menu-content--padding-top) + var(--sf-context-menu-content--padding-bottom));
+  padding-inline: calc(var(--sf-context-menu-content--padding-inline-start) + var(--sf-context-menu--row-padding)) calc(var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--row-padding));
 }
 
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
@@ -723,7 +743,7 @@
   flex-direction: column;
   gap: var(--sf-context-menu-gap, var(--sf-px));
   min-block-size: 0;
-  padding-block: 0 var(--sf-context-menu-content--padding-bottom);
+  padding-block: var(--sf-context-menu-content--padding-top) var(--sf-context-menu-content--padding-bottom);
   padding-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
   overflow-x: hidden;
   overflow-y: auto;
@@ -749,6 +769,7 @@
   position: static;
   margin-block-end: 0;
   padding-block-end: var(--sf-context-menu--block-space);
+  padding-inline: calc(var(--sf-context-menu-content--padding-inline-start) + var(--sf-context-menu--inset-start)) calc(var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--inset-end));
 }
 
 .sf-context-menu-heading {
@@ -880,6 +901,56 @@
   white-space: nowrap;
 }
 
+/* ─── the scrollbar: only when the rows do not fit, in the inset ───────── */
+/* What scrolls the rows -- the content of a menu, or the rows' area under a
+   search -- shows a scrollbar only when they do not fit (owner C07; the
+   panel's height is fitted to its room since 1.7.2). A scrollbar that takes
+   room in the layout stands in the inline-end inset: the area gives up its
+   inline-end padding, and the track is the inset, the thumb and the inset
+   again, so the thumb is as far from the rows' highlight as the highlight is
+   from the panel's other edge. sf-menu-context marks the area with
+   sf-context-menu-content--scrollbar or sf-context-menu-list--scrollbar while
+   its scrollbar takes room (offsetWidth - clientWidth, past the borders); an
+   overlay scrollbar takes none, and the inset stays. Firefox draws its thin
+   scrollbar. */
+.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
+  --sf-context-menu--track: calc(2 * var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--thumb));
+}
+
+.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar {
+  width: var(--sf-context-menu--track);
+  height: var(--sf-context-menu--track);
+}
+
+.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar-track,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar-track {
+  border: 0;
+  background-color: transparent;
+}
+
+.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar-thumb,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar-thumb {
+  min-height: var(--sf-context-menu--row-height);
+  border: var(--sf-context-menu-content--padding-inline-end) solid transparent;
+  border-radius: var(--sf-context-menu--track);
+  background-clip: padding-box;
+  background-color: var(--sf-scroll-bg-thumb);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
+  .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
+    scrollbar-width: thin;
+  }
+}
+
+.sf-context-menu .sf-context-menu-content.sf-context-menu-content--scrollbar,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list.sf-context-menu-list--scrollbar {
+  padding-inline-end: 0;
+}
+
 /* An item is one line. A menu opened from a control near the inline edge was
    capped to the free space beside that control, and the labels wrapped to two
    lines inside it -- which is not the menu getting smaller, it is the words
@@ -892,9 +963,10 @@
 }
 
 @layer sf.states {
-  .sf-context-menu-search-input:focus-visible {
-    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
+  /* The header has no frame to ring: the focus is the caret and the header's
+     line in the primary colour. */
+  .sf-context-menu-search:focus-within {
+    border-block-end-color: var(--sf-primary);
   }
 
   .sf-context-menu-item:focus-visible,
@@ -923,6 +995,10 @@
 @media (forced-colors: active) {
   .sf-context-menu .sf-context-menu-content {
     border: var(--sf-px) solid CanvasText;
+  }
+
+  .sf-context-menu-search:focus-within {
+    border-block-end-color: Highlight;
   }
 
   /* A switch that is on and a tile that is on are told apart by the forced

@@ -54,7 +54,10 @@ test('the host keeps a readable record of the data attributes it was given', asy
   assert.match(base, /this\.__sfHostDataAttributeTarget = target;/u);
   assert.match(base, /this\.__sfHostDataAttributeTargetKeys = targetStorageKey;/u, 'the component’s own key, not the default');
   assert.match(base, /get dataAttributes\(\) \{/u);
-  assert.match(base, /\.replace\(\/-\(\[a-z\]\)\/gu, \(_, letter\) => letter\.toUpperCase\(\)\)/u, 'read like dataset: data-add -> .add');
+  // The reading lives in host-runtime-marks.js since 2026-11-07, beside the
+  // runtime marks it leaves out (tests/host-runtime-marks.contract.test.mjs).
+  const marks = await read('src/core/js/host-runtime-marks.js');
+  assert.match(marks, /\.replace\(\/-\(\[a-z\]\)\/gu, \(_, letter\) => letter\.toUpperCase\(\)\)/u, 'read like dataset: data-add -> .add');
   // Removing it from the control alone would be undone on the next render,
   // because the record is what the control is given again.
   assert.match(base, /removeHostDataAttribute\(name\) \{/u);

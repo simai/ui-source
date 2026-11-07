@@ -1,0 +1,20 @@
+{
+  "title": "Требует внимания",
+  "runtime": {
+    "label": "Требует внимания",
+    "empty-text": "Всё в порядке",
+    "count": "{count}",
+    "status-error": "Ошибка",
+    "status-warning": "Предупреждение",
+    "status-info": "Сведения",
+    "status-success": "Готово"
+  },
+  "events": {
+    "navigate": {
+      "label": "Перейти"
+    },
+    "apply": {
+      "label": "Выполнить"
+    }
+  }
+}

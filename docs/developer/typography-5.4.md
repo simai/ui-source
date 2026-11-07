@@ -24,8 +24,17 @@ Semantic roles are exposed as:
 - `--sf-heading-1..6--size/height`;
 - `--sf-display-1..6--size/height`.
 
+The content heading ladder (docs review R022, contract 1.4.0): H1 is text
+rung 6, H2 rung 5, H3 rung 2 and H4 rung 1, each on the title line height of
+its rung; H3 and H4 are set apart from body text by weight, not size. H5 and
+H6 keep rungs 2 and 1.
+
 Heading flow uses `--sf-heading--space-top` and
-`--sf-heading--space-bottom`. H1 has no top margin; H2-H6 use both tokens.
+`--sf-heading--space-bottom`. H1 has no top margin. H2 opens a section: its
+top margin is `--sf-heading--space-top` plus `--sf-content--space-block`, its
+bottom margin `--sf-heading--space-bottom`. H3-H6 belong to their section: the
+top margin is `--sf-content--space-block`, the bottom margin half of
+`--sf-heading--space-bottom`.
 `--sf-heading--margin` is retained only as a deprecated compatibility alias.
 Body flow uses `--sf-text--space-bottom`.
 
@@ -50,6 +59,67 @@ The existing `.text*` selectors remain aliases for Body Text. A numeric
 `.text-N` utility can opt into title line height with `.heading`.
 `utility/headers` remains a compatible entrypoint but consumes the same
 Heading role variables as Core; it has no separate size or line-height table.
+
+## Code in running text
+
+A `<code>` in author markup -- a paragraph, a list item, a table cell, a
+heading, a link, chat markup -- gets a quiet plate (owner decision
+2026-11-07, docs review R024, rule C10). Code in `pre`, the highlighter's
+surface, `kbd`, `samp`, a button, a code with an `sf-` class and a code whose
+parent has one are left as they are. The rule is in `:where()` in the base
+layer: any component, utility or site rule wins.
+
+| Public variable | Default | Ladder |
+| --- | --- | --- |
+| `--sf-code-background` | `var(--sf-surface-container)` | the alpha plate: reads on `surface-0..3`, stripes and callouts |
+| `--sf-code-color` | `var(--sf-on-surface)` | the text's ink |
+| `--sf-code-padding` | `0.2em 0.4em` | relative, kept in em (below) |
+| `--sf-code-font-size` | `85%` | relative, kept in % (below) |
+| `--sf-code-radius` | `var(--sf-a6)` | the a6 step of the size ladder (6px) |
+| `--sf-code-font-family` | `var(--sf-mono)` | the mono stack |
+
+The geometry is Gravity UI's and GitHub's. The corner maps to a6 exactly;
+the radius ladder has no 6 (`--sf-radius-1/2` is 4px, `--sf-radius-1` 8px).
+The room and the size stay relative on purpose: one word of code sits in body
+text, a heading, a caption and a table cell, and has to scale with each; no
+fixed step is .2em, .4em or 85 % of all of them (at 16px text the code is
+13.6px, its room 2.72px by 5.44px). The name never parts at a hyphen
+(`white-space: nowrap`): the line breaks before `sf-button-press`, not inside.
+
+The public variables have one dash and are never set by the Framework; set
+them on `:root` or any container. The `--sf-code--*` names with two dashes
+are the internal defaults they fall back to.
+
+Tones are recipes over existing roles, not classes and not a palette:
+
+```css
+/* secondary */
+:root { --sf-code-color: var(--sf-secondary); }
+/* tertiary on its container */
+:root { --sf-code-background: var(--sf-tertiary-container); --sf-code-color: var(--sf-on-tertiary-container); }
+/* the highlighter's keyword colour */
+:root { --sf-code-color: var(--sf-highlight-keyword); }
+```
+
+A tone is a site's or a section's choice, so it is written where the choice is
+made. A class would have to work on the container and on the `<code>`, and a
+class on the `<code>` itself is an `sf-` class, which the rule reads as
+component markup and leaves without a plate.
+
+### Copy on click
+
+Opt-in, never the default. `data-sf-code-copy` on a container turns each code
+in running text inside it into a copy control (`core/js/code-copy.js`):
+`role="button"`, `tabindex="0"`, an `aria-label` naming what is copied;
+a click, Enter or Space copies; a hairline on hover and the base focus ring;
+a polite status («Скопировано» / «Copied») above the code. The copy is core's
+`copyText` (Clipboard API, `execCommand` fallback); a refused copy selects
+the code and says which keys to press. The words are sf-button-copy's, in the
+page's language, and a product's words registered for `sf-button-copy` win.
+`data-sf-code-copy="false"` turns a part inside off. Blocks of code
+(`pre > code`, the highlighter) are never taken. `SF.codeCopy.refresh(root)`
+re-reads a part changed without a DOM mutation; added and changed containers
+are followed on their own.
 
 ## Fonts and compatibility
 

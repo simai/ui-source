@@ -1,0 +1,41 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.progress-run",
+  "title": "progress-run reference",
+  "summary": "Deterministic reference fixture for sf-progress-run.",
+  "locale": "ru",
+  "props": {
+    "label": "Создание сайта demo.test",
+    "steps": [
+      {
+        "id": "dns",
+        "title": "Адрес demo.test",
+        "state": "done",
+        "duration": 1200
+      },
+      {
+        "id": "files",
+        "title": "Файлы сайта",
+        "state": "done",
+        "duration": 5300,
+        "text": "120 файлов"
+      },
+      {
+        "id": "db",
+        "title": "База данных",
+        "state": "running",
+        "text": "Создаём таблицы"
+      },
+      {
+        "id": "ssl",
+        "title": "Сертификат",
+        "state": "waiting"
+      }
+    ],
+    "output": "$ create-site demo.test\nDNS: ok\nCopying 120 files... ok\nCreating tables...\n",
+    "cancelable": true
+  },
+  "children": [],
+  "state": "default"
+}

@@ -23,8 +23,12 @@ The short `data-theme="system|light|dark"` attribute turns a theme button into
 an explicit preference choice. Without it, the button keeps binary toggle
 behavior.
 
-A theme button represents the dark-theme option with `aria-pressed`; the
-component synchronizes its value without changing focus. Event delegation keeps
+A toggle (no `data-theme`) represents the dark-theme option with
+`aria-pressed` and keeps one name: a genuine on/off toggle, drawn pressed while
+on (rule C12). A choice (`data-theme`) is one option of a set, not a toggle: it
+carries `role="radio"` and `aria-checked`, never `aria-pressed`, and the chosen
+one keeps the chosen-segment look (`.active`). The component synchronizes these
+values without changing focus. Event delegation keeps
 buttons inserted later operable. `SF_BOOT_CONFIG.theme === false` disables all
 theme mutation.
 

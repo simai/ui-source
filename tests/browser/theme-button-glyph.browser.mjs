@@ -72,12 +72,19 @@ try {
   await tab.waitForTimeout(200);
   await tab.click('#choice');
   await tab.waitForTimeout(200);
-  seen.clicked = await tab.evaluate(() => ({preference: window.SF.Loader.themePreference, dark: document.documentElement.classList.contains('theme-dark'), pressed: document.querySelector('#choice').getAttribute('aria-pressed')}));
+  seen.clicked = await tab.evaluate(() => ({preference: window.SF.Loader.themePreference, dark: document.documentElement.classList.contains('theme-dark'), pressed: document.querySelector('#choice').getAttribute('aria-pressed'),
+    role: document.querySelector('#choice > button')?.getAttribute('role'), checked: document.querySelector('#choice > button')?.getAttribute('aria-checked'),
+    innerPressed: document.querySelector('#choice > button')?.getAttribute('aria-pressed'),
+    pressedLook: document.querySelector('#choice > button')?.classList.contains('sf-icon-button--pressed') ?? null,
+    active: document.querySelector('#choice > button')?.classList.contains('active') ?? null}));
   const expect = (name, got, want) => { if (JSON.stringify(got) !== JSON.stringify(want)) failures.push(`${name}: ${JSON.stringify(got)}`); };
   expect('light page: moons, the author glyph and the choice untouched', seen.light, {host: 'dark_mode', native: 'dark_mode', own: 'palette', choice: 'dark_mode'});
   expect('dark page: suns, the author glyph and the choice untouched', seen.dark, {host: 'light_mode', native: 'light_mode', own: 'palette', choice: 'dark_mode'});
   expect('back to light: moons again', seen.back, seen.light);
-  expect('a click on the dark choice sets dark, pressed', seen.clicked, {preference: 'dark', dark: true, pressed: 'true'});
+  // A choice is a radio (rule C12), not a pressed toggle: aria-checked, the
+  // chosen-segment look, no aria-pressed and no pressed fill.
+  expect('a click on the dark choice sets dark, checked', seen.clicked, {preference: 'dark', dark: true, pressed: null,
+    role: 'radio', checked: 'true', innerPressed: null, pressedLook: false, active: true});
   await tab.close();
 } finally {
   await browser.close();

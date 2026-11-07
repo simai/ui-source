@@ -1,0 +1,304 @@
+{
+  "$comment": "The source of sf-list-attention's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the attention list the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 2), planned in the reply msg-05e76ea0bc0746a690b8 as sf-list-attention of block list.",
+  "id": "smart.list-attention",
+  "tag": "sf-list-attention",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "list",
+  "settings": {
+    "items": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "error",
+                "warning",
+                "info",
+                "success"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "action": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "href": {
+                  "type": "string"
+                },
+                "event": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": [
+            "id",
+            "status",
+            "title"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The problems that need a person, each {id, status error|warning|info|success, title, text?, action?: {label, href} or {label, event}}. A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), the host's order inside a status. An item without an id or a title is left out; another status reads as info"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The count of items stands beside it"
+    },
+    "heading-level": {
+      "type": "number",
+      "integer": true,
+      "min": 2,
+      "max": 6,
+      "default": 3,
+      "summary": "The level of the heading in the page's outline"
+    },
+    "empty": {
+      "type": "enum",
+      "values": [
+        "none",
+        "line"
+      ],
+      "default": "none",
+      "summary": "With no items: none draws nothing at all (the host takes no room); line draws one quiet line, empty-text with a check"
+    },
+    "empty-text": {
+      "type": "string",
+      "default-from": "runtime.empty-text",
+      "summary": "The quiet line of empty line; «Всё в порядке» / «All is well» when not set"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1",
+      "summary": "The ladder rung: the heading and titles are the rung's line, the texts the rung below's, a one-line row the rung's control height. 1/2 for a side panel"
+    }
+  },
+  "values": {},
+  "events": {
+    "navigate": {
+      "carries": {
+        "id": "string",
+        "status": "string",
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
+    },
+    "apply": {
+      "carries": {
+        "action": "string",
+        "scope": "string",
+        "ids": "list",
+        "id": "string",
+        "status": "string"
+      },
+      "summary": "A person pressed an item's action button, one without href (vocabulary §5 apply {action, scope: entry, ids}): action is the item's action.event, ids the item's id. The host does it (restarts a job, opens a dialog) and sets the list again"
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-badge"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "sr-only/default"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A section named by its heading; the items are a list, each with its status said in words before its title (the icon is a picture), and its action a native link or button. The list is no live region: a host that wants a new problem read out says so with its own announcement. Nothing takes focus.",
+    "role": "region",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
+    }
+  },
+  "host-states": {
+    "data-status": "string",
+    "data-empty": "boolean"
+  },
+  "css-variables": {
+    "--sf-list-attention-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-attention-divider-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-attention-heading-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-attention-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-list-attention-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+  "x-source": {
+    "package": "framework",
+    "folder": "list-attention",
+    "brief": "Federation bus msg-993e1e39151942c19b23 item 2 from the Larena storage thread (owner-approved panel prototype, 2026-11-02): items {status, title, text, action: {label, href | event}}, ordered by severity, a heading with the count, with no items nothing at all or optionally one quiet line, never a big empty card. Used for server health, site checks, import and migration errors, update readiness, storage integrity, a form's validation summary."
+  },
+  "x-words": [
+    "label",
+    "empty-text"
+  ],
+  "x-decisions": [
+    "name: sf-list-attention, a variant of block list (ui-control control/decisions/2026-11-02-smart-component-naming.md: sf-<block>-<variant>; the reply msg-05e76ea0). sf-list is the list a person acts on (selection, row menu, rename, paging) and its rows are entries to open; the attention list is a short summary of notices, each with one action of its own and no selection, so it is a variant with its own rows, not a setting of sf-list. It draws its parts with sf-icon, sf-badge and sf-button.",
+    "order: error, warning, info, success; the host's order inside a status (the list never sorts by anything else). An item without an id or a title is left out, a repeated id too; an unknown status reads as info.",
+    "count: the heading shows how many there are as an sf-badge of the most serious status (tonal); the status drawn is the host state data-status.",
+    "empty: empty none (the default) draws nothing and the host is display none while data-empty is on, so the list takes no room at all; empty line draws one quiet line, a check of the success role and empty-text, at the rung's control height. Never a card.",
+    "action: {label, href} is a link (sf-button href) and its press the cancelable request navigate {id, status, href} (vocabulary §5 navigate); {label, event} is a button and its press the fact apply {action: event, scope: entry, ids: [id], id, status} (§5 apply). An action without either is not drawn.",
+    "a11y: a section named by its heading (role region through aria-labelledby); the items a list; each item says its status in words before its title, visually hidden, so the icon is never the only sign. No live region: a host that wants a new problem read out announces it itself.",
+    "geometry: one rung S (size 1/2 or 1): the heading and the titles are the rung's line and type, the texts the rung below's, the status icon the title's line, icon-to-text the rung's text-space-x, the row's block inset (H − L) / 2 and its inline inset the rung's space-x, so a one-line row is the rung's control height H, as a list row is. The action is an sf-button of the rung below, centred on the row, whose height takes no room beyond the title's line.",
+    "css-variables: five public variables (§6) -- the fill (none by default), the dividers, the heading's colour, the inline inset and the gap under the heading -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "list",
+      "attention",
+      "problems",
+      "health",
+      "status",
+      "validation-summary",
+      "admin"
+    ],
+    "state": {
+      "machines": {
+        "list": [
+          "empty",
+          "shown"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "empty"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "finding the problems (the host checks and sets the list)",
+        "deciding when a problem ends (the host sets the list again)",
+        "doing an action (the host answers apply or navigate)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-list-attention on an overview screen for the problems that need a person now: server health, site checks, import errors, update readiness, a form's validation summary.",
+      "do_not": [
+        "Do not wrap it in a card that stays when the list is empty; with empty none it takes no room",
+        "Do not use it for news or a history; sf-list-feed or a timeline does that",
+        "Do not use it for a page-wide condition above the header; sf-alert-bar does that"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-list-attention><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"text\": \"demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches each item's action in order; Enter follows a link, Enter or Space presses a button"
+      ],
+      "focus": "The list never takes focus."
+    }
+  }
+}

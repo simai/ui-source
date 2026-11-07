@@ -28,6 +28,9 @@ import './sanitize.js';
 import {publishFormat} from './format.js';
 import './breakpoints.js';
 import './clipboard.js';
+// Copy on click for code in running text, where a container opts in with
+// data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
+import './code-copy.js';
 // The reading position of a scrolling column (duplication audit 2026-11-03,
 // A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
 import './reading-position.js';

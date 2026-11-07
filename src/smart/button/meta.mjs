@@ -31,7 +31,7 @@ const sfButtonMeta = {
         "3"
       ],
       "default": "1",
-      "description": "Button size token."
+      "description": "Button size."
     },
     "appearance": {
       "kind": "enum",
@@ -163,7 +163,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
+      "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). The inner button is unavailable while it loads."
     },
     "disabled": {
       "kind": "boolean",
@@ -172,7 +172,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Disabled state flag."
+      "description": "The button is unavailable."
     },
     "native-type": {
       "kind": "enum",
@@ -182,25 +182,25 @@ const sfButtonMeta = {
         "reset"
       ],
       "default": "button",
-      "description": "Native button type attribute."
+      "description": "The inner button's type attribute."
     },
     "form": {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The id of the form the native button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
+      "description": "The id of the form the inner button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
     },
     "name": {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The name the native button submits its value under, as a native button's name."
+      "description": "The name the inner button submits its value under, as a native button's name."
     },
     "value": {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The value the native button submits under name when it is the submitter (next, skip)."
+      "description": "The value the inner button submits under name when it is the submitter (next, skip)."
     },
     "href": {
       "kind": "custom",
@@ -212,7 +212,7 @@ const sfButtonMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the native button. Empty: no keys"
+      "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
     },
     "shortcut-listen": {
       "kind": "boolean",
@@ -230,7 +230,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
+      "description": "Whether the panel this button opens is open: aria-expanded on the inner button; absent says nothing"
     },
     "pressed": {
       "kind": "boolean",
@@ -239,7 +239,13 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.buttons 1.5.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+    },
+    "text-pressed": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The label while the toggle is on, for a toggle whose label changes («В избранное» → «В избранном»). Set, the label says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: the label stays the same and aria-pressed says the state"
     },
     "aria-label": {
       "kind": "custom",

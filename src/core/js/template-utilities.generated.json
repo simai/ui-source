@@ -245,6 +245,9 @@
     "justify-content/default",
     "sr-only/default"
   ],
+  "cl-list-attention": [
+    "sr-only/default"
+  ],
   "cl-list-description": [
     "font-family/default",
     "sr-only/default",
@@ -326,6 +329,10 @@
   "cl-progress-ring": [
     "display/default"
   ],
+  "cl-progress-run": [
+    "sr-only/default",
+    "white-space/default"
+  ],
   "cl-progress-scale": [
     "align-items/default",
     "display/default",
@@ -397,6 +404,10 @@
     "justify-content/default",
     "min-width/default",
     "place-items/default"
+  ],
+  "cl-tile-metric": [
+    "position/default",
+    "sr-only/default"
   ],
   "cl-toast": [
     "align-items/default",

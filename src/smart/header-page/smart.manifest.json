@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Page header",
   "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "kind": "smart",
@@ -157,7 +157,7 @@
       "Tab reaches the star and the actions",
       "Enter or Space toggles the star"
     ],
-    "focus": "The star is a native button in sf-icon-button with aria-pressed and a label that says what pressing it does."
+    "focus": "The star is a native button in sf-icon-button with a label that says what pressing it does, and so its state; it carries no aria-pressed (rule C12)."
   },
   "presentation": {
     "themes": [
@@ -231,7 +231,7 @@
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "940dc76fbd7522946fb28cb32b6556363c6ca9fe9631be6b4124127945322975"
+        "sha256": "e75e174ed9f65c9cd98ea3b713e6834dd67ec21d92f90dfae62d8dbdc113ff64"
       }
     ],
     "generated_runtime": [

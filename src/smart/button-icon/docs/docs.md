@@ -59,8 +59,16 @@ Main attributes:
 - `disabled`
 - `native-type`
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native
-  button and, while on, the selected look (`pressed="false"` says off);
-  absent, the button is not a toggle and nothing is said
+  button and, while on, the pressed look (`pressed="false"` says off);
+  absent, the button is not a toggle and nothing is said. The pressed look
+  (1.5.0, rule C12): the primary container fill, the icon in
+  `--sf-on-primary-container` and filled, no visible edge (the height does not
+  move) -- two cues, not colour alone, in both themes
+- `label-pressed` — the name while the toggle is on, for a toggle whose name
+  changes: `<sf-button-icon icon="star" aria-label="Добавить в избранное"
+  label-pressed="Убрать из избранного" pressed="false">`. The name then says
+  the state, so `aria-pressed` is not written; the pressed look still follows
+  `pressed`. A toggle with one name («Жирный») leaves it empty
 - `aria-label`
 - `badge-count`, `badge-dot`, `badge-cap` (99), `badge-label` -- a count or a
   dot at the button's top end corner, sized by `size` (1/3 and 1/2: a dot

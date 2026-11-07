@@ -14,7 +14,10 @@ decorative and uses `aria-hidden="true"`.
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
-  are the same steps under older names that read backwards;
+  are the same steps under older names that read backwards. Density moves
+  the side padding only (1.2.0): an icon button of a size is as tall at every
+  density, so a compact one is narrower than it is tall and a spacious one
+  wider;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
@@ -42,9 +45,22 @@ spinner in place of its icon, at the icon's size (an element with
 constructor draws it), in the disabled ink unless `--sf-loader--color` is set,
 and a still arc under reduced motion. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
-`token-button-loading-stripe`). A real two-state action combines
-`active` with `aria-pressed`; a colour change alone does not create toggle
-semantics.
+`token-button-loading-stripe`). A two-state action -- bold in an editor's
+toolbar, wrap lines in a code block -- keeps one name and says its state with
+`aria-pressed`. Pressed, it wears the pressed look (1.3.0, owner decision
+2026-11-07, rule C12) whatever its emphasis or scheme: the primary container
+fill, the icon in `--sf-on-primary-container` and filled (`FILL 1`) -- two
+cues, not colour alone -- and no visible edge (the border keeps its width and
+is transparent over the fill, so the height does not move). Hover and press
+step the container; focus draws the ring; disabled wears the disabled look.
+`sf-icon-button--pressed` draws the same look without `aria-pressed`, for an
+action whose name changes with the state («Добавить в избранное» → «Убрать из
+избранного»): its name says the state, so it carries no `aria-pressed`
+(`sf-button-icon` does it with `label-pressed`). With the Loader's icon subset,
+mark the icon of a pressed toggle `sf-icon--filled` as well: the subset holds
+the filled glyph only for an icon marked filled.
+`--sf-icon-button-pressed-background-color` and
+`--sf-icon-button-pressed-color` recolour the resting pressed look.
 
 Pointer activation does not show a focus ring. Keyboard navigation uses
 `:focus-visible`, including forced-colours fallback. Constructor-created

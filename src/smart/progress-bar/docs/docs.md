@@ -18,7 +18,14 @@ cancellation.
 - `size="1/3|1/2|1|2|3"`.
 - `text-position="none|inline-end|bottom"`; `right` is a physical legacy alias.
 - `status="neutral|info|success|warning|error"` — a process state supplied by
-  the application, never inferred from the percentage.
+  the application.
+- `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page:
+  from `warning-at` on the bar is a warning by itself, from `error-at` an
+  error. A meter of a disk, a quota or licence seats turns its tone when it
+  fills: `<sf-progress-bar label="Диск" value="83" warning-at="80" error-at="95">`
+  is a warning. The bar draws the more serious of `status` and the threshold
+  reached, and says which on the host as `data-status`. Without thresholds the
+  bar never infers a tone from the percentage.
 
 The component is not interactive, does not receive focus and does not create an
 assertive live region. Shared `root-class` and `root-style` settings apply only

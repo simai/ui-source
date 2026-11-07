@@ -1,0 +1,191 @@
+@layer sf.components {
+/* sf-list-attention (standard simai.smart-component 1.3.14 §6). One rung S
+   of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
+   with size="1/2": the heading and the titles are the rung's line L and
+   type, the texts the rung below's, the status icon the title's line,
+   icon-to-text the rung's text-space-x. A row's block inset is (H - L) / 2,
+   so a one-line row is the rung's control height H, as a list row is; a
+   divider gives up its hairline from the inset (padding gives up the
+   border). The action is an sf-button of the rung below, centred on the row,
+   whose height takes no room beyond the title's line.
+
+   No card: with no items nothing is drawn (empty none), so the list never
+   leaves an empty frame. The public variables are read with the
+   role token as their fallback and never set here. */
+sf-list-attention {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-list-attention {
+  /* The rung: 1. */
+  --sf-list-attention--line: var(--sf-text-height-1);
+  --sf-list-attention--font-size: var(--sf-text-size-1);
+  --sf-list-attention--below-line: var(--sf-text-height-1\/2);
+  --sf-list-attention--below-font-size: var(--sf-text-size-1\/2);
+  --sf-list-attention--control: var(--sf-ui-1--control-height);
+  --sf-list-attention--action: var(--sf-ui-1\/2--control-height);
+  --sf-list-attention--space-x: var(--sf-ui-1--space-x);
+  --sf-list-attention--text-space-x: var(--sf-ui-1--text-space-x);
+  --sf-list-attention--padding-block: calc((var(--sf-list-attention--control) - var(--sf-list-attention--line)) / 2);
+  --sf-list-attention--padding-inline: var(--sf-list-attention-padding-inline, calc(var(--sf-px) * 0));
+  --sf-list-attention--divider: var(--sf-list-attention-divider-color, var(--sf-outline-variant));
+  display: block;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  margin: 0;
+  container-type: inline-size;
+  background: var(--sf-list-attention-background, transparent);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-list-attention--font-size);
+  line-height: var(--sf-list-attention--line);
+}
+
+.sf-list-attention.sf-list-attention--size-half {
+  --sf-list-attention--line: var(--sf-text-height-1\/2);
+  --sf-list-attention--font-size: var(--sf-text-size-1\/2);
+  --sf-list-attention--below-line: var(--sf-text-height-1\/3);
+  --sf-list-attention--below-font-size: var(--sf-text-size-1\/3);
+  --sf-list-attention--control: var(--sf-ui-1\/2--control-height);
+  --sf-list-attention--action: var(--sf-ui-1\/3--control-height);
+  --sf-list-attention--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-list-attention--text-space-x: var(--sf-ui-1\/2--text-space-x);
+}
+
+/* The heading: the rung's line, the count beside it. */
+.sf-list-attention-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-list-attention--text-space-x);
+  min-block-size: var(--sf-list-attention--line);
+  margin-block-end: var(--sf-list-attention-gap, var(--sf-list-attention--text-space-x));
+  padding-inline: var(--sf-list-attention--padding-inline);
+  color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
+  font-weight: var(--sf-text--font-weight-6, 600);
+}
+
+.sf-list-attention-heading-text {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-list-attention-count {
+  flex: none;
+  font-weight: normal;
+}
+
+.sf-list-attention-list {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row: icon, text, action. The icon stands on the title's line; the action
+   on the row's centre. */
+.sf-list-attention-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-list-attention--text-space-x);
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-attention--control);
+  margin: 0;
+  padding-block: var(--sf-list-attention--padding-block);
+  padding-inline: var(--sf-list-attention--padding-inline);
+}
+
+.sf-list-attention-item + .sf-list-attention-item {
+  padding-block-start: calc(var(--sf-list-attention--padding-block) - var(--sf-px));
+  border-block-start: var(--sf-px) solid var(--sf-list-attention--divider);
+}
+
+.sf-list-attention .sf-list-attention-icon {
+  --sf-icon--font-size: var(--sf-list-attention--line);
+  --sf-icon--width: var(--sf-list-attention--line);
+  --sf-icon--height: var(--sf-list-attention--line);
+  --sf-icon--color: currentColor;
+  flex: none;
+}
+
+.sf-list-attention-icon--error {
+  color: var(--sf-error);
+}
+
+.sf-list-attention-icon--warning {
+  color: var(--sf-warning);
+}
+
+.sf-list-attention-icon--info {
+  color: var(--sf-info);
+}
+
+.sf-list-attention-icon--success {
+  color: var(--sf-success);
+}
+
+.sf-list-attention-text {
+  display: flex;
+  flex: 1 1 10rem;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-list-attention-title {
+  font-weight: var(--sf-text--font-weight-5, 500);
+  overflow-wrap: anywhere;
+}
+
+.sf-list-attention-supporting {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-list-attention--below-font-size);
+  line-height: var(--sf-list-attention--below-line);
+  overflow-wrap: anywhere;
+}
+
+/* The action keeps its label's width; its control is the rung below's, and
+   its overhang over the title's line is taken back, so a one-line row stays
+   H tall. (sf-button's host is display: contents: the native control is the
+   box.) */
+.sf-list-attention-action {
+  align-self: center;
+}
+
+.sf-list-attention-action > :is(a, button) {
+  flex: none;
+  align-self: center;
+  margin-block: calc((var(--sf-list-attention--line) - var(--sf-list-attention--action)) / 2);
+  white-space: nowrap;
+}
+
+/* With no items and empty line: one quiet line at the rung's control height. */
+.sf-list-attention-quiet {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-list-attention--text-space-x);
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-attention--control);
+  margin: 0;
+  padding-block: var(--sf-list-attention--padding-block);
+  padding-inline: var(--sf-list-attention--padding-inline);
+  color: var(--sf-on-surface-variant);
+}
+
+/* A phone or a narrow column: the action goes under the text, at the text's
+   start, so the title keeps the row's width. */
+@container (max-width: 30rem) {
+  .sf-list-attention-item {
+    flex-wrap: wrap;
+    row-gap: var(--sf-list-attention--text-space-x);
+  }
+
+  .sf-list-attention-text {
+    flex-basis: calc(100% - var(--sf-list-attention--line) - var(--sf-list-attention--text-space-x));
+  }
+
+  .sf-list-attention-action > :is(a, button) {
+    margin-block: 0;
+    margin-inline-start: calc(var(--sf-list-attention--line) + var(--sf-list-attention--text-space-x));
+  }
+}
+
+}

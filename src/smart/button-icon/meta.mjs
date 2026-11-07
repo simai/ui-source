@@ -186,7 +186,13 @@ const sfButtonIconMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.icon-buttons 1.3.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+    },
+    "label-pressed": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
     },
     "aria-label": {
       "kind": "custom",

@@ -36,7 +36,10 @@ Main attributes:
   family the control takes. `on-surface-variant` is the on-surface family one
   step quieter: the fill and the edge of `on-surface`, the label and the icons
   in `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
-  inverse ink). Hover, press and disabled are on-surface's.
+  inverse ink). Hover, press and disabled are on-surface's. `secondary` in
+  the `outline`, `surface` and `link` appearances is drawn the same way: the
+  on-surface button with the label and the icons in `--sf-secondary`, at rest,
+  hovered and pressed; `default` and `tonal` secondary keep their own fill.
 - `status="error"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone: it paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
@@ -70,8 +73,17 @@ Main attributes:
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native
-  button and, while on, the selected look (`pressed="false"` says off);
-  absent, the button is not a toggle and nothing is said
+  button and, while on, the pressed look (`pressed="false"` says off);
+  absent, the button is not a toggle and nothing is said. The pressed look
+  (1.6.0, rule C12): the primary container fill, the label and the icons in
+  `--sf-on-primary-container`, no visible edge (the height does not move) and
+  the icons filled -- two cues, not colour alone, in both themes
+- `text-pressed` — the label while the toggle is on, for a toggle whose label
+  changes: `<sf-button text="В избранное" text-pressed="В избранном"
+  icon="star" pressed="false">`. The label then says the state, so
+  `aria-pressed` is not written (both at once read «В избранном, нажата»); the
+  pressed look still follows `pressed`. A toggle with one label («Жирный»)
+  leaves it empty and `aria-pressed` says the state
 - `shortcut` — a key combination drawn at the end of the button, see below
 - `shortcut-listen` — the button is pressed by its shortcut, see below
 - `aria-label` — a host attribute, passed to the native button

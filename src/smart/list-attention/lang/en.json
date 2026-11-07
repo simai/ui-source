@@ -1,0 +1,20 @@
+{
+  "title": "Needs attention",
+  "runtime": {
+    "label": "Needs attention",
+    "empty-text": "All is well",
+    "count": "{count}",
+    "status-error": "Error",
+    "status-warning": "Warning",
+    "status-info": "Info",
+    "status-success": "Done"
+  },
+  "events": {
+    "navigate": {
+      "label": "Go"
+    },
+    "apply": {
+      "label": "Run"
+    }
+  }
+}

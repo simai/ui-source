@@ -165,12 +165,12 @@ for (const theme of ['light', 'dark']) {
         const rows = name === 'twelve' ? 12 : 5;
         ok(`${label}: the menu opens with a row per language, each in its language, Russian checked`, m.count === rows && m.langs && m.checked.join() === 'ru', JSON.stringify(m));
         ok(`${label}: a row is the native name with English beside it`, m.de?.label === 'Deutsch' && m.de?.value === 'German', JSON.stringify(m.de));
-        // The menu's own rung (sf-menu-context size 1/2): a row is the rung's
-        // line and its block inset twice -- 32 px wide, less on a phone where
+        // The menu's own rung (sf-menu-context size 1/2): a row is a control
+        // of the rung (owner C05, R029) -- 32 px wide, less on a phone where
         // the ladder is tighter.
         const row = await tab.evaluate(() => {
           const probe = document.createElement('div');
-          probe.style.cssText = 'position:absolute;block-size:calc(var(--sf-text-height-1\\/2) + 2 * var(--sf-ui-1\\/2--space-y))';
+          probe.style.cssText = 'position:absolute;block-size:var(--sf-ui-1\\/2--control-height)';
           document.body.append(probe);
           const h = parseFloat(getComputedStyle(probe).blockSize);
           probe.remove();

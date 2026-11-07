@@ -154,3 +154,50 @@
     color: var(--sf-loader--color, var(--sf-on-disable));
   }
 }
+
+/* A toggle that is on (owner decision 2026-11-07, docs review R028, rule C12),
+   as sf-button's (component.buttons): sf-button-icon writes
+   sf-icon-button--pressed, plain markup says aria-pressed="true". One look
+   whatever the appearance or scheme: the primary container fill, the icon in
+   --sf-on-primary-container and filled -- two cues, not colour alone. The edge
+   keeps its width (the height holds) and is transparent over the fill. Hover
+   and press step the container; focus keeps the fill and draws the ring;
+   disabled wears the disabled look. */
+@layer sf.states {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
+    --sf-icon-button--border-color: transparent;
+    --sf-icon-button--focus-ink: transparent;
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+
+  @media (forced-colors: active) {
+    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+      --sf-icon-button--border-top-width: var(--sf-px);
+      --sf-icon-button--border-bottom-width: var(--sf-px);
+      --sf-icon-button--border-inline-start-width: var(--sf-px);
+      --sf-icon-button--border-inline-end-width: var(--sf-px);
+      --sf-icon-button--border-width: var(--sf-px);
+      --sf-icon-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+
+/* The second cue: the icon of a pressed toggle is filled. Outside the layers
+   because the glyph's own --sf-icon--fill is (component.icons). */
+.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]) .sf-icon {
+  --sf-icon--fill: 1;
+}

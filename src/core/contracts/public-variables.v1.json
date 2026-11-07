@@ -1,7 +1,7 @@
 {
   "schema": "simai.framework.public-variables",
   "schema_version": 1,
-  "summary": "The CSS variables each component offers for customisation. A public variable has a single dash after the block (--sf-badge-color); the Framework never sets one, and reads it wherever a resting look is defined -- the base rule, sizes, appearances, schemes, statuses -- but not where a state is drawn (hover, focus, pressed, disabled, loading, an error), so states still show over a customised look. Set one on the component or on any ancestor. Every other --sf-<block>--* variable is internal: it may be renamed or removed in any release. A public variable is renamed or removed only through the change journal, as an attribute is.",
+  "summary": "The CSS variables each component offers for customisation. A public variable has a single dash after the block (--sf-badge-color); the Framework never sets one, and reads it wherever a resting look is defined -- the base rule, sizes, appearances, schemes, statuses, and the resting look of a toggle that is on (pressed) -- but not where a state is drawn (hover, focus, pressed, disabled, loading, an error), so states still show over a customised look. Set one on the component or on any ancestor. Every other --sf-<block>--* variable is internal: it may be renamed or removed in any release. A public variable is renamed or removed only through the change journal, as an attribute is.",
   "components": [
     {
       "component": "badge",
@@ -171,6 +171,20 @@
             "size",
             "spacing"
           ]
+        },
+        {
+          "name": "--sf-button-pressed-background-color",
+          "role": "background",
+          "summary": "The fill of a toggle that is on (pressed, aria-pressed=\"true\"); hover, press over it and disabled keep their own.",
+          "default": "var(--sf-primary-container)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-button-pressed-color",
+          "role": "color",
+          "summary": "The label and icon colour of a toggle that is on.",
+          "default": "var(--sf-on-primary-container)",
+          "since": "2026-11-07"
         }
       ]
     },
@@ -455,6 +469,20 @@
             "size",
             "spacing"
           ]
+        },
+        {
+          "name": "--sf-icon-button-pressed-background-color",
+          "role": "background",
+          "summary": "The fill of a toggle that is on (pressed, aria-pressed=\"true\"); hover, press over it and disabled keep their own.",
+          "default": "var(--sf-primary-container)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-icon-button-pressed-color",
+          "role": "color",
+          "summary": "The icon colour of a toggle that is on.",
+          "default": "var(--sf-on-primary-container)",
+          "since": "2026-11-07"
         }
       ]
     },
@@ -1087,16 +1115,23 @@
         {
           "name": "--sf-context-menu-padding-inline",
           "role": "padding-inline",
-          "summary": "Space between the menu's edge and its rows, before and after; row content stays on its axis.",
+          "summary": "The inset: space between the menu's edge and a row's highlight, before and after; a search header's text and a scrollbar's gaps on either side of its thumb follow it.",
           "default": "var(--sf-space-1/4)",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-context-menu-padding-block",
           "role": "padding-block",
-          "summary": "Space above the first row and below the last.",
+          "summary": "Space above the first row's highlight and below the last; a search header is a row's height and this space above and below.",
           "default": "var(--sf-space-1/4)",
           "since": "2026-10-18"
+        },
+        {
+          "name": "--sf-context-menu-row-radius",
+          "role": "radius",
+          "summary": "The corner radius of a row's highlight -- hover, chosen, current -- a control's by default.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-07"
         },
         {
           "name": "--sf-context-menu-gap",
@@ -3955,6 +3990,198 @@
           "summary": "The widest the frame grows; none fills its container.",
           "default": "none",
           "since": "2026-11-06"
+        }
+      ]
+    },
+    {
+      "component": "tile-metric",
+      "selector": "sf-tile-metric, .sf-tile-metric",
+      "variables": [
+        {
+          "name": "--sf-tile-metric-background",
+          "role": "background",
+          "summary": "The tile's fill.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-border-color",
+          "role": "border-color",
+          "summary": "The tile's hairline.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-radius",
+          "role": "radius",
+          "summary": "The tile's corner.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-padding",
+          "role": "padding",
+          "summary": "The tile's inset on every side; by default the rung's space-x less the hairline.",
+          "default": "calc(var(--sf-ui-1--space-x) - var(--sf-px))",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-value-color",
+          "role": "color",
+          "summary": "The value's colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-hover-background",
+          "role": "hover-background",
+          "summary": "The fill of a link or button tile under the pointer.",
+          "default": "var(--sf-surface-container-hover)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-tile-metric-min-width",
+          "role": "min-inline-size",
+          "summary": "The narrowest column of sf-tile-metric-grid, the row of tiles that wraps.",
+          "default": "14rem",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "list-attention",
+      "selector": "sf-list-attention, .sf-list-attention",
+      "variables": [
+        {
+          "name": "--sf-list-attention-background",
+          "role": "background",
+          "summary": "The list's fill; none by default, so it is no card.",
+          "default": "transparent",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between items.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-heading-color",
+          "role": "color",
+          "summary": "The heading's colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-padding-inline",
+          "role": "padding-inline",
+          "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
+          "default": "calc(var(--sf-px) * 0)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-list-attention-gap",
+          "role": "margin-block-end",
+          "summary": "The space under the heading.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "progress-run",
+      "selector": "sf-progress-run, .sf-progress-run",
+      "variables": [
+        {
+          "name": "--sf-progress-run-background",
+          "role": "background",
+          "summary": "The run's fill; none by default (a drawer has its own).",
+          "default": "transparent",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between steps.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-background",
+          "role": "background",
+          "summary": "The output pane's fill.",
+          "default": "var(--sf-surface-1)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-color",
+          "role": "color",
+          "summary": "The output's text colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-output-max-height",
+          "role": "max-block-size",
+          "summary": "The output pane's greatest height; sixteen lines by default.",
+          "default": "calc(16 * var(--sf-text-height-1/2) + 2 * var(--sf-ui-1/2--space-x))",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-progress-run-padding-inline",
+          "role": "padding-inline",
+          "summary": "The inline inset of the heading, the steps, the result, the output and the actions; 0 by default.",
+          "default": "calc(var(--sf-px) * 0)",
+          "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "code",
+      "selector": "code",
+      "variables": [
+        {
+          "name": "--sf-code-background",
+          "role": "background",
+          "summary": "The plate behind a word of code in running text. Tones from existing roles only: var(--sf-tertiary-container) with --sf-code-color var(--sf-on-tertiary-container).",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-color",
+          "role": "color",
+          "summary": "The ink of a word of code in running text. Tones from existing roles only: var(--sf-secondary), var(--sf-highlight-keyword).",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-padding",
+          "role": "padding",
+          "summary": "The room around the word, relative to the code's own size.",
+          "default": "0.2em 0.4em",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-font-size",
+          "role": "font-size",
+          "summary": "The code's size against the text around it.",
+          "default": "85%",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-radius",
+          "role": "radius",
+          "summary": "The plate's corners.",
+          "default": "var(--sf-a6)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-font-family",
+          "role": "font-family",
+          "summary": "The code's typeface.",
+          "default": "var(--sf-mono)",
+          "since": "2026-11-07"
         }
       ]
     },

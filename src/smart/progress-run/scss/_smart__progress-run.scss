@@ -1,0 +1,254 @@
+@layer sf.components {
+/* sf-progress-run (standard simai.smart-component 1.3.14 §6). One rung S of
+   the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
+   with size="1/2": a step's title is the rung's line L and type, its text and
+   time the rung below's, the state icon the title's line, icon-to-text the
+   rung's text-space-x; a step's block inset is (H - L) / 2, so a one-line
+   step is the rung's control height H, and a divider gives up its hairline
+   from the inset (padding gives up the border). The output is monospace in
+   the rung below's type and line, inset by the rung below's space-x; the
+   buttons are sf-button of the rung below.
+
+   The public variables are read with the role token as their fallback and
+   never set here. */
+sf-progress-run {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-progress-run {
+  /* The rung: 1. */
+  --sf-progress-run--line: var(--sf-text-height-1);
+  --sf-progress-run--font-size: var(--sf-text-size-1);
+  --sf-progress-run--below-line: var(--sf-text-height-1\/2);
+  --sf-progress-run--below-font-size: var(--sf-text-size-1\/2);
+  --sf-progress-run--control: var(--sf-ui-1--control-height);
+  --sf-progress-run--text-space-x: var(--sf-ui-1--text-space-x);
+  --sf-progress-run--below-space-x: var(--sf-ui-1\/2--space-x);
+  --sf-progress-run--below-text-space-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-progress-run--padding-block: calc((var(--sf-progress-run--control) - var(--sf-progress-run--line)) / 2);
+  --sf-progress-run--padding-inline: var(--sf-progress-run-padding-inline, calc(var(--sf-px) * 0));
+  --sf-progress-run--divider: var(--sf-progress-run-divider-color, var(--sf-outline-variant));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-progress-run--text-space-x);
+  box-sizing: border-box;
+  min-inline-size: 0;
+  margin: 0;
+  background: var(--sf-progress-run-background, transparent);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-progress-run--font-size);
+  line-height: var(--sf-progress-run--line);
+}
+
+.sf-progress-run.sf-progress-run--size-half {
+  --sf-progress-run--line: var(--sf-text-height-1\/2);
+  --sf-progress-run--font-size: var(--sf-text-size-1\/2);
+  --sf-progress-run--below-line: var(--sf-text-height-1\/3);
+  --sf-progress-run--below-font-size: var(--sf-text-size-1\/3);
+  --sf-progress-run--control: var(--sf-ui-1\/2--control-height);
+  --sf-progress-run--text-space-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-progress-run--below-space-x: var(--sf-ui-1\/3--space-x);
+  --sf-progress-run--below-text-space-x: var(--sf-ui-1\/3--text-space-x);
+}
+
+.sf-progress-run-heading {
+  padding-inline: var(--sf-progress-run--padding-inline);
+  font-weight: var(--sf-text--font-weight-6, 600);
+  overflow-wrap: anywhere;
+}
+
+.sf-progress-run-steps {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A step: icon, title with its text, the time at the end. */
+.sf-progress-run-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-progress-run--text-space-x);
+  box-sizing: border-box;
+  min-block-size: var(--sf-progress-run--control);
+  margin: 0;
+  padding-block: var(--sf-progress-run--padding-block);
+  padding-inline: var(--sf-progress-run--padding-inline);
+}
+
+.sf-progress-run-step + .sf-progress-run-step {
+  padding-block-start: calc(var(--sf-progress-run--padding-block) - var(--sf-px));
+  border-block-start: var(--sf-px) solid var(--sf-progress-run--divider);
+}
+
+.sf-progress-run .sf-progress-run-icon {
+  --sf-icon--font-size: var(--sf-progress-run--line);
+  --sf-icon--width: var(--sf-progress-run--line);
+  --sf-icon--height: var(--sf-progress-run--line);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  flex: none;
+}
+
+/* sf-steps' state colours: done and failed keep their status colours; the
+   rest are the quiet on-surface-variant marks, a waiting step's title too. */
+.sf-progress-run .sf-progress-run-icon--done {
+  --sf-icon--color: var(--sf-success);
+}
+
+.sf-progress-run .sf-progress-run-icon--failed {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-progress-run-step--waiting .sf-progress-run-step-title,
+.sf-progress-run-step--skipped .sf-progress-run-step-title {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-progress-run-step--running .sf-progress-run-step-title {
+  font-weight: var(--sf-text--font-weight-5, 500);
+}
+
+/* The running mark turns, as sf-steps' does. */
+@media (prefers-reduced-motion: no-preference) {
+  .sf-progress-run .sf-progress-run-icon--running {
+    animation: sf-progress-run-turn calc(var(--sf-duration-slow, 400ms) * 4) linear infinite;
+  }
+}
+
+@keyframes sf-progress-run-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.sf-progress-run-step-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-progress-run-step-title {
+  overflow-wrap: anywhere;
+}
+
+.sf-progress-run-step-supporting,
+.sf-progress-run-time,
+.sf-progress-run-output-empty {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-progress-run--below-font-size);
+  line-height: var(--sf-progress-run--below-line);
+}
+
+.sf-progress-run-step-supporting {
+  overflow-wrap: anywhere;
+}
+
+/* The time stands on the title's line, on the title's baseline box. */
+.sf-progress-run-time {
+  flex: none;
+  padding-block: calc((var(--sf-progress-run--line) - var(--sf-progress-run--below-line)) / 2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The result: icon and words on the rung's line. Empty until the job ends. */
+.sf-progress-run-result {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-progress-run--text-space-x);
+  padding-inline: var(--sf-progress-run--padding-inline);
+  font-weight: var(--sf-text--font-weight-5, 500);
+}
+
+.sf-progress-run .sf-progress-run-icon--cancelled {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-progress-run-result-text {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The output: its toggle and tools, then the pane. */
+.sf-progress-run-output-block {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sf-progress-run--text-space-x) / 2);
+  padding-inline: var(--sf-progress-run--padding-inline);
+}
+
+.sf-progress-run-output-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-progress-run--text-space-x);
+}
+
+/* The «Вывод» toggle is a link button, and a link button keeps its own inner
+   room: its label stood a button's padding plus the label's own inset to the
+   right of the step column. Its first letter stands on the column: the button
+   is drawn that much to the start -- the button's inline padding (read on the
+   button) and its label's inset (the rung below's text-space-x, which the
+   button sets on the label, not on itself) -- so its hover fill reaches past
+   the column as a text button's does. */
+.sf-progress-run-toggle > .sf-button {
+  margin-inline-start: calc(-1 * (var(--sf-button--padding-inline-start, 0px) + var(--sf-progress-run--below-text-space-x)));
+}
+
+.sf-progress-run-output-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--sf-progress-run--text-space-x) / 2);
+}
+
+.sf-progress-run-output {
+  box-sizing: border-box;
+  max-block-size: var(--sf-progress-run-output-max-height, calc(var(--sf-progress-run--below-line) * 16 + var(--sf-progress-run--below-space-x) * 2));
+  overflow: auto;
+  overscroll-behavior: contain;
+  /* A log jumps: the page's smooth scrolling would leave it behind its end
+     while lines arrive, and hold a reader's scroll back from where they put it. */
+  scroll-behavior: auto;
+  padding: calc(var(--sf-progress-run--below-space-x) - var(--sf-px));
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  background: var(--sf-progress-run-output-background, var(--sf-surface-1));
+  color: var(--sf-progress-run-output-color, var(--sf-on-surface));
+}
+
+.sf-progress-run-output:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-progress-run-output-text {
+  margin: 0;
+  font-family: var(--sf-mono);
+  font-size: var(--sf-progress-run--below-font-size);
+  line-height: var(--sf-progress-run--below-line);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+}
+
+.sf-progress-run-output-text:empty {
+  display: none;
+}
+
+.sf-progress-run-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sf-progress-run--text-space-x);
+  padding-inline: var(--sf-progress-run--padding-inline);
+}
+
+@media (forced-colors: active) {
+  .sf-progress-run-output {
+    border-color: CanvasText;
+  }
+}
+}

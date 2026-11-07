@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.0.1');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -75,7 +75,9 @@ test('place pages: the footer posts the step\'s form with the button\'s word, no
   // sf-button 1.5.0 passes form, name and value to its native button.
   const button = read('src/smart/button/js/templates/default.js');
   assert.match(button, /form=\$\{context\.formId \|\| nothing\}/u);
-  assert.equal(json('src/smart/button/component.json').version, '1.5.0');
+  // At least the minor that added them; later patches keep them.
+  const [major, minor] = json('src/smart/button/component.json').version.split('.').map(Number);
+  assert.ok(major > 1 || (major === 1 && minor >= 5), 'sf-button 1.5.0 or later');
 });
 
 test('the steps are printed once: a live container the first paint fills in place', () => {

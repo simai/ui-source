@@ -9,6 +9,8 @@
       "  <sf-progress-bar id=\"p1\" label=\"Загрузка файлов\" value=\"65\"></sf-progress-bar>",
       "  <sf-progress-bar id=\"p2\" aria-label=\"Копирование\" value=\"40\" status=\"success\"></sf-progress-bar>",
       "  <sf-progress-bar id=\"p-old\" label=\"Старое имя\" value=\"20\" tone=\"warning\"></sf-progress-bar>",
+      "  <sf-progress-bar id=\"p6\" label=\"Диск\" value=\"83\" warning-at=\"80\" error-at=\"95\"></sf-progress-bar>",
+      "  <sf-progress-bar id=\"p7\" label=\"Квота\" value=\"40\" status=\"error\" warning-at=\"80\"></sf-progress-bar>",
       "</main>"
     ]
   },
@@ -121,6 +123,26 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "p6-thresholds",
+      "title": "warning-at and error-at turn the tone by themselves, the more serious of status and the threshold is drawn and said as data-status",
+      "covers": "settings.warning-at, settings.error-at, host-states data-status",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#p6'); const b = document.querySelector('#p7'); return a.getAttribute('data-status') === 'warning' && a.querySelector('.sf-progress-bar').classList.contains('sf-progress-bar--warning') && b.getAttribute('data-status') === 'error'; })()"
+        },
+        {
+          "script": "(document.querySelector('#p6').value = 97, true)",
+          "wait": 100,
+          "check": "(() => { const a = document.querySelector('#p6'); return a.getAttribute('data-status') === 'error' && a.querySelector('.sf-progress-bar').dataset.tone === 'error'; })()"
+        },
+        {
+          "script": "(document.querySelector('#p6').value = 30, true)",
+          "wait": 100,
+          "check": "(() => { const a = document.querySelector('#p6'); return a.getAttribute('data-status') === 'neutral' && !a.querySelector('.sf-progress-bar').classList.contains('sf-progress-bar--warning'); })()"
         }
       ]
     }

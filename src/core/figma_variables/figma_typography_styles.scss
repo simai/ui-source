@@ -27,12 +27,16 @@
     margin-block-end: var(--sf-heading--space-bottom);
   }
 
+  /* The content heading ladder (docs review R022, owner decision 2026-11-07):
+     a section heading (h2) stands a block further from the text before it
+     than a section break, and a sub-heading (h3-h6) only a block, with half
+     the text space under it, so it reads as part of its section. */
   .sf-h-2, h2 {
     font-size: var(--sf-heading-2--size);
     font-family: var(--sf-heading--family);
     line-height: var(--sf-heading-2--height);
     font-weight: var(--sf-heading--weight);
-    margin-block-start: var(--sf-heading--space-top);
+    margin-block-start: calc(var(--sf-heading--space-top) + var(--sf-content--space-block));
     margin-block-end: var(--sf-heading--space-bottom);
   }
 
@@ -41,8 +45,8 @@
     font-family: var(--sf-heading--family);
     line-height: var(--sf-heading-3--height);
     font-weight: var(--sf-heading--weight);
-    margin-block-start: var(--sf-heading--space-top);
-    margin-block-end: var(--sf-heading--space-bottom);
+    margin-block-start: var(--sf-content--space-block);
+    margin-block-end: calc(var(--sf-heading--space-bottom) / 2);
   }
 
   .sf-h-4, h4 {
@@ -50,8 +54,8 @@
     font-family: var(--sf-heading--family);
     line-height: var(--sf-heading-4--height);
     font-weight: var(--sf-heading--weight);
-    margin-block-start: var(--sf-heading--space-top);
-    margin-block-end: var(--sf-heading--space-bottom);
+    margin-block-start: var(--sf-content--space-block);
+    margin-block-end: calc(var(--sf-heading--space-bottom) / 2);
   }
 
   .sf-h-5, h5 {
@@ -59,8 +63,8 @@
     font-family: var(--sf-heading--family);
     line-height: var(--sf-heading-5--height);
     font-weight: var(--sf-heading--weight);
-    margin-block-start: var(--sf-heading--space-top);
-    margin-block-end: var(--sf-heading--space-bottom);
+    margin-block-start: var(--sf-content--space-block);
+    margin-block-end: calc(var(--sf-heading--space-bottom) / 2);
   }
 
   .sf-h-6, h6 {
@@ -68,8 +72,8 @@
     font-family: var(--sf-heading--family);
     line-height: var(--sf-heading-6--height);
     font-weight: var(--sf-heading--weight);
-    margin-block-start: var(--sf-heading--space-top);
-    margin-block-end: var(--sf-heading--space-bottom);
+    margin-block-start: var(--sf-content--space-block);
+    margin-block-end: calc(var(--sf-heading--space-bottom) / 2);
   }
 
   .sf-display-1, .display1, .d1 {

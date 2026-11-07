@@ -1,22 +1,32 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// Code in running text (owner, 2026-11-02), on the built bytes in a browser:
-// in both themes a <code> in a paragraph, a list item, a table cell, a heading,
-// a link and chat-like markup gets the quiet neutral plate -- the background of
-// --sf-surface-container, padding-inline --sf-space-1/4, the radius
-// --sf-radius--ui, .875em and the mono family. A <code> the Framework draws or
-// that sits in a block or a control is left as it was: inside an sf-button's
-// text, a highlighted block (sf-highlight), pre > code, kbd, samp, a code
-// carrying an sf- class, and a Smart component's own markup (sf-input-color's value).
+// Code in running text (owner, 2026-11-02; geometry and copy, 2026-11-07,
+// docs review R024, rule C10), on the built bytes in a browser: in both themes
+// a <code> in a paragraph, a list item, a table cell, a heading, a link and
+// chat-like markup gets the quiet neutral plate -- the background of
+// --sf-surface-container, .2em by .4em of room, 85 % of the text, a 6px
+// corner (--sf-a6), the mono family -- and never parts at a hyphen. The plate
+// shows on a surface-2 stripe too. A <code> the Framework draws or that sits
+// in a block or a control is left as it was: inside an sf-button's text, a
+// highlighted block (sf-highlight), pre > code, kbd, samp, a code carrying an
+// sf- class, and a Smart component's own markup (sf-input-color's value).
 // The rule weighs what a bare `code` does: a utility and an unlayered site rule
-// both win over it.
+// both win over it. The public variables (--sf-code-*) retone it.
+//
+// Copy on click is opt-in: code outside a [data-sf-code-copy] container is
+// not a control; inside one it is a button, copies on a click, on Enter and on
+// Space, says «Скопировано» near the code, and a block of code is not taken.
+//
+// INLINE_CODE_SHOTS=<folder> saves a screenshot of each theme there.
+import {readFile} from 'node:fs/promises';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
+const SHOTS = process.env.INLINE_CODE_SHOTS ? resolve(process.env.INLINE_CODE_SHOTS) : null;
 const THEMES = ['light', 'dark'];
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/highlight/css/highlight.css'];
@@ -46,22 +56,54 @@ const BODY = `
   <sf-input-color id="color" value="#1a7f37"></sf-input-color>
 
   <p>Utility <code class="bg-transparent" id="with-utility">x</code></p>
-  <p class="site">Site <code id="site-rule">x</code></p>`;
+  <p class="site">Site <code id="site-rule">x</code></p>
+  <div id="stripe" style="background:var(--sf-surface-2);padding:8px"><p>On a stripe <code id="on-stripe">surface-2</code></p></div>
+  <p id="narrow" style="inline-size:12ch">An event <code id="hyphen">sf-button-press</code> comes</p>
+  <p class="tone-secondary">Secondary <code id="tone-secondary">x</code></p>
+  <p class="tone-tertiary">Tertiary <code id="tone-tertiary">x</code></p>
+  <article id="copy-box" data-sf-code-copy>
+    <p>Copy <code id="copy-me">sf-button-press</code> and <code id="copy-key">npm test</code>.</p>
+    <pre><code id="copy-pre">not a control</code></pre>
+    <div class="sf-highlight"><pre><code id="copy-highlight">nor this</code></pre></div>
+    <p data-sf-code-copy="false">Off <code id="copy-off">x</code></p>
+  </article>`;
 
 const browser = await chromium.launch();
 
 async function open(theme) {
-  const page = await browser.newPage({viewport: {width: 1200, height: 900}});
+  const context = await browser.newContext({viewport: {width: 1200, height: 1100}});
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], {origin: 'http://localhost:4917'});
+  const page = await context.newPage();
   // core.js added as an inline module cannot work out its own address; every
   // probe that adds it this way sees that one error, and it changes nothing here.
   page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', theme, said: error.message}); });
-  const html = `<!doctype html><html lang="en" class="theme-${theme}"><head><meta charset="utf-8">
-    <style>.site code { background-color: rgb(1, 2, 3); }</style></head>
+  const html = `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
+    <script>window.SF_BOOT_CONFIG = {theme: false};</script>
+    <style>.site code { background-color: rgb(1, 2, 3); }
+    .tone-secondary { --sf-code-color: var(--sf-secondary); }
+    .tone-tertiary { --sf-code-background: var(--sf-tertiary-container); --sf-code-color: var(--sf-on-tertiary-container); }</style></head>
     <body style="margin:16px;background:var(--sf-surface-0)">${BODY}</body></html>`;
-  await page.route('http://inline-code.test/**', (route) => route.fulfill({contentType: 'text/html; charset=utf-8', body: html}));
-  await page.goto('http://inline-code.test/');
+  // The page and the build under /dist/ on one secure origin (localhost):
+  // core.js is loaded by its address, so it knows where it stands and runs
+  // whole (copy on click is core's), and the Clipboard API is there.
+  await page.route('http://localhost:4917/**', async (route) => {
+    const {pathname} = new URL(route.request().url());
+    if (!pathname.startsWith('/dist/')) return route.fulfill({contentType: 'text/html; charset=utf-8', body: html});
+    try {
+      const body = await readFile(join(out, decodeURIComponent(pathname.slice('/dist/'.length))));
+      const type = pathname.endsWith('.css') ? 'text/css' : pathname.endsWith('.json') ? 'application/json' : 'text/javascript';
+      return route.fulfill({contentType: `${type}; charset=utf-8`, body});
+    } catch {
+      return route.fulfill({status: 404, body: ''});
+    }
+  });
+  await page.goto('http://localhost:4917/');
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
-  for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
+  for (const path of SCRIPTS) {
+    if (path === 'core/core/js/core.js') await page.addScriptTag({url: `/dist/${path}`, type: 'module'});
+    else await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
+  }
+  await page.waitForFunction(() => globalThis.SF?.codeCopy);
   await page.waitForFunction(() => customElements.get('sf-button') && customElements.get('sf-input-color'));
   await page.waitForFunction(() => document.querySelector('#btn-host > button') && document.querySelector('#color .sf-color-text code'));
   await page.waitForTimeout(500);
@@ -71,44 +113,80 @@ async function open(theme) {
 const read = () => {
   const style = (element) => {
     const s = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
     return {
       background: s.backgroundColor,
+      color: s.color,
+      paddingTop: s.paddingTop,
+      paddingBottom: s.paddingBottom,
       paddingLeft: s.paddingLeft,
       paddingRight: s.paddingRight,
       radius: s.borderTopLeftRadius,
+      whiteSpace: s.whiteSpace,
       fontSize: parseFloat(s.fontSize),
       parentFontSize: parseFloat(getComputedStyle(element.parentElement).fontSize),
       fontFamily: s.fontFamily,
+      height: Math.round(box.height * 100) / 100,
+      width: Math.round(box.width * 100) / 100,
+      lines: element.getClientRects().length,
     };
   };
   // What the tokens resolve to, read off an element that asks for them.
   const probe = document.createElement('div');
-  probe.style.cssText = 'background-color:var(--sf-surface-container);padding-left:var(--sf-space-1\\/4);border-radius:var(--sf-radius--ui)';
+  probe.style.cssText = 'background-color:var(--sf-surface-container);border-radius:var(--sf-a6);color:var(--sf-on-surface)';
   document.body.append(probe);
   const p = getComputedStyle(probe);
-  const expected = {background: p.backgroundColor, padding: p.paddingLeft, radius: p.borderTopLeftRadius};
+  const expected = {background: p.backgroundColor, radius: p.borderTopLeftRadius, color: p.color};
+  const tone = (css) => { probe.style.cssText = css; return getComputedStyle(probe).color; };
+  expected.secondary = tone('color:var(--sf-secondary)');
+  expected.onTertiaryContainer = tone('color:var(--sf-on-tertiary-container)');
+  probe.style.cssText = 'background-color:var(--sf-tertiary-container)';
+  expected.tertiaryContainer = getComputedStyle(probe).backgroundColor;
   probe.remove();
+  const stripe = getComputedStyle(document.getElementById('stripe')).backgroundColor;
   const codes = {};
   for (const code of document.querySelectorAll('code')) {
     const id = code.id || (code.closest('#color') ? 'in-sf-color' : code.closest('#btn-host') ? 'in-sf-button' : null)
       || `unnamed-${Object.keys(codes).length}`;
-    codes[id] = {...style(code), parent: code.parentElement.localName + (code.parentElement.className ? `.${String(code.parentElement.className).split(/\s+/u)[0]}` : ''), classes: code.className};
+    codes[id] = {...style(code), parent: code.parentElement.localName + (code.parentElement.className ? `.${String(code.parentElement.className).split(/\s+/u)[0]}` : ''), classes: code.className,
+      role: code.getAttribute('role'), tabindex: code.getAttribute('tabindex'), label: code.getAttribute('aria-label')};
   }
-  return {expected, codes, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
+  return {expected, stripe, codes, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
 };
 
-const PROSE = ['in-p', 'in-li', 'in-td', 'in-h3', 'in-a', 'in-chat', 'in-strong'];
+const rgba = (value) => {
+  const [r, g, b, a = 1] = String(value).match(/[\d.]+/gu).map(Number);
+  return {r, g, b, a};
+};
+// The plate as it is seen: its colour laid over what is under it.
+const over = (top, under) => {
+  const t = rgba(top);
+  const u = rgba(under);
+  return ['r', 'g', 'b'].map((c) => t[c] * t.a + u[c] * (1 - t.a));
+};
+const distance = (a, b) => Math.max(...a.map((value, at) => Math.abs(value - b[at])));
+
+const PROSE = ['in-p', 'in-li', 'in-td', 'in-h3', 'in-a', 'in-chat', 'in-strong', 'on-stripe', 'hyphen'];
 const UNTOUCHED = ['in-sf-button', 'in-button', 'in-pre', 'in-highlight', 'in-highlighted', 'in-kbd', 'in-samp', 'classed', 'in-sf-color'];
 const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+const near = (a, b) => Math.abs(a - b) < 0.06;
 
 for (const theme of THEMES) {
   const page = await open(theme);
-  const {expected, codes, buttonHasCode} = await page.evaluate(read);
-  evidence[theme] = {expected, prose: codes['in-p'], untouched: Object.fromEntries(UNTOUCHED.map((id) => [id, codes[id] && {background: codes[id].background, padding: codes[id].paddingLeft, parent: codes[id].parent}]))};
+  const {expected, stripe, codes, buttonHasCode} = await page.evaluate(read);
+  const plateOnStripe = over(codes['on-stripe'].background, stripe);
+  const stripeColour = over(stripe, 'rgb(0, 0, 0)');
+  evidence[theme] = {
+    expected,
+    prose: codes['in-p'],
+    heading: codes['in-h3'],
+    stripe: {stripe, plate: codes['on-stripe'].background, seen: plateOnStripe.map(Math.round), difference: Math.round(distance(plateOnStripe, stripeColour))},
+    hyphen: {lines: codes.hyphen.lines, whiteSpace: codes.hyphen.whiteSpace, width: codes.hyphen.width},
+    untouched: Object.fromEntries(UNTOUCHED.map((id) => [id, codes[id] && {background: codes[id].background, padding: codes[id].paddingLeft, parent: codes[id].parent}])),
+  };
 
   check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.1[56]\d*\)/u.test(expected.background), expected);
-  check(`${theme}: the padding resolves`, parseFloat(expected.padding) > 0, expected);
-  check(`${theme}: the radius resolves`, parseFloat(expected.radius) > 0, expected);
+  check(`${theme}: the radius resolves to 6px`, expected.radius === '6px', expected);
   check(`${theme}: the code in sf-button stays in its button`, buttonHasCode);
 
   for (const id of PROSE) {
@@ -116,19 +194,36 @@ for (const theme of THEMES) {
     check(`${theme}: prose code was found`, Boolean(code), {id});
     if (!code) continue;
     check(`${theme}: prose code takes the plate`, code.background === expected.background, {id, got: code.background, expected: expected.background});
-    check(`${theme}: prose code takes the padding`, code.paddingLeft === expected.padding && code.paddingRight === expected.padding, {id, got: [code.paddingLeft, code.paddingRight], expected: expected.padding});
+    check(`${theme}: prose code takes the text colour`, code.color === expected.color, {id, got: code.color, expected: expected.color});
+    check(`${theme}: prose code is 85 % of its text`, near(code.fontSize, code.parentFontSize * 0.85), {id, got: code.fontSize, parent: code.parentFontSize});
+    check(`${theme}: prose code has .2em above and below`, near(parseFloat(code.paddingTop), code.fontSize * 0.2) && near(parseFloat(code.paddingBottom), code.fontSize * 0.2),
+      {id, got: [code.paddingTop, code.paddingBottom], fontSize: code.fontSize});
+    check(`${theme}: prose code has .4em beside`, near(parseFloat(code.paddingLeft), code.fontSize * 0.4) && near(parseFloat(code.paddingRight), code.fontSize * 0.4),
+      {id, got: [code.paddingLeft, code.paddingRight], fontSize: code.fontSize});
     check(`${theme}: prose code takes the radius`, code.radius === expected.radius, {id, got: code.radius, expected: expected.radius});
-    check(`${theme}: prose code is .875em`, Math.abs(code.fontSize - code.parentFontSize * 0.875) < 0.05, {id, got: code.fontSize, parent: code.parentFontSize});
     check(`${theme}: prose code is mono`, /ui-monospace/u.test(code.fontFamily), {id, got: code.fontFamily});
+    check(`${theme}: prose code does not wrap`, code.whiteSpace === 'nowrap', {id, got: code.whiteSpace});
+    check(`${theme}: prose code outside an opted-in container is not a control`, code.role === null && code.tabindex === null, {id, role: code.role});
   }
+  // The plate is visible on a surface-2 stripe: laid over the stripe it is
+  // another colour, not the stripe again.
+  check(`${theme}: the plate shows on a surface-2 stripe`, distance(plateOnStripe, stripeColour) >= 6, evidence[theme].stripe);
+  // A name with hyphens in a column too narrow for it stays on one line.
+  check(`${theme}: sf-button-press does not part at a hyphen`, codes.hyphen.lines === 1, evidence[theme].hyphen);
+
+  // The tones are recipes: two public variables on any ancestor.
+  check(`${theme}: secondary tone`, codes['tone-secondary'].color === expected.secondary && codes['tone-secondary'].background === expected.background,
+    {got: codes['tone-secondary'], expected: expected.secondary});
+  check(`${theme}: tertiary tone on its container`, codes['tone-tertiary'].color === expected.onTertiaryContainer && codes['tone-tertiary'].background === expected.tertiaryContainer,
+    {got: [codes['tone-tertiary'].color, codes['tone-tertiary'].background], expected: [expected.onTertiaryContainer, expected.tertiaryContainer]});
 
   for (const id of UNTOUCHED) {
     const code = codes[id];
     check(`${theme}: component code was found`, Boolean(code), {id, ids: Object.keys(codes)});
     if (!code) continue;
     check(`${theme}: component code takes no plate`, code.background !== expected.background, {id, got: code.background, parent: code.parent});
-    check(`${theme}: component code takes no padding`, code.paddingLeft === '0px' && code.paddingRight === '0px', {id, got: code.paddingLeft, parent: code.parent});
-    check(`${theme}: component code keeps its size`, Math.abs(code.fontSize - code.parentFontSize * 0.875) > 0.05 || id === 'in-pre' || id === 'in-highlight' || id === 'in-highlighted',
+    check(`${theme}: component code takes no padding`, code.paddingLeft === '0px' && code.paddingRight === '0px' && code.paddingTop === '0px', {id, got: code.paddingLeft, parent: code.parent});
+    check(`${theme}: component code keeps its size`, !near(code.fontSize, code.parentFontSize * 0.85) || id === 'in-pre' || id === 'in-highlight' || id === 'in-highlighted',
       {id, got: code.fontSize, parent: code.parentFontSize});
   }
   // pre > code: what the browser gives a block of code, untouched by the rule.
@@ -139,7 +234,70 @@ for (const theme of THEMES) {
   // Low weight: a utility and an unlayered site rule both win.
   check(`${theme}: a utility wins`, /, 0\)$/u.test(codes['with-utility'].background), {got: codes['with-utility'].background});
   check(`${theme}: an unlayered site rule wins`, codes['site-rule'].background === 'rgb(1, 2, 3)', {got: codes['site-rule'].background});
-  await page.close();
+
+  // Copy on click, inside the opted-in container only.
+  check(`${theme}: an opted-in code is a button`, codes['copy-me'].role === 'button' && codes['copy-me'].tabindex === '0' && /sf-button-press/u.test(codes['copy-me'].label ?? ''),
+    {got: [codes['copy-me'].role, codes['copy-me'].tabindex, codes['copy-me'].label]});
+  for (const id of ['copy-pre', 'copy-highlight', 'copy-off']) {
+    check(`${theme}: ${id} is not a copy control`, codes[id].role === null && codes[id].tabindex === null, {id, got: codes[id].role});
+  }
+  const status = () => page.evaluate(() => {
+    const element = document.querySelector('.sf-code-copy-status');
+    if (!element) return null;
+    const box = element.getBoundingClientRect();
+    const code = document.activeElement?.localName === 'code' ? document.activeElement : document.getElementById('copy-me');
+    const anchor = code.getBoundingClientRect();
+    return {text: element.textContent, role: element.getAttribute('role'), shown: element.hasAttribute('data-shown'), opacity: getComputedStyle(element).opacity,
+      above: box.bottom <= anchor.top + 0.5, centred: Math.abs(box.left + box.width / 2 - (anchor.left + anchor.width / 2)) < 1};
+  });
+  const clipboard = () => page.evaluate(() => navigator.clipboard.readText());
+
+  const hover = await (async () => {
+    await page.hover('#copy-me');
+    await page.waitForTimeout(300);
+    return page.evaluate(() => getComputedStyle(document.getElementById('copy-me')).boxShadow);
+  })();
+  check(`${theme}: a hairline on hover`, /inset/u.test(hover) && /1px/u.test(hover), {got: hover});
+  await page.click('#copy-me');
+  await page.waitForTimeout(250);
+  const byClick = {clipboard: await clipboard(), status: await status()};
+  check(`${theme}: a click copies`, byClick.clipboard === 'sf-button-press', byClick);
+  check(`${theme}: a click says Скопировано above the code`, byClick.status?.text === 'Скопировано' && byClick.status.role === 'status' && byClick.status.shown && byClick.status.above && byClick.status.centred, byClick);
+
+  // From the keyboard: Tab from the code before it, so the ring is the
+  // keyboard's (:focus-visible).
+  await page.evaluate(() => navigator.clipboard.writeText(''));
+  await page.focus('#copy-me');
+  await page.keyboard.press('Tab');
+  const focused = await page.evaluate(() => document.activeElement?.id);
+  const ring = await page.evaluate(() => getComputedStyle(document.getElementById('copy-key')).outlineStyle);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(250);
+  const byEnter = {focused, clipboard: await clipboard(), status: await status()};
+  await page.evaluate(() => navigator.clipboard.writeText(''));
+  const before = await page.evaluate(() => scrollY);
+  await page.keyboard.press(' ');
+  await page.waitForTimeout(250);
+  const bySpace = {clipboard: await clipboard(), scrolled: (await page.evaluate(() => scrollY)) - before};
+  check(`${theme}: Tab reaches the next code`, focused === 'copy-key', {focused});
+  check(`${theme}: Enter copies`, byEnter.clipboard === 'npm test' && byEnter.status?.text === 'Скопировано', byEnter);
+  check(`${theme}: Space copies and does not scroll`, bySpace.clipboard === 'npm test' && bySpace.scrolled === 0, bySpace);
+  check(`${theme}: the focus ring is drawn`, ring === 'solid', {got: ring});
+
+  await page.evaluate(() => navigator.clipboard.writeText('unchanged'));
+  await page.click('#copy-pre');
+  await page.click('#copy-off');
+  await page.waitForTimeout(200);
+  check(`${theme}: a block of code and an opted-out part do not copy`, (await clipboard()) === 'unchanged');
+  evidence[theme].copy = {hover, byClick, byEnter, bySpace, ring};
+
+  if (SHOTS) {
+    await page.focus('#copy-me');
+    await page.click('#copy-me');
+    await page.waitForTimeout(250);
+    await page.screenshot({path: join(SHOTS, `inline-code-${theme}.png`), fullPage: true});
+  }
+  await page.context().close();
 }
 
 const light = evidence.light.expected.background;

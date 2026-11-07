@@ -16,7 +16,8 @@ import ru from './lang/ru.json';
 // 1.3.8 §3, §4, §4.4): its settings are attributes and properties made by
 // core/js/element-manifest.js; a job's part arrives as the stream fact chunk
 // {done, total} (vocabulary 1.1.5 §5.2), which a rule hands to the action
-// chunk; tone and setProgress are dated aliases (aliases.json).
+// chunk; tone and setProgress are dated aliases (aliases.json). warning-at and
+// error-at (1.2.0) turn the bar a warning or an error by itself.
 const ProgressBarElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -40,6 +41,24 @@ export function showChunk(element, done, total) {
   const percent = Math.max(0, Math.min(100, (part / whole) * 100));
   element.value = Math.round(percent * 100) / 100;
   return { outcome: 'applied' };
+}
+
+// The status the bar draws (1.2.0): the more serious of the page's status and
+// the threshold the value reached. The thresholds are the page's, in per cent
+// like the value; unset (null) is no threshold. neutral, info and success rank
+// below warning, warning below error.
+const RANK = { warning: 1, error: 2 };
+export function thresholdStatus(value, warningAt, errorAt) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '';
+  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
+  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
+  return '';
+}
+
+export function effectiveStatus(status, value, warningAt, errorAt) {
+  const reached = thresholdStatus(value, warningAt, errorAt);
+  return (RANK[reached] ?? 0) > (RANK[status] ?? 0) ? reached : status;
 }
 
 // What retires without a new name (aliases.json rows with `to: null`): kept
@@ -68,6 +87,18 @@ class SfProgressBar extends ProgressBarElement {
     return this.getProp('status');
   }
 
+  // A threshold holds only where the page set it: an unset number reads 0.
+  threshold(attribute) {
+    if (!this.hasAttribute(attribute)) return null;
+    const number = Number(this.getAttribute(attribute));
+    return Number.isFinite(number) ? number : null;
+  }
+
+  // The status drawn: the page's, or the threshold the value reached.
+  get drawnStatus() {
+    return effectiveStatus(this.status, this.value, this.threshold('warning-at'), this.threshold('error-at'));
+  }
+
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).
   get accessibleLabel() {
     return this.label || this.getAttribute('aria-label') || '';
@@ -76,8 +107,12 @@ class SfProgressBar extends ProgressBarElement {
   templateContext() {
     const props = this.getPropsContext();
 
+    const status = this.drawnStatus;
+    this.sfHostState('data-status', status);
+
     return this.createTemplateContext({
       ...props,
+      status,
       label: this.accessibleLabel,
       component: this,
     });
@@ -93,6 +128,7 @@ class SfProgressBar extends ProgressBarElement {
       value: this.value,
       textPosition: this.textPosition,
       status: this.status,
+      drawnStatus: this.drawnStatus,
       label: this.label,
       valueText: this.valueText,
     };
@@ -112,7 +148,7 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'label', 'value-text', 'aria-label'];
+    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -126,10 +162,12 @@ class SfProgressBar extends ProgressBarElement {
   updateDom() {
     const root = this.querySelector('.sf-progress-bar');
     if (!root) return false;
+    const status = this.drawnStatus;
+    this.sfHostState('data-status', status);
     return setProgressBarState(root, {
       value: this.value,
       textPosition: this.textPosition,
-      tone: this.status,
+      tone: status,
       label: this.accessibleLabel,
       valueText: this.valueText,
     });

@@ -26,13 +26,14 @@ const DRAW = {
   // A count anchored on an icon besides the label: the ring is drawn on the
   // anchored badge alone (simai/ui-source#12).
   badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
-  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
+  // A pressed toggle beside the button: the pressed variables colour its resting look.
+  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button>'},
   // A variable of a state (standard 1.3.8 §6) is measured on an instance in
   // that state, drawn beside the one at rest.
   input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
   tag: {css: ['tags'], js: 'tag', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
-  'icon-button': {css: ['icon-buttons'], js: 'button-icon', html: '<sf-button-icon icon="add" aria-label="Добавить" size="1"></sf-button-icon>'},
+  'icon-button': {css: ['icon-buttons'], js: 'button-icon', html: '<sf-button-icon icon="add" aria-label="Добавить" size="1"></sf-button-icon><sf-button-icon icon="format_bold" aria-label="Жирный" appearance="outline" scheme="on-surface" pressed size="1"></sf-button-icon>'},
   checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
   'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
@@ -188,6 +189,16 @@ const DRAW = {
   'alert-bar': {css: ['buttons', 'icon-buttons', 'badges', 'icons', 'smart/smart/alert-bar/css/alert-bar.css'], js: ['alert-bar', 'badge'],
     html: ['danger', 'warning', 'info'].map((level, at) => `<sf-alert-bar id="ab-${level}"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', level, text: 'Текст', action: {label: 'Открыть', href: '#a'}}, ...(at === 1 ? [{id: 'b', level: 'info', text: 'Ещё'}] : [])]})}</script></sf-alert-bar>`).join(''),
     open: 'document.getElementById("ab-warning").toggleList(true)'},
+  // sf-tile-metric (2026-11-07): a plain tile; the value takes value-color.
+  'tile-metric': {css: ['badges', 'icons', 'progress-bar', 'smart/smart/tile-metric/css/tile-metric.css'], js: ['tile-metric', 'badge', 'progress-bar'],
+    html: '<sf-tile-metric label="Диск" value="83" max="100" warning-at="80" hint="Мало места"></sf-tile-metric>'},
+  // sf-list-attention (2026-11-07): two items, so the divider is drawn.
+  'list-attention': {css: ['buttons', 'badges', 'icons', 'smart/smart/list-attention/css/list-attention.css'], js: ['list-attention', 'badge'],
+    html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention>`},
+  // sf-progress-run (2026-11-07): two steps and the output open, so the
+  // divider and the pane are drawn.
+  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy'],
+    html: `<sf-progress-run label="Run" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
   // sf-list-description (2026-11-08): two rows with dividers, so the
   // divider is drawn; an empty value takes the label colour too.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
@@ -245,6 +256,9 @@ const DRAW = {
   // Smart module. A figure with a caption; a procedure of two steps, so the
   // line between the markers is drawn (the marker is a ::before, the line an
   // ::after).
+  // Code in running text (2026-11-07, R024): the core sheet's base rule, no
+  // module; a word in a paragraph, set on an ancestor as any site would.
+  code: {css: [], js: [], html: '<p>Run <code>npm test</code> before a commit.</p>'},
   card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
   figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
   procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},
@@ -270,6 +284,10 @@ const ROLES = {
   size: {properties: ['block-size', 'height'], value: '29px'},
   // A text size: the card's title (sf-card).
   'font-size': {properties: ['font-size'], value: '29px'},
+  // A typeface: code in running text.
+  'font-family': {properties: ['font-family'], value: 'probe-family'},
+  // Room on every side, written as one value (code in running text).
+  padding: {properties: ['padding-top', 'padding-left'], value: '17px'},
   // A width a panel fixes, so its text cannot widen it.
   'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays

@@ -59,7 +59,21 @@ const sfProgressBarMeta = {
         "error"
       ],
       "default": "neutral",
-      "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
+      "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral. With warning-at or error-at the bar takes the more serious of this status and the threshold the value reached."
+    },
+    "warning-at": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "A threshold in per cent: from this value on, the bar is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the bar only compares. Unset, no threshold."
+    },
+    "error-at": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "A threshold in per cent: from this value on, the bar is an error by itself. Above warning-at when both are set. Unset, no threshold."
     },
     "label": {
       "kind": "custom",
