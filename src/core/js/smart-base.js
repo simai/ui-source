@@ -1226,7 +1226,16 @@ class SfBaseElement extends HTMLElement {
         : "lit";
 
     if (mode === "dom" && this.updateDom(changedAttributes) !== false) {
+      // An element that never renders a template (sf-popover keeps the page's
+      // own trigger and surface where they were written) is drawn by its
+      // first DOM update. It says so as a render does: the Loader reads the
+      // children it kept on sf-after-render, and without one the sf-dropdown
+      // in a popover's surface was never defined (simai/ui-source#70);
+      // whenRendered() settles too.
+      const first = !this._hasRendered;
+      this._hasRendered = true;
       this.afterUpdate(changedAttributes, mode);
+      if (first) this.emitComponentEvent("after-render", { changedAttributes });
       this.emitComponentEvent("updated", {
         changedAttributes,
         updateMode: mode,
