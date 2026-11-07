@@ -48,7 +48,6 @@ const browser = await chromium.launch(headed
   ? {channel: 'chrome', headless: false, args: ['--disable-features=OverlayScrollbar']}
   : {});
 const INSET = 8;
-const EDGE = 12; // position()'s edge padding, space-1/2
 const LANGUAGES = ['Русский', 'English', 'Deutsch', 'Français', 'Español'];
 
 async function page(theme, viewport = {width: 900, height: 700}) {
@@ -185,7 +184,14 @@ try {
           const c = content.getBoundingClientRect();
           const last = content.lastElementChild.getBoundingClientRect();
           const borders = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+          // position()'s edge padding, space-1/2 -- adaptive, so read here.
+          const probe = document.createElement('span');
+          probe.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-space-1\\/2)';
+          document.body.append(probe);
+          const edge = probe.getBoundingClientRect().width;
+          probe.remove();
           const result = {
+            edge,
             overflow: Math.round((last.bottom + parseFloat(style.paddingBottom) + parseFloat(style.borderBottomWidth) - c.bottom) * 1000) / 1000,
             bar: content.offsetWidth - content.clientWidth - Math.round(borders),
             scrollGap: content.scrollHeight - content.clientHeight,
@@ -194,10 +200,10 @@ try {
           menu.close({restoreFocus: false});
           return result;
         });
-        const sliver = got.overflow > 0.01 && got.overflow <= EDGE;
+        const sliver = got.overflow > 0.01 && got.overflow <= got.edge + 0.01;
         const bar = got.bar > 0 && got.scrollGap < 2;
         const off = got.top < -0.5 || got.bottom > height + 0.5;
-        if (sliver || bar || off) note({case: `a menu opening ${where === 'top' ? 'down' : 'up'} at ${height}px (${theme}) overflows by nothing or by more than ${EDGE}px, shows no scrollbar beside rows that fit and stays in the window`, got});
+        if (sliver || bar || off) note({case: `a menu opening ${where === 'top' ? 'down' : 'up'} at ${height}px (${theme}) overflows by nothing or by more than the edge's padding, shows no scrollbar beside rows that fit and stays in the window`, got});
         if (theme === 'light' && where === 'top' && height % 10 === 0) evidence.overflow.push({height, ...got});
       }
       if (errors.length) note({case: `console clean (sweep ${where}, ${theme})`, got: errors});
