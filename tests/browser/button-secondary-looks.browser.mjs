@@ -30,14 +30,13 @@ const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'),
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const LOOKS = ['outline', 'surface', 'link', 'ghost'];
 const SCHEMES = ['on-surface', 'secondary'];
-const esc = (size) => size.replace('/', '\\/');
 
 const body = () => SIZES.map((size) => `
 <div class="row" data-size="${size}">
   ${LOOKS.map((look) => SCHEMES.map((scheme) =>
     `<sf-button size="${size}" appearance="${look}" scheme="${scheme}" text="Кнопка" icon-start="settings" data-k="smart ${look} ${scheme}"></sf-button>`).join('')).join('')}
   ${['outline', 'surface', 'link'].map((look) => SCHEMES.map((scheme) =>
-    `<button type="button" class="sf-button sf-button--${look} sf-button--${scheme} sf-button--size-${esc(size)} flex items-cross-center" data-k="plain ${look} ${scheme}"><span class="sf-button-text-container">Кнопка</span></button>`).join('')).join('')}
+    `<button type="button" class="sf-button sf-button--${look} sf-button--${scheme} sf-button--size-${size} flex items-cross-center" data-k="plain ${look} ${scheme}"><span class="sf-button-text-container">Кнопка</span></button>`).join('')).join('')}
   ${['default', 'tonal'].map((look) =>
     `<sf-button size="${size}" appearance="${look}" scheme="secondary" text="Кнопка" data-k="smart ${look} secondary"></sf-button>`).join('')}
 </div>`).join('\n') + `
@@ -162,6 +161,9 @@ try {
           if (kind === 'smart' && secondary.icon !== ink) failures.push(`${theme} size ${size} ${kind} ${look}: secondary icon ${secondary.icon}, --sf-secondary ${ink}`);
         }
       }
+      // One height per size: every cell of the row, Smart and plain, stands as tall.
+      const heights = new Set(Object.values(cells).filter(Boolean).map((cell) => cell.h));
+      if (heights.size !== 1) failures.push(`${theme} size ${size}: buttons of different heights (${[...heights].join(', ')})`);
       const filled = cells['smart default secondary'];
       const tonal = cells['smart tonal secondary'];
       if (!filled || filled.fill !== ink) failures.push(`${theme} size ${size}: default secondary fill ${filled?.fill}, --sf-secondary ${ink}`);
