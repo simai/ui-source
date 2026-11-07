@@ -40,6 +40,10 @@ const PopoverElement = elementFromManifest(manifest, {
 // through core (`core/js/open-surface-mark`) rather than written here.
 
 class SfPopover extends PopoverElement {
+    // Its DOM updates are all it draws: the first one counts as its render
+    // (Smart base, simai/ui-source#70).
+    static rendersNoTemplate = true;
+
     // The manifest's settings and value, and the base's template name.
     static get props() {
         return {
