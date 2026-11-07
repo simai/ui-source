@@ -1,0 +1,75 @@
+{
+  "id": "columns-name-what-they-hold",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A column says what it holds, so the Framework's shared renderer set draws the value instead of printing it.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ],
+        "name": "Биллинг",
+        "status": "active",
+        "public": true,
+        "accent": "#2f6feb",
+        "released": "2026-09-25"
+      }
+    ],
+    "columns": [
+      {
+        "key": "name",
+        "label": "Название",
+        "property_type": "string",
+        "role": "title"
+      },
+      {
+        "key": "status",
+        "label": "Статус",
+        "property_type": "choice",
+        "options": [
+          {
+            "value": "active",
+            "label": "В работе",
+            "scheme": "primary"
+          }
+        ]
+      },
+      {
+        "key": "public",
+        "label": "Доступно всем",
+        "property_type": "boolean"
+      },
+      {
+        "key": "accent",
+        "label": "Цвет",
+        "property_type": "color"
+      },
+      {
+        "key": "released",
+        "label": "Выпущено",
+        "property_type": "datetime"
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "columns"
+    ],
+    "note": "Without property_type a boolean cell reads «true», a choice reads its stored code and a colour reads its hex: the renderer set is type-driven and the port had no word for the type, so no conformant host could reach it. `options` carries the labels a choice column shows, `variant` how a file or a number is presented, `language` an include column's language, and `multiple` whether the column holds several values. A column that names no type is printed as it is stored, which is what every column did before 1.7.0."
+  }
+}

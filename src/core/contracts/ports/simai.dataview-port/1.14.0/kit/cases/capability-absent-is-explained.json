@@ -1,0 +1,22 @@
+{
+  "id": "capability-absent-is-explained",
+  "intent": "view.open",
+  "capability": "saved-views",
+  "summary": "A host that does not announce saved views gets no stored-view intents at all.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "view.open",
+    "payload": {
+      "key": "mine"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The view shows no template control; the kit checks that the intent is never raised."
+  }
+}
