@@ -59,7 +59,9 @@ async function open(body) {
   // What an author wrote on a host, without the runtime's own state marks
   // (data-sf-started is the base value started, §4.1, and stays on the host).
   await page.evaluate(() => {
-    window.authored = (host) => Object.fromEntries(Object.entries(host.dataset).filter(([key]) => key !== 'sfStarted'));
+    // The runtime's marks stay on the host (core/js/host-runtime-marks.js):
+    // the Assembly's, and since 2026-11-07 the style gate's pair as well.
+    window.authored = (host) => Object.fromEntries(Object.entries(host.dataset).filter(([key]) => !['sfStarted', 'sfStyleReady', 'sfStylePending'].includes(key)));
   });
   await page.waitForTimeout(600);
   return page;

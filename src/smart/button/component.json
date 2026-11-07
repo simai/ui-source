@@ -199,6 +199,7 @@
   "values": {},
   "events": {
     "press": {
+      "summary": "A press: a click, Enter or Space on the inner button or link, or the shortcut-listen key; the detail is an empty object. Not sent by click() on the host, nor by a disabled or loading button.",
       "carries": {}
     }
   },
