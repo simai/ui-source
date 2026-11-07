@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -310,7 +310,8 @@
     "width: the panel is 280 px in every look -- the drilling menu's own width (--sf-context-menu-inline-size, f7 + a8), given to the menu as its lower and upper bound -- so a long name wraps and a long value ends in an ellipsis with the whole of it in title.",
     "geometry: the menu's two rungs, size 1/2 (32 px rows) and 1 (40 px); every sub-element is the menu's own, on the ladder.",
     "remember: SF.Preferences key sf-settings/<name>, the whole value map, written after every change, setValue, setAll and reset, and put back into the items the first time the element meets them, before its first drawing (no flash of the declared values). The declared values stay the page's for reset.",
-    "css-variables: none of its own -- it has no sheet; sf-menu-context's public variables reach it (--sf-context-menu-inline-size sets the panel's width)."
+    "css-variables: none of its own -- it has no sheet; sf-menu-context's public variables reach it (--sf-context-menu-inline-size sets the panel's width).",
+    "version 1.0.1 (2026-11-07): the drill look's option level marks the chosen option by the soft fill of a chosen row, not a check mark (sf-menu-context 1.7.0, owner decision R016; rule 1 applied to the drill look: it reads as the language list does, and the options use the whole width); a search in the panel keeps its field and scrolls the rows under it. Settings, values and events unchanged; docs and first-paint snapshots follow."
   ],
   "x-registry": {
     "capabilities": [
