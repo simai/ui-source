@@ -58,13 +58,18 @@ schema is 2.1.0 since that additive change, and the type manifest schema is
 1.1.0.
 
 `standard-contract-1.0.schema.json` is a copy of the envelope schema from
-ai-first standard-contract 1.0 (`standard-contract/1.0`), revision
+simai/standards (formerly ai-first, zabarov/ai-first; moved and renamed on
+2026-11-02, GitHub redirects the old address) standard-contract 1.0
+(`standard-contract/1.0`), revision
 `8ed3d48efdb2435f1dd4142ab3339b00f5340fb1`, sha256
 `ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8`. The copy keeps the owner gate
 self-contained: `tests/standards.contract.test.mjs` checks every envelope and
 every pinned digest without reaching outside this repository. Refresh the copy
-from ai-first when that schema changes, and record the new revision and digest
-in this file.
+from simai/standards when that schema changes, and record the new revision and
+digest in this file. The move kept the history: the revision above and its
+bytes are the same in simai/standards (tag v1.0.0). Published standards keep
+the words "copied from ai-first" in their `specification` description: their
+bytes never change, and the name is the repository's former one.
 
 The published, reader-facing form of both standards lives in ui-doc; the
 machine-readable form is this directory.

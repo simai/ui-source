@@ -5,6 +5,7 @@ import test from 'node:test';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { resolveFieldKind, validateFieldKinds } from '../src/core/js/composition/fields.mjs';
 import { createRegistry, extendRegistry, render, validate, validateEditorManifest } from '../src/core/js/composition/index.mjs';
+import { FILE_ICONS, fileIcon } from '../src/core/js/composition/file-size.mjs';
 
 // The first edition of the structured-content types (the content standard's
 // step 3, owner's decision 2026-10-31): each validates against its schema, each
@@ -282,6 +283,16 @@ test('diagram and math draw through a renderer the host registers, and report it
   const hosted = await render(document, { registry });
   assert.deepEqual(hosted.diagnostics, []);
   assert.equal(inner(hosted.html), '<figure data-engine="mermaid">17</figure><div role="math" aria-label="Euler"></div>');
+});
+
+test('the content.file icon table is exported from file-size.mjs, frozen, and the renderer reads it', async () => {
+  assert.ok(Object.isFrozen(FILE_ICONS) && FILE_ICONS.every((entry) => Object.isFrozen(entry)));
+  assert.deepEqual(FILE_ICONS.map(([, icon]) => icon), ['picture_as_pdf', 'image', 'movie', 'audio_file', 'folder_zip', 'table_chart', 'slideshow', 'description']);
+  assert.equal(fileIcon(undefined), 'download');
+  assert.equal(fileIcon('application/x-unknown'), 'download');
+  assert.equal(fileIcon('application/vnd.openxmlformats-officedocument.presentationml.presentation'), 'slideshow');
+  const source = await readFile(new URL('../src/core/js/composition/index.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /FILE_ICONS/u, 'the renderer keeps no copy of the table');
 });
 
 test('content.file reads its size in the Document\'s language and its icon from the media type', async () => {

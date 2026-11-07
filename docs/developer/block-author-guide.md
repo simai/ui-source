@@ -757,6 +757,15 @@ A host that does not know a type never guesses it:
   the same with an inline entry it does not know;
 - nothing is dropped silently: the host learns of an unknown type when it
   validates, not by losing it.
+- an editor's canvas may ask for the page anyway: `render(document,
+  {registry, options: {unknown: 'placeholder'}})` (and `validate` with the same
+  option) makes `type_unknown` a notice instead of a refusal, draws the node as
+  `<div class="sf-composition-unknown" role="note"
+  data-sf-composition-type data-sf-composition-id>` holding its type name, and
+  draws the rest of the page. Nothing of the node's data or slots is drawn,
+  the Document and its digest stay unchanged, every other problem still
+  refuses. The default, `unknown: 'refuse'`, is what a publishing host keeps;
+  any other value throws `composition_unknown_mode_invalid`.
 
 So a Document holding a block survives a host without the block, and comes
 back unchanged when it is saved there. The check asks this of the runtime: a

@@ -1,7 +1,7 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
 import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, editorFieldMessages } from './editor-words.mjs';
 import { sanitizeRichText } from './html-subset.mjs';
-import { fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
+import { fileIcon, fileNameFromAddress, fileSizeUnits, formatFileSize } from './file-size.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
 import { isSchema, schemaFields } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
@@ -421,6 +421,19 @@ export function compositionTypeFromSmartManifest(manifest) {
   };
 }
 
+// How a node of an unregistered type is met: 'refuse' (the default, type_unknown
+// makes the Document invalid) or 'placeholder' (G-32).
+const UNKNOWN_MODES = new Set(['refuse', 'placeholder']);
+function unknownAsPlaceholder(options) {
+  const mode = options?.unknown ?? 'refuse';
+  if (!UNKNOWN_MODES.has(mode)) throw new TypeError(`composition_unknown_mode_invalid:${String(mode)}`);
+  return mode === 'placeholder';
+}
+
+// The placeholder of a node whose type the host does not know: its type as
+// text, its id kept for the editor's selection, nothing of its data or slots.
+const unknownPlaceholder = (node) => `<div class="sf-composition-unknown" role="note" data-sf-composition-type="${escapeHtml(node.type)}" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(node.type)}</div>`;
+
 export function validate(document, registry = undefined, options = {}) {
   const diagnostics = [];
   const notices = [];
@@ -459,7 +472,13 @@ export function validate(document, registry = undefined, options = {}) {
     else ids.add(node.id);
     const manifest = resolvedRegistry.types.get(node.type);
     if (!manifest) {
-      diagnostics.push(diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`));
+      // unknown: 'placeholder' (G-32, for an editor's canvas): a node of a
+      // type this host does not know is a notice, not a refusal; render draws
+      // it as a placeholder and the rest of the page. Its own data and slots
+      // are left unread. The default stays strict: a publishing host refuses.
+      const unknown = diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`);
+      if (unknownAsPlaceholder(options) && typeof node.type === 'string' && node.type) notices.push(unknown);
+      else diagnostics.push(unknown);
       return;
     }
     if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
@@ -617,23 +636,6 @@ const GRID_COLUMNS = {
 function renderImage(data) {
   const size = ['width', 'height'].filter((key) => Number.isInteger(data[key])).map((key) => ` ${key}="${data[key]}"`).join('');
   return `<img src="${escapeHtml(data.src)}" alt="${escapeHtml(data.alt)}"${size} loading="lazy" decoding="async">`;
-}
-
-// The icon of a file's kind, by its media type: sf-download-file's own glyph
-// when the type says nothing a reader would recognise.
-const FILE_ICONS = [
-  [/^application\/pdf$/u, 'picture_as_pdf'],
-  [/^image\//u, 'image'],
-  [/^video\//u, 'movie'],
-  [/^audio\//u, 'audio_file'],
-  [/^application\/(?:zip|x-zip-compressed|x-7z-compressed|x-rar-compressed|vnd\.rar|x-tar|gzip|x-gzip)$/u, 'folder_zip'],
-  [/^(?:text\/csv|application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.spreadsheet)$/u, 'table_chart'],
-  [/^(?:application\/vnd\.ms-powerpoint|application\/vnd\.openxmlformats-officedocument\.presentationml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.presentation)$/u, 'slideshow'],
-  [/^(?:text\/|application\/msword$|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.[a-z.]+$|application\/vnd\.oasis\.opendocument\.text$|application\/rtf$)/u, 'description'],
-];
-function fileIcon(mime) {
-  if (typeof mime !== 'string' || !mime) return 'download';
-  return FILE_ICONS.find(([pattern]) => pattern.test(mime))?.[1] ?? 'download';
 }
 
 // sf-download-file's row, drawn as a plain link: it downloads with no script,
@@ -995,6 +997,9 @@ export async function render(document, context = {}) {
       node = { ...node, data: { ...node.data, src: address } };
     }
     const manifest = registry.types.get(node.type);
+    // Only reached under unknown: 'placeholder' (validate's notice says
+    // which node); normalize refused the Document otherwise.
+    if (!manifest) return unknownPlaceholder(node);
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {
