@@ -989,6 +989,10 @@ class SfContextMenu extends ContextMenuElement {
     // side arrows stay the slider's and the search field's.
     if (!this._owned) {
       const editing = event.target?.classList?.contains("sf-context-menu-range-input") || event.target === this.searchField();
+      if (event.key === "Enter" && event.target === this.searchField()) {
+        this.chooseFirstMatch(event);
+        return;
+      }
       if (this._drill?.length && (event.key === "Escape" || (event.key === outward && !editing))) {
         event.preventDefault();
         event.stopPropagation();
@@ -1012,13 +1016,15 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     // In the search field the letters and the side arrows are the field's;
-    // ArrowDown goes on to the rows, and Escape still closes.
+    // ArrowDown goes on to the rows, Enter chooses the first row the query
+    // left, as a combobox does (simai/ui-source#72), and Escape still closes.
     if (event.target === this.searchField() && event.key !== "Escape" && event.key !== "Tab") {
       if (event.key === "ArrowDown") {
         event.preventDefault();
         this.syncMenuItems();
         this.availableMenuItems()[0]?.focus();
       }
+      if (event.key === "Enter") this.chooseFirstMatch(event);
       return;
     }
     // One level back before the menu closes: the way out of a drilling panel
@@ -1049,6 +1055,21 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     if (event.key.length === 1 && event.key !== " ") this.typeahead(event);
+  }
+
+  // Enter in the search field: the first row the query left is chosen, as a
+  // press on it would choose it -- a command row selects and closes, a
+  // submenu row opens, a drilling row goes a level in. A word still being
+  // composed (an input method) is the field's Enter, and a query that left no
+  // row does nothing. The key is taken (preventDefault) and still bubbles, so
+  // a host that once answered Enter itself can tell the menu did.
+  chooseFirstMatch(event) {
+    if (event.isComposing || event.keyCode === 229) return;
+    this.syncMenuItems();
+    const first = this.availableMenuItems()[0];
+    if (!first) return;
+    event.preventDefault();
+    first.click();
   }
 
   typeahead(event) {
