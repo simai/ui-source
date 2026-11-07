@@ -26,7 +26,7 @@ function renderBadge(item) {
   const count = badgeCount(item.badge);
   return count !== null
     ? html`<span class="sf-badge" data-count=${count}></span>`
-    : html`<span class="sf-badge">${item.badge}</span>`;
+    : html`<span class="sf-badge sf-badge--tight">${item.badge}</span>`;
 }
 
 // What a row holds, in the class order: an icon, the words, a counter.

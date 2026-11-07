@@ -46,6 +46,12 @@ export function renderBadgeTemplate(context) {
     : context.drawnText;
   // Compact needs something to show: with no icon the text stays visible.
   const isCompact = Boolean(context.compact) && (leftIconContent !== nothing || rightIconContent !== nothing);
+  // A figure -- one character and no icon, a single-figure count -- stays
+  // round in either side room: its side room is the block padding, so the
+  // size's height is its width.
+  const isFigure = !hasTextSlot
+    && leftIconContent === nothing && rightIconContent === nothing
+    && [...String(context.drawnText ?? '').trim()].length === 1;
 
   const classes = [
     'sf-badge',
@@ -56,6 +62,8 @@ export function renderBadgeTemplate(context) {
     `sf-badge--size-${context.size}`,
     context.line ? `sf-badge--line-${context.line}` : '',
     isCompact ? 'sf-badge--compact' : '',
+    context.tight ? 'sf-badge--tight' : '',
+    isFigure ? 'sf-badge--figure' : '',
     // Inline: a badge is as wide as its text. As a block-level flex box it
     // filled whatever held it -- every status in a table cell was a bar the
     // width of the column.

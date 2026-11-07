@@ -137,6 +137,16 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
+    "figure": [
+      "component/badges/css/badges.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
     "icon": [
       "component/badges/css/badges.min.css",
       "component/icons/css/icons.min.css",
@@ -191,6 +201,16 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "tight": [
+      "component/badges/css/badges.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
     "tonal": [

@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.1.0'], ['list-feed', 'sf-list-feed', '1.0.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.1.1'], ['list-feed', 'sf-list-feed', '1.0.1']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -79,6 +79,9 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   assert.match(template, /<sf-avatar\n/u);
   assert.match(template, /<sf-badge class="sf-list__count" line=\$\{line\} scheme="primary"/u);
   assert.match(template, /<sf-badge class="sf-list__badge" line=\$\{line\} appearance="tonal"/u);
+  // A row is a dense place: both keep the tight side room (sf-badge 1.3.0).
+  assert.match(template, /class="sf-list__count" line=\$\{line\} scheme="primary" tight/u);
+  assert.match(template, /class="sf-list__badge" line=\$\{line\} appearance="tonal" tight/u);
   assert.doesNotMatch(read('src/smart/list/index.js'), /render(Row|Item|er)\s*[:=(]/u);
   // The slot elements are the row template's own, never a value of it: the
   // row takes its slot nodes once (smart-base captureSlotTemplates).
