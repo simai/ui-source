@@ -314,6 +314,7 @@
             "shortcut-listen",
             "expanded",
             "pressed",
+            "text-pressed",
             "aria-label"
           ],
           "renderer": {
@@ -341,7 +342,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "b59a974c9a3f8876ae6b277b38c664951f74f4738d201aed5f189a99cfad093d",
+      "manifest_sha256": "015d4d27cc714e42b9026c39d88b9e84d23d936bcaf6dea7669bd4453a2cc657",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -492,7 +493,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "8e73397f627384d9477eecb76d7d11e4a6b23da4aa77ada572a4255c959ac0a2",
+      "manifest_sha256": "cfad0d61564508f9e15fcded48edb47c4e9ac80981a5e5df6c6f157a53f80865",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1012,7 +1013,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-page/smart.manifest.json",
-      "manifest_sha256": "85db4192f2cab02ce397841853d1dcc50a3cc9ecce86a1e716ab0b65a1a09537",
+      "manifest_sha256": "eb750da85c703ef3df6ce7dc4bcd5c1101f079e7e95272999939be1911dc48c6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

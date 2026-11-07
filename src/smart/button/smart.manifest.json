@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -61,6 +61,7 @@
         "shortcut-listen",
         "expanded",
         "pressed",
+        "text-pressed",
         "aria-label"
       ],
       "presentation": {
@@ -297,7 +298,12 @@
       "pressed": {
         "type": "boolean",
         "default": false,
-        "description": "Whether this toggle button is on: aria-pressed on the inner button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+        "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.buttons 1.5.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      },
+      "text-pressed": {
+        "type": "string",
+        "default": "",
+        "description": "The label while the toggle is on, for a toggle whose label changes («В избранное» → «В избранном»). Set, the label says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: the label stays the same and aria-pressed says the state"
       },
       "aria-label": {
         "type": "string",
@@ -600,7 +606,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "d7eb26a29518b5a90236e1dc5f5b1717f49801bd629470d605dc573538b4236c"
+        "sha256": "a365ef17756e1fef0b3f52afc190504befa81078bcf9c45f5cf0dce01da0568a"
       }
     ],
     "generated_runtime": [

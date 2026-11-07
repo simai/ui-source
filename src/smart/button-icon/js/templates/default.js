@@ -50,9 +50,16 @@ export function renderIconButtonTemplate(context) {
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-icon-button-state-loading' : '',
-        // A toggle that is on wears the selected look (active with aria-pressed).
-        context.pressed ? 'active' : '',
+        // A toggle that is on wears the pressed look (component.icon-buttons
+        // 1.3.0, rule C12): the class carries it whether or not aria-pressed is said.
+        context.pressed ? 'sf-icon-button--pressed' : '',
     ].filter(Boolean);
+
+    // A toggle whose name changes (label-pressed, 1.5.0): «Добавить в избранное»
+    // at rest, «Убрать из избранного» while on. The name then says the state,
+    // so aria-pressed is not written as well (docs review R028, rule C12).
+    const name = context.pressed === true && context.labelPressed ? context.labelPressed : ariaLabel;
+    const announcesPressed = context.pressed !== undefined && !context.labelPressed;
 
     // Loading shows the spinner in place of the icon, at the icon's size
     // (simai/ui-source#10); the button keeps its name and says aria-busy.
@@ -72,11 +79,11 @@ export function renderIconButtonTemplate(context) {
                 class=${rootClasses.join(' ')}
                 style=${context.rootStyle || nothing}
                 ?disabled=${disabled || loading}
-                aria-label=${ariaLabel ? nameWithBadge(ariaLabel, badge?.phrase) : nothing}
+                aria-label=${name ? nameWithBadge(name, badge?.phrase) : nothing}
                 aria-busy=${loading ? 'true' : nothing}
-                aria-pressed=${context.pressed === undefined ? nothing : String(Boolean(context.pressed))}
+                aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
         >
-            ${iconContent}${renderAnchoredBadge(badge)}${ariaLabel ? nothing : renderAnchoredBadgeText(badge, false)}
+            ${iconContent}${renderAnchoredBadge(badge)}${name ? nothing : renderAnchoredBadgeText(badge, false)}
         </button>
     `;
 }

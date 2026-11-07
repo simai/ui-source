@@ -45,6 +45,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   "href",
   "expanded",
   "pressed",
+  "text-pressed",
   "shortcut",
   "shortcut-listen",
   "aria-label",
@@ -210,6 +211,7 @@ class SfButton extends ButtonElement {
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
       pressed: this.pressed,
+      textPressed: this.textPressed,
       // The shortcut's key caps and its aria-keyshortcuts, in this platform's
       // words (js/shortcut.js).
       shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),

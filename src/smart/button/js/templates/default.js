@@ -42,10 +42,16 @@ export function renderButtonTemplate(context) {
             : component?.hasSlotContent?.('icon-right')
             ? component.getSlotContent('icon-right')
             : component.createIcon(rightIconName);
+    // A toggle whose label changes (text-pressed, 1.6.0): «В избранное» at rest,
+    // «В избранном» while on. The label then says the state, so aria-pressed
+    // is not written as well (docs review R028, rule C12): a screen reader
+    // would hear «В избранном, нажата». The look follows pressed either way.
+    const pressedLabel = context.pressed === true && context.textPressed ? context.textPressed : '';
+    const announcesPressed = context.pressed !== undefined && !context.textPressed;
     const textContent =
         component?.hasSlotContent?.('text')
             ? component.getSlotContent('text')
-            : text;
+            : pressedLabel || text;
     // The shortcut's keys sit at the end; the label then takes the free room,
     // so a stretched button reads label ... keys and text-position places it.
     const shortcutCaps = context.shortcutCaps || [];
@@ -84,9 +90,9 @@ export function renderButtonTemplate(context) {
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',
-        // A toggle that is on wears the selected look the class sheet gives a
-        // real two-state button (active with aria-pressed).
-        context.pressed ? 'active' : '',
+        // A toggle that is on wears the pressed look (component.buttons 1.5.0,
+        // rule C12): the class carries it whether or not aria-pressed is said.
+        context.pressed ? 'sf-button--pressed' : '',
     ].filter(Boolean);
 
     const content = html`
@@ -132,7 +138,7 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
-                aria-pressed=${context.pressed === undefined ? nothing : String(Boolean(context.pressed))}
+                aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
         >${content}</button>
     `;

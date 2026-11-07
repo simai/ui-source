@@ -100,7 +100,7 @@
           "covers": "settings.star (optional boolean), lang runtime.star, runtime.unstar",
           "steps": [
             {
-              "check": "(() => { const off = document.querySelector('#h .sf-page-header-star button'); const on = document.querySelector('#h-on .sf-page-header-star button'); return off && off.getAttribute('aria-pressed') === 'false' && off.getAttribute('aria-label') === 'В избранное' && on.getAttribute('aria-pressed') === 'true' && on.getAttribute('aria-label') === 'Убрать из избранного' && !document.querySelector('#h-none .sf-page-header-star') && document.querySelector('#h').star === false && document.querySelector('#h-on').star === true && document.querySelector('#h-none').star === undefined; })()"
+              "check": "(() => { const off = document.querySelector('#h .sf-page-header-star button'); const on = document.querySelector('#h-on .sf-page-header-star button'); return off && !off.hasAttribute('aria-pressed') && off.getAttribute('aria-label') === 'В избранное' && !on.hasAttribute('aria-pressed') && on.getAttribute('aria-label') === 'Убрать из избранного' && !document.querySelector('#h-none .sf-page-header-star') && document.querySelector('#h').star === false && document.querySelector('#h-on').star === true && document.querySelector('#h-none').star === undefined; })()"
             }
           ]
         },
@@ -131,7 +131,7 @@
               }
             },
             {
-              "check": "document.querySelector('#h .sf-page-header-star button').getAttribute('aria-pressed') === 'true'"
+              "check": "document.querySelector('#h .sf-page-header-star button').getAttribute('aria-label') === 'Убрать из избранного'"
             }
           ]
         },
@@ -169,7 +169,7 @@
               }
             },
             {
-              "check": "document.querySelector('#h-on').getAttribute('star') === 'false' && document.querySelector('#h-on .sf-page-header-star button').getAttribute('aria-pressed') === 'false'"
+              "check": "document.querySelector('#h-on').getAttribute('star') === 'false' && document.querySelector('#h-on .sf-page-header-star button').getAttribute('aria-label') === 'В избранное'"
             }
           ]
         },

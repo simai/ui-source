@@ -239,7 +239,13 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the inner button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.buttons 1.5.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+    },
+    "text-pressed": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The label while the toggle is on, for a toggle whose label changes («В избранное» → «В избранном»). Set, the label says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: the label stays the same and aria-pressed says the state"
     },
     "aria-label": {
       "kind": "custom",
