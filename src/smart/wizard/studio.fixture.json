@@ -1,0 +1,13 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.wizard",
+  "title": "wizard reference",
+  "summary": "Deterministic reference fixture for sf-wizard.",
+  "locale": "ru",
+  "props": {
+    "heading": "Новый сайт"
+  },
+  "children": [],
+  "state": "default"
+}

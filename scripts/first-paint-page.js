@@ -33,6 +33,12 @@
   const pageTags = new Map();
   const isPage = (node) => node.hasAttribute(PAGE) && pageTags.get(node.getAttribute(PAGE)) === node.localName;
   const originals = new Map();
+  // Page children an element placed live in its markup, in a container marked
+  // data-sf-live (sf-wizard's steps): printed once, in their place inside the
+  // static markup, as the page gave them -- never copied into the picture and
+  // printed again held. The element adopts them from there (2026-11-06: a
+  // step's server form must exist once in the page).
+  const placed = new WeakSet();
   let host = null;
   let hosts = [];
   let spec = null;
@@ -247,10 +253,14 @@
     else if (mode.skeleton && el.localName === 'textarea') inner = '';
     else {
       const nested = isCustom(el);
+      const live = el.hasAttribute('data-sf-live');
       if (nested && !mode.skeleton) inner += islandMarkup(islandOf(el));
       for (const node of el.childNodes) {
         if (node.nodeType === 3) inner += text(node, mode);
-        else if (node.nodeType === 1) inner += picture(node, nested && !isCustom(node) && !node.hasAttribute('slot'), mode);
+        else if (node.nodeType === 1 && live && isPage(node)) {
+          placed.add(node);
+          inner += holder(node, mode);
+        } else if (node.nodeType === 1) inner += picture(node, nested && !isCustom(node) && !node.hasAttribute('slot'), mode);
       }
     }
     let head = open(el, extra);
@@ -314,7 +324,7 @@
     // Page children the element took away (into its markup, a template, a
     // layer elsewhere): printed as the page gave them.
     for (const {node, html} of originals.get(el) ?? []) {
-      if (node.parentNode === el || !html) continue;
+      if (node.parentNode === el || !html || placed.has(node)) continue;
       if (node.nodeType === 3) {
         if (node.data.trim()) inner += html;
         continue;

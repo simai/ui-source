@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -53,6 +53,9 @@
         "loading",
         "disabled",
         "native-type",
+        "form",
+        "name",
+        "value",
         "href",
         "shortcut",
         "shortcut-listen",
@@ -255,6 +258,21 @@
           "submit",
           "reset"
         ]
+      },
+      "form": {
+        "type": "string",
+        "default": "",
+        "description": "The id of the form the native button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The name the native button submits its value under, as a native button's name."
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The value the native button submits under name when it is the submitter (next, skip)."
       },
       "href": {
         "type": "string",
@@ -582,7 +600,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "b0b8d753d59611ae781a4f1e0af76dee36af8c75dfeb5b79075f08099cbe6740"
+        "sha256": "d7eb26a29518b5a90236e1dc5f5b1717f49801bd629470d605dc573538b4236c"
       }
     ],
     "generated_runtime": [

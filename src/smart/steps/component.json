@@ -2,7 +2,7 @@
   "$comment": "The source of sf-steps's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/steps (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.steps",
   "tag": "sf-steps",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -22,9 +22,20 @@
         "disabled": {
           "type": "boolean",
           "optional": true
+        },
+        "state": {
+          "type": "enum",
+          "values": [
+            "default",
+            "completed",
+            "skipped",
+            "running",
+            "error"
+          ],
+          "optional": true
         }
       },
-      "x-markup": "the attribute also takes the old \"label::disabled|label\" form, or the same list as JSON"
+      "x-markup": "the attribute also takes the old \"label::disabled|label\" form (flags disabled, completed, skipped, error), or the same list as JSON"
     },
     "error-step": {
       "type": "number",
@@ -46,6 +57,16 @@
       "type": "string",
       "default-from": "runtime.error-label",
       "summary": "Empty: the text of the page's language (\"Error\" in English)."
+    },
+    "skipped-label": {
+      "type": "string",
+      "default-from": "runtime.skipped-label",
+      "summary": "Empty: the text of the page's language (\"Skipped\" in English)."
+    },
+    "running-label": {
+      "type": "string",
+      "default-from": "runtime.running-label",
+      "summary": "Empty: the text of the page's language (\"In progress\" in English)."
     }
   },
   "values": {
@@ -168,7 +189,7 @@
       }
     ]
   },
-  "x-summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
+  "x-summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
   "x-source": {
     "package": "framework",
     "folder": "steps",
@@ -177,7 +198,9 @@
   },
   "x-words": [
     "completed-label",
-    "error-label"
+    "error-label",
+    "skipped-label",
+    "running-label"
   ],
   "x-renamed": [
     "settings.items: type string with a list default → list (§4.2)",
@@ -202,7 +225,8 @@
     "side-effects: none.",
     "docs: docs/docs.md, where the folder keeps it (as sf-tooltip); the fold into the folder's docs.md is §16 item 30's.",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0 (sf-wizard, owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): an item may carry its own state -- default (not started), completed, skipped, running or error -- which wins over the one derived from its place (before current: completed; error-step: error). skipped and running are new. skipped: a step a person passed over on purpose, the do_not_disturb_on glyph in on-surface-variant. running: the step's action is under way, the progress_activity glyph in on-surface-variant, turning (still under prefers-reduced-motion: reduce). The icon roles are on-surface, on-surface-variant and on-disable; completed and error keep their status colours. Each new state is named in the step's accessible name (skipped-label «Пропущен» / «Skipped», running-label «Выполняется» / «In progress»). A wizard passes a state for every step, so a step before current that was never done reads as not started. The string form takes the states as flags (label::skipped). Additions only: a minor."
   ],
   "x-registry": {
     "capabilities": [

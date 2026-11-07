@@ -188,8 +188,13 @@ function unbindInput(root) {
   delete root.__sfInputNoopHandler;
   delete root.__sfInputPointerFocusHandler;
   delete root.__sfInputBlurHandler;
-  root.classList.remove('sf-input--pointer-focus');
-  delete root.dataset[INPUT_BOUND_FLAG];
+  // A field moved in the page (a wizard taking its steps, a window its
+  // content) is unbound and bound again: its markup stays as it was, so the
+  // class list is not rewritten for a token it does not hold and the flag
+  // keeps its place (the first paint printed before and after a move is the
+  // same markup).
+  if (root.classList.contains('sf-input--pointer-focus')) root.classList.remove('sf-input--pointer-focus');
+  root.dataset[INPUT_BOUND_FLAG] = '0';
 }
 
 function initExistingInputs(target = document) {

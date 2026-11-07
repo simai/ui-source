@@ -322,6 +322,16 @@
       "component": "file-preview",
       "property": "size",
       "reason": "a legacy name for file-size: the file's own size as text (12 KB), not a step of the size ladder. It is honoured and documented as legacy; a renderer passes file-size and never size."
+    },
+    {
+      "component": "wizard-step",
+      "property": "type",
+      "reason": "the value names what the step does in the wizard -- info shows a text, form takes answers, action runs work, review shows the plan, result says what came of it -- so info is the kind of step, not a status the step reports; its outcome is the state value (done, skipped, running, error)."
+    },
+    {
+      "component": "wizard-step",
+      "property": "state",
+      "reason": "the value is where the step stands in the wizard's process -- not started, done, skipped, running, or error after its action failed -- the same stages sf-steps draws (completed, skipped, running, error), not a status of the world the step reports; the step's message says what happened."
     }
   ],
   "size_ladder": {

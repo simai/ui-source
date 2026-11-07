@@ -18,8 +18,9 @@ test('every component has a snapshot per example, and the sheets it needs', () =
   // 60 with sf-progress-ring, 61 with sf-site-header, 62 with sf-search, 63 with sf-settings-menu, 64 with sf-pager, 65 with sf-contents, 66 with sf-rich-text, 67 with sf-lookup;
   // 66 again when sf-settings-menu was folded into sf-context-menu (owner, 2026-10-30); 67 with sf-include; 66 when sf-toggle was swept (2026-11-02);
   // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05);
-  // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06).
-  assert.equal(all.length, 73);
+  // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06);
+  // 75 with sf-wizard and sf-wizard-step (2026-11-06).
+  assert.equal(all.length, 75);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);
@@ -43,7 +44,9 @@ test('a drawn component prints its markup as static, never its runtime marks', (
     for (const example of component.examples.filter((one) => one.template !== 'skeleton')) {
       const html = readFileSync(exampleFiles(component, example).html, 'utf8');
       assert.doesNotMatch(html, /data-sf-started|data-sf-style-ready|data-sf-snap-page|<!--\?lit/u, `${component.folder}/${example.name}`);
-      if (component.folder !== 'sortable' && component.folder !== 'resizer' && component.folder !== 'editor-inline') {
+      // sf-wizard-step draws nothing of its own: its children are the page's
+      // (the wizard draws the frame around them).
+      if (!['sortable', 'resizer', 'editor-inline', 'wizard-step'].includes(component.folder)) {
         assert.match(html, /data-sf-static/u, `${component.folder}/${example.name}: static markup`);
       }
     }

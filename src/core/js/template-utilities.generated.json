@@ -411,5 +411,9 @@
     "display/default",
     "flex-direction/default",
     "position/default"
+  ],
+  "cl-wizard": [
+    "display/default",
+    "sr-only/default"
   ]
 }

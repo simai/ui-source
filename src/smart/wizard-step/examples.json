@@ -1,0 +1,51 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Шаг с формой",
+      "settings": {
+        "name": "address",
+        "label": "Адрес панели",
+        "heading": "Адрес панели",
+        "description": "По этому адресу вы будете открывать панель.",
+        "type": "form"
+      },
+      "children": [
+        "<form><sf-input name=\"host\" label=\"Адрес\" required></sf-input></form>"
+      ],
+      "expect": {
+        "name": ""
+      },
+      "studio": {
+        "title": "wizard-step reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error"
+          ]
+        }
+      }
+    },
+    {
+      "name": "action-error",
+      "title": "Действие с ошибкой",
+      "settings": {
+        "name": "protection",
+        "label": "Защита",
+        "type": "action",
+        "state": "error",
+        "message": "Let’s Encrypt не ответил.",
+        "action-text": "Выпустить сертификат"
+      },
+      "children": [
+        "<p>Сертификат для адреса панели.</p>"
+      ],
+      "expect": {
+        "values": {
+          "state": "error"
+        }
+      }
+    }
+  ],
+  "pages": []
+}

@@ -53,12 +53,20 @@ Main attributes:
 - `loading`
 - `disabled`
 - `native-type`
+- `form`, `name`, `value` — a native button's own words (1.5.0): the id of the
+  form it submits (a button outside the form submits it), and the name and
+  value it submits under when it is the submitter:
+
+  ```html
+  <form id="step-address" method="post">…</form>
+  <sf-button native-type="submit" form="step-address" name="wizard" value="next" text="Далее"></sf-button>
+  ```
 - `href` — a link with the button's look (1.4.0): the element draws
   `<a href>` with the button's classes; the role is link, Enter and the
   browser's link keys follow it. A relative address, a fragment, http(s),
   `mailto:` and `tel:` are taken; any other scheme draws a button. Disabled
   or loading, the link loses its `href` and says `aria-disabled`.
-  `native-type`, `expanded` and `pressed` do not apply to a link
+  `native-type`, `form`, `name`, `value`, `expanded` and `pressed` do not apply to a link
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native

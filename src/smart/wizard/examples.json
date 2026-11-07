@@ -1,0 +1,533 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Три шага: сайт с нуля",
+      "settings": {
+        "heading": "Новый сайт"
+      },
+      "children": [
+        "<sf-wizard-step name=\"name\" label=\"Название\" type=\"form\" description=\"Так сайт будет называться в панели и в заголовке страниц.\"><form><sf-input name=\"title\" label=\"Название сайта\" placeholder=\"Мой магазин\" required></sf-input><sf-input name=\"domain\" label=\"Адрес\" placeholder=\"shop.example.ru\" hint=\"Можно поменять позже.\" pattern=\"[a-z0-9.-]+\"></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"template\" label=\"Шаблон\" type=\"info\" description=\"С чего начнётся сайт.\"><p>Шаблон «Магазин»: каталог, корзина и оплата уже настроены. Остальные шаблоны можно поставить позже из раздела «Пакеты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"done\" label=\"Готово\" type=\"result\" description=\"Всё готово к работе.\"><p>Сайт создан. Откройте его или вернитесь к списку сайтов.</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Новый сайт",
+        "values": {
+          "current": ""
+        }
+      },
+      "first-paint": {
+        "max-bytes": 24000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      },
+      "studio": {
+        "title": "wizard reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error"
+          ]
+        }
+      }
+    },
+    {
+      "name": "server-address",
+      "title": "Настройка сервера: адрес панели",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "address",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"><form method=\"post\" action=\"?step=address\"><sf-input name=\"host\" label=\"Адрес панели\" default-value=\"panel.example.ru\" required></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "address"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-notify",
+      "title": "Необязательный шаг: «Пропустить»",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "notify",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"><form method=\"post\" action=\"?step=notify\"><sf-input name=\"email\" label=\"Почта для уведомлений\" input-type=\"email\" placeholder=\"admin@example.ru\"></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "notify"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-protection",
+      "title": "Действие: выпустить сертификат",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "protection",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"><form method=\"post\" action=\"?step=protection\"><p>Адрес: <b>panel.example.ru</b>. Выпуск занимает до минуты; страницу закрывать не нужно.</p><input type=\"hidden\" name=\"host\" value=\"panel.example.ru\"></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "protection"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-protection-error",
+      "title": "Действие не удалось: ошибка и «Повторить»",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "protection",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" state=\"error\" action-text=\"Выпустить сертификат\" message=\"Let’s Encrypt не ответил: домен panel.example.ru пока не указывает на этот сервер. Проверьте запись A и повторите.\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"><form method=\"post\" action=\"?step=protection\"><p>Адрес: <b>panel.example.ru</b>. Выпуск занимает до минуты; страницу закрывать не нужно.</p><input type=\"hidden\" name=\"host\" value=\"panel.example.ru\"></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "protection"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-protection-done",
+      "title": "Действие удалось: итог и «Далее»",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "protection",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" state=\"done\" action-text=\"Выпустить сертификат\" message=\"Сертификат выпущен, действует до 4 февраля 2027 года.\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"><form method=\"post\" action=\"?step=protection\"><p>Адрес: <b>panel.example.ru</b>. Выпуск занимает до минуты; страницу закрывать не нужно.</p><input type=\"hidden\" name=\"host\" value=\"panel.example.ru\"></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "protection"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-backups",
+      "title": "Форма: копии",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "backups",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" state=\"done\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"><form method=\"post\" action=\"?step=backups\"><sf-input name=\"keep\" label=\"Хранить копий\" input-type=\"number\" default-value=\"7\" required></sf-input><sf-checkbox name=\"daily\" label=\"Каждую ночь в 03:00\" value=\"1\"></sf-checkbox></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "backups"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-check",
+      "title": "Проверка: план изменений и «Применить»",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "check",
+        "later-href": "/",
+        "focus-title": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" state=\"done\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" state=\"done\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"><form method=\"post\" action=\"?step=check\"><p>Панель сделает на сервере четыре изменения.</p><ul class=\"sf-wizard-plan\"><li><span><b>Адрес панели</b> — panel.example.ru</span><sf-button appearance=\"link\" size=\"1/2\" text=\"Изменить\" href=\"?step=address\" data-wizard-step=\"address\"></sf-button></li><li><span><b>Уведомления</b> — не настроены, шаг пропущен</span><sf-button appearance=\"link\" size=\"1/2\" text=\"Изменить\" href=\"?step=notify\" data-wizard-step=\"notify\"></sf-button></li><li><span><b>Сертификат</b> — Let’s Encrypt, выпущен</span><sf-button appearance=\"link\" size=\"1/2\" text=\"Изменить\" href=\"?step=protection\" data-wizard-step=\"protection\"></sf-button></li><li><span><b>Копии</b> — хранить 7, каждую ночь в 03:00</span><sf-button appearance=\"link\" size=\"1/2\" text=\"Изменить\" href=\"?step=backups\" data-wizard-step=\"backups\"></sf-button></li></ul></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "check"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 32000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "server-finish",
+      "title": "Итог: сервер настроен",
+      "settings": {
+        "place": "pages",
+        "heading": "Настройка сервера",
+        "current": "finish",
+        "done-href": "/"
+      },
+      "children": [
+        "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" state=\"done\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" state=\"done\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step>",
+        "<sf-wizard-step state=\"done\" name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step>",
+        "<sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"><p>Панель работает по адресу <b>https://panel.example.ru</b>. Копии сохраняются каждую ночь в 03:00.</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Настройка сервера",
+        "values": {
+          "current": "finish"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 24000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "csv-import",
+      "title": "Импорт CSV в окне",
+      "settings": {
+        "place": "modal",
+        "heading": "Импорт контактов",
+        "for": "csv-open",
+        "remember": "csv-import",
+        "later": true
+      },
+      "children": [
+        "<sf-wizard-step name=\"upload\" label=\"Файл\" type=\"form\" description=\"Выберите файл с контактами.\"><form><sf-input name=\"file\" label=\"Файл CSV\" placeholder=\"contacts.csv\" required hint=\"UTF-8, разделитель — точка с запятой.\"></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"map\" label=\"Колонки\" type=\"form\" description=\"Какая колонка файла идёт в какое поле.\"><form><sf-input name=\"col-name\" label=\"Колонка «Имя»\" default-value=\"A\" required></sf-input><sf-input name=\"col-email\" label=\"Колонка «Почта»\" default-value=\"B\" required></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"preview\" label=\"Проверка\" type=\"review\" action-text=\"Импортировать\" description=\"Что попадёт в список контактов.\"><ul class=\"sf-wizard-plan\"><li><span><b>124</b> контакта будут добавлены: имя из колонки A, почта из колонки B</span><sf-button appearance=\"link\" size=\"1/2\" text=\"Изменить\" data-wizard-step=\"map\"></sf-button></li><li><span><b>3</b> строки без почты будут пропущены</span></li></ul></sf-wizard-step>",
+        "<sf-wizard-step name=\"run\" label=\"Импорт\" type=\"action\" action-text=\"Запустить импорт\" description=\"Загружаем контакты.\"><p>Импорт идёт в фоне; окно можно не закрывать.</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"result\" label=\"Итог\" type=\"result\" description=\"Импорт завершён.\"><p>Добавлено 124 контакта, пропущено 3 строки.</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Импорт контактов"
+      }
+    },
+    {
+      "name": "twelve",
+      "title": "Двенадцать шагов: «Шаг 5 из 12», полоса и список по запросу",
+      "settings": {
+        "heading": "Установка Larena"
+      },
+      "children": [
+        "<sf-wizard-step name=\"s1\" label=\"Лицензия\" type=\"info\" state=\"done\" description=\"Настройка: лицензия.\"><p>Шаг «Лицензия».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s2\" label=\"Каталог\" type=\"info\" state=\"done\" description=\"Настройка: каталог.\"><p>Шаг «Каталог».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s3\" label=\"Сервер\" type=\"info\" optional state=\"skipped\" description=\"Настройка: сервер.\"><p>Шаг «Сервер».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s4\" label=\"База данных\" type=\"info\" state=\"done\" description=\"Настройка: база данных.\"><p>Шаг «База данных».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s5\" label=\"Почта\" type=\"form\" description=\"Настройка: почта.\"><form><sf-input name=\"value\" label=\"Значение\" required></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"s6\" label=\"Домены\" type=\"info\" description=\"Настройка: домены.\"><p>Шаг «Домены».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s7\" label=\"Сертификаты\" type=\"info\" description=\"Настройка: сертификаты.\"><p>Шаг «Сертификаты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s8\" label=\"Пользователи\" type=\"info\" description=\"Настройка: пользователи.\"><p>Шаг «Пользователи».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s9\" label=\"Права\" type=\"info\" description=\"Настройка: права.\"><p>Шаг «Права».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s10\" label=\"Пакеты\" type=\"info\" description=\"Настройка: пакеты.\"><p>Шаг «Пакеты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s11\" label=\"Копии\" type=\"info\" description=\"Настройка: копии.\"><p>Шаг «Копии».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s12\" label=\"Готово\" type=\"result\" description=\"Настройка: готово.\"><p>Шаг «Готово».</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Установка Larena"
+      },
+      "first-paint": {
+        "max-bytes": 24000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "column",
+      "title": "Двенадцать шагов в колонке слева внутри рамки",
+      "settings": {
+        "heading": "Установка Larena",
+        "progress": "column",
+        "navigation": "visited"
+      },
+      "children": [
+        "<sf-wizard-step name=\"s1\" label=\"Лицензия\" type=\"info\" state=\"done\" description=\"Настройка: лицензия.\"><p>Шаг «Лицензия».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s2\" label=\"Каталог\" type=\"info\" state=\"done\" description=\"Настройка: каталог.\"><p>Шаг «Каталог».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s3\" label=\"Сервер\" type=\"info\" optional state=\"skipped\" description=\"Настройка: сервер.\"><p>Шаг «Сервер».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s4\" label=\"База данных\" type=\"info\" state=\"done\" description=\"Настройка: база данных.\"><p>Шаг «База данных».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s5\" label=\"Почта\" type=\"form\" description=\"Настройка: почта.\"><form><sf-input name=\"value\" label=\"Значение\" required></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"s6\" label=\"Домены\" type=\"info\" description=\"Настройка: домены.\"><p>Шаг «Домены».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s7\" label=\"Сертификаты\" type=\"info\" description=\"Настройка: сертификаты.\"><p>Шаг «Сертификаты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s8\" label=\"Пользователи\" type=\"info\" description=\"Настройка: пользователи.\"><p>Шаг «Пользователи».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s9\" label=\"Права\" type=\"info\" description=\"Настройка: права.\"><p>Шаг «Права».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s10\" label=\"Пакеты\" type=\"info\" description=\"Настройка: пакеты.\"><p>Шаг «Пакеты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s11\" label=\"Копии\" type=\"info\" description=\"Настройка: копии.\"><p>Шаг «Копии».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"s12\" label=\"Готово\" type=\"result\" description=\"Настройка: готово.\"><p>Шаг «Готово».</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Установка Larena"
+      },
+      "first-paint": {
+        "max-bytes": 24000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    },
+    {
+      "name": "compact",
+      "title": "Половинный размер",
+      "settings": {
+        "heading": "Новый сайт",
+        "size": "1/2"
+      },
+      "children": [
+        "<sf-wizard-step name=\"name\" label=\"Название\" type=\"form\" description=\"Так сайт будет называться в панели и в заголовке страниц.\"><form><sf-input name=\"title\" label=\"Название сайта\" placeholder=\"Мой магазин\" required></sf-input><sf-input name=\"domain\" label=\"Адрес\" placeholder=\"shop.example.ru\" hint=\"Можно поменять позже.\" pattern=\"[a-z0-9.-]+\"></sf-input></form></sf-wizard-step>",
+        "<sf-wizard-step name=\"template\" label=\"Шаблон\" type=\"info\" description=\"С чего начнётся сайт.\"><p>Шаблон «Магазин»: каталог, корзина и оплата уже настроены. Остальные шаблоны можно поставить позже из раздела «Пакеты».</p></sf-wizard-step>",
+        "<sf-wizard-step name=\"done\" label=\"Готово\" type=\"result\" description=\"Всё готово к работе.\"><p>Сайт создан. Откройте его или вернитесь к списку сайтов.</p></sf-wizard-step>"
+      ],
+      "expect": {
+        "name": "Новый сайт"
+      },
+      "first-paint": {
+        "max-bytes": 24000,
+        "why": "the frame prints the step's form once, with the Framework fields' own first paint inside it (place pages: the server's page)"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-wizard against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-wizard id=\"three\" heading=\"Новый сайт\"><sf-wizard-step name=\"name\" label=\"Название\" type=\"form\" description=\"Так сайт будет называться в панели и в заголовке страниц.\"><form><sf-input name=\"title\" label=\"Название сайта\" placeholder=\"Мой магазин\" required></sf-input><sf-input name=\"domain\" label=\"Адрес\" placeholder=\"shop.example.ru\" hint=\"Можно поменять позже.\" pattern=\"[a-z0-9.-]+\"></sf-input></form></sf-wizard-step><sf-wizard-step name=\"template\" label=\"Шаблон\" type=\"info\" description=\"С чего начнётся сайт.\"><p>Шаблон «Магазин»: каталог, корзина и оплата уже настроены. Остальные шаблоны можно поставить позже из раздела «Пакеты».</p></sf-wizard-step><sf-wizard-step name=\"done\" label=\"Готово\" type=\"result\" description=\"Всё готово к работе.\"><p>Сайт создан. Откройте его или вернитесь к списку сайтов.</p></sf-wizard-step></sf-wizard>",
+          "  <sf-wizard id=\"pages\" place=\"pages\" heading=\"Настройка сервера\" current=\"protection\"><sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" href=\"?step=address\" state=\"done\" description=\"По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер.\"></sf-wizard-step><sf-wizard-step name=\"notify\" label=\"Уведомления\" type=\"form\" optional href=\"?step=notify\" state=\"skipped\" description=\"Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже.\"></sf-wizard-step><sf-wizard-step name=\"protection\" label=\"Защита\" type=\"action\" href=\"?step=protection\" action-text=\"Выпустить сертификат\" description=\"Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение.\"><form method=\"post\" action=\"?step=protection\"><p>Адрес: <b>panel.example.ru</b>. Выпуск занимает до минуты; страницу закрывать не нужно.</p><input type=\"hidden\" name=\"host\" value=\"panel.example.ru\"></form></sf-wizard-step><sf-wizard-step name=\"backups\" label=\"Копии\" type=\"form\" href=\"?step=backups\" description=\"Как часто сохранять копии сайтов и сколько их хранить.\"></sf-wizard-step><sf-wizard-step name=\"check\" label=\"Проверка\" type=\"review\" href=\"?step=check\" action-text=\"Применить\" description=\"Что панель изменит на сервере. Проверьте и примените.\"></sf-wizard-step><sf-wizard-step name=\"finish\" label=\"Готово\" type=\"result\" href=\"?step=finish\" description=\"Сервер настроен.\"></sf-wizard-step></sf-wizard>",
+          "</main>"
+        ],
+        "listen": [
+          "sf-wizard-invalid",
+          "sf-wizard-submit",
+          "sf-wizard-change",
+          "sf-wizard-navigate"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-frame",
+          "title": "the frame: region named by the heading, the row of three steps with aria-current on the first, «Шаг 1 из 3», one primary «Далее», no Back on the first step",
+          "covers": "settings.heading, settings.progress auto row, accessibility.role region, the footer",
+          "steps": [
+            {
+              "check": "(() => { const w = document.querySelector('#three'); const root = w.querySelector('.sf-wizard'); return root.getAttribute('role') === 'region' && root.getAttribute('aria-label') === 'Новый сайт' && w.querySelector('.sf-wizard-position').textContent.trim() === 'Шаг 1 из 3' && w.querySelector('sf-steps [aria-current=\"step\"]')?.dataset.stepIndex === '0' && w.querySelectorAll('.sf-wizard-primary').length === 1 && w.querySelector('.sf-wizard-primary').textContent.includes('Далее') && !w.querySelector('.sf-wizard-back') && w.querySelector('.sf-wizard-title').textContent.trim() === 'Название'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-invalid",
+          "title": "Next with an empty required field: invalid, the field shows its message and takes focus, the step stays",
+          "covers": "events.invalid, validation",
+          "steps": [
+            {
+              "user": "click:#three .sf-wizard-primary button",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-wizard-invalid",
+                    "count": 1,
+                    "detail": {
+                      "step": "name",
+                      "fields": [
+                        "title"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "check": "(() => { const w = document.querySelector('#three'); const field = w.querySelector('sf-input[name=\"title\"]'); return field.hasAttribute('invalid') && w.current !== 'template' && document.activeElement === field.querySelector('input'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-next",
+          "title": "filled, Next moves on: submit then change, the step reads done, the title has focus, the status says where",
+          "covers": "events.submit, events.change, values.current, focus to the title",
+          "steps": [
+            {
+              "script": "(() => { const input = document.querySelector('#three sf-input[name=\"title\"] input'); input.value = 'Мой магазин'; input.dispatchEvent(new Event('input', {bubbles: true})); return true; })()",
+              "wait": 120
+            },
+            {
+              "user": "click:#three .sf-wizard-primary button",
+              "wait": 300,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-wizard-submit",
+                    "count": 1,
+                    "detail": {
+                      "step": "name",
+                      "action": "next",
+                      "values": {
+                        "title": "Мой магазин"
+                      }
+                    }
+                  },
+                  {
+                    "name": "sf-wizard-change",
+                    "count": 1,
+                    "detail": {
+                      "previous": "name",
+                      "current": "template"
+                    }
+                  }
+                ]
+              },
+              "check": "(() => { const w = document.querySelector('#three'); return w.getAttribute('current') === 'template' && w.querySelector('sf-wizard-step[name=\"name\"]').getAttribute('state') === 'done' && document.activeElement === w.querySelector('.sf-wizard-title') && w.querySelector('.sf-wizard-announce').textContent.includes('Шаг 2 из 3') && w.value.name.title === 'Мой магазин'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-back",
+          "title": "Back shows the previous step and keeps its answer",
+          "covers": "the footer Back, values.value",
+          "steps": [
+            {
+              "script": "(() => { const input = document.querySelector('#three sf-input[name=\"title\"] input'); input.value = 'Мой магазин'; input.dispatchEvent(new Event('input', {bubbles: true})); return true; })()",
+              "wait": 120
+            },
+            {
+              "user": "click:#three .sf-wizard-primary button",
+              "wait": 300,
+              "check": "document.querySelector('#three').getAttribute('current') === 'template'"
+            },
+            {
+              "user": "click:#three .sf-wizard-back button",
+              "wait": 300,
+              "check": "(() => { const w = document.querySelector('#three'); return w.getAttribute('current') === 'name' && w.querySelector('sf-input[name=\"title\"] input').value === 'Мой магазин'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-pages-submit",
+          "title": "place pages: the primary is a submit button of the step's form with name wizard-action and its word; Back is a link to the previous step",
+          "covers": "settings.place pages, sf-button form/name/value",
+          "steps": [
+            {
+              "check": "(() => { const w = document.querySelector('#pages'); const form = w.querySelector('sf-wizard-step[name=\"protection\"] form'); const button = w.querySelector('.sf-wizard-primary button'); return Boolean(form.id) && button.type === 'submit' && button.getAttribute('form') === form.id && button.name === 'wizard-action' && button.value === 'run' && button.form === form && button.textContent.includes('Выпустить сертификат') && w.querySelector('.sf-wizard-back a')?.getAttribute('href') === '?step=notify'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-go-to-step",
+          "title": "go-to-step shows a step without change; refused for a missing one",
+          "covers": "actions.go-to-step",
+          "steps": [
+            {
+              "action": {
+                "name": "go-to-step",
+                "with": {
+                  "name": "done"
+                }
+              },
+              "target": "#three",
+              "wait": 200,
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                },
+                "events": []
+              },
+              "check": "document.querySelector('#three').getAttribute('current') === 'done'"
+            },
+            {
+              "action": {
+                "name": "go-to-step",
+                "with": {
+                  "name": "nope"
+                }
+              },
+              "target": "#three",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "missing"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

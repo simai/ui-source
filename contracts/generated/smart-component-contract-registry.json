@@ -306,6 +306,9 @@
             "loading",
             "disabled",
             "native-type",
+            "form",
+            "name",
+            "value",
             "href",
             "shortcut",
             "shortcut-listen",
@@ -338,7 +341,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "5cf7d0585becde78882f6c76206aad2bdb67eea358f0d648bb24a6924b5128be",
+      "manifest_sha256": "05c7d61f83f69ed24afaf9083aed6e7803b028b990153914482e1ff67a6ae81a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2582,13 +2585,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/steps/smart.manifest.json",
-      "manifest_sha256": "f924b767da18008d3e6e185a760de80ae10ebad5c526df8227b9f4c3e6562d56",
+      "manifest_sha256": "fb9b2fe126f9ee4a5fbfebce80c216fc706a9808cee1614ce59735691d5db127",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
+      "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
       "tags": [
         "steps"
       ],
@@ -2909,6 +2912,89 @@
         "tree-item"
       ],
       "title": "Tree item"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.scrollbar",
+          "smart.alert",
+          "smart.button",
+          "smart.confirm",
+          "smart.icon",
+          "smart.modal",
+          "smart.progress-bar",
+          "smart.spinner",
+          "smart.steps",
+          "smart.wizard-step"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-wizard",
+      "id": "smart.wizard",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/wizard/smart.manifest.json",
+      "manifest_sha256": "35f13ddd840cb378dd02ea949f7da379cd4119b944d199d7f58097b1a1c46048",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
+      "tags": [
+        "wizard",
+        "steps",
+        "stepper",
+        "setup",
+        "onboarding",
+        "installer",
+        "import",
+        "form"
+      ],
+      "title": "Wizard"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-wizard-step",
+      "id": "smart.wizard-step",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/wizard-step/smart.manifest.json",
+      "manifest_sha256": "fd6deec0d14f4bc79995ac45b7acb707ed14982b4979e3f84bd03fdce8ed52e6",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
+      "tags": [
+        "wizard-step"
+      ],
+      "title": "Wizard step"
     }
   ],
   "schema": "simai.smart-component-contract-registry.v2",

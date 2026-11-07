@@ -10,7 +10,10 @@
   `role="listitem"`.
 - Текущий этап отмечается `selected` и `aria-current="step"`.
 - Завершённый этап использует `sf-step--stage-completed`, будущий —
-  `sf-step--stage-default`, ошибочный — `sf-step--stage-error`.
+  `sf-step--stage-default`, ошибочный — `sf-step--stage-error`, пропущенный
+  намеренно — `sf-step--stage-skipped` (значок `do_not_disturb_on`), выполняющийся —
+  `sf-step--stage-running` (значок `progress_activity`, вращается); оба в роли
+  `on-surface-variant`, с версии 1.1.0.
 - Статус, переданный цветом и иконкой, повторяется локализованным `sr-only`
   текстом. Иконки состояния и разделители получают `aria-hidden="true"`.
 - Статический шаг не получает hover и focus. Если продукт действительно

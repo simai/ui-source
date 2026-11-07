@@ -1,0 +1,249 @@
+{
+  "schema_version": 2,
+  "id": "smart.wizard-step",
+  "version": "1.0.0",
+  "title": "Wizard step",
+  "summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "wizard-step"
+  ],
+  "capabilities": [
+    "render"
+  ],
+  "custom_element": "sf-wizard-step",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The step's key: what current names, what events carry, the key of its answers in the wizard's value. Its place (step-1, step-2 …) when empty."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The step's short name in the progress («Адрес панели»)."
+      },
+      "heading": {
+        "type": "string",
+        "default": "",
+        "description": "The step's title over its body; the label when empty."
+      },
+      "description": {
+        "type": "string",
+        "default": "",
+        "description": "Why the step is there, one or two sentences under the title."
+      },
+      "type": {
+        "type": "string",
+        "default": "info",
+        "description": "What the step does, and so its primary button: info shows (Далее); form takes fields and validates them (Далее saves the step); action runs a long action (Запустить, then Далее; Повторить after an error); review shows what will be done with a way back to each step (Применить); result says what happened (Готово).",
+        "enum": [
+          "info",
+          "form",
+          "action",
+          "review",
+          "result"
+        ]
+      },
+      "optional": {
+        "type": "boolean",
+        "default": false,
+        "description": "The step may be skipped: the wizard draws «Пропустить», and a skipped step reads skipped."
+      },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "Place pages: the step's own address. Back and a press on the step in the progress go there."
+      },
+      "action-text": {
+        "type": "string",
+        "default": "",
+        "description": "The primary button's label on this step («Выпустить сертификат», «Импортировать»); the type's word when empty. Retry and the move on after an action keep their own words."
+      },
+      "message": {
+        "type": "string",
+        "default": "",
+        "description": "What the step's action came to, one sentence: drawn as sf-alert in the step, success while the step is done, error while it is error. While running, the line beside the indicator."
+      },
+      "state": {
+        "type": "string",
+        "default": "",
+        "description": "Where the step stands: empty (not started), done, skipped, running (its action is under way) or error. The host writes it; in places inline and modal the wizard also writes done and skipped when a person moves on.",
+        "enum": [
+          "",
+          "done",
+          "skipped",
+          "running",
+          "error"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {},
+  "state": {
+    "machines": {
+      "step": [
+        "not-started",
+        "done",
+        "skipped",
+        "running",
+        "error"
+      ]
+    },
+    "visual_states": [
+      "default"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "running the step's action (the host or the server does)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "none",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab"
+    ],
+    "focus": "The step takes no focus; its controls are the page's."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "54c89e61ef9b89ed683fe530d43bdbf215fbafdd",
+    "source_artifacts": [
+      {
+        "path": "src/smart/wizard-step/index.js",
+        "sha256": "8bce19e9780f32c842be9832da758b4468a76d534903b083fbdf5ccf9e12efb6"
+      },
+      {
+        "path": "src/smart/wizard-step/js/templates/default.js",
+        "sha256": "b4e49195837d7ece0a8f36756b7857227218af021b63637c95d1821bc6c9abef"
+      },
+      {
+        "path": "src/smart/wizard-step/rule.js",
+        "sha256": "3beb5cb366411362e599bd47453179d6f09c06a4bc48e311d73ae516b9ab8a2d"
+      },
+      {
+        "path": "src/smart/wizard-step/docs.md",
+        "sha256": "10bc07f12f960942b5b79f288fcc1ef8079bdf01e13be9f4dd67714fc4aab668"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-wizard-step only inside sf-wizard, one per step.",
+    "do_not": [
+      "Do not draw the step's title or buttons inside the body; the wizard draws them from the attributes"
+    ],
+    "required_reads": [
+      "inputs"
+    ],
+    "minimal_example": "<sf-wizard-step name=\"address\" label=\"Адрес панели\" type=\"form\" description=\"По этому адресу вы будете открывать панель.\"><form><sf-input name=\"host\" label=\"Адрес\" required></sf-input></form></sf-wizard-step>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

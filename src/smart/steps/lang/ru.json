@@ -3,6 +3,8 @@
   "runtime": {
     "aria-label": "Шаги",
     "completed-label": "Завершено",
-    "error-label": "Ошибка"
+    "error-label": "Ошибка",
+    "skipped-label": "Пропущен",
+    "running-label": "Выполняется"
   }
 }
