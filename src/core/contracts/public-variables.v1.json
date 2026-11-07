@@ -3957,6 +3957,54 @@
           "since": "2026-11-06"
         }
       ]
+    },
+    {
+      "component": "code",
+      "selector": "code",
+      "variables": [
+        {
+          "name": "--sf-code-background",
+          "role": "background",
+          "summary": "The plate behind a word of code in running text. Tones from existing roles only: var(--sf-tertiary-container) with --sf-code-color var(--sf-on-tertiary-container).",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-color",
+          "role": "color",
+          "summary": "The ink of a word of code in running text. Tones from existing roles only: var(--sf-secondary), var(--sf-highlight-keyword).",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-padding",
+          "role": "padding",
+          "summary": "The room around the word, relative to the code's own size.",
+          "default": "0.2em 0.4em",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-font-size",
+          "role": "font-size",
+          "summary": "The code's size against the text around it.",
+          "default": "85%",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-radius",
+          "role": "radius",
+          "summary": "The plate's corners.",
+          "default": "var(--sf-a6)",
+          "since": "2026-11-07"
+        },
+        {
+          "name": "--sf-code-font-family",
+          "role": "font-family",
+          "summary": "The code's typeface.",
+          "default": "var(--sf-mono)",
+          "since": "2026-11-07"
+        }
+      ]
     }
   ]
 }

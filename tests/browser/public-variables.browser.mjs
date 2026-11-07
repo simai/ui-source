@@ -237,6 +237,9 @@ const DRAW = {
   // Smart module. A figure with a caption; a procedure of two steps, so the
   // line between the markers is drawn (the marker is a ::before, the line an
   // ::after).
+  // Code in running text (2026-11-07, R024): the core sheet's base rule, no
+  // module; a word in a paragraph, set on an ancestor as any site would.
+  code: {css: [], js: [], html: '<p>Run <code>npm test</code> before a commit.</p>'},
   card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
   figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
   procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},
@@ -262,6 +265,10 @@ const ROLES = {
   size: {properties: ['block-size', 'height'], value: '29px'},
   // A text size: the card's title (sf-card).
   'font-size': {properties: ['font-size'], value: '29px'},
+  // A typeface: code in running text.
+  'font-family': {properties: ['font-family'], value: 'probe-family'},
+  // Room on every side, written as one value (code in running text).
+  padding: {properties: ['padding-top', 'padding-left'], value: '17px'},
   // A width a panel fixes, so its text cannot widen it.
   'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays

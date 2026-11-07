@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.styles",
   "kind": "core",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions and the workspace layout, placeholders and touch fields.",
   "includes": [
