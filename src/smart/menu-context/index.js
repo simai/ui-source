@@ -261,6 +261,7 @@ class SfContextMenu extends ContextMenuElement {
     const run = this._afterRender;
     this._afterRender = null;
     run?.();
+    this.watchScrollbar();
     const content = this.querySelector(".sf-context-menu-content");
     if (content) this._itemObserver.observe(content, {
       childList: true, subtree: true, attributes: true,
@@ -268,10 +269,51 @@ class SfContextMenu extends ContextMenuElement {
     });
   }
 
+  // The scrollbar stands in the inline-end inset only while it takes room
+  // (owner C07, R029): the area that scrolls the rows -- the rows' area under
+  // a search, else the content of a menu that is not a panel -- gives up its
+  // inline-end padding then, and keeps it beside an overlay scrollbar or none.
+  // Read whenever the area is drawn or changes its size: a narrowed search, a
+  // panel fitted to its room, a window made smaller.
+  scrollArea() {
+    return this.querySelector(".sf-context-menu-content--search > .sf-context-menu-list")
+      ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .relative > .sf-context-menu-content");
+  }
+
+  watchScrollbar() {
+    const area = this.scrollArea();
+    if (area !== this._scrollArea) {
+      this._scrollObserver?.disconnect();
+      this._scrollArea?.classList.remove("sf-context-menu-list--scrollbar", "sf-context-menu-content--scrollbar");
+      this._scrollArea = area;
+      if (area && typeof ResizeObserver === "function") {
+        // The mark moves the area's padding, so it is written on the next
+        // frame: written in the observer's own call it would resize what is
+        // observed while the observer delivers (a ResizeObserver loop).
+        this._scrollObserver ??= new ResizeObserver(() => requestAnimationFrame(() => this.markScrollbar()));
+        this._scrollObserver.observe(area);
+      }
+    }
+    this.markScrollbar();
+  }
+
+  markScrollbar() {
+    const area = this._scrollArea;
+    if (!area?.isConnected) return;
+    const style = getComputedStyle(area);
+    const borders = (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0);
+    const takesRoom = area.offsetWidth - area.clientWidth - borders > 0;
+    const name = area.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar";
+    if (area.classList.contains(name) !== takesRoom) area.classList.toggle(name, takesRoom);
+  }
+
   disconnectedCallback() {
     // Taken out of the page, it closes without asking: nothing is left to keep.
     if (this._owned) this.close({restoreFocus: false, ask: false});
     this._itemObserver.disconnect();
+    this._scrollObserver?.disconnect();
+    this._scrollObserver = null;
+    this._scrollArea = null;
     for (const item of this._itemAttributes.keys()) this.releaseItem(item);
     this._currentItem = null;
     super.disconnectedCallback();

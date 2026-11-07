@@ -109,7 +109,8 @@ async function open(name, {width, theme}) {
   return {tab, context, errors};
 }
 
-const rung = (size) => `(() => { const probe = document.createElement('div'); probe.style.cssText = 'position:absolute;block-size:calc(var(--sf-text-height-${size.replace('/', '\\\\/')}) + 2 * var(--sf-ui-${size.replace('/', '\\\\/')}--space-y))'; document.body.append(probe); const h = parseFloat(getComputedStyle(probe).blockSize); probe.remove(); return h; })()`;
+// A row is a control of the menu's rung (owner C05, R029).
+const rung = (size) => `(() => { const probe = document.createElement('div'); probe.style.cssText = 'position:absolute;block-size:var(--sf-ui-${size.replace('/', '\\\\/')}--control-height)'; document.body.append(probe); const h = parseFloat(getComputedStyle(probe).blockSize); probe.remove(); return h; })()`;
 // A role's colour where the glyphs stand: inside the panel, whose surface
 // may give the roles values of its own (a raised surface in the dark theme).
 const colour = (variable) => `(() => { const probe = document.createElement('span'); probe.style.color = 'var(${variable})'; document.querySelector('#settings .sf-context-menu-content').append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; })()`;
