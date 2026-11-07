@@ -137,3 +137,53 @@ test('the Framework never sets a public variable', async () => {
     }
   }
 });
+
+// The default the contract states is the one the sheet falls back to
+// (2026-11-07: sf-menu-context 1.7.2 moved the panel's inset to --sf-space-1/3
+// while the contract still said 1/4, and nothing compared the two). Checked
+// where the sheet says it plainly: the variable does not vary with a setting,
+// every read falls back to one and the same value, and that value is not an
+// internal variable (--sf-<name>--<part>) whose own value moves with the
+// state. A sheet's local alias (--sf-skeleton-base: var(--sf-ui-skeleton))
+// is read through once, and a token's own fallback inside the value is
+// ignored (var(--sf-scrim-color, var(--sf-black)) is var(--sf-scrim-color)).
+const plain = (value) => value.replace(/\\/gu, '').replace(/\s+/gu, '');
+const withoutFallbacks = (value) => {
+  let before;
+  do {
+    before = value;
+    value = value.replace(/var\((--[\w/-]+),(?:[^()]|\([^()]*\))*\)/gu, 'var($1)');
+  } while (value !== before);
+  return value;
+};
+const fallbacksOf = (source, name) => {
+  const found = [];
+  const key = `var(${name},`;
+  for (let at = source.indexOf(key); at >= 0; at = source.indexOf(key, at + key.length)) {
+    let depth = 1;
+    let end = at + key.length;
+    for (; end < source.length && depth; end += 1) depth += source[end] === '(' ? 1 : source[end] === ')' ? -1 : 0;
+    found.push(plain(source.slice(at + key.length, end - 1)));
+  }
+  return found;
+};
+
+test('a public variable\'s stated default is the value its stylesheet falls back to', async () => {
+  const checked = [];
+  for (const entry of contract.components) {
+    const source = await scss(FOLDERS[entry.component]);
+    for (const variable of entry.variables) {
+      if (!('default' in variable) || variable.varies_with) continue;
+      const fallbacks = [...new Set(fallbacksOf(source, variable.name))];
+      if (fallbacks.length !== 1 || /--sf-[a-z0-9-]+--/u.test(fallbacks[0])) continue;
+      const [fallback] = fallbacks;
+      const alias = /^var\((--[\w/-]+)\)$/u.exec(fallback)?.[1];
+      const local = alias ? [...new Set([...source.matchAll(new RegExp(`${alias.replace(/\//gu, '\\/')}\\s*:\\s*([^;]+);`, 'gu'))].map((match) => plain(match[1])))] : [];
+      const stated = withoutFallbacks(plain(variable.default));
+      const read = [fallback, ...(local.length === 1 ? local : [])].map(withoutFallbacks);
+      assert.ok(read.includes(stated), `${variable.name}: the contract says ${variable.default}, ${FOLDERS[entry.component]} falls back to ${fallback}`);
+      checked.push(variable.name);
+    }
+  }
+  assert.ok(checked.length > 200, `${checked.length} defaults compared`);
+});
