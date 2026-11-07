@@ -336,7 +336,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "5f2ee3db81429548aaead8457fdc4a23502713ef0cb2e2314c3c2d8cbf39b940"
+        "sha256": "247113da4612524095f1e07156aefeecff1a51cc80706e805f06bc17c1f55c6a"
       },
       {
         "path": "src/smart/popover/rule.js",
@@ -348,7 +348,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "a875e07234779d925bd2ce53744bedd2d237bda5a09f5a73790de37c8242a15c"
+        "sha256": "4a66fbd68daff0093438bce2ad669d1ef3f67dfdfec11c83fc3050025dd73fe4"
       }
     ],
     "generated_runtime": []
