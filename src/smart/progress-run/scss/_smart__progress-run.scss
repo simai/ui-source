@@ -25,6 +25,7 @@ sf-progress-run {
   --sf-progress-run--control: var(--sf-ui-1--control-height);
   --sf-progress-run--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-progress-run--below-space-x: var(--sf-ui-1\/2--space-x);
+  --sf-progress-run--below-text-space-x: var(--sf-ui-1\/2--text-space-x);
   --sf-progress-run--padding-block: calc((var(--sf-progress-run--control) - var(--sf-progress-run--line)) / 2);
   --sf-progress-run--padding-inline: var(--sf-progress-run-padding-inline, calc(var(--sf-px) * 0));
   --sf-progress-run--divider: var(--sf-progress-run-divider-color, var(--sf-outline-variant));
@@ -48,6 +49,7 @@ sf-progress-run {
   --sf-progress-run--control: var(--sf-ui-1\/2--control-height);
   --sf-progress-run--text-space-x: var(--sf-ui-1\/2--text-space-x);
   --sf-progress-run--below-space-x: var(--sf-ui-1\/3--space-x);
+  --sf-progress-run--below-text-space-x: var(--sf-ui-1\/3--text-space-x);
 }
 
 .sf-progress-run-heading {
@@ -187,10 +189,12 @@ sf-progress-run {
 /* The «Вывод» toggle is a link button, and a link button keeps its own inner
    room: its label stood a button's padding plus the label's own inset to the
    right of the step column. Its first letter stands on the column: the button
-   is drawn that much to the start, so its hover fill reaches past the column
-   as a text button's does, and the label lines up with the step titles. */
+   is drawn that much to the start -- the button's inline padding (read on the
+   button) and its label's inset (the rung below's text-space-x, which the
+   button sets on the label, not on itself) -- so its hover fill reaches past
+   the column as a text button's does. */
 .sf-progress-run-toggle > .sf-button {
-  margin-inline-start: calc(-1 * (var(--sf-button--padding-inline-start, 0px) + var(--sf-button-text-container--padding-inline-start, 0px)));
+  margin-inline-start: calc(-1 * (var(--sf-button--padding-inline-start, 0px) + var(--sf-progress-run--below-text-space-x)));
 }
 
 .sf-progress-run-output-tools {

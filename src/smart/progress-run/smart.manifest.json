@@ -380,7 +380,7 @@
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "3b599fe89bd8fbdf779e8c8d93239baa436736ccd26bd5780c1eca9288f406f7"
+        "sha256": "fd7fa8b918725c2376749674295355100683c12523528e477814d1ae60173a34"
       },
       {
         "path": "src/smart/progress-run/rule.js",

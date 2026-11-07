@@ -4077,7 +4077,7 @@
           "name": "--sf-list-attention-padding-inline",
           "role": "padding-inline",
           "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
-          "default": "0",
+          "default": "calc(var(--sf-px) * 0)",
           "since": "2026-11-07"
         },
         {
@@ -4132,7 +4132,7 @@
           "name": "--sf-progress-run-padding-inline",
           "role": "padding-inline",
           "summary": "The inline inset of the heading, the steps, the result, the output and the actions; 0 by default.",
-          "default": "0",
+          "default": "calc(var(--sf-px) * 0)",
           "since": "2026-11-07"
         }
       ]
