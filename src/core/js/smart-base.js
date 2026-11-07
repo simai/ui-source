@@ -9,6 +9,7 @@ import { canonicalTag, defineTagAliases } from './tag-aliases.js';
 // with defineTagAliases.
 export { canonicalTag, defineTagAliases, isTag, tagNames, tagSelector } from './tag-aliases.js';
 import { upgradeOwnProperties } from './upgrade-properties.js';
+import { HOST_RUNTIME_MARKS, readHostDataAttributes } from './host-runtime-marks.js';
 import { connectPort as connectHostPort, portOf } from './host-port.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
@@ -351,20 +352,7 @@ class SmartElementDirective extends Directive {
 
 export const smartElement = directive(SmartElementDirective);
 
-// The marks the runtime keeps on a Smart host (SF.Assembly, the first paint,
-// the Loader): forwardHostAttributes leaves them on the host.
-const HOST_RUNTIME_MARKS = new Set([
-  "data-sf-role",
-  "data-sf-instance",
-  "data-sf-start",
-  "data-sf-started",
-  "data-sf-assembly",
-  "data-sf-static",
-  "data-sf-first-paint",
-  "data-sf-held",
-  "data-sf-skeleton",
-  "data-sf-observer",
-]);
+// The marks the runtime keeps on a Smart host: host-runtime-marks.js.
 
 // The same element, outside a template. A caller that holds the element itself
 // -- a portal, a measurement, a test -- gets a fresh one, because there is no
@@ -1672,20 +1660,7 @@ class SfBaseElement extends HTMLElement {
   // dataAttributes.add for data-add. The attributes themselves live on the
   // native control, so host.dataset is empty and this is the host's answer.
   get dataAttributes() {
-    const record = this.__sfHostDataAttributes;
-    if (!record || !record.size) {
-      return {};
-    }
-
-    const read = {};
-    record.forEach((value, name) => {
-      const key = name
-        .slice(5)
-        .replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
-      read[key] = value;
-    });
-
-    return read;
+    return readHostDataAttributes(this.__sfHostDataAttributes);
   }
 
   // Take a data-* off the host's record and off the control together. Removing

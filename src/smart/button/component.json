@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -16,7 +16,7 @@
         "3"
       ],
       "default": "1",
-      "summary": "Button size token."
+      "summary": "Button size."
     },
     "appearance": {
       "type": "enum",
@@ -138,12 +138,12 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "summary": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
+      "summary": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). The inner button is unavailable while it loads."
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "summary": "Disabled state flag."
+      "summary": "The button is unavailable."
     },
     "native-type": {
       "type": "enum",
@@ -153,22 +153,22 @@
         "reset"
       ],
       "default": "button",
-      "summary": "Native button type attribute."
+      "summary": "The inner button's type attribute."
     },
     "form": {
       "type": "string",
       "default": "",
-      "summary": "The id of the form the native button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
+      "summary": "The id of the form the inner button submits or resets, as a native button's form attribute: a button outside the form (a wizard's footer) submits it. Not written on a link."
     },
     "name": {
       "type": "string",
       "default": "",
-      "summary": "The name the native button submits its value under, as a native button's name."
+      "summary": "The name the inner button submits its value under, as a native button's name."
     },
     "value": {
       "type": "string",
       "default": "",
-      "summary": "The value the native button submits under name when it is the submitter (next, skip)."
+      "summary": "The value the inner button submits under name when it is the submitter (next, skip)."
     },
     "href": {
       "type": "string",
@@ -178,7 +178,7 @@
     "shortcut": {
       "type": "string",
       "default": "",
-      "summary": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the native button. Empty: no keys"
+      "summary": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
     },
     "shortcut-listen": {
       "type": "boolean",
@@ -188,12 +188,12 @@
     "expanded": {
       "type": "boolean",
       "optional": true,
-      "summary": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
+      "summary": "Whether the panel this button opens is open: aria-expanded on the inner button; absent says nothing"
     },
     "pressed": {
       "type": "boolean",
       "optional": true,
-      "summary": "Whether this toggle button is on: aria-pressed on the native button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "summary": "Whether this toggle button is on: aria-pressed on the inner button and the selected look (the class sheet's active state); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     }
   },
   "values": {},
@@ -442,7 +442,8 @@
     "version 1.3.0: a minor (§4.10): the setting pressed is added (stage 1 of the component sets, duplication audit A-10). Present, the native button carries aria-pressed (\"true\" or \"false\") and, while on, the class sheet's active state, the selected look the buttons component documents for a real two-state button; absent, the button is not a toggle and nothing is said. A page that wrote aria-pressed on the host keeps it: the host forwards it as before.",
     "version 1.4.0: a minor (§4.10): the setting href is added (visual parity of the one block editor, 2026-11-04: a button that is a link). Set, the template draws <a href> with the same classes as the native button, so the class sheet gives it the button's look; its role is link and the browser follows it (Enter, the context menu, a new tab), sf-button-press still fires on a click. accessibility.role stays button for the element without href. A relative address, a fragment, http(s), mailto and tel are taken; any other scheme (javascript:, data:) is refused and the button draws as a button. Disabled or loading, the link loses its href (not reached by Tab, not followed) and says role link and aria-disabled true. native-type, expanded and pressed are a button's words and are not written on a link.",
     "version 1.4.1 (2026-11-07): a cap of one character is a square key -- each key carries sf-button-shortcut-key--square when its cap is one character, and the sf-button-shortcut-key--chars-N classes are gone: a modifier no longer keeps the box of its widest platform word, so ⇧ and ⌘ stand as wide as P (docs review R010). The keys on a default or tonal button take the button's own ink (component.buttons 1.3.0, R009). Settings, values and events unchanged.",
-    "version 1.5.0: a minor (§4.10): the settings form, name and value are added (sf-wizard, owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): the native button carries them as a native button does, so a button outside a form submits it (form) and the server reads which button sent it (name, value) -- a wizard's footer posts the step's form with next or skip and adds no hidden field. Before, a host attribute of these names reached the native button only as an undeclared forwarded attribute. They are a button's words: a link (href) does not carry them."
+    "version 1.5.0: a minor (§4.10): the settings form, name and value are added (sf-wizard, owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): the native button carries them as a native button does, so a button outside a form submits it (form) and the server reads which button sent it (name, value) -- a wizard's footer posts the step's form with next or skip and adds no hidden field. Before, a host attribute of these names reached the native button only as an undeclared forwarded attribute. They are a button's words: a link (href) does not carry them.",
+    "version 1.5.1 (2026-11-07): the reference wording (docs review R022): press says what sends it, checked in a browser on the built bytes -- a click, Enter or Space on the inner button or link, the shortcut-listen key; the detail is an empty object; not click() on the host, not a disabled or loading button (a click() on the inner button does send it). size, disabled and loading read plainly; the control is the inner button, the docs' term, not the native one. element.dataAttributes no longer returns the style gate's sfStyleReady / sfStylePending (core.runtime 1.31.2). Settings, values and events unchanged."
   ],
   "x-rule": {
     "$comment-after": [

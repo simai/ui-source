@@ -230,6 +230,11 @@ try {
 
     check('the host reads what the author wrote, like dataset',
       record.afterRender.read.add === 'block' && record.afterRender.read.columnKey === 'f2', record);
+    // Only what the author wrote: the style gate's marks (sfStyleReady,
+    // sfStylePending) came back beside data-add until 2026-11-07 (R022).
+    check('the record holds only the author\'s attributes, no runtime mark',
+      JSON.stringify(Object.keys(record.afterRender.read).sort()) === JSON.stringify(['add', 'columnKey'])
+      && JSON.stringify(Object.keys(record.afterRemove.read).sort()) === JSON.stringify(['columnKey']), record);
     check('the attribute itself is on the control, not the host',
       record.afterRender.onControl === 'block' && record.afterRender.count === 1
       && Object.keys(record.afterRender.dataset).length === 0, record);
