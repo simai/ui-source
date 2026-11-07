@@ -4425,6 +4425,54 @@
           "since": "2026-11-08"
         }
       ]
+    },
+    {
+      "component": "highlight",
+      "selector": ".sf-highlight, .sf-code-surface",
+      "variables": [
+        {
+          "name": "--sf-highlight-radius",
+          "role": "radius",
+          "summary": "The code surface's corner; inside a container that follows the nesting rule, var(--sf-radius--nested).",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-highlight-background-color",
+          "role": "background",
+          "summary": "The code surface's fill, under the header and the code.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-highlight-border-color",
+          "role": "border-color",
+          "summary": "The code surface's border and the header's bottom rule.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-highlight-border-width",
+          "role": "border-width",
+          "summary": "The code surface's border width.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-highlight-padding",
+          "role": "padding",
+          "summary": "The inset of the code inside the surface.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-highlight-head-height",
+          "role": "min-block-size",
+          "summary": "The generated header's height: the language, the wrap toggle and copy stand on its middle line.",
+          "default": "var(--sf-ui-1--control-height)",
+          "since": "2026-11-08"
+        }
+      ]
     }
   ]
 }

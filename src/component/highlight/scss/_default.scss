@@ -39,7 +39,7 @@
         min-height: 0;
 
         > .sf-scrollbar__viewport:not([class*='p-']) {
-          padding: var(--sf-space-1);
+          padding: var(--sf-highlight-padding, var(--sf-space-1));
         }
       }
     }
@@ -52,10 +52,51 @@
     margin-inline-start: auto;
   }
 
-  .sf-highlight__head {
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
+  /* The head lays itself out (simai/ui-source#31 item 2, ui-chat D-08): the
+     language at the start, the wrap toggle and copy at the end, all on the
+     head's middle line, one size-1 control high. It read space-between and
+     centring from utility classes the script wrote on it (flex,
+     content-main-between, items-center), so on a page whose utility sheet was
+     missing or late both packed to the start of a block box. The end inset is
+     the quarter step: the copy button's box stands as far from the head's
+     end as from its top and bottom ((40 - 32) / 2 at size 1), the icon in
+     the corner as on any nested control. */
+  :is(.sf-highlight__head, .sf--highlight-head) {
+    /* The control height is the content's; the bottom rule comes on top. */
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sf-space-1\/4);
+    min-block-size: var(--sf-highlight-head-height, var(--sf-ui-1--control-height));
+    padding-block: 0;
+    padding-inline: var(--sf-space-1) var(--sf-space-1\/4);
     margin: 0;
     border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  /* The language takes the free space after it, so the buttons stand at the
+     end whether the label is there or not. */
+  .sf-highlight__language {
+    margin-inline-end: auto;
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    font-weight: 500;
+    color: var(--sf-on-surface-variant);
+  }
+
+  /* The copy status is read aloud, not shown: the component's own, so it
+     never shows while the utility sheet is on its way. */
+  .sf-highlight__status {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    padding: 0;
+    margin: calc(-1 * var(--sf-px));
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* The block is a column: the head, then the code taking the rest. The code
@@ -80,24 +121,25 @@
     min-width: 0;
     overflow: hidden;
     margin: 0;
-    background: var(--sf-surface-container);
+    background: var(--sf-highlight-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    border: var(--sf-px) solid var(--sf-outline-variant);
-    border-radius: var(--sf-radius--surface);
+    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    /* A public corner (#31 item 3), as sf-drawer and sf-modal give one: a
+       chat bubble or a card that holds a code block sets it to the radius
+       nested in its own (--sf-radius--nested). */
+    border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
     color: var(--sf-on-surface);
   }
 
   .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
     margin: 0;
-    padding-block: var(--sf-space-1\/3);
-    padding-inline: var(--sf-space-1);
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end: var(--sf-px) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
 
   .sf-code-surface__scroll {
     max-width: 100%;
     margin: 0;
-    padding: var(--sf-space-1);
+    padding: var(--sf-highlight-padding, var(--sf-space-1));
     overflow: auto;
     overscroll-behavior-inline: contain;
     direction: ltr;

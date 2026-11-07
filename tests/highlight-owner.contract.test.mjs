@@ -30,6 +30,24 @@ test('the generated code head has no fill or backdrop filter of its own (Docara,
   assert.ok(!head[1].split(' ').some((name) => name.startsWith('bg-')), `no background utility on the head: ${head[1]}`);
 });
 
+test('the code head lays itself out from the component sheet, not from utilities (simai/ui-source#31 item 2)', async () => {
+  const [source, sheet] = await Promise.all([
+    read('src/component/highlight/js/index.js'),
+    read('src/component/highlight/scss/_default.scss'),
+  ]);
+  const head = /head\.className = '([^']+)'/u.exec(source)[1].split(' ');
+  assert.deepEqual(head, ['sf-highlight__head', 'sf--highlight-head'], 'no utility class on the generated head');
+  const label = /language\.className = '([^']+)'/u.exec(source)[1].split(' ');
+  assert.deepEqual(label, ['sf-highlight__language'], 'no utility class on the generated label');
+  const rule = /:is\(\.sf-highlight__head, \.sf--highlight-head\) \{([^}]+)\}/u.exec(sheet)?.[1] ?? '';
+  for (const declaration of ['display: flex', 'align-items: center', 'min-block-size: var(--sf-highlight-head-height, var(--sf-ui-1--control-height))']) {
+    assert.ok(rule.includes(declaration), `the head rule holds ${declaration}`);
+  }
+  assert.match(sheet, /\.sf-highlight__language \{[^}]*margin-inline-end: auto/u);
+  assert.match(sheet, /\.sf-highlight__status \{[^}]*clip-path: inset\(50%\)/u);
+  assert.match(sheet, /border-radius: var\(--sf-highlight-radius, var\(--sf-radius--surface\)\)/u);
+});
+
 test('Highlight composes native Clipboard and supports dynamic refresh', async () => {
   const [source, rule] = await Promise.all([
     read('src/component/highlight/js/index.js'),

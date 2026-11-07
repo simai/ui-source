@@ -19,7 +19,7 @@ test('Highlight uses compact Framework tokens and a transparent code surface', a
   );
   assert.match(
     defaults,
-    /&-wrap\s*\{[\s\S]*padding:\s*0;[\s\S]*> \.sf-scrollbar__viewport:not\(\[class\*='p-'\]\)\s*\{[\s\S]*padding:\s*var\(--sf-space-1\);/,
+    /&-wrap\s*\{[\s\S]*padding:\s*0;[\s\S]*> \.sf-scrollbar__viewport:not\(\[class\*='p-'\]\)\s*\{[\s\S]*padding:\s*var\(--sf-highlight-padding, var\(--sf-space-1\)\);/,
   );
   assert.doesNotMatch(
     defaults,
@@ -33,13 +33,16 @@ test('Highlight uses compact Framework tokens and a transparent code surface', a
 });
 
 test('Highlight creates an accessible icon-only Clipboard action at size 1/2', async () => {
-  const [highlight, clipboard, rule] = await Promise.all([
+  const [highlight, clipboard, rule, sheetOf] = await Promise.all([
     read('src/component/highlight/js/index.js'),
     read('src/component/clipboard/js/index.js'),
     read('src/component/highlight/rule.js'),
+    read('src/component/highlight/scss/_default.scss'),
   ]);
 
-  assert.match(highlight, /sf-text-1\/2/);
+  // The label's size is the component's own rule since 1.2.0 (#31 item 2),
+  // not the sf-text-1/2 utility.
+  assert.match(sheetOf, /\.sf-highlight__language \{[^}]*font-size: var\(--sf-text-size-1\\\/2\)/);
   assert.match(highlight, /sf--highlight-wrap sf-scrollbar/);
   assert.match(highlight, /sfScrollbarAxis = 'horizontal'/);
   assert.match(highlight, /sf-scrollbar__viewport/);

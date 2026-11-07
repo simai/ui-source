@@ -234,8 +234,12 @@ function ensureStructure(block) {
       // backdrop-filter (blur 64px) blurred nothing here but gave every code
       // head a compositing layer, and sticky page headers blanked for a frame
       // while scrolling past code blocks (Docara, 2026-11-07). A second
-      // bg-surface-container would double the translucent fill.
-      head.className = 'sf-highlight__head sf--highlight-head flex content-main-between items-center border-outline-variant';
+      // bg-surface-container would double the translucent fill. Its layout
+      // is the component's own rule too (simai/ui-source#31 item 2): the
+      // utility classes it carried (flex, content-main-between, items-center,
+      // border-outline-variant) left it a block box where the utility sheet
+      // was missing or late.
+      head.className = 'sf-highlight__head sf--highlight-head';
       root.prepend(head);
     }
   }
@@ -251,7 +255,7 @@ function updateChrome(block, result) {
   let language = head.querySelector(':scope > .sf-highlight__language');
   if (!language) {
     language = block.ownerDocument.createElement('span');
-    language.className = 'sf-highlight__language sf-text-1/2 weight-5';
+    language.className = 'sf-highlight__language';
     head.prepend(language);
   }
   language.textContent = block.dataset.requestedLang || result.language || 'text';
