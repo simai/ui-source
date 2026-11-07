@@ -239,23 +239,24 @@
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
   }
 
+  /* Density (spacing) moves the side padding only, as on sf-button: one
+     height per size whatever the look or the spacing (owner rule C01, docs
+     review R022, 2026-11-07). The block padding stays the size's default
+     step, so the button keeps the size's control height; the side padding
+     takes the tightness step, so a compact icon button is narrower than it is
+     tall and a spacious one wider. Before, the step moved all four sides and
+     a compact size 1 stood 32px, a spacious one 56px. */
   .sf-icon-button--size-1:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
   }
 
   .sf-icon-button--size-1:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
   }
 
   .sf-icon-button--size-1:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
   }
@@ -268,22 +269,16 @@
   }
 
   .sf-icon-button--size-2:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
   }
 
   .sf-icon-button--size-2:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
   }
 
   .sf-icon-button--size-2:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
   }
@@ -296,22 +291,16 @@
   }
 
   .sf-icon-button--size-3:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
   }
 
   .sf-icon-button--size-3:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
   }
 
   .sf-icon-button--size-3:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
   }
@@ -324,22 +313,16 @@
   }
 
   .sf-icon-button--size-1\/2:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
   }
 
   .sf-icon-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
   }
 
   .sf-icon-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
   }
@@ -352,22 +335,16 @@
   }
 
   .sf-icon-button--size-1\/3:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
   }
 
   .sf-icon-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
   }
 
   .sf-icon-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
-    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
   }

@@ -59,7 +59,9 @@ async function open(body) {
   // What an author wrote on a host, without the runtime's own state marks
   // (data-sf-started is the base value started, §4.1, and stays on the host).
   await page.evaluate(() => {
-    window.authored = (host) => Object.fromEntries(Object.entries(host.dataset).filter(([key]) => key !== 'sfStarted'));
+    // The runtime's marks stay on the host (core/js/host-runtime-marks.js):
+    // the Assembly's, and since 2026-11-07 the style gate's pair as well.
+    window.authored = (host) => Object.fromEntries(Object.entries(host.dataset).filter(([key]) => !['sfStarted', 'sfStyleReady', 'sfStylePending'].includes(key)));
   });
   await page.waitForTimeout(600);
   return page;
@@ -230,6 +232,11 @@ try {
 
     check('the host reads what the author wrote, like dataset',
       record.afterRender.read.add === 'block' && record.afterRender.read.columnKey === 'f2', record);
+    // Only what the author wrote: the style gate's marks (sfStyleReady,
+    // sfStylePending) came back beside data-add until 2026-11-07 (R022).
+    check('the record holds only the author\'s attributes, no runtime mark',
+      JSON.stringify(Object.keys(record.afterRender.read).sort()) === JSON.stringify(['add', 'columnKey'])
+      && JSON.stringify(Object.keys(record.afterRemove.read).sort()) === JSON.stringify(['columnKey']), record);
     check('the attribute itself is on the control, not the host',
       record.afterRender.onControl === 'block' && record.afterRender.count === 1
       && Object.keys(record.afterRender.dataset).length === 0, record);

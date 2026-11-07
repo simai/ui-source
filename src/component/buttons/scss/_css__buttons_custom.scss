@@ -189,6 +189,17 @@
     color: transparent;
     -webkit-text-fill-color: transparent;
   }
+
+  /* Secondary outline, surface and link keep the secondary ink when hovered
+     or pressed: the fill steps as on-surface's do, the label does not turn
+     grey. Same weight as the on-surface state rules, later in the layer. */
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-secondary);
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
+    --sf-icon--color: var(--sf-secondary);
+  }
 }
 
 @layer sf.components {
@@ -205,6 +216,22 @@
 
   .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) .sf-icon {
     --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
+  /* Secondary in the outline, surface and link (ghost) looks (owner decision
+     2026-11-07, variant A): the on-surface structure -- edge, fill, padding,
+     type, height, hover and press fills, disabled -- is the same rule set
+     (_css__buttons: those selectors read :is(on-surface, secondary)); only
+     the label and the icons take --sf-secondary, at rest, hovered and
+     pressed. Before, these three looks of secondary had no rule at all: no
+     padding, shorter than the size's control height, the browser's text colour. Filled
+     (default) and tonal secondary are unchanged. */
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary .sf-icon {
+    --sf-icon--color: var(--sf-secondary);
   }
 
   /* A shortcut's keys (sf-button shortcut): a kbd group at the end of the

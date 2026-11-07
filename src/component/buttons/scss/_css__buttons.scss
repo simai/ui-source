@@ -110,12 +110,12 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1--text-space-x);
   }
 
-  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-size: var(--sf-text-size-1);
     --sf-button-text-container--line-height: var(--sf-text-height-1);
   }
 
-  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-family: var(--sf-text--family);
     --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
   }
@@ -175,15 +175,15 @@
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container {
+  .sf-button.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline.sf-button--on-surface .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-icon {
+  .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
-  .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline.sf-button--on-surface {
+  .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
     --sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));
   }
@@ -196,7 +196,7 @@
     --sf-icon--color: var(--sf-primary);
   }
 
-  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface, .sf-button.sf-button--loading.sf-button--default.sf-button--primary, .sf-button.sf-button--loading.sf-button--default.sf-button--secondary {
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary), .sf-button.sf-button--loading.sf-button--default.sf-button--primary, .sf-button.sf-button--loading.sf-button--default.sf-button--secondary {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
   }
 
@@ -205,7 +205,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-2--text-space-x);
   }
 
-  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-size: var(--sf-text-size-2);
     --sf-button-text-container--line-height: var(--sf-text-height-2);
   }
@@ -215,7 +215,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-3--text-space-x);
   }
 
-  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-size: var(--sf-text-size-3);
     --sf-button-text-container--line-height: var(--sf-text-height-3);
   }
@@ -225,7 +225,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
   }
 
-  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
   }
@@ -235,7 +235,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
   }
 
-  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
   }
@@ -253,19 +253,27 @@
     --sf-icon--width: var(--sf-text-height-1);
   }
 
+  /* Density (spacing) moves the side padding only: one height per size
+     whatever the look or the spacing (owner rule C01, docs review R022,
+     2026-11-07). The step is the one the size's tightness ladder already
+     gives -- the tightness value less the default one -- added to the size's
+     side padding, so compact is narrower and spacious wider at the same
+     control height. The block padding stays the size's default step, which is
+     what --sf-ui-*--control-height is made of. Before, the steps changed the
+     block padding and a compact size 1 stood 32px, a spacious one 56px. */
   .sf-button--size-1:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-1:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-1:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
   }
 
   .sf-button--size-2 {
@@ -282,18 +290,18 @@
   }
 
   .sf-button--size-2:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-2:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-2:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
   }
 
   .sf-button--size-3 {
@@ -310,18 +318,18 @@
   }
 
   .sf-button--size-3:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-3:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-3:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2 {
@@ -338,18 +346,18 @@
   }
 
   .sf-button--size-1\/2:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3 {
@@ -366,18 +374,18 @@
   }
 
   .sf-button--size-1\/3:is(.tightness-low, .spacing-compact) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
-    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
-    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
   .sf-button--outline {
@@ -491,11 +499,11 @@
     --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
   }
 
-  .sf-button.sf-button--surface.sf-button--on-surface .sf-button-text-container {
+  .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--surface.sf-button--on-surface .sf-icon {
+  .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
@@ -509,7 +517,7 @@
 }
 
 @layer sf.states {
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):focus-visible {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible {
     --sf-button--background-color: var(--sf-transparent-for-focus);
   }
 
@@ -517,7 +525,7 @@
     --sf-button--background-color: var(--sf-disable);
   }
 
-  .sf-button.sf-button--default.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--outline.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--secondary:disabled .sf-button-text-container {
+  .sf-button.sf-button--default.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--outline.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--secondary:disabled .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-on-disable);
   }
 
@@ -525,7 +533,7 @@
     --sf-button--border-color: var(--sf-outline-disable);
   }
 
-  .sf-button.sf-button--outline.sf-button--on-surface:disabled {
+  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled {
     --sf-button--border-color: var(--sf-outline-variant);
   }
 
@@ -548,11 +556,11 @@
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover {
     --sf-button--background-color: var(--sf-surface-container-hover);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-on-surface-hover);
   }
 
@@ -568,7 +576,7 @@
     --sf-icon--color: var(--sf-primary-hover);
   }
 
-  .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon {
+  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon {
     --sf-icon--color: var(--sf-on-surface-hover);
   }
 
@@ -588,11 +596,11 @@
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active {
     --sf-button--background-color: var(--sf-surface-container-active);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-on-surface-active);
   }
 
@@ -608,7 +616,7 @@
     --sf-icon--color: var(--sf-primary-active);
   }
 
-  .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon {
+  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon {
     --sf-icon--color: var(--sf-on-surface-active);
   }
 

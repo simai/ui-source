@@ -18,11 +18,18 @@ the Smart `sf-button` projection.
 - emphasis: `sf-button--default`, `sf-button--tonal`,
   `sf-button--outline`, `sf-button--link`, `sf-button--surface`;
   `sf-button--ghost` is a compatibility name for `link`;
-- scheme: `primary` and `on-surface` for every emphasis; `tonal` also keeps
-  `secondary`;
+- scheme: `primary`, `on-surface` and `secondary` for every emphasis.
+  `default` and `tonal` secondary have a secondary fill of their own;
+  `outline`, `surface` and `link` secondary are the on-surface button --
+  edge, fill, padding, height, hover, press and disabled -- with the label and
+  the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
+  these three had no rule: no padding, about 32px at size 1 and the browser's
+  text colour);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density: the default, `spacing-compact`, `spacing-comfortable` or
-  `spacing-spacious` (less, more and most inner space). The older
+  `spacing-spacious` (less, more and most side space). Density moves the side
+  padding only: a button of a size is as tall at every density as at every
+  appearance (one height per size, 1.4.0). The older
   `tightness-low`, `tightness-high` and `tightness-highest` are the same steps
   under names that read backwards -- `low` is the least space -- and stay as
   compatibility names. Put one density class on a button; the constructor's

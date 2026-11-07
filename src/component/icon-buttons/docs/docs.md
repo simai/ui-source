@@ -14,7 +14,10 @@ decorative and uses `aria-hidden="true"`.
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
-  are the same steps under older names that read backwards;
+  are the same steps under older names that read backwards. Density moves
+  the side padding only (1.2.0): an icon button of a size is as tall at every
+  density, so a compact one is narrower than it is tall and a spacious one
+  wider;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
