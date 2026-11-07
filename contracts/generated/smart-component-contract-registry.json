@@ -2548,7 +2548,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "8c8ff61ed80c662011b9639d8c80fcc83f1bce391ec74859bc12aba442320d20",
+      "manifest_sha256": "a084c4078f13f63cf3feacfc5e78d193b7da9ff7b088f5f5fb420733db1ff1d9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
