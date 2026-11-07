@@ -26,6 +26,10 @@
   /* The column of steps: eleven lines of the rung, a label of two or three
      words beside its mark. */
   --sf-wizard--column: calc(var(--sf-wizard--line) * 11);
+  /* A row of the column is the rung's control (the list step's height); the
+     column is never shorter than six of them (owner, 2026-11-07). */
+  --sf-wizard--row: var(--sf-wizard--control);
+  --sf-wizard--column-rows: 6;
   display: flex;
   flex-direction: column;
   gap: var(--sf-wizard--gap);
@@ -392,18 +396,20 @@
 
 /* Wide (40rem of the wizard's own width and more): the column, when asked. */
 @container sf-wizard (min-width: 40rem) {
-  /* The column never sets the wizard's height: the body does (owner,
-     2026-11-07). The column stretches to the body's height and its list
-     scrolls inside, out of the flow (absolute), so 30 steps beside a short
-     body leave the frame as tall as the body. The scroller is an sf-scrollbar
-     in standard mode, the kit's look of a native scroll area; the wizard keeps
-     the current step in view in it (afterRender), keyboard focus does the
-     same natively. */
+  /* The column never sets the wizard's height beyond six of its rows (owner,
+     2026-11-07): it is at least six rows tall, so a short step does not
+     squeeze it; above that the body and the footer decide the height. The
+     column stretches to the body's height and its list scrolls inside, out of
+     the flow (absolute), so 30 steps beside a short body leave the frame six
+     rows tall. The scroller is an sf-scrollbar in standard mode, the kit's
+     look of a native scroll area; the wizard keeps the current step in view
+     in it (afterRender), keyboard focus does the same natively. */
   .sf-wizard--progress-column .sf-wizard-column {
     display: block;
     position: relative;
     flex: none;
     inline-size: var(--sf-wizard--column);
+    min-block-size: calc(var(--sf-wizard--row) * var(--sf-wizard--column-rows));
     border-inline-end: var(--sf-px) solid var(--sf-wizard--border-color);
   }
 
@@ -470,6 +476,11 @@
     .sf-wizard .sf-wizard-steps .sf-step,
     .sf-wizard .sf-wizard-list-step {
       min-block-size: var(--sf-d1);
+    }
+
+    /* The column's six rows are six touch rows. */
+    .sf-wizard {
+      --sf-wizard--row: max(var(--sf-wizard--control), var(--sf-d1));
     }
   }
 }

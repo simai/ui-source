@@ -504,7 +504,7 @@
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "31220210b3f1180b3ebe0266125424155754371cbba5bbd1cf0746022d00fe57"
+        "sha256": "f018ecb37b82dc5742b37a19fb38d02e86bb8ac6f1836228953771eecc0f729d"
       },
       {
         "path": "src/smart/wizard/rule.js",
@@ -512,7 +512,7 @@
       },
       {
         "path": "src/smart/wizard/docs.md",
-        "sha256": "4af895180574c09e093f6b33fd4d362f425d4392941f365c67ef2cc4c15d9704"
+        "sha256": "851484752c8ba3bd9a3176445d23b047a91045fb5b42b3020a27f2c276e41ea2"
       }
     ],
     "generated_runtime": []

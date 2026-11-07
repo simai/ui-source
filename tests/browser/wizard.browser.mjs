@@ -285,6 +285,7 @@ for (const scheme of ['light', 'dark']) {
       column: w.querySelector('.sf-wizard-column')?.getBoundingClientRect().height ?? -1,
       body: w.querySelector('.sf-wizard-body').getBoundingClientRect().height,
       scrolls: scroller ? scroller.scrollHeight > scroller.clientHeight : false,
+      row: scroller?.querySelector('.sf-wizard-list-step')?.getBoundingClientRect().height ?? 0,
       inView: Boolean(box && box.top >= view.top - 1 && box.bottom <= view.bottom + 1),
       head: w.querySelector('.sf-wizard-head').getBoundingClientRect().top - w.querySelector('.sf-wizard').getBoundingClientRect().top,
       page: globalThis.scrollY,
@@ -293,6 +294,7 @@ for (const scheme of ['light', 'dark']) {
   });
   const first = await read();
   ok(`${tag}: 30 steps beside a short body do not make the wizard taller`, first.column > 0 && first.column <= first.body + 1, JSON.stringify(first));
+  ok(`${tag}: beside a short body the column is six rows tall, not less, not more (owner, 2026-11-07)`, Math.abs(first.column - 6 * first.row) <= 1, JSON.stringify(first));
   ok(`${tag}: the column scrolls inside, an sf-scrollbar in standard mode`, first.scrolls && first.look === 'standard', JSON.stringify(first));
   ok(`${tag}: the current step (18) is in view on load, the page not scrolled`, first.inView && first.page === 0, JSON.stringify(first));
   await tab.locator('#w .sf-wizard-column-scroll .sf-wizard-list-step').first().click();
