@@ -40,6 +40,10 @@ const PopoverElement = elementFromManifest(manifest, {
 // through core (`core/js/open-surface-mark`) rather than written here.
 
 class SfPopover extends PopoverElement {
+    // Its DOM updates are all it draws: the first one counts as its render
+    // (Smart base, simai/ui-source#70).
+    static rendersNoTemplate = true;
+
     // The manifest's settings and value, and the base's template name.
     static get props() {
         return {
@@ -247,6 +251,9 @@ class SfPopover extends PopoverElement {
         if (this.label) surface.setAttribute('aria-label', this.label);
         else surface.removeAttribute('aria-label');
         surface.style.setProperty('--sf-popover--width', this.width || '');
+        // The gap to the trigger (#69), a margin on the trigger's side.
+        if (this.offset) surface.style.setProperty('--sf-popover--offset', this.offset);
+        else surface.style.removeProperty('--sf-popover--offset');
         return true;
     }
 

@@ -106,6 +106,22 @@ an icon-only badge or a shortened count such as `99+`, provide a full
 label the badge is decorative. The host owns any `aria-live` or `role="status"`
 policy because only the application knows whether an update must be announced.
 
+## Side room and height
+
+Every badge of one size has one height and one side room, whatever its
+appearance: the outline's border is drawn inside the size. By default the text
+sits `--sf-space-1/2` from the edges at every size; `tight` keeps the size's
+own narrow inset for dense places -- a table, a counter, a chip in a row:
+
+```html
+<sf-badge appearance="tonal" text="Черновик"></sf-badge>
+<sf-badge appearance="tonal" text="Черновик" tight></sf-badge>
+```
+
+A badge whose text is one character and that draws no icon -- a single-figure
+count -- carries `sf-badge--figure` and stays round in either room. `compact`
+is unchanged.
+
 ## Run state
 
 `activity` says where a run stands. It is a second axis beside `status`, which

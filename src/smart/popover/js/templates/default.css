@@ -34,31 +34,37 @@
   }
 
   sf-popover[data-placement='bottom-end'] > [slot='content'] {
+    margin-block-start: var(--sf-popover--offset, 0);
     inset-block-start: 100%;
     inset-inline-end: 0;
   }
 
   sf-popover[data-placement='bottom-start'] > [slot='content'] {
+    margin-block-start: var(--sf-popover--offset, 0);
     inset-block-start: 100%;
     inset-inline-start: 0;
   }
 
   sf-popover[data-placement='top-end'] > [slot='content'] {
+    margin-block-end: var(--sf-popover--offset, 0);
     inset-block-end: 100%;
     inset-inline-end: 0;
   }
 
   sf-popover[data-placement='top-start'] > [slot='content'] {
+    margin-block-end: var(--sf-popover--offset, 0);
     inset-block-end: 100%;
     inset-inline-start: 0;
   }
 
   sf-popover[data-placement='inline-end'] > [slot='content'] {
+    margin-inline-start: var(--sf-popover--offset, 0);
     inset-block-start: 0;
     inset-inline-start: 100%;
   }
 
   sf-popover[data-placement='inline-start'] > [slot='content'] {
+    margin-inline-end: var(--sf-popover--offset, 0);
     inset-block-start: 0;
     inset-inline-end: 100%;
   }

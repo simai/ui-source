@@ -1,0 +1,250 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.component-set",
+  "version": "1.1.0",
+  "title": "SIMAI Framework Component Set",
+  "appliesTo": [
+    "simai.framework.component-set"
+  ],
+  "requirements": [
+    {
+      "id": "outside-framework-is-a-set",
+      "level": "must",
+      "text": "Every Smart component outside the free SIMAI Framework lives in exactly one component set. A set is one repository that holds the set's Smart components, its Docara documentation site and its demonstrations, and nothing in the set is built into SIMAI Framework. A product that uses components makes none of its own: it uses SIMAI Framework and the sets.",
+      "verification": "manual",
+      "guidance": "Owner decision 2026-11-03 (component sets), revising D31 of 2026-10-26. The sets of that decision: admin, chat, mail, editor, chart (paid) and effects (free)."
+    },
+    {
+      "id": "set-id-is-repository-name",
+      "level": "must",
+      "text": "A set has one id: its repository name without the ui- prefix, lower-case letters, digits and hyphens, starting with a letter (simai/ui-effects is effects). The same id is the package name in the lock, the name the rule file registers, the release tag prefix, the npm name @simai-studio/<id>, the page declaration and the owner in the shared name registry.",
+      "verification": "manual",
+      "guidance": "Pattern ^[a-z][a-z0-9-]*$, shared with simai.component-package package-name-grammar. tests/component-set.contract.test.mjs checks the fixture passport and every set of the registry."
+    },
+    {
+      "id": "passport-form",
+      "level": "must",
+      "text": "A set carries its passport, set.json at the root of its package folder, in the component set passport format the standard pins: id, title, repository, licence, SIMAI Framework compatibility, required sets, owned name families, documentation site and every component it holds. The builder copies the passport into the build and the release unchanged, adding only the release block.",
+      "verification": "equals",
+      "property": "set.json/schema",
+      "value": "simai.framework.component-set",
+      "guidance": "Schema contracts/schema/component-set.v1.schema.json, frozen as pinned/component-set-1.0.0.schema.json; schema_version 1."
+    },
+    {
+      "id": "set-describes-its-components",
+      "level": "must",
+      "text": "A set describes its own components, and only there: its passport lists every element with its rule, folder, the rules it needs and its dated former tags, and its rule file carries the rules and relations at runtime. SIMAI Framework holds the standard and the shared name registry only, never a per-set reference, so a new component in a set needs no SIMAI Framework release.",
+      "verification": "manual",
+      "guidance": "Replaces the package references src/core/contracts/packages/<name>.package.json for every set; pro and larena keep theirs as dated aliases until pro moves onto this standard."
+    },
+    {
+      "id": "licence-one-of-two",
+      "level": "must",
+      "text": "A set's licence is one of two classes. simai-pro: the one common SIMAI Pro licence of every paid set, PolyForm-Small-Business-1.0.0 OR PolyForm-Noncommercial-1.0.0 OR LicenseRef-SIMAI-Commercial. framework: free, under the SIMAI Framework's own licence, Apache-2.0. The passport names the class and its SPDX expression, and the package folder's package.json carries the same expression. The SIMAI Framework code a build contains keeps the Framework's licence and notices.",
+      "verification": "manual",
+      "guidance": "tests/component-set.contract.test.mjs pairs each class with its expression. Rights holder and licensor of every SIMAI product: Rim Zabarov (owner 2026-10-23)."
+    },
+    {
+      "id": "one-framework-pair",
+      "level": "must",
+      "text": "A set is built and tested over exactly one SIMAI Framework source revision, named by full commit in its lock and in its passport, together with the lowest core.runtime version it needs. A release names the free release (ui-<12 hex>) built from that revision. Moving to a newer SIMAI Framework is a commit to the lock and the passport, the gates again and a new release, unless the set's own source did not change: then the existing release, unchanged, gains a pair receipt for the newer pair when the release source repinned to it rebuilds to the released bytes apart from the passport's source revision and the set's gates pass over the newer pair against those bytes; otherwise it is a new release. A set never floats on a branch or a latest release.",
+      "verification": "manual",
+      "guidance": "framework.lock.json keeps the simai.framework.product-package-source-lock form of simai.component-package; the passport's framework.source_revision equals the lock's source.revision. A pair receipt is simai.framework.set-pair-receipt v1, written by ui-builder scripts/pair-receipt.py run (owner decision 2026-11-07, ui-control control/decisions/2026-11-07-set-pair-receipts.md); the release lock, the package receipt and the passport in the release keep naming the pair the release was built over."
+    },
+    {
+      "id": "required-sets-shallow",
+      "level": "must",
+      "text": "A set may require other sets, each by id and an npm range over its version. The graph has no cycle and is at most two levels deep below any set. Every relation of a set's rule names a rule of the same set, of a set it requires or of the free release it is built on. The Loader never loads a required set on its own: a page declares each set it uses, and a missing one is reported with the line to add.",
+      "verification": "manual",
+      "guidance": "Checked across sets by the compatibility index (not yet built: see not_yet_checked). Same idea as D31: sets do not chain."
+    },
+    {
+      "id": "one-prefix",
+      "level": "must",
+      "text": "Every element of every set carries the one prefix sf-, and every rule the prefix cl-. A set has no prefix of its own; the shared name registry, not the prefix, keeps sets apart.",
+      "verification": "manual",
+      "guidance": "Replaces simai.component-package own-element-prefix for sets. Owner decision 2026-11-03, point 6."
+    },
+    {
+      "id": "names-start-with-owned-family",
+      "level": "must",
+      "text": "A component's name is sf-<family>[-<block>][-<variant>], from the general to the specific, and its family, the first word after sf-, is one its owner holds in the shared name registry. A dated former tag is exempt until its remove_after; a name that breaks the rule today is listed as an exception in the registry with its reason and date, or the gate refuses it.",
+      "verification": "manual",
+      "guidance": "ui-control decisions/2026-11-02-smart-component-naming.md (set-block-variant). tests/component-set.contract.test.mjs checks every registered name, the SIMAI Framework's own manifests and the targets of the tag alias table."
+    },
+    {
+      "id": "family-has-one-owner",
+      "level": "must",
+      "text": "The shared name registry gives each family exactly one owner, SIMAI Framework or one set, and a set's passport lists the same families the registry gives it. A family is taken by a change to the registry before the set's first release that uses it; a family is never owned by two. The registry is public and read from simai/ui-source main, the one documented exception to main is not a contract, so a set checks against it without a SIMAI Framework release.",
+      "verification": "manual",
+      "guidance": "contracts/registry/names.json, format simai.framework.name-registry (pinned/name-registry-1.0.0.schema.json). ui-source CI: tests/component-set.contract.test.mjs. Each set's CI: its passport against the registry at main."
+    },
+    {
+      "id": "framework-first",
+      "level": "must",
+      "text": "What is universal belongs to SIMAI Framework. A set does not ship what SIMAI Framework offers or should offer: the reusable part of a complex component is raised into SIMAI Framework as a Smart component of its own, and the set composes it; a basic part (a scale, a colour scheme, a token, an overlay's scrim, lazy loading of a part) is ordered from SIMAI Framework, not made in a set. Every component entering a set, new or moved, first passes a review against this rule, and the review is recorded with the component.",
+      "verification": "manual",
+      "guidance": "Owner 2026-11-02 (reuse before sets) and 2026-11-03 (decision point 11). Review step: before a component enters a set, its parts are compared with SIMAI Framework's components and with the other sets; a part another set or a product could use is ordered from SIMAI Framework first. First candidates when ui-pro moves: message-log, confirm-change, admin-menu. ui-control control/REUSE-AUDIT-2026-11-02.md. No gate checks it: it is a review item."
+    },
+    {
+      "id": "package-folder-by-component-package",
+      "level": "must",
+      "text": "A set's package folder, its components, rule files, manifests, ports, build, receipt, page trust and public names follow simai.component-package 1.1.1 as published, except own-element-prefix and delivered-in-owners-distribution, which this standard replaces with one-prefix and the one release route. A set is a component package with a passport, a family in the shared registry and one route.",
+      "verification": "manual",
+      "guidance": "simai.component-package is referenced by digest, not extended: extending would inherit the two replaced requirements, and the standard-contract envelope has no way to override an inherited one."
+    },
+    {
+      "id": "same-gates-for-every-set",
+      "level": "must",
+      "text": "Every set passes the same gates before a release, the ones the Pro package passes today: its unit suite over the overlay of the pinned SIMAI Framework, its manifest probes, its browser probes in a real browser, the first paint watched frame by frame, linkage (a passport per unit whose version moves with its content hash, and the release's inventory compared to the previous one), two byte-identical builds with a receipt, and its passport against the shared name registry. A green gate of one set proves nothing about another.",
+      "verification": "manual",
+      "guidance": "Pro today: ui-pro components/scripts test.mjs, run-manifest-probes.mjs, run-browser-probes.mjs, run-first-paint.mjs; ui-builder verify-package-reproducibility.cjs and write-package-receipt.py; ui-source scripts/linkage.mjs. Generic scripts per set are listed under rollout."
+    },
+    {
+      "id": "one-release-route",
+      "level": "must",
+      "text": "Every set is released one way. A release is tagged <set>-<12 hex>, the first twelve hex digits of the set commit it is built from, on the set's repository, with the assets package-<set>.tar, its .sha256, package-receipt.json and the built set.json. The same bytes are published to npm as @simai-studio/<set>. A release is never moved or rewritten; a fix is a new release. A pair receipt adds the asset pair-receipt-<pair>.json to the existing release and the same bytes as contracts/pair-receipts/<release>/<pair>.json to the set's repository; nothing published before it changes, npm included.",
+      "verification": "manual",
+      "guidance": "The Pro route generalised (pro-<12>, package-pro.tar since 2026-11-02). The npm name follows from the set id, so no set needs a separate naming decision."
+    },
+    {
+      "id": "one-compatibility-index",
+      "level": "must",
+      "text": "Every release adds one row to one shared compatibility index: the set, the release id, the npm version, the SIMAI Framework pairs it runs over (the pair it was built over, and each pair it was re-receipted over, added to its row as pairs), the sets it requires with their ranges, and the digest of its receipt. The index is the only place a consumer and the Loader learn which set releases go with which SIMAI Framework pair; no set keeps an index of its own.",
+      "verification": "manual",
+      "guidance": "Replaces simai/ui-pro package-index/releases.json. Format simai.framework.set-index (contracts/schema/set-index.v1.schema.json, pinned/set-index-1.1.0.schema.json). Location: index.json of the npm package @simai-studio/sets, read by the Loader from https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json (the format major pinned; SF_BOOT_CONFIG.setIndex overrides it for a mirror or a stand). Writer: the set release route, ui-builder scripts/set-index.py add, from the release's built set.json and receipt; a row's facts never change and its pairs only grow (set-index.py pair). The Loader chooses the newest release of a set whose framework.core_runtime this Core meets (core/js/sets.js selectSetRelease)."
+    },
+    {
+      "id": "one-line-connection",
+      "level": "must",
+      "text": "A page loads SIMAI Framework and names the sets it uses, in one declaration before the core starts; the Loader finds each set's base through the compatibility index unless the page gives a base, and loads only the components on the page. A set component that cannot load is reported, never fetched from SIMAI Framework's own base in its place. The page's owner chooses every set it trusts.",
+      "verification": "manual",
+      "guidance": "The one line: <script src=\".../distr/core/js/core.min.js\" data-sf-sets=\"effects\"></script>, or the same in SF_BOOT_CONFIG.packages: effects: true (by the index), effects: '1.0.0' (that npm version, no index), effects: '<base>' (that base) or {base, rule, version}. A set named without a base is served from @simai-studio/<set>@<version>/dist/smart on jsDelivr (SF_BOOT_CONFIG.setNpm overrides the npm root). A set's bundle gives its scripted API with SF.RuleLoader.registerPackage(<set>, {exports}) and a page reads it with SF.package('<set>'); SF.RuleLoader.packageOf('<set>') tells a bundle its base. In debug the Loader reads <base>/../set.json and names every required set the page did not declare (core.runtime 1.25.0)."
+    },
+    {
+      "id": "one-site-per-set",
+      "level": "must",
+      "text": "Each set has one site on its own subdomain that holds its documentation and its demonstrations together, built from the set's repository with the one shared Docara set template, so every set site has the same required sections: Overview (what the set does, its licence, its SIMAI Framework compatibility), Connection (the one line that loads it), Components (a page per component with live examples over the set's released build), Demos (ready screens made from the set's components) and Changes. The passport names the site. SIMAI Framework's documentation lists the sets and links to their sites; it does not document a set's components.",
+      "verification": "manual",
+      "guidance": "Owner decision 2026-11-03, points 7 and 9: admin.simai.io, effects.simai.io and one subdomain per other set; simai.io lists the sets as cards leading to their subdomains. The shared Docara set template does not exist yet (rollout)."
+    },
+    {
+      "id": "transitional-bundle",
+      "level": "may",
+      "text": "A bundle may join several paid sets under one package name for consumers that loaded them together before the sets existed, with a dated alias and a removal date in the change journal. A bundle is not a set: it owns no family, lists no component of its own and is released only from the sets' own releases.",
+      "verification": "manual",
+      "guidance": "pro, while simai/ui-pro's components move into admin, chat, mail and editor; larena stays the dated alias of pro until 2027-01-01."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.component-set-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/component-set-1.0.0.schema.json",
+      "sha256": "77d62f8216a046a65a057a109dcdd668168443d758335d47455057a061dfc799",
+      "description": "The set passport, set.json: id, title, repository, licence class and SPDX expression, SIMAI Framework compatibility, required sets, owned families, documentation site, components and the release block a release adds."
+    },
+    {
+      "id": "simai.framework.name-registry-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/name-registry-1.0.0.schema.json",
+      "sha256": "2a12010aadbab09c2008362e6433227b22b3b76b7a4536e18fcff0ea78fcc2dd",
+      "description": "The shared name registry: the prefix, each owner (SIMAI Framework or a set, active, planned or pending the owner's decision) with the families it holds and the names known in them, and the listed exceptions."
+    },
+    {
+      "id": "simai.framework.set-index-schema",
+      "version": "1.1.0",
+      "path": "../../pinned/set-index-1.1.0.schema.json",
+      "sha256": "1fe136749eff355e21db481ee57ca886c8f9386f53d89429099d465969371376",
+      "description": "The one compatibility index: one row per set release with its npm version, the SIMAI Framework it was built over, the lowest core.runtime it needs, the sets it requires and its receipt digest; the Loader places a set named without a base from it; since 1.1.0 a row also lists the further pairs its unchanged release was re-receipted over."
+    },
+    {
+      "id": "simai.framework.smart-component-manifest",
+      "version": "2.5.0",
+      "path": "../../pinned/smart-component-manifest-2.5.0.schema.json",
+      "sha256": "d5b0a5b299fa4b044d8125a315458c37de76f0bb5c6cb686962cdec7922b14ce",
+      "description": "The contract of each component in a set, the same edition simai.component-package 1.1.1 pins."
+    }
+  ],
+  "references": [
+    {
+      "id": "simai.component-package",
+      "version": "1.1.1",
+      "path": "../../simai.component-package/1.1.1/standard.json",
+      "sha256": "f6c675628da5ee977faca1d1fb1400423cf29257eb3d0c89790fddece1ed1315",
+      "description": "The package folder of a set follows it as published, except own-element-prefix and delivered-in-owners-distribution, which this standard replaces."
+    },
+    {
+      "id": "simai.change-lifecycle",
+      "version": "1.0.0",
+      "path": "../../simai.change-lifecycle/1.0.0/standard.json",
+      "sha256": "e63f4550d2c967e4f65c917677be849a6640614bad33c00c31cb0c6aef7ed860",
+      "description": "How a set's public names leave, the set's owner in the role of SIMAI Framework; a bundle's alias leaves the same way."
+    },
+    {
+      "id": "simai.linkage",
+      "version": "1.0.0",
+      "path": "../../simai.linkage/1.0.0/standard.json",
+      "sha256": "0690a30fd14505cbfa1d66dc8ca0e5003e5fd1e2262c2618f587e9ff4047da02",
+      "description": "The linkage gate every set passes: passports, inventory per release, compare."
+    },
+    {
+      "id": "simai.interaction-rules",
+      "version": "1.0.0",
+      "path": "../../simai.interaction-rules/1.0.0/standard.json",
+      "sha256": "370fa086eacdeaedb8a52b634dc013ca2adbf7b4b01e39d6eb16787fb7409276",
+      "description": "Every Smart component of a set loads, talks and draws as SIMAI Framework's own do."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "status": "draft",
+      "scope_note": "Everything outside the free SIMAI Framework, in sets: one repository per set with its components, its documentation site and its demonstrations; one passport form, one name registry, one set of gates, one release route, one compatibility index and one connection line for every set. For components outside SIMAI Framework it supersedes simai.component-package, which stays the standard of the package folder a set is built from and of the pro and larena packages until pro moves onto sets.",
+      "relation_to_component_package": "Supersedes, by reference. simai.component-set does not extend simai.component-package: an extends would inherit own-element-prefix (a set uses sf-) and delivered-in-owners-distribution (a set has one release route), and the envelope cannot override an inherited requirement. It references 1.1.1 by digest and keeps every other requirement of it for a set's package folder.",
+      "decisions": [
+        "ui-control control/decisions/2026-11-03-component-sets.md (owner, 2026-11-03, points 1-11)",
+        "ui-control control/decisions/2026-11-02-smart-component-naming.md (owner, 2026-11-02: set-block-variant)",
+        "ui-control control/decisions/2026-11-02-ui-chart-package.md (chart names reserved)",
+        "ui-control control/EFFECTS-PACKAGE-PLAN-2026-11-03.md, section What generalises to every set",
+        "ui-control control/decisions/2026-11-07-set-pair-receipts.md (owner, 2026-11-07: re-receipt an unchanged set release per pair, no new version)"
+      ],
+      "tools": {
+        "passport_schema": "simai/ui-source contracts/schema/component-set.v1.schema.json",
+        "registry": "simai/ui-source contracts/registry/names.json (read from main)",
+        "registry_schema": "simai/ui-source contracts/schema/name-registry.v1.schema.json",
+        "gate": "simai/ui-source tests/component-set.contract.test.mjs",
+        "fixture": "simai/ui-source tests/fixtures/component-set/set.json",
+        "set_index_schema": "simai/ui-source contracts/schema/set-index.v1.schema.json",
+        "loader": "simai/ui-source src/core/js/sets.js and loader.js (data-sf-sets, packages.<set> forms, packageOf, SF.package, per-set aliases); tests/component-set-loader.contract.test.mjs, tests/loader-packages.contract.test.mjs, tests/browser/component-sets.browser.mjs",
+        "pair_receipt": "simai/ui-builder scripts/pair-receipt.py (run, check, publish), schema simai.framework.set-pair-receipt v1; scripts/set-index.py pair"
+      },
+      "rollout": [
+        "1. this standard, the passport and registry formats, the registry seeded and its gate (draft)",
+        "2. Loader: set names resolved through the compatibility index, per-set tag aliases from registerPackage, set exports (SF.package, SF.RuleLoader.packageOf); core.runtime 1.25.0 (done on the standard branch)",
+        "3. ui-builder: publish-package-release.sh and bind-package-release.py for any set; set.json copied into build, receipt and release; receipt checked against set.json and the registry instead of distr/core/contracts/packages/<name>.package.json",
+        "4. effects as the first set; then admin, chat, mail, editor and chart out of ui-pro, with pro as a transitional bundle",
+        "4a. the shared Docara set template with the five required sections, and simai.io set cards",
+        "5. contracts/packages/*.package.json and the generated tag alias rows from them become dated aliases and leave with the larena sweep"
+      ],
+      "not_yet_checked": [
+        "the compatibility index has a format and a Loader reader but no published copy yet: @simai-studio/sets is not on npm until the first set release",
+        "required-sets-shallow is checked by no gate until the compatibility index exists",
+        "no set publishes set.json yet; the registry's sets are planned and their names come from ui-pro, ui-chart and the owner's decisions",
+        "one-site-per-set: no gate checks the five sections until the Docara set template exists",
+        "framework-first is a review item with no gate",
+        "the set view (data views: table, kanban, calendar, gantt, list) awaits the owner; the registry holds the family view for it as pending"
+      ],
+      "reissue": "Issued as 1.1.0 on 2026-11-07: one-framework-pair allows a pair receipt of an unchanged release instead of a new release, one-release-route names its asset, one-compatibility-index lets a row list the pairs it was re-receipted over, and the index form is pinned at 1.1.0 (the optional pairs). Every 1.0.0 passport, release and index row still holds. 1.0.0 keeps its published bytes under contracts/standards/history."
+    }
+  }
+}

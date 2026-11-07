@@ -196,7 +196,7 @@ sf-tile-metric {
 .sf-tile-metric-skeleton {
   display: block;
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-skeleton-base, var(--sf-surface-container));
+  background: var(--sf-skeleton-base, var(--sf-ui-skeleton));
 }
 
 .sf-tile-metric-skeleton--value {
@@ -212,7 +212,7 @@ sf-tile-metric {
 
 @media (prefers-reduced-motion: no-preference) {
   .sf-tile-metric--loading .sf-tile-metric-skeleton {
-    animation: sf-tile-metric-pulse 1.6s ease-in-out infinite;
+    animation: sf-tile-metric-pulse calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
   }
 }
 

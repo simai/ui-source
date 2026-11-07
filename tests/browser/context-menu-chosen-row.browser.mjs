@@ -111,7 +111,7 @@ try {
         if (row.chosen !== (row.checked === 'true')) note({case: `the chosen row and only it carries the chosen fill (${theme})`, got: row});
         // The row reaches the content's end padding (4px), its value the row's
         // own end padding.
-        if (Math.abs(row.gapToEdge - 4) > 0.5) note({case: `a pick-one row reaches the end padding (${theme})`, got: row});
+        if (Math.abs(row.gapToEdge - 8) > 0.5) note({case: `a pick-one row reaches the end padding (${theme})`, got: row});
         if (row.valueGap !== null && Math.abs(row.valueGap) > 0.5) note({case: `the trailing hint ends at the row's end padding (${theme})`, got: row});
       }
       // The three states: the chosen fill, the pointer's plate on another row,
@@ -154,7 +154,7 @@ try {
         if (row.endMark) note({case: `a ticked row keeps nothing at its end (${theme})`, got: row});
         if (row.leadLeft === null || Math.abs(row.leadLeft - icon.leadLeft) > 0.5 || Math.abs(row.leadWidth - icon.leadWidth) > 0.5) note({case: `the check column is the icons' column (${theme})`, got: {row, icon}});
         if (row.role === 'menuitemcheckbox' && row.checkInLead !== (row.checked === 'true')) note({case: `a ticked row shows its check in the lead (${theme})`, got: row});
-        if (Math.abs(row.gapToEdge - 4) > 0.5) note({case: `a row of a check menu reaches the end padding (${theme})`, got: row});
+        if (Math.abs(row.gapToEdge - 8) > 0.5) note({case: `a row of a check menu reaches the end padding (${theme})`, got: row});
       }
       // A menu of ticks alone keeps the column too.
       await show(page, [
@@ -187,7 +187,7 @@ try {
       const level = await page.evaluate(ROWS);
       const options = level.filter((row) => row.role === 'menuitemradio');
       if (options.length !== 3 || options.some((row) => row.endMark) || options.filter((row) => row.chosen).map((row) => row.text).join() !== 'Обычный') note({case: `a drilled choice marks its chosen option by the fill (${theme})`, got: level});
-      if (options.some((row) => Math.abs(row.gapToEdge - 4) > 0.5)) note({case: `a drilled option reaches the end padding (${theme})`, got: options});
+      if (options.some((row) => Math.abs(row.gapToEdge - 8) > 0.5)) note({case: `a drilled option reaches the end padding (${theme})`, got: options});
       if (load === 1) {
         evidence[`${theme}-drill`] = options.map(({text, chosen: c, background, gapToEdge}) => ({text, chosen: c, background, gapToEdge}));
         await page.screenshot({path: join(process.env.SF_PROBE_SHOTS ?? '/tmp', `menu-chosen-drill-${theme}.png`), clip: {x: 20, y: 40, width: 340, height: 220}}).catch(() => {});

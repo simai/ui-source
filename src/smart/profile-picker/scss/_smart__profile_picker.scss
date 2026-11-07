@@ -76,7 +76,8 @@ sf-profile-picker {
   flex-direction: column;
   gap: var(--sf-px);
   max-inline-size: min(var(--sf-g2), 100vw);
-  padding: var(--sf-space-1\/4);
+  /* A menu's inset (owner R017, 2026-11-07). */
+  padding: var(--sf-space-1\/3);
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-profile-picker-panel-background-color, var(--sf-elevation-3--surface));
@@ -96,7 +97,7 @@ sf-profile-picker {
   gap: var(--sf-space-1\/2);
   min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
   padding-block: var(--sf-a2);
-  padding-inline: calc(var(--sf-profile-picker--space-x) - var(--sf-space-1\/4)) var(--sf-a4);
+  padding-inline: calc(var(--sf-profile-picker--space-x) - var(--sf-space-1\/3)) var(--sf-a4);
   border-radius: var(--sf-radius--ui);
   cursor: pointer;
   outline: none;

@@ -1,5 +1,5 @@
 // Normative bundle inventory for Composition capability contracts.
-import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
+import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, PORT_MANIFEST_SF_TABLE_1_0_0 } from '../src/core/js/composition/builtins.mjs';
 import { BUILTIN_FIELD_KINDS } from '../src/core/js/composition/fields.mjs';
 
 const ports = (...elements) => elements.map((element) => {
@@ -39,7 +39,7 @@ export const BUNDLES = Object.freeze([
   {
     directory: 'composition-routing-v1',
     capability: 'simai.composition.routing',
-    version: '1.1.0',
+    version: '1.2.0',
     status: 'owner-accepted-candidate',
     compatibility: {
       recipe: 'simai.composition.recipe.v1@1.0.1 unchanged',
@@ -49,9 +49,14 @@ export const BUNDLES = Object.freeze([
       ports: 'new simai.composition.port-registry.v1 in composition-ports.v1.json',
       smart: 'smart.data-view 1.2.0 additive ports and query intent',
       value_types: 'bare names read beside the older .v1 labels (value-types-without-version); fixtures/routing.json and the sf-table manifest unchanged',
+      port_element: 'the builtin list port is sf-view-table@1.1.0 (sf-view-table 1.14.0); sf-table@1.0.0 keeps its bytes and digest, and the name sf-table is read as sf-view-table until 2027-01-01 (port-element-sf-table-to-sf-view-table)',
     },
     schemas: [],
-    entries: () => [...types('layout.scope'), ...ports('sf-table')],
+    entries: () => [
+      ...types('layout.scope'),
+      { key: `port:${PORT_MANIFEST_SF_TABLE_1_0_0.element}@${PORT_MANIFEST_SF_TABLE_1_0_0.version}`, value: PORT_MANIFEST_SF_TABLE_1_0_0 },
+      ...ports('sf-view-table'),
+    ],
   },
   {
     directory: 'composition-editor-fields-v1',

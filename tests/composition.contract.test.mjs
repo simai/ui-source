@@ -120,6 +120,38 @@ test('rejects unknown types, views, modifiers, slots and forbidden children', as
   }
 });
 
+test('unknown: placeholder draws an unknown block as a placeholder and the rest of the page (G-32)', async () => {
+  const document = await fixture('columns.json');
+  document.root.slots.columns[0] = { id: 'left', type: 'vendor.quote', data: { text: '<b>kept</b>' }, slots: { default: [{ id: 'inner', type: 'content.paragraph', data: { content: [] } }] } };
+  const before = stableStringify(document);
+  // The default stays strict: the whole Document is refused.
+  const strict = await render(document);
+  assert.equal(strict.html, '');
+  assert.deepEqual(strict.diagnostics.map(({ code }) => code), ['type_unknown']);
+  assert.deepEqual(validate(document).diagnostics.map(({ code, path }) => [code, path]), [['type_unknown', '$.root.slots.columns[0].type']]);
+  // Placeholder: valid, the unknown node is a notice and a placeholder.
+  const checked = validate(document, undefined, { unknown: 'placeholder' });
+  assert.equal(checked.valid, true);
+  assert.deepEqual(checked.notices.map(({ code, path }) => [code, path]), [['type_unknown', '$.root.slots.columns[0].type']]);
+  const drawn = await render(document, { options: { unknown: 'placeholder' } });
+  assert.deepEqual(drawn.diagnostics, []);
+  assert.deepEqual(drawn.notices.map(({ code, path }) => [code, path]), [['type_unknown', '$.root.slots.columns[0].type']]);
+  assert.match(drawn.html, /<div class="sf-composition-unknown" role="note" data-sf-composition-type="vendor\.quote" data-sf-composition-id="left">vendor\.quote<\/div>/u);
+  assert.match(drawn.html, /Справа/u, 'the rest of the page is drawn');
+  assert.doesNotMatch(drawn.html, /kept|data-sf-composition-id="inner"/u, 'nothing of its data or slots');
+  assert.equal(stableStringify(document), before, 'the Document is kept unchanged');
+  assert.equal(drawn.digest, (await normalize(document, undefined, { unknown: 'placeholder' })).digest);
+  // Other problems still refuse, and an unknown mode is a programming error.
+  const broken = JSON.parse(before);
+  broken.root.slots.columns[1].id = 'left';
+  assert.equal((await render(broken, { options: { unknown: 'placeholder' } })).html, '');
+  assert.throws(() => validate(document, undefined, { unknown: 'draw' }), /composition_unknown_mode_invalid:draw/u);
+  // A node with no type at all is not a block to stand in for.
+  const typeless = JSON.parse(before);
+  delete typeless.root.slots.columns[0].type;
+  assert.equal(validate(typeless, undefined, { unknown: 'placeholder' }).valid, false);
+});
+
 test('keeps namespaced extensions and rejects unqualified extension names', async () => {
   const document = await fixture('catalog-page.json');
   const normalized = await normalize(document);

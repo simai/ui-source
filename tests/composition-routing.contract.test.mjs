@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
+import { BUILTIN_PORT_ELEMENT_ALIASES, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, PORT_MANIFEST_SF_TABLE_1_0_0 } from '../src/core/js/composition/builtins.mjs';
 import { createRegistry, normalize, render, stableStringify, validate } from '../src/core/js/composition/index.mjs';
 import {
   CompositionRouteController,
@@ -15,6 +15,8 @@ import {
   checkPortValue,
   createPortRegistry,
   parseRoutesAttribute,
+  portManifestFor,
+  portsForType,
   sameValueType,
   valueTypeName,
 } from '../src/core/js/composition/routing.mjs';
@@ -63,13 +65,43 @@ function harness(routes, names = ['orders', 'lines']) {
 
 const typedRoute = (id, from, to) => ({ id, from: { endpoint: from, port: 'selection', value: 'record-ids.v1' }, to: { endpoint: to, port: 'context', value: 'record-ids.v1' } });
 
-test('publishes the sf-table port manifest with closed value types', () => {
+test('publishes the sf-view-table port manifest with closed value types', () => {
   const ports = createPortRegistry(BUILTIN_PORT_MANIFESTS, { bindings: ROUTING_PORT_BINDINGS });
-  const table = ports.elements.get('sf-table');
+  const table = ports.elements.get('sf-view-table');
   assert.equal(table.outputs.selection.value, 'record-ids.v1');
   assert.equal(table.inputs.context.value, 'record-ids.v1');
   assert.throws(() => createPortRegistry([{ ...BUILTIN_PORT_MANIFESTS[0], element: 'sf-x', outputs: { a: { value: 'script.v1' } } }]), /value_type_unknown/u);
   assert.throws(() => createPortRegistry(BUILTIN_PORT_MANIFESTS, { bindings: { 'example.x': 'sf-missing' } }), /binding_unknown/u);
+});
+
+test('the list port is sf-view-table@1.1.0; sf-table is read as it until its journal date', async () => {
+  assert.deepEqual(BUILTIN_PORT_MANIFESTS.map(({ element, version }) => `${element}@${version}`), ['sf-view-table@1.1.0']);
+  const [current] = BUILTIN_PORT_MANIFESTS;
+  // Same ports, values and effect as 1.0.0; only the element, its component and the query event moved.
+  const strip = ({ element, version, component, component_version, inputs, ...rest }) => ({ ...rest, inputs: { context: { ...inputs.context, request_event: null, summary: null } } });
+  assert.deepEqual(strip(current), strip(PORT_MANIFEST_SF_TABLE_1_0_0));
+  assert.equal(current.inputs.context.request_event, 'sf-view-table-query');
+  // A binding to the old name, and a type drawn by the old tag, find the new manifest.
+  const ports = createPortRegistry(BUILTIN_PORT_MANIFESTS, { bindings: { 'example.product-list': 'sf-table' } });
+  assert.equal(ports.elements.has('sf-table'), false);
+  assert.equal(portManifestFor(ports, 'sf-table').element, 'sf-view-table');
+  assert.equal(portsForType({ type: 'example.product-list' }, ports).element, 'sf-view-table');
+  assert.equal(portsForType({ type: 'example.other', renderer: { kind: 'custom-element', name: 'sf-table' } }, ports).element, 'sf-view-table');
+  // A registry that holds a manifest under the old name keeps it; one without the new name has no alias.
+  const own = createPortRegistry([PORT_MANIFEST_SF_TABLE_1_0_0, current]);
+  assert.equal(portManifestFor(own, 'sf-table').version, '1.0.0');
+  assert.throws(() => createPortRegistry([PORT_MANIFEST_SF_TABLE_1_0_0].map((entry) => ({ ...entry, element: 'sf-other' })), { bindings: { x: 'sf-table' } }), /binding_unknown:x/u);
+  assert.throws(() => createPortRegistry(BUILTIN_PORT_MANIFESTS, { bindings: { x: 'sf-table' }, aliases: {} }), /binding_unknown:x/u);
+  // The alias is dated by its journal record, and the published registry carries it.
+  const journal = await readJson('contracts/changes/journal.json');
+  for (const [from, alias] of Object.entries(BUILTIN_PORT_ELEMENT_ALIASES)) {
+    const record = journal.records.find(({ id }) => id === alias.journal);
+    assert.ok(record && record.stage === 'compat', `${from}: journal record ${alias.journal}`);
+    assert.equal(record.remove_after, alias.remove_after);
+    assert.ok(record.items.some((item) => item.from === from && item.to === alias.to));
+  }
+  const registry = await readJson('src/core/contracts/composition-ports.v1.json');
+  assert.deepEqual(registry.element_aliases, JSON.parse(JSON.stringify(BUILTIN_PORT_ELEMENT_ALIASES)));
 });
 
 test('value types reject coercion, duplicates, control characters and oversize values', () => {
@@ -298,17 +330,17 @@ const ROUTING_1_0_0 = Object.freeze({
   layoutScope: 'sha256:7d75a2efdd7aba65da77a362f0e6f6cfb33cd57c516569e2c58789caaca9f18d',
 });
 
-test('Routing 1.1.0 keeps the older-form corpus, the sf-table manifest and its port registry keys as 1.0.0 fixed them', async () => {
+test('Routing 1.2.0 keeps the older-form corpus, the sf-table manifest and its port registry keys as 1.0.0 fixed them', async () => {
   const { createHash } = await import('node:crypto');
   const sha = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
   const lock = await readJson('src/core/contracts/composition-routing-v1/contract.lock.json');
-  assert.equal(lock.version, '1.1.0');
+  assert.equal(lock.version, '1.2.0');
   assert.notEqual(lock.contractDigest, ROUTING_1_0_0.contractDigest);
   assert.equal(sha(await readFile(resolve(root, 'src/core/contracts/composition-routing-v1/fixtures/routing.json'))), ROUTING_1_0_0.routing, 'fixtures/routing.json is byte for byte the 1.0.0 corpus');
   assert.equal(lock.normativeFiles['fixtures/routing.json'], ROUTING_1_0_0.routing);
   assert.equal(lock.manifests['port:sf-table@1.0.0'], ROUTING_1_0_0.sfTable);
   assert.equal(lock.manifests['type:layout.scope@1.0.0'], ROUTING_1_0_0.layoutScope);
-  assert.equal(sha(stableStringify(BUILTIN_PORT_MANIFESTS.find(({ element }) => element === 'sf-table'))), ROUTING_1_0_0.sfTable);
+  assert.equal(sha(stableStringify(PORT_MANIFEST_SF_TABLE_1_0_0)), ROUTING_1_0_0.sfTable);
   const registry = await readJson('src/core/contracts/composition-ports.v1.json');
   assert.deepEqual(Object.keys(registry.value_types).sort(), Object.keys(VALUE_TYPES).sort(), 'the registry keys stay the older labels');
   assert.deepEqual(registry.value_type_names, Object.fromEntries(Object.keys(VALUE_TYPES).map((label) => [valueTypeName(label), label])));

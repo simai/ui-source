@@ -5912,6 +5912,31 @@
       "manual": "Move foreign and about into SF_BOOT_CONFIG.packages.effects beside the set's base or version, and drop catalogue: the set reads the catalogue published with it. A page that needs another catalogue pins another release of the set.",
       "owner": "ui-control",
       "source": "src/core/js/effects.js effectsConfig"
+    },
+    {
+      "id": "port-element-sf-table-to-sf-view-table",
+      "recorded_on": "2026-11-07",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The builtin list port of Composition routing names its element sf-view-table (port manifest sf-view-table@1.1.0, routing 1.2.0), following the tag record tag-sf-table-to-sf-view-table. A port binding (ports.bindings) or a type drawn by the custom element sf-table still finds the sf-view-table manifest until remove_after (routing.mjs PORT_ELEMENT_ALIASES, element_aliases in composition-ports.v1.json). The 1.0.0 manifest sf-table@1.0.0 keeps its bytes in the routing lock.",
+      "items": [
+        {
+          "component": "composition",
+          "from": "sf-table",
+          "to": "sf-view-table",
+          "match": "bindings['\"]?\\s*:\\s*\\{[^}]{0,400}['\"]sf-table['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-07",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "SF.Composition.render(document, {registry, options: {ports: {manifests: SF.Composition.BUILTIN_PORT_MANIFESTS, bindings: {'product.records': 'sf-table'}}}});",
+        "after": "SF.Composition.render(document, {registry, options: {ports: {manifests: SF.Composition.BUILTIN_PORT_MANIFESTS, bindings: {'product.records': 'sf-view-table'}}}});"
+      },
+      "manual": "Name sf-view-table where a port binding or a port registry lookup names sf-table. A product that registers its own manifest under the element sf-table keeps it: the alias stands only where the old name is not registered.",
+      "owner": "ui-source",
+      "source": "src/core/js/composition/routing.mjs PORT_ELEMENT_ALIASES, src/core/js/composition/builtins.mjs BUILTIN_PORT_MANIFESTS; bus msg-b1d7e5a07ab240efb8ba (Larena's binding, msg-b178ad43e88c4125afb6)"
     }
   ]
 }

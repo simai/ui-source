@@ -70,8 +70,8 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     failed: {role: 'error', icon: 'error', word: 'Failed'},
   };
 
-  assert.equal(component.version, '1.2.1');
-  assert.equal(manifest.version, '1.2.1');
+  assert.equal(component.version, '1.3.0');
+  assert.equal(manifest.version, '1.3.0');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings.compact.type, 'boolean');
@@ -140,4 +140,35 @@ test('Badge documentation covers every public axis with runnable examples', {
   assert.match(icons, /class="sr-only"/);
   assert.match(icons, /aria-hidden="true"/);
   assert.doesNotMatch(examples, /<style\b|style=/);
+});
+
+// Docs review R019, R020 (2026-11-07): one height per size whatever the look,
+// --sf-space-1/2 of side room by default (owner decision), tight for the room before, a single
+// figure round. The geometry itself is measured by
+// tests/browser/badge-geometry.browser.mjs.
+test('Badge draws its border inside its size and offers tight side room', async () => {
+  const [css, component, manifest, template, passport, variables] = await Promise.all([
+    read('src/component/badges/scss/_css__badges.scss'),
+    read('src/smart/badge/component.json').then(JSON.parse),
+    read('src/smart/badge/smart.manifest.json').then(JSON.parse),
+    read('src/smart/badge/js/templates/default.js'),
+    read('src/component/badges/passport.json').then(JSON.parse),
+    read('src/core/contracts/public-variables.v1.json').then(JSON.parse),
+  ]);
+
+  assert.equal(passport.version, '1.2.0');
+  for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
+    assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
+  }
+  assert.match(css, /--sf-badge--side-room: var\(--sf-space-1\\\/2\);/);
+  assert.match(css, /\.sf-badge\.sf-badge--tight \{\s*--sf-badge--side-room: var\(--sf-badge--side-tight\);/);
+  assert.match(css, /\.sf-badge:is\(\.sf-badge--figure, \[data-count\]\) \{/);
+  assert.equal(component.settings.tight.type, 'boolean');
+  assert.equal(component.settings.tight.default, false);
+  assert.equal(manifest.inputs.properties.tight.type, 'boolean');
+  assert.match(template, /context\.tight \? 'sf-badge--tight'/);
+  assert.match(template, /isFigure \? 'sf-badge--figure'/);
+  const padding = variables.components.find((entry) => entry.component === 'badge').variables.find((entry) => entry.name === '--sf-badge-padding-inline');
+  assert.equal(padding.default, 'var(--sf-space-1/2)');
+  assert.ok(padding.varies_with.includes('tight'));
 });

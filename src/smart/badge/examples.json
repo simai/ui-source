@@ -108,6 +108,32 @@
       }
     },
     {
+      "name": "tight",
+      "title": "Плотный",
+      "settings": {
+        "text": "Черновик",
+        "appearance": "tonal",
+        "tight": true
+      },
+      "expect": {
+        "tight": true
+      }
+    },
+    {
+      "name": "figure",
+      "title": "Счётчик из одной цифры",
+      "settings": {
+        "text": "3",
+        "scheme": "primary"
+      },
+      "attributes": {
+        "aria-label": "3 новых"
+      },
+      "expect": {
+        "text": "3"
+      }
+    },
+    {
       "name": "activity-running",
       "title": "Run state: Running",
       "settings": {
@@ -215,6 +241,9 @@
           "  <sf-badge id=\"bd-empty-mark\" activity=\"done\" icon-start=\"\"></sf-badge>",
           "  <sf-badge id=\"bd-compact\" activity=\"stopped\" compact></sf-badge>",
           "  <sf-badge id=\"bd-compact-bare\" text=\"Bare\" compact></sf-badge>",
+          "  <sf-badge id=\"bd-tight\" text=\"Черновик\" appearance=\"tonal\" tight></sf-badge>",
+          "  <sf-badge id=\"bd-figure\" text=\"3\" scheme=\"primary\"></sf-badge>",
+          "  <sf-badge id=\"bd-figures\" text=\"12\" scheme=\"primary\"></sf-badge>",
           "</main>"
         ]
       },
@@ -382,6 +411,24 @@
             },
             {
               "check": "(() => { const b = document.querySelector('#bd-compact-bare .sf-badge'); return !b.classList.contains('sf-badge--compact') && !b.querySelector('.sf-badge-text-container').classList.contains('sr-only'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p12-tight",
+          "title": "tight keeps the size's own side room; one figure stays round, two do not take the mark",
+          "covers": "settings.tight",
+          "steps": [
+            {
+              "check": "(() => { const tight = document.querySelector('#bd-tight .sf-badge'); const room = document.querySelector('#bd .sf-badge'); return tight.classList.contains('sf-badge--tight') && !room.classList.contains('sf-badge--tight') && parseFloat(getComputedStyle(tight).paddingLeft) < parseFloat(getComputedStyle(room).paddingLeft); })()",
+              "expect": {
+                "values": {
+                  "#bd-tight.tight": true
+                }
+              }
+            },
+            {
+              "check": "(() => { const one = document.querySelector('#bd-figure .sf-badge'); const two = document.querySelector('#bd-figures .sf-badge'); const box = one.getBoundingClientRect(); return one.classList.contains('sf-badge--figure') && !two.classList.contains('sf-badge--figure') && Math.abs(box.width - box.height) < 0.02; })()"
             }
           ]
         }

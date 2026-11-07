@@ -15,7 +15,7 @@ version, in the `standard-contract` envelope:
 | `simai.effect` | 1.4.0 | an animated background: effect.json with typed, bounded settings (a setting may be shown only while another holds given values), the schemes it draws and a pair of the other scheme, one module with mount/update/pause/resume/destroy, still for reduced motion, idle in a hidden tab, no network, clean destroy, a placement theme mode with the area in the drawn theme at 4.5:1, palette tones not roles, a mask-safe windows mode, a pair under the same trust, foreign effects sandboxed, an about menu on a right-click over the background, a kit (scripts/effect-kit.mjs) run before listing |
 | `simai.ai-development` | 1.0.0 | how an AI agent develops on and with the Framework: the contracts read first, the public surface only, generated output never edited, exact pins, upgrades by the journal, names without versions, ports by their kit, what a person sees measured in a browser, evidence over report, one writer per repository, the owner's decisions asked, content as data |
 | `simai.linkage` | 1.0.0 | what is current and what to change, for every system that uses the Framework: a passport per unit (id, version, owner, files, one content hash over the committed files, dependencies with ranges), a version that moves with the hash, an inventory per release that compares to a change report, a usage record per consumer and one reconcile; formats simai.framework.unit-passport, unit-inventory and unit-change-report; scripts/linkage.mjs |
-| `simai.component-set` | 1.0.0 | everything outside the free Framework in sets (draft): one repository per set with its components, Docara site and demos; a passport (set.json: id = repository without ui-, licence simai-pro or framework, Framework pair, required sets at most two levels deep, owned name families, docs site, every component); the Framework holds no per-set reference; one shared name registry (contracts/registry/names.json) with one owner per family under sf-; the Pro gates for every set; one release route (`<set>-<12 hex>` asset and npm `@simai-studio/<set>`) and one compatibility index; a one-line connection through the Loader; one site per set from one Docara template (Overview, Connection, Components, Demos, Changes); what is universal belongs to the Framework, reviewed for every component entering a set. Supersedes `simai.component-package` for sets by reference: its package-folder rules hold, `own-element-prefix` and `delivered-in-owners-distribution` are replaced |
+| `simai.component-set` | 1.1.0 | everything outside the free Framework in sets (draft): one repository per set with its components, Docara site and demos; a passport (set.json: id = repository without ui-, licence simai-pro or framework, Framework pair, required sets at most two levels deep, owned name families, docs site, every component); the Framework holds no per-set reference; one shared name registry (contracts/registry/names.json) with one owner per family under sf-; the Pro gates for every set; one release route (`<set>-<12 hex>` asset and npm `@simai-studio/<set>`) and one compatibility index; an unchanged release re-receipted over a newer pair (`pair-receipt-<pair>.json`, the row's `pairs`) instead of a new version (1.1.0); a one-line connection through the Loader; one site per set from one Docara template (Overview, Connection, Components, Demos, Changes); what is universal belongs to the Framework, reviewed for every component entering a set. Supersedes `simai.component-package` for sets by reference: its package-folder rules hold, `own-element-prefix` and `delivered-in-owners-distribution` are replaced |
 
 A standard stays at the level of principles that survive a change of library,
 browser or view type: 15 to 20 requirements. Event names, CSS classes and
@@ -58,13 +58,18 @@ schema is 2.1.0 since that additive change, and the type manifest schema is
 1.1.0.
 
 `standard-contract-1.0.schema.json` is a copy of the envelope schema from
-ai-first standard-contract 1.0 (`standard-contract/1.0`), revision
+simai/standards (formerly ai-first, zabarov/ai-first; moved and renamed on
+2026-11-02, GitHub redirects the old address) standard-contract 1.0
+(`standard-contract/1.0`), revision
 `8ed3d48efdb2435f1dd4142ab3339b00f5340fb1`, sha256
 `ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8`. The copy keeps the owner gate
 self-contained: `tests/standards.contract.test.mjs` checks every envelope and
 every pinned digest without reaching outside this repository. Refresh the copy
-from ai-first when that schema changes, and record the new revision and digest
-in this file.
+from simai/standards when that schema changes, and record the new revision and
+digest in this file. The move kept the history: the revision above and its
+bytes are the same in simai/standards (tag v1.0.0). Published standards keep
+the words "copied from ai-first" in their `specification` description: their
+bytes never change, and the name is the repository's former one.
 
 The published, reader-facing form of both standards lives in ui-doc; the
 machine-readable form is this directory.

@@ -22,10 +22,17 @@ without product JavaScript. The normative text, fixtures and lock live in
 Routes name endpoints and published ports only. A product type rendered by a
 Framework element binds to that element's published ports through the port
 registry, for example `{manifests: SF.Composition.BUILTIN_PORT_MANIFESTS,
-bindings: {"product.records": "sf-table"}}` passed as `options.ports` to
+bindings: {"product.records": "sf-view-table"}}` passed as `options.ports` to
 `validate`, `normalize` and `render`, and as `compositionPorts` in the
 `resolveRecipe` context (its `ports` field already holds the source-reading
-ports). Its renderer puts `data-sf-endpoint` on the `sf-table` element.
+ports). Its renderer puts `data-sf-endpoint` on the `sf-view-table` element.
+
+The list port is `sf-view-table@1.1.0` since routing 1.2.0 (2026-11-07). The
+former name `sf-table` is read as `sf-view-table` until 2027-01-01 (journal
+record `port-element-sf-table-to-sf-view-table`): a binding to `sf-table`, or a
+type drawn by the custom element `sf-table`, finds the `sf-view-table`
+manifest, and the published registry lists the alias in `element_aliases`.
+The 1.0.0 manifest `sf-table@1.0.0` keeps its bytes and digest in the lock.
 
 Value types are named without a version: `record-ids`, `record-removed`,
 `collection-changed` and the rest. The older labels (`record-ids.v1` ...) name

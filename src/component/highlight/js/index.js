@@ -228,7 +228,14 @@ function ensureStructure(block) {
     head = root.querySelector(':scope > .sf-highlight__head, :scope > .sf--highlight-head');
     if (!head) {
       head = block.ownerDocument.createElement('div');
-      head.className = 'sf-highlight__head sf--highlight-head flex content-main-between items-center border-outline-variant bg-surface-overlay';
+      // No fill of its own: the head stands on the code surface the root
+      // already paints (.sf-code-surface, --sf-surface-container), so it reads
+      // as the block's surface. It once carried bg-surface-overlay, whose
+      // backdrop-filter (blur 64px) blurred nothing here but gave every code
+      // head a compositing layer, and sticky page headers blanked for a frame
+      // while scrolling past code blocks (Docara, 2026-11-07). A second
+      // bg-surface-container would double the translucent fill.
+      head.className = 'sf-highlight__head sf--highlight-head flex content-main-between items-center border-outline-variant';
       root.prepend(head);
     }
   }

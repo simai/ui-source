@@ -22,6 +22,48 @@ export function resolveLength(value, context = document.body) {
   return pixels;
 }
 
+// A host that draws no box of its own -- every Smart element is
+// `display: contents`, sf-button-icon and sf-button among them -- measures as a
+// zero rectangle at 0,0, and a menu opened for it stood at the window's left
+// edge (simai/ui-source#68). Such a host is measured by what it draws: the
+// union of its children's boxes. The first of them stands in for it where an
+// element is needed (scroll ancestors, resize).
+function drawsNoBox(element) {
+  return element instanceof Element && getComputedStyle(element).display === 'contents';
+}
+
+function boxesOf(element, found = []) {
+  for (const child of element.children) {
+    if (drawsNoBox(child)) boxesOf(child, found);
+    else if (child.getClientRects().length) found.push(child);
+  }
+  return found;
+}
+
+/** The rectangle a reference occupies: its own, or what it draws when it has none. */
+export function referenceRect(element) {
+  if (!drawsNoBox(element)) return element.getBoundingClientRect();
+  const boxes = boxesOf(element).map((box) => box.getBoundingClientRect());
+  if (!boxes.length) return element.getBoundingClientRect();
+  const left = Math.min(...boxes.map((box) => box.left));
+  const top = Math.min(...boxes.map((box) => box.top));
+  const right = Math.max(...boxes.map((box) => box.right));
+  const bottom = Math.max(...boxes.map((box) => box.bottom));
+  return new DOMRect(left, top, right - left, bottom - top);
+}
+
+/** The element positioning measures: the reference itself, or for a host that draws no box a stand-in that measures what it draws. */
+export function anchorReference(element) {
+  if (!drawsNoBox(element)) return element;
+  return {
+    getBoundingClientRect: () => referenceRect(element),
+    getClientRects: () => [referenceRect(element)],
+    get contextElement() {
+      return boxesOf(element)[0] || element.parentElement || element;
+    },
+  };
+}
+
 /**
  * Keeps `floating` anchored to `reference`.
  * options: {side, align, offset, alignmentOffset, padding, flip, shift,
@@ -32,6 +74,8 @@ export function anchor(reference, floating, options = {}) {
   if (!(reference instanceof Element) || !(floating instanceof HTMLElement)) {
     throw new TypeError('Anchored positioning needs a reference element and a floating element');
   }
+  // Measured through what it draws when the reference draws no box (#68).
+  const measured = anchorReference(reference);
   const settings = {
     side: 'block-end', align: 'start', offset: 'var(--sf-space-1\\/4)', alignmentOffset: 0, padding: 'var(--sf-space-1\\/2)',
     flip: true, shift: true, matchWidth: false, fitHeight: true, autoUpdate: true, onPosition: null, ...options,
@@ -64,6 +108,7 @@ export function anchor(reference, floating, options = {}) {
     const padding = resolveLength(settings.padding, reference.parentElement);
     // Measure the natural size so flipping compares the real panel height.
     if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || '';
+    const natural = settings.fitHeight ? floating.getBoundingClientRect().height : 0;
     // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
     // for end), e.g. so a tail points at the middle of a small trigger.
     // The panel keeps its distance from the viewport's inline edges, but never
@@ -72,7 +117,7 @@ export function anchor(reference, floating, options = {}) {
     // at the frame's edge -- had its panel pushed inward by the difference and
     // hanging past the field on the other side. The edge a field reaches is an
     // edge its own panel may reach too.
-    const box = reference.getBoundingClientRect();
+    const box = referenceRect(reference);
     const clientWidth = document.documentElement.clientWidth;
     const edges = {
       top: padding,
@@ -92,10 +137,20 @@ export function anchor(reference, floating, options = {}) {
         const viewportWidth = clientWidth - edges.left - edges.right;
         if (settings.matchWidth) elements.floating.style.width = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
         elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`;
-        if (settings.fitHeight) elements.floating.style.maxHeight = `${Math.max(0, Math.min(availableHeight, heightCap))}px`;
+        if (settings.fitHeight) {
+          // A panel that misses its room by less than the edge's padding takes
+          // its whole height, rounded up, and stands that much nearer the edge:
+          // clamped half a pixel or a few pixels short, every row showed and a
+          // scrollbar still stood beside them, its thumb the whole track
+          // (owner R018, 2026-11-07, a five-language menu at DPR 1).
+          const room = Math.min(availableHeight, heightCap);
+          const whole = Math.ceil(natural);
+          const fits = whole > room && whole <= availableHeight + padding && whole <= heightCap;
+          elements.floating.style.maxHeight = `${Math.max(0, fits ? whole : room)}px`;
+        }
       },
     }));
-    const result = await computePosition(reference, floating, {
+    const result = await computePosition(measured, floating, {
       strategy: 'fixed',
       placement: physicalPlacement(settings.side, settings.align, rtl),
       middleware,
@@ -126,7 +181,7 @@ export function anchor(reference, floating, options = {}) {
     });
     return running;
   };
-  const cleanup = settings.autoUpdate ? autoUpdate(reference, floating, controller.update) : null;
+  const cleanup = settings.autoUpdate ? autoUpdate(measured, floating, controller.update) : null;
   controller.stop = () => {
     controller.stopped = true;
     cleanup?.();
@@ -140,7 +195,7 @@ export function anchor(reference, floating, options = {}) {
   return controller;
 }
 
-const Position = Object.freeze({anchor, logicalSide, physicalPlacement, resolveLength});
+const Position = Object.freeze({anchor, anchorReference, referenceRect, logicalSide, physicalPlacement, resolveLength});
 
 // Core publishes the helper; component bundles that carry their own copy reuse
 // an already published one instead of replacing it.

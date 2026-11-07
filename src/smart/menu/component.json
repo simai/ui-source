@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu",
   "tag": "sf-menu",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -373,7 +373,8 @@
     "layer: none declared. A row's open panel and the button's panel hold the shared open-surface mark (core/js/open-surface-mark), so a drawer or modal behind stands back on Escape; they are placed by SF.Position in place, not moved to the end of body (side-effects: none).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.2.0: appearance navigation (owner decision by recommendation, 2026-11-01), the look of a site header's sections as Docara draws them, so a header needs no classes of its own over the menu: rows with no border and no fill at rest, text on-surface at the class row's size 1 height, padding, type and ui radius; hover and press the state family of the alpha scale (--sf-surface-transparent-hover 4, -active 12), an open branch the select step (8), the current page the fill family's plate --sf-surface-container-active (24, the same step in both themes on the theme's neutral tone, as the token sets it); forced colours frame the current page instead. It is a row or a column as orientation says, so a row's panels, the collapse to a button and the keyboard are the default's. The look comes from the class sheet src/component/menu 1.1.0."
+    "version 1.2.0: appearance navigation (owner decision by recommendation, 2026-11-01), the look of a site header's sections as Docara draws them, so a header needs no classes of its own over the menu: rows with no border and no fill at rest, text on-surface at the class row's size 1 height, padding, type and ui radius; hover and press the state family of the alpha scale (--sf-surface-transparent-hover 4, -active 12), an open branch the select step (8), the current page the fill family's plate --sf-surface-container-active (24, the same step in both themes on the theme's neutral tone, as the token sets it); forced colours frame the current page instead. It is a row or a column as orientation says, so a row's panels, the collapse to a button and the keyboard are the default's. The look comes from the class sheet src/component/menu 1.1.0.",
+    "version 1.2.4 (2026-11-07): a patch (a look). A row's label badge carries sf-badge--tight, and a row's counter (.sf-badge[data-count]) takes the same tight room from the badge sheet: component.badges 1.2.0 widened a badge's default side room to --sf-space-1/2 (owner decision, docs review R020), and a menu row is a dense place. Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

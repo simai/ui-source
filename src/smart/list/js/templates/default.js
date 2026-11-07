@@ -67,11 +67,14 @@ const metaContent = (context, item) => {
     const count = context.countOf(item);
     const badge = context.badgeOf(item);
     const line = context.size;
+    // A row is a dense place: its badge and count keep the tight side room
+    // (sf-badge tight), so the wider default of sf-badge 1.3.0 does not push
+    // the row's text aside.
     return html`${badge
-        ? html`<sf-badge class="sf-list__badge" line=${line} appearance="tonal"
+        ? html`<sf-badge class="sf-list__badge" line=${line} appearance="tonal" tight
                          status=${BADGE_STATUS[badge.tone]} text=${badge.text}></sf-badge>`
         : nothing}${count
-        ? html`<sf-badge class="sf-list__count" line=${line} scheme="primary"
+        ? html`<sf-badge class="sf-list__count" line=${line} scheme="primary" tight
                          text=${count > context.countCap ? `${context.countCap}+` : String(count)}
                          aria-label=${context.countLabel(count)}></sf-badge>`
         : nothing}`;

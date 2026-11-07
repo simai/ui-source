@@ -1,7 +1,8 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.0.0
-(`contracts/standards/simai.component-set/1.0.0/standard.json`). The Loader
+Status: draft standard `simai.component-set` 1.1.0
+(`contracts/standards/simai.component-set/1.1.0/standard.json`; 1.0.0 is kept
+under `contracts/standards/history`). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
@@ -175,6 +176,29 @@ Each release adds one row to the one compatibility index, with:
 
 No release is moved or rewritten.
 
+### Pair receipts (since 1.1.0)
+
+When a product moves to a newer SIMAI Framework pair and the set's own source
+did not change, the set gets no new version (owner decision 2026-11-07). The
+release route runs ui-builder `scripts/pair-receipt.py run` over the existing
+release:
+
+- the released output, read from the Build commit, is the release archive;
+- the pair's `core.runtime` meets the set's minimum, its shared runtime and
+  free rules agree with the set, and the registry agrees with the passport;
+- the release source, repinned to the pair's ui-source in a local commit that
+  is never pushed, rebuilds to the released bytes apart from the passport's
+  `framework.source_revision` (otherwise the set needs a new release);
+- the set's own gates pass over the pair against the released bytes.
+
+The result, a pair receipt (`simai.framework.set-pair-receipt` v1), is added to
+the existing release as `pair-receipt-<pair>.json`, to the set repository as
+`contracts/pair-receipts/<release>/<pair>.json`, and to the release's row of
+the index as an entry of `pairs`. The release lock, the package receipt, the
+passport and npm do not change. A consumer that pins exact pairs accepts the
+set over a pair named either by its package receipt or by one of its pair
+receipts.
+
 ### The compatibility index
 
 - Format: `simai.framework.set-index`, `schema_version: 1`
@@ -187,7 +211,11 @@ No release is moved or rewritten.
   the release's built `set.json` and receipt. Nobody edits it by hand.
 - Reader: the Loader picks the newest release of a set whose
   `framework.core_runtime` this Core meets (`core/js/sets.js`,
-  `selectSetRelease`).
+  `selectSetRelease`). It does not read `pairs`.
+- A row's facts never change. Since 1.1.0 a row may carry `pairs`, each
+  `{pair, source_revision, receipt_sha256, received_on}`: the further pairs
+  its unchanged release was re-receipted over, in the order received, written
+  by `set-index.py pair`.
 
 ```json
 {

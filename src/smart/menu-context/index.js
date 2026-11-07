@@ -763,7 +763,7 @@ class SfContextMenu extends ContextMenuElement {
   // line; "trigger" makes it exactly as wide as the control that opened it --
   // a site switcher, a profile button (owner, 2026-10-14) -- a long line ending
   // in an ellipsis; a CSS length fixes it. The attribute gives the default.
-  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, width = this.width} = {}) {
+  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width} = {}) {
     if (!(anchor instanceof Element)) throw new TypeError("A menu opens for an element");
     if (this._owned) this.close({restoreFocus: false, ask: false});
     // The request first (§19, vocabulary §4): a listener that prevents it keeps
@@ -803,14 +803,20 @@ class SfContextMenu extends ContextMenuElement {
     const content = this.querySelector(".sf-context-menu-content");
     const sized = width && width !== "content";
     if (sized && content) {
-      const length = width === "trigger" ? `${anchor.getBoundingClientRect().width}px` : width;
+      // A display: contents trigger (sf-button-icon, sf-button) is as wide as
+      // what it draws (#68).
+      const rect = position().referenceRect?.(anchor) ?? anchor.getBoundingClientRect();
+      const length = width === "trigger" ? `${rect.width}px` : width;
       content.style.setProperty("--sf-context-menu--min-inline-size", length);
       content.style.setProperty("--sf-context-menu--max-inline-size", length);
       content.style.setProperty("inline-size", length);
       this._owned.sizedContent = content;
     }
+    // offset: the gap between the trigger and the menu, a token or a length
+    // (simai/ui-source#69); left out, the positioning's own --sf-space-1/4.
     this._owned.position = position().anchor(anchor, surface, {
       side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
+      ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
     });
     // A menu it opens owns Escape, so the root says a surface is open: a record
     // panel listening on the document in capture runs before the menu's own
