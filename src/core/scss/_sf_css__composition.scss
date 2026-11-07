@@ -30,6 +30,20 @@
         min-inline-size: 0;
     }
 
+    // A block of a type the host does not know, drawn by render under
+    // unknown: 'placeholder' (an editor's canvas): its type name in a dashed
+    // frame, so the rest of the page stays where it is.
+    .sf-composition-unknown {
+        display: block;
+        min-inline-size: 0;
+        padding-block: var(--sf-space-2, .5rem);
+        padding-inline: var(--sf-space-3, .75rem);
+        border: 1px dashed var(--sf-outline-variant, GrayText);
+        border-radius: var(--sf-radius-1, .25rem);
+        color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
+        overflow-wrap: anywhere;
+    }
+
     .sf-composition-regions-grid > [data-sf-region-placement="block"][data-sf-region-sticky] {
         position: sticky;
         inset-block-start: 0;

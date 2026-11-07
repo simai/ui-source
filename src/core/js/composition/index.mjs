@@ -408,6 +408,19 @@ export function compositionTypeFromSmartManifest(manifest) {
   };
 }
 
+// How a node of an unregistered type is met: 'refuse' (the default, type_unknown
+// makes the Document invalid) or 'placeholder' (G-32).
+const UNKNOWN_MODES = new Set(['refuse', 'placeholder']);
+function unknownAsPlaceholder(options) {
+  const mode = options?.unknown ?? 'refuse';
+  if (!UNKNOWN_MODES.has(mode)) throw new TypeError(`composition_unknown_mode_invalid:${String(mode)}`);
+  return mode === 'placeholder';
+}
+
+// The placeholder of a node whose type the host does not know: its type as
+// text, its id kept for the editor's selection, nothing of its data or slots.
+const unknownPlaceholder = (node) => `<div class="sf-composition-unknown" role="note" data-sf-composition-type="${escapeHtml(node.type)}" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(node.type)}</div>`;
+
 export function validate(document, registry = undefined, options = {}) {
   const diagnostics = [];
   const notices = [];
@@ -446,7 +459,13 @@ export function validate(document, registry = undefined, options = {}) {
     else ids.add(node.id);
     const manifest = resolvedRegistry.types.get(node.type);
     if (!manifest) {
-      diagnostics.push(diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`));
+      // unknown: 'placeholder' (G-32, for an editor's canvas): a node of a
+      // type this host does not know is a notice, not a refusal; render draws
+      // it as a placeholder and the rest of the page. Its own data and slots
+      // are left unread. The default stays strict: a publishing host refuses.
+      const unknown = diagnostic('type_unknown', `${path}.type`, `Unknown type ${node.type || ''}`);
+      if (unknownAsPlaceholder(options) && typeof node.type === 'string' && node.type) notices.push(unknown);
+      else diagnostics.push(unknown);
       return;
     }
     if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
@@ -948,6 +967,9 @@ export async function render(document, context = {}) {
   // container and its own frame keeps the gutter (2026-11-04).
   const renderNode = async (node, depth = 0, inside = false) => {
     const manifest = registry.types.get(node.type);
+    // Only reached under unknown: 'placeholder' (validate's notice says
+    // which node); normalize refused the Document otherwise.
+    if (!manifest) return unknownPlaceholder(node);
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {
