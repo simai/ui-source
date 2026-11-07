@@ -78,9 +78,13 @@ try {
       const body = panel.querySelector(':scope > .sf-drawer-body');
       const scroller = /auto|scroll/u.test(getComputedStyle(body).overflowY) ? body : panel;
       const row = body.querySelector('p').getBoundingClientRect();
+      const title = panel.querySelector('.sf-drawer-title').getBoundingClientRect();
+      const close = panel.querySelector('.sf-drawer-close')?.getBoundingClientRect();
       return {
         scroller: scroller === body ? 'body' : 'panel',
         text: Math.round(end ? row.left - p.left : p.right - row.right),
+        title: Math.round(title.left - p.left),
+        close: close ? Math.round(p.right - close.right) : null,
         panel: {left: p.left, right: p.right, top: p.top, bottom: p.bottom, width: p.width},
         gutter: scroller.offsetWidth - scroller.clientWidth - (parseFloat(getComputedStyle(scroller).borderLeftWidth) || 0) - (parseFloat(getComputedStyle(scroller).borderRightWidth) || 0),
         scrollTop: scroller.scrollTop,
@@ -95,6 +99,13 @@ try {
     for (const id of ['start', 'end']) {
       const at = `${id} ${theme}`;
       const before = await read(id);
+      // SF_PROBE_SHOTS=<dir> keeps a picture of the handle on hover for the evidence.
+      if (process.env.SF_PROBE_SHOTS) {
+        await page.mouse.move(Math.round(before.centre), 350);
+        await page.waitForTimeout(250);
+        await page.screenshot({path: join(process.env.SF_PROBE_SHOTS, `resizer-${id}-${theme}.png`)});
+        await page.mouse.move(640, 690);
+      }
       // The content keeps the inset it has in a drawer without a handle: the
       // scrollbar's room on both sides plus the gutter.
       const plain = await page.evaluate((key) => {
@@ -105,11 +116,15 @@ try {
         const p = panel.getBoundingClientRect();
         const row = panel.querySelector('.sf-drawer-body p').getBoundingClientRect();
         const text = Math.round(key === 'start' ? row.left - p.left : p.right - row.right);
+        const title = Math.round(panel.querySelector('.sf-drawer-title').getBoundingClientRect().left - p.left);
+        const close = panel.querySelector('.sf-drawer-close')?.getBoundingClientRect();
         parent.append(handle);
-        return text;
+        return {text, title, close: close ? Math.round(p.right - close.right) : null};
       }, id);
       await page.waitForTimeout(200);
-      if (Math.abs(plain - before.text) > 1) note({case: `${at}: the content keeps the inset of a drawer without a handle`, got: {plain, withHandle: before.text}});
+      for (const key of ['text', 'title', 'close']) {
+        if (Math.abs(plain[key] - before[key]) > 1) note({case: `${at}: the ${key} keeps its inset from a drawer without a handle`, got: {plain: plain[key], withHandle: before[key]}});
+      }
       if (!(before.gutter > 0)) note({case: `${at}: the panel keeps a scrollbar's room (the case needs classic scrollbars)`, got: before});
       if (Math.abs(before.off) > 1) note({case: `${at}: the handle is centred on the panel's edge`, got: before});
       if (Math.abs(before.top) > 1 || Math.abs(before.bottom) > 1) note({case: `${at}: the handle spans the panel`, got: before});

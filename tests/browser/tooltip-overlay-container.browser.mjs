@@ -106,6 +106,8 @@ try {
         .then(read);
       await page.waitForTimeout(300);
       const settled = await read();
+      // SF_PROBE_SHOTS=<dir> keeps a picture of each case for the evidence.
+      if (process.env.SF_PROBE_SHOTS) await page.screenshot({path: join(process.env.SF_PROBE_SHOTS, `tooltip-${id}-${theme}.png`)});
       measures[`${id} ${theme}`] = {first, settled};
       for (const [when, got] of [['first frame', first], ['settled', settled]]) {
         if (!got.shown) { note({case: `${id}: the tooltip shows on hover (${when}, ${theme})`, got}); continue; }
