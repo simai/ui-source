@@ -205,7 +205,9 @@
       "source": "core/js/position.js",
       "exports": [
         "anchor",
+        "anchorReference",
         "default",
+        "referenceRect",
         "resolveLength"
       ]
     },

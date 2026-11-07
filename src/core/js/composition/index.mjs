@@ -255,6 +255,17 @@ function validUrl(value) {
   }
 }
 
+// A picture the host keeps in the browser (IndexedDB, before a server store)
+// is shown from an object URL. Such an address is only ever one a host's
+// resolveSource gave at render (simai/ui-source#71), never one a Document
+// stores, and only of the page's own origin: a blob: address is the page's.
+function hostBlobUrl(value) {
+  const match = /^blob:(https?:\/\/[^/]+)\//u.exec(String(value));
+  if (!match) return false;
+  const origin = globalThis.location?.origin;
+  return !origin || origin === 'null' || origin === match[1];
+}
+
 function validateInlineContent(value, path, diagnostics) {
   if (!Array.isArray(value)) return;
   for (let index = 0; index < value.length; index += 1) {
@@ -296,12 +307,14 @@ function inlineFields(node, path) {
 // Content rules beyond a type's own schema: links and image sources follow the
 // Document's URL rule, an item type stands only in its own parent, and a
 // layout holds at most one outlet.
-function validateContentRules(root, diagnostics) {
+function validateContentRules(root, diagnostics, { hostSources = false } = {}) {
   let outlets = 0;
   const visit = (node, path, parentType) => {
     if (!isPlainObject(node)) return;
     for (const [content, contentPath] of inlineFields(node, path)) validateInlineContent(content, contentPath, diagnostics);
-    if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !validUrl(node.data.src)) {
+    // With a host source resolver the stored name is the host's (media:<id>),
+    // and the address it resolves to is checked where it is drawn.
+    if ((node.type === 'content.figure' || node.type === 'content.media') && typeof node.data?.src === 'string' && !hostSources && !validUrl(node.data.src)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.src`, 'Image source protocol is not allowed'));
     }
     if (node.type === 'element.button' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
@@ -530,7 +543,7 @@ export function validate(document, registry = undefined, options = {}) {
   if (nodeCount > limits.maxNodes) diagnostics.push(diagnostic('node_limit', '$.root', 'Composition has too many nodes'));
   else {
     validateRegionRules(document.root, resolvedRegistry, diagnostics);
-    validateContentRules(document.root, diagnostics);
+    validateContentRules(document.root, diagnostics, { hostSources: typeof options.resolveSource === 'function' });
     resolveRoutes(document.root, resolvedRegistry, normalizePorts(options.ports), diagnostics);
     validateDataRules(document.root, resolvedRegistry, options.shapes, diagnostics);
   }
@@ -931,9 +944,17 @@ const BUILTIN_RENDERERS = {
   'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
 };
 
+// context.resolveSource(src, {node}) → address: a host that keeps pictures
+// itself names them in content.figure and content.media (media:<id>) and gives
+// the address to draw at render, which may be a blob: address of the page's
+// origin (simai/ui-source#71). The address is held to the Document's URL rule
+// with that one addition; one that fails it draws nothing and is reported.
+const HOST_SOURCE_TYPES = new Set(['content.figure', 'content.media']);
+
 export async function render(document, context = {}) {
   const registry = normalizeRegistry(context.registry);
-  const normalized = await normalize(document, registry, context.options || {});
+  const resolveSource = typeof context.resolveSource === 'function' ? context.resolveSource : null;
+  const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
   const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier'));
@@ -963,7 +984,16 @@ export async function render(document, context = {}) {
   // part prints `container`). A frame inside one takes container-flush, so a
   // container in a section has no second gutter; a breakout leaves the
   // container and its own frame keeps the gutter (2026-11-04).
-  const renderNode = async (node, depth = 0, inside = false) => {
+  const renderNode = async (given, depth = 0, inside = false) => {
+    let node = given;
+    if (resolveSource && HOST_SOURCE_TYPES.has(node.type) && typeof node.data?.src === 'string') {
+      const address = await resolveSource(node.data.src, { node });
+      if (typeof address !== 'string' || !(validUrl(address) || hostBlobUrl(address))) {
+        diagnostics.push(diagnostic('unsafe_url', `node:${node.id}.data.src`, 'The resolved image source is not allowed'));
+        return '';
+      }
+      node = { ...node, data: { ...node.data, src: address } };
+    }
     const manifest = registry.types.get(node.type);
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.

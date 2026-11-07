@@ -136,7 +136,7 @@
   --sf-switch-top--gap: var(--sf-space-1\/3);
 }
 
-.sf-switch.disabled .sf-switch-container {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-container {
   --sf-switch-container--color: var(--sf-on-disable);
 }
 
@@ -155,12 +155,15 @@
   --sf-switch-description--line-height: var(--sf-text-height-1);
 }
 
+/* The on state's colours are public (simai/ui-source#46): the track's fill
+   --sf-switch-checked-background-color and the thumb's
+   --sf-switch-checked-thumb-color, the primary pair by default. */
 .sf-switch:has(input:checked):not(:has(input:disabled)) .sf-switch-inner {
-  --sf-switch-inner--background-color: var(--sf-on-primary);
+  --sf-switch-inner--background-color: var(--sf-switch-checked-thumb-color, var(--sf-on-primary));
 }
 
 .sf-switch:has(input:checked):not(:has(input:disabled)) .sf-switch-toggler {
-  --sf-switch-toggler--background-color: var(--sf-primary);
+  --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 
 /* The track stands as tall as the line of its size, which is the rule the
@@ -286,20 +289,20 @@
   --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-2--text-space-x));
 }
 
-.sf-switch.disabled .sf-icon {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-icon {
   --sf-icon--color: var(--sf-on-disable);
 }
 
-.sf-switch.disabled .sf-switch-description {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-description {
   --sf-switch-description--color: var(--sf-on-disable);
 }
 
-.sf-switch.disabled .sf-switch-inner {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-inner {
   --sf-switch-inner--background-color: var(--sf-on-disable);
 }
 
 /* utility-hint: justify-content/flex-start (.justify-start) */
-.sf-switch.disabled .sf-switch-toggler {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-toggler {
   --sf-switch-toggler--border-color: var(--sf-outline-disable);
 }
 
@@ -320,13 +323,13 @@
   --sf-switch-toggler--border-color: var(--sf-primary-hover);
 }
 
-.sf-switch:not(:disabled):not(.disabled):active .sf-switch-inner {
-  --sf-switch-inner--background-color: var(--sf-on-primary);
+.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-inner {
+  --sf-switch-inner--background-color: var(--sf-switch-checked-thumb-color, var(--sf-on-primary));
 }
 
 /* utility-hint: justify-content/flex-end (.justify-end) */
-.sf-switch:not(:disabled):not(.disabled):active .sf-switch-toggler {
-  --sf-switch-toggler--background-color: var(--sf-primary);
+.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-toggler {
+  --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 }
 

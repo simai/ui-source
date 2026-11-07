@@ -32,7 +32,7 @@
 // core.runtime.json). A set's release says the lowest version it needs, and
 // the index lookup keeps the releases this Core satisfies. Moved by hand with
 // the passport; tests/component-set-loader.contract.test.mjs holds them equal.
-export const CORE_RUNTIME = '1.31.1';
+export const CORE_RUNTIME = '1.32.0';
 
 export const SET_NAME = /^[a-z][a-z0-9-]*$/u;
 export const SET_INDEX_FORMAT = 'simai.framework.set-index';
