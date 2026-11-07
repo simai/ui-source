@@ -136,6 +136,9 @@ digits and the English unit words. The icon follows the media type:
 `picture_as_pdf`, `image`, `movie`, `audio_file`, `folder_zip` (archives),
 `table_chart` (spreadsheets and CSV), `slideshow` (presentations),
 `description` (text and documents), else sf-download-file's own `download`.
+The table is exported from `composition/file-size.mjs` as `FILE_ICONS`
+([pattern, icon] pairs, the first match wins) with `fileIcon(mime)`, so an
+editor that draws the same row takes the same icon without keeping a copy.
 Its editor manifest has two text fields, `label` and `href`.
 
 ## Diagram and math

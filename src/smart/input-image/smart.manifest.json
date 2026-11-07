@@ -611,7 +611,7 @@
       },
       {
         "path": "src/core/js/composition/file-size.mjs",
-        "sha256": "eb0ea52f7f3a9cb0fafb8f8419c2f054aa16de51534a9b22d0cfc5075cd25f31"
+        "sha256": "9de04c8110754d3a60c4943bb41b9314821dfd22d3875d65961c0839018a9f22"
       },
       {
         "path": "src/smart/input-image/js/templates/default.js",
