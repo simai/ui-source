@@ -1,3 +1,5 @@
+@use '../../context-menu/scss/panel';
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
 .sf-list {
@@ -60,17 +62,39 @@
     --sf-list--background-color: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
     --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
     --sf-badge--surface: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
-    /* The menu's inset (owner R017, 2026-11-07): rows and their fills stand
-       8px from the panel's edge, as a menu's and its search field's do. */
-    --sf-list--padding-top: var(--sf-space-1\/3);
-    --sf-list--padding-bottom: var(--sf-space-1\/3);
-    --sf-list--padding-left: var(--sf-space-1\/3);
-    --sf-list--padding-right: var(--sf-space-1\/3);
+    /* The inset (owner C05, docs review R029, 2026-11-07; it replaces R017's
+       1/3): a row's highlight stands --sf-space-1/4 from the panel's edge on
+       every side, as a context menu's does. The same inset is the scrollbar's
+       gap on either side of its thumb (C07) and, twice over, what a search
+       header adds to a row's height (C06). */
+    --sf-list--padding-top: var(--sf-space-1\/4);
+    --sf-list--padding-bottom: var(--sf-space-1\/4);
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    /* A row is as tall as a control of the list's size (C05); the list says
+       its size (sf-list--size-*), else size 1. */
+    --sf-list--row-height: var(--sf-ui-1--control-height);
+    --sf-list--line: var(--sf-text-height-1);
+    --sf-list--text: var(--sf-text-size-1);
     /* The lift goes through the variable the dropdown stylesheet reads. Its own
        rule set the variable only under .open, a class the script never puts
        on the root -- it writes sf-dropdown--open, and the portal context drops
        the open modifiers altogether -- so the list never had a shadow. */
     --sf-list--box-shadow: var(--sf-elevation-2--shadow);
+  }
+
+  .sf-dropdown .sf-list.sf-list--size-1\/2,
+  .sf-list--menu.sf-list--size-1\/2 {
+    --sf-list--row-height: var(--sf-ui-1\/2--control-height);
+    --sf-list--line: var(--sf-text-height-1\/2);
+    --sf-list--text: var(--sf-text-size-1\/2);
+  }
+
+  .sf-dropdown .sf-list.sf-list--size-2,
+  .sf-list--menu.sf-list--size-2 {
+    --sf-list--row-height: var(--sf-ui-2--control-height);
+    --sf-list--line: var(--sf-text-height-2);
+    --sf-list--text: var(--sf-text-size-2);
   }
 
   .sf-dropdown .sf-list .sf-list-item,
@@ -80,6 +104,85 @@
     display: flex;
     align-items: center;
     border-radius: var(--sf-radius--ui);
+  }
+
+  /* A row is as tall as a control of its own size (C05): its line and the
+     size's block space make that height, and a picture never makes it
+     shorter. */
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1\/2,
+  .sf-list--menu .sf-list-item.sf-list-item--size-1\/2 {
+    min-block-size: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1,
+  .sf-list--menu .sf-list-item.sf-list-item--size-1 {
+    min-block-size: var(--sf-ui-1--control-height);
+  }
+
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-2,
+  .sf-list--menu .sf-list-item.sf-list-item--size-2 {
+    min-block-size: var(--sf-ui-2--control-height);
+  }
+
+  /* A list with a scroll area of its own -- the dropdown's -- draws no
+     padding: the area that scrolls holds the inset on every side, so the rows
+     stand where they stand in any menu, and a search header sits on top across
+     the panel's whole width (C06). Only the rows scroll. */
+  .sf-dropdown .sf-list:has(> .sf-list-container-wrap),
+  .sf-list--menu:has(> .sf-list-container-wrap) {
+    gap: 0;
+    padding: 0;
+  }
+
+  .sf-dropdown .sf-list > .sf-list-container-wrap,
+  .sf-list--menu > .sf-list-container-wrap {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    padding-block: var(--sf-list--padding-top) var(--sf-list--padding-bottom);
+    padding-inline: var(--sf-list--padding-left) var(--sf-list--padding-right);
+    overscroll-behavior: contain;
+    // C07: the scrollbar stands in the inline-end inset while it takes room;
+    // the area is marked sf-list-container-wrap--scrollbar then
+    // (src/component/panel-scrollbar.js).
+    @include panel.scrollbar(var(--sf-list--padding-right), --sf-list--track, var(--sf-list--row-height));
+  }
+
+  .sf-dropdown .sf-list > .sf-list-container-wrap.sf-list-container-wrap--scrollbar,
+  .sf-list--menu > .sf-list-container-wrap.sf-list-container-wrap--scrollbar {
+    padding-inline-end: 0;
+  }
+
+  /* The search is the panel's header, not a boxed field (owner C06, R029):
+     a search icon over the rows' icons, the text over their text, no frame, no
+     fill, a row's height and the inset above and below, a hairline across the
+     panel under it. */
+  .sf-dropdown .sf-list > .sf-list-search,
+  .sf-list--menu > .sf-list-search {
+    @include panel.search-header(var(--sf-list--row-height), var(--sf-list--padding-top), var(--sf-list--padding-bottom), var(--sf-list--padding-left), var(--sf-list--padding-right));
+    font-size: var(--sf-list--text);
+    line-height: var(--sf-list--line);
+    font-family: var(--sf-text--family);
+    cursor: text;
+  }
+
+  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-icon,
+  .sf-list--menu > .sf-list-search > .sf-list-search-icon {
+    @include panel.search-icon(var(--sf-list--line));
+    --sf-icon--font-size: var(--sf-list--line);
+    --sf-icon--height: var(--sf-list--line);
+    --sf-icon--width: var(--sf-list--line);
+  }
+
+  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
+  .sf-list--menu > .sf-list-search > .sf-list-search-input {
+    @include panel.search-input;
+  }
+
+  /* A search field written as an sf-input (markup from before R029) keeps
+     its box, and stands the inset inside the panel. */
+  .sf-dropdown .sf-list:has(> .sf-list-container-wrap) > .sf-input,
+  .sf-list--menu:has(> .sf-list-container-wrap) > .sf-input {
+    margin: var(--sf-list--padding-top) var(--sf-list--padding-right) 0 var(--sf-list--padding-left);
   }
 
   .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
@@ -97,6 +200,22 @@
   .sf-dropdown .sf-list,
   .sf-list--menu {
     border: var(--sf-px) solid CanvasText;
+  }
+}
+
+@layer sf.states {
+  /* The header has no frame to ring: the focus is the caret and the header's
+     line in the primary colour (C06). !important on the bare field only: a
+     page's unlayered :focus-visible outline beats any layered rule and drew a
+     frame inside the header (as on the field, owner 2026-11-01). */
+  .sf-dropdown .sf-list > .sf-list-search,
+  .sf-list--menu > .sf-list-search {
+    @include panel.search-focus;
+  }
+
+  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input:focus-visible,
+  .sf-list--menu > .sf-list-search > .sf-list-search-input:focus-visible {
+    outline: none !important;
   }
 }
 

@@ -124,6 +124,17 @@ hint, Searching..., Nothing found, the unavailable line, the error and the
 max-items refusal -- is `role="status"`, polite. Chips are sf-tag with a remove button named
 "Remove Anna". Colours are role tokens, AA in light and dark.
 
+## The list's geometry
+
+The list is a dropping panel with the context menu's geometry (owner C05-C07,
+docs review R029): its rows stand `--sf-space-1/4` from the panel's edge, are
+as tall as a control of the lookup's size and rounded `--sf-radius--ui`, and
+their avatar or text stands `--sf-space-1/2` inside the highlight; the state
+line and the actions under them start on the same line. The scrollbar shows
+only when the rows do not fit; while it takes room the panel is marked
+`sf-lookup-panel--scrollbar` and gives up its inline-end padding, so the thumb
+stands in the inset with `--sf-space-1/4` on either side.
+
 ## Public CSS variables
 
 `--sf-lookup-background-color`, `--sf-lookup-border-color`,

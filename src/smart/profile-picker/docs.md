@@ -48,6 +48,13 @@
   `personal: false`.
 - `size` — `1/2` (по умолчанию) или `1`.
 
+Панель — выпадающая панель с геометрией контекстного меню (правила владельца
+C05–C07, ревью документации R029): строки высотой с контрол размера пикера,
+подсветка в `--sf-space-1/4` от края панели, содержимое строки в
+`--sf-space-1/2` от края подсветки; полоса прокрутки — только когда строки не
+помещаются, и стоит в правом отступе (панель помечается
+`sf-profile-picker-panel--scrollbar`).
+
 Публичные переменные: `--sf-profile-picker-background-color`,
 `--sf-profile-picker-border-color`, `--sf-profile-picker-radius`,
 `--sf-profile-picker-color`, `--sf-profile-picker-panel-background-color`.

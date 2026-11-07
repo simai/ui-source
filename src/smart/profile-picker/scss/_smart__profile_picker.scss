@@ -1,7 +1,13 @@
+@use '../../../component/context-menu/scss/panel';
+
 @layer sf.components {
 /* The profile picker (owner, 2026-10-14): a field-like button, and a panel
-   with the standard menu's surface -- elevation 3, a hairline, 4px padding,
-   8px corners -- whose rows are as tall as a field of the picker's size. */
+   with the standard menu's surface -- elevation 3, a hairline, the inset,
+   8px corners -- whose rows are a dropping panel's (owner C05-C07, docs review
+   R029, 2026-11-07; the geometry is the context menu's,
+   context-menu/scss/_panel): as tall as a control of the picker's size, their
+   highlight --sf-space-1/4 from the panel's edge, their content --sf-space-1/2
+   inside it, a scrollbar in the inset. */
 sf-profile-picker {
   display: block;
   min-inline-size: 0;
@@ -12,6 +18,8 @@ sf-profile-picker {
   --sf-profile-picker--text: var(--sf-text-size-1\/2);
   --sf-profile-picker--space-y: var(--sf-ui-1\/2--space-y);
   --sf-profile-picker--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-profile-picker--row-height: var(--sf-ui-1\/2--control-height);
+  --sf-profile-picker--inset: var(--sf-space-1\/4);
   font-size: var(--sf-profile-picker--text);
   line-height: var(--sf-profile-picker--line);
   --sf-icon--font-size: var(--sf-profile-picker--line);
@@ -24,6 +32,7 @@ sf-profile-picker {
   --sf-profile-picker--text: var(--sf-text-size-1);
   --sf-profile-picker--space-y: var(--sf-ui-1--space-y);
   --sf-profile-picker--space-x: var(--sf-ui-1--space-x);
+  --sf-profile-picker--row-height: var(--sf-ui-1--control-height);
 }
 
 .sf-profile-picker-trigger {
@@ -76,8 +85,8 @@ sf-profile-picker {
   flex-direction: column;
   gap: var(--sf-px);
   max-inline-size: min(var(--sf-g2), 100vw);
-  /* A menu's inset (owner R017, 2026-11-07). */
-  padding: var(--sf-space-1\/3);
+  /* The inset (C05, R029; R017's 1/3 before). */
+  padding: var(--sf-profile-picker--inset);
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-profile-picker-panel-background-color, var(--sf-elevation-3--surface));
@@ -85,6 +94,15 @@ sf-profile-picker {
   box-shadow: var(--sf-elevation-3--shadow);
   color: var(--sf-on-surface);
   overflow: auto;
+  overscroll-behavior: contain;
+  // C07: the scrollbar stands in the inline-end inset while it takes room;
+  // the panel is marked sf-profile-picker-panel--scrollbar then
+  // (src/component/panel-scrollbar.js).
+  @include panel.scrollbar(var(--sf-profile-picker--inset), --sf-profile-picker--track, var(--sf-profile-picker--row-height));
+}
+
+.sf-profile-picker-panel.sf-profile-picker-panel--scrollbar {
+  padding-inline-end: 0;
 }
 
 .sf-profile-picker-panel[hidden] {
@@ -95,9 +113,9 @@ sf-profile-picker {
   display: flex;
   align-items: center;
   gap: var(--sf-space-1\/2);
-  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
+  min-block-size: var(--sf-profile-picker--row-height);
   padding-block: var(--sf-a2);
-  padding-inline: calc(var(--sf-profile-picker--space-x) - var(--sf-space-1\/3)) var(--sf-a4);
+  padding-inline: var(--sf-space-1\/2);
   border-radius: var(--sf-radius--ui);
   cursor: pointer;
   outline: none;
@@ -143,7 +161,7 @@ sf-profile-picker {
 
 .sf-profile-picker-message {
   margin: 0;
-  padding: var(--sf-a4) var(--sf-profile-picker--space-x);
+  padding: var(--sf-a4) var(--sf-space-1\/2);
   color: var(--sf-error);
 }
 

@@ -30,7 +30,8 @@ test('Smart Dropdown template keeps option decoration out of the accessibility t
   const template = await read('src/smart/dropdown/js/templates/default.js');
   assert.match(template, /sf-tag-color-icon[^>]+aria-hidden="true"/);
   assert.match(template, /sf-tag-icon" aria-hidden="true"/);
-  assert.match(template, /sf-icon sf-icon-hint" aria-hidden="true"/);
+  // The search header's icon (owner C06, R029).
+  assert.match(template, /sf-icon sf-list-search-icon" aria-hidden="true"/);
   assert.match(template, /\$\{dropdownIcon\}<\/i>/);
 });
 

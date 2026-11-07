@@ -29,6 +29,25 @@ Checkboxes and icons inside an option are indicators, not independent controls.
 Long labels and tag collections wrap without covering the toggle. The field
 uses `--sf-radius--ui`; the popup surface uses `--sf-radius--surface`.
 
+The open list is a dropping panel with the context menu's geometry (owner
+rules C05-C07, docs review R029; the shared partial
+`src/component/context-menu/scss/_panel.scss`): a row's highlight stands
+`--sf-space-1/4` from the panel's edge, is as tall as a control of the row's
+size and rounded `--sf-radius--ui`, and its picture or text stands
+`--sf-space-1/2` inside it, the picture `--sf-space-1/2` before the text. The
+list (`.sf-list--size-*` says its size) draws no padding of its own when it has
+a scroll area (`.sf-list-container-wrap`): that area holds the inset on every
+side and is the only part that scrolls. A search is the panel's header,
+`label.sf-list-search` holding `i.sf-list-search-icon` and
+`input.sf-list-search-input`: no frame, no fill, a row's height and the inset
+above and below, its icon and text over the rows' icon and text, a hairline
+under it across the panel that turns primary while it has the focus. A search
+written as an `sf-input` (the markup before R029) still works and keeps its
+box, the inset around it. The scrollbar shows only when the rows do not fit;
+while it takes room in the layout the scroll area is marked
+`sf-list-container-wrap--scrollbar` and gives up its inline-end padding, the
+track being the inset, a thumb of `--sf-space-1/4` and the inset again.
+
 Native form reset restores the selection captured at first connection. `change`
 bubbles after user selection and is the name to bind; `sf-dropdown:change` is
 its legacy name with the same detail. The detail keeps visible labels separate
