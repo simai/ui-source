@@ -5,7 +5,7 @@
 // field scrolled away with the list and the scrollbar ran beside it, and the
 // field stood a step of space from the panel's edge. Measured here: the field
 // does not move while the rows scroll, the scroll area begins under the field,
-// the paddings are the ladder's (8 around the field, 0 4 4 around the rows),
+// the paddings are the ladder's (8 around the field, 0 8 8 around the rows -- the panel's inset, owner R017),
 // the rows keep the axis they have without a search, and the keys, the empty
 // note and the height cap still work -- at the top level, in a flyout submenu
 // and on a drilling level.
@@ -122,7 +122,7 @@ function checkLayout(where, {before, after}) {
   if (before.contentScrolls || after.contentScrollTop !== 0 || before.contentOverflowY !== 'hidden') note({case: `${where}: the content does not scroll`, got: {scrolls: before.contentScrolls, top: after.contentScrollTop, overflow: before.contentOverflowY}});
   if (before.listTop < before.searchBottom - 0.5 || before.listTop < before.fieldBottom) note({case: `${where}: the scroll area begins under the field`, got: {field: before.fieldBottom, search: before.searchBottom, list: before.listTop}});
   if (before.searchPadding.join() !== '8,8,8,8') note({case: `${where}: the field has 8px on every side`, got: before.searchPadding});
-  if (before.listPadding.join() !== '0,4,4,4') note({case: `${where}: the rows' area is padded 0 4 4`, got: before.listPadding});
+  if (before.listPadding.join() !== '0,8,8,8') note({case: `${where}: the rows' area is padded 0 8 8`, got: before.listPadding});
   if (before.contentPadding.join() !== '0,0,0,0') note({case: `${where}: the content has no padding of its own`, got: before.contentPadding});
   // The field 8px from the panel's inner edge: content border 1 + 8.
   if (Math.abs(before.fieldLeft - 9) > 0.5 || Math.abs(before.fieldRight - 9) > 0.5) note({case: `${where}: the field stands 8px inside the panel`, got: [before.fieldLeft, before.fieldRight]});
@@ -266,4 +266,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   throw new Error(`${failures.length} menu search check(s) failed`);
 }
-process.stdout.write('Context menu search: PASS — the field stays, the rows scroll under it, 8 around the field, 0 4 4 around the rows, keys and empty note kept, top level, flyout and drill, light and dark, three loads each\n');
+process.stdout.write('Context menu search: PASS — the field stays, the rows scroll under it, 8 around the field, 0 8 8 around the rows, keys and empty note kept, top level, flyout and drill, light and dark, three loads each\n');

@@ -64,6 +64,7 @@ export function anchor(reference, floating, options = {}) {
     const padding = resolveLength(settings.padding, reference.parentElement);
     // Measure the natural size so flipping compares the real panel height.
     if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || '';
+    const natural = settings.fitHeight ? floating.getBoundingClientRect().height : 0;
     // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
     // for end), e.g. so a tail points at the middle of a small trigger.
     // The panel keeps its distance from the viewport's inline edges, but never
@@ -92,7 +93,17 @@ export function anchor(reference, floating, options = {}) {
         const viewportWidth = clientWidth - edges.left - edges.right;
         if (settings.matchWidth) elements.floating.style.width = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
         elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`;
-        if (settings.fitHeight) elements.floating.style.maxHeight = `${Math.max(0, Math.min(availableHeight, heightCap))}px`;
+        if (settings.fitHeight) {
+          // A panel that misses its room by less than the edge's padding takes
+          // its whole height, rounded up, and stands that much nearer the edge:
+          // clamped half a pixel or a few pixels short, every row showed and a
+          // scrollbar still stood beside them, its thumb the whole track
+          // (owner R018, 2026-11-07, a five-language menu at DPR 1).
+          const room = Math.min(availableHeight, heightCap);
+          const whole = Math.ceil(natural);
+          const fits = whole > room && whole <= availableHeight + padding && whole <= heightCap;
+          elements.floating.style.maxHeight = `${Math.max(0, fits ? whole : room)}px`;
+        }
       },
     }));
     const result = await computePosition(reference, floating, {

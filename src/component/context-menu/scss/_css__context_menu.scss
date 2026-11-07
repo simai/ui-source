@@ -25,10 +25,14 @@
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   --sf-badge--surface: var(--sf-context-menu-content--background-color);
   border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
-  --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
-  --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
-  --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
-  --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  /* The panel's inset is its search field's (owner R017, 2026-11-07): 8px,
+     so the field, the rows and their hover and chosen fills, a drilling head
+     and the footer share one edge. It was 4px, and the fills stood out past
+     the field and hugged the panel's edge. */
+  --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/3));
+  --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/3));
+  --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/3));
+  --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/3));
   --sf-context-menu-content--border-radius: var(--sf-context-menu-radius, var(--sf-radius--surface));
   border-radius: var(--sf-context-menu-content--border-radius);
   background-color: var(--sf-context-menu-content--background-color);
