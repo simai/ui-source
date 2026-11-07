@@ -430,6 +430,17 @@ function unknownAsPlaceholder(options) {
   return mode === 'placeholder';
 }
 
+// options.embedded (simai/ui-source#60): the Document is drawn inside a host
+// page that holds its own main landmark -- an editor's canvas. layout.page and
+// a main layout.region are drawn as plain elements marked
+// data-sf-composition-landmark="main", so the page keeps one main. The default,
+// false, is what a publishing host keeps; anything but a boolean throws.
+function renderEmbedded(options) {
+  const embedded = options?.embedded === undefined ? false : options.embedded;
+  if (typeof embedded !== 'boolean') throw new TypeError(`composition_embedded_invalid:${String(embedded)}`);
+  return embedded;
+}
+
 // The placeholder of a node whose type the host does not know: its type as
 // text, its id kept for the editor's selection, nothing of its data or slots.
 const unknownPlaceholder = (node) => `<div class="sf-composition-unknown" role="note" data-sf-composition-type="${escapeHtml(node.type)}" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(node.type)}</div>`;
@@ -749,7 +760,12 @@ function rhythm(props) {
 }
 
 const BUILTIN_RENDERERS = {
-  'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
+  // A page is the document's main landmark; drawn embedded (options.embedded,
+  // a host's canvas inside the host's own main) it is a plain element that
+  // names the landmark it stands for (simai/ui-source#60).
+  'layout.page': ({ node, slots, context }) => (renderEmbedded(context?.options)
+    ? `<div data-sf-composition-landmark="main" data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</div>`
+    : `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`),
   'layout.section': ({ node, slots, manifest }) => {
     // 1.1.0: a section given a width or columns draws the frame and content
     // parts its parameter sets place classes on. 1.2.0: its width defaults to
@@ -771,12 +787,15 @@ const BUILTIN_RENDERERS = {
   'content.heading': ({ node }) => `<h${node.data.level || 2} data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</h${node.data.level || 2}>`,
   'content.paragraph': ({ node }) => `<p data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</p>`,
   'layout.regions': ({ node, slots }) => `<div class="sf-composition-regions" data-sf-composition-id="${escapeHtml(node.id)}"><div class="sf-composition-regions-grid">${slots.regions || ''}</div></div>`,
-  'layout.region': ({ node, slots }) => {
+  'layout.region': ({ node, slots, context }) => {
     const props = node.props;
-    const element = REGION_ELEMENTS[props.landmark];
+    // Embedded, the main region is a plain element too: the host's page holds the one main.
+    const embeddedMain = props.landmark === 'main' && renderEmbedded(context?.options);
+    const element = embeddedMain ? 'div' : REGION_ELEMENTS[props.landmark];
+    const landmark = embeddedMain ? ' data-sf-composition-landmark="main"' : '';
     const sticky = props.sticky === true ? ' data-sf-region-sticky=""' : '';
     const label = props.label !== undefined ? ` aria-label="${escapeHtml(props.label)}"` : '';
-    return `<${element} class="sf-composition-region" data-sf-composition-id="${escapeHtml(node.id)}" data-sf-region="${escapeHtml(props.name)}" data-sf-region-placement="${escapeHtml(props.placement ?? 'block')}"${sticky}${label}>${slots.default || ''}</${element}>`;
+    return `<${element} class="sf-composition-region" data-sf-composition-id="${escapeHtml(node.id)}" data-sf-region="${escapeHtml(props.name)}" data-sf-region-placement="${escapeHtml(props.placement ?? 'block')}"${landmark}${sticky}${label}>${slots.default || ''}</${element}>`;
   },
   'layout.scope': ({ node, slots, routes }) => `<sf-composition-scope data-sf-composition-id="${escapeHtml(node.id)}" data-sf-routes="${escapeHtml(routesAttribute(routes || []))}">${slots.default || ''}</sf-composition-scope>`,
   'layout.area': ({ node, slots }) => `<div data-sf-composition-area=""${id(node)}>${slots.default || ''}</div>`,
@@ -955,6 +974,7 @@ const HOST_SOURCE_TYPES = new Set(['content.figure', 'content.media']);
 
 export async function render(document, context = {}) {
   const registry = normalizeRegistry(context.registry);
+  renderEmbedded(context.options);
   const resolveSource = typeof context.resolveSource === 'function' ? context.resolveSource : null;
   const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
