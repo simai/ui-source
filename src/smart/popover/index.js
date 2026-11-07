@@ -247,6 +247,9 @@ class SfPopover extends PopoverElement {
         if (this.label) surface.setAttribute('aria-label', this.label);
         else surface.removeAttribute('aria-label');
         surface.style.setProperty('--sf-popover--width', this.width || '');
+        // The gap to the trigger (#69), a margin on the trigger's side.
+        if (this.offset) surface.style.setProperty('--sf-popover--offset', this.offset);
+        else surface.style.removeProperty('--sf-popover--offset');
         return true;
     }
 
