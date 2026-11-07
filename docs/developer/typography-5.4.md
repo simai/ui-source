@@ -24,8 +24,17 @@ Semantic roles are exposed as:
 - `--sf-heading-1..6--size/height`;
 - `--sf-display-1..6--size/height`.
 
+The content heading ladder (docs review R022, contract 1.4.0): H1 is text
+rung 6, H2 rung 5, H3 rung 2 and H4 rung 1, each on the title line height of
+its rung; H3 and H4 are set apart from body text by weight, not size. H5 and
+H6 keep rungs 2 and 1.
+
 Heading flow uses `--sf-heading--space-top` and
-`--sf-heading--space-bottom`. H1 has no top margin; H2-H6 use both tokens.
+`--sf-heading--space-bottom`. H1 has no top margin. H2 opens a section: its
+top margin is `--sf-heading--space-top` plus `--sf-content--space-block`, its
+bottom margin `--sf-heading--space-bottom`. H3-H6 belong to their section: the
+top margin is `--sf-content--space-block`, the bottom margin half of
+`--sf-heading--space-bottom`.
 `--sf-heading--margin` is retained only as a deprecated compatibility alias.
 Body flow uses `--sf-text--space-bottom`.
 

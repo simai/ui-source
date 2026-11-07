@@ -18,7 +18,7 @@ const expectedTitleHeights = {
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.3.0");
+    assert.equal(contract.meta.version, "1.4.0");
 
     for (const mode of ["mobile", "desktop"])
     {
@@ -34,6 +34,13 @@ test("5.4 title heights and semantic roles are canonical contract data", () => {
         height: "6",
         size: "6",
     });
+    // The content heading ladder (docs review R022): h3 and h4 sit two rungs
+    // below h2, on the body-large and body rungs, set apart by weight.
+    assert.deepEqual(
+        Object.fromEntries(Object.entries(contract.typography.roles.heading)
+            .map(([level, role]) => [level, role.size])),
+        { 1: "6", 2: "5", 3: "2", 4: "1", 5: "2", 6: "1" },
+    );
     assert.deepEqual(contract.typography.roles.display["1"], {
         height: "12",
         size: "12",
@@ -103,8 +110,18 @@ test("role selectors and heading flow spacing use public semantic variables", ()
     assert.match(typography, /\.body-text-large[\s\S]*--sf-text-large--size/);
     assert.match(styles, /\.sf-body-large[\s\S]*--sf-text-large--size[\s\S]*--sf-text-large--height/);
     assert.match(styles, /\.sf-label-medium[\s\S]*--sf-label-medium--size[\s\S]*--sf-label-medium--height/);
-    assert.match(styles, /margin-block-start:\s*var\(--sf-heading--space-top\)/);
-    assert.match(styles, /margin-block-end:\s*var\(--sf-heading--space-bottom\)/);
+    // h2 opens a section: the section space and a block more before it;
+    // h3-h6 stand a block from the text before and half a text space above
+    // their own text.
+    assert.match(styles, /\.sf-h-2, h2 \{[^}]*margin-block-start:\s*calc\(var\(--sf-heading--space-top\) \+ var\(--sf-content--space-block\)\);[^}]*margin-block-end:\s*var\(--sf-heading--space-bottom\);/);
+    for (let level = 3; level <= 6; level += 1)
+    {
+        assert.match(
+            styles,
+            new RegExp(`\\.sf-h-${level}, h${level} \\{[^}]*margin-block-start:\\s*var\\(--sf-content--space-block\\);[^}]*margin-block-end:\\s*calc\\(var\\(--sf-heading--space-bottom\\) / 2\\);`),
+            `heading ${level} flow spacing`,
+        );
+    }
     assert.doesNotMatch(styles.split("  .sf-body-large")[0], /&\s*\+\s*\*/);
     assert.match(fontSize, /\.heading[\s\S]*--sf-title--height-/);
 });
