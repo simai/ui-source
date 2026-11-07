@@ -255,6 +255,72 @@
           "current": "desks"
         }
       }
+    },
+    {
+      "name": "sections",
+      "title": "Разделы карточки",
+      "settings": {
+        "label": "Разделы сайта",
+        "appearance": "navigation",
+        "current": "address",
+        "items": [
+          {
+            "id": "site",
+            "label": "Сайт",
+            "group": true,
+            "items": [
+              {
+                "id": "address",
+                "label": "Адрес",
+                "href": "#address",
+                "icon": "language",
+                "status": "warning"
+              },
+              {
+                "id": "code",
+                "label": "Код",
+                "href": "#code",
+                "icon": "code"
+              },
+              {
+                "id": "data",
+                "label": "Данные",
+                "href": "#data",
+                "icon": "database",
+                "count": 12
+              }
+            ]
+          },
+          {
+            "id": "watch",
+            "label": "Наблюдение",
+            "group": true,
+            "collapsible": true,
+            "items": [
+              {
+                "id": "health",
+                "label": "Состояние",
+                "href": "#health",
+                "icon": "monitor_heart",
+                "status": "success"
+              },
+              {
+                "id": "journal",
+                "label": "Журнал",
+                "href": "#journal",
+                "icon": "history",
+                "count": 3
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "name": "Разделы сайта",
+        "values": {
+          "current": "address"
+        }
+      }
     }
   ],
   "pages": [
@@ -268,6 +334,7 @@
           "  <div id=\"area\" style=\"inline-size: 900px\"><sf-menu id=\"row\" label=\"Сайт\" orientation=\"horizontal\" collapse=\"none\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}, {\"id\": \"catalog\", \"label\": \"Каталог\", \"children\": [{\"id\": \"solutions\", \"label\": \"Решения\", \"href\": \"#solutions\"}, {\"id\": \"products\", \"label\": \"Продукты\", \"href\": \"#products\", \"badge\": \"3\", \"children\": [{\"id\": \"desks\", \"label\": \"Столы\", \"href\": \"#desks\"}]}]}, {\"id\": \"contacts\", \"label\": \"Контакты\", \"href\": \"#contacts\"}]'></sf-menu></div>",
           "  <sf-menu id=\"col\" label=\"Разделы\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}, {\"id\": \"catalog\", \"label\": \"Каталог\", \"children\": [{\"id\": \"solutions\", \"label\": \"Решения\", \"href\": \"#solutions\"}, {\"id\": \"products\", \"label\": \"Продукты\", \"href\": \"#products\", \"badge\": \"3\", \"children\": [{\"id\": \"desks\", \"label\": \"Столы\", \"href\": \"#desks\"}]}]}, {\"id\": \"contacts\", \"label\": \"Контакты\", \"href\": \"#contacts\"}]'></sf-menu>",
           "  <sf-menu id=\"btn\" label=\"Кнопка\" collapse=\"always\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}]'></sf-menu>",
+          "  <sf-menu id=\"grp\" label=\"Разделы сайта\" appearance=\"navigation\" items='[{\"id\": \"site\", \"label\": \"Сайт\", \"group\": true, \"items\": [{\"id\": \"address\", \"label\": \"Адрес\", \"href\": \"#address\", \"status\": \"warning\"}, {\"id\": \"code\", \"label\": \"Код\", \"href\": \"#code\", \"count\": 12}]}, {\"id\": \"watch\", \"label\": \"Наблюдение\", \"group\": true, \"collapsible\": true, \"items\": [{\"id\": \"health\", \"label\": \"Состояние\", \"href\": \"#health\"}]}]'></sf-menu>",
           "</main>"
         ]
       },
@@ -547,6 +614,69 @@
               "script": "(document.getElementById('area').style.setProperty('--sf-menu-item-color', 'rgb(1, 2, 3)'), true)",
               "wait": 400,
               "check": "getComputedStyle(document.querySelector('#row a[data-sf-menu-link=\"about\"] .sf-menu-element-text') || document.querySelector('#row a[data-sf-menu-link=\"about\"]')).color === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p8-groups",
+          "title": "a group's heading names its list; a collapsible heading is a disclosure button that Enter closes and opens; a fixed group refuses with fixed; a status is a dot whose word ends the link's name; count is the class counter",
+          "covers": "settings.items group, collapsible, status, count; actions.toggle fixed",
+          "steps": [
+            {
+              "check": "(() => { const list = document.querySelector('#grp [data-sf-menu-item=\"site\"] > ul'); const head = document.getElementById(list.getAttribute('aria-labelledby')); return head && head.textContent.trim() === 'Сайт' && head.localName === 'span' && document.querySelector('#grp a[data-sf-menu-link=\"address\"] .sf-dot.sf-dot--warning') !== null && document.querySelector('#grp a[data-sf-menu-link=\"address\"]').textContent.includes('внимание') && document.querySelector('#grp a[data-sf-menu-link=\"code\"] .sf-badge[data-count=\"12\"]') !== null && document.querySelector('#grp a[data-sf-menu-link=\"address\"]').closest('[data-sf-menu-level]').dataset.sfMenuLevel === '1'; })()"
+            },
+            {
+              "action": {
+                "name": "toggle",
+                "with": {
+                  "id": "site"
+                }
+              },
+              "target": "#grp",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "fixed"
+                }
+              }
+            },
+            {
+              "script": "(document.querySelector('#grp [data-sf-menu-toggle=\"watch\"]').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-menu-toggle",
+                    "count": 1,
+                    "detail": {
+                      "id": "watch",
+                      "open": false,
+                      "source": "user"
+                    }
+                  }
+                ]
+              },
+              "check": "document.querySelector('#grp [data-sf-menu-toggle=\"watch\"]').getAttribute('aria-expanded') === 'false' && document.querySelector('#grp [data-sf-menu-item=\"watch\"] > ul').hidden"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-menu-toggle",
+                    "count": 1,
+                    "detail": {
+                      "id": "watch",
+                      "open": true,
+                      "source": "user"
+                    }
+                  }
+                ]
+              },
+              "check": "document.querySelector('#grp [data-sf-menu-toggle=\"watch\"]').getAttribute('aria-expanded') === 'true' && document.activeElement === document.querySelector('#grp [data-sf-menu-toggle=\"watch\"]')"
             }
           ]
         }

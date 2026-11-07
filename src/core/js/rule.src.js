@@ -750,6 +750,7 @@ import '../../smart/contents/rule.js';
 import '../../smart/confirm/rule.js';
 import '../../smart/confirm-change/rule.js';
 import '../../smart/language/rule.js';
+import '../../smart/input-choice/rule.js';
 import '../../smart/list/rule.js';
 import '../../smart/list-attention/rule.js';
 import '../../smart/list-feed/rule.js';

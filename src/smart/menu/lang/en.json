@@ -1,6 +1,11 @@
 {
   "title": "Menu",
   "runtime": {
-    "toggle-label": "Menu"
+    "toggle-label": "Menu",
+    "status-success": "all good",
+    "status-warning": "needs attention",
+    "status-error": "error",
+    "status-info": "something new",
+    "status-neutral": "no data"
   }
 }

@@ -1552,6 +1552,13 @@
           "varies_with": [
             "orientation"
           ]
+        },
+        {
+          "name": "--sf-menu-sticky-top",
+          "role": "inset-block-start",
+          "summary": "How far from the top of the view a sticky menu stops (sticky): the height of a fixed header above it.",
+          "default": "0",
+          "since": "2026-11-08"
         }
       ]
     },
@@ -4182,6 +4189,68 @@
           "summary": "The code's typeface.",
           "default": "var(--sf-mono)",
           "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "choice",
+      "selector": ".sf-choice",
+      "variables": [
+        {
+          "name": "--sf-choice-gap",
+          "role": "gap",
+          "summary": "The space between the cards.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-min-inline-size",
+          "role": "min-inline-size",
+          "summary": "The narrowest a card may be in the grid; fewer columns where it would be narrower.",
+          "default": "15rem",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-padding",
+          "role": "padding",
+          "summary": "The room inside a card.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-radius",
+          "role": "radius",
+          "summary": "A card's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-background-color",
+          "role": "background",
+          "summary": "A card's fill at rest; hover keeps its own.",
+          "default": "var(--sf-transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-border-color",
+          "role": "border-color",
+          "summary": "A card's hairline at rest; invalid and disabled keep their own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-selected-background-color",
+          "role": "background",
+          "summary": "A chosen card's fill.",
+          "default": "var(--sf-primary-transparent-select)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-selected-border-color",
+          "role": "border-color",
+          "summary": "A chosen card's edge (drawn twice as heavy).",
+          "default": "var(--sf-primary)",
+          "since": "2026-11-08"
         }
       ]
     }

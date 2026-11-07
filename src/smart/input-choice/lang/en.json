@@ -1,0 +1,6 @@
+{
+  "title": "Choice",
+  "runtime": {
+    "value-missing": "Choose an option."
+  }
+}

@@ -15,5 +15,8 @@ SF.RuleLoader['cl-menu'] = {
     { name: 'icons' },
     { name: 'icon-buttons' },
     { name: 'badges' },
+    // An item's status is the class dot of its tone (.sf-dot), drawn by the dot
+    // sheet without an element per row.
+    { name: 'dot' },
   ],
 };

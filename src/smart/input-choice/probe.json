@@ -1,0 +1,106 @@
+{
+  "component": "sf-input-choice",
+  "probe": "sf-input-choice against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <form id=\"f\">",
+      "    <sf-input-choice id=\"c1\" label=\"Тип сайта\" name=\"kind\" required hint=\"Тип можно сменить позже.\" items='[{\"value\": \"site\", \"label\": \"Сайт\", \"caption\": \"Страницы, разделы и меню\", \"icon\": \"language\"}, {\"value\": \"shop\", \"label\": \"Магазин\", \"caption\": \"Каталог, корзина и заказы\", \"icon\": \"storefront\", \"badge\": \"Pro\"}, {\"value\": \"docs\", \"label\": \"Документация\", \"caption\": \"Статьи с поиском и оглавлением\", \"icon\": \"menu_book\"}]'></sf-input-choice>",
+      "    <sf-input-choice id=\"c2\" label=\"Куда сохранять копии\" name=\"targets\" multiple value=\"local\" items='[{\"value\": \"local\", \"label\": \"Этот сервер\", \"caption\": \"Быстро, но пропадёт вместе с сервером\"}, {\"value\": \"s3\", \"label\": \"Хранилище S3\", \"caption\": \"Отдельно от сервера\"}, {\"value\": \"ftp\", \"label\": \"FTP\", \"caption\": \"Устаревший способ\", \"disabled\": true}]'></sf-input-choice>",
+      "  </form>",
+      "  <div id=\"area\"><sf-input-choice id=\"c3\" aria-label=\"Тариф\" value=\"shop\" items='[{\"value\": \"site\", \"label\": \"Сайт\", \"caption\": \"Страницы, разделы и меню\", \"icon\": \"language\"}, {\"value\": \"shop\", \"label\": \"Магазин\", \"caption\": \"Каталог, корзина и заказы\", \"icon\": \"storefront\", \"badge\": \"Pro\"}, {\"value\": \"docs\", \"label\": \"Документация\", \"caption\": \"Статьи с поиском и оглавлением\", \"icon\": \"menu_book\"}]'></sf-input-choice></div>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-group",
+      "title": "single is a radiogroup of native radios named by the label and described by the hint; multiple a group of checkboxes; each input named by its title and described by its description",
+      "covers": "accessibility, settings.label, settings.hint, settings.multiple",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "(() => { const g = document.querySelector('#c1 [role=radiogroup]'); const label = document.getElementById(g.getAttribute('aria-labelledby')); const hint = document.getElementById(g.getAttribute('aria-describedby')); const r = [...document.querySelectorAll('#c1 input')]; const first = r[0]; return label.textContent.trim().startsWith('Тип сайта') && hint.textContent.trim() === 'Тип можно сменить позже.' && r.length === 3 && r.every((i) => i.type === 'radio' && i.name === r[0].name && !i.form) && document.getElementById(first.getAttribute('aria-labelledby')).textContent.trim() === 'Сайт' && document.getElementById(first.getAttribute('aria-describedby')).textContent.trim() === 'Страницы, разделы и меню' && document.querySelector('#c2 [role=group]') !== null && [...document.querySelectorAll('#c2 input')].every((i) => i.type === 'checkbox') && document.querySelector('#c3 [role=radiogroup]').getAttribute('aria-label') === 'Тариф'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-required",
+      "title": "required with nothing chosen keeps the form from sending (value-missing); the multiple field sends one entry per value",
+      "covers": "form, settings.required, values.value",
+      "steps": [
+        {
+          "check": "(() => { const f = document.getElementById('f'); const d = new FormData(f); return f.checkValidity() === false && document.getElementById('c1').validity.valueMissing === true && d.get('kind') === null && JSON.stringify(d.getAll('targets')) === '[\"local\"]'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p3-arrows",
+      "title": "the arrow keys move through the radios and choose: input then change once each, detail {value, item, checked}; the form sends the value",
+      "covers": "keyboard.host ArrowRight focus:next, events.input, events.change",
+      "steps": [
+        {
+          "script": "(() => { const el = document.getElementById('c1'); window.__said = []; el.addEventListener('input', (e) => window.__said.push('input:' + e.detail.value)); el.addEventListener('change', (e) => window.__said.push('change:' + e.detail.value + ':' + e.detail.item.value + ':' + e.detail.checked)); el.querySelectorAll('input')[0].focus(); el.querySelectorAll('input')[0].click(); return true; })()",
+          "wait": 100
+        },
+        {
+          "user": "keyboard:ArrowRight",
+          "wait": 100,
+          "check": "(() => { const el = document.getElementById('c1'); return el.value === 'shop' && JSON.stringify(window.__said) === '[\"input:site\",\"change:site:site:true\",\"input:shop\",\"change:shop:shop:true\"]' && document.activeElement === el.querySelectorAll('input')[1] && new FormData(document.getElementById('f')).get('kind') === 'shop' && document.getElementById('f').checkValidity(); })()"
+        }
+      ]
+    },
+    {
+      "id": "p4-multiple",
+      "title": "multiple: Space toggles a checkbox; the value keeps the options' order; a disabled option is not focusable",
+      "covers": "settings.multiple, keyboard.host Space select, items.disabled",
+      "steps": [
+        {
+          "script": "(() => { const el = document.getElementById('c2'); el.querySelectorAll('input')[1].focus(); return true; })()",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Space",
+          "wait": 100,
+          "check": "(() => { const el = document.getElementById('c2'); return el.value === 'local,s3' && JSON.stringify(el.selected) === '[\"local\",\"s3\"]' && el.querySelectorAll('input')[2].disabled && JSON.stringify(new FormData(document.getElementById('f')).getAll('targets')) === '[\"local\",\"s3\"]'; })()"
+        },
+        {
+          "user": "keyboard:Space",
+          "wait": 100,
+          "check": "document.getElementById('c2').value === 'local'"
+        }
+      ]
+    },
+    {
+      "id": "p5-code-and-reset",
+      "title": "a value set from code says nothing; a form reset returns to the value attribute without events",
+      "covers": "values.value, form.reset",
+      "steps": [
+        {
+          "script": "(() => { const el = document.getElementById('c2'); window.__quiet = 0; el.addEventListener('change', () => window.__quiet++); el.value = ['ftp', 's3', 'local']; return true; })()",
+          "wait": 100,
+          "check": "document.getElementById('c2').value === 'local,s3,ftp' && window.__quiet === 0"
+        },
+        {
+          "script": "(document.getElementById('f').reset(), true)",
+          "wait": 150,
+          "check": "document.getElementById('c2').value === 'local' && window.__quiet === 0 && document.getElementById('c1').value === ''"
+        }
+      ]
+    },
+    {
+      "id": "p6-public-variables",
+      "title": "a public variable on an ancestor reaches the cards",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-choice-border-color', 'rgb(1, 2, 3)'), true)",
+          "wait": 200,
+          "check": "getComputedStyle(document.querySelector('#c3 .sf-choice-card:not(.sf-choice-card--checked)')).borderTopColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

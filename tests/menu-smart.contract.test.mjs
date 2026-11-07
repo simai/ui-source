@@ -142,8 +142,16 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
   assert.match(classRuntime, /if \(!\(target instanceof Element\) \|\| isOwned\(target\)\) return;/u);
   assert.match(classRuntime, /if \(!isOwned\(root\) && !root\.contains\(target\)\) setMenuItemOpen\(root, false\);/u);
   // The own sheet draws nothing the class draws: no row geometry, no colours
-  // but the shared focus ring.
-  assert.doesNotMatch(sheet, /padding|block-size|height|background|border-color|font-size/u);
+  // but the shared focus ring. The one rule past that is the host's place on
+  // the page (sticky, sf-menu 1.3.0); the groups are the class sheet's
+  // (component.menu 1.2.0, _css__menu_group.scss).
+  const [parts, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  assert.doesNotMatch(parts, /padding|block-size|height|background|border-color|font-size/u);
+  assert.match(sticky, /sf-menu\[sticky\]:not\(\[sticky='false'\]\) \{\n    position: sticky;/u);
+  assert.doesNotMatch(sticky, /padding|background|border-color|font-size/u);
+  for (const part of ['sf-menu-item--group', 'sf-menu-group-heading', 'sf-menu-group-label', 'sf-menu-element-status']) {
+    assert.ok(template.includes(part), part);
+  }
 });
 
 test('smart menu: a row\'s panels are placed by SF.Position and Escape closes the innermost only', () => {
@@ -197,7 +205,9 @@ test('smart menu: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-menu'\] = \{\n  tags: \['sf-menu'\],/u);
   assert.match(rule, /\{ name: 'menu' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},\n    \{ name: 'badges' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/menu\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.badges', 'component.icon-buttons', 'component.icons', 'component.menu']);
+  // The class dot draws an item's status (sf-menu 1.3.0).
+  assert.match(rule, /\{ name: 'badges' \},\n(?: {4}\/\/.*\n)* {4}\{ name: 'dot' \},/u);
+  assert.deepEqual(manifest.composition.uses, ['component.badges', 'component.dot', 'component.icon-buttons', 'component.icons', 'component.menu']);
 });
 
 // The public variables (2026-10-25): nine, read by the class sheet sf-menu
@@ -206,8 +216,10 @@ test('smart menu: the class menu\'s public variables wrap the values it drew bef
   const contract = JSON.parse(read('src/core/contracts/public-variables.v1.json'));
   const entry = contract.components.find((one) => one.component === 'menu');
   assert.equal(entry.selector, '.sf-menu');
-  assert.equal(entry.variables.length, 9);
+  // Ten with the sticky offset sf-menu's own sheet reads (1.3.0).
+  assert.equal(entry.variables.length, 10);
   const classSheet = ['_css__menu.scss', '_css__menu_element.scss'].map((name) => read(`src/component/menu/scss/${name}`)).join('\n');
+  assert.ok(sheet.includes('inset-block-start: var(--sf-menu-sticky-top, var(--sf-0));'));
   for (const line of [
     'background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));',
     'gap: var(--sf-menu--gap, var(--sf-menu-gap, var(--sf-space-1\\/3)));',
@@ -241,6 +253,7 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
     {orientation: 'horizontal', appearance: 'default'},
     {orientation: 'horizontal', appearance: 'navigation'},
     {collapse: 'always'},
+    {collapse: 'narrow'},
   ]);
   const sheet = read('src/component/menu/scss/_css__menu.scss');
   const block = sheet.slice(sheet.indexOf('.sf-menu.sf-menu--navigation {'), sheet.indexOf('/* Documentation navigation'));

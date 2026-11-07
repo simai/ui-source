@@ -19,6 +19,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
   MENU_APPEARANCES,
@@ -32,6 +33,7 @@ import {
   openBranches,
   pathTo,
   walkItems,
+  withoutGroups,
 } from './items.mjs';
 import './scss/index.scss';
 import manifest from './component.json';
@@ -70,6 +72,7 @@ class SfSmartMenu extends MenuElement {
       collapse: {default: 'auto', values: MENU_COLLAPSE},
       label: {default: ''},
       toggleLabel: {attribute: 'toggle-label', default: ''},
+      sticky: {type: Boolean, default: false},
       rootClass: {default: ''},
     };
   }
@@ -94,6 +97,8 @@ class SfSmartMenu extends MenuElement {
     this._anchors = new Map();
     this._holding = false;
     this._escapeTaken = false;
+    // Under the md breakpoint (a phone), for collapse narrow.
+    this._narrow = false;
     // A value set as a property before the element was defined is an own
     // property that would hide the accessor; it is taken through it.
     if (Object.prototype.hasOwnProperty.call(this, 'items')) {
@@ -138,12 +143,24 @@ class SfSmartMenu extends MenuElement {
     };
     window.addEventListener('popstate', this._onLocation);
     window.addEventListener('hashchange', this._onLocation);
+    // The phone's width, as the sheets switch on it (core/js/breakpoints).
+    this._narrowMedia = breakpointMedia('md', {below: true});
+    this._narrow = this._narrowMedia?.matches === true;
+    this._onNarrow = () => {
+      const narrow = this._narrowMedia?.matches === true;
+      if (narrow === this._narrow) return;
+      this._narrow = narrow;
+      if (this.collapse === 'narrow') this.requestComponentUpdate('narrow');
+    };
+    this._narrowMedia?.addEventListener?.('change', this._onNarrow);
   }
 
   onDisconnected() {
     super.onDisconnected();
     window.removeEventListener('popstate', this._onLocation);
     window.removeEventListener('hashchange', this._onLocation);
+    this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
+    this._narrowMedia = null;
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
     this._observed = null;
@@ -180,12 +197,19 @@ class SfSmartMenu extends MenuElement {
   // The row became a button that opens the same links as a column.
   get collapsed() {
     if (this.collapse === 'always') return true;
+    if (this.collapse === 'narrow') return this._narrow;
     return this.collapse === 'auto' && this.horizontal && this._autoCollapsed;
   }
 
   // Branches open as panels beside the row: a row that is shown as a row.
   get flyouts() {
     return this.horizontal && !this.collapsed;
+  }
+
+  // Groups are drawn with their headings in a column; a row and the compact
+  // rail draw their items in the group's place.
+  get groupsDrawn() {
+    return !this.flyouts && this.appearance !== 'compact';
   }
 
   get panelOpen() {
@@ -198,6 +222,7 @@ class SfSmartMenu extends MenuElement {
     return currentItemId(this.menuItems, {
       current: this.getProp('current'),
       pathname: here?.pathname || '',
+      hash: here?.hash || '',
       base: here?.href || '',
       fromLocation: this.currentFromLocation,
     });
@@ -249,6 +274,9 @@ class SfSmartMenu extends MenuElement {
     const item = this.item(id);
     if (!item || !item.children.length) return {outcome: 'refused', reason: 'unknown'};
     if (this.appearance === 'compact') return {outcome: 'refused', reason: 'compact'};
+    // A group that is not collapsible, or a group a row does not draw, stays
+    // as it is.
+    if (item.group && (!item.collapsible || !this.groupsDrawn)) return {outcome: 'refused', reason: 'fixed'};
     if (item.disabled && source === 'user') return {outcome: 'refused', reason: 'disabled'};
     const before = new Set(this.openIds);
     if (before.has(item.id) === Boolean(open)) return {outcome: 'refused', reason: 'already'};
@@ -540,7 +568,10 @@ class SfSmartMenu extends MenuElement {
   templateContext() {
     const props = this.getPropsContext();
     this.syncMode();
-    const items = this.menuItems;
+    const all = this.menuItems;
+    const items = this.groupsDrawn ? all : withoutGroups(all);
+    const currentId = this.currentId;
+    const selector = this.collapse === 'narrow' && this.collapsed;
     return this.createTemplateContext({
       ...props,
       component: this,
@@ -549,7 +580,11 @@ class SfSmartMenu extends MenuElement {
       id: partId(instancePath(this, {kind: 'sf-menu'})),
       items,
       open: new Set(this.openIds),
-      currentId: this.currentId,
+      currentId,
+      // collapse narrow: the button is a selector showing the current item.
+      selector,
+      selectedItem: selector && currentId ? findItem(all, currentId) : null,
+      statusWord: (status) => this.sfWord(`status-${status}`),
       flyouts: this.flyouts,
       collapsed: this.collapsed,
       panelOpen: this.panelOpen,

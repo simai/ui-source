@@ -13,7 +13,10 @@ const FOLDERS = {
   tag: 'tags', 'icon-button': 'icon-buttons', checkbox: 'checkbox', 'radio-button': 'radio',
   switch: 'switch', textarea: 'textarea', toast: 'toast', modal: 'modal',
   tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
-  'button-group': 'button-group', accordion: 'accordion', menu: 'menu', verification: 'verification',
+  'button-group': 'button-group', accordion: 'accordion', verification: 'verification',
+  // sf-menu draws with the class sheet; its own sheet reads the sticky offset
+  // of the host (sf-menu 1.3.0).
+  menu: ['menu', 'smart/menu'],
   // A Smart component that carries its own sheet: the path from src/.
   'image-field': 'smart/input-image',
   // sf-quantity draws the class component's markup, so the class sheet reads them.
@@ -87,6 +90,8 @@ const FOLDERS = {
   'list-feed': 'smart/list-feed/js/templates',
   // sf-wizard (2026-11-06): a sheet of its own, the frame's gap, inset, fill, edge, corner and width.
   wizard: 'smart/wizard',
+  // sf-input-choice (2026-11-08): a sheet of its own, the cards' gap, width, room, corner, fills and edges.
+  choice: 'smart/input-choice',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.
@@ -98,6 +103,7 @@ const FOLDERS = {
 };
 
 const scss = async (folder) => {
+  if (Array.isArray(folder)) return (await Promise.all(folder.map(scss))).join('\n');
   const dir = folder === 'core' ? 'src/core/scss' : folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
   const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => /\.s?css$/u.test(name));
   return (await Promise.all(names.map((name) => read(`${dir}/${name}`)))).join('\n');

@@ -1,6 +1,11 @@
 {
   "title": "Меню",
   "runtime": {
-    "toggle-label": "Меню"
+    "toggle-label": "Меню",
+    "status-success": "в порядке",
+    "status-warning": "внимание",
+    "status-error": "ошибка",
+    "status-info": "есть новое",
+    "status-neutral": "нет данных"
   }
 }

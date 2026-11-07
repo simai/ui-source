@@ -54,3 +54,18 @@
     }
   }
 }
+
+// sticky (sf-menu 1.3.0): the host stays in sight while the page scrolls and
+// scrolls inside itself when it is taller than the view. The host's place on
+// the page, not a part the class draws.
+@layer sf.components {
+  sf-menu[sticky]:not([sticky='false']) {
+    position: sticky;
+    display: block;
+    align-self: flex-start;
+    inset-block-start: var(--sf-menu-sticky-top, var(--sf-0));
+    max-block-size: calc(100dvh - var(--sf-menu-sticky-top, 0px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
