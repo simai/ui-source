@@ -110,17 +110,27 @@ try {
     await settle(page);
     const two = await boxes(page, ['c', 'a', 'b']);
     const gap = two.b.x - (two.a.x + two.a.width);
-    report[`columns2_${theme}`] = {...drawn, boxes: two, gap, utilitiesLoaded: await page.evaluate(() => Boolean(window.SF?.Loader))};
+    // gap-4 is var(--sf-space-4): the step the theme sets, read here.
+    const step = await page.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.width = 'var(--sf-space-4)';
+      document.body.append(probe);
+      const width = probe.getBoundingClientRect().width;
+      probe.remove();
+      return width;
+    });
+    report[`columns2_${theme}`] = {...drawn, boxes: two, gap, step, utilitiesLoaded: await page.evaluate(() => Boolean(window.SF?.Loader))};
     check(JSON.stringify(drawn.assets) === '["composition/layout"]' && drawn.diagnostics.length === 0, `${theme}: the render lists composition/layout and nothing wrong`, drawn);
     check(near(two.a.y, two.b.y) && two.b.x > two.a.x + two.a.width, `${theme}: A and B stand side by side on core.css alone`, two);
-    check(near(two.a.width, two.b.width) && near(gap, 16), `${theme}: two equal columns 16 px apart (gap-4)`, {two, gap});
+    check(step > 0 && near(two.a.width, two.b.width) && near(gap, step), `${theme}: two equal columns, the type's gap apart (gap-4, --sf-space-4)`, {two, gap, step});
     if (shots) await page.screenshot({path: join(shots, `columns-core-css-${theme}.png`), clip: {x: 0, y: 0, width: 1000, height: 160}});
   }
   await draw(page, columns(3, ['a', 'b', 'd']));
   await settle(page);
   const three = await boxes(page, ['c', 'a', 'b', 'd']);
   report.columns3 = three;
-  check(near(three.a.y, three.d.y) && near(three.a.width, three.d.width) && near(three.a.width * 3 + 32, three.c.width), 'three columns fill the row in thirds, two gaps between', three);
+  const step = report.columns2_dark.step;
+  check(near(three.a.y, three.d.y) && near(three.a.width, three.d.width) && near(three.a.width * 3 + step * 2, three.c.width), 'three columns fill the row in thirds, two gaps between', three);
 
   // With the Loader: the utilities the renderer prints take over; nothing moves.
   await page.goto(`${base}/host?loader=1`);
