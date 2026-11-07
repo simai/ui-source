@@ -29,12 +29,14 @@ function renderTop(context) {
                 icon=${context.previousIcon} aria-label=${context.labels.previousMonth}
                 @click=${() => context.component.shiftMonth(-1)}></sf-button-icon>
             <div class="sf-datepicker-period flex content-main-center items-cross-center gap-1/4">
-                <sf-button class="sf-datepicker-month-toggle" appearance="link" scheme="on-surface" spacing="compact"
+                <!-- The toggles are size 1/2, as tall as the compact size 1 they were:
+                     density no longer changes a button's height (C01). -->
+                <sf-button class="sf-datepicker-month-toggle" size="1/2" appearance="link" scheme="on-surface"
                     ?disabled=${context.disabled}
                     text=${context.monthLabel}
                     aria-expanded=${context.context === 'month' ? 'true' : 'false'}
                     @click=${() => context.component.toggleContext('month')}></sf-button>
-                <sf-button class="sf-datepicker-year-toggle" appearance="link" scheme="on-surface" spacing="compact"
+                <sf-button class="sf-datepicker-year-toggle" size="1/2" appearance="link" scheme="on-surface"
                     ?disabled=${context.disabled}
                     text=${String(context.year)}
                     aria-expanded="false"
