@@ -865,10 +865,14 @@ function renderPhoneEdit(field, value, host) {
 // Clearing a set password is not offered: an empty field means «keep».
 //
 // The typed text lives in the input and nowhere else: no `value` attribute on
-// sf-input, no data-*, no text node, no log. «Показать» is an icon button that
-// switches the input's type and says so with its pressed setting (aria-pressed); it changes the DOM
-// directly, so a host's re-render (its attributes are static in the template)
-// leaves the person's choice as it is.
+// sf-input, no data-*, no text node, no log. «Показать пароль» is an icon button
+// that switches the input's type and says what it will do next by its name and
+// icon: «Показать пароль» (visibility) while hidden, «Скрыть пароль»
+// (visibility_off) while shown. A toggle whose name changes is not a pressed
+// toggle (rule C12, point 3): it carries no aria-pressed and no pressed look,
+// or a reader would hear «Скрыть пароль, нажата». It changes the DOM directly,
+// so a host's re-render (its attributes are static in the template) leaves the
+// person's choice as it is.
 function isPasswordField(field) {
     return String(field.variant ?? '') === 'password';
 }
@@ -882,13 +886,13 @@ function passwordState(host, value) {
     return setText(host, passwordIsSet(value) ? 'passwordSet' : 'passwordUnset');
 }
 
-function togglePasswordShown(event) {
+function togglePasswordShown(event, host) {
     const button = event.currentTarget;
     const input = button?.closest?.('.sf-field-password')?.querySelector?.('sf-input');
     if (!input) return;
-    const shown = button.getAttribute('pressed') === 'false';
+    const shown = input.getAttribute('input-type') !== 'text';
     input.setAttribute('input-type', shown ? 'text' : 'password');
-    button.setAttribute('pressed', shown ? '' : 'false');
+    button.setAttribute('aria-label', setText(host, shown ? 'hidePassword' : 'showPassword'));
     button.setAttribute('icon', shown ? 'visibility_off' : 'visibility');
 }
 
@@ -922,9 +926,8 @@ function renderPasswordEdit(field, value, host) {
                     appearance="link"
                     scheme="on-surface"
                     icon="visibility"
-                    pressed="false"
                     aria-label=${setText(host, 'showPassword')}
-                    @click=${togglePasswordShown}
+                    @click=${(event) => togglePasswordShown(event, host)}
             ></sf-button-icon>
         </span>
     `;
@@ -1623,6 +1626,7 @@ const SET_TEXT = {
         passwordUnset: 'Not set',
         passwordKeep: 'Set; type a new one to replace it',
         showPassword: 'Show password',
+        hidePassword: 'Hide password',
         maskIncomplete: 'Complete the field',
     },
     ru: {
@@ -1651,6 +1655,7 @@ const SET_TEXT = {
         passwordUnset: 'Не задан',
         passwordKeep: 'Задан; введите новый, чтобы заменить',
         showPassword: 'Показать пароль',
+        hidePassword: 'Скрыть пароль',
         maskIncomplete: 'Заполните поле полностью',
     },
 };

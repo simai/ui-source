@@ -89,7 +89,10 @@ function syncCarouselState(root) {
   root.dataset.rotation = playing ? 'playing' : 'paused';
   main.setAttribute('aria-live', playing ? 'off' : 'polite');
   if (rotation) {
-    rotation.setAttribute('aria-pressed', String(!playing));
+    // The control is named by what it does next (pause / play): a toggle whose
+    // name changes carries no aria-pressed (rule C12), or a reader would hear
+    // «Play, pressed»; a page's stale aria-pressed is taken off.
+    rotation.removeAttribute('aria-pressed');
     setOptionalAttribute(
       rotation,
       'aria-label',

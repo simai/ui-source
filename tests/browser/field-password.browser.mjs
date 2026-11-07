@@ -5,8 +5,9 @@
 // bytes. A host never sends a password: the value is {set: true|false}, and the
 // set shows only «задан»/«не задан». The edit control is an empty
 // type=password input with autocomplete=new-password and spellcheck off, a
-// «Показать пароль» icon button that switches the type and says so with
-// aria-pressed, and the control writes only what a person types -- an untouched
+// «Показать пароль» icon button that switches the type and says what it will do
+// next by its name -- «Скрыть пароль» while shown, no aria-pressed (rule C12:
+// a toggle whose name changes is not a pressed toggle) -- and the control writes only what a person types -- an untouched
 // field puts nothing in the save, a typed one puts the text, an erased one takes
 // it back. A sentinel password is searched for in the whole document's markup
 // in every state: it must never appear there.
@@ -109,10 +110,12 @@ try {
     };
     const untouched = {payload: payload()};
 
-    // The toggle shows and hides, and says which with aria-pressed.
+    // The toggle shows and hides, and its name says what it will do next.
     a.button?.click();
     await tick();
-    const shown = {type: parts('secret').input?.type, pressed: parts('secret').button?.getAttribute('aria-pressed')};
+    const shown = {type: parts('secret').input?.type, pressed: parts('secret').button?.getAttribute('aria-pressed'),
+      name: parts('secret').button?.getAttribute('aria-label'),
+      pressedLook: parts('secret').button?.classList.contains('sf-icon-button--pressed')};
 
     // A typed value goes out; the markup still does not hold it, and the
     // re-render the write caused keeps the person's choice to see it.
@@ -121,11 +124,13 @@ try {
     typing.dispatchEvent(new Event('input', {bubbles: true}));
     await tick();
     const typed = {payload: payload(), leaks: leaks(), type: parts('secret').input?.type,
-      pressed: parts('secret').button?.getAttribute('aria-pressed'), value: parts('secret').input?.value,
+      pressed: parts('secret').button?.getAttribute('aria-pressed'), name: parts('secret').button?.getAttribute('aria-label'),
+      value: parts('secret').input?.value,
       valueAttribute: parts('secret').host?.hasAttribute('value')};
     parts('secret').button?.click();
     await tick();
-    const hidden = {type: parts('secret').input?.type, pressed: parts('secret').button?.getAttribute('aria-pressed')};
+    const hidden = {type: parts('secret').input?.type, pressed: parts('secret').button?.getAttribute('aria-pressed'),
+      name: parts('secret').button?.getAttribute('aria-label')};
 
     // Erased: the change is taken back, and the save carries nothing again.
     const erasing = parts('secret').input;
@@ -204,8 +209,8 @@ try {
     if (e.required !== false || e.freshRequired !== true || !e.placeholder) {
       note({case: 'a set password is not required again and says an empty field keeps it; an unset required one is required', got: e});
     }
-    if (e.buttonName !== 'Показать пароль' || e.pressed !== 'false') {
-      note({case: 'the toggle is named in the page language and not pressed', got: e});
+    if (e.buttonName !== 'Показать пароль' || e.pressed !== null) {
+      note({case: 'the toggle is named in the page language and says no aria-pressed', got: e});
     }
     if (e.buttonHeight !== e.fieldHeight) {
       note({case: 'the toggle stands on the field\'s rung of the size ladder', got: {button: e.buttonHeight, field: e.fieldHeight}});
@@ -221,15 +226,16 @@ try {
     if (Object.keys(result.untouched.payload).length) {
       note({case: 'an untouched password field puts nothing in the save', got: result.untouched});
     }
-    if (result.shown.type !== 'text' || result.shown.pressed !== 'true') {
-      note({case: 'the toggle shows the password and is pressed', got: result.shown});
+    if (result.shown.type !== 'text' || result.shown.pressed !== null || result.shown.name !== 'Скрыть пароль'
+      || result.shown.pressedLook) {
+      note({case: 'the toggle shows the password and is renamed «Скрыть пароль», neither pressed nor drawn pressed', got: result.shown});
     }
     const t = result.typed;
     if (t.payload.secret !== SENTINEL || Object.keys(t.payload).length !== 1 || t.leaks || t.valueAttribute
-      || t.type !== 'text' || t.pressed !== 'true' || t.value !== SENTINEL) {
+      || t.type !== 'text' || t.pressed !== null || t.name !== 'Скрыть пароль' || t.value !== SENTINEL) {
       note({case: 'a typed password goes out in the save, stays out of the markup, and a re-render keeps it shown', got: t});
     }
-    if (result.hidden.type !== 'password' || result.hidden.pressed !== 'false') {
+    if (result.hidden.type !== 'password' || result.hidden.pressed !== null || result.hidden.name !== 'Показать пароль') {
       note({case: 'the toggle hides the password again', got: result.hidden});
     }
     if (Object.keys(result.erased.payload).length) {

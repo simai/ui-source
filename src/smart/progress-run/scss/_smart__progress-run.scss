@@ -184,6 +184,15 @@ sf-progress-run {
   gap: var(--sf-progress-run--text-space-x);
 }
 
+/* The «Вывод» toggle is a link button, and a link button keeps its own inner
+   room: its label stood a button's padding plus the label's own inset to the
+   right of the step column. Its first letter stands on the column: the button
+   is drawn that much to the start, so its hover fill reaches past the column
+   as a text button's does, and the label lines up with the step titles. */
+.sf-progress-run-toggle > .sf-button {
+  margin-inline-start: calc(-1 * (var(--sf-button--padding-inline-start, 0px) + var(--sf-button-text-container--padding-inline-start, 0px)));
+}
+
 .sf-progress-run-output-tools {
   display: inline-flex;
   align-items: center;
