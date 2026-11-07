@@ -2905,6 +2905,14 @@ class SfBaseElement extends HTMLElement {
 
     if (this.shouldClearLightDomBeforeFirstRender()) {
       this.replaceChildren();
+      // A first render that drew and was then cut short -- the element was
+      // moved while it waited for its sheets, as sf-drawer moves its content
+      // into its portal -- never set _hasRendered, so the next one clears
+      // again. Lit's part on the host survived the clear with its markers
+      // gone, and committed nothing for the same values: a static sf-icon in
+      // a docked drawer stayed empty in 2 of 8 loads (simai/ui-source#56).
+      // The cleared host starts lit afresh.
+      if (this._$litPart$ !== undefined) this._$litPart$ = undefined;
       this.endFirstPaint();
       return;
     }
