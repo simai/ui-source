@@ -92,3 +92,19 @@ below and after them.
 - `onFocus(handler)`
 - `onBlur(handler)`
 - `resetToInherited()`
+
+## Public CSS variables
+
+Set on the switch or on any ancestor (standard 1.3.8 §6):
+
+- `--sf-switch-color` — the label;
+- `--sf-switch-background-color`, `--sf-switch-border-color`,
+  `--sf-switch-border-width`, `--sf-switch-radius` — the track while off;
+- `--sf-switch-gap` — between the track and the label;
+- `--sf-switch-checked-background-color` — the track while on (`--sf-primary`
+  by default), also while pressed;
+- `--sf-switch-checked-thumb-color` — the thumb while on (`--sf-on-primary`).
+
+The look follows the native control: on reads `input:checked` and disabled
+reads `input:disabled`, so a script that sets either on the input is drawn
+without the component's classes.
