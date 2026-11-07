@@ -1,0 +1,299 @@
+{
+  "schema_version": 2,
+  "id": "smart.list-attention",
+  "version": "1.0.0",
+  "title": "Needs attention",
+  "summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "list",
+    "attention",
+    "problems",
+    "health",
+    "status",
+    "validation-summary",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-list-attention",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.badge",
+      "smart.button",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "description": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The count of items stands beside it"
+      },
+      "heading-level": {
+        "type": "integer",
+        "default": 3,
+        "description": "The level of the heading in the page's outline",
+        "minimum": 2,
+        "maximum": 6
+      },
+      "empty": {
+        "type": "string",
+        "default": "none",
+        "description": "With no items: none draws nothing at all (the host takes no room); line draws one quiet line, empty-text with a check",
+        "enum": [
+          "none",
+          "line"
+        ]
+      },
+      "empty-text": {
+        "type": "string",
+        "description": "The quiet line of empty line; «Всё в порядке» / «All is well» when not set"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: the heading and titles are the rung's line, the texts the rung below's, a one-line row the rung's control height. 1/2 for a side panel",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The problems that need a person, each {id, status error|warning|info|success, title, text?, action?: {label, href} or {label, event}}. A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), the host's order inside a status. An item without an id or a title is left out; another status reads as info"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {
+    "sf-list-attention-navigate": {
+      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "href"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-attention-apply": {
+      "summary": "A person pressed an item's action button, one without href (vocabulary §5 apply {action, scope: entry, ids}): action is the item's action.event, ids the item's id. The host does it (restarts a job, opens a dialog) and sets the list again",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action",
+          "scope",
+          "ids",
+          "id",
+          "status"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "list": [
+        "empty",
+        "shown"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "finding the problems (the host checks and sets the list)",
+      "deciding when a problem ends (the host sets the list again)",
+      "doing an action (the host answers apply or navigate)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "region",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches each item's action in order; Enter follows a link, Enter or Space presses a button"
+    ],
+    "focus": "The list never takes focus."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "195fc22bad4b725cf4f5bb3778b78fb3739e5e20",
+    "source_artifacts": [
+      {
+        "path": "src/smart/list-attention/index.js",
+        "sha256": "e2c1301d90a2cc1622c500f75d0f3b23a36655fd82e5373f6ca61142deb7b9c0"
+      },
+      {
+        "path": "src/smart/list-attention/js/templates/default.js",
+        "sha256": "63357da4fcb5bb5378f4d0b11ae07e545c155b810dfa69484063973e5fb6c7ab"
+      },
+      {
+        "path": "src/smart/list-attention/scss/_smart__list-attention.scss",
+        "sha256": "b152d304d58184f76543e8a3ebb8ad2f6eabd265bd7853af05f92cd154c2ac28"
+      },
+      {
+        "path": "src/smart/list-attention/rule.js",
+        "sha256": "d9e43358d8db6bca3dffe0171dae176d1dd3244738b607c43d31085396cf057e"
+      },
+      {
+        "path": "src/smart/list-attention/docs.md",
+        "sha256": "e57093e79169b224ed11851e8d407f453f8277b84afd736eaa4c3789971cf2dc"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-list-attention on an overview screen for the problems that need a person now: server health, site checks, import errors, update readiness, a form's validation summary.",
+    "do_not": [
+      "Do not wrap it in a card that stays when the list is empty; with empty none it takes no room",
+      "Do not use it for news or a history; sf-list-feed or a timeline does that",
+      "Do not use it for a page-wide condition above the header; sf-alert-bar does that"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-list-attention><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"text\": \"demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

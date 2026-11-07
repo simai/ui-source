@@ -52,6 +52,7 @@
         "tabs",
         "tag",
         "theme",
+        "tile",
         "toast",
         "tooltip",
         "tree",
@@ -227,6 +228,10 @@
           "status": "released"
         },
         {
+          "element": "sf-list-attention",
+          "status": "released"
+        },
+        {
           "element": "sf-list-feed",
           "status": "released"
         },
@@ -268,6 +273,10 @@
         },
         {
           "element": "sf-progress-ring",
+          "status": "released"
+        },
+        {
+          "element": "sf-progress-run",
           "status": "released"
         },
         {
@@ -332,6 +341,10 @@
         },
         {
           "element": "sf-theme-generator",
+          "status": "released"
+        },
+        {
+          "element": "sf-tile-metric",
           "status": "released"
         },
         {

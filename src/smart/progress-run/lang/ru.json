@@ -1,0 +1,36 @@
+{
+  "title": "Ход выполнения",
+  "runtime": {
+    "label": "Ход выполнения",
+    "output-label": "Вывод",
+    "steps": "Шаги",
+    "state-waiting": "ожидает",
+    "state-running": "выполняется",
+    "state-done": "готово",
+    "state-failed": "не удалось",
+    "state-skipped": "пропущен",
+    "result-done": "Готово",
+    "result-failed": "Не удалось",
+    "result-cancelled": "Отменено",
+    "cancel": "Отменить",
+    "retry": "Повторить",
+    "hide": "Скрыть",
+    "copy": "Скопировать вывод",
+    "download": "Скачать вывод",
+    "empty-output": "Вывода пока нет"
+  },
+  "events": {
+    "cancel": {
+      "label": "Отменить"
+    },
+    "retry": {
+      "label": "Повторить"
+    },
+    "close": {
+      "label": "Скрыть"
+    },
+    "download": {
+      "label": "Скачать вывод"
+    }
+  }
+}

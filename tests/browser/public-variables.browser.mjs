@@ -188,6 +188,16 @@ const DRAW = {
   'alert-bar': {css: ['buttons', 'icon-buttons', 'badges', 'icons', 'smart/smart/alert-bar/css/alert-bar.css'], js: ['alert-bar', 'badge'],
     html: ['danger', 'warning', 'info'].map((level, at) => `<sf-alert-bar id="ab-${level}"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', level, text: 'Текст', action: {label: 'Открыть', href: '#a'}}, ...(at === 1 ? [{id: 'b', level: 'info', text: 'Ещё'}] : [])]})}</script></sf-alert-bar>`).join(''),
     open: 'document.getElementById("ab-warning").toggleList(true)'},
+  // sf-tile-metric (2026-11-07): a plain tile; the value takes value-color.
+  'tile-metric': {css: ['badges', 'icons', 'progress-bar', 'smart/smart/tile-metric/css/tile-metric.css'], js: ['tile-metric', 'badge', 'progress-bar'],
+    html: '<sf-tile-metric label="Диск" value="83" max="100" warning-at="80" hint="Мало места"></sf-tile-metric>'},
+  // sf-list-attention (2026-11-07): two items, so the divider is drawn.
+  'list-attention': {css: ['buttons', 'badges', 'icons', 'smart/smart/list-attention/css/list-attention.css'], js: ['list-attention', 'badge'],
+    html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention>`},
+  // sf-progress-run (2026-11-07): two steps and the output open, so the
+  // divider and the pane are drawn.
+  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy'],
+    html: `<sf-progress-run label="Run" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading

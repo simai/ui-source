@@ -1,0 +1,21 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tile-metric",
+  "title": "tile-metric reference",
+  "summary": "Deterministic reference fixture for sf-tile-metric.",
+  "locale": "ru",
+  "props": {
+    "label": "Подкачка",
+    "value": 83,
+    "max": 100,
+    "format": "integer",
+    "unit": "%",
+    "limit-text": "83 % из 2 ГБ",
+    "warning-at": 80,
+    "error-at": 95,
+    "hint": "Серверу не хватает памяти"
+  },
+  "children": [],
+  "state": "default"
+}

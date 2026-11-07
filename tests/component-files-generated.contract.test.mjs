@@ -68,6 +68,10 @@ const PHASE_A = [
   // The step-by-step wizard and its step (2026-11-06).
   'wizard',
   'wizard-step',
+  // The Larena admin screens' tile, attention list and run progress (2026-11-07).
+  'tile-metric',
+  'list-attention',
+  'progress-run',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

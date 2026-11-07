@@ -1,0 +1,345 @@
+{
+  "schema_version": 2,
+  "id": "smart.tile-metric",
+  "version": "1.0.0",
+  "title": "Metric tile",
+  "summary": "A metric tile: a label, a value with its unit, the change against a previous period said in words and by an arrow, a limit as a meter with thresholds, a status with a short hint, a slot for a chart, a skeleton while it loads, and the whole tile as one link or button. Tiles stand in a row that wraps (sf-tile-metric-grid).",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "tile",
+    "metric",
+    "kpi",
+    "stat",
+    "meter",
+    "dashboard",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-tile-metric",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.badge",
+      "smart.icon",
+      "smart.progress-bar"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "What the number is, in a few words («Диск», «Подкачка», «Посетители»): the tile's accessible name. Without it the tile is named «Показатель» / «Metric»"
+      },
+      "value": {
+        "type": "number",
+        "description": "The number. Unset, the tile says «—»"
+      },
+      "value-text": {
+        "type": "string",
+        "default": "",
+        "description": "The value as the page writes it («83 %», «1,2 млн»), in place of the formatted number; value still feeds the change and the limit"
+      },
+      "format": {
+        "type": "string",
+        "default": "number",
+        "description": "How the value, the change and the limit are written, in the page language (SF.format.number words): number, integer, decimal-<n>, percent (a share 0..1), compact, currency-<CODE> or unit-<Intl unit> (unit-gigabyte, unit-percent)"
+      },
+      "unit": {
+        "type": "string",
+        "default": "",
+        "description": "A word after the value for a unit Intl does not know («запросов/с», «сайтов»); drawn smaller, on the value's baseline"
+      },
+      "previous": {
+        "type": "number",
+        "description": "The value of the previous period; the change is worked out from it when delta is not given"
+      },
+      "delta": {
+        "type": "number",
+        "description": "The change itself, when the page has it; it wins over previous"
+      },
+      "delta-format": {
+        "type": "string",
+        "default": "percent",
+        "description": "How the change is written: its share of the previous value, the difference in the value's format, or both. Without a previous value it is the difference",
+        "enum": [
+          "percent",
+          "absolute",
+          "both"
+        ]
+      },
+      "period-text": {
+        "type": "string",
+        "default": "",
+        "description": "What the change is against, after it: «к прошлой неделе»"
+      },
+      "better": {
+        "type": "string",
+        "default": "up",
+        "description": "Whether a rise is good: up for visitors, down for load, errors or a queue, none when neither. The change's tone follows its meaning, not its sign",
+        "enum": [
+          "up",
+          "down",
+          "none"
+        ]
+      },
+      "max": {
+        "type": "number",
+        "description": "A limit: the tile shows the value of max with a meter (a disk, a quota, licence seats)"
+      },
+      "limit-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words under the meter in place of «45 ГБ из 100 ГБ»"
+      },
+      "warning-at": {
+        "type": "number",
+        "description": "A threshold in per cent of max: from it on, the meter and the tile are a warning by themselves (sf-progress-bar's warning-at). The page sets it; the tile only compares",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "error-at": {
+        "type": "number",
+        "description": "A threshold in per cent of max: from it on, the meter and the tile are an error by themselves",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "status": {
+        "type": "string",
+        "default": "neutral",
+        "description": "The page's statement about the number, in the shared status vocabulary: a status icon of that tone before the hint. With warning-at or error-at the tile takes the more serious of this and the threshold the limit reached",
+        "enum": [
+          "neutral",
+          "success",
+          "warning",
+          "error",
+          "info"
+        ]
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "A short line beside the status: «серверу не хватает памяти»"
+      },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "Makes the whole tile one link to this address"
+      },
+      "openable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Without href: makes the whole tile one button that sends open"
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false,
+        "description": "The value is on its way: the tile keeps its size, the label stays, the value, the change and the limit are skeleton bars, aria-busy is true"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The rung of the size ladder: the label and the lines under the value are the rung below, the value two rungs up, the insets the rung's. 1/2 for a dense row, 2 for a page's headline figure",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {
+    "sf-tile-metric-open": {
+      "summary": "A person pressed an openable tile (a click, Enter or Space): open {id} of vocabulary 1.1.5 §5, id being the element's id; the host opens the details",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "tile": [
+        "loading",
+        "empty",
+        "ready"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "loading",
+      "empty"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "loading or polling the number (the host sets value)",
+      "inventing a threshold (the host sets warning-at and error-at)",
+      "deciding whether a rise is good (the host sets better)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "required",
+    "keyboard": [
+      "A link or button tile is one Tab stop; Enter follows the link, Enter or Space presses the button"
+    ],
+    "focus": "A plain tile takes no focus; a link or button tile shows the focus ring on its whole surface."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "195fc22bad4b725cf4f5bb3778b78fb3739e5e20",
+    "source_artifacts": [
+      {
+        "path": "src/smart/tile-metric/index.js",
+        "sha256": "a4be3a5aa1b13f2463fe408649818abec286110f190b3bdf40c9e234fa83d13f"
+      },
+      {
+        "path": "src/smart/tile-metric/js/templates/default.js",
+        "sha256": "d13f62a61a0f3bf211885ef7dc9a1a6cca51fe5137d480dc2a8c704462e0fe38"
+      },
+      {
+        "path": "src/smart/tile-metric/scss/_smart__tile-metric.scss",
+        "sha256": "2b1afefaf7b5093c45313cfed54e56adeb20f1133c2ff2ddc371b39aebacf005"
+      },
+      {
+        "path": "src/smart/tile-metric/rule.js",
+        "sha256": "f346340724e2c57600521151e77887629d990c349b271cb4199669d2a0426a65"
+      },
+      {
+        "path": "src/smart/tile-metric/docs.md",
+        "sha256": "6312196c34e238dbb8ac376b8ca3752b263ea7b7ccdfcbc51c8b328a5521bce4"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-tile-metric for one number that matters on an admin or dashboard screen: server load, storage used of a quota, visitors against last week, queue depth, licence seats.",
+    "do_not": [
+      "Do not put buttons or links inside the tile; make the whole tile one link (href) or button (openable)",
+      "Do not compute a status from the value in the page and pass it as colour; give warning-at and error-at, or status with a hint",
+      "Do not use the tile for a list of numbers; use a description list or a table"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-tile-metric label=\"Диск\" value=\"83\" max=\"100\" format=\"unit-gigabyte\" warning-at=\"80\" error-at=\"95\" hint=\"Свободно меньше 20 %\"></sf-tile-metric>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

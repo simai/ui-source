@@ -1,0 +1,201 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Подкачка заполнена: предупреждение по порогу",
+      "settings": {
+        "label": "Подкачка",
+        "value": 83,
+        "max": 100,
+        "format": "integer",
+        "unit": "%",
+        "limit-text": "83 % из 2 ГБ",
+        "warning-at": 80,
+        "error-at": 95,
+        "hint": "Серверу не хватает памяти"
+      },
+      "studio": {
+        "title": "tile-metric reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "change",
+      "title": "Посетители против прошлой недели",
+      "settings": {
+        "label": "Посетители",
+        "value": 12480,
+        "previous": 11020,
+        "format": "integer",
+        "period-text": "к прошлой неделе",
+        "href": "#traffic"
+      }
+    },
+    {
+      "name": "load",
+      "title": "Нагрузка: рост — это плохо",
+      "settings": {
+        "label": "Нагрузка процессора",
+        "value": 0.64,
+        "previous": 0.41,
+        "format": "percent",
+        "better": "down",
+        "delta-format": "absolute",
+        "period-text": "за час",
+        "status": "warning",
+        "hint": "Выше обычного"
+      }
+    },
+    {
+      "name": "storage",
+      "title": "Диск с пределом",
+      "settings": {
+        "label": "Диск",
+        "value": 45.3,
+        "max": 100,
+        "format": "unit-gigabyte",
+        "warning-at": 80,
+        "error-at": 95,
+        "openable": true
+      }
+    },
+    {
+      "name": "loading",
+      "title": "Загрузка: скелет на своих строках",
+      "settings": {
+        "label": "Очередь заданий",
+        "loading": true
+      }
+    },
+    {
+      "name": "empty",
+      "title": "Нет значения",
+      "settings": {
+        "label": "Ошибки за сутки",
+        "size": "1/2"
+      }
+    },
+    {
+      "name": "large",
+      "title": "Крупный показатель страницы",
+      "settings": {
+        "label": "Сайтов на сервере",
+        "value": 24,
+        "unit": "сайта",
+        "previous": 22,
+        "delta-format": "absolute",
+        "period-text": "за месяц",
+        "size": "2",
+        "status": "success",
+        "hint": "Все отвечают"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-tile-metric against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <div class=\"sf-tile-metric-grid\" id=\"grid\">",
+          "    <sf-tile-metric id=\"swap\" label=\"Подкачка\" value=\"83\" max=\"100\" format=\"integer\" unit=\"%\" warning-at=\"80\" error-at=\"95\" hint=\"Серверу не хватает памяти\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"visits\" label=\"Посетители\" value=\"12480\" previous=\"11020\" format=\"integer\" period-text=\"к прошлой неделе\" href=\"#traffic\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"cpu\" label=\"Нагрузка процессора\" value=\"0.64\" previous=\"0.41\" format=\"percent\" better=\"down\" delta-format=\"absolute\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"disk\" label=\"Диск\" value=\"45\" max=\"100\" format=\"integer\" openable></sf-tile-metric>",
+          "    <sf-tile-metric id=\"wait\" label=\"Очередь\" loading></sf-tile-metric>",
+          "    <sf-tile-metric id=\"none\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"chart\" label=\"Запросы\" value=\"320\"><span slot=\"chart\" id=\"spark\">график</span></sf-tile-metric>",
+          "  </div>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-group-and-threshold",
+          "title": "a plain tile is a group named by its label; swap 83 of 100 with warning-at 80 is a warning by itself, its meter says the limit",
+          "covers": "accessibility.role group, settings.label, settings.max, settings.warning-at, host-states data-status",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#swap'); const root = el.querySelector(':scope > .sf-tile-metric'); const meter = el.querySelector('[role=meter]'); return root.getAttribute('role') === 'group' && document.getElementById(root.getAttribute('aria-labelledby')).textContent === 'Подкачка' && el.getAttribute('data-status') === 'warning' && meter.getAttribute('aria-valuemax') === '100' && meter.getAttribute('aria-valuenow') === '83' && el.querySelector('.sf-tile-metric-status-icon').textContent === 'warning' && el.querySelector('.sf-tile-metric-hint').textContent === 'Серверу не хватает памяти' && el.querySelector('.sf-tile-metric-unit').textContent === '%'; })()"
+            },
+            {
+              "script": "(document.querySelector('#swap').value = 97, true)",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#swap'); return el.getAttribute('data-status') === 'error' && el.querySelector('.sf-tile-metric-status-icon').textContent === 'error'; })()"
+            },
+            {
+              "script": "(document.querySelector('#swap').value = 40, true)",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#swap'); return el.getAttribute('data-status') === 'neutral' && !el.querySelector('.sf-tile-metric-status-icon'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-change",
+          "title": "the change is worked out from previous, toned by better and said in words; a link tile is one link",
+          "covers": "settings.previous, settings.better, settings.delta-format, settings.href",
+          "steps": [
+            {
+              "check": "(() => { const v = document.querySelector('#visits'); const c = document.querySelector('#cpu'); const link = v.querySelector(':scope > a.sf-tile-metric'); return link && link.getAttribute('href') === '#traffic' && !link.querySelector('a, button') && v.querySelector('.sf-tile-metric-change').getAttribute('data-tone') === 'positive' && v.querySelector('.sf-tile-metric-delta .sr-only').textContent === 'рост' && v.querySelector('.sf-tile-metric-period').textContent === 'к прошлой неделе' && c.querySelector('.sf-tile-metric-change').getAttribute('data-tone') === 'negative'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-open",
+          "title": "an openable tile is one native button that sends open with the element's id",
+          "covers": "events.open, settings.openable, keyboard",
+          "steps": [
+            {
+              "user": "click:#disk button.sf-tile-metric",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-tile-metric-open",
+                    "count": 1,
+                    "detail": {
+                      "id": "disk"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-loading-and-empty",
+          "title": "loading keeps the label and draws skeleton bars with aria-busy; no value reads «—» and no label reads «Показатель»",
+          "covers": "settings.loading, host-states data-loading, settings.value unset",
+          "steps": [
+            {
+              "check": "(() => { const w = document.querySelector('#wait'); const n = document.querySelector('#none'); return w.getAttribute('data-loading') === 'true' && w.querySelector('.sf-tile-metric').getAttribute('aria-busy') === 'true' && w.querySelectorAll('.sf-tile-metric-skeleton').length === 2 && w.querySelector('.sf-tile-metric-label').textContent === 'Очередь' && n.querySelector('.sf-tile-metric-value').textContent === '—' && n.querySelector('.sf-tile-metric-label').textContent === 'Показатель'; })()"
+            },
+            {
+              "script": "(document.querySelector('#wait').loading = false, document.querySelector('#wait').value = 7, true)",
+              "wait": 150,
+              "check": "(() => { const w = document.querySelector('#wait'); return !w.hasAttribute('data-loading') && !w.querySelector('.sf-tile-metric-skeleton') && w.querySelector('.sf-tile-metric-value').textContent === '7'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-chart-slot",
+          "title": "the chart slot keeps the page's own node, live",
+          "covers": "slots.chart",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#chart'); const spark = document.getElementById('spark'); return spark && el.querySelector('.sf-tile-metric-chart').contains(spark) && !el.querySelector('.sf-tile-metric-chart').hidden; })()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

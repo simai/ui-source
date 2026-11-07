@@ -77,6 +77,10 @@ const FOLDERS = {
   'change-confirm': 'smart/confirm-change/js/templates',
   // sf-alert-bar (2026-11-05): a sheet of its own, the level fills, the inset and the list.
   'alert-bar': 'smart/alert-bar',
+  // The Larena admin screens' tile, attention list and run progress (2026-11-07): sheets of their own.
+  'tile-metric': 'smart/tile-metric',
+  'list-attention': 'smart/list-attention',
+  'progress-run': 'smart/progress-run',
   // sf-list and sf-list-feed (2026-11-05, block list): each a sheet beside its
   // Lit template.
   list: 'smart/list/js/templates',
