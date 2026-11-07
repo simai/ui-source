@@ -217,7 +217,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "259bcb06f95345ddbe7f4b00d01d9eeea6ab641ce64765892a4b01e6094ac5e8",
+      "manifest_sha256": "49c9d03c3f64f42354d70006e2af42dcfd6eb4b6a042d8d6d3f1a270deab74af",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -341,7 +341,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "05c7d61f83f69ed24afaf9083aed6e7803b028b990153914482e1ff67a6ae81a",
+      "manifest_sha256": "f15fb8e9cc55ae29566a1405a89b07f81707fc678746ee5ab935af895b3327ee",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -492,7 +492,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "8e73397f627384d9477eecb76d7d11e4a6b23da4aa77ada572a4255c959ac0a2",
+      "manifest_sha256": "23cd01f79eee97db3ab4685c3d38cb417433e7b7eb71612b04177dabf624074e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

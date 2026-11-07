@@ -75,7 +75,7 @@ test('place pages: the footer posts the step\'s form with the button\'s word, no
   // sf-button 1.5.0 passes form, name and value to its native button.
   const button = read('src/smart/button/js/templates/default.js');
   assert.match(button, /form=\$\{context\.formId \|\| nothing\}/u);
-  assert.equal(json('src/smart/button/component.json').version, '1.5.0');
+  assert.equal(json('src/smart/button/component.json').version, '1.5.2');
 });
 
 test('the steps are printed once: a live container the first paint fills in place', () => {
