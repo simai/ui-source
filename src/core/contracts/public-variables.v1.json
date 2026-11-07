@@ -4228,7 +4228,7 @@
           "name": "--sf-list-description-padding-inline",
           "role": "padding-inline",
           "summary": "The rows' inline inset; 0 by default, so they line up with the page's text.",
-          "default": "0",
+          "default": "calc(var(--sf-px) * 0)",
           "since": "2026-11-08"
         }
       ]
@@ -4276,7 +4276,7 @@
           "name": "--sf-list-timeline-padding-inline",
           "role": "padding-inline",
           "summary": "The events', the day headings' and the button's inline inset; 0 by default.",
-          "default": "0",
+          "default": "calc(var(--sf-px) * 0)",
           "since": "2026-11-08"
         }
       ]
