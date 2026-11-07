@@ -35,13 +35,13 @@ export function renderButtonTemplate(context) {
             ? component.getSlotContent('icon-start')
             : component?.hasSlotContent?.('icon-left')
             ? component.getSlotContent('icon-left')
-            : component.createIcon(leftIconName);
+            : component.createIcon(leftIconName, context.pressed === true);
     const rightIconContent =
         component?.hasSlotContent?.('icon-end')
             ? component.getSlotContent('icon-end')
             : component?.hasSlotContent?.('icon-right')
             ? component.getSlotContent('icon-right')
-            : component.createIcon(rightIconName);
+            : component.createIcon(rightIconName, context.pressed === true);
     // A toggle whose label changes (text-pressed, 1.6.0): «В избранное» at rest,
     // «В избранном» while on. The label then says the state, so aria-pressed
     // is not written as well (docs review R028, rule C12): a screen reader

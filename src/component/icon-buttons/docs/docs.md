@@ -56,7 +56,9 @@ step the container; focus draws the ring; disabled wears the disabled look.
 `sf-icon-button--pressed` draws the same look without `aria-pressed`, for an
 action whose name changes with the state («Добавить в избранное» → «Убрать из
 избранного»): its name says the state, so it carries no `aria-pressed`
-(`sf-button-icon` does it with `label-pressed`).
+(`sf-button-icon` does it with `label-pressed`). With the Loader's icon subset,
+mark the icon of a pressed toggle `sf-icon--filled` as well: the subset holds
+the filled glyph only for an icon marked filled.
 `--sf-icon-button-pressed-background-color` and
 `--sf-icon-button-pressed-color` recolour the resting pressed look.
 

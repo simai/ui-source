@@ -71,7 +71,7 @@ export function renderIconButtonTemplate(context) {
                 ? html`
                             <sf-button-close root-class="pointer-event-none" size="${size || '1'}"></sf-button-close>`
                 : html`
-                            <sf-icon filled="${filled}" root-class="pointer-event-none" icon="${icon}" weight="400" aria-hidden="true"></sf-icon>`;
+                            <sf-icon filled="${filled || context.pressed === true}" root-class="pointer-event-none" icon="${icon}" weight="400" aria-hidden="true"></sf-icon>`;
 
     return html`
         <button

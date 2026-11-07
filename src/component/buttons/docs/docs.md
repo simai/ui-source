@@ -21,6 +21,9 @@ the Smart `sf-button` projection.
   the same roles in both themes. Hover and press over it step the container;
   focus draws the ring; disabled wears the disabled look and keeps the filled
   icon. `sf-button--pressed` draws the same look without `aria-pressed`.
+  With the Loader's icon subset, give the icon of a pressed toggle
+  `sf-icon--filled` too (the Smart button writes `filled` on its `sf-icon`):
+  the subset holds the filled glyph only for an icon marked filled.
   `--sf-button-pressed-background-color` and `--sf-button-pressed-color`
   recolour the resting pressed look.
 - A toggle whose label changes («В избранное» → «В избранном») does not carry
