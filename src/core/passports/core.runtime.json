@@ -89,6 +89,7 @@
     "src/core/js/breakpoints.js",
     "src/core/js/cacheCodec.js",
     "src/core/js/clipboard.js",
+    "src/core/js/code-copy.js",
     "src/core/js/composition/builtins.mjs",
     "src/core/js/composition/canonical.mjs",
     "src/core/js/composition/catalogue.mjs",

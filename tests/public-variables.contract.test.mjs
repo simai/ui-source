@@ -85,6 +85,8 @@ const FOLDERS = {
   wizard: 'smart/wizard',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
+  // Code in running text (2026-11-07, R024): the base rule in the core sheet.
+  code: 'core',
   // The display parts of the structured-content types (2026-11-01): CSS only.
   card: 'card',
   figure: 'figure',

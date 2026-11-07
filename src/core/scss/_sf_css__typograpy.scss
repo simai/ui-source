@@ -99,10 +99,24 @@
     // a different tone: the plate is mixed from the near-white neutral-90
     // there, which reads at 16 as neutral-50 does on white (see the surface
     // container role in _sf_css__theme.scss).
+    //
+    // The geometry is Gravity UI's and GitHub's (owner, 2026-11-07, docs
+    // review R024, rule C10): .2em by .4em of room, 85 % of the text, a 6px
+    // corner. The corner is a step of the one size ladder, a6; the radius
+    // ladder has none at 6 (radius-1/2 is 4, radius-1 is 8). The room and the
+    // size stay relative: a word of code sits in a paragraph, a heading, a
+    // caption and a table cell, and has to grow and shrink with each. No step
+    // of the ladder is .2em or .4em of every one of those.
+    //
+    // These are the defaults. A site sets the public ones, --sf-code-<role>
+    // with a single dash (src/core/contracts/public-variables.v1.json), which
+    // the rule below reads first; the Framework never sets those.
     --sf-code--color: var(--sf-on-surface);
     --sf-code--background: var(--sf-surface-container);
     --sf-code--font-family: var(--sf-mono);
-    --sf-code--radius: var(--sf-radius--ui);
+    --sf-code--radius: var(--sf-a6);
+    --sf-code--padding: 0.2em 0.4em;
+    --sf-code--font-size: 85%;
 
     // Relative line height variables
     @each $line-height-name, $line-height-value in lineHeightVars.$line-height-array {
@@ -253,11 +267,63 @@
     .sf-highlight code,
     .sf-code-surface code
   )) {
-    padding-inline: var(--sf-space-1\/4);
-    border-radius: var(--sf-code--radius);
-    background-color: var(--sf-code--background);
-    font-family: var(--sf-code--font-family);
-    font-size: 0.875em;
+    padding: var(--sf-code-padding, var(--sf-code--padding));
+    border-radius: var(--sf-code-radius, var(--sf-code--radius));
+    background-color: var(--sf-code-background, var(--sf-code--background));
+    color: var(--sf-code-color, var(--sf-code--color));
+    font-family: var(--sf-code-font-family, var(--sf-code--font-family));
+    font-size: var(--sf-code-font-size, var(--sf-code--font-size));
+    // A name is one word: sf-button-press never parts at its hyphens. The
+    // line breaks before the code instead (owner, 2026-11-07, R024).
+    white-space: nowrap;
+  }
+
+  // Copy on click, only where a container asks for it with
+  // data-sf-code-copy (core/js/code-copy.js marks each code inside as a
+  // button). Never the default: a word of code in running text is text.
+  // The hairline is the hover; the focus ring is the base :focus-visible one.
+  [data-sf-code-copy] code[data-sf-code-copy-target] {
+    cursor: pointer;
+    transition: box-shadow var(--sf-duration-fast) var(--sf-animation);
+
+    &:hover {
+      box-shadow: inset 0 0 0 var(--sf-px) var(--sf-outline-variant);
+    }
+  }
+
+  // What the copy said, above the code (below it at the top of the window):
+  // the inverse surface a tooltip stands on, the small text step, a status
+  // that is read out politely. Placed by core/js/code-copy.js from its anchor
+  // point, the code's top centre; empty and transparent at rest.
+  .sf-code-copy-status {
+    position: fixed;
+    z-index: var(--sf-z-index-9);
+    margin-block-start: calc(-1 * var(--sf-space-1\/4));
+    padding: var(--sf-space-1\/4) var(--sf-space-1\/2);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-surface-inverse);
+    color: var(--sf-on-surface-inverse);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text--size-1\/2);
+    line-height: var(--sf-text--height-1\/2);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+    transition: opacity var(--sf-duration-fast) var(--sf-animation);
+
+    &:empty {
+      padding: 0;
+    }
+
+    &[data-shown] {
+      opacity: 1;
+    }
+
+    &[data-below] {
+      margin-block-start: var(--sf-space-1\/4);
+      transform: translate(-50%, 0);
+    }
   }
 }
 

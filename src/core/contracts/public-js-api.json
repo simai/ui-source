@@ -262,6 +262,18 @@
       "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
     },
     {
+      "name": "SF.codeCopy",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Copy on click for code in running text, opt-in with data-sf-code-copy on a container (owner 2026-11-07, R024): refresh(root) marks the code under root that copies and unmarks what no longer should (added and changed containers are followed on their own); copy(code) copies one code's text with SF.copyText and says so in sf-button-copy's words, settling true when copied; isCopyable(code) answers whether a code is a copy control. docs/developer/typography-5.4.md.",
+      "members": [
+        "refresh",
+        "copy",
+        "isCopyable"
+      ]
+    },
+    {
       "name": "SF.readingPosition",
       "status": "public",
       "kind": "object",
