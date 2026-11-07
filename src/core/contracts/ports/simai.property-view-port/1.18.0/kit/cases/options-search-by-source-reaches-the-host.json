@@ -1,0 +1,30 @@
+{
+  "id": "options-search-by-source-reaches-the-host",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "A search inside a lookup is the host's, over the whole reference list, case-insensitively.",
+  "given": {
+    "capabilities": [
+      "field-options"
+    ]
+  },
+  "when": {
+    "intent": "field.options",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "field": "country",
+      "cursor": null,
+      "search": "рос",
+      "source": "countries",
+      "limit": 20
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "options_page"
+    ],
+    "note": "«рос» finds «Россия» and «Белоруссия» wherever they are in the list. The component never filters a page it holds: the page is not the whole list."
+  }
+}

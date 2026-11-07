@@ -1,0 +1,32 @@
+{
+  "intent": "view.create",
+  "summary": "Making a view answers with the record through it: a person who has just made one is looking at it.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.create",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "label": "Для продаж",
+      "shared": true,
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The answer carries the record and its view, so the new view's id and its place in the list come from the host rather than being guessed at here."
+  },
+  "id": "view-create-answers-with-the-record-through-the-new-view"
+}

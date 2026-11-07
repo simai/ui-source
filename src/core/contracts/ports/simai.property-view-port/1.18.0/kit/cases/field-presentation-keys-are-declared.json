@@ -1,0 +1,12 @@
+{
+  "id": "field-presentation-keys-are-declared",
+  "intent": "record.load",
+  "summary": "A field carries the words and limits its control needs -- the call to action and the readable formats of a file field, the accept list its dialog filters by, a placeholder, a search placeholder, a badge appearance, a readonly mark. All of them are the host's, and an answer carrying them is applied.",
+  "given": {"capabilities": ["field-upload"]},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "This case exists because the field schema is closed. A host that validates its own answers against this port was refused for sending uploadText, formats and accept -- keys the renderer set has always read but the port never declared, which is the port lying about the seam rather than the host getting it wrong. A field control with no words of its own falls back to the component's default, and a file control's default names image formats, which is wrong for a field that takes any file."
+  }
+}

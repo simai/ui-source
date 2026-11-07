@@ -1,0 +1,25 @@
+{
+  "id": "view-profile-refused-is-explained",
+  "intent": "view.profile",
+  "summary": "A view this person may not open is refused with a reason, not silently ignored.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.profile",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "profile-forbidden"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Without the reason a chooser that snaps back looks broken rather than guarded."
+  }
+}

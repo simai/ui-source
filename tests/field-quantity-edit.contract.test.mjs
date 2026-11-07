@@ -20,10 +20,12 @@ const body = (name) => {
 test('only a stepper number is drawn with sf-quantity; the default number edit is unchanged', () => {
   assert.match(body('isStepperField'), /return String\(field\.variant \?\? ''\) === 'stepper';/u);
   assert.match(body('renderNumberEdit'), /^function renderNumberEdit\(field, value, host\) \{\n    if \(isStepperField\(field\)\) return renderStepperEdit\(field, value, host\);\n/u);
-  // The plain editor below it is the sf-input it was.
+  // The plain editor below it is an sf-input: an integer the one it was, a
+  // number the decimal editor of property-view port 1.18.0 (field-decimal).
   const plain = body('renderNumberEdit');
-  assert.match(plain, /<sf-input[\s\S]*inputmode=\$\{decimal \? 'decimal' : 'numeric'\}/u);
+  assert.match(plain, /<sf-input[\s\S]*inputmode="numeric"/u);
   assert.match(plain, /host\.setFieldValue\(field, next === '' \? null : Number\(next\)\);/u);
+  assert.match(plain, /<sf-input[\s\S]*inputmode="decimal"/u);
   assert.match(source, /\n    integer: renderNumberEdit,\n    number: renderNumberEdit,\n/u);
 });
 

@@ -1,0 +1,27 @@
+{
+  "id": "group-load-unknown-group-is-refused",
+  "intent": "group.load",
+  "capability": "group-load",
+  "summary": "A group the record does not hold is refused with a reason, never answered as an empty group.",
+  "given": {
+    "capabilities": [
+      "group-load"
+    ]
+  },
+  "when": {
+    "intent": "group.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "group": "no-such-group",
+      "reason": "requested"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is unknown-group. An empty group drawn for a key the arrangement has lost -- a view changed in another window -- would show a section with nothing in it; the refusal lets the component read the arrangement again."
+  }
+}

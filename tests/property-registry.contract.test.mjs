@@ -12,7 +12,7 @@ const root = resolve(import.meta.dirname, '..');
 const source = readFileSync(join(root, 'src/smart/field-renderers/index.js'), 'utf8');
 const mapKeys = (name) => {
   const body = source.slice(source.indexOf(`${name} = {`), source.indexOf('};', source.indexOf(`${name} = {`)));
-  return [...body.matchAll(/^\s+'?([a-z-]+)'?:/gmu)].map(([, key]) => key);
+  return [...body.matchAll(/^\s+'?([a-z.-]+)'?:/gmu)].map(([, key]) => key);
 };
 
 test('every type a renderer map names is registered', () => {
@@ -25,6 +25,13 @@ test('every registered type is shown and edited, and names its label in both lan
   const view = new Set(mapKeys('VIEW_RENDERERS'));
   const edit = new Set(mapKeys('EDIT_RENDERERS'));
   for (const entry of PROPERTY_TYPES) {
+    // A type a component set draws (property-view port 1.18.0) is shown and
+    // edited by that set; the Framework does not half-draw it.
+    if (entry.set) {
+      assert.ok(!view.has(entry.type) && !edit.has(entry.type), `${entry.type} is the ${entry.set} set's to show and edit`);
+      assert.ok(entry.label.ru && entry.label.en, `${entry.type} is named`);
+      continue;
+    }
     assert.ok(view.has(entry.type), `${entry.type} has a view`);
     assert.ok(edit.has(entry.type), `${entry.type} has an edit`);
     assert.ok(entry.label.ru && entry.label.en, `${entry.type} is named`);
@@ -74,5 +81,25 @@ test('the password renderers never put the value into markup and write only type
   assert.match(source, /string: renderStringCell,/u);
   for (const key of ['passwordSet', 'passwordUnset', 'passwordKeep', 'showPassword']) {
     assert.equal((source.match(new RegExp(`^        ${key}: '`, 'gmu')) ?? []).length, 2, `${key} in en and ru`);
+  }
+});
+
+// The types the View set draws (simai.property-view-port 1.18.0): registered
+// with the set that shows and edits them, their cells and filters the
+// Framework's, and every key they read declared by the port.
+test('money, percent, items, compound and ru.requisites are the view set\'s, with the port\'s keys', () => {
+  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.18.0/port.json'), 'utf8'));
+  const declared = new Set(Object.keys(port.data.record.schema.properties.sections.items.properties.groups.items.properties.fields.items.properties));
+  const cell = new Set(mapKeys('CELL_RENDERERS'));
+  const filter = new Set(mapKeys('FILTER_RENDERERS'));
+  const drawn = PROPERTY_TYPES.filter((entry) => entry.set);
+  assert.deepEqual(drawn.map((entry) => entry.type), ['money', 'percent', 'items', 'compound', 'ru.requisites']);
+  for (const entry of drawn) {
+    assert.equal(entry.set, 'view', entry.type);
+    for (const param of entry.params) assert.ok(declared.has(param), `${entry.type}.${param} is declared by the port`);
+  }
+  for (const type of ['money', 'percent', 'items']) {
+    assert.ok(cell.has(type), `${type} has a cell`);
+    assert.ok(filter.has(type), `${type} has a filter`);
   }
 });

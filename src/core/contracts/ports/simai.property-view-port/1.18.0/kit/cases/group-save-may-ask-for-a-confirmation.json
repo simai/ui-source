@@ -1,0 +1,38 @@
+{
+  "id": "group-save-may-ask-for-a-confirmation",
+  "intent": "group.save",
+  "summary": "A save the host will make only once confirmed is refused with confirm_required and says what it will do, with a digest.",
+  "given": {
+    "capabilities": [],
+    "confirms": [
+      "group.save"
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "section": "main",
+      "group": "terms",
+      "values": {
+        "type": {
+          "value": "framework",
+          "label": "Рамочный"
+        }
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason",
+      "confirm"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required; confirm is {summary, digest}. Nothing is written yet. The component shows the summary and keeps what the person entered."
+  }
+}

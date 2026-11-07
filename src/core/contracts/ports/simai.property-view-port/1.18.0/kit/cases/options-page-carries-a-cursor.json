@@ -1,0 +1,15 @@
+{
+  "id": "options-page-carries-a-cursor",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "Candidates arrive a page at a time with the cursor for the next page, never as the whole set.",
+  "given": {"capabilities": ["field-options"]},
+  "when": {"intent": "field.options", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "section", "cursor": null, "search": ""}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["options_page"],
+    "data_must_include": ["options_page"],
+    "note": "A host that answers with every candidate makes the component's paging meaningless and its own query unbounded. next_cursor absent or null means this was the last page."
+  }
+}

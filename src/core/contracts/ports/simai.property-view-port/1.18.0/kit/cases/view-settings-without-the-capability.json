@@ -1,0 +1,30 @@
+{
+  "id": "view-settings-without-the-capability",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A host that does not declare view-settings is never asked to save a view, and the component shows nothing that would lead there.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": null
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "note": "The control is absent rather than present and failing. A person offered a way to rearrange a view that cannot be stored would lose the arrangement on the next load and have no way to know why."
+  }
+}

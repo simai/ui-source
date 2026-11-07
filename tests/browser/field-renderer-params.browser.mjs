@@ -68,7 +68,7 @@ try {
     const VALUES = {string: 'a', text: 'a', integer: 3, number: 3.5, date: '2026-10-15', datetime: '2026-10-15T10:00:00',
       boolean: true, choice: 'a', choices: ['a'], user: {value: '1', label: 'x'}, record: {value: '1', label: 'x'},
       relation: {value: '1', label: 'x'}, lookup: {value: 'a', label: 'A'}, file: [{name: 'a.png', href: '/a.png'}], color: '#ff0000', include: 'x',
-      html: '<p>a</p>'};
+      html: '<p>a</p>', money: {amount: '1500.50', currency: 'RUB'}, percent: '12.5', items: [{a: '1'}]};
     const host = new Proxy({
       setFieldValue() {}, getFieldOptionsPage: () => ({items: [], status: 'ready'}), getFieldOptionSearch: () => '',
       loadFieldOptions() {}, startFieldUpload() {}, getFieldUploads: () => [],
@@ -91,7 +91,11 @@ try {
           }
         }
       }
-      const unread = entry.params.filter((param) => !reads.has(param));
+      // A type a component set draws (`set`, property-view port 1.18.0) reads
+      // most of its keys in that set's renderers, which this page does not
+      // load; its Framework cell and filter are drawn above all the same, and
+      // the unit contract holds its keys to the port.
+      const unread = entry.set ? [] : entry.params.filter((param) => !reads.has(param));
       if (unread.length) report.push({type: entry.type, unread});
     }
     return {ready: true, same: set === again, report, types: set.registry.length};
