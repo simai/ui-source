@@ -83,6 +83,9 @@ const FOLDERS = {
   'list-feed': 'smart/list-feed/js/templates',
   // sf-wizard (2026-11-06): a sheet of its own, the frame's gap, inset, fill, edge, corner and width.
   wizard: 'smart/wizard',
+  // The Larena admin screens' description list and timeline (2026-11-08): sheets of their own.
+  'list-description': 'smart/list-description',
+  'list-timeline': 'smart/list-timeline',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // The display parts of the structured-content types (2026-11-01): CSS only.

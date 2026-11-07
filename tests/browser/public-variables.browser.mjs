@@ -188,6 +188,14 @@ const DRAW = {
   'alert-bar': {css: ['buttons', 'icon-buttons', 'badges', 'icons', 'smart/smart/alert-bar/css/alert-bar.css'], js: ['alert-bar', 'badge'],
     html: ['danger', 'warning', 'info'].map((level, at) => `<sf-alert-bar id="ab-${level}"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', level, text: 'Текст', action: {label: 'Открыть', href: '#a'}}, ...(at === 1 ? [{id: 'b', level: 'info', text: 'Ещё'}] : [])]})}</script></sf-alert-bar>`).join(''),
     open: 'document.getElementById("ab-warning").toggleList(true)'},
+  // sf-list-description (2026-11-08): two rows with dividers, so the
+  // divider is drawn; an empty value takes the label colour too.
+  'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
+    html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}]})}</script></sf-list-description>`},
+  // sf-list-timeline (2026-11-08): one day of two events, the first without
+  // a status (the neutral marker) and with the connector under it.
+  'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
+    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading

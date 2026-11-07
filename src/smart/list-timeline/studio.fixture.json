@@ -1,0 +1,53 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list-timeline",
+  "title": "list-timeline reference",
+  "summary": "Deterministic reference fixture for sf-list-timeline.",
+  "locale": "ru",
+  "props": {
+    "has-more": true,
+    "items": [
+      {
+        "id": "backup",
+        "time": "2026-10-27T11:58:00+03:00",
+        "status": "success",
+        "title": "Копия demo-owned.test создана",
+        "actor": "Планировщик",
+        "text": "1,2 ГБ, хранится 30 дней"
+      },
+      {
+        "id": "down",
+        "time": "2026-10-27T11:20:00+03:00",
+        "status": "error",
+        "title": "demo-php.test не отвечал 12 минут",
+        "text": "Код 502; сайт перезапущен автоматически"
+      },
+      {
+        "id": "update",
+        "time": "2026-10-27T09:05:00+03:00",
+        "status": "info",
+        "icon": "system_update_alt",
+        "title": "Панель обновлена до 0.3.1",
+        "actor": "Рим Забаров",
+        "href": "#update"
+      },
+      {
+        "id": "cert",
+        "time": "2026-10-26T18:40:00+03:00",
+        "status": "warning",
+        "title": "Сертификат demo-static.test истекает через 6 дней",
+        "actor": "Проверка сайтов"
+      },
+      {
+        "id": "site",
+        "time": "2026-10-24T10:00:00+03:00",
+        "icon": "add_circle",
+        "title": "Создан сайт demo-static.test",
+        "actor": "Рим Забаров"
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}

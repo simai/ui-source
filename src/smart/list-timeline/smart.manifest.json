@@ -1,0 +1,318 @@
+{
+  "schema_version": 2,
+  "id": "smart.list-timeline",
+  "version": "1.0.0",
+  "title": "Timeline",
+  "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "list",
+    "timeline",
+    "activity",
+    "history",
+    "audit",
+    "events",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-list-timeline",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The list's accessible name, when it is not grouped and the page has no heading above it that names it"
+      },
+      "group": {
+        "type": "string",
+        "default": "day",
+        "description": "day: the events under a heading per calendar day in the reader's time zone («Сегодня», «Вчера», the weekday within a week, else the date), the days in the order the events come; none: one list",
+        "enum": [
+          "day",
+          "none"
+        ]
+      },
+      "time-format": {
+        "type": "string",
+        "default": "relative",
+        "description": "relative: «5 минут назад», «вчера»; exact: the time («14:32»), with the date when the events are not grouped by day. The exact date and time are always the element's title (under the pointer) and its datetime",
+        "enum": [
+          "relative",
+          "exact"
+        ]
+      },
+      "now": {
+        "type": "string",
+        "default": "",
+        "description": "The moment relative times and the day headings count from, ISO 8601; empty: the reader's clock (the list then draws them again each minute and at midnight)"
+      },
+      "density": {
+        "type": "string",
+        "default": "normal",
+        "description": "normal: the text wraps in full and the events stand apart by the gap; compact: a one-line event is the rung's control height and the text keeps to one line",
+        "enum": [
+          "normal",
+          "compact"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: the title is the rung's line and type, the time, the actor, the text and the day headings the rung below's, the marker the title's line. 1/2 for a side panel",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "heading-level": {
+        "type": "integer",
+        "default": 3,
+        "description": "The level of the day headings in the page's outline",
+        "minimum": 2,
+        "maximum": 6
+      },
+      "has-more": {
+        "type": "boolean",
+        "default": false,
+        "description": "More events exist: the «Показать ещё» button shows after the last one, and its press asks load-more"
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false,
+        "description": "The next page is on its way: the button shows it is busy and asks nothing more"
+      },
+      "empty-text": {
+        "type": "string",
+        "description": "The quiet line with no events; «Событий пока нет» / «No events yet» when not set"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?}. time is an ISO 8601 date-time (with its offset) or milliseconds. status (success, warning, error, info; neutral by default) colours the marker, icon puts that glyph on it in place of the dot, href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {
+    "sf-list-timeline-navigate": {
+      "summary": "A person pressed an event's title link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "href"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-timeline-load-more": {
+      "summary": "A person pressed «Показать ещё» (vocabulary §5 load-more): {direction: after, after: the id of the last event shown}. The host sets loading, appends the next page to items and clears has-more when there is none",
+      "payload": {
+        "type": "object",
+        "required": [
+          "direction",
+          "after"
+        ],
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "list": [
+        "empty",
+        "shown",
+        "loading"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "loading"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "loading the events or the next page (the host answers load-more)",
+      "ordering the events (the host gives them in order)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "list",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab reaches each title link and the «Показать ещё» button in order; Enter follows a link, Enter or Space presses the button"
+    ],
+    "focus": "The list never takes focus."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "4638e4ffb789fa3f57dbcf765eb230972bd1aec9",
+    "source_artifacts": [
+      {
+        "path": "src/smart/list-timeline/index.js",
+        "sha256": "2337fc636f5c5fda588ecd5f30d860d553d57c0ee48a8f24bce8839eb96c9cc8"
+      },
+      {
+        "path": "src/smart/list-timeline/js/templates/default.js",
+        "sha256": "64369e67543ede1b0ff2efe918d0387b6f75b0aad68410a4a61f4b615f5730d8"
+      },
+      {
+        "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
+        "sha256": "e9c39bdcba44b810af26d917f1f4d65ebc10d728ae43a63f7024e2d1775b0b17"
+      },
+      {
+        "path": "src/smart/list-timeline/rule.js",
+        "sha256": "54ca5d699b844b92689039a12f5971c5e220d5616c3f53fc5cfd7a26156b54e3"
+      },
+      {
+        "path": "src/smart/list-timeline/docs.md",
+        "sha256": "ff96ed5da2d9447064b29b923c2579c77c975e62ace89d6489ea46723694e9e5"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-list-timeline for a short history read from the top: recent server actions, an audit, a record's history, a notifications page, a job's history.",
+    "do_not": [
+      "Do not use it for a chat or a log read from the bottom; sf-list-feed does that",
+      "Do not use it for the steps of a running job; sf-progress-run does that",
+      "Do not put markup in a title or a text; they are text"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-list-timeline><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"e1\", \"time\": \"2026-10-27T11:50:00+03:00\", \"status\": \"success\", \"title\": \"Копия demo-owned.test создана\", \"actor\": \"Планировщик\"}]}</script></sf-list-timeline>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

@@ -3957,6 +3957,102 @@
           "since": "2026-11-06"
         }
       ]
+    },
+    {
+      "component": "list-description",
+      "selector": "sf-list-description, .sf-list-description",
+      "variables": [
+        {
+          "name": "--sf-list-description-label-color",
+          "role": "color",
+          "summary": "The labels' colour, and the empty value's.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-value-color",
+          "role": "color",
+          "summary": "The values' colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between rows (dividers).",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-label-width",
+          "role": "max-inline-size",
+          "summary": "The labels' column at its widest; it is as wide as the longest label up to this.",
+          "default": "40%",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-gap",
+          "role": "column-gap",
+          "summary": "The space between the labels' column and the values'; the rung's space-x by default.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-padding-inline",
+          "role": "padding-inline",
+          "summary": "The rows' inline inset; 0 by default, so they line up with the page's text.",
+          "default": "0",
+          "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "list-timeline",
+      "selector": "sf-list-timeline, .sf-list-timeline",
+      "variables": [
+        {
+          "name": "--sf-list-timeline-line-color",
+          "role": "background",
+          "summary": "The connector between the markers.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-marker-color",
+          "role": "color",
+          "summary": "The marker of an event with no status (neutral).",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-time-color",
+          "role": "color",
+          "summary": "The time's and the actor's colour.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-day-color",
+          "role": "color",
+          "summary": "The day headings' colour.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-gap",
+          "role": "gap",
+          "summary": "The space after each event in normal density; the rung's text-space-x by default.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-padding-inline",
+          "role": "padding-inline",
+          "summary": "The events', the day headings' and the button's inline inset; 0 by default.",
+          "default": "0",
+          "since": "2026-11-08"
+        }
+      ]
     }
   ]
 }

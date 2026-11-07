@@ -227,11 +227,19 @@
           "status": "released"
         },
         {
+          "element": "sf-list-description",
+          "status": "released"
+        },
+        {
           "element": "sf-list-feed",
           "status": "released"
         },
         {
           "element": "sf-list-item",
+          "status": "released"
+        },
+        {
+          "element": "sf-list-timeline",
           "status": "released"
         },
         {

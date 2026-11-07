@@ -1719,6 +1719,49 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button-copy",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list-description",
+      "id": "smart.list-description",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list-description/smart.manifest.json",
+      "manifest_sha256": "81eb9aadd6c3140ef30876991935f304bf646bae68a344fe4497901324b287f2",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
+      "tags": [
+        "list",
+        "description",
+        "key-value",
+        "properties",
+        "facts",
+        "summary",
+        "admin"
+      ],
+      "title": "Description list"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "content",
         "scroll-position",
         "live-announcement",
@@ -1797,6 +1840,49 @@
         "list-item"
       ],
       "title": "List item"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list-timeline",
+      "id": "smart.list-timeline",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list-timeline/smart.manifest.json",
+      "manifest_sha256": "912c6fbe76c589cc487b65f5ce3466840c7f345e55303c8d9c08383c577b8ea0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+      "tags": [
+        "list",
+        "timeline",
+        "activity",
+        "history",
+        "audit",
+        "events",
+        "admin"
+      ],
+      "title": "Timeline"
     },
     {
       "backend_adapters": [],
