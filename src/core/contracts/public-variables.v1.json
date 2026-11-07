@@ -46,7 +46,7 @@
         {
           "name": "--sf-badge-border-width",
           "role": "border-width",
-          "summary": "The border width on every side.",
+          "summary": "The border width on every side, a length. It is drawn inside the badge's size: the padding gives up its width, so a badge of one size is as high with a border as without.",
           "default": "0",
           "since": "2026-10-13",
           "varies_with": [
@@ -63,11 +63,12 @@
         {
           "name": "--sf-badge-padding-inline",
           "role": "padding-inline",
-          "summary": "Space before and after the text.",
-          "default": "var(--sf-ui-1/3--text-space-x)",
+          "summary": "Space before and after the text: --sf-space-1/2 by default at every size; sf-badge--tight (sf-badge tight) and a single figure take the size's own text inset, so a figure stays round; a compact badge takes the block padding and stays square.",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13",
           "varies_with": [
-            "size"
+            "size",
+            "tight"
           ]
         },
         {

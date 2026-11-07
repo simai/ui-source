@@ -97,6 +97,15 @@ const sfBadgeMeta = {
       "default": "false",
       "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
     },
+    "tight": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Keeps the size's own narrow side room, for dense places: a table, a counter, a chip in a row. By default the text sits --sf-space-1/2 from the badge's edges at every size."
+    },
     "text": {
       "kind": "custom",
       "valueType": "string",
