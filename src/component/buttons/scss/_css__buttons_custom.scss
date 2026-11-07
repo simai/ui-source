@@ -224,7 +224,7 @@
      (_css__buttons: those selectors read :is(on-surface, secondary)); only
      the label and the icons take --sf-secondary, at rest, hovered and
      pressed. Before, these three looks of secondary had no rule at all: no
-     padding, about 32px at size 1, the browser's text colour. Filled
+     padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));

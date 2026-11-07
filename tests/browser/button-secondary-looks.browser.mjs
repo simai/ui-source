@@ -75,6 +75,8 @@ const MEASURE = () => {
   const rows = {};
   for (const row of document.querySelectorAll('.row')) {
     const cells = {};
+    // sf-button forwards data-* to its inner button: the key sits on the
+    // control itself, on a Smart and a plain button alike.
     for (const host of row.querySelectorAll('[data-k]')) {
       const button = host.matches('.sf-button') ? host : host.querySelector('.sf-button');
       if (!button) { cells[host.dataset.k] = null; continue; }
@@ -105,7 +107,8 @@ const browser = await chromium.launch();
 try {
   for (const theme of ['light', 'dark']) {
     for (let load = 1; load <= 3; load += 1) {
-      const tab = await browser.newPage({viewport: {width: 1280, height: 900}});
+      // The Loader writes the theme class from the system's preference.
+      const tab = await browser.newPage({viewport: {width: 1280, height: 900}, colorScheme: theme});
       const errors = [];
       tab.on('pageerror', (error) => errors.push(error.message));
       tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -117,12 +120,13 @@ try {
         .catch(async () => failures.push(`${theme}: the page never drew its buttons (${await tab.evaluate(() => document.querySelectorAll('sf-button > .sf-button').length)})`));
       await tab.evaluate(() => document.fonts.ready);
       await tab.waitForTimeout(300);
+      if (!await tab.evaluate((name) => document.documentElement.classList.contains(`theme-${name}`), theme)) failures.push(`${theme} load ${load}: the page is not in that theme`);
       const seen = await tab.evaluate(MEASURE);
       // Hovered: the on-surface and the secondary outline / link of size 1.
       seen.hover = {};
       for (const look of ['outline', 'link', 'surface']) {
         for (const scheme of SCHEMES) {
-          const locator = tab.locator(`.row[data-size="1"] [data-k="smart ${look} ${scheme}"] > .sf-button`);
+          const locator = tab.locator(`.row[data-size="1"] [data-k="smart ${look} ${scheme}"]`);
           await locator.hover();
           await tab.waitForTimeout(250);
           seen.hover[`${look} ${scheme}`] = await locator.evaluate((button) => ({
