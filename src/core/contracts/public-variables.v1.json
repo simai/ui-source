@@ -1701,7 +1701,7 @@
           "name": "--sf-color-swatches-gap",
           "role": "gap",
           "summary": "The space between presets.",
-          "default": "var(--sf-space-1\\/2, 4px)",
+          "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
@@ -4050,7 +4050,7 @@
           "name": "--sf-tile-metric-min-width",
           "role": "min-inline-size",
           "summary": "The narrowest column of sf-tile-metric-grid, the row of tiles that wraps.",
-          "default": "14rem",
+          "default": "var(--sf-f4)",
           "since": "2026-11-07"
         }
       ]
@@ -4303,7 +4303,7 @@
           "name": "--sf-choice-min-inline-size",
           "role": "min-inline-size",
           "summary": "The narrowest a card may be in the grid; fewer columns where it would be narrower.",
-          "default": "15rem",
+          "default": "var(--sf-f5)",
           "since": "2026-11-08"
         },
         {

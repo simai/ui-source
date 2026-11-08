@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
   "id": "smart.wizard",
   "tag": "sf-wizard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -384,7 +384,8 @@
     "version 1.0.2 (2026-11-08): a patch, no change to the wizard itself. The server-backups example's days field is a number field (sf-input 1.5.0 input-type number), so its first-paint snapshot prints type=\"number\".",
     "version 1.0.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.0 (one number above the unreleased 1.0.4 and 1.1.0 it joins): the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
-    "version 1.2.0 background-color-names: the public variable --sf-wizard-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-wizard-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently."
+    "version 1.2.0 background-color-names: the public variable --sf-wizard-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-wizard-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
+    "version 1.2.1: the size rule C18 (2026-11-09): the plan's first column grows from the size step f6 (16rem, 256 px, as before); the steps row's room reads --sf-focus--width with no raw fallback (nothing moves)."
   ],
   "x-registry": {
     "capabilities": [

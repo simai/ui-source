@@ -321,7 +321,7 @@
      rather than running the height of the screen: a hundred and twenty glyphs
      six to a row is twenty rows, and twenty rows is a column again. */
   .sf-list-container-wrap:has(.sf-list-container--grid) {
-    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    max-block-size: var(--sf-dropdown--grid-height, var(--sf-f6));
     overflow: hidden auto;
   }
 }
@@ -333,7 +333,7 @@
    and names that do not fit wrap. */
 @layer sf.components {
   .sf-list--free-width {
-    inline-size: var(--sf-dropdown--list-width, 18rem);
+    inline-size: var(--sf-dropdown--list-width, var(--sf-f8));
   }
 
   /* A grid is as wide as its columns: a picker of size-1/2 icons stood in an

@@ -77,7 +77,7 @@ test('layout.columns lists composition/layout and the core sheet carries it (#61
   const base = sheet.match(/@layer sf\.base \{\n {4}:where\(\.sf-composition-columns\) \{[\s\S]*?\n\}\n/u)?.[0] || '';
   assert.ok(base, 'the columns stand in sf.base');
   assert.match(base, /display: grid;/u);
-  assert.match(base, /gap: var\(--sf-space-4, 1rem\);/u, 'the type\'s own gap, gap-4');
+  assert.match(base, /gap: var\(--sf-space-4\);/u, 'the type\'s own gap, gap-4');
   assert.match(base, /@for \$columns from 2 through 12 \{\n {8}:where\(\.sf-composition-columns\[data-composition-columns="#\{\$columns\}"\]\) \{\n {12}grid-template-columns: repeat\(#\{\$columns\}, minmax\(0, 1fr\)\);/u);
   assert.match(base, /:where\(\.sf-composition-column\) \{\n {8}min-inline-size: 0;/u);
 });

@@ -135,7 +135,7 @@
      query and not a container query: containing the card's inline size would
      make a card that is as wide as its content (in a message bubble) collapse
      to nothing. */
-  @media (max-width: 479px) {
+  @media (width < 32rem) { /* below sm */
     .sf-change-confirm__actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
