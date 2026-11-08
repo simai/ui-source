@@ -9,6 +9,7 @@
     "component/badges/css/badges.min.css",
     "component/buttons/css/buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
     "component/skeleton/css/skeleton.min.css",
     "core/css/core.css",
     "smart/include/css/include.min.css",
@@ -30,6 +31,7 @@
       "component/badges/css/badges.min.css",
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
@@ -49,6 +51,7 @@
     "error": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
@@ -63,6 +66,7 @@
     "placeholder": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
@@ -77,6 +81,7 @@
     "reference": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
@@ -91,6 +96,7 @@
     "view": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
@@ -105,6 +111,7 @@
     "waiting": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/skeleton/css/skeleton.min.css",
       "core/css/core.css",
       "smart/include/css/include.min.css",
