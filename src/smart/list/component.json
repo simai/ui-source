@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -136,6 +136,11 @@
       ],
       "default": "1",
       "summary": "The rows' step on the size ladder (sf-list-item size); the «⋯» and the rename field take the same."
+    },
+    "no-wrap": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Every row's title and its second line stay one line each, cut at the end with an ellipsis; the whole text stays in the row for a screen reader and is the row's tooltip (title). Off: the title of a one-line row wraps."
     },
     "label": {
       "type": "string",
@@ -605,7 +610,8 @@
     "a11y: ungrouped, the one list takes the label; grouped, the frame is a group named by the label and each group's rows a list named by its heading (role heading, heading-level).",
     "words: lang/ru.json and lang/en.json.",
     "version 1.1.0 (owner decision q-3b313e2246, 2026-11-06, through the UI Chat thread msg-f972819c0a4e477aaab1: sf-chat-threads of package pro becomes a thin wrapper of sf-list): bounded declarative row data drawn with the Framework's own parts, no renderer a host hands in. item.avatar {image-url?, text?, shape circle|square, icon?} in sf-list-item's leading place as sf-avatar (tone auto), a sign (icon, no image) in sf-avatar's class markup as sf-chat-window draws one; no leading place at all when no item has an avatar, and when one has, every row keeps it so the titles start on one line (a row with an icon and no avatar shows the icon there). The place is the row's line wide (the avatar takes sf-avatar line=<size>, as the row's icon does), or the control height of the row's step when any row has a second line (sf-avatar size=<size>): a one-line row keeps its control height either way. item.count (whole, above 0) as sf-badge scheme primary at the row's end, «99+» above 99, named by the word count-label in plural forms; item.badge {text, tone?} as a tonal sf-badge before it, tone the status vocabulary (neutral, info, success, warning, error) -- chat's activity words stay in package pro and map onto it. Both stand in sf-list-item's trailing place, centred on the row. item.pinned true leads under its own heading pinned-text («Закреплённые», «Pinned») before the day or key groups; ungrouped, pinned items lead the one list without a heading. Group headings by day stay core's formatRelativeDay (the chat accepts it in place of Today/Yesterday/Earlier). The slot elements are fixed in the row's template (sf-list-item takes its slot nodes once, when it connects); what changes inside them is drawn in place, so a count that comes and goes keeps the row and its focus. Additions only: a list without the new fields draws as 1.0.0 did.",
-    "version 1.1.1 (2026-11-07): a patch (a look). A row's badge and count draw with sf-badge tight: sf-badge 1.3.0 widened a badge's default side room to --sf-space-1/2 (owner decision, docs review R020), and a row is a dense place, so they keep the room they had. Settings, values, events and keys unchanged."
+    "version 1.1.1 (2026-11-07): a patch (a look). A row's badge and count draw with sf-badge tight: sf-badge 1.3.0 widened a badge's default side room to --sf-space-1/2 (owner decision, docs review R020), and a row is a dense place, so they keep the room they had. Settings, values, events and keys unchanged.",
+    "version 1.2.0 (the UI Chat thread's request msg-f44b9ece, item b, 2026-11-08: sf-chat-threads 2.0.0 bridged both for its own rows): two things a sidebar list needs now live in the list. (1) The setting no-wrap (the word sf-avatar uses for the same thing): the title and the second line of every row stay one line each, cut at the end with an ellipsis (the row's text box gives way to its leading and trailing places, so the count and the «⋯» stay whole); the whole text stays in the row, so a screen reader reads all of it, and is the tooltip of the row (title on the row's sf-list-item: the title, or «title · second line»). Off by default: a one-line row's title wraps as in 1.1. (2) Under a coarse pointer (@media (pointer: coarse), as sf-menu-context does) every row, the rename field, the loading rows and the «⋯» are at least --sf-d1 (44px; WCAG 2.5.5 and the platforms' minimum, owner 2026-10-28), the content on the row's centre line; a step whose control height is taller keeps it. A fine pointer keeps the ladder's rows. The «⋯» is always shown, never on hover only, whatever the pointer. Additions only: a list without no-wrap under a mouse draws as 1.1.1 did."
   ],
   "x-rule": {
     "$comment": [

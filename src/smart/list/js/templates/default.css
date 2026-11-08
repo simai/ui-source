@@ -206,6 +206,28 @@
     block-size: var(--sf-px);
   }
 
+  /* no-wrap (1.2.0): every row's title and its second line stay one line
+     each, cut at the end. The row's text box gives way to the leading and
+     trailing places (the avatar, the count, the badge stay whole) and the
+     «⋯» beside the row stays whole too; the whole text stays in the row for
+     a screen reader and is the row's tooltip (the template's title). */
+  .sf-list--no-wrap .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .sf-list--no-wrap .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-title,
+  .sf-list--no-wrap .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-supporting {
+    display: block;
+    min-inline-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   .sf-list__skeleton {
     display: flex;
     flex-direction: column;
@@ -217,6 +239,29 @@
     block-size: var(--sf-list--row-height);
     border-radius: var(--sf-list--row-radius);
     background: var(--sf-surface-container);
+  }
+}
+
+/* Under a finger (1.2.0) every row, the rename field, the loading rows and
+   the «⋯» are at least --sf-d1, 44px (WCAG 2.5.5 and the platforms' own
+   minimum, owner 2026-10-28), as sf-menu-context's rows are: at step 1/2 a
+   row was 32px and at 1 it was 40px under a finger. The row grows to the
+   target and keeps its content on its centre line; a step whose control
+   height is taller keeps it, and a mouse keeps the ladder's rows. The «⋯» is
+   always shown, whatever the pointer: nothing in the list waits for a hover. */
+@media (pointer: coarse) {
+  @layer sf.components {
+    .sf-list__frame { --sf-list--touch-height: max(var(--sf-list--row-height), var(--sf-d1)); }
+
+    .sf-list__row > sf-list-item > .sf-list-item { min-block-size: var(--sf-list--touch-height); }
+
+    .sf-list__rename,
+    .sf-list__skeleton > span { block-size: var(--sf-list--touch-height); }
+
+    .sf-list__actions {
+      min-block-size: var(--sf-d1);
+      min-inline-size: var(--sf-d1);
+    }
   }
 }
 

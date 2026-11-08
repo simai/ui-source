@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -100,6 +100,11 @@
           "1",
           "2"
         ]
+      },
+      "no-wrap": {
+        "type": "boolean",
+        "default": false,
+        "description": "Every row's title and its second line stay one line each, cut at the end with an ellipsis; the whole text stays in the row for a screen reader and is the row's tooltip (title). Off: the title of a one-line row wraps."
       },
       "label": {
         "type": "string",
@@ -688,15 +693,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "e96146ace7f9e06e188eb878d0e5411eb4041598c9c3b519ca1b8e2bcaaa5e33"
+        "sha256": "a983e0f9fe31d02375b6658e08718ca5fbc892f696457782fc5ef758e1e56801"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "64585a23e96add5f7df7575583efab03b85ee367f7b12291146bb6208a5fe9a2"
+        "sha256": "f84bf6d295f6cce99b62df150e0ce49a918ad5f807664093cd7fb75809e56009"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "081d498e4d1160fcd1bc2b68127e0c656985de79874b7216e5287f58242cf379"
+        "sha256": "69f662367ff0aeb9db439c50bfe9a47d3ffedd2c91ba5405ba72d2f5079d59d4"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -704,11 +709,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "361673876af9e2ddacee8b896c919e5cba5a51457e2b78546c315ed7f1cbfa9f"
+        "sha256": "430771a2c1c960c079a3cb5f403e83b7c1b938283a7c7a1143ee1cdf6246e3f7"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "01b2a4bcf28dc8fed7f517444ec8ea69c51752e3e666a58d08f53b17750ab44b"
+        "sha256": "80008a9e9e765f622029f39d0dc6cbe21fc6e2ca7454c3b63e7453473aec3f14"
       },
       {
         "path": "src/smart/list/lang/en.json",
