@@ -368,16 +368,35 @@
 
   // Settled: no one-shot timer of a second or less, frame or idle callback is
   // pending (a debounce, a closing animation's end), and no script the Loader
-  // asked for is still on its way. A loop keeps re-arming and is still there
+  // asked for is still on its way -- and it stays so for SETTLED_LOOKS looks in
+  // a row, SETTLED_GAP ms apart. A loop keeps re-arming and is still there
   // after `limit` ms: it is counted.
-  function quiet(limit = 3000) {
-    const short = () => pendingScripts.size > 0 || [...timers.values()].some((one) => one.kind === 'frame' || one.kind === 'idle' || (one.kind === 'timeout' && one.delay <= 1000));
+  //
+  // The count is taken here, in the look that finds the page settled, not in
+  // a later call: on a loaded machine the gap between a separate quiet() and
+  // count() let a late change re-arm the Loader's 100 ms mutation debounce
+  // (core-loader, mutation buffer), and one count of the two had that timer
+  // and the other not (2026-11-08: input-lookup/readonly, resizer/kept). One
+  // quiet look was also too little: the debounce fires, the Loader reads the
+  // change, and its own work arms the next one a moment later.
+  const SETTLED_LOOKS = 3;
+  const SETTLED_GAP = 50;
+  const short = () => pendingScripts.size > 0 || [...timers.values()].some((one) => one.kind === 'frame' || one.kind === 'idle' || (one.kind === 'timeout' && one.delay <= 1000));
+  function settle(limit, take) {
     const until = performance.now() + limit;
+    let calm = 0;
     return new Promise((done) => {
-      const look = () => (!short() || performance.now() > until ? done(short()) : nativeTimeout(look, 25));
+      const look = () => {
+        calm = short() ? 0 : calm + 1;
+        if (calm >= SETTLED_LOOKS || performance.now() > until) done(take ? {settled: calm >= SETTLED_LOOKS, count: count()} : short());
+        else nativeTimeout(look, calm ? SETTLED_GAP : 25);
+      };
       nativeTimeout(look, 0);
     });
   }
+  const quiet = (limit = 10000) => settle(limit, false);
+  // The count of a settled page: what quiet() waits for, then count() in the same task.
+  const settledCount = (limit = 10000) => settle(limit, true);
 
-  window.__sfScopeProbe = {quiet, build, drawn, removeHosts, placeAgain, placedAgainProblems, sizes, interact, count};
+  window.__sfScopeProbe = {quiet, settledCount, build, drawn, removeHosts, placeAgain, placedAgainProblems, sizes, interact, count};
 })();

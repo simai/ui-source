@@ -178,10 +178,11 @@ test('a framed overlay reads keys inside its frame only, as before', () => {
   assert.deepEqual(applied(overlay), []);
 });
 
-test('the version moves to 1.5.1 in the manifests', async () => {
+test('the version moves to 1.5.1 or later in the manifests', async () => {
   const manifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   const component = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/component.json', import.meta.url), 'utf8'));
-  assert.equal(component.version, '1.5.1');
-  assert.equal(manifest.version, '1.5.1');
+  // 1.5.2 carries the counted sortable id on top of 1.5.1.
+  assert.equal(component.version, '1.5.2');
+  assert.equal(manifest.version, '1.5.2');
   assert.ok(component['x-decisions'].some((entry) => entry.startsWith('version 1.5.1 (simai/ui-source#62')), 'the decision is recorded');
 });

@@ -179,9 +179,9 @@ test('passive reads the attribute as the manifest base reads a boolean', () => {
 test('the manifest declares passive and open as the element does', async () => {
   const manifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   const component = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/component.json', import.meta.url), 'utf8'));
-  // 1.5.1 (#62) adds the canvas keys; passive and open are as 1.5.0 made them.
-  assert.equal(component.version, '1.5.1');
-  assert.equal(manifest.version, '1.5.1');
+  // 1.5.1 (#62) adds the canvas keys, 1.5.2 the counted sortable id; passive and open are as 1.5.0 made them.
+  assert.equal(component.version, '1.5.2');
+  assert.equal(manifest.version, '1.5.2');
   assert.deepEqual([manifest.inputs.properties.passive.type, manifest.inputs.properties.passive.default], ['boolean', false]);
   const open = manifest.events['sf-editor-overlay-open'];
   assert.deepEqual(open.payload.required, ['ids', 'id', 'node', 'point', 'trigger']);
