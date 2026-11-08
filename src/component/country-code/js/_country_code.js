@@ -627,8 +627,41 @@ async function applyMaskForRoot(root, input, maskPattern, config = null) {
   }
 }
 
-function resolveInitialCountry(config, root) {
+// Where several countries share a dial code, the one a number with that code
+// means unless its next digits say otherwise (+7 6xx and +7 7xx are
+// Kazakhstan).
+const SHARED_DIAL_CODES = {
+  '+1': 'US', '+7': 'RU', '+39': 'IT', '+44': 'GB', '+47': 'NO', '+61': 'AU',
+  '+212': 'MA', '+262': 'RE', '+358': 'FI', '+590': 'GP', '+599': 'CW',
+};
+
+// The country a stored number names by its own dial code: the longest dial
+// code its digits start with. A field that gets '+7 900 123-45-67' and no
+// country used to take the first country of the list (Australia, +61) and
+// read the number through its mask as '+79 0 0123 4567' (simai/ui-source#34).
+function countryFromNumber(root, value) {
+  const text = String(value || '').trim();
+  if (!text.startsWith('+')) return null;
+  const digits = text.replace(/\D/g, '');
+  if (!digits) return null;
+  const options = root.__sfCountryOptions?.length ? root.__sfCountryOptions : COUNTRY_ITEMS;
+  for (let length = Math.min(4, digits.length); length > 0; length -= 1) {
+    const code = `+${digits.slice(0, length)}`;
+    const matches = options.filter((country) => country.dialCode === code);
+    if (!matches.length) continue;
+    if (matches.length === 1) return matches[0];
+    if (code === '+7' && /^[67]/u.test(digits.slice(1))) {
+      const kazakhstan = matches.find((country) => country.iso2 === 'KZ');
+      if (kazakhstan) return kazakhstan;
+    }
+    return matches.find((country) => country.iso2 === SHARED_DIAL_CODES[code]) || matches[0];
+  }
+  return null;
+}
+
+function resolveInitialCountry(config, root, value = '') {
   return resolveCountry(root, config.defaultIso2) || resolveCountry(root, '', config.fixedDialCode) ||
+    countryFromNumber(root, value) ||
     root.__sfCountryOptions?.[0] || COUNTRY_ITEMS[0] || null;
 }
 
@@ -771,7 +804,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     nodes.list?.classList?.remove('hidden');
   }
 
-  const initialCountry = resolveInitialCountry(config, root);
+  const initialCountry = resolveInitialCountry(config, root, input.value || input.getAttribute('value') || '');
   if (resetCountry || !countryResetDefaults.has(input)) countryResetDefaults.set(input, initialCountry);
   if (initialCountry) {
     applyCountrySelection(root, initialCountry, 'init');

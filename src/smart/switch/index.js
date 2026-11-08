@@ -4,6 +4,7 @@ import { bindSwitch, setSwitchState, unbindSwitch } from '../../component/switch
 import { renderSwitchTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
 import { InheritedValueField } from '../helpers/inherited-value';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -97,6 +98,34 @@ class SfSwitch extends SwitchElement {
 
   inheritedFocusTarget() {
     return this.getInputElement();
+  }
+
+  // The checkbox is described by the description (aria-describedby,
+  // simai/ui-source#44), and a browser reads aria-describedby instead of
+  // aria-description, so «Наследуется: включено» would go unsaid beside it.
+  // While the inherited state applies and something else describes the
+  // checkbox, the sentence is a hidden note the description list also names.
+  syncInheritedState() {
+    super.syncInheritedState();
+    const input = this.getInputElement();
+    if (!input) return;
+    let note = this.querySelector(':scope > [data-sf-switch-inherited-note]');
+    const others = String(input.getAttribute('aria-describedby') || '').split(/\s+/).filter((id) => id && id !== note?.id);
+    if (this.hasInheritedValue && this.isInherited && others.length && this.isConnected) {
+      if (!note) {
+        note = document.createElement('span');
+        note.hidden = true;
+        note.setAttribute('data-sf-switch-inherited-note', '');
+        this.append(note);
+      }
+      if (!note.id) note.id = partId(instancePath(this, { kind: 'sf-switch' }), 'inherited');
+      note.textContent = this.inheritedDescription();
+      input.setAttribute('aria-describedby', [...others, note.id].join(' '));
+    } else if (note) {
+      note.remove();
+      if (others.length) input.setAttribute('aria-describedby', others.join(' '));
+      else input.removeAttribute('aria-describedby');
+    }
   }
 
   // Back to no value of its own: the knob goes where the inherited value puts

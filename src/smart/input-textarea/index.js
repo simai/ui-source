@@ -33,6 +33,8 @@ class SfTextarea extends FormField(TextareaElement) {
     return {
       ...super.props,
       rootClass: { default: '' },
+      ariaLabel: { attribute: 'aria-label', default: '' },
+      labelledBy: { attribute: 'aria-labelledby', default: '' },
       // What the field falls back to while it holds nothing (simai/ui-source#28).
       inheritedValue: { attribute: 'inherited-value', default: '' },
       inheritedText: { attribute: 'inherited-text', default: '' },
@@ -58,6 +60,19 @@ class SfTextarea extends FormField(TextareaElement) {
   get maxlength() {
     const value = this.getNumberAttr('maxlength', null);
     return Number.isInteger(value) && value >= 0 ? value : null;
+  }
+
+  // A textarea whose label is drawn outside it -- a record panel prints it, a
+  // flush field in a card has none -- still owes a name. The host's aria-label
+  // and aria-labelledby reach the native textarea, which is what assistive
+  // technology reads; on the host they named nothing, because the host is not
+  // the control (simai/ui-source#30, as sf-input does).
+  get ariaLabel() {
+    return this.getProp('ariaLabel') || '';
+  }
+
+  get labelledBy() {
+    return this.getProp('labelledBy') || '';
   }
 
   // element.focus() on the host reaches the native textarea.
@@ -145,6 +160,8 @@ class SfTextarea extends FormField(TextareaElement) {
       inheritedValue: this.inheritedValue,
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,
+      ariaLabel: this.ariaLabel,
+      labelledBy: this.labelledBy,
       component: this,
     });
   }
