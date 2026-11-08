@@ -8,6 +8,7 @@
   "sheets": [
     "component/buttons/css/buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
     "core/css/core.css",
     "smart/list-timeline/css/list-timeline.min.css",
     "utility/align-items/default/css/default.min.css",
@@ -23,6 +24,7 @@
     "compact": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/list-timeline/css/list-timeline.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -37,6 +39,7 @@
     "empty": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/list-timeline/css/list-timeline.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -51,6 +54,7 @@
     "history": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/list-timeline/css/list-timeline.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -65,6 +69,7 @@
     "reference": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/list-timeline/css/list-timeline.min.css",
       "utility/align-items/default/css/default.min.css",
