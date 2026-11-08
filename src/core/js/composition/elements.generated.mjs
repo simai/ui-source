@@ -623,7 +623,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "sf-icon": {
     "inputs": {
@@ -708,7 +708,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.1.5"
+    "version": "1.1.6"
   },
   "sf-input": {
     "inputs": {
