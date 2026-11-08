@@ -697,6 +697,14 @@
   @include panel.search-input;
 }
 
+/* A menu without a leading column (no row has an icon, a tick or a picture):
+   the search text stands over the rows' text and its icon at the header's
+   end (C06, DEV measurement 2026-11-08: the text stood 24-28px right of the
+   rows'). */
+.sf-context-menu-content--search:not(:has(.sf-context-menu-item-lead)) > .sf-context-menu-search > .sf-context-menu-search-icon {
+  @include panel.search-icon-trailing;
+}
+
 /* A menu with a search: the header stays where it is and only the rows
    scroll, under it (owner R012, C06). The content no longer scrolls: the
    header (and a drilling level's head) sits on top across the panel's whole

@@ -173,6 +173,15 @@
     --sf-icon--width: var(--sf-list--line);
   }
 
+  /* Rows without a leading picture (no icon, avatar, colour or checkbox):
+     the search text stands over the rows' text and its icon at the header's
+     end (C06, DEV measurement 2026-11-08: the text stood 24-32px right of
+     the rows'). */
+  .sf-dropdown .sf-list:not(:has(.sf-list-item:is(.sf-list-item--icon, .sf-list-item--avatar, .sf-list-item--color, .sf-list-item--checkbox))) > .sf-list-search > .sf-list-search-icon,
+  .sf-list--menu:not(:has(.sf-list-item:is(.sf-list-item--icon, .sf-list-item--avatar, .sf-list-item--color, .sf-list-item--checkbox))) > .sf-list-search > .sf-list-search-icon {
+    @include panel.search-icon-trailing;
+  }
+
   .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
   .sf-list--menu > .sf-list-search > .sf-list-search-input {
     @include panel.search-input;

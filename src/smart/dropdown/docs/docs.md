@@ -39,7 +39,8 @@ The open list has the context menu's geometry (owner C05-C07, docs review
 R029): rows as tall as a control of their size, their highlight
 `--sf-space-1/4` from the panel's edge and their picture or text
 `--sf-space-1/2` inside it; the search is the panel's header (a search icon over
-the rows' icons, no frame, a hairline under it) and stays put while the rows
+the rows' icons, no frame, a hairline under it; when the rows have no pictures,
+the search text stands over the rows' text and the icon at the header's end) and stays put while the rows
 scroll; a scrollbar only when the rows do not fit, standing in the inline-end
 inset. The base component's documentation has the classes.
 

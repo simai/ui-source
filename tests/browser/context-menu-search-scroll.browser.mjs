@@ -149,10 +149,12 @@ function checkLayout(where, {before, after}) {
   if (!near(before.searchLine[0], 1) || before.searchLine[1] !== 0 || before.searchLine[2] !== 0) note({case: `${where}: a hairline under the header and no frame`, got: before.searchLine});
   if (!near(before.searchHeight, rowHeight + 2 * inset)) note({case: `${where}: the header is a row and the inset above and below`, got: {height: before.searchHeight, rowHeight, inset}});
   if (!near(before.rowHeight, rowHeight)) note({case: `${where}: a row is a control's height`, got: {row: before.rowHeight, rowHeight}});
-  // The icon over the rows' icons (or their text), the text over their text.
-  const rowStart = before.hasLead ? before.rowIconLeft : before.rowTextAbsLeft;
-  if (!near(before.searchIconLeft, rowStart)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: before.searchIconLeft, row: rowStart}});
-  if (before.hasLead && !near(before.fieldTextLeft, before.rowTextAbsLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {field: before.fieldTextLeft, row: before.rowTextAbsLeft}});
+  // The text over the rows' text, always; the icon over the rows' icons, or,
+  // in a menu without a leading column, at the header's end (C06, DEV
+  // measurement 2026-11-08: text over text).
+  if (!near(before.fieldTextLeft, before.rowTextAbsLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {field: before.fieldTextLeft, row: before.rowTextAbsLeft}});
+  if (before.hasLead && !near(before.searchIconLeft, before.rowIconLeft)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: before.searchIconLeft, row: before.rowIconLeft}});
+  if (!before.hasLead && !(before.searchIconLeft > before.fieldTextLeft)) note({case: `${where}: without a leading column the search icon stands at the header's end`, got: {icon: before.searchIconLeft, field: before.fieldTextLeft}});
 }
 
 const evidence = {};
