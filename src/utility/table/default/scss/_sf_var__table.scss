@@ -10,7 +10,7 @@
 $table-color: var(--sf-on-surface);
 $table-bg: inherit;
 $table-border-color: var(--sf-outline-variant);
-$table-accent-bg: #0000;
+$table-accent-bg: var(--sf-transparent);
 
 $table-stripe-color: var(--sf-on-surface);
 $table-stripe-bg: var(--sf-surface-transparent-select);

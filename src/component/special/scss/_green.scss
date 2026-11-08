@@ -7,9 +7,9 @@
 html {
     &.special {
         .sf-special-green {
-            background-color: #000!important;
-            color: #A9DD38!important;
-            border-color:#A9DD38!important;
+            background-color: var(--sf-special-green)!important;
+            color: var(--sf-on-special-green)!important;
+            border-color:var(--sf-on-special-green)!important;
 
             *:not(.special-panel,[data-bg]),
             ::after,::before {
@@ -24,25 +24,25 @@ html {
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #A9DD38!important;
-                color:#000!important;
-                border-color:#000!important;
+                background-color: var(--sf-on-special-green)!important;
+                color:var(--sf-special-green)!important;
+                border-color:var(--sf-special-green)!important;
             }
 
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #A9DD38!important;
-                color:#000!important;
-                border-color: #000!important;
+                background-color: var(--sf-on-special-green)!important;
+                color:var(--sf-special-green)!important;
+                border-color: var(--sf-special-green)!important;
             }
 
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #A9DD38!important;
-                color:#000!important;
-                border-color: #000!important;
+                background-color: var(--sf-on-special-green)!important;
+                color:var(--sf-special-green)!important;
+                border-color: var(--sf-special-green)!important;
             }
         }
     }

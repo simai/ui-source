@@ -61,6 +61,23 @@
     --sf-avatar-badge--border-color: var(--sf-surface-0);
   }
 
+  /* The badge drawings take their two inks from the palette (C18): the
+     company plate is the red palette at tone 50, the verified plate the
+     theme colour at tone 40 (the seed itself under the default theme), the
+     glyph on either is white. Primitives, not roles: like the drawings they
+     replace, the badges keep one look in light and dark. */
+  .sf-avatar-badge--company .sf-avatar-badge-plate {
+    fill: var(--sf-error-50);
+  }
+
+  .sf-avatar-badge--verified .sf-avatar-badge-plate {
+    fill: var(--sf-primary-40);
+  }
+
+  .sf-avatar-badge .sf-avatar-badge-glyph {
+    fill: var(--sf-white);
+  }
+
   .sf-avatar.sf-avatar--size-2 .sf-icon {
     --sf-icon--font-size: var(--sf-icon-size-4);
     --sf-icon--height: var(--sf-icon-size-4);

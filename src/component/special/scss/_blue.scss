@@ -7,9 +7,9 @@
 html {
     &.special {
         .sf-special-blue {
-            background-color: #9FD7FF!important;
-            color: #000!important;
-            border-color:#000!important;
+            background-color: var(--sf-special-blue)!important;
+            color: var(--sf-on-special-blue)!important;
+            border-color:var(--sf-on-special-blue)!important;
 
             *:not(.special-panel,[data-bg]),
             ::after,::before {
@@ -23,14 +23,14 @@ html {
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #000!important;
-                color:#9FD7FF!important;
-                border-color:#9FD7FF!important;
+                background-color: var(--sf-on-special-blue)!important;
+                color:var(--sf-special-blue)!important;
+                border-color:var(--sf-special-blue)!important;
 
                 * {
-                    background-color: #000!important;
-                    color:#9FD7FF!important;
-                    border-color:#9FD7FF!important;
+                    background-color: var(--sf-on-special-blue)!important;
+                    color:var(--sf-special-blue)!important;
+                    border-color:var(--sf-special-blue)!important;
                     box-shadow: none!important;
                 }
             }
@@ -38,28 +38,28 @@ html {
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #000!important;
-                color:#9FD7FF!important;
-                border-color: #9FD7FF!important;
+                background-color: var(--sf-on-special-blue)!important;
+                color:var(--sf-special-blue)!important;
+                border-color: var(--sf-special-blue)!important;
 
                 * {
-                    background-color: #000!important;
-                    color:#9FD7FF!important;
-                    border-color:#9FD7FF!important;
+                    background-color: var(--sf-on-special-blue)!important;
+                    color:var(--sf-special-blue)!important;
+                    border-color:var(--sf-special-blue)!important;
                 }
             }
 
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #000!important;
-                color:#9FD7FF!important;
-                border-color: #9FD7FF!important;
+                background-color: var(--sf-on-special-blue)!important;
+                color:var(--sf-special-blue)!important;
+                border-color: var(--sf-special-blue)!important;
 
                 * {
-                    background-color: #000!important;
-                    color:#9FD7FF!important;
-                    border-color:#9FD7FF!important;
+                    background-color: var(--sf-on-special-blue)!important;
+                    color:var(--sf-special-blue)!important;
+                    border-color:var(--sf-special-blue)!important;
                 }
             }
         }

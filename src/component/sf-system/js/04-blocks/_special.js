@@ -187,9 +187,9 @@ SF.Special = function(el, opt) {
                 html.classList.add('special-font-sans');
                 html.classList.remove('special-font-serif');
                 html.classList.remove('special-font-mono');
-                el.special.font.content.btnsans.style.setProperty('background-color','#d1d5da','important');
-                el.special.font.content.btnserif.style.setProperty('background-color','#FFF','important');
-                el.special.font.content.btnmono.style.setProperty('background-color','#FFF','important');
+                el.special.font.content.btnsans.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.font.content.btnserif.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.font.content.btnmono.style.setProperty('background-color','var(--sf-surface-popup)','important');
                 el.special.font.content.btnsans.classList.add('sf-special-btn--noclick');
                 el.special.font.content.btnserif.classList.remove('sf-special-btn--noclick');
                 el.special.font.content.btnmono.classList.remove('sf-special-btn--noclick');
@@ -206,9 +206,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-font-sans');
                 html.classList.add('special-font-serif');
                 html.classList.remove('special-font-mono');
-                el.special.font.content.btnsans.style.setProperty('background-color','#FFF','important');
-                el.special.font.content.btnserif.style.setProperty('background-color','#d1d5da','important');
-                el.special.font.content.btnmono.style.setProperty('background-color','#FFF','important');
+                el.special.font.content.btnsans.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.font.content.btnserif.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.font.content.btnmono.style.setProperty('background-color','var(--sf-surface-popup)','important');
                 el.special.font.content.btnsans.classList.remove('sf-special-btn--noclick');
                 el.special.font.content.btnserif.classList.add('sf-special-btn--noclick');
                 el.special.font.content.btnmono.classList.remove('sf-special-btn--noclick');
@@ -222,9 +222,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-font-sans');
                 html.classList.remove('special-font-serif');
                 html.classList.add('special-font-mono');
-                el.special.font.content.btnsans.style.setProperty('background-color','#FFF','important');
-                el.special.font.content.btnserif.style.setProperty('background-color','#FFF','important');
-                el.special.font.content.btnmono.style.setProperty('background-color','#d1d5da','important');
+                el.special.font.content.btnsans.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.font.content.btnserif.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.font.content.btnmono.style.setProperty('background-color','var(--sf-primary-container)','important');
                 el.special.font.content.btnsans.classList.remove('sf-special-btn--noclick');
                 el.special.font.content.btnserif.classList.remove('sf-special-btn--noclick');
                 el.special.font.content.btnmono.classList.add('sf-special-btn--noclick');
@@ -271,9 +271,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-kerning-middle');
                 html.classList.remove('special-kerning-big');
 
-                el.special.kerning.content.btnnormal.style.setProperty('background-color','#d1d5da','important');
-                el.special.kerning.content.btnmiddle.style.setProperty('background-color','#FFF','important');
-                el.special.kerning.content.btnbig.style.setProperty('background-color','#FFF','important');
+                el.special.kerning.content.btnnormal.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.kerning.content.btnmiddle.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.kerning.content.btnbig.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.kerning.content.btnnormal.classList.add('sf-special-btn--noclick');
                 el.special.kerning.content.btnmiddle.classList.remove('sf-special-btn--noclick');
@@ -291,9 +291,9 @@ SF.Special = function(el, opt) {
                 html.classList.add('special-kerning-middle');
                 html.classList.remove('special-kerning-big');
 
-                el.special.kerning.content.btnnormal.style.setProperty('background-color','#FFF','important');
-                el.special.kerning.content.btnmiddle.style.setProperty('background-color','#d1d5da','important');
-                el.special.kerning.content.btnbig.style.setProperty('background-color','#FFF','important');
+                el.special.kerning.content.btnnormal.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.kerning.content.btnmiddle.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.kerning.content.btnbig.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.kerning.content.btnnormal.classList.remove('sf-special-btn--noclick');
                 el.special.kerning.content.btnmiddle.classList.add('sf-special-btn--noclick');
@@ -310,9 +310,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-kerning-middle');
                 html.classList.add('special-kerning-big');
 
-                el.special.kerning.content.btnnormal.style.setProperty('background-color','#FFF','important');
-                el.special.kerning.content.btnmiddle.style.setProperty('background-color','#FFF','important');
-                el.special.kerning.content.btnbig.style.setProperty('background-color','#d1d5da','important');
+                el.special.kerning.content.btnnormal.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.kerning.content.btnmiddle.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.kerning.content.btnbig.style.setProperty('background-color','var(--sf-primary-container)','important');
 
                 el.special.kerning.content.btnnormal.classList.remove('sf-special-btn--noclick');
                 el.special.kerning.content.btnmiddle.classList.remove('sf-special-btn--noclick');
@@ -332,9 +332,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-interval-15');
                 html.classList.remove('special-interval-20');
 
-                el.special.interval.content.btnone.style.setProperty('background-color','#d1d5da','important');
-                el.special.interval.content.btnhalf.style.setProperty('background-color','#FFF','important');
-                el.special.interval.content.btntwo.style.setProperty('background-color','#FFF','important');
+                el.special.interval.content.btnone.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.interval.content.btnhalf.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.interval.content.btntwo.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.interval.content.btnone.classList.add('sf-special-btn--noclick');
                 el.special.interval.content.btnhalf.classList.remove('sf-special-btn--noclick');
@@ -352,9 +352,9 @@ SF.Special = function(el, opt) {
                 html.classList.add('special-interval-15');
                 html.classList.remove('special-interval-20');
 
-                el.special.interval.content.btnone.style.setProperty('background-color','#FFF','important');
-                el.special.interval.content.btnhalf.style.setProperty('background-color','#d1d5da','important');
-                el.special.interval.content.btntwo.style.setProperty('background-color','#FFF','important');
+                el.special.interval.content.btnone.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.interval.content.btnhalf.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.interval.content.btntwo.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.interval.content.btnone.classList.remove('sf-special-btn--noclick');
                 el.special.interval.content.btnhalf.classList.add('sf-special-btn--noclick');
@@ -372,9 +372,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-interval-15');
                 html.classList.add('special-interval-20');
 
-                el.special.interval.content.btnone.style.setProperty('background-color','#FFF','important');
-                el.special.interval.content.btnhalf.style.setProperty('background-color','#FFF','important');
-                el.special.interval.content.btntwo.style.setProperty('background-color','#d1d5da','important');
+                el.special.interval.content.btnone.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.interval.content.btnhalf.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.interval.content.btntwo.style.setProperty('background-color','var(--sf-primary-container)','important');
 
                 el.special.interval.content.btnone.classList.remove('sf-special-btn--noclick');
                 el.special.interval.content.btnhalf.classList.remove('sf-special-btn--noclick');
@@ -394,9 +394,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-img-none');
                 html.classList.remove('special-img-black');
 
-                el.special.img.content.btnoff.style.setProperty('background-color','#FFF','important');
-                el.special.img.content.btnbw.style.setProperty('background-color','#FFF','important');
-                el.special.img.content.btncolor.style.setProperty('background-color','#d1d5da','important');
+                el.special.img.content.btnoff.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.img.content.btnbw.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.img.content.btncolor.style.setProperty('background-color','var(--sf-primary-container)','important');
 
                 el.special.img.content.btnoff.classList.remove('sf-special-btn--noclick');
                 el.special.img.content.btnbw.classList.remove('sf-special-btn--noclick');
@@ -414,9 +414,9 @@ SF.Special = function(el, opt) {
                 html.classList.remove('special-img-none');
                 html.classList.add('special-img-black');
 
-                el.special.img.content.btnoff.style.setProperty('background-color','#FFF','important');
-                el.special.img.content.btnbw.style.setProperty('background-color','#d1d5da','important');
-                el.special.img.content.btncolor.style.setProperty('background-color','#FFF','important');
+                el.special.img.content.btnoff.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.img.content.btnbw.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.img.content.btncolor.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.img.content.btnoff.classList.remove('sf-special-btn--noclick');
                 el.special.img.content.btnbw.classList.add('sf-special-btn--noclick');
@@ -434,9 +434,9 @@ SF.Special = function(el, opt) {
                 html.classList.add('special-img-none');
                 html.classList.remove('special-img-black');
 
-                el.special.img.content.btnoff.style.setProperty('background-color','#d1d5da','important');
-                el.special.img.content.btnbw.style.setProperty('background-color','#FFF','important');
-                el.special.img.content.btncolor.style.setProperty('background-color','#FFF','important');
+                el.special.img.content.btnoff.style.setProperty('background-color','var(--sf-primary-container)','important');
+                el.special.img.content.btnbw.style.setProperty('background-color','var(--sf-surface-popup)','important');
+                el.special.img.content.btncolor.style.setProperty('background-color','var(--sf-surface-popup)','important');
 
                 el.special.img.content.btnoff.classList.add('sf-special-btn--noclick');
                 el.special.img.content.btnbw.classList.remove('sf-special-btn--noclick');
@@ -459,7 +459,7 @@ SF.Special = function(el, opt) {
 
         this.buttonColorActive = (button) => {
             button.classList.add('sf-special-btn--noclick');
-            button.style.boxShadow = '0 0px 0px 4px lightgrey';
+            button.style.boxShadow = 'var(--sf-ui-focus)';
             button.style.zIndex = 1;
         }
 
