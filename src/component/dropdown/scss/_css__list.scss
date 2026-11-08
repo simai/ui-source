@@ -176,6 +176,9 @@
   .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
   .sf-list--menu > .sf-list-search > .sf-list-search-input {
     @include panel.search-input;
+    /* The field is the header's whole height above the hairline, so a touch
+       window's larger font never changes how tall it is. */
+    block-size: calc(var(--sf-list--row-height) + var(--sf-list--padding-top) + var(--sf-list--padding-bottom) - var(--sf-px));
   }
 
   /* A search field written as an sf-input (markup from before R029) keeps

@@ -19,7 +19,7 @@
     "src/component/dropdown/scss/_css__list.scss",
     "src/component/dropdown/scss/index.scss"
   ],
-  "content_sha256": "0805754791a8d6308dd9c8ae63997be9a12827b4df992e1a362d736088d1e073",
+  "content_sha256": "89d6c2e5d92b95da6afc22e673c4510bc9ab8bff60b89a1612a0d72f5f108dd8",
   "dependencies": [
     {
       "id": "component.context-menu",
