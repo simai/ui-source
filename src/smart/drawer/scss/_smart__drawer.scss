@@ -80,6 +80,31 @@
     transition: transform var(--sf-duration-normal) var(--sf-ease-exit);
   }
 
+  /* A panel with a resizer on its edge (an sf-resizer written in the drawer's
+     content) scrolls its body instead of itself. Positioned against a panel
+     that scrolls, the handle stood inside the scrollbar's room the panel keeps
+     on both sides (15px in from the edge of a 320px panel with classic
+     scrollbars), moved with the scrolled rows, and the panel clipped its outer
+     half (simai/ui-source#59). The body takes the scroll and the same room on
+     both sides, the head that room too, so the content stands where it stood; the panel clips nothing,
+     and the handle -- positioned against the panel -- stands on its edge. */
+  .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) {
+    overflow: visible;
+    scrollbar-gutter: auto;
+  }
+
+  .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-body {
+    overflow: hidden auto;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  /* The head keeps the same room, so its title and close stand over the
+     content as they did (overflow: hidden takes a gutter and scrolls nothing). */
+  .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-head {
+    overflow: hidden;
+    scrollbar-gutter: stable both-edges;
+  }
+
   /* A floating panel stands on the raised surface, with its dimmed text; a
      column of the page takes the page's (below). */
   .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {

@@ -61,6 +61,15 @@ class SfIcon extends IconElement {
   }
 
   connectedCallback() {
+    // An icon placed again that has no glyph -- its host emptied after it drew,
+    // by whatever emptied it -- draws again instead of staying blank for good:
+    // its first render, which clears the host and starts lit afresh, runs once
+    // more. Taking such an icon out and putting it back did nothing before,
+    // and ui-mail replaced the blank ones in its drawer portals with fresh
+    // copies (redrawPortalIcons, simai/ui-source#56).
+    if (this._hasRendered && !this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor")) {
+      this._hasRendered = false;
+    }
     super.connectedCallback();
     window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
     this.requestIconLoad();
