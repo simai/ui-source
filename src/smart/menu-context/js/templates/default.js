@@ -1,5 +1,16 @@
 import {html, nothing} from "lit";
 import {getInitials} from "../../../helpers/text";
+import {shortcutView} from "../../../../component/kbd/js/shortcut";
+
+// An entry's shortcut: the kbd component's keys -- `mod+c` in this platform's
+// words, or the text a page wrote (⇧⌘L, F2) as it is. Inside a menu the kbd
+// sheet draws them as plain glyphs in the muted ink; the menu never styles
+// them (owner decision 2026-11-07, docs review R030, rule C04).
+function renderShortcut(value) {
+    const {keys, join} = shortcutView(value);
+    if (!keys.length) return nothing;
+    return html`<kbd class="sf-kbd--group sf-context-menu-item-shortcut">${keys.map((key, at) => html`${at && join ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${key.square ? "sf-kbd--square" : nothing}>${key.text}</kbd>`)}</kbd>`;
+}
 
 function joinClasses(...tokens) {
     return tokens.flat().filter(Boolean).join(" ");
@@ -322,7 +333,7 @@ function renderEntry(entry, path, lead, context, query) {
         ${renderLeadPlace(entry, lead)}
         ${renderItemText(entry, under)}
         ${entry.value && !under && !toggle ? html`<span class="sf-context-menu-item-value">${entry.value}</span>` : nothing}
-        ${entry.shortcut ? html`<kbd class="sf-context-menu-item-shortcut">${entry.shortcut}</kbd>` : nothing}
+        ${renderShortcut(entry.shortcut)}
         ${toggle ? renderSwitch() : nothing}
         ${submenu ? icon("chevron_right", "sf-context-menu-item-chevron") : nothing}
     `;

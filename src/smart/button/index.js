@@ -6,11 +6,12 @@ import { resolveControlSpacing } from '../../core/js/control-spacing';
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
+  isApplePlatform,
   isEditableTarget,
   matchesShortcut,
   parseShortcut,
   shortcutCaps,
-} from "./js/shortcut";
+} from "../../component/kbd/js/shortcut";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -213,8 +214,11 @@ class SfButton extends ButtonElement {
       pressed: this.pressed,
       textPressed: this.textPressed,
       // The shortcut's key caps and its aria-keyshortcuts, in this platform's
-      // words (js/shortcut.js).
+      // words (component/kbd/js/shortcut.js).
       shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),
+      // Words join with + where the platform spells its modifiers (the kbd
+      // sheet shows the join only where keys are plain glyphs).
+      shortcutJoin: !isApplePlatform(),
       ariaKeyShortcuts: ariaKeyShortcuts(parseShortcut(this.shortcut)),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       component: this,

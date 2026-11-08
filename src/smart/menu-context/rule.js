@@ -6,6 +6,8 @@ SF.RuleLoader['cl-menu-context'] = {
   js: true,
   relation: [
     { name: 'context-menu' },
+    // An entry's shortcut is the kbd component's keys: plain glyphs in a menu.
+    { name: 'kbd' },
     { name: 'cl-button' },
     // The tabs and the close button draw only a panel's head: fetched after the
     // page is ready, not held up front for every menu.

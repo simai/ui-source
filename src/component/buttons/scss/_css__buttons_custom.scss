@@ -193,7 +193,7 @@
   /* Secondary outline, surface and link keep the secondary ink when hovered
      or pressed: the fill steps as on-surface's do, the label does not turn
      grey. Same weight as the on-surface state rules, later in the layer. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-button-text-container {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--color: var(--sf-secondary);
   }
 
@@ -210,7 +210,7 @@
      its container's variant). A filled (default) button keeps on-surface's
      inverse ink: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
-  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) .sf-button-text-container {
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-variant));
   }
 
@@ -226,7 +226,7 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary .sf-button-text-container {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
   }
 
@@ -234,127 +234,20 @@
     --sf-icon--color: var(--sf-secondary);
   }
 
-  /* A shortcut's keys (sf-button shortcut): a kbd group at the end of the
-     button. The keys wear the kbd component's look -- colours, edge, radius,
-     face -- read from the kbd sheet's own variables with its values as the
-     fallbacks, because the kbd sheet is fetched after the page is ready (a
-     lazy relation): the first paint is the same before and after it arrives.
-     Their size is the control's, not the kbd's text size: a key is the text
-     line of the rung below the button's (the 1/2 line in a size 1 button), so
-     the button keeps its control height; the face stays the kbd's 1/3 step.
-     Muted: the ink is the kbd's quiet step on its container fill, the
-     container's variant role, as the kbd sheet sets it. */
-  .sf-button {
-    --sf-button-shortcut--key-size: var(--sf-text-height-1\/2);
-  }
-
-  .sf-button.sf-button--size-1\/2,
-  .sf-button.sf-button--size-1\/3 {
-    --sf-button-shortcut--key-size: var(--sf-text-height-1\/3);
-  }
-
-  .sf-button.sf-button--size-2 {
-    --sf-button-shortcut--key-size: var(--sf-text-height-1);
-  }
-
-  .sf-button.sf-button--size-3 {
-    --sf-button-shortcut--key-size: var(--sf-text-height-2);
-  }
-
+  /* A shortcut (sf-button shortcut): the keys at the end of the button, in a
+     wrapper that takes the label's ink and text size -- every rule that gives
+     the label its ink or its size gives it to the wrapper too, so the caps are
+     sized from the label (0.8125em of it). The keys themselves are the kbd
+     component's: inside a button they are soft caps mixed from that ink, so
+     they read on a filled button with no rule of the button's own (owner
+     decision 2026-11-07, docs review R030, rule C04). The button never styles
+     a key. */
   .sf-button .sf-button-shortcut {
     display: inline-flex;
     flex: none;
-    box-sizing: border-box;
     align-items: center;
-    gap: var(--sf-space-1\/4);
-    margin: var(--sf-0);
-    padding: var(--sf-0);
-    border: none;
-    background: var(--sf-transparent);
-    white-space: nowrap;
-  }
-
-  .sf-button .sf-button-shortcut > kbd {
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    --sf-kbd--color: var(--sf-on-surface-variant);
-    color: var(--sf-kbd--color);
-    background: var(--sf-kbd--background, var(--sf-surface-container));
-    display: inline-flex;
-    box-sizing: border-box;
-    align-items: center;
-    justify-content: center;
-    block-size: var(--sf-button-shortcut--key-size);
-    min-block-size: var(--sf-0);
-    min-inline-size: var(--sf-button-shortcut--key-size);
-    padding-block: var(--sf-0);
-    padding-inline: var(--sf-space-1\/4);
-    border: var(--sf-kbd--border-width, var(--sf-px)) solid var(--sf-kbd--border-color, var(--sf-outline-variant));
-    border-radius: var(--sf-kbd--radius, var(--sf-radius--ui));
-    font-family: var(--sf-kbd--font-family, var(--sf-mono));
-    font-size: var(--sf-kbd--font-size, var(--sf-text-size-1\/3));
-    font-weight: var(--sf-kbd--font-weight, var(--sf-font-weight-medium));
-    line-height: var(--sf-text-height-1\/4);
-    white-space: nowrap;
-  }
-
-  /* A key of one character -- a letter, ⌘, ⇧, ↵ -- is a square of the key
-     size, the glyph centred; a key of several letters (Esc, Ctrl, Shift)
-     hugs its word with the key padding on each side. A modifier's cap used
-     to keep the box of its widest platform word, so ⇧ stood five characters
-     wide beside a square P (docs review R010, 2026-11-06). */
-  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--square {
-    inline-size: var(--sf-button-shortcut--key-size);
-    padding-inline: var(--sf-0);
-  }
-
-  /* On a button with a fill of its own -- default and tonal -- the keys
-     take the button's ink: the on-colour its label wears, a fill of it at
-     12% and an edge at 32% over the button's fill, the inverse of the button
-     they sit on. The surface container and its variant ink, which the keys
-     keep on outline, link and surface, disappeared on a filled button: on
-     primary the key's text stood at 1.24:1, in the dark theme at 1.04:1, and
-     on a dark tonal on-surface button at 4.35:1 (docs review R009,
-     2026-11-06). The fill and the edge are steps of the fill family. */
-  .sf-button.sf-button--default.sf-button--primary {
-    --sf-button-shortcut--ink: var(--sf-on-primary);
-  }
-
-  .sf-button.sf-button--default.sf-button--secondary {
-    --sf-button-shortcut--ink: var(--sf-on-secondary);
-  }
-
-  .sf-button.sf-button--default.sf-button--on-surface {
-    --sf-button-shortcut--ink: var(--sf-on-surface-inverse);
-  }
-
-  .sf-button.sf-button--default.sf-button--error {
-    --sf-button-shortcut--ink: var(--sf-on-error);
-  }
-
-  .sf-button.sf-button--tonal.sf-button--primary {
-    --sf-button-shortcut--ink: var(--sf-on-primary-container);
-  }
-
-  .sf-button.sf-button--tonal.sf-button--secondary {
-    --sf-button-shortcut--ink: var(--sf-on-secondary-container);
-  }
-
-  .sf-button.sf-button--tonal.sf-button--on-surface {
-    --sf-button-shortcut--ink: var(--sf-on-surface);
-  }
-
-  .sf-button.sf-button--tonal.sf-button--error {
-    --sf-button-shortcut--ink: var(--sf-on-error-container);
-  }
-
-  .sf-button:is(.sf-button--default, .sf-button--tonal):not(:disabled, .disabled) .sf-button-shortcut > kbd {
-    --sf-kbd--color: var(--sf-button-shortcut--ink);
-    --sf-kbd--background: color-mix(in srgb, var(--sf-button-shortcut--ink) 12%, transparent);
-    --sf-kbd--border-color: color-mix(in srgb, var(--sf-button-shortcut--ink) 32%, transparent);
-  }
-
-  .sf-button:is(:disabled, .disabled) .sf-button-shortcut > kbd {
-    --sf-kbd--color: var(--sf-on-disable);
+    color: var(--sf-button-text-container--color);
+    font-size: var(--sf-button-text-container--font-size);
   }
 }
 
@@ -390,8 +283,8 @@
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-button-text-container,
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-button-text-container {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 

@@ -9,15 +9,19 @@
 // rounded, icon-start, text-position start, stretched): the control height of
 // its size, the icon, the label and the keys on one centre line, the label
 // starting after the icon and the keys at the end; the label and the icon in
-// the quieter ink; the key box the same before and after the kbd sheet (a
-// lazy relation) arrives.
+// the quieter ink; the keys the kbd component's soft caps (owner decision
+// 2026-11-07, docs review R030, rule C04): sized from the label (0.8125em
+// letters, 1.6em high), their ink the label's at 80 % and their fill that ink
+// at 12 %, no edge; the key box the same before and after the kbd sheet
+// arrives.
 //
 // The snapshot and the live button: the search-trigger snapshot (printed on
 // a Mac, ⌘ K) on a page without any script stands in the same boxes as the
 // button drawn live on a Mac, 0 px apart. On a page that says it is Windows
 // the caps are Ctrl K: a key of one character is a square, a key of several
 // letters hugs its word -- the caps are true to the platform, not to its
-// widest word (docs review R010, 2026-11-06).
+// widest word (docs review R010, 2026-11-06) -- and the + between the words
+// is written but not drawn: caps stand apart.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {dirname, extname, join, resolve} from 'node:path';
@@ -81,17 +85,17 @@ const browser = await chromium.launch();
 try {
   const tab = await browser.newPage({viewport: {width: 1280, height: 800}});
   await tab.goto(`http://127.0.0.1:${server.address().port}/page`);
-  await tab.waitForFunction(() => customElements.get('sf-button') && document.querySelector('#search .sf-button-shortcut kbd')
+  await tab.waitForFunction(() => customElements.get('sf-button') && document.querySelector('#search .sf-button-shortcut kbd kbd')
     && document.querySelector('#search .sf-icon'), null, {timeout: 20000})
     .catch(() => failures.push('the search trigger never drew its keys'));
   // The key box as first drawn, before the lazily fetched kbd sheet.
   const firstBox = await tab.evaluate(() => {
-    const group = document.querySelector('#search .sf-button-shortcut');
+    const group = document.querySelector('#search .sf-button-shortcut .sf-kbd--group');
     const kbdSheet = Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || ''));
     return {kbdSheet, group: group ? [group.getBoundingClientRect().width, group.getBoundingClientRect().height] : null};
   });
   await tab.waitForFunction(() => Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 15000})
-    .catch(() => failures.push('the kbd sheet (a lazy relation) never arrived'));
+    .catch(() => failures.push('the kbd sheet never arrived'));
   await tab.evaluate(() => document.fonts.ready);
   await tab.waitForTimeout(200);
 
@@ -100,12 +104,13 @@ try {
     const read = (id) => {
       const host = document.getElementById(id);
       const button = host.querySelector('button.sf-button');
-      const group = button?.querySelector('.sf-button-shortcut');
+      const wrapper = button?.querySelector('.sf-button-shortcut');
+      const group = wrapper?.querySelector(':scope > .sf-kbd--group');
       return {
         host: getComputedStyle(host).display,
         caps: Array.from(group?.querySelectorAll(':scope > kbd') ?? []).map((key) => key.textContent.trim()),
-        hidden: group?.getAttribute('aria-hidden') ?? null,
-        last: button?.lastElementChild === group,
+        hidden: wrapper?.getAttribute('aria-hidden') ?? null,
+        last: button?.lastElementChild === wrapper,
         keyshortcuts: button?.getAttribute('aria-keyshortcuts') ?? null,
         name: button?.textContent.replace(/\s+/gu, ' ').trim(),
       };
@@ -129,7 +134,7 @@ try {
     const button = host.querySelector('button.sf-button');
     const icon = button.querySelector('.sf-icon');
     const label = button.querySelector('.sf-button-text-container');
-    const group = button.querySelector('.sf-button-shortcut');
+    const group = button.querySelector('.sf-button-shortcut .sf-kbd--group');
     const keys = Array.from(group.querySelectorAll(':scope > kbd'));
     const range = document.createRange();
     range.selectNodeContents(label);
@@ -145,9 +150,18 @@ try {
     probe.style.display = 'block';
     probe.style.position = 'absolute';
     const ladder = probe.getBoundingClientRect().height;
-    probe.style.blockSize = 'var(--sf-text-height-1\\/2)';
-    const keyLadder = probe.getBoundingClientRect().height;
     probe.remove();
+    // A cap is 1.6em of letters at 0.8125em of the label (owner decision C04).
+    const labelSize = parseFloat(getComputedStyle(label).fontSize);
+    const keyLadder = labelSize * 0.8125 * 1.6;
+    // The ink the caps should wear: the label's at 80 %, the fill that ink at 12 %.
+    const mix = document.createElement('span');
+    mix.style.color = `color-mix(in srgb, ${getComputedStyle(label).color} 80%, transparent)`;
+    button.append(mix);
+    const capInk = getComputedStyle(mix).color;
+    mix.style.color = `color-mix(in srgb, ${capInk} 12%, transparent)`;
+    const capFill = getComputedStyle(mix).color;
+    mix.remove();
     const stage = box(host.parentElement);
     const b = box(button);
     return {
@@ -166,6 +180,12 @@ try {
       labelColour: getComputedStyle(label).color,
       iconColour: getComputedStyle(icon).color,
       keyColour: getComputedStyle(keys[0]).color,
+      keyFill: getComputedStyle(keys[0]).backgroundColor,
+      keyEdge: getComputedStyle(keys[0]).borderTopWidth,
+      keyFace: [getComputedStyle(keys[0]).fontSize, getComputedStyle(keys[0]).fontWeight],
+      labelSize,
+      capInk,
+      capFill,
       variant,
       radius: getComputedStyle(button).borderTopLeftRadius,
       group: [box(group).width, box(group).height],
@@ -174,7 +194,10 @@ try {
   seen.geometry = geometry;
   seen.firstBox = firstBox;
   if (Math.abs(geometry.height - geometry.ladder) > 0.5) failures.push(`the trigger is ${geometry.height}px tall, the size 1 control height is ${geometry.ladder}px`);
-  if (geometry.keyHeights.some((height) => Math.abs(height - geometry.keyLadder) > 0.5)) failures.push(`the keys are ${geometry.keyHeights}px tall, not the text line of the rung below (${geometry.keyLadder}px)`);
+  if (geometry.keyHeights.some((height) => Math.abs(height - geometry.keyLadder) > 0.5)) failures.push(`the keys are ${geometry.keyHeights}px tall, not 1.6em of 0.8125em of the label (${geometry.keyLadder}px)`);
+  if (Math.abs(parseFloat(geometry.keyFace[0]) - geometry.labelSize * 0.8125) > 0.05 || geometry.keyFace[1] !== '500') failures.push(`the caps' letters are ${geometry.keyFace}, not 0.8125em of the ${geometry.labelSize}px label at weight 500`);
+  if (geometry.keyColour !== geometry.capInk || geometry.keyFill !== geometry.capFill) failures.push(`the caps wear ${geometry.keyColour} on ${geometry.keyFill}, not the label's ink at 80 % (${geometry.capInk}) on 12 % of it (${geometry.capFill})`);
+  if (geometry.keyEdge !== '0px') failures.push(`a cap has an edge of ${geometry.keyEdge}`);
   if (Math.abs(geometry.width - geometry.stageInner) > 0.5) failures.push(`the stretched trigger is ${geometry.width}px wide in a ${geometry.stageInner}px row`);
   if (geometry.centres.some((offset) => Math.abs(offset) > 0.5)) failures.push(`icon, label and keys are off the button's centre line: ${geometry.centres}`);
   if (Math.abs(geometry.textStartAfterIcon - geometry.labelPaddingStart) > 0.5) failures.push(`the label starts ${geometry.textStartAfterIcon}px after the icon, not at its own padding (${geometry.labelPaddingStart}px): it is not at the start`);
@@ -219,7 +242,7 @@ try {
   // the keys and the control follow them.
   const phone = await browser.newPage({viewport: {width: 375, height: 700}});
   await phone.goto(`http://127.0.0.1:${server.address().port}/page`);
-  await phone.waitForFunction(() => document.querySelector('#search .sf-button-shortcut kbd') && document.querySelector('#search .sf-icon'), null, {timeout: 20000})
+  await phone.waitForFunction(() => document.querySelector('#search .sf-button-shortcut kbd kbd') && document.querySelector('#search .sf-icon'), null, {timeout: 20000})
     .catch(() => failures.push('375: the search trigger never drew its keys'));
   await phone.evaluate(() => document.fonts.ready);
   const small = await phone.evaluate(() => {
@@ -228,16 +251,15 @@ try {
     probe.style.cssText = 'position:absolute;display:block;block-size:var(--sf-ui-1--control-height)';
     button.append(probe);
     const ladder = probe.getBoundingClientRect().height;
-    probe.style.blockSize = 'var(--sf-text-height-1\\/2)';
-    const keyLadder = probe.getBoundingClientRect().height;
     probe.remove();
+    const keyLadder = parseFloat(getComputedStyle(button.querySelector('.sf-button-text-container')).fontSize) * 0.8125 * 1.6;
     const b = button.getBoundingClientRect();
     const centre = (rect) => rect.top + rect.height / 2;
     return {
       height: b.height,
       ladder,
       keyLadder,
-      keyHeights: Array.from(button.querySelectorAll('.sf-button-shortcut > kbd')).map((key) => key.getBoundingClientRect().height),
+      keyHeights: Array.from(button.querySelectorAll('.sf-button-shortcut .sf-kbd--group > kbd')).map((key) => key.getBoundingClientRect().height),
       centres: [button.querySelector('.sf-icon'), button.querySelector('.sf-button-shortcut')].map((node) => Math.round((centre(node.getBoundingClientRect()) - centre(b)) * 100) / 100),
     };
   });
@@ -255,8 +277,9 @@ try {
       const r = node.getBoundingClientRect();
       return [r.left - origin.left, r.top - origin.top, r.width, r.height].map((n) => Math.round(n * 100) / 100);
     };
-    const group = button.querySelector('.sf-button-shortcut');
+    const group = button.querySelector('.sf-button-shortcut .sf-kbd--group');
     return {
+      joins: Array.from(group.querySelectorAll(':scope > .sf-kbd-join')).map((join) => [join.textContent, getComputedStyle(join).display]),
       button: [origin.left, origin.top, origin.width, origin.height].map((n) => Math.round(n * 100) / 100),
       group: box(group),
       keys: Array.from(group.querySelectorAll(':scope > kbd')).map(box),
@@ -279,13 +302,13 @@ try {
         Object.defineProperty(Navigator.prototype, 'userAgentData', {get: () => ({platform: platform[1], brands: [], mobile: false}), configurable: true});
       }, windows);
       await tab.goto(url('/live'));
-      await tab.waitForFunction(() => document.querySelector('sf-button .sf-button-shortcut kbd') && document.querySelector('sf-button .sf-icon')
+      await tab.waitForFunction(() => document.querySelector('sf-button .sf-button-shortcut kbd kbd') && document.querySelector('sf-button .sf-icon')
         && Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 20000})
         .catch(() => failures.push(`${width}: the live ${windows ? 'Windows' : 'Mac'} button never drew its keys with the kbd sheet`));
       await tab.evaluate(() => document.fonts.ready);
       await tab.waitForTimeout(200);
       const drawn = await geometryOf(tab);
-      drawn.hug = await tab.evaluate(() => Array.from(document.querySelectorAll('sf-button .sf-button-shortcut > kbd')).map((key) => {
+      drawn.hug = await tab.evaluate(() => Array.from(document.querySelectorAll('sf-button .sf-button-shortcut .sf-kbd--group > kbd')).map((key) => {
         const style = getComputedStyle(key);
         const range = document.createRange();
         range.selectNodeContents(key);
@@ -300,6 +323,9 @@ try {
     seen[`platforms${width}`] = {printed, mac, live};
     if (JSON.stringify(printed.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(mac.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(live.caps) !== JSON.stringify(['Ctrl', 'K'])) {
       failures.push(`${width}: the printed caps are ${printed.caps}, the live Mac caps ${mac.caps} and the live Windows caps ${live.caps}, expected ⌘ K, ⌘ K and Ctrl K`);
+    }
+    if (JSON.stringify(mac.joins) !== '[]' || JSON.stringify(live.joins) !== JSON.stringify([['+', 'none']])) {
+      failures.push(`${width}: the joins are ${JSON.stringify(mac.joins)} on a Mac and ${JSON.stringify(live.joins)} on Windows, expected none and one + that is not drawn`);
     }
     for (const part of ['button', 'group', 'keys', 'label']) {
       if (JSON.stringify(printed[part]) !== JSON.stringify(mac[part])) failures.push(`${width}: ${part} moved between the printed Mac snapshot and the live Mac button: ${JSON.stringify(printed[part])} -> ${JSON.stringify(mac[part])}`);

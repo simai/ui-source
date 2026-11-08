@@ -54,6 +54,8 @@ export function renderButtonTemplate(context) {
             : pressedLabel || text;
     // The shortcut's keys sit at the end; the label then takes the free room,
     // so a stretched button reads label ... keys and text-position places it.
+    // The keys are the kbd component's (soft caps inside a button); the
+    // wrapper only gives them the label's ink.
     const shortcutCaps = context.shortcutCaps || [];
     const fullText = (!leftIconContent && !rightIconContent) || shortcutCaps.length > 0;
     // Loading shows the spinner at the icon's size (simai/ui-source#10): in
@@ -102,7 +104,7 @@ export function renderButtonTemplate(context) {
                     class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.square ? 'sf-button-shortcut-key--square' : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
+            ${endContent}${shortcutCaps.length ? html`<span class="sf-button-shortcut pointer-event-none" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutCaps.map((cap, at) => html`${at && context.shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${cap.square ? 'sf-kbd--square' : nothing}>${cap.text}</kbd>`)}</kbd></span>` : ''}
 `;
 
     // href (1.4.0): a link with the button's look. The browser's own link

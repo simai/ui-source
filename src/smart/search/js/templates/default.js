@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {keyed} from 'lit/directives/keyed.js';
+import {shortcutView} from '../../../../component/kbd/js/shortcut';
 
 // The host: the page's trigger, in place. The host itself is display:
 // contents, so the trigger stands in the page as the page wrote it, before the
@@ -25,7 +26,8 @@ function renderRow(context, row) {
     trailing = html`<button class="sf-search-remove" type="button" tabindex="-1" aria-label=${row.removeLabel}
       @click=${(event) => { event.stopPropagation(); component.forgetRecent(row.text); }}>${glyph('close')}</button>`;
   } else if (row.shortcut) {
-    trailing = html`<kbd class="sf-search-shortcut">${row.shortcut}</kbd>`;
+    const {keys, join} = shortcutView(row.shortcut);
+    trailing = html`<kbd class="sf-kbd--group sf-search-shortcut">${keys.map((key, at) => html`${at && join ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${key.square ? 'sf-kbd--square' : nothing}>${key.text}</kbd>`)}</kbd>`;
   } else {
     trailing = glyph('arrow_forward', 'sf-search-go');
   }
@@ -122,9 +124,9 @@ export function renderSearchWindow(context) {
         </aside>
       </div>` : body}
       ${show.keys && view.rowCount ? html`<div class="sf-search-keys" aria-hidden="true">
-        <span class="sf-search-key"><kbd>↑</kbd><kbd>↓</kbd>${words.keySelect}</span>
-        <span class="sf-search-key"><kbd>↵</kbd>${words.keyOpen}</span>
-        <span class="sf-search-key"><kbd>esc</kbd>${filled ? words.keyClear : words.keyClose}</span>
+        <span class="sf-search-key"><kbd appearance="cap" class="sf-kbd--square">↑</kbd><kbd appearance="cap" class="sf-kbd--square">↓</kbd>${words.keySelect}</span>
+        <span class="sf-search-key"><kbd appearance="cap" class="sf-kbd--square">↵</kbd>${words.keyOpen}</span>
+        <span class="sf-search-key"><kbd appearance="cap">Esc</kbd>${filled ? words.keyClear : words.keyClose}</span>
       </div>` : nothing}
     </div>
     <div class="sr-only" role="status" aria-live="polite">${statusText}</div>

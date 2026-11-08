@@ -2,19 +2,21 @@
 // Usage: node this-file /absolute/path/to/output [--report]
 //
 // sf-button's joins and keys on the built bytes, over the Loader as a page
-// uses it (the kbd sheet arrives lazily), in the light and the dark theme:
+// uses it, in the light and the dark theme:
 //
 //   - joins: three sf-button segments (start, middle, end) side by side, every
 //     appearance at every size, and the mixed control the docs show (an
 //     outline segment beside link segments), draw one line where two segments
 //     meet -- the painted width at the join is the width of one edge
 //     (--sf-px), not two; sf-button-group (default) the same;
-//   - keys' ink: a shortcut's keys take the inverse of the button they sit on:
-//     on a filled (default) button the keys are drawn in the button's own
-//     on-colour family, elsewhere on the surface family. The key's text
-//     against its fill is at least 4.5:1, and the key's fill stands apart from
-//     the button it sits on (at least 1.25:1, or an edge that does), for
-//     every appearance x scheme (status error included) x theme;
+//   - keys' ink: a shortcut's keys are the kbd component's soft caps (owner
+//     decision 2026-11-07, docs review R030, rule C04, which supersedes the
+//     inverse caps of R009): the label's ink at 80 % on a fill of that ink at
+//     12 %, no edge, so they follow the button they sit on. The key's text
+//     against its fill is at least 3:1 (the ink family's measure: the keys are
+//     a quieter hint beside the label, which keeps its own contrast), and the
+//     fill shows on the button (above 1.05:1), for every appearance x scheme
+//     (status error included) x theme;
 //   - keys' widths: a key of one character -- a letter, ⇧, ⌘, ⌥, ↵ -- is a
 //     square of the key's height at every size; a key of several letters
 //     (Esc, Ctrl, Shift) hugs its text with the one key padding on each side.
@@ -167,7 +169,7 @@ const MEASURE = ({joinIds, keyIds, widthIds}) => {
   const keys = {};
   for (const id of keyIds) {
     const button = document.querySelector(`#${id} button.sf-button`);
-    const key = button.querySelector('.sf-button-shortcut > kbd');
+    const key = button.querySelector('.sf-button-shortcut .sf-kbd--group > kbd');
     const label = button.querySelector('.sf-button-text-container');
     const ks = getComputedStyle(key);
     const buttonFill = backdrop(button);
@@ -182,7 +184,7 @@ const MEASURE = ({joinIds, keyIds, widthIds}) => {
 
   const widths = {};
   for (const id of widthIds) {
-    widths[id] = Array.from(document.querySelectorAll(`#${id} .sf-button-shortcut > kbd`)).map((key) => {
+    widths[id] = Array.from(document.querySelectorAll(`#${id} .sf-button-shortcut .sf-kbd--group > kbd`)).map((key) => {
       const r = key.getBoundingClientRect();
       const s = getComputedStyle(key);
       const range = document.createRange();
@@ -208,7 +210,7 @@ try {
       tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
       await tab.goto(`http://127.0.0.1:${server.address().port}/${theme}`);
       await tab.waitForFunction(() => customElements.get('sf-button') && customElements.get('sf-button-group')
-        && document.querySelectorAll('.sf-button-shortcut > kbd').length > 0
+        && document.querySelectorAll('.sf-button-shortcut .sf-kbd--group > kbd').length > 0
         && document.querySelectorAll('.row button.sf-button').length > 0
         && Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 30000})
         .catch(() => failures.push(`${theme}: the page never drew its buttons with the kbd sheet`));
@@ -237,8 +239,8 @@ try {
     }
     for (const row of keyRows) {
       const key = seen.keys[row.id];
-      if (key.text < 4.5) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
-      if (key.fillAgainstButton < 1.25 && key.edgeAgainstButton < 1.25) failures.push(`${theme} ${row.id}: the key does not stand apart from the button (fill ${key.fillAgainstButton}:1, edge ${key.edgeAgainstButton}:1)`);
+      if (key.text < 3) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
+      if (key.fillAgainstButton <= 1.05) failures.push(`${theme} ${row.id}: the key's fill does not show on the button (${key.fillAgainstButton}:1)`);
     }
     for (const row of widthRows) {
       for (const key of seen.widths[row.id]) {

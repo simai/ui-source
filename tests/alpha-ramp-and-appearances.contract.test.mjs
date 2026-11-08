@@ -266,14 +266,17 @@ test('the appearances are part of the public API, and documented', () => {
 
 test('every size dresses the new appearances too', () => {
   const buttons = read('src/component/buttons/scss/_css__buttons.scss');
+  // The label's size rules size the shortcut's keys too (R030, rule C04):
+  // they name the label and the shortcut wrapper in one :is().
+  const label = ':is(.sf-button-text-container, .sf-button-shortcut)';
   for (const size of ['1', '2', '3', '1\\/2', '1\\/3']) {
     assert.ok(
-      buttons.includes(`.sf-button.sf-button--size-${size}.sf-button--surface .sf-button-text-container`),
+      buttons.includes(`.sf-button.sf-button--size-${size}.sf-button--surface ${label}`),
       `size ${size} would otherwise leave surface text unsized`,
     );
     // Ghost now reads as link, so it is sized wherever link is.
     assert.ok(
-      buttons.includes(`.sf-button.sf-button--size-${size}:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container`),
+      buttons.includes(`.sf-button.sf-button--size-${size}:is(.sf-button--link, .sf-button--ghost).sf-button--primary ${label}`),
       `size ${size} would otherwise leave ghost text unsized`,
     );
   }

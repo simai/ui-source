@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -283,7 +283,7 @@
       "shortcut": {
         "type": "string",
         "default": "",
-        "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
+        "description": "A key combination drawn at the end of the button as the kbd component's soft caps in the label's ink: words joined by +, e.g. mod+k (⌘K on a Mac, Ctrl K elsewhere), shift+mod+p (⇧⌘P, Ctrl Shift P), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. The only input: a page never styles the keys. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
       },
       "shortcut-listen": {
         "type": "boolean",
@@ -606,7 +606,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "2e7ccc865cdd9cad471e2fbe5bdd2b9fb915edf8e0e8fbe8e820e14dcd4031dc"
+        "sha256": "77c9fe21ba097a5417331439507e5dd7ae661d955ace311c666dab945f99def3"
       }
     ],
     "generated_runtime": [
