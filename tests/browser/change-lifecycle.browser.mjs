@@ -80,25 +80,27 @@ try {
   // Every legacy name the button still answers to is noted, and a legacy
   // status still paints: danger and critical drew a primary button, and
   // icon-left, icon-right and tightness worked without a note (documentation
-  // trial 6, 2026-10-18).
+  // trial 6, 2026-10-18). Since decision C13 (actions block, 2026-11-08) a
+  // control says danger: error and critical read as danger and are noted so;
+  // the drawn control still carries the error class beside the danger one.
   {
     const page = await browser.newPage();
     await page.goto('about:blank');
     await page.addScriptTag({path: join(out, 'core', 'core', 'js', 'smart-base.js')});
     await page.addScriptTag({path: join(smart, 'button', 'js', 'button.js')});
     const seen = await page.evaluate(async () => {
-      document.body.innerHTML = '<sf-button id="d" status="danger" text="A"></sf-button><sf-button id="c" status="critical" text="B"></sf-button>'
+      document.body.innerHTML = '<sf-button id="d" status="error" text="A"></sf-button><sf-button id="c" status="critical" text="B"></sf-button>'
         + '<sf-button icon-left="add" icon-right="close" tightness="low" text="C"></sf-button>';
       await new Promise((settle) => setTimeout(settle, 200));
       return {list: globalThis.SF?.deprecations?.list?.() ?? [], danger: document.querySelector('#d .sf-button')?.className || '', critical: document.querySelector('#c .sf-button')?.className || ''};
     });
     await page.close();
-    for (const [kind, from, to] of [['value', 'danger', 'error'], ['value', 'critical', 'error'], ['attribute', 'icon-left', 'icon-start'], ['attribute', 'icon-right', 'icon-end'], ['attribute', 'tightness', 'spacing']]) {
+    for (const [kind, from, to] of [['value', 'error', 'danger'], ['value', 'critical', 'danger'], ['attribute', 'icon-left', 'icon-start'], ['attribute', 'icon-right', 'icon-end'], ['attribute', 'tightness', 'spacing']]) {
       // A renamed attribute of a component built from its component.json is noted
       // by the dated aliases as a setting (standard 1.3.8 §16.20).
       if (!seen.list.some((entry) => entry.component === 'sf-button' && (entry.kind === kind || (kind === 'attribute' && entry.kind === 'setting')) && entry.from === from && entry.to === to)) failures.push(`sf-button ${from} is not noted as ${to} (${JSON.stringify(seen.list)})`);
     }
-    if (!seen.danger.includes('sf-button--error') || !seen.critical.includes('sf-button--error')) failures.push(`sf-button status danger/critical does not paint error (${seen.danger} / ${seen.critical})`);
+    if (!seen.danger.includes('sf-button--error') || !seen.critical.includes('sf-button--error')) failures.push(`sf-button status error/critical does not paint error (${seen.danger} / ${seen.critical})`);
   }
 } finally {
   await browser.close();

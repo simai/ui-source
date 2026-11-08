@@ -15,7 +15,11 @@ const cases = [
   {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'tonal', canonical: 'surface',
    css: ['core/core/css/core.css', 'component/component/buttons/css/buttons.css'],
    js: 'smart/smart/button/js/button.js'},
-  {tag: 'sf-button-icon', root: '.sf-icon-button', prefix: 'sf-icon-button--', legacy: 'ghost', canonical: 'surface',
+  // sf-button-icon's looks are four since rule C15 (actions block, 2026-11-08):
+  // surface is drawn as tonal and ghost draws the link class, so the axis is
+  // checked with two looks that keep their own class.
+  {tag: 'sf-button-icon', root: '.sf-icon-button', prefix: 'sf-icon-button--', legacy: 'outline', canonical: 'tonal',
+   changeFrom: 'outline', changeTo: 'tonal',
    css: ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css'],
    js: 'smart/smart/button-icon/js/button-icon.js'},
 ];
@@ -107,20 +111,20 @@ try {
     }
 
     // A change to the legacy attribute after the element is live still re-renders.
-    const afterChange = await page.evaluate(async ({tag, root}) => {
+    const afterChange = await page.evaluate(async ({tag, root, changeFrom, changeTo}) => {
       const element = document.createElement(tag);
       element.setAttribute('size', '1');
-      element.setAttribute('type', 'ghost');
+      element.setAttribute('type', changeFrom);
       document.body.append(element);
       await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
-      element.setAttribute('type', 'surface');
+      element.setAttribute('type', changeTo);
       await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
       const rendered = element.querySelector(root) || element.shadowRoot?.querySelector(root);
       const list = rendered ? [...rendered.classList] : [];
       element.remove();
       return list;
-    }, {tag: subject.tag, root: subject.root});
-    if (!afterChange.includes(`${subject.prefix}surface`)) {
+    }, {tag: subject.tag, root: subject.root, changeFrom: subject.changeFrom ?? 'ghost', changeTo: subject.changeTo ?? 'surface'});
+    if (!afterChange.includes(`${subject.prefix}${subject.changeTo ?? 'surface'}`)) {
       failures.push({tag: subject.tag, classes: afterChange, expected: 'a change to the legacy attribute re-renders'});
     }
 

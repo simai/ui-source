@@ -106,7 +106,7 @@
           "covers": "settings.languages, look inline, accessibility radiogroup, settings.label",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#two'); const group = el.querySelector(':scope > .sf-language-parts > sf-segmented'); const radios = [...el.querySelectorAll('button[role=\"radio\"]')]; return el.getAttribute('data-look') === 'inline' && group.getAttribute('appearance') === 'segmented' && el.querySelector('[role=\"radiogroup\"]').getAttribute('aria-label') === 'Язык' && radios.length === 2 && radios[0].textContent.trim() === 'Русский' && radios[0].lang === 'ru' && radios[1].textContent.trim() === 'English' && radios[1].lang === 'en' && radios[0].getAttribute('aria-checked') === 'true' && el.value === 'ru'; })()"
+              "check": "(() => { const el = document.querySelector('#two'); const group = el.querySelector(':scope > .sf-language-parts > sf-segmented'); const radios = [...el.querySelectorAll('button[role=\"radio\"]')]; return el.getAttribute('data-look') === 'inline' && group.getAttribute('appearance') === 'track' && el.querySelector('[role=\"radiogroup\"]').getAttribute('aria-label') === 'Язык' && radios.length === 2 && radios[0].textContent.trim() === 'Русский' && radios[0].lang === 'ru' && radios[1].textContent.trim() === 'English' && radios[1].lang === 'en' && radios[0].getAttribute('aria-checked') === 'true' && el.value === 'ru'; })()"
             }
           ]
         },

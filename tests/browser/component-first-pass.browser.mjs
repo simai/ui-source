@@ -68,10 +68,13 @@ try {
   if (crumbs.label !== 'Показать скрытые крошки') failures.push(`breadcrumbs «…» named ${JSON.stringify(crumbs.label)}`);
   if (crumbs.visible < 6 || crumbs.ellipsis) failures.push(`breadcrumbs did not stay expanded: ${JSON.stringify(crumbs)}`);
   // A selected segment at scheme=secondary: appearance default + secondary had
-  // no styles -- no fill, the browser's 13.33px text.
+  // no styles -- no fill, the browser's 13.33px text. Since sf-segmented 1.4.0
+  // (owner decision D11c) the track is the default look and its fill is one
+  // plate that slides under the selected segment; the segments draw none.
   const group = await tab.evaluate(() => {
     const buttons = [...document.querySelectorAll('#group .sf-button')];
-    const style = (button) => { const text = button.querySelector('.sf-button-text-container') || button; return {bg: getComputedStyle(button).backgroundColor, size: getComputedStyle(text).fontSize}; };
+    const plate = document.querySelector('#group .sf-button-group-plate');
+    const style = (button) => { const text = button.querySelector('.sf-button-text-container') || button; return {bg: getComputedStyle(button.getAttribute('aria-checked') === 'true' && plate ? plate : button).backgroundColor, size: getComputedStyle(text).fontSize}; };
     return buttons.map(style);
   });
   if (group.length !== 3) failures.push(`button group drew ${group.length} segments`);

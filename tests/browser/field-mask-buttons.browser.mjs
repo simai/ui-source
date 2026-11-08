@@ -221,7 +221,7 @@ try {
       const ref = (id) => page.evaluate((id) => document.querySelector(`#${id} .sf-button`).getBoundingClientRect().height, id);
 
       const kind = await group('kind');
-      check(at('a choice as buttons is one segmented group, a button per option'), kind.tag && kind.appearance === 'segmented'
+      check(at('a choice as buttons is one segmented group, a button per option'), kind.tag && kind.appearance === 'track'
         && JSON.stringify(kind.labels) === JSON.stringify(['Физлицо', 'Юрлицо', 'Другое']) && kind.role === 'radiogroup' && kind.named === 'Вид', kind);
       check(at('the stored option is chosen; a disabled option is disabled'), JSON.stringify(kind.checked) === JSON.stringify(['true', 'false', 'false'])
         && JSON.stringify(kind.disabled) === JSON.stringify([false, false, true]), kind);
@@ -229,27 +229,27 @@ try {
       const tier = await group('tier');
       check(at('field.size sizes the group on the ladder'), tier.size === '2' && Math.abs(tier.height - await ref('refInput')) < 0.5, tier);
 
-      await page.click('#kind button:nth-child(2)');
+      await page.click('#kind .sf-button-group > button:nth-of-type(2)');
       await settle(page);
       const chose = await group('kind');
       check(at('choosing writes the option\'s value'), JSON.stringify(chose.writes) === JSON.stringify([['kind', 'company']])
         && chose.checked[1] === 'true', chose);
-      await page.click('#kind button:nth-child(2)');
+      await page.click('#kind .sf-button-group > button:nth-of-type(2)');
       await settle(page);
       const again = await group('kind');
       check(at('pressing the chosen one again clears it'), JSON.stringify(again.writes) === JSON.stringify([['kind', null]])
         && again.checked.every((one) => one === 'false'), again);
-      await page.click('#kind button:nth-child(1)');
+      await page.click('#kind .sf-button-group > button:nth-of-type(1)');
       await page.keyboard.press('ArrowRight');
       await settle(page);
       const arrows = await group('kind');
       check(at('the arrows choose'), JSON.stringify(arrows.writes) === JSON.stringify([['kind', 'person'], ['kind', 'company']]), arrows);
 
-      await page.click('#tier button:nth-child(2)');
+      await page.click('#tier .sf-button-group > button:nth-of-type(2)');
       await settle(page);
       const tierChose = await group('tier');
       check(at('a numeric option writes its own number'), JSON.stringify(tierChose.writes) === JSON.stringify([['tier', 2]]), tierChose);
-      await page.click('#tier button:nth-child(2)');
+      await page.click('#tier .sf-button-group > button:nth-of-type(2)');
       await settle(page);
       const tierStays = await group('tier');
       check(at('a required choice stays chosen'), tierStays.writes.length === 0 && tierStays.checked[1] === 'true', tierStays);
