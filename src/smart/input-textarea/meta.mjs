@@ -189,6 +189,11 @@ const sfInputTextareaMeta = {
       "valueType": "string",
       "default": ""
     },
+    "aria-label": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": ""
+    },
     "spellcheck": {
       "kind": "boolean",
       "values": [
