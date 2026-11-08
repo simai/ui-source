@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-timeline",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Timeline",
   "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
   "kind": "smart",
