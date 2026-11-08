@@ -43,7 +43,7 @@ const sfButtonMeta = {
         "surface"
       ],
       "default": "default",
-      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01)."
+      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border."
     },
     "scheme": {
       "kind": "enum",
@@ -208,6 +208,18 @@ const sfButtonMeta = {
       "default": "",
       "description": "An address: the button draws a link (an <a href>) with the button's look; role link, Enter and the browser's link keys follow it. A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, expanded and pressed do not apply; disabled or loading, the link has no href and says aria-disabled."
     },
+    "target": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Where a link (href) opens, as an <a target>: _blank opens a new tab. Not written on a button."
+    },
+    "rel": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The link's relation, as an <a rel>. A link that opens in a new tab (target _blank) with no rel says noopener noreferrer, so the new page cannot reach this one. Not written on a button."
+    },
     "shortcut": {
       "kind": "custom",
       "valueType": "string",
@@ -239,7 +251,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.buttons 1.5.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "text-pressed": {
       "kind": "custom",

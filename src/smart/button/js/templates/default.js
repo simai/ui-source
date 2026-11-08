@@ -115,6 +115,8 @@ export function renderButtonTemplate(context) {
         return html`
         <a
                 href=${inactive ? nothing : context.href}
+                target=${context.linkTarget || nothing}
+                rel=${context.linkRel || nothing}
                 class=${rootClasses.join(' ')}
                 style=${context.rootStyle || nothing}
                 role=${inactive ? 'link' : nothing}

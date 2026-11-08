@@ -66,7 +66,8 @@ const sfInputMeta = {
         "password",
         "search",
         "tel",
-        "url"
+        "url",
+        "number"
       ],
       "default": "text"
     },
@@ -104,6 +105,24 @@ const sfInputMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": ""
+    },
+    "min": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The smallest number a number field (input-type number) takes, as the native input's min; below it the field is invalid (range underflow). Not written on other types."
+    },
+    "max": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The largest number a number field takes, as the native input's max; above it the field is invalid (range overflow). Not written on other types."
+    },
+    "step": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The step of a number field, as the native input's step: 1 when empty, any for any number; a value off the step is invalid (step mismatch). Not written on other types."
     },
     "hint": {
       "kind": "custom",

@@ -16,6 +16,9 @@ export function renderInputTemplate(context) {
     minlength,
     maxlength,
     pattern,
+    min,
+    max,
+    step,
     hint,
     value,
     defaultValue,
@@ -39,6 +42,12 @@ export function renderInputTemplate(context) {
     ariaLabel,
   } = context;
   const maskLazyValue = maskLazy === '' ? '' : String(maskLazy);
+  // A number field (1.5.0) takes the native range and step; other types do
+  // not carry them.
+  const isNumber = inputType === 'number';
+  const numberMin = isNumber && min !== '' && min != null ? min : nothing;
+  const numberMax = isNumber && max !== '' && max != null ? max : nothing;
+  const numberStep = isNumber && step !== '' && step != null ? step : nothing;
   // While the field holds nothing of its own, the inherited value is what the
   // empty field shows, in the placeholder's ink -- never as its value.
   const shownPlaceholder = context.inheritedValue || placeholder;
@@ -157,6 +166,9 @@ export function renderInputTemplate(context) {
                 minlength=${minlength === '' ? nothing : minlength}
                 maxlength=${maxlength === '' ? nothing : maxlength}
                 pattern=${pattern || nothing}
+                min=${numberMin}
+                max=${numberMax}
+                step=${numberStep}
                 placeholder=${shownPlaceholder}
                 .value=${value}
                 .defaultValue=${defaultValue}
@@ -184,6 +196,9 @@ export function renderInputTemplate(context) {
                 minlength=${minlength === '' ? nothing : minlength}
                 maxlength=${maxlength === '' ? nothing : maxlength}
                 pattern=${pattern || nothing}
+                min=${numberMin}
+                max=${numberMax}
+                step=${numberStep}
                 placeholder=${shownPlaceholder}
                 .defaultValue=${inputValue}
                 .value=${value}

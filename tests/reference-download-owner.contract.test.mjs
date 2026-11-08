@@ -42,7 +42,12 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(css, /border: var\(--sf-px\)/);
   assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
   assert.match(css, /\.sf-download-file:focus-visible/);
-  assert.match(css, /overflow-wrap: anywhere/);
+  // One line, cut with an ellipsis, never broken inside a word (rule C01:
+  // the card keeps the button's height of its size).
+  assert.match(css, /text-overflow: ellipsis/);
+  assert.doesNotMatch(css, /overflow-wrap: anywhere|word-break: break-all/);
+  assert.match(css, /--sf-download-file--padding-block: var\(--sf-ui-1--space-y-tightness-default\)/);
+  assert.match(css, /--sf-download-file--icon-size: var\(--sf-text-height-1\)/);
   assert.match(template, /href && !disabled \? 'a' : 'button'/);
   assert.match(template, /aria-hidden="true"/);
   assert.match(rule, /name: 'icons'/);

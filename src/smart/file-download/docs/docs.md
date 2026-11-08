@@ -11,15 +11,15 @@ destination.
 
 ## Events
 
-- `sf-download-file-download` — a person pressed the file: the request to
+- `sf-file-download-download` — a person pressed the file: the request to
   download it (standard 1.3.8 §8, vocabulary 1.1.5 §5.1). `detail` is
   `{href, fileName, download}`. It is **cancelable**: `preventDefault()` stops
   the browser's download or navigation, so a page can take the download over.
-  The old name `sf-download-file:click` follows it with the same detail and
-  the same cancel until 2026-12-01 (`aliases.json`).
+  The former names follow it with the same detail and the same cancel until
+  their dates (`aliases.json`); listen to this one.
 
 ```js
-file.addEventListener('sf-download-file-download', (event) => {
+file.addEventListener('sf-file-download-download', (event) => {
   event.preventDefault();
   startDownload(event.detail.href, event.detail.fileName);
 });
@@ -27,7 +27,9 @@ file.addEventListener('sf-download-file-download', (event) => {
 
 ## Attributes
 
-- `size="1/3|1/2|1|2|3"`
+- `size="1/3|1/2|1|2|3"` — as tall as an `sf-button` of the same size (one
+  height per size, rule C01); the file name is one line and ends in an
+  ellipsis when it does not fit, never broken inside a word
 - `file-name`
 - `file-size`
 - `icon`

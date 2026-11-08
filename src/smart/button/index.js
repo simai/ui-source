@@ -43,6 +43,8 @@ const COMPONENT_ATTRIBUTES = new Set([
   "name",
   "value",
   "href",
+  "target",
+  "rel",
   "expanded",
   "pressed",
   "text-pressed",
@@ -62,6 +64,14 @@ const SAFE_HREF = /^(?:[^:/?#]*(?:[/?#]|$)|https?:|mailto:|tel:)/iu;
 function linkAddress(value) {
   const href = String(value || "").trim();
   return href && SAFE_HREF.test(href) ? href : "";
+}
+
+// A link that opens a new tab says noopener noreferrer unless the page wrote
+// its own rel (1.7.0): the opened page cannot reach window.opener.
+function linkRelation(target, rel) {
+  const own = String(rel || "").trim();
+  if (own) return own;
+  return String(target || "").trim().toLowerCase() === "_blank" ? "noopener noreferrer" : "";
 }
 
 function applyButtonAttributes(host, button) {
@@ -207,6 +217,10 @@ class SfButton extends ButtonElement {
       submitName: this.getAttribute("name") || "",
       submitValue: this.getAttribute("value") ?? "",
       href: linkAddress(this.getAttribute("href")),
+      // Where the link opens and its relation (1.7.0, Larena after sf-wizard):
+      // a new tab with no rel is noopener noreferrer.
+      linkTarget: this.getAttribute("target") || "",
+      linkRel: linkRelation(this.getAttribute("target"), this.getAttribute("rel")),
       radius: this.radius,
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
@@ -338,6 +352,8 @@ class SfButton extends ButtonElement {
       name: this.getAttribute("name") || "",
       value: this.getAttribute("value") || "",
       href: this.getAttribute("href") || "",
+      target: this.getAttribute("target") || "",
+      rel: this.getAttribute("rel") || "",
       shortcut: this.shortcut,
       shortcutListen: this.shortcutListen,
       ariaLabel: this.getAttribute("aria-label") || "",
