@@ -91,11 +91,8 @@
       "rule_name": "cl-chat-threads",
       "folder": "chat-threads",
       "requires": [
-        "smart.avatar",
-        "smart.badge",
         "smart.icon",
-        "smart.menu-context",
-        "utility.sr-only"
+        "smart.list"
       ]
     },
     {
