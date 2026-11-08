@@ -123,7 +123,10 @@ const scale = await SF.runtimeModule('chart/scale', 1);
   never in a module's scope: Core, the runtime script and each package's core
   carry their own copy of `core/js/package-modules.js`, and all read and write
   the one registry. `shared-runtime.v1.json` `package_modules` says what a
-  builder may count on (`tests/package-runtime-modules.contract.test.mjs`).
+  builder may count on (`tests/package-runtime-modules.contract.test.mjs`;
+  in a browser, with the released `core.js` and `smart-base.js` and two
+  package bundles each carrying its own copy,
+  `tests/browser/package-runtime-modules.browser.mjs <distr>`).
 
 ## The runtime ABI
 
