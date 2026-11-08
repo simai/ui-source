@@ -2,8 +2,8 @@
   "schema_version": "sf.content-spacing.docs.v1",
   "source": {
     "contract_id": "simai.vertical-sizing",
-    "contract_version": "1.4.0",
-    "contract_sha256": "03bedf71a6b50902771f4b384f2ec87bb4849b2c3f0e0ae32d5605acc42f7faf"
+    "contract_version": "1.5.0",
+    "contract_sha256": "9d8fb9a4ffb9ac8581e6e9e448babec1f752b139fea730e40968022907bed28c"
   },
   "ownership": {
     "token_values": "simai/ui-source",
