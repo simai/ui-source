@@ -288,7 +288,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.7.0"
+    "version": "1.8.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -623,7 +623,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.7.0"
+    "version": "1.7.1"
   },
   "sf-icon": {
     "inputs": {
@@ -885,7 +885,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.5.0"
+    "version": "1.5.1"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -898,6 +898,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "filled",
             "flush"
           ],
+          "type": "string"
+        },
+        "aria-label": {
+          "default": "",
+          "type": "string"
+        },
+        "aria-labelledby": {
+          "default": "",
           "type": "string"
         },
         "auto-grow": {
@@ -1030,7 +1038,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.7.0"
+    "version": "1.7.2"
   },
   "sf-switch": {
     "inputs": {
@@ -1094,6 +1102,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.3.0"
+    "version": "1.3.2"
   }
 });
