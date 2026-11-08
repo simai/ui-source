@@ -195,6 +195,15 @@ class SfTooltipController {
   }
 
   open() {
+    // The surface was replaced or taken out after the link was made (a page
+    // that redrew the tooltip with new text): link the trigger again, so the
+    // new surface is the one shown and not the cached old one.
+    if (this.surface && !this.surface.isConnected) {
+      const trigger = this.trigger;
+      this.destroy();
+      relinkTrigger(trigger)?.open();
+      return;
+    }
     if (!this.surface || !this.surface.hidden) return;
     this.surface.hidden = false;
     this.surface.classList.add('active');
@@ -285,6 +294,32 @@ class SfTooltipController {
   }
 }
 
+// A trigger linked again: its old link (listeners, aria-describedby, the
+// cached surface) undone, and a new one made if it still names a surface.
+function relinkTrigger(trigger) {
+  tooltipInstances.get(trigger)?.destroy();
+  if (!trigger.isConnected || !trigger.hasAttribute('data-tooltip')) return null;
+  new SfTooltipController(trigger).init();
+  return tooltipInstances.get(trigger) || null;
+}
+
+// data-tooltip removed: the link goes -- no tooltip on hover or focus, the
+// listeners off, aria-describedby back to the page's own. Changed to name
+// another surface: the trigger is linked to that one, so the new text shows.
+// The controller writes the surface's id into data-tooltip itself; that
+// write, which names the surface already linked, changes nothing.
+function syncTooltipAttribute(trigger) {
+  if (!(trigger instanceof HTMLElement)) return;
+  const instance = tooltipInstances.get(trigger);
+  if (!trigger.hasAttribute('data-tooltip')) {
+    instance?.destroy();
+    return;
+  }
+  const reference = trigger.getAttribute('data-tooltip').trim();
+  if (instance && instance.surface?.isConnected && reference === instance.surface.id) return;
+  relinkTrigger(trigger);
+}
+
 function initTooltipTriggers(root = document) {
   if (!root?.querySelectorAll) return;
 
@@ -311,6 +346,10 @@ if (typeof MutationObserver !== 'undefined') {
     let retryDocument = false;
 
     mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes') {
+        syncTooltipAttribute(mutation.target);
+        return;
+      }
       mutation.addedNodes.forEach((node) => {
         if (!(node instanceof HTMLElement)) return;
         initTooltipTriggers(node);
@@ -327,6 +366,8 @@ if (typeof MutationObserver !== 'undefined') {
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
+    attributes: true,
+    attributeFilter: ['data-tooltip'],
   });
 }
 

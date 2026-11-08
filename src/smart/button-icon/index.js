@@ -248,9 +248,17 @@ class SfIconButton extends IconButtonElement {
     }
 
     if (changedAttributes.includes('icon')) {
-      const iconNode = button.querySelector('.sf-icon');
-      if (iconNode) {
-        iconNode.textContent = this.icon;
+      // The glyph is sf-icon's: its icon setting is changed, and it draws the
+      // name and asks the Loader for it. Writing the glyph's text here took
+      // lit's markers out of sf-icon's drawing and left its icon attribute on
+      // the old name; moved afterwards (sf-drawer taking its column under
+      // body), the icon drew again and threw "Cannot set properties of null
+      // (setting 'data')".
+      const iconElement = button.querySelector(':scope > sf-icon');
+      if (iconElement) {
+        iconElement.setAttribute('icon', this.icon);
+      } else if (!this.loading) {
+        return false;
       }
     }
 
