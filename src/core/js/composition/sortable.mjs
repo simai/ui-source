@@ -15,6 +15,18 @@ const ITEM = '[data-sf-sortable-item]';
 const HANDLE = '[data-sf-sortable-handle]';
 const INTERACTIVE = 'a[href],button,input,select,textarea,summary,[contenteditable]:not([contenteditable="false"])';
 const NAME = /^[a-z][a-z0-9-]{0,31}$/u;
+// The id of a list's instructions, which its items name in aria-describedby:
+// a page-wide count, kept on a shared global because every bundle that
+// carries this module has its own module scope. It used to be random base 36,
+// and one id in about twenty-five held "h1".."h6", which the headers utility's
+// rule (/(h1|h2|h3|h4|h5|h6)/, tested on every element's attributes) reads as a
+// heading: the Loader asked for utility/headers on some loads and not on
+// others, and the first-paint sheet lists moved from run to run.
+const HELP_IDS = Symbol.for('simai.sf.sortable.help-ids');
+function nextHelpId() {
+  globalThis[HELP_IDS] = (globalThis[HELP_IDS] ?? 0) + 1;
+  return `sf-sortable-help-${globalThis[HELP_IDS]}`;
+}
 const DRAG_THRESHOLD = 4;
 const EDGE = 32;
 
@@ -333,7 +345,7 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         this.live.setAttribute('aria-live', 'polite');
         this.instructions = globalThis.document.createElement('div');
         this.instructions.className = 'sf-sortable-live';
-        this.instructions.id = `sf-sortable-help-${Math.random().toString(36).slice(2, 10)}`;
+        this.instructions.id = nextHelpId();
       }
       this.instructions.textContent = messages().instructions;
       this.append(this.live, this.instructions);
