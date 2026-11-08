@@ -51,6 +51,7 @@ const html = (theme) => `<!doctype html><html class="theme-${theme}" lang="en"><
   + '</body></html>';
 
 const failures = [];
+const missing = new Set();
 const seen = {};
 const expect = (name, got, wanted) => {
   if (JSON.stringify(got) !== JSON.stringify(wanted)) failures.push({case: name, got, expected: wanted});
@@ -59,14 +60,19 @@ const browser = await chromium.launch();
 try {
   for (const theme of ['light', 'dark']) {
     const page = await browser.newPage({viewport: {width: 1000, height: 800}});
+    page.on('pageerror', (error) => failures.push({case: `${theme}: page error`, got: String(error)}));
+    page.on('console', (message) => { if (message.type() === 'error') failures.push({case: `${theme}: console error`, got: message.text()}); });
     const origin = 'http://probe.test';
     await page.route(`${origin}/**`, (route) => {
       const url = new URL(route.request().url());
       if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: html(theme)});
-      const path = join(out, decodeURIComponent(url.pathname));
+      // The Loader asks for the parts' code and sheets under the core's base
+      // (/core/component/…, /core/smart/…): served from the build's folders.
+      const wanted = decodeURIComponent(url.pathname).replace(/^\/core\/(component|utility|smart|rule)\//u, '/$1/$1/');
+      const path = join(out, wanted);
       return existsSync(path)
         ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)})
-        : route.fulfill({status: 404, body: ''});
+        : (missing.add(url.pathname), route.fulfill({status: 404, body: ''}));
     });
     await page.goto(`${origin}/`);
     await page.waitForFunction(() => customElements.get('sf-modal') && customElements.get('sf-button') && customElements.get('sf-drawer'), null, {timeout: 10000});
@@ -147,5 +153,6 @@ try {
 }
 
 console.log(JSON.stringify(seen));
+console.log(`not served: ${[...missing].sort().join(" ")}`);
 if (failures.length) { console.error(JSON.stringify(failures, null, 2)); process.exit(1); }
 console.log('MODAL_ASSEMBLY_VARIABLES_OK');

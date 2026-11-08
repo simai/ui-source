@@ -17,7 +17,8 @@
 //   - mode inline and auto (two languages) at each size: the box is one
 //     control high before and after, so the row below never moves;
 //   - the frames see the element before its code (undefined, nothing drawn).
-// Light and dark.
+// Light and dark, at a desktop and a phone width (the ladder has a mobile
+// step); console errors fail the run.
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
@@ -121,10 +122,11 @@ const report = {scriptDelayMs: SCRIPT_DELAY};
 const near = (a, b, tolerance = 0.6) => a !== null && b !== null && Math.abs(a - b) <= tolerance;
 const browser = await chromium.launch();
 try {
-  for (const theme of ['light', 'dark']) {
-    const tab = await browser.newPage({viewport: {width: 1000, height: 1400}});
+  for (const [theme, width] of [['light', 1000], ['dark', 1000], ['light', 390], ['dark', 390]]) {
+    const tab = await browser.newPage({viewport: {width, height: 1400}});
     const errors = [];
     tab.on('pageerror', (error) => errors.push(String(error)));
+    tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
     await tab.goto(`${origin}/${theme}`);
     await tab.waitForFunction(() => [...document.querySelectorAll('sf-language')].every((host) => host.getAttribute('data-look')), null, {timeout: 15000}).catch(() => {});
     await tab.waitForTimeout(600);
@@ -132,31 +134,31 @@ try {
     const last = frames.at(-1);
     const early = frames.filter((frame) => !frame.header.defined);
     const summary = {frames: frames.length, earlyFrames: early.length, header: {first: frames[0]?.header, last: last?.header}, cases: {}};
-    if (!early.length) failures.push(`${theme}: no frame saw sf-language before its code; raise SCRIPT_DELAY`);
+    if (!early.length) failures.push(`${theme} ${width}: no frame saw sf-language before its code; raise SCRIPT_DELAY`);
     // A frame taken before the parser reached a node records nothing for it.
     const headerXs = [...new Set(frames.map((frame) => frame.header.x).filter((x) => x !== null))];
-    if (headerXs.length !== 1) failures.push(`${theme}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
+    if (headerXs.length !== 1) failures.push(`${theme} ${width}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
     for (const [name, end] of Object.entries(last?.cases ?? {})) {
       const [mode] = name.split(' ');
       const before = frames.map((frame) => frame.cases[name]).filter((one) => one && !one.look);
       const first = before[0];
       summary.cases[name] = {before: first ? {box: first.box, rowHeight: first.rowHeight} : null, after: {box: end.box, drawn: end.drawn, look: end.look, rowHeight: end.rowHeight}};
-      if (!first) { failures.push(`${theme} ${name}: no frame before it drew`); continue; }
-      if (!end.drawn) { failures.push(`${theme} ${name}: nothing drawn`); continue; }
+      if (!first) { failures.push(`${theme} ${width} ${name}: no frame before it drew`); continue; }
+      if (!end.drawn) { failures.push(`${theme} ${width} ${name}: nothing drawn`); continue; }
       if (mode === 'menu' || mode === 'search') {
-        if (!near(first.box[0], first.box[1])) failures.push(`${theme} ${name}: the box before is not square ${first.box}`);
-        if (!near(first.box[0], end.drawn[0]) || !near(first.box[1], end.drawn[1])) failures.push(`${theme} ${name}: box before ${first.box}, trigger drawn ${end.drawn}`);
+        if (!near(first.box[0], first.box[1])) failures.push(`${theme} ${width} ${name}: the box before is not square ${first.box}`);
+        if (!near(first.box[0], end.drawn[0]) || !near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: box before ${first.box}, trigger drawn ${end.drawn}`);
         const xs = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
-        if (xs.length !== 1) failures.push(`${theme} ${name}: the mark after it moved ${xs.join(' -> ')}`);
+        if (xs.length !== 1) failures.push(`${theme} ${width} ${name}: the mark after it moved ${xs.join(' -> ')}`);
       } else {
-        if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${name}: height before ${first.box[1]}, switch drawn ${end.drawn[1]}`);
+        if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, switch drawn ${end.drawn[1]}`);
         const below = [...new Set(frames.map((frame) => frame.cases[name]?.below).filter((y) => y !== undefined && y !== null))];
-        if (below.length !== 1) failures.push(`${theme} ${name}: the row below moved ${below.join(' -> ')}`);
+        if (below.length !== 1) failures.push(`${theme} ${width} ${name}: the row below moved ${below.join(' -> ')}`);
       }
     }
-    if (errors.length) failures.push(`${theme}: page errors ${errors.join(' | ')}`);
-    report[theme] = summary;
-    if (evidence) await tab.screenshot({path: join(evidence, `language-first-paint-${theme}.png`), fullPage: true});
+    if (errors.length) failures.push(`${theme} ${width}: page errors ${errors.join(' | ')}`);
+    report[`${theme} ${width}`] = summary;
+    if (evidence) await tab.screenshot({path: join(evidence, `language-first-paint-${theme}-${width}.png`), fullPage: true});
     await tab.close();
   }
 } finally {
