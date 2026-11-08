@@ -513,6 +513,14 @@
         }
       }
     },
+    "inputs": {
+      "aria-label": {
+        "description": "Accessible name for a textarea drawn without a visible label; it lands on the native textarea. A visible label wins."
+      },
+      "aria-labelledby": {
+        "description": "Ids of the elements that name the textarea; it lands on the native textarea."
+      }
+    },
     "trait-inputs": {
       "inherited-value": {
         "type": "string",

@@ -112,7 +112,6 @@ function syncSwitchState(root) {
   if (description && hasToggleText) {
     description.textContent = isChecked ? onText : offText;
   }
-  linkSwitchText(root);
 }
 
 function bindSwitch(root) {
@@ -127,6 +126,7 @@ function bindSwitch(root) {
 
   root.dataset[SWITCH_BOUND_FLAG] = '1';
   syncSwitchState(root);
+  linkSwitchText(root);
 }
 
 function unbindSwitch(root) {

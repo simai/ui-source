@@ -192,7 +192,8 @@ const sfInputTextareaMeta = {
     "aria-label": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Accessible name for a textarea drawn without a visible label; it lands on the native textarea. A visible label wins."
     },
     "spellcheck": {
       "kind": "boolean",
@@ -221,6 +222,12 @@ const sfInputTextareaMeta = {
       ],
       "default": "bordered",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+    },
+    "aria-labelledby": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Ids of the elements that name the textarea; it lands on the native textarea."
     }
   }
 };

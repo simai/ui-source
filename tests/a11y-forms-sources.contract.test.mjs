@@ -73,7 +73,7 @@ test('the manifests carry accessibility in the current shape: keys with effects,
   // new one fails here.
   const pending = new Set(['alert-bar Enter activate', 'alert-bar Space activate', 'confirm Escape cancel',
     'include Enter activate', 'include Space activate', 'input-lookup Backspace remove', 'pager Enter activate',
-    'pager Space activate', 'pager ArrowLeft prev', 'pager ArrowRight next', 'wizard Enter activate', 'wizard Space activate']);
+    'pager Space activate', 'list-attention Enter activate', 'list-attention Space activate', 'pager ArrowLeft prev', 'pager ArrowRight next', 'wizard Enter activate', 'wizard Space activate']);
   const isEffect = (value) => words.has(value) || prefixes.some((prefix) => String(value).startsWith(prefix));
   const folders = readdirSync(new URL('../src/smart/', import.meta.url), {withFileTypes: true})
     .filter((entry) => entry.isDirectory() && existsSync(new URL(`../src/smart/${entry.name}/component.json`, import.meta.url)))
