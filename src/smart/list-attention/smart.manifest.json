@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-attention",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Needs attention",
   "summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
   "kind": "smart",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
   "id": "smart.wizard",
   "tag": "sf-wizard",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -381,7 +381,8 @@
     "css-variables: six public variables (§6) -- the gap between the head, the body and the footer, the inset, the background, the edge, the corner and the maximum width -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "phase 1.0 (owner): conditional steps, step groups and the drawer place are 1.1.",
     "version 1.0.1 (2026-11-07): the title keeps rung 3 (--sf-text--size-3, --sf-title--height-3) when the heading-4 role moves to the body size in the content heading ladder (tokens.typography 1.2.0, docs review R022); unchanged on the page. Also: the first-paint snapshots carry sf-progress-bar 1.2.0's host state data-status and sf-badge's figure mark. Markup only; behaviour unchanged.",
-    "version 1.0.2 (2026-11-08): a patch, no change to the wizard itself. The server-backups example's days field is a number field (sf-input 1.5.0 input-type number), so its first-paint snapshot prints type=\"number\"."
+    "version 1.0.2 (2026-11-08): a patch, no change to the wizard itself. The server-backups example's days field is a number field (sf-input 1.5.0 input-type number), so its first-paint snapshot prints type=\"number\".",
+    "version 1.0.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
