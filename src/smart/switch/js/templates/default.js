@@ -13,9 +13,12 @@ export function renderSwitchTemplate(context) {
         ? html`<span class="sf-switch-text">${label}</span>`
         : '';
 
+  // A slotted description is held in a plain span: the binding names it as the
+  // checkbox's description (aria-describedby, simai/ui-source#44), and a bare
+  // text node has no id. The span draws nothing of its own.
   const descriptionContent =
     context.component?.hasSlotContent?.('description')
-      ? context.component.getSlotContent('description')
+      ? html`<span data-sf-switch-description>${context.component.getSlotContent('description')}</span>`
       : description
         ? html`<span class="sf-switch-description">${description}</span>`
         : '';
