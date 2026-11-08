@@ -116,6 +116,11 @@ const row = (context, item) => {
     }
 
     const menu = context.hasMenu(item);
+    // no-wrap (1.2.0): the row's text may be cut, so the whole of it is the
+    // row's tooltip. It stands on the row's host, an ancestor of everything
+    // the pointer can rest on but the «⋯», which has its own; the text itself
+    // stays in the row for a screen reader, so the tooltip is not its name.
+    const tip = context.noWrap ? (supporting ? `${text} · ${supporting}` : text) : "";
     // Two templates, with the leading place and without; the slot elements
     // are the template's own, never a value of it (see above).
     const listItem = context.leading
@@ -126,6 +131,7 @@ const row = (context, item) => {
                     value=${item.id}
                     text=${text}
                     supporting=${supporting || nothing}
+                    title=${tip || nothing}
                     ?selected=${current}
                     ?disabled=${disabled}
             ><span slot="leading" class="sf-list__lead">${leadContent(context, item)}</span><span
@@ -138,6 +144,7 @@ const row = (context, item) => {
                     value=${item.id}
                     text=${text}
                     supporting=${supporting || nothing}
+                    title=${tip || nothing}
                     ?selected=${current}
                     ?disabled=${disabled}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`;
@@ -168,7 +175,7 @@ const rows = (context, items, labelled) => html`
 export function renderListTemplate(context) {
     const {component} = context;
     return html`
-        <div class="sf-list sf-list__frame sf-list--size-${context.size}${context.leading?.wide ? " sf-list--lead-wide" : ""} ${context.empty ? "sf-list--empty" : ""}"
+        <div class="sf-list sf-list__frame sf-list--size-${context.size}${context.leading?.wide ? " sf-list--lead-wide" : ""}${context.noWrap ? " sf-list--no-wrap" : ""} ${context.empty ? "sf-list--empty" : ""}"
              role=${context.grouped ? "group" : nothing}
              aria-label=${context.grouped ? context.label : nothing}
              aria-busy=${context.loading ? "true" : "false"}>

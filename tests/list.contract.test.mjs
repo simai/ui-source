@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.1.1'], ['list-feed', 'sf-list-feed', '1.0.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.2.0'], ['list-feed', 'sf-list-feed', '1.0.1']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -63,9 +63,9 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   const of = contract.settings.items.of;
   assert.deepEqual(Object.keys(of).sort(),
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
-  // Additions only: no setting, event or action of 1.0.0 changed.
+  // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -97,6 +97,27 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   assert.ok(contract['x-decisions'].some((line) => line.startsWith('version 1.1.0 (owner decision q-3b313e2246')));
   const sheet = read('src/smart/list/js/templates/default.css');
   assert.match(sheet, /\.sf-list__meta:empty \{ display: none; \}/u);
+});
+
+test('sf-list 1.2.0: no-wrap cuts a row\'s text with an ellipsis and keeps it whole in its tooltip; rows and «⋯» are 44px under a finger', () => {
+  const contract = json('src/smart/list/component.json');
+  assert.equal(contract.settings['no-wrap'].type, 'boolean');
+  assert.equal(contract.settings['no-wrap'].default, false);
+  assert.equal(json('src/smart/list/smart.manifest.json').inputs.properties['no-wrap'].type, 'boolean');
+  assert.ok(contract['x-decisions'].some((line) => line.startsWith('version 1.2.0 (the UI Chat thread\'s request msg-f44b9ece')));
+  const template = read('src/smart/list/js/templates/default.js');
+  // The class on the frame and the whole text as the row's tooltip, on both row templates.
+  assert.match(template, /\$\{context\.noWrap \? " sf-list--no-wrap" : ""\}/u);
+  assert.match(template, /const tip = context\.noWrap \? \(supporting \? `\$\{text\} · \$\{supporting\}` : text\) : "";/u);
+  assert.equal([...template.matchAll(/title=\$\{tip \|\| nothing\}/gu)].length, 2);
+  const sheet = read('src/smart/list/js/templates/default.css');
+  assert.match(sheet, /\.sf-list--no-wrap \.sf-list__row > sf-list-item > \.sf-list-item \.sf-list-item-container \{[^}]*white-space: nowrap;[^}]*text-overflow: ellipsis;/u);
+  // Under a finger: --sf-d1 for the rows, the rename field, the loading rows and the «⋯»; nothing on hover only.
+  const touch = sheet.slice(sheet.indexOf('@media (pointer: coarse)'));
+  assert.match(touch, /--sf-list--touch-height: max\(var\(--sf-list--row-height\), var\(--sf-d1\)\)/u);
+  assert.match(touch, /\.sf-list__row > sf-list-item > \.sf-list-item \{ min-block-size: var\(--sf-list--touch-height\); \}/u);
+  assert.match(touch, /\.sf-list__actions \{\s+min-block-size: var\(--sf-d1\);\s+min-inline-size: var\(--sf-d1\);/u);
+  assert.doesNotMatch(sheet, /\.sf-list__actions[^{]*\{[^}]*(opacity|visibility)\s*:/u);
 });
 
 test('sf-list-feed: sf-message-log\'s behaviour under the list family\'s names, on the core reading position', () => {
