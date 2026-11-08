@@ -57,7 +57,9 @@ confirmation around it (a change sheet) are the page's composition.
 ## Actions
 
 - `chunk({text})` — appends to the output (the stream fact `chunk {id, text}`
-  of vocabulary 1.1.5 §5.2, handed on by a rule). The pane follows the newest
+  of vocabulary 1.1.5 §5.2, handed on by a rule). The object is the canonical
+  form, so the fact can grow fields; a plain string, `chunk('text')`, is
+  accepted as shorthand. The pane follows the newest
   line only while the reader is at its end; a reader who scrolled up keeps
   their place. The run keeps the last 500 000 characters, dropping whole
   lines from the start.

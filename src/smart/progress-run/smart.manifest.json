@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Progress",
   "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
   "kind": "smart",
@@ -134,17 +134,28 @@
   "contracts": {},
   "methods": {
     "chunk": {
-      "summary": "Appends text to the output (vocabulary §5.2 chunk {id, text} of a stream: a rule hands a job's output chunk on). A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
+      "summary": "Appends text to the output: chunk({text}), the object form of vocabulary §5.2 chunk {id, text} of a stream (a rule hands a job's output chunk on); a plain string, chunk(text), is accepted as shorthand. A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
       "arguments": [
         {
-          "name": "text",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
           }
         }
       ],
       "returns": {
-        "type": "object"
+        "type": "object",
+        "description": "An outcome: {outcome: 'applied'} or {outcome: 'refused', reason: 'invalid'}."
       }
     },
     "clear": {
@@ -388,7 +399,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "8363a0580fff3db30961c3329d72f278c974772a3879bfbfccadbbaa12f5664f"
+        "sha256": "81fe825cfc96bff53c4c679c57e0c1ed5a6986c4172ecf0538ba4655f8d73b0b"
       }
     ],
     "generated_runtime": []
