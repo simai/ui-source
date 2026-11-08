@@ -672,8 +672,11 @@ class SfModal extends ModalElement {
     // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
     // theme of its area, and the values of the public variables its manifest
     // declares, by name: a prefix would also carry what an outer window sets
-    // on its own panel (--sf-modal-width) into a window opened from it.
-    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES });
+    // on its own panel (--sf-modal-width) into a window opened from it. And
+    // the variables of the area it stands in (simai/ui-source#46 item 1): a
+    // block's retuned roles and its parts' public variables reach the window
+    // and its content, but none of the window's own --sf-modal-* names.
+    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, area: true, except: ["--sf-modal-"] });
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }

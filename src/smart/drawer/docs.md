@@ -67,7 +67,11 @@ simai.smart-component 1.3.8 §19) вместе с `sf-modal`, открытыми
 `drawer:before-close` и `drawer:after-close` несут `reason`: `close`,
 `escape`, `outside`, `cancelled` или `api` (`close({reason})`). Портал панели
 несёт `lang`, `dir` и тему (`.theme-dark`/`.theme-light`) того места, где стоит
-элемент.
+элемент, а с 1.9.0 и переменные этого места: каждая CSS-переменная, значение
+которой там другое, чем в конце body (`--sf-button-background-color` блока,
+перенастроенный `--sf-primary`, собственная `--brand` страницы), записывается
+на портал, и панель с содержимым выглядит так же, как там, где объявлена.
+Публичные `--sf-drawer-*` переходят по имени, приватные — никогда.
 
 ## Стопка панелей (`stack-offset`)
 
