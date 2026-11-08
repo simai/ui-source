@@ -18,7 +18,7 @@
   box-sizing: border-box;
   min-block-size: var(--sf-site-header--block-size);
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
-  background: var(--sf-site-header-background, var(--sf-surface-0));
+  background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-0)));
   color: var(--sf-site-header-color, var(--sf-on-surface));
 }
 

@@ -132,12 +132,12 @@ the bar. Motion is off under `prefers-reduced-motion: reduce`.
 
 ## Public CSS variables
 
-- `--sf-alert-bar-danger-background`, `--sf-alert-bar-warning-background`,
-  `--sf-alert-bar-info-background` — the level fills (the theme's error,
+- `--sf-alert-bar-danger-background-color`, `--sf-alert-bar-warning-background-color`,
+  `--sf-alert-bar-info-background-color` — the level fills (the theme's error,
   warning and info roles by default; the text keeps their on- role).
 - `--sf-alert-bar-padding-inline` — the bar's inline inset (the rung's
   space-x), to line the text up with the header under it.
 - `--sf-alert-bar-gap` — the space between the bar's text, its actions and
   its end button (the rung's space-x).
-- `--sf-alert-bar-list-background` — the list of all's surface (it scrolls
+- `--sf-alert-bar-list-background-color` — the list of all's surface (it scrolls
   past 22.5rem).

@@ -269,7 +269,7 @@
   )) {
     padding: var(--sf-code-padding, var(--sf-code--padding));
     border-radius: var(--sf-code-radius, var(--sf-code--radius));
-    background-color: var(--sf-code-background, var(--sf-code--background));
+    background-color: var(--sf-code-background-color, var(--sf-code-background, var(--sf-code--background)));
     color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));

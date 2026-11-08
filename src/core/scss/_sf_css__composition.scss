@@ -407,7 +407,7 @@ $sf-workspace-wide-default: h6;
                 // Above anything main raises; the workspace is its own stacking
                 // context (a size container), so this stays inside it.
                 z-index: var(--sf-z-index-layer, 9000);
-                background: var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface));
+                background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface)));
                 color: var(--sf-on-surface);
                 box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-scrim-color, var(--sf-black)) var(--sf-scrim-opacity, var(--sf-opacity-60)), transparent);
 

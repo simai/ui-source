@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-run's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the run progress the Larena admin screens asked for first (Federation bus msg-993e1e39151942c19b23 item 6), planned in the reply msg-05e76ea0bc0746a690b8 as sf-progress-run of block progress.",
   "id": "smart.progress-run",
   "tag": "sf-progress-run",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -240,7 +240,7 @@
     "data-state": "string"
   },
   "css-variables": {
-    "--sf-progress-run-background": {
+    "--sf-progress-run-background-color": {
       "type": "color",
       "state": "default"
     },
@@ -248,7 +248,7 @@
       "type": "color",
       "state": "default"
     },
-    "--sf-progress-run-output-background": {
+    "--sf-progress-run-output-background-color": {
       "type": "color",
       "state": "default"
     },
@@ -286,7 +286,8 @@
     "a11y: a region named by label; the steps an ordered list, each saying its state in words after its title, the running one aria-current step. The output toggle has aria-expanded and aria-controls. Nothing takes focus by itself.",
     "geometry: one rung S (size 1/2 or 1): a step's title is the rung's line and type, its text and time the rung below's, the state icon the title's line, icon-to-text the rung's text-space-x, a step's block inset (H − L) / 2 so a one-line step is the rung's control height H; the output monospace in the rung below's type and line, its inset the rung below's space-x; the buttons sf-button of the rung below. Lines and the pane at the rung's inline inset (0 by default: the run stands in a drawer that has its own).",
     "css-variables: six public variables (§6) -- the run's fill (none by default), the dividers, the output's fill and ink, the output's greatest height and the inline inset -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
-    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.1.0 background-color-names: the public variables --sf-progress-run-background-color, --sf-progress-run-output-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former names --sf-progress-run-background, --sf-progress-run-output-background are still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently."
   ],
   "x-registry": {
     "capabilities": [

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {withoutPublicVariables} from './support/public-variables.mjs';
+import {themeSource} from './support/theme-source.mjs';
 
 const read = async (path) => withoutPublicVariables(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 
@@ -27,7 +28,7 @@ const over = (line, alpha, background) => line.map((channel, index) => channel *
    at exactly --sf-outline-disable -- a field at rest and a field nobody can
    type in drawn in the same line. The value is --sf-outline itself now. */
 test('control boundary: the resting role holds 3:1 on surface-0 in both themes', async () => {
-  const theme = await read('src/core/scss/_sf_css__theme.scss');
+  const theme = themeSource();
   const colours = await read('src/core/scss/_sf_figma_colors_variables.scss');
   const primitive = (name) => hex(colours.match(new RegExp(`--sf-${name}: (#[0-9a-f]{6});`, 'iu'))[1]);
   // Both halves are steps of the alpha scale, not a mix written in the role.

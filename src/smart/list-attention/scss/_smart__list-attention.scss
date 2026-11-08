@@ -35,7 +35,7 @@ sf-list-attention {
   min-inline-size: 0;
   margin: 0;
   container-type: inline-size;
-  background: var(--sf-list-attention-background, transparent);
+  background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
   color: var(--sf-on-surface);
   font-size: var(--sf-list-attention--font-size);
   line-height: var(--sf-list-attention--line);

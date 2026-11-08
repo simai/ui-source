@@ -68,7 +68,7 @@ test('public variables and the JS API list the workspace', () => {
   const variables = JSON.parse(read('src/core/contracts/public-variables.v1.json')).components.find(({component}) => component === 'workspace');
   assert.deepEqual(variables.variables.map(({name}) => name), [
     '--sf-workspace-rail', '--sf-workspace-list', '--sf-workspace-panel', '--sf-workspace-gap',
-    '--sf-workspace-divider-color', '--sf-workspace-drawer-background',
+    '--sf-workspace-divider-color', '--sf-workspace-drawer-background-color',
   ]);
   assert.equal(variables.variables.find(({name}) => name === '--sf-workspace-list').default, 'var(--sf-g0)');
   assert.equal(variables.variables.find(({name}) => name === '--sf-workspace-panel').default, 'var(--sf-g1)');

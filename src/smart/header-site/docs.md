@@ -130,7 +130,7 @@
 
 | Переменная | Что меняет |
 | --- | --- |
-| `--sf-site-header-background` | Фон полосы |
+| `--sf-site-header-background-color` | Фон полосы |
 | `--sf-site-header-color` | Цвет текста полосы |
 | `--sf-site-header-border-color` | Нижняя граница полосы и заголовка панели |
 | `--sf-site-header-block-size` | Высота полосы |

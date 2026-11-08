@@ -5976,6 +5976,570 @@
       "manual": "Write <sf-list-feed> for <sf-message-log>, and move the former names with it: items for messages, setItems and prependItems for setMessages and prependMessages, renderItem and announceItem for renderMessage and announceMessage, sf-list-feed-* for the events sf-message-log-*, --sf-list-feed-* for the variables --sf-message-log-*, .sf-list-feed__* for the classes .sf-message-log__* (__message is __entry). The tag alone is not a mechanical rename, because the former property and method names live only on the alias element.",
       "owner": "ui-source",
       "source": "src/smart/list-feed (component.json x-decisions, docs.md «Переход с sf-message-log»); ui-pro components/src/smart/message-log/index.js; contracts/registry/names.json (chat owner note)"
+    },
+    {
+      "id": "token-c16-theme-role-names",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The background system's naming scheme (C16, owner-approved 2026-11-08; role, variant, state): 51 theme roles take purpose names -- surface-0 and surface-1 are surface-page and surface-area, elevation-1/3/4--surface are surface-card, surface-popup and surface-popup-nested (their shadows and dim ink likewise), <colour>-transparent-hover/select/active are <colour>-state-*, <colour>-transparent-overlay is <colour>-container-strong, surface-overlay is surface-veil, outline-<colour> is <colour>-outline, disable and on-disable are surface-disabled and on-surface-disabled. Values do not change: each former name is var() of its new name, declared on the theme root and on every rule that re-declares the role. Elevation 2 and 5 and the four shadow--* names are held (token-aliases.v1.json, held).",
+      "items": [
+        {
+          "from": "--sf-disable",
+          "to": "--sf-surface-disabled",
+          "match": "--sf-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-1--shadow",
+          "to": "--sf-shadow-card",
+          "match": "--sf-elevation-1--shadow(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-1--surface",
+          "to": "--sf-surface-card",
+          "match": "--sf-elevation-1--surface(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-3--shadow",
+          "to": "--sf-shadow-popup",
+          "match": "--sf-elevation-3--shadow(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-3--surface",
+          "to": "--sf-surface-popup",
+          "match": "--sf-elevation-3--surface(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-4--shadow",
+          "to": "--sf-shadow-popup-nested",
+          "match": "--sf-elevation-4--shadow(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-4--surface",
+          "to": "--sf-surface-popup-nested",
+          "match": "--sf-elevation-4--surface(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-error-transparent-active",
+          "to": "--sf-error-state-active",
+          "match": "--sf-error-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-error-transparent-hover",
+          "to": "--sf-error-state-hover",
+          "match": "--sf-error-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-error-transparent-overlay",
+          "to": "--sf-error-container-strong",
+          "match": "--sf-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-error-transparent-select",
+          "to": "--sf-error-state-select",
+          "match": "--sf-error-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-disable",
+          "to": "--sf-on-surface-disabled",
+          "match": "--sf-on-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-elevation-1--variant",
+          "to": "--sf-on-surface-card-variant",
+          "match": "--sf-on-elevation-1--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-elevation-3--variant",
+          "to": "--sf-on-surface-popup-variant",
+          "match": "--sf-on-elevation-3--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-elevation-4--variant",
+          "to": "--sf-on-surface-popup-nested-variant",
+          "match": "--sf-on-elevation-4--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-surface-container--variant",
+          "to": "--sf-on-surface-container-variant",
+          "match": "--sf-on-surface-container--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-disable",
+          "to": "--sf-outline-disabled",
+          "match": "--sf-outline-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-error",
+          "to": "--sf-error-outline",
+          "match": "--sf-outline-error(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-info",
+          "to": "--sf-info-outline",
+          "match": "--sf-outline-info(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-primary",
+          "to": "--sf-primary-outline",
+          "match": "--sf-outline-primary(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-secondary",
+          "to": "--sf-secondary-outline",
+          "match": "--sf-outline-secondary(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-success",
+          "to": "--sf-success-outline",
+          "match": "--sf-outline-success(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-tertiary",
+          "to": "--sf-tertiary-outline",
+          "match": "--sf-outline-tertiary(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-outline-warning",
+          "to": "--sf-warning-outline",
+          "match": "--sf-outline-warning(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-primary-transparent-active",
+          "to": "--sf-primary-state-active",
+          "match": "--sf-primary-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-primary-transparent-hover",
+          "to": "--sf-primary-state-hover",
+          "match": "--sf-primary-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-primary-transparent-overlay",
+          "to": "--sf-primary-container-strong",
+          "match": "--sf-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-primary-transparent-select",
+          "to": "--sf-primary-state-select",
+          "match": "--sf-primary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-secondary-transparent-active",
+          "to": "--sf-secondary-state-active",
+          "match": "--sf-secondary-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-secondary-transparent-hover",
+          "to": "--sf-secondary-state-hover",
+          "match": "--sf-secondary-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-secondary-transparent-overlay",
+          "to": "--sf-secondary-container-strong",
+          "match": "--sf-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-secondary-transparent-select",
+          "to": "--sf-secondary-state-select",
+          "match": "--sf-secondary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-success-transparent-active",
+          "to": "--sf-success-state-active",
+          "match": "--sf-success-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-success-transparent-hover",
+          "to": "--sf-success-state-hover",
+          "match": "--sf-success-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-success-transparent-overlay",
+          "to": "--sf-success-container-strong",
+          "match": "--sf-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-success-transparent-select",
+          "to": "--sf-success-state-select",
+          "match": "--sf-success-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-0",
+          "to": "--sf-surface-page",
+          "match": "--sf-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-1",
+          "to": "--sf-surface-area",
+          "match": "--sf-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-overlay",
+          "to": "--sf-surface-veil",
+          "match": "--sf-surface-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-transparent-active",
+          "to": "--sf-surface-state-active",
+          "match": "--sf-surface-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-transparent-hover",
+          "to": "--sf-surface-state-hover",
+          "match": "--sf-surface-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-transparent-overlay",
+          "to": "--sf-surface-container-strong",
+          "match": "--sf-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-surface-transparent-select",
+          "to": "--sf-surface-state-select",
+          "match": "--sf-surface-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tertiary-transparent-active",
+          "to": "--sf-tertiary-state-active",
+          "match": "--sf-tertiary-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tertiary-transparent-hover",
+          "to": "--sf-tertiary-state-hover",
+          "match": "--sf-tertiary-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tertiary-transparent-overlay",
+          "to": "--sf-tertiary-container-strong",
+          "match": "--sf-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tertiary-transparent-select",
+          "to": "--sf-tertiary-state-select",
+          "match": "--sf-tertiary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-warning-transparent-active",
+          "to": "--sf-warning-state-active",
+          "match": "--sf-warning-transparent-active(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-warning-transparent-hover",
+          "to": "--sf-warning-state-hover",
+          "match": "--sf-warning-transparent-hover(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-warning-transparent-overlay",
+          "to": "--sf-warning-container-strong",
+          "match": "--sf-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-warning-transparent-select",
+          "to": "--sf-warning-state-select",
+          "match": "--sf-warning-transparent-select(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "background: var(--sf-elevation-3--surface); color: var(--sf-on-elevation-3--variant);",
+        "after": "background: var(--sf-surface-popup); color: var(--sf-on-surface-popup-variant);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__theme.scss, src/core/scss/mix/_mix__role_aliases.scss, src/core/contracts/token-aliases.v1.json"
+    },
+    {
+      "id": "token-component-background-color-names",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "Twenty public component variables that set a fill end in -background-color, as the other 53 do (C16 naming): --sf-card-background is --sf-card-background-color, and so on for alert-bar, code, contents, figure, kbd, list-attention, pager, procedure, progress-run, search, site-header, tile-metric, wizard and workspace-drawer. The component reads the new name first and the former one under it, so a page that sets the former name draws as before.",
+      "items": [
+        {
+          "from": "--sf-alert-bar-danger-background",
+          "to": "--sf-alert-bar-danger-background-color",
+          "match": "--sf-alert-bar-danger-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-alert-bar-info-background",
+          "to": "--sf-alert-bar-info-background-color",
+          "match": "--sf-alert-bar-info-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-alert-bar-list-background",
+          "to": "--sf-alert-bar-list-background-color",
+          "match": "--sf-alert-bar-list-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-alert-bar-warning-background",
+          "to": "--sf-alert-bar-warning-background-color",
+          "match": "--sf-alert-bar-warning-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-card-background",
+          "to": "--sf-card-background-color",
+          "match": "--sf-card-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-code-background",
+          "to": "--sf-code-background-color",
+          "match": "--sf-code-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-contents-background",
+          "to": "--sf-contents-background-color",
+          "match": "--sf-contents-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-figure-background",
+          "to": "--sf-figure-background-color",
+          "match": "--sf-figure-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-kbd-background",
+          "to": "--sf-kbd-background-color",
+          "match": "--sf-kbd-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-list-attention-background",
+          "to": "--sf-list-attention-background-color",
+          "match": "--sf-list-attention-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-pager-card-background",
+          "to": "--sf-pager-card-background-color",
+          "match": "--sf-pager-card-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-procedure-marker-background",
+          "to": "--sf-procedure-marker-background-color",
+          "match": "--sf-procedure-marker-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-progress-run-background",
+          "to": "--sf-progress-run-background-color",
+          "match": "--sf-progress-run-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-progress-run-output-background",
+          "to": "--sf-progress-run-output-background-color",
+          "match": "--sf-progress-run-output-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-search-background",
+          "to": "--sf-search-background-color",
+          "match": "--sf-search-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-site-header-background",
+          "to": "--sf-site-header-background-color",
+          "match": "--sf-site-header-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tile-metric-background",
+          "to": "--sf-tile-metric-background-color",
+          "match": "--sf-tile-metric-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-tile-metric-hover-background",
+          "to": "--sf-tile-metric-hover-background-color",
+          "match": "--sf-tile-metric-hover-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-wizard-background",
+          "to": "--sf-wizard-background-color",
+          "match": "--sf-wizard-background(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-workspace-drawer-background",
+          "to": "--sf-workspace-drawer-background-color",
+          "match": "--sf-workspace-drawer-background(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": ".promo { --sf-card-background: var(--sf-primary-container); }",
+        "after": ".promo { --sf-card-background-color: var(--sf-primary-container); }"
+      },
+      "owner": "ui-source",
+      "source": "src/core/contracts/public-variables.v1.json, src/core/contracts/token-aliases.v1.json"
+    },
+    {
+      "id": "utility-c16-background-names",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The background utilities take the C16 names beside the former ones: bg-surface-page, -area, -card, -popup and -popup-nested (the place classes also declare --sf-surface-place and the place's dim ink), bg-<colour>-state-select, bg-<colour>-container-strong, bg-surface-veil, bg-surface-disabled, hover:/active:bg-<colour>-state. The former classes paint the same colour until remove_after.",
+      "items": [
+        {
+          "from": "bg-surface-0",
+          "to": "bg-surface-page",
+          "match": "(?<![a-z0-9:-])bg-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-surface-1",
+          "to": "bg-surface-area",
+          "match": "(?<![a-z0-9:-])bg-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-surface-transparent-select",
+          "to": "bg-surface-state-select",
+          "match": "(?<![a-z0-9:-])bg-surface-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-surface-transparent-overlay",
+          "to": "bg-surface-container-strong",
+          "match": "(?<![a-z0-9:-])bg-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-disable",
+          "to": "bg-surface-disabled",
+          "match": "(?<![a-z0-9:-])bg-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-primary-transparent-select",
+          "to": "bg-primary-state-select",
+          "match": "(?<![a-z0-9:-])bg-primary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-primary-transparent-overlay",
+          "to": "bg-primary-container-strong",
+          "match": "(?<![a-z0-9:-])bg-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-secondary-transparent-select",
+          "to": "bg-secondary-state-select",
+          "match": "(?<![a-z0-9:-])bg-secondary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-secondary-transparent-overlay",
+          "to": "bg-secondary-container-strong",
+          "match": "(?<![a-z0-9:-])bg-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-tertiary-transparent-select",
+          "to": "bg-tertiary-state-select",
+          "match": "(?<![a-z0-9:-])bg-tertiary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-tertiary-transparent-overlay",
+          "to": "bg-tertiary-container-strong",
+          "match": "(?<![a-z0-9:-])bg-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-error-transparent-select",
+          "to": "bg-error-state-select",
+          "match": "(?<![a-z0-9:-])bg-error-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-error-transparent-overlay",
+          "to": "bg-error-container-strong",
+          "match": "(?<![a-z0-9:-])bg-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-warning-transparent-select",
+          "to": "bg-warning-state-select",
+          "match": "(?<![a-z0-9:-])bg-warning-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-warning-transparent-overlay",
+          "to": "bg-warning-container-strong",
+          "match": "(?<![a-z0-9:-])bg-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-success-transparent-select",
+          "to": "bg-success-state-select",
+          "match": "(?<![a-z0-9:-])bg-success-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "bg-success-transparent-overlay",
+          "to": "bg-success-container-strong",
+          "match": "(?<![a-z0-9:-])bg-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-surface-transparent",
+          "to": "hover:bg-surface-state",
+          "match": "(?<![a-z0-9:-])hover:bg-surface-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-primary-transparent",
+          "to": "hover:bg-primary-state",
+          "match": "(?<![a-z0-9:-])hover:bg-primary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-secondary-transparent",
+          "to": "hover:bg-secondary-state",
+          "match": "(?<![a-z0-9:-])hover:bg-secondary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-tertiary-transparent",
+          "to": "hover:bg-tertiary-state",
+          "match": "(?<![a-z0-9:-])hover:bg-tertiary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-error-transparent",
+          "to": "hover:bg-error-state",
+          "match": "(?<![a-z0-9:-])hover:bg-error-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-warning-transparent",
+          "to": "hover:bg-warning-state",
+          "match": "(?<![a-z0-9:-])hover:bg-warning-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:bg-success-transparent",
+          "to": "hover:bg-success-state",
+          "match": "(?<![a-z0-9:-])hover:bg-success-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-surface-transparent",
+          "to": "active:bg-surface-state",
+          "match": "(?<![a-z0-9:-])active:bg-surface-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-primary-transparent",
+          "to": "active:bg-primary-state",
+          "match": "(?<![a-z0-9:-])active:bg-primary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-secondary-transparent",
+          "to": "active:bg-secondary-state",
+          "match": "(?<![a-z0-9:-])active:bg-secondary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-tertiary-transparent",
+          "to": "active:bg-tertiary-state",
+          "match": "(?<![a-z0-9:-])active:bg-tertiary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-error-transparent",
+          "to": "active:bg-error-state",
+          "match": "(?<![a-z0-9:-])active:bg-error-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-warning-transparent",
+          "to": "active:bg-warning-state",
+          "match": "(?<![a-z0-9:-])active:bg-warning-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "active:bg-success-transparent",
+          "to": "active:bg-success-state",
+          "match": "(?<![a-z0-9:-])active:bg-success-transparent(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<div class=\"bg-surface-1\">",
+        "after": "<div class=\"bg-surface-area\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/background-color/default/scss/_sf_var__background_color.scss"
     }
   ]
 }

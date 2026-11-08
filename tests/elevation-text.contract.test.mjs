@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import {themeSource} from './support/theme-source.mjs';
 
 // A role is dimmed relative to the surface it lies on, and a raised surface
 // lightens with its step in the dark theme. One fixed value therefore cannot
@@ -24,7 +25,7 @@ const primitives = () => {
 };
 
 const themeRoles = () => {
-  const source = read('src/core/scss/_sf_css__theme.scss');
+  const source = themeSource();
   return Object.fromEntries(
     [...source.matchAll(/(--sf-[a-z0-9-]+):\s*light-dark\(\s*var\((--sf-[a-z0-9-]+)\)\s*,\s*var\((--sf-[a-z0-9-]+)\)\s*\)/gu)]
       .map(([, name, light, dark]) => [name, { light, dark }]),

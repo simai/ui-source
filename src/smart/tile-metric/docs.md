@@ -82,9 +82,9 @@ surface radius.
 
 ## Public variables
 
-`--sf-tile-metric-background`, `--sf-tile-metric-border-color`,
+`--sf-tile-metric-background-color`, `--sf-tile-metric-border-color`,
 `--sf-tile-metric-radius`, `--sf-tile-metric-padding`,
-`--sf-tile-metric-value-color`, `--sf-tile-metric-hover-background`,
+`--sf-tile-metric-value-color`, `--sf-tile-metric-hover-background-color`,
 `--sf-tile-metric-min-width`. The Framework never sets them.
 
 ## Accessibility

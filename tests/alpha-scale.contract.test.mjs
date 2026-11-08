@@ -98,9 +98,9 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // lightened by two different greys, and the steps could not match across
   // themes (owner, 2026-10-08).
   const surfaces = {
-    'surface-transparent-hover': 4,
-    'surface-transparent-select': 8,
-    'surface-transparent-overlay': 32,
+    'surface-state-hover': 4,
+    'surface-state-select': 8,
+    'surface-container-strong': 32,
     'surface-container': 16,
     'surface-container-hover': 20,
     'surface-container-active': 24,
@@ -114,11 +114,11 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
 
   // The plate starts at 16 because at 12 it was the colour of a pressed
   // surface, and a plate that cannot be told from a press is not a plate.
-  assert.notEqual(surfaces['surface-container'], surfaces['surface-transparent-select']);
-  assert.ok(surfaces['surface-container'] > surfaces['surface-transparent-select']);
+  assert.notEqual(surfaces['surface-container'], surfaces['surface-state-select']);
+  assert.ok(surfaces['surface-container'] > surfaces['surface-state-select']);
   // And the veil is above every plate: a plate sits on the page, a veil covers
   // it. At 24 the backdrop of a modal was the colour of a pressed card.
-  assert.ok(surfaces['surface-transparent-overlay'] > surfaces['surface-container-active']);
+  assert.ok(surfaces['surface-container-strong'] > surfaces['surface-container-active']);
   // No two surface roles share a value: each is a different thing to see.
   const steps = Object.values(surfaces);
   assert.equal(new Set(steps).size, steps.length, `two surface roles share a step: ${steps}`);
@@ -126,7 +126,7 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // The veil is the exception, and it is one on purpose: it darkens a scene
   // rather than tinting a surface. On the neutral tone it came out 7.4 points
   // lighter in the light theme -- a veil that does not veil.
-  assert.equal(value('surface-overlay'),
+  assert.equal(value('surface-veil'),
     'light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8))');
 });
 
