@@ -41,6 +41,7 @@ import {installReady} from './ready.js';
 import {applyRememberedIconSubset} from './icon-subset-memory.js';
 import pageStorage from './page-storage.js';
 import {installEarlyPort} from './early-port.js';
+import {installPackageRegistration, packageModule, packageModuleId} from './package-modules.js';
 import {holdUndefinedElements, installPendingTags} from './pending-tags.js';
 import {
   createPreloaderContent,
@@ -115,6 +116,13 @@ if (typeof window !== 'undefined') {
       if (!modules[id]) throw new Error(`SF runtime: no shared module "${id}"`);
       return modules[id];
     });
+    // A package module (`<package>/<module>`, core/js/package-modules.js) comes
+    // from the package's own core bundle, not from the runtime script: it is
+    // answered from the one registry on the shared global, waiting for the
+    // package's core when it has not run yet.
+    const coreLookup = SF.runtimeModule;
+    SF.runtimeModule = (id, abi) => (packageModuleId(id) ? packageModule(id, abi) : coreLookup(id, abi));
+    installPackageRegistration(SF.runtimeModule, () => Object.keys(SF.__internal.runtimeModules || {}));
     // A page that already holds a Smart part (printed by the server, waiting
     // for its definition) preloads the runtime now, with Core, rather than
     // when the Loader's own chunk arrives and queues the part (stand 25): the

@@ -8,6 +8,7 @@
 // on the page (js/runtime.js SHARED_MODULES, js/core-modules.js).
 import { RUNTIME_ABI, SHARED_MODULES as RUNTIME_MODULES, checkRuntimeAbi } from './js/runtime';
 import './js/internal.js';
+import {installPackageRegistration, packageModule, packageModuleId} from './js/package-modules.js';
 
 const SF = (window.SF = window.SF || {});
 SF.__internal.runtimeAbi = RUNTIME_ABI;
@@ -23,6 +24,12 @@ if (!SF.runtimeModule) {
       ? Promise.resolve(RUNTIME_MODULES[id])
       : Promise.reject(new Error(`SF runtime: no shared module "${id}"`));
   };
+  // A package module (`<package>/<module>`) comes from the package's own core
+  // bundle, through the one registry on the shared global
+  // (js/package-modules.js).
+  const coreLookup = SF.runtimeModule;
+  SF.runtimeModule = (id, abi) => (packageModuleId(id) ? packageModule(id, abi) : coreLookup(id, abi));
+  installPackageRegistration(SF.runtimeModule, () => Object.keys(RUNTIME_MODULES));
 }
 if (typeof SF.__internal.runtimeArrived === 'function') SF.__internal.runtimeArrived(RUNTIME_MODULES);
 try {

@@ -269,6 +269,31 @@ names the same components under the former name (`alias_of: "pro"`), so a
 package built as `larena` still agrees with the release; it leaves with the
 alias on 2027-01-01.
 
+## A package's shared core
+
+Code every component of a package draws with -- a chart set's scales,
+formats and data readers -- is not copied into each component's bundle. Since
+`core.runtime` 1.38.0 a package builds it once, as a bundle of its own, and
+its components take it from the shared runtime
+(`docs/developer/shared-runtime.md`, "Package modules"):
+
+- The package's `package.json` names the core folder and its ABI:
+  `"simai": {"core": {"folder": "chart-core", "abi": 1}}`. The folder is a
+  helper folder under `src/smart` (no `rule.js` of its own).
+- ui-builder builds `<base>/chart-core/js/chart-core.js`, which registers
+  every module of the folder as `chart/<module>` (`chart/scale` for
+  `chart-core/scale.js`) with `SF.runtimeModule.register`, and writes a rule
+  for it, `cl-chart-core`, without tags. In every component, an import from
+  the folder becomes `SF.runtimeModule('chart/<module>', 1)`.
+- Each component that imports the core relates to its rule
+  (`relation: [{name: 'cl-chart-core'}]`), so the Loader fetches the core once,
+  before the first component that needs it runs. The build refuses a
+  component that imports the core without that relation.
+- Raising the core's ABI is a change of what its modules export (a removed or
+  renamed export, an export that means something else); the package's
+  components are always built with their core, so the ABI only guards a page
+  that mixes bundles of two builds.
+
 ## Not yet
 
 - A package's files are versioned with Core's `cacheVersion`; a package with
