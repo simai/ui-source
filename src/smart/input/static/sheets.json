@@ -104,6 +104,19 @@
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
+    "number": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
+      "core/css/core.css",
+      "smart/input/css/input.min.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
     "readonly": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
