@@ -4193,6 +4193,47 @@
       ]
     },
     {
+      "component": "highlight",
+      "selector": ".sf-code-surface",
+      "variables": [
+        {
+          "name": "--sf-highlight-radius",
+          "role": "radius",
+          "summary": "The code block's corners. A host that nests the block -- a code block in a chat bubble -- sets it to follow its own corner.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-background-color",
+          "role": "background",
+          "summary": "The code block's fill, under the head and the code.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-color",
+          "role": "color",
+          "summary": "The code block's text, where a token has no colour of its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-color",
+          "role": "border-color",
+          "summary": "The block's edge and the line under its head.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-width",
+          "role": "border-width",
+          "summary": "The width of the block's edge and of the line under its head.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-09"
+        }
+      ]
+    },
+    {
       "component": "list-description",
       "selector": "sf-list-description, .sf-list-description",
       "variables": [
