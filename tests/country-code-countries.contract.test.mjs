@@ -48,3 +48,21 @@ test('CountryCode resolution uses local descriptors and first local default, ret
   assert.equal(ctx.resolveInitialCountry({defaultIso2: 'RU'}, root).iso2, 'RU');
   assert.equal(ctx.resolveInitialCountry({defaultIso2: 'RU', fixedDialCode: '+49'}, root).iso2, 'RU');
 });
+
+test('CountryCode reads the country of a stored number by its dial code (simai/ui-source#34)', () => {
+  const ctx = runtime();
+  const root = {};
+  assert.equal(ctx.resolveInitialCountry({}, root, '+7 900 123-45-67').iso2, 'RU');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+7 701 123-45-67').iso2, 'KZ');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+1 212 555-0100').iso2, 'US');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+44 20 7946 0958').iso2, 'GB');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+49 30 123456').iso2, 'DE');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+380 44 123 4567').iso2, 'UA');
+  // An explicit country still wins; a local number keeps the first country.
+  assert.equal(ctx.resolveInitialCountry({defaultIso2: 'DE'}, root, '+7 900 123-45-67').iso2, 'DE');
+  assert.equal(ctx.resolveInitialCountry({}, root, '8 900 123-45-67'), items[0]);
+  assert.equal(ctx.resolveInitialCountry({}, root, ''), items[0]);
+  // A local list limits the guess to its own countries.
+  const local = ctx.normalizeCountriesList([{iso2: 'DE'}, {iso2: 'KZ'}]);
+  assert.equal(ctx.resolveInitialCountry({}, {__sfCountryOptions: local}, '+7 900 123-45-67').iso2, 'KZ');
+});

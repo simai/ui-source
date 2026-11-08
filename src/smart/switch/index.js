@@ -102,7 +102,7 @@ class SfSwitch extends SwitchElement {
 
   // The checkbox is described by the description (aria-describedby,
   // simai/ui-source#44), and a browser reads aria-describedby instead of
-  // aria-description, so «Наследуется: включено» would go unsaid beside it.
+  // aria-description, so the inherited sentence would go unsaid beside it.
   // While the inherited state applies and something else describes the
   // checkbox, the sentence is a hidden note the description list also names.
   syncInheritedState() {

@@ -416,7 +416,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "bae47b6667487249a66813d061a6e991bc8ba555610d6df829a6d5373f751a2c"
+        "sha256": "aca88ababbf9d2441ee58d6c7faf4884890c62e6c5b6643e10c92fe2187a5a79"
       },
       {
         "path": "src/smart/switch/rule.js",

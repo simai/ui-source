@@ -627,6 +627,12 @@ async function applyMaskForRoot(root, input, maskPattern, config = null) {
   }
 }
 
+function resolveInitialCountry(config, root, value = '') {
+  return resolveCountry(root, config.defaultIso2) || resolveCountry(root, '', config.fixedDialCode) ||
+    countryFromNumber(root, value) ||
+    root.__sfCountryOptions?.[0] || COUNTRY_ITEMS[0] || null;
+}
+
 // Where several countries share a dial code, the one a number with that code
 // means unless its next digits say otherwise (+7 6xx and +7 7xx are
 // Kazakhstan).
@@ -657,12 +663,6 @@ function countryFromNumber(root, value) {
     return matches.find((country) => country.iso2 === SHARED_DIAL_CODES[code]) || matches[0];
   }
   return null;
-}
-
-function resolveInitialCountry(config, root, value = '') {
-  return resolveCountry(root, config.defaultIso2) || resolveCountry(root, '', config.fixedDialCode) ||
-    countryFromNumber(root, value) ||
-    root.__sfCountryOptions?.[0] || COUNTRY_ITEMS[0] || null;
 }
 
 function syncDisabledState(root) {
