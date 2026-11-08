@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 import test from 'node:test';
 
 import {
-  checkPassports, collectUnits, compareInventories, contentHash, inventoryOf, passportFor, readCommittedTree, satisfies,
+  OWNER, checkPassports, collectUnits, compareInventories, contentHash, inventoryOf, packageOwners, passportFor, readCommittedTree, satisfies,
 } from '../scripts/linkage.mjs';
 
 // Standard simai.linkage 1.0.0: every unit SIMAI Framework publishes has a
@@ -171,4 +171,37 @@ test('(c) against the previous release: every moved hash moved its version', {sk
   assert.ok(existsSync(previousRelease), previousRelease);
   const report = compareInventories(JSON.parse(readFileSync(previousRelease, 'utf8')), inventoryOf(collected, {revision: head.revision}));
   assert.deepEqual(report.violations.map(({message}) => message), []);
+});
+
+test('a Smart component of a package is owned by that package, not by ui-source', () => {
+  // ui-chart M0 part 4: a derived Smart passport said simai/ui-source for every
+  // component, so a set's components laid over ui-source were reported as ui-source's.
+  const registry = {owners: [{id: 'framework', repository: 'simai/ui-source'}, {id: 'chart', repository: 'simai/ui-chart'}]};
+  const component = (id, pkg) => JSON.stringify({id, version: '0.1.0', ...(pkg ? {'x-source': {package: pkg}} : {})});
+  const files = {
+    ...SOURCES,
+    'src/core/contracts/packages/pro.package.json': JSON.stringify({package: 'pro', distribution: {owner: 'simai/ui-pro'}}),
+    'src/smart/tree/component.json': component('smart.tree', 'framework'),
+    'src/smart/badge/component.json': component('smart.badge', 'ui-source'),
+    'src/smart/plain/component.json': component('smart.plain'),
+    'src/smart/chart-line/component.json': component('smart.chart-line', 'chart'),
+    'src/smart/view-table/component.json': component('smart.view-table', 'ui-pro'),
+    'src/smart/stray/component.json': component('smart.stray', 'nowhere'),
+  };
+  const tree = new Map(Object.entries(files).map(([file, text]) => [file, Buffer.from(text)]));
+  const owners = packageOwners(tree, {registry});
+  assert.equal(owners.get('framework'), OWNER);
+  assert.equal(owners.get('pro'), 'simai/ui-pro', 'from the package reference');
+  assert.equal(owners.get('ui-chart'), 'simai/ui-chart', 'a package is also known by its repository name');
+  const collectedHere = collectUnits(tree, {owners});
+  const ownerOf = (id) => collectedHere.units.find((unit) => unit.id === id).passport.owner;
+  assert.equal(ownerOf('smart.tree'), OWNER);
+  assert.equal(ownerOf('smart.badge'), OWNER);
+  assert.equal(ownerOf('smart.plain'), OWNER, 'a component that names no package is ui-source\'s');
+  assert.equal(ownerOf('smart.chart-line'), 'simai/ui-chart');
+  assert.equal(ownerOf('smart.view-table'), 'simai/ui-pro');
+  assert.deepEqual(collectedHere.problems.filter(({code}) => code === 'unknown-package').map(({id}) => id), ['smart.stray'], 'an unknown package is reported');
+  // This checkout's own registry knows the chart set, and every free component stays ui-source's.
+  assert.equal(packageOwners(head.tree).get('chart'), 'simai/ui-chart');
+  assert.deepEqual([...new Set(collected.units.filter(({kind}) => kind === 'smart').map(({passport}) => passport.owner))], [OWNER]);
 });

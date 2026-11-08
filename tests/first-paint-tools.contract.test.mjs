@@ -267,3 +267,19 @@ test('9. the clock is frozen: one instant per example, before any page code runs
     }
   }
 });
+
+test('10. a foreign subtree prints without comments, as an HTML one does', () => {
+  // A chart's plot is an <svg> a template fills; its part markers are comments
+  // between the SVG's children (ui-chart M0, part 3). The HTML path skips
+  // comment nodes; the foreign path clones the subtree and must drop them too.
+  const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
+  const foreign = page.slice(page.indexOf('const foreign = (el) => {'), page.indexOf('return copy.outerHTML;'));
+  assert.match(foreign, /createTreeWalker\(copy, NodeFilter\.SHOW_COMMENT\)/u, 'the clone is walked for comments');
+  assert.match(foreign, /node\.remove\(\)/u, 'and they are removed before it is printed');
+  for (const file of snapshots()) {
+    const html = readFileSync(file, 'utf8');
+    for (const [subtree] of html.matchAll(/<(svg|math)\b[\s\S]*?<\/\1>/gu)) {
+      assert.doesNotMatch(subtree, /<!--/u, `${file}: a comment inside a foreign subtree`);
+    }
+  }
+});

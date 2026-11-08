@@ -283,6 +283,14 @@
         ]
       },
       "note": "primary was a colour inside a list of statuses; here it meant info"
+    },
+    {
+      "component": "chart-metric",
+      "package": "chart",
+      "axis": "status",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "sf-chart-metric lives in the chart set (simai/ui-chart). Its status is the page's statement about the number in the shared vocabulary, a dot of that tone and the hint; the tile never infers it from the value (ui-chart M1, need 9). A package component is recorded here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
     }
   ],
   "not_an_axis": {
@@ -290,6 +298,21 @@
     "size": "the shared size ladder.",
     "mode": "how a control behaves rather than how it looks (a modal loading inline or over ajax, a dropdown selecting or tagging).",
     "native-type": "the HTML type attribute of a native element, which belongs to the platform, not to us."
+  },
+  "data_state": {
+    "property": "data-state",
+    "values": [
+      "auto",
+      "loading",
+      "populated",
+      "empty",
+      "error"
+    ],
+    "value_aliases": {
+      "ready": "populated"
+    },
+    "rule": "A component that shows data it is given or fetches (a table, a chart, a list) says where that data stands in one input, data-state, with the data states of standard simai.dynamic-composite-component (data-states-declared: at least loading, populated, empty and error; auto lets the component decide from the data). It is not the status axis: error here means the data could not be had, not a statement about the world. A data-state whose values are all data states needs no exemption of its own, in the Framework or in a package; one that offers any other word is held to the axes like every other input.",
+    "note": "ready is the word the chart set (simai/ui-chart) uses for populated; it is recognised so the set's charts are not each exempted by hand (ui-chart M0, part 2), and a new component writes populated."
   },
   "exempt_properties": [
     {
