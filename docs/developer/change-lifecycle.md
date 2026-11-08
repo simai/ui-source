@@ -1,7 +1,7 @@
 # Change lifecycle
 
 How a public name leaves the Framework and how a product follows it. The
-standard is `contracts/standards/simai.change-lifecycle/1.0.0`; the policy is
+standard is `contracts/standards/simai.change-lifecycle/1.0.1`; the policy is
 `contracts/lifecycle-policy.json`; the history is
 `contracts/changes/journal.json`.
 

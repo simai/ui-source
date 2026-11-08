@@ -15,7 +15,7 @@ const root = new URL('../', import.meta.url);
 const read = (relative) => readFileSync(new URL(relative, root));
 const json = (relative) => JSON.parse(read(relative).toString('utf8'));
 
-const STANDARD = 'contracts/standards/simai.component-set/1.1.0/standard.json';
+const STANDARD = 'contracts/standards/simai.component-set/1.1.1/standard.json';
 const PASSPORT_SCHEMA = 'contracts/schema/component-set.v1.schema.json';
 const REGISTRY_SCHEMA = 'contracts/schema/name-registry.v1.schema.json';
 const REGISTRY = 'contracts/registry/names.json';
@@ -86,7 +86,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
   const reference = standard.references.find(({id}) => id === 'simai.component-package');
   assert.ok(reference, 'the component package standard is referenced');
   assert.equal(standard.extends, undefined, 'the set standard supersedes the package standard by reference, it does not extend it');
-  const replaced = json('contracts/standards/simai.component-package/1.1.1/standard.json').requirements.map(({id}) => id);
+  const replaced = json('contracts/standards/simai.component-package/1.1.2/standard.json').requirements.map(({id}) => id);
   for (const id of ['own-element-prefix', 'delivered-in-owners-distribution']) {
     assert.ok(replaced.includes(id), `${id} exists in the package standard`);
     assert.match(standard.requirements.find(({id: own}) => own === 'package-folder-by-component-package').text, new RegExp(id), `${id} is named as replaced`);
@@ -94,7 +94,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
 });
 
 test('the standards index lists the set standard', () => {
-  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.1\.0 \|/u);
+  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.1\.1 \|/u);
 });
 
 test('a set passport takes the pinned form and its own rules', () => {
