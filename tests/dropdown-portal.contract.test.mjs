@@ -3,8 +3,9 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 const read=p=>readFile(new URL(`../${p}`,import.meta.url),'utf8');
 test('Projection declines detached or missing-field surfaces without mutation',async()=>{
-  // The refusal paths never reach geometry, so the bundled helper is stubbed.
-  const source=(await read('src/component/dropdown/portal.js')).replace("import BundledPosition from '../../core/js/position.js';","const BundledPosition=null;");
+  // The refusal paths never reach geometry or the scrollbar's mark, so the
+  // bundled helpers are stubbed.
+  const source=(await read('src/component/dropdown/portal.js')).replace("import BundledPosition from '../../core/js/position.js';","const BundledPosition=null;").replace("import {PanelScrollbar} from '../panel-scrollbar.js';","const PanelScrollbar=class{watch(){}mark(){}disconnect(){}};");
   const {openDropdownPortal,closeDropdownPortal}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
   assert.equal(openDropdownPortal({},{}),false);
   assert.equal(openDropdownPortal({},{showPopover(){throw new Error('detached');},isConnected:false}),false);

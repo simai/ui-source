@@ -43,7 +43,9 @@ export function createDropdownInteraction(root, adapter) {
   const field = () => root.querySelector('.sf-dropdown-field, .sf-dropdown-trigger');
   const trigger = () => field()?.querySelector(':scope > button') || field();
   const input = () => field()?.querySelector('input:not([type="hidden"])');
-  const search = () => adapter.getList()?.querySelector('.sf-input input');
+  // The search header (.sf-list-search, since R029) or a search field written
+  // as an sf-input before it.
+  const search = () => adapter.getList()?.querySelector('.sf-list-search-input, .sf-input input');
   const items = () => [...(adapter.getList()?.querySelectorAll('.sf-list-item') || [])];
   const available = () => items().filter(e=>!e.hidden&&!e.classList.contains('disabled')&&e.getAttribute('aria-disabled')!=='true'&&e.getAttribute('aria-hidden')!=='true');
   const contains = node => node && (root.contains(node)||adapter.getList()?.contains(node));

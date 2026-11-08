@@ -1,0 +1,119 @@
+// The dropping panel's geometry (owner C05-C07, docs review R029,
+// 2026-11-07), written once and used by every panel that drops rows from a
+// control: sf-menu-context (this component), sf-dropdown's list (what
+// sf-select and the field renderers draw), sf-input-lookup and
+// sf-profile-picker. A sheet that uses it includes the mixins where its
+// selectors say, and writes the values below as the same Framework variables
+// (literally: the contracts and the public variables' stated defaults are read
+// from the sheets' sources).
+//
+// - C05: a row's highlight stands $inset from the panel's edge, is as tall as
+//   a control of the panel's step (--sf-ui-<step>--control-height) and rounded
+//   $row-radius; its icon or text stands $row-padding inside it, the icon
+//   $row-padding before the text.
+// - C06: a search is the panel's header, not a boxed field: a search icon,
+//   no frame, no fill, a row's height and the inset above and below, its icon
+//   and text over the rows' icon and text, a hairline across the panel's width
+//   under it that turns primary while the field has the focus. It stays put;
+//   only the rows scroll.
+// - C07: a scrollbar only when the rows do not fit. While it takes room in
+//   the layout, the area that scrolls gives up its inline-end padding (the
+//   component marks it, see src/component/panel-scrollbar.js) and the track is
+//   the inset, a thumb of $thumb and the inset again; an overlay scrollbar
+//   takes no room and the inset stays. Firefox draws its thin scrollbar.
+
+// The values, every one a Framework variable; the mixins read them.
+$inset: var(--sf-space-1\/4);
+$row-padding: var(--sf-space-1\/2);
+$row-radius: var(--sf-radius--ui);
+$thumb: var(--sf-space-1\/4);
+
+// C07, on the area that scrolls the rows. $inset is the area's inline-end
+// padding (the gap on either side of the thumb), $track the name of the
+// custom property that holds the track's width, $thumb-min the thumb's
+// shortest length (a row's height), $thumb-width the thumb's width.
+@mixin scrollbar($inset, $track, $thumb-min, $thumb-width: $thumb) {
+  #{$track}: calc(2 * #{$inset} + #{$thumb-width});
+
+  &::-webkit-scrollbar {
+    width: var(#{$track});
+    height: var(#{$track});
+  }
+
+  &::-webkit-scrollbar-track {
+    border: 0;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    min-height: $thumb-min;
+    border: $inset solid transparent;
+    border-radius: var(#{$track});
+    background-clip: padding-box;
+    background-color: var(--sf-scroll-bg-thumb);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+  }
+}
+
+// C06, the header: a row's height and the inset above and below
+// ($block-start, $block-end), its icon and text after the inset and the
+// row's padding ($inline-start, $inline-end are the panel's insets), a
+// hairline under it.
+@mixin search-header($row-height, $block-start, $block-end, $inline-start, $inline-end) {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: $row-padding;
+  min-block-size: calc(#{$row-height} + #{$block-start} + #{$block-end});
+  padding-block: 0;
+  padding-inline: calc(#{$inline-start} + #{$row-padding}) calc(#{$inline-end} + #{$row-padding});
+  border: 0;
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+// The header's search icon, as wide as the rows' icons ($size).
+@mixin search-icon($size) {
+  display: flex;
+  flex: none;
+  inline-size: $size;
+  overflow: hidden;
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+// The header's field: no frame, no fill, a primary caret.
+@mixin search-input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background-color: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+  appearance: none;
+  caret-color: var(--sf-primary);
+
+  &::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
+// The header has no frame to ring: the focus is the caret and the header's
+// line in the primary colour (Highlight in forced colours). Included in
+// sf.states on the header's selector.
+@mixin search-focus {
+  &:focus-within {
+    border-block-end-color: var(--sf-primary);
+  }
+
+  @media (forced-colors: active) {
+    &:focus-within {
+      border-block-end-color: Highlight;
+    }
+  }
+}

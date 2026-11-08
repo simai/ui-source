@@ -4,6 +4,7 @@ import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
 import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 import { tagSelector } from "../../core/js/tag-aliases.js";
+import { PanelScrollbar } from "../../component/panel-scrollbar.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -280,40 +281,19 @@ class SfContextMenu extends ContextMenuElement {
       ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .relative > .sf-context-menu-content");
   }
 
+  // The mark itself is shared with every dropping panel
+  // (src/component/panel-scrollbar.js).
   watchScrollbar() {
     const area = this.scrollArea();
-    if (area !== this._scrollArea) {
-      this._scrollObserver?.disconnect();
-      this._scrollArea?.classList.remove("sf-context-menu-list--scrollbar", "sf-context-menu-content--scrollbar");
-      this._scrollArea = area;
-      if (area && typeof ResizeObserver === "function") {
-        // The mark moves the area's padding, so it is written on the next
-        // frame: written in the observer's own call it would resize what is
-        // observed while the observer delivers (a ResizeObserver loop).
-        this._scrollObserver ??= new ResizeObserver(() => requestAnimationFrame(() => this.markScrollbar()));
-        this._scrollObserver.observe(area);
-      }
-    }
-    this.markScrollbar();
-  }
-
-  markScrollbar() {
-    const area = this._scrollArea;
-    if (!area?.isConnected) return;
-    const style = getComputedStyle(area);
-    const borders = (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0);
-    const takesRoom = area.offsetWidth - area.clientWidth - borders > 0;
-    const name = area.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar";
-    if (area.classList.contains(name) !== takesRoom) area.classList.toggle(name, takesRoom);
+    this._scrollbar ??= new PanelScrollbar();
+    this._scrollbar.watch(area, area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar");
   }
 
   disconnectedCallback() {
     // Taken out of the page, it closes without asking: nothing is left to keep.
     if (this._owned) this.close({restoreFocus: false, ask: false});
     this._itemObserver.disconnect();
-    this._scrollObserver?.disconnect();
-    this._scrollObserver = null;
-    this._scrollArea = null;
+    this._scrollbar?.disconnect();
     for (const item of this._itemAttributes.keys()) this.releaseItem(item);
     this._currentItem = null;
     super.disconnectedCallback();

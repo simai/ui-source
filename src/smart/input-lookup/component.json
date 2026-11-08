@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -303,7 +303,8 @@
     "version 1.0.2: wrapped chips' remove targets no longer overlap. sf-tag's target is --sf-c2 (24px) square centred on the line; on a 16px line with the 4px row gap the targets of neighbouring rows overlapped by 4px, so a click in that band could remove a chip on the other row. The frame's row gap is now the larger of --sf-space-1/4 and --sf-c2 minus the line, at every size and viewport; the column gap and the height of a single row do not change.",
     "version 1.1.1: the bare input keeps a page's unlayered :focus-visible outline off with outline: none !important -- an unlayered rule beats every layered one, and drew a second frame inside the frame's ring (owner, 2026-11-01). The frame's ring is unchanged.",
     "version 1.2.0: the tag is sf-input-lookup (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-lookup and the bundle cl-input-lookup follow it. sf-lookup stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-lookup, sf-lookup) (change journal tag-sf-lookup-to-sf-input-lookup, path-smart-lookup-to-input-lookup).",
-    "version 1.2.1 (2026-11-07): a patch (owner R017). The list's panel insets its rows 8px (space-1/3, --sf-lookup--panel-padding), as a menu and its search field do; a row's padding gives back what the panel takes, so its text keeps the field's axis (space-x + 1px from the panel's outer edge). Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-07): a patch (owner R017). The list's panel insets its rows 8px (space-1/3, --sf-lookup--panel-padding), as a menu and its search field do; a row's padding gives back what the panel takes, so its text keeps the field's axis (space-x + 1px from the panel's outer edge). Settings, values, events and keys unchanged.",
+    "version 1.2.2 (2026-11-07): a patch (owner C05-C07, docs review R029, which replaces R017's 1/3 inset). The list is a dropping panel with the context menu's geometry, from the shared partial component/context-menu/scss/_panel.scss: rows and their fills stand --sf-space-1/4 from the panel's edge (--sf-lookup--panel-padding), a row is as tall as a control of the lookup's size (--sf-ui-<size>--control-height; a caption makes it taller) and rounded --sf-radius--ui, and its avatar or text stands --sf-space-1/2 inside the highlight, the state line and the actions on the same line (before, a row's text kept the field's axis). The scrollbar shows only when the rows do not fit; while it takes room the panel is marked sf-lookup-panel--scrollbar (component/panel-scrollbar.js) and gives up its inline-end padding, the track the inset, a thumb of --sf-space-1/4 and the inset again. Settings, values, events and keys unchanged; probe dropdown-panels-inset."
   ],
   "x-registry": {
     "reuse_mode": "whole",

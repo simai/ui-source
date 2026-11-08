@@ -53,7 +53,7 @@ try {
       document.querySelector('#d').addEventListener('change', (event) => window.changes.push(event.detail ?? null));
     });
     await tab.locator('#d button[aria-haspopup]').click();
-    const search = tab.locator('.sf-list:not([hidden]) .sf-input input').first();
+    const search = tab.locator('.sf-list:not([hidden]) .sf-list-search-input').first();
     await search.waitFor({timeout: 5000}).catch(() => failures.push(`${lang}: no search field`));
     const placeholder = await search.getAttribute('placeholder').catch(() => null);
     await search.fill('Каз').catch(() => {});

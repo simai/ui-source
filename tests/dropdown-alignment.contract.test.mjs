@@ -23,10 +23,17 @@ test('dropdown alignment: pictures take the whole line, the padding gives up the
   }
 });
 
-test('dropdown alignment: an option gives back the list inset and adds the field border', async () => {
+// Since R029 (owner C05, 2026-11-07) an option no longer lines up with its
+// field: it is a row of the dropping panel, its picture or text --sf-space-1/2
+// inside its highlight at every size, the picture --sf-space-1/2 before the
+// text (the context menu's geometry; dropdown-panels-inset measures it).
+test('dropdown alignment: an option is a dropping panel row, its content --sf-space-1/2 inside its highlight', async () => {
   const custom = await read('component/dropdown/scss/_css__custom.scss');
+  assert.match(custom, /\.sf-dropdown \.sf-list \.sf-list-item,\n\.sf-list--menu \.sf-list-item \{\n  --sf-list-item--padding-inline-start: var\(--sf-space-1\\\/2\);\n  --sf-list-item--padding-inline-end: var\(--sf-space-1\\\/2\);/);
+  assert.match(custom, /\.sf-list-item-wrap,\n\.sf-list--menu \.sf-list-item \.sf-list-item-wrap \{\n  gap: var\(--sf-space-1\\\/2\);/);
+  assert.match(custom, /--sf-list-item-container--padding-inline-start: 0;/);
+  assert.ok(!custom.includes('var(--sf-list--padding-left, 0px)'), 'no option gives the list inset back');
   for (const size of SIZES) {
-    assert.ok(custom.includes(`.sf-dropdown .sf-list .sf-list-item.sf-list-item--size-${size} {\n  --sf-list-item--padding-inline-start: calc(var(--sf-ui-${size}--space-x) + var(--sf-px) - var(--sf-list--padding-left, 0px));`), size);
     assert.ok(custom.includes(`.sf-dropdown.sf-dropdown--size-${size} .sf-dropdown-field > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-${size}--text-space-x); }`), `label step ${size}`);
   }
   assert.match(custom, /\.sf-dropdown \.sf-dropdown-field:has\(> \.sf-dropdown-field-visual\) \{\s*column-gap: 0;/);

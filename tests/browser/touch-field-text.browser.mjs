@@ -78,7 +78,7 @@ const measure = async (options) => {
   }));
   // The dropdown's search.
   await page.locator('#dropdown button[aria-haspopup]').click();
-  const search = page.locator('.sf-list:not([hidden]) .sf-input input').first();
+  const search = page.locator('.sf-list:not([hidden]) .sf-list-search-input').first();
   await search.waitFor({timeout: 5000}).catch(() => failures.push({name: 'the dropdown search never drew'}));
   fields.push(await search.evaluate((input) => ({name: 'dropdown search', font: parseFloat(getComputedStyle(input).fontSize),
     height: input.closest('.sf-input-field')?.getBoundingClientRect().height ?? input.getBoundingClientRect().height})).catch(() => ({name: 'dropdown search', font: 0, height: 0})));

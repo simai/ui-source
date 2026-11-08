@@ -1,3 +1,5 @@
+@use 'panel';
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-context-menu {
@@ -691,30 +693,11 @@
 }
 
 .sf-context-menu-search-icon {
-  display: flex;
-  flex: none;
-  inline-size: var(--sf-context-menu--line);
-  overflow: hidden;
-  --sf-icon--color: var(--sf-on-surface-variant);
+  @include panel.search-icon(var(--sf-context-menu--line));
 }
 
 .sf-context-menu-search-input {
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  outline: none;
-  background-color: transparent;
-  color: var(--sf-on-surface);
-  font: inherit;
-  appearance: none;
-  caret-color: var(--sf-primary);
-}
-
-.sf-context-menu-search-input::placeholder {
-  color: var(--sf-on-surface-variant);
+  @include panel.search-input;
 }
 
 /* A menu with a search: the header stays where it is and only the rows
@@ -732,9 +715,13 @@
 }
 
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-search {
-  flex: none;
-  min-block-size: calc(var(--sf-context-menu--row-height) + var(--sf-context-menu-content--padding-top) + var(--sf-context-menu-content--padding-bottom));
-  padding-inline: calc(var(--sf-context-menu-content--padding-inline-start) + var(--sf-context-menu--row-padding)) calc(var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--row-padding));
+  @include panel.search-header(
+    var(--sf-context-menu--row-height),
+    var(--sf-context-menu-content--padding-top),
+    var(--sf-context-menu-content--padding-bottom),
+    var(--sf-context-menu-content--padding-inline-start),
+    var(--sf-context-menu-content--padding-inline-end)
+  );
 }
 
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
@@ -915,35 +902,7 @@
    scrollbar. */
 .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
-  --sf-context-menu--track: calc(2 * var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--thumb));
-}
-
-.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar,
-.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar {
-  width: var(--sf-context-menu--track);
-  height: var(--sf-context-menu--track);
-}
-
-.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar-track,
-.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar-track {
-  border: 0;
-  background-color: transparent;
-}
-
-.sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content::-webkit-scrollbar-thumb,
-.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list::-webkit-scrollbar-thumb {
-  min-height: var(--sf-context-menu--row-height);
-  border: var(--sf-context-menu-content--padding-inline-end) solid transparent;
-  border-radius: var(--sf-context-menu--track);
-  background-clip: padding-box;
-  background-color: var(--sf-scroll-bg-thumb);
-}
-
-@supports not selector(::-webkit-scrollbar) {
-  .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
-  .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
-    scrollbar-width: thin;
-  }
+  @include panel.scrollbar(var(--sf-context-menu-content--padding-inline-end), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
 }
 
 .sf-context-menu .sf-context-menu-content.sf-context-menu-content--scrollbar,
@@ -964,9 +923,9 @@
 
 @layer sf.states {
   /* The header has no frame to ring: the focus is the caret and the header's
-     line in the primary colour. */
-  .sf-context-menu-search:focus-within {
-    border-block-end-color: var(--sf-primary);
+     line in the primary colour (Highlight in forced colours). */
+  .sf-context-menu-search {
+    @include panel.search-focus;
   }
 
   .sf-context-menu-item:focus-visible,
@@ -995,10 +954,6 @@
 @media (forced-colors: active) {
   .sf-context-menu .sf-context-menu-content {
     border: var(--sf-px) solid CanvasText;
-  }
-
-  .sf-context-menu-search:focus-within {
-    border-block-end-color: Highlight;
   }
 
   /* A switch that is on and a tile that is on are told apart by the forced
