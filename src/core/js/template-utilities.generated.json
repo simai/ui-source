@@ -265,6 +265,9 @@
     "justify-content/default",
     "place-items/default"
   ],
+  "cl-menu": [
+    "position/default"
+  ],
   "cl-menu-context": [
     "display/default",
     "flex-direction/default",

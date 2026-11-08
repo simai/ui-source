@@ -184,6 +184,10 @@
           "status": "released"
         },
         {
+          "element": "sf-input-choice",
+          "status": "released"
+        },
+        {
           "element": "sf-input-code",
           "status": "released"
         },

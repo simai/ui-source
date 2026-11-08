@@ -72,6 +72,8 @@ const PHASE_A = [
   'tile-metric',
   'list-attention',
   'progress-run',
+  // Choice cards (Larena msg-993e1e39 item 3, 2026-11-08).
+  'input-choice',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

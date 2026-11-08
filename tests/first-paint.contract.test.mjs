@@ -19,8 +19,8 @@ test('every component has a snapshot per example, and the sheets it needs', () =
   // 66 again when sf-settings-menu was folded into sf-context-menu (owner, 2026-10-30); 67 with sf-include; 66 when sf-toggle was swept (2026-11-02);
   // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05);
   // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06);
-  // 75 with sf-wizard and sf-wizard-step (2026-11-06); 78 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07).
-  assert.equal(all.length, 78);
+  // 75 with sf-wizard and sf-wizard-step (2026-11-06); 78 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07); 79 with sf-input-choice (2026-11-08).
+  assert.equal(all.length, 79);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);

@@ -1236,6 +1236,54 @@
         "render",
         "interaction",
         "keyboard",
+        "form",
+        "validation",
+        "selection",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.badges",
+          "component.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input-choice",
+      "id": "smart.input-choice",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/input-choice/smart.manifest.json",
+      "manifest_sha256": "d36a6b624736cdf27e5765c3e35d7e2d67c79380f54ae0dd3202563ed5efbf21",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A form field that picks one option, or several, from cards: each a title, a caption, an icon and a badge, in a grid that wraps on a phone. One option is a radio group the arrow keys move through; several are checkboxes. Chosen cards have a filled mark and a heavier primary edge; invalid cards an error edge and a message under them.",
+      "tags": [
+        "choice",
+        "cards",
+        "radio",
+        "checkbox",
+        "options",
+        "picker",
+        "field",
+        "form"
+      ],
+      "title": "Choice"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
         "theme",
         "responsive"
       ],
@@ -1857,6 +1905,7 @@
         "public_parts": [],
         "uses": [
           "component.badges",
+          "component.dot",
           "component.icon-buttons",
           "component.icons",
           "component.menu"
@@ -1871,7 +1920,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "e4b8f017f3f090d8e485ca944ca40cfb99863a897067d7996d9f95c3d49c4981",
+      "manifest_sha256": "4d9f3d4fa4a8d354101c3f82c91bbe5d0e1dba0a6b3b5c2031c5649b65e3d1d5",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

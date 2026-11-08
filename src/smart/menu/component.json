@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu",
   "tag": "sf-menu",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -24,6 +24,23 @@
           "type": "string",
           "optional": true
         },
+        "count": {
+          "type": "number",
+          "optional": true,
+          "summary": "A count by its own name: the same as a badge holding a whole number (the class counter)."
+        },
+        "status": {
+          "type": "enum",
+          "values": [
+            "success",
+            "warning",
+            "error",
+            "info",
+            "neutral"
+          ],
+          "optional": true,
+          "summary": "A status dot of that tone at the row's end, before the counter; its word ends the link's name («Адрес, внимание»)."
+        },
         "current": {
           "type": "boolean",
           "optional": true
@@ -39,10 +56,25 @@
         "children": {
           "type": "list",
           "optional": true
+        },
+        "group": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "A first-level item that is a group: a heading over its items (children, or items), never a destination. Its items are first-level rows. A row and the compact rail draw the items in the group's place, without the heading."
+        },
+        "collapsible": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "A group whose heading is a button that opens and closes it (aria-expanded); a group is open unless open is false."
+        },
+        "items": {
+          "type": "list",
+          "optional": true,
+          "summary": "A group's items, the same as children, by the shape of a grouped navigation {groups:[{label, items}]}."
         }
       },
       "x-markup": "the attribute takes the same list as JSON; without it a nested <ul><li><a> written inside is the menu; children has the same shape",
-      "summary": "The items, [{id, label, href?, icon?, badge?, current?, disabled?, open?, children?}]: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it.",
+      "summary": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
       "examples": [
         [
           {
@@ -66,6 +98,42 @@
             "label": "Контакты",
             "href": "/contacts/",
             "badge": "3"
+          }
+        ],
+        [
+          {
+            "id": "site",
+            "label": "Сайт",
+            "group": true,
+            "items": [
+              {
+                "id": "address",
+                "label": "Адрес",
+                "href": "#address",
+                "icon": "language",
+                "status": "warning"
+              },
+              {
+                "id": "code",
+                "label": "Код",
+                "href": "#code",
+                "icon": "code"
+              }
+            ]
+          },
+          {
+            "id": "data",
+            "label": "Данные",
+            "group": true,
+            "collapsible": true,
+            "items": [
+              {
+                "id": "tables",
+                "label": "Таблицы",
+                "href": "#tables",
+                "count": 12
+              }
+            ]
           }
         ]
       ]
@@ -93,17 +161,18 @@
     "current-from-location": {
       "type": "boolean",
       "default": false,
-      "summary": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
+      "summary": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); a link to a section of the page (#address) is current while location.hash names it. History navigation is followed."
     },
     "collapse": {
       "type": "enum",
       "values": [
         "auto",
         "always",
+        "narrow",
         "none"
       ],
       "default": "auto",
-      "summary": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never."
+      "summary": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; narrow: the button while the page is narrower than the md breakpoint (a phone), and then a selector -- its words and icon are the current item's; none: never."
     },
     "label": {
       "type": "string",
@@ -114,6 +183,11 @@
       "type": "string",
       "default-from": "runtime.toggle-label",
       "summary": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The menu stays in sight while the page scrolls (position sticky at --sf-menu-sticky-top, 0 by default), and scrolls inside itself when it is taller than the view. For a section navigation beside a long page."
     }
   },
   "values": {
@@ -162,7 +236,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu-toggle fires for each branch that changed, source method. Returns whether anything changed.",
+      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu-toggle fires for each branch that changed, source method. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "x-returns": {
         "type": "boolean"
       }
@@ -175,7 +249,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Close the branch with this id; in a row the panels inside it close too. Returns whether anything changed.",
+      "summary": "Close the branch with this id; in a row the panels inside it close too. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "x-returns": {
         "type": "boolean"
       }
@@ -188,7 +262,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Open the branch if it is closed, close it if it is open. Returns whether anything changed.",
+      "summary": "Open the branch if it is closed, close it if it is open. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "x-returns": {
         "type": "boolean"
       }
@@ -226,6 +300,13 @@
     },
     {
       "name": "badges"
+    },
+    {
+      "name": "dot",
+      "$comment": [
+        "An item's status is the class dot of its tone (.sf-dot), drawn by the dot",
+        "sheet without an element per row."
+      ]
     }
   ],
   "templates": {
@@ -271,9 +352,12 @@
           },
           {
             "collapse": "always"
+          },
+          {
+            "collapse": "narrow"
           }
         ],
-        "x-when": "any of: a row's open panel (appearance default or navigation), or the panel of the menu drawn as a button; a column's groups are no surface and keep Escape for the page"
+        "x-when": "any of: a row's open panel (appearance default or navigation), or the panel of the menu drawn as a button (collapse always, or narrow under the md breakpoint); a column's groups are no surface and keep Escape for the page"
       }
     }
   },
@@ -313,6 +397,10 @@
     "--sf-menu-submenu-radius": {
       "type": "length",
       "state": "open"
+    },
+    "--sf-menu-sticky-top": {
+      "type": "length",
+      "state": "default"
     }
   },
   "aliases": {
@@ -374,7 +462,8 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0: appearance navigation (owner decision by recommendation, 2026-11-01), the look of a site header's sections as Docara draws them, so a header needs no classes of its own over the menu: rows with no border and no fill at rest, text on-surface at the class row's size 1 height, padding, type and ui radius; hover and press the state family of the alpha scale (--sf-surface-transparent-hover 4, -active 12), an open branch the select step (8), the current page the fill family's plate --sf-surface-container-active (24, the same step in both themes on the theme's neutral tone, as the token sets it); forced colours frame the current page instead. It is a row or a column as orientation says, so a row's panels, the collapse to a button and the keyboard are the default's. The look comes from the class sheet src/component/menu 1.1.0.",
-    "version 1.2.4 (2026-11-07): a patch (a look). A row's label badge carries sf-badge--tight, and a row's counter (.sf-badge[data-count]) takes the same tight room from the badge sheet: component.badges 1.2.0 widened a badge's default side room to --sf-space-1/2 (owner decision, docs review R020), and a menu row is a dense place. Settings, values, events and keys unchanged."
+    "version 1.2.4 (2026-11-07): a patch (a look). A row's label badge carries sf-badge--tight, and a row's counter (.sf-badge[data-count]) takes the same tight room from the badge sheet: component.badges 1.2.0 widened a badge's default side room to --sf-space-1/2 (owner decision, docs review R020), and a menu row is a dense place. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-08, Larena msg-993e1e39 item 4 -- section navigation for an entity page): a minor, all additions. First-level groups {group: true, label, collapsible?, open?, items | children}: a heading (words, or a disclosure button with aria-expanded when collapsible) over a list the heading names (aria-labelledby); the group's items are first-level rows, so the text axis is the rows' own and the heading's words stand on it. A group is open unless open is false; one that is not collapsible is always open, and open/close/toggle refuse it with reason fixed; a row and the compact rail draw the items in the group's place. An item's status (success, warning, error, info, neutral) is the class dot (component dot) at the row's end before the counter, its word in the link's name; count is badge's count by its own name. collapse narrow: the menu is the button under the md breakpoint and the button is a selector showing the current item (its icon and words, named «<label>: <item>»). sticky keeps the menu in sight (--sf-menu-sticky-top, the tenth public variable). current-from-location matches a section link (#address) against location.hash, so in-page panels and real URLs both work. Not a second tabs component: sf-tabs stays the tab strip of one panel set; this is navigation (WAI-ARIA disclosure, no roles of an application menu)."
   ],
   "x-rule": {
     "$comment": [

@@ -1,0 +1,36 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.input-choice",
+  "title": "input-choice reference",
+  "summary": "Deterministic reference fixture for sf-input-choice.",
+  "locale": "ru",
+  "props": {
+    "label": "Тип сайта",
+    "name": "kind",
+    "value": "shop",
+    "items": [
+      {
+        "value": "site",
+        "label": "Сайт",
+        "caption": "Страницы, разделы и меню",
+        "icon": "language"
+      },
+      {
+        "value": "shop",
+        "label": "Магазин",
+        "caption": "Каталог, корзина и заказы",
+        "icon": "storefront",
+        "badge": "Pro"
+      },
+      {
+        "value": "docs",
+        "label": "Документация",
+        "caption": "Статьи с поиском и оглавлением",
+        "icon": "menu_book"
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}
