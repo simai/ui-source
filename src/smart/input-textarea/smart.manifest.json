@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-textarea",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -176,6 +176,11 @@
         "type": "string",
         "default": ""
       },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for a textarea drawn without a visible label; it lands on the native textarea. A visible label wins."
+      },
       "spellcheck": {
         "type": "boolean",
         "default": true,
@@ -195,6 +200,11 @@
           "filled",
           "flush"
         ]
+      },
+      "aria-labelledby": {
+        "type": "string",
+        "default": "",
+        "description": "Ids of the elements that name the textarea; it lands on the native textarea."
       },
       "inherited-value": {
         "type": "string",
@@ -452,7 +462,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-textarea/index.js",
-        "sha256": "e572ee83323c6abb2ebe5c7bfb46f039600b51f6f15c7e46cb7b3c9ebc68405c"
+        "sha256": "8aee6f68994d29a60fef929c814146d8febffc7c582b7b3f18a90d4e81de7753"
       },
       {
         "path": "src/smart/input-textarea/rule.js",
@@ -460,11 +470,11 @@
       },
       {
         "path": "src/smart/input-textarea/js/templates/default.js",
-        "sha256": "4d092acb372912b3280b03fceabac693fa7b9e0d3d1536e8d64730fccdd44438"
+        "sha256": "a8232c0d6f93295422e59c06e0c47bf0a34ce5133b933f681d3d7968fc0ad65f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "767ea28b693f62589ff7c213b256623140cac4767e8a06428b8712554505152d"
+        "sha256": "142012a4643f36ca6d6d34c8bc2b222470b5291d804c96b9d156b9b7a13c2313"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -199,6 +199,7 @@
   },
   "styles": "js/templates/default.css",
   "examples": "examples.json",
+  "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
     "role": "dialog",
@@ -301,11 +302,12 @@
     "css-variables: six public variables of the surface (background, colour, radius, shadow, max width, max height) read by default.css with the old internal --sf-popover--max-* and the elevation tokens as fallbacks (§6).",
     "side-effects: none. The surface is drawn in place, absolutely positioned against the host, not at the end of body; it registers as a surface layer of the one stack (core open-surface-mark), so Escape and an outside press reach it only while it is the top layer.",
     "dismissing: reasons escape (Escape), outside (a press outside), close (the trigger pressed again), api (a script); dismissible=false removes escape and outside.",
-    "docs: the folder has no docs.md yet (the page lives in ui-doc); a leftover for the docs fold of §16 item 30.",
+    "docs: docs.md in the folder since 1.2.1 (simai/ui-source#30); ui-doc keeps the full page with its examples.",
     "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.1.5: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; behaviour unchanged.",
     "version 1.1.6: what the page sets inline on the host that a child inherits -- custom properties, colour, the font but its size -- stays on the host before its box (core.runtime 1.30.0, Smart base hostInheritedStyle), so el.style.color or a --var set on sf-popover reaches the trigger and the surface; before, the host's style attribute was replaced by the box alone.",
-    "version 1.2.0 (2026-11-07): a minor. The setting offset, the gap between the trigger and the surface as a token or a CSS length (simai/ui-source#69): the stylesheet reads it as --sf-popover--offset, a margin on the trigger side of whichever placement is set; empty, nothing changes. It declares static rendersNoTemplate, so its first DOM update counts as its render (Smart base, core.runtime 1.32.0): what it holds is read by the Loader then, and an sf-dropdown or sf-button-icon in it is defined (simai/ui-source#70)."
+    "version 1.2.0 (2026-11-07): a minor. The setting offset, the gap between the trigger and the surface as a token or a CSS length (simai/ui-source#69): the stylesheet reads it as --sf-popover--offset, a margin on the trigger side of whichever placement is set; empty, nothing changes. It declares static rendersNoTemplate, so its first DOM update counts as its render (Smart base, core.runtime 1.32.0): what it holds is read by the Loader then, and an sf-dropdown or sf-button-icon in it is defined (simai/ui-source#70).",
+    "version 1.2.1: the folder carries its docs.md (simai/ui-source#30): a kit audit that read the source docs took sf-popover as undocumented while ui-doc had its page. The docs say what the page says -- trigger and content in place, the settings, the open and close requests and facts with their reasons, the keys and the six public variables. Behaviour unchanged."
   ],
   "x-rule": {
     "$comment": [

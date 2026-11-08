@@ -1,10 +1,11 @@
 // The registry of universal properties (owner, 2026-10-15): every property
-// type the Framework renders, its variants and the parameters a field of it
-// reads -- one list a host (Larena's fields and settings), the property
-// workbench and the documentation read, instead of each learning the types
-// from the renderers' source. Which modes a type has is not written here: it
-// is read from the renderer maps themselves (modesOf), so the registry cannot
-// claim a mode the set does not draw. A contract keeps the two the same.
+// type the Framework renders, or a component set renders beside it (`set`),
+// its variants and the parameters a field of it reads -- one list a host
+// (Larena's fields and settings), the property workbench and the documentation
+// read, instead of each learning the types from the renderers' source. Which
+// modes a type has is not written here: it is read from the renderer maps
+// themselves (modesOf), so the registry cannot claim a mode the set does not
+// draw. A contract keeps the two the same.
 //
 // `params` are the field keys the type's renderers read -- each one, and no
 // other (the probe field-renderer-params calls them with a field that records
@@ -106,6 +107,28 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'include', label: {ru: 'Код', en: 'Code'},
         variants: [],
         params: ['language', 'required', 'readonly']},
+    // The types a component set draws (property-view port 1.18.0; Larena
+    // property types standard, notes of 2026-11-03): `set` names the set whose
+    // components show and edit them -- the View set's sf-view-properties and
+    // sf-view-flow -- and the Framework draws their table cells and filters
+    // (money and percent as numbers, items by its number of rows). `params` are
+    // the keys the type reads, in the set's renderers and in these. Every
+    // number is a decimal string, never a float.
+    {type: 'money', label: {ru: 'Деньги', en: 'Money'}, set: 'view',
+        variants: [],
+        params: ['currency', 'min', 'max', 'required', 'readonly']},
+    {type: 'percent', label: {ru: 'Процент', en: 'Percent'}, set: 'view',
+        variants: [],
+        params: ['min', 'max', 'required', 'readonly']},
+    {type: 'items', label: {ru: 'Строки', en: 'Rows'}, set: 'view',
+        variants: [],
+        params: ['columns', 'minRows', 'maxRows', 'required', 'readonly']},
+    {type: 'compound', label: {ru: 'Составное', en: 'Compound'}, set: 'view',
+        variants: [],
+        params: ['parts', 'required', 'readonly']},
+    {type: 'ru.requisites', label: {ru: 'Реквизиты', en: 'Requisites (Russia)'}, set: 'view',
+        variants: [],
+        params: ['parts', 'required', 'readonly']},
 ]);
 
 // The modes a type has, read from the renderer maps: view and edit (a record),

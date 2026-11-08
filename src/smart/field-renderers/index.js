@@ -1,11 +1,12 @@
 import {html, nothing} from "lit";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
-import {pageText} from "../../core/js/page-language";
+import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
+import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -374,6 +375,12 @@ export const FILTER_RENDERERS = {
     lookup: renderEntityMultiSelectFilterControl,
     file: renderFileFilterControl,
     color: renderColorFilterControl,
+    // The types a component set draws (property-view port 1.18.0): a money
+    // amount and a percent are filtered as numbers (the host compares the
+    // amount, as a decimal), and an items field by its number of rows.
+    money: renderNumberFilterControl,
+    percent: renderNumberFilterControl,
+    items: renderNumberFilterControl,
 };
 
 // What a field asks to be filtered by: its own declared control if it has one,
@@ -617,8 +624,8 @@ const CELL_RENDERERS = {
     // 2026» in the record panel, with no way for a consumer to change the
     // first. These two ask the host and fall through to the stored value when
     // it has nothing to say.
-    date: renderHostFormattedCell,
-    datetime: renderHostFormattedCell,
+    date: renderDateCell,
+    datetime: renderDateCell,
     time: renderHostFormattedCell,
     boolean: renderBooleanCell,
     choices: renderChoicesCell,
@@ -633,6 +640,9 @@ const CELL_RENDERERS = {
     relation: renderReferenceCell,
     lookup: renderLookupCell,
     html: renderHtmlCell,
+    money: renderMoneyCell,
+    percent: renderPercentCell,
+    items: renderItemsCell,
 };
 
 // A consumer found this on their stand: the words were written into the set, so
@@ -693,6 +703,47 @@ function renderChoiceCell(field, value) {
 function renderHostFormattedCell(field, value, host) {
     const formatted = host?.formatFieldValue?.(field, value);
     return typeof formatted === 'string' && formatted !== '' ? formatted : null;
+}
+
+// The types a component set draws (property-view port 1.18.0) have their
+// cells here, so a table shows them wherever the set's editors live. A host's
+// formatFieldValue wins, as for a date; otherwise the page's language:
+//
+//   money     {amount, currency} or a bare amount under a fixed `currency`;
+//             «1 500,50 ₽», every digit the amount has and at least the
+//             currency's minor units, formatted from the digits, never a float
+//   percent   a decimal string of the percent, «12,5 %»
+//   items     a list of rows; how many, «3 строки»
+//
+// A value that is not one of these shapes falls through to the plain value.
+function renderMoneyCell(field, value, host) {
+    const formatted = renderHostFormattedCell(field, value, host);
+    if (formatted !== null) return formatted;
+    const text = formatMoney(scalarValue(value), field, pageLocale(host ?? null));
+    return text || null;
+}
+
+function renderPercentCell(field, value, host) {
+    const formatted = renderHostFormattedCell(field, value, host);
+    if (formatted !== null) return formatted;
+    const text = formatPercent(scalarValue(value), pageLocale(host ?? null));
+    return text || null;
+}
+
+function renderItemsCell(field, value, host) {
+    const formatted = renderHostFormattedCell(field, value, host);
+    if (formatted !== null) return formatted;
+    if (!Array.isArray(value)) return null;
+    return value.length ? pageWord(SET_TEXT, 'rowCount', host ?? null, {component: SET_NAME, count: value.length}) : '';
+}
+
+// A date in a row reads as it does in the record panel: the host's text, else
+// the page's reading of the day (simai/ui-source#34); null for a value that is
+// not a date, which the table prints as it came.
+function renderDateCell(field, value, host) {
+    const formatted = renderHostFormattedCell(field, value, host);
+    if (formatted !== null) return formatted;
+    return defaultDateText(field, value, host);
 }
 
 function renderNumericCell(field, value, host) {
@@ -1182,10 +1233,76 @@ function renderStepperEdit(field, value, host) {
     `;
 }
 
+// A number is a decimal (property-view port 1.18.0: «never a float on the
+// wire»). What is typed is read with a comma or a point and spaces between
+// groups. A number field whose value arrives as a string, or that declares
+// `precision`, is a decimal-string field: it writes the canonical decimal
+// string («1500.50»), never a float, and refuses more digits after the point
+// than `precision` allows. Any other number field writes a number, as before;
+// an integer field is unchanged. Text that is not a number is reported as a
+// masked string's incomplete entry is: through setFieldError, which holds the
+// save, and under the field once the person leaves it.
+function isDecimalStringField(field, value) {
+    return (field.propertyType || field.type) === 'number'
+        && (typeof value === 'string' || Number.isInteger(field.precision));
+}
+
 function renderNumberEdit(field, value, host) {
     if (isStepperField(field)) return renderStepperEdit(field, value, host);
     const decimal = (field.propertyType || field.type) === 'number';
     value = scalarValue(value);
+    if (!decimal) {
+        return html`
+            <sf-input
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    name=${fieldName(field)}
+                    value=${value ?? ''}
+                    inputmode="numeric"
+                    ?required=${Boolean(field.required)}
+                    aria-label=${field.label || field.key || ''}
+                    @input=${(event) => {
+                        const next = event.target?.value ?? '';
+                        host.setFieldValue(field, next === '' ? null : Number(next));
+                    }}
+                    @change=${(event) => {
+                        const next = event.target?.value ?? '';
+                        host.setFieldValue(field, next === '' ? null : Number(next));
+                    }}
+            ></sf-input>
+        `;
+    }
+    const asString = isDecimalStringField(field, value);
+    const write = (event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const text = String(input?.value ?? '');
+        const read = readDecimal(text);
+        let message = null;
+        if (!read.ok) message = setText(host, 'notNumber');
+        else if (read.value !== null && Number.isInteger(field.precision) && fractionDigits(read.value) > field.precision) {
+            message = pageWord(SET_TEXT, 'precisionMax', host ?? null, {component: SET_NAME, count: field.precision});
+        }
+        if (message) {
+            if (left && input) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, text);
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        if (input?.hasAttribute?.('invalid')) {
+            input.toggleAttribute('invalid', false);
+            input.removeAttribute('error-message');
+        }
+        host.setFieldError?.(field, null);
+        if (read.value === null) host.setFieldValue(field, null);
+        else host.setFieldValue(field, asString ? read.value : Number(read.value));
+    };
 
     return html`
         <sf-input
@@ -1193,17 +1310,11 @@ function renderNumberEdit(field, value, host) {
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
-                inputmode=${decimal ? 'decimal' : 'numeric'}
+                inputmode="decimal"
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
-                @input=${(event) => {
-                    const next = event.target?.value ?? '';
-                    host.setFieldValue(field, next === '' ? null : Number(next));
-                }}
-                @change=${(event) => {
-                    const next = event.target?.value ?? '';
-                    host.setFieldValue(field, next === '' ? null : Number(next));
-                }}
+                @input=${(event) => write(event, false)}
+                @change=${(event) => write(event, true)}
         ></sf-input>
     `;
 }
@@ -1628,6 +1739,9 @@ const SET_TEXT = {
         showPassword: 'Show password',
         hidePassword: 'Hide password',
         maskIncomplete: 'Complete the field',
+        notNumber: 'Enter a number',
+        precisionMax: 'At most {n} digits after the point',
+        rowCount: {one: '{n} row', other: '{n} rows'},
     },
     ru: {
         yes: 'Да',
@@ -1657,6 +1771,9 @@ const SET_TEXT = {
         showPassword: 'Показать пароль',
         hidePassword: 'Скрыть пароль',
         maskIncomplete: 'Заполните поле полностью',
+        notNumber: 'Введите число',
+        precisionMax: 'Не больше {n} знаков после запятой',
+        rowCount: {one: '{n} строка', few: '{n} строки', many: '{n} строк', other: '{n} строки'},
     },
 };
 
@@ -2127,11 +2244,43 @@ function renderNumberView(field, value, host) {
     return html`<span class="sf-field-view">${field.unit ? `${text} ${field.unit}` : text}</span>`;
 }
 
-// A date is the host's to format. The set has no locale and will not invent one:
-// without formatFieldValue it shows what it was given, which is at worst the
-// stored form and never a wrong date confidently rendered.
+// A date is the host's to format first: formatFieldValue wins. Without it the
+// set used to print the stored form -- «2026-10-25T10:30:00+03:00» beside a
+// person's «25.10.2026 10:30» (simai/ui-source#34) -- so a host that formats
+// nothing now gets the page's reading of the day, and of the time of day for a
+// datetime, in the page's locale. The day and the clock are the record's own
+// (datetime.js reads them as written, in the host's zone): nothing is moved to
+// the reader's time zone, which would show a different day near midnight. A
+// value that is not a date at all is shown as it came, never guessed at.
+function defaultDateText(field, value, host) {
+    if (carriesText(value)) return null;
+    const parts = readDateTime(value);
+    if (!parts.known || !parts.date) return null;
+    const [year, month, day] = parts.date.split('-').map(Number);
+    const locale = pageLocale(host ?? null);
+    try {
+        const date = new Date(0);
+        date.setUTCFullYear(year, month - 1, day);
+        const dayText = new Intl.DateTimeFormat(locale, {day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC'}).format(date);
+        const type = field?.propertyType || field?.type || field?.dataType;
+        if (type !== 'datetime' || !parts.time) return dayText;
+        const [hours, minutes] = parts.time.split(':').map(Number);
+        date.setUTCHours(hours, minutes, 0, 0);
+        const timeText = new Intl.DateTimeFormat(locale, {hour: '2-digit', minute: '2-digit', timeZone: 'UTC'}).format(date);
+        return `${dayText} ${timeText}`;
+    } catch {
+        return null;
+    }
+}
+
+function dateText(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted;
+    return defaultDateText(field, value, host) ?? viewText(field, value, null);
+}
+
 function renderDateView(field, value, host) {
-    const text = viewText(field, value, host);
+    const text = dateText(field, value, host);
     return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
 }
 

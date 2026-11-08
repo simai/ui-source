@@ -31,6 +31,8 @@ export function renderTextareaTemplate(context) {
     autoGrow,
     minRows,
     maxRows,
+    ariaLabel,
+    labelledBy,
   } = context;
   const field = createFieldContract(context.component, {
     prefix: 'sf-textarea',
@@ -67,6 +69,12 @@ export function renderTextareaTemplate(context) {
       `
     // A label row with nothing but a star names nothing: see sf-input.
     : '';
+  // The visible label names the textarea through the wrapping <label>; with no
+  // visible label the host's aria-label lands on the textarea, as in sf-input.
+  // The host's aria-labelledby is the author's explicit choice and always
+  // lands (simai/ui-source#30).
+  const accessibleName = !labelContent && ariaLabel ? ariaLabel : nothing;
+  const accessibleLabelledBy = labelledBy || nothing;
 
   return html`
     <label
@@ -101,6 +109,8 @@ export function renderTextareaTemplate(context) {
         ?disabled=${disabled}
         ?readonly=${readonly}
         ?required=${field.required}
+        aria-label=${accessibleName}
+        aria-labelledby=${accessibleLabelledBy}
         aria-invalid=${field.invalid ? 'true' : nothing}
         aria-describedby=${messageContent ? field.messageId : nothing}
         aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}

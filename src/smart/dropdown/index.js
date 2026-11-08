@@ -6,6 +6,7 @@ import { createDropdownInteraction } from '../../component/dropdown/interaction'
 import { bindFormReset } from '../../component/form-reset-helper';
 import { openDropdownPortal, closeDropdownPortal } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
+import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -477,6 +478,10 @@ class SfDropdown extends DropdownElement {
     this.syncPortalListeners();
     this.syncOpenSurfaceMark();
     this.positionPortalList();
+    // An open list that stays in place (portal off) marks its rows' scroll
+    // area itself; a portalled one is marked by the portal (owner C07, R029).
+    this._scrollbar ??= new PanelScrollbar();
+    this._scrollbar.watch(this._open && !this.portal ? this._list?.querySelector('.sf-list-container-wrap') : null, 'sf-list-container-wrap--scrollbar');
     if (previousRoot !== this._dropdownRoot) {
       this._interaction?.release();
       this._interaction = null;
@@ -519,6 +524,7 @@ class SfDropdown extends DropdownElement {
   onDisconnected() {
     holdOpenSurfaceMark(this, false);
     closeDropdownPortal(this._list);
+    this._scrollbar?.disconnect();
     this._releaseReset?.();
     this._releaseReset = null;
     this._resetControl = null;

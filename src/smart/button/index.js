@@ -6,11 +6,12 @@ import { resolveControlSpacing } from '../../core/js/control-spacing';
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
+  isApplePlatform,
   isEditableTarget,
   matchesShortcut,
   parseShortcut,
   shortcutCaps,
-} from "./js/shortcut";
+} from "../../component/kbd/js/shortcut";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -43,6 +44,8 @@ const COMPONENT_ATTRIBUTES = new Set([
   "name",
   "value",
   "href",
+  "target",
+  "rel",
   "expanded",
   "pressed",
   "text-pressed",
@@ -62,6 +65,14 @@ const SAFE_HREF = /^(?:[^:/?#]*(?:[/?#]|$)|https?:|mailto:|tel:)/iu;
 function linkAddress(value) {
   const href = String(value || "").trim();
   return href && SAFE_HREF.test(href) ? href : "";
+}
+
+// A link that opens a new tab says noopener noreferrer unless the page wrote
+// its own rel (1.7.0): the opened page cannot reach window.opener.
+function linkRelation(target, rel) {
+  const own = String(rel || "").trim();
+  if (own) return own;
+  return String(target || "").trim().toLowerCase() === "_blank" ? "noopener noreferrer" : "";
 }
 
 function applyButtonAttributes(host, button) {
@@ -207,14 +218,21 @@ class SfButton extends ButtonElement {
       submitName: this.getAttribute("name") || "",
       submitValue: this.getAttribute("value") ?? "",
       href: linkAddress(this.getAttribute("href")),
+      // Where the link opens and its relation (1.7.0, Larena after sf-wizard):
+      // a new tab with no rel is noopener noreferrer.
+      linkTarget: this.getAttribute("target") || "",
+      linkRel: linkRelation(this.getAttribute("target"), this.getAttribute("rel")),
       radius: this.radius,
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
       pressed: this.pressed,
       textPressed: this.textPressed,
       // The shortcut's key caps and its aria-keyshortcuts, in this platform's
-      // words (js/shortcut.js).
+      // words (component/kbd/js/shortcut.js).
       shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),
+      // Words join with + where the platform spells its modifiers (the kbd
+      // sheet shows the join only where keys are plain glyphs).
+      shortcutJoin: !isApplePlatform(),
       ariaKeyShortcuts: ariaKeyShortcuts(parseShortcut(this.shortcut)),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       component: this,
@@ -338,6 +356,8 @@ class SfButton extends ButtonElement {
       name: this.getAttribute("name") || "",
       value: this.getAttribute("value") || "",
       href: this.getAttribute("href") || "",
+      target: this.getAttribute("target") || "",
+      rel: this.getAttribute("rel") || "",
       shortcut: this.shortcut,
       shortcutListen: this.shortcutListen,
       ariaLabel: this.getAttribute("aria-label") || "",

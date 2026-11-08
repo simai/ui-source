@@ -17,7 +17,12 @@ export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 
 export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
 // When a row of links that does not fit becomes a button that opens them as a
 // column: when it does not fit, always, or never.
-export const MENU_COLLAPSE = Object.freeze(['auto', 'always', 'none']);
+// narrow: a column (or a row) that is shown as that button while the page is
+// narrower than the md breakpoint -- a phone -- whose words are then the
+// current item's, a compact selector of the sections.
+export const MENU_COLLAPSE = Object.freeze(['auto', 'always', 'narrow', 'none']);
+// The tones of an item's status dot: the class dot's tones (src/component/dot).
+export const MENU_STATUSES = Object.freeze(['success', 'warning', 'error', 'info', 'neutral']);
 // The class menu draws four levels; a deeper one is drawn as the fourth.
 export const LEVEL_LIMIT = 4;
 
@@ -25,7 +30,13 @@ const text = (value) => (value === null || value === undefined ? '' : String(val
 
 // One item, as the element draws it, with its children. `label` is text, never
 // markup; `badge` is a count (drawn by the class counter: capped at 99+,
-// hidden at 0, its phrase ends the link's name) or a short label.
+// hidden at 0, its phrase ends the link's name) or a short label, and `count`
+// the same count by its own name. `status` is a dot of one of the tones.
+//
+// A first-level item with `group: true` is a group: a heading over its items
+// (`children`, or `items` by the shape of a grouped navigation), never a
+// destination itself. Its items are first-level rows; a group is open unless
+// it says `open: false`, and only a `collapsible` one is opened and closed.
 export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) {
   if (typeof item === 'string') item = {label: item};
   if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
@@ -33,22 +44,31 @@ export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) 
   const id = own || (parentId ? `${parentId}-${index + 1}` : `item-${index + 1}`);
   if (seen.has(id)) return null;
   seen.add(id);
+  const group = !parentId && Boolean(item.group);
+  const nested = Array.isArray(item.children) ? item.children : group && Array.isArray(item.items) ? item.items : [];
   const children = [];
-  (Array.isArray(item.children) ? item.children : []).forEach((child, at) => {
+  nested.forEach((child, at) => {
     const normalised = normaliseItem(child, at, id, seen);
     if (normalised) children.push(normalised);
   });
-  return {
+  const status = text(item.status).trim();
+  const normalised = {
     id,
     label: text(item.label ?? item.text ?? item.title),
-    href: text(item.href).trim(),
+    href: group ? '' : text(item.href).trim(),
     icon: text(item.icon).trim(),
-    badge: text(item.badge).trim(),
-    current: Boolean(item.current),
+    badge: text(item.badge ?? item.count).trim(),
+    status: MENU_STATUSES.includes(status) ? status : '',
+    current: !group && Boolean(item.current),
     disabled: Boolean(item.disabled),
-    open: Boolean(item.open),
+    open: group ? item.open !== false : Boolean(item.open),
     children,
   };
+  if (group) {
+    normalised.group = true;
+    normalised.collapsible = Boolean(item.collapsible);
+  }
+  return normalised;
 }
 
 // The items from what a host gave: an array, or the same array as JSON in the
@@ -119,9 +139,10 @@ export function normalisePath(path) {
 // else -- when the menu follows the location -- the item whose link leads to
 // this path (the first, depth first), else the first item marked current.
 // `base` resolves relative links, as the browser would.
-export function currentItemId(items, {current = '', pathname = '', base = '', fromLocation = false} = {}) {
+export function currentItemId(items, {current = '', pathname = '', hash = '', base = '', fromLocation = false} = {}) {
   const named = text(current).trim();
-  if (named && findItem(items, named)) return named;
+  const namedItem = named ? findItem(items, named) : null;
+  if (namedItem && !namedItem.group) return named;
   if (fromLocation && pathname) {
     const here = normalisePath(pathname);
     let found = null;
@@ -134,6 +155,9 @@ export function currentItemId(items, {current = '', pathname = '', base = '', fr
         return;
       }
       if (base && new globalThis.URL(base).origin !== target.origin) return;
+      // A link to a section of a page (#address) is that section only while
+      // the location names it: in-page panels, one hash each.
+      if (target.hash && target.hash !== text(hash)) return;
       if (normalisePath(target.pathname) === here) found = item.id;
     });
     if (found) return found;
@@ -148,12 +172,17 @@ export function currentItemId(items, {current = '', pathname = '', base = '', fr
 // Which branches are open: what the person or the host set, else -- in a
 // column -- what the item says, and the branches above the current page, so
 // it can be seen. A row's panels open only when asked: none is open when the
-// page starts.
+// page starts. A group that cannot be collapsed is always open; a row draws
+// no group (its items stand in the row), so none is open there.
 export function openBranches(items, overrides = new Map(), currentId = null, inColumn = true) {
   const reveal = new Set(inColumn && currentId ? pathTo(items, currentId) || [] : []);
   const open = new Set();
   walkItems(items, (item) => {
     if (!item.children.length) return;
+    if (item.group && !item.collapsible) {
+      if (inColumn) open.add(item.id);
+      return;
+    }
     const fallback = inColumn && (item.open || reveal.has(item.id));
     const state = overrides.has(item.id) ? overrides.get(item.id) : fallback;
     if (state) open.add(item.id);
@@ -164,7 +193,8 @@ export function openBranches(items, overrides = new Map(), currentId = null, inC
 // A list written in the markup, read as items: each <li> is an item, its
 // direct <a> the link (href, aria-current, the label from its words), its
 // direct <ul> the children. data-id (or id), data-icon, data-badge,
-// data-open and data-disabled give the other fields; a row the class menu has
+// data-open, data-disabled, data-status, data-group and data-collapsible
+// give the other fields (data-open="false" closes a group at first); a row the class menu has
 // already drawn is read too (its .sf-menu-element-icon, .sf-menu-element-text
 // and counter). Icon glyphs, counters and what is hidden from assistive
 // technology are not words of the label. Works on any DOM-like node with
@@ -206,8 +236,20 @@ export function itemsFromList(list) {
         badge: attr(li, 'data-badge') || attr(link, 'data-badge') || attr(drawnCount, 'data-count') || '',
         current: (currentAttr !== null && currentAttr !== 'false') || has(li, 'data-current'),
         disabled: has(li, 'data-disabled') || has(li, 'disabled') || attr(link, 'aria-disabled') === 'true',
-        open: has(li, 'data-open') || Boolean(li.classList?.contains?.('open')),
+        // A group is open unless data-open="false" says otherwise.
+        open: has(li, 'data-group')
+          ? attr(li, 'data-open') !== 'false'
+          : has(li, 'data-open') || Boolean(li.classList?.contains?.('open')),
+        group: has(li, 'data-group'),
+        collapsible: has(li, 'data-collapsible'),
+        status: attr(li, 'data-status') || '',
         children: nested ? itemsFromList(nested) : [],
       };
     });
+}
+
+// The items as a row or a compact rail draws them: a group gives its items
+// to the first level, in its place, and draws no heading.
+export function withoutGroups(items) {
+  return items.flatMap((item) => (item.group ? item.children : [item]));
 }

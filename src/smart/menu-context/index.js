@@ -4,6 +4,7 @@ import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
 import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 import { tagSelector } from "../../core/js/tag-aliases.js";
+import { PanelScrollbar } from "../../component/panel-scrollbar.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -280,40 +281,19 @@ class SfContextMenu extends ContextMenuElement {
       ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .relative > .sf-context-menu-content");
   }
 
+  // The mark itself is shared with every dropping panel
+  // (src/component/panel-scrollbar.js).
   watchScrollbar() {
     const area = this.scrollArea();
-    if (area !== this._scrollArea) {
-      this._scrollObserver?.disconnect();
-      this._scrollArea?.classList.remove("sf-context-menu-list--scrollbar", "sf-context-menu-content--scrollbar");
-      this._scrollArea = area;
-      if (area && typeof ResizeObserver === "function") {
-        // The mark moves the area's padding, so it is written on the next
-        // frame: written in the observer's own call it would resize what is
-        // observed while the observer delivers (a ResizeObserver loop).
-        this._scrollObserver ??= new ResizeObserver(() => requestAnimationFrame(() => this.markScrollbar()));
-        this._scrollObserver.observe(area);
-      }
-    }
-    this.markScrollbar();
-  }
-
-  markScrollbar() {
-    const area = this._scrollArea;
-    if (!area?.isConnected) return;
-    const style = getComputedStyle(area);
-    const borders = (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0);
-    const takesRoom = area.offsetWidth - area.clientWidth - borders > 0;
-    const name = area.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar";
-    if (area.classList.contains(name) !== takesRoom) area.classList.toggle(name, takesRoom);
+    this._scrollbar ??= new PanelScrollbar();
+    this._scrollbar.watch(area, area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar");
   }
 
   disconnectedCallback() {
     // Taken out of the page, it closes without asking: nothing is left to keep.
     if (this._owned) this.close({restoreFocus: false, ask: false});
     this._itemObserver.disconnect();
-    this._scrollObserver?.disconnect();
-    this._scrollObserver = null;
-    this._scrollArea = null;
+    this._scrollbar?.disconnect();
     for (const item of this._itemAttributes.keys()) this.releaseItem(item);
     this._currentItem = null;
     super.disconnectedCallback();
@@ -989,6 +969,10 @@ class SfContextMenu extends ContextMenuElement {
     // side arrows stay the slider's and the search field's.
     if (!this._owned) {
       const editing = event.target?.classList?.contains("sf-context-menu-range-input") || event.target === this.searchField();
+      if (event.key === "Enter" && event.target === this.searchField()) {
+        this.chooseFirstMatch(event);
+        return;
+      }
       if (this._drill?.length && (event.key === "Escape" || (event.key === outward && !editing))) {
         event.preventDefault();
         event.stopPropagation();
@@ -1012,13 +996,15 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     // In the search field the letters and the side arrows are the field's;
-    // ArrowDown goes on to the rows, and Escape still closes.
+    // ArrowDown goes on to the rows, Enter chooses the first row the query
+    // left, as a combobox does (simai/ui-source#72), and Escape still closes.
     if (event.target === this.searchField() && event.key !== "Escape" && event.key !== "Tab") {
       if (event.key === "ArrowDown") {
         event.preventDefault();
         this.syncMenuItems();
         this.availableMenuItems()[0]?.focus();
       }
+      if (event.key === "Enter") this.chooseFirstMatch(event);
       return;
     }
     // One level back before the menu closes: the way out of a drilling panel
@@ -1049,6 +1035,21 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     if (event.key.length === 1 && event.key !== " ") this.typeahead(event);
+  }
+
+  // Enter in the search field: the first row the query left is chosen, as a
+  // press on it would choose it -- a command row selects and closes, a
+  // submenu row opens, a drilling row goes a level in. A word still being
+  // composed (an input method) is the field's Enter, and a query that left no
+  // row does nothing. The key is taken (preventDefault) and still bubbles, so
+  // a host that once answered Enter itself can tell the menu did.
+  chooseFirstMatch(event) {
+    if (event.isComposing || event.keyCode === 229) return;
+    this.syncMenuItems();
+    const first = this.availableMenuItems()[0];
+    if (!first) return;
+    event.preventDefault();
+    first.click();
   }
 
   typeahead(event) {

@@ -1,0 +1,297 @@
+{
+  "$comment": "The source of sf-list-description's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the description list the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 5), a variant of block list beside sf-list-attention.",
+  "id": "smart.list-description",
+  "tag": "sf-list-description",
+  "version": "1.0.1",
+  "kind": "leaf",
+  "family": "list",
+  "settings": {
+    "items": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "mono": {
+              "type": "boolean"
+            },
+            "copy": {
+              "type": "boolean"
+            },
+            "href": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "success",
+                "warning",
+                "error",
+                "info"
+              ]
+            }
+          },
+          "required": [
+            "label"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The facts in order, each {label, value, id?, hint?, mono?, copy?, href?, status?}. A property, or the JSON island a server prints. value is text (a number is written as it is); an empty value shows empty-text. mono writes the value in the monospace face (a path, a hash, a key), copy adds a button that copies it, href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing), hint is a line under it. An item without a label is left out"
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The list's accessible name, when the page has no heading above it that names it"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The ladder rung: the label and the value are the rung's line and type, the hint and a stacked label the rung below's, a one-line row the rung's control height. 1/2 for a side panel"
+    },
+    "layout": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "columns",
+        "stacked"
+      ],
+      "default": "auto",
+      "summary": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column narrower than 24rem (a phone)"
+    },
+    "dividers": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A hairline between rows"
+    },
+    "overflow": {
+      "type": "enum",
+      "values": [
+        "wrap",
+        "truncate"
+      ],
+      "default": "wrap",
+      "summary": "A value longer than its column: wrap breaks it over lines (anywhere, so a path or a hash wraps too); truncate keeps it on one line with an ellipsis, the full value shown under the pointer (title) and while the value has focus (a press or Tab)"
+    },
+    "empty-text": {
+      "type": "string",
+      "default-from": "runtime.empty-text",
+      "summary": "What an item with no value shows; «—» when not set"
+    }
+  },
+  "values": {},
+  "events": {
+    "navigate": {
+      "carries": {
+        "id": "string",
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "A person pressed a value link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button-copy"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "sr-only/default"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A group named by label when it is given, holding a description list (dl): each label a term (dt), its value a definition (dd), so a screen reader says how many facts there are and pairs each value with its label. A status is said in words before the value (the icon is a picture). A copy button is named by what it copies. A truncated value is reachable by Tab and shown whole while it has focus; a screen reader reads it whole always.",
+    "role": "group",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate"
+    }
+  },
+  "host-states": {
+    "data-empty": "boolean"
+  },
+  "css-variables": {
+    "--sf-list-description-label-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-description-value-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-description-divider-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-description-label-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-list-description-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-list-description-padding-inline": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
+  "x-source": {
+    "package": "framework",
+    "folder": "list-description",
+    "brief": "Federation bus msg-993e1e39151942c19b23 item 5 from the Larena storage thread (owner-approved panel prototype, 2026-11-02): items {label, value, hint, mono, copy, href, status}, auto columns, a phone stacks the label over the value, long values wrap or truncate with the full value shown on demand; read-only and lighter than sf-property-view (no port). Used for a site summary, server facts, record header facts, job parameters, licence details. The dispatcher's brief added sizes 1/2, 1 and 2, optional dividers and a placeholder for an empty value."
+  },
+  "x-words": [
+    "empty-text"
+  ],
+  "x-decisions": [
+    "name: sf-list-description, a variant of block list (ui-control control/decisions/2026-11-02-smart-component-naming.md: sf-<block>-<variant>), beside sf-list-attention. It is read-only and has no port: sf-property-view (package pro) is the list a person edits; this one only shows facts the page already has.",
+    "markup: a native dl; each row a div holding one dt and one dd (HTML allows the wrapper), so a row can carry a divider and the label and the value line up on one grid.",
+    "columns: the dl is a grid of two columns, the labels' as wide as the longest label up to --sf-list-description-label-width (40% by default, fit-content), the values' the rest; each row is a subgrid of it, so every label and every value starts on one axis however long the labels are.",
+    "stacked: layout stacked, or layout auto in a column narrower than 24rem (a container query, so a side panel stacks as a phone does): one column, the label over its value at the rung below's line and type.",
+    "value: text, never markup; a number or a boolean is written as it is, a list joined with commas; empty (none, null, '') shows empty-text («—») in the label's colour, and then no copy button and no link are drawn.",
+    "copy: an sf-button-copy of the rung below, icon only, named «Скопировать: <label>», copying the value as shown; centred on the value's first line, its overhang taken back so a one-line row stays H tall.",
+    "href: the value is a native link; its press is the cancelable request navigate {id, href} (vocabulary §5 navigate), not cancelled the browser follows it.",
+    "status: the shared status words; success, warning, error and info put the status icon (sf-alert's glyphs) on the value's line before it and say the status in words, visually hidden; neutral or anything else draws nothing.",
+    "overflow: wrap (the default) breaks anywhere, so a path, a hash or a URL never widens the page; truncate keeps one line with an ellipsis, the value carries the whole text as title and is reachable by Tab, and while it (or its link) has focus the whole value wraps in place.",
+    "geometry: one rung S (size 1/2, 1 or 2): the label and the value are the rung's line L and type, the hint and a stacked label the rung below's, the status icon L, icon-to-text the rung's text-space-x, the row's block inset (H - L) / 2, so a one-line row is the rung's control height H, as a list row is; a divider gives up its hairline from the inset. The column gap is the rung's space-x.",
+    "css-variables: six public variables (§6) -- the label's and the value's colours, the dividers, the label column's greatest width, the gap between the columns and the inline inset -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): the sf-button its examples draw asks for it before the first paint since sf-button 1.8.0. Settings, values, events and keys unchanged."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "list",
+      "description",
+      "key-value",
+      "properties",
+      "facts",
+      "summary",
+      "admin"
+    ],
+    "state": {
+      "machines": {
+        "list": [
+          "empty",
+          "shown"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "empty"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "loading or saving the facts (the host sets the list)",
+        "editing a value (sf-property-view does that)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-list-description for read-only facts as label and value: a site summary, server facts, a record's header, a job's parameters, licence details.",
+      "do_not": [
+        "Do not use it to edit values; sf-property-view does that",
+        "Do not put markup in a value; it is text, the link and the copy button are settings",
+        "Do not use it for a table of many records; sf-data-view does that"
+      ],
+      "required_reads": [
+        "inputs",
+        "events"
+      ],
+      "minimal_example": "<sf-list-description><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Адрес\", \"value\": \"demo.test\", \"href\": \"https://demo.test/\"}, {\"label\": \"Корень сайта\", \"value\": \"/var/www/demo\", \"mono\": true, \"copy\": true}, {\"label\": \"Сертификат\", \"value\": \"до 12 декабря\", \"status\": \"success\"}]}</script></sf-list-description>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "recommended",
+      "keyboard": [
+        "Tab reaches each value link, each copy button and, with overflow truncate, each cut value in order; Enter follows a link or copies"
+      ],
+      "focus": "The list never takes focus itself."
+    }
+  }
+}

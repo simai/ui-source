@@ -51,7 +51,9 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
   assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.inputs', 'smart.icon']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'hidden']);
-  assert.deepEqual(manifest.inputs.properties['input-type'].enum, ['text', 'email', 'password', 'search', 'tel', 'url']);
+  assert.deepEqual(manifest.inputs.properties['input-type'].enum, ['text', 'email', 'password', 'search', 'tel', 'url', 'number']);
+  // A number field's range and step (1.5.0) are the native input's.
+  for (const name of ['min', 'max', 'step']) assert.deepEqual(manifest.inputs.properties[name], {...manifest.inputs.properties[name], type: 'string', default: ''});
   assert.deepEqual(manifest.inputs.properties.inputmode.enum, ['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
   assert.equal(manifest.contracts.state_owner.const, 'native_input');
   assert.equal(manifest.accessibility.role, 'textbox');

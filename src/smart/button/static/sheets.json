@@ -25,6 +25,7 @@
     "disabled": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -37,6 +38,7 @@
     "error": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -49,6 +51,7 @@
     "expanded": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -61,6 +64,7 @@
     "icon-only": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -73,6 +77,7 @@
     "icons": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -85,6 +90,7 @@
     "link": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -97,6 +103,7 @@
     "loading": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "component/spinner/css/spinner.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -107,9 +114,22 @@
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
+    "new-tab": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
     "outline": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -122,6 +142,7 @@
     "reference": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -162,6 +183,7 @@
     "sizes": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/border-radius/default/css/default.min.css",
@@ -175,6 +197,7 @@
     "surface": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -187,6 +210,7 @@
     "tonal": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",

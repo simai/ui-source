@@ -199,6 +199,18 @@ const DRAW = {
   // divider and the pane are drawn.
   'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy'],
     html: `<sf-progress-run label="Run" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
+  // sf-list-description (2026-11-08): two rows with dividers, so the
+  // divider is drawn; an empty value takes the label colour too.
+  'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
+    html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}]})}</script></sf-list-description>`},
+  // sf-list-timeline (2026-11-08): one day of two events, the first without
+  // a status (the neutral marker) and with the connector under it.
+  'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
+    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
+  // card's fill and edge are drawn beside a card at rest.
+  choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
+    html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
@@ -251,6 +263,8 @@ const DRAW = {
   // Code in running text (2026-11-07, R024): the core sheet's base rule, no
   // module; a word in a paragraph, set on an ancestor as any site would.
   code: {css: [], js: [], html: '<p>Run <code>npm test</code> before a commit.</p>'},
+  // A key in running text, a cap in a button, plain glyphs in a menu.
+  kbd: {css: ['kbd'], js: [], html: '<p>Press <kbd>Esc</kbd> to close.</p><button type="button">Find <kbd class="sf-kbd--group"><kbd class="sf-kbd--square">⌘</kbd><kbd>Shift</kbd></kbd></button><div role="menu"><kbd>F2</kbd></div>'},
   card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
   figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
   procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},

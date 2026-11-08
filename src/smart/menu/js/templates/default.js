@@ -29,12 +29,20 @@ function renderBadge(item) {
     : html`<span class="sf-badge sf-badge--tight">${item.badge}</span>`;
 }
 
-// What a row holds, in the class order: an icon, the words, a counter.
-function renderWrapContent(item) {
-  return html`${item.icon ? html`<i class="sf-icon sf-menu-element-icon" aria-hidden="true">${item.icon}</i>` : nothing}<span class="sf-menu-element-text">${item.label}</span>${renderBadge(item)}`;
+// An item's status: the class dot of its tone at the row's end, before the
+// counter, and its word in the link's name («Адрес, внимание»), out of sight.
+function renderStatus(context, item) {
+  if (!item.status) return nothing;
+  return html`<span class=${`sf-dot sf-dot--size-1/2 sf-dot--${item.status}`} aria-hidden="true"><span class="sf-dot-item"></span></span><span class="sf-menu-element-status">${context.statusWord(item.status)}</span>`;
 }
 
-const renderWrap = (item) => html`<span class="sf-menu-element-wrap">${renderWrapContent(item)}</span>`;
+// What a row holds, in the class order: an icon, the words, a status dot and a
+// counter.
+function renderWrapContent(context, item) {
+  return html`${item.icon ? html`<i class="sf-icon sf-menu-element-icon" aria-hidden="true">${item.icon}</i>` : nothing}<span class="sf-menu-element-text">${item.label}</span>${renderStatus(context, item)}${renderBadge(item)}`;
+}
+
+const renderWrap = (context, item) => html`<span class="sf-menu-element-wrap">${renderWrapContent(context, item)}</span>`;
 
 // The branch's disclosure glyph as the class draws it inside a button row: an
 // icon-button box hidden from assistive technology, the button being the row.
@@ -57,10 +65,10 @@ function renderRow(context, item, level, branch, open, submenuId) {
     // words in the row's place.
     if (linked) {
       return html`<a class=${classes} href=${item.href} aria-current=${current ? 'page' : nothing}
-                     data-sf-menu-link=${item.id}>${renderWrap(item)}</a>`;
+                     data-sf-menu-link=${item.id}>${renderWrap(context, item)}</a>`;
     }
-    if (item.disabled) return html`<a class=${classes} aria-disabled="true">${renderWrap(item)}</a>`;
-    return html`<span class=${classes} aria-current=${current ? 'page' : nothing}>${renderWrap(item)}</span>`;
+    if (item.disabled) return html`<a class=${classes} aria-disabled="true">${renderWrap(context, item)}</a>`;
+    return html`<span class=${classes} aria-current=${current ? 'page' : nothing}>${renderWrap(context, item)}</span>`;
   }
 
   const glyph = branchGlyph(context, level, open);
@@ -70,15 +78,15 @@ function renderRow(context, item, level, branch, open, submenuId) {
     return html`<div class=${classes}>
       ${linked
         ? html`<a class="sf-menu-element-wrap" href=${item.href} aria-current=${current ? 'page' : nothing}
-                  data-sf-menu-link=${item.id}>${renderWrapContent(item)}</a>`
-        : html`<a class="sf-menu-element-wrap" aria-disabled="true">${renderWrapContent(item)}</a>`}
+                  data-sf-menu-link=${item.id}>${renderWrapContent(context, item)}</a>`
+        : html`<a class="sf-menu-element-wrap" aria-disabled="true">${renderWrapContent(context, item)}</a>`}
       <button class="sf-icon-button" type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${submenuId}
               aria-label=${item.label} ?disabled=${item.disabled}
               data-sf-menu-toggle=${item.id}><span class="sf-icon" aria-hidden="true">${glyph}</span></button>
     </div>`;
   }
   return html`<button class=${classes} type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${submenuId}
-                      ?disabled=${item.disabled} data-sf-menu-toggle=${item.id}>${renderWrap(item)}${renderTrailing(glyph)}</button>`;
+                      ?disabled=${item.disabled} data-sf-menu-toggle=${item.id}>${renderWrap(context, item)}${renderTrailing(glyph)}</button>`;
 }
 
 function renderItem(context, item, level) {
@@ -97,19 +105,50 @@ function renderItem(context, item, level) {
   `;
 }
 
+// A group of a column: its heading -- words, or the button that opens and
+// closes it when it is collapsible -- over a list of first-level rows that the
+// heading names.
+function renderGroup(context, item) {
+  const open = context.open.has(item.id);
+  const listId = `${context.id}--menu-${context.domId(item.id)}`;
+  const headingId = `${listId}-heading`;
+  const heading = item.collapsible
+    ? html`<button class="sf-menu-group-heading" type="button" id=${headingId}
+                   aria-expanded=${open ? 'true' : 'false'} aria-controls=${listId}
+                   ?disabled=${item.disabled} data-sf-menu-toggle=${item.id}>
+        <span class="sf-menu-group-label">${item.label}</span>${renderStatus(context, item)}${renderBadge(item)}
+        <span class="sf-icon" aria-hidden="true">${open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</span>
+      </button>`
+    : html`<span class="sf-menu-group-heading" id=${headingId}>
+        <span class="sf-menu-group-label">${item.label}</span>${renderStatus(context, item)}${renderBadge(item)}
+      </span>`;
+  return html`
+    <li class=${joinClasses('sf-menu-item', 'sf-menu-item--group', open ? 'open' : '')}
+        data-sf-menu-item=${item.id} data-sf-menu-group>
+      ${heading}
+      <ul class="sf-menu" id=${listId} aria-labelledby=${headingId} ?hidden=${!open}>${renderItems(context, item.children, 1)}</ul>
+    </li>
+  `;
+}
+
 function renderItems(context, items, level) {
-  return repeat(items, (item) => item.id, (item) => renderItem(context, item, level));
+  return repeat(items, (item) => item.id, (item) => (item.group ? renderGroup(context, item) : renderItem(context, item, level)));
 }
 
 // The button a row that does not fit becomes: a class menu row (a size 1
 // control, as every row), the menu glyph and its words, the disclosure glyph
 // at its end.
+// A selector (collapse narrow) shows the current item instead -- its icon and
+// words -- and is named by the menu and that item: «Разделы: Адрес».
 function renderPanelToggle(context) {
   const open = context.panelOpen;
+  const selected = context.selector ? context.selectedItem : null;
+  const icon = selected ? selected.icon : 'menu';
   return html`<button class=${joinClasses('sf-menu-element', 'sf-menu-element--level-1', 'sf-menu-element--has-submenu', 'sf-smart-menu-toggle', open ? 'open' : '')}
                       type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${`${context.id}--list`}
+                      aria-label=${selected ? `${context.label || context.toggleLabel}: ${selected.label}` : nothing}
                       data-sf-menu-panel-toggle>
-    <span class="sf-menu-element-wrap"><i class="sf-icon sf-menu-element-icon" aria-hidden="true">menu</i><span class="sf-menu-element-text">${context.toggleLabel}</span></span>
+    <span class="sf-menu-element-wrap">${icon ? html`<i class="sf-icon sf-menu-element-icon" aria-hidden="true">${icon}</i>` : nothing}<span class="sf-menu-element-text">${selected ? selected.label : context.toggleLabel}</span></span>
     ${renderTrailing(open ? 'keyboard_arrow_up' : 'keyboard_arrow_down')}
   </button>`;
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -30,6 +30,7 @@
   "composition": {
     "uses": [
       "component.badges",
+      "component.dot",
       "component.icon-buttons",
       "component.icons",
       "component.menu"
@@ -77,15 +78,16 @@
       "current-from-location": {
         "type": "boolean",
         "default": false,
-        "description": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
+        "description": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); a link to a section of the page (#address) is current while location.hash names it. History navigation is followed."
       },
       "collapse": {
         "type": "string",
         "default": "auto",
-        "description": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never.",
+        "description": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; narrow: the button while the page is narrower than the md breakpoint (a phone), and then a selector -- its words and icon are the current item's; none: never.",
         "enum": [
           "auto",
           "always",
+          "narrow",
           "none"
         ]
       },
@@ -97,6 +99,11 @@
       "toggle-label": {
         "type": "string",
         "description": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
+      },
+      "sticky": {
+        "type": "boolean",
+        "default": false,
+        "description": "The menu stays in sight while the page scrolls (position sticky at --sf-menu-sticky-top, 0 by default), and scrolls inside itself when it is taller than the view. For a section navigation beside a long page."
       },
       "current": {
         "type": "string",
@@ -110,7 +117,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The items, [{id, label, href?, icon?, badge?, current?, disabled?, open?, children?}]: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it.",
+        "description": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
         "examples": [
           [
             {
@@ -134,6 +141,42 @@
               "label": "Контакты",
               "href": "/contacts/",
               "badge": "3"
+            }
+          ],
+          [
+            {
+              "id": "site",
+              "label": "Сайт",
+              "group": true,
+              "items": [
+                {
+                  "id": "address",
+                  "label": "Адрес",
+                  "href": "#address",
+                  "icon": "language",
+                  "status": "warning"
+                },
+                {
+                  "id": "code",
+                  "label": "Код",
+                  "href": "#code",
+                  "icon": "code"
+                }
+              ]
+            },
+            {
+              "id": "data",
+              "label": "Данные",
+              "group": true,
+              "collapsible": true,
+              "items": [
+                {
+                  "id": "tables",
+                  "label": "Таблицы",
+                  "href": "#tables",
+                  "count": 12
+                }
+              ]
             }
           ]
         ],
@@ -253,7 +296,7 @@
   },
   "methods": {
     "open": {
-      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu-toggle fires for each branch that changed, source method. Returns whether anything changed.",
+      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu-toggle fires for each branch that changed, source method. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
           "name": "id",
@@ -265,7 +308,7 @@
       }
     },
     "close": {
-      "summary": "Close the branch with this id; in a row the panels inside it close too. Returns whether anything changed.",
+      "summary": "Close the branch with this id; in a row the panels inside it close too. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
           "name": "id",
@@ -277,7 +320,7 @@
       }
     },
     "toggle": {
-      "summary": "Open the branch if it is closed, close it if it is open. Returns whether anything changed.",
+      "summary": "Open the branch if it is closed, close it if it is open. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
           "name": "id",
@@ -536,27 +579,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "a9f1923a701b70f1f010775ec6c348e30e1c9bc2a3ed7625e7ea18a23747d1fe"
+        "sha256": "68d90339675c97463ee85b4f6f93c105ab075649889396ad7166ffc8107d05f1"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "d999db26df9c77bc9d186b4130b26b187fbe49e97e0cdb75419c786e979aa69f"
+        "sha256": "f3232527824027592b8704ff9269798c146059fae44e68962b6cd33074d79828"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "e2735b4253e2f7e25315b5d2ac53ae855139319682224cb782afda2e8d77b73e"
+        "sha256": "ffb96b8649fe3611b428d4338cea98d2ffd80e7ffd00548ac9ef8b7f34e968cd"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "a270cf5ba1aac506788e7682a74cc15b8f51b9a3703d09f6c922bfa06b3ea6ea"
+        "sha256": "a7ef268840cecd1e2ea95826117ae11b85367041179c00de22a66c392bf09bb1"
       },
       {
         "path": "src/smart/menu/rule.js",
-        "sha256": "abef8e484d70bfa6b889acdb406e72e9545165c611b7eed277a3f313dca066e2"
+        "sha256": "96ba69705bd2bf74a8c997be5563a906d0e9bcc615b8aef05bfaff07b491efe0"
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "2bb6f87ffa2acb515191d9dab46aa05a34925a872ca01425fcfd97a070b67a63"
+        "sha256": "0f7b8b9b6ba480950e8959ff24f5e18fc774cc8b1d33a1ec73c424a6c69568ae"
       }
     ],
     "generated_runtime": []

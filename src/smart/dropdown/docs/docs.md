@@ -35,6 +35,14 @@ and event labels. Text/checkbox options do not invent a decorative tag icon.
 Decorative option glyphs are hidden from assistive technology. This presentation
 normalization does not reorder the existing serialized values or change events.
 
+The open list has the context menu's geometry (owner C05-C07, docs review
+R029): rows as tall as a control of their size, their highlight
+`--sf-space-1/4` from the panel's edge and their picture or text
+`--sf-space-1/2` inside it; the search is the panel's header (a search icon over
+the rows' icons, no frame, a hairline under it) and stays put while the rows
+scroll; a scrollbar only when the rows do not fit, standing in the inline-end
+inset. The base component's documentation has the classes.
+
 All three size profiles (1/2, 1, 2) use semantic control heights as minima. Form fields have three sizes; a retired `1/3` or `3` renders as `1/2` or `2` with a console warning.
 Tag fields grow with wrapped selections, including unbroken long labels. The
 toggle has its own place in the row and does not cover the tags; tag-removal
@@ -161,7 +169,11 @@ Not prevented, the field empties, says so with its ordinary `change` (detail `va
 inherited value again and takes focus back on the control. `element.resetToInherited()`
 does the same from code and returns whether it reset. While inherited, the
 control carries the value as `aria-description` («Наследуется: …»); the visible
-marker is hidden from assistive technology so it is not read twice.
+marker is hidden from assistive technology so it is not read twice. A browser
+reads `aria-describedby` instead of `aria-description`, so when a hint, an error
+or a description also describes the control, the same sentence is a hidden note
+in the element (`[data-sf-inherited-note]`) that `aria-describedby` names after
+them.
 
 The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
 sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets

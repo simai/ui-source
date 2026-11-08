@@ -171,10 +171,17 @@
   }
   const open = (el, extra) => `<${el.localName}${attributes(el, extra)}>`;
   const close = (el) => (VOID.has(el.localName) ? '' : `</${el.localName}>`);
-  // A foreign subtree (svg, math) as the browser writes it, the markers out.
+  // A foreign subtree (svg, math) as the browser writes it, the markers and
+  // the comments out: a template's part markers (<!---->, <!--?lit$…-->) sit
+  // between an SVG's children as they do between HTML ones, and the HTML
+  // path drops them too, so a chart's printed plot matches its live one.
   const foreign = (el) => {
     const copy = el.cloneNode(true);
     for (const one of [copy, ...copy.querySelectorAll('*')]) for (const name of RUNTIME) one.removeAttribute?.(name);
+    const walker = document.createTreeWalker(copy, NodeFilter.SHOW_COMMENT);
+    const comments = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) comments.push(node);
+    for (const node of comments) node.remove();
     return copy.outerHTML;
   };
 

@@ -6,16 +6,18 @@ import test from 'node:test';
 // The browser half is tests/browser/dropdown-empty-state.browser.mjs.
 const read = (file) => readFile(new URL(`../${file}`, import.meta.url), 'utf8');
 const json = async (file) => JSON.parse(await read(file));
+// Since 1.6.0: the version is that or a later one.
+const since = (version, floor) => version.split('.').map(Number).reduce((order, part, index) => order || part - floor.split('.').map(Number)[index], 0) >= 0;
 
 test('the placeholder defaults to the language word runtime.empty, in both languages', async () => {
   const component = await json('src/smart/dropdown/component.json');
-  assert.equal(component.version, '1.6.0');
+  assert.ok(since(component.version, '1.6.0'), component.version);
   assert.equal(component.settings.placeholder['default-from'], 'runtime.empty');
   assert.equal(Object.hasOwn(component.settings.placeholder, 'default'), false);
   assert.equal((await json('src/smart/dropdown/lang/ru.json')).runtime.empty, 'Не выбрано');
   assert.equal((await json('src/smart/dropdown/lang/en.json')).runtime.empty, 'Not selected');
   const manifest = await json('src/smart/dropdown/smart.manifest.json');
-  assert.equal(manifest.version, '1.6.0');
+  assert.ok(since(manifest.version, '1.6.0'), manifest.version);
   assert.equal(Object.hasOwn(manifest.inputs.properties.placeholder, 'default'), false);
 });
 

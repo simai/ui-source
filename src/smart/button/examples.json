@@ -70,6 +70,22 @@
       }
     },
     {
+      "name": "new-tab",
+      "title": "Ссылка в новой вкладке",
+      "settings": {
+        "text": "Инструкция",
+        "appearance": "outline",
+        "scheme": "secondary",
+        "icon-end": "open_in_new",
+        "href": "#instructions",
+        "target": "_blank"
+      },
+      "expect": {
+        "href": "#instructions",
+        "target": "_blank"
+      }
+    },
+    {
       "name": "surface",
       "title": "На поверхности",
       "settings": {
@@ -214,6 +230,10 @@
           "  <sf-button id=\"b-load\" text=\"Отправка\" loading></sf-button>",
           "  <sf-button id=\"b-exp\" text=\"Ещё\" expanded=\"false\"></sf-button>",
           "  <sf-button id=\"b-bad\" text=\"Неизвестно\" appearance=\"primary\" size=\"9\"></sf-button>",
+          "  <sf-button id=\"b-tab\" text=\"Инструкция\" href=\"/fixture/help\" target=\"_blank\"></sf-button>",
+          "  <sf-button id=\"b-rel\" text=\"Партнёр\" href=\"https://example.com/\" target=\"_blank\" rel=\"noopener\"></sf-button>",
+          "  <sf-button id=\"b-self\" text=\"Раздел\" href=\"/fixture/section\" target=\"_self\"></sf-button>",
+          "  <sf-button id=\"b-btn-target\" text=\"Кнопка\" target=\"_blank\" rel=\"nofollow\"></sf-button>",
           "</main>"
         ]
       },
@@ -377,6 +397,22 @@
             },
             {
               "check": "getComputedStyle(document.querySelector('#b-text button')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p11-link-target-rel",
+          "title": "a link takes target and rel; a new tab with no rel says noopener noreferrer; a button carries neither",
+          "covers": "settings.target, settings.rel",
+          "steps": [
+            {
+              "check": "(() => { const a = (id) => document.querySelector(id + ' a.sf-button'); const tab = a('#b-tab'), rel = a('#b-rel'), self = a('#b-self'); const btn = document.querySelector('#b-btn-target button.sf-button'); return Boolean(tab && rel && self && btn) && tab.getAttribute('target') === '_blank' && tab.getAttribute('rel') === 'noopener noreferrer' && rel.getAttribute('rel') === 'noopener' && self.getAttribute('target') === '_self' && !self.hasAttribute('rel') && !btn.hasAttribute('target') && !btn.hasAttribute('rel'); })()",
+              "expect": {
+                "values": {
+                  "#b-tab.target": "_blank",
+                  "#b-rel.rel": "noopener"
+                }
+              }
             }
           ]
         }

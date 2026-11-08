@@ -1,0 +1,66 @@
+{
+  "id": "money-and-percent-are-saved-as-decimal-strings",
+  "intent": "group.save",
+  "summary": "A money field is saved as {amount, currency} with the amount a decimal string, a field that fixes its currency as well, and a percent as the decimal string of the percent, never the share and never a float.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "price",
+        "label": "Цена",
+        "propertyType": "money",
+        "value": {
+          "amount": "1500.50",
+          "currency": "RUB"
+        }
+      },
+      {
+        "key": "fee",
+        "label": "Комиссия",
+        "propertyType": "money",
+        "currency": "RUB",
+        "min": "0",
+        "value": {
+          "amount": "10",
+          "currency": "RUB"
+        }
+      },
+      {
+        "key": "discount",
+        "label": "Скидка",
+        "propertyType": "percent",
+        "min": "0",
+        "max": "100",
+        "value": "5"
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "section": "main",
+      "group": "terms",
+      "values": {
+        "price": {
+          "amount": "2499.99",
+          "currency": "USD"
+        },
+        "fee": {
+          "amount": "12.30",
+          "currency": "RUB"
+        },
+        "discount": "12.5"
+      },
+      "revision": "3"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "Digits after the point follow the currency (ISO 4217: RUB and USD 2, JPY 0, KWD 3); an amount with more is not sent, the field says so. \"12.5\" is 12.5 %. The host works on decimal digits: 0.1 + 0.2 is 0.3, and an amount is never read through a float."
+  }
+}

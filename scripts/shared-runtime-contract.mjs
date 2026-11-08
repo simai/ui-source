@@ -103,6 +103,17 @@ export function buildContract() {
   const hostFile = 'src/core/js/core-modules.js';
   const coreHosted = [...read(hostFile).matchAll(/^\s+'([^']+)': asModule\(/gmu)].map((m) => m[1]).sort();
   for (const id of coreHosted) if (!modules[id]) throw new Error(`${hostFile}: Core publishes "${id}", which the runtime does not hand out`);
+  // Package modules (core.runtime 1.38.0): a package's shared core registers
+  // `<package>/<module>` ids; the namespaces of the runtime's own slash ids are
+  // reserved (core/js/package-modules.js RESERVED_NAMESPACES).
+  const packageFile = 'src/core/js/package-modules.js';
+  const reservedText = read(packageFile).match(/^export const RESERVED_NAMESPACES = Object\.freeze\(\[([^\]]*)\]\);$/mu)?.[1];
+  if (reservedText === undefined) throw new Error(`${packageFile}: no "export const RESERVED_NAMESPACES = Object.freeze([...]);"`);
+  const reserved = [...reservedText.matchAll(/'([^']+)'/gu)].map((m) => m[1]).sort();
+  const namespaces = [...new Set(Object.keys(modules).filter((id) => id.includes('/')).map((id) => id.split('/')[0]))].sort();
+  if (JSON.stringify(reserved) !== JSON.stringify(namespaces)) {
+    throw new Error(`${packageFile}: RESERVED_NAMESPACES ${JSON.stringify(reserved)}, the runtime's slash ids use ${JSON.stringify(namespaces)}`);
+  }
   return {
     schema: 'simai.framework.shared-runtime',
     version: 1,
@@ -112,6 +123,11 @@ export function buildContract() {
     component_manifest_keys: [...COMPONENT_MANIFEST_KEYS],
     component_manifest_drop: [...COMPONENT_MANIFEST_DROP],
     modules: Object.fromEntries(Object.entries(modules).sort(([a], [b]) => (a < b ? -1 : 1))),
+    package_modules: {
+      id: '<package>/<module>',
+      register: 'SF.runtimeModule.register(<package>, <abi>, {<module>: <namespace>})',
+      reserved_namespaces: reserved,
+    },
   };
 }
 

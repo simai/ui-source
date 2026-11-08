@@ -20,7 +20,9 @@ Main attributes:
 - `label`
 - `required`
 - `placeholder`
-- `input-type` — `text`, `email`, `password`, `search`, `tel` or `url`
+- `input-type` — `text`, `email`, `password`, `search`, `tel`, `url` or
+  `number`
+- `min`, `max`, `step` — the range and step of a number field
 - `autocomplete`
 - `inputmode`
 - `minlength`
@@ -106,7 +108,11 @@ Not prevented, the field empties, says so with its ordinary `input` and `change`
 inherited value again and takes focus back on the control. `element.resetToInherited()`
 does the same from code and returns whether it reset. While inherited, the
 control carries the value as `aria-description` («Наследуется: …»); the visible
-marker is hidden from assistive technology so it is not read twice.
+marker is hidden from assistive technology so it is not read twice. A browser
+reads `aria-describedby` instead of `aria-description`, so when a hint, an error
+or a description also describes the control, the same sentence is a hidden note
+in the element (`[data-sf-inherited-note]`) that `aria-describedby` names after
+them.
 
 The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
 sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets
@@ -121,6 +127,20 @@ autocomplete and reset. `input-type` selects a bounded one-line text type;
 `autocomplete`, `inputmode`, `minlength`, `maxlength` and `pattern` are projected
 to that native control. Use `sf-textarea`, Quantity, Select or date components
 for different value semantics instead of making Input imitate them.
+
+`input-type="number"` is the browser's own number field (1.5.0): `min`, `max`
+and `step` go to the native input as they are given, and the browser's
+validation is the field's -- a value below `min`, above `max` or off `step`
+makes the field and its form invalid (`rangeUnderflow`, `rangeOverflow`,
+`stepMismatch`), as `required` does when it is empty. The value stays a
+string, the text the native input holds (`""` while it holds no number), and
+the form submits that string under `name`. `inputmode="numeric"` or `decimal`
+picks the phone keyboard. A field with a stepper and its own buttons is
+Quantity (`sf-input-quantity`).
+
+```html
+<sf-input name="limit" label="Лимит" input-type="number" min="1" max="100" step="1" inputmode="numeric" value="10"></sf-input>
+```
 
 `size` is limited to `1/3`, `1/2`, `1`, `2` and `3`. Visible presentation is
 `bordered` or `filled`. `hidden` is preserved for compatibility but is not a

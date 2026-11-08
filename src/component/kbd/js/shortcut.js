@@ -1,7 +1,16 @@
-// A key combination as sf-button's shortcut setting writes it: words joined
-// by +, the modifiers first and the key last -- mod+k, shift+/, /, escape.
-// `mod` is the platform's command modifier: Cmd on Apple platforms, Ctrl
-// elsewhere. Read once per render; nothing here holds state.
+// A key combination as a `shortcut` setting writes it (sf-button, an entry
+// of sf-menu-context, a row of sf-search): words joined by +, the modifiers
+// first and the key last -- mod+k, shift+/, /, escape. `mod` is the
+// platform's command modifier: Cmd on Apple platforms, Ctrl elsewhere. Read
+// once per render; nothing here holds state.
+//
+// The kbd component owns how a combination reads (owner decision 2026-11-07,
+// docs review R030, rule C04): on an Apple platform the modifiers are glyphs
+// in the platform's order, side by side (⇧⌘P); elsewhere they are words in
+// Ctrl+Shift+P order, and shortcutView() says to join them with + -- the kbd
+// sheet shows the joins where keys are plain glyphs (a menu row, a tooltip)
+// and hides them between caps, which stand apart. A host renders the view
+// and never styles the keys.
 
 const MODIFIERS = ['mod', 'ctrl', 'alt', 'shift', 'meta'];
 
@@ -65,6 +74,38 @@ export function shortcutCaps(parsed, apple = isApplePlatform()) {
   }
   const key = KEY_CAPS[parsed.key] ?? (parsed.key.length === 1 ? parsed.key.toUpperCase() : parsed.key.charAt(0).toUpperCase() + parsed.key.slice(1));
   return [...modifiers, key].map((text) => ({text, square: [...text].length === 1}));
+}
+
+// A function key (F1-F24) reads as its name.
+const FUNCTION_KEY = /^f(?:[1-9]|1[0-9]|2[0-4])$/u;
+
+// Whether a written value is the notation above rather than text a page
+// already wrote for people (⇧⌘L, «Ctrl K»): every word but the last a
+// modifier, the last one character, a named key or a function key.
+function isNotation(value) {
+  const text = String(value ?? '').trim().toLowerCase();
+  if (!text || /\s/u.test(text.replace(/\s*\+\s*/gu, '+'))) return false;
+  if (text === '+') return true;
+  const words = text.split('+').map((word) => word.trim());
+  if (words.some((word) => !word)) return false;
+  const key = words.at(-1) === 'plus' ? '+' : words.at(-1);
+  return words.slice(0, -1).every((word) => MODIFIERS.includes(word))
+    && ([...key].length === 1 || key in KEY_CAPS || FUNCTION_KEY.test(key));
+}
+
+/**
+ * What a host draws for a `shortcut` value: {keys: [{text, square}], join},
+ * the keys in this platform's words and whether they are joined with + (not
+ * on an Apple platform, and only between keys). A value that is not the
+ * notation -- text a page wrote for people, such as ⇧⌘L -- is one key of
+ * that text. Empty: no keys.
+ */
+export function shortcutView(value, apple = isApplePlatform()) {
+  const text = String(value ?? '').trim();
+  if (!text) return {keys: [], join: false};
+  if (!isNotation(text)) return {keys: [{text, square: [...text].length === 1}], join: false};
+  const keys = shortcutCaps(parseShortcut(text), apple);
+  return {keys, join: !apple && keys.length > 1};
 }
 
 /** The value of aria-keyshortcuts (WAI-ARIA 1.2): Meta+K, Control+K, /. */

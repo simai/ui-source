@@ -269,8 +269,63 @@ names the same components under the former name (`alias_of: "pro"`), so a
 package built as `larena` still agrees with the release; it leaves with the
 alias on 2027-01-01.
 
+## A package's components in the Framework's records
+
+A package runs the Framework's cross-cutting tests in its overlay of ui-source,
+against ui-source's own records, and a package file may not replace a
+ui-source one. Two of those records therefore know package components:
+
+- **Passports** (`scripts/linkage.mjs`, standard simai.linkage). A Smart
+  component's derived passport names the owner its `component.json`
+  `x-source.package` points at: a package reference
+  (`src/core/contracts/packages/<package>.package.json`, its
+  `distribution.owner`) or an owner of the shared name registry
+  (`contracts/registry/names.json`), by id or by repository name. `chart` and
+  `ui-chart` are `simai/ui-chart`, `pro` and `ui-pro` are `simai/ui-pro`,
+  `framework` and `ui-source` are `simai/ui-source`. A package name neither
+  record knows is reported (`unknown-package`), never given to ui-source.
+- **Axes** (`contracts/public-api-axes.json`). A package component's axis is
+  recorded with `"package": "<id>"` (`sf-chart-metric`'s `status`); in
+  ui-source alone its folder is absent and only the package is checked, in the
+  package's overlay its manifest is held to the vocabulary. A `data-state`
+  whose values are all data states (`data_state`: auto, loading, populated,
+  empty, error; `ready` read as populated) answers where the data stands, not
+  the status axis, and needs no exemption of its own.
+
+## A package's shared core
+
+Code every component of a package draws with -- a chart set's scales,
+formats and data readers -- is not copied into each component's bundle. Since
+`core.runtime` 1.38.0 a package builds it once, as a bundle of its own, and
+its components take it from the shared runtime
+(`docs/developer/shared-runtime.md`, "Package modules"):
+
+- The package's `package.json` names the core folder and its ABI:
+  `"simai": {"core": {"folder": "chart-core", "abi": 1}}`. The folder is a
+  helper folder under `src/smart` (no `rule.js` of its own).
+- ui-builder builds `<base>/chart-core/js/chart-core.js`, which registers
+  every module of the folder as `chart/<module>` (`chart/scale` for
+  `chart-core/scale.js`) with `SF.runtimeModule.register`, and writes a rule
+  for it, `cl-chart-core`, without tags. In every component, an import from
+  the folder becomes `SF.runtimeModule('chart/<module>', 1)`.
+- Each component that imports the core relates to its rule
+  (`relation: [{name: 'cl-chart-core'}]`), so the Loader fetches the core once,
+  before the first component that needs it runs. The build refuses a
+  component that imports the core without that relation.
+- Every module of the folder is in the core, and a page with one component
+  fetches all of it: keep there only what two or more components share. A
+  module one component alone imports belongs in that component's folder
+  (ui-builder reports each module's importers, `module_users`).
+- Raising the core's ABI is a change of what its modules export (a removed or
+  renamed export, an export that means something else); the package's
+  components are always built with their core, so the ABI only guards a page
+  that mixes bundles of two builds.
+
 ## Not yet
 
 - A package's files are versioned with Core's `cacheVersion`; a package with
   its own release cadence has no separate cache version yet. A page that
   serves each release under its own path (as ui-admin does) is not affected.
+- A package's helper module (one chart core for every chart of the set) is
+  bundled into each component that imports it; the shared runtime
+  (`SF.runtimeModule`) hands out the Framework's modules only.

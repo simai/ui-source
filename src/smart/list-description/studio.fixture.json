@@ -1,0 +1,52 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list-description",
+  "title": "list-description reference",
+  "summary": "Deterministic reference fixture for sf-list-description.",
+  "locale": "ru",
+  "props": {
+    "label": "Сведения о сайте",
+    "items": [
+      {
+        "id": "address",
+        "label": "Адрес",
+        "value": "demo-static.test",
+        "href": "#site"
+      },
+      {
+        "id": "root",
+        "label": "Корень сайта",
+        "value": "/var/www/demo-static/public",
+        "mono": true,
+        "copy": true
+      },
+      {
+        "id": "php",
+        "label": "PHP",
+        "value": "8.3.12"
+      },
+      {
+        "id": "cert",
+        "label": "Сертификат",
+        "value": "Действует до 12 декабря 2026",
+        "status": "success",
+        "hint": "Let's Encrypt, продлевается сам"
+      },
+      {
+        "id": "backup",
+        "label": "Последняя копия",
+        "value": "27 октября, 03:30",
+        "status": "warning",
+        "hint": "Не удалась: нет места на диске"
+      },
+      {
+        "id": "owner",
+        "label": "Владелец",
+        "value": ""
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}

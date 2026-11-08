@@ -93,6 +93,34 @@
     }
 }
 
+// The composition/layout asset (simai/ui-source#61): layout.columns draws
+// <div class="sf-composition-columns grid gap-4 grid-col-N"
+// data-composition-columns="N"> with one .sf-composition-column per child.
+// The grid, gap and grid-col-* classes are utilities the Loader brings on
+// demand; a host that renders a Document onto a page holding core.css alone
+// gets the columns from here: N equal columns from data-composition-columns,
+// one column where columns is set per screen (the utilities place those), the
+// type's gap. In sf.base, below the utilities, so a utility the page has --
+// a gap, a column count per screen -- still wins.
+@layer sf.base {
+    :where(.sf-composition-columns) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--sf-space-4, 1rem);
+        min-inline-size: 0;
+    }
+
+    @for $columns from 2 through 12 {
+        :where(.sf-composition-columns[data-composition-columns="#{$columns}"]) {
+            grid-template-columns: repeat(#{$columns}, minmax(0, 1fr));
+        }
+    }
+
+    :where(.sf-composition-column) {
+        min-inline-size: 0;
+    }
+}
+
 // The content part of a section or a container (layout.section 1.2.0,
 // layout.container; visual parity 2026-11-04): the part's padding alone sets
 // the inset. Its first block has no block-start margin and its last no

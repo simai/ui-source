@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
   "id": "smart.input",
   "tag": "sf-input",
-  "version": "1.4.4",
+  "version": "1.5.1",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -48,7 +48,8 @@
         "password",
         "search",
         "tel",
-        "url"
+        "url",
+        "number"
       ],
       "default": "text"
     },
@@ -82,6 +83,21 @@
     "pattern": {
       "type": "string",
       "default": ""
+    },
+    "min": {
+      "type": "string",
+      "default": "",
+      "summary": "The smallest number a number field (input-type number) takes, as the native input's min; below it the field is invalid (range underflow). Not written on other types."
+    },
+    "max": {
+      "type": "string",
+      "default": "",
+      "summary": "The largest number a number field takes, as the native input's max; above it the field is invalid (range overflow). Not written on other types."
+    },
+    "step": {
+      "type": "string",
+      "default": "",
+      "summary": "The step of a number field, as the native input's step: 1 when empty, any for any number; a value off the step is invalid (step mismatch). Not written on other types."
     },
     "hint": {
       "type": "string",
@@ -360,7 +376,9 @@
     "version 1.3.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.3.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.3.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.4.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01."
+    "version 1.4.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01.",
+    "version 1.5.0 (2026-11-08): a minor (§4.10): input-type takes number and the settings min, max and step are added (Larena after sf-wizard, msg-12cd5ef6). A number field is the browser's own: min, max and step go to the native input as given (only on a number field), its validation is the field's -- range underflow, range overflow and step mismatch make the field and its form invalid, as required does -- and inputmode (numeric, decimal) picks the phone keyboard. The value stays a string, the text the native input holds, and the form submits it under name. A stepper with buttons stays sf-input-quantity.",
+    "version 1.5.1: with a hint or an error and an inherited value, the inherited sentence is also a hidden note that aria-describedby names after the message, because a browser reads aria-describedby instead of aria-description and the sentence went unsaid (helpers/inherited-value.js, syncInheritedNote). Nothing is drawn differently."
   ],
   "x-rule": {
     "$comment-after": [

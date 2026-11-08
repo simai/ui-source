@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -270,6 +270,7 @@
     "role": "button",
     "accessible_name": "recommended",
     "keyboard": [
+      "Tab",
       "Enter",
       "Space"
     ],

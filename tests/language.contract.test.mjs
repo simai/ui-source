@@ -16,7 +16,7 @@ const template = read('src/smart/language/js/templates/default.js');
 test('the manifest: a leaf of family language, a form field with one cancellable change and select', () => {
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.0.1');
   assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'mode', 'inline-max', 'search-from', 'compact', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
   assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-icon's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button-icon",
   "tag": "sf-button-icon",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -49,7 +49,7 @@
         "on-surface-variant"
       ],
       "default": "primary",
-      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants (sf-button 1.2.0 has the same value). A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
+      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants. A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "type": "enum",
@@ -152,7 +152,7 @@
     "pressed": {
       "type": "boolean",
       "optional": true,
-      "summary": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.icon-buttons 1.3.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "summary": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "label-pressed": {
       "type": "string",
@@ -165,7 +165,9 @@
   "actions": {},
   "keyboard": {
     "host": {
-      "Tab": "reach"
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "relations": [
@@ -212,7 +214,9 @@
       ]
     },
     "keys": {
-      "Tab": "reach"
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "css-variables": {
@@ -365,7 +369,8 @@
     "version 1.4.0: a minor (§4.10): the setting pressed is added (stage 1 of the component sets, duplication audit A-10), as on sf-button: present, aria-pressed on the native button and, while on, the active state of the icon-button class sheet; absent, nothing is said. A page that wrote aria-pressed on the host keeps it.",
     "version 1.4.1 (2026-11-06): the host's aria-label is watched, so a name changed after the first drawing reaches the native button (it was patched by updateDom but never observed: sf-language's trigger kept «Язык: Русский» after a choice). Nothing else changes.",
     "version 1.5.0 (2026-11-07): a minor (§4.10): the pressed look and the setting label-pressed (owner decision 2026-11-07, docs review R028, rule C12). A toggle that is on wears sf-icon-button--pressed instead of the active class: the primary container fill, no visible edge (the border keeps its width and is transparent over the fill, so the height does not move), the icon in --sf-on-primary-container and filled (FILL 1) -- two cues, not colour alone. Hover and press over it step the container; focus draws the ring; disabled wears the disabled look and keeps the filled icon. Public variables --sf-icon-button-pressed-background-color and --sf-icon-button-pressed-color colour the resting pressed look. label-pressed is the name while on, for a toggle whose name changes: aria-pressed is then not written.",
-    "version 1.5.1 (2026-11-07): a loading icon button's spinner draws its ring inside the icon's live area (docs review R027, owner decision C11; component.spinner 1.1.0): 20 of the 24 units, as the Material Symbol beside it, in the same icon box, so nothing around it moves; the first-paint snapshots are retaken. The settings are unchanged."
+    "version 1.5.1 (2026-11-07): a loading icon button's spinner draws its ring inside the icon's live area (docs review R027, owner decision C11; component.spinner 1.1.0): 20 of the 24 units, as the Material Symbol beside it, in the same icon box, so nothing around it moves; the first-paint snapshots are retaken. The settings are unchanged.",
+    "version 1.5.2 (2026-11-08): the reference describes the current component only (docs review rules D02, D03, msg-4ef7082c): the scheme words no longer cite another component's version and pressed names the rule, not a sheet's version; tightness, type and variant are listed under sf-button-icon in the change journal, so the reference shows them as former names, not as attributes. Tab, Enter and Space are the component's own key map now (they were a registry copy); the manifest lists the same three. Settings, values, events and the drawing are unchanged."
   ],
   "x-rule": {
     "$comment-after": [
@@ -495,12 +500,7 @@
     },
     "accessibility": {
       "accessible_name": "required",
-      "keyboard": [
-        "Tab",
-        "Enter",
-        "Space"
-      ],
-      "focus": "The inner native button is the only focus owner. Pointer activation does not show the ring; keyboard focus uses focus-visible, with an inset ring inside joined controls."
+            "focus": "The inner native button is the only focus owner. Pointer activation does not show the ring; keyboard focus uses focus-visible, with an inset ring inside joined controls."
     },
     "methods": {
       "setButtonAttributes": {

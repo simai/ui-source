@@ -25,7 +25,7 @@ export function renderDownloadFileTemplate(context) {
     <span class="sf-download-file__body sf-download-file-wrap">
       <span class="sf-download-file__main sf-download-file-container">
         <i class="sf-download-file__icon sf-icon" aria-hidden="true">${icon}</i>
-        <span class="sf-download-file__name sf-download-file-file-name">${fileName}</span>
+        <span class="sf-download-file__name sf-download-file-file-name" title=${fileName || nothing}>${fileName}</span>
       </span>
       <span class="sf-download-file__size sf-download-file-file-size">${fileSize}</span>
     </span>

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-header-site's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.header-site",
   "tag": "sf-header-site",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -269,7 +269,8 @@
     "version 1.1.0: navigation-align (owner decision by recommendation, 2026-11-01), start (the default, the 1.0 bar) or center, the nav of a Docara-like header. A sheet rule, nothing measured, so the first paint is right without the script: the brand and the end of the bar (the tools; the actions and the tools when there are actions) share the room the nav leaves, each at least its own width, so the nav stands at the bar's true centre while both sides fit and moves aside rather than overlap them; with actions the nav is centred in the room between the brand and the actions. Collapsed, nothing changes: the nav is in the side panel. The same at size 1/2 and 1.",
     "version 1.2.3: collapse reads its step from core/js/breakpoints.js (SF.breakpoints, core.runtime 1.20.0), the ladder the sheet switches at, instead of a copy of it (reuse audit 2026-11-02, finding 6). The same steps.",
     "version 1.3.0: the tag is sf-header-site (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.header-site and the bundle cl-header-site follow it. sf-site-header stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-header-site, sf-site-header) (change journal tag-sf-site-header-to-sf-header-site, path-smart-site-header-to-header-site).",
-    "version 1.3.1: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; behaviour unchanged."
+    "version 1.3.1: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; behaviour unchanged.",
+    "version 1.3.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

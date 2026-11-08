@@ -1,0 +1,262 @@
+@layer sf.components {
+/* sf-input-choice (standard simai.smart-component 1.3.14 §6): options as
+   cards in a grid. The label row and the message line are sf-input's (text
+   size 1/2, on-surface-variant, the error role while invalid). A card is
+   drawn on the ladder: its icon box is the size 1 control height, the title
+   text size 1, the caption text size 1/2, the mark the half rung's icon;
+   its hairline is drawn inside its box. Every colour is a role token; the
+   public variables are read with the role as their fallback and never set
+   here, and states (hover, focus, checked, disabled, invalid) draw over
+   them. */
+.sf-choice {
+  --sf-choice--gap: var(--sf-choice-gap, var(--sf-space-1\/2));
+  --sf-choice--min-inline-size: var(--sf-choice-min-inline-size, 15rem);
+  --sf-choice--padding: var(--sf-choice-padding, var(--sf-space-1\/2));
+  --sf-choice--radius: var(--sf-choice-radius, var(--sf-radius--ui));
+  --sf-choice--background-color: var(--sf-choice-background-color, var(--sf-transparent));
+  --sf-choice--border-color: var(--sf-choice-border-color, var(--sf-outline-variant));
+  --sf-choice--selected-background-color: var(--sf-choice-selected-background-color, var(--sf-primary-transparent-select));
+  --sf-choice--selected-border-color: var(--sf-choice-selected-border-color, var(--sf-primary));
+  --sf-choice--columns: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-choice .sf-choice-label,
+.sf-choice .sf-choice-message {
+  font-family: var(--sf-text--family);
+  font-weight: var(--sf-font-weight-regular);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-choice .sf-choice-required,
+.sf-choice.sf-choice--invalid .sf-choice-message {
+  color: var(--sf-error);
+}
+
+.sf-choice .sf-choice-required {
+  margin-inline-start: var(--sf-space-1\/4);
+}
+
+/* The grid: auto fills the width with cards no narrower than the minimum; a
+   number of columns is the most, fewer where a card would be narrower than
+   the minimum (a phone stacks them). */
+.sf-choice .sf-choice-grid {
+  display: grid;
+  gap: var(--sf-choice--gap);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-choice--min-inline-size)), 1fr));
+  min-inline-size: 0;
+}
+
+.sf-choice[data-columns='1'] { --sf-choice--columns: 1; }
+.sf-choice[data-columns='2'] { --sf-choice--columns: 2; }
+.sf-choice[data-columns='3'] { --sf-choice--columns: 3; }
+.sf-choice[data-columns='4'] { --sf-choice--columns: 4; }
+
+.sf-choice:not([data-columns='auto']) .sf-choice-grid {
+  grid-template-columns: repeat(auto-fill, minmax(max(min(100%, var(--sf-choice--min-inline-size)), calc((100% - (var(--sf-choice--columns) - 1) * var(--sf-choice--gap)) / var(--sf-choice--columns))), 1fr));
+}
+
+.sf-choice .sf-choice-card {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  align-items: flex-start;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+  padding: var(--sf-choice--padding);
+  border: var(--sf-px) solid var(--sf-choice--border-color);
+  border-radius: var(--sf-choice--radius);
+  background-color: var(--sf-choice--background-color);
+  color: var(--sf-on-surface);
+  cursor: pointer;
+}
+
+/* The native input covers the card: a press anywhere is the input's, and the
+   focus is the card's box. */
+.sf-choice .sf-choice-input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  appearance: none;
+  cursor: inherit;
+}
+
+.sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
+  background-color: var(--sf-surface-transparent-hover);
+}
+
+.sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-px);
+}
+
+/* Checked: two signs, not only colour -- the mark is filled and the edge is
+   drawn twice as heavy (an inner ring, so the box does not move). */
+.sf-choice .sf-choice-card--checked {
+  border-color: var(--sf-choice--selected-border-color);
+  background-color: var(--sf-choice--selected-background-color);
+  box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
+}
+
+.sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked) {
+  border-color: var(--sf-error);
+}
+
+.sf-choice .sf-choice-card--disabled {
+  border-color: var(--sf-outline-disable);
+  background-color: var(--sf-disable);
+  color: var(--sf-on-disable);
+  cursor: default;
+}
+
+/* The icon box: the size 1 control height, square, the glyph at the size 1
+   icon. */
+.sf-choice .sf-choice-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-ui-1--control-height);
+  block-size: var(--sf-ui-1--control-height);
+  border-radius: var(--sf-radius--ui);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  background-color: var(--sf-surface-container);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-choice .sf-choice-icon .sf-icon {
+  --sf-icon--color: currentColor;
+  --sf-icon--size: var(--sf-icon-size-1);
+  font-size: var(--sf-icon-size-1);
+}
+
+.sf-choice .sf-choice-card--checked .sf-choice-icon {
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+}
+
+.sf-choice .sf-choice-card--disabled .sf-choice-icon {
+  background-color: var(--sf-transparent);
+  color: var(--sf-on-disable);
+}
+
+/* The words: the title on the size 1 line, the caption a rung below. With
+   an icon, the title's line is centred on the icon box's first half. */
+.sf-choice .sf-choice-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-choice .sf-choice-icon + .sf-choice-body {
+  padding-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
+}
+
+.sf-choice .sf-choice-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-space-1\/4) var(--sf-space-1\/3);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-choice .sf-choice-title-text {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-choice .sf-choice-caption {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+
+.sf-choice .sf-choice-card--disabled .sf-choice-caption {
+  color: inherit;
+}
+
+/* The mark: a radio ring or a check box, the half rung's icon, on the
+   title's line. Checked, it is filled with the primary role: a dot inside the
+   ring, a check inside the box. */
+.sf-choice .sf-choice-mark {
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-icon-size-1\/2);
+  block-size: var(--sf-icon-size-1\/2);
+  margin-block-start: calc((var(--sf-text-height-1) - var(--sf-icon-size-1\/2)) / 2);
+  border: calc(var(--sf-px) * 2) solid var(--sf-on-surface-variant);
+  border-radius: var(--sf-radius-circle);
+  color: var(--sf-on-primary);
+}
+
+.sf-choice .sf-choice-icon ~ .sf-choice-mark {
+  margin-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-icon-size-1\/2)) / 2);
+}
+
+.sf-choice.sf-choice--multiple .sf-choice-mark {
+  border-radius: calc(var(--sf-px) * 4);
+}
+
+.sf-choice .sf-choice-card--checked .sf-choice-mark {
+  border-color: var(--sf-primary);
+  background-color: var(--sf-primary);
+}
+
+.sf-choice:not(.sf-choice--multiple) .sf-choice-card--checked .sf-choice-mark {
+  /* The radio's dot: half the ring's inner size, the gap around it the card's
+     own fill. */
+  background: radial-gradient(circle closest-side, var(--sf-primary) 50%, var(--sf-transparent) calc(50% + var(--sf-px) / 2));
+}
+
+.sf-choice .sf-choice-mark .sf-icon {
+  --sf-icon--color: currentColor;
+  --sf-icon--size: var(--sf-icon-size-1\/3);
+  font-size: var(--sf-icon-size-1\/3);
+}
+
+.sf-choice .sf-choice-card--disabled .sf-choice-mark {
+  border-color: var(--sf-outline-disable);
+}
+
+.sf-choice.sf-choice--multiple .sf-choice-card--disabled.sf-choice-card--checked .sf-choice-mark {
+  background-color: var(--sf-on-disable);
+}
+
+.sf-choice:not(.sf-choice--multiple) .sf-choice-card--disabled.sf-choice-card--checked .sf-choice-mark {
+  background: radial-gradient(circle closest-side, var(--sf-on-disable) 50%, var(--sf-transparent) calc(50% + var(--sf-px) / 2));
+}
+
+@media (forced-colors: active) {
+  .sf-choice .sf-choice-card--checked {
+    border-color: Highlight;
+    box-shadow: inset 0 0 0 var(--sf-px) Highlight;
+  }
+
+  .sf-choice .sf-choice-card--checked .sf-choice-mark {
+    border-color: Highlight;
+    background-color: Highlight;
+  }
+
+  .sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+  }
+}
+}

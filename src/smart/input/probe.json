@@ -120,6 +120,85 @@
       }
     },
     {
+      "id": "number-is-native",
+      "covers": "settings.input-type number, settings.min, settings.max, settings.step, settings.inputmode",
+      "field": "<sf-input name=\"limit\" label=\"Лимит\" input-type=\"number\" min=\"1\" max=\"100\" step=\"1\" inputmode=\"numeric\"></sf-input>",
+      "user": [
+        "type:42",
+        "tab"
+      ],
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "limit": "42"
+        },
+        "value": "42",
+        "box": {
+          "attributes": {
+            "type": "number",
+            "min": "1",
+            "max": "100",
+            "step": "1",
+            "inputmode": "numeric"
+          }
+        }
+      }
+    },
+    {
+      "id": "number-range-underflow",
+      "covers": "form.validity range-underflow (number)",
+      "field": "<sf-input name=\"limit\" label=\"Лимит\" input-type=\"number\" min=\"1\" max=\"100\" value=\"0\"></sf-input>",
+      "form": "submit",
+      "expect": {
+        "submitted": false,
+        "checkValidity": false,
+        "validity": {
+          "rangeUnderflow": true,
+          "valid": false
+        }
+      }
+    },
+    {
+      "id": "number-range-overflow",
+      "covers": "form.validity range-overflow (number)",
+      "field": "<sf-input name=\"limit\" label=\"Лимит\" input-type=\"number\" min=\"1\" max=\"100\" value=\"101\"></sf-input>",
+      "form": "reset",
+      "expect": {
+        "checkValidity": false,
+        "validity": {
+          "rangeOverflow": true
+        }
+      }
+    },
+    {
+      "id": "number-step-mismatch",
+      "covers": "form.validity step-mismatch (number)",
+      "field": "<sf-input name=\"qty\" label=\"Упаковки\" input-type=\"number\" min=\"0\" step=\"5\" value=\"3\"></sf-input>",
+      "form": "reset",
+      "expect": {
+        "checkValidity": false,
+        "validity": {
+          "stepMismatch": true
+        }
+      }
+    },
+    {
+      "id": "text-carries-no-range",
+      "covers": "settings.min/max/step only on a number field",
+      "field": "<sf-input name=\"login\" label=\"Логин\" min=\"1\" max=\"9\" step=\"2\"></sf-input>",
+      "expect": {
+        "box": {
+          "attributes": {
+            "type": "text",
+            "min": null,
+            "max": null,
+            "step": null
+          }
+        }
+      }
+    },
+    {
       "id": "disabled-leaves-the-form",
       "covers": "form.disabled (§17.1 item 3)",
       "field": "<sf-input name=\"login\" value=\"admin\" label=\"Логин\"></sf-input>",

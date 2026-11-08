@@ -1,0 +1,24 @@
+{
+  "id": "create-applied-answers-with-the-id",
+  "intent": "record.create",
+  "summary": "Pressing create sends the filled fields once; the host answers with the new object's id.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.create",
+    "payload": {
+      "collection": "pages",
+      "values": {
+        "title": "Новая страница"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record_id"
+    ],
+    "note": "With the record too, when the host has it at hand; the component reads it otherwise."
+  }
+}

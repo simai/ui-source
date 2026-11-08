@@ -1,0 +1,136 @@
+// Groups (component.menu 1.2.0; sf-menu 1.3.0 draws them): a heading over a
+// list of first-level rows,
+//
+//   li.sf-menu-item.sf-menu-item--group
+//     span.sf-menu-group-heading (or button, aria-expanded, when collapsible)
+//       span.sf-menu-group-label
+//     ul.sf-menu (aria-labelledby the heading) > li.sf-menu-item ...
+//
+// The heading's words stand on the rows' text axis -- the row's inline
+// padding and its hairline -- at the half rung of the ladder: the half rung's
+// control height, text size 1/2, on-surface-variant. A collapsible heading is
+// a button of the same box with the state family of the alpha scale under the
+// pointer and the shared focus ring. A row's status is the class dot
+// (.sf-dot) at its end, before the counter, and its word a
+// .sf-menu-element-status out of sight.
+@layer sf.components {
+  .sf-menu .sf-menu-item--group {
+    --sf-menu-item--gap: var(--sf-space-1\/4);
+  }
+
+  .sf-menu > .sf-menu-item--group:not(:first-child),
+  .sf-menu > .sf-menu-item--group + .sf-menu-item {
+    margin-block-start: var(--sf-space-1\/2);
+  }
+
+  .sf-menu-group-heading {
+    --sf-menu-group-heading--border-width: var(--sf-px);
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    inline-size: 100%;
+    min-inline-size: var(--sf-0);
+    min-block-size: var(--sf-ui-1\/2--control-height);
+    margin: var(--sf-0);
+    padding-block: var(--sf-0);
+    padding-inline: calc(var(--sf-space-1) + var(--sf-menu-group-heading--border-width));
+    border: var(--sf-0);
+    border-radius: var(--sf-menu-item-radius, var(--sf-radius--ui));
+    background: var(--sf-transparent);
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/2);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1\/2);
+    text-align: start;
+  }
+
+  // The navigation draws its rows without a hairline: the words move with it.
+  .sf-menu.sf-menu--navigation .sf-menu-group-heading {
+    --sf-menu-group-heading--border-width: calc(var(--sf-px) * 0);
+  }
+
+  .sf-menu-group-label {
+    min-inline-size: var(--sf-0);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-menu-group-heading > .sf-icon {
+    --sf-icon--size: var(--sf-icon-size-1\/2);
+    flex: none;
+    margin-inline-start: auto;
+    font-size: var(--sf-icon-size-1\/2);
+  }
+
+  button.sf-menu-group-heading {
+    appearance: none;
+    cursor: pointer;
+  }
+
+  button.sf-menu-group-heading:not(:disabled):hover {
+    background: var(--sf-surface-transparent-hover);
+  }
+
+  button.sf-menu-group-heading:not(:disabled):active {
+    background: var(--sf-surface-transparent-active);
+  }
+
+  button.sf-menu-group-heading:disabled {
+    color: var(--sf-on-disable);
+    cursor: default;
+  }
+
+  button.sf-menu-group-heading:focus {
+    outline: none;
+  }
+
+  button.sf-menu-group-heading:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  // A status dot stands at the row's end, before the counter: the dot takes
+  // the free room and the counter follows it.
+  :is(.sf-menu-element-wrap, .sf-menu-group-heading) > .sf-dot {
+    margin-inline-start: auto;
+    padding: var(--sf-0);
+  }
+
+  :is(.sf-menu-element-wrap, .sf-menu-group-heading) > .sf-dot ~ .sf-badge {
+    margin-inline-start: var(--sf-0);
+  }
+
+  .sf-menu-group-heading > .sf-dot ~ .sf-icon,
+  .sf-menu-group-heading > .sf-badge ~ .sf-icon {
+    margin-inline-start: var(--sf-0);
+  }
+
+  .sf-menu-group-heading > .sf-badge:not(.sf-dot ~ .sf-badge) {
+    margin-inline-start: auto;
+  }
+
+  // The rail shows the icon alone; the status stays in the link's name.
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-dot {
+    display: none;
+  }
+
+  // A status's word: in the link's name, out of sight.
+  .sf-menu-element-status {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(var(--sf-px) * -1);
+    padding: var(--sf-0);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: var(--sf-0);
+  }
+
+  @media (forced-colors: active) {
+    button.sf-menu-group-heading:focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+    }
+  }
+}

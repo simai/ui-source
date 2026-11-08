@@ -7,6 +7,7 @@
   ],
   "sheets": [
     "component/badges/css/badges.min.css",
+    "component/dot/css/dot.min.css",
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "component/menu/css/menu.min.css",
@@ -21,6 +22,7 @@
   "examples": {
     "button": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/menu/css/menu.min.css",
@@ -34,6 +36,7 @@
     ],
     "docs-tree": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/menu/css/menu.min.css",
@@ -47,6 +50,7 @@
     ],
     "reference": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/menu/css/menu.min.css",
@@ -60,6 +64,7 @@
     ],
     "row": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/menu/css/menu.min.css",
@@ -71,8 +76,19 @@
       "utility/resize/default/css/default.min.css",
       "utility/text-max-width/default/css/default.min.css"
     ],
+    "sections": [
+      "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/menu/css/menu.min.css",
+      "core/css/core.css",
+      "smart/menu/css/menu.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
     "visible": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/menu/css/menu.min.css",

@@ -248,6 +248,11 @@
   "cl-list-attention": [
     "sr-only/default"
   ],
+  "cl-list-description": [
+    "font-family/default",
+    "sr-only/default",
+    "text-overflow/default"
+  ],
   "cl-list-feed": [
     "display/default",
     "sr-only/default"
@@ -264,6 +269,13 @@
     "gap/default",
     "justify-content/default",
     "place-items/default"
+  ],
+  "cl-list-timeline": [
+    "position/default",
+    "sr-only/default"
+  ],
+  "cl-menu": [
+    "position/default"
   ],
   "cl-menu-context": [
     "display/default",

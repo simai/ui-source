@@ -4,6 +4,7 @@ import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {pageLocale} from '../../core/js/page-language.js';
 import {fieldSize} from '../../component/field-size';
+import {PanelScrollbar} from '../../component/panel-scrollbar';
 import {FormField} from '../helpers/form-field';
 import {renderLookupTemplate} from './js/templates/default';
 import {
@@ -273,6 +274,7 @@ class SfLookup extends FormField(LookupElement) {
   onDisconnected() {
     this._close({render: false});
     this._syncPanel({force: false});
+    this._scrollbar?.disconnect();
     super.onDisconnected?.();
   }
 
@@ -305,6 +307,10 @@ class SfLookup extends FormField(LookupElement) {
         // Nothing to hide.
       }
     }
+    // The scrollbar stands in the panel's inline-end inset while it takes
+    // room (owner C07, docs review R029).
+    this._scrollbar ??= new PanelScrollbar();
+    this._scrollbar.watch(open ? panel : null, 'sf-lookup-panel--scrollbar');
     holdOpenSurfaceMark(this, open);
   }
 

@@ -262,6 +262,9 @@ class DownloadFile extends ComponentObserver {
     const fileNameNode = document.createElement('span');
     fileNameNode.classList.add('sf-download-file__name', 'sf-download-file-file-name');
     fileNameNode.textContent = String(fileName || '');
+    // The name is one line cut with an ellipsis (component.download-file
+    // 1.1.0): the title shows the whole of it.
+    if (fileName) fileNameNode.title = String(fileName);
 
     container.append(iconNode, fileNameNode);
 

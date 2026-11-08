@@ -1,5 +1,6 @@
 // One placement/lifecycle contract for native and body-projected panels.
 import BundledPosition from '../../core/js/position.js';
+import {PanelScrollbar} from '../panel-scrollbar.js';
 
 // Prefer the helper Core published; a bundle loaded without core.js (for
 // example an isolated documentation frame) still positions with its own copy.
@@ -75,6 +76,7 @@ export function positionDropdownPortal(root, list) {
     });
   }
   state.anchor.update();
+  state.scrollbar?.mark();
   return true;
 }
 
@@ -114,6 +116,12 @@ export function openDropdownPortal(root, list, onUnavailable) {
     }
     window.visualViewport?.addEventListener('resize',state.schedule);
     window.visualViewport?.addEventListener('scroll',state.schedule);
+    // The rows' scroll area gives up its inline-end inset to a scrollbar that
+    // takes room (owner C07, docs review R029).
+    if (state.wrap) {
+      state.scrollbar = new PanelScrollbar();
+      state.scrollbar.watch(state.wrap, 'sf-list-container-wrap--scrollbar');
+    }
   }
   list.hidden = false;
   if (portals.get(list).native && !list.matches(':popover-open')) list.showPopover();
@@ -129,6 +137,7 @@ export function closeDropdownPortal(list) {
   state.anchor?.stop();
   state.resize?.disconnect();cancelAnimationFrame(state.frame);
   state.inheritance?.disconnect();
+  state.scrollbar?.disconnect();
   window.visualViewport?.removeEventListener('resize',state.schedule);
   window.visualViewport?.removeEventListener('scroll',state.schedule);
   if(state.native){

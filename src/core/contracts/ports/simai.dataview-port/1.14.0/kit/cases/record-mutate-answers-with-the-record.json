@@ -1,0 +1,46 @@
+{
+  "id": "record-mutate-answers-with-the-record",
+  "intent": "record.mutate",
+  "capability": "row-actions",
+  "summary": "A write answered with the record it changed rewrites that row alone.",
+  "given": {
+    "records": [
+      {
+        "id": 7,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "publish"
+        ],
+        "status": "draft"
+      },
+      {
+        "id": 8,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ],
+        "status": "draft"
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.mutate",
+    "payload": {
+      "action_id": "publish",
+      "record_ids": [
+        7
+      ],
+      "revisions": {
+        "7": "r1"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records"
+    ],
+    "note": "records alone, with no echo, total or columns: the view writes row 7 and leaves the page, the scroll and the selection as they are. A host that answers with nothing instead has the page re-read."
+  }
+}

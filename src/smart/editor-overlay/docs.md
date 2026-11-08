@@ -64,7 +64,10 @@ as it always did: a text button.
   and the shortcut;
 - `shortcut` is the keys as the tooltip shows them: `⌥↑`, `⌥↓`, `⌘D`, `⌫`, `Enter`.
   While focus is in the tree, on the toolbar or in the frame, the key sends the same
-  `sf-composition-overlay-apply` as the button, for the selected node. `⌘` is Command
+  `sf-composition-overlay-apply` as the button, for the selected node. After a click
+  on a canvas bound with `for` (1.5.1) the key works where the click left focus: on
+  the canvas, on an element in it that types no text, or on the scroller or body
+  around it; a text field or an editable in a block keeps its keys. `⌘` is Command
   or Control and `⌫` is Backspace or Delete. What the action does is the host's;
 - `disabled` dims the button where it stands, so its neighbours do not move; its key
   sends nothing;

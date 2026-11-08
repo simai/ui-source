@@ -5560,7 +5560,8 @@ function createSmartElement(name, params = {}) {
 // element draws visibly only once the sheets it draws with are applied -- its
 // own sheet and those of the components and utilities it relates to (not the
 // lazy ones). A sheet already linked in <head> and loaded counts at once, so
-// a page that links its parts' sheets pays nothing; a sheet linked but on its
+// a page that links its parts' sheets pays nothing, and so does one the page
+// reports as held (SF_PRELOADED.loadedPlugins css: true); a sheet linked but on its
 // way is waited for; one nobody asked for yet is asked for now (autoLoad;
 // without it, it is not waited for: a printed first paint waits only for what
 // the page linked),
@@ -5582,7 +5583,15 @@ SFLoaderPlugin.prototype.styleSheetsOfRule = function (requested, visited = new 
   if (rule.css === true || (type === 'utility' && rule.css !== false)) {
     const point = name.includes('/') ? name.split('/').pop() : 'default';
     const unit = type === 'utility' && !name.includes('/') ? `${name}/${point}` : name;
-    const file = this.pathPluginCss(unit, type, point);
+    // A sheet whose styles the page already holds is not a sheet to ask for:
+    // the page said so (SF_PRELOADED.loadedPlugins, css: true -- a site that
+    // merged the Framework sheets into its own, Docara's shell styles), or the
+    // Loader's own request for it has loaded. Asked for by its path, a merged
+    // sheet is linked a second time: eleven of the fifteen links the Loader
+    // added to a Docara page were sheets its shell styles already held
+    // (2026-11-08).
+    const held = this.loadedPlugins?.[unit]?.css === true || this.loadedPlugins?.[name]?.css === true;
+    const file = held ? null : this.pathPluginCss(unit, type, point);
     if (file) sheets.push(file);
   }
   const drawnWith = type === 'smart'

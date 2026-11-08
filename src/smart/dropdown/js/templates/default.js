@@ -147,7 +147,6 @@ export function renderDropdownTemplate(context) {
 
   const iconButtonSize =
     context.size === "1" || context.size === "1/2" ? "1/2" : context.size;
-  const listInputSize = context.size;
   const dropdownIcon = context.open ? "keyboard_arrow_up" : "keyboard_arrow_down";
 
   const renderTrigger = () => {
@@ -262,30 +261,29 @@ export function renderDropdownTemplate(context) {
       ${renderTrigger()}
 
       <div
-        class=${`sf-list flex flex-col${
+        class=${`sf-list sf-list--size-${context.size} flex flex-col${
           context.component?.hasSlotContent?.('trigger') ? " sf-list--free-width" : ""
         }`}
         style=${`--sf-list--cell: ${CELL[context.size] || CELL["1"]}`}
         ?hidden=${!context.open}
       >
         ${context.search
+          // The search is the panel's header (owner C06, docs review R029):
+          // its icon over the rows' icons, its text over their text, no frame.
           ? html`
-              <label
-                class="sf-input sf-input--size-${listInputSize} sf-input--filled flex flex-col"
-              >
-                <span class="sf-input-field items-cross-center transition flex">
-                  <input
-                    placeholder=${context.searchPlaceholder}
-                    aria-label=${context.searchPlaceholder || nothing}
-                    type="text"
-                    .value=${context.searchValue || ""}
-                    ?disabled=${context.disabled}
-                    @input=${(event) => context.component.handleSearchInput(event)}
-                    @change=${(event) => event.stopPropagation()}
-                    @click=${(event) => event.stopPropagation()}
-                  />
-                  <i class="sf-icon sf-icon-hint" aria-hidden="true">search</i>
-                </span>
+              <label class="sf-list-search">
+                <i class="sf-icon sf-list-search-icon" aria-hidden="true">search</i>
+                <input
+                  class="sf-list-search-input"
+                  placeholder=${context.searchPlaceholder}
+                  aria-label=${context.searchPlaceholder || nothing}
+                  type="text"
+                  .value=${context.searchValue || ""}
+                  ?disabled=${context.disabled}
+                  @input=${(event) => context.component.handleSearchInput(event)}
+                  @change=${(event) => event.stopPropagation()}
+                  @click=${(event) => event.stopPropagation()}
+                />
               </label>
             `
           : nothing}

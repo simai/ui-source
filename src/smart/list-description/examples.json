@@ -1,0 +1,238 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Сведения о сайте: ссылка, путь с копированием, статус, подсказка",
+      "settings": {
+        "label": "Сведения о сайте",
+        "items": [
+          {
+            "id": "address",
+            "label": "Адрес",
+            "value": "demo-static.test",
+            "href": "#site"
+          },
+          {
+            "id": "root",
+            "label": "Корень сайта",
+            "value": "/var/www/demo-static/public",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "id": "php",
+            "label": "PHP",
+            "value": "8.3.12"
+          },
+          {
+            "id": "cert",
+            "label": "Сертификат",
+            "value": "Действует до 12 декабря 2026",
+            "status": "success",
+            "hint": "Let's Encrypt, продлевается сам"
+          },
+          {
+            "id": "backup",
+            "label": "Последняя копия",
+            "value": "27 октября, 03:30",
+            "status": "warning",
+            "hint": "Не удалась: нет места на диске"
+          },
+          {
+            "id": "owner",
+            "label": "Владелец",
+            "value": ""
+          }
+        ]
+      },
+      "studio": {
+        "title": "list-description reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "panel",
+      "title": "Боковая панель: размер 1/2, подпись над значением",
+      "settings": {
+        "size": "1/2",
+        "layout": "stacked",
+        "items": [
+          {
+            "label": "Задание",
+            "value": "Резервная копия demo-owned.test"
+          },
+          {
+            "label": "Ключ",
+            "value": "job_7f3a91c2e4b0",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "label": "Начато",
+            "value": "27 октября, 03:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dividers",
+      "title": "Лицензия: размер 2, линии между строками",
+      "settings": {
+        "size": "2",
+        "dividers": true,
+        "items": [
+          {
+            "label": "Лицензия",
+            "value": "SIMAI Commercial",
+            "status": "success"
+          },
+          {
+            "label": "Мест",
+            "value": "24 из 25"
+          },
+          {
+            "label": "Действует до",
+            "value": "31 декабря 2026"
+          }
+        ]
+      }
+    },
+    {
+      "name": "truncate",
+      "title": "Длинные значения в одну строку",
+      "settings": {
+        "overflow": "truncate",
+        "dividers": true,
+        "items": [
+          {
+            "label": "Хеш выпуска",
+            "value": "4638e4ffb789fa3f57dbcf765eb230972bd1aec9a8c1d2e3f4a5b6c7d8e9f0a1",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "label": "Страница",
+            "value": "https://demo-static.test/catalog/section/subsection/item-with-a-long-address/",
+            "href": "#page"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-list-description against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main style=\"inline-size: 40rem\">",
+          "  <sf-list-description id=\"facts\" label=\"Сведения о сайте\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"address\", \"label\": \"Адрес\", \"value\": \"demo-static.test\", \"href\": \"#site\"}, {\"id\": \"root\", \"label\": \"Корень сайта\", \"value\": \"/var/www/demo-static/public\", \"mono\": true, \"copy\": true}, {\"id\": \"php\", \"label\": \"PHP\", \"value\": 8.3}, {\"id\": \"cert\", \"label\": \"Сертификат\", \"value\": \"Действует до 12 декабря\", \"status\": \"success\", \"hint\": \"Продлевается сам\"}, {\"id\": \"owner\", \"label\": \"Владелец\", \"value\": \"\", \"copy\": true, \"href\": \"#owner\"}, {\"value\": \"без подписи\"}]}</script></sf-list-description>",
+          "  <sf-list-description id=\"stacked\" layout=\"stacked\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Задание\", \"value\": \"Резервная копия\"}]}</script></sf-list-description>",
+          "  <div style=\"inline-size: 18rem\"><sf-list-description id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Задание\", \"value\": \"Резервная копия\"}]}</script></sf-list-description></div>",
+          "  <sf-list-description id=\"cut\" overflow=\"truncate\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Хеш\", \"value\": \"4638e4ffb789fa3f57dbcf765eb230972bd1aec9a8c1d2e3f4a5b6c7d8e9f0a1-4638e4ffb789fa3f57dbcf765eb230972bd1aec9\", \"mono\": true}]}</script></sf-list-description>",
+          "  <sf-list-description id=\"none\"></sf-list-description>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-pairs",
+          "title": "a dl of label and value pairs in the host's order; an item without a label is left out; an empty value shows «—» with no link and no copy; a status is said in words",
+          "covers": "settings.items, settings.label, settings.empty-text, accessibility.role group",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#facts'); const root = el.querySelector('.sf-list-description'); const rows = [...el.querySelectorAll('dl > .sf-list-description-row')]; const owner = el.querySelector('[data-id=owner]'); return root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Сведения о сайте' && rows.map((row) => row.dataset.id).join(',') === 'address,root,php,cert,owner' && rows.every((row) => row.querySelector(':scope > dt') && row.querySelector(':scope > dd')) && el.querySelector('[data-id=php] .sf-list-description-text').textContent === '8.3' && owner.querySelector('.sf-list-description-empty').textContent === '—' && !owner.querySelector('a, sf-button-copy') && el.querySelector('[data-id=cert] .sr-only').textContent === 'В порядке: ' && el.querySelector('[data-id=cert] .sf-list-description-hint').textContent === 'Продлевается сам' && el.querySelector('[data-id=root] .sf-list-description-text--mono') !== null; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-navigate",
+          "title": "a value with href is a link; its press asks sf-list-description-navigate, cancelable",
+          "covers": "events.navigate",
+          "steps": [
+            {
+              "script": "(document.querySelector('#facts').addEventListener('sf-list-description-navigate', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#facts [data-id=address] a.sf-list-description-link",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-description-navigate",
+                    "count": 1,
+                    "detail": {
+                      "id": "address",
+                      "href": "#site"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "location.hash !== '#site'"
+            }
+          ]
+        },
+        {
+          "id": "p3-copy",
+          "title": "copy adds an sf-button-copy of the value, named by the label",
+          "covers": "settings.items copy",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const copy = document.querySelector('#facts [data-id=root] sf-button-copy'); return document.querySelectorAll('#facts sf-button-copy').length === 1 && copy.getAttribute('value') === '/var/www/demo-static/public' && copy.getAttribute('label') === 'Скопировать: Корень сайта'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-layout",
+          "title": "columns put every value on one axis beside its label; stacked, and auto in a narrow column, put the label over the value",
+          "covers": "settings.layout",
+          "steps": [
+            {
+              "check": "(() => { const box = (el) => el.getBoundingClientRect(); const values = [...document.querySelectorAll('#facts dd')].map((dd) => Math.round(box(dd).left)); const label = box(document.querySelector('#facts [data-id=address] dt')); const value = box(document.querySelector('#facts [data-id=address] dd')); const over = (id) => { const dt = box(document.querySelector(`#${id} dt`)); const dd = box(document.querySelector(`#${id} dd`)); return dd.top >= dt.bottom - 0.5 && Math.abs(dd.left - dt.left) < 0.5; }; return new Set(values).size === 1 && value.left > label.right && Math.abs(value.top - label.top) < 0.5 && over('stacked') && over('narrow'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-truncate",
+          "title": "overflow truncate keeps a value on one line with its whole text as title; focus shows it whole",
+          "covers": "settings.overflow",
+          "steps": [
+            {
+              "check": "(() => { const text = document.querySelector('#cut .sf-list-description-text'); return text.scrollWidth > text.clientWidth && text.getAttribute('title').length > 60 && text.tabIndex === 0 && text.getBoundingClientRect().height <= parseFloat(getComputedStyle(text).lineHeight) + 0.5; })()"
+            },
+            {
+              "script": "(document.querySelector('#cut .sf-list-description-text').focus(), true)",
+              "wait": 50,
+              "check": "(() => { const text = document.querySelector('#cut .sf-list-description-text'); return text.getBoundingClientRect().height > parseFloat(getComputedStyle(text).lineHeight) + 0.5; })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-empty",
+          "title": "with no items it draws nothing; a new list draws again",
+          "covers": "host-states data-empty",
+          "steps": [
+            {
+              "check": "(() => { const none = document.querySelector('#none'); return none.getAttribute('data-empty') === 'true' && !none.querySelector('.sf-list-description'); })()"
+            },
+            {
+              "script": "(document.querySelector('#none').items = [{label: 'Новое', value: 'значение'}], true)",
+              "wait": 150,
+              "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelectorAll('.sf-list-description-row').length === 1; })()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

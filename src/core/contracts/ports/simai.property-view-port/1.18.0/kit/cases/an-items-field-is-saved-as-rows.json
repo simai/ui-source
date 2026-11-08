@@ -1,0 +1,111 @@
+{
+  "id": "an-items-field-is-saved-as-rows",
+  "intent": "group.save",
+  "summary": "An items field is saved as the list of its rows within minRows and maxRows: typed cells by column key, a computed cell worked out and written last in its row, an empty cell no key.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "items",
+        "label": "Позиции",
+        "propertyType": "items",
+        "width": "full",
+        "minRows": 1,
+        "maxRows": 50,
+        "columns": [
+          {
+            "key": "name",
+            "label": "Наименование",
+            "type": "string",
+            "required": true
+          },
+          {
+            "key": "qty",
+            "label": "Кол-во",
+            "type": "number"
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "type": "money",
+            "settings": {
+              "currency": "RUB"
+            }
+          },
+          {
+            "key": "sum",
+            "label": "Сумма",
+            "type": "money",
+            "compute": {
+              "op": "multiply",
+              "of": [
+                "qty",
+                "price"
+              ]
+            },
+            "total": "sum"
+          }
+        ],
+        "value": [
+          {
+            "name": "Ручка",
+            "qty": "3",
+            "price": {
+              "amount": "33.33",
+              "currency": "RUB"
+            },
+            "sum": {
+              "amount": "99.99",
+              "currency": "RUB"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "invoices",
+      "section": "main",
+      "group": "lines",
+      "values": {
+        "items": [
+          {
+            "name": "Ручка",
+            "qty": "3",
+            "price": {
+              "amount": "33.33",
+              "currency": "RUB"
+            },
+            "sum": {
+              "amount": "99.99",
+              "currency": "RUB"
+            }
+          },
+          {
+            "name": "Тетрадь",
+            "qty": "2",
+            "price": {
+              "amount": "45",
+              "currency": "RUB"
+            },
+            "sum": {
+              "amount": "90.00",
+              "currency": "RUB"
+            }
+          }
+        ]
+      },
+      "revision": "8"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The rows are the whole value: a save sends every row, in order. A computed cell is the product of its operands rounded half away from zero to the currency's minor units (or the column's scale, 2 by default); the host works it out again and is the authority, refusing with a field error when its own figure differs. A list shorter than minRows or longer than maxRows is not sent."
+  }
+}

@@ -86,7 +86,7 @@ function getList(root) {
 }
 
 function getSearchInput(root) {
-  return getList(root)?.querySelector(".sf-input input") || null;
+  return getList(root)?.querySelector(".sf-list-search-input, .sf-input input") || null;
 }
 
 function getTagContainer(root) {
@@ -409,12 +409,19 @@ function applyDropdownViewport(root, visibleItems = 4) {
   const paddingTop = Number.parseFloat(containerStyle.paddingTop || "") || 0;
   const paddingBottom =
     Number.parseFloat(containerStyle.paddingBottom || "") || 0;
+  // The scroll area holds the panel's inset since R029 (C05-C07): its own
+  // padding is part of the height it shows.
+  const wrapStyle = window.getComputedStyle(wrap);
+  const wrapPadding =
+    (Number.parseFloat(wrapStyle.paddingTop || "") || 0) +
+    (Number.parseFloat(wrapStyle.paddingBottom || "") || 0);
   const visibleCount = Math.min(visibleItems, items.length);
   const totalHeight =
     visibleCount * itemHeight +
     Math.max(visibleCount - 1, 0) * gap +
     paddingTop +
-    paddingBottom;
+    paddingBottom +
+    wrapPadding;
 
   wrap.style.maxHeight = `${Math.ceil(totalHeight)}px`;
   wrap.style.overflowY = items.length > visibleCount ? "auto" : "hidden";
@@ -645,7 +652,7 @@ function onRootClick(event) {
   const field = getField(root);
   const item = event.target.closest(".sf-list-item");
   const removeTagButton = event.target.closest('[data-role="remove-tag"]');
-  const searchWrap = event.target.closest(".sf-list .sf-input");
+  const searchWrap = event.target.closest(".sf-list .sf-list-search, .sf-list .sf-input");
   const optionCheckbox = event.target.closest(".sf-list-item .sf-checkbox");
 
   if (searchWrap && containsDropdownTarget(root, searchWrap)) {

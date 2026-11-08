@@ -1,0 +1,23 @@
+{
+  "title": "Хронология",
+  "runtime": {
+    "empty-text": "Событий пока нет",
+    "more": "Показать ещё",
+    "loading": "Загружаем…",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "tomorrow": "Завтра",
+    "status-success": "Готово",
+    "status-warning": "Предупреждение",
+    "status-error": "Ошибка",
+    "status-info": "Сведения"
+  },
+  "events": {
+    "navigate": {
+      "label": "Перейти"
+    },
+    "load-more": {
+      "label": "Показать ещё"
+    }
+  }
+}

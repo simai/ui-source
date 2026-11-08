@@ -561,7 +561,7 @@
       "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "A promise of one module of the shared Smart runtime by its id (lit, smart-base, page-language, ...); what a built Smart bundle imports through."
+      "summary": "A promise of one module of the shared Smart runtime by its id (lit, smart-base, page-language, ...), or of a package's shared core by <package>/<module>; what a built Smart bundle imports through. SF.runtimeModule.register(<package>, <abi>, {<module>: namespace}) registers a package's shared core (core.runtime 1.38.0)."
     },
     {
       "name": "SF.runtimeModules",

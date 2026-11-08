@@ -1552,6 +1552,13 @@
           "varies_with": [
             "orientation"
           ]
+        },
+        {
+          "name": "--sf-menu-sticky-top",
+          "role": "inset-block-start",
+          "summary": "How far from the top of the view a sticky menu stops (sticky): the height of a fixed header above it.",
+          "default": "0",
+          "since": "2026-11-08"
         }
       ]
     },
@@ -2150,8 +2157,8 @@
         {
           "name": "--sf-download-file-padding",
           "role": "padding",
-          "summary": "Space around the card's content.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)) calc(var(--sf-ui-1--space-x) - var(--sf-px))",
           "varies_with": [
             "size"
           ],
@@ -2160,8 +2167,8 @@
         {
           "name": "--sf-download-file-gap",
           "role": "gap",
-          "summary": "Space between the file's name and its size.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size.",
+          "default": "var(--sf-ui-1--text-space-x)",
           "varies_with": [
             "size"
           ],
@@ -2170,8 +2177,8 @@
         {
           "name": "--sf-download-file-icon-size",
           "role": "size",
-          "summary": "The download icon's size.",
-          "default": "var(--sf-text-size-3)",
+          "summary": "The download icon's size: the button's icon of the size (its text height).",
+          "default": "var(--sf-text-height-1)",
           "varies_with": [
             "size"
           ],
@@ -4182,6 +4189,240 @@
           "summary": "The code's typeface.",
           "default": "var(--sf-mono)",
           "since": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "component": "list-description",
+      "selector": "sf-list-description, .sf-list-description",
+      "variables": [
+        {
+          "name": "--sf-list-description-label-color",
+          "role": "color",
+          "summary": "The labels' colour, and the empty value's.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-value-color",
+          "role": "color",
+          "summary": "The values' colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-divider-color",
+          "role": "border-color",
+          "summary": "The hairline between rows (dividers).",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-label-width",
+          "role": "max-inline-size",
+          "summary": "The labels' column at its widest; it is as wide as the longest label up to this.",
+          "default": "40%",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-gap",
+          "role": "column-gap",
+          "summary": "The space between the labels' column and the values'; the rung's space-x by default.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-description-padding-inline",
+          "role": "padding-inline",
+          "summary": "The rows' inline inset; 0 by default, so they line up with the page's text.",
+          "default": "calc(var(--sf-px) * 0)",
+          "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "list-timeline",
+      "selector": "sf-list-timeline, .sf-list-timeline",
+      "variables": [
+        {
+          "name": "--sf-list-timeline-line-color",
+          "role": "background",
+          "summary": "The connector between the markers.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-marker-color",
+          "role": "color",
+          "summary": "The marker of an event with no status (neutral).",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-time-color",
+          "role": "color",
+          "summary": "The time's and the actor's colour.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-day-color",
+          "role": "color",
+          "summary": "The day headings' colour.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-gap",
+          "role": "gap",
+          "summary": "The space after each event in normal density; the rung's text-space-x by default.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-list-timeline-padding-inline",
+          "role": "padding-inline",
+          "summary": "The events', the day headings' and the button's inline inset; 0 by default.",
+          "default": "calc(var(--sf-px) * 0)",
+          "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "choice",
+      "selector": ".sf-choice",
+      "variables": [
+        {
+          "name": "--sf-choice-gap",
+          "role": "gap",
+          "summary": "The space between the cards.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-min-inline-size",
+          "role": "min-inline-size",
+          "summary": "The narrowest a card may be in the grid; fewer columns where it would be narrower.",
+          "default": "15rem",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-padding",
+          "role": "padding",
+          "summary": "The room inside a card.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-radius",
+          "role": "radius",
+          "summary": "A card's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-background-color",
+          "role": "background",
+          "summary": "A card's fill at rest; hover keeps its own.",
+          "default": "var(--sf-transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-border-color",
+          "role": "border-color",
+          "summary": "A card's hairline at rest; invalid and disabled keep their own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-selected-background-color",
+          "role": "background",
+          "summary": "A chosen card's fill.",
+          "default": "var(--sf-primary-transparent-select)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-choice-selected-border-color",
+          "role": "border-color",
+          "summary": "A chosen card's edge (drawn twice as heavy).",
+          "default": "var(--sf-primary)",
+          "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "kbd",
+      "selector": "kbd",
+      "variables": [
+        {
+          "name": "--sf-kbd-size",
+          "role": "size",
+          "summary": "A cap's and a key's height and least width, relative to its own letters.",
+          "default": "1.6em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-padding-inline",
+          "role": "padding-inline",
+          "summary": "The room on each side of a cap's or a key's letters.",
+          "default": "0.4em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-gap",
+          "role": "gap",
+          "summary": "The space between the keys of a combination drawn as caps or keys.",
+          "default": "0.25em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-font-size",
+          "role": "font-size",
+          "summary": "A cap's and a key's letters against the text around them.",
+          "default": "0.8125em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-font-family",
+          "role": "font-family",
+          "summary": "A cap's and a key's typeface.",
+          "default": "var(--sf-text--family)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-radius",
+          "role": "radius",
+          "summary": "A cap's and a key's corners.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-background",
+          "role": "background",
+          "summary": "A cap's fill (in a button or a field): the ink it sits in, mixed.",
+          "default": "color-mix(in srgb, currentColor 12%, transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-color",
+          "role": "color",
+          "summary": "A cap's letters (in a button or a field): the ink it sits in, mixed.",
+          "default": "color-mix(in srgb, currentColor 80%, transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-border-color",
+          "role": "border-color",
+          "summary": "A key's edge and its inset bottom edge (in running text).",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-plain-color",
+          "role": "color",
+          "summary": "The ink of plain glyphs (in a menu or a list box).",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
         }
       ]
     }

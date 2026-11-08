@@ -14,7 +14,16 @@ const scroller = ({height = 1000, top = 0, client = 200} = {}) => {
   };
   return element;
 };
-const frames = () => new Promise((done) => setTimeout(done, 60));
+// Frames are run by the test, one at a time: the module's own fallback is a
+// 16 ms timer per frame, and a fixed 60 ms wait for two chained frames lost the
+// race whenever a loaded machine ran the first frame late (the second was then
+// still pending when the wait ended).
+const frameQueue = [];
+const manualFrames = () => {
+  globalThis.requestAnimationFrame = (callback) => frameQueue.push(callback);
+  return () => { delete globalThis.requestAnimationFrame; frameQueue.length = 0; };
+};
+const frame = () => { for (const callback of frameQueue.splice(0)) callback(); };
 
 test('at the end within NEAR_END, at the start within NEAR_START; a column not drawn is at its end', () => {
   assert.equal(NEAR_END, 96);
@@ -41,28 +50,36 @@ test('keep: history added above leaves what is read the same distance from the e
   assert.equal(element.scrollHeight - element.scrollTop, 700);
 });
 
-test('check reports the start once it is in reach, never while settling', async () => {
-  let asked = 0;
-  const element = scroller({height: 1000, top: 100});
-  const position = readingPosition(element, {onStart: () => { asked += 1; }});
-  assert.equal(position.check(), true);
-  assert.equal(asked, 1);
-  position.hold();
-  assert.equal(position.settling, true);
-  assert.equal(position.check(), false);
-  position.release();
-  element.scrollTop = 500;
-  assert.equal(position.check(), false, 'not in reach');
-  assert.equal(asked, 1);
-  // toEnd with settle holds the start until the frame after the jump.
-  element.scrollTop = 0;
-  let after = false;
-  position.toEnd({instant: true, settle: true, then: () => { after = true; }});
-  assert.equal(position.check(), false, 'settling');
-  await frames();
-  assert.equal(after, true);
-  assert.equal(position.settling, false);
-  assert.deepEqual(element.scrolled.at(-1), {top: 1000, behavior: 'instant'});
+test('check reports the start once it is in reach, never while settling', () => {
+  const restore = manualFrames();
+  try {
+    let asked = 0;
+    const element = scroller({height: 1000, top: 100});
+    const position = readingPosition(element, {onStart: () => { asked += 1; }});
+    assert.equal(position.check(), true);
+    assert.equal(asked, 1);
+    position.hold();
+    assert.equal(position.settling, true);
+    assert.equal(position.check(), false);
+    position.release();
+    element.scrollTop = 500;
+    assert.equal(position.check(), false, 'not in reach');
+    assert.equal(asked, 1);
+    // toEnd with settle holds the start until the frame after the jump.
+    element.scrollTop = 0;
+    let after = false;
+    position.toEnd({instant: true, settle: true, then: () => { after = true; }});
+    assert.equal(position.check(), false, 'settling');
+    frame();
+    assert.equal(after, true, 'the jump and then run in the next frame');
+    assert.equal(position.settling, true, 'still settling in the frame of the jump');
+    assert.equal(position.check(), false);
+    frame();
+    assert.equal(position.settling, false, 'released the frame after');
+    assert.deepEqual(element.scrolled.at(-1), {top: 1000, behavior: 'instant'});
+  } finally {
+    restore();
+  }
 });
 
 test('watchEdge observes the sentinel with the margin and answers the way to stop', () => {

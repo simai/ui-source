@@ -1,0 +1,361 @@
+{
+  "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
+  "id": "smart.input-choice",
+  "tag": "sf-input-choice",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "value": "string",
+        "label": "string",
+        "caption": {
+          "type": "string",
+          "optional": true
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "badge": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "x-markup": "the attribute takes the same list as JSON; a server prints it in the JSON island (script type=application/json data-sf-settings); title is read as label",
+      "summary": "The options, [{value, label, caption?, icon?, badge?, disabled?}]: each a card with its title (label, or title), a caption under it, an icon in a box before it and a short badge beside the title. A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+      "examples": [
+        [
+          {
+            "value": "site",
+            "label": "Сайт",
+            "caption": "Страницы, разделы и меню",
+            "icon": "language"
+          },
+          {
+            "value": "shop",
+            "label": "Магазин",
+            "caption": "Каталог, корзина и заказы",
+            "icon": "storefront",
+            "badge": "Pro"
+          }
+        ]
+      ]
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
+    },
+    "columns": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "default": "auto",
+      "summary": "The grid: auto fills the width with cards no narrower than --sf-choice-min-inline-size (15rem); a number is the most columns, fewer where a card would be narrower than that, so a phone stacks them."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The visible name of the field over the cards; it names the group. Without it the host's aria-label does."
+    },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "The line under the cards; it describes the group."
+    },
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The form name: one entry with the chosen value, or one entry per chosen value when multiple."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The form is not sent while nothing is chosen (value-missing)."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "summary": "No card can be chosen or focused, and nothing is sent with the form; a disabled fieldset does the same. An option's own disabled turns off its card alone."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The page's verdict: the cards not chosen take the error edge, aria-invalid is set, and error-message shows under them."
+    },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "Shown in place of the hint while invalid."
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The chosen option's value; multiple, the chosen values joined by commas in the order of the options ('' when nothing is). The value attribute is the default a form reset returns to; set from code (a string, or a list of values) it says nothing. The property selected gives the values as a list."
+    }
+  },
+  "events": {
+    "input": {
+      "carries": "native",
+      "x-detail": {
+        "value": "string",
+        "values": "list",
+        "item": "object",
+        "checked": "boolean"
+      },
+      "summary": "A person chose an option or, multiple, turned one off. Sent before change, with the same detail; the inner inputs' own events do not leave the host."
+    },
+    "change": {
+      "carries": "native",
+      "x-detail": {
+        "value": "string",
+        "values": "list",
+        "item": "object",
+        "checked": "boolean"
+      },
+      "summary": "The value changed by the person, once per press, as a native radio group's or checkbox's: detail.value is the new value, detail.values the chosen values, detail.item the option pressed, detail.checked whether it is chosen now. A value set from code, a form reset and a restore say nothing."
+    }
+  },
+  "actions": {},
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowRight": "focus:next",
+      "ArrowUp": "focus:prev",
+      "ArrowLeft": "focus:prev",
+      "Space": "select"
+    }
+  },
+  "relations": [
+    {
+      "name": "icons",
+      "$comment": [
+        "An option's icon and the check of a chosen card in a multiple field."
+      ]
+    },
+    {
+      "name": "badges",
+      "$comment": [
+        "An option's badge is the class badge (.sf-badge, tight, its default size) beside",
+        "its title."
+      ]
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "Native inputs: single, a radio group (role radiogroup, named by the label or the host's aria-label, described by the hint or error, aria-required and aria-invalid on it) of native radios that the arrow keys move through and choose, Tab reaching the chosen one; multiple, a group of native checkboxes, each reached by Tab and toggled by Space, aria-invalid on each. Each input covers its card, is named by the card's title (with its badge) and described by its description. The focus ring is the card's.",
+    "role": "radiogroup",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowRight": "focus:next",
+      "ArrowUp": "focus:prev",
+      "ArrowLeft": "focus:prev",
+      "Space": "select"
+    }
+  },
+  "css-variables": {
+    "--sf-choice-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-choice-min-inline-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-choice-padding": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-choice-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-choice-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-choice-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-choice-selected-background-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-choice-selected-border-color": {
+      "type": "color",
+      "state": "selected"
+    }
+  },
+  "x-summary": "A form field that picks one option, or several, from cards: each a title, a caption, an icon and a badge, in a grid that wraps on a phone. One option is a radio group the arrow keys move through; several are checkboxes. Chosen cards have a filled mark and a heavier primary edge; invalid cards an error edge and a message under them.",
+  "x-source": {
+    "package": "framework",
+    "folder": "input-choice",
+    "brief": "Larena msg-993e1e39151942c19b23 item 3 (choice cards: a form-associated group of {value, icon, title, caption, badge, disabled}, single with radiogroup keyboard or multiple, responsive grid, selected and focus states, invalid with a message; for site kind, page type, template, field type, backup target, plan); name sf-input-choice in the dispatcher's plan msg-05e76ea0bc0746a690b8."
+  },
+  "x-words": [
+    "label",
+    "hint",
+    "error-message"
+  ],
+  "x-decisions": [
+    "caption, not description: description is a key every Smart bundle drops from its component.json (scripts/shared-runtime-contract.mjs), and sf-input-lookup's options already name their second line caption; one option shape across the field family.",
+    "new, not an extension (D31: one registry, no duplicates). sf-radio and sf-checkbox are one option each (a label and a description line, no icon, no badge, no grid, no group value); sf-button-group is a segmented row of buttons, single choice only, no second line, and its geometry is a button's height on the ladder, which a card with a caption cannot keep; sf-input-select and sf-input-lookup choose from a list in a panel. A card grid that is one form value, single or multiple, is a field none of them is, and stretching any of them to it would give that component two geometries and two value models. So one new field in the family input, the name of the dispatcher's plan.",
+    "control: native inputs, not ARIA on spans. Single is native radios of one name in a role radiogroup, so the arrows, the wrap and the choose-on-move are the browser's and a screen reader hears the group's position; multiple is native checkboxes in a role group. Each input covers its card (opacity 0, inset 0), so a press anywhere is the input's and the focus ring is the card's box.",
+    "form: the host is the form control (ElementInternals) and sends the values alone -- one entry, or one entry per chosen value under the name when multiple (FormData), as sf-input-lookup. The inner inputs are taken out of the page's form by a form attribute that names no form, and their name is the host's path id, so the radios of one element are one group and two elements never share one.",
+    "value: a string -- one value, or the values joined by commas when multiple, in the order of the options -- so a server prints it as the value attribute; the property takes a string or a list, and selected gives the list. A value with a comma in it cannot be said by the attribute; such an option is chosen by the property.",
+    "events: input then change, once per press, detail {value, values, item, checked}; the inner inputs' own events do not leave the host. A value set from code, a reset and a restore say nothing.",
+    "geometry: on the ladder. The icon box is the size 1 control height (square, ui radius, surface-container; primary-container when chosen); the title is text size 1 medium on the size 1 line, the caption text size 1/2 on-surface-variant; the mark is the half rung's icon, on the title's line, or centred on the icon box when there is one; the card's padding space-1/2, its hairline inside its box. The label row and the message line are sf-input's (text size 1/2).",
+    "states: checked is two signs -- the mark filled (a dot in the ring, a check in the box) and the edge drawn twice as heavy in the primary role (an inner ring, so the box does not move) over the select step of the alpha scale; hover the state step; focus the shared ring on the card; disabled the disable roles; invalid the error edge on the cards not chosen and the error line under them; forced colours Highlight.",
+    "grid: auto-fill with a minimum card width (--sf-choice-min-inline-size, 15rem); columns 1-4 is the most columns, fewer where a card would be narrower than the minimum, so a phone stacks the cards without a breakpoint of its own.",
+    "css-variables: eight, read with the role as their fallback and never set here: gap, min-inline-size, padding, radius, background-color, border-color, selected-background-color, selected-border-color."
+  ],
+  "x-registry": {
+    "reuse_mode": "whole",
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "form",
+      "validation",
+      "selection",
+      "theme",
+      "responsive",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "choice",
+      "cards",
+      "radio",
+      "checkbox",
+      "options",
+      "picker",
+      "field",
+      "form"
+    ],
+    "state": {
+      "machines": {
+        "value": [
+          "empty",
+          "filled"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "selected",
+        "disabled",
+        "error"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "drawing cards of its own over the field",
+        "trusting the submitted values without checking them on the server"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-input-choice to pick one or several of a few options that need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan -- shown all at once as cards.",
+      "do_not": [
+        "Do not use it for a long list; use sf-input-select or sf-input-lookup",
+        "Do not use it for two or three short words; use sf-button-group (segmented) or sf-radio",
+        "Do not draw cards of your own with radios inside; give the options to the field"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-input-choice label=\"Тип сайта\" name=\"kind\" items='[{\"value\": \"site\", \"label\": \"Сайт\", \"caption\": \"Страницы и разделы\", \"icon\": \"language\"}, {\"value\": \"shop\", \"label\": \"Магазин\", \"caption\": \"Каталог и заказы\", \"icon\": \"storefront\"}]'></sf-input-choice>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Single: Tab reaches the chosen card (or the first); the arrow keys move to the next or previous card and choose it, wrapping at the ends",
+        "Multiple: Tab reaches each card; Space turns it on or off"
+      ],
+      "focus": "The focus ring is drawn on the card whose input has keyboard focus; a press draws none."
+    }
+  }
+}

@@ -20,6 +20,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {applied, elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
+import {PanelScrollbar} from '../../component/panel-scrollbar';
 import {renderProfilePickerTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -143,6 +144,10 @@ class SfProfilePicker extends ProfilePickerElement {
     // At least the trigger's width, wider for a long name.
     panel.style.minInlineSize = `${Math.round(trigger.getBoundingClientRect().width)}px`;
     this._position = position().anchor(trigger, panel, {side: 'block-end', align: 'start', flip: true, shift: true, fitHeight: true});
+    // The scrollbar stands in the panel's inline-end inset while it takes
+    // room (owner C07, docs review R029).
+    this._scrollbar ??= new PanelScrollbar();
+    this._scrollbar.watch(panel, 'sf-profile-picker-panel--scrollbar');
     // The open panel owns Escape: the root says so, and a drawer or record
     // panel listening on the document stands back. A press outside the picker
     // and its panel closes it, heard through the layer stack's one listener
@@ -160,6 +165,7 @@ class SfProfilePicker extends ProfilePickerElement {
     this.state = {...this.state, open: false, mode: null, target: null};
     this._position?.stop();
     this._position = null;
+    this._scrollbar?.disconnect();
     holdOpenSurfaceMark(this, false);
     const panel = this.panel();
     if (panel?.matches?.(':popover-open')) panel.hidePopover();

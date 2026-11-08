@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.button-group",
   "tag": "sf-button-group",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -359,7 +359,8 @@
     "accessibility.name: the host's aria-label, or the theme switch's own word «Тема»",
     "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.2.0 (sf-language, owner decision 2026-11-06): an item may name the language its label is written in, lang; the segment (or the sf-button of the default appearance) carries it as lang, so a language picker's «Deutsch» is read in German. Nothing else changes."
+    "version 1.2.0 (sf-language, owner decision 2026-11-06): an item may name the language its label is written in, lang; the segment (or the sf-button of the default appearance) carries it as lang, so a language picker's «Deutsch» is read in German. Nothing else changes.",
+    "version 1.2.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

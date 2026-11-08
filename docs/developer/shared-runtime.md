@@ -97,6 +97,34 @@ asks for it by tag (the Loader defines it from its own bundle); it does not
 import the other element's `index.js`, which would put a second copy of that
 element in its bundle.
 
+## Package modules
+
+Since `core.runtime` 1.38.0 the runtime also holds the modules a package
+shares between its own bundles: its shared core, built once as its own bundle
+(`docs/developer/component-packages.md`, "A package's shared core"). The core
+bundle registers them and the package's components ask for them by id, as
+they ask for a Core module:
+
+```js
+SF.runtimeModule.register('chart', 1, {scale: scaleNamespace, format: formatNamespace});
+const scale = await SF.runtimeModule('chart/scale', 1);
+```
+
+- The id is `<package>/<module>`. The package may not be named after a
+  namespace of the runtime's own ids (`lit`, for `lit/directive.js`), and no
+  id may be a Core one: a package module never shadows a Core module.
+- The number is the package's own ABI, not the runtime's: the version of its
+  core's exports. A bundle built for another ABI of the package is refused,
+  loudly, as one built for another runtime ABI is, and so is a second
+  registration of the package with another ABI. A second registration with the
+  same ABI keeps the modules already registered: one instance per page.
+- A component that asks before its package's core has run waits for it.
+- The registry lives on the shared global (`globalThis.__sfRuntimePackages`),
+  never in a module's scope: Core, the runtime script and each package's core
+  carry their own copy of `core/js/package-modules.js`, and all read and write
+  the one registry. `shared-runtime.v1.json` `package_modules` says what a
+  builder may count on (`tests/package-runtime-modules.contract.test.mjs`).
+
 ## The runtime ABI
 
 `core/js/runtime.js` `RUNTIME_ABI` (today 1) is the runtime's module ABI. A

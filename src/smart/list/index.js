@@ -406,6 +406,7 @@ class SfList extends ListElement {
             label: this.label,
             headingLevel: this.headingLevel,
             size: this.size,
+            noWrap: this.noWrap === true,
             sections: this.arranged(),
             leading: this.leading(),
             avatarOf,

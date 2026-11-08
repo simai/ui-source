@@ -21,7 +21,9 @@
 // - every Smart component (a folder of src/smart with component.json) is
 //   smart.<folder>: its passport is derived -- the id and version from
 //   component.json, the files its folder -- so nothing is written into
-//   src/smart. A former path's folder (a forward in
+//   src/smart. Its owner is the source its component.json names in
+//   x-source.package: a component package laid over ui-source (ui-pro, a set
+//   such as simai/ui-chart) owns its components (see packageOwners). A former path's folder (a forward in
 //   src/core/contracts/smart-rule-forwards.v1.json) belongs to the component it
 //   forwards to;
 // - every host port (src/core/contracts/ports/<name>) is port.<name>, derived:
@@ -62,6 +64,8 @@ export const CENTRAL = 'src/core/passports/';
 const FOLDER_KINDS = {'src/component/': 'component', 'src/utility/': 'utility', 'src/plugin/': 'plugin'};
 const FORWARDS = 'src/core/contracts/smart-rule-forwards.v1.json';
 const PORTS = 'src/core/contracts/ports/';
+const PACKAGE_REFERENCES = 'src/core/contracts/packages/';
+const NAME_REGISTRY = 'contracts/registry/names.json';
 // The kinds whose custom properties other units read: a read of --sf-x makes
 // the reader depend on the unit that defines --sf-x.
 const FOUNDATION_KINDS = new Set(['tokens', 'font', 'icons']);
@@ -179,13 +183,56 @@ function ruleKeys(tree, file) {
 }
 
 /**
+ * The owner of each component package a Smart component may name in its
+ * component.json x-source.package: a Map from the package name to the owning
+ * repository (owner/name). It is read from two records ui-source keeps:
+ *
+ * - the component package references in the tree
+ *   (src/core/contracts/packages/<package>.package.json, distribution.owner),
+ *   such as pro -> simai/ui-pro;
+ * - the shared name registry (contracts/registry/names.json, outside src/, read
+ *   from the checkout this script runs in), whose owners are the Framework and
+ *   every set: framework -> simai/ui-source, chart -> simai/ui-chart.
+ *
+ * A package is also known by its repository's name (ui-source, ui-pro,
+ * ui-chart), which is what some component.json files write. The Framework's
+ * own name maps to OWNER, so the free inventory does not move.
+ */
+export function packageOwners(tree, {registry} = {}) {
+  const owners = new Map([['framework', OWNER]]);
+  const add = (name, owner) => {
+    if (typeof owner !== 'string' || !/^[\w.-]+\/[\w.-]+$/u.test(owner)) return;
+    if (name && !owners.has(name)) owners.set(name, owner);
+    const repository = owner.split('/')[1];
+    if (!owners.has(repository)) owners.set(repository, owner);
+  };
+  for (const file of [...tree.keys()].filter((entry) => entry.startsWith(PACKAGE_REFERENCES) && entry.endsWith('.package.json')).sort(byBytes)) {
+    try {
+      const reference = json(tree, file);
+      add(reference.package, reference.distribution?.owner);
+    } catch {
+      // A reference that does not parse is its own gate's problem, not linkage's.
+    }
+  }
+  let names = registry;
+  if (names === undefined) {
+    const file = path.join(repositoryRoot, NAME_REGISTRY);
+    names = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null;
+  }
+  for (const entry of names?.owners ?? []) add(entry.id, entry.repository);
+  return owners;
+}
+
+/**
  * Every unit of the tree with its passport: written ones (per folder and
  * central) and derived ones (Smart components, host ports). Problems found on
  * the way are returned with them, never thrown, so a check reports them all.
+ * `owners` (package name -> owner) defaults to packageOwners(tree).
  */
-export function collectUnits(tree) {
+export function collectUnits(tree, {owners: knownOwners} = {}) {
   const units = [];
   const problems = [];
+  const packageOwner = knownOwners ?? packageOwners(tree);
 
   const centralFiles = [...tree.keys()].filter((entry) => entry.startsWith(CENTRAL) && entry.endsWith('.json'));
   const centralFolders = new Map();
@@ -231,8 +278,13 @@ export function collectUnits(tree) {
     if (!tree.has(manifest)) continue;
     const component = json(tree, manifest);
     const id = component.id || `smart.${folder}`;
+    // A component of a package laid over ui-source is that package's; a name
+    // no record knows is reported, never silently given to ui-source.
+    const declared = component['x-source']?.package;
+    const owner = declared ? packageOwner.get(declared) : OWNER;
+    if (!owner) problems.push({id, code: 'unknown-package', message: `${manifest}: x-source.package ${declared} names no package reference (${PACKAGE_REFERENCES}) or name registry owner (${NAME_REGISTRY})`});
     const unit = {id, kind: 'smart', includes: [`src/smart/${folder}/`], passportFile: manifest, written: false,
-      passport: {id, kind: 'smart', version: component.version, owner: OWNER}};
+      passport: {id, kind: 'smart', version: component.version, owner: owner ?? OWNER}};
     smart.set(folder, unit);
     units.push(unit);
   }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.4.4",
+  "version": "1.5.1",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -93,7 +93,8 @@
           "password",
           "search",
           "tel",
-          "url"
+          "url",
+          "number"
         ]
       },
       "autocomplete": {
@@ -126,6 +127,21 @@
       "pattern": {
         "type": "string",
         "default": ""
+      },
+      "min": {
+        "type": "string",
+        "default": "",
+        "description": "The smallest number a number field (input-type number) takes, as the native input's min; below it the field is invalid (range underflow). Not written on other types."
+      },
+      "max": {
+        "type": "string",
+        "default": "",
+        "description": "The largest number a number field takes, as the native input's max; above it the field is invalid (range overflow). Not written on other types."
+      },
+      "step": {
+        "type": "string",
+        "default": "",
+        "description": "The step of a number field, as the native input's step: 1 when empty, any for any number; a value off the step is invalid (step mismatch). Not written on other types."
       },
       "hint": {
         "type": "string",
@@ -601,11 +617,11 @@
       },
       {
         "path": "src/smart/input/js/templates/default.js",
-        "sha256": "1b94d6d0b00b97e0e97c1527490f35e1032e500bd7a2e86853ea6e2a2fae6c6e"
+        "sha256": "93637fda151a013306eda073d044aa1c8fcab122a7802f739f1750b1ae8dd2e7"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "767ea28b693f62589ff7c213b256623140cac4767e8a06428b8712554505152d"
+        "sha256": "142012a4643f36ca6d6d34c8bc2b222470b5291d804c96b9d156b9b7a13c2313"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",

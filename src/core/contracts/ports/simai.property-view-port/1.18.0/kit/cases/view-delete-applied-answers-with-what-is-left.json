@@ -1,0 +1,25 @@
+{
+  "intent": "view.delete",
+  "summary": "Removing a view answers with the record through whichever view is now current.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.delete",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "mine"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "Deleting the view a person was looking at leaves them looking at something; which one is the host's to decide and is said in the answer."
+  },
+  "id": "view-delete-applied-answers-with-what-is-left"
+}

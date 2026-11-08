@@ -45,6 +45,15 @@ class SfAccordion {
     }
 
     this.bindRelationship();
+    // A closed panel is hidden for everyone from the first paint, not only to
+    // the eye: markup that closes it with the `hidden` class alone (a utility
+    // that may not have arrived yet) gets the `hidden` attribute too, so its
+    // content is out of the tab order and the accessibility tree before the
+    // first toggle (simai/ui-source#30).
+    if (this.content && !this.isOpen()) {
+      this.content.hidden = true;
+      this.content.classList.add('hidden');
+    }
     this.syncState();
     this.trigger.addEventListener('click', this.onClick);
     if (usesLegacyTrigger) {

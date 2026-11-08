@@ -193,6 +193,23 @@
           "check": "!document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list__count') && document.querySelector('#l .sf-list__row[data-id=\"t1\"] .sf-list-item') === window.__row && document.activeElement === window.__row"
         }
       ]
+    },
+    {
+      "id": "p6-no-wrap",
+      "title": "no-wrap: a long title and its second line stay one line each, cut with an ellipsis; the whole text stays in the row and is its tooltip; the «⋯» is shown without a hover",
+      "covers": "settings.no-wrap",
+      "steps": [
+        {
+          "script": "(() => {const list = document.querySelector('#l'); list.items = [{id: 'w1', text: 'Очень длинное название беседы, которому не хватит места в одной строке списка', supporting: 'И вторая строка, которая тоже длиннее, чем ширина колонки беседы', date: new Date().toISOString()}, {id: 'w2', text: 'Короткая', date: new Date().toISOString()}]; list.noWrap = true; return true;})()",
+          "wait": 200,
+          "check": "(() => {const row = document.querySelector('#l .sf-list__row[data-id=\"w1\"]'); const title = row?.querySelector('.sf-list-item-title'); const host = row?.querySelector('sf-list-item'); const more = row?.querySelector('.sf-list__actions'); const style = title && getComputedStyle(title); return Boolean(document.querySelector('#l .sf-list--no-wrap')) && style?.whiteSpace === 'nowrap' && style?.textOverflow === 'ellipsis' && title.scrollWidth > title.clientWidth && title.textContent.includes('одной строке списка') && host?.getAttribute('title') === 'Очень длинное название беседы, которому не хватит места в одной строке списка · И вторая строка, которая тоже длиннее, чем ширина колонки беседы' && more && getComputedStyle(more).opacity === '1' && getComputedStyle(more).visibility === 'visible' && more.getBoundingClientRect().right <= row.getBoundingClientRect().right + 0.5;})()"
+        },
+        {
+          "script": "(document.querySelector('#l').noWrap = false, true)",
+          "wait": 200,
+          "check": "!document.querySelector('#l .sf-list--no-wrap') && !document.querySelector('#l .sf-list__row[data-id=\"w1\"] sf-list-item')?.hasAttribute('title')"
+        }
+      ]
     }
   ]
 }

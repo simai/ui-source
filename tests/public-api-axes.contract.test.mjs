@@ -146,6 +146,53 @@ test('a converted component carries the canonical name, and the legacy name stil
   }
 });
 
+// A data-state that offers only data states (standard
+// simai.dynamic-composite-component, data-states-declared) answers where the
+// component's data stands, not a status about the world: map.data_state.
+const DATA_STATES = new Set([...map.data_state.values, ...Object.keys(map.data_state.value_aliases ?? {})]);
+const isDataState = (property, definition) => property === map.data_state.property
+  && (definition.enum ?? []).length > 0 && definition.enum.every((value) => DATA_STATES.has(value));
+
+test('the data states are the standard\'s, and an alias points at one of them', () => {
+  assert.equal(map.data_state.property, 'data-state');
+  for (const value of ['loading', 'populated', 'empty', 'error']) assert.ok(map.data_state.values.includes(value), `${value} is a data state`);
+  for (const [alias, canonical] of Object.entries(map.data_state.value_aliases ?? {})) {
+    assert.ok(map.data_state.values.includes(canonical), `${alias} points at a data state`);
+    assert.ok(!map.data_state.values.includes(alias), `${alias} is not itself one`);
+  }
+  for (const word of map.data_state.values.filter((value) => STATUS_WORDS.includes(value))) {
+    assert.equal(word, 'error', 'error is the only word a data state shares with the status vocabulary');
+  }
+  assert.ok(isDataState('data-state', {enum: ['auto', 'loading', 'ready', 'empty', 'error']}), 'a chart\'s data-state is a data state');
+  assert.ok(!isDataState('data-state', {enum: ['loading', 'warning']}), 'one with a status word besides is not');
+  assert.ok(!isDataState('state', {enum: ['loading', 'error']}), 'and only under its own name');
+});
+
+test('a package component is recorded by its package, and holds to the axes where it is laid', () => {
+  const registry = json('contracts/registry/names.json');
+  const references = existsSync(resolve(root, 'src/core/contracts/packages'))
+    ? readdirSync(resolve(root, 'src/core/contracts/packages')).filter((name) => name.endsWith('.package.json')).map((name) => json(`src/core/contracts/packages/${name}`).package)
+    : [];
+  const packages = new Set([...registry.owners.filter(({kind}) => kind !== 'framework').map(({id}) => id), ...references]);
+  for (const entry of [...map.components, ...(map.exempt_properties ?? [])].filter((one) => one.package)) {
+    assert.ok(packages.has(entry.package), `${entry.component}: ${entry.package} is a set of the name registry or a package reference`);
+  }
+  for (const entry of map.components.filter((one) => one.package)) {
+    // In ui-source alone the folder is not here; in the package's overlay it is.
+    if (!components.includes(entry.component)) continue;
+    const declared = properties(entry.component)[entry.axis];
+    assert.ok(declared, `${entry.component}: the manifest declares ${entry.axis}`);
+    if (entry.axis === 'status') {
+      for (const value of (declared.enum ?? []).filter(Boolean)) {
+        assert.ok(map.status_vocabulary.includes(value), `${entry.component}: ${value} is part of the shared status vocabulary`);
+      }
+    }
+  }
+  for (const entry of map.components.filter((one) => !one.package)) {
+    assert.ok(components.includes(entry.component), `${entry.component}: a free entry names a folder of src/smart; a package's says its package`);
+  }
+});
+
 test('nothing calls an appearance or a status `type` without being recorded', () => {
   const recorded = new Set(map.components.map(({component, legacy}) => legacy.map((name) => `${component}.${name}`)).flat());
   // A property may be exempt, but only in writing and with a reason.
@@ -156,6 +203,7 @@ test('nothing calls an appearance or a status `type` without being recorded', ()
   for (const name of components) {
     for (const [property, definition] of Object.entries(properties(name))) {
       if (Object.keys(map.axes).includes(property)) continue;
+      if (isDataState(property, definition)) continue;
       const values = definition.enum ?? [];
       const looksLikeAppearance = values.some((value) => APPEARANCE_WORDS.includes(value));
       const looksLikeStatus = values.some((value) => STATUS_WORDS.includes(value));

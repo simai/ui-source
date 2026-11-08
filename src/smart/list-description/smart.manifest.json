@@ -1,0 +1,271 @@
+{
+  "schema_version": 2,
+  "id": "smart.list-description",
+  "version": "1.0.1",
+  "title": "Description list",
+  "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "list",
+    "description",
+    "key-value",
+    "properties",
+    "facts",
+    "summary",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-list-description",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button-copy",
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The list's accessible name, when the page has no heading above it that names it"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: the label and the value are the rung's line and type, the hint and a stacked label the rung below's, a one-line row the rung's control height. 1/2 for a side panel",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "layout": {
+        "type": "string",
+        "default": "auto",
+        "description": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column narrower than 24rem (a phone)",
+        "enum": [
+          "auto",
+          "columns",
+          "stacked"
+        ]
+      },
+      "dividers": {
+        "type": "boolean",
+        "default": false,
+        "description": "A hairline between rows"
+      },
+      "overflow": {
+        "type": "string",
+        "default": "wrap",
+        "description": "A value longer than its column: wrap breaks it over lines (anywhere, so a path or a hash wraps too); truncate keeps it on one line with an ellipsis, the full value shown under the pointer (title) and while the value has focus (a press or Tab)",
+        "enum": [
+          "wrap",
+          "truncate"
+        ]
+      },
+      "empty-text": {
+        "type": "string",
+        "description": "What an item with no value shows; «—» when not set"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The facts in order, each {label, value, id?, hint?, mono?, copy?, href?, status?}. A property, or the JSON island a server prints. value is text (a number is written as it is); an empty value shows empty-text. mono writes the value in the monospace face (a path, a hash, a key), copy adds a button that copies it, href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing), hint is a line under it. An item without a label is left out"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {
+    "sf-list-description-navigate": {
+      "summary": "A person pressed a value link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "href"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "list": [
+        "empty",
+        "shown"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "loading or saving the facts (the host sets the list)",
+      "editing a value (sf-property-view does that)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab reaches each value link, each copy button and, with overflow truncate, each cut value in order; Enter follows a link or copies"
+    ],
+    "focus": "The list never takes focus itself."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "4638e4ffb789fa3f57dbcf765eb230972bd1aec9",
+    "source_artifacts": [
+      {
+        "path": "src/smart/list-description/index.js",
+        "sha256": "a2389f5b8837a8b81cdf4351cddf37e11e27ded99939494192d83bd90a74e9dc"
+      },
+      {
+        "path": "src/smart/list-description/js/templates/default.js",
+        "sha256": "1620aa73e48eeff219d11d6a2aa1345ae692b92b40cbdbcfa29fc0116513b428"
+      },
+      {
+        "path": "src/smart/list-description/scss/_smart__list-description.scss",
+        "sha256": "1f46787ecc85b0e8a03b223d380234af74523cce60ba909d70dae66232a8907c"
+      },
+      {
+        "path": "src/smart/list-description/rule.js",
+        "sha256": "36cab71b80236c7616e86fb8fd82eb78c6b8d480e0eafdb0a2a5b9d83e8d3b5f"
+      },
+      {
+        "path": "src/smart/list-description/docs.md",
+        "sha256": "5d702d2edf60bfc105b13c1c22f4fd612799188a34d64764032bf15aedc916c7"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-list-description for read-only facts as label and value: a site summary, server facts, a record's header, a job's parameters, licence details.",
+    "do_not": [
+      "Do not use it to edit values; sf-property-view does that",
+      "Do not put markup in a value; it is text, the link and the copy button are settings",
+      "Do not use it for a table of many records; sf-data-view does that"
+    ],
+    "required_reads": [
+      "inputs",
+      "events"
+    ],
+    "minimal_example": "<sf-list-description><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Адрес\", \"value\": \"demo.test\", \"href\": \"https://demo.test/\"}, {\"label\": \"Корень сайта\", \"value\": \"/var/www/demo\", \"mono\": true, \"copy\": true}, {\"label\": \"Сертификат\", \"value\": \"до 12 декабря\", \"status\": \"success\"}]}</script></sf-list-description>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

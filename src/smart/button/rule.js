@@ -12,10 +12,9 @@ SF.RuleLoader['cl-button'] = {
     // The spinner a loading button shows: its slot is drawn by the button sheet,
     // the motion by the spinner's, fetched after the page is ready.
     { name: 'spinner', lazy: true },
-    // The keys of a shortcut: the button sheet draws their box from the kbd sheet's own
-    // variables with the same values as fallbacks, so the first paint is right before
-    // the kbd sheet, fetched after the page is ready, arrives.
-    { name: 'kbd', lazy: true },
+    // The keys of a shortcut are the kbd component's (soft caps inside a button):
+    // fetched with the button, so the first paint draws them as they stay.
+    { name: 'kbd' },
   ],
 };
 
