@@ -416,7 +416,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "aca88ababbf9d2441ee58d6c7faf4884890c62e6c5b6643e10c92fe2187a5a79"
+        "sha256": "456d57b4a4b435da0a79707bc56c1b36d773d4f3f063918435421b574f937e69"
       },
       {
         "path": "src/smart/switch/rule.js",
@@ -428,7 +428,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "767ea28b693f62589ff7c213b256623140cac4767e8a06428b8712554505152d"
+        "sha256": "142012a4643f36ca6d6d34c8bc2b222470b5291d804c96b9d156b9b7a13c2313"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
