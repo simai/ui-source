@@ -632,7 +632,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.7.1"
+    "version": "1.7.2"
   },
   "sf-icon": {
     "inputs": {
@@ -1059,7 +1059,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.7.2"
+    "version": "1.7.3"
   },
   "sf-switch": {
     "inputs": {
@@ -1123,6 +1123,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.3.2"
+    "version": "1.3.3"
   }
 });

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard-step's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes the generated files from it). One step of sf-wizard (owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): what the step is and where it stands, and its body as its children.",
   "id": "smart.wizard-step",
   "tag": "sf-wizard-step",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -104,7 +104,8 @@
     "name: sf-wizard-step, a part of block wizard (sf-<block>-<variant>, ui-control control/decisions/2026-11-02-smart-component-naming.md), as sf-tree-item is of sf-tree.",
     "it draws nothing: its children are the body and stay live nodes; sf-wizard places the step in its body and draws its title, its «why», its indicator, its result and the footer from these attributes. Alone, outside a wizard, it shows its children.",
     "types (owner): info, form, action, review, result; each gives the primary button its word, action-text replaces it.",
-    "state is a value the host writes (done, skipped, running, error, or empty for not started); message is the result's sentence. A change is told to the wizard that holds the step, which draws it at once."
+    "state is a value the host writes (done, skipped, running, error, or empty for not started); message is the result's sentence. A change is told to the wizard that holds the step, which draws it at once.",
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

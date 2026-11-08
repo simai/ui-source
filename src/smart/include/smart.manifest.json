@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.include",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "title": "Include",
   "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
   "kind": "smart",

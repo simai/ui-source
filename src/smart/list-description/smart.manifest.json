@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-description",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Description list",
   "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
   "kind": "smart",

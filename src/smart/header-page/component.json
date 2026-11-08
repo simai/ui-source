@@ -2,7 +2,7 @@
   "$comment": "The source of sf-header-page's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/page-header (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.header-page",
   "tag": "sf-header-page",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -181,7 +181,8 @@
     "version 1.2.0: the tag is sf-header-page (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.header-page and the bundle cl-header-page follow it. sf-page-header stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-header-page, sf-page-header) (change journal tag-sf-page-header-to-sf-header-page, path-smart-page-header-to-header-page).",
     "version 1.2.1: the star is a toggle through sf-button-icon's pressed setting (sf-button-icon 1.4.0, duplication audit A-10) instead of an aria-pressed written on the host: the native button says aria-pressed as before and, while on, wears the selected look.",
     "version 1.2.2 (2026-11-07): the star carries no aria-pressed (docs review R028, rule C12). Its name already changes with the state («В избранное», «Убрать из избранного»), and a name that says the state with aria-pressed beside it reads «Убрать из избранного, нажата». The star no longer sets pressed on its sf-button-icon, so it does not wear the toggle's pressed fill either: the filled glyph in --sf-page-header-star-color and the name show the state, as before.",
-    "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.2.4 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [
