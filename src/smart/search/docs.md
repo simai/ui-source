@@ -83,8 +83,10 @@ document.querySelector('sf-search').provider = async (query, {scope, signal}) =>
 - `scope` is the pressed scope, a hint only: answer every group, so the counts
   on the scope pills stay right. The component filters by scope itself.
 - An entry: `id`, `group`, `title`, `path`, `href` or `action`, `icon` (a
-  Material Symbols name), `shortcut` (a hint shown on an action), `text`
-  (matched by the static index, not shown).
+  Material Symbols name), `shortcut` (a hint shown on an action: written as
+  sf-button's, `mod+l`, it is drawn in the platform's words -- ⌘L, Ctrl+L --
+  and other text as written; the keys are the kbd component's plain glyphs),
+  `text` (matched by the static index, not shown).
 
 While the first answer is awaited the card says so; an error says the search
 is unavailable; no entries say «Ничего не нашлось по «…»».

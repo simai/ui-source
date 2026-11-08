@@ -4349,6 +4349,82 @@
           "since": "2026-11-08"
         }
       ]
+    },
+    {
+      "component": "kbd",
+      "selector": "kbd",
+      "variables": [
+        {
+          "name": "--sf-kbd-size",
+          "role": "size",
+          "summary": "A cap's and a key's height and least width, relative to its own letters.",
+          "default": "1.6em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-padding-inline",
+          "role": "padding-inline",
+          "summary": "The room on each side of a cap's or a key's letters.",
+          "default": "0.4em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-gap",
+          "role": "gap",
+          "summary": "The space between the keys of a combination drawn as caps or keys.",
+          "default": "0.25em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-font-size",
+          "role": "font-size",
+          "summary": "A cap's and a key's letters against the text around them.",
+          "default": "0.8125em",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-font-family",
+          "role": "font-family",
+          "summary": "A cap's and a key's typeface.",
+          "default": "var(--sf-text--family)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-radius",
+          "role": "radius",
+          "summary": "A cap's and a key's corners.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-background",
+          "role": "background",
+          "summary": "A cap's fill (in a button or a field): the ink it sits in, mixed.",
+          "default": "color-mix(in srgb, currentColor 12%, transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-color",
+          "role": "color",
+          "summary": "A cap's letters (in a button or a field): the ink it sits in, mixed.",
+          "default": "color-mix(in srgb, currentColor 80%, transparent)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-border-color",
+          "role": "border-color",
+          "summary": "A key's edge and its inset bottom edge (in running text).",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-08"
+        },
+        {
+          "name": "--sf-kbd-plain-color",
+          "role": "color",
+          "summary": "The ink of plain glyphs (in a menu or a list box).",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-08"
+        }
+      ]
     }
   ]
 }

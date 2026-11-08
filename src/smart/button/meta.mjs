@@ -224,7 +224,7 @@ const sfButtonMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
+      "description": "A key combination drawn at the end of the button as the kbd component's soft caps in the label's ink: words joined by +, e.g. mod+k (⌘K on a Mac, Ctrl K elsewhere), shift+mod+p (⇧⌘P, Ctrl Shift P), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. The only input: a page never styles the keys. Also written as aria-keyshortcuts on the inner button. Empty: no keys"
     },
     "shortcut-listen": {
       "kind": "boolean",

@@ -3,16 +3,17 @@
   "schema_version": 1,
   "id": "component.kbd",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/kbd/docs/docs.md",
     "src/component/kbd/index.js",
+    "src/component/kbd/js/shortcut.js",
     "src/component/kbd/rule.js",
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "1fe1d6f9b4fa760ee60487108b017cdf099b5a8ddc49294808ee5550582f4feb",
+  "content_sha256": "eed2a3b67e98d4783bf5dfd3099179ed7bf0e71db0422a29275124c4607f0304",
   "dependencies": [
     {
       "id": "tokens.border",
@@ -24,10 +25,6 @@
     },
     {
       "id": "tokens.size",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.space",
       "range": "^1.0.0"
     },
     {

@@ -8,6 +8,7 @@
   "sheets": [
     "component/buttons/css/buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
     "core/css/core.css",
     "smart/input-image/css/input-image.min.css",
     "utility/align-items/default/css/default.min.css",
@@ -22,6 +23,7 @@
     "error": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/input-image/css/input-image.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -35,6 +37,7 @@
     "readonly": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/input-image/css/input-image.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -48,6 +51,7 @@
     "reference": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/input-image/css/input-image.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -61,6 +65,7 @@
     "required": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/input-image/css/input-image.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -74,6 +79,7 @@
     "stored": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "smart/input-image/css/input-image.min.css",
       "utility/align-items/default/css/default.min.css",

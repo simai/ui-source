@@ -1,55 +1,135 @@
+// One component owns how a key reads (owner decision 2026-11-07, docs review
+// R030, rule C04): hosts and authors write the keys and never style them. The
+// look follows the place, and an `appearance` attribute on a key or on its
+// group (cap, plain or key) says it outright where the place cannot:
+//
+//   key    in running text (a bare <kbd> in documentation): a keycap, a
+//          hairline outline-variant edge and an inset bottom edge;
+//   cap    in a control -- a button, a field, a combobox or search box -- a
+//          soft cap without an edge, in the text face at medium weight, sized
+//          from the text around it, its fill and ink mixed from the ink it
+//          sits in, so it reads on a filled button with no inverse rule;
+//   plain  in a list of commands -- a menu, a list box, a tooltip -- glyphs
+//          without a cap, a step smaller and in the muted ink (in a tooltip
+//          the tooltip's own ink, quieter).
+//
+// The sizes are the text's: a cap or a key is 0.8125em of the text around it
+// (13 of 16 px), 1.6em of its own letters high and at least as wide (about
+// 21 px), 0.4em of room on each side; keys of a combination stand 0.25em
+// apart. Caps and keys stand apart; plain glyphs join with + where the
+// platform spells modifiers as words (the .sf-kbd-join marks the shared
+// shortcut renderer writes, js/shortcut.js). A key of one character is a
+// square (.sf-kbd--square).
+//
+// Public variables (src/core/contracts/public-variables.v1.json): the size,
+// the room, the gap, the corner, the face, the cap's fill and ink, the key's
+// edge and the plain ink. Everything --sf-kbd--* is internal.
+
+// A key: a <kbd> without keys inside it, or the class fallback.
+$key: 'kbd:not(.sf-kbd--group):not(:has(> kbd)), .sf-kbd:not(.sf-kbd--group)';
+// A combination: a <kbd> of keys, or the explicit group.
+$group: 'kbd:has(> kbd), .sf-kbd--group';
+// The places that decide the look.
+$cap-places: 'button, [role="button"], [role="combobox"], [role="searchbox"], .sf-button, .sf-input';
+$plain-places: '[role="menu"], [role="menubar"], [role="listbox"], [role="tooltip"], .sf-tooltip, .sf-context-menu';
+$tooltip-places: '[role="tooltip"], .sf-tooltip';
+
+@function said($appearance) {
+  @return 'kbd[appearance="#{$appearance}"]:not(:has(> kbd)), .sf-kbd[appearance="#{$appearance}"], kbd[appearance="#{$appearance}"] kbd';
+}
+
+@function said-group($appearance) {
+  @return 'kbd[appearance="#{$appearance}"]:has(> kbd), .sf-kbd--group[appearance="#{$appearance}"]';
+}
+
+// The keycap and the cap share their geometry.
+@mixin sized {
+  inline-size: var(--sf-kbd--inline-size, auto);
+  min-inline-size: var(--sf-kbd--size);
+  block-size: var(--sf-kbd--size);
+  padding-inline: var(--sf-kbd--padding-inline);
+  border-radius: var(--sf-kbd-radius, var(--sf-radius--ui));
+  font-family: var(--sf-kbd-font-family, var(--sf-text--family));
+  font-size: var(--sf-kbd-font-size, 0.8125em);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+@mixin keycap {
+  @include sized;
+  color: var(--sf-on-surface);
+  background: var(--sf-surface-1);
+  border: var(--sf-px) solid var(--sf-kbd-border-color, var(--sf-outline-variant));
+  box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
+}
+
+// The cap's ink is the ink it sits in at 80 % (the ink family), its fill that
+// ink at 12 % (the first fill step: over the 80 % ink it reads as about 10 %
+// of the surrounding ink, the owner's figure).
+@mixin cap {
+  @include sized;
+  color: var(--sf-kbd-color, color-mix(in srgb, currentColor 80%, transparent));
+  background: var(--sf-kbd-background, color-mix(in srgb, currentColor 12%, transparent));
+  border: none;
+  box-shadow: none;
+}
+
+@mixin plain {
+  inline-size: auto;
+  min-inline-size: var(--sf-0);
+  block-size: auto;
+  padding-inline: var(--sf-0);
+  color: var(--sf-kbd-plain-color, var(--sf-on-surface-variant));
+  background: var(--sf-transparent);
+  border: none;
+  border-radius: var(--sf-0);
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 0.875em;
+  font-weight: inherit;
+}
+
 @layer sf.components {
-  :where(kbd:not(.sf-kbd--group), .sf-kbd:not(.sf-kbd--group)) {
-    --sf-kbd--min-block-size: var(--sf-text-height-1\/3);
-    --sf-kbd--min-inline-size: var(--sf-text-height-1\/3);
-    --sf-kbd--padding-block: var(--sf-space-1\/4);
-    --sf-kbd--padding-inline: var(--sf-space-1\/2);
-    --sf-kbd--color: var(--sf-on-surface);
-    --sf-kbd--background: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    --sf-kbd--border-color: var(--sf-outline-variant);
-    --sf-kbd--border-width: var(--sf-px);
-    --sf-kbd--radius: var(--sf-radius--ui);
-    --sf-kbd--font-family: var(--sf-mono);
-    --sf-kbd--font-size: var(--sf-text-size-1\/3);
-    --sf-kbd--font-weight: var(--sf-font-weight-medium);
-    --sf-kbd--line-height: var(--sf-text-height-1\/3);
+  :where(#{$key}) {
+    --sf-kbd--size: var(--sf-kbd-size, 1.6em);
+    --sf-kbd--padding-inline: var(--sf-kbd-padding-inline, 0.4em);
 
     display: inline-flex;
+    flex: none;
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
-    min-block-size: var(--sf-kbd--min-block-size);
-    min-inline-size: var(--sf-kbd--min-inline-size);
-    padding-block: var(--sf-kbd--padding-block);
-    padding-inline: var(--sf-kbd--padding-inline);
-    color: var(--sf-kbd--color);
-    background: var(--sf-kbd--background);
-    border: var(--sf-kbd--border-width) solid var(--sf-kbd--border-color);
-    border-radius: var(--sf-kbd--radius);
-    font-family: var(--sf-kbd--font-family);
-    font-size: var(--sf-kbd--font-size);
-    font-weight: var(--sf-kbd--font-weight);
-    line-height: var(--sf-kbd--line-height);
+    margin: var(--sf-0);
+    padding-block: var(--sf-0);
+    line-height: 1;
     unicode-bidi: isolate;
     vertical-align: baseline;
     white-space: nowrap;
+    @include keycap;
   }
 
-  kbd:has(> kbd),
-  .sf-kbd--group {
+  // A key of one character -- a letter, ⌘, ⇧, ↵ -- is a square of the key's
+  // height, the glyph centred (docs review R010, 2026-11-06).
+  :where(kbd.sf-kbd--square, .sf-kbd.sf-kbd--square) {
+    --sf-kbd--inline-size: var(--sf-kbd--size);
+    --sf-kbd--padding-inline: var(--sf-0);
+  }
+
+  :where(#{$group}) {
     display: inline-flex;
+    flex: none;
     box-sizing: border-box;
     align-items: center;
-    gap: var(--sf-space-1\/4);
-    min-block-size: var(--sf-0);
+    gap: var(--sf-kbd-gap, 0.25em);
+    inline-size: auto;
     min-inline-size: var(--sf-0);
+    block-size: auto;
     margin: var(--sf-0);
     padding: var(--sf-0);
     color: inherit;
     background: var(--sf-transparent);
     border: none;
     border-radius: var(--sf-0);
+    box-shadow: none;
     font: inherit;
     line-height: inherit;
     unicode-bidi: isolate;
@@ -57,9 +137,84 @@
     white-space: nowrap;
   }
 
+  // The + between words, shown only where the keys are plain glyphs.
+  :where(.sf-kbd-join) {
+    display: none;
+  }
+
+  // The place decides: a control's caps, then a list's plain glyphs (a menu
+  // row is a button inside a menu, so the list comes last and wins).
+  :where(#{$cap-places}) :where(#{$key}) {
+    @include cap;
+  }
+
+  :where(#{$plain-places}) :where(#{$key}) {
+    @include plain;
+  }
+
+  :where(#{$plain-places}) :where(#{$group}) {
+    gap: 0.125em;
+  }
+
+  :where(#{$plain-places}) :where(.sf-kbd-join) {
+    display: inline;
+  }
+
+  :where(#{$tooltip-places}) :where(#{$key}) {
+    color: color-mix(in srgb, currentColor 64%, transparent);
+  }
+
+  // A disabled command's keys take its disabled ink.
+  :where(#{$plain-places}) :where(:disabled, [aria-disabled="true"]) :where(#{$key}) {
+    color: inherit;
+  }
+
+  // An appearance said outright wins over the place.
+  :where(#{said(cap)}) {
+    @include cap;
+  }
+
+  :where(#{said-group(cap)}) {
+    gap: var(--sf-kbd-gap, 0.25em);
+  }
+
+  :where(#{said-group(cap)}) > :where(.sf-kbd-join) {
+    display: none;
+  }
+
+  :where(#{said(plain)}) {
+    @include plain;
+  }
+
+  :where(#{said-group(plain)}) {
+    gap: 0.125em;
+  }
+
+  :where(#{said-group(plain)}) > :where(.sf-kbd-join) {
+    display: inline;
+  }
+
+  :where(#{said(key)}) {
+    @include keycap;
+  }
+
+  :where(#{said-group(key)}) {
+    gap: var(--sf-kbd-gap, 0.25em);
+  }
+
+  :where(#{said-group(key)}) > :where(.sf-kbd-join) {
+    display: none;
+  }
+
   @media (forced-colors: active) {
-    :where(kbd:not(.sf-kbd--group), .sf-kbd:not(.sf-kbd--group)) {
+    :where(#{$key}) {
       border-color: CanvasText;
+    }
+
+    :where(#{$cap-places}) :where(#{$key}),
+    :where(#{said(cap)}) {
+      outline: var(--sf-px) solid CanvasText;
+      outline-offset: calc(-1 * var(--sf-px));
     }
   }
 }

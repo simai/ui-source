@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.9.2",
+  "version": "1.10.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -23,6 +23,7 @@
   "composition": {
     "uses": [
       "component.context-menu",
+      "component.kbd",
       "smart.button",
       "smart.button-icon",
       "smart.tabs"
@@ -195,7 +196,7 @@
           "icon": "string, a Material Symbols name",
           "caption": "string, a second line under the label",
           "value": "string, read-only value at the row's end; on a drilling row it is drawn under the label, where a long value is cut instead of widening the panel",
-          "shortcut": "string, shown at the row's end",
+          "shortcut": "string, a key combination shown at the row's end as plain glyphs: written as sf-button's (mod+c, shift+mod+z, F2) and drawn in the platform's words; other text as written",
           "kind": "'check' | 'radio' for a checkable row",
           "checked": "boolean",
           "danger": "boolean, a destructive action",
@@ -889,11 +890,11 @@
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "f83ed520db2cbebc6e870efc240fd4fd4cb615ba351a6273fe938066ed9ce690"
+        "sha256": "49757855569d61226412ff9a4f5fc4cec9991ddf2847fbdaddb5c77f14800c42"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "d14d4c5429d764b59898b77dfb1d11a59e9cc0bedadec9246a9e3ac193971813"
+        "sha256": "9f1c54eaa5c213d8abe8eb429198c5701405c689cd8d021caf80038e5b8b6ebf"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

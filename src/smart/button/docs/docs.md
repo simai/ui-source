@@ -106,8 +106,9 @@ use in `SF.deprecations`.
 
 ## Shortcut
 
-`shortcut` draws a key combination at the end of the button as keys, muted:
-words joined by `+`, the modifiers first and the key last.
+`shortcut` draws a key combination at the end of the button as keys: words
+joined by `+`, the modifiers first and the key last. It is the only input: the
+look is the `kbd` component's, and a page never styles the keys.
 
 | Written | On a Mac | Elsewhere |
 |:---|:---|:---|
@@ -122,17 +123,21 @@ elsewhere; `ctrl`, `alt`, `shift` and `meta` are those keys. The named keys are
 `enter`, `escape`, `tab`, `space`, `backspace`, `delete`, `up`, `down`,
 `left`, `right`, `home`, `end`, `pageup` and `pagedown`; `plus` is the `+` key.
 
-The keys are the `kbd` component's (one `<kbd class="sf-kbd--group">` holding
-a `<kbd>` per key) and are hidden from assistive technology: the native button
+The keys are the `kbd` component's (a `<span class="sf-button-shortcut">`
+holding one `<kbd class="sf-kbd--group">` with a `<kbd>` per key) and are
+hidden from assistive technology: the native button
 says the combination in `aria-keyshortcuts` (`Meta+K` on a Mac, `Control+K`
 elsewhere). With a shortcut the label takes the free room, so a stretched
 button reads label … keys and `text-position` places the label.
 
-A key of one character (P, ⌘, ⇧, ↵) is a square; a key of several letters
-(Esc, Ctrl, Shift) hugs its word with the same padding on both sides. The keys
-take the colours of the button they sit on: on `default` and `tonal` the
-button's own ink (its label's on-colour, a 12% fill and a 32% edge of it), on
-`outline`, `link` and `surface` the surface container with the quieter ink.
+Inside a button the keys are soft caps (owner decision 2026-11-07, docs
+review R030): no edge, the text face at medium weight, sized from the label --
+letters at 0.8125em, a cap 1.6em high and at least as wide, 0.4em of room,
+0.25em between caps. Their ink is the label's at 80 % and their fill that ink
+at 12 %, so they read on every appearance and scheme, filled or not, light or
+dark, with nothing of the button's own. A key of one character (P, ⌘, ⇧, ↵) is
+a square; a key of several letters (Esc, Ctrl, Shift) hugs its word. Caps
+stand apart, so no `+` is drawn between them.
 
 `shortcut-listen` makes the button listen: the combination pressed anywhere on
 the page presses the button, exactly as a click does (so `sf-button-press`
