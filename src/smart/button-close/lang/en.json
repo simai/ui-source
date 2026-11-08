@@ -1,3 +1,6 @@
 {
-  "title": "Close"
+  "title": "Close",
+  "runtime": {
+    "close": "Close"
+  }
 }

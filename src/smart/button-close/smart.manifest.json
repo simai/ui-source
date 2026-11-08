@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.button-close",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Close",
-  "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
+  "summary": "The close button of the SIMAI Framework: a real button (focus, Enter and Space, the name «Закрыть» by default) drawing the cross with a 2px line, in three looks -- ghost, plain and media. Inside a native button it stays the decorative cross it was before 1.2.0.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -22,7 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.close"
+      "component.close",
+      "component.icon-buttons"
     ],
     "public_parts": []
   },
@@ -47,7 +48,7 @@
       "size": {
         "type": "string",
         "default": "1/3",
-        "description": "Decorative close-glyph size token.",
+        "description": "Size on the ladder: as a button the box is the control ladder (1/3 24px, 1/2 32, 1 40, 2 48, 3 56; 24-52 on a phone) and the cross its step; 1/4 and 4-7 are glyph sizes only, drawn by a button at the nearest ladder step. The line is 2px at every size.",
         "enum": [
           "1/4",
           "1/3",
@@ -60,6 +61,52 @@
           "6",
           "7"
         ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "ghost",
+        "description": "How the close looks (owner decision C14). ghost, the default: a plain cross in the ink of its place, and a spot of --sf-surface-container-hover / -active under it on hover and press, shaped by radius. plain: no spot ever; the cross steps up from the ink step 64 to full, and the keyboard ring stands around the cross -- tags, a field's clear, an inline remove. media: over a photo or a video, a black circle at the ink steps 48 / 64 / 80 with a white cross, the same in both themes.",
+        "enum": [
+          "ghost",
+          "plain",
+          "media"
+        ]
+      },
+      "radius": {
+        "type": "string",
+        "default": "default",
+        "description": "The shape of the ghost spot, as the icon buttons beside it: default is the rounded square of controls, rounded a circle. plain has no spot; media is always a circle.",
+        "enum": [
+          "default",
+          "rounded"
+        ]
+      },
+      "scheme": {
+        "type": "string",
+        "default": "on-surface",
+        "description": "The cross's ink: the text colour, or one step quieter (it comes up to on-surface on hover). media is always white.",
+        "enum": [
+          "on-surface",
+          "on-surface-variant"
+        ]
+      },
+      "backdrop": {
+        "type": "string",
+        "default": "surface",
+        "description": "What the close stands on. surface, the default: a page, a card, a dialog. color: a coloured banner or bar; the cross takes the place's ink (currentColor) and the ghost spot is that ink at the state steps 8 / 12.",
+        "enum": [
+          "surface",
+          "color"
+        ]
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the button: no spot, the cross in the disabled ink, out of the tab order."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -98,10 +145,14 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "none",
-    "accessible_name": "internal",
-    "keyboard": [],
-    "focus": "Close is decorative and never enters the tab order. The containing native button owns focus."
+    "role": "button",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space"
+    ],
+    "focus": "The native button is focusable and in the tab order; its name is aria-label, else the runtime word close («Закрыть»). Inside a containing button the cross is decorative and never focusable."
   },
   "presentation": {
     "themes": [
@@ -171,7 +222,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-close/index.js",
-        "sha256": "1e9cd9645c5ab1b2a66b069e50c1694fb194457f398b683455f24c34aad68f87"
+        "sha256": "8ffd52d7f53b40149cc271099cb4046e8e6f9fb77d068ba9c097283434f4df47"
       }
     ],
     "generated_runtime": [
@@ -184,11 +235,12 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-button-close only as the decorative cross glyph inside a host-owned close action.",
+    "use_when": "Use sf-button-close for every close or remove action: dialogs, drawers, toasts, banners (ghost), tags, a field's clear and inline remove (plain), over photos and video (media).",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",
-      "Do not make sf-button-close focusable or use it as the action owner"
+      "Do not put sf-button-close inside another button for a new page: it is the button",
+      "Do not draw a bordered or filled square or circle around the cross"
     ],
     "required_reads": [
       "inputs",
@@ -197,7 +249,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<button type=\"button\" class=\"sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center\" aria-label=\"Close notification\"><sf-button-close size=\"1\"></sf-button-close></button>",
+    "minimal_example": "<sf-button-close aria-label=\"Закрыть уведомление\"></sf-button-close>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

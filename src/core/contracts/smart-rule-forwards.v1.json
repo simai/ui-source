@@ -193,6 +193,12 @@
       "since": "2026-11-03",
       "remove_after": "2027-01-01",
       "journal": "path-smart-change-confirm-to-confirm-change"
+    },
+    "cl-button-group": {
+      "to": "cl-segmented",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "journal": "path-smart-button-group-to-segmented"
     }
   }
 }

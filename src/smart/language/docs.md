@@ -16,8 +16,8 @@ follows the number of languages it is given:
 <sf-language languages="ru en de fr es it pt tr pl uk ja ar" size="1/2"></sf-language>
 ```
 
-The element draws nothing of its own: the switch is `sf-button-group`
-`appearance="segmented"`, the trigger `sf-button-icon`, the menu
+The element draws nothing of its own: the switch is `sf-segmented` on
+its track, the trigger `sf-button-icon`, the menu
 `sf-menu-context` with its search. No flags and no globe.
 
 ## Languages
@@ -148,7 +148,7 @@ same height as the theme switch beside it:
 ```html
 <sf-header-site>
   <sf-language slot="tools" languages="ru en" size="1/2"></sf-language>
-  <sf-button-group slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
+  <sf-segmented slot="tools" theme-switch size="1/2"></sf-segmented>
 </sf-header-site>
 ```
 

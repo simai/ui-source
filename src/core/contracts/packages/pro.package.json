@@ -128,7 +128,6 @@
       "folder": "editor",
       "requires": [
         "smart.button",
-        "smart.button-group",
         "smart.button-icon",
         "smart.dropdown",
         "smart.editor-inline",
@@ -136,6 +135,7 @@
         "smart.input",
         "smart.menu-context",
         "smart.modal",
+        "smart.segmented",
         "smart.skeleton",
         "smart.switch",
         "smart.tabs"
@@ -174,8 +174,8 @@
       "rule_name": "cl-mail-canvas",
       "folder": "mail-canvas",
       "requires": [
-        "smart.button-group",
-        "smart.editor-overlay"
+        "smart.editor-overlay",
+        "smart.segmented"
       ]
     },
     {
@@ -293,7 +293,6 @@
         "smart.badge",
         "smart.button",
         "smart.button-copy",
-        "smart.button-group",
         "smart.button-icon",
         "smart.checkbox",
         "smart.drawer",
@@ -314,6 +313,7 @@
         "smart.progress-bar",
         "smart.progress-scale",
         "smart.reference-link",
+        "smart.segmented",
         "smart.slider-range",
         "smart.sortable",
         "smart.spinner",

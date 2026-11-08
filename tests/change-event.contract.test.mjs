@@ -43,7 +43,7 @@ test('change event: one canonical name for every value control', async () => {
     }
   }
 
-  const group = await read('src/smart/button-group/index.js');
+  const group = await read('src/smart/segmented/index.js');
   // Once, under its native name (sfEmit: change keeps it, core/js/
   // element-manifest.js eventName); the shim sends sf-button-group-change
   // after it (standard 1.3.8 §16.20, aliases.json).

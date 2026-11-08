@@ -1,6 +1,6 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-SF.RuleLoader['cl-button-group'] = {
-  tags: ['sf-button-group'],
+SF.RuleLoader['cl-segmented'] = {
+  tags: ['sf-segmented', 'sf-button-group'],
   type: 'smart',
   mode: 'smart',
   js: true,

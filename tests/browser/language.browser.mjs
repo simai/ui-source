@@ -63,7 +63,7 @@ const shell = (name, theme, width) => {
   <a slot="brand" href="/">SIMAI</a>
   <nav aria-label="Разделы"><a href="/framework/">Framework</a><a href="/docara/">Docara</a></nav>
   <sf-language id="picker" slot="tools" languages="${languages}" size="1/2"${compact}></sf-language>
-  <sf-button-group id="theme" slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
+  <sf-segmented id="theme" slot="tools" appearance="segmented" theme-switch size="1/2"></sf-segmented>
 </sf-header-site>
 <main>
   <sf-button id="ref-1-2" size="1/2" text="Кнопка"></sf-button>
@@ -86,7 +86,7 @@ async function open(name, {width, theme}) {
   tab.on('response', (r) => { if (r.status() === 404) errors.push(`404 ${new URL(r.url()).pathname}`); });
   await tab.goto(`${base}/page`);
   await tab.waitForFunction(() => customElements.get('sf-language') && document.querySelector('#picker[data-look]'), null, {timeout: 20000});
-  await tab.waitForFunction(() => [...document.querySelectorAll('sf-language sf-button-group, sf-language sf-button-icon, sf-button')].every((el) => el.querySelector('button, a')), null, {timeout: 10000}).catch(() => null);
+  await tab.waitForFunction(() => [...document.querySelectorAll('sf-language sf-segmented, sf-language sf-button-icon, sf-button')].every((el) => el.querySelector('button, a')), null, {timeout: 10000}).catch(() => null);
   await tab.waitForLoadState('networkidle', {timeout: 15000}).catch(() => null);
   await tab.evaluate(() => document.fonts.ready);
   await tab.waitForTimeout(500);

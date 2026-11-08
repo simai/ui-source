@@ -738,7 +738,7 @@ import '../../smart/avatar/rule.js';
 import '../../smart/avatar-group/rule.js';
 import '../../smart/badge/rule.js';
 import '../../smart/breadcrumbs/rule.js';
-import '../../smart/button-group/rule.js';
+import '../../smart/segmented/rule.js';
 import '../../smart/button/rule.js';
 import '../../smart/checkbox/rule.js';
 import '../../smart/input-color/rule.js';

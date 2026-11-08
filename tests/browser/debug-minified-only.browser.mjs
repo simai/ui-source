@@ -28,7 +28,7 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <link rel="stylesheet" href="${PREFIX}core/css/core.css">
 <script src="${PREFIX}core/js/core.js"></script></head><body>
 <sf-button id="button" text="Кнопка"></sf-button>
-<sf-button-group id="group" value="b" items="a::Первый|b::Второй|c::Третий"></sf-button-group>
+<sf-segmented id="group" value="b" items="a::Первый|b::Второй|c::Третий"></sf-segmented>
 <sf-breadcrumbs id="crumbs"><sf-breadcrumbs-item href="/">Главная</sf-breadcrumbs-item><sf-breadcrumbs-item current>Страница</sf-breadcrumbs-item></sf-breadcrumbs>
 <p><kbd id="key">Ctrl</kbd></p>
 <div class="p-4 d-flex" id="utility">x</div>

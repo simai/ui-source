@@ -1,7 +1,9 @@
-# Smart Button Group
+# Сегментный переключатель
 
-`sf-button-group` — управляемый взаимоисключающий выбор, визуально собранный из
-Button Group и Smart Buttons. Это `radiogroup`, а не generic action group.
+`sf-segmented` — выбор одного значения из 2–5 вариантов (до 6 значками).
+Это `radiogroup`, а не группа независимых действий. Прежнее имя тега —
+`sf-button-group`: оно работает до 2027-01-01 (тот же элемент, в консоли —
+одна заметка о новом имени).
 
 Передайте уникальные `value`, понятные `label`, начальный `value` и доступное
 имя группы. Runtime создаёт ровно одну нативную radio-семантику на пункт,
@@ -14,7 +16,7 @@ ARIA orientation. Состояние остаётся controlled через ат
 бизнес-действие принадлежат приложению.
 
 В `detail` приходят `previous`, `value`, `item` и `component` — сам
-`sf-button-group`. `component` — живой элемент, а не данные: `detail` не JSON, и
+`sf-segmented`. `component` — живой элемент, а не данные: `detail` не JSON, и
 `JSON.stringify(event.detail)` падает на циклической структуре. Берите нужные
 поля (`previous` и `value` — строки) и отправляйте их:
 
@@ -28,30 +30,53 @@ group.addEventListener('change', (event) => {
 Для независимых команд используйте обычный `.sf-button-group` с `role="group"`,
 не Smart-компонент.
 
-## Сегментированный вид
+## Два вида
 
-`appearance="segmented"` рисует ту же группу как сегментированный контрол:
-утопленную дорожку на заливке контейнера, сегменты без рамок и плашку под
-выбранным. Семантика не меняется: `radiogroup`, один roving tab stop, стрелки,
+- **Дорожка** (`appearance="track"`, по умолчанию): полупрозрачная дорожка и
+  плашка под выбранным вариантом. Переключить вид данных, период, режим
+  (День / Неделя / Месяц, Список / Плитка).
+- **Кнопки** (`appearance="buttons"`): склеенные контурные кнопки, выбранная
+  залита цветом `scheme`. Только в формах и панелях инструментов на обычном
+  фоне, рядом с другими кнопками: на цветной шапке и на фото выбранную не видно.
+
+Семантика у обоих видов одна: `radiogroup`, один roving tab stop, стрелки,
 Home и End, `change`, `select()` и `clear()`. Это не вкладки — панелей нет.
+Прежние значения `appearance="segmented"` и `appearance="default"` — старые
+имена `track` и `buttons` (до 2027-01-01).
 
 ```html
-<sf-button-group appearance="segmented" aria-label="Тема" value="all"
+<sf-segmented aria-label="Тема" value="all"
   items='[{"value":"all","label":"Все","count":24},
           {"value":"light","label":"Светлые","count":17},
-          {"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>
+          {"value":"dark","label":"Тёмные","count":7}]'></sf-segmented>
 
-<sf-button-group appearance="segmented" plate="raised" full-width aria-label="Период" value="w"
-  items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-button-group>
+<sf-segmented plate="scheme" full-width aria-label="Период" value="w"
+  items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-segmented>
 
-<sf-button-group appearance="segmented" size="1/2" aria-label="Вид" value="list"
+<sf-segmented size="1/2" aria-label="Вид" value="list"
   items='[{"value":"list","label":"Список","icon":"list","icon-only":true},
-          {"value":"grid","label":"Сетка","icon":"grid_view","icon-only":true}]'></sf-button-group>
+          {"value":"grid","label":"Сетка","icon":"grid_view","icon-only":true}]'></sf-segmented>
+
+<sf-segmented appearance="buttons" aria-label="Доставка" value="pickup"
+  items='[{"value":"pickup","label":"Самовывоз"},{"value":"courier","label":"Курьер"}]'></sf-segmented>
 ```
 
-- `plate="scheme|raised"` — плашка выбранного сегмента: заливка `scheme`
-  (`primary`, `secondary`, `on-surface`) или приподнятая нейтральная поверхность.
-- `full-width` — дорожка занимает ширину контейнера, сегменты делят её поровну.
+- `plate="raised|scheme"` — плашка на дорожке: `raised` (по умолчанию) —
+  приподнятая нейтральная поверхность с тенью, белая в светлой теме;
+  `scheme` — заливка `scheme` (`primary`, `secondary`, `on-surface`), акцент:
+  один такой переключатель на экран.
+- Плашка переезжает к выбранному варианту за 0,2 с; при
+  `prefers-reduced-motion: reduce` встаёт сразу. До первого замера (печатная
+  первая отрисовка, страница без скриптов) выбранный вариант рисует плашку сам.
+- `backdrop="surface|color|media"` — на чём стоит дорожка:
+  - `surface` (по умолчанию) — страница, карточка, панель: дорожка —
+    заливка контейнера `--sf-surface-container`;
+  - `color` — цветное место (шапка цвета бренда, цветная плашка): дорожка и
+    подписи берут цвет текста места (`currentColor`, дорожка — 12 % от него),
+    поэтому читаются на любом цвете; приподнятая плашка остаётся нейтральной;
+  - `media` — фото или видео: тёмное стекло (чёрный 48 % с размытием), белые
+    подписи, белая плашка; одинаково в обеих темах.
+- `full-width` — дорожка занимает ширину контейнера, варианты делят её поровну.
 - `radius="default|square|rounded"` — как у `sf-button`; пустое значение —
   обычный радиус элементов. Плашка — сегмент размером с кнопку, поэтому она
   получает радиус кнопки с тем же значением, а у дорожки радиус больше на её
@@ -99,22 +124,21 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
 
 ```html
 <form>
-  <sf-button-group appearance="segmented" name="period" value="w" aria-label="Период"
-    items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-button-group>
+  <sf-segmented name="period" value="w" aria-label="Период"
+    items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-segmented>
 </form>
 ```
 
 ## Переключатель темы
 
-Готовый переключатель темы — сегментированная группа с атрибутом
-`theme-switch`:
+Готовый переключатель темы — `sf-segmented` с атрибутом `theme-switch`:
 
 ```html
-<sf-button-group appearance="segmented" theme-switch></sf-button-group>
+<sf-segmented theme-switch></sf-segmented>
 ```
 
 - Группа сама рисует три пункта только с иконками: `system` («Как в системе»,
-  `brightness_auto`), `light` («Светлая», `light_mode`) и `dark` («Тёмная»,
+  `desktop_windows`, монитор), `light` («Светлая», `light_mode`) и `dark` («Тёмная»,
   `dark_mode`). Подписи и имя группы («Тема») берутся на языке страницы;
   `aria-label` на группе заменяет имя группы. `items` не используется.
 - Выбран пункт **предпочтения** темы (`SF.Loader.themePreference`), а не
@@ -128,4 +152,5 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
   прямой вызов `SF.Loader.setTheme`).
 - Клавиатура та же, что у группы: стрелки, Home и End, один tab stop.
 - Без Loader или при `SF_BOOT_CONFIG.theme === false` выбор не меняется.
-- Остальные атрибуты группы работают: `size`, `plate`, `radius`, `scheme`.
+- Остальные атрибуты работают: `size`, `plate`, `backdrop`, `radius`, `scheme`.
+  В шапке цвета бренда — `backdrop="color"`.

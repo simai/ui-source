@@ -27,7 +27,7 @@ test("whole composite manifests are generated into the searchable registry", () 
   for (const id of ["smart.admin-menu", "smart.data-view", "smart.data-view-composite", "smart.property-view"]) {
     assert.ok(!registry.entries.some((entry) => entry.id === id), `${id} is in package pro`);
   }
-  assert.ok(registry.entries.some(({id}) => id === "smart.button-group"));
+  assert.ok(registry.entries.some(({id}) => id === "smart.segmented"));
   assert.ok(registry.entries.every(({reuse_mode}) => ["whole", "parts", "both"].includes(reuse_mode)));
   assert.ok(registry.entries.every(({contract_schema}) => contract_schema.version === 2));
 });

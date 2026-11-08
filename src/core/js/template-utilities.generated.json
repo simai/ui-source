@@ -57,15 +57,11 @@
     "sr-only/default"
   ],
   "cl-button-close": [
-    "display/default",
-    "justify-content/default",
-    "place-items/default"
-  ],
-  "cl-button-group": [
     "align-items/default",
     "display/default",
-    "pointer-events/default",
-    "text-align/default"
+    "justify-content/default",
+    "place-items/default",
+    "pointer-events/default"
   ],
   "cl-button-icon": [
     "align-items/default",
@@ -365,6 +361,12 @@
   "cl-search": [
     "display/default",
     "sr-only/default"
+  ],
+  "cl-segmented": [
+    "align-items/default",
+    "display/default",
+    "pointer-events/default",
+    "text-align/default"
   ],
   "cl-skeleton": [
     "animation/default",

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// <sf-button-group appearance="segmented" theme-switch>, the ready theme
+// <sf-segmented appearance="segmented" theme-switch>, the ready theme
 // switch, on a page that loads through the Loader with the theme enabled:
 //   - it draws three icon-only radios named in the page language (ru: «Как в
 //     системе», «Светлая», «Тёмная»; en: System, Light, Dark) in a radiogroup
@@ -44,19 +44,19 @@ const boot = ({lang = 'ru', theme = true, body}) => `<!doctype html><html lang="
   };
   window.__changes = [];
   document.addEventListener('change', (event) => {
-    if (event.target.localName !== 'sf-button-group') return;
+    if (!['sf-segmented', 'sf-button-group'].includes(event.target.localName)) return;
     window.__changes.push({id: event.target.id, value: event.detail.value, dark: document.documentElement.classList.contains('theme-dark')});
   });
 </script></head><body>${body}
 <script src="/distr/core/js/core.js"></script></body></html>`;
 
 const SWITCH = `<button id="before" type="button">до</button>
-<sf-button-group id="one" appearance="segmented" theme-switch items='[{"value":"x","label":"Лишний"}]'></sf-button-group>
-<sf-button-group id="two" appearance="segmented" plate="raised" radius="rounded" theme-switch aria-label="Оформление"></sf-button-group>`;
+<sf-segmented id="one" appearance="segmented" theme-switch items='[{"value":"x","label":"Лишний"}]'></sf-segmented>
+<sf-segmented id="two" appearance="segmented" plate="raised" radius="rounded" theme-switch aria-label="Оформление"></sf-segmented>`;
 const pages = {
   '/ru.html': boot({body: SWITCH}),
-  '/en.html': boot({lang: 'en', body: '<sf-button-group id="one" appearance="segmented" theme-switch></sf-button-group>'}),
-  '/off.html': boot({theme: false, body: '<sf-button-group id="one" appearance="segmented" theme-switch></sf-button-group>'}),
+  '/en.html': boot({lang: 'en', body: '<sf-segmented id="one" appearance="segmented" theme-switch></sf-segmented>'}),
+  '/off.html': boot({theme: false, body: '<sf-segmented id="one" appearance="segmented" theme-switch></sf-segmented>'}),
 };
 
 const types = new Map([['.js', 'text/javascript'], ['.mjs', 'text/javascript'], ['.css', 'text/css'], ['.json', 'application/json'], ['.svg', 'image/svg+xml'], ['.woff2', 'font/woff2']]);
@@ -94,7 +94,7 @@ async function open(path, {colorScheme = 'light'} = {}) {
   page.on('pageerror', (error) => failures.push({name: `page error on ${path}`, said: error.message}));
   await page.goto(`${origin}${path}`);
   await page.waitForFunction(() => {
-    const groups = [...document.querySelectorAll('sf-button-group')];
+    const groups = [...document.querySelectorAll('sf-segmented')];
     return groups.length && groups.every((group) => group.querySelectorAll('button[role="radio"]').length === 3);
   }, null, {timeout: 15000});
   await page.waitForTimeout(200);
@@ -104,7 +104,7 @@ async function open(path, {colorScheme = 'light'} = {}) {
 const state = (page) => page.evaluate(() => ({
   html: ['theme-dark', 'theme-light'].filter((name) => document.documentElement.classList.contains(name)),
   preference: window.SF?.Loader?.themePreference ?? null,
-  groups: Object.fromEntries([...document.querySelectorAll('sf-button-group')].map((group) => [group.id, {
+  groups: Object.fromEntries([...document.querySelectorAll('sf-segmented')].map((group) => [group.id, {
     value: group.value,
     checked: [...group.querySelectorAll('button[role="radio"]')].filter((button) => button.getAttribute('aria-checked') === 'true').map((button) => button.dataset.sfButtonGroupValue),
     stops: [...group.querySelectorAll('button[role="radio"]')].filter((button) => button.tabIndex === 0).map((button) => button.dataset.sfButtonGroupValue),
@@ -117,7 +117,7 @@ try {
   // 1. Names and items, Russian page, system light.
   {
     const page = await open('/ru.html');
-    const names = await page.evaluate(() => [...document.querySelectorAll('sf-button-group')].map((group) => ({
+    const names = await page.evaluate(() => [...document.querySelectorAll('sf-segmented')].map((group) => ({
       id: group.id,
       group: group.querySelector('[role="radiogroup"]')?.getAttribute('aria-label'),
       items: [...group.querySelectorAll('button[role="radio"]')].map((button) => ({
@@ -133,7 +133,7 @@ try {
     check('ru: the group is named Тема', one.group === 'Тема', one);
     check('ru: an aria-label on the group wins', two.group === 'Оформление', two);
     check('ru: three items, items ignored, icon-only, named in Russian', JSON.stringify(one.items) === JSON.stringify([
-      {value: 'system', name: 'Как в системе', icon: 'brightness_auto', iconOnly: true},
+      {value: 'system', name: 'Как в системе', icon: 'desktop_windows', iconOnly: true},
       {value: 'light', name: 'Светлая', icon: 'light_mode', iconOnly: true},
       {value: 'dark', name: 'Тёмная', icon: 'dark_mode', iconOnly: true},
     ]), one);

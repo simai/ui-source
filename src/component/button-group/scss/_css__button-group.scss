@@ -65,7 +65,7 @@
      internal join. Selection changes fill and text, never border geometry.
      A Smart segment is a host, sf-button[segment], carrying its appearance and
      scheme; old markup names the appearance `type` (a dated alias until
-     2026-12-01). Keying on [type] alone matched no group sf-button-group draws,
+     2026-12-01). Keying on [type] alone matched no group sf-segmented draws,
      and every join was two lines wide (simai/ui-source#52). The :is() keeps the
      specificity the button's own segment rules are written against. */
   .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
@@ -222,6 +222,8 @@
     --sf-button-group--text-size: var(--sf-text-size-1);
     --sf-button-group--text-height: var(--sf-text-height-1);
     box-sizing: border-box;
+    /* The plate (below) is placed against the track's padding box. */
+    position: relative;
     gap: var(--sf-button-group--padding);
     padding: var(--sf-button-group--padding);
     border-radius: var(--sf-button-group--radius);
@@ -344,30 +346,153 @@
   /* The plate. A scheme plate is the scheme's fill; a raised one is the first
      raised surface with its shadow, for a neutral look. Its ink and the count
      inside it follow the plate. */
+  /* Each plate is two variables on the track, its fill and its shadow: the
+     selected option paints them until the element has measured it, and the
+     plate element paints them from then on (data-plate on the track). */
+  .sf-button-group--segmented.sf-button-group--primary {
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-primary));
+    --sf-button-group--plate-shadow: none;
+  }
+
   .sf-button-group--segmented.sf-button-group--primary > .sf-button-group-segment.active {
-    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-primary));
+    --sf-button--background-color: var(--sf-button-group--plate-fill);
     --sf-button--focus-ink: var(--sf-on-primary);
     color: var(--sf-button-group-plate-color, var(--sf-on-primary));
   }
 
+  .sf-button-group--segmented.sf-button-group--secondary {
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-secondary));
+    --sf-button-group--plate-shadow: none;
+  }
+
   .sf-button-group--segmented.sf-button-group--secondary > .sf-button-group-segment.active {
-    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-secondary));
+    --sf-button--background-color: var(--sf-button-group--plate-fill);
     --sf-button--focus-ink: var(--sf-on-secondary);
     color: var(--sf-button-group-plate-color, var(--sf-on-secondary));
   }
 
+  .sf-button-group--segmented.sf-button-group--on-surface {
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-on-surface));
+    --sf-button-group--plate-shadow: none;
+  }
+
   .sf-button-group--segmented.sf-button-group--on-surface > .sf-button-group-segment.active {
-    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-on-surface));
+    --sf-button--background-color: var(--sf-button-group--plate-fill);
     --sf-button--focus-ink: var(--sf-on-surface-inverse);
     color: var(--sf-button-group-plate-color, var(--sf-on-surface-inverse));
   }
 
+  /* The raised plate, the default since 1.4.0: the first raised surface with
+     its shadow, white in the light theme. */
+  .sf-button-group--segmented.sf-button-group--plate-raised {
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-elevation-1--surface));
+    --sf-button-group--plate-variant: var(--sf-on-elevation-1--variant);
+    --sf-button-group--plate-shadow: var(--sf-elevation-1--shadow);
+  }
+
   .sf-button-group--segmented.sf-button-group--plate-raised > .sf-button-group-segment.active {
-    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-elevation-1--surface));
-    --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
-    --sf-button--box-shadow: var(--sf-elevation-1--shadow);
+    --sf-button--background-color: var(--sf-button-group--plate-fill);
+    --sf-on-surface-variant: var(--sf-button-group--plate-variant);
+    --sf-button--box-shadow: var(--sf-button-group--plate-shadow);
     --sf-button--focus-ink: transparent;
     color: var(--sf-button-group-plate-color, var(--sf-on-surface));
+  }
+
+  /* The plate element. Hidden until the element has measured the selected
+     option; then it stands under it and the option itself is clear. A new
+     choice slides it (data-plate="moving", 0.2 s), never under
+     prefers-reduced-motion. The plate starts at the track's inline start and
+     the element measures the offset from there, in either direction. */
+  .sf-button-group--segmented > .sf-button-group-plate {
+    display: none;
+  }
+
+  .sf-button-group--segmented[data-plate] > .sf-button-group-plate {
+    display: block;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: var(--sf-button-group--plate-inline-size, 0);
+    block-size: var(--sf-button-group--plate-block-size, 0);
+    transform: translate(var(--sf-button-group--plate-x, 0), var(--sf-button-group--plate-y, 0));
+    border-radius: var(--sf-button-group--plate-radius);
+    background-color: var(--sf-button-group--plate-fill);
+    box-shadow: var(--sf-button-group--plate-shadow, none);
+    pointer-events: none;
+  }
+
+  .sf-button-group--segmented[data-plate='moving'] > .sf-button-group-plate {
+    transition-property: transform, inline-size, block-size;
+    /* About 0.2 s (owner decision D11c): two steps of the fast duration, on
+       the curve of a movement. */
+    transition-duration: calc(var(--sf-duration-fast) * 2);
+    transition-timing-function: var(--sf-ease-move);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-button-group--segmented[data-plate='moving'] > .sf-button-group-plate {
+      transition-duration: 0s;
+    }
+  }
+
+  .sf-button-group--segmented[data-plate] > .sf-button-group-segment.active {
+    --sf-button--background-color: transparent;
+    --sf-button--box-shadow: none;
+  }
+
+  /* backdrop="color": a coloured place (a brand header, a coloured banner).
+     The track and the labels are the place's ink, currentColor: the track at
+     the fill step 12, hover and press at the state steps 8 and 12 over it, so
+     they read on any colour the place has. The raised plate keeps its
+     neutral surface and ink. */
+  .sf-button-group--segmented.sf-button-group--backdrop-color {
+    background-color: var(--sf-button-group-background-color, color-mix(in srgb, currentColor 12%, transparent));
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-color > .sf-button-group-segment {
+    color: var(--sf-button-group-color, inherit);
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-color > .sf-button-group-segment:not(.active):not(:disabled):hover {
+    --sf-button--background-color: color-mix(in srgb, currentColor 8%, transparent);
+    color: inherit;
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-color > .sf-button-group-segment:not(.active):not(:disabled):active {
+    --sf-button--background-color: color-mix(in srgb, currentColor 12%, transparent);
+    color: inherit;
+  }
+
+  /* backdrop="media": over a photo or a video, the same in both themes. A dark
+     glass (black at the ink step 48, with a blur), white labels at the ink
+     step 80, a white plate with black ink. */
+  .sf-button-group--segmented.sf-button-group--backdrop-media {
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-white));
+    --sf-button-group--plate-shadow: none;
+    background-color: var(--sf-button-group-background-color, color-mix(in srgb, var(--sf-black) 48%, transparent));
+    -webkit-backdrop-filter: var(--sf-ui-blur-medium);
+    backdrop-filter: var(--sf-ui-blur-medium);
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-media > .sf-button-group-segment {
+    color: var(--sf-button-group-color, color-mix(in srgb, var(--sf-white) 80%, transparent));
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-media > .sf-button-group-segment:not(.active):not(:disabled):is(:hover, :active) {
+    --sf-button--background-color: color-mix(in srgb, var(--sf-white) 12%, transparent);
+    color: var(--sf-white);
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-media > .sf-button-group-segment.active {
+    --sf-button--background-color: var(--sf-button-group--plate-fill);
+    --sf-button--box-shadow: none;
+    --sf-button--focus-ink: transparent;
+    --sf-on-surface-variant: var(--sf-black);
+    color: var(--sf-button-group-plate-color, var(--sf-black));
+  }
+
+  .sf-button-group--segmented.sf-button-group--backdrop-media[data-plate] > .sf-button-group-segment.active {
+    --sf-button--background-color: transparent;
   }
 
   .sf-button-group--segmented > .sf-button-group-segment.active .sf-button-group-count {
@@ -405,6 +530,12 @@
   @media (forced-colors: active) {
     .sf-button-group--segmented {
       border: var(--sf-px) solid CanvasText;
+    }
+
+    /* The selected option paints the system Highlight itself (below); the
+       plate element would be forced to Canvas over nothing. */
+    .sf-button-group--segmented[data-plate] > .sf-button-group-plate {
+      display: none;
     }
 
     /* As strong as the scheme plates above (three classes), or a plate's

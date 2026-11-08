@@ -29,8 +29,21 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
   const button = '.sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close';
   assert.ok(css.includes(`${button} {\n        padding: 0;`), 'no padding of its own');
   assert.ok(css.includes(`${button}::after {\n        content: "";\n        position: absolute;\n        inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));`), 'target of --sf-c2');
-  assert.ok(css.includes(`${button} > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {\n        --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);`), 'mark from the label');
+  assert.ok(css.includes(`${button} > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {\n        --sf-close-icon--height: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));`), 'mark from the cross ladder (C14)');
   assert.ok(css.includes(`.sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close {\n        block-size: var(--sf-tag--line, var(--sf-tag--line-height));`), 'inline: the line');
-  assert.ok(css.includes(`.sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close {\n        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--font-size) * 0.7) / 2));`), 'the target stays off a label that is a button');
+  assert.ok(css.includes(`.sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close {\n        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));`), 'the target stays off a label that is a button');
   assert.doesNotMatch(css, /text-size-1\\\/4/);
+});
+
+test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async () => {
+  const tags = await read('component/tags/scss/_css__tags.scss');
+  for (const [size, step] of [['1\\/3', '1\\/4'], ['1\\/2', '1\\/4'], ['1', '1\\/3'], ['2', '1\\/2'], ['3', '1']]) {
+    const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
+    assert.ok(start >= 0, size);
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-text-size-${step});`), size);
+  }
+  assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
+  const css = await read('smart/tag/js/templates/default.css');
+  assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);
+  assert.match(css, /:not\(:disabled\):is\(:hover, :active\)/u);
 });

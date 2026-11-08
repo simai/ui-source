@@ -51,7 +51,7 @@ for (const size of SIZES) {
     + `<sf-button appearance="link" scheme="on-surface" size="${size}" segment="middle" text="Неделя"></sf-button>`
     + `<sf-button appearance="link" scheme="on-surface" size="${size}" segment="end" text="Месяц"></sf-button>`});
   joinRows.push({id: `j-group-${size.replace('/', '_')}`, label: `sf-button-group ${size}`, group: true, html:
-    `<sf-button-group aria-label="Период" size="${size}" value="week"><script type="application/json" data-sf-settings>{"items":[{"value":"day","label":"День"},{"value":"week","label":"Неделя"},{"value":"month","label":"Месяц"}]}</script></sf-button-group>`});
+    `<sf-segmented aria-label="Период" size="${size}" value="week"><script type="application/json" data-sf-settings>{"items":[{"value":"day","label":"День"},{"value":"week","label":"Неделя"},{"value":"month","label":"Месяц"}]}</script></sf-segmented>`});
 }
 
 const keyRows = [];

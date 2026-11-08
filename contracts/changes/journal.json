@@ -6111,6 +6111,126 @@
       },
       "manual": "Give an item level \"error\" for \"danger\"; rename the class sf-alert-bar--danger and the variable --sf-alert-bar-danger-background to their error forms. The refused reason of close() for an item that cannot be closed stays danger.",
       "source": "src/smart/alert-bar/index.js"
+    },
+    {
+      "id": "tag-sf-button-group-to-sf-segmented",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-button-group is sf-segmented (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-segmented's class, the Loader's rule lists it, the Framework's sheets match :is(sf-segmented, sf-button-group), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "sf-button-group",
+          "to": "sf-segmented"
+        },
+        {
+          "component": "sf-segmented",
+          "from": "sf-button-group-change",
+          "to": "change"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-button-group></sf-button-group>",
+        "after": "<sf-segmented></sf-segmented>"
+      },
+      "manual": "Write <sf-segmented> for <sf-button-group> in markup and sf-segmented for sf-button-group in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-segmented, or both names through SF.tags.selector('sf-segmented') while the alias lives; a class or a custom property spelled like the old tag (.sf-button-group, --sf-button-group-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/segmented/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-button-group-to-segmented",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-segmented is served from smart/segmented/ since its folder took the new tag's name: js/segmented.js, loader bundle cl-segmented. The old path keeps working until remove_after: smart/button-group/js/button-group.js is a forwarding script that notes the path in SF.deprecations and loads smart/segmented/js/segmented.js, the Loader forwards the bundle name cl-button-group to cl-segmented (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.button-group is a dated alias of smart.segmented, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "smart/button-group/js/button-group.js",
+          "to": "smart/segmented/js/segmented.js",
+          "match": "smart/button-group/js/button-group(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-button-group",
+          "to": "cl-segmented",
+          "match": "['\"]cl-button-group['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.button-group",
+          "to": "smart.segmented",
+          "match": "['\"]smart\\.button-group['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/segmented/ for smart/button-group/ and segmented for button-group in the file names (js/segmented.js, js/segmented.min.js); in a product rule's relation write cl-segmented for cl-button-group, and in a manifest or a package contract smart.segmented for smart.button-group. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/button-group/js/button-group.js\"></script>",
+        "after": "<script src=\"/distr/smart/segmented/js/segmented.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/button-group/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/segmented/component.json"
+    },
+    {
+      "id": "value-segmented-appearance-to-track-buttons",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-segmented names its two looks track and buttons, and the track is the default (owner decisions D11b, D11c). appearance=\"segmented\" is track, appearance=\"default\" is buttons; markup without appearance now draws the track with a raised plate, where before 1.4.0 it drew the joined buttons.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "attribute": "appearance",
+          "from": "segmented",
+          "to": "track"
+        },
+        {
+          "component": "sf-segmented",
+          "attribute": "appearance",
+          "from": "default",
+          "to": "buttons"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-segmented appearance=\"segmented\">",
+        "after": "<sf-segmented appearance=\"track\">"
+      },
+      "manual": "A group that relied on the old default (no appearance: the joined buttons) and should keep them writes appearance=\"buttons\". The plate default is raised now; plate=\"scheme\" keeps the coloured plate.",
+      "owner": "ui-source",
+      "source": "src/smart/segmented/component.json aliases"
+    },
+    {
+      "id": "component-button-icon-close-to-button-close",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "One close button (owner decision C14): sf-button-close is a real button with three looks (ghost, plain, media). sf-button-icon kind=\"close\" is its old name; it keeps drawing as it did, and the documentation shows sf-button-close only. sf-button-close inside a native button stays the decorative cross until the pages move.",
+      "items": [
+        {
+          "from": "sf-button-icon[kind=close]",
+          "to": "sf-button-close"
+        },
+        {
+          "from": "<button class=\"sf-icon-button sf-icon-button--close\"><sf-button-close>",
+          "to": "<sf-button-close>"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write <sf-button-close aria-label=\"…\"> for <sf-button-icon kind=\"close\" aria-label=\"…\">: appearance link or ghost becomes the default ghost; on a tag, a field's clear or an inline remove appearance=\"plain\"; over a photo appearance=\"media\"; on a coloured banner backdrop=\"color\". A native button holding <sf-button-close> becomes the element itself, with the button's aria-label and click handler.",
+      "owner": "ui-source",
+      "source": "src/smart/button-close/component.json"
     }
   ]
 }
