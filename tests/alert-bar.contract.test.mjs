@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.2.1');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -82,7 +82,7 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
     assert.ok(sheet.includes(`var(${role}`), role);
   }
   assert.match(sheet, /--sf-alert-bar--padding-block: calc\(\(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2\);/u);
-  assert.match(sheet, /@container sf-alert-bar \(max-width: 600px\)/u);
+  assert.match(sheet, /@container sf-alert-bar \(max-width: 38rem\)/u);
   assert.match(sheet, /@media \(prefers-reduced-motion: no-preference\)/u);
   // No raw colour: theme roles and the ink's alpha mixes only.
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);

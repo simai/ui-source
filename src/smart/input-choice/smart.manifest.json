@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards: each a title, a caption, an icon and a badge, in a grid that wraps on a phone. One option is a radio group the arrow keys move through; several are checkboxes. Chosen cards have a filled mark and a heavier primary edge; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -320,7 +320,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "4a1611f5a8de2a423833e2578d5cdeaec5b6de953254fd96ca7f39df09636989"
+        "sha256": "d5134a7c20938a06a6a3f8da9ae0d867e277976437e209d674ee16f4c3e2a894"
       },
       {
         "path": "src/smart/input-choice/rule.js",
@@ -328,7 +328,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "cc1282e4f37fe8e290226ef0d3f1b499c14d2b6e09fa350166c533c794f579b1"
+        "sha256": "cbae02d83e6cc89d5d37f592668551fa0c2ddc3b6ac7a46cf08b9fca55283034"
       }
     ],
     "generated_runtime": []

@@ -47,7 +47,7 @@
     .sf-sortable-indicator {
         position: fixed;
         z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
-        border-radius: 2px;
+        border-radius: var(--sf-radius-1\/3);
         background: var(--sf-sortable-indicator-color, var(--sf-primary, Highlight));
         pointer-events: none;
     }
@@ -70,7 +70,7 @@
         z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
         box-sizing: border-box;
         border: var(--sf-px) dashed var(--sf-outline-primary, var(--sf-primary, Highlight));
-        border-radius: var(--sf-radius--ui, 4px);
+        border-radius: var(--sf-radius--ui);
         background-color: var(--sf-primary-transparent-select, transparent);
         pointer-events: none;
     }
@@ -83,7 +83,7 @@
         box-sizing: border-box;
         flex: none;
         border: var(--sf-px) dashed var(--sf-sortable-placeholder-border-color, var(--sf-outline-primary, var(--sf-primary, Highlight)));
-        border-radius: var(--sf-radius--ui, 4px);
+        border-radius: var(--sf-radius--ui);
         background-color: var(--sf-primary-transparent-select, transparent);
         pointer-events: none;
     }

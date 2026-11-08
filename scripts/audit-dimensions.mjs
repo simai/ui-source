@@ -9,7 +9,7 @@ const root = path.resolve(args[0] || fileURLToPath(new URL('../src/', import.met
 const policyPath = path.join(root, 'core/contracts/dimension-policy.v1.json');
 const policy = fs.existsSync(policyPath) ? JSON.parse(fs.readFileSync(policyPath, 'utf8')) : null;
 const result = inventory(root, {policy});
-const summary = {status: result.status, scannedFiles: result.scannedFiles, findingCount: result.findingCount, byCategory: result.byCategory, byStatus: result.byStatus, unresolvedCount: result.unresolvedCount, byLayer: result.byLayer};
+const summary = {status: result.status, scannedFiles: result.scannedFiles, findingCount: result.findingCount, byCategory: result.byCategory, byStatus: result.byStatus, unresolvedCount: result.unresolvedCount, deferredCount: result.deferredCount, byLayer: result.byLayer};
 if (args[1]) {
   fs.writeFileSync(args[1], JSON.stringify(result, null, 2)+'\n');
   console.log(JSON.stringify(summary));

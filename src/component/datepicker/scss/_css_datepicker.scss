@@ -56,9 +56,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Beside the grid the panel's content is about 28rem wide (twelve 40px
-     days and a gap); any less and the list wraps above it. */
-  @container sf-datepicker (inline-size < 27rem) {
+  /* Beside the grid the list needs twelve control heights and a gap: 440 px
+     on a phone (36), 488 on a desktop (40). Below the size step g4 (28rem,
+     448 px; a container query cannot read a variable) the list is a row above
+     the grid instead of a column squeezed under it. */
+  @container sf-datepicker (inline-size < 28rem) {
     .sf-datepicker .sf-datepicker-presets {
       flex: 1 1 100%;
       flex-direction: row;

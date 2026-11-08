@@ -18,9 +18,9 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: var(--sf-inline-editor-toolbar-gap, var(--sf-space-1, .25rem));
-        padding: var(--sf-inline-editor-toolbar-padding, var(--sf-space-1, .25rem));
-        border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius-1, .25rem));
+        gap: var(--sf-inline-editor-toolbar-gap, var(--sf-space-1));
+        padding: var(--sf-inline-editor-toolbar-padding, var(--sf-space-1));
+        border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius-1));
         /* A toolbar floats over the page: step 2's surface and shadow. */
         background: var(--sf-inline-editor-toolbar-background-color, var(--sf-elevation-2--surface, Canvas));
         --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
@@ -30,9 +30,9 @@
 
     .sf-inline-editor-button,
     .sf-inline-editor-url {
-        padding: var(--sf-space-1, .25rem) var(--sf-space-2, .5rem);
+        padding: var(--sf-space-1) var(--sf-space-2);
         border: 1px solid var(--sf-outline, GrayText);
-        border-radius: var(--sf-radius-1, .25rem);
+        border-radius: var(--sf-radius-1);
         background: var(--sf-surface-1, Canvas);
         color: var(--sf-on-surface, CanvasText);
         font: inherit;
@@ -52,7 +52,7 @@
     .sf-inline-editor-link {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--sf-space-1, .25rem);
+        gap: var(--sf-space-1);
     }
 
     .sf-inline-editor-link[hidden],
