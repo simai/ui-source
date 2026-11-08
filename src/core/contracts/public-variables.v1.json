@@ -2150,8 +2150,8 @@
         {
           "name": "--sf-download-file-padding",
           "role": "padding",
-          "summary": "Space around the card's content.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)) calc(var(--sf-ui-1--space-x) - var(--sf-px))",
           "varies_with": [
             "size"
           ],
@@ -2160,8 +2160,8 @@
         {
           "name": "--sf-download-file-gap",
           "role": "gap",
-          "summary": "Space between the file's name and its size.",
-          "default": "var(--sf-space-1/3)",
+          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size.",
+          "default": "var(--sf-ui-1--text-space-x)",
           "varies_with": [
             "size"
           ],
@@ -2170,8 +2170,8 @@
         {
           "name": "--sf-download-file-icon-size",
           "role": "size",
-          "summary": "The download icon's size.",
-          "default": "var(--sf-text-size-3)",
+          "summary": "The download icon's size: the button's icon of the size (its text height).",
+          "default": "var(--sf-text-height-1)",
           "varies_with": [
             "size"
           ],

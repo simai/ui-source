@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-download",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -103,7 +103,7 @@
   "contracts": {
     "owner_semantics": {
       "resource": "href renders a native anchor",
-      "application_action": "no href renders a button and emits sf-download-file:click",
+      "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-download",
       "disabled": "disabled button with no live destination"
     },
     "canonical_elements": {
@@ -216,7 +216,9 @@
     "role": "link",
     "accessible_name": "recommended",
     "keyboard": [
-      "Tab"
+      "Tab",
+      "Enter",
+      "Space"
     ],
     "focus": "Keep visible focus on the active control."
   },

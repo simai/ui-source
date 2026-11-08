@@ -43,7 +43,7 @@ const sfButtonMeta = {
         "surface"
       ],
       "default": "default",
-      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01)."
+      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border."
     },
     "scheme": {
       "kind": "enum",
@@ -239,7 +239,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.buttons 1.5.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the inner button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "text-pressed": {
       "kind": "custom",

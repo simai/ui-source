@@ -31,6 +31,11 @@
           "to": "appearance"
         },
         {
+          "component": "sf-button-icon",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
           "component": "sf-input",
           "from": "type",
           "to": "appearance"
@@ -178,6 +183,11 @@
           "to": "kind"
         },
         {
+          "component": "sf-button-icon",
+          "from": "variant",
+          "to": "kind"
+        },
+        {
           "component": "sf-skeleton",
           "from": "variant",
           "to": "kind"
@@ -313,6 +323,11 @@
         },
         {
           "component": "sf-icon-button",
+          "from": "tightness",
+          "to": "spacing"
+        },
+        {
+          "component": "sf-button-icon",
           "from": "tightness",
           "to": "spacing"
         },

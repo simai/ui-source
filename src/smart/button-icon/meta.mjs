@@ -64,7 +64,7 @@ const sfButtonIconMeta = {
         "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants (sf-button 1.2.0 has the same value). A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants. A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
@@ -186,7 +186,7 @@ const sfButtonIconMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (component.icon-buttons 1.3.0, rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12); pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "label-pressed": {
       "kind": "custom",
