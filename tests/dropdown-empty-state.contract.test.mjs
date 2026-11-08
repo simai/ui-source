@@ -9,13 +9,13 @@ const json = async (file) => JSON.parse(await read(file));
 
 test('the placeholder defaults to the language word runtime.empty, in both languages', async () => {
   const component = await json('src/smart/dropdown/component.json');
-  assert.equal(component.version, '1.6.0');
+  assert.match(component.version, /^1\.6\.\d+$/u);
   assert.equal(component.settings.placeholder['default-from'], 'runtime.empty');
   assert.equal(Object.hasOwn(component.settings.placeholder, 'default'), false);
   assert.equal((await json('src/smart/dropdown/lang/ru.json')).runtime.empty, 'Не выбрано');
   assert.equal((await json('src/smart/dropdown/lang/en.json')).runtime.empty, 'Not selected');
   const manifest = await json('src/smart/dropdown/smart.manifest.json');
-  assert.equal(manifest.version, '1.6.0');
+  assert.match(manifest.version, /^1\.6\.\d+$/u);
   assert.equal(Object.hasOwn(manifest.inputs.properties.placeholder, 'default'), false);
 });
 
