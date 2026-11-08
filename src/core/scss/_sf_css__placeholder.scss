@@ -70,6 +70,46 @@
 }
 
 @layer sf.base {
+/* sf-language before it draws (Docara, 2026-11-07: the header tools moved
+   left by 40 px when the trigger appeared). The element knows its box before
+   its code does, from its attributes alone: one control of its size step
+   high (size, default 1), and for the menu and search looks -- an icon button
+   -- as wide as high. So until it marks its look (data-look, set as it draws)
+   it holds that box itself, and a page needs no placeholder of its own. The
+   switch (mode inline, or auto, whose look depends on how many languages it
+   is given) holds its height only: its width is its labels'. Static markup
+   printed inside (data-sf-static) is its own box, so nothing is reserved
+   then. Here, not in a sheet of the component's, because the element has no
+   sheet and core.css is the one sheet a page links before any code. */
+:where(sf-language:not([data-look])) {
+  --sf-language--box: var(--sf-ui-1--control-height);
+}
+
+:where(sf-language[size="1/3"]:not([data-look])) { --sf-language--box: var(--sf-ui-1\/3--control-height); }
+:where(sf-language[size="1/2"]:not([data-look])) { --sf-language--box: var(--sf-ui-1\/2--control-height); }
+:where(sf-language[size="2"]:not([data-look])) { --sf-language--box: var(--sf-ui-2--control-height); }
+:where(sf-language[size="3"]:not([data-look])) { --sf-language--box: var(--sf-ui-3--control-height); }
+
+:where(sf-language:not([data-look])):not(:has(> [data-sf-static])) {
+  display: inline-block;
+  vertical-align: middle;
+  block-size: var(--sf-language--box);
+}
+
+:where(sf-language:is([mode="menu"], [mode="search"]):not([data-look])):not(:has(> [data-sf-static])) {
+  inline-size: var(--sf-language--box);
+}
+
+/* Its menu waits for its own code in the parts the element drew: an empty
+   undefined sf-menu-context would stand in the row as one more item, a gap
+   wider than the trigger, until it upgrades into its popup. */
+:where(sf-language .sf-language-parts > sf-menu-context[popup]:not(:defined)) {
+  display: none;
+}
+
+}
+
+@layer sf.base {
 /* A region on its way (region navigation, 2026-10-15): the content that is
    leaving gives up its place to the skeleton of a page -- a heading bar and
    rows -- in that region only; the shell around it stays as it is. The
