@@ -1,0 +1,14 @@
+{
+  "id": "options-without-the-capability",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "A host that does not announce the capability is never asked, and the field shows its value read-only.",
+  "given": {"capabilities": []},
+  "when": {"intent": "field.options", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "section", "cursor": null, "search": ""}},
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": ["reason"],
+    "note": "This is not a degraded state to apologise for: a reference field with no picker shows the value it has, which is strictly better than an empty control over a value that exists."
+  }
+}

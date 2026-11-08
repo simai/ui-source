@@ -1,0 +1,36 @@
+{
+  "id": "save-may-ask-for-a-confirmation",
+  "intent": "record.save",
+  "summary": "A whole-object save may be confirmed first, the same way as a group save.",
+  "given": {
+    "capabilities": [],
+    "confirms": [
+      "record.save"
+    ]
+  },
+  "when": {
+    "intent": "record.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "values": {
+        "type": {
+          "value": "framework",
+          "label": "Рамочный"
+        }
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason",
+      "confirm"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required. Raised again with confirm set to the digest, the same payload is applied."
+  }
+}

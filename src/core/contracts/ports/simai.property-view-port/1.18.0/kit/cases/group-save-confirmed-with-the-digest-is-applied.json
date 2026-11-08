@@ -1,0 +1,35 @@
+{
+  "id": "group-save-confirmed-with-the-digest-is-applied",
+  "intent": "group.save",
+  "summary": "The same save raised again with confirm set to the digest is applied as one revision.",
+  "given": {
+    "capabilities": [],
+    "confirms": [
+      "group.save"
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "section": "main",
+      "group": "terms",
+      "values": {
+        "type": {
+          "value": "framework",
+          "label": "Рамочный"
+        }
+      },
+      "revision": "7",
+      "confirm": "c0ffee"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "c0ffee stands for the digest the host answered the first raise with. The values are the same ones; a digest the host did not issue for this save is not applied."
+  }
+}

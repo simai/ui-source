@@ -1,0 +1,16 @@
+{
+  "id": "group-save-applied-is-one-revision",
+  "intent": "group.save",
+  "summary": "Pressing save sends one intent carrying only the changed fields, and the host answers with the object at its new revision.",
+  "given": {"capabilities": []},
+  "when": {
+    "intent": "group.save",
+    "payload": {"record_id": "record-1", "collection": "pages", "section": "main", "group": "about",
+                "values": {"title": "Новое название"}, "revision": "7"}
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "One press, one intent, one revision. A field the person did not touch is absent from values, so a save cannot overwrite what another save changed meanwhile."
+  }
+}

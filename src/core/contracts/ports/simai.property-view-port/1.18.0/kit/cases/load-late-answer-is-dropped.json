@@ -1,0 +1,15 @@
+{
+  "id": "load-late-answer-is-dropped",
+  "intent": "record.load",
+  "summary": "Two reads in flight: the answer to the earlier one is dropped and never drawn over the later object.",
+  "given": {"capabilities": []},
+  "when": {
+    "intent": "record.load",
+    "payload": {"record_id": "record-2", "collection": "pages", "reason": "record-id-changed"},
+    "after": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}}
+  },
+  "then": {
+    "answer": "applied",
+    "note": "The host may answer in either order. The component counts its own asks and renders only the newest, so a slow first answer cannot replace the object a person is now looking at."
+  }
+}

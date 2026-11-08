@@ -1,0 +1,12 @@
+{
+  "id": "load-refused-is-explained",
+  "intent": "record.load",
+  "summary": "A read the host will not serve is refused with a reason, and the component shows the refusal rather than an empty object.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-forbidden", "collection": "pages", "reason": "requested"}},
+  "then": {
+    "answer": "refused",
+    "answer_must_include": ["reason"],
+    "note": "An empty arrangement and a refused read look identical on screen unless the refusal is said out loud, and the second is the one a person can act on."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "group-save-field-errors-are-refused",
+  "intent": "group.save",
+  "summary": "Values the host will not accept come back refused with errors keyed by field, and each error is shown under its own field.",
+  "given": {"capabilities": []},
+  "when": {
+    "intent": "group.save",
+    "payload": {"record_id": "record-1", "collection": "pages", "section": "main", "group": "about",
+                "values": {"title": "", "count": "many"}, "revision": "7"}
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": ["errors"],
+    "note": "errors is keyed by field key, so the component can place each message under the field it belongs to. A single sentence for the whole group leaves a person hunting for which field is wrong."
+  }
+}

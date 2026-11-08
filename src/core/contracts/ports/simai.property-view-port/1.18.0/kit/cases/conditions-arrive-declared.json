@@ -1,0 +1,82 @@
+{
+  "id": "conditions-arrive-declared",
+  "intent": "record.load",
+  "summary": "A field may carry when: the conditions under which it is shown, required and enabled, over the other fields' values.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "type",
+        "propertyType": "choice",
+        "options": [
+          {
+            "value": "single",
+            "label": "Разовый"
+          },
+          {
+            "value": "framework",
+            "label": "Рамочный"
+          }
+        ],
+        "value": "single"
+      },
+      {
+        "key": "valid_until",
+        "propertyType": "date",
+        "value": "2027-01-01",
+        "when": {
+          "visible": {
+            "field": "type",
+            "op": "eq",
+            "value": "framework"
+          },
+          "required": {
+            "all": [
+              {
+                "field": "type",
+                "op": "eq",
+                "value": "framework"
+              },
+              {
+                "field": "valid_until",
+                "op": "empty"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "amount",
+        "propertyType": "number",
+        "value": 1000,
+        "when": {
+          "enabled": {
+            "not": {
+              "field": "status",
+              "op": "in",
+              "value": [
+                "signed",
+                "closed"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The component evaluates the conditions as the person edits. valid_until is hidden while the type is single, and keeps 2027-01-01."
+  }
+}
