@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -621,7 +621,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "767ea28b693f62589ff7c213b256623140cac4767e8a06428b8712554505152d"
+        "sha256": "142012a4643f36ca6d6d34c8bc2b222470b5291d804c96b9d156b9b7a13c2313"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",

@@ -48,3 +48,47 @@ test('CountryCode resolution uses local descriptors and first local default, ret
   assert.equal(ctx.resolveInitialCountry({defaultIso2: 'RU'}, root).iso2, 'RU');
   assert.equal(ctx.resolveInitialCountry({defaultIso2: 'RU', fixedDialCode: '+49'}, root).iso2, 'RU');
 });
+
+test('CountryCode reads the country of a stored number by its dial code (simai/ui-source#34)', () => {
+  const ctx = runtime();
+  const root = {};
+  assert.equal(ctx.resolveInitialCountry({}, root, '+7 900 123-45-67').iso2, 'RU');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+7 701 123-45-67').iso2, 'KZ');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+1 212 555-0100').iso2, 'US');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+44 20 7946 0958').iso2, 'GB');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+49 30 123456').iso2, 'DE');
+  assert.equal(ctx.resolveInitialCountry({}, root, '+380 44 123 4567').iso2, 'UA');
+  // An explicit country still wins; a local number keeps the first country.
+  assert.equal(ctx.resolveInitialCountry({defaultIso2: 'DE'}, root, '+7 900 123-45-67').iso2, 'DE');
+  assert.equal(ctx.resolveInitialCountry({}, root, '8 900 123-45-67'), items[0]);
+  assert.equal(ctx.resolveInitialCountry({}, root, ''), items[0]);
+  // A local list limits the guess to its own countries.
+  const local = ctx.normalizeCountriesList([{iso2: 'DE'}, {iso2: 'KZ'}]);
+  assert.equal(ctx.resolveInitialCountry({}, {__sfCountryOptions: local}, '+7 900 123-45-67').iso2, 'KZ');
+});
+
+// A mask is the pattern's zeros filled with the digits, in order.
+function throughMask(pattern, number) {
+  const digits = [...String(number).replace(/\D/gu, '')];
+  return [...pattern].map((char) => (char === '0' ? digits.shift() ?? '' : char)).join('').trim();
+}
+
+test('CountryCode: the countries sharing +7 read a number in the national format', () => {
+  const kazakhstan = items.find((item) => item.iso2 === 'KZ');
+  const russia = items.find((item) => item.iso2 === 'RU');
+  // Kazakhstan's plan is the same ten digits as Russia's: +7 701 123-45-67,
+  // never +7 70112 3 45 67 (the pattern this list carried before).
+  assert.equal(throughMask(kazakhstan.maskPattern, '+77011234567'), '+7 701 123-45-67');
+  assert.equal(throughMask(russia.maskPattern, '+79001234567'), '+7 900 123-45-67');
+  assert.equal(kazakhstan.maskPattern, russia.maskPattern);
+  assert.equal(kazakhstan.maskHasHyphen, true);
+  // Every country of a shared dial code has a pattern for that code, and the
+  // countries that share one numbering plan share one pattern.
+  const plans = [['+7', 'RU', 'KZ'], ['+1', 'US', 'CA', 'PR'], ['+39', 'IT', 'VA'], ['+47', 'NO', 'SJ'],
+    ['+61', 'AU', 'CC', 'CX'], ['+212', 'MA', 'EH'], ['+262', 'RE', 'YT'], ['+358', 'FI', 'AX'], ['+590', 'GP', 'BL', 'MF']];
+  for (const [code, ...countries] of plans) {
+    const patterns = countries.map((iso2) => items.find((item) => item.iso2 === iso2));
+    for (const country of patterns) assert.ok(country.maskPattern.startsWith(code.replace(/\d/gu, '0')), `${country.iso2}: ${country.maskPattern}`);
+    assert.equal(new Set(patterns.map((country) => country.maskPattern)).size, 1, `${code}: ${patterns.map((country) => `${country.iso2} ${country.maskPattern}`).join(', ')}`);
+  }
+});

@@ -624,8 +624,8 @@ const CELL_RENDERERS = {
     // 2026» in the record panel, with no way for a consumer to change the
     // first. These two ask the host and fall through to the stored value when
     // it has nothing to say.
-    date: renderHostFormattedCell,
-    datetime: renderHostFormattedCell,
+    date: renderDateCell,
+    datetime: renderDateCell,
     time: renderHostFormattedCell,
     boolean: renderBooleanCell,
     choices: renderChoicesCell,
@@ -735,6 +735,15 @@ function renderItemsCell(field, value, host) {
     if (formatted !== null) return formatted;
     if (!Array.isArray(value)) return null;
     return value.length ? pageWord(SET_TEXT, 'rowCount', host ?? null, {component: SET_NAME, count: value.length}) : '';
+}
+
+// A date in a row reads as it does in the record panel: the host's text, else
+// the page's reading of the day (simai/ui-source#34); null for a value that is
+// not a date, which the table prints as it came.
+function renderDateCell(field, value, host) {
+    const formatted = renderHostFormattedCell(field, value, host);
+    if (formatted !== null) return formatted;
+    return defaultDateText(field, value, host);
 }
 
 function renderNumericCell(field, value, host) {
@@ -2235,11 +2244,43 @@ function renderNumberView(field, value, host) {
     return html`<span class="sf-field-view">${field.unit ? `${text} ${field.unit}` : text}</span>`;
 }
 
-// A date is the host's to format. The set has no locale and will not invent one:
-// without formatFieldValue it shows what it was given, which is at worst the
-// stored form and never a wrong date confidently rendered.
+// A date is the host's to format first: formatFieldValue wins. Without it the
+// set used to print the stored form -- «2026-10-25T10:30:00+03:00» beside a
+// person's «25.10.2026 10:30» (simai/ui-source#34) -- so a host that formats
+// nothing now gets the page's reading of the day, and of the time of day for a
+// datetime, in the page's locale. The day and the clock are the record's own
+// (datetime.js reads them as written, in the host's zone): nothing is moved to
+// the reader's time zone, which would show a different day near midnight. A
+// value that is not a date at all is shown as it came, never guessed at.
+function defaultDateText(field, value, host) {
+    if (carriesText(value)) return null;
+    const parts = readDateTime(value);
+    if (!parts.known || !parts.date) return null;
+    const [year, month, day] = parts.date.split('-').map(Number);
+    const locale = pageLocale(host ?? null);
+    try {
+        const date = new Date(0);
+        date.setUTCFullYear(year, month - 1, day);
+        const dayText = new Intl.DateTimeFormat(locale, {day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC'}).format(date);
+        const type = field?.propertyType || field?.type || field?.dataType;
+        if (type !== 'datetime' || !parts.time) return dayText;
+        const [hours, minutes] = parts.time.split(':').map(Number);
+        date.setUTCHours(hours, minutes, 0, 0);
+        const timeText = new Intl.DateTimeFormat(locale, {hour: '2-digit', minute: '2-digit', timeZone: 'UTC'}).format(date);
+        return `${dayText} ${timeText}`;
+    } catch {
+        return null;
+    }
+}
+
+function dateText(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted;
+    return defaultDateText(field, value, host) ?? viewText(field, value, null);
+}
+
 function renderDateView(field, value, host) {
-    const text = viewText(field, value, host);
+    const text = dateText(field, value, host);
     return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
 }
 
