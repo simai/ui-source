@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 import {
     computedControlHeights,
@@ -19,6 +22,81 @@ test("the canonical vertical sizing contract is valid", () => {
     assert.match(contractSha256, /^[a-f0-9]{64}$/);
     assert.equal(primitiveValues().size, 91);
     assert.equal(projections().size, 11);
+});
+
+// The contract is the single source of the generated sheets: a hand edit to a
+// sheet that is not carried into the contract (or the generator) would be
+// reverted by the next regeneration. Run the generator for real in a scratch
+// copy and require the tree it writes to equal the tree in the repository.
+test("regeneration leaves the generated sheets unchanged", () => {
+    const outputs = [...projections().keys()];
+    const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "sf-adaptive-sizing-"));
+    try
+    {
+        const copied = [
+            "scripts/generate-adaptive-sizing-contract.mjs",
+            "scripts/adaptive-sizing-contract-lib.mjs",
+            "src/core/contracts/adaptive-sizing.v1.json",
+            ...outputs,
+        ];
+        for (const relativePath of copied)
+        {
+            const target = path.join(scratch, relativePath);
+            fs.mkdirSync(path.dirname(target), { recursive: true });
+            fs.copyFileSync(repositoryPath(relativePath), target);
+        }
+
+        const run = spawnSync(
+            process.execPath,
+            [path.join(scratch, "scripts/generate-adaptive-sizing-contract.mjs")],
+            { encoding: "utf8" },
+        );
+        assert.equal(run.status, 0, run.stderr);
+
+        for (const relativePath of outputs)
+        {
+            assert.equal(
+                fs.readFileSync(path.join(scratch, relativePath), "utf8"),
+                fs.readFileSync(repositoryPath(relativePath), "utf8"),
+                `regeneration changes ${relativePath}`,
+            );
+        }
+
+        const check = spawnSync(
+            process.execPath,
+            [repositoryPath("scripts/generate-adaptive-sizing-contract.mjs"), "--check"],
+            { encoding: "utf8" },
+        );
+        assert.equal(check.status, 0, check.stderr);
+    }
+    finally
+    {
+        fs.rmSync(scratch, { recursive: true, force: true });
+    }
+});
+
+test("the desktop threshold is written in rem, as the breakpoint ladder is", () => {
+    const rem = contract.modes.desktop.minWidthPx / contract.meta.nominalRootPx;
+    for (const [relativePath, output] of projections())
+    {
+        if (!relativePath.endsWith(".scss")) continue;
+        assert.doesNotMatch(output, /@media \(min-width: \d+px\)/u, relativePath);
+        if (output.includes("@media"))
+        {
+            assert.match(output, new RegExp(`@media \\(min-width: ${rem}rem\\)`, "u"));
+        }
+    }
+});
+
+test("a pinned label role stays on its primitives in both modes", () => {
+    const output = projections().get(contract.projections.scss.typographyRoles);
+    const large = contract.typography.roles.label.large;
+    assert.match(output, new RegExp(`--sf-label-large--size: var\\(--sf-${large.fixedSize}\\);`, "u"));
+    assert.match(output, new RegExp(`--sf-label-large--height: var\\(--sf-${large.fixedHeight}\\);`, "u"));
+
+    const candidate = cloneContract();
+    candidate.typography.roles.label.large.fixedSize = "z9";
+    assert.throws(() => validateContract(candidate), /unknown primitive alias/u);
 });
 
 test("content spacing roles are generated from one semantic contract", () => {

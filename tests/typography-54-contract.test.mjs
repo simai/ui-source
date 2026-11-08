@@ -12,13 +12,13 @@ import { projections } from "../scripts/generate-adaptive-sizing-contract.mjs";
 const read = relativePath => fs.readFileSync(repositoryPath(relativePath), "utf8");
 
 const expectedTitleHeights = {
-    mobile: [16, 16, 20, 24, 24, 28, 32, 36, 40, 48, 52, 56],
-    desktop: [16, 24, 28, 32, 36, 40, 48, 56, 64, 76, 80, 96],
+    mobile: [16, 18, 20, 24, 26, 28, 32, 36, 40, 48, 52, 56],
+    desktop: [18, 24, 28, 32, 36, 40, 48, 56, 64, 76, 80, 96],
 };
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.4.0");
+    assert.equal(contract.meta.version, "1.5.0");
 
     for (const mode of ["mobile", "desktop"])
     {

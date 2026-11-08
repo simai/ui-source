@@ -161,13 +161,30 @@
       "additionalProperties": { "$ref": "#/$defs/alias" }
     },
     "roleBinding": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["size", "height"],
-      "properties": {
-        "size": { "type": "string", "minLength": 1 },
-        "height": { "type": "string", "minLength": 1 }
-      }
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["size", "height"],
+          "properties": {
+            "size": { "type": "string", "minLength": 1 },
+            "height": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fixedSize", "fixedHeight"],
+          "properties": {
+            "fixedSize": { "type": "string", "pattern": "^(zero|[a-i][0-9])$" },
+            "fixedHeight": { "type": "string", "pattern": "^(zero|[a-i][0-9])$" },
+            "note": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      ]
     },
     "roleMap": {
       "type": "object",
