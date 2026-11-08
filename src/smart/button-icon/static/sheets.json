@@ -19,7 +19,8 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "badge": [
@@ -35,7 +36,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "close": [
       "component/badges/css/badges.min.css",
@@ -50,7 +52,38 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "cycle": [
+      "component/badges/css/badges.min.css",
+      "component/close/css/close.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "smart/button-icon/css/button-icon.min.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "danger": [
+      "component/badges/css/badges.min.css",
+      "component/close/css/close.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "smart/button-icon/css/button-icon.min.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "disabled": [
       "component/badges/css/badges.min.css",
@@ -65,22 +98,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
-    ],
-    "error": [
-      "component/badges/css/badges.min.css",
-      "component/close/css/close.min.css",
-      "component/icon-buttons/css/icon-buttons.min.css",
-      "component/icons/css/icons.min.css",
-      "core/css/core.css",
-      "smart/button-icon/css/button-icon.min.css",
-      "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css",
-      "utility/font-weight/default/css/default.min.css",
-      "utility/justify-content/default/css/default.min.css",
-      "utility/place-items/default/css/default.min.css",
-      "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "loading": [
       "component/badges/css/badges.min.css",
@@ -96,7 +115,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "outline": [
       "component/badges/css/badges.min.css",
@@ -111,7 +131,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "quiet": [
       "component/badges/css/badges.min.css",
@@ -125,7 +146,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/pointer-events/default/css/default.min.css"
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/badges/css/badges.min.css",
@@ -140,7 +162,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "segments": [
       "component/badges/css/badges.min.css",
@@ -155,7 +178,23 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "theme-cycle": [
+      "component/badges/css/badges.min.css",
+      "component/close/css/close.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "smart/button-icon/css/button-icon.min.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "tonal": [
       "component/badges/css/badges.min.css",
@@ -170,7 +209,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

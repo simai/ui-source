@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert-bar's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the page alert bar the Larena storage thread asked for (Federation bus msg-f8fd87ae998c44438cc7), from the owner-approved prototype «Плашка важных уведомлений» (claude.ai artifact BAtvwTPsumKqguQgDwngaM, 2026-11-05).",
   "id": "smart.alert-bar",
   "tag": "sf-alert-bar",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "alert",
   "settings": {
@@ -18,7 +18,7 @@
             "level": {
               "type": "string",
               "enum": [
-                "danger",
+                "error",
                 "warning",
                 "info"
               ]
@@ -63,7 +63,7 @@
         }
       },
       "default": [],
-      "summary": "The current conditions, each {id, level danger|warning|info, text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: danger, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; a danger item is never closed, only minimized"
+      "summary": "The current conditions, each {id, level error|warning|info (danger, the former word, reads as error), text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: error, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; an error item is never closed, only minimized"
     },
     "size": {
       "type": "enum",
@@ -84,7 +84,7 @@
     "minimized": {
       "type": "boolean",
       "default": false,
-      "summary": "The danger bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is danger is minimized; a page that kept the state sets it back. A danger item that was not in the list before expands the bar again"
+      "summary": "The error bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is an error is minimized; a page that kept the state sets it back. An error item that was not in the list before expands the bar again"
     }
   },
   "events": {
@@ -126,13 +126,13 @@
         }
       },
       "cancelable": true,
-      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. A danger item is never closed"
+      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. An error item is never closed"
     },
     "minimize": {
       "carries": {
         "minimized": "boolean"
       },
-      "summary": "The danger bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by a danger item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page"
+      "summary": "The error bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by an error item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page"
     }
   },
   "actions": {
@@ -144,7 +144,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for a danger item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
+      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for an error item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
       "x-returns": {
         "type": "object",
         "description": "The outcome."
@@ -183,7 +183,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The bar is a region named by label. It is no live region itself, so a bar present when the page loads is not read out and paging does not speak. Two visually hidden live regions inside it announce what appears later: a danger item that was not in the list before in the alert region (assertive), any other new item in the status region (polite). Nothing takes focus; every control is a native button or link, and Escape closes the open list and returns focus to its toggle.",
+    "$comment": "The bar is a region named by label. It is no live region itself, so a bar present when the page loads is not read out and paging does not speak. Two visually hidden live regions inside it announce what appears later: an error item that was not in the list before in the alert region (assertive), any other new item in the status region (polite). Nothing takes focus; every control is a native button or link, and Escape closes the open list and returns focus to its toggle.",
     "role": "region",
     "name": {
       "from": [
@@ -203,7 +203,7 @@
     "data-empty": "boolean"
   },
   "css-variables": {
-    "--sf-alert-bar-danger-background": {
+    "--sf-alert-bar-error-background": {
       "type": "color",
       "state": "default"
     },
@@ -228,7 +228,7 @@
       "state": "default"
     }
   },
-  "x-summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "x-summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "x-source": {
     "package": "framework",
     "folder": "alert-bar",
@@ -250,7 +250,8 @@
     "geometry: one rung (size 1/2 by default, or 1): the text the rung's line, the icon that line, the buttons the rung's control height, the bar's block inset (H − L) / 2 so the text stands where a control's label stands, its inline inset the rung's space-x, icon-to-text the rung's text-space-x. The minimized strip is a control of the rung below (1/3 or 1/2).",
     "css-variables: six public variables (§6) -- the three level fills, the bar's inline inset, the gap between its parts and the list's background -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "version 1.0.1 (Larena, 2026-11-05: «Отметить, что видели» cut short at 1296 px): an action keeps its label's natural width -- the native control of each sf-button in the actions is flex: none and nowrap, never shrunk or cut. The message gives way first (flex 1 1 10rem, its floor min(10rem, 100%)), then the actions wrap onto a line of their own (the actions block wraps, end-aligned); before, a bar 600-700 px wide squeezed the text to nothing and ran the actions out of the bar. Probe: tests/browser/alert-bar-actions.browser.mjs at 1296, 1296 in a 640 px column and 390.",
-    "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.1.0 (2026-11-08): a minor (§4.10; docs review R031, owner decision C13): the bar reports conditions, so its most serious level is error, as on every message (alert, badge, toast, field); danger -- the word of the first brief -- reads as error and is noted once (change journal value-alert-bar-level-danger-to-error). The bar's class is sf-alert-bar--error and its public variable --sf-alert-bar-error-background; the danger class and --sf-alert-bar-danger-background still draw. The level badge in the list takes the level word as its status. close(id) still answers {reason: danger} for an item that cannot be closed: an outcome has no alias to carry a rename. The bar's own controls write sf-button-icon's ghost, the name of the look without a fill (sf-button-icon 1.6.0, rule C15)."
   ],
   "x-registry": {
     "capabilities": [

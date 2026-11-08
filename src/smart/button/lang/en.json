@@ -1,3 +1,11 @@
 {
-  "title": "Buttons"
+  "title": "Buttons",
+  "runtime": {
+    "theme": "Theme",
+    "theme-system": "system",
+    "theme-light": "light",
+    "theme-dark": "dark",
+    "theme-system-now": "system (now {theme})",
+    "cycle-next": "{name}. Press for {next}"
+  }
 }

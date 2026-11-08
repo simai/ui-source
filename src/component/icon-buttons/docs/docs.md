@@ -7,10 +7,14 @@ decorative and uses `aria-hidden="true"`.
 
 ## Public axes
 
-- emphasis: `default`, `tonal`, `outline`, `link`, or `surface`; `ghost` is a
-  compatibility name for `link`;
-- scheme: `primary`, `secondary`, or `on-surface` only in combinations backed
-  by component styles;
+- emphasis: `default`, `tonal`, `outline` and the ghost look, drawn by
+  `sf-icon-button--link` (sf-button-icon calls it `ghost`, decision C15);
+  `surface` is kept for markup written before and draws as `tonal` does with
+  the destructive status;
+- scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
+  `on-surface`); `secondary` is kept for older markup;
+- status: `sf-icon-button--danger` (or `--error`, the same rules) for a
+  destructive control, in every emphasis (decision C13);
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`

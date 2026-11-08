@@ -56,37 +56,37 @@
       "note": "journal attribute-tightness-to-spacing; its words are spacing's value aliases below, spacing wins when both are given"
     },
     {
-      "from": "ghost",
-      "to": "link",
+      "from": "link",
+      "to": "ghost",
       "kind": "value",
       "setting": "appearance",
       "component": "sf-button",
-      "since": "2026-10-27",
-      "remove_after": "2026-12-01",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
       "section": "§16 item 20",
-      "note": "journal value-button-ghost-to-link"
+      "note": "journal value-button-link-to-ghost (rule C15): ghost is the name, link its former one; the earlier ghost-to-link record stays in the journal"
     },
     {
-      "from": "danger",
-      "to": "error",
+      "from": "error",
+      "to": "danger",
       "kind": "value",
       "setting": "status",
       "component": "sf-button",
-      "since": "2026-10-27",
-      "remove_after": "2026-12-01",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
       "section": "§16 item 20",
-      "note": "journal value-status-danger-critical-to-error"
+      "note": "journal value-control-status-error-to-danger (rule C13): a control's destructive status is danger; messages keep error"
     },
     {
       "from": "critical",
-      "to": "error",
+      "to": "danger",
       "kind": "value",
       "setting": "status",
       "component": "sf-button",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "§16 item 20",
-      "note": "journal value-status-danger-critical-to-error"
+      "note": "journal value-control-status-error-to-danger (rule C13); critical was an older word for the same"
     },
     {
       "from": "low",

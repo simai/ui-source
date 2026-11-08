@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.component-shared",
   "kind": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "summary": "The modules the class components share from the top of src/component: field contract and size, mask service, form reset and registration.",
   "includes": [
@@ -18,7 +18,7 @@
     "src/component/register-helper.js",
     "src/component/register.js"
   ],
-  "content_sha256": "ad9855d81ea90e65887d9f19b9c39c4cdd56f9138cec90a1955fd41db2da3c09",
+  "content_sha256": "169249880ec9c25cf0816d0e9f94d9c24924ae79ba5ef2c7b43078b8a59a1f2c",
   "dependencies": [
     {
       "id": "component.badges",

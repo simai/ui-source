@@ -53,6 +53,9 @@ the Smart `sf-button` projection.
   the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
   these three had no rule: no padding, about 32px at size 1 and the browser's
   text colour);
+- status: `sf-button--danger` (or `--error`, the same rules) for a
+  destructive button, in every emphasis (decision C13); sf-button writes
+  both, and calls `--link` the ghost appearance (C15);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density: the default, `spacing-compact`, `spacing-comfortable` or
   `spacing-spacious` (less, more and most side space). Density moves the side

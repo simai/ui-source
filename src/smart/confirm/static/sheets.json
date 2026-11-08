@@ -16,6 +16,7 @@
     "utility/flex/default/css/default.min.css",
     "utility/font-weight/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css"
   ],
   "examples": {
@@ -30,6 +31,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "card": [
@@ -43,6 +45,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "expired": [
@@ -56,6 +59,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "pending": [
@@ -69,6 +73,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "reference": [
@@ -82,6 +87,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "untitled": [
@@ -95,6 +101,7 @@
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]
   }

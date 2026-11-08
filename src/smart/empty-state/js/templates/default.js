@@ -21,7 +21,7 @@ function renderInline(context) {
         // The link is one size below the line (1.0.x: size 1 with compact
         // spacing): density no longer changes a button's height (C01), so the
         // smaller link is the next size down, as tall as it was.
-        ? html`<sf-button class="sf-empty-state-link" size=${size === '1' ? '1/2' : '1/3'} appearance="link" scheme="primary"
+        ? html`<sf-button class="sf-empty-state-link" size=${size === '1' ? '1/2' : '1/3'} appearance="ghost" scheme="primary"
                  text=${action.text ?? ''} data-action=${String(action.id)}
                  @click=${() => context.component.act(action.id)}></sf-button>`
         : nothing}

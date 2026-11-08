@@ -66,7 +66,7 @@ function renderDirection(context, {kind, icon, label, page}) {
       <sf-button-icon
         class=${`sf-pagination-direction sf-pagination-direction--${kind}`}
         size=${context.size}
-        appearance="link"
+        appearance="ghost"
         scheme="on-surface"
         icon=${icon}
         title=${label}
@@ -152,7 +152,7 @@ export function renderPaginationTemplate(context) {
                                     <sf-button
                                       class="sf-pagination-count-request"
                                       size=${context.size}
-                                      appearance="link"
+                                      appearance="ghost"
                                       scheme="primary"
                                       text=${context.showCountLabel}
                                       @click=${() => component.requestCount("total")}
@@ -175,7 +175,7 @@ export function renderPaginationTemplate(context) {
                               <sf-button
                                 class="sf-pagination-count-request"
                                 size=${context.size}
-                                appearance="link"
+                                appearance="ghost"
                                 scheme="primary"
                                 text=${context.showCountLabel}
                                 @click=${() => component.requestCount("total")}
@@ -351,7 +351,7 @@ export function renderPaginationTemplate(context) {
               <sf-button-icon
                 class="sf-pagination-actions-clear"
                 size=${context.size}
-                appearance="link"
+                appearance="ghost"
                 scheme="on-surface"
                 icon="close"
                 title=${context.clearSelectionLabel}

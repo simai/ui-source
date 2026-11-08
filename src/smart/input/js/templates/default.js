@@ -5,6 +5,7 @@ import './default.css'
 export function renderInputTemplate(context) {
   const {
     size,
+    radius,
     appearance,
     type,
     label,
@@ -66,6 +67,7 @@ export function renderInputTemplate(context) {
       field.invalid ? 'error' : '',
     `sf-input--size-${size}`,
     `sf-input--${appearance ?? type}`,
+    radius && radius !== 'default' ? `sf-input--radius-${radius}` : '',
       rootClass,
     'flex',
     'flex-col',

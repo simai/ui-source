@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -697,7 +697,7 @@
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "f84bf6d295f6cce99b62df150e0ce49a918ad5f807664093cd7fb75809e56009"
+        "sha256": "acf03985fb04b2b27c95f5f1cce0f8f2bcd329d1b9124d6d768be17d0e2fe64e"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
@@ -713,7 +713,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "80008a9e9e765f622029f39d0dc6cbe21fc6e2ca7454c3b63e7453473aec3f14"
+        "sha256": "e415f5ec92f998ba434346ac3fb908a188ef206364aebaef4c7ffc7a02b80be8"
       },
       {
         "path": "src/smart/list/lang/en.json",

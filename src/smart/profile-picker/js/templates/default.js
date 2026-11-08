@@ -27,7 +27,7 @@ function renderRow(context, profile) {
     return html`<div class="sf-profile-picker-confirm" role="alertdialog" aria-label=${fill(text('removeQuestion'), {name: profile.label ?? id})}>
       <div>${fill(text('removeQuestion'), {name: profile.label ?? id})}${profile.shared ? html` ${text('removeShared')}` : nothing}</div>
       <div class="sf-profile-picker-buttons">
-        <sf-button size=${context.size} status="error" text=${text('remove')} @click=${() => component.submitDelete(id)}></sf-button>
+        <sf-button size=${context.size} status="danger" text=${text('remove')} @click=${() => component.submitDelete(id)}></sf-button>
         <sf-button size=${context.size} appearance="outline" scheme="on-surface" text=${text('cancel')} @click=${() => component.setMode(null)}></sf-button>
       </div>
     </div>`;

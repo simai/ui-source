@@ -4,7 +4,7 @@
 //
 // sf-alert-bar on the built bytes with the real Loader, above a mock admin
 // header, at 1440 and 390 px, light and dark: one warning, three items (the
-// danger colour, «‹ 1 из 3 ›» wide, two lines narrow) and a minimized danger
+// error colour, «‹ 1 из 3 ›» wide, two lines narrow) and a minimized error
 // bar. Measured on the ladder (rung 1/2): the text the rung's line, the icon
 // that line, every button the rung's control height, the bar's block inset
 // (H − L) / 2 and its inline inset the rung's space-x; wide, the icon, the
@@ -46,7 +46,7 @@ const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60000).toISOStri
 const ITEMS = {
   backup: {id: 'backup', level: 'warning', text: 'Последняя копия demo-owned.test не удалась.', source: 'Сайт demo-owned.test', time: minutesAgo(330), action: {label: 'Открыть копии', href: '#backups'}, acknowledge: {label: 'Отметить, что видели'}},
   swap: {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.', source: 'Сервер', time: minutesAgo(5), action: {label: 'Посмотреть память', href: '#memory'}, acknowledge: {label: 'Отметить, что видели'}},
-  disk: {id: 'disk', level: 'danger', text: 'Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.', source: 'Сервер', time: minutesAgo(2), action: {label: 'Освободить место', href: '#disk'}},
+  disk: {id: 'disk', level: 'error', text: 'Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.', source: 'Сервер', time: minutesAgo(2), action: {label: 'Освободить место', href: '#disk'}},
   update: {id: 'update', level: 'info', text: 'Доступна новая версия панели 0.3.1.', source: 'Обновление', action: {label: 'Посмотреть', href: '#update'}},
 };
 const CASES = {
@@ -158,7 +158,7 @@ for (const theme of ['light', 'dark']) {
       });
       ok(`${label}: no sideways scroll, the bar spans the page above the header`, !g.overflow && near(g.bar.width, width, 1) && g.bar.bottom <= g.header.top + 0.5, JSON.stringify({bar: g.bar, header: g.header}));
       const contrast = CONTRAST([g.fill, g.ink]);
-      ok(`${label}: the fill is the level's status role, its ink at least 4.5:1`, g.level === (name === 'one' ? 'warning' : 'danger') && contrast >= 4.5, `${g.level} ${g.fill} on ${g.ink}: ${contrast.toFixed(2)}`);
+      ok(`${label}: the fill is the level's status role, its ink at least 4.5:1`, g.level === (name === 'one' ? 'warning' : 'error') && contrast >= 4.5, `${g.level} ${g.fill} on ${g.ink}: ${contrast.toFixed(2)}`);
       if (name === 'minimized') {
         ok(`${label}: the strip is the control height of the rung below, with the count`, near(g.bar.height, below.control) && g.stripText.includes('Важных уведомлений: 3'), JSON.stringify({h: g.bar.height, below, text: g.stripText}));
       } else {
@@ -185,7 +185,7 @@ for (const theme of ['light', 'dark']) {
           const items = [...(element?.querySelectorAll(':scope > li') ?? [])];
           return {count: items.length, levels: items.map((li) => li.dataset.level), top: element?.getBoundingClientRect().top, bar: document.querySelector('#bar .sf-alert-bar-row').getBoundingClientRect().bottom, overflow: document.documentElement.scrollWidth > innerWidth};
         });
-        ok(`${label}: «Все 3» opens the list under the bar, danger first`, list.count === 3 && list.levels.join(',') === 'danger,warning,info' && near(list.top, list.bar, 1) && !list.overflow, JSON.stringify(list));
+        ok(`${label}: «Все 3» opens the list under the bar, error first`, list.count === 3 && list.levels.join(',') === 'error,warning,info' && near(list.top, list.bar, 1) && !list.overflow, JSON.stringify(list));
         if (shots) await tab.screenshot({path: join(shots, `alert-bar-three-list-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: width < 600 ? 640 : 420}});
       }
       ok(`${label}: no page errors`, !errors.length, errors.join(' | '));

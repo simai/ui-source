@@ -18,10 +18,37 @@
     "utility/font-weight/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/width/default/css/default.min.css"
   ],
   "examples": {
+    "cycle": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "danger": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
     "disabled": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
@@ -33,19 +60,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
-    ],
-    "error": [
-      "component/buttons/css/buttons.min.css",
-      "component/icons/css/icons.min.css",
-      "component/kbd/css/kbd.min.css",
-      "core/css/core.css",
-      "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css",
-      "utility/flex/default/css/default.min.css",
-      "utility/font-weight/default/css/default.min.css",
-      "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "expanded": [
@@ -59,6 +74,20 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "ghost": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "icon-only": [
@@ -72,6 +101,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "icons": [
@@ -85,19 +115,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
-    ],
-    "link": [
-      "component/buttons/css/buttons.min.css",
-      "component/icons/css/icons.min.css",
-      "component/kbd/css/kbd.min.css",
-      "core/css/core.css",
-      "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css",
-      "utility/flex/default/css/default.min.css",
-      "utility/font-weight/default/css/default.min.css",
-      "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "loading": [
@@ -112,17 +130,20 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "new-tab": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "outline": [
@@ -136,6 +157,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "reference": [
@@ -149,6 +171,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "search-trigger": [
@@ -163,6 +186,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
@@ -177,6 +201,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "sizes": [
@@ -191,6 +216,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "surface": [
@@ -204,6 +230,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "tonal": [
@@ -217,6 +244,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]
   }

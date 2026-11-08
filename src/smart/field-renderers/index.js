@@ -974,7 +974,7 @@ function renderPasswordEdit(field, value, host) {
             ></sf-input>
             <sf-button-icon
                     size=${EDIT_SIZE}
-                    appearance="link"
+                    appearance="ghost"
                     scheme="on-surface"
                     icon="visibility"
                     aria-label=${setText(host, 'showPassword')}

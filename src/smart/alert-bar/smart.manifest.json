@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "title": "Alert bar",
-  "summary": "A full-width bar above a page or admin header for the conditions that need action now: danger, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, danger only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -71,12 +71,12 @@
       "minimized": {
         "type": "boolean",
         "default": false,
-        "description": "The danger bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is danger is minimized; a page that kept the state sets it back. A danger item that was not in the list before expands the bar again"
+        "description": "The error bar is minimized to a thin strip that keeps the count and expands again on a press. Only a bar whose most serious item is an error is minimized; a page that kept the state sets it back. An error item that was not in the list before expands the bar again"
       },
       "items": {
         "type": "array",
         "default": [],
-        "description": "The current conditions, each {id, level danger|warning|info, text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: danger, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; a danger item is never closed, only minimized"
+        "description": "The current conditions, each {id, level error|warning|info (danger, the former word, reads as error), text, source?, time?, action?: {label, href}, acknowledge?: {label}, dismissible?}. A property, or the JSON island a server prints; the host sets the whole list again when a condition appears or ends. The bar sorts them: error, warning, info, the newest first by time (ISO 8601), and takes its colour from the first. dismissible false keeps a warning or an info item from being closed; an error item is never closed, only minimized"
       }
     },
     "additionalProperties": false
@@ -85,7 +85,7 @@
   "contracts": {},
   "methods": {
     "close": {
-      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for a danger item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
+      "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for an error item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
       "arguments": [
         {
           "name": "id",
@@ -144,7 +144,7 @@
       }
     },
     "sf-alert-bar-close": {
-      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. A danger item is never closed",
+      "summary": "A person closed an item (reason close) or a page called close(id) (reason api): hide day for a warning (hidden for 24 hours), always for an info item (hidden for good). The bar stores nothing: the host keeps the choice and leaves the item out when it sets the list again. Not cancelled, the item leaves the bar at once. An error item is never closed",
       "payload": {
         "type": "object",
         "required": [
@@ -177,7 +177,7 @@
       }
     },
     "sf-alert-bar-minimize": {
-      "summary": "The danger bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by a danger item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page",
+      "summary": "The error bar was minimized to its strip (minimized true) or expanded again (false): by a press, or, expanding, by an error item that was not in the list before. The fact after the change; the page may keep it and set minimized back on the next page",
       "payload": {
         "type": "object",
         "required": [
@@ -301,15 +301,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "8247e18c28f77b8ea154cc90bc4c68217c55f5a5213f69b2472d7ab6f4ae09ac"
+        "sha256": "a35072a2c7e079880d503c88b2d605b787c86fa8a70bcc0a03ea6a9b73fb4bca"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "cc72b2a86b50a1e613b1725f0d9e07094b0188aeda97844d529546fe6861af24"
+        "sha256": "a62e881ee2ff9d5b210755ef50f2d78a0e3e7e917889af6ee0504eb2b5afa36b"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "09d61bfb26d6b1f9398fe692493775609b2fbfe3839adb74d67f0b2ec373759a"
+        "sha256": "25d15e0307e3e01e208676e7546c6d0d9e8d93ef32e2a4b1e67237b025148a92"
       },
       {
         "path": "src/smart/alert-bar/rule.js",

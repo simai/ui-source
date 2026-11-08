@@ -10,7 +10,9 @@
    The public variables are read with the role token as their fallback and
    never set here. */
 .sf-alert-bar {
-  --sf-alert-bar--danger-background: var(--sf-alert-bar-danger-background, var(--sf-error));
+  /* --sf-alert-bar-danger-background is the former name (change journal
+     value-alert-bar-level-danger-to-error); the error one wins. */
+  --sf-alert-bar--error-background: var(--sf-alert-bar-error-background, var(--sf-alert-bar-danger-background, var(--sf-error)));
   --sf-alert-bar--warning-background: var(--sf-alert-bar-warning-background, var(--sf-warning));
   --sf-alert-bar--info-background: var(--sf-alert-bar-info-background, var(--sf-info));
   --sf-alert-bar--list-background: var(--sf-alert-bar-list-background, var(--sf-surface-1));
@@ -52,8 +54,8 @@
 }
 
 /* The level's fill and its ink: the theme's status roles, light and dark. */
-.sf-alert-bar.sf-alert-bar--danger {
-  --sf-alert-bar--fill: var(--sf-alert-bar--danger-background);
+.sf-alert-bar:is(.sf-alert-bar--error, .sf-alert-bar--danger) {
+  --sf-alert-bar--fill: var(--sf-alert-bar--error-background);
   --sf-alert-bar--ink: var(--sf-on-error);
 }
 

@@ -227,23 +227,25 @@ test('a status tag keeps its colour: the appearance is only for the neutral type
 test('the appearances are part of the public API, and documented', () => {
   // The manifests are generated from component.json (standard 1.4), so the enum
   // has one source. If the two ever drift, Studio and the runtime would disagree
-  // about what exists. sf-button's ghost reads as link: a dated value alias
-  // (compatibility.aliases appearance=ghost), not an appearance of its own;
-  // sf-button-icon keeps ghost.
+  // about what exists. Since decision C15 (sf-button 1.9.0, sf-button-icon
+  // 1.6.0) ghost is the quiet appearance and link its dated alias; the icon
+  // button retired surface (drawn as tonal on-surface), the button keeps it.
   const expected = {
-    button: ['default', 'tonal', 'outline', 'link', 'surface'],
-    'button-icon': ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'],
+    button: ['default', 'tonal', 'outline', 'ghost', 'surface'],
+    'button-icon': ['default', 'tonal', 'outline', 'ghost'],
   };
   for (const [component, values] of Object.entries(expected)) {
     const manifest = JSON.parse(read(`src/smart/${component}/smart.manifest.json`));
     // The axis is `appearance`; `type` still mirrors it, which the axes rule checks.
-    assert.deepEqual(manifest.inputs.properties.appearance.enum, values, `${component}: the list stays closed and carries the two appearances`);
+    assert.deepEqual(manifest.inputs.properties.appearance.enum, values, `${component}: the list stays closed`);
     assert.deepEqual(JSON.parse(read(`src/smart/${component}/component.json`)).settings.appearance.values, manifest.inputs.properties.appearance.enum);
     const docs = read(`src/smart/${component}/docs/docs.md`);
-    assert.match(docs, /surface\|ghost/u, `${component}: the type list names them`);
-    assert.match(docs, /alpha ramp/u, `${component}: and says what they are built on`);
+    assert.ok(docs.includes(`appearance="${values.join('|')}"`), `${component}: the docs name the list`);
   }
-  assert.ok(JSON.parse(read('src/smart/button/smart.manifest.json')).compatibility.aliases.includes('appearance=ghost'));
+  assert.match(read('src/smart/button/docs/docs.md'), /alpha ramp/u, 'sf-button says what surface is built on');
+  for (const component of ['button', 'button-icon']) {
+    assert.ok(JSON.parse(read(`src/smart/${component}/smart.manifest.json`)).compatibility.aliases.includes('appearance=link'), component);
+  }
 
   // On a tag the appearance is its own axis, because `type` there says what the
   // tag carries or reports, not how it looks.

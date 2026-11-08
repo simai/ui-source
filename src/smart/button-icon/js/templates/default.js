@@ -4,6 +4,20 @@ import {createInlineSpinner} from '../../../../component/spinner/js/_spinner-dra
 import {nameWithBadge, renderAnchoredBadge, renderAnchoredBadgeText} from '../../../helpers/anchored-badge';
 
 const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
+// The drawing class of each appearance; surface is resolved to tonal by the
+// element (C15), a value off the list draws the default.
+const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'link', link: 'link', surface: 'surface'};
+
+function statusClasses(status, scheme) {
+    if (status === 'danger' || status === 'error') return ['sf-icon-button--danger', 'sf-icon-button--error'];
+    // secondary was retired (C15): drawn as on-surface-variant.
+    const colour = scheme === 'secondary' ? 'on-surface-variant' : (scheme || 'primary');
+    // on-surface-variant is the on-surface family one step quieter: both
+    // classes, so every on-surface rule holds and one rule quietens it.
+    return colour === 'on-surface-variant'
+        ? ['sf-icon-button--on-surface-variant', 'sf-icon-button--on-surface']
+        : [`sf-icon-button--${colour}`];
+}
 
 export function renderIconButtonTemplate(context) {
     const {
@@ -34,7 +48,9 @@ export function renderIconButtonTemplate(context) {
         // here had no rule (documentation trial 6, 2026-10-18).
         ICON_BUTTON_SIZES.has(size || '1') ? `sf-icon-button--size-${size || '1'}` : '',
         `sf-icon-button--${kind ?? variant ?? 'icon'}`,
-        `sf-icon-button--${appearance || type || 'default'}`,
+        // ghost is drawn by the link class, the one the sheets and their
+        // consumers select (link was ghost's twin; C15 made ghost the name).
+        `sf-icon-button--${ICON_BUTTON_LOOK[appearance || type] || 'default'}`,
         'flex',
         'items-cross-center',
         segment ? `segment-${segment}` : '',
@@ -42,23 +58,22 @@ export function renderIconButtonTemplate(context) {
         // scheme otherwise. A status says what the control is about -- an error
         // for something destructive -- and a scheme says which colour family it
         // takes; they cannot both paint it.
-        `sf-icon-button--${status || scheme || 'primary'}`,
-        // on-surface-variant is the on-surface family one step quieter: both
-        // classes, so every on-surface rule holds and one rule quietens it.
-        !status && scheme === 'on-surface-variant' ? 'sf-icon-button--on-surface' : '',
+        // danger is a control's status (C13), drawn with the error roles: the
+        // class is the danger one and the error one the sheets also select.
+        ...statusClasses(status, scheme),
         tightness ? `tightness-${tightness}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-icon-button-state-loading' : '',
         // A toggle that is on wears the pressed look (component.icon-buttons
         // 1.3.0, rule C12): the class carries it whether or not aria-pressed is said.
-        context.pressed ? 'sf-icon-button--pressed' : '',
+        context.pressed || context.cycleView?.pressedLook ? 'sf-icon-button--pressed' : '',
     ].filter(Boolean);
 
     // A toggle whose name changes (label-pressed, 1.5.0): «Добавить в избранное»
     // at rest, «Убрать из избранного» while on. The name then says the state,
     // so aria-pressed is not written as well (docs review R028, rule C12).
-    const name = context.pressed === true && context.labelPressed ? context.labelPressed : ariaLabel;
+    const name = context.cycleView ? context.cycleView.name : context.pressed === true && context.labelPressed ? context.labelPressed : ariaLabel;
     const announcesPressed = context.pressed !== undefined && !context.labelPressed;
 
     // Loading shows the spinner in place of the icon, at the icon's size
@@ -71,7 +86,7 @@ export function renderIconButtonTemplate(context) {
                 ? html`
                             <sf-button-close root-class="pointer-event-none" size="${size || '1'}"></sf-button-close>`
                 : html`
-                            <sf-icon filled="${filled || context.pressed === true}" root-class="pointer-event-none" icon="${icon}" weight="400" aria-hidden="true"></sf-icon>`;
+                            <sf-icon filled="${filled || context.pressed === true || Boolean(context.cycleView?.pressedLook)}" root-class="pointer-event-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
 
     return html`
         <button
@@ -84,6 +99,6 @@ export function renderIconButtonTemplate(context) {
                 aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
         >
             ${iconContent}${renderAnchoredBadge(badge)}${name ? nothing : renderAnchoredBadgeText(badge, false)}
-        </button>
+        </button>${context.cycleView ? html`<span class="sf-icon-button-announce sr-only" role="status" aria-live="polite" aria-atomic="true">${context.cycleView.announcement}</span>` : nothing}
     `;
 }

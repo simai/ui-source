@@ -34,6 +34,7 @@
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/stroke-color/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css"
   ],
@@ -67,6 +68,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -99,6 +101,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -131,6 +134,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -163,6 +167,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -195,6 +200,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -227,6 +233,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -259,6 +266,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -291,6 +299,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
@@ -323,6 +332,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]

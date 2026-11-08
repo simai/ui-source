@@ -36,13 +36,13 @@
       }
     },
     {
-      "name": "danger",
-      "title": "Опасность: скрыть нельзя, только свернуть",
+      "name": "error",
+      "title": "Ошибка: скрыть нельзя, только свернуть",
       "settings": {
         "items": [
           {
             "id": "disk",
-            "level": "danger",
+            "level": "error",
             "text": "Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.",
             "source": "Сервер",
             "time": "2026-10-27T08:58:00Z",
@@ -92,7 +92,7 @@
           },
           {
             "id": "disk",
-            "level": "danger",
+            "level": "error",
             "text": "Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.",
             "source": "Сервер",
             "time": "2026-10-27T08:58:00Z",
@@ -103,7 +103,7 @@
           },
           {
             "id": "down",
-            "level": "danger",
+            "level": "error",
             "text": "demo-php.test не отвечает уже 12 минут.",
             "source": "Сайт demo-php.test",
             "time": "2026-10-27T08:48:00Z",
@@ -152,7 +152,7 @@
           },
           {
             "id": "disk",
-            "level": "danger",
+            "level": "error",
             "text": "Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.",
             "source": "Сервер",
             "time": "2026-10-27T08:58:00Z",
@@ -205,7 +205,7 @@
         "items": [
           {
             "id": "disk",
-            "level": "danger",
+            "level": "error",
             "text": "Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.",
             "source": "Сервер",
             "time": "2026-10-27T08:58:00Z",
@@ -216,7 +216,7 @@
           },
           {
             "id": "down",
-            "level": "danger",
+            "level": "error",
             "text": "demo-php.test не отвечает уже 12 минут.",
             "source": "Сайт demo-php.test",
             "time": "2026-10-27T08:48:00Z",
@@ -297,12 +297,12 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-alert-bar id=\"many\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"danger\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"down\", \"level\": \"danger\", \"text\": \"demo-php.test не отвечает уже 12 минут.\", \"source\": \"Сайт demo-php.test\", \"time\": \"2026-10-27T08:48:00Z\", \"action\": {\"label\": \"Открыть сайт\", \"href\": \"#site\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"cert\", \"level\": \"warning\", \"text\": \"Сертификат demo-static.test истекает через 6 дней.\", \"source\": \"Сайт demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}]}</script></sf-alert-bar>",
+          "  <sf-alert-bar id=\"many\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"down\", \"level\": \"error\", \"text\": \"demo-php.test не отвечает уже 12 минут.\", \"source\": \"Сайт demo-php.test\", \"time\": \"2026-10-27T08:48:00Z\", \"action\": {\"label\": \"Открыть сайт\", \"href\": \"#site\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"cert\", \"level\": \"warning\", \"text\": \"Сертификат demo-static.test истекает через 6 дней.\", \"source\": \"Сайт demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}]}</script></sf-alert-bar>",
           "  <sf-alert-bar id=\"one\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}]}</script></sf-alert-bar>",
           "  <sf-alert-bar id=\"info\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"update\", \"level\": \"info\", \"text\": \"Доступна новая версия панели 0.3.1.\", \"source\": \"Обновление\", \"action\": {\"label\": \"Посмотреть\", \"href\": \"#update\"}}]}</script></sf-alert-bar>",
-          "  <sf-alert-bar id=\"danger\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"disk\", \"level\": \"danger\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}]}</script></sf-alert-bar>",
+          "  <sf-alert-bar id=\"danger\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}]}</script></sf-alert-bar>",
           "  <sf-alert-bar id=\"live\"></sf-alert-bar>",
-          "  <div style=\"inline-size: 390px\"><sf-alert-bar id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"danger\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}]}</script></sf-alert-bar></div>",
+          "  <div style=\"inline-size: 390px\"><sf-alert-bar id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}]}</script></sf-alert-bar></div>",
           "  <div lang=\"en\"><sf-alert-bar id=\"en\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"update\", \"level\": \"info\", \"text\": \"Доступна новая версия панели 0.3.1.\", \"source\": \"Обновление\", \"action\": {\"label\": \"Посмотреть\", \"href\": \"#update\"}}]}</script></sf-alert-bar></div>",
           "</main>"
         ]
@@ -310,17 +310,17 @@
       "checks": [
         {
           "id": "p1-order-and-colour",
-          "title": "the items are sorted danger, warning, info, the newest first; the bar takes the first one's colour and shows it with «1 из 5»",
+          "title": "the items are sorted error, warning, info, the newest first; the bar takes the first one's colour and shows it with «1 из 5»",
           "covers": "settings.items, host-states data-level, accessibility.role region, settings.label",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#many'); const root = el.querySelector(':scope > .sf-alert-bar'); return el.getAttribute('data-level') === 'danger' && root.getAttribute('role') === 'region' && root.getAttribute('aria-label') === 'Важные уведомления' && el.querySelector('.sf-alert-bar-message').textContent.includes('Диск заполнен') && el.querySelector('.sf-alert-bar-position').textContent.trim() === '1 из 5' && getComputedStyle(el.querySelector('.sf-alert-bar-row')).backgroundColor !== 'rgba(0, 0, 0, 0)'; })()"
+              "check": "(() => { const el = document.querySelector('#many'); const root = el.querySelector(':scope > .sf-alert-bar'); return el.getAttribute('data-level') === 'error' && root.getAttribute('role') === 'region' && root.getAttribute('aria-label') === 'Важные уведомления' && el.querySelector('.sf-alert-bar-message').textContent.includes('Диск заполнен') && el.querySelector('.sf-alert-bar-position').textContent.trim() === '1 из 5' && getComputedStyle(el.querySelector('.sf-alert-bar-row')).backgroundColor !== 'rgba(0, 0, 0, 0)'; })()"
             }
           ]
         },
         {
           "id": "p2-paging",
-          "title": "the arrows page through the items and wrap; a warning in a danger bar says its level",
+          "title": "the arrows page through the items and wrap; a warning in an error bar says its level",
           "covers": "paging, settings.items order",
           "steps": [
             {
@@ -345,7 +345,7 @@
           "steps": [
             {
               "user": "click:#many .sf-alert-bar-all button",
-              "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 5 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"danger\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3; })()"
+              "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 5 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3; })()"
             },
             {
               "user": "keyboard:Escape",
@@ -414,7 +414,7 @@
         },
         {
           "id": "p6-danger-minimizes",
-          "title": "a danger item has no close: its button minimizes the bar to a strip that keeps the count; the strip expands it again",
+          "title": "an error item has no close: its button minimizes the bar to a strip that keeps the count; the strip expands it again",
           "covers": "values.minimized, events.minimize, host-states data-minimized",
           "steps": [
             {
@@ -472,7 +472,7 @@
                     "count": 1,
                     "detail": {
                       "id": "down",
-                      "level": "danger"
+                      "level": "error"
                     }
                   }
                 ]
@@ -498,7 +498,7 @@
                     "count": 1,
                     "detail": {
                       "id": "disk",
-                      "level": "danger",
+                      "level": "error",
                       "href": "#disk"
                     }
                   }
@@ -515,7 +515,7 @@
         },
         {
           "id": "p9-live-regions",
-          "title": "the first list is not read out; a new danger item later is spoken in role alert, a new warning in role status, and a minimized bar expands for a new danger",
+          "title": "the first list is not read out; a new error item later is spoken in role alert, a new warning in role status, and a minimized bar expands for a new error",
           "covers": "accessibility live regions, values.minimized",
           "steps": [
             {
@@ -531,19 +531,19 @@
               "check": "(() => { const el = document.querySelector('#live'); return el.querySelector('[role=status]').textContent.trim() === 'Сведения: Второе' && el.querySelector('[role=alert]').textContent.trim() === ''; })()"
             },
             {
-              "script": "(document.querySelector('#live').items = [{id: 'c', level: 'danger', text: 'Беда'}], document.querySelector('#live').minimized = true, true)",
+              "script": "(document.querySelector('#live').items = [{id: 'c', level: 'error', text: 'Беда'}], document.querySelector('#live').minimized = true, true)",
               "wait": 200
             },
             {
-              "script": "(document.querySelector('#live').items = [{id: 'c', level: 'danger', text: 'Беда'}, {id: 'd', level: 'danger', text: 'Новая беда'}], true)",
+              "script": "(document.querySelector('#live').items = [{id: 'c', level: 'error', text: 'Беда'}, {id: 'd', level: 'error', text: 'Новая беда'}], true)",
               "wait": 250,
-              "check": "(() => { const el = document.querySelector('#live'); return el.querySelector('[role=alert]').textContent.trim() === 'Опасность: Новая беда' && !!el.querySelector('.sf-alert-bar-row') && el.minimized === false; })()"
+              "check": "(() => { const el = document.querySelector('#live'); return el.querySelector('[role=alert]').textContent.trim() === 'Ошибка: Новая беда' && !!el.querySelector('.sf-alert-bar-row') && el.minimized === false; })()"
             }
           ]
         },
         {
           "id": "p10-close-action",
-          "title": "close(id) closes a warning with reason api and refuses a danger item and an unknown id",
+          "title": "close(id) closes a warning with reason api and refuses an error item and an unknown id",
           "covers": "actions.close",
           "steps": [
             {

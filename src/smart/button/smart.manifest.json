@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -64,6 +64,7 @@
         "expanded",
         "pressed",
         "text-pressed",
+        "theme-cycle",
         "aria-label"
       ],
       "presentation": {
@@ -116,12 +117,12 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border.",
+        "description": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look.",
         "enum": [
           "default",
           "tonal",
           "outline",
-          "link",
+          "ghost",
           "surface"
         ]
       },
@@ -139,10 +140,10 @@
       "status": {
         "type": "string",
         "default": "",
-        "description": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone.",
+        "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control.",
         "enum": [
           "",
-          "error"
+          "danger"
         ]
       },
       "text-position": {
@@ -275,7 +276,7 @@
       "value": {
         "type": "string",
         "default": "",
-        "description": "The value the inner button submits under name when it is the submitter (next, skip)."
+        "description": "The value the inner button submits under name when it is the submitter (next, skip); for a cycle, the current item's value, which a press moves to the next one."
       },
       "href": {
         "type": "string",
@@ -317,6 +318,11 @@
         "default": "",
         "description": "The label while the toggle is on, for a toggle whose label changes («В избранное» → «В избранном»). Set, the label says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: the label stays the same and aria-pressed says the state"
       },
+      "theme-cycle": {
+        "type": "string",
+        "default": "",
+        "description": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
+      },
       "aria-label": {
         "type": "string",
         "default": "",
@@ -330,7 +336,7 @@
           "default",
           "tonal",
           "outline",
-          "link",
+          "ghost",
           "surface"
         ]
       },
@@ -368,6 +374,32 @@
           "low",
           "high",
           "highest"
+        ]
+      },
+      "cycle": {
+        "type": "array",
+        "default": [],
+        "description": "One button, several values (rule D11d): the items {value, label, icon, pressed?} a press steps through, wrapping at the end. value is the current item. The name and the icon say the current value («Скорость: 1,5×»), the tooltip says the current and the next, and a polite live region says the new value after a press; change {previous, value, item} follows. Not a toggle: pressed and text-pressed are ignored beside it, with one console warning.",
+        "examples": [
+          [
+            {
+              "value": "off",
+              "label": "выключен",
+              "icon": "repeat"
+            },
+            {
+              "value": "all",
+              "label": "весь список",
+              "icon": "repeat",
+              "pressed": true
+            },
+            {
+              "value": "one",
+              "label": "один трек",
+              "icon": "repeat_one",
+              "pressed": true
+            }
+          ]
         ]
       }
     },
@@ -510,6 +542,33 @@
         "properties": {},
         "additionalProperties": true
       }
+    },
+    "change": {
+      "summary": "A cycle (cycle or theme-cycle) moved to its next value after a person's press; dispatched on the host, bubbles and is composed, after press on sf-button. A theme cycle sends it after SF.Loader.setTheme has drawn the theme. Not sent by a button that is not a cycle.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "value",
+          "item"
+        ],
+        "properties": {
+          "previous": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The item now current: {value, label, icon, lang, pressed}."
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -601,8 +660,8 @@
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
     "aliases": [
-      "appearance=ghost",
-      "status=danger",
+      "appearance=link",
+      "status=error",
       "status=critical",
       "spacing=low",
       "spacing=high",
@@ -620,7 +679,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "063dbfeac9ff7d67da693556497576084141de2e9cd849adece6a92539484758"
+        "sha256": "24a248be02955194c9e2c29830fb389765a8c64647aef52b378b8f6d95af4526"
       }
     ],
     "generated_runtime": [

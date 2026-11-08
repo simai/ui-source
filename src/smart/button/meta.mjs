@@ -39,11 +39,11 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "link",
+        "ghost",
         "surface"
       ],
       "default": "default",
-      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border."
+      "description": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look."
     },
     "scheme": {
       "kind": "enum",
@@ -60,10 +60,10 @@ const sfButtonMeta = {
       "kind": "enum",
       "values": [
         "",
-        "error"
+        "danger"
       ],
       "default": "",
-      "description": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
     },
     "text-position": {
       "kind": "custom",
@@ -200,7 +200,7 @@ const sfButtonMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The value the inner button submits under name when it is the submitter (next, skip)."
+      "description": "The value the inner button submits under name when it is the submitter (next, skip); for a cycle, the current item's value, which a press moves to the next one."
     },
     "href": {
       "kind": "custom",
@@ -259,6 +259,12 @@ const sfButtonMeta = {
       "default": "",
       "description": "The label while the toggle is on, for a toggle whose label changes («В избранное» → «В избранном»). Set, the label says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: the label stays the same and aria-pressed says the state"
     },
+    "theme-cycle": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
+    },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",
@@ -271,7 +277,7 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "link",
+        "ghost",
         "surface"
       ],
       "default": "default",
