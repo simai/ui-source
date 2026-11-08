@@ -20,7 +20,7 @@ The set id is the repository name without `ui-`:
 |---|---|---|---|---|
 | admin | simai/ui-admin | simai-pro | admin | planned |
 | view | simai/ui-view | simai-pro | view | pending the owner |
-| chat | simai/ui-chat | simai-pro | chat, message | planned |
+| chat | simai/ui-chat | simai-pro | chat | planned |
 | mail | simai/ui-mail | simai-pro | mail | planned |
 | editor | simai/ui-editor | simai-pro | editor | planned |
 | chart | simai/ui-chart | simai-pro | chart | planned |
