@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -284,7 +284,8 @@
     "a11y: the trigger's accessible name and title are the word trigger, «Язык: Русский» / «Language: English» -- label and the current language in itself; every segment and row has lang; the keyboard is sf-button-group's (arrows, Home, End) and sf-menu-context's (arrows, letters, Enter, Escape back to the trigger; Down from the search field to the rows).",
     "geometry: the parts are on the shared ladder; the element passes size through (1/3 .. 3). The menu has rungs 1/2 and 1: up to 1/2 its rows are 32 px, from 1 40 px. At 1/2 it fits sf-header-site's tools slot beside the theme switch (the same group height).",
     "css-variables: none of its own -- it has no sheet; the parts' public variables (sf-button-group, sf-button-icon, sf-menu-context) reach it.",
-    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.1.0 (owner decisions D11b, D11c): the inline switch is sf-segmented on its track (appearance track); its selected plate is the raised neutral one, the segmented control's new default, where it was the primary fill. Settings and events unchanged."
   ],
   "x-registry": {
     "capabilities": [

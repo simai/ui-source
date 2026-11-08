@@ -12,7 +12,9 @@ import ru from './lang/ru.json';
 // The theme switch's own words -- the three Loader preferences, and the
 // group's name when the page gives none -- are lang/<locale>.json runtime.
 const THEME_PREFERENCES = ['system', 'light', 'dark'];
-const THEME_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
+// The system item is a monitor, desktop_windows (owner decision D11c, docs
+// review R037): brightness_auto is automatic screen brightness on Android.
+const THEME_ICONS = { system: 'desktop_windows', light: 'light_mode', dark: 'dark_mode' };
 
 // The Loader's theme preference: what the person chose, not the theme drawn,
 // so system stays selected while the system is dark.
@@ -225,6 +227,10 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
 
   onDisconnected() {
     window.removeEventListener('sf-theme-change', this.handleThemeChange);
+    this._plateObserver?.disconnect();
+    this._plateObserver = null;
+    this._plateFor = null;
+    clearTimeout(this._plateTimer);
     this._releaseReset?.();
     this._releaseReset = null;
     this._resetInput = null;
@@ -279,6 +285,77 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     this.syncButtonSemantics();
     this.bindReset();
     this.sfSyncFormState();
+    this.placePlate();
+  }
+
+  // The plate of the track (1.4.0, owner decision D11c): one element under
+  // the selected option, measured after each render and moved there. A new
+  // choice slides it in 0.2 s (data-plate="moving" turns the transition on;
+  // the sheet takes it off under prefers-reduced-motion); a resize, a font
+  // that arrives or the first placement move it at once. Without a selected,
+  // enabled option the option paints itself (data-plate is removed), as it
+  // does in the printed first paint.
+  placePlate() {
+    const root = this.querySelector(':scope > .sf-button-group');
+    const plate = root?.querySelector(':scope > .sf-button-group-plate');
+    if (!root || !plate) {
+      this._plateObserver?.disconnect();
+      this._plateObserver = null;
+      this._plateFor = null;
+      return;
+    }
+    const active = root.querySelector(':scope > .sf-button-group-segment.active');
+    if (!active || active.disabled) {
+      root.removeAttribute('data-plate');
+      this._plateFor = null;
+      return;
+    }
+    const moving = Boolean(this._plateFor && this._plateFor !== active && this._plateRoot === root && root.hasAttribute('data-plate'));
+    this.measurePlate(root, plate, active, moving);
+    this._plateFor = active;
+    this._plateRoot = root;
+    if (typeof ResizeObserver === 'undefined') return;
+    if (!this._plateObserver) {
+      this._plateObserver = new ResizeObserver(() => {
+        const current = this._plateFor;
+        if (current?.isConnected && this._plateRoot?.isConnected) {
+          this.measurePlate(this._plateRoot, this._plateRoot.querySelector(':scope > .sf-button-group-plate'), current, false);
+        }
+      });
+    }
+    this._plateObserver.disconnect();
+    this._plateObserver.observe(root);
+    this._plateObserver.observe(active);
+  }
+
+  measurePlate(root, plate, active, moving) {
+    if (!plate) return;
+    const box = root.getBoundingClientRect();
+    const rect = active.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    // From the track's padding edge at its inline start, with the scroll: a
+    // right-to-left track starts at its right edge.
+    const rtl = getComputedStyle(root).direction === 'rtl';
+    const x = rtl
+      ? rect.right - (box.right - (parseFloat(getComputedStyle(root).borderRightWidth) || 0)) + root.scrollLeft
+      : rect.left - box.left - root.clientLeft + root.scrollLeft;
+    const y = rect.top - box.top - root.clientTop + root.scrollTop;
+    // A render that follows the choice (the value echoed back, a form sync)
+    // measures again while the plate slides: it keeps the slide and its timer.
+    const sliding = !moving && root.getAttribute('data-plate') === 'moving';
+    if (!sliding) {
+      clearTimeout(this._plateTimer);
+      root.setAttribute('data-plate', moving ? 'moving' : 'placed');
+    }
+    plate.style.setProperty('--sf-button-group--plate-x', `${x}px`);
+    plate.style.setProperty('--sf-button-group--plate-y', `${y}px`);
+    plate.style.setProperty('--sf-button-group--plate-inline-size', `${rect.width}px`);
+    plate.style.setProperty('--sf-button-group--plate-block-size', `${rect.height}px`);
+    if (moving) {
+      this._plateTimer = setTimeout(() => {
+        if (root.getAttribute('data-plate') === 'moving') root.setAttribute('data-plate', 'placed');
+      }, 260);
+    }
   }
 
   // Without ElementInternals the hidden input carries the name and value (and

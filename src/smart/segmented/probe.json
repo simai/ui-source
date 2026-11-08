@@ -287,7 +287,7 @@
     {
       "id": "the-theme-switch-names-itself",
       "covers": "accessibility.name: the theme switch's own word in the page language",
-      "field": "<sf-segmented theme-switch appearance=\"segmented\"></sf-segmented>",
+      "field": "<sf-segmented theme-switch></sf-segmented>",
       "script": "return [el.querySelector(\"[role=radiogroup]\").getAttribute(\"aria-label\"), [\"Как в системе\", \"Светлая\", \"Тёмная\"].every((word) => el.textContent.includes(word))];",
       "expect": {
         "returns": [

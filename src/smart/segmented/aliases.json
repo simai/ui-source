@@ -35,6 +35,28 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-segmented; sf-button-group is a subclass defined beside it until the date"
+    },
+    {
+      "from": "segmented",
+      "to": "track",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-segmented",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision D11b/D11c (docs review R035, R037): the two looks are named track and buttons; track is the default"
+    },
+    {
+      "from": "default",
+      "to": "buttons",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-segmented",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision D11b/D11c (docs review R035, R037): the two looks are named track and buttons; track is the default"
     }
   ]
 }

@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03' || (row.kind === 'tag' && row.since === '2026-11-08')) {
+      if (row.since === '2026-11-03' || row.since === '2026-11-08') {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }

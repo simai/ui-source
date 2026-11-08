@@ -78,25 +78,35 @@ const sfSegmentedMeta = {
         "on-surface"
       ],
       "default": "primary",
-      "description": "Color scheme for the selected button, and for the selected plate in the segmented appearance."
+      "description": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme."
     },
     "appearance": {
       "kind": "enum",
       "values": [
-        "default",
-        "segmented"
+        "track",
+        "buttons"
       ],
-      "default": "default",
-      "description": "How the group looks. default joins outlined buttons into one perimeter; segmented draws a sunken track with borderless segments and a plate under the selected one. The selection model, keyboard and events are the same."
+      "default": "track",
+      "description": "How the control looks (owner decision D11c). track, the default: a translucent track with a plate under the selected option. buttons: joined outlined buttons, the selected one filled -- for forms and toolbars on a plain surface, next to other buttons. The selection model, keyboard and events are the same. The old values segmented and default are dated aliases of track and buttons."
     },
     "plate": {
       "kind": "enum",
       "values": [
-        "scheme",
-        "raised"
+        "raised",
+        "scheme"
       ],
-      "default": "scheme",
-      "description": "The selected segment's plate in the segmented appearance: the scheme's fill, or a raised neutral surface with its shadow."
+      "default": "raised",
+      "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
+    },
+    "backdrop": {
+      "kind": "enum",
+      "values": [
+        "surface",
+        "color",
+        "media"
+      ],
+      "default": "surface",
+      "description": "What the track stands on. surface, the default: a page, a card or a panel; the track is the surface container fill. color: a coloured place (a brand header, a coloured banner); the track and the labels take the place's ink (currentColor), so they read on any colour. media: a photo or a video; the track is a dark glass (black 48% with a blur) with white labels and a white plate, the same in both themes."
     },
     "full-width": {
       "kind": "boolean",
@@ -105,7 +115,7 @@ const sfSegmentedMeta = {
         "false"
       ],
       "default": "false",
-      "description": "In the segmented appearance, the track fills its container and the segments share the width equally."
+      "description": "On the track, the control fills its container and the options share the width equally."
     },
     "radius": {
       "kind": "enum",
@@ -116,7 +126,7 @@ const sfSegmentedMeta = {
         "rounded"
       ],
       "default": "",
-      "description": "Corner radius, as on sf-button: empty is the UI radius. In the segmented appearance the plate, a button-sized segment, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills)."
+      "description": "Corner radius, as on sf-button: empty is the UI radius. On the track the plate, a button-sized option, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills)."
     },
     "orientation": {
       "kind": "enum",

@@ -87,10 +87,10 @@ this, is no longer needed and gives the same pills.
 ```
 
 Tabs are not a switch. For a two-option segmented switch — two choices, no
-panels — use the segmented button group:
+panels — use the segmented control, `sf-segmented`:
 
 ```html
-<sf-segmented appearance="segmented" aria-label="Вид" value="edit"
+<sf-segmented aria-label="Вид" value="edit"
   items='[{"value":"edit","label":"Редактор"},{"value":"code","label":"Код"}]'></sf-segmented>
 ```
 

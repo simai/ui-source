@@ -165,7 +165,7 @@ try {
   } else {
     const expected = {
       title: 'sf-input', about: 'sf-input-textarea', count: 'sf-input', when: 'sf-input-date',
-      live: 'sf-switch', maybe: 'sf-button-group', status: 'sf-dropdown',
+      live: 'sf-switch', maybe: 'sf-segmented', status: 'sf-dropdown',
     };
     for (const [key, tag] of Object.entries(expected)) {
       if (rendered[key]?.tag !== tag) {

@@ -133,7 +133,7 @@ try {
     check('ru: the group is named Тема', one.group === 'Тема', one);
     check('ru: an aria-label on the group wins', two.group === 'Оформление', two);
     check('ru: three items, items ignored, icon-only, named in Russian', JSON.stringify(one.items) === JSON.stringify([
-      {value: 'system', name: 'Как в системе', icon: 'brightness_auto', iconOnly: true},
+      {value: 'system', name: 'Как в системе', icon: 'desktop_windows', iconOnly: true},
       {value: 'light', name: 'Светлая', icon: 'light_mode', iconOnly: true},
       {value: 'dark', name: 'Тёмная', icon: 'dark_mode', iconOnly: true},
     ]), one);

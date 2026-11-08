@@ -92,14 +92,24 @@ function renderSegment(item, context) {
   `;
 }
 
+// The track (appearance track, the default since 1.4.0) draws native buttons
+// on a translucent track and one plate element under the selected option: the
+// element measures the option after each render and the plate slides to it
+// (index.js placePlate). Until it is measured -- the printed first paint, a
+// page without script -- the selected option paints the plate itself, so the
+// choice is visible from the first frame. The buttons look (appearance
+// buttons, the old default) joins Smart buttons. backdrop says what the track
+// stands on: a surface (the default), a coloured place or a photo.
 export function renderButtonGroupTemplate(context) {
-  const segmented = context.appearance === 'segmented';
+  const segmented = context.appearance !== 'buttons';
+  const backdrop = segmented && context.backdrop && context.backdrop !== 'surface' ? context.backdrop : '';
   const classes = [
     'sf-button-group',
     segmented ? 'sf-button-group--segmented' : '',
     segmented ? `sf-button-group--size-${context.size}` : '',
-    segmented && context.plate === 'raised' ? 'sf-button-group--plate-raised' : '',
+    segmented && context.plate !== 'scheme' ? 'sf-button-group--plate-raised' : '',
     segmented ? `sf-button-group--${context.scheme}` : '',
+    backdrop ? `sf-button-group--backdrop-${backdrop}` : '',
     segmented && context.fullWidth ? 'sf-button-group--full-width' : '',
     context.radius ? `sf-button-group--radius-${context.radius}` : '',
     context.rootClass,
@@ -114,6 +124,7 @@ export function renderButtonGroupTemplate(context) {
       aria-orientation=${context.orientation}
       data-value=${context.value || ''}
     >
+      ${segmented ? html`<span class="sf-button-group-plate" aria-hidden="true"></span>` : nothing}
       ${context.entries.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
     </div>
     ${context.hiddenName

@@ -56,9 +56,11 @@
     "pointer-events/default"
   ],
   "cl-button-close": [
+    "align-items/default",
     "display/default",
     "justify-content/default",
-    "place-items/default"
+    "place-items/default",
+    "pointer-events/default"
   ],
   "cl-button-icon": [
     "align-items/default",

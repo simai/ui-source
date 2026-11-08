@@ -117,6 +117,7 @@
     "new-tab": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",

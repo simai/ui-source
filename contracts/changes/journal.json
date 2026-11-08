@@ -6042,6 +6042,60 @@
       },
       "owner": "ui-source",
       "source": "src/smart/button-group/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/segmented/component.json"
+    },
+    {
+      "id": "value-segmented-appearance-to-track-buttons",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-segmented names its two looks track and buttons, and the track is the default (owner decisions D11b, D11c). appearance=\"segmented\" is track, appearance=\"default\" is buttons; markup without appearance now draws the track with a raised plate, where before 1.4.0 it drew the joined buttons.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "attribute": "appearance",
+          "from": "segmented",
+          "to": "track"
+        },
+        {
+          "component": "sf-segmented",
+          "attribute": "appearance",
+          "from": "default",
+          "to": "buttons"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-segmented appearance=\"segmented\">",
+        "after": "<sf-segmented appearance=\"track\">"
+      },
+      "manual": "A group that relied on the old default (no appearance: the joined buttons) and should keep them writes appearance=\"buttons\". The plate default is raised now; plate=\"scheme\" keeps the coloured plate.",
+      "owner": "ui-source",
+      "source": "src/smart/segmented/component.json aliases"
+    },
+    {
+      "id": "component-button-icon-close-to-button-close",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "One close button (owner decision C14): sf-button-close is a real button with three looks (ghost, plain, media). sf-button-icon kind=\"close\" is its old name; it keeps drawing as it did, and the documentation shows sf-button-close only. sf-button-close inside a native button stays the decorative cross until the pages move.",
+      "items": [
+        {
+          "from": "sf-button-icon[kind=close]",
+          "to": "sf-button-close"
+        },
+        {
+          "from": "<button class=\"sf-icon-button sf-icon-button--close\"><sf-button-close>",
+          "to": "<sf-button-close>"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write <sf-button-close aria-label=\"…\"> for <sf-button-icon kind=\"close\" aria-label=\"…\">: appearance link or ghost becomes the default ghost; on a tag, a field's clear or an inline remove appearance=\"plain\"; over a photo appearance=\"media\"; on a coloured banner backdrop=\"color\". A native button holding <sf-button-close> becomes the element itself, with the button's aria-label and click handler.",
+      "owner": "ui-source",
+      "source": "src/smart/button-close/component.json"
     }
   ]
 }

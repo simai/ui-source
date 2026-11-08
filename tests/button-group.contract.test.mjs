@@ -107,9 +107,12 @@ test('button group offers a segmented appearance with the same semantics', async
     json('contracts/public-api-axes.json'),
   ]);
   const inputs = manifest.inputs.properties;
-  assert.deepEqual(inputs.appearance.enum, ['default', 'segmented']);
-  assert.equal(inputs.appearance.default, 'default');
-  assert.deepEqual(inputs.plate.enum, ['scheme', 'raised']);
+  // Owner decision D11c (1.4.0): the track is the default look, with a raised
+  // plate; the joined buttons are the buttons look.
+  assert.deepEqual(inputs.appearance.enum, ['track', 'buttons']);
+  assert.equal(inputs.appearance.default, 'track');
+  assert.deepEqual(inputs.plate.enum, ['raised', 'scheme']);
+  assert.deepEqual(inputs.backdrop.enum, ['surface', 'color', 'media']);
   assert.equal(inputs['full-width'].type, 'boolean');
   assert.deepEqual(inputs.size.enum, ['1/3', '1/2', '1', '2', '3']);
   const item = inputs.items.items.properties;
@@ -123,8 +126,12 @@ test('button group offers a segmented appearance with the same semantics', async
   const bgManifest = JSON.parse(await source('src/smart/segmented/component.json'));
   // (the words, summary, are the registry's descriptions since standard 1.4)
   const typed = ({summary, ...setting}) => setting;
-  assert.deepEqual(typed(bgManifest.settings.appearance), {type: 'enum', values: ['default', 'segmented'], default: 'default'});
-  assert.deepEqual(typed(bgManifest.settings.plate), {type: 'enum', values: ['scheme', 'raised'], default: 'scheme'});
+  assert.deepEqual(typed(bgManifest.settings.appearance), {type: 'enum', values: ['track', 'buttons'], default: 'track'});
+  assert.deepEqual(typed(bgManifest.settings.plate), {type: 'enum', values: ['raised', 'scheme'], default: 'raised'});
+  assert.deepEqual(typed(bgManifest.settings.backdrop), {type: 'enum', values: ['surface', 'color', 'media'], default: 'surface'});
+  // The old values are dated aliases of the new.
+  const valueRows = bgManifest.aliases.rows.filter((row) => row.kind === 'value' && row.setting === 'appearance');
+  assert.deepEqual(valueRows.map((row) => [row.from, row.to]), [['segmented', 'track'], ['default', 'buttons']]);
   assert.deepEqual(typed(bgManifest.settings['full-width']), {type: 'boolean', default: false});
   assert.match(smart, /:scope > sf-button, :scope > button/);
   assert.ok(axes.components.some((entry) => entry.component === 'segmented' && entry.axis === 'appearance'));
@@ -214,7 +221,7 @@ test('button group takes a radius, a form name and a theme switch', async () => 
   // The words are the language file's (standard 1.3.8 §11), the icons the code's.
   const bgRu = await source('src/smart/segmented/lang/ru.json');
   for (const word of ['Как в системе', 'Светлая', 'Тёмная']) assert.ok(bgRu.includes(word), word);
-  for (const word of ['brightness_auto', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
+  for (const word of ['desktop_windows', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
   assert.match(docs, /## Переключатель темы/);
   assert.match(docs, /theme-switch/);
   assert.match(docs, /## В форме/);

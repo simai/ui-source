@@ -48,8 +48,14 @@
 }
 
 @layer sf.overrides {
+    /* The remove cross is plain (C14): no spot, the tag's ink at the ink step
+       64 at rest and full on hover and press. */
     .sf-tag.sf-tag--color > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--icon > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--default > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--avatar > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {
-        --sf-close-icon--background-color: var(--sf-on-surface-variant);
+        --sf-close-icon--background-color: color-mix(in srgb, var(--sf-tag-color, var(--sf-on-surface)) 64%, transparent);
+    }
+
+    .sf-tag.sf-tag--color > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--icon > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--default > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--avatar > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {
+        --sf-close-icon--background-color: var(--sf-tag-color, var(--sf-on-surface));
     }
 
 }
@@ -61,7 +67,7 @@
    and 2 it stood taller than the label's line and grew the tag (40px against
    24px at 1/3, 38 against 32 at 1/2). The tag asks sf-button-icon for its
    smallest size, 1/3, and draws the box itself: no padding, the mark 0.7 of the
-   label's font size (the rule of plain markup), so the box never passes the
+   label's ladder step (--sf-tag--close-size, the rule of plain markup; C14), so the box never passes the
    text line. An inline tag keeps the button the size of the line. The target
    is extended to --sf-c2 square around the mark by a transparent ::after, so
    it stays at the WCAG 2.2 minimum (2.5.8) without growing the tag's height.
@@ -90,12 +96,12 @@
     }
 
     .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {
-        --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);
-        --sf-close-icon--width: calc(var(--sf-tag--font-size) * 0.7);
+        --sf-close-icon--height: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));
+        --sf-close-icon--width: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));
     }
 
     .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close {
-        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--font-size) * 0.7) / 2));
+        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));
     }
 
     .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close {

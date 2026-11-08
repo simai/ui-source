@@ -1,16 +1,58 @@
 import { html, nothing } from 'lit';
+import './default.css';
 
-export function renderCloseTemplate(context) {
+// The control ladder of the box (the icon button's sizes). A glyph-only size
+// draws a button at the nearest ladder step: 1/4 at 1/3, 4-7 at 3.
+const LADDER = new Set(['1/3', '1/2', '1', '2', '3']);
+
+export function buttonSize(size) {
+  if (LADDER.has(size)) return size;
+  return size === '1/4' ? '1/3' : '3';
+}
+
+function renderCross(size, rootClass, rootStyle) {
   const classes = [
     'sf-close',
-    `sf-close--size-${context.size || '1/3'}`,
+    `sf-close--size-${size || '1/3'}`,
     'flex',
     'justify-center',
     'items-center',
+    rootClass,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return html`<span class="${classes}" style=${rootStyle || nothing} aria-hidden="true"><span class="sf-close-icon"></span></span>`;
+}
+
+// The close button (owner decision C14): a native button in the icon button's
+// box, the cross inside it. Inside a containing button (context.glyph) the
+// element draws only the decorative cross, as it did before 1.2.0.
+export function renderCloseTemplate(context) {
+  if (context.glyph) return renderCross(context.size, context.rootClass, context.rootStyle);
+
+  const size = buttonSize(context.size || '1/3');
+  const classes = [
+    'sf-icon-button',
+    `sf-icon-button--size-${size}`,
+    'sf-icon-button--close',
+    'sf-button-close',
+    `sf-button-close--${context.appearance || 'ghost'}`,
+    `sf-button-close--${context.scheme || 'on-surface'}`,
+    context.backdrop === 'color' ? 'sf-button-close--backdrop-color' : '',
+    context.radius === 'rounded' ? 'sf-button-close--radius-rounded' : '',
+    'flex',
+    'items-cross-center',
     context.rootClass,
   ]
     .filter(Boolean)
     .join(' ');
 
-  return html`<span class="${classes}" style=${context.rootStyle || nothing} aria-hidden="true"><span class="sf-close-icon"></span></span>`;
+  return html`<button
+    type="button"
+    class=${classes}
+    style=${context.rootStyle || nothing}
+    aria-label=${context.label}
+    ?disabled=${context.disabled}
+  >${renderCross(size, 'pointer-event-none', '')}</button>`;
 }

@@ -4,7 +4,7 @@ import {html, nothing} from 'lit';
 // already has, so the element has no sheet of its own.
 //
 // - none (one language or none): nothing at all.
-// - inline (two or three): sf-button-group appearance="segmented", a radio
+// - inline (two or three): sf-segmented on its track, a radio
 //   group named by label, one segment per language labelled with its own
 //   name (compact: its code, the name kept as the segment's accessible
 //   name), each segment in its own language (lang).
@@ -26,7 +26,7 @@ function renderInline(context) {
   }));
   return html`<sf-segmented
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
-      appearance="segmented"
+      appearance="track"
       size=${context.size}
       .items=${items}
       value=${context.value}

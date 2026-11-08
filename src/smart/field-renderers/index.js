@@ -1480,6 +1480,7 @@ function renderBooleanEdit(field, value, host) {
 
     return html`
         <sf-segmented
+                appearance="buttons"
                 size=${EDIT_SIZE}
                 items=${items}
                 value=${value === true ? 'yes' : value === false ? 'no' : nothing}
@@ -1589,7 +1590,7 @@ function renderChoiceButtons(field, value, host) {
     return html`
         <sf-segmented
                 class="sf-field-choice-buttons"
-                appearance="segmented"
+                appearance="track"
                 size=${size}
                 root-class=${locked ? 'flex-wrap pointer-event-none' : 'flex-wrap'}
                 name=${fieldName(field)}

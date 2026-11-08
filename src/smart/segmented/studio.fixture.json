@@ -2,7 +2,7 @@
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
   "component": "smart.segmented",
-  "title": "Button group reference",
+  "title": "Segmented control reference",
   "summary": "A three-option segmented control where every option can be selected.",
   "locale": "ru",
   "props": {

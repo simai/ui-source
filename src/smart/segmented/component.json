@@ -2,7 +2,7 @@
   "$comment": "The source of sf-segmented's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.segmented",
   "tag": "sf-segmented",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -125,30 +125,40 @@
         "on-surface"
       ],
       "default": "primary",
-      "summary": "Color scheme for the selected button, and for the selected plate in the segmented appearance."
+      "summary": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme."
     },
     "appearance": {
       "type": "enum",
       "values": [
-        "default",
-        "segmented"
+        "track",
+        "buttons"
       ],
-      "default": "default",
-      "summary": "How the group looks. default joins outlined buttons into one perimeter; segmented draws a sunken track with borderless segments and a plate under the selected one. The selection model, keyboard and events are the same."
+      "default": "track",
+      "summary": "How the control looks (owner decision D11c). track, the default: a translucent track with a plate under the selected option. buttons: joined outlined buttons, the selected one filled -- for forms and toolbars on a plain surface, next to other buttons. The selection model, keyboard and events are the same. The old values segmented and default are dated aliases of track and buttons."
     },
     "plate": {
       "type": "enum",
       "values": [
-        "scheme",
-        "raised"
+        "raised",
+        "scheme"
       ],
-      "default": "scheme",
-      "summary": "The selected segment's plate in the segmented appearance: the scheme's fill, or a raised neutral surface with its shadow."
+      "default": "raised",
+      "summary": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
+    },
+    "backdrop": {
+      "type": "enum",
+      "values": [
+        "surface",
+        "color",
+        "media"
+      ],
+      "default": "surface",
+      "summary": "What the track stands on. surface, the default: a page, a card or a panel; the track is the surface container fill. color: a coloured place (a brand header, a coloured banner); the track and the labels take the place's ink (currentColor), so they read on any colour. media: a photo or a video; the track is a dark glass (black 48% with a blur) with white labels and a white plate, the same in both themes."
     },
     "full-width": {
       "type": "boolean",
       "default": false,
-      "summary": "In the segmented appearance, the track fills its container and the segments share the width equally."
+      "summary": "On the track, the control fills its container and the options share the width equally."
     },
     "radius": {
       "type": "enum",
@@ -159,7 +169,7 @@
         "rounded"
       ],
       "default": "",
-      "summary": "Corner radius, as on sf-button: empty is the UI radius. In the segmented appearance the plate, a button-sized segment, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills)."
+      "summary": "Corner radius, as on sf-button: empty is the UI radius. On the track the plate, a button-sized option, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills)."
     },
     "orientation": {
       "type": "enum",
@@ -344,6 +354,28 @@
         "since-version": "1.3.0",
         "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
         "note": "the element is sf-segmented; sf-button-group is a subclass defined beside it until the date"
+      },
+      {
+        "from": "segmented",
+        "to": "track",
+        "kind": "value",
+        "setting": "appearance",
+        "since": "2026-11-08",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§16 item 20",
+        "note": "owner decision D11b/D11c (docs review R035, R037): the two looks are named track and buttons; track is the default"
+      },
+      {
+        "from": "default",
+        "to": "buttons",
+        "kind": "value",
+        "setting": "appearance",
+        "since": "2026-11-08",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§16 item 20",
+        "note": "owner decision D11b/D11c (docs review R035, R037): the two looks are named track and buttons; track is the default"
       }
     ]
   },
@@ -371,7 +403,8 @@
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0 (sf-language, owner decision 2026-11-06): an item may name the language its label is written in, lang; the segment (or the sf-button of the default appearance) carries it as lang, so a language picker's «Deutsch» is read in German. Nothing else changes.",
     "version 1.2.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
-    "version 1.3.0: the tag is sf-segmented (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.segmented and the bundle cl-segmented follow it. sf-button-group stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-segmented, sf-button-group) (change journal tag-sf-button-group-to-sf-segmented, path-smart-button-group-to-segmented)."
+    "version 1.3.0: the tag is sf-segmented (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.segmented and the bundle cl-segmented follow it. sf-button-group stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-segmented, sf-button-group) (change journal tag-sf-button-group-to-sf-segmented, path-smart-button-group-to-segmented).",
+    "version 1.4.0 (owner decisions D11b, D11c; docs review R035, R037): the default look is the track with a raised neutral plate (appearance track, plate raised); the joined buttons are appearance buttons, for forms on a plain surface. The old appearance values segmented and default are dated value aliases of track and buttons (until 2027-01-01). New setting backdrop: surface (the surface container track, as before), color (track and labels from the place's ink, currentColor at the fill step 12) and media (dark glass: black 48 with a blur, white labels and plate). The plate slides to the chosen option in 0.2 s, and stands still under prefers-reduced-motion. The theme switch's system item draws desktop_windows (a monitor) instead of brightness_auto. The track colour stays the surface container role until the background system (C16) renames the roles."
   ],
   "x-registry": {
     "capabilities": [

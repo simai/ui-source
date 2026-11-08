@@ -93,7 +93,7 @@
       "title": "Сегменты",
       "settings": {
         "aria-label": "Период",
-        "appearance": "segmented",
+        "appearance": "track",
         "items": [
           {
             "value": "day",
@@ -133,7 +133,8 @@
             "label": "Самовывоз"
           }
         ],
-        "value": "pickup"
+        "value": "pickup",
+        "appearance": "buttons"
       },
       "expect": {
         "values": {
@@ -160,7 +161,8 @@
             "label": "Доступ"
           }
         ],
-        "value": "a"
+        "value": "a",
+        "appearance": "buttons"
       },
       "expect": {
         "values": {
@@ -172,8 +174,7 @@
       "name": "theme-switch",
       "title": "Переключатель темы",
       "settings": {
-        "theme-switch": true,
-        "appearance": "segmented"
+        "theme-switch": true
       },
       "expect": {
         "name": "Тема"
@@ -496,7 +497,7 @@
           {
             "id": "the-theme-switch-names-itself",
             "covers": "accessibility.name: the theme switch's own word in the page language",
-            "field": "<sf-segmented theme-switch appearance=\"segmented\"></sf-segmented>",
+            "field": "<sf-segmented theme-switch></sf-segmented>",
             "script": "return [el.querySelector(\"[role=radiogroup]\").getAttribute(\"aria-label\"), [\"Как в системе\", \"Светлая\", \"Тёмная\"].every((word) => el.textContent.includes(word))];",
             "expect": {
               "returns": [

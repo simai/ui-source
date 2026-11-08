@@ -87,7 +87,7 @@
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start",
-      "note": "segmented draws the same radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); default keeps the joined outlined buttons."
+      "note": "segmented draws the radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); since 1.4.0 (owner decision D11b, 2026-11-08) the track is the default, `buttons` keeps the joined outlined buttons for forms, and the old values segmented and default answer as track and buttons until 2027-01-01."
     },
     {
       "component": "badge",
@@ -355,6 +355,18 @@
       "component": "wizard-step",
       "property": "state",
       "reason": "the value is where the step stands in the wizard's process -- not started, done, skipped, running, or error after its action failed -- the same stages sf-steps draws (completed, skipped, running, error), not a status of the world the step reports; the step's message says what happened."
+    },
+    {
+      "component": "button-close",
+      "property": "backdrop",
+      "reason": "backdrop (surface or color) tells the control what it stands on, so it takes the ink of that place (owner decisions C14, D11c, 2026-11-08). The value surface names the kind of place under the control -- a surface, a coloured place, a photo -- not a look of the control, so it answers where the control stands, not the appearance question.",
+      "kept_for": "the appearance of the control stays its own setting; backdrop only changes the ink the look is drawn in."
+    },
+    {
+      "component": "segmented",
+      "property": "backdrop",
+      "reason": "backdrop (surface, color or media) tells the control what it stands on, so it takes the ink of that place (owner decisions C14, D11c, 2026-11-08). The value surface names the kind of place under the control -- a surface, a coloured place, a photo -- not a look of the control, so it answers where the control stands, not the appearance question.",
+      "kept_for": "the appearance of the control stays its own setting; backdrop only changes the ink the look is drawn in."
     }
   ],
   "size_ladder": {
