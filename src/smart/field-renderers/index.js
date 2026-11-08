@@ -2,6 +2,7 @@ import {html, nothing} from "lit";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
+import {formatDate} from "../../core/js/format-date.js";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
@@ -2245,14 +2246,20 @@ function renderNumberView(field, value, host) {
     return html`<span class="sf-field-view">${field.unit ? `${text} ${field.unit}` : text}</span>`;
 }
 
-// A date is the host's to format first: formatFieldValue wins. Without it the
-// set used to print the stored form -- «2026-10-25T10:30:00+03:00» beside a
-// person's «25.10.2026 10:30» (simai/ui-source#34) -- so a host that formats
-// nothing now gets the page's reading of the day, and of the time of day for a
-// datetime, in the page's locale. The day and the clock are the record's own
-// (datetime.js reads them as written, in the host's zone): nothing is moved to
-// the reader's time zone, which would show a different day near midnight. A
-// value that is not a date at all is shown as it came, never guessed at.
+// A date is the host's to format first: formatFieldValue wins, and so does a
+// value that carries its own text. Without it the set used to print the stored
+// form -- «2026-10-25T10:30:00+03:00» (simai/ui-source#34) -- so a host that
+// formats nothing gets the page's medium reading through core format-date:
+// «2 нояб. 2026 г.» / «Nov 2, 2026» for a date, «15 нояб. 2026 г., 10:30» /
+// «Nov 15, 2026, 10:30 AM» for a datetime, the form the View set's table
+// printed before the renderers formatted dates (C19: the set formats, the
+// table inherits). The day and the clock are the record's own (datetime.js
+// reads them as written, in the host's zone): nothing is moved to the reader's
+// time zone, which would show a different day near midnight. A value that is
+// not a date at all is shown as it came, never guessed at.
+const DATE_VIEW = {dateStyle: 'medium', timeZone: 'UTC'};
+const DATETIME_VIEW = {dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'};
+
 function defaultDateText(field, value, host) {
     if (carriesText(value)) return null;
     const parts = readDateTime(value);
@@ -2262,13 +2269,11 @@ function defaultDateText(field, value, host) {
     try {
         const date = new Date(0);
         date.setUTCFullYear(year, month - 1, day);
-        const dayText = new Intl.DateTimeFormat(locale, {day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC'}).format(date);
         const type = field?.propertyType || field?.type || field?.dataType;
-        if (type !== 'datetime' || !parts.time) return dayText;
+        if (type !== 'datetime' || !parts.time) return formatDate(date, {intl: DATE_VIEW, locale}) || null;
         const [hours, minutes] = parts.time.split(':').map(Number);
         date.setUTCHours(hours, minutes, 0, 0);
-        const timeText = new Intl.DateTimeFormat(locale, {hour: '2-digit', minute: '2-digit', timeZone: 'UTC'}).format(date);
-        return `${dayText} ${timeText}`;
+        return formatDate(date, {intl: DATETIME_VIEW, locale}) || null;
     } catch {
         return null;
     }
