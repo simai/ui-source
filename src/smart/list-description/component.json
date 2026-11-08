@@ -197,7 +197,8 @@
     "status: the shared status words; success, warning, error and info put the status icon (sf-alert's glyphs) on the value's line before it and say the status in words, visually hidden; neutral or anything else draws nothing.",
     "overflow: wrap (the default) breaks anywhere, so a path, a hash or a URL never widens the page; truncate keeps one line with an ellipsis, the value carries the whole text as title and is reachable by Tab, and while it (or its link) has focus the whole value wraps in place.",
     "geometry: one rung S (size 1/2, 1 or 2): the label and the value are the rung's line L and type, the hint and a stacked label the rung below's, the status icon L, icon-to-text the rung's text-space-x, the row's block inset (H - L) / 2, so a one-line row is the rung's control height H, as a list row is; a divider gives up its hairline from the inset. The column gap is the rung's space-x.",
-    "css-variables: six public variables (§6) -- the label's and the value's colours, the dividers, the label column's greatest width, the gap between the columns and the inline inset -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+    "css-variables: six public variables (§6) -- the label's and the value's colours, the dividers, the label column's greatest width, the gap between the columns and the inline inset -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): the sf-button its examples draw asks for it before the first paint since sf-button 1.8.0. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
