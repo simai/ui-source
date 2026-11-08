@@ -34,6 +34,16 @@ test('the axes are three, and the status vocabulary is one list', () => {
     assert.ok(map.status_vocabulary.includes(canonical), `${alias} points at a word of the vocabulary`);
     assert.ok(!map.status_vocabulary.includes(alias), `${alias} is not itself part of the vocabulary`);
   }
+  // A control's status (decision C13) is its own short list: danger, with
+  // error and critical as its dated aliases; a message keeps error.
+  assert.deepEqual(map.control_status.vocabulary, ['danger']);
+  for (const [alias, canonical] of Object.entries(map.control_status.aliases)) {
+    assert.ok(map.control_status.vocabulary.includes(canonical), `${alias} points at a control word`);
+  }
+  for (const name of map.control_status.components) {
+    const entry = map.components.find((one) => one.component === name && one.axis === 'status');
+    assert.equal(entry?.vocabulary, 'control', `${name}: its status entry names the control vocabulary`);
+  }
   for (const entry of map.components) {
     assert.ok(Object.keys(map.axes).includes(entry.axis), `${entry.component}: ${entry.axis} is one of the axes`);
     assert.ok(['converted', 'pending', 'canonical_from_the_start'].includes(entry.state), `${entry.component}: a known state`);
@@ -135,11 +145,13 @@ test('a converted component carries the canonical name, and the legacy name stil
     }
     if (entry.axis === 'status') {
       // The empty string is how a component says it reports nothing; every other
-      // value is a word of the shared vocabulary.
+      // value is a word of the shared vocabulary -- a message's, or, for a
+      // control, the control vocabulary (decision C13: danger).
+      const words = entry.vocabulary === 'control' ? map.control_status.vocabulary : map.status_vocabulary;
       for (const value of declared[entry.axis].enum.filter(Boolean)) {
         assert.ok(
-          map.status_vocabulary.includes(value),
-          `${entry.component}: ${value} is part of the shared status vocabulary`,
+          words.includes(value),
+          `${entry.component}: ${value} is part of the ${entry.vocabulary === 'control' ? 'control' : 'shared'} status vocabulary`,
         );
       }
     }

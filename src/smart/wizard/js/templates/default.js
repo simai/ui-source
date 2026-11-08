@@ -60,7 +60,7 @@ function compact(context) {
   return html`<div class="sf-wizard-compact">
     <div class="sf-wizard-compact-line">
       <span class="sf-wizard-compact-label">${words.position}</span>
-      <sf-button class="sf-wizard-all" size=${size === '1' ? '1/2' : '1/3'} appearance="link" scheme="on-surface-variant"
+      <sf-button class="sf-wizard-all" size=${size === '1' ? '1/2' : '1/3'} appearance="ghost" scheme="on-surface-variant"
         text=${listOpen ? words.hideSteps : words.allSteps} expanded=${listOpen ? 'true' : 'false'} aria-controls=${`${id}-list`}
         @click=${() => component.toggleList()}></sf-button>
     </div>
@@ -74,7 +74,7 @@ function head(context) {
     <div class="sf-wizard-top">
       ${heading ? html`<p class="sf-wizard-heading">${heading}</p>` : nothing}
       <span class="sf-wizard-position">${words.position}</span>
-      ${offerLater ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="link" scheme="on-surface-variant"
+      ${offerLater ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="ghost" scheme="on-surface-variant"
         text=${words.later} href=${laterHref || nothing} @click=${(event) => component.continueLater(event)}></sf-button>` : nothing}
     </div>
     ${shape === 'row' ? stepsRow(context) : nothing}
@@ -115,7 +115,7 @@ function footer(context) {
     href=${pages && context.backHref && !busy ? context.backHref : nothing}
     @click=${(event) => component.onFooter(event, 'back')}></sf-button>`;
   const skip = step?.optional && step.state !== 'done' && step.type !== 'result' ? html`<sf-button class="sf-wizard-skip" size=${size}
-    appearance="link" scheme="on-surface" text=${words.skip} ?disabled=${busy}
+    appearance="ghost" scheme="on-surface" text=${words.skip} ?disabled=${busy}
     native-type=${pages && form ? 'submit' : 'button'} form=${pages && form ? form.id : nothing}
     name=${pages && form ? actionName : nothing} value=${pages && form ? 'skip' : nothing}
     href=${pages && !form && context.nextHref ? context.nextHref : nothing}

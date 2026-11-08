@@ -2,7 +2,7 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import inputUtility from '../json/input.utility.json';
 import { syncFieldContract } from '../../field-contract';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { inputSize } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 
@@ -135,7 +135,7 @@ async function bindMask(root, input) {
 }
 
 function bindInput(root) {
-  retireFieldSizeClass(root, 'sf-input');
+  // sf-input keeps 1/3 and 3 (field-size.js inputSize): no class to move.
   if (!root || root.dataset[INPUT_BOUND_FLAG] === '1') return;
   const input = getInputNode(root);
   if (!input) return;
@@ -292,7 +292,7 @@ class Inputs extends ComponentObserver {
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
-    const normalizedSize = fieldSize(size, 'sf-input');
+    const normalizedSize = inputSize(size);
     const normalizedVariant = boundedValue(type, INPUT_VARIANTS, 'bordered');
 
     this.template = document.createElement('label');

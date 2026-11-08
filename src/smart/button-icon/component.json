@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-icon's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button-icon",
   "tag": "sf-button-icon",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -33,32 +33,29 @@
         "default",
         "tonal",
         "outline",
-        "link",
-        "surface",
         "ghost"
       ],
       "default": "default",
-      "summary": "How the icon button looks. Surface and ghost read the neutral alpha ramp: surface keeps a faint fill and a border, ghost keeps nothing until it is hovered or focused."
+      "summary": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme."
     },
     "scheme": {
       "type": "enum",
       "values": [
         "primary",
-        "secondary",
         "on-surface",
         "on-surface-variant"
       ],
       "default": "primary",
-      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants. A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
+      "summary": "Which colour family the control takes (rule C15): primary, on-surface (the neutral, the text colour) or on-surface-variant (the quiet neutral: a window's head, a table row, a field's clear; under a pointer its glyph darkens to on-surface). A filled (default) control keeps on-surface's inverse glyph with on-surface-variant: on a dark fill there is no quieter step. secondary was retired and is drawn as on-surface-variant. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "type": "enum",
       "values": [
         "",
-        "error"
+        "danger"
       ],
       "default": "",
-      "summary": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone."
+      "summary": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
     },
     "segment": {
       "type": "enum",
@@ -158,10 +155,78 @@
       "type": "string",
       "default": "",
       "summary": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
+    },
+    "cycle": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "value": "string",
+        "label": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "lang": {
+          "type": "string",
+          "optional": true,
+          "summary": "The language the label is written in (BCP 47)."
+        },
+        "pressed": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "Draws this item with the pressed look (the «on» values of repeat); no aria-pressed is said."
+        }
+      },
+      "x-shape": "ui-source src/smart/helpers/cycle.js cycleItems: the attribute takes JSON or value::label::flags|… (flags icon=<name>, pressed), the property a list; the items are shaped like sf-segmented's items",
+      "summary": "One button, several values (rule D11d): the items {value, label, icon, pressed?} a press steps through, wrapping at the end. value is the current item. The name and the icon say the current value («Повтор: один трек»), the tooltip says the current and the next, and a polite live region says the new value after a press; change {previous, value, item} follows. Not a toggle: pressed and label-pressed are ignored beside it, with one console warning.",
+      "examples": [
+        [
+          {
+            "value": "off",
+            "label": "выключен",
+            "icon": "repeat"
+          },
+          {
+            "value": "all",
+            "label": "весь список",
+            "icon": "repeat",
+            "pressed": true
+          },
+          {
+            "value": "one",
+            "label": "один трек",
+            "icon": "repeat_one",
+            "pressed": true
+          }
+        ]
+      ]
+    },
+    "theme-cycle": {
+      "type": "string",
+      "optional": true,
+      "summary": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
+    },
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The current item of a cycle (its value); a press writes the next one. Read it from the attribute or from change: the value property keeps the settings object it has always given."
     }
   },
   "values": {},
-  "events": {},
+  "events": {
+    "change": {
+      "carries": {
+        "previous": "string",
+        "value": "string",
+        "item": {
+          "type": "object",
+          "nullable": true,
+          "summary": "The item now current: {value, label, icon, lang, pressed}."
+        }
+      },
+      "summary": "A cycle (cycle or theme-cycle) moved to its next value after a person's press; dispatched on the host, bubbles and is composed, after press on sf-button. A theme cycle sends it after SF.Loader.setTheme has drawn the theme. Not sent by a button that is not a cycle."
+    }
+  },
   "actions": {},
   "keyboard": {
     "host": {
@@ -211,7 +276,8 @@
     "name": {
       "from": [
         "aria-label"
-      ]
+      ],
+      "$comment": "A cycle's name is the aria-label and the current item's label («Повтор: один трек»); a theme cycle without one says «Тема: …» in the page language."
     },
     "keys": {
       "Tab": "reach",
@@ -325,6 +391,36 @@
         "note": "tightness's word, journal attribute-tightness-to-spacing"
       },
       {
+        "from": "link",
+        "to": "ghost",
+        "kind": "value",
+        "setting": "appearance",
+        "since": "2026-11-08",
+        "remove_after": "2027-01-01",
+        "section": "§16 item 20",
+        "note": "journal value-icon-button-looks-c15 (rule C15): link and ghost drew the same; ghost is the name"
+      },
+      {
+        "from": "secondary",
+        "to": "on-surface-variant",
+        "kind": "value",
+        "setting": "scheme",
+        "since": "2026-11-08",
+        "remove_after": "2027-01-01",
+        "section": "§16 item 20",
+        "note": "journal value-icon-button-looks-c15 (rule C15): secondary was drawn only in the tonal look and read as the quiet neutral elsewhere"
+      },
+      {
+        "from": "error",
+        "to": "danger",
+        "kind": "value",
+        "setting": "status",
+        "since": "2026-11-08",
+        "remove_after": "2027-01-01",
+        "section": "§16 item 20",
+        "note": "journal value-control-status-error-to-danger (rule C13): a control's destructive status is danger; messages keep error"
+      },
+      {
         "from": "sf-icon-button",
         "to": "sf-button-icon",
         "kind": "tag",
@@ -370,7 +466,8 @@
     "version 1.4.1 (2026-11-06): the host's aria-label is watched, so a name changed after the first drawing reaches the native button (it was patched by updateDom but never observed: sf-language's trigger kept «Язык: Русский» after a choice). Nothing else changes.",
     "version 1.5.0 (2026-11-07): a minor (§4.10): the pressed look and the setting label-pressed (owner decision 2026-11-07, docs review R028, rule C12). A toggle that is on wears sf-icon-button--pressed instead of the active class: the primary container fill, no visible edge (the border keeps its width and is transparent over the fill, so the height does not move), the icon in --sf-on-primary-container and filled (FILL 1) -- two cues, not colour alone. Hover and press over it step the container; focus draws the ring; disabled wears the disabled look and keeps the filled icon. Public variables --sf-icon-button-pressed-background-color and --sf-icon-button-pressed-color colour the resting pressed look. label-pressed is the name while on, for a toggle whose name changes: aria-pressed is then not written.",
     "version 1.5.1 (2026-11-07): a loading icon button's spinner draws its ring inside the icon's live area (docs review R027, owner decision C11; component.spinner 1.1.0): 20 of the 24 units, as the Material Symbol beside it, in the same icon box, so nothing around it moves; the first-paint snapshots are retaken. The settings are unchanged.",
-    "version 1.5.2 (2026-11-08): the reference describes the current component only (docs review rules D02, D03, msg-4ef7082c): the scheme words no longer cite another component's version and pressed names the rule, not a sheet's version; tightness, type and variant are listed under sf-button-icon in the change journal, so the reference shows them as former names, not as attributes. Tab, Enter and Space are the component's own key map now (they were a registry copy); the manifest lists the same three. Settings, values, events and the drawing are unchanged."
+    "version 1.5.2 (2026-11-08): the reference describes the current component only (docs review rules D02, D03, msg-4ef7082c): the scheme words no longer cite another component's version and pressed names the rule, not a sheet's version; tightness, type and variant are listed under sf-button-icon in the change journal, so the reference shows them as former names, not as attributes. Tab, Enter and Space are the component's own key map now (they were a registry copy); the manifest lists the same three. Settings, values, events and the drawing are unchanged.",
+    "version 1.6.0 (2026-11-08): a minor (§4.10; docs review R031, R033, R039; owner rules C13, C15, D11d). The looks are four without twins: appearance default, tonal, outline, ghost -- link is ghost's dated alias (both drew the same), surface is retired and drawn as tonal with the on-surface scheme unless the page names a scheme (the component reads the word and notes it: it changes two settings, which a value alias cannot); its tonal look also fixes surface with status error, which drew grey. scheme primary, on-surface, on-surface-variant -- secondary is a dated alias of on-surface-variant; a quiet glyph without a fill darkens to on-surface under a pointer. status danger for a control that deletes or cannot be undone, error its dated alias (C13: messages keep error; one red, the error roles); the native button carries sf-icon-button--danger and sf-icon-button--error, which the sheets and their consumers select. ghost is drawn by the link class the sheets already had, so nothing a consumer selects moves. cycle (a list of {value, label, icon, pressed?}), theme-cycle and value: one button, several values (D11d) -- the name and icon say the current value, the title the current and the next, a polite live region the new value; change {previous, value, item}; theme-cycle steps the opposite of the visible theme first, then the other, then «as the system» (contrast icon), or flips two themes. pressed and label-pressed are ignored beside a cycle, with one console warning."
   ],
   "x-rule": {
     "$comment-after": [
@@ -500,7 +597,7 @@
     },
     "accessibility": {
       "accessible_name": "required",
-            "focus": "The inner native button is the only focus owner. Pointer activation does not show the ring; keyboard focus uses focus-visible, with an inset ring inside joined controls."
+      "focus": "The inner native button is the only focus owner. Pointer activation does not show the ring; keyboard focus uses focus-visible, with an inset ring inside joined controls."
     },
     "methods": {
       "setButtonAttributes": {

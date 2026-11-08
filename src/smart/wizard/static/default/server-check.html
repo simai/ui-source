@@ -4,7 +4,7 @@
 <div class="sf-wizard-top">
 <p class="sf-wizard-heading">Настройка сервера</p>
 <span class="sf-wizard-position">Шаг 5 из 6</span>
-<sf-button class="sf-wizard-later" appearance="link" scheme="on-surface-variant" size="1/2" text="Продолжить позже" href="/" style="display: contents;">
+<sf-button class="sf-wizard-later" appearance="ghost" scheme="on-surface-variant" size="1/2" text="Продолжить позже" href="/" style="display: contents;">
 <a href="/" class="sf-button sf-button--size-1/2 sf-button--link sf-button--on-surface-variant sf-button--on-surface flex items-cross-center" data-sf-static>
 
 
@@ -73,7 +73,7 @@
 <div class="sf-wizard-compact">
 <div class="sf-wizard-compact-line">
 <span class="sf-wizard-compact-label">Шаг 5 из 6</span>
-<sf-button class="sf-wizard-all" appearance="link" scheme="on-surface-variant" size="1/2" text="Все шаги" expanded="false" aria-controls="sf-wizard-1-list" style="display: contents;">
+<sf-button class="sf-wizard-all" appearance="ghost" scheme="on-surface-variant" size="1/2" text="Все шаги" expanded="false" aria-controls="sf-wizard-1-list" style="display: contents;">
 <button type="button" class="sf-button sf-button--size-1/2 sf-button--link sf-button--on-surface-variant sf-button--on-surface flex items-cross-center" aria-expanded="false" aria-controls="sf-wizard-1-list" data-sf-static>
 
 
@@ -104,7 +104,7 @@
 </div>
 
 
-<div class="sf-wizard-live" data-sf-live><sf-wizard-step name="address" label="Адрес панели" type="form" href="?step=address" state="done" description="По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="notify" label="Уведомления" type="form" optional href="?step=notify" state="skipped" description="Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="protection" label="Защита" type="action" href="?step=protection" state="done" action-text="Выпустить сертификат" description="Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="backups" label="Копии" type="form" href="?step=backups" state="done" description="Как часто сохранять копии сайтов и сколько их хранить." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="check" label="Проверка" type="review" href="?step=check" action-text="Применить" description="Что панель изменит на сервере. Проверьте и примените." style="display: contents;"><form method="post" action="?step=check" id="sf-wizard-server-check-2"><p>Панель сделает на сервере четыре изменения.</p><ul class="sf-wizard-plan"><li><span><b>Адрес панели</b> — panel.example.ru</span><sf-button appearance="link" size="1/2" text="Изменить" href="?step=address" style="display: contents;">
+<div class="sf-wizard-live" data-sf-live><sf-wizard-step name="address" label="Адрес панели" type="form" href="?step=address" state="done" description="По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="notify" label="Уведомления" type="form" optional href="?step=notify" state="skipped" description="Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="protection" label="Защита" type="action" href="?step=protection" state="done" action-text="Выпустить сертификат" description="Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="backups" label="Копии" type="form" href="?step=backups" state="done" description="Как часто сохранять копии сайтов и сколько их хранить." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="check" label="Проверка" type="review" href="?step=check" action-text="Применить" description="Что панель изменит на сервере. Проверьте и примените." style="display: contents;"><form method="post" action="?step=check" id="sf-wizard-server-check-2"><p>Панель сделает на сервере четыре изменения.</p><ul class="sf-wizard-plan"><li><span><b>Адрес панели</b> — panel.example.ru</span><sf-button appearance="ghost" size="1/2" text="Изменить" href="?step=address" style="display: contents;">
 <a href="?step=address" class="sf-button sf-button--size-1/2 sf-button--link sf-button--primary flex items-cross-center" data-wizard-step="address" data-sf-static>
 
 
@@ -113,7 +113,7 @@
 </span>
 
 </a>
-</sf-button></li><li><span><b>Уведомления</b> — не настроены, шаг пропущен</span><sf-button appearance="link" size="1/2" text="Изменить" href="?step=notify" style="display: contents;">
+</sf-button></li><li><span><b>Уведомления</b> — не настроены, шаг пропущен</span><sf-button appearance="ghost" size="1/2" text="Изменить" href="?step=notify" style="display: contents;">
 <a href="?step=notify" class="sf-button sf-button--size-1/2 sf-button--link sf-button--primary flex items-cross-center" data-wizard-step="notify" data-sf-static>
 
 
@@ -122,7 +122,7 @@
 </span>
 
 </a>
-</sf-button></li><li><span><b>Сертификат</b> — Let’s Encrypt, выпущен</span><sf-button appearance="link" size="1/2" text="Изменить" href="?step=protection" style="display: contents;">
+</sf-button></li><li><span><b>Сертификат</b> — Let’s Encrypt, выпущен</span><sf-button appearance="ghost" size="1/2" text="Изменить" href="?step=protection" style="display: contents;">
 <a href="?step=protection" class="sf-button sf-button--size-1/2 sf-button--link sf-button--primary flex items-cross-center" data-wizard-step="protection" data-sf-static>
 
 
@@ -131,7 +131,7 @@
 </span>
 
 </a>
-</sf-button></li><li><span><b>Копии</b> — хранить 7, каждую ночь в 03:00</span><sf-button appearance="link" size="1/2" text="Изменить" href="?step=backups" style="display: contents;">
+</sf-button></li><li><span><b>Копии</b> — хранить 7, каждую ночь в 03:00</span><sf-button appearance="ghost" size="1/2" text="Изменить" href="?step=backups" style="display: contents;">
 <a href="?step=backups" class="sf-button sf-button--size-1/2 sf-button--link sf-button--primary flex items-cross-center" data-wizard-step="backups" data-sf-static>
 
 

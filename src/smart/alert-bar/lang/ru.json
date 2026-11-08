@@ -2,7 +2,7 @@
   "title": "Плашка уведомлений",
   "runtime": {
     "label": "Важные уведомления",
-    "level-danger": "Опасность",
+    "level-error": "Ошибка",
     "level-warning": "Предупреждение",
     "level-info": "Сведения",
     "position": "{n} из {count}",

@@ -5976,6 +5976,141 @@
       "manual": "Write <sf-list-feed> for <sf-message-log>, and move the former names with it: items for messages, setItems and prependItems for setMessages and prependMessages, renderItem and announceItem for renderMessage and announceMessage, sf-list-feed-* for the events sf-message-log-*, --sf-list-feed-* for the variables --sf-message-log-*, .sf-list-feed__* for the classes .sf-message-log__* (__message is __entry). The tag alone is not a mechanical rename, because the former property and method names live only on the alias element.",
       "owner": "ui-source",
       "source": "src/smart/list-feed (component.json x-decisions, docs.md «Переход с sf-message-log»); ui-pro components/src/smart/message-log/index.js; contracts/registry/names.json (chat owner note)"
+    },
+    {
+      "id": "value-control-status-error-to-danger",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "A dangerous action and an error are different words (decision C13, docs review R031): a control -- sf-button, sf-button-icon, a menu entry -- says status danger; a message keeps error. One red: danger is drawn with the error roles. The control's former error (and sf-button's critical) read as danger; the drawn control still carries the error class beside the danger one.",
+      "items": [
+        {
+          "component": "sf-button",
+          "attribute": "status",
+          "from": "error",
+          "to": "danger"
+        },
+        {
+          "component": "sf-button",
+          "attribute": "status",
+          "from": "critical",
+          "to": "danger"
+        },
+        {
+          "component": "sf-button-icon",
+          "attribute": "status",
+          "from": "error",
+          "to": "danger"
+        },
+        {
+          "component": "sf-menu-context",
+          "attribute": "entries.status",
+          "from": "error",
+          "to": "danger"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-button status=\"error\" text=\"Удалить\">",
+        "after": "<sf-button status=\"danger\" text=\"Удалить\">"
+      },
+      "manual": "On sf-button, sf-button-icon and a menu entry write status=\"danger\" for status=\"error\" (and critical). Leave error on fields, alerts, badges, toasts and the alert bar: there it means something went wrong. A blind rename is wrong because the same word stays canonical on messages.",
+      "source": "contracts/public-api-axes.json control_status; ui-control control/docs-review/decisions.md C13"
+    },
+    {
+      "id": "value-button-link-to-ghost",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The Smart button's look without a fill is called ghost (decision C15, docs review R033); link is its former name. A link is made by href, not by the look. The earlier record value-button-ghost-to-link went the other way and stays as history.",
+      "items": [
+        {
+          "component": "sf-button",
+          "attribute": "appearance",
+          "from": "link",
+          "to": "ghost"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-button appearance=\"link\" text=\"Подробнее\">",
+        "after": "<sf-button appearance=\"ghost\" text=\"Подробнее\">"
+      },
+      "source": "src/smart/button/aliases.json"
+    },
+    {
+      "id": "value-icon-button-looks-c15",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The icon button's looks without twins (decision C15, docs review R033): appearance default, tonal, outline, ghost -- link is ghost's former name, surface is retired and drawn as tonal with the on-surface scheme; scheme primary, on-surface, on-surface-variant -- secondary is drawn as on-surface-variant.",
+      "items": [
+        {
+          "component": "sf-button-icon",
+          "attribute": "appearance",
+          "from": "link",
+          "to": "ghost"
+        },
+        {
+          "component": "sf-button-icon",
+          "attribute": "appearance",
+          "from": "surface",
+          "to": "tonal"
+        },
+        {
+          "component": "sf-button-icon",
+          "attribute": "scheme",
+          "from": "secondary",
+          "to": "on-surface-variant"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-button-icon appearance=\"surface\" icon=\"tune\">",
+        "after": "<sf-button-icon appearance=\"tonal\" scheme=\"on-surface\" icon=\"tune\">"
+      },
+      "manual": "Write appearance=\"ghost\" for link and scheme=\"on-surface-variant\" for secondary. For appearance=\"surface\" write appearance=\"tonal\" and, unless a scheme is already written, scheme=\"on-surface\": surface changes two settings, so it is not a plain rename.",
+      "source": "src/smart/button-icon/aliases.json; src/smart/button-icon/index.js"
+    },
+    {
+      "id": "value-alert-bar-level-danger-to-error",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The alert bar reports conditions, so its most serious level is error (decision C13, docs review R031); danger is its former word. The bar's class and public variable follow: sf-alert-bar--error, --sf-alert-bar-error-background (the danger forms still draw).",
+      "items": [
+        {
+          "component": "sf-alert-bar",
+          "attribute": "items.level",
+          "from": "danger",
+          "to": "error"
+        },
+        {
+          "component": "sf-alert-bar",
+          "from": "sf-alert-bar--danger",
+          "to": "sf-alert-bar--error"
+        },
+        {
+          "component": "sf-alert-bar",
+          "from": "--sf-alert-bar-danger-background",
+          "to": "--sf-alert-bar-error-background"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"id\": \"db\", \"level\": \"danger\", \"text\": \"База данных недоступна\"}",
+        "after": "{\"id\": \"db\", \"level\": \"error\", \"text\": \"База данных недоступна\"}"
+      },
+      "manual": "Give an item level \"error\" for \"danger\"; rename the class sf-alert-bar--danger and the variable --sf-alert-bar-danger-background to their error forms. The refused reason of close() for an item that cannot be closed stays danger.",
+      "source": "src/smart/alert-bar/index.js"
     }
   ]
 }

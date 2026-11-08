@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.inputs",
   "kind": "component",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/inputs/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/inputs/scss/_css__inputs.scss",
     "src/component/inputs/scss/index.scss"
   ],
-  "content_sha256": "ecdbc7f1508a046d20baf9ae42714ba3290853a339aae1771e19cff9a63c9596",
+  "content_sha256": "4b3fc45205322092879526ead8fa725c5a1f825ea102309ad165ef893cb78ed2",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -37,6 +37,10 @@
     {
       "id": "tokens.motion",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.1.0"
     },
     {
       "id": "tokens.size",

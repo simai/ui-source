@@ -3909,11 +3909,11 @@
       "selector": "sf-alert-bar, .sf-alert-bar",
       "variables": [
         {
-          "name": "--sf-alert-bar-danger-background",
+          "name": "--sf-alert-bar-error-background",
           "role": "background",
-          "summary": "The bar's fill when its most serious item is danger; the text keeps --sf-on-error.",
-          "default": "var(--sf-error)",
-          "since": "2026-11-05"
+          "summary": "The bar's fill when its most serious item is an error; the text keeps --sf-on-error. --sf-alert-bar-danger-background is its former name and still reads until 2027-01-01 (journal value-alert-bar-level-danger-to-error).",
+          "default": "var(--sf-alert-bar-danger-background, var(--sf-error))",
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-alert-bar-warning-background",

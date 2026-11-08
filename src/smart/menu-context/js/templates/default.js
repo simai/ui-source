@@ -2,6 +2,12 @@ import {html, nothing} from "lit";
 import {getInitials} from "../../../helpers/text";
 import {shortcutView} from "../../../../component/kbd/js/shortcut";
 
+// A destructive row: danger: true, or status "danger" as every control writes
+// it (C13), with "error" read as its alias.
+function isDestructive(entry) {
+    return Boolean(entry.danger) || entry.status === "danger" || entry.status === "error";
+}
+
 // An entry's shortcut: the kbd component's keys -- `mod+c` in this platform's
 // words, or the text a page wrote (⇧⌘L, F2) as it is. Inside a menu the kbd
 // sheet draws them as plain glyphs in the muted ink; the menu never styles
@@ -325,7 +331,7 @@ function renderEntry(entry, path, lead, context, query) {
     const classes = joinClasses(
         "sf-context-menu-item",
         toggle ? "sf-context-menu-item--switch" : "",
-        entry.danger ? "sf-context-menu-item--danger" : "",
+        isDestructive(entry) ? "sf-context-menu-item--danger" : "",
         entry.current ? "sf-context-menu-item--current" : "",
         chosen ? "sf-context-menu-item--chosen" : "",
     );
@@ -402,7 +408,7 @@ function renderSearch(context) {
 // never grows with the depth (owner, 2026-10-30).
 function renderDrillHead(context) {
     return html`<div class="sf-context-menu-drill-head">
-        <sf-button-icon class="sf-context-menu-back" icon="arrow_back" appearance="link" scheme="on-surface"
+        <sf-button-icon class="sf-context-menu-back" icon="arrow_back" appearance="ghost" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"}
                 aria-label=${context.backLabel} title=${context.backLabel}
                 @click=${() => context.component.drillBack()}></sf-button-icon>
@@ -500,7 +506,7 @@ function renderPanelHead(context) {
                     event.stopPropagation();
                     context.component.chooseTab(Number(event.detail?.current ?? 0));
                 }}></sf-tabs>
-        ${context.closable ? html`<sf-button-icon class="sf-context-menu-close" appearance="link" scheme="on-surface"
+        ${context.closable ? html`<sf-button-icon class="sf-context-menu-close" appearance="ghost" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"} icon="close"
                 aria-label=${context.closeLabel} title=${context.closeLabel}
                 @click=${() => context.component.requestClose()}></sf-button-icon>` : nothing}

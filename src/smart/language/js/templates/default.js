@@ -41,7 +41,7 @@ function renderMenu(context) {
   return html`<sf-button-icon
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       icon="translate"
-      appearance="link"
+      appearance="ghost"
       scheme="on-surface"
       size=${context.size}
       aria-label=${context.triggerLabel}

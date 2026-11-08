@@ -36,7 +36,7 @@ function output(context) {
   const below = BELOW[size];
   return html`<div class="sf-progress-run-output-block">
     <div class="sf-progress-run-output-bar">
-      <sf-button class="sf-progress-run-toggle" size=${below} appearance="link" text=${context.outputLabel}
+      <sf-button class="sf-progress-run-toggle" size=${below} appearance="ghost" text=${context.outputLabel}
         icon-end=${outputOpen ? 'expand_less' : 'expand_more'} expanded=${outputOpen ? 'true' : 'false'} aria-controls=${ids.output}
         @click=${() => component.toggleOutput()}></sf-button>
       ${outputOpen ? html`<span class="sf-progress-run-output-tools">
@@ -61,7 +61,7 @@ function actions(context) {
       @click=${() => component.onCancel()}></sf-button>` : nothing}
     ${showRetry ? html`<sf-button class="sf-progress-run-retry" size=${below} appearance="outline" text=${words.retry}
       @click=${() => component.onRetry()}></sf-button>` : nothing}
-    ${showHide ? html`<sf-button class="sf-progress-run-hide" size=${below} appearance="link" text=${words.hide}
+    ${showHide ? html`<sf-button class="sf-progress-run-hide" size=${below} appearance="ghost" text=${words.hide}
       @click=${() => component.onHide()}></sf-button>` : nothing}
   </div>`;
 }

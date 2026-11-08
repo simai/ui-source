@@ -203,7 +203,7 @@ export function renderListTemplate(context) {
                 : nothing}
             <div class="sf-list__next" ?hidden=${!context.showMore}>
                 <sf-button
-                        appearance="link"
+                        appearance="ghost"
                         scheme="on-surface"
                         size="1/2"
                         icon="expand_more"

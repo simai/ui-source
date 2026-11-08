@@ -3,15 +3,15 @@ import {html, nothing} from 'lit';
 // sf-alert-bar's markup (scss/ draws it on one rung of the ladder).
 //
 // - The root is a region named by label. Two visually hidden live regions
-//   inside it speak what appears after the first list: a new danger item in
+//   inside it speak what appears after the first list: a new error item in
 //   role alert, any other new item in role status. The bar itself is no live
 //   region, so a bar printed with the page is not read out.
-// - Minimized (a danger bar only): one button, the strip, that keeps the
+// - Minimized (an error bar only): one button, the strip, that keeps the
 //   colour, the icon and the count and expands the bar on a press.
 // - Otherwise one row: the shown item's icon, its text with source and time,
 //   its action link (sf-button href), acknowledge, the pager «‹ 1 из N ›» and
 //   «Все N» when there are several, and at the end close (a warning or an
-//   info item) or minimize (a danger item). With several items the list of
+//   info item) or minimize (an error item). With several items the list of
 //   all opens under the bar, each with its own action, acknowledge and close.
 //
 // The controls are sf-button and sf-button-icon of scheme on-surface: inside
@@ -62,7 +62,7 @@ function row(context) {
     const label = hideWord(context, item);
     end = html`<sf-button-icon class="sf-alert-bar-close" icon="close" size=${size} appearance="ghost" scheme="on-surface"
       aria-label=${label} title=${label} @click=${() => component.closeItem(item.id)}></sf-button-icon>`;
-  } else if (item.level === 'danger') {
+  } else if (item.level === 'error') {
     end = html`<sf-button-icon class="sf-alert-bar-minimize" icon="expand_less" size=${size} appearance="ghost" scheme="on-surface"
       aria-label=${words.minimize} title=${words.minimize} @click=${() => component.setMinimized(true)}></sf-button-icon>`;
   }
@@ -94,7 +94,7 @@ function listOfAll(context) {
   const {component, list, size, words, listId} = context;
   return html`<ul class="sf-alert-bar-list" id=${listId} aria-label=${words.list}>
     ${list.map((item) => html`<li class="sf-alert-bar-item" data-level=${item.level} data-id=${item.id}>
-      <sf-badge class="sf-alert-bar-badge" status=${item.level === 'danger' ? 'error' : item.level} appearance="tonal" size="1/3" text=${item.levelWord}></sf-badge>
+      <sf-badge class="sf-alert-bar-badge" status=${item.level} appearance="tonal" size="1/3" text=${item.levelWord}></sf-badge>
       <div class="sf-alert-bar-item-text">
         <span class="sf-alert-bar-item-message">${item.text}</span>
         ${meta(item, 'sf-alert-bar-item-meta')}

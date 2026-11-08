@@ -24,11 +24,25 @@ const sfInputMeta = {
     "size": {
       "kind": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
-      "default": "1"
+      "default": "1",
+      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input keeps the outer steps 1/3 and 3 (a compact toolbar search, a hero search); the other fields stay on 1/2, 1 and 2."
+    },
+    "radius": {
+      "kind": "enum",
+      "values": [
+        "",
+        "default",
+        "square",
+        "rounded"
+      ],
+      "default": "",
+      "description": "The field's corners, as sf-button's radius names them: empty and default are the controls' rounded square, square has none, rounded is a pill (a search field beside rounded buttons). --sf-input-radius still wins."
     },
     "appearance": {
       "kind": "enum",

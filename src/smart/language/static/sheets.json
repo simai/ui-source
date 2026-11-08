@@ -28,6 +28,7 @@
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-decoration/default/css/default.min.css"
   ],
@@ -55,6 +56,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css"
     ],
@@ -78,6 +80,7 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "rtl": [
@@ -100,6 +103,7 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "three": [
@@ -122,6 +126,7 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "twelve": [
@@ -147,6 +152,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css"
     ],
@@ -170,6 +176,7 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]
   }

@@ -53,7 +53,8 @@
     "align-items/default",
     "display/default",
     "flex/default",
-    "pointer-events/default"
+    "pointer-events/default",
+    "sr-only/default"
   ],
   "cl-button-close": [
     "display/default",
@@ -69,7 +70,8 @@
   "cl-button-icon": [
     "align-items/default",
     "display/default",
-    "pointer-events/default"
+    "pointer-events/default",
+    "sr-only/default"
   ],
   "cl-checkbox": [
     "cursor/default",

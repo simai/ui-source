@@ -37,7 +37,7 @@ test('the shared state names one cancellable event and draws one slot', () => {
   // The reset is a real button with a name, one step down the ladder.
   assert.match(helper, /<button\s+type="button"\s+class="sf-field-reset sf-icon-button[^"]*sf-icon-button--size-\$\{step\}"/u);
   assert.match(helper, /aria-label=\$\{component\.resetLabel\}/u);
-  assert.match(helper, /STEP_DOWN = Object\.freeze\(\{'1\/2': '1\/3', '1': '1\/2', '2': '1'\}\)/u);
+  assert.match(helper, /STEP_DOWN = Object\.freeze\(\{'1\/3': '1\/3', '1\/2': '1\/3', '1': '1\/2', '2': '1', '3': '2'\}\)/u);
   // The words, in both shipped languages.
   assert.match(helper, /inherited: 'наследуется', reset: 'Сбросить к наследуемому'/u);
   assert.match(helper, /inherited: 'inherited', reset: 'Reset to inherited'/u);

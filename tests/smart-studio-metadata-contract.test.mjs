@@ -16,10 +16,11 @@ test('button Studio contract preserves closed choices and open icon examples', a
   const properties = manifest.inputs.properties;
 
   // The list stays closed, and it carries the surface appearance built on the
-  // neutral alpha ramp; ghost reads as link (a dated value alias, listed in
-  // compatibility.aliases). Studio offers exactly the types the button CSS styles.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface']);
-  assert.ok(manifest.compatibility.aliases.includes('appearance=ghost'));
+  // neutral alpha ramp; link reads as ghost since sf-button 1.9.0 (decision
+  // C15, a dated value alias listed in compatibility.aliases). Studio offers
+  // exactly the types the button CSS styles.
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'surface']);
+  assert.ok(manifest.compatibility.aliases.includes('appearance=link'));
   // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
   assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
@@ -43,8 +44,9 @@ test('metadata refresh is generic and also corrects icon button inputs', async (
   assert.match(generator, /metadataInputProperties/);
   assert.match(generator, /refreshMetadata/);
   assert.match(generator, /buttons: \{text: 'Продолжить', type: 'default'/);
-  // The icon button carries the same six appearances as the button.
-  assert.deepEqual(manifest.inputs.properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface', 'ghost']);
+  // The icon button carries four appearances (sf-button-icon 1.6.0, decision
+  // C15): link reads as ghost, surface is drawn as tonal on-surface.
+  assert.deepEqual(manifest.inputs.properties.type.enum, ['default', 'tonal', 'outline', 'ghost']);
   assert.equal(manifest.inputs.properties.icon.type, 'string');
   assert.equal(manifest.inputs.properties.loading.type, 'boolean');
 });

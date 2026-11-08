@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Language",
   "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -323,7 +323,7 @@
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "267c267a040bf555abe0edb446afcbf8f769d52834cf16546082b8e5c8408b65"
+        "sha256": "086e9d86a9c73437eacaba16b13e858f16cd757f409ed4d06a42531964d7728f"
       },
       {
         "path": "src/smart/language/rule.js",

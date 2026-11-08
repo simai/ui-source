@@ -3,6 +3,8 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderIconButtonTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
+import { cycleState, hasCycle, parseCycle, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
+import { noteDeprecated } from '../../core/js/deprecations';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -29,6 +31,9 @@ const COMPONENT_ATTRIBUTES = new Set([
   'native-type',
   'pressed',
   'label-pressed',
+  'cycle',
+  'theme-cycle',
+  'value',
   'button-attributes',
   'aria-label',
   ...ANCHORED_BADGE_ATTRIBUTES,
@@ -60,6 +65,12 @@ const IconButtonElement = elementFromManifest(manifest, {
   aliases,
 });
 
+// The looks C15 retired (docs review R033): surface is drawn as tonal with
+// the on-surface scheme, secondary as on-surface-variant. surface changes two
+// settings, which a value alias cannot do, so the component reads the word
+// itself and notes the use (change journal value-icon-button-looks-c15).
+const RETIRED_APPEARANCE = 'surface';
+
 class SfIconButton extends IconButtonElement {
   // aria-label is the host's (§3.1), not a setting, so the manifest makes no
   // attribute of it; it is watched here, or a name changed after the first
@@ -74,6 +85,62 @@ class SfIconButton extends IconButtonElement {
     this._attributeObserver = null;
   }
 
+  // appearance: the retired surface reads as tonal; link, the former name of
+  // ghost, is mapped by the dated alias before it gets here.
+  get retiredSurface() {
+    return (this.getAttribute('appearance') ?? this.getAttribute('type')) === RETIRED_APPEARANCE;
+  }
+
+  get appearance() {
+    if (this.retiredSurface) {
+      noteDeprecated({component: 'sf-button-icon', tag: 'sf-button-icon', kind: 'value', attribute: 'appearance', from: 'surface', to: 'tonal', since: '2026-11-08', remove_after: '2027-01-01'});
+      return 'tonal';
+    }
+    return super.appearance;
+  }
+
+  set appearance(value) {
+    super.appearance = value;
+  }
+
+  // scheme: surface brings on-surface with it unless the page named a scheme.
+  get scheme() {
+    if (this.retiredSurface && !this.hasAttribute('scheme')) return 'on-surface';
+    return super.scheme;
+  }
+
+  set scheme(value) {
+    super.scheme = value;
+  }
+
+  // The cycle (D11d): null when the button is not one.
+  cycleState() {
+    if (!hasCycle(this)) return null;
+    return cycleState(this, {
+      base: this.getAttribute('aria-label') || '',
+      words: (key, options) => this.sfWord(key, options),
+    });
+  }
+
+  static get props() {
+    return {
+      ...super.props,
+      // The attribute takes JSON or value::label::flags|…; the property a list.
+      cycle: {type: Array, default: [], parser: parseCycle},
+    };
+  }
+
+  // cycle is a list setting (§4.2) whose attribute keeps its JSON form: a
+  // list set as a property stays the instance's own, as sf-segmented's items.
+  get cycle() {
+    return this.getProp('cycle');
+  }
+
+  set cycle(value) {
+    Object.defineProperty(this, 'cycle', {configurable: true, enumerable: true, writable: true, value});
+    this.requestComponentUpdate?.('cycle');
+  }
+
   get templateName() {
     return this.getAttribute('template') || 'default';
   }
@@ -85,6 +152,8 @@ class SfIconButton extends IconButtonElement {
   // pressed is optional: absent, the button is not a toggle and says nothing;
   // present, aria-pressed and the selected look follow it.
   get pressed() {
+    // A cycle is not a toggle: pressed is ignored beside it.
+    if (hasCycle(this)) return undefined;
     return this.hasAttribute('pressed') ? super.pressed : undefined;
   }
 
@@ -95,6 +164,10 @@ class SfIconButton extends IconButtonElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    const cycle = this.cycleState();
+    if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
+    const announce = Boolean(cycle && this.__sfCycleAnnounce);
+    this.__sfCycleAnnounce = false;
 
     return this.createTemplateContext({
       ...props,
@@ -112,8 +185,18 @@ class SfIconButton extends IconButtonElement {
       nativeType: this.nativeType,
       radius: this.radius,
       ariaLabel: this.getAttribute('aria-label') || '',
-      pressed: this.pressed,
-      labelPressed: this.labelPressed,
+      pressed: cycle ? undefined : this.pressed,
+      labelPressed: cycle ? '' : this.labelPressed,
+      // The cycle's current item: its icon, its pressed look, its name and
+      // the tooltip; the announcement after a press.
+      // cycleView, not cycle: `cycle` is the setting (the list of items).
+      cycleView: cycle ? {
+        icon: cycle.item.icon,
+        pressedLook: cycle.item.pressed,
+        name: cycle.name,
+        tooltip: cycle.tooltip,
+        announcement: announce ? cycle.name : '',
+      } : null,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       badge: this.badgeState?.(),
       component: this,
@@ -133,6 +216,8 @@ class SfIconButton extends IconButtonElement {
     // loading is drawn by the template, not patched: it puts the spinner in
     // place of the icon (simai/ui-source#10).
     const directPatchAttributes = ['disabled', 'aria-label', 'icon'];
+    // A cycle's name and icon come from its item: drawn, not patched.
+    if (this.cycleState()) return 'lit';
 
     if (
       changedAttributes.length > 0 &&
@@ -176,6 +261,10 @@ class SfIconButton extends IconButtonElement {
   afterRender() {
     const button = this.querySelector('.sf-icon-button');
     applyButtonAttributes(this, button);
+    // The cycle's tooltip names the current and the next value; it stands
+    // over a title the page forwarded.
+    const cycle = this.cycleState();
+    if (button && cycle) button.setAttribute('title', cycle.tooltip);
 
     if (!this._attributeObserver) {
       this._attributeObserver = this.observeForwardedHostAttributes(
@@ -283,7 +372,33 @@ class SfIconButton extends IconButtonElement {
     this.setValueAttributes(nextValue);
   }
 
+  onConnected() {
+    if (!this._cyclePress) {
+      // A person's press moves the cycle: the click of the native button.
+      this._cyclePress = (event) => {
+        const button = this.querySelector('.sf-icon-button');
+        if (!button || !(event.target instanceof Node) || !button.contains(event.target) || button.disabled) return;
+        pressCycle(this, this.cycleState());
+      };
+      this.addEventListener('click', this._cyclePress);
+    }
+    if (!this._cycleTheme) {
+      // A theme cycle follows the theme wherever it was set.
+      this._cycleTheme = () => themeCycleFollow(this);
+      globalThis.addEventListener?.('sf-theme-change', this._cycleTheme);
+    }
+    super.onConnected?.();
+  }
+
   onDisconnected() {
+    if (this._cyclePress) {
+      this.removeEventListener('click', this._cyclePress);
+      this._cyclePress = null;
+    }
+    if (this._cycleTheme) {
+      globalThis.removeEventListener?.('sf-theme-change', this._cycleTheme);
+      this._cycleTheme = null;
+    }
     this.disconnectForwardedHostAttributes();
     this._attributeObserver = null;
     super.onDisconnected?.();

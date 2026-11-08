@@ -26,7 +26,8 @@
     "utility/min-width/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "checkbox": [
@@ -50,7 +51,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "count": [
       "component/avatars/css/avatars.min.css",
@@ -73,7 +75,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "icon": [
       "component/avatars/css/avatars.min.css",
@@ -96,7 +99,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "interactive": [
       "component/avatars/css/avatars.min.css",
@@ -119,7 +123,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "line": [
       "component/avatars/css/avatars.min.css",
@@ -142,7 +147,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",
@@ -165,7 +171,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "status": [
       "component/avatars/css/avatars.min.css",
@@ -188,7 +195,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "surface": [
       "component/avatars/css/avatars.min.css",
@@ -211,7 +219,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

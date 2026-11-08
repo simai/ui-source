@@ -33,6 +33,17 @@ export function fieldSize(value, component = 'field', fallback = '1') {
   return fallback;
 }
 
+// A text field keeps the ladder's outer steps (actions block item 4,
+// 2026-11-08): a plain sf-input holds no pictures or tags, and a toolbar
+// search or a hero search stands beside buttons of 1/3 and 3. Every other
+// field keeps the three sizes.
+export const INPUT_SIZES = Object.freeze(['1/3', ...FIELD_SIZES, '3']);
+
+export function inputSize(value, fallback = '1') {
+  const size = String(value ?? '').trim().toLowerCase();
+  return INPUT_SIZES.includes(size) ? size : fieldSize(size, 'sf-input', fallback);
+}
+
 // Markup written by hand carries its size as a class, so the binder moves a
 // retired size class to the kept one before anything measures the field.
 export function retireFieldSizeClass(root, block) {

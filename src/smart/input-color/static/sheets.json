@@ -19,7 +19,8 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "clearable": [
@@ -36,7 +37,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "disabled": [
       "component/badges/css/badges.min.css",
@@ -52,7 +54,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "inherited": [
       "component/badges/css/badges.min.css",
@@ -68,7 +71,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "set": [
       "component/badges/css/badges.min.css",
@@ -84,7 +88,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "swatches": [
       "component/badges/css/badges.min.css",
@@ -100,7 +105,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "theme": [
       "component/badges/css/badges.min.css",
@@ -116,7 +122,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

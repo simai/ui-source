@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -711,7 +711,7 @@
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "93bf9596c85572cb391f4b948b8ff4a739cbd9160dbe749c1469875c5b1d8c60"
+        "sha256": "ccdcea51eceeb3b0901b9ff3ad829cdb003b4cc4e0938eb0b77aa7110336bcd9"
       },
       {
         "path": "src/smart/input-date/rule.js",
