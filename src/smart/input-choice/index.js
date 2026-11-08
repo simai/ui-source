@@ -206,7 +206,9 @@ class SfInputChoice extends FormField(ChoiceElement) {
       errorMessage: this.errorMessage || '',
       invalid: Boolean(this.invalid),
       required: Boolean(this.required),
-      disabled: this.effectiveDisabled,
+      // The field's own disabled or a disabled fieldset's (formDisabledCallback),
+      // under a name of its own: the disabled getter is the setting alone.
+      fieldDisabled: this.effectiveDisabled,
       // Without ElementInternals the named inner inputs submit, as before.
       controlName: internals ? `${id}--choice` : (this.name || `${id}--choice`),
       innerForm: internals ? NO_FORM : '',

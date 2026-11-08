@@ -308,11 +308,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "baa0929456d2aaac102e6382ab555d3c1c6fab8c2d46bcc62cf6a3667a529a2f"
+        "sha256": "f08b418d327de271d9f19cab5579f774fa68f3d263f11f879820896baa924f59"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "9618a750310b87b338b7d94cc179d1af027d00fe15a52407b2bd8a13bf11bd32"
+        "sha256": "4e198b260441be9a5ccfc1cdbd2f6059b087da8b72c2d97e6bc13fe947ba33d8"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",

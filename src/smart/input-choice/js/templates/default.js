@@ -23,7 +23,7 @@ const joinClasses = (...tokens) => tokens.flat().filter(Boolean).join(' ');
 
 function renderCard(context, item, index) {
   const checked = context.chosen.has(item.value);
-  const disabled = context.disabled || item.disabled;
+  const disabled = context.fieldDisabled || item.disabled;
   const titleId = `${context.id}--title-${index + 1}`;
   const captionId = `${context.id}--caption-${index + 1}`;
   return html`<label class=${joinClasses('sf-choice-card', checked ? 'sf-choice-card--checked' : '', disabled ? 'sf-choice-card--disabled' : '')}>
@@ -47,7 +47,7 @@ export function renderChoiceTemplate(context) {
   const labelId = `${context.id}--label`;
   const messageId = `${context.id}--message`;
   const message = context.invalid && context.errorMessage ? context.errorMessage : context.hint;
-  return html`<div class=${joinClasses('sf-choice', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.disabled ? 'sf-choice--disabled' : '', context.rootClass)}
+  return html`<div class=${joinClasses('sf-choice', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
                    style=${context.rootStyle || nothing} data-columns=${context.columns}>
     ${context.label
       ? html`<span class="sf-choice-label" id=${labelId}>${context.label}${context.required ? html`<span class="sf-choice-required" aria-hidden="true">*</span>` : nothing}</span>`
@@ -58,7 +58,7 @@ export function renderChoiceTemplate(context) {
          aria-describedby=${message ? messageId : nothing}
          aria-required=${context.required && !context.multiple ? 'true' : nothing}
          aria-invalid=${context.invalid && !context.multiple ? 'true' : nothing}
-         aria-disabled=${context.disabled ? 'true' : nothing}>
+         aria-disabled=${context.fieldDisabled ? 'true' : nothing}>
       ${repeat(context.items, (item) => item.value, (item, index) => renderCard(context, item, index))}
     </div>
     ${message

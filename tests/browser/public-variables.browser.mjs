@@ -207,6 +207,10 @@ const DRAW = {
   // a status (the neutral marker) and with the connector under it.
   'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
     html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
+  // card's fill and edge are drawn beside a card at rest.
+  choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
+    html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
   'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
