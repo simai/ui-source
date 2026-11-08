@@ -418,56 +418,220 @@
       "to": "active:bg-success-state"
     }
   ],
-  "held": [
-    {
-      "from": "--sf-elevation-2--shadow",
-      "to": "--sf-shadow-popup",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-elevation-2--surface",
-      "to": "--sf-surface-popup",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-elevation-5--shadow",
-      "to": "--sf-shadow-popup-nested",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-elevation-5--surface",
-      "to": "--sf-surface-popup-nested",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-on-elevation-2--variant",
-      "to": "--sf-on-surface-popup-variant",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-on-elevation-5--variant",
-      "to": "--sf-on-surface-popup-nested-variant",
-      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
-    },
-    {
-      "from": "--sf-shadow--color-fill",
-      "to": "--sf-shadow-color-fill",
-      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
-    },
-    {
-      "from": "--sf-shadow--color-outline",
-      "to": "--sf-shadow-color-outline",
-      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
-    },
-    {
-      "from": "--sf-shadow--color-shading",
-      "to": "--sf-shadow-color-shading",
-      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
-    },
-    {
-      "from": "--sf-shadow--rim",
-      "to": "--sf-shadow-rim",
-      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
-    }
-  ]
+  "held": [],
+  "shadows": {
+    "decision": "C20, owner 2026-11-08 (ui-control control/docs-review/decisions.md; prototypes/shadows.html)",
+    "since": "2026-11-09",
+    "remove_after": "2027-01-01",
+    "summary": "Four shadows by place replace the numbered levels, the Figma layer styles and the three shadow colours: --sf-shadow-flat (none, the edge is --sf-outline-variant), --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, drawn from --sf-shadow-key-color and --sf-shadow-ambient-color. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names of a card's, a popup's and a nested popup's shadow are raised, overlay and overlay. A former name is var() of its successor on the theme root (src/core/scss/mix/_mix__role_aliases.scss, sf-shadow-aliases); a value changes where the place's shadow differs from the level's (it is a visible change, approved by the owner as C20). Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested.",
+    "tokens": [
+      {
+        "from": "--sf-shadow-card",
+        "to": "--sf-shadow-raised"
+      },
+      {
+        "from": "--sf-shadow-popup",
+        "to": "--sf-shadow-overlay"
+      },
+      {
+        "from": "--sf-shadow-popup-nested",
+        "to": "--sf-shadow-overlay"
+      },
+      {
+        "from": "--sf-elevation-2--shadow",
+        "to": "--sf-shadow-overlay"
+      },
+      {
+        "from": "--sf-elevation-5--shadow",
+        "to": "--sf-shadow-modal"
+      },
+      {
+        "from": "--sf-elevation-2--surface",
+        "to": "--sf-surface-popup"
+      },
+      {
+        "from": "--sf-elevation-5--surface",
+        "to": "--sf-surface-popup-nested"
+      },
+      {
+        "from": "--sf-on-elevation-2--variant",
+        "to": "--sf-on-surface-popup-variant"
+      },
+      {
+        "from": "--sf-on-elevation-5--variant",
+        "to": "--sf-on-surface-popup-nested-variant"
+      },
+      {
+        "from": "--sf-ui-shadow-1",
+        "to": "--sf-shadow-raised"
+      },
+      {
+        "from": "--sf-ui-shadow-2",
+        "to": "--sf-shadow-overlay"
+      },
+      {
+        "from": "--sf-ui-shadow-3",
+        "to": "--sf-shadow-overlay"
+      },
+      {
+        "from": "--sf-ui-shadow-4",
+        "to": "--sf-shadow-modal"
+      },
+      {
+        "from": "--sf-ui-shadow-5",
+        "to": "--sf-shadow-modal"
+      },
+      {
+        "from": "--sf-ui-shadow-top",
+        "to": "--sf-shadow-flat"
+      },
+      {
+        "from": "--sf-shadow--color-fill",
+        "to": "--sf-shadow-key-color"
+      },
+      {
+        "from": "--sf-shadow--color-outline",
+        "to": "--sf-shadow-key-color"
+      },
+      {
+        "from": "--sf-shadow--color-shading",
+        "to": "--sf-shadow-ambient-color"
+      },
+      {
+        "from": "--sf-shadow--color-shade",
+        "to": "--sf-shadow-ambient-color"
+      }
+    ],
+    "retired": [
+      {
+        "name": "--sf-shadow--rim",
+        "value": "0 0 0 0 transparent",
+        "why": "The last layer of every level, always off; C20 takes no rim (a dark place is lighter instead). It keeps its value until remove_after, so a shadow list a page wrote with it stays valid."
+      }
+    ],
+    "utilities": [
+      {
+        "from": "shadow-0",
+        "to": "shadow-flat"
+      },
+      {
+        "from": "shadow-1",
+        "to": "shadow-raised"
+      },
+      {
+        "from": "shadow-2",
+        "to": "shadow-overlay"
+      },
+      {
+        "from": "shadow-3",
+        "to": "shadow-overlay"
+      },
+      {
+        "from": "shadow-4",
+        "to": "shadow-modal"
+      },
+      {
+        "from": "shadow-5",
+        "to": "shadow-modal"
+      },
+      {
+        "from": "hover:shadow-0",
+        "to": "hover:shadow-flat"
+      },
+      {
+        "from": "hover:shadow-1",
+        "to": "hover:shadow-raised"
+      },
+      {
+        "from": "hover:shadow-2",
+        "to": "hover:shadow-overlay"
+      },
+      {
+        "from": "hover:shadow-3",
+        "to": "hover:shadow-overlay"
+      },
+      {
+        "from": "hover:shadow-4",
+        "to": "hover:shadow-modal"
+      },
+      {
+        "from": "hover:shadow-5",
+        "to": "hover:shadow-modal"
+      },
+      {
+        "from": "drop-shadow-0",
+        "to": "drop-shadow-flat"
+      },
+      {
+        "from": "drop-shadow-1",
+        "to": "drop-shadow-raised"
+      },
+      {
+        "from": "drop-shadow-2",
+        "to": "drop-shadow-overlay"
+      },
+      {
+        "from": "drop-shadow-3",
+        "to": "drop-shadow-overlay"
+      },
+      {
+        "from": "drop-shadow-4",
+        "to": "drop-shadow-modal"
+      },
+      {
+        "from": "drop-shadow-5",
+        "to": "drop-shadow-modal"
+      },
+      {
+        "from": "hover:drop-shadow-0",
+        "to": "hover:drop-shadow-flat"
+      },
+      {
+        "from": "hover:drop-shadow-1",
+        "to": "hover:drop-shadow-raised"
+      },
+      {
+        "from": "hover:drop-shadow-2",
+        "to": "hover:drop-shadow-overlay"
+      },
+      {
+        "from": "hover:drop-shadow-3",
+        "to": "hover:drop-shadow-overlay"
+      },
+      {
+        "from": "hover:drop-shadow-4",
+        "to": "hover:drop-shadow-modal"
+      },
+      {
+        "from": "hover:drop-shadow-5",
+        "to": "hover:drop-shadow-modal"
+      }
+    ],
+    "removed": [
+      {
+        "utility": "box-shadow-color",
+        "classes": "shadow-<colour>, hover:shadow-<colour>, active:shadow-<colour> (primary, secondary, tertiary, error, warning, success, on-surface)",
+        "why": "A shadow carries no colour meaning: a coloured halo reads as focus or as a status (C20, C17). Until remove_after the class colours the key and the ambient shadow of its own element."
+      },
+      {
+        "utility": "drop-shadow-color",
+        "classes": "drop-shadow-<colour>, hover:drop-shadow-<colour>",
+        "why": "As box-shadow-color."
+      },
+      {
+        "rule": "[class*=\"shadow\"], [class*=\"drop-shadow\"] (core)",
+        "why": "Gave a shadow to any element with the word in a class; each shadow utility draws its own now."
+      }
+    ],
+    "primitives_kept": [
+      {
+        "name": "--sf-black--alfa-4",
+        "why": "The former light-theme ambient shadow colour (--sf-shadow--color-shading); C20 draws with black 8, 16 and 28. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
+      },
+      {
+        "name": "--sf-black--alfa-12",
+        "why": "The former light-theme key shadow colour (--sf-shadow--color-fill); C20 draws with black 16. Nothing in the Framework reads it now; Docara's resources/smart/assets/preferences.css does, so it stays until remove_after."
+      }
+    ]
+  }
 }

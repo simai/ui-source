@@ -2,28 +2,23 @@
 // https://simai.io
 
 // Shadow
+//
+// The shadows are the theme's (C20, 2026-11-08): two colours, the key and the
+// ambient one, and four places, --sf-shadow-flat, -raised, -overlay and
+// -modal (_sf_css__theme.scss, mix/_mix__shadow.scss). The core declares no
+// shadow of its own any more:
+//   - the colours --sf-shadow--color-fill/-outline/-shading were declared here
+//     through color-mix at 24/12/8 and again in the theme at 12/8/4, and the
+//     layer styles --sf-ui-shadow-N, built on :root, read these and never the
+//     theme's; both are former names of the key and the ambient colour now;
+//   - the rule that gave a shadow to any element with "shadow" in a class
+//     ([class*="shadow"], [class*="drop-shadow"]) is gone: the shadow
+//     utilities draw their own.
+// What stays is the strength the coloured shadow utilities mix their colour
+// at, until those utilities go (2027-01-01).
 @layer sf.base {
     :root {
-        --sf-shadow--level-ratio: 1;
-
         --sf-shadow--alfa-fill: 24%;
-        --sf-shadow--alfa-outline: 12%;
         --sf-shadow--alfa-shade: 8%;
-
-        --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-fill));
-        --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-outline));
-        --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-shade));
-        --sf-shadow--color-shade: var(--sf-shadow--color-shading);
-    }
-
-    [class*="shadow"] {
-        box-shadow: 0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(-1 * var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-fill),
-        0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a3) * var(--sf-shadow--level-ratio)) 0 var(--sf-shadow--color-outline),
-        0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a4) * var(--sf-shadow--level-ratio)) calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-shading);
-    }
-
-    [class*="drop-shadow"] {
-        box-shadow: none;
-        filter: drop-shadow(0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-fill)) drop-shadow(0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a3) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-outline)) drop-shadow(0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a4) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-shading));
     }
 }

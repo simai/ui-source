@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.drop-shadow-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/drop-shadow-color/default/index.js",

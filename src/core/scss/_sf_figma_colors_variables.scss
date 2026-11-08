@@ -25,6 +25,11 @@
     --sf-black--alfa-4: #0000000a;
     --sf-black--alfa-8: #00000014;
     --sf-black--alfa-12: #0000001f;
+    /* Shadows (C20, 2026-11-08): the key shadow is black at 16 in the light
+       theme and 28 in the dark -- fill steps, the dark one twelve higher as
+       every fill is (--sf-shadow-key-color). */
+    --sf-black--alfa-16: #00000029;
+    --sf-black--alfa-28: #00000047;
     /* Glass over a photo or a video (C16 --sf-surface-media; C14 the media
        close button): black at 48 at rest, 64 under the pointer, 80 pressed.
        The ink family as a fill, which the alpha scale allows for glass and

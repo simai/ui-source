@@ -6795,6 +6795,322 @@
       },
       "owner": "ui-source",
       "source": "src/utility/background-color/default/scss/_sf_var__background_color.scss"
+    },
+    {
+      "id": "token-c20-shadow-places",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The shadow system (C20, owner-approved 2026-11-08): four shadows by place -- --sf-shadow-flat, --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, from --sf-shadow-key-color and --sf-shadow-ambient-color -- replace the numbered levels (--sf-elevation-N--shadow, --sf-ui-shadow-N), the upward layer style and the three shadow colours. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names --sf-shadow-card, -popup and -popup-nested are raised, overlay and overlay. Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested. Each former name is var() of its successor on the theme root; the value follows the place, a visible change approved as C20 (light theme one key and one ambient layer at black 16 and 8, dark theme the key at 28 and no ambient).",
+      "items": [
+        {
+          "from": "--sf-shadow-card",
+          "to": "--sf-shadow-raised",
+          "match": "--sf-shadow-card(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow-popup",
+          "to": "--sf-shadow-overlay",
+          "match": "--sf-shadow-popup(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow-popup-nested",
+          "to": "--sf-shadow-overlay",
+          "match": "--sf-shadow-popup-nested(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-2--shadow",
+          "to": "--sf-shadow-overlay",
+          "match": "--sf-elevation-2--shadow(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-5--shadow",
+          "to": "--sf-shadow-modal",
+          "match": "--sf-elevation-5--shadow(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-2--surface",
+          "to": "--sf-surface-popup",
+          "match": "--sf-elevation-2--surface(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-elevation-5--surface",
+          "to": "--sf-surface-popup-nested",
+          "match": "--sf-elevation-5--surface(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-elevation-2--variant",
+          "to": "--sf-on-surface-popup-variant",
+          "match": "--sf-on-elevation-2--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-on-elevation-5--variant",
+          "to": "--sf-on-surface-popup-nested-variant",
+          "match": "--sf-on-elevation-5--variant(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-1",
+          "to": "--sf-shadow-raised",
+          "match": "--sf-ui-shadow-1(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-2",
+          "to": "--sf-shadow-overlay",
+          "match": "--sf-ui-shadow-2(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-3",
+          "to": "--sf-shadow-overlay",
+          "match": "--sf-ui-shadow-3(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-4",
+          "to": "--sf-shadow-modal",
+          "match": "--sf-ui-shadow-4(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-5",
+          "to": "--sf-shadow-modal",
+          "match": "--sf-ui-shadow-5(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-ui-shadow-top",
+          "to": "--sf-shadow-flat",
+          "match": "--sf-ui-shadow-top(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow--color-fill",
+          "to": "--sf-shadow-key-color",
+          "match": "--sf-shadow--color-fill(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow--color-outline",
+          "to": "--sf-shadow-key-color",
+          "match": "--sf-shadow--color-outline(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow--color-shading",
+          "to": "--sf-shadow-ambient-color",
+          "match": "--sf-shadow--color-shading(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow--color-shade",
+          "to": "--sf-shadow-ambient-color",
+          "match": "--sf-shadow--color-shade(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-shadow--rim",
+          "to": null,
+          "match": "--sf-shadow--rim(?![a-z0-9-])",
+          "held": "Retired with no successor: it keeps its value (0 0 0 0 transparent) until remove_after so a shadow list a page wrote with it stays valid; drop it from the list."
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "box-shadow: var(--sf-elevation-3--shadow); background: var(--sf-elevation-2--surface);",
+        "after": "box-shadow: var(--sf-shadow-overlay); background: var(--sf-surface-popup);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__theme.scss, src/core/scss/mix/_mix__shadow.scss, src/core/scss/mix/_mix__role_aliases.scss, src/core/contracts/token-aliases.v1.json"
+    },
+    {
+      "id": "utility-c20-shadow-places",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The shadow utilities name the place (C20): shadow-flat, -raised, -overlay, -modal and drop-shadow-flat, -raised, -overlay, -modal, with hover: variants. The numbered classes shadow-0..5 and drop-shadow-0..5 are former names: 0 is flat, 1 raised, 2 and 3 overlay, 4 and 5 modal, and draw their place's shadow until remove_after. The elevation-N classes keep their surface and take their place's shadow.",
+      "items": [
+        {
+          "from": "shadow-0",
+          "to": "shadow-flat",
+          "match": "(?<![a-z0-9:-])shadow-0(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-1",
+          "to": "shadow-raised",
+          "match": "(?<![a-z0-9:-])shadow-1(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-2",
+          "to": "shadow-overlay",
+          "match": "(?<![a-z0-9:-])shadow-2(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-3",
+          "to": "shadow-overlay",
+          "match": "(?<![a-z0-9:-])shadow-3(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-4",
+          "to": "shadow-modal",
+          "match": "(?<![a-z0-9:-])shadow-4(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-5",
+          "to": "shadow-modal",
+          "match": "(?<![a-z0-9:-])shadow-5(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-0",
+          "to": "hover:shadow-flat",
+          "match": "(?<![a-z0-9:-])hover:shadow-0(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-1",
+          "to": "hover:shadow-raised",
+          "match": "(?<![a-z0-9:-])hover:shadow-1(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-2",
+          "to": "hover:shadow-overlay",
+          "match": "(?<![a-z0-9:-])hover:shadow-2(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-3",
+          "to": "hover:shadow-overlay",
+          "match": "(?<![a-z0-9:-])hover:shadow-3(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-4",
+          "to": "hover:shadow-modal",
+          "match": "(?<![a-z0-9:-])hover:shadow-4(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:shadow-5",
+          "to": "hover:shadow-modal",
+          "match": "(?<![a-z0-9:-])hover:shadow-5(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-0",
+          "to": "drop-shadow-flat",
+          "match": "(?<![a-z0-9:-])drop-shadow-0(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-1",
+          "to": "drop-shadow-raised",
+          "match": "(?<![a-z0-9:-])drop-shadow-1(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-2",
+          "to": "drop-shadow-overlay",
+          "match": "(?<![a-z0-9:-])drop-shadow-2(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-3",
+          "to": "drop-shadow-overlay",
+          "match": "(?<![a-z0-9:-])drop-shadow-3(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-4",
+          "to": "drop-shadow-modal",
+          "match": "(?<![a-z0-9:-])drop-shadow-4(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-5",
+          "to": "drop-shadow-modal",
+          "match": "(?<![a-z0-9:-])drop-shadow-5(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-0",
+          "to": "hover:drop-shadow-flat",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-0(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-1",
+          "to": "hover:drop-shadow-raised",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-1(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-2",
+          "to": "hover:drop-shadow-overlay",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-2(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-3",
+          "to": "hover:drop-shadow-overlay",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-3(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-4",
+          "to": "hover:drop-shadow-modal",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-4(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:drop-shadow-5",
+          "to": "hover:drop-shadow-modal",
+          "match": "(?<![a-z0-9:-])hover:drop-shadow-5(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<div class=\"shadow-3\">",
+        "after": "<div class=\"shadow-overlay\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/box-shadow, src/utility/drop-shadow"
+    },
+    {
+      "id": "utility-c20-coloured-shadows",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Coloured shadows go (C20, C17): a shadow carries no colour meaning, and a coloured halo reads as focus or as a status. shadow-<colour>, hover:shadow-<colour>, active:shadow-<colour> and drop-shadow-<colour>, hover:drop-shadow-<colour> colour the key and the ambient shadow of their own element until remove_after, then are removed with no successor. The core rule that gave a shadow to any element with \"shadow\" in a class ([class*=\"shadow\"], [class*=\"drop-shadow\"]) is gone now: a shadow utility draws its own.",
+      "items": [
+        {
+          "from": "shadow-primary",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-primary(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-secondary",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-secondary(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-tertiary",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-tertiary(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-error",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-error(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-warning",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-warning(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-success",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-success(?![a-z0-9-])"
+        },
+        {
+          "from": "shadow-on-surface",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:|active:)?shadow-on-surface(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-<colour>",
+          "to": null,
+          "match": "(?<![a-z0-9-])(?:hover:)?drop-shadow-(?!flat|raised|overlay|modal|[0-5](?![a-z0-9-]))[a-z][a-z0-9-]*"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"shadow-2 shadow-primary\">",
+        "after": "<div class=\"shadow-overlay\">"
+      },
+      "manual": "Drop the colour class; keep or rename the shadow class to its place (shadow-raised, shadow-overlay). Where a colour carried meaning, say it with the element's own fill, outline or status, not with its shadow.",
+      "owner": "ui-source",
+      "source": "src/utility/box-shadow-color, src/utility/drop-shadow-color, src/core/scss/_sf_css__shadow.scss"
     }
   ]
 }

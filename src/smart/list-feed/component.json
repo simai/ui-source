@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-feed's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The feed variant of block list (duplication audit 2026-11-03 A-6): the behaviour of ui-pro's sf-message-log 1.2.5 on core's reading position (core/js/reading-position.js).",
   "id": "smart.list-feed",
   "tag": "sf-list-feed",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -559,7 +559,8 @@
     "css-variables: the five public variables of sf-message-log under the feed's stem (--sf-list-feed-*); --sf-list-feed--* are the internal layer.",
     "words: lang/ru.json and lang/en.json; the region «Лента», «Показать предыдущие», «К последней записи».",
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
-    "version 1.0.3: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; its «to the latest» button was appearance surface, retired on sf-button-icon, and is tonal in on-surface now (C15): a soft container fill in place of the faint alpha fill and edge."
+    "version 1.0.3: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; its «to the latest» button was appearance surface, retired on sf-button-icon, and is tonal in on-surface now (C15): a soft container fill in place of the faint alpha fill and edge.",
+    "version 1.1.0 (2026-11-09): the jump-to-new button stands over the feed: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup. Nothing else changes."
   ],
   "x-rule": {
     "$comment": [

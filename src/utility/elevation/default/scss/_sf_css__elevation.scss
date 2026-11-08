@@ -1,3 +1,4 @@
+@use 'sass:list';
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -18,16 +19,31 @@
 // получает значение, подобранное под поверхность, на которой он оказался.
 // Менять в компонентах нечего: пользовательское свойство наследуется.
 
-@each $level in (1, 2, 3, 4, 5) {
+// C20 (2026-11-08): the levels are former names of the places until
+// 2027-01-01. Each class keeps the surface of its level and takes the shadow
+// of its place: 1 is raised (a card's surface), 2 and 3 overlay (a popup's),
+// 4 and 5 modal (a nested popup's, the lightest step).
+$elevation-places: (
+    1: ('surface-card', 'shadow-raised', 'on-surface-card-variant'),
+    2: ('surface-popup', 'shadow-overlay', 'on-surface-popup-variant'),
+    3: ('surface-popup', 'shadow-overlay', 'on-surface-popup-variant'),
+    4: ('surface-popup-nested', 'shadow-modal', 'on-surface-popup-nested-variant'),
+    5: ('surface-popup-nested', 'shadow-modal', 'on-surface-popup-nested-variant'),
+);
+
+@each $level, $place in $elevation-places {
+    $surface: list.nth($place, 1);
+    $shadow: list.nth($place, 2);
+    $variant: list.nth($place, 3);
     .elevation-#{$level} {
-        background-color: var(--sf-elevation-#{$level}--surface);
-        box-shadow: var(--sf-elevation-#{$level}--shadow);
-        --sf-on-surface-variant: var(--sf-on-elevation-#{$level}--variant);
+        background-color: var(--sf-#{$surface});
+        box-shadow: var(--sf-#{$shadow});
+        --sf-on-surface-variant: var(--sf-#{$variant});
     }
 }
 
 .elevation-0 {
-    background-color: var(--sf-surface-0);
-    box-shadow: none;
+    background-color: var(--sf-surface-page);
+    box-shadow: var(--sf-shadow-flat);
 }
 }

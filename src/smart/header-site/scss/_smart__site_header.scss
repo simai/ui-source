@@ -31,6 +31,23 @@
   position: sticky;
   inset-block-start: 0;
   z-index: var(--sf-site-header-z-index, var(--sf-z-index-5));
+  /* The flat place at the top of the page; the raised one while content runs
+     under it (C20): the host says data-scrolled, the bar takes the raised
+     shadow and, in the dark theme, the raised surface, a step lighter. A
+     colour the page set for the bar stays. */
+  box-shadow: var(--sf-shadow-flat);
+  transition: box-shadow var(--sf-duration-fast) var(--sf-animation), background-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-site-header--sticky {
+    transition: none;
+  }
+}
+
+:is(sf-header-site, sf-site-header)[data-scrolled='true'] > .sf-site-header--sticky {
+  background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-raised)));
+  box-shadow: var(--sf-shadow-raised);
 }
 
 /* The row: brand · nav … actions · tools, on one centre line. */
@@ -167,9 +184,9 @@
     display: block;
     position: fixed;
     inset: 0;
-    /* The shared scrim (core --sf-scrim-*). */
-    background: var(--sf-scrim-color, var(--sf-black));
-    opacity: var(--sf-scrim-opacity, var(--sf-opacity-60));
+    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20). */
+    background: var(--sf-scrim-color, var(--sf-black--alfa-64));
+    opacity: var(--sf-scrim-opacity, 1);
   }
 
   &.sf-site-header--open .sf-site-header-panel {
@@ -183,10 +200,10 @@
     block-size: 100dvh;
     overflow: auto;
     overscroll-behavior: contain;
-    background: var(--sf-elevation-4--surface);
-    box-shadow: var(--sf-elevation-4--shadow);
+    background: var(--sf-surface-popup);
+    box-shadow: var(--sf-shadow-modal);
     color: var(--sf-on-surface);
-    --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
   }
 
   /* The panel's head is as tall as the bar, its close button on the axis of

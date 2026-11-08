@@ -52,10 +52,15 @@ test('every alpha primitive is drawn with', () => {
   const declared = new Set([...read(palettePath).matchAll(/(--sf-[a-z0-9-]+--alfa-\d+):/gu)].map(([, name]) => name));
   const used = new Set();
   for (const path of sources(resolve(root, 'src'))) {
-    if (!statSync(path).isFile() || path.endsWith('_sf_figma_colors_variables.scss')) continue;
+    if (!statSync(path).isFile() || path.endsWith('_sf_figma_colors_variables.scss') || path.endsWith('token-aliases.v1.json')) continue;
     for (const match of readFileSync(path, 'utf8').matchAll(/--sf-[a-z0-9-]+--alfa-\d+/gu)) used.add(match[0]);
   }
-  const unused = [...declared].filter((name) => !used.has(name)).sort();
+  // The shadow system (C20) left two steps of black unread; they stay, by name
+  // and with a reason, until the alias list's remove_after -- a page or a
+  // product may have written them (token-aliases.v1.json, shadows).
+  const kept = new Set(JSON.parse(read('src/core/contracts/token-aliases.v1.json')).shadows.primitives_kept.map(({name}) => name));
+  for (const name of kept) assert.ok(declared.has(name) && !used.has(name), `${name}: kept for consumers, so declared and read by nothing in src`);
+  const unused = [...declared].filter((name) => !used.has(name) && !kept.has(name)).sort();
   // A palette is read as the set of answers the system has. One that carries
   // fifty values nothing draws with is a palette that cannot be read at all.
   assert.deepEqual(unused, [], 'an alpha primitive nothing asks for is a step a reader has to rule out by hand');

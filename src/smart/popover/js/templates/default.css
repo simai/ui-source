@@ -22,11 +22,11 @@
     max-block-size: var(--sf-popover-max-height, var(--sf-popover--max-height, 60vb));
     overflow: auto;
     border-radius: var(--sf-popover-radius, var(--sf-radius--surface));
-    background-color: var(--sf-popover-background-color, var(--sf-elevation-2--surface));
+    background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
     color: var(--sf-popover-color, inherit);
-    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    --sf-badge--surface: var(--sf-popover-background-color, var(--sf-elevation-2--surface));
-    box-shadow: var(--sf-popover-shadow, var(--sf-elevation-2--shadow));
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    --sf-badge--surface: var(--sf-popover-background-color, var(--sf-surface-popup));
+    box-shadow: var(--sf-popover-shadow, var(--sf-shadow-overlay));
   }
 
   sf-popover[data-open='false'] > [slot='content'] {

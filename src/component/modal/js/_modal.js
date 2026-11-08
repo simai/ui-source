@@ -440,7 +440,7 @@ class Modal extends ComponentObserver {
     surface.className = joinClasses(
       isInline
         ? 'bg-surface border border-outline-variant radius-surface p-2 flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-3 p-2 flex flex-col gap-1 min-w-0',
+        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-2 flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');

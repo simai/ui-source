@@ -1,60 +1,29 @@
+@use '../../../../core/scss/mix/mix__shadow' as shadow;
 @use '../../default/scss/var__shadow' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
 
-// SHADOW
+// SHADOW ON HOVER (C20, 2026-11-08): hover:shadow-raised lifts a card under
+// the pointer. The numbered classes are former names until 2027-01-01.
 
-// $shadowAllClass: '';
-// $infix: hover;
+@mixin place-shadow($place) {
+    @if $place == flat {
+        box-shadow: var(--sf-shadow-flat);
+    } @else {
+        box-shadow: shadow.sf-shadow($place);
+    }
+}
 
-// @each $shadow-name, $shadow-value in $shadow-colored-array {
-//     $shadowAllClass: '#{$shadowAllClass}.#{$infix}\\:shadow-#{$shadow-name}:#{$infix},';
-// }
+@each $place in $shadow-places {
+    .hover\:shadow-#{$place}:hover {
+        @include place-shadow($place);
+    }
+}
 
-// @include layer-priority(utility,$infix) {
-    
-    // #{$shadowAllClass} {
-    //     --sf-ring-offset-shadow: 0 0 #0000;
-    //     --sf-ring-shadow: 0 0 #0000;
-    //     --sf-shadow: 0 0 #0000;
-    //     --sf-shadow-colored: 0 0 #0000;
-    // }
-    
-    // // Box Shadow
-    // @each $shadow-name, $shadow-value in $shadow-colored-array {
-    //     .#{$infix}\:shadow-#{$shadow-name}:#{$infix} {
-    //         --sf-shadow: #{$shadow-value};
-    //     }
-    // }
-
-    // #{$shadowAllClass} {
-    //     box-shadow: var(--sf-ring-offset-shadow,0 0 #0000), var(--sf-ring-shadow, 0 0 #0000), var(--sf-shadow);
-    // }
-// }
-
-// Box Shadow
-@each $shadow-name, $shadow-value in $shadow-array {
-    .hover\:shadow-#{$shadow-name}:hover {
-        --sf-shadow--level-ratio: #{$shadow-value};
-        @if $shadow-name == 0 {
-            box-shadow: none;
-        } @else {
-            box-shadow: var(
-                --sf-ui-shadow-#{$shadow-name},
-                0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                    calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                    calc(-1 * var(--sf-a1) * var(--sf-shadow--level-ratio))
-                    var(--sf-shadow--color-fill),
-                0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
-                    calc(var(--sf-a3) * var(--sf-shadow--level-ratio))
-                    0 var(--sf-shadow--color-outline),
-                0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                    calc(var(--sf-a4) * var(--sf-shadow--level-ratio))
-                    calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
-                    var(--sf-shadow--color-shading)
-            );
-        }
+@each $level, $place in $shadow-array {
+    .hover\:shadow-#{$level}:hover {
+        @include place-shadow($place);
     }
 }
 }

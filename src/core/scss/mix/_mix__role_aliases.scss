@@ -82,3 +82,51 @@ $sf-role-aliases: (
     }
   }
 }
+
+// SHADOW ALIASES (C20, the shadow system, 2026-11-08)
+//
+// Four shadows by place -- flat, raised, overlay, modal -- replace the five
+// numbered levels, the Figma layer styles and the three shadow colours. Each
+// former name is var() of its place until the alias list's remove_after:
+// level 1 is raised, 2 and 3 are overlay, 4 and 5 are modal; the C16 names of
+// a card's, a popup's and a nested popup's shadow are declared in the theme as
+// var() of raised and overlay. Level 2's and 5's surfaces and dim ink, held by
+// C16 because they differed from the step they join, join it now (popup,
+// popup-nested). src/core/contracts/token-aliases.v1.json (shadows) is the
+// same list; tests/shadow-places.contract.test.mjs holds the two equal.
+//
+// former name: the name it reads.
+$sf-shadow-aliases: (
+  'elevation-2--shadow': 'shadow-overlay',
+  'elevation-5--shadow': 'shadow-modal',
+  'elevation-2--surface': 'surface-popup',
+  'elevation-5--surface': 'surface-popup-nested',
+  'on-elevation-2--variant': 'on-surface-popup-variant',
+  'on-elevation-5--variant': 'on-surface-popup-nested-variant',
+  'ui-shadow-1': 'shadow-raised',
+  'ui-shadow-2': 'shadow-overlay',
+  'ui-shadow-3': 'shadow-overlay',
+  'ui-shadow-4': 'shadow-modal',
+  'ui-shadow-5': 'shadow-modal',
+  'ui-shadow-top': 'shadow-flat',
+  'shadow--color-fill': 'shadow-key-color',
+  'shadow--color-outline': 'shadow-key-color',
+  'shadow--color-shading': 'shadow-ambient-color',
+  'shadow--color-shade': 'shadow-ambient-color',
+);
+
+// Retired with no successor: the rim, a last layer of every level that was
+// always off. It keeps its value, so a shadow list a page wrote with it stays
+// valid, until remove_after.
+$sf-shadow-retired: (
+  'shadow--rim': '0 0 0 0 transparent',
+);
+
+@mixin sf-shadow-aliases {
+  @each $old, $new in $sf-shadow-aliases {
+    --sf-#{$old}: var(--sf-#{$new});
+  }
+  @each $old, $value in $sf-shadow-retired {
+    --sf-#{$old}: #{$value};
+  }
+}

@@ -6,6 +6,14 @@
 // https://simai.io
 
 // DROP SHADOW COLOR
+//
+// Former utilities (C20, 2026-11-08): a shadow does not carry the meaning of a
+// colour -- a coloured halo reads as focus or as a status -- so the coloured
+// shadows go on 2027-01-01 (src/core/contracts/token-aliases.v1.json,
+// utilities, removed). Until then a class colours the key and the ambient
+// shadow of its own element, which the shadow utilities on that element draw
+// with (shadow-raised, drop-shadow-overlay, and the numbered former names).
+
 $mobile: xs;
 
 @include breakpoint-media($mobile) {
@@ -13,11 +21,8 @@ $mobile: xs;
 
   @each $drop-shadow-color-name, $drop-shadow-color-value in $drop-shadow-color-array {
     .#{$infix}drop-shadow-#{$drop-shadow-color-name} {
-      --sf-shadow--color: var(--sf-#{$drop-shadow-color-value});
-      --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill));
-      --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-outline));
-      --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade));
-      --sf-shadow--color-shade: var(--sf-shadow--color-shading);
+      --sf-shadow-key-color: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill));
+      --sf-shadow-ambient-color: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade));
     }
   }
 }

@@ -606,8 +606,10 @@
     );
   }
 
+  /* Under an open menu the bottom bar is flat and parted by a line (C20): no
+     shadow upward. */
   .sf-admin-menu-main.open + .sf-admin-menu-bottom {
-    box-shadow: var(--sf-ui-shadow-top);
+    box-shadow: inset 0 var(--sf-px) 0 var(--sf-outline-variant);
   }
 
   .sf-admin-menu-panel.small
