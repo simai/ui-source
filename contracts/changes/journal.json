@@ -5952,6 +5952,30 @@
       "manual": "Name sf-view-table where a port binding or a port registry lookup names sf-table. A product that registers its own manifest under the element sf-table keeps it: the alias stands only where the old name is not registered.",
       "owner": "ui-source",
       "source": "src/core/js/composition/routing.mjs PORT_ELEMENT_ALIASES, src/core/js/composition/builtins.mjs BUILTIN_PORT_MANIFESTS; bus msg-b1d7e5a07ab240efb8ba (Larena's binding, msg-b178ad43e88c4125afb6)"
+    },
+    {
+      "id": "tag-sf-message-log-to-sf-list-feed",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-message-log is the dated alias of SIMAI Framework's sf-list-feed (duplication audit 2026-11-03 A-6; sets split plan 2026-11-05, S2): the feed's behaviour moved to the Framework as sf-list-feed, taken over from sf-message-log 1.2.5 whole, and the former tag keeps working until remove_after. The alias belongs to the Framework, not to a set: the chat set does not carry the name and family message has no owner in the shared name registry. Until the chat set takes the pair, package pro ships the alias element itself (ui-pro components/src/smart/message-log 2.0.0, pro-db5cc2a375bd and later): a subclass of the class that defines sf-list-feed, which also maps the former names (messages, setMessages, prependMessages, renderMessage, announceMessage, the events sf-message-log-*) and gives its tag row at runtime (registerTagAliasRows). The Framework's static tag table does not carry the row while package pro defines the element, so the Smart base does not define a bare subclass first and take the former names away.",
+      "items": [
+        {
+          "component": "sf-list-feed",
+          "from": "sf-message-log",
+          "to": "sf-list-feed"
+        }
+      ],
+      "deprecated_on": "2026-11-05",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-message-log></sf-message-log>",
+        "after": "<sf-list-feed></sf-list-feed>"
+      },
+      "manual": "Write <sf-list-feed> for <sf-message-log>, and move the former names with it: items for messages, setItems and prependItems for setMessages and prependMessages, renderItem and announceItem for renderMessage and announceMessage, sf-list-feed-* for the events sf-message-log-*, --sf-list-feed-* for the variables --sf-message-log-*, .sf-list-feed__* for the classes .sf-message-log__* (__message is __entry). The tag alone is not a mechanical rename, because the former property and method names live only on the alias element.",
+      "owner": "ui-source",
+      "source": "src/smart/list-feed (component.json x-decisions, docs.md «Переход с sf-message-log»); ui-pro components/src/smart/message-log/index.js; contracts/registry/names.json (chat owner note)"
     }
   ]
 }
