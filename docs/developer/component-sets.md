@@ -1,8 +1,8 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.1.0
-(`contracts/standards/simai.component-set/1.1.0/standard.json`; 1.0.0 is kept
-under `contracts/standards/history`). The Loader
+Status: draft standard `simai.component-set` 1.1.1
+(`contracts/standards/simai.component-set/1.1.1/standard.json`; 1.0.0 and 1.1.0
+are kept under `contracts/standards/history`; 1.1.1 changes no requirement of 1.1.0). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
