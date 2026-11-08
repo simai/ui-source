@@ -310,6 +310,8 @@
             "name",
             "value",
             "href",
+            "target",
+            "rel",
             "shortcut",
             "shortcut-listen",
             "expanded",
@@ -342,7 +344,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "eaaea1f98c4c38516c97bcbd436047e569baf4e77cef51f5090f7a99e2ce74d9",
+      "manifest_sha256": "8efc2c3f7a8a59673342efa482604b38cb5aa4232ac96500f262b71d06ff0f62",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1218,7 +1220,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "e4bc827c55fcd0617ba9871372ffe062f730d28629c7f3e98b5ed829798896f9",
+      "manifest_sha256": "631ce60887b4d6856bd39b87387fa9386173d0aa9b1ba414a3a6339a728e78f2",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

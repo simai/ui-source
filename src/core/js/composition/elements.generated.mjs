@@ -98,13 +98,17 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "text": {
           "default": "",
           "type": "string"
+        },
+        "tight": {
+          "default": false,
+          "type": "boolean"
         }
       },
       "type": "object"
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.2.1"
+    "version": "1.3.1"
   },
   "sf-button": {
     "inputs": {
@@ -132,6 +136,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "expanded": {
           "default": false,
           "type": "boolean"
+        },
+        "form": {
+          "default": "",
+          "type": "string"
         },
         "href": {
           "default": "",
@@ -161,6 +169,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "name": {
+          "default": "",
+          "type": "string"
+        },
         "native-type": {
           "default": "button",
           "enum": [
@@ -182,6 +194,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "square",
             "rounded"
           ],
+          "type": "string"
+        },
+        "rel": {
+          "default": "",
           "type": "string"
         },
         "scheme": {
@@ -241,6 +257,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "target": {
+          "default": "",
+          "type": "string"
+        },
         "text": {
           "default": "",
           "type": "string"
@@ -254,13 +274,21 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "justify"
           ],
           "type": "string"
+        },
+        "text-pressed": {
+          "default": "",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "type": "string"
         }
       },
       "type": "object"
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.4.0"
+    "version": "1.7.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -317,6 +345,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "icon",
             "close"
           ],
+          "type": "string"
+        },
+        "label-pressed": {
+          "default": "",
           "type": "string"
         },
         "loading": {
@@ -400,7 +432,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.4.0"
+    "version": "1.5.2"
   },
   "sf-checkbox": {
     "inputs": {
@@ -739,7 +771,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "password",
             "search",
             "tel",
-            "url"
+            "url",
+            "number"
           ],
           "type": "string"
         },
@@ -786,7 +819,15 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "max": {
+          "default": "",
+          "type": "string"
+        },
         "maxlength": {
+          "default": "",
+          "type": "string"
+        },
+        "min": {
           "default": "",
           "type": "string"
         },
@@ -827,6 +868,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "step": {
+          "default": "",
+          "type": "string"
+        },
         "text-end": {
           "default": "",
           "type": "string"
@@ -840,7 +885,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.4.4"
+    "version": "1.5.0"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1049,6 +1094,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.2.3"
+    "version": "1.3.0"
   }
 });

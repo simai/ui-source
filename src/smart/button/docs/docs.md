@@ -70,6 +70,15 @@ Main attributes:
   `mailto:` and `tel:` are taken; any other scheme draws a button. Disabled
   or loading, the link loses its `href` and says `aria-disabled`.
   `native-type`, `form`, `name`, `value`, `expanded` and `pressed` do not apply to a link
+- `target`, `rel` — where a link opens and its relation, written on the
+  `<a>` as they are given (1.7.0). A link that opens a new tab
+  (`target="_blank"`) with no `rel` says `rel="noopener noreferrer"`, so the
+  opened page cannot reach this one; a `rel` the page writes is kept as it is.
+  A button (no `href`) carries neither:
+
+  ```html
+  <sf-button href="/docs/import" target="_blank" text="Инструкция" icon-end="open_in_new"></sf-button>
+  ```
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native
