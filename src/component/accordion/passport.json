@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.accordion",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/accordion/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/accordion/scss/_var__accordion.scss",
     "src/component/accordion/scss/index.scss"
   ],
-  "content_sha256": "00b47c835800399c2177810360a9fbb64995bd85e2cf76a0a620d9f53d48da56",
+  "content_sha256": "f42fdd9bdbdabfb41311b96daf73ead31e5b8afbc2a0a0e34b607f3ac964113d",
   "dependencies": [
     {
       "id": "core.runtime",
