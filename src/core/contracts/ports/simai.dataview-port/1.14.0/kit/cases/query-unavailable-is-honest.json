@@ -1,0 +1,26 @@
+{
+  "id": "query-unavailable-is-honest",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "When the store cannot answer, the view shows the failure and the retry, not an empty list.",
+  "given": {
+    "store": "down"
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 5,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The previous records stay on screen or the error state is shown; total is not reset to zero."
+  }
+}

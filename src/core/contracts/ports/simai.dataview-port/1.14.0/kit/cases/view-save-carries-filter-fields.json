@@ -1,0 +1,33 @@
+{
+  "id": "view-save-carries-filter-fields",
+  "intent": "view.save",
+  "capability": "saved-views",
+  "summary": "A saved view stores the filter fields it was showing, and opening it shows them again.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "key": "mine",
+      "settings": {
+        "filter_fields": [
+          "city",
+          "name"
+        ]
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "The host stores settings as it is given. The next answer that carries saved_views must carry the same settings.filter_fields for this key, because the view puts those fields back when it opens."
+  }
+}

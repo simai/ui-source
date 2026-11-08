@@ -175,6 +175,36 @@ otherwise); it is validated and rendered with the same registry, its
 diagnostics are reported under `$.content`, and its assets join the layout's.
 An invalid page draws nothing in the outlet.
 
+## Drawing on a host's canvas
+
+`layout.page` is the Document's main landmark: `render` draws it as `<main>`,
+and a `layout.region` with `landmark: main` as `<main>` too. A host that shows
+the Document inside its own page -- an editor's canvas, a preview pane --
+already has a `main`, and a second one nested in it is an accessibility error
+(`landmark-main-is-top-level`, `landmark-no-duplicate-main`). Such a host
+renders embedded:
+
+```js
+const { html } = await SF.Composition.render(document, { registry, options: { embedded: true } });
+```
+
+Embedded, `layout.page` and a main region are drawn as `<div
+data-sf-composition-landmark="main">` with the same id, children and classes;
+every other element, the digest and the diagnostics stay as they are. The
+default, `embedded: false`, is what a publishing host keeps. Anything but a
+boolean throws `composition_embedded_invalid`. A layout's page content in a
+`content.outlet` is drawn with the same option.
+
+## Layout styles
+
+`layout.columns` lists the asset `composition/layout`. Its styles are part of
+`core/css/core.css`: a page that loads the core sheet draws the columns side
+by side -- as many as `data-composition-columns` says, one where the columns
+are set per screen, with the type's gap. The `grid`, `gap-*` and `grid-col-*`
+utilities the renderer also prints are brought by the Loader where it runs and
+win over the core sheet (it stands in the `sf.base` layer), so a column count
+per screen applies there. A host needs nothing else for `composition/layout`.
+
 ## Text areas in a layout
 
 For the one block editor (owner, 2026-11-03) a page keeps layout and content

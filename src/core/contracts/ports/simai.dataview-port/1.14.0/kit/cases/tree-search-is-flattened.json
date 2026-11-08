@@ -1,0 +1,51 @@
+{
+  "id": "tree-search-is-flattened",
+  "intent": "query.change",
+  "capability": "tree",
+  "summary": "A search over a tree answers the matching nodes as a flat list, each with its path.",
+  "given": {
+    "records": [
+      {
+        "id": "site",
+        "parent": null,
+        "has_children": true,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      },
+      {
+        "id": "team",
+        "parent": "about",
+        "has_children": false,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "query": {
+        "search": "team",
+        "filters": {},
+        "sort": [],
+        "window": {
+          "cursor": null,
+          "limit": 50
+        }
+      },
+      "sequence": 3
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "tree"
+    ],
+    "note": "tree.mode is flattened and each record carries path, from the root: team's path names site and about."
+  }
+}

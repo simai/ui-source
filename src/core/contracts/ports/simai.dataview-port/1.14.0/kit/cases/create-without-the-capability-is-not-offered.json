@@ -1,0 +1,25 @@
+{
+  "id": "create-without-the-capability-is-not-offered",
+  "intent": "view.create_record",
+  "capability": "create-record",
+  "summary": "A host that does not create records is not offered the create action, and says so plainly if it is asked.",
+  "given": {
+    "records": [],
+    "capabilities": [
+      "row-actions"
+    ]
+  },
+  "when": {
+    "intent": "view.create_record",
+    "payload": {
+      "item": null
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Without the capability the view shows no create action and no menu of kinds; this case is here so the refusal is still honest."
+  }
+}

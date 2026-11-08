@@ -1,0 +1,37 @@
+{
+  "id": "record-mutate-conflict",
+  "intent": "record.mutate",
+  "capability": "row-actions",
+  "summary": "A stale revision is answered with a conflict and the current revision, not a silent overwrite.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r2",
+        "actions": [
+          "view",
+          "edit"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.mutate",
+    "payload": {
+      "action_id": "edit",
+      "record_ids": [
+        1
+      ],
+      "revisions": {
+        "1": "r1"
+      }
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "The host re-reads the stored bytes; it does not trust the revision in the request."
+  }
+}

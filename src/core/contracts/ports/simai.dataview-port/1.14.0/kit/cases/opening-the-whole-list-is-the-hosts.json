@@ -1,0 +1,11 @@
+{
+  "id": "opening-the-whole-list-is-the-hosts",
+  "intent": "list.open",
+  "summary": "A capped list offers to show all of it, and asks the host to open the whole list rather than following a link of its own.",
+  "given": {"capabilities": []},
+  "when": {"intent": "list.open", "payload": {"reason": "row-cap", "query": {"search": "", "filters": {}}}},
+  "then": {
+    "answer": "applied",
+    "note": "The query travels with it, so the full view opens on the records the person was looking at rather than on an unfiltered collection. The component builds no address: an embedded list has nothing to build one from, and a guessed route would send a person to a page the product may not have."
+  }
+}
