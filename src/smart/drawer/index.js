@@ -630,7 +630,7 @@ class SfDrawer extends DrawerElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer();
     }
-    render(result, portal);
+    this.drawInto(result, portal);
     this.afterRender();
   }
 

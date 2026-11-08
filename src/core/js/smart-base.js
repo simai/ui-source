@@ -15,6 +15,7 @@ import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
 import { followLanguage, language } from "./page-language";
+import { drawing, markRelativeSizes, noteAuthored, sizedBefore } from "./density.js";
 // The properties a child takes from its parent (CSS inheritance), which a
 // boxless host passes on to its markup without having a box of its own. The
 // host keeps these, and every custom property, beside `display: contents`, so
@@ -1305,7 +1306,11 @@ class SfBaseElement extends HTMLElement {
     const printed = this._hasRendered ? [] : this.staticMarkup();
     this.prepareRenderContainer(changedAttributes);
     this.markStylePending(this);
-    render(templateResult, this);
+    // Sizes the page placed before the first drawing stay explicit; what the
+    // drawing adds is relative to this element (density, C22).
+    if (!this._sfSizedBefore) this._sfSizedBefore = sizedBefore(this);
+    drawing(() => render(templateResult, this));
+    markRelativeSizes(this, this._sfSizedBefore);
     if (printed.length) {
       this.handOverStaticMarkup(printed);
       // Page children the first paint held out of view are placed now.
@@ -2469,7 +2474,9 @@ class SfBaseElement extends HTMLElement {
         }
 
         Array.from(child.content?.childNodes || []).forEach((node) => {
-          this._slotTemplates.get(slotName).push(node.cloneNode(true));
+          const copy = node.cloneNode(true);
+          noteAuthored([copy]);
+          this._slotTemplates.get(slotName).push(copy);
         });
 
         child.remove();
@@ -2487,6 +2494,8 @@ class SfBaseElement extends HTMLElement {
         : [child];
 
       this._liveSlotNodes.get(slotName).push(...slotNodes);
+      // The page's content: a size it gives stays explicit (density, C22).
+      noteAuthored(slotNodes);
       child.remove();
     });
   }
@@ -2518,6 +2527,7 @@ class SfBaseElement extends HTMLElement {
     }
 
     const templates = nodes.map((node) => node.cloneNode(true));
+    noteAuthored(templates);
 
     templates.forEach((node) => {
       this._slotTemplates.get(name).push(node);
@@ -2527,7 +2537,7 @@ class SfBaseElement extends HTMLElement {
       nodes.forEach((node) => node.remove());
     }
 
-    return templates.map((node) => node.cloneNode(true));
+    return templates.map((node) => this.authoredCopy(node));
   }
 
   hasSlotContent(name) {
@@ -2552,10 +2562,28 @@ class SfBaseElement extends HTMLElement {
     }
 
     if (slotContent.length === 1) {
-      return slotContent[0].cloneNode(true);
+      return this.authoredCopy(slotContent[0]);
     }
 
-    return slotContent.map((node) => node.cloneNode(true));
+    return slotContent.map((node) => this.authoredCopy(node));
+  }
+
+  // Draws a template into a container of the element's own outside it (a
+  // portal at the end of the body, a popup's body): the sizes the drawing
+  // gives are relative to the element, as in its own box (density, C22).
+  drawInto(result, container) {
+    if (!container) return;
+    drawing(() => render(result, container));
+    markRelativeSizes(container, container === this ? (this._sfSizedBefore ??= sizedBefore(this)) : null);
+  }
+
+  // A copy of captured page content is the page's as well (density, C22): a
+  // size in it stays explicit.
+  authoredCopy(node) {
+    const copy = node.cloneNode(true);
+    const authored = globalThis.SF?.__internal?.density?.authored;
+    if (authored?.has(node)) authored.add(copy);
+    return copy;
   }
 
   setSlot(name, ...elements) {
@@ -2581,6 +2609,7 @@ class SfBaseElement extends HTMLElement {
 
     // Обновляем _liveSlotNodes (если есть — для совместимости с sf-modal)
     this._liveSlotNodes.set(name, parsed);
+    noteAuthored(parsed);
 
     // Запрашиваем перерендер
     this.requestComponentUpdate("slot-change");

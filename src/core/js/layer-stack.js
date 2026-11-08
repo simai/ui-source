@@ -36,6 +36,8 @@
 // without one. One whose `isConnected` is false is passed over, so a layer
 // removed without closing cannot hold every key on the page.
 
+import {densityOf} from './density.js';
+
 const STACK_KEY = Symbol.for('sf.layerStack');
 
 // The scale's defaults, the same as core's tokens: 9000 is where the modal
@@ -470,6 +472,11 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = []} =
   // does before it announces the change (simai/ui-source#55).
   if (!nearest || nearest === doc.documentElement) portal.dataset.sfLayerLang = 'page';
   else delete portal.dataset.sfLayerLang;
+  // The density (C22): the ladder the host stands on, so a window or a drawer
+  // at the end of the body is as dense as the page region that opened it.
+  const density = densityOf(host);
+  if (density) portal.setAttribute('data-sf-density', density);
+  else portal.removeAttribute('data-sf-density');
   const declared = host.closest('[dir]')?.getAttribute('dir');
   const dir = declared && declared !== 'auto' ? declared : view.getComputedStyle(host).direction;
   if (dir) portal.setAttribute('dir', dir);

@@ -963,7 +963,7 @@ class SfSearch extends SearchElement {
       keyClear: this.sfWord('key-clear-label'),
       keyClose: this.sfWord('key-close-label'),
     };
-    render(renderSearchWindow({
+    this.drawInto(renderSearchWindow({
       component: this,
       ids: {dialog: `${this._id}-dialog`, option: (index) => `${this._id}-option-${index}`},
       query: this.query,
