@@ -92,6 +92,9 @@ const FOLDERS = {
   wizard: 'smart/wizard',
   // sf-input-choice (2026-11-08): a sheet of its own, the cards' gap, width, room, corner, fills and edges.
   choice: 'smart/input-choice',
+  // The Larena admin screens' description list and timeline (2026-11-08): sheets of their own.
+  'list-description': 'smart/list-description',
+  'list-timeline': 'smart/list-timeline',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.

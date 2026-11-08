@@ -1,0 +1,23 @@
+{
+  "title": "Timeline",
+  "runtime": {
+    "empty-text": "No events yet",
+    "more": "Show more",
+    "loading": "Loading…",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "status-success": "Done",
+    "status-warning": "Warning",
+    "status-error": "Error",
+    "status-info": "Info"
+  },
+  "events": {
+    "navigate": {
+      "label": "Go"
+    },
+    "load-more": {
+      "label": "Show more"
+    }
+  }
+}
