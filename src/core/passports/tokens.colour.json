@@ -24,14 +24,10 @@
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/scss/vars/_sf_var__color.scss"
   ],
-  "content_sha256": "73514bcd5446b27583066608a93a9f3c51fac26375298358a5b2f8ba62d2117d",
+  "content_sha256": "bd1a4beb40bd2ee68f044297990200ce32ca96076d3be2937726849d7595f4e9",
   "dependencies": [
     {
       "id": "tokens.elevation",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.opacity",
       "range": "^1.0.0"
     }
   ]

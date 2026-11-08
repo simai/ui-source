@@ -18,7 +18,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "98cbe8ce6eb089775f3286f284ee0e9caa63a09c60b148a8e9c8cbde2503e914",
+  "content_sha256": "066efb947534015c311ce9207507baefb01013522733a0b67e6171dbfeeddb0b",
   "dependencies": [
     {
       "id": "component.close",
@@ -50,10 +50,6 @@
     },
     {
       "id": "tokens.motion",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.opacity",
       "range": "^1.0.0"
     },
     {

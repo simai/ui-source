@@ -11,7 +11,7 @@
     "src/utility/elevation/default/rule.js",
     "src/utility/elevation/default/scss/_sf_css__elevation.scss"
   ],
-  "content_sha256": "151e4a874e2e7dfb6f408c85b9bc5226e5245094e5d8470505ac3b16d83e4d09",
+  "content_sha256": "8d4e67191f4367ea4ab42950c479fbf7027eeff9055816c28e9ebdcb881fa9ef",
   "dependencies": [
     {
       "id": "tokens.colour",

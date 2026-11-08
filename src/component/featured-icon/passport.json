@@ -12,14 +12,10 @@
     "src/component/featured-icon/scss/_css_featured-icon.scss",
     "src/component/featured-icon/scss/index.scss"
   ],
-  "content_sha256": "58db1d4327e8246244c1282c1bd4358c80503f1aa32f73f28e6f4aaf7d5d4a09",
+  "content_sha256": "3cedb7dfbfbf5e1cfc654809a32cc91238f51755e1df5bbbaa66c87e6313f8c4",
   "dependencies": [
     {
       "id": "tokens.colour",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.elevation",
       "range": "^1.0.0"
     },
     {

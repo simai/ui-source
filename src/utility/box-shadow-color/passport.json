@@ -23,7 +23,7 @@
     "src/utility/box-shadow-color/hover/scss/_sf_css__box_shadow_color.scss",
     "src/utility/box-shadow-color/hover/scss/index.scss"
   ],
-  "content_sha256": "a82599d149455dfb922a80866b404c768a1df5192dccea089db4f8eaae3e0270",
+  "content_sha256": "16bd5ce12ab593662f83f33f6cf33ac0a9fb1095d0bb6c6a45ec6d0cc7106c9f",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
@@ -35,10 +35,6 @@
     },
     {
       "id": "tokens.elevation",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.size",
       "range": "^1.0.0"
     }
   ]
