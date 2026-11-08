@@ -131,6 +131,29 @@
     --sf-on-info-container: light-dark(var(--sf-info-10), var(--sf-info-90));
     --sf-on-info-container-graphic: light-dark(var(--sf-info-50), var(--sf-info-60));
     --sf-outline-info: light-dark(var(--sf-info-50), var(--sf-info-60));
+    /* Information had no translucent layers, so a hover or a selection on an
+       info surface borrowed primary's (C16, surfaces research 6.3). The same
+       steps as the other statuses: 4, 8 and 12 for the states, 24 for the
+       stronger fill. */
+    --sf-info-transparent-hover: light-dark(var(--sf-info-50--alfa-4), var(--sf-info-90--alfa-4));
+    --sf-info-transparent-select: light-dark(var(--sf-info-50--alfa-8), var(--sf-info-90--alfa-8));
+    --sf-info-transparent-active: light-dark(var(--sf-info-50--alfa-12), var(--sf-info-90--alfa-12));
+    --sf-info-transparent-overlay: light-dark(var(--sf-info-50--alfa-24), var(--sf-info-90--alfa-24));
+    /* The colour of the place a thing stands on (C16). A cut-out -- a badge's
+       ring, a switch's thumb gap, a table head -- reads it instead of the page,
+       so it matches a card or a popup it sits in. The page by default; a place
+       that is not the page declares its own (the bg-surface-* place
+       utilities, and later the cards and the popups). */
+    --sf-surface-place: var(--sf-surface-0);
+    /* Glass over a photo or a video (C16, C14): controls on media stand on
+       black at 48 with a blur, ink white, the same in both themes because the
+       picture does not change with the theme. Hover and press take the next
+       steps of the ink family, which the alpha scale allows as a fill for glass
+       and the scrim only. */
+    --sf-surface-media: var(--sf-black--alfa-48);
+    --sf-surface-media-hover: var(--sf-black--alfa-64);
+    --sf-surface-media-active: var(--sf-black--alfa-80);
+    --sf-on-surface-media: var(--sf-white);
     --sf-surface-0: light-dark(var(--sf-white), var(--sf-neutral-5));
     --sf-surface-1: light-dark(var(--sf-neutral-98), var(--sf-neutral-10));
     /* The veil over a scene, and the one translucent surface that keeps the pure

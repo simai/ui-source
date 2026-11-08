@@ -129,3 +129,21 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   assert.equal(value('surface-overlay'),
     'light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8))');
 });
+
+const placesPath = 'src/core/scss/_sf_css__surface_places.scss';
+// Ink steps as a fill (C16, 2026-11-08): 48, 64 and 80 are what is read or
+// found. As the colour of a surface they are allowed for glass over media and
+// for the scrim, and for nothing else -- a plate at 48 is a veil, not a plate.
+test('an ink step (48 and above) is a fill only for glass and the scrim', () => {
+  const placesPath = 'src/core/scss/_sf_css__surface_places.scss';
+  const allowed = new Set(['--sf-surface-media', '--sf-surface-media-hover', '--sf-surface-media-active', '--sf-scrim-color']);
+  const wrong = [];
+  for (const path of [themePath, placesPath]) {
+    for (const [, name, value] of read(path).matchAll(/(--sf-[a-z0-9-]+):\s*([^;]+);/gu)) {
+      if (name.startsWith('--sf-on-') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
+      if (!/--alfa-(48|64|80)\b/u.test(value)) continue;
+      if (!allowed.has(name)) wrong.push(`${path}: ${name}: ${value.trim()}`);
+    }
+  }
+  assert.deepEqual(wrong, [], 'an ink step as a fill is glass or the scrim');
+});

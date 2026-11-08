@@ -3,17 +3,19 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
-  "summary": "The colour roles and palettes: the theme's light and dark roles, the Figma colour variables and the colour utilities' variables.",
+  "summary": "The colour roles and palettes: the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
+    "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__color.scss",
     "src/core/scss/vars/_sf_var__color.scss"
   ],
   "files": [
     "src/core/scss/_sf_css__color.scss",
+    "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
     "src/core/scss/vars/_sf_var__color.scss"
