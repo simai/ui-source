@@ -289,6 +289,10 @@ its components take it from the shared runtime
   (`relation: [{name: 'cl-chart-core'}]`), so the Loader fetches the core once,
   before the first component that needs it runs. The build refuses a
   component that imports the core without that relation.
+- Every module of the folder is in the core, and a page with one component
+  fetches all of it: keep there only what two or more components share. A
+  module one component alone imports belongs in that component's folder
+  (ui-builder reports each module's importers, `module_users`).
 - Raising the core's ABI is a change of what its modules export (a removed or
   renamed export, an export that means something else); the package's
   components are always built with their core, so the ABI only guards a page
