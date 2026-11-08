@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync, readdirSync} from 'node:fs';
 import test from 'node:test';
+import {isKeyEffect} from './support/key-effects.mjs';
 
 // The source half of simai/ui-source#30, #34 and #44. The browser half reads
 // the accessibility tree and the drawn renderers on the built bytes:
@@ -66,16 +67,6 @@ test('the field renderers read a date in the page\'s language and a phone by its
 });
 
 test('the manifests carry accessibility in the current shape: keys with effects, name.from (#44 item 3)', () => {
-  // `activate` (a button-like row or step pressed) is read by eight manifests
-  // and is a word for the standard to take into its closed list.
-  const words = new Set(['reach', 'open', 'close', 'commit', 'revert', 'select', 'activate']);
-  const prefixes = ['toggle:', 'step:', 'to:', 'focus:'];
-  // Effects outside the closed list of standard 1.3.14 §4.8 that manifests
-  // already declare; each is a word to settle with the standard, listed so a
-  // new one fails here.
-  const pending = new Set(['confirm Escape cancel',
-    'input-lookup Backspace remove', 'pager ArrowLeft prev', 'pager ArrowRight next']);
-  const isEffect = (value) => words.has(value) || prefixes.some((prefix) => String(value).startsWith(prefix));
   const folders = readdirSync(new URL('../src/smart/', import.meta.url), {withFileTypes: true})
     .filter((entry) => entry.isDirectory() && existsSync(new URL(`../src/smart/${entry.name}/component.json`, import.meta.url)))
     .map((entry) => entry.name);
@@ -90,8 +81,8 @@ test('the manifests carry accessibility in the current shape: keys with effects,
     if ('keys' in accessibility) {
       assert.ok(accessibility.keys && !Array.isArray(accessibility.keys), `${name}: keys map to effects, not a list`);
       for (const [key, value] of Object.entries(accessibility.keys)) {
-        const effect = typeof value === 'string' ? value : value?.effect;
-        assert.ok(typeof effect === 'string' && (isEffect(effect) || pending.has(`${name} ${key} ${effect}`)), `${name}: ${key} -> ${JSON.stringify(value)}`);
+        // The closed list of standard 1.3.15 §4.8, with nothing pending.
+        assert.ok(isKeyEffect(value), `${name}: ${key} -> ${JSON.stringify(value)}`);
       }
     }
   }

@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {pageText} from '../../core/js/page-language';
+import {instancePath, partId} from '../../core/js/instance-path.js';
 import './inherited-value.css';
 
 // An inherited value, for every field of the input family (simai/ui-source#28).
@@ -176,6 +177,36 @@ export const InheritedValueField = (Base) => class extends Base {
     } else if (this.__sfInheritedDescribed === control) {
       control.removeAttribute('aria-description');
       this.__sfInheritedDescribed = null;
+    }
+    this.syncInheritedNote(control, inherited);
+  }
+
+  // A browser reads aria-describedby instead of aria-description, so a field
+  // that also has a hint, an error or a description (aria-describedby) would
+  // say those and drop the inherited sentence. While the inherited state
+  // applies and something else describes the control, the sentence is also a
+  // hidden note in the host that aria-describedby names after the ids already
+  // there. Written once here for the whole family (sf-input, sf-textarea,
+  // sf-quantity, sf-dropdown, sf-color, sf-switch); the id comes from the
+  // instance path, never a counter.
+  syncInheritedNote(control, inherited) {
+    let note = this.querySelector(':scope > [data-sf-inherited-note]');
+    const others = String(control.getAttribute('aria-describedby') || '').split(/\s+/u).filter((id) => id && id !== note?.id);
+    if (inherited && others.length && this.isConnected) {
+      if (!note) {
+        note = document.createElement('span');
+        note.hidden = true;
+        note.setAttribute('data-sf-inherited-note', '');
+        this.append(note);
+      }
+      if (!note.id) note.id = partId(instancePath(this, {kind: this.localName}), 'inherited');
+      note.textContent = this.inheritedDescription();
+      const ids = [...others, note.id].join(' ');
+      if (control.getAttribute('aria-describedby') !== ids) control.setAttribute('aria-describedby', ids);
+    } else if (note) {
+      note.remove();
+      if (others.length) control.setAttribute('aria-describedby', others.join(' '));
+      else control.removeAttribute('aria-describedby');
     }
   }
 };

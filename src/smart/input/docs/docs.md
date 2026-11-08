@@ -106,7 +106,11 @@ Not prevented, the field empties, says so with its ordinary `input` and `change`
 inherited value again and takes focus back on the control. `element.resetToInherited()`
 does the same from code and returns whether it reset. While inherited, the
 control carries the value as `aria-description` («Наследуется: …»); the visible
-marker is hidden from assistive technology so it is not read twice.
+marker is hidden from assistive technology so it is not read twice. A browser
+reads `aria-describedby` instead of `aria-description`, so when a hint, an error
+or a description also describes the control, the same sentence is a hidden note
+in the element (`[data-sf-inherited-note]`) that `aria-describedby` names after
+them.
 
 The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
 sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets

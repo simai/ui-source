@@ -11,6 +11,7 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const json = (path) => JSON.parse(read(path));
 const {readManifest} = await import('../src/core/js/element-manifest.js');
 const {readAliasTable} = await import('../src/core/js/alias-table.js');
+const {KEY_EFFECT, keyEffect} = await import('./support/key-effects.mjs');
 
 const FOLDERS = ['menu', 'tabs', 'accordion', 'breadcrumbs', 'steps', 'pagination'];
 const present = FOLDERS.filter((folder) => existsSync(new URL(`../src/smart/${folder}/component.json`, import.meta.url)));
@@ -40,8 +41,7 @@ test('every navigation component is made from its component.json, language files
     }
     // Keys map to effects of the closed list (§4.8).
     for (const [key, effect] of Object.entries(manifest.accessibility?.keys ?? {})) {
-      const name = typeof effect === 'string' ? effect : effect.effect;
-      assert.match(name, /^(reach|toggle:[a-z-]+|step:[+-](\d+|page)|to:(min|max|first|last)|focus:(next|prev|first|last)|open|close|commit|revert|select)$/u, `${folder}: ${key}`);
+      assert.match(keyEffect(effect), KEY_EFFECT, `${folder}: ${key}`);
     }
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});

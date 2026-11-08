@@ -9,7 +9,8 @@
 // host that formats nothing:
 //   1. string/phone edit of '+7 900 123-45-67' reads the number as Russian:
 //      the flag RU, the dial code +7 and the digits 900 123-45-67 in order;
-//      a stored +1 and +44 number take US and GB, and +7 7xx Kazakhstan;
+//      a stored +1 and +44 number take US and GB, and +7 7xx Kazakhstan,
+//      drawn in the national format +7 701 123-45-67;
 //   2. date and datetime view (and cell) print the page's reading --
 //      25.10.2026 and 25.10.2026 10:30 on a Russian page, the record's own
 //      day and clock -- not the stored text; a host's formatFieldValue still
@@ -123,6 +124,8 @@ for (const theme of ['light', 'dark']) {
   const digits = (text) => String(text || '').replace(/\D/gu, '');
   ok(`${t} phone +7 900: Russia, +7 and the digits in order`, phones['phone-ru'].iso2 === 'RU' && phones['phone-ru'].dial === '+7' && digits(phones['phone-ru'].value) === '79001234567', phones['phone-ru']);
   ok(`${t} phone +7 701: Kazakhstan`, phones['phone-kz'].iso2 === 'KZ' && digits(phones['phone-kz'].value) === '77011234567', phones['phone-kz']);
+  // Kazakhstan's numbers read as Russia's: +7 701 123-45-67, not +7 70112 3 45 67.
+  ok(`${t} phone +7 701: the national format`, phones['phone-kz'].value === '+7 701 123-45-67', phones['phone-kz']);
   ok(`${t} phone +1: the United States`, phones['phone-us'].iso2 === 'US' && digits(phones['phone-us'].value) === '12125550100', phones['phone-us']);
   ok(`${t} phone +44: the United Kingdom`, phones['phone-gb'].iso2 === 'GB' && digits(phones['phone-gb'].value) === '442079460958', phones['phone-gb']);
 

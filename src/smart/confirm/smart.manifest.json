@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
