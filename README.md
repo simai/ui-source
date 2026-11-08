@@ -44,6 +44,31 @@ yarn install --frozen-lockfile
 yarn test:unit
 ```
 
+### Browser probes
+
+The probes in `tests/browser/` drive Chromium through `playwright`, a pinned
+devDependency. They resolve it from this repository's own `node_modules` and
+nowhere else: `scripts/run-browser-probes.mjs` stops before the first probe when
+playwright is missing, resolves outside the repository or differs from the
+declared version. A git worktree without `node_modules` borrows the main
+checkout's through a symlink, so install there first.
+
+Installing the package downloads no browser. Point `PLAYWRIGHT_BROWSERS_PATH`
+at a folder holding the build the pinned version wants (the release route uses
+`<GitHub>/.playwright-browsers`, because the shared
+`~/Library/Caches/ms-playwright` is pruned by other tools' installs), and add a
+missing build there with:
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH=<folder> node node_modules/playwright/cli.js install chromium-headless-shell
+```
+
+Then run every probe against a build output:
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH=<folder> node scripts/run-browser-probes.mjs <build output root>
+```
+
 Build release artifacts through `simai/ui-builder`; do not commit generated
 `ui` output here.
 

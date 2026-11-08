@@ -12,10 +12,14 @@ import {readdirSync, readFileSync, existsSync, mkdtempSync, symlinkSync, writeFi
 import {tmpdir} from 'node:os';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {ensureLocalPlaywright} from './playwright-local.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.argv[2] ? resolve(process.argv[2]) : null;
 if (!out || !existsSync(out)) throw new Error('Build output root is required (the directory holding core/, smart/, component/, utility/)');
+// Before any probe: a playwright that does not resolve from this repository fails
+// every probe the same way, so it is one sentence here rather than a hundred there.
+const playwright = ensureLocalPlaywright(root);
 
 const roots = {
   output: out,
@@ -184,6 +188,7 @@ finally { await browser.close(); }
 }
 
 console.log(JSON.stringify({
+  playwright: {version: playwright.version, path: playwright.path},
   passed: results.passed.length,
   failed: results.failed,
   skipped: {count: results.skipped.length, why: 'these drive a served lab and take URLs', names: results.skipped},
