@@ -122,7 +122,8 @@ ${coreScript}
   const settle = () => page.evaluate(() => new Promise((done) => setTimeout(() => setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(() => done())), 0), 0)));
   const frames = () => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => done()))));
   const drawn = (what) => page.waitForFunction(() => window.__sfScopeProbe.drawn(), null, {timeout: 20000}).then(() => true, () => { problems.push(`${what}: it never drew`); return false; });
-  const rest = async () => { await settle(); await page.waitForTimeout(200); await page.evaluate(() => window.__sfScopeProbe.quiet()); };
+  // Settled, then counted in the same task (scripts/instance-scope-page.js settledCount).
+  const settledCount = async () => { await settle(); await page.waitForTimeout(200); return (await page.evaluate(() => window.__sfScopeProbe.settledCount())).count; };
   const cycle = async () => {
     // The same element, placed again.
     const before = await page.evaluate(() => window.__sfScopeProbe.sizes());
@@ -153,11 +154,9 @@ ${coreScript}
     await page.evaluate(() => window.__sfScopeProbe.removeHosts());
     await settle();
     await cycle();
-    await rest();
-    const base = await page.evaluate(() => window.__sfScopeProbe.count());
+    const base = await settledCount();
     for (let i = 0; i < CYCLES; i += 1) await cycle();
-    await rest();
-    const after = await page.evaluate(() => window.__sfScopeProbe.count());
+    const after = await settledCount();
     const leaks = grown(base.filter((one) => one.kind !== 'page'), after.filter((one) => one.kind !== 'page'));
     // The page itself: back to what it was before any element was placed.
     const was = pageAttrs(await page.evaluate(() => window.__sfPageBefore));
