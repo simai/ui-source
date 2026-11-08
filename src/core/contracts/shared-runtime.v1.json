@@ -230,5 +230,12 @@
         "toNumber"
       ]
     }
+  },
+  "package_modules": {
+    "id": "<package>/<module>",
+    "register": "SF.runtimeModule.register(<package>, <abi>, {<module>: <namespace>})",
+    "reserved_namespaces": [
+      "lit"
+    ]
   }
 }
