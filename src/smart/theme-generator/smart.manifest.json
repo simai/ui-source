@@ -467,7 +467,7 @@
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "e4082a61d2c58cd2a28c979b95779cf51a7b7f1fc6e7079dcde9a851ff77cd31"
+        "sha256": "7e015da3f78ca3362abb1e6052159e7f5205386161a22cf2d33d0d2835cb022e"
       }
     ],
     "generated_runtime": []

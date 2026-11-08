@@ -67,7 +67,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert/smart.manifest.json",
-      "manifest_sha256": "dc8fdc44e1276c5fbd1125bd751cda37ba2a83a5138a40c05e3be7aead41a65f",
+      "manifest_sha256": "44633212290998982938b1247e420a7b3aab694d201c42347041e9553469072b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -106,7 +106,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert-bar/smart.manifest.json",
-      "manifest_sha256": "383c5d39c411407cba4b5246dc283a68b4be8d0fa01dbb14a256e02206d41086",
+      "manifest_sha256": "56ae9d5881602a80e3388dc49eafa82fcb166b95ebbb21f4b1eba462696fff50",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -367,7 +367,8 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.close"
+          "component.close",
+          "component.icon-buttons"
         ]
       },
       "contract_schema": {
@@ -379,13 +380,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-close/smart.manifest.json",
-      "manifest_sha256": "e3bb89150273a2052b89c4c3c275c3c62ac80ef4550174da619c9a3f185daf21",
+      "manifest_sha256": "39865e7ef68b4da9b0f9acdd61a922324706850453c5ae9ee463e5c4660ecccb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
+      "summary": "The close button of the SIMAI Framework: a real button (focus, Enter and Space, the name «Закрыть» by default) drawing the cross with a 2px line, in three looks -- ghost, plain and media. Inside a native button it stays the decorative cross it was before 1.2.0.",
       "tags": [
         "button-close"
       ],
@@ -433,47 +434,6 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
-        "interaction",
-        "keyboard",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "component.button-group",
-          "component.spinner",
-          "smart.button",
-          "smart.icon"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-button-group",
-      "id": "smart.button-group",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/button-group/smart.manifest.json",
-      "manifest_sha256": "98e09a373e8eec1afd0caa29e21d8981d3b53b239bf74e5ce73079baaafb6a7f",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A controlled single-selection group built from SF5 buttons.",
-      "tags": [
-        "button",
-        "segmented-control",
-        "selection"
-      ],
-      "title": "Button group"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
         "theme",
         "responsive"
       ],
@@ -496,7 +456,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "624088fabca2ebfa96038d84512853c99caba2f71720ab2a6b6ddb8cb636be77",
+      "manifest_sha256": "cb3622e0b744da871b6c6713bce00e377e0f29aaac52f19cb1c4b07b310a2a55",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -645,7 +605,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/contents/smart.manifest.json",
-      "manifest_sha256": "e4349197c3d82e8927914e53b43ebdc6e6df93ef85e1dd7d22bf0eef3a742e0f",
+      "manifest_sha256": "a1d4a728b1f3d799622c679f99a84e839ad15878cf61235465517148783f5888",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -979,7 +939,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/gallery/smart.manifest.json",
-      "manifest_sha256": "06ca2c8ba86bb75a631cfa8f2c92c5cffa53503ff0fcc9c41be3cad8a1758fc8",
+      "manifest_sha256": "dffc0fa0e629ec14ed65811066018484b758ea54adae89c81afce7273195c5c2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1057,7 +1017,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "956fea10afdd8d7b81597bb1b753a89815503abdd5e3f8dde3b4582e39e8ccfa",
+      "manifest_sha256": "6071360279ade6d5e76e77b6c706fc043c5f03570bfab51130dbc556d55b091c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1095,7 +1055,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/help-mark/smart.manifest.json",
-      "manifest_sha256": "2eccdc271c02aa6bd0d09e6680b438f7b69e2c8d4cf435e5ad2075809f857087",
+      "manifest_sha256": "dc4cc0c7f69c59f8c17ef3c604e6f60bce0e948faa3e1c44b00ce4856d49ac6c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1685,10 +1645,10 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.button-group",
           "smart.button-icon",
           "smart.icon",
-          "smart.menu-context"
+          "smart.menu-context",
+          "smart.segmented"
         ]
       },
       "contract_schema": {
@@ -1700,7 +1660,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/language/smart.manifest.json",
-      "manifest_sha256": "52b6e95fc41fb4b1f4ef5faa63e9f997a630015fa2069f63f6dc0a6cf9fc8630",
+      "manifest_sha256": "6614ecda62735fe421394bed4c00060465156961f807be48f9da6156ed46561e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1794,7 +1754,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-attention/smart.manifest.json",
-      "manifest_sha256": "1169b575a3e2fefb2efa915f9cc316a01fa2e440c61bd771c5a953885ea38af2",
+      "manifest_sha256": "c2cb4197e6eb8d0303c51c21edbab05309ca2288435b233cf92af9d50812639c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2126,7 +2086,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pager/smart.manifest.json",
-      "manifest_sha256": "33a2a0f6781f6ba0fe0eba9d1d6b4aea155fe8b3c8e0753c44687564893d499b",
+      "manifest_sha256": "6127462674566d7b96bdabcdab1ffe7d00887e2e9f7b5029f3a22d280f0450d8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2360,7 +2320,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "ffd683e273c254aa5116783e3157cbfc41dc18cde7f0bc3ffbf2e94711c5afd8",
+      "manifest_sha256": "80dc8946dea303427045c6bb5783ffcbcd08a7f1caa0e43fb324a58f00875e61",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2554,7 +2514,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/search/smart.manifest.json",
-      "manifest_sha256": "b93a57e8e1770b5747b750dbd0eebe029c93b1580762c2745ae3c0b0105267d0",
+      "manifest_sha256": "4bbfe40006f8a78dcd547f9565a44eb1f3351ff2b6363c0b597815346df76824",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2568,6 +2528,47 @@
         "dialog"
       ],
       "title": "Site search"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.button-group",
+          "component.spinner",
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-segmented",
+      "id": "smart.segmented",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/segmented/smart.manifest.json",
+      "manifest_sha256": "7c0d8d4b8ece7144cc74341a91f6fdb4279242d9b4a06e37118df766b881c93b",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A controlled single-selection group built from SF5 buttons.",
+      "tags": [
+        "button",
+        "segmented-control",
+        "selection"
+      ],
+      "title": "Segmented control"
     },
     {
       "backend_adapters": [],
@@ -2670,7 +2671,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/slider/smart.manifest.json",
-      "manifest_sha256": "613aa3875c2c78863c1a38f3c5b9cf81e346ce8c49a590fcb8ba5d34246d56cf",
+      "manifest_sha256": "07d0b296d88010b6e00a660b0f51d4357a7a5d481d3ff5e79726b9e374fa5137",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2939,7 +2940,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "57bd182dbf27bf2c5f2797e9f6787070574179b0ff3bc3c9fec6f7fc1faa17b9",
+      "manifest_sha256": "cbf7c32b79e3f0f9f146d8296701eb2314db55bb1f7795513d85a65441147aa0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2978,7 +2979,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "3d5f9b77acd2bc94efbf02f2af4a0423ac5ef84785d311c581da21d1cbe50c94",
+      "manifest_sha256": "39ab3354172826c33794cda5a9cfdc0ced77f3b81f00742c9a1ec9fab2f55a57",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3019,7 +3020,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "ea93d908b17cb57516d54dd78146ae4a5c2aa7040ec80e71edae443df78fa0cc",
+      "manifest_sha256": "941edb472a47d4a6a43cc14b9f6e43ebb7ba79b641417a7bd5efea8ccd9453aa",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3063,7 +3064,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/toast/smart.manifest.json",
-      "manifest_sha256": "0cff593e01a39c3becd8c3fb338f9c59d16701360a35cefde4e4e484fb8fea49",
+      "manifest_sha256": "8f99db46be0c53c33c6bf694c68d8d40e0fc6d23a60a97f4b8b9d94beed7e018",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3222,7 +3223,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard/smart.manifest.json",
-      "manifest_sha256": "8d463d656c37cd506364fae9b9840ec701faedfc86e8baaa7066b85f7090c895",
+      "manifest_sha256": "d77f8289008a2b4e09e86e10aac6e57d6ca605021066ae09602b1240c33aa2d4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -24,7 +24,7 @@
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/scss/vars/_sf_var__color.scss"
   ],
-  "content_sha256": "9e3ff34c37d497bb5d2bdf980082a36df351c2fdb6a6eaa71ac93698fa49b9c9",
+  "content_sha256": "73514bcd5446b27583066608a93a9f3c51fac26375298358a5b2f8ba62d2117d",
   "dependencies": [
     {
       "id": "tokens.elevation",
