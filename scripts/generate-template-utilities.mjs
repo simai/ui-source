@@ -48,7 +48,13 @@ const utilities = Object.entries(readRules(utilityFiles)).filter(([, rule]) => r
 // 2026-10-31). A component that wants the utility writes `isolate` or
 // `isolation-auto`, which still match.
 const DATED_BARE_WORDS = new Set(['auto']);
-const classToken = (token) => !DATED_BARE_WORDS.has(token);
+// The heading tag names. utility.headers 1.1.0 asks for a whole class token
+// h1..h6, and a template names those words only as tags or tag strings --
+// `<h1 class="sf-h-4">` (header-page), `<h2 id=...>` (modal), BLOCK_TAGS
+// 'h2'..'h4' (input-rich) -- never as a class; read as classes they bound the
+// headers sheet to three components that write none (measured 2026-11-08).
+const HEADING_TAGS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+const classToken = (token) => !DATED_BARE_WORDS.has(token) && !HEADING_TAGS.has(token);
 
 const sources = (folder) => {
   const files = [join(folder, 'index.js')];
