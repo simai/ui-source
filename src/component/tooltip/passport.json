@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.tooltip",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tooltip/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/tooltip/scss/_css__tooltip_custom.scss",
     "src/component/tooltip/scss/index.scss"
   ],
-  "content_sha256": "70d7bdba83ae3bdb8c7f34164250fe0bcebbcb2452fc719b3a0da666976c7c81",
+  "content_sha256": "b8ce0f26c21b70ba11f29984914525d65d6d815f0188497d996a8188ac2cd29a",
   "dependencies": [
     {
       "id": "core.runtime",
