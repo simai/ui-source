@@ -841,7 +841,7 @@
       },
       {
         "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "7966a790c5ad940affc4a446be59fe65ef97f7c519037999a8c11a24fcb393c4"
+        "sha256": "3c732ed2444c479bff53ed6b93475da97a77e331f31d14105a112ee4fa6cf810"
       },
       {
         "path": "src/smart/editor-overlay/rule.js",

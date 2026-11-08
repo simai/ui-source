@@ -412,7 +412,7 @@
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",
-        "sha256": "dff4655fc5611feafee44ce1f77b3b5f00405a4add5a2b8efae11d6336613748"
+        "sha256": "cf7f4254a61dc6fdf4c58580ab2c0bbca81accc6ab1b99072c725a6514da6f29"
       },
       {
         "path": "src/smart/sortable/rule.js",

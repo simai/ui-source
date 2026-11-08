@@ -471,7 +471,7 @@
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-        "sha256": "b9fb130698e72357e7cb537a9fc3712b746dd9c8390dfc6caa9ba5db3c51e183"
+        "sha256": "ff03e1d90e8bdc2994ac56a72654e90cf8821ab815015a1c8f4f2b25eb444b16"
       },
       {
         "path": "src/smart/profile-picker/rule.js",

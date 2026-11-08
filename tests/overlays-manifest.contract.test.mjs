@@ -120,7 +120,7 @@ test('sf-popover: requests before, facts after; role on the host is a dated alia
   assert.doesNotMatch(source, /get role\(\)/, 'the prototype role stays the browser\'s (§3.1)');
   assert.match(source, /this\.close\(\{reason: 'escape'\}\)/);
   assert.match(source, /this\.close\(\{reason: 'outside'\}\)/);
-  assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-elevation-2--surface\)\);/);
+  assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/);
 });
 
 test('sf-dropdown: change carries data only; sf-dropdown:change keeps root through its adapter; no module counter ids', () => {

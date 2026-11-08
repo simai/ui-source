@@ -607,7 +607,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "e7e4817b409cde89cf407ef73a426edf697adb5b89c860055508cd6807b0d873"
+        "sha256": "f9d08a07d4caf4518a18313426c4352738e8285ebe1b0bdb893856df6fc48d30"
       }
     ],
     "generated_runtime": [
