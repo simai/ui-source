@@ -13,7 +13,7 @@ const source = read('src/smart/include/index.js');
 
 test('the manifest: a leaf that fetches, two facts and the refresh action', () => {
   assert.equal(manifest.tag, 'sf-include');
-  assert.equal(manifest.version, '1.0.2');
+  assert.equal(manifest.version, '1.0.3');
   assert.deepEqual(manifest['side-effects'], ['network']);
   assert.deepEqual(Object.keys(manifest.settings), ['src', 'load', 'lines']);
   assert.deepEqual(manifest.settings.load.values, ['now', 'view']);
