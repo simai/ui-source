@@ -363,7 +363,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "669bebc09776f7f9192dd31ac4c298e816818264a3bcfa0a47dc1bd8d49fe2f8"
+        "sha256": "47afc2acdc2fa4e21c43aeb4d7b5fa10ee13a5eacb84fc5509751e51ea838cbd"
       }
     ],
     "generated_runtime": []
@@ -380,7 +380,7 @@
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-header-site>",
+    "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-segmented></sf-header-site>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

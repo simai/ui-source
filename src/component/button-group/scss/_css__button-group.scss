@@ -65,7 +65,7 @@
      internal join. Selection changes fill and text, never border geometry.
      A Smart segment is a host, sf-button[segment], carrying its appearance and
      scheme; old markup names the appearance `type` (a dated alias until
-     2026-12-01). Keying on [type] alone matched no group sf-button-group draws,
+     2026-12-01). Keying on [type] alone matched no group sf-segmented draws,
      and every join was two lines wide (simai/ui-source#52). The :is() keeps the
      specificity the button's own segment rules are written against. */
   .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],

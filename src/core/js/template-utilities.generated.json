@@ -60,12 +60,6 @@
     "justify-content/default",
     "place-items/default"
   ],
-  "cl-button-group": [
-    "align-items/default",
-    "display/default",
-    "pointer-events/default",
-    "text-align/default"
-  ],
   "cl-button-icon": [
     "align-items/default",
     "display/default",
@@ -363,6 +357,12 @@
   "cl-search": [
     "display/default",
     "sr-only/default"
+  ],
+  "cl-segmented": [
+    "align-items/default",
+    "display/default",
+    "pointer-events/default",
+    "text-align/default"
   ],
   "cl-skeleton": [
     "animation/default",

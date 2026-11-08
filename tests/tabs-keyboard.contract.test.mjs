@@ -177,6 +177,6 @@ test('Tabs documentation sends a segmented switch to the button group and explai
   );
   assert.match(docs, /## Pills, and what a two-option switch is/);
   assert.match(docs, /scheme="outline"/);
-  assert.match(docs, /sf-button-group appearance="segmented"/);
+  assert.match(docs, /sf-segmented appearance="segmented"/);
   assert.match(docs, /Tabs are for panels/);
 });

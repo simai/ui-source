@@ -1479,7 +1479,7 @@ function renderBooleanEdit(field, value, host) {
     ]);
 
     return html`
-        <sf-button-group
+        <sf-segmented
                 size=${EDIT_SIZE}
                 items=${items}
                 value=${value === true ? 'yes' : value === false ? 'no' : nothing}
@@ -1488,7 +1488,7 @@ function renderBooleanEdit(field, value, host) {
                     const next = event.detail?.value;
                     host.setFieldValue(field, next === 'yes' ? true : next === 'no' ? false : null);
                 }}
-        ></sf-button-group>
+        ></sf-segmented>
     `;
 }
 
@@ -1587,7 +1587,7 @@ function renderChoiceButtons(field, value, host) {
     };
 
     return html`
-        <sf-button-group
+        <sf-segmented
                 class="sf-field-choice-buttons"
                 appearance="segmented"
                 size=${size}
@@ -1604,7 +1604,7 @@ function renderChoiceButtons(field, value, host) {
                     const next = String(event.detail?.value ?? '');
                     host.setFieldValue(field, next === '' ? null : optionValue(next));
                 }}
-        ></sf-button-group>
+        ></sf-segmented>
     `;
 }
 

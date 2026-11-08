@@ -28,7 +28,7 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.deepEqual(Object.keys(manifest.events.change.carries), ['value', 'previous', 'href', 'dir', 'reason']);
   assert.deepEqual(Object.keys(manifest.actions), ['select']);
   assert.equal(manifest.form.value, 'value');
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-button-group', 'cl-button-icon', 'cl-icon', 'cl-menu-context']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button-icon', 'cl-icon', 'cl-menu-context']);
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
 });
 
@@ -84,7 +84,7 @@ test('the page language picks the value: the same code, else the same primary la
 });
 
 test('it composes the Framework\'s parts and keeps their events inside', () => {
-  assert.match(template, /<sf-button-group[\s\S]*appearance="segmented"/u);
+  assert.match(template, /<sf-segmented[\s\S]*appearance="segmented"/u);
   assert.match(template, /<sf-button-icon[\s\S]*icon="translate"[\s\S]*scheme="on-surface"/u);
   assert.match(template, /<sf-menu-context[\s\S]*popup/u);
   assert.match(template, /@sf-button-group-change=\$\{stop\}/u);

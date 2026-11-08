@@ -34,7 +34,7 @@ const out = resolve(process.argv[2]);
 
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css', 'component/component/button-group/css/button-group.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'component/component/button-group/js/button-group.js', 'smart/smart/button-group/js/button-group.js'];
+  'component/component/button-group/js/button-group.js', 'smart/smart/segmented/js/segmented.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 
 const failures = [];
@@ -69,18 +69,18 @@ try {
     const body = SIZES.map((size) => `<div data-row="${size}" style="display:flex;gap:16px;align-items:flex-start;margin-block-end:8px">
       <sf-button size="${size}" text="Кнопка" class="normal"></sf-button>
       <sf-button size="${size}" spacing="compact" text="Кнопка" class="compact"></sf-button>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Период" value="all" class="text" ${items(THREE)}></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Вид" value="list" class="icons" ${items(ICONS)}></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" spacing="compact" aria-label="Период" value="all" class="dense" ${items(THREE)}></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" theme-switch class="theme"></sf-button-group>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Период" value="all" class="text" ${items(THREE)}></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Вид" value="list" class="icons" ${items(ICONS)}></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" spacing="compact" aria-label="Период" value="all" class="dense" ${items(THREE)}></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" theme-switch class="theme"></sf-segmented>
     </div>`).join('');
     const page = await open({width, body});
-    await page.waitForFunction(() => document.querySelectorAll('sf-button-group.theme .sf-button-group > button').length === 15);
+    await page.waitForFunction(() => document.querySelectorAll('sf-segmented.theme .sf-button-group > button').length === 15);
     const ladder = await page.evaluate((sizes) => sizes.map((size) => {
       const row = document.querySelector(`[data-row="${size}"]`);
       const height = (node) => node.getBoundingClientRect().height;
       const measure = (name) => {
-        const group = row.querySelector(`sf-button-group.${name} .sf-button-group`);
+        const group = row.querySelector(`sf-segmented.${name} .sf-button-group`);
         const style = getComputedStyle(group);
         const nodes = [...group.querySelectorAll(':scope > button')];
         return {
@@ -122,7 +122,7 @@ try {
 
   // 2. The plate follows the selection and keeps the widths; no join border.
   {
-    const page = await open({body: `<sf-button-group id="g" appearance="segmented" aria-label="Тема" value="all" ${items(THREE)}></sf-button-group>`});
+    const page = await open({body: `<sf-segmented id="g" appearance="segmented" aria-label="Тема" value="all" ${items(THREE)}></sf-segmented>`});
     const read = () => page.evaluate(() => [...document.querySelectorAll('#g .sf-button-group > button')].map((node) => {
       const style = getComputedStyle(node);
       return {
@@ -149,10 +149,10 @@ try {
   // 3. Contrast over the track on surfaces 0 to 3, both themes; ink on both plates.
   for (const theme of ['light', 'dark']) {
     const body = [0, 1, 2, 3].map((step) => `<div class="surface" style="background-color:var(--sf-surface-${step});padding:8px">
-      <sf-button-group appearance="segmented" aria-label="Тема" value="all" data-step="${step}" ${items(THREE)}></sf-button-group>
-      <sf-button-group appearance="segmented" plate="raised" aria-label="Тема" value="all" data-raised="${step}" ${items(THREE)}></sf-button-group>
-      <sf-button-group appearance="segmented" scheme="secondary" aria-label="Тема" value="all" data-secondary="${step}" ${items(THREE)}></sf-button-group>
-      <sf-button-group appearance="segmented" scheme="on-surface" aria-label="Тема" value="all" data-on-surface="${step}" ${items(THREE)}></sf-button-group>
+      <sf-segmented appearance="segmented" aria-label="Тема" value="all" data-step="${step}" ${items(THREE)}></sf-segmented>
+      <sf-segmented appearance="segmented" plate="raised" aria-label="Тема" value="all" data-raised="${step}" ${items(THREE)}></sf-segmented>
+      <sf-segmented appearance="segmented" scheme="secondary" aria-label="Тема" value="all" data-secondary="${step}" ${items(THREE)}></sf-segmented>
+      <sf-segmented appearance="segmented" scheme="on-surface" aria-label="Тема" value="all" data-on-surface="${step}" ${items(THREE)}></sf-segmented>
     </div>`).join('');
     const page = await open({theme, body});
     const rows = await page.evaluate(() => {
@@ -182,7 +182,7 @@ try {
       const result = [];
       for (const surface of document.querySelectorAll('.surface')) {
         const page = rgba(getComputedStyle(surface).backgroundColor);
-        for (const host of surface.querySelectorAll('sf-button-group')) {
+        for (const host of surface.querySelectorAll('sf-segmented')) {
           const kind = host.dataset.raised ? 'raised' : host.dataset.secondary ? 'secondary' : host.dataset.onSurface ? 'on-surface' : 'primary';
           const root = host.querySelector('.sf-button-group');
           const track = over(rgba(getComputedStyle(root).backgroundColor), page);
@@ -211,10 +211,10 @@ try {
   // 4. Full width, icon-only names, counts in the name, narrow pages.
   {
     const page = await open({width: 390, body: `
-      <div id="box" style="inline-size:320px"><sf-button-group id="full" appearance="segmented" full-width aria-label="Период" value="d" ${items([{value: 'd', label: 'День'}, {value: 'w', label: 'Неделя'}, {value: 'm', label: 'Месяц'}])}></sf-button-group></div>
-      <sf-button-group id="icons" appearance="segmented" aria-label="Вид" value="list" ${items(ICONS)}></sf-button-group>
-      <sf-button-group id="named" appearance="segmented" aria-label="Фильтр" value="all" ${items([{value: 'all', label: 'Все', count: 24}, {value: 'dark', label: 'Тёмные', count: 7, 'aria-label': 'Тёмные эффекты'}])}></sf-button-group>
-      <sf-button-group id="long" appearance="segmented" aria-label="Много" value="a" ${items('abcdefghij'.split('').map((value) => ({value, label: `Пункт ${value}`})))}></sf-button-group>`});
+      <div id="box" style="inline-size:320px"><sf-segmented id="full" appearance="segmented" full-width aria-label="Период" value="d" ${items([{value: 'd', label: 'День'}, {value: 'w', label: 'Неделя'}, {value: 'm', label: 'Месяц'}])}></sf-segmented></div>
+      <sf-segmented id="icons" appearance="segmented" aria-label="Вид" value="list" ${items(ICONS)}></sf-segmented>
+      <sf-segmented id="named" appearance="segmented" aria-label="Фильтр" value="all" ${items([{value: 'all', label: 'Все', count: 24}, {value: 'dark', label: 'Тёмные', count: 7, 'aria-label': 'Тёмные эффекты'}])}></sf-segmented>
+      <sf-segmented id="long" appearance="segmented" aria-label="Много" value="a" ${items('abcdefghij'.split('').map((value) => ({value, label: `Пункт ${value}`})))}></sf-segmented>`});
     const full = await page.evaluate(() => {
       const box = document.getElementById('box').getBoundingClientRect();
       const root = document.querySelector('#full .sf-button-group');
@@ -242,7 +242,7 @@ try {
   // 5. The keyboard is the group's own; the ring is seen.
   {
     const page = await open({body: `<button id="before">до</button>
-      <sf-button-group id="k" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'А'}, {value: 'b', label: 'Б', disabled: true}, {value: 'c', label: 'В'}, {value: 'd', label: 'Г'}])}></sf-button-group>`});
+      <sf-segmented id="k" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'А'}, {value: 'b', label: 'Б', disabled: true}, {value: 'c', label: 'В'}, {value: 'd', label: 'Г'}])}></sf-segmented>`});
     await page.evaluate(() => { window.__changes = []; document.getElementById('k').addEventListener('change', (event) => window.__changes.push(event.detail.value)); });
     await page.focus('#before');
     await page.keyboard.press('Tab');
@@ -282,7 +282,7 @@ try {
 
   // 6. Reduced motion, right to left, forced colours.
   {
-    const page = await open({reducedMotion: 'reduce', body: `<div dir="rtl"><sf-button-group id="r" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'Первый'}, {value: 'b', label: 'Второй'}])}></sf-button-group></div>`});
+    const page = await open({reducedMotion: 'reduce', body: `<div dir="rtl"><sf-segmented id="r" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'Первый'}, {value: 'b', label: 'Второй'}])}></sf-segmented></div>`});
     // The probe's own reset turns transitions off everywhere; read the sheet's rule instead.
     const motion = await page.evaluate(() => {
       document.head.querySelector('style').remove();
@@ -293,7 +293,7 @@ try {
     check('reduced motion: no transition', motion.duration.split(',').every((value) => parseFloat(value) === 0), motion);
     check('right to left: the first segment stands at the start', motion.firstRight, motion);
     await page.close();
-    const forced = await open({forcedColors: 'active', body: `<sf-button-group id="f" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'Первый'}, {value: 'b', label: 'Второй'}])}></sf-button-group>`});
+    const forced = await open({forcedColors: 'active', body: `<sf-segmented id="f" appearance="segmented" aria-label="Тема" value="a" ${items([{value: 'a', label: 'Первый'}, {value: 'b', label: 'Второй'}])}></sf-segmented>`});
     const colors = await forced.evaluate(() => [...document.querySelectorAll('#f button')].map((node) => getComputedStyle(node).backgroundColor));
     evidence.forcedColors = colors;
     check('forced colours: the selected plate still differs', colors[0] !== colors[1], {colors});
@@ -303,10 +303,10 @@ try {
   // 7. radius: the track takes it, the plate stays concentric.
   {
     const RADII = ['', 'default', 'square', 'rounded'];
-    const body = ['1', '3'].flatMap((size) => RADII.map((radius) => `<div style="margin-block-end:8px"><sf-button-group appearance="segmented" size="${size}" ${radius ? `radius="${radius}"` : ''} data-size="${size}" data-radius="${radius || 'none'}" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`)).join('')
-      + `<div style="--sf-button-group-radius:10px"><sf-button-group id="var" appearance="segmented" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`
-      + `<div style="--sf-button-group-radius:10px"><sf-button-group id="var-square" appearance="segmented" radius="square" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`
-      + `<sf-button-group id="joined" radius="rounded" aria-label="Период" value="all" ${items(THREE)}></sf-button-group>`;
+    const body = ['1', '3'].flatMap((size) => RADII.map((radius) => `<div style="margin-block-end:8px"><sf-segmented appearance="segmented" size="${size}" ${radius ? `radius="${radius}"` : ''} data-size="${size}" data-radius="${radius || 'none'}" aria-label="Период" value="all" ${items(THREE)}></sf-segmented></div>`)).join('')
+      + `<div style="--sf-button-group-radius:10px"><sf-segmented id="var" appearance="segmented" aria-label="Период" value="all" ${items(THREE)}></sf-segmented></div>`
+      + `<div style="--sf-button-group-radius:10px"><sf-segmented id="var-square" appearance="segmented" radius="square" aria-label="Период" value="all" ${items(THREE)}></sf-segmented></div>`
+      + `<sf-segmented id="joined" radius="rounded" aria-label="Период" value="all" ${items(THREE)}></sf-segmented>`;
     const page = await open({body});
     const rows = await page.evaluate(() => {
       const read = (host) => {
@@ -330,7 +330,7 @@ try {
         return {start: parseFloat(style.borderStartStartRadius), end: parseFloat(style.borderStartEndRadius), height: node.getBoundingClientRect().height};
       });
       return {
-        rows: [...document.querySelectorAll('sf-button-group[data-radius]')].map(read),
+        rows: [...document.querySelectorAll('sf-segmented[data-radius]')].map(read),
         variable: read(document.getElementById('var')), variableSquare: read(document.getElementById('var-square')),
         named, joined,
       };
@@ -356,9 +356,9 @@ try {
   {
     const PERIOD = [{value: 'd', label: 'День'}, {value: 'w', label: 'Неделя'}, {value: 'm', label: 'Месяц'}];
     const page = await open({body: `<form id="form">
-      <sf-button-group id="period" appearance="segmented" name="period" value="w" aria-label="Период" ${items(PERIOD)}></sf-button-group>
-      <sf-button-group id="off" appearance="segmented" name="off" value="d" disabled aria-label="Выключено" ${items(PERIOD)}></sf-button-group>
-      <sf-button-group id="nameless" appearance="segmented" value="d" aria-label="Без имени" ${items(PERIOD)}></sf-button-group>
+      <sf-segmented id="period" appearance="segmented" name="period" value="w" aria-label="Период" ${items(PERIOD)}></sf-segmented>
+      <sf-segmented id="off" appearance="segmented" name="off" value="d" disabled aria-label="Выключено" ${items(PERIOD)}></sf-segmented>
+      <sf-segmented id="nameless" appearance="segmented" value="d" aria-label="Без имени" ${items(PERIOD)}></sf-segmented>
       <button id="send" type="submit">Отправить</button>
     </form>`});
     await page.evaluate(() => {

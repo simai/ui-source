@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "id": "smart.button-group",
-  "version": "1.2.1",
+  "id": "smart.segmented",
+  "version": "1.3.0",
   "title": "Button group",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -19,7 +19,7 @@
     "theme",
     "responsive"
   ],
-  "custom_element": "sf-button-group",
+  "custom_element": "sf-segmented",
   "templates": [
     "default"
   ],
@@ -443,8 +443,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "<sf-button-group>"
+    ],
+    "deprecations": [
+      {
+        "path": "<sf-button-group>",
+        "since": "1.3.0",
+        "replacement": "<sf-segmented>"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
@@ -453,8 +461,8 @@
     "source_revision": "a38447c031988137d3ebead71d2397ceaf6b1b14",
     "source_artifacts": [
       {
-        "path": "src/smart/button-group/index.js",
-        "sha256": "1cb400d707d6578fe3ba1b95ae139a343c68800c9908282174248f260dd9bb20"
+        "path": "src/smart/segmented/index.js",
+        "sha256": "171679d6473da9749c6cc31b722bde5bddc795d144c5ec8a6e6baf9fc491649a"
       }
     ],
     "generated_runtime": []
@@ -473,7 +481,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-button-group aria-label=\"View\" items='[{\"value\":\"list\",\"label\":\"List\"},{\"value\":\"grid\",\"label\":\"Grid\"}]' value=\"list\"></sf-button-group>",
+    "minimal_example": "<sf-segmented aria-label=\"View\" items='[{\"value\":\"list\",\"label\":\"List\"},{\"value\":\"grid\",\"label\":\"Grid\"}]' value=\"list\"></sf-segmented>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

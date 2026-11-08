@@ -90,8 +90,8 @@ Tabs are not a switch. For a two-option segmented switch — two choices, no
 panels — use the segmented button group:
 
 ```html
-<sf-button-group appearance="segmented" aria-label="Вид" value="edit"
-  items='[{"value":"edit","label":"Редактор"},{"value":"code","label":"Код"}]'></sf-button-group>
+<sf-segmented appearance="segmented" aria-label="Вид" value="edit"
+  items='[{"value":"edit","label":"Редактор"},{"value":"code","label":"Код"}]'></sf-segmented>
 ```
 
 It is a `radiogroup` with one tab stop, arrows, Home and End, and its track is

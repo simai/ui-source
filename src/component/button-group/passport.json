@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.button-group",
   "kind": "component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/button-group/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/button-group/scss/_css__button-group.scss",
     "src/component/button-group/scss/index.scss"
   ],
-  "content_sha256": "263bd79ef6f91c27a74f7019f694697e389e5dcb1dffa64e3e9e9e0e0f235cfa",
+  "content_sha256": "b73645416f49e2dc43bcf1388598d24c39c384053d34f9b2b916cfe672ee235a",
   "dependencies": [
     {
       "id": "core.runtime",

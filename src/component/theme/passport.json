@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.theme",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/theme/docs/docs.md",
@@ -12,6 +12,6 @@
     "src/component/theme/js/index.js",
     "src/component/theme/rule.js"
   ],
-  "content_sha256": "19547f2e24aaf84498aef0e8e4e85a2fcb87d9a381b347e710dff570ff349300",
+  "content_sha256": "ecbe685af66aa9248b8ecf59f147b43d6e3f4400c0577f875f30d945569317e3",
   "dependencies": []
 }

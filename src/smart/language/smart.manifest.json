@@ -30,10 +30,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.button-group",
       "smart.button-icon",
       "smart.icon",
-      "smart.menu-context"
+      "smart.menu-context",
+      "smart.segmented"
     ],
     "public_parts": []
   },
@@ -323,15 +323,15 @@
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "267c267a040bf555abe0edb446afcbf8f769d52834cf16546082b8e5c8408b65"
+        "sha256": "f2b9e69bf76ac3e59d17d5e91b7560505ea2bd51938d775c3cd19225c2ec2af2"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "c9a18fe67990be903799df042a235d0f7d767c9cfcba4ffcd302f8a3a0fc5d03"
+        "sha256": "32607b90c20e906c0d5771dc6b8b46d9da14da34bc412ada98477899e4589fa1"
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "b904afdc9b41cbadd474035d30703000c448f1b8dcdc7191f900912e20361f73"
+        "sha256": "098cac50aa804e278bb274c356ddb42a3c71e98ed319fdd1a25714230cee6caa"
       }
     ],
     "generated_runtime": []

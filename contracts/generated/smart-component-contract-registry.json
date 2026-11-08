@@ -432,47 +432,6 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
-        "interaction",
-        "keyboard",
-        "theme",
-        "responsive"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "component.button-group",
-          "component.spinner",
-          "smart.button",
-          "smart.icon"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-button-group",
-      "id": "smart.button-group",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/button-group/smart.manifest.json",
-      "manifest_sha256": "98e09a373e8eec1afd0caa29e21d8981d3b53b239bf74e5ce73079baaafb6a7f",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "A controlled single-selection group built from SF5 buttons.",
-      "tags": [
-        "button",
-        "segmented-control",
-        "selection"
-      ],
-      "title": "Button group"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
         "theme",
         "responsive"
       ],
@@ -1056,7 +1015,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "888974da84b9db985188ae341ea17d9e5017156138028d59a538715b1ef11a48",
+      "manifest_sha256": "5cdca87798577d058b1de8f4ac13d298ace1ffe2d23f6bc01f6d621e5022b9e3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1684,10 +1643,10 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.button-group",
           "smart.button-icon",
           "smart.icon",
-          "smart.menu-context"
+          "smart.menu-context",
+          "smart.segmented"
         ]
       },
       "contract_schema": {
@@ -1699,7 +1658,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/language/smart.manifest.json",
-      "manifest_sha256": "53c8d04aa6164d660ca2f1621f58a04ee44d8f20bf802da219a0c5850a7b7e8d",
+      "manifest_sha256": "2fd37cfb778fcaac7a6d8785cb4ca5e8cb86706c785e43751480eb87030b4def",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2567,6 +2526,47 @@
         "dialog"
       ],
       "title": "Site search"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.button-group",
+          "component.spinner",
+          "smart.button",
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-segmented",
+      "id": "smart.segmented",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/segmented/smart.manifest.json",
+      "manifest_sha256": "aeb34e4ecbb1e317beb5ad98682d586214aeed91826070a43a1a5f8ec70129a2",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A controlled single-selection group built from SF5 buttons.",
+      "tags": [
+        "button",
+        "segmented-control",
+        "selection"
+      ],
+      "title": "Button group"
     },
     {
       "backend_adapters": [],

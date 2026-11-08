@@ -55,7 +55,7 @@ test('button loading: every button draws the one spinner', async () => {
   for (const path of [
     'src/smart/button/js/templates/default.js',
     'src/smart/button-icon/js/templates/default.js',
-    'src/smart/button-group/js/templates/default.js',
+    'src/smart/segmented/js/templates/default.js',
     'src/component/buttons/js/_buttons.js',
     'src/component/icon-buttons/js/_icon-buttons.js',
   ]) {
@@ -63,7 +63,7 @@ test('button loading: every button draws the one spinner', async () => {
     assert.match(source, /import \{ ?createInlineSpinner ?\} from '[./]+(?:component\/)?spinner\/js\/_spinner-draw'/, `${path} imports the drawing`);
     assert.match(source, /createInlineSpinner\(\{ ?className: 'sf-(?:icon-)?button-spinner'/, path);
   }
-  const group = await read('src/smart/button-group/js/templates/default.js');
+  const group = await read('src/smart/segmented/js/templates/default.js');
   assert.match(group, /aria-busy=\$\{item\.loading \? 'true' : nothing\}/);
   assert.match(group, /\?loading=\$\{item\.loading\}/);
 });

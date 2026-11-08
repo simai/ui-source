@@ -24,7 +24,7 @@ function renderInline(context) {
     ariaLabel: context.compact ? language.label : '',
     lang: language.code,
   }));
-  return html`<sf-button-group
+  return html`<sf-segmented
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       appearance="segmented"
       size=${context.size}
@@ -34,7 +34,7 @@ function renderInline(context) {
       ?disabled=${context.disabled}
       @change=${(event) => context.component.onGroupChange(event)}
       @sf-button-group-change=${stop}
-    ></sf-button-group>`;
+    ></sf-segmented>`;
 }
 
 function renderMenu(context) {

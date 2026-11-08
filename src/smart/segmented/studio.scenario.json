@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.button-group",
+  "component": "smart.segmented",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [

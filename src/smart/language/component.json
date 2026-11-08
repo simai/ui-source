@@ -217,7 +217,7 @@
   },
   "relations": [
     {
-      "name": "cl-button-group"
+      "name": "cl-segmented"
     },
     {
       "name": "cl-button-icon"

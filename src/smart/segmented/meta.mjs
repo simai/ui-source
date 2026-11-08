@@ -1,7 +1,7 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-const sfButtonGroupMeta = {
-  "tag": "sf-button-group",
-  "source": "src/smart/button-group/component.json",
+const sfSegmentedMeta = {
+  "tag": "sf-segmented",
+  "source": "src/smart/segmented/component.json",
   "attributes": {
     "template": {
       "kind": "custom",
@@ -151,5 +151,5 @@ const sfButtonGroupMeta = {
   }
 };
 
-export {sfButtonGroupMeta};
-export default sfButtonGroupMeta;
+export {sfSegmentedMeta};
+export default sfSegmentedMeta;

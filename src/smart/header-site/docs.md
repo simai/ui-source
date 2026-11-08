@@ -17,7 +17,7 @@
     <a href="/docara/">Docara</a>
   </nav>
   <a slot="actions" href="https://github.com/simai">GitHub</a>
-  <sf-button-group slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
+  <sf-segmented slot="tools" appearance="segmented" theme-switch size="1/2"></sf-segmented>
 </sf-header-site>
 ```
 
@@ -38,7 +38,7 @@
 переводит такое меню в колонку через его настройку `orientation`.
 
 В `tools` кладут то, что нужно всегда: поиск, язык, тему
-(`<sf-button-group appearance="segmented" theme-switch>`), цвет
+(`<sf-segmented appearance="segmented" theme-switch>`), цвет
 (`<sf-input-color>`). Менее важное — в `actions`: на узком экране оно уйдёт в
 панель. Слот `sheet` — то, что бывает только в панели, например дерево
 документации; сайт может заполнить его по событию `sf-site-header-opened`.
@@ -90,7 +90,7 @@
       </ul>
     </nav>
   </sf-menu>
-  <sf-button-group slot="tools" appearance="segmented" theme-switch size="1/2"></sf-button-group>
+  <sf-segmented slot="tools" appearance="segmented" theme-switch size="1/2"></sf-segmented>
 </sf-header-site>
 ```
 

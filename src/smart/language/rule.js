@@ -5,7 +5,7 @@ SF.RuleLoader['cl-language'] = {
   mode: 'smart',
   js: true,
   relation: [
-    { name: 'cl-button-group' },
+    { name: 'cl-segmented' },
     { name: 'cl-button-icon' },
     { name: 'cl-icon' },
     { name: 'cl-menu-context', lazy: true },

@@ -16,7 +16,7 @@ const COMPONENTS = {
   'input-country': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss', variables: 'country-code'},
   'input-color': {class: 'SfColor', sheets: 'src/smart/input-color/js/templates', variables: 'color'},
   'slider-range': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss', variables: 'range-slider'},
-  'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
+  segmented: {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss', variables: 'button-group'},
   // The public variables keep the name they had under the former tag.
   'input-image': {class: 'SfImageField', sheets: 'src/smart/input-image/scss', variables: 'image-field'},
   'file-upload': {class: 'SfFileUpload', sheets: 'src/component/file-upload/scss'},
@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03') {
+      if (row.since === '2026-11-03' || (row.kind === 'tag' && row.since === '2026-11-08')) {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }
@@ -151,17 +151,17 @@ test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled
 });
 
 test('sf-button-group: select and clear are the manifest\'s actions; change once; the host is the form control (§4.4, §8, §17.1)', () => {
-  const source = read('src/smart/button-group/index.js');
+  const source = read('src/smart/segmented/index.js');
   assert.match(source, /class SfButtonGroup extends FormField\(ButtonGroupElement\)/u);
   assert.doesNotMatch(source, /\n {2}select\(nextValue\) \{|\n {2}clear\(\) \{/u, 'the actions are generated from the manifest');
   assert.match(source, /actions: \{\n {4}select\(\{ value: nextValue \} = \{\}\) \{/u);
   assert.doesNotMatch(source, /THEME_SWITCH_TEXT|Как в системе/u);
   assert.doesNotMatch(source, /new CustomEvent\('change'/u);
   assert.match(source, /hiddenName: this\.sfInternals \? '' : this\.name/u);
-  const manifest = json('src/smart/button-group/component.json');
+  const manifest = json('src/smart/segmented/component.json');
   assert.deepEqual(Object.keys(manifest.actions), ['select', 'clear']);
   assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'value', 'label', 'lang', 'icon', 'count', 'icon-only', 'loading', 'disabled']);
-  assert.equal(json('src/smart/button-group/lang/ru.json').runtime.system, 'Как в системе');
+  assert.equal(json('src/smart/segmented/lang/ru.json').runtime.system, 'Как в системе');
 });
 
 test('sf-input-image: vocabulary names with dated colon aliases, error is invalid, ids from the instance path (§7.1.1, §16.20, §17.2)', () => {

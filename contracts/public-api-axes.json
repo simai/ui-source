@@ -83,7 +83,7 @@
       "note": "the class menu's presentations by name: default, documentation-tree and compact, its two modifiers."
     },
     {
-      "component": "button-group",
+      "component": "segmented",
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start",
@@ -401,7 +401,7 @@
   "change_event": {
     "rule": "Every form value control reports a committed change as `change` on its host, once per change made by the user. A value set from code is not a change. A native control's `change` bubbles from its inner input; a composite control dispatches a `change` CustomEvent on its host. Older names stay emitted with the same detail as aliases for as long as the change journal (contracts/changes/journal.json) keeps them in compatibility; the manifest marks `change` with `canonical: true` and each alias with `alias_of: \"change\"`.",
     "controls": [
-      "button-group",
+      "segmented",
       "checkbox",
       "input-code",
       "input-country",
@@ -419,7 +419,7 @@
     ],
     "aliases": [
       {
-        "component": "button-group",
+        "component": "segmented",
         "legacy": [
           "sf-button-group-change"
         ],

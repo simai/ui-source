@@ -33,7 +33,7 @@ buttons inserted later operable. `SF_BOOT_CONFIG.theme === false` disables all
 theme mutation.
 
 A ready three-way switch (system, light, dark) is
-`<sf-button-group appearance="segmented" theme-switch>`: it selects the
+`<sf-segmented appearance="segmented" theme-switch>`: it selects the
 preference, calls `SF.Loader.setTheme` and follows `sf-theme-change` itself,
 with no `.sf-theme-button` inside it.
 

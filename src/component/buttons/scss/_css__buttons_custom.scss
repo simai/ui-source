@@ -120,7 +120,7 @@
      it, and a segment that follows another has no start edge. Here and not
      beside the segment rules in sf.components: surface writes its four edges
      after them there and gave every follower its start edge back: two lines
-     at each join. sf-button-group writes its own edges over these
+     at each join. sf-segmented writes its own edges over these
      (a vertical group joins on the block axis). */
   .sf-button:is(.segment-middle, .segment-end) {
     --sf-button--border-inline-start-width: 0;

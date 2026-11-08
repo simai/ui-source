@@ -3,7 +3,7 @@
     {
       "name": "reference",
       "title": "Бренд, разделы и тема",
-      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a> <a href=\"/effects/\">Эффекты</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a> <a href=\"/effects/\">Эффекты</a></nav><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-segmented>",
       "settings": {
         "collapse": "lg",
         "size": "1"
@@ -27,7 +27,7 @@
     {
       "name": "catalogue",
       "title": "Каталог эффектов: цвет и тема",
-      "children": "<a slot=\"brand\" href=\"/\"><span>Фоновые эффекты</span></a><nav aria-label=\"Разделы\"><a href=\"https://simai.io/\">simai.io</a> <a href=\"/\" aria-current=\"page\">Галерея</a></nav><a slot=\"actions\" href=\"https://github.com/simai/ui-effects\">GitHub</a><sf-input-color slot=\"tools\" size=\"1/2\" appearance=\"plain\" clearable label=\"Основной цвет сайта\"></sf-input-color><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "children": "<a slot=\"brand\" href=\"/\"><span>Фоновые эффекты</span></a><nav aria-label=\"Разделы\"><a href=\"https://simai.io/\">simai.io</a> <a href=\"/\" aria-current=\"page\">Галерея</a></nav><a slot=\"actions\" href=\"https://github.com/simai/ui-effects\">GitHub</a><sf-input-color slot=\"tools\" size=\"1/2\" appearance=\"plain\" clearable label=\"Основной цвет сайта\"></sf-input-color><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-segmented>",
       "settings": {
         "size": "1/2"
       },
@@ -42,7 +42,7 @@
     {
       "name": "documentation",
       "title": "Сайт документации: меню и поиск, шапка прилипает",
-      "children": "<a slot=\"brand\" href=\"/ru/\"><span>Docara</span></a><nav aria-label=\"Основная навигация\"><a href=\"/ru/guide/\" aria-current=\"page\">Руководство</a> <a href=\"/ru/reference/\">Справочник</a></nav><sf-button slot=\"tools\" size=\"1\" appearance=\"outline\" scheme=\"on-surface\" icon-start=\"search\" text=\"Поиск\"></sf-button><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "children": "<a slot=\"brand\" href=\"/ru/\"><span>Docara</span></a><nav aria-label=\"Основная навигация\"><a href=\"/ru/guide/\" aria-current=\"page\">Руководство</a> <a href=\"/ru/reference/\">Справочник</a></nav><sf-button slot=\"tools\" size=\"1\" appearance=\"outline\" scheme=\"on-surface\" icon-start=\"search\" text=\"Поиск\"></sf-button><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-segmented>",
       "settings": {
         "collapse": "xl",
         "sticky": true
@@ -59,7 +59,7 @@
     {
       "name": "collapsed",
       "title": "Всегда меню",
-      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a></nav><a slot=\"actions\" href=\"https://github.com/simai\">GitHub</a><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a></nav><a slot=\"actions\" href=\"https://github.com/simai\">GitHub</a><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-segmented>",
       "settings": {
         "collapse": "always"
       },

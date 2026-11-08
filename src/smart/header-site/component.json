@@ -349,7 +349,7 @@
         "events",
         "ownership"
       ],
-      "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-header-site>",
+      "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-segmented></sf-header-site>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

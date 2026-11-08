@@ -1,6 +1,6 @@
 # Smart Button Group
 
-`sf-button-group` — управляемый взаимоисключающий выбор, визуально собранный из
+`sf-segmented` — управляемый взаимоисключающий выбор, визуально собранный из
 Button Group и Smart Buttons. Это `radiogroup`, а не generic action group.
 
 Передайте уникальные `value`, понятные `label`, начальный `value` и доступное
@@ -14,7 +14,7 @@ ARIA orientation. Состояние остаётся controlled через ат
 бизнес-действие принадлежат приложению.
 
 В `detail` приходят `previous`, `value`, `item` и `component` — сам
-`sf-button-group`. `component` — живой элемент, а не данные: `detail` не JSON, и
+`sf-segmented`. `component` — живой элемент, а не данные: `detail` не JSON, и
 `JSON.stringify(event.detail)` падает на циклической структуре. Берите нужные
 поля (`previous` и `value` — строки) и отправляйте их:
 
@@ -36,17 +36,17 @@ group.addEventListener('change', (event) => {
 Home и End, `change`, `select()` и `clear()`. Это не вкладки — панелей нет.
 
 ```html
-<sf-button-group appearance="segmented" aria-label="Тема" value="all"
+<sf-segmented appearance="segmented" aria-label="Тема" value="all"
   items='[{"value":"all","label":"Все","count":24},
           {"value":"light","label":"Светлые","count":17},
-          {"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>
+          {"value":"dark","label":"Тёмные","count":7}]'></sf-segmented>
 
-<sf-button-group appearance="segmented" plate="raised" full-width aria-label="Период" value="w"
-  items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-button-group>
+<sf-segmented appearance="segmented" plate="raised" full-width aria-label="Период" value="w"
+  items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-segmented>
 
-<sf-button-group appearance="segmented" size="1/2" aria-label="Вид" value="list"
+<sf-segmented appearance="segmented" size="1/2" aria-label="Вид" value="list"
   items='[{"value":"list","label":"Список","icon":"list","icon-only":true},
-          {"value":"grid","label":"Сетка","icon":"grid_view","icon-only":true}]'></sf-button-group>
+          {"value":"grid","label":"Сетка","icon":"grid_view","icon-only":true}]'></sf-segmented>
 ```
 
 - `plate="scheme|raised"` — плашка выбранного сегмента: заливка `scheme`
@@ -99,8 +99,8 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
 
 ```html
 <form>
-  <sf-button-group appearance="segmented" name="period" value="w" aria-label="Период"
-    items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-button-group>
+  <sf-segmented appearance="segmented" name="period" value="w" aria-label="Период"
+    items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-segmented>
 </form>
 ```
 
@@ -110,7 +110,7 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
 `theme-switch`:
 
 ```html
-<sf-button-group appearance="segmented" theme-switch></sf-button-group>
+<sf-segmented appearance="segmented" theme-switch></sf-segmented>
 ```
 
 - Группа сама рисует три пункта только с иконками: `system` («Как в системе»,

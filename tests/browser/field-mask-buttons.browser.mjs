@@ -29,7 +29,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/buttons/css/buttons.css', 'component/component/button-group/css/button-group.css',
   'component/component/dropdown/css/dropdown.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/button-group/js/button-group.js', 'smart/smart/input/js/input.js', 'smart/smart/dropdown/js/dropdown.js',
+  'smart/smart/segmented/js/segmented.js', 'smart/smart/input/js/input.js', 'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/field-renderers/js/field-renderers.js'];
 
 const failures = [];
@@ -207,7 +207,7 @@ try {
 
       // --- the choice as buttons ---------------------------------------------
       const group = (key) => page.evaluate((key) => {
-        const host = document.querySelector(`#${key} sf-button-group`);
+        const host = document.querySelector(`#${key} sf-segmented`);
         const track = host?.querySelector('.sf-button-group');
         const buttons = [...(track?.querySelectorAll(':scope > button') ?? [])];
         const rect = track?.getBoundingClientRect();
@@ -279,7 +279,7 @@ try {
       check(at('no horizontal page scroll'), await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
 
       const dropdown = await page.evaluate(() => ({dropdown: Boolean(document.querySelector('#dropdown sf-dropdown')),
-        group: Boolean(document.querySelector('#dropdown sf-button-group'))}));
+        group: Boolean(document.querySelector('#dropdown sf-segmented'))}));
       check(at('a choice without the variant is the dropdown it was'), dropdown.dropdown && !dropdown.group, dropdown);
       await page.close();
     }

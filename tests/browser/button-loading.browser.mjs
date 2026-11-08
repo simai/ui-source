@@ -30,7 +30,7 @@ const SPINNER_SHEET = 'component/component/spinner/css/spinner.css';
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/button-group/css/button-group.css', SPINNER_SHEET];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/button-icon/js/button-icon.js', 'component/component/button-group/js/button-group.js', 'smart/smart/button-group/js/button-group.js',
+  'smart/smart/button-icon/js/button-icon.js', 'component/component/button-group/js/button-group.js', 'smart/smart/segmented/js/segmented.js',
   'component/component/buttons/js/buttons.js', 'component/component/icon-buttons/js/icon-buttons.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 
@@ -97,17 +97,17 @@ try {
       <sf-button size="${size}" icon="save" aria-label="Сохранить" loading class="k-only s-load"></sf-button>
       <sf-button-icon size="${size}" icon="save" aria-label="Сохранить" class="k-iconbutton s-rest"></sf-button-icon>
       <sf-button-icon size="${size}" icon="save" aria-label="Сохранить" loading class="k-iconbutton s-load"></sf-button-icon>
-      <sf-button-group size="${size}" aria-label="Действие" value="b" ${items(WITH_ICON)} class="k-group s-rest"></sf-button-group>
-      <sf-button-group size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(WITH_ICON))} class="k-group s-load"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(TEXT)} class="k-segtext s-rest"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))} class="k-segtext s-load"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(WITH_ICON)} class="k-segicon s-rest"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(WITH_ICON))} class="k-segicon s-load"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(ICON_ONLY)} class="k-segonly s-rest"></sf-button-group>
-      <sf-button-group appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(ICON_ONLY))} class="k-segonly s-load"></sf-button-group>
+      <sf-segmented size="${size}" aria-label="Действие" value="b" ${items(WITH_ICON)} class="k-group s-rest"></sf-segmented>
+      <sf-segmented size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(WITH_ICON))} class="k-group s-load"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(TEXT)} class="k-segtext s-rest"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))} class="k-segtext s-load"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(WITH_ICON)} class="k-segicon s-rest"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(WITH_ICON))} class="k-segicon s-load"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(ICON_ONLY)} class="k-segonly s-rest"></sf-segmented>
+      <sf-segmented appearance="segmented" size="${size}" aria-label="Действие" value="b" ${items(loadingFirst(ICON_ONLY))} class="k-segonly s-load"></sf-segmented>
     </div>`).join('');
     const page = await open({width, body});
-    await page.waitForFunction(() => document.querySelectorAll('sf-button-group button').length === 5 * 8 * 2);
+    await page.waitForFunction(() => document.querySelectorAll('sf-segmented button').length === 5 * 8 * 2);
     const rows = await page.evaluate(({sizes, source}) => {
       const read = eval(source);
       const first = (host) => host.querySelector('button');
@@ -201,7 +201,7 @@ try {
     const page = await open({reducedMotion: 'reduce', body: `<sf-button text="Сохранить" loading></sf-button>
       <sf-button text="Сохранить" icon="save" loading></sf-button>
       <sf-button-icon icon="save" aria-label="Сохранить" loading></sf-button-icon>
-      <sf-button-group appearance="segmented" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))}></sf-button-group>`});
+      <sf-segmented appearance="segmented" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))}></sf-segmented>`});
     const still = await page.evaluate(() => [...document.querySelectorAll('.sf-loader-ring-accent')].map((node) => {
       const style = getComputedStyle(node);
       return {animation: style.animationName, spin: getComputedStyle(node.closest('.sf-loader-svg')).animationName, dash: style.strokeDasharray, opacity: style.opacity};

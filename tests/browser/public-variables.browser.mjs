@@ -52,7 +52,7 @@ const DRAW = {
   // The variables belong to the segmented appearance; a count is drawn on a
   // segment that is not selected, so the count's own colour has a part to reach.
   'button-group': {css: ['button-group', 'buttons'], js: 'button-group',
-    html: `<sf-button-group appearance="segmented" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>`},
+    html: `<sf-segmented appearance="segmented" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-segmented>`},
   // A Smart element with a sheet of its own: a css entry with a slash is a
   // path in the output. Empty, so the glyph's thumbnail is drawn without an
   // image to wait for.

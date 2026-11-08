@@ -5976,6 +5976,72 @@
       "manual": "Write <sf-list-feed> for <sf-message-log>, and move the former names with it: items for messages, setItems and prependItems for setMessages and prependMessages, renderItem and announceItem for renderMessage and announceMessage, sf-list-feed-* for the events sf-message-log-*, --sf-list-feed-* for the variables --sf-message-log-*, .sf-list-feed__* for the classes .sf-message-log__* (__message is __entry). The tag alone is not a mechanical rename, because the former property and method names live only on the alias element.",
       "owner": "ui-source",
       "source": "src/smart/list-feed (component.json x-decisions, docs.md «Переход с sf-message-log»); ui-pro components/src/smart/message-log/index.js; contracts/registry/names.json (chat owner note)"
+    },
+    {
+      "id": "tag-sf-button-group-to-sf-segmented",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "tag",
+      "summary": "sf-button-group is sf-segmented (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-segmented's class, the Loader's rule lists it, the Framework's sheets match :is(sf-segmented, sf-button-group), and the first old-tag element of a page is noted in SF.deprecations and once on the console.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "sf-button-group",
+          "to": "sf-segmented"
+        },
+        {
+          "component": "sf-segmented",
+          "from": "sf-button-group-change",
+          "to": "change"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-tag",
+      "examples": {
+        "before": "<sf-button-group></sf-button-group>",
+        "after": "<sf-segmented></sf-segmented>"
+      },
+      "manual": "Write <sf-segmented> for <sf-button-group> in markup and sf-segmented for sf-button-group in a sheet's type selector (sf-upgrade --apply does both). A script that finds the element by name (querySelector, closest, matches, createElement, a localName comparison) names sf-segmented, or both names through SF.tags.selector('sf-segmented') while the alias lives; a class or a custom property spelled like the old tag (.sf-button-group, --sf-button-group-*) is not the tag and stays.",
+      "owner": "ui-source",
+      "source": "src/smart/segmented/aliases.json, src/core/js/tag-aliases.js; ui-control control/RENAME-PLAN-2026-11-03.md (R0)"
+    },
+    {
+      "id": "path-smart-button-group-to-segmented",
+      "recorded_on": "2026-11-08",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-segmented is served from smart/segmented/ since its folder took the new tag's name: js/segmented.js, loader bundle cl-segmented. The old path keeps working until remove_after: smart/button-group/js/button-group.js is a forwarding script that notes the path in SF.deprecations and loads smart/segmented/js/segmented.js, the Loader forwards the bundle name cl-button-group to cl-segmented (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.button-group is a dated alias of smart.segmented, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "smart/button-group/js/button-group.js",
+          "to": "smart/segmented/js/segmented.js",
+          "match": "smart/button-group/js/button-group(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-button-group",
+          "to": "cl-segmented",
+          "match": "['\"]cl-button-group['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.button-group",
+          "to": "smart.segmented",
+          "match": "['\"]smart\\.button-group['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write smart/segmented/ for smart/button-group/ and segmented for button-group in the file names (js/segmented.js, js/segmented.min.js); in a product rule's relation write cl-segmented for cl-button-group, and in a manifest or a package contract smart.segmented for smart.button-group. A page that lets the Loader fetch the element needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/button-group/js/button-group.js\"></script>",
+        "after": "<script src=\"/distr/smart/segmented/js/segmented.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/button-group/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/segmented/component.json"
     }
   ]
 }

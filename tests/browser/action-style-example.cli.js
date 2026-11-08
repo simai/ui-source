@@ -14,10 +14,10 @@ async page => {
       if (!response.ok) throw new Error('Missing documentation example');
       document.querySelector('main').innerHTML = await response.text();
     }, theme);
-    await page.waitForFunction(() => document.querySelectorAll('sf-button-group button[role="radio"]').length === 2 && document.querySelector('sf-alert .sf-alert'));
+    await page.waitForFunction(() => document.querySelectorAll('sf-segmented button[role="radio"]').length === 2 && document.querySelector('sf-alert .sf-alert'));
     await page.getByRole('radio', {name: 'Карточки', exact: true}).click();
     await page.keyboard.press('ArrowLeft');
-    await page.waitForFunction(() => document.querySelector('sf-button-group').value === 'list');
+    await page.waitForFunction(() => document.querySelector('sf-segmented').value === 'list');
     const result = await page.evaluate(async () => {
       const faces = await document.fonts.load('24px "Material Symbols Outlined"', 'edit info');
       if (!faces.length) throw new Error('Local fixture icon font unavailable');
