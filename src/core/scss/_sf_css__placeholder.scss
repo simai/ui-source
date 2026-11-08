@@ -103,7 +103,7 @@
 /* Its menu waits for its own code in the parts the element drew: an empty
    undefined sf-menu-context would stand in the row as one more item, a gap
    wider than the trigger, until it upgrades into its popup. */
-:where(sf-language .sf-language-parts > sf-menu-context[popup]:not(:defined)) {
+:where(sf-language .sf-language-parts > :is(sf-menu-context, sf-context-menu)[popup]:not(:defined)) {
   display: none;
 }
 
