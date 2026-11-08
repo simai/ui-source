@@ -13,7 +13,8 @@
 //   $row-padding before the text.
 // - C06: a search is the panel's header, not a boxed field: a search icon,
 //   no frame, no fill, a row's height and the inset above and below, its icon
-//   and text over the rows' icon and text, a hairline across the panel's width
+//   and text over the rows' icon and text (rows without a leading picture: its
+//   text over theirs, the icon at the header's end), a hairline across the panel's width
 //   under it that turns primary while the field has the focus. It stays put;
 //   only the rows scroll.
 // - C07: a scrollbar only when the rows do not fit. While it takes room in
@@ -81,6 +82,16 @@ $thumb: var(--sf-space-1\/4);
   inline-size: $size;
   overflow: hidden;
   --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+// The header over rows without a leading picture (DEV measurement 2026-11-08
+// on C06): text stands over text. The rows' text starts at the inset and the
+// row's padding, so the field must start there too; the search icon leaves
+// the leading place and stands at the header's end, still saying what the
+// field is. Included on the icon's selector, under the panel that has no
+// leading column.
+@mixin search-icon-trailing {
+  order: 1;
 }
 
 // The header's field: no frame, no fill, a primary caret.

@@ -1131,7 +1131,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.7.2"
+      "version": "1.7.3"
     },
     "sf-icon": {
       "inputs": {
