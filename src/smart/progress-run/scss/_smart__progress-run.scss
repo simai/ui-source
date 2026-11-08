@@ -35,7 +35,7 @@ sf-progress-run {
   box-sizing: border-box;
   min-inline-size: 0;
   margin: 0;
-  background: var(--sf-progress-run-background, transparent);
+  background: var(--sf-progress-run-background-color, var(--sf-progress-run-background, transparent));
   color: var(--sf-on-surface);
   font-size: var(--sf-progress-run--font-size);
   line-height: var(--sf-progress-run--line);
@@ -214,7 +214,7 @@ sf-progress-run {
   padding: calc(var(--sf-progress-run--below-space-x) - var(--sf-px));
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-progress-run-output-background, var(--sf-surface-1));
+  background: var(--sf-progress-run-output-background-color, var(--sf-progress-run-output-background, var(--sf-surface-1)));
   color: var(--sf-progress-run-output-color, var(--sf-on-surface));
 }
 

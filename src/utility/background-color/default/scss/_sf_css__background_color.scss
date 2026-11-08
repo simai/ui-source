@@ -24,6 +24,18 @@
         --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     }
 
+    // A place class is a place (C16): what stands on it reads its colour as
+    // --sf-surface-place (a badge's ring, a table head) and its dim ink as the
+    // variant role, as the cards and popups will declare for themselves.
+    @each $place, $variant in ('page': null, 'area': null, 'card': 'on-surface-card-variant', 'popup': 'on-surface-popup-variant', 'popup-nested': 'on-surface-popup-nested-variant') {
+        .#{$infix}bg-surface-#{$place} {
+            --sf-surface-place: var(--sf-surface-#{$place});
+            @if $variant {
+                --sf-on-surface-variant: var(--sf-#{$variant});
+            }
+        }
+    }
+
     // Состояние есть не у каждой роли: у прозрачного и у текущего цвета его быть
     // не может, у ступеней поверхности его нет в теме. Список ролей с состояниями
     // лежит рядом и до сих пор не читался, поэтому hover:bg-transparent просил

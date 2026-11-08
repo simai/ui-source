@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFile, readdir} from 'node:fs/promises';
+import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {isSchema} from '../src/core/js/composition/schema-name.mjs';
 
@@ -164,6 +165,8 @@ test('the Framework never sets a public variable', async () => {
 // state. A sheet's local alias (--sf-skeleton-base: var(--sf-ui-skeleton))
 // is read through once, and a token's own fallback inside the value is
 // ignored (var(--sf-scrim-color, var(--sf-black)) is var(--sf-scrim-color)).
+const FORMER = new Map(JSON.parse(readFileSync(new URL('../src/core/contracts/token-aliases.v1.json', import.meta.url), 'utf8'))
+  .component_variables.map(({from, to}) => [to, from]));
 const plain = (value) => value.replace(/\\/gu, '').replace(/\s+/gu, '');
 const withoutFallbacks = (value) => {
   let before;
@@ -180,7 +183,12 @@ const fallbacksOf = (source, name) => {
     let depth = 1;
     let end = at + key.length;
     for (; end < source.length && depth; end += 1) depth += source[end] === '(' ? 1 : source[end] === ')' ? -1 : 0;
-    found.push(plain(source.slice(at + key.length, end - 1)));
+    let fallback = plain(source.slice(at + key.length, end - 1));
+    // A renamed variable reads its former name under the new one (C16); the
+    // default is what the former name falls back to.
+    const former = FORMER.get(name);
+    if (former && fallback.startsWith(`var(${former},`) && fallback.endsWith(')')) fallback = fallback.slice(former.length + 5, -1);
+    found.push(fallback);
   }
   return found;
 };

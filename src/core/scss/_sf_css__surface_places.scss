@@ -1,0 +1,43 @@
+// SIMAI Framework
+// https://simai.io
+
+// PLACES (C16, the background system)
+//
+// A place is what a region stands on: the page, an area, a card, a popup, the
+// inverse. Things on a place are translucent -- a fill, a state layer, a line
+// -- so they come out right on any of them.
+//
+// .sf-surface-media is glass over a photo or a video: black at 48 with a blur,
+// white ink, the same in both themes (C16, C14). It re-declares the roles the
+// controls on it read from white on the alpha scale -- states 4/8/12, fill
+// 16/20/24, line 24, boundary 64, dim ink 80 -- so an icon keeps its three
+// roles and a control needs no new one. In sf.base with the theme, so a
+// utility on the same element still wins.
+//
+// Coloured places are held (owner's question, 2026-11-08): the proposal is
+// that the bg-<role> and bg-<role>-container utilities become places rather
+// than a second class family.
+
+@use 'mix/mix__role_aliases' as aliases;
+
+@layer sf.base {
+  .sf-surface-media {
+    background-color: var(--sf-surface-media);
+    color: var(--sf-on-surface-media);
+    backdrop-filter: blur(var(--sf-blur-large));
+    --sf-on-surface: var(--sf-on-surface-media);
+    --sf-on-surface-variant: var(--sf-white--alfa-80);
+    --sf-on-surface-container-variant: var(--sf-white--alfa-80);
+    --sf-surface-state-hover: var(--sf-white--alfa-4);
+    --sf-surface-state-select: var(--sf-white--alfa-8);
+    --sf-surface-state-active: var(--sf-white--alfa-12);
+    --sf-surface-container: var(--sf-white--alfa-16);
+    --sf-surface-container-hover: var(--sf-white--alfa-20);
+    --sf-surface-container-active: var(--sf-white--alfa-24);
+    --sf-outline: var(--sf-white--alfa-64);
+    --sf-outline-variant: var(--sf-white--alfa-24);
+    --sf-surface-disabled: var(--sf-white--alfa-12);
+    --sf-on-surface-disabled: var(--sf-white--alfa-64);
+    @include aliases.sf-role-aliases(('on-surface-container-variant', 'surface-state-hover', 'surface-state-select', 'surface-state-active', 'surface-disabled', 'on-surface-disabled'));
+  }
+}

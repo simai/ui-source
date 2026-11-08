@@ -5,6 +5,7 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import {TonalPalette} from '../src/core/js/vendor/material-color-utilities/palettes/tonal_palette.js';
 import {hexFromArgb} from '../src/core/js/vendor/material-color-utilities/utils/string_utils.js';
+import {themeSource} from './support/theme-source.mjs';
 
 // The chart series roles (--sf-chart-1 .. -8), their area fills and the
 // diverging midpoint, ordered by SIMAI Chart (D4; parameters 8.3-8.4). The
@@ -30,7 +31,7 @@ import {hexFromArgb} from '../src/core/js/vendor/material-color-utilities/utils/
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const palette = read('src/core/scss/_sf_figma_colors_variables.scss');
-const theme = read('src/core/scss/_sf_css__theme.scss');
+const theme = themeSource();
 
 const CONTRAST_MIN = 3;
 const CVD_MIN = 15;

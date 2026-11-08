@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import {themeSource} from './support/theme-source.mjs';
 
 // Height is two things at once: the shadow under an element and the surface it
 // stands on. In the light theme the shadow does the work. In the dark theme it
@@ -14,11 +15,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 test('a raised surface is declared for every step, each above the last', () => {
-  const theme = read('src/core/scss/_sf_css__theme.scss');
+  const theme = themeSource();
   const steps = [];
   for (const step of [1, 2, 3, 4, 5]) {
     const found = theme.match(
-      new RegExp(`--sf-elevation-${step}--surface: light-dark\\(var\\(--sf-surface-0\\), var\\(--sf-surface-(\\d)\\)\\)`, 'u'),
+      new RegExp(`--sf-elevation-${step}--surface: light-dark\\(var\\(--sf-surface-(?:0|page)\\), var\\(--sf-surface-(\\d)\\)\\)`, 'u'),
     );
     assert.ok(found, `step ${step} keeps the ordinary surface in the light theme and rises in the dark one`);
     steps.push(Number(found[1]));

@@ -1,0 +1,84 @@
+// SIMAI Framework
+// https://simai.io
+
+// ROLE ALIASES (C16, the background system, 2026-11-08)
+//
+// The theme roles renamed by the naming scheme (role, variant, state: surfaces
+// research 6.5) keep their former names as aliases until the alias list's
+// remove_after: --sf-<old>: var(--sf-<new>). An alias resolves where it is
+// declared, so the root declares them all, and every other rule that
+// re-declares a renamed role includes this mixin with the roles it sets --
+// a place that set the new name alone would leave a reader of the old one on
+// the root's value. src/core/contracts/token-aliases.v1.json is the same list
+// for the docs, sf-upgrade and the removal gate;
+// tests/token-aliases.contract.test.mjs holds the two equal and checks every
+// rule in the built sheets.
+
+@use 'sass:list';
+
+// new name: the former names it answers for.
+$sf-role-aliases: (
+  'surface-disabled': ('disable',),
+  'shadow-card': ('elevation-1--shadow',),
+  'surface-card': ('elevation-1--surface',),
+  'shadow-popup': ('elevation-3--shadow',),
+  'surface-popup': ('elevation-3--surface',),
+  'shadow-popup-nested': ('elevation-4--shadow',),
+  'surface-popup-nested': ('elevation-4--surface',),
+  'error-state-active': ('error-transparent-active',),
+  'error-state-hover': ('error-transparent-hover',),
+  'error-container-strong': ('error-transparent-overlay',),
+  'error-state-select': ('error-transparent-select',),
+  'on-surface-disabled': ('on-disable',),
+  'on-surface-card-variant': ('on-elevation-1--variant',),
+  'on-surface-popup-variant': ('on-elevation-3--variant',),
+  'on-surface-popup-nested-variant': ('on-elevation-4--variant',),
+  'on-surface-container-variant': ('on-surface-container--variant',),
+  'outline-disabled': ('outline-disable',),
+  'error-outline': ('outline-error',),
+  'info-outline': ('outline-info',),
+  'primary-outline': ('outline-primary',),
+  'secondary-outline': ('outline-secondary',),
+  'success-outline': ('outline-success',),
+  'tertiary-outline': ('outline-tertiary',),
+  'warning-outline': ('outline-warning',),
+  'primary-state-active': ('primary-transparent-active',),
+  'primary-state-hover': ('primary-transparent-hover',),
+  'primary-container-strong': ('primary-transparent-overlay',),
+  'primary-state-select': ('primary-transparent-select',),
+  'secondary-state-active': ('secondary-transparent-active',),
+  'secondary-state-hover': ('secondary-transparent-hover',),
+  'secondary-container-strong': ('secondary-transparent-overlay',),
+  'secondary-state-select': ('secondary-transparent-select',),
+  'success-state-active': ('success-transparent-active',),
+  'success-state-hover': ('success-transparent-hover',),
+  'success-container-strong': ('success-transparent-overlay',),
+  'success-state-select': ('success-transparent-select',),
+  'surface-page': ('surface-0',),
+  'surface-area': ('surface-1',),
+  'surface-veil': ('surface-overlay',),
+  'surface-state-active': ('surface-transparent-active',),
+  'surface-state-hover': ('surface-transparent-hover',),
+  'surface-container-strong': ('surface-transparent-overlay',),
+  'surface-state-select': ('surface-transparent-select',),
+  'tertiary-state-active': ('tertiary-transparent-active',),
+  'tertiary-state-hover': ('tertiary-transparent-hover',),
+  'tertiary-container-strong': ('tertiary-transparent-overlay',),
+  'tertiary-state-select': ('tertiary-transparent-select',),
+  'warning-state-active': ('warning-transparent-active',),
+  'warning-state-hover': ('warning-transparent-hover',),
+  'warning-container-strong': ('warning-transparent-overlay',),
+  'warning-state-select': ('warning-transparent-select',),
+);
+
+// No argument: every alias (the theme root). A list of new names: the
+// aliases of those roles only (a place, a component that re-declares a role).
+@mixin sf-role-aliases($roles: null) {
+  @each $new, $olds in $sf-role-aliases {
+    @if $roles == null or list.index($roles, $new) {
+      @each $old in $olds {
+        --sf-#{$old}: var(--sf-#{$new});
+      }
+    }
+  }
+}

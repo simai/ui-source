@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync, readdirSync} from 'node:fs';
 import {resolve} from 'node:path';
+import {themeSource} from './support/theme-source.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -26,7 +27,7 @@ const styles = [...files('src/component', /\.s?css$/u), ...files('src/smart', /\
    shadow and lay flat in the dark theme, where a black shadow on a near-black
    page shows nothing; the overbox and the legacy dialogs were white there. */
 test('elevation: every step is a surface and a shadow, the rim off', () => {
-  const theme = read('src/core/scss/_sf_css__theme.scss');
+  const theme = themeSource();
   assert.match(theme, /--sf-shadow--rim: 0 0 0 0 transparent;/u);
   for (const step of [1, 2, 3, 4, 5]) {
     assert.ok(theme.includes(`--sf-elevation-${step}--surface:`), `surface ${step}`);

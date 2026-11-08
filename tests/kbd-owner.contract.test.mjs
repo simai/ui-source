@@ -48,7 +48,7 @@ test('Kbd caps mix their ink and fill from the ink they sit in, on the alpha sca
   const css = await read('src/component/kbd/scss/_kbd.scss');
   const cap = css.slice(css.indexOf('@mixin cap'), css.indexOf('@mixin plain'));
   assert.match(cap, /color: var\(--sf-kbd-color, color-mix\(in srgb, currentColor 80%, transparent\)\)/u);
-  assert.match(cap, /background: var\(--sf-kbd-background, color-mix\(in srgb, currentColor 12%, transparent\)\)/u);
+  assert.match(cap, /background: var\(--sf-kbd-background-color, var\(--sf-kbd-background, color-mix\(in srgb, currentColor 12%, transparent\)\)\)/u);
   assert.match(cap, /border: none/u);
   const keycap = css.slice(css.indexOf('@mixin keycap'), css.indexOf('@mixin cap'));
   assert.match(keycap, /border: var\(--sf-px\) solid var\(--sf-kbd-border-color, var\(--sf-outline-variant\)\)/u);

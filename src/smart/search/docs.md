@@ -230,7 +230,7 @@ locked.
 | --- | --- |
 | `--sf-search-inline-size` | The window's width (36rem) |
 | `--sf-search-inset-block-start` | The distance from the top of the window (4rem) |
-| `--sf-search-background` | The field's and the card's surface |
+| `--sf-search-background-color` | The field's and the card's surface |
 | `--sf-search-scrim-color` | The scrim, a colour with its own transparency (by default the shared scrim) |
 | `--sf-search-mark-color` | The fill of the matched text |
 | `--sf-search-radius` | The results card's corners |

@@ -309,7 +309,7 @@ Framework получает `invalid` и сообщение (текст брау�
 |---|---|
 | `--sf-wizard-gap` | `--sf-space-3` (`--sf-space-2` на ступени 1/2) |
 | `--sf-wizard-padding` | `--sf-space-3` (`--sf-space-2` на ступени 1/2) |
-| `--sf-wizard-background` | `--sf-surface-1` |
+| `--sf-wizard-background-color` | `--sf-surface-1` |
 | `--sf-wizard-border-color` | `--sf-outline-variant` |
 | `--sf-wizard-radius` | `--sf-radius--surface` |
 | `--sf-wizard-max-width` | `none` |

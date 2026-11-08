@@ -169,7 +169,7 @@
     inset-block-start: var(--sf-contents--top);
     padding-block: var(--sf-space-1\/4);
     margin-block: calc(var(--sf-space-1\/4) * -1);
-    background-color: var(--sf-contents-background, var(--sf-surface-0));
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-0)));
   }
 
   .sf-contents-head {
@@ -218,7 +218,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-contents-background, var(--sf-elevation-2--surface));
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-elevation-2--surface)));
     --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
     box-shadow: var(--sf-elevation-2--shadow);
   }
@@ -325,7 +325,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     border-block-end: var(--sf-px) solid var(--sf-contents--line);
-    background-color: var(--sf-contents-background, var(--sf-surface-0));
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-0)));
   }
 
   .sf-contents-item {

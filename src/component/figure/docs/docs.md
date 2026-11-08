@@ -41,7 +41,7 @@ its picture with it.
 
 | Variable | What | Default |
 |:---|:---|:---|
-| `--sf-figure-background` | the box's fill, seen around contained media | `--sf-surface-container` |
+| `--sf-figure-background-color` | the box's fill, seen around contained media | `--sf-surface-container` |
 | `--sf-figure-border-color` | the box's edge | `--sf-outline-variant` |
 | `--sf-figure-border-width` | the box's edge's width | `--sf-0` (no edge) |
 | `--sf-figure-radius` | the box's corners | `--sf-radius--surface` |

@@ -98,9 +98,9 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // lightened by two different greys, and the steps could not match across
   // themes (owner, 2026-10-08).
   const surfaces = {
-    'surface-transparent-hover': 4,
-    'surface-transparent-select': 8,
-    'surface-transparent-overlay': 32,
+    'surface-state-hover': 4,
+    'surface-state-select': 8,
+    'surface-container-strong': 32,
     'surface-container': 16,
     'surface-container-hover': 20,
     'surface-container-active': 24,
@@ -114,11 +114,11 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
 
   // The plate starts at 16 because at 12 it was the colour of a pressed
   // surface, and a plate that cannot be told from a press is not a plate.
-  assert.notEqual(surfaces['surface-container'], surfaces['surface-transparent-select']);
-  assert.ok(surfaces['surface-container'] > surfaces['surface-transparent-select']);
+  assert.notEqual(surfaces['surface-container'], surfaces['surface-state-select']);
+  assert.ok(surfaces['surface-container'] > surfaces['surface-state-select']);
   // And the veil is above every plate: a plate sits on the page, a veil covers
   // it. At 24 the backdrop of a modal was the colour of a pressed card.
-  assert.ok(surfaces['surface-transparent-overlay'] > surfaces['surface-container-active']);
+  assert.ok(surfaces['surface-container-strong'] > surfaces['surface-container-active']);
   // No two surface roles share a value: each is a different thing to see.
   const steps = Object.values(surfaces);
   assert.equal(new Set(steps).size, steps.length, `two surface roles share a step: ${steps}`);
@@ -126,6 +126,24 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // The veil is the exception, and it is one on purpose: it darkens a scene
   // rather than tinting a surface. On the neutral tone it came out 7.4 points
   // lighter in the light theme -- a veil that does not veil.
-  assert.equal(value('surface-overlay'),
+  assert.equal(value('surface-veil'),
     'light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8))');
+});
+
+const placesPath = 'src/core/scss/_sf_css__surface_places.scss';
+// Ink steps as a fill (C16, 2026-11-08): 48, 64 and 80 are what is read or
+// found. As the colour of a surface they are allowed for glass over media and
+// for the scrim, and for nothing else -- a plate at 48 is a veil, not a plate.
+test('an ink step (48 and above) is a fill only for glass and the scrim', () => {
+  const placesPath = 'src/core/scss/_sf_css__surface_places.scss';
+  const allowed = new Set(['--sf-surface-media', '--sf-surface-media-hover', '--sf-surface-media-active', '--sf-scrim-color']);
+  const wrong = [];
+  for (const path of [themePath, placesPath]) {
+    for (const [, name, value] of read(path).matchAll(/(--sf-[a-z0-9-]+):\s*([^;]+);/gu)) {
+      if (name.startsWith('--sf-on-') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
+      if (!/--alfa-(48|64|80)\b/u.test(value)) continue;
+      if (!allowed.has(name)) wrong.push(`${path}: ${name}: ${value.trim()}`);
+    }
+  }
+  assert.deepEqual(wrong, [], 'an ink step as a fill is glass or the scrim');
 });

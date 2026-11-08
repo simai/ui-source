@@ -56,7 +56,7 @@ row. In a column narrower than 360 px the action goes under the text.
 
 ## Public variables
 
-`--sf-list-attention-background` (none by default),
+`--sf-list-attention-background-color` (none by default),
 `--sf-list-attention-divider-color`, `--sf-list-attention-heading-color`,
 `--sf-list-attention-padding-inline` (0 by default: the rows line up with the
 page's text), `--sf-list-attention-gap` (under the heading). The Framework

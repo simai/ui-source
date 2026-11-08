@@ -15,7 +15,7 @@
   --sf-pager--text-space: var(--sf-ui-1--text-space-x);
   --sf-pager--inset-y: var(--sf-ui-1--space-y);
   --sf-pager--gap: var(--sf-pager-gap, var(--sf-pager--text-space));
-  --sf-pager--card-background: var(--sf-pager-card-background, var(--sf-surface-0));
+  --sf-pager--card-background: var(--sf-pager-card-background-color, var(--sf-pager-card-background, var(--sf-surface-0)));
   --sf-pager--card-border-color: var(--sf-pager-card-border-color, var(--sf-outline-variant));
   --sf-pager--card-radius: var(--sf-pager-card-radius, var(--sf-radius--ui));
   --sf-pager--link-color: var(--sf-pager-link-color, var(--sf-primary));

@@ -7,7 +7,14 @@
 import {readFileSync} from 'node:fs';
 
 const contract = JSON.parse(readFileSync(new URL('../../src/core/contracts/public-variables.v1.json', import.meta.url), 'utf8'));
-const NAMES = contract.components.flatMap((entry) => entry.variables.map((variable) => variable.name));
+// A renamed public variable (C16: -background to -background-color) reads its
+// former name under the new one until the alias list's remove_after; that
+// wrapper comes off too, after the new name's.
+const aliases = JSON.parse(readFileSync(new URL('../../src/core/contracts/token-aliases.v1.json', import.meta.url), 'utf8'));
+const NAMES = [
+  ...contract.components.flatMap((entry) => entry.variables.map((variable) => variable.name)),
+  ...aliases.component_variables.map((variable) => variable.from),
+];
 
 export function withoutPublicVariables(source) {
   let text = String(source);

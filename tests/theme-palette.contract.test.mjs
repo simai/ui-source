@@ -10,7 +10,7 @@ const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_varia
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the
 // component would re-theme a page that asked for nothing.
-test('the default colour gives back all 128 shipped primitives and their 98 translucent steps exactly', () => {
+test('the default colour gives back all 128 shipped primitives and their 104 translucent steps exactly', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const variables = themeVariables(theme);
   const declared = [...primitives.matchAll(/(--sf-[a-z]+-\d+--alfa-\d+):/gu)].map(([, name]) => name);
@@ -68,7 +68,7 @@ test('the CSS is one rule of the 128 primitives under the selector', () => {
   const css = themeToCss(themeFromColor('#005bbe'), '.site-main');
   assert.match(css, /^\.site-main \{\n/u);
   assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 128);
-  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 98);
+  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 104);
 });
 
 // The copied HCT files are the package's own bytes: a copy that drifted would
@@ -91,4 +91,16 @@ test('a pastel colour keeps its own chroma; a vivid one stands for the vivid pal
   assert.ok(pastel.chroma < 20, `pastel read as ${pastel.chroma}`);
   assert.equal(colorToHct('#005bbe').chroma, VIVID_CHROMA);
   assert.equal(colorToHct('#005bbe').hue, 265);
+});
+
+// C16 (2026-11-08): the greys never take more chroma than the colour they are
+// made from. A near-grey brand colour made greys of chroma 5 in a hue it
+// barely had -- teal or violet greys under a grey brand.
+test('the neutral palette is no more chromatic than its source', () => {
+  for (const color of ['#6b6f76', '#7a7a7a', '#5f6b6d']) {
+    const theme = themeFromColor(color);
+    assert.ok(theme.palettes.neutral.chroma <= Math.max(theme.source.chroma, 0) + 0.5,
+      `${color}: neutral chroma ${theme.palettes.neutral.chroma} over source ${theme.source.chroma}`);
+  }
+  assert.equal(Math.round(themeFromColor(DEFAULT_THEME_COLOR).palettes.neutral.chroma), 5);
 });

@@ -1,0 +1,473 @@
+{
+  "schema": "simai.framework.token-aliases",
+  "schema_version": 1,
+  "summary": "The former names of the background system's renames (C16, 2026-11-08): every theme role, component variable and utility class renamed by the naming scheme (role, variant, state), with the name that replaces it. A former name keeps working, with the same value, until remove_after. The docs' «Прежние имена» block, sf-upgrade and the removal gate read this list; src/core/scss/mix/_mix__role_aliases.scss declares the theme aliases from the same list (tests/token-aliases.contract.test.mjs holds the two equal).",
+  "since": "2026-11-08",
+  "remove_after": "2027-01-01",
+  "tokens": [
+    {
+      "from": "--sf-disable",
+      "to": "--sf-surface-disabled"
+    },
+    {
+      "from": "--sf-elevation-1--shadow",
+      "to": "--sf-shadow-card"
+    },
+    {
+      "from": "--sf-elevation-1--surface",
+      "to": "--sf-surface-card"
+    },
+    {
+      "from": "--sf-elevation-3--shadow",
+      "to": "--sf-shadow-popup"
+    },
+    {
+      "from": "--sf-elevation-3--surface",
+      "to": "--sf-surface-popup"
+    },
+    {
+      "from": "--sf-elevation-4--shadow",
+      "to": "--sf-shadow-popup-nested"
+    },
+    {
+      "from": "--sf-elevation-4--surface",
+      "to": "--sf-surface-popup-nested"
+    },
+    {
+      "from": "--sf-error-transparent-active",
+      "to": "--sf-error-state-active"
+    },
+    {
+      "from": "--sf-error-transparent-hover",
+      "to": "--sf-error-state-hover"
+    },
+    {
+      "from": "--sf-error-transparent-overlay",
+      "to": "--sf-error-container-strong"
+    },
+    {
+      "from": "--sf-error-transparent-select",
+      "to": "--sf-error-state-select"
+    },
+    {
+      "from": "--sf-on-disable",
+      "to": "--sf-on-surface-disabled"
+    },
+    {
+      "from": "--sf-on-elevation-1--variant",
+      "to": "--sf-on-surface-card-variant"
+    },
+    {
+      "from": "--sf-on-elevation-3--variant",
+      "to": "--sf-on-surface-popup-variant"
+    },
+    {
+      "from": "--sf-on-elevation-4--variant",
+      "to": "--sf-on-surface-popup-nested-variant"
+    },
+    {
+      "from": "--sf-on-surface-container--variant",
+      "to": "--sf-on-surface-container-variant"
+    },
+    {
+      "from": "--sf-outline-disable",
+      "to": "--sf-outline-disabled"
+    },
+    {
+      "from": "--sf-outline-error",
+      "to": "--sf-error-outline"
+    },
+    {
+      "from": "--sf-outline-info",
+      "to": "--sf-info-outline"
+    },
+    {
+      "from": "--sf-outline-primary",
+      "to": "--sf-primary-outline"
+    },
+    {
+      "from": "--sf-outline-secondary",
+      "to": "--sf-secondary-outline"
+    },
+    {
+      "from": "--sf-outline-success",
+      "to": "--sf-success-outline"
+    },
+    {
+      "from": "--sf-outline-tertiary",
+      "to": "--sf-tertiary-outline"
+    },
+    {
+      "from": "--sf-outline-warning",
+      "to": "--sf-warning-outline"
+    },
+    {
+      "from": "--sf-primary-transparent-active",
+      "to": "--sf-primary-state-active"
+    },
+    {
+      "from": "--sf-primary-transparent-hover",
+      "to": "--sf-primary-state-hover"
+    },
+    {
+      "from": "--sf-primary-transparent-overlay",
+      "to": "--sf-primary-container-strong"
+    },
+    {
+      "from": "--sf-primary-transparent-select",
+      "to": "--sf-primary-state-select"
+    },
+    {
+      "from": "--sf-secondary-transparent-active",
+      "to": "--sf-secondary-state-active"
+    },
+    {
+      "from": "--sf-secondary-transparent-hover",
+      "to": "--sf-secondary-state-hover"
+    },
+    {
+      "from": "--sf-secondary-transparent-overlay",
+      "to": "--sf-secondary-container-strong"
+    },
+    {
+      "from": "--sf-secondary-transparent-select",
+      "to": "--sf-secondary-state-select"
+    },
+    {
+      "from": "--sf-success-transparent-active",
+      "to": "--sf-success-state-active"
+    },
+    {
+      "from": "--sf-success-transparent-hover",
+      "to": "--sf-success-state-hover"
+    },
+    {
+      "from": "--sf-success-transparent-overlay",
+      "to": "--sf-success-container-strong"
+    },
+    {
+      "from": "--sf-success-transparent-select",
+      "to": "--sf-success-state-select"
+    },
+    {
+      "from": "--sf-surface-0",
+      "to": "--sf-surface-page"
+    },
+    {
+      "from": "--sf-surface-1",
+      "to": "--sf-surface-area"
+    },
+    {
+      "from": "--sf-surface-overlay",
+      "to": "--sf-surface-veil"
+    },
+    {
+      "from": "--sf-surface-transparent-active",
+      "to": "--sf-surface-state-active"
+    },
+    {
+      "from": "--sf-surface-transparent-hover",
+      "to": "--sf-surface-state-hover"
+    },
+    {
+      "from": "--sf-surface-transparent-overlay",
+      "to": "--sf-surface-container-strong"
+    },
+    {
+      "from": "--sf-surface-transparent-select",
+      "to": "--sf-surface-state-select"
+    },
+    {
+      "from": "--sf-tertiary-transparent-active",
+      "to": "--sf-tertiary-state-active"
+    },
+    {
+      "from": "--sf-tertiary-transparent-hover",
+      "to": "--sf-tertiary-state-hover"
+    },
+    {
+      "from": "--sf-tertiary-transparent-overlay",
+      "to": "--sf-tertiary-container-strong"
+    },
+    {
+      "from": "--sf-tertiary-transparent-select",
+      "to": "--sf-tertiary-state-select"
+    },
+    {
+      "from": "--sf-warning-transparent-active",
+      "to": "--sf-warning-state-active"
+    },
+    {
+      "from": "--sf-warning-transparent-hover",
+      "to": "--sf-warning-state-hover"
+    },
+    {
+      "from": "--sf-warning-transparent-overlay",
+      "to": "--sf-warning-container-strong"
+    },
+    {
+      "from": "--sf-warning-transparent-select",
+      "to": "--sf-warning-state-select"
+    }
+  ],
+  "component_variables": [
+    {
+      "from": "--sf-alert-bar-danger-background",
+      "to": "--sf-alert-bar-error-background-color"
+    },
+    {
+      "from": "--sf-alert-bar-info-background",
+      "to": "--sf-alert-bar-info-background-color"
+    },
+    {
+      "from": "--sf-alert-bar-list-background",
+      "to": "--sf-alert-bar-list-background-color"
+    },
+    {
+      "from": "--sf-alert-bar-warning-background",
+      "to": "--sf-alert-bar-warning-background-color"
+    },
+    {
+      "from": "--sf-card-background",
+      "to": "--sf-card-background-color"
+    },
+    {
+      "from": "--sf-code-background",
+      "to": "--sf-code-background-color"
+    },
+    {
+      "from": "--sf-contents-background",
+      "to": "--sf-contents-background-color"
+    },
+    {
+      "from": "--sf-figure-background",
+      "to": "--sf-figure-background-color"
+    },
+    {
+      "from": "--sf-kbd-background",
+      "to": "--sf-kbd-background-color"
+    },
+    {
+      "from": "--sf-list-attention-background",
+      "to": "--sf-list-attention-background-color"
+    },
+    {
+      "from": "--sf-pager-card-background",
+      "to": "--sf-pager-card-background-color"
+    },
+    {
+      "from": "--sf-procedure-marker-background",
+      "to": "--sf-procedure-marker-background-color"
+    },
+    {
+      "from": "--sf-progress-run-background",
+      "to": "--sf-progress-run-background-color"
+    },
+    {
+      "from": "--sf-progress-run-output-background",
+      "to": "--sf-progress-run-output-background-color"
+    },
+    {
+      "from": "--sf-search-background",
+      "to": "--sf-search-background-color"
+    },
+    {
+      "from": "--sf-site-header-background",
+      "to": "--sf-site-header-background-color"
+    },
+    {
+      "from": "--sf-tile-metric-background",
+      "to": "--sf-tile-metric-background-color"
+    },
+    {
+      "from": "--sf-tile-metric-hover-background",
+      "to": "--sf-tile-metric-hover-background-color"
+    },
+    {
+      "from": "--sf-wizard-background",
+      "to": "--sf-wizard-background-color"
+    },
+    {
+      "from": "--sf-workspace-drawer-background",
+      "to": "--sf-workspace-drawer-background-color"
+    }
+  ],
+  "utilities": [
+    {
+      "from": "bg-surface-0",
+      "to": "bg-surface-page"
+    },
+    {
+      "from": "bg-surface-1",
+      "to": "bg-surface-area"
+    },
+    {
+      "from": "bg-surface-transparent-select",
+      "to": "bg-surface-state-select"
+    },
+    {
+      "from": "bg-surface-transparent-overlay",
+      "to": "bg-surface-container-strong"
+    },
+    {
+      "from": "bg-disable",
+      "to": "bg-surface-disabled"
+    },
+    {
+      "from": "bg-primary-transparent-select",
+      "to": "bg-primary-state-select"
+    },
+    {
+      "from": "bg-primary-transparent-overlay",
+      "to": "bg-primary-container-strong"
+    },
+    {
+      "from": "bg-secondary-transparent-select",
+      "to": "bg-secondary-state-select"
+    },
+    {
+      "from": "bg-secondary-transparent-overlay",
+      "to": "bg-secondary-container-strong"
+    },
+    {
+      "from": "bg-tertiary-transparent-select",
+      "to": "bg-tertiary-state-select"
+    },
+    {
+      "from": "bg-tertiary-transparent-overlay",
+      "to": "bg-tertiary-container-strong"
+    },
+    {
+      "from": "bg-error-transparent-select",
+      "to": "bg-error-state-select"
+    },
+    {
+      "from": "bg-error-transparent-overlay",
+      "to": "bg-error-container-strong"
+    },
+    {
+      "from": "bg-warning-transparent-select",
+      "to": "bg-warning-state-select"
+    },
+    {
+      "from": "bg-warning-transparent-overlay",
+      "to": "bg-warning-container-strong"
+    },
+    {
+      "from": "bg-success-transparent-select",
+      "to": "bg-success-state-select"
+    },
+    {
+      "from": "bg-success-transparent-overlay",
+      "to": "bg-success-container-strong"
+    },
+    {
+      "from": "hover:bg-surface-transparent",
+      "to": "hover:bg-surface-state"
+    },
+    {
+      "from": "hover:bg-primary-transparent",
+      "to": "hover:bg-primary-state"
+    },
+    {
+      "from": "hover:bg-secondary-transparent",
+      "to": "hover:bg-secondary-state"
+    },
+    {
+      "from": "hover:bg-tertiary-transparent",
+      "to": "hover:bg-tertiary-state"
+    },
+    {
+      "from": "hover:bg-error-transparent",
+      "to": "hover:bg-error-state"
+    },
+    {
+      "from": "hover:bg-warning-transparent",
+      "to": "hover:bg-warning-state"
+    },
+    {
+      "from": "hover:bg-success-transparent",
+      "to": "hover:bg-success-state"
+    },
+    {
+      "from": "active:bg-surface-transparent",
+      "to": "active:bg-surface-state"
+    },
+    {
+      "from": "active:bg-primary-transparent",
+      "to": "active:bg-primary-state"
+    },
+    {
+      "from": "active:bg-secondary-transparent",
+      "to": "active:bg-secondary-state"
+    },
+    {
+      "from": "active:bg-tertiary-transparent",
+      "to": "active:bg-tertiary-state"
+    },
+    {
+      "from": "active:bg-error-transparent",
+      "to": "active:bg-error-state"
+    },
+    {
+      "from": "active:bg-warning-transparent",
+      "to": "active:bg-warning-state"
+    },
+    {
+      "from": "active:bg-success-transparent",
+      "to": "active:bg-success-state"
+    }
+  ],
+  "held": [
+    {
+      "from": "--sf-elevation-2--shadow",
+      "to": "--sf-shadow-popup",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-elevation-2--surface",
+      "to": "--sf-surface-popup",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-elevation-5--shadow",
+      "to": "--sf-shadow-popup-nested",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-elevation-5--surface",
+      "to": "--sf-surface-popup-nested",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-on-elevation-2--variant",
+      "to": "--sf-on-surface-popup-variant",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-on-elevation-5--variant",
+      "to": "--sf-on-surface-popup-nested-variant",
+      "why": "Today a different value from the name it joins (elevation 2 is not 3, 5's shadow is not 4's): the collapse is a visible change and comes with S3, which turns the former name into an alias then."
+    },
+    {
+      "from": "--sf-shadow--color-fill",
+      "to": "--sf-shadow-color-fill",
+      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
+    },
+    {
+      "from": "--sf-shadow--color-outline",
+      "to": "--sf-shadow-color-outline",
+      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
+    },
+    {
+      "from": "--sf-shadow--color-shading",
+      "to": "--sf-shadow-color-shading",
+      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
+    },
+    {
+      "from": "--sf-shadow--rim",
+      "to": "--sf-shadow-rim",
+      "why": "The shadow family is renamed whole in a separate pass: these four are the theme's, the rest of the family (level ratio, alfa steps, colour, shade) are not, and the utilities write them per scope."
+    }
+  ]
+}

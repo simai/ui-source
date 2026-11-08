@@ -68,7 +68,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
 @mixin cap {
   @include sized;
   color: var(--sf-kbd-color, color-mix(in srgb, currentColor 80%, transparent));
-  background: var(--sf-kbd-background, color-mix(in srgb, currentColor 12%, transparent));
+  background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 12%, transparent)));
   border: none;
   box-shadow: none;
 }
