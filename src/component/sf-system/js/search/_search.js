@@ -292,11 +292,11 @@ export function Search(e = {modal:'[sf-modal]'}, param)
         page                : '[data-name*="sf-pagewrap-area"]',          // Основная область страницы для blur
         container           : '.sf-modal-container',
         // Модификаторы подложки модального окна
-        overlay : 'sf-modal-overlay fixed w-full h-full top-0 inline-end-0 bottom-0 inline-start-0 items-cross-center content-main-center bg-surface-transparent-overlay',
+        overlay : 'sf-modal-overlay fixed w-full h-full top-0 inline-end-0 bottom-0 inline-start-0 items-cross-center content-main-center bg-scrim',
         'overlay-close': false,
         area                : 'sf-modal-area relative w-10/12 sm:w-10/12 w-2/3 lg:w-1/2 xl:w-1/2', // Модификаторы контейнера контентной части
         // Модификаторы контентной части
-        content             : 'sf-modal-content overflow-auto border-0 bg-surface-1 p-6',
+        content             : 'sf-modal-content overflow-auto border-0 bg-surface-popup p-6',
         html : false,
         beforeCreateWindow      : function() {},   // Перед созданием
         beforeContentUpload     : function() {},   // Перед загрузкой контента

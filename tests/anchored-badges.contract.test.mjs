@@ -59,7 +59,7 @@ test('the sheets size the badge from tokens and logical sides only', async () =>
   assert.doesNotMatch(sheets, /\b(?:left|right|top|bottom):/u, 'no physical sides');
   assert.match(sheets, /inset-inline-start/u);
   assert.match(sheets, /&:dir\(rtl\)/u);
-  assert.match(sheets, /var\(--sf-badge-ring-color, var\(--sf-badge--surface, var\(--sf-surface-0\)\)\)/u);
+  assert.match(sheets, /var\(--sf-badge-ring-color, var\(--sf-badge--surface, var\(--sf-surface-place\)\)\)/u);
 });
 
 test('Smart avatar, icon and icon button declare the badge inputs and the sheet that places them', async () => {

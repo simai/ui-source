@@ -128,7 +128,7 @@
 }
 
 .sf-textarea.sf-textarea--bordered textarea {
-  --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-0));
+  --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-transparent));
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-outline));
 }
 
@@ -304,10 +304,6 @@
   --sf-textarea-textarea--border-color: var(--sf-primary-hover);
 }
 
-.sf-textarea:not(.error):has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
-  --sf-textarea-textarea--background-color: var(--sf-surface-0);
-}
-
 .sf-textarea:not(.sf-textarea--pointer-focus):has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
@@ -322,8 +318,8 @@
 }
 
 .sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
-  --sf-textarea-textarea--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-textarea-textarea--background-color: var(--sf-transparent);
+  --sf-textarea-textarea--border-color: var(--sf-outline-variant);
 }
 
 /* Flush: the field inside a composite control -- a chat composer, say -- whose
@@ -403,7 +399,7 @@
 @layer sf.components {
   /* Focus anywhere within the field changes the fill, not the focus ring. */
   .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) textarea {
-    --sf-textarea-textarea--background-color: var(--sf-surface-0);
+    --sf-textarea-textarea--background-color: var(--sf-transparent);
   }
 
   /* The boundary of the ordinary field; lighter than the hover rule. */

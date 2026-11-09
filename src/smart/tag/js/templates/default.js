@@ -81,6 +81,7 @@ function renderLeading(context) {
             return renderColorIcon(context);
         case 'avatar':
             return renderAvatar(context);
+        case 'info':
         case 'success':
         case 'error':
         case 'warning':

@@ -1,5 +1,6 @@
 @use 'sf_var__background_color' as *;
 @use '../../../../core/scss/vars/sf_var__color' as *;
+@use '../../../../core/scss/mix/mix__places' as places;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -25,14 +26,36 @@
     }
 
     // A place class is a place (C16): what stands on it reads its colour as
-    // --sf-surface-place (a badge's ring, a table head) and its dim ink as the
-    // variant role, as the cards and popups will declare for themselves.
-    @each $place, $variant in ('page': null, 'area': null, 'card': 'on-surface-card-variant', 'popup': 'on-surface-popup-variant', 'popup-nested': 'on-surface-popup-nested-variant') {
-        .#{$infix}bg-surface-#{$place} {
-            --sf-surface-place: var(--sf-surface-#{$place});
-            @if $variant {
-                --sf-on-surface-variant: var(--sf-#{$variant});
-            }
+    // --sf-surface-place (a badge's ring, a table head), its dim ink as the
+    // variant role, and the theme's roles back -- a card-coloured block on a
+    // coloured banner is an ordinary card (mix/_mix__places.scss). The former
+    // keys (surface-0, surface-1, surface) are the same places.
+    @each $place, $surface, $variant in (
+        'page' 'surface-page' null, 'surface-0' 'surface-page' null,
+        'area' 'surface-area' null, 'surface-1' 'surface-area' null, 'surface' 'surface-area' null,
+        'card' 'surface-card' 'on-surface-card-variant',
+        'popup' 'surface-popup' 'on-surface-popup-variant',
+        'popup-nested' 'surface-popup-nested' 'on-surface-popup-nested-variant'
+    ) {
+        $class: if(str-index($place, 'surface') == 1, $place, 'surface-#{$place}');
+        .#{$infix}bg-#{$class} {
+            @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null));
+        }
+    }
+
+    // A coloured place (C16; owner 2026-11-08): bg-<role> and
+    // bg-<role>-container paint the background and tell what stands on them
+    // which place it is -- the control fill, the state layers and the lines
+    // from that colour, and on a strong colour the controls' own ink. They
+    // set no text colour: the block's text is color-<role> or
+    // color-on-<role>-container, as the author writes it. hover: and active:
+    // only paint (below).
+    @each $c in places.$sf-place-colours {
+        .#{$infix}bg-#{$c} {
+            @include places.sf-place-strong($c);
+        }
+        .#{$infix}bg-#{$c}-container {
+            @include places.sf-place-soft($c);
         }
     }
 

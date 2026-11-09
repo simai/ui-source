@@ -92,7 +92,7 @@
           "name": "--sf-badge-ring-color",
           "role": "ring-color",
           "summary": "The ring that separates a badge anchored on an avatar, an icon or an icon button from its anchor: the colour of the surface the anchor sits on. Framework surfaces (menus, lists, drawers, modals, toasts) say their own; set it where a page paints a surface of its own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-place)",
           "since": "2026-10-21"
         }
       ]
@@ -196,7 +196,7 @@
           "name": "--sf-input-background-color",
           "role": "background",
           "summary": "The field's fill at rest; focus, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance"
@@ -494,7 +494,7 @@
           "name": "--sf-checkbox-background-color",
           "role": "background",
           "summary": "The box's fill when unchecked; checked, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-place)",
           "since": "2026-10-18"
         },
         {
@@ -634,7 +634,7 @@
           "name": "--sf-switch-background-color",
           "role": "background",
           "summary": "The track's fill when off; the on, pressed and disabled looks keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-place)",
           "since": "2026-10-18"
         },
         {
@@ -685,7 +685,7 @@
           "name": "--sf-textarea-background-color",
           "role": "background",
           "summary": "The field's fill at rest; hover, focus, read-only, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -1237,7 +1237,7 @@
           "name": "--sf-image-field-background-color",
           "role": "background",
           "summary": "The well's fill at rest; drag-over and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-24"
         },
         {
@@ -1399,7 +1399,7 @@
           "name": "--sf-quantity-background-color",
           "role": "background",
           "summary": "The field's fill at rest; an error keeps its own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-25"
         },
         {
@@ -1570,7 +1570,7 @@
           "name": "--sf-verification-background-color",
           "role": "background",
           "summary": "A cell's fill at rest: the surface when bordered, the tonal fill when filled; a focused filled code, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-25",
           "varies_with": [
             "appearance"
@@ -1639,7 +1639,7 @@
           "name": "--sf-country-code-background-color",
           "role": "background",
           "summary": "The field's fill at rest.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -1762,7 +1762,7 @@
           "name": "--sf-file-upload-background-color",
           "role": "background",
           "summary": "The area's fill at rest; hover, focus, dragged-over and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -1845,7 +1845,7 @@
           "name": "--sf-datepicker-range-background-color",
           "role": "background",
           "summary": "The days inside a chosen range.",
-          "default": "var(--sf-primary-container-active)",
+          "default": "var(--sf-primary-container)",
           "since": "2026-10-27"
         },
         {
@@ -2529,7 +2529,7 @@
           "name": "--sf-skeleton-background-color",
           "role": "background",
           "summary": "The placeholder bars and shapes.",
-          "default": "var(--sf-ui-skeleton)",
+          "default": "var(--sf-surface-container)",
           "since": "2026-10-27"
         },
         {
@@ -3017,7 +3017,7 @@
           "name": "--sf-tree-selected-background-color",
           "role": "background",
           "summary": "The fill of a selected or current row.",
-          "default": "var(--sf-surface-container-active)",
+          "default": "var(--sf-primary-container)",
           "state": "selected",
           "since": "2026-10-27"
         }
@@ -3211,7 +3211,7 @@
           "name": "--sf-pager-card-background-color",
           "role": "background",
           "summary": "The fill of the cards and of the lesson card. The former name --sf-pager-card-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-card)",
           "since": "2026-11-08"
         },
         {
@@ -3329,7 +3329,7 @@
           "name": "--sf-rich-text-background-color",
           "role": "background",
           "summary": "The frame's fill at rest; hover, focus, read-only, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-30",
           "varies_with": [
             "appearance"
@@ -3397,7 +3397,7 @@
           "name": "--sf-lookup-background-color",
           "role": "background",
           "summary": "The frame's fill at rest; hover, focus, read-only, error and disabled keep their own.",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-30",
           "varies_with": [
             "appearance"
@@ -3569,7 +3569,7 @@
           "name": "--sf-card-background-color",
           "role": "background",
           "summary": "The card's fill. The former name --sf-card-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-card)",
           "since": "2026-11-08"
         },
         {
@@ -4008,7 +4008,7 @@
           "name": "--sf-tile-metric-background-color",
           "role": "background",
           "summary": "The tile's fill. The former name --sf-tile-metric-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-card)",
           "since": "2026-11-08"
         },
         {

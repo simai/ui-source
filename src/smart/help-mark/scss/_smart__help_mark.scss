@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
 /* A «?» on a label's line, and a short explanation on the menu's surface, at
    most 20rem wide. */
@@ -35,7 +36,7 @@ sf-help-mark {
   border: var(--sf-px) solid var(--sf-help-mark-border-color, var(--sf-outline-variant));
   border-radius: var(--sf-help-mark-radius, var(--sf-radius--surface));
   background-color: var(--sf-help-mark-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-help-mark-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
   color: var(--sf-help-mark-color, var(--sf-on-surface));
   font-size: var(--sf-text-size-1\/2);

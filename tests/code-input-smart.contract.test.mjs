@@ -200,7 +200,7 @@ test('code input: the class verification\'s public variables wrap the values it 
     '--sf-verification--radius: var(--sf-verification-radius, var(--sf-radius--ui));',
     '--sf-verification--border-width: var(--sf-verification-border-width, var(--sf-px));',
     'solid var(--sf-verification-border-color, var(--sf-outline));',
-    'background: var(--sf-verification-background-color, var(--sf-surface-0));',
+    'background: var(--sf-verification-background-color, var(--sf-transparent));',
     'background: var(--sf-verification-background-color, var(--sf-surface-container));',
     'color: var(--sf-verification-color, var(--sf-on-surface));',
     '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-4));',

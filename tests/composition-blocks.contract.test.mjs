@@ -821,7 +821,11 @@ test('the accent section is the primary fill with on-primary text; a grid keeps 
   assert.ok(known('bg-primary') && known('color-on-primary'));
   assert.equal(PARAMETER_SETS.background.version, '1.1.0');
   const sheet = readFileSync(new URL('src/core/scss/_sf_css__composition.scss', root), 'utf8');
-  assert.match(sheet, /\[data-sf-composition-id\]\.bg-primary\.color-on-primary\) \{\s*--sf-on-surface: var\(--sf-on-primary\);\s*--sf-on-surface-variant: var\(--sf-on-primary\);/u, 'the on-surface roles read on the accent');
+  // C16: bg-primary is a coloured place, so the on-surface roles on the accent
+  // come from the utility (on-primary, its 80 step for dim ink), not from here.
+  assert.doesNotMatch(sheet, /\[data-sf-composition-id\]\.bg-primary\.color-on-primary\) \{\s*--sf-on-surface:/u, 'the accent re-declares no role of its own');
+  const places = readFileSync(new URL('src/utility/background-color/default/scss/_sf_css__background_color.scss', root), 'utf8');
+  assert.match(places, /bg-#\{\$c\} \{\s*@include places\.sf-place-strong\(\$c\);/u, 'the on-surface roles read on the accent');
   const grid = BUILTIN_TYPE_MANIFESTS.find(({ type }) => type === 'layout.grid');
   assert.deepEqual(grid.parameter_defaults, { columns: 3, gap: 5 });
   for (const count of [2, 3, 4]) {

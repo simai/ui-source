@@ -1,0 +1,122 @@
+// SIMAI Framework
+// https://simai.io
+
+// PLACES (C16, the background system, 2026-11-08)
+//
+// A place is what a region stands on. Things on a place are translucent -- a
+// control's fill, a state layer, a line -- and read the roles below, so they
+// come out right on any place. Two kinds of rule re-declare those roles:
+//
+//   a coloured place   bg-<role> and bg-<role>-container (owner, 2026-11-08):
+//                      the fill, the states and the lines of what stands on it
+//                      come from that colour; on a strong colour (bg-primary)
+//                      the controls' own ink too. The text of the block itself
+//                      stays with color-<role>: a background utility sets no
+//                      colour.
+//   an opaque place    a card, a popup, a window, a bg-surface-* block: it
+//                      takes the theme's roles back, so a menu opened from a
+//                      field on a coloured banner is an ordinary menu, not
+//                      white ink on a white plate.
+//
+// Both say which colour a cut-out takes (--sf-surface-place: a badge's ring,
+// a table head) and which dim ink stands on them (--sf-on-surface-variant).
+//
+// The theme's values live in _sf_css__theme.scss, one light-dark() each;
+// $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
+// place can take them back (an ancestor's value cannot be read in CSS).
+// tests/surface-places.contract.test.mjs holds every value here equal to the
+// theme's.
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'mix__role_aliases' as aliases;
+
+$sf-place-theme-roles: (
+  'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
+  'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-60))',
+  'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
+  'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
+  'surface-state-select': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
+  'surface-state-active': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
+  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20))',
+  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+  'outline': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
+  'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+  'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
+);
+
+// The renamed roles among them: their former names are re-declared with them
+// (an alias resolves where it is declared; tests/token-aliases.contract.test.mjs).
+$sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surface-state-select', 'surface-state-active', 'surface-disabled', 'on-surface-disabled');
+
+// An opaque place: the colour of the place, its dim ink, and the theme's
+// roles back. $surface and $variant are the place's own values (a component
+// passes its public variable chain as $surface); without $variant the dim ink
+// is the theme's (the page, an area).
+@mixin sf-place($surface, $variant: null) {
+  --sf-surface-place: #{$surface};
+  @each $role, $value in $sf-place-theme-roles {
+    @if $role == 'on-surface-variant' and $variant {
+      --sf-on-surface-variant: #{$variant};
+    } @else {
+      --sf-#{$role}: #{$value};
+    }
+  }
+  @include aliases.sf-role-aliases($sf-place-aliased);
+}
+
+// The seven colours that are places.
+$sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
+
+// A soft coloured place, bg-<c>-container: the colour's own container trio is
+// the control fill, its state layers the states, its outline the boundary and
+// its 24 step (container-strong, the line's step) the line. The place colour
+// is the container itself. The ink is the author's (color-on-<c>-container),
+// so the controls keep the theme's ink, which holds on every container
+// (surfaces research 6.3: text 12.32 light / 8.60 dark at least).
+@mixin sf-place-soft($c) {
+  --sf-surface-place: var(--sf-#{$c}-container);
+  --sf-surface-container: var(--sf-#{$c}-container);
+  --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
+  --sf-surface-container-active: var(--sf-#{$c}-container-active);
+  --sf-surface-state-hover: var(--sf-#{$c}-state-hover);
+  --sf-surface-state-select: var(--sf-#{$c}-state-select);
+  --sf-surface-state-active: var(--sf-#{$c}-state-active);
+  --sf-outline: var(--sf-#{$c}-outline);
+  --sf-outline-variant: var(--sf-#{$c}-container-strong);
+  @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
+}
+
+// A step of a strong place's ink: on-<c>, white in the light theme and tone 20
+// in the dark, at a step of the alpha scale. Written as a mix of the role with
+// transparent because the palette has no tone-20 steps yet (the C17 palette
+// primitives); the value is the step's, and it becomes
+// light-dark(var(--sf-white--alfa-N), var(--sf-<c>-20--alfa-N)) when they land.
+@function sf-ink($c, $step) {
+  @return color-mix(in srgb, var(--sf-on-#{$c}) #{$step * 1%}, var(--sf-transparent));
+}
+
+// A strong coloured place, bg-<c>: what stands on it takes the place's ink on
+// the alpha scale -- states 4/8/12, fill 12/16/20 (a named exception: on a
+// colour the fill starts at 12, research 4.1, white at 16 gave 4.40 on a
+// near-grey header), line 24, boundary 64, dim ink 80 -- and the controls'
+// own ink is on-<c>, or a field's text would be dark on the colour.
+@mixin sf-place-strong($c) {
+  --sf-surface-place: var(--sf-#{$c});
+  --sf-on-surface: var(--sf-on-#{$c});
+  --sf-on-surface-variant: #{sf-ink($c, 80)};
+  --sf-on-surface-container-variant: #{sf-ink($c, 80)};
+  --sf-surface-state-hover: #{sf-ink($c, 4)};
+  --sf-surface-state-select: #{sf-ink($c, 8)};
+  --sf-surface-state-active: #{sf-ink($c, 12)};
+  --sf-surface-container: #{sf-ink($c, 12)};
+  --sf-surface-container-hover: #{sf-ink($c, 16)};
+  --sf-surface-container-active: #{sf-ink($c, 20)};
+  --sf-outline: #{sf-ink($c, 64)};
+  --sf-outline-variant: #{sf-ink($c, 24)};
+  --sf-surface-disabled: #{sf-ink($c, 12)};
+  --sf-on-surface-disabled: #{sf-ink($c, 64)};
+  @include aliases.sf-role-aliases($sf-place-aliased);
+}

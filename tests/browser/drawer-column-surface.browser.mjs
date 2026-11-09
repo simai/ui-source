@@ -5,8 +5,8 @@
 // (simai/ui-source#26 C1, ui-mail P-02), on the built bytes, in the light and
 // the dark theme:
 //   - in a dock host with the room (at least 48rem) the docked panel says
-//     data-sf-drawer-column="true", paints --sf-surface-0 -- the colour of the
-//     page beside it, not the modal place's --sf-surface-popup (C20; it was --sf-elevation-4--surface) -- draws no
+//     data-sf-drawer-column="true", paints --sf-surface-area -- a column beside
+//     the page (C16 S4a; it was the page's --sf-surface-0), not the modal place's --sf-surface-popup (C20; it was --sf-elevation-4--surface) -- draws no
 //     shadow, and keeps the page's --sf-on-surface-variant;
 //   - narrowed under 48rem the same panel floats over the page: column
 //     "false", the raised surface and a shadow, as a floating panel;
@@ -67,7 +67,7 @@ try {
       variant.remove();
       return {
         column: root.getAttribute('data-sf-drawer-column'), background: style.backgroundColor, shadow: style.boxShadow,
-        variant: panelVariant, page: resolveColor('var(--sf-surface-0)'), raised: resolveColor('var(--sf-surface-popup)'),
+        variant: panelVariant, page: resolveColor('var(--sf-surface-area)'), raised: resolveColor('var(--sf-surface-popup)'),
         pageVariant: resolveColor('var(--sf-on-surface-variant)'), padding: getComputedStyle(document.getElementById('host')).paddingInlineStart,
       };
     }, id);
@@ -76,7 +76,7 @@ try {
     let library = await read('library');
     evidence[`${theme} column`] = library;
     check(at('a docked drawer with the room is a column'), library.column === 'true', library);
-    check(at('the column paints the page surface'), library.background === library.page, library);
+    check(at('the column paints the area (C16 S4a)'), library.background === library.page, library);
     check(at('the column draws no shadow'), library.shadow === 'none', library);
     check(at('the column keeps the page\'s dimmed text'), library.variant === library.pageVariant, library);
     check(at('the column takes room from the page'), library.padding !== '0px', library);

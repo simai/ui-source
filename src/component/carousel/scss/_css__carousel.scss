@@ -108,6 +108,23 @@
   --sf-carousel-control--color: var(--sf-on-surface-hover);
 }
 
+.sf-carousel-switch--media {
+  /* Glass over the slide (C16, surfaces research 5): black at 48 with a blur
+     and white ink in both themes, so a switch over a photo reads on any photo. */
+  --sf-carousel-control--background-color: var(--sf-surface-media);
+  --sf-carousel-control--color: var(--sf-on-surface-media);
+  backdrop-filter: blur(var(--sf-blur-large));
+}
+
+.sf-carousel-switch--media:hover {
+  --sf-carousel-control--background-color: var(--sf-surface-media-hover);
+  --sf-carousel-control--color: var(--sf-on-surface-media);
+}
+
+.sf-carousel-switch--media:active {
+  --sf-carousel-control--background-color: var(--sf-surface-media-active);
+}
+
 .sf-carousel-switch--big {
   min-block-size: var(--sf-ui-2--control-height);
   min-inline-size: var(--sf-ui-2--control-height);

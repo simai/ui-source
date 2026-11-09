@@ -187,7 +187,7 @@ try {
   await page.waitForTimeout(200);
   const over = await state('filled');
   const overPaint = await page.evaluate(() => getComputedStyle(document.querySelector('#filled .sf-image-field-well')).borderTopStyle);
-  if (!over.dragover || over.name !== 'Отпустите файл, чтобы поставить его' || overPaint !== 'solid') note({case: 'drop state is drawn', got: {over, overPaint}});
+  if (!over.dragover || over.name !== 'Отпустите файл, чтобы поставить его' || overPaint !== 'dashed') note({case: 'drop state is drawn', got: {over, overPaint}});
   await drag('filled', 'drop', 'dropped.png', 'image/png');
   await page.waitForTimeout(300);
   const dropped = await state('filled');

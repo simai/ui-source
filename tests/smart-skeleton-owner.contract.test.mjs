@@ -23,7 +23,7 @@ test('ordinary and Smart Skeleton expose decorative bounded geometry', async () 
 test('Skeleton uses Framework semantic tokens and reduced motion', async () => {
   const styles = await read('src/component/skeleton/scss/_skeleton.scss');
 
-  assert.match(styles, /--sf-skeleton-base: var\(--sf-ui-skeleton\)/);
+  assert.match(styles, /--sf-skeleton-base: var\(--sf-surface-container\)/);
   assert.match(styles, /--sf-skeleton-highlight: var\(--sf-surface-container-active\)/);
   assert.match(styles, /--sf-skeleton-duration: calc\(var\(--sf-duration-slow\) \* 3\)/);
   assert.match(styles, /border-radius: var\(--sf-radius--ui\)/);

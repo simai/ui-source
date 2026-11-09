@@ -70,8 +70,11 @@ test('system modal defaults use current semantic utilities', async () => {
   const combined = sources.join('\n');
 
   assert.doesNotMatch(combined, /\bbg-opacity-/);
-  assert.match(combined, /\bbg-surface-transparent-overlay\b/);
-  assert.match(combined, /\bbg-surface-[01]\b/);
+  // The backdrop is the scrim (C16 S3), not the fill that used to stand in
+  // for it; the panel is a place.
+  assert.match(combined, /\bbg-scrim\b/);
+  assert.doesNotMatch(combined, /\bbg-surface-transparent-overlay\b/);
+  assert.match(combined, /\bbg-surface-(1|area|popup)\b/);
 });
 
 test('modal surfaces use the semantic surface radius and logical edge positions', async () => {

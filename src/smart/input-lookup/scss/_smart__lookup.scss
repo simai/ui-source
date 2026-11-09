@@ -1,4 +1,5 @@
 @use '../../../component/context-menu/scss/panel';
+@use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
 /* sf-input-lookup (standard simai.smart-component 1.3.14 §6). The frame is
@@ -113,7 +114,7 @@
 }
 
 .sf-lookup.sf-lookup--bordered .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-0));
+  --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-transparent));
   --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-outline));
 }
 
@@ -138,7 +139,7 @@
 }
 
 .sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly):focus-within .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-surface-0);
+  --sf-lookup--background-color: var(--sf-transparent);
   --sf-lookup--border-color: var(--sf-outline);
 }
 
@@ -165,8 +166,8 @@
 }
 
 .sf-lookup.sf-lookup--readonly.sf-lookup--bordered:not(.error) .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-lookup--background-color: var(--sf-transparent);
+  --sf-lookup--border-color: var(--sf-outline-variant);
 }
 
 .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
@@ -238,7 +239,7 @@
   border: 0;
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-lookup-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
   color: var(--sf-on-surface);
   overflow: auto;

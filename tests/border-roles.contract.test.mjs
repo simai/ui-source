@@ -39,7 +39,9 @@ const CONTROLS = [
 test('a control carries the boundary a person can actually see', () => {
   const offenders = [];
   for (const [component, variable] of CONTROLS) {
-    const source = componentStyles(component);
+    // A read-only field is no control to press (C16 S4b): its edge is the
+    // area's line on purpose, so its rule is not the resting boundary.
+    const source = componentStyles(component).replace(/[^{}]*:read-only:not\(:disabled\)\)[^{}]*\{[^}]*\}/gu, '');
     // States paint the same variable with their own colour — error, disabled,
     // the primary of a hover. What the rule is about is the resting boundary:
     // the solid role has to be there, and the role that draws an area must not.

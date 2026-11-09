@@ -309,8 +309,10 @@
   --sf-list-item--background-color: var(--sf-primary-container-hover);
 }
 
+/* Selected or current is one role in every component (C16): primary-container
+     with its ink. */
 .sf-list-item.selected {
-  --sf-list-item--background-color: var(--sf-primary-container-active);
+  --sf-list-item--background-color: var(--sf-primary-container);
 }
 
 /* An option sits flush against the options above and below it. */

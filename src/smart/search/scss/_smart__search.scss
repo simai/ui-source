@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
 /* Site search (standard simai.smart-component 1.3.13 §6): the window sf-search
@@ -21,7 +22,7 @@
 .sf-search-portal {
   --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
   --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-surface-popup)));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-search--surface), var(--sf-on-surface-popup-variant));
   --sf-search--radius: var(--sf-search-radius, var(--sf-radius-2));
   --sf-search--pad: var(--sf-space-1\/4);
   --sf-search--row-pad: var(--sf-space-1\/2);
@@ -222,7 +223,9 @@
 }
 
 .sf-search-row--selected {
-  background: var(--sf-surface-transparent-select);
+  /* The selected role (C16). */
+  background: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
 }
 
 .sf-search-row-icon {
@@ -372,9 +375,10 @@
 }
 
 .sf-search-scope[aria-pressed='true'] {
-  background: var(--sf-surface-container-active);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-  color: var(--sf-on-surface);
+  /* The chosen scope: the selected role (C16). */
+  background: var(--sf-primary-container);
+  --sf-on-surface-variant: var(--sf-on-primary-container);
+  color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
 }
 

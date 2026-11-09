@@ -24,7 +24,7 @@ test('ordinary Skeleton uses logical token geometry and semantic paint', async (
   assert.match(styles, /inline-size: var\(--sf-skeleton-text--height\)/);
   assert.match(styles, /border-radius: var\(--sf-radius--ui\)/);
   assert.match(styles, /\.sf-skeleton-rounded[\s\S]*var\(--sf-radius--ui\)/);
-  assert.match(styles, /--sf-skeleton-base: var\(--sf-ui-skeleton\)/);
+  assert.match(styles, /--sf-skeleton-base: var\(--sf-surface-container\)/);
   assert.match(styles, /@media \(forced-colors: active\)/);
   assert.doesNotMatch(styles, /(?:^|[\s:(])\d+(?:\.\d+)?(?:px|rem)(?:[\s;,)])/m);
 });

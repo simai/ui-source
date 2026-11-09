@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
 .sf-modal-focus-guard {
   position: fixed;
@@ -102,7 +103,8 @@
   --sf-modal-surface-shadow: var(--sf-shadow-flat);
 
   background-color: var(--sf-modal-surface-bg);
-  --sf-badge--surface: var(--sf-modal-surface-bg);
+  // A flat modal surface is an area (C18), a place of its own (C16).
+  @include places.sf-place(var(--sf-modal-surface-bg));
   border: var(--sf-modal-surface-border-width)
     var(--sf-modal-surface-border-style)
     var(--sf-modal-surface-border-color);
@@ -117,7 +119,7 @@
   /* Elevated is a place, not a shadow alone: the window stands on the popup
      surface with the modal shadow, over the scrim (C20). */
   --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-modal-surface-bg), var(--sf-on-surface-popup-variant));
   --sf-modal-surface-shadow: var(--sf-shadow-modal);
 }
 

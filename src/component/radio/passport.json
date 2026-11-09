@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.radio",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/radio/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/radio/scss/_css_radio_custom.scss",
     "src/component/radio/scss/index.scss"
   ],
-  "content_sha256": "62909e6b04c8c859660428121723d1d624ca2a40fec0e2e507c70d13935e4291",
+  "content_sha256": "2eee3c631fece47a86bc032c5cafa16f6f0b023be732acf92696341767d63305",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -30,7 +30,7 @@
   box-sizing: border-box;
   border: var(--sf-verification--border-width) solid var(--sf-verification-border-color, var(--sf-outline));
   border-radius: var(--sf-verification--radius);
-  background: var(--sf-verification-background-color, var(--sf-surface-0));
+  background: var(--sf-verification-background-color, var(--sf-transparent));
   color: var(--sf-verification-color, var(--sf-on-surface));
   font-family: var(--sf-text--family);
   font-size: var(--sf-verification--font-size, var(--sf-text-size-1));
@@ -116,7 +116,7 @@
 @layer sf.components {
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell,
   .sf-verification-form--filled:not(.error):has(input:enabled:focus) .sf-verification-form-wrap .sf-verification {
-    background: var(--sf-surface-0);
+    background: var(--sf-transparent);
     border-color: var(--sf-outline);
   }
 

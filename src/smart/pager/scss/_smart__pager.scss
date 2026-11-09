@@ -15,7 +15,8 @@
   --sf-pager--text-space: var(--sf-ui-1--text-space-x);
   --sf-pager--inset-y: var(--sf-ui-1--space-y);
   --sf-pager--gap: var(--sf-pager-gap, var(--sf-pager--text-space));
-  --sf-pager--card-background: var(--sf-pager-card-background-color, var(--sf-pager-card-background, var(--sf-surface-0)));
+  // The side cards are cards (C16): the card place.
+  --sf-pager--card-background: var(--sf-pager-card-background-color, var(--sf-pager-card-background, var(--sf-surface-card)));
   --sf-pager--card-border-color: var(--sf-pager-card-border-color, var(--sf-outline-variant));
   --sf-pager--card-radius: var(--sf-pager-card-radius, var(--sf-radius--ui));
   --sf-pager--link-color: var(--sf-pager-link-color, var(--sf-primary));
@@ -251,7 +252,8 @@
 
 .sf-pager-dot--current {
   border: var(--sf-a2) solid var(--sf-pager--fill-color);
-  background: var(--sf-pager--card-background);
+  /* A ring: its middle is the place the dots stand on (C16). */
+  background: var(--sf-surface-place);
 }
 
 .sf-pager-lesson {

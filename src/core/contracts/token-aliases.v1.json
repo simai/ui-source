@@ -637,5 +637,15 @@
         "why": "The former light-theme key shadow colour (--sf-shadow--color-fill); C20 draws with black 16. Nothing in the Framework reads it now; Docara's resources/smart/assets/preferences.css does, so it stays until remove_after."
       }
     ]
-  }
+  },
+  "primitives_kept": [
+    {
+      "name": "--sf-neutral-60--alfa-64",
+      "why": "The dark half of --sf-outline before C16 S3 (2026-11-08): the boundary is neutral-90 at 48 now. Nothing in the Framework reads it; kept for pages that wrote it until remove_after."
+    },
+    {
+      "name": "--sf-neutral-80--alfa-48",
+      "why": "The top of the former skeleton gradient (--sf-ui-skeleton); the skeletons are the control fill since C16 S3. Nothing in the Framework reads it; kept for pages that wrote it until remove_after."
+    }
+  ]
 }

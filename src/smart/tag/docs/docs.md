@@ -30,7 +30,7 @@ root preserves the ordinary BEM classes and applies `root-class`, author
 `SF.deprecations` until 2026-12-01 (journal `attribute-tag-type-split`).
 
 Supported types are `checkbox`, `icon`, `default`, `color`, `avatar`,
-`success`, `error` and `warning`. Supported sizes are `1/2` and `1`.
+`info`, `success`, `error` and `warning`. Supported sizes are `1/2` and `1`.
 
 `appearance="default|surface|ghost"` is a separate axis from `type`, because a
 tag's type says what it carries or what it reports, not how it looks. Surface and
@@ -40,7 +40,7 @@ is hovered. Both are right in a light and in a dark theme without being
 redeclared.
 
 Only the neutral types (`default`, `icon`, `color`, `avatar`, `checkbox`) take an
-appearance: a `success`, `error` or `warning` tag carries its meaning in its
+appearance: an `info`, `success`, `error` or `warning` tag carries its meaning in its
 colour, and draining that colour would drain the meaning. Selection and press
 keep the primary container the tag already uses for both, because on a tag
 pressing shows what being chosen looks like.

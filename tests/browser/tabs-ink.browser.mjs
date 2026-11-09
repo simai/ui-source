@@ -21,7 +21,8 @@
 // for every scheme and both variants:
 //   - a resting unselected pill has a transparent background and border, and
 //     its label reads on the page at 4.5:1 or more;
-//   - the selected pill is filled with --sf-primary-active, and its label
+//   - the selected pill is filled with --sf-primary-container (C16, the
+//     selected role every component takes; it was --sf-primary-active), and its label
 //     reads on that fill at 4.5:1 or more;
 //   - under the pointer an unselected pill takes the surface state layer
 //     (--sf-surface-transparent-hover), not a fill of the theme colour.
@@ -49,7 +50,7 @@ const GREEN = themeVariables(themeFromColor('#2e7d32'));
 // page and the selected fill resolved in the theme.
 const PILLS = () => {
   const probe = document.getElementById('role');
-  probe.style.backgroundColor = 'var(--sf-primary-active)';
+  probe.style.backgroundColor = 'var(--sf-primary-container)';
   const fill = getComputedStyle(probe).backgroundColor;
   probe.style.backgroundColor = '';
   const rows = [...document.querySelectorAll('sf-tabs[type="pills"]')].flatMap((host) =>
@@ -173,7 +174,7 @@ try {
         if (row.disabled) continue;
         const at = `${theme} ${colour} pills/${row.key} tab ${row.index}${row.selected ? ' (selected)' : ''}`;
         if (row.selected) {
-          check(`${at}: the selected pill is filled with --sf-primary-active`, row.background === pills.fill && !transparent(row.background),
+          check(`${at}: the selected pill is filled with --sf-primary-container`, row.background === pills.fill && !transparent(row.background),
             {...row, expected: pills.fill});
           check(`${at}: its label reads on the fill at 4.5:1`, contrast(row.ink, row.background, pills.page) >= 4.5,
             {...row, ratio: contrast(row.ink, row.background, pills.page)});

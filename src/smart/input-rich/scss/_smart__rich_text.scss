@@ -78,7 +78,7 @@
 }
 
 .sf-rich-text.sf-rich-text--bordered .sf-rich-text-frame {
-  --sf-rich-text--background-color: var(--sf-rich-text-background-color, var(--sf-surface-0));
+  --sf-rich-text--background-color: var(--sf-rich-text-background-color, var(--sf-transparent));
   --sf-rich-text--border-color: var(--sf-rich-text-border-color, var(--sf-outline));
 }
 
@@ -103,7 +103,7 @@
 }
 
 .sf-rich-text:not(.error).sf-rich-text--filled:not(.sf-rich-text--disabled):not(.sf-rich-text--readonly):focus-within .sf-rich-text-frame {
-  --sf-rich-text--background-color: var(--sf-surface-0);
+  --sf-rich-text--background-color: var(--sf-transparent);
   --sf-rich-text--border-color: var(--sf-outline);
 }
 
@@ -132,8 +132,8 @@
 }
 
 .sf-rich-text.sf-rich-text--readonly.sf-rich-text--bordered:not(.error) .sf-rich-text-frame {
-  --sf-rich-text--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-rich-text--background-color: var(--sf-transparent);
+  --sf-rich-text--border-color: var(--sf-outline-variant);
 }
 
 .sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {

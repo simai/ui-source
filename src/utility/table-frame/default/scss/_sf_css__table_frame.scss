@@ -21,7 +21,8 @@
            --sf-table-frame-head-background, defaults on the head cells. */
         --sf-table-frame-border-color: var(--sf-outline-variant);
         --sf-table-frame-radius: var(--sf-radius--surface);
-        --sf-table-frame-background: var(--sf-surface-0);
+        // The place it stands on (C16): a card, a popup, a coloured block.
+        --sf-table-frame-background: var(--sf-surface-place);
         --sf-table-frame-head-color: var(--sf-on-surface);
         --sf-table-frame-head-padding-block: var(--sf-space-1);
         --sf-table-frame-cell-padding-block: var(--sf-space-1\/2);

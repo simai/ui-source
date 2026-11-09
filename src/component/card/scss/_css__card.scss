@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 // SIMAI Framework
 // https://simai.io
 
@@ -25,6 +26,17 @@
   }
 }
 
+// A card is a place (C16): its colour for a cut-out, its dim ink and the
+// theme's roles back, so a card on a coloured block is an ordinary card. In
+// sf.base, below the utilities, so a card the page colours (sf-card
+// bg-success-container) is that coloured place instead. A card in a card has
+// no plate, so it keeps the place of the card it is in.
+@layer sf.base {
+  .sf-card:not(.sf-card--plain):not(.sf-card .sf-card) {
+    @include places.sf-place(var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card))), var(--sf-on-surface-card-variant));
+  }
+}
+
 @layer sf.components {
   .sf-card {
     display: flex;
@@ -38,7 +50,9 @@
     // up to the full step, so a wide card is unchanged.
     padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
     color: var(--sf-card-color, var(--sf-on-surface));
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-0)));
+    // The card place (C16): white in the light theme, a step lighter than
+    // the page in the dark (it was the page's own colour there).
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card-radius, var(--sf-radius--surface));
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
@@ -64,6 +78,13 @@
   .sf-card:is(a[href], button):not(.sf-card--plain):hover {
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
     box-shadow: var(--sf-shadow-raised);
+  }
+
+  // A card in a card is its outline only (C16, surfaces research 4.2: page,
+  // then area or card, then outline only): no second plate, so it does not
+  // stand a step lighter again in the dark. Its own variables still win.
+  .sf-card .sf-card:not(.sf-card--plain) {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
   }
 
   .sf-card--plain {

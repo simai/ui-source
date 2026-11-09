@@ -20,12 +20,15 @@ const subtlePath = 'src/utility/scroll-subtle/default/scss/_sf_css__scroll_subtl
 // (2026-10-22, control/VISUAL-DECISIONS.md). What it replaced was below or near
 // the threshold: the page's own thumb at 1.00-1.14:1, the overlay ink at
 // 2.09-2.70:1, the standard preset at 2.80-3.12:1, the legacy class at 1.30-1.69:1.
-const REST = 'var(--sf-on-neutral-container-graphic)';
+// C16 (2026-11-09): the rest colour is the boundary role, --sf-outline, which
+// clears 3:1 on every place (surfaces research 5.2) and follows a coloured place
+// or glass, where an opaque grey would be drawn on the colour.
+const REST = 'var(--sf-outline)';
 // The held state has to stay above that rest, and --sf-on-surface-variant cannot:
 // in the dark theme it is neutral-60, the rest colour itself.
 const HELD = 'var(--sf-on-surface)';
 
-test('every page scrollbar draws its thumb in the graphic role', () => {
+test('every page scrollbar draws its thumb in the boundary role', () => {
   const css = read(corePath);
 
   assert.match(css, new RegExp(`--sf-scroll-bg-thumb:\\s*${REST.replace(/[()]/g, '\\$&')}`));

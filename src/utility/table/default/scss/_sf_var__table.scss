@@ -13,13 +13,16 @@ $table-border-color: var(--sf-outline-variant);
 $table-accent-bg: var(--sf-transparent);
 
 $table-stripe-color: var(--sf-on-surface);
-$table-stripe-bg: var(--sf-surface-transparent-select);
+// A stripe and a hovered row are the lightest state layer (C16): 4, and a
+// hovered stripe both, 8 ($table-hover-stripe-bg).
+$table-stripe-bg: var(--sf-surface-state-hover);
 
 $table-active-color: var(--sf-on-surface);
-$table-active-bg: var(--sf-surface-transparent-select);
+$table-active-bg: var(--sf-surface-state-select);
 
 $table-hover-color: var(--sf-on-surface);
-$table-hover-bg: var(--sf-surface-transparent-hover);
+$table-hover-bg: var(--sf-surface-state-hover);
+$table-hover-stripe-bg: var(--sf-surface-state-select);
 
 // The cells keep their fixed lengths. Moving them to the adaptive space
 // ladder (duplication audit 2026-11-03, A-4) shifted every table that

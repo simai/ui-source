@@ -1,4 +1,5 @@
 @use '../../../component/context-menu/scss/panel';
+@use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
 /* The profile picker (owner, 2026-10-14): a field-like button, and a panel
@@ -90,7 +91,7 @@ sf-profile-picker {
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
   color: var(--sf-on-surface);
   overflow: auto;
@@ -334,6 +335,6 @@ sf-profile-picker {
   max-inline-size: 100%;
   block-size: var(--sf-profile-picker--text);
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-ui-skeleton);
+  background: var(--sf-surface-container);
 }
 }

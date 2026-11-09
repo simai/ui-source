@@ -12,5 +12,12 @@ $prefix: --sf-table-;
         #{$prefix}accent-bg: var(#{$prefix}hover-bg);
         color: var(#{$prefix}hover-color);
     }
+
+    // A hovered stripe stacks the two layers (C16): the stripe and the hover
+    // are one step each, so the row under the pointer stays apart from its
+    // neighbours either way.
+    .table-hover.table-stripe>tbody>tr:nth-of-type(odd):hover>* {
+        #{$prefix}accent-bg: #{$table-hover-stripe-bg};
+    }
 // }
 }

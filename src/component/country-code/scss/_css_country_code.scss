@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-country-code {
@@ -37,7 +38,7 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-country-code .sf-country-code-field {
-  --sf-country-code-field--background-color: var(--sf-country-code-background-color, var(--sf-surface-0));
+  --sf-country-code-field--background-color: var(--sf-country-code-background-color, var(--sf-transparent));
   --sf-country-code-field--border: var(--sf-px) solid;
   --sf-country-code-field--border-color: var(--sf-country-code-border-color, var(--sf-outline));
   --sf-country-code-field--border-end-end-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
@@ -415,7 +416,7 @@
   /* Поднят: поверхность берёт ступень своей высоты, иначе в тёмной теме
      подъём не виден — там чёрная тень ничего не даёт. */
   --sf-country-code-list--background-color: var(--sf-country-code-list-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-country-code-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   --sf-country-code-list--box-shadow: var(--sf-shadow-overlay);
   --sf-country-code-list--padding-bottom: var(--sf-space-1\/3);
   --sf-country-code-list--padding-inline-end: var(--sf-space-1\/3);

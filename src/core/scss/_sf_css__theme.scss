@@ -261,8 +261,11 @@
        over the brightest of them and stay well short of the primary role
        (effects-gallery theme audit and the ui-doc repin, 2026-10-19; issue
        simai/ui-source#3). A fill inside a fill -- an avatar in a tag -- is
-       darker still and takes the primary role. */
-    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-80));
+       darker still and takes the primary role. The same ink takes dim text
+       under a state layer (surfaces research 6.1). Dark neutral-85 since C16
+       (owner, 2026-11-08): on a resting fill over the popup's step
+       neutral-80 gave 4.30, neutral-85 gives 4.96. */
+    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
     /* The tones of initials: a muted plate and the ink that reads on it over the
        surfaces 0 to 3, in both themes (tests/browser/avatar-tones.browser.mjs
        measures them). */
@@ -362,8 +365,13 @@
        Both halves are steps of the alpha scale now. The dark one, 64, is on
        the scale's own footing -- it climbs in fours -- and had simply never
        been generated, which is why this role used to be written as a
-       color-mix of its own (owner, 2026-10-08). */
-    --sf-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-60--alfa-64));
+       color-mix of its own (owner, 2026-10-08).
+
+       The dark half is neutral-90 at 48 since C16 (owner, 2026-11-08): the
+       boundary takes the ink's tone, as the line does, and holds 3:1 from the
+       page to the popup's step (4.12 to 3.30), where neutral-60 at 64 gave
+       3.12 to 2.30. */
+    --sf-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
     /* The edge of a region -- a panel, a card, a table, a row inside one.
        Nothing is found by it, so it is not held to 1.4.11: 1.34:1 and 1.92:1. */
     --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));

@@ -18,7 +18,10 @@
     // page and exactly 1.00:1 on a surface-1 panel, where it is not visible at
     // all. The graphic role is opaque neutral-50/60 and clears 3:1 on every
     // step of the surface ladder in both themes (measured 2026-10-22).
-    --sf-scroll-bg-thumb: var(--sf-on-neutral-container-graphic);
+    // C16: the thumb is the boundary role, --sf-outline (3:1 and above on every
+    // place, research 5.2), so a scrollbar on a coloured place or glass takes
+    // that place's boundary instead of a grey drawn on it.
+    --sf-scroll-bg-thumb: var(--sf-outline);
     --sf-scroll-bg-width: var(--sf-b4);
     --sf-scroll-thumb-size: var(--sf-a6);
     --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);

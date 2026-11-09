@@ -86,7 +86,7 @@ test('the disabled content role paints a fill only where the fill is the content
     'src/component/radio/scss/_css_radio.scss: --sf-radio-button-mark--background-color: var(--sf-on-disable);',
     // The slider's handle is the content of its rail, laid over the surface
     // so the fill does not show through (2026-11-01).
-    'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable)) var(--sf-thumb-handle--ring-color, var(--sf-surface-0));',
+    'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));',
     'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-disable);',
     // A chosen card's mark is the content of its ring or box, as the radio's
     // mark and the checkbox's box are (sf-input-choice, 2026-11-08).

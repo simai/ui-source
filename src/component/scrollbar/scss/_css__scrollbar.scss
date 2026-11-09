@@ -9,7 +9,7 @@
     --sf-scrollbar-keyboard-step: var(--sf-d0);
     // The drawn overlay thumb. A 34% ink read 2.09-2.70:1 over the surface
     // ladder, under the 3:1 non-text threshold; the graphic role holds it.
-    --sf-scrollbar-thumb-color: var(--sf-on-neutral-container-graphic);
+    --sf-scrollbar-thumb-color: var(--sf-outline);
 
     position: relative;
     min-block-size: 0;
@@ -56,7 +56,7 @@
     [data-mode="standard"],
     :not([data-mode])[data-sf-scrollbar="standard"]
   ) .sf-scrollbar__viewport {
-    scrollbar-color: var(--sf-on-neutral-container-graphic) var(--sf-transparent);
+    scrollbar-color: var(--sf-outline) var(--sf-transparent);
     scrollbar-width: auto;
   }
 
@@ -86,7 +86,7 @@
     min-inline-size: var(--sf-scroll-thumb-size);
     border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
     border-radius: var(--sf-scroll-radius);
-    background: var(--sf-on-neutral-container-graphic);
+    background: var(--sf-outline);
     background-clip: padding-box;
   }
 
@@ -230,7 +230,7 @@
      pair as the standard preset; whether it is removed is a separate
      question about a public class. */
   .scrollbar::-webkit-scrollbar-thumb {
-    background: var(--sf-on-neutral-container-graphic);
+    background: var(--sf-outline);
   }
 
   .scrollbar::-webkit-scrollbar-thumb:hover {

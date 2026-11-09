@@ -333,8 +333,11 @@
 }
 
 @layer sf.states {
+  /* A bordered field is its boundary on the place it stands on, no plate of
+     its own (C16): on a card, a popup or a coloured place it takes that place,
+     where a page-white plate was a hole. */
   .sf-input:not(.error).sf-input--bordered:not(:has(input:disabled)) .sf-input-field {
-    --sf-input-field--background-color: var(--sf-input-background-color, var(--sf-surface-0));
+    --sf-input-field--background-color: var(--sf-input-background-color, var(--sf-transparent));
     --sf-input-field--border-color: var(--sf-input-border-color, var(--sf-outline));
   }
 
@@ -384,10 +387,6 @@
     --sf-input-field--border-color: var(--sf-primary-hover);
   }
 
-  .sf-input:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
-    --sf-input-field--background-color: var(--sf-surface-0);
-  }
-
   /* The ring belongs to the field the person sees, not to the bare control
      inside it. An outline keeps the field's own shadow free for state. */
   .sf-input:not(.sf-input--pointer-focus):has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-input-field {
@@ -413,9 +412,11 @@
     outline: none !important;
   }
 
+  /* A read-only field is not filled (a fill reads as a control to press,
+     C16): no plate, and the line of a region for its edge. */
   .sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {
-    --sf-input-field--background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-input-field--background-color: var(--sf-transparent);
+    --sf-input-field--border-color: var(--sf-outline-variant);
   }
 }
 
@@ -448,7 +449,7 @@
      which stays keyboard-only (:focus-visible) under the field focus
      contract. */
   .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) .sf-input-field {
-    --sf-input-field--background-color: var(--sf-surface-0);
+    --sf-input-field--background-color: var(--sf-transparent);
   }
 
   /* The boundary of the ordinary field. Without it the field was the surface

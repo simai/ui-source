@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
 .sf-tooltip {
@@ -95,7 +96,9 @@
 }
 
 .sf-tooltip.sf-tooltip--light .sf-tooltip-tail {
-  --sf-tooltip-tail--background-color: var(--sf-tooltip-background-color, var(--sf-surface-1));
+  /* The tail is the content's own place (it was the area while the content
+     stood on the popup step since C20). */
+  --sf-tooltip-tail--background-color: var(--sf-tooltip-background-color, var(--sf-surface-popup));
 }
 
 .sf-tooltip.sf-tooltip--light .sf-tooltip-supporting-text {
@@ -196,7 +199,7 @@
   /* A light tooltip is a raised surface, like every floating one: the plain
      surface-1 with no border or shadow vanished into a light page. */
   --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  @include places.sf-place(var(--sf-tooltip-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
   border: var(--sf-tooltip-border-width, var(--sf-px)) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
 }

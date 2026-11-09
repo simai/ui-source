@@ -31,8 +31,8 @@ test('an unknown toolbar mode is refused before the element is touched', () => {
 test('the option is part of sf-editor-inline 1.4.1 (sf-inline-editor 1.3.0): its edit action, its script API and its sheet', async () => {
   const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
   const manifest = JSON.parse(await read('src/smart/editor-inline/component.json'));
-  // 1.5.0: the toolbar is the overlay place (C20); 1.4.1 the action-calls record, 1.4.2 the object form of its actions.
-  assert.equal(manifest.version, '1.5.3');
+  // 1.5.0: the toolbar is the overlay place (C20); 1.6.0 it declares a popup place (C16); 1.6.1 one above the released 1.5.3.
+  assert.equal(manifest.version, '1.6.1');
   assert.match(manifest.actions.edit.summary, /toolbar \(session: [^)]+; selection: [^)]+\)/u);
   assert.match(await read('src/smart/editor-inline/index.js'), /SF\.InlineEditor = Object\.freeze\(\{[^}]*INLINE_TOOLBAR_MODES/u);
   // A hidden bar is not drawn: the sheet's display: flex would otherwise win over [hidden].

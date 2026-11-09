@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-datepicker {
@@ -5,7 +6,7 @@
     /* The whole calendar floats on step 3, not only its top band: on the plain
        surface its body was the page's colour in the dark theme. */
     background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    @include places.sf-place(var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
     border-end-end-radius: var(--sf-datepicker--border-bottom-right-radius, var(--sf-radius--surface));
     border-end-start-radius: var(--sf-datepicker--border-bottom-left-radius, var(--sf-radius--surface));
     border-start-end-radius: var(--sf-datepicker--border-top-right-radius, var(--sf-radius--surface));

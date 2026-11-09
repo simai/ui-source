@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table-frame",
   "kind": "utility",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table-frame/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/table-frame/default/scss/_sf_css__table_frame.scss",
     "src/utility/table-frame/default/scss/index.scss"
   ],
-  "content_sha256": "d3fffe3911cc253cf46d8b862ca2c57b8db9751bf3ca12b3dc83e5508f9b3b63",
+  "content_sha256": "8ad05b2da9f8559de2b4b9d8f20789fae1c50d4d25555991c6236268e1f19ba4",
   "dependencies": [
     {
       "id": "tokens.border",

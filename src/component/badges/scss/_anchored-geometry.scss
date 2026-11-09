@@ -41,11 +41,12 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   --sf-badge--anchored-size: var(--sf-badge--anchored-count);
   --sf-badge--anchored-max: none;
   --sf-badge--anchored-inset: calc(min(var(--sf-badge--anchor-radius), 50% + var(--sf-badge--anchor-border)) * #{$diagonal});
-  // The ring is the surface the anchor sits on: a page may name it with the
-  // public --sf-badge-ring-color; a Framework surface (a menu, a list, a
-  // drawer, a modal) says its own through --sf-badge--surface, which inherits;
-  // the page surface otherwise.
-  --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-0)));
+  // The ring is the place the anchor sits on: a page may name it with the
+  // public --sf-badge-ring-color; every place (a card, a menu, a drawer, a
+  // modal, a coloured block) declares --sf-surface-place, which inherits (C16).
+  // --sf-badge--surface, the name a surface said it by before, still wins
+  // until the alias list's remove_after.
+  --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-place)));
   // A count says something needs attention: the error role, unless the badge
   // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
