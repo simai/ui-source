@@ -1,4 +1,55 @@
 @use '../../../core/scss/mix/mix__places' as places;
+
+// The current page of a navigation menu (C23, owner 2026-11-09): a primary
+// plate of the fill family -- --sf-primary-container-active, primary at 20 in
+// the light theme and at 32 in the dark one, measured against the panel, the
+// hover state and its own words (control/evidence/2026-11-09-c23-nav-current)
+// -- with on-primary-container words and a medium label. No bar.
+@mixin current-plate {
+  --sf-menu-element--background-color: var(--sf-primary-container-active);
+  --sf-menu-element--border-color: var(--sf-transparent);
+  --sf-menu-element--color: var(--sf-on-primary-container);
+  --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+}
+
+// The bar (C23): where a row has no plate but leads to the current page -- a
+// closed branch that holds it, a rail row whose section holds it -- a bar of
+// primary, 3 by 16 (a3 by icon size 1), stands at the row's inline start,
+// flush with it, its free end rounded. Written inside the menu's own rule: a
+// closed branch (its list is in the markup, hidden) found by :has, or a row
+// marked sf-menu-element--holds-current, which sf-menu writes when the list is
+// not drawn at all (a compact rail). A bar is never on a plate.
+@mixin holds-current-bar {
+  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
+  .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
+    position: relative;
+  }
+
+  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current])::before,
+  .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--sf-0);
+    inline-size: var(--sf-a3);
+    block-size: var(--sf-icon-size-1);
+    translate: 0 -50%;
+    border-start-start-radius: var(--sf-0);
+    border-end-start-radius: var(--sf-0);
+    border-start-end-radius: var(--sf-radius--ui);
+    border-end-end-radius: var(--sf-radius--ui);
+    background-color: var(--sf-primary);
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current])::before,
+    .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+  }
+}
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-menu {
@@ -89,13 +140,18 @@
 /* Header navigation (sf-menu appearance navigation): the site's sections in
    a header row -- and the same rows as a column, in a side panel or a sidebar.
    A row has no frame and no fill at rest; a pointer lays the state family of
-   the alpha scale over it (4 hover, 12 press), an open branch takes the select
-   step (8), and the current page is a plate of the fill family
-   (--sf-surface-container-active, 24 in both themes on the theme's neutral
-   tone). Height, padding, type, radius and the focus ring stay the class
-   row's: the size 1 control height, space-1 at the sides, text size 1, the
-   ui radius. The current page's plate does not change under the pointer, so
-   it is never lighter than at rest. */
+   the alpha scale over it (4 hover, 12 press). An open branch is not filled:
+   its open list says it is open (C23). The current page (C23, owner
+   2026-11-09) is a primary plate of the fill family,
+   --sf-primary-container-active (primary at 20 in the light theme, 32 in the
+   dark one), with on-primary-container words and icon and a medium label --
+   the weight is the second cue besides the colour; no bar. The plate does not
+   change under the pointer, so it is never lighter than at rest. Where there
+   is no plate the current page is shown by a bar of primary, 3 by 16 at the
+   row's inline start: on a closed branch that holds the current page, in a
+   column (the menu mixin below). Height, padding, size of type, radius and
+   the focus ring stay the class row's: the size 1 control height, space-1 at
+   the sides, text size 1, the ui radius. */
 .sf-menu.sf-menu--navigation {
   --sf-menu--gap: var(--sf-menu-gap, var(--sf-space-1\/4));
 }
@@ -117,14 +173,18 @@
   --sf-menu-element--background-color: var(--sf-surface-transparent-active);
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is(.open, [aria-expanded='true']) {
-  --sf-menu-element--background-color: var(--sf-surface-transparent-select);
-  --sf-menu-element--border-color: var(--sf-transparent);
+.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+  @include current-plate;
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
-  --sf-menu-element--background-color: var(--sf-surface-container-active);
-  --sf-menu-element--border-color: var(--sf-transparent);
+.sf-menu.sf-menu--navigation .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+/* The bar: a closed branch of a column that holds the current page. A
+   header row's first level opens panels, not a column, and draws no bar. */
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
+  @include holds-current-bar;
 }
 
 .sf-menu.sf-menu--navigation .sf-menu-element:disabled,
@@ -135,7 +195,7 @@
 
 /* Forced colours drop the plates: the current page keeps a frame of the
    system's text colour instead, and the padding gives up its width as it does
-   for the default row. */
+   for the default row. The bar keeps its place in the system's highlight. */
 @media (forced-colors: active) {
   .sf-menu.sf-menu--navigation .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
     --sf-menu-element--border-width: var(--sf-px);
@@ -183,10 +243,27 @@
   --sf-menu-element--padding-inline-start: var(--sf-space-3);
 }
 
+/* The documentation tree marks its current page as navigation does (C23): the
+   primary plate, on-primary-container words, a medium label; an open branch
+   is not filled, and a closed branch that holds the current page takes the
+   bar. */
 .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
-  background: var(--sf-surface-container-active);
-  color: var(--sf-on-surface);
+  background: var(--sf-primary-container-active);
+  color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+.sf-menu.sf-menu--documentation-tree [aria-current="page"] .sf-menu-element-icon {
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element:is(.open, [aria-expanded='true']) {
+  --sf-menu-element--background-color: var(--sf-transparent);
+}
+
+.sf-menu.sf-menu--documentation-tree {
+  @include holds-current-bar;
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap:focus-visible {

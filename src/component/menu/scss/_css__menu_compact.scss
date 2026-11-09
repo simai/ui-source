@@ -4,6 +4,7 @@
 // onto the icon the way an anchored badge sits on its anchor, a count at the
 // top end corner, with the same geometry and ring. Branches do not open here.
 @use '../../badges/scss/anchored-geometry' as anchored;
+@use 'css__menu' as menu;
 
 @include anchored.properties;
 
@@ -38,6 +39,22 @@
   .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-badge {
     @include anchored.badge;
     margin-inline-start: 0;
+  }
+
+  // The rail marks the current page as the navigation column does (C23, owner
+// 2026-11-09): the row that is the current page takes the primary plate and
+// on-primary-container icon; the row whose section holds it -- the rail draws
+// no branch, so it has no plate -- takes the bar at its icon's side.
+  .sf-menu.sf-menu--compact .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    @include menu.current-plate;
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
+    --sf-icon--color: var(--sf-on-primary-container);
+  }
+
+  .sf-menu.sf-menu--compact {
+    @include menu.holds-current-bar;
   }
 
   // An avatar is round unless it is the square one.
