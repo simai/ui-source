@@ -2979,7 +2979,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "39ab3354172826c33794cda5a9cfdc0ced77f3b81f00742c9a1ec9fab2f55a57",
+      "manifest_sha256": "176ad24e898231b30cc66ad9e6dba999bdee938ece5725923a9a9abcd0a14cb8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

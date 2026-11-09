@@ -1,0 +1,47 @@
+// SIMAI Framework
+// https://simai.io
+
+// HUE (owner decision C17, 2026-11-08; research
+// control/research/2026-11-08-palette.md 3.4)
+//
+// A component that needs a colour of its own -- an avatar's initials, a tag, a
+// coloured place -- takes a hue setting: the name of a static hue, or one of
+// the theme's own palettes. .sf-hue-<name> gives that element one role set,
+// the same for every hue, so the component reads --sf-hue-container and its
+// ink and never names a hue itself:
+//
+//   --sf-hue                       strong fill          40 / 80
+//   --sf-on-hue                    ink on it            white / 20
+//   --sf-hue-container             plate                50 at 12 / 50 at 24
+//   --sf-hue-container-hover       plate, pointer over  50 at 16 / 50 at 28
+//   --sf-hue-container-active      plate, pressed       50 at 20 / 50 at 32
+//   --sf-on-hue-container          ink on the plate     10 / 90
+//   --sf-on-hue-container-graphic  dot, glyph           50 / 60
+//   --sf-hue-outline               line                 50 / 60
+//
+// the steps of the status roles (--sf-success-container and the rest), light
+// and dark side by side. The names are tests/static-palette.contract.test.mjs's:
+// the sixteen static hues of theme-palette.js STATIC_HUES and the theme's
+// primary, secondary and tertiary. Neutral is left out: the greys have no
+// tone-50 step at 28, and gray is the theme-independent grey. In sf.base with
+// the theme, so a utility on the same element still wins.
+
+@use 'sass:list';
+
+$sf-static-hues: ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray');
+$sf-theme-hues: ('primary', 'secondary', 'tertiary');
+
+@layer sf.base {
+  @each $hue in list.join($sf-static-hues, $sf-theme-hues) {
+    .sf-hue-#{$hue} {
+      --sf-hue: light-dark(var(--sf-#{$hue}-40), var(--sf-#{$hue}-80));
+      --sf-on-hue: light-dark(var(--sf-white), var(--sf-#{$hue}-20));
+      --sf-hue-container: light-dark(var(--sf-#{$hue}-50--alfa-12), var(--sf-#{$hue}-50--alfa-24));
+      --sf-hue-container-hover: light-dark(var(--sf-#{$hue}-50--alfa-16), var(--sf-#{$hue}-50--alfa-28));
+      --sf-hue-container-active: light-dark(var(--sf-#{$hue}-50--alfa-20), var(--sf-#{$hue}-50--alfa-32));
+      --sf-on-hue-container: light-dark(var(--sf-#{$hue}-10), var(--sf-#{$hue}-90));
+      --sf-on-hue-container-graphic: light-dark(var(--sf-#{$hue}-50), var(--sf-#{$hue}-60));
+      --sf-hue-outline: light-dark(var(--sf-#{$hue}-50), var(--sf-#{$hue}-60));
+    }
+  }
+}

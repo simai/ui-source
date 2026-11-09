@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.divider-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/divider-color/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/divider-color/hover/scss/_sf_css__divider_color.scss",
     "src/utility/divider-color/hover/scss/index.scss"
   ],
-  "content_sha256": "b2f850619d4fda36f39987ddadacb12f36730aa4112bc5299ff10ca8c80b3d2a",
+  "content_sha256": "31d192d6ff68d56d78ca09cef6c1a8d7b140353368e758f9c56575b56346b0a0",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

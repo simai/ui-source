@@ -29,6 +29,55 @@ import {argbFromHex, hexFromArgb} from './vendor/material-color-utilities/utils/
 
 export const THEME_TONES = Object.freeze([98, 95, 90, 85, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5]);
 
+// The static palette (owner decision C17, 2026-11-08; research
+// control/research/2026-11-08-palette.md 3.2): sixteen fixed hues run through
+// the same generator as the theme, so every hue has the same sixteen tones and
+// the same translucent steps, and no theme colour moves them. Every colour in
+// the product comes from this palette or from the dynamic one the theme makes
+// (C18). The four status hues keep their numbers, byte for byte: red is error,
+// amber warning, green success, blue info. Information is a status, not the
+// brand (owner, 2026-10-21, simai/ui-source#14): blue is the fixed palette of
+// #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
+// own 58.5, the one that puts tone 40 on #005bbe itself. Every added hue is
+// chroma 60, brown 30 and gray 0. No hue is shifted toward the theme colour
+// (research 3.3): a hue keeps its name on every site.
+//
+// The order is the order of the hue circle, gray last; the CSS primitives
+// --sf-<hue>-<tone> are written from it by scripts/generate-static-palette.mjs
+// into src/core/scss/_sf_static_palette.scss.
+export const STATIC_HUES = Object.freeze({
+  red: Object.freeze({hue: 25, chroma: 85}),
+  orange: Object.freeze({hue: 45, chroma: 60}),
+  amber: Object.freeze({hue: 60, chroma: 60}),
+  yellow: Object.freeze({hue: 90, chroma: 60}),
+  lime: Object.freeze({hue: 120, chroma: 60}),
+  green: Object.freeze({hue: 145, chroma: 65}),
+  teal: Object.freeze({hue: 175, chroma: 60}),
+  cyan: Object.freeze({hue: 205, chroma: 60}),
+  sky: Object.freeze({hue: 235, chroma: 60}),
+  blue: Object.freeze({hue: 265.1, chroma: 58.6}),
+  indigo: Object.freeze({hue: 285, chroma: 60}),
+  violet: Object.freeze({hue: 305, chroma: 60}),
+  purple: Object.freeze({hue: 325, chroma: 60}),
+  pink: Object.freeze({hue: 350, chroma: 60}),
+  brown: Object.freeze({hue: 50, chroma: 30}),
+  gray: Object.freeze({hue: 265, chroma: 0}),
+});
+
+export const STATIC_HUE_NAMES = Object.freeze(Object.keys(STATIC_HUES));
+
+// The hue each status is.
+export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'blue'});
+
+function statusRule(status) {
+  const {hue, chroma} = STATIC_HUES[STATUS_HUES[status]];
+  return {hue, chroma};
+}
+
+// The translucent steps of every static hue: the status steps, tone 50 at the
+// state and fill families (4 to 32) and tone 90 at 4, 8, 12 and 24.
+export const STATIC_ALPHA = Object.freeze({50: Object.freeze([4, 8, 12, 16, 20, 24, 28, 32]), 90: Object.freeze([4, 8, 12, 24])});
+
 // The generator's defaults. `hue` and `chroma` are either a number or a
 // function of the primary's; a caller may override any of them.
 export const THEME_RULES = Object.freeze({
@@ -39,17 +88,14 @@ export const THEME_RULES = Object.freeze({
   // when that is lower (C16): a near-grey brand colour made teal or violet
   // greys out of a hue it barely has.
   neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
-  error: {hue: 25, chroma: 85},
-  warning: {hue: 60, chroma: 60},
-  success: {hue: 145, chroma: 65},
-  // Information is a status, not the brand (owner, 2026-10-21,
-  // simai/ui-source#14): told in the brand's own colour, info turned red under
-  // a red primary and read as danger. It is its own fixed palette of #005bbe,
-  // like error, warning and success. #005bbe is HCT hue 265.1, chroma 58.5;
-  // the chroma here is the nearest tenth above, the one whose palette is the
-  // owner-approved list byte for byte -- it puts tone 40 on #005bbe itself,
-  // where 58.5 lands a unit away on #015bbe.
-  info: {hue: 265.1, chroma: 58.6},
+  // The four statuses are four hues of the static palette (C17): error is red,
+  // warning amber, success green and info blue, by the same numbers, so a
+  // status and its hue are one palette. A theme may still override a status
+  // here; the hue it was made from stays as it is.
+  error: statusRule('error'),
+  warning: statusRule('warning'),
+  success: statusRule('success'),
+  info: statusRule('info'),
 });
 
 export const THEME_PALETTES = Object.freeze(Object.keys(THEME_RULES));
@@ -154,6 +200,32 @@ export function themeVariables(theme) {
   return variables;
 }
 
+/**
+ * The static palette: for every hue its HCT numbers and its sixteen tones,
+ * {name: {hue, chroma, tones}}. The same TonalPalette as the theme's, so a
+ * status palette the theme makes is the static hue it names, byte for byte.
+ */
+export function staticPalette() {
+  const palettes = {};
+  for (const [name, {hue, chroma}] of Object.entries(STATIC_HUES)) {
+    const palette = TonalPalette.fromHueAndChroma(hue, chroma);
+    palettes[name] = {hue, chroma, tones: Object.fromEntries(THEME_TONES.map((tone) => [tone, hexFromArgb(palette.tone(tone))]))};
+  }
+  return palettes;
+}
+
+/** The static palette's CSS custom properties, {name: value}: --sf-<hue>-<tone> and --sf-<hue>-<tone>--alfa-<n>. */
+export function staticVariables(palettes = staticPalette()) {
+  const variables = {};
+  for (const [name, palette] of Object.entries(palettes)) {
+    for (const tone of THEME_TONES) {
+      variables[`--sf-${name}-${tone}`] = palette.tones[tone];
+      for (const step of STATIC_ALPHA[tone] ?? []) variables[`--sf-${name}-${tone}--alfa-${step}`] = `${palette.tones[tone]}${alphaHex(step)}`;
+    }
+  }
+  return variables;
+}
+
 /** The theme as a stylesheet rule, for a page's or a site's own CSS. */
 export function themeToCss(theme, selector = ':root') {
   const lines = Object.entries(themeVariables(theme)).map(([name, value]) => `  ${name}: ${value};`);
@@ -179,5 +251,5 @@ export function applyTheme(theme, target = globalThis.document?.documentElement)
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, THEME_TONES, THEME_PALETTES, THEME_ALPHA, DEFAULT_THEME_COLOR});
+  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, DEFAULT_THEME_COLOR});
 }

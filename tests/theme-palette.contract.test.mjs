@@ -5,7 +5,12 @@ import test from 'node:test';
 import {themeFromColor, themeToCss, themeVariables, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
 
 const root = new URL('..', import.meta.url).pathname;
-const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8');
+// A status primitive is var() of its static hue (C17): the shipped value of
+// --sf-success-40 is the one --sf-green-40 holds in the generated palette.
+const staticPrimitives = readFileSync(join(root, 'src/core/scss/_sf_static_palette.scss'), 'utf8');
+const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8')
+  .replace(/(--sf-[a-z]+-\d+(?:--alfa-\d+)?): var\((--sf-[a-z]+-\d+(?:--alfa-\d+)?)\);/gu,
+    (line, name, target) => `${name}: ${staticPrimitives.match(new RegExp(`${target}: (#[0-9a-f]+);`, 'u'))?.[1] ?? 'unresolved'};`);
 
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the

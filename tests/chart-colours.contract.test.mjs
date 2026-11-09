@@ -30,7 +30,9 @@ import {themeSource} from './support/theme-source.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const palette = read('src/core/scss/_sf_figma_colors_variables.scss');
+// The primitives: the theme's palettes and the static palette (C17); a status
+// primitive is var() of its hue.
+const palette = `${read('src/core/scss/_sf_figma_colors_variables.scss')}\n${read('src/core/scss/_sf_static_palette.scss')}`;
 const theme = themeSource();
 
 const CONTRAST_MIN = 3;
@@ -43,6 +45,7 @@ const TONE_HUES = {rose: 5, amber: 65, lime: 110, green: 150, teal: 190, sky: 24
 const TONE_CHROMA = 48;
 
 const primitives = new Map([...palette.matchAll(/(--sf-[a-z0-9-]+): (#[0-9a-f]{6,8});/gu)].map(([, name, hex]) => [name, hex]));
+for (const [, name, target] of palette.matchAll(/(--sf-[a-z0-9-]+): var\((--sf-[a-z0-9-]+)\);/gu)) if (primitives.has(target)) primitives.set(name, primitives.get(target));
 const role = (name) => (theme.match(new RegExp(`\\s${name}: ([^;]+);`, 'u')) ?? [])[1]?.trim() ?? null;
 const branches = (name) => {
   const value = role(name);

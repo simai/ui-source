@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.box-shadow-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/box-shadow-color/active/index.js",
@@ -23,7 +23,7 @@
     "src/utility/box-shadow-color/hover/scss/_sf_css__box_shadow_color.scss",
     "src/utility/box-shadow-color/hover/scss/index.scss"
   ],
-  "content_sha256": "a82599d149455dfb922a80866b404c768a1df5192dccea089db4f8eaae3e0270",
+  "content_sha256": "623201cc8444cb909fb6dd768f732a4c22a829fb54e86e2df3a00a93e554059d",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
