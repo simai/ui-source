@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.3.10",
+  "version": "1.3.11",
   "title": "Pagination",
   "summary": "Source-driven navigation for a collection split into numbered pages.",
   "kind": "smart",
@@ -291,9 +291,19 @@
       "summary": "Moves to a page: the number is parsed as an integer and clamped to 1..pageCount when the count is known (only to at least 1 when it is not). Emits sf-pagination-change when the page actually changes; does nothing when the total is a known zero.",
       "arguments": [
         {
-          "name": "page",
+          "name": "args",
+          "type": "object|number",
+          "required": true,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "page"
+            ]
           }
         }
       ],

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -245,64 +245,71 @@
       "summary": "The whole list and whether more follows, together; ends a page request.",
       "arguments": [
         {
-          "name": "items",
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": [
-                    "string",
-                    "number"
-                  ],
-                  "description": "The stable key of the item."
-                },
-                "text": {
-                  "type": "string",
-                  "description": "The row's title, as text."
-                },
-                "supporting": {
-                  "type": "string",
-                  "description": "A quiet second line under the title."
-                },
-                "icon": {
-                  "type": "string",
-                  "description": "A glyph before the title (a Material Symbols name)."
-                },
-                "date": {
-                  "type": "string",
-                  "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
-                },
-                "group": {
-                  "type": "string",
-                  "description": "With group-by key, the key of its group."
-                },
-                "disabled": {
-                  "type": "boolean",
-                  "description": "Shown, not opened, renamed or acted on."
-                },
-                "actions": {
-                  "description": "false: no row actions; a list of action ids: only those."
-                }
-              },
-              "required": [
-                "id"
-              ],
-              "description": "Plain data; any further fields are the host's."
-            }
-          }
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "hasMore": {
-                "type": "boolean",
-                "default": false
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "The stable key of the item."
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "The row's title, as text."
+                    },
+                    "supporting": {
+                      "type": "string",
+                      "description": "A quiet second line under the title."
+                    },
+                    "icon": {
+                      "type": "string",
+                      "description": "A glyph before the title (a Material Symbols name)."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+                    },
+                    "group": {
+                      "type": "string",
+                      "description": "With group-by key, the key of its group."
+                    },
+                    "disabled": {
+                      "type": "boolean",
+                      "description": "Shown, not opened, renamed or acted on."
+                    },
+                    "actions": {
+                      "description": "false: no row actions; a list of action ids: only those."
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "description": "Plain data; any further fields are the host's."
+                }
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "hasMore": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
               }
-            }
+            },
+            "required": [
+              "items"
+            ]
           }
         }
       ],
@@ -315,64 +322,71 @@
       "summary": "The next page after what is shown; ends the page request.",
       "arguments": [
         {
-          "name": "items",
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": [
-                    "string",
-                    "number"
-                  ],
-                  "description": "The stable key of the item."
-                },
-                "text": {
-                  "type": "string",
-                  "description": "The row's title, as text."
-                },
-                "supporting": {
-                  "type": "string",
-                  "description": "A quiet second line under the title."
-                },
-                "icon": {
-                  "type": "string",
-                  "description": "A glyph before the title (a Material Symbols name)."
-                },
-                "date": {
-                  "type": "string",
-                  "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
-                },
-                "group": {
-                  "type": "string",
-                  "description": "With group-by key, the key of its group."
-                },
-                "disabled": {
-                  "type": "boolean",
-                  "description": "Shown, not opened, renamed or acted on."
-                },
-                "actions": {
-                  "description": "false: no row actions; a list of action ids: only those."
-                }
-              },
-              "required": [
-                "id"
-              ],
-              "description": "Plain data; any further fields are the host's."
-            }
-          }
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "hasMore": {
-                "type": "boolean",
-                "default": false
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "The stable key of the item."
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "The row's title, as text."
+                    },
+                    "supporting": {
+                      "type": "string",
+                      "description": "A quiet second line under the title."
+                    },
+                    "icon": {
+                      "type": "string",
+                      "description": "A glyph before the title (a Material Symbols name)."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+                    },
+                    "group": {
+                      "type": "string",
+                      "description": "With group-by key, the key of its group."
+                    },
+                    "disabled": {
+                      "type": "boolean",
+                      "description": "Shown, not opened, renamed or acted on."
+                    },
+                    "actions": {
+                      "description": "false: no row actions; a list of action ids: only those."
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "description": "Plain data; any further fields are the host's."
+                }
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "hasMore": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
               }
-            }
+            },
+            "required": [
+              "items"
+            ]
           }
         }
       ],
@@ -385,49 +399,59 @@
       "summary": "A new item at the start, or a changed one in its place.",
       "arguments": [
         {
-          "name": "item",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": [
-                  "string",
-                  "number"
+              "item": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": [
+                      "string",
+                      "number"
+                    ],
+                    "description": "The stable key of the item."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "The row's title, as text."
+                  },
+                  "supporting": {
+                    "type": "string",
+                    "description": "A quiet second line under the title."
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "A glyph before the title (a Material Symbols name)."
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
+                  },
+                  "group": {
+                    "type": "string",
+                    "description": "With group-by key, the key of its group."
+                  },
+                  "disabled": {
+                    "type": "boolean",
+                    "description": "Shown, not opened, renamed or acted on."
+                  },
+                  "actions": {
+                    "description": "false: no row actions; a list of action ids: only those."
+                  }
+                },
+                "required": [
+                  "id"
                 ],
-                "description": "The stable key of the item."
-              },
-              "text": {
-                "type": "string",
-                "description": "The row's title, as text."
-              },
-              "supporting": {
-                "type": "string",
-                "description": "A quiet second line under the title."
-              },
-              "icon": {
-                "type": "string",
-                "description": "A glyph before the title (a Material Symbols name)."
-              },
-              "date": {
-                "type": "string",
-                "description": "ISO 8601; with group-by day, the calendar day it is grouped under."
-              },
-              "group": {
-                "type": "string",
-                "description": "With group-by key, the key of its group."
-              },
-              "disabled": {
-                "type": "boolean",
-                "description": "Shown, not opened, renamed or acted on."
-              },
-              "actions": {
-                "description": "false: no row actions; a list of action ids: only those."
+                "description": "Plain data; any further fields are the host's."
               }
             },
             "required": [
-              "id"
-            ],
-            "description": "Plain data; any further fields are the host's."
+              "item"
+            ]
           }
         }
       ],
@@ -440,8 +464,18 @@
       "summary": "Take one item off; the focus on it goes to its neighbour.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -453,8 +487,18 @@
       "summary": "Start renaming a row in place, as F2 does.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -466,8 +510,18 @@
       "summary": "Open a row's actions, as its «⋯» and Shift+F10 do.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -713,7 +767,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "e415f5ec92f998ba434346ac3fb908a188ef206364aebaef4c7ffc7a02b80be8"
+        "sha256": "67d567633add79d86ee64dd6ce2b8e8a2dc2d0002c38ab9df3d5b8bb4a8e26c8"
       },
       {
         "path": "src/smart/list/lang/en.json",

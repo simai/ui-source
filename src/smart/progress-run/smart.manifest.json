@@ -169,39 +169,39 @@
       "summary": "Changes one step: the fields given replace that step's (state, text, started, finished, duration). Refused {reason: missing} for an id the run does not have",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "state",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "text",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "started",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "finished",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "duration",
-          "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "started": {
+                "type": "string"
+              },
+              "finished": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "state",
+              "text",
+              "started",
+              "finished",
+              "duration"
+            ]
           }
         }
       ],

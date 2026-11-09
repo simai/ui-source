@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -249,9 +249,16 @@
       "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
       "arguments": [
         {
-          "name": "index",
+          "name": "args",
+          "type": "object|number",
+          "required": false,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            }
           }
         }
       ],
@@ -272,9 +279,16 @@
       "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
       "arguments": [
         {
-          "name": "index",
+          "name": "args",
+          "type": "object|number",
+          "required": false,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            }
           }
         }
       ],
@@ -287,9 +301,19 @@
       "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches the native change event when it moved. Returns the element.",
       "arguments": [
         {
-          "name": "index",
+          "name": "args",
+          "type": "object|number",
+          "required": true,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "index"
+            ]
           }
         }
       ],

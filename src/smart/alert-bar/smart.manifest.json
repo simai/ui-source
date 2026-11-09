@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Alert bar",
   "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
@@ -88,9 +88,19 @@
       "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for an error item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
           }
         }
       ],
