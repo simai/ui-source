@@ -122,7 +122,9 @@
     outline-offset: var(--sf-space-1\/4);
   }
 
-  .sf-change-confirm--accepted .sf-change-confirm__status { color: var(--sf-on-success-container); }
+  /* The outcome's ink is the success role on the card's surface (C16), not
+     the ink of a success container. */
+  .sf-change-confirm--accepted .sf-change-confirm__status { color: var(--sf-success); }
 
   .sf-change-confirm__actions {
     display: flex;

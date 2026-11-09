@@ -416,7 +416,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-copy/smart.manifest.json",
-      "manifest_sha256": "e30d8fe872b21200c1537b9e1974cd455343dd128547272e5dd7b3486a2a007d",
+      "manifest_sha256": "5fea7cd5bfa42e4555de39718dd4758d45f2c60b9bf874a2fc00cbf21ac536fd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -818,6 +818,8 @@
         "uses": [
           "component.download-file",
           "component.icons",
+          "component.spinner",
+          "smart.alert",
           "smart.icon"
         ]
       },
@@ -830,7 +832,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-download/smart.manifest.json",
-      "manifest_sha256": "b63238dda6a4dbbb95903f418735cc4682b54a07abf02f9552ed9e42c0df3e1e",
+      "manifest_sha256": "c6d9806f4793f1f2beaf5a464f9e4eba5cb21d600381898a9f9507a18415a878",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -81,6 +81,60 @@
     white-space: nowrap;
   }
 
+  /* The type and the size are two facts in one line (decision C25):
+     «PDF · 2,4 МБ». The dot stands only between two of them. */
+  .sf-download-file :where(.sf-download-file__meta) {
+    display: inline-flex;
+    flex: none;
+    align-items: baseline;
+    gap: var(--sf-space-1\/4);
+    color: var(--sf-on-surface-variant);
+    white-space: nowrap;
+  }
+
+  .sf-download-file :where(.sf-download-file__type) {
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-download-file :where(.sf-download-file__type + .sf-download-file__size:not(:empty))::before {
+    content: "·";
+    margin-inline-end: var(--sf-space-1\/4);
+  }
+
+  /* A link that opens a tab (target="_blank", a file opened to view) says so
+     before it is pressed: the sign after the name, the words for a screen
+     reader (decision C25). */
+  .sf-download-file :where(.sf-download-file__tab) {
+    --sf-download-file--icon-size: var(--sf-download-file--text-height);
+  }
+
+  .sf-download-file :where(.sf-download-file__tab-words) {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Preparing (decision C25): the Framework's spinner stands in the sign's
+     box, the size of the size's icon, so nothing moves. */
+  .sf-download-file :where(.sf-download-file__spinner) {
+    --sf-loader-svg-width: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    --sf-loader-svg-height: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    block-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    color: var(--sf-download-file-icon-color, var(--sf-primary));
+  }
+
+  .sf-download-file :where(.sf-download-file__spinner) :is(.sf-loader--loading-indicator, .sf-loader-svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
   .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
     flex: none;
     block-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
@@ -132,12 +186,12 @@
 }
 
 @layer sf.states {
-  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):hover {
     --sf-download-file--background-color: var(--sf-surface-container-hover);
     --sf-download-file--border-color: var(--sf-outline-primary);
   }
 
-  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):active {
     --sf-download-file--background-color: var(--sf-surface-container-active);
   }
 
@@ -150,6 +204,12 @@
     outline-offset: var(--sf-focus--offset);
     outline-style: var(--sf-focus--style);
     outline-width: var(--sf-focus--width);
+  }
+
+  /* Preparing: not disabled -- the name keeps its ink -- but it takes no
+     press while the file is made. */
+  .sf-download-file[aria-busy='true'] {
+    cursor: progress;
   }
 
   .sf-download-file:is(:disabled, .disabled, [aria-disabled='true']) {

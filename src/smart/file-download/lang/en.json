@@ -1,3 +1,15 @@
 {
-  "title": "Download File"
+  "title": "Download File",
+  "runtime": {
+    "file": "File",
+    "preparing-text": "Preparing the file…",
+    "error-heading": "Could not prepare the file",
+    "retry-text": "Retry",
+    "new-tab-text": "(opens in a new tab)"
+  },
+  "events": {
+    "retry": {
+      "label": "Retry"
+    }
+  }
 }

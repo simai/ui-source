@@ -6,7 +6,7 @@
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-confirm id=\"c\" question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" destructive></sf-confirm>",
+      "  <sf-confirm id=\"c\" question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" status=\"danger\"></sf-confirm>",
       "  <sf-confirm id=\"d\" confirm-id=\"u-1\"></sf-confirm>",
       "  <button id=\"page-confirm\" type=\"button\" data-sf-action=\"d.confirm\">Да</button>",
       "</main>"
@@ -15,16 +15,16 @@
   "probes": [
     {
       "id": "p1-tab-enter-confirms",
-      "title": "Tab reaches the first answer; Enter confirms: sf-confirm-answer {id, accepted: true} once; the question is pending and the focus is on its status line",
-      "covers": "keyboard.host Tab reach, Enter select, events.answer, accessibility.name question, destructive",
+      "title": "The safe answer holds the focus; Shift+Tab reaches the accepting one; Enter confirms: sf-confirm-answer {id, accepted: true} once; the question is pending and the focus is on its status line",
+      "covers": "keyboard.host Tab reach, Enter select, events.answer, accessibility.name question, settings.status danger",
       "steps": [
         {
-          "script": "(document.activeElement?.blur?.(), true)",
+          "script": "(document.querySelector('#c button[data-action=\"decline\"]').focus(), true)",
           "wait": 60,
-          "check": "document.querySelector('#c section').getAttribute('role') === 'group' && document.querySelector('#c section').getAttribute('aria-labelledby') === document.querySelector('#c .sf-confirm__question').id && document.querySelector('#c button[data-action=\"accept\"]').classList.contains('sf-button--error')"
+          "check": "document.activeElement === document.querySelector('#c button[data-action=\"decline\"]') && document.querySelector('#c section').getAttribute('role') === 'group' && document.querySelector('#c section').getAttribute('aria-labelledby') === document.querySelector('#c .sf-confirm__question').id && document.querySelector('#c button[data-action=\"accept\"]').classList.contains('sf-button--danger')"
         },
         {
-          "user": "keyboard:Tab",
+          "user": "keyboard:Shift+Tab",
           "wait": 80,
           "check": "document.activeElement === document.querySelector('#c button[data-action=\"accept\"]')"
         },
@@ -48,7 +48,7 @@
     },
     {
       "id": "p2-escape-declines-refused",
-      "title": "Escape inside the open question declines; a page that cancels the answer keeps the question open and the first answer takes the focus back",
+      "title": "Escape inside the open question declines; a page that cancels the answer keeps the question open and the safe (declining) answer takes the focus back (decision C25)",
       "covers": "keyboard.host Escape cancel, events.answer cancelable",
       "steps": [
         {
@@ -73,7 +73,7 @@
               }
             ]
           },
-          "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"accept\"]')"
+          "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"decline\"]')"
         }
       ]
     },
@@ -114,6 +114,22 @@
           "script": "(document.querySelector('#d').state = 'accepted', window.__o = [document.querySelector('#d').answer({accepted: true}).outcome, document.querySelector('#d').answer('maybe').reason], document.querySelector('#d').open(), window.__o.push(document.querySelector('#d').answer({accepted: false}).outcome), true)",
           "wait": 100,
           "check": "window.__o.join(',') === 'refused,unknown,applied'"
+        }
+      ]
+    },
+    {
+      "id": "p5-open-focuses-safe-answer",
+      "title": "open() puts the question with the focus on the declining answer; a dangerous question fills its accepting answer and leaves the declining one quiet, a plain one keeps two outlined answers (decision C25)",
+      "covers": "actions.open, settings.status danger, decision C25",
+      "steps": [
+        {
+          "script": "(document.querySelector('#c').state = 'declined', document.querySelector('#d').state = 'open', true)",
+          "wait": 150
+        },
+        {
+          "script": "(document.querySelector('#c').open(), true)",
+          "wait": 200,
+          "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"decline\"]') && document.querySelector('#c button[data-action=\"accept\"]').closest('sf-button').getAttribute('appearance') === 'default' && document.querySelector('#c button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'ghost' && document.querySelector('#d button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'outline'"
         }
       ]
     }

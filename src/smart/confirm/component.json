@@ -2,7 +2,7 @@
   "$comment": "The source of sf-confirm's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The plain question of block confirm; sf-confirm-change is the same surface over values (src/smart/helpers/confirm-surface.js).",
   "id": "smart.confirm",
   "tag": "sf-confirm",
-  "version": "1.0.4",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "confirm",
   "settings": {
@@ -38,10 +38,19 @@
       "default": false,
       "summary": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
     },
+    "status": {
+      "type": "enum",
+      "values": [
+        "",
+        "danger"
+      ],
+      "default": "",
+      "summary": "What the acceptance does (decision C13): danger, a delete or anything that cannot be undone. The accepting answer is then a filled danger button and the declining one quiet (decision C25). destructive is its former name."
+    },
     "destructive": {
       "type": "boolean",
       "default": false,
-      "summary": "The acceptance destroys something (a delete): the accepting answer wears the error status."
+      "summary": "Former name of status=\"danger\" (decision C13): read as danger and noted in SF.deprecations until 2027-01-01."
     },
     "appearance": {
       "type": "enum",
@@ -51,6 +60,19 @@
       ],
       "default": "inline",
       "summary": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset."
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1",
+      "x-scale": "control",
+      "summary": "The step of the control ladder the two answers stand on: 1, a field's and a button's, unless the page says otherwise. A compact region (data-sf-density=\"compact\", decision C22) moves them down a step by itself."
     },
     "accept-text": {
       "type": "string",
@@ -138,7 +160,9 @@
     }
   },
   "slots": {
-    "description": {}
+    "description": {
+      "x-summary": "More words under the question when the question alone is not enough: what stays, what goes."
+    }
   },
   "layer": {
     "kind": "surface",
@@ -186,29 +210,34 @@
       "Space": "select",
       "Escape": "close"
     },
-    "x-keys": "Enter and Space press the focused answer (two native buttons); Escape inside an open question declines, as the declining answer does"
+    "x-keys": "Enter and Space press the focused answer (two native buttons). Whenever the question is put -- open(), the host reopening it, or the question standing in place of the control the person pressed -- the focus waits on the declining answer, so a stray Enter or Space only takes the question back (decision C25). Escape inside an open question declines, as the declining answer does."
   },
   "host-states": {},
   "css-variables": {
     "--sf-confirm-gap": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "Space between the question, the description and the answers."
     },
     "--sf-confirm-inset": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The card's inner padding (appearance=\"card\")."
     },
     "--sf-confirm-radius": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The card's corner."
     },
     "--sf-confirm-background-color": {
       "type": "color",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The card's fill."
     },
     "--sf-confirm-border-color": {
       "type": "color",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The card's edge."
     }
   },
   "aliases": null,
@@ -232,7 +261,7 @@
     "words: lang/ru.json and lang/en.json; the answers default to Подтвердить and Отмена.",
     "version 1.0.1: Escape is the effect close of the closed list (standard simai.smart-component 1.3.15 §4.8): the open question closes with the declining answer. The word cancel stays the keyboard action and the answer's id. Nothing behaves differently.",
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
-    "version 1.0.4: the size rule C18 (2026-11-09): the two answers share the width below the Framework's sm breakpoint, 32rem (512 px), not below a raw 479 px; on a screen 480-511 px wide they now stand as two equal halves, as on any narrower phone. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, answer({accepted}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged."
+    "version 1.1.1: the size rule C18 (2026-11-09): the two answers share the width below the Framework's sm breakpoint, 32rem (512 px), not below a raw 479 px; on a screen 480-511 px wide they now stand as two equal halves, as on any narrower phone. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, answer({accepted}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged. Also: a minor (decisions C13, C22, C25; docs review pre-check 2026-11-09 CF-03..CF-06, CF-10). status=\"danger\" names a dangerous acceptance; destructive, its former name, reads as danger and is noted once until 2027-01-01 (change journal setting-confirm-destructive-to-status-danger). A dangerous question draws a filled danger accepting answer and a quiet (ghost) declining one; a plain question keeps two outlined answers. Whenever the question is put -- open(), the host reopening it after a refused answer, or the element arriving in place of the control the person pressed (the focus had fallen to the page after the person acted) -- the declining answer takes the focus; a question printed with the page takes none. The answers stand on the new setting size (default 1, the ladder of a field and a button) instead of a fixed 1/2, so a compact region (data-sf-density, C22) brings them to 32 px with the rest of the row. The accepted outcome is written in the success role (--sf-success), not on-success-container, which read near-black on the page in the light theme (C16). The description slot and the five public variables carry an x-summary for the reference. Events, values and actions unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -335,7 +364,7 @@
         "events",
         "accessibility"
       ],
-      "minimal_example": "<sf-confirm question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" destructive></sf-confirm>",
+      "minimal_example": "<sf-confirm question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" status=\"danger\"></sf-confirm>",
       "owner_commands": [
         "npm run contract:verify",
         "node scripts/run-browser-probes.mjs <output>"

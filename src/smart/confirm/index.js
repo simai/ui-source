@@ -20,6 +20,7 @@
 import SfBaseElement from "../../core/js/smart-base";
 import {elementFromManifest} from "../../core/js/element-manifest";
 import {confirmSurface} from "../helpers/confirm-surface.js";
+import {noteDeprecated} from "../../core/js/deprecations";
 import {renderConfirmTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
 import en from "./lang/en.json";
@@ -50,6 +51,21 @@ class SfConfirm extends ConfirmSurface {
         this._onKeydown = (event) => this.onKeydown(event);
     }
 
+    // What the acceptance does (decision C13): status="danger" for a delete or
+    // anything that cannot be undone. destructive is its former name: read as
+    // danger and noted once, until 2027-01-01 (change journal
+    // setting-confirm-destructive-to-status-danger).
+    get danger() {
+        if (this.getAttribute("status") === "danger") return true;
+        if (!this.getProp("destructive")) return false;
+        if (!this._destructiveNoted) {
+            this._destructiveNoted = true;
+            noteDeprecated({component: "sf-confirm", tag: "sf-confirm", kind: "setting", attribute: "destructive",
+                from: "destructive", to: "status=\"danger\"", since: "2026-11-09", remove_after: "2027-01-01"});
+        }
+        return true;
+    }
+
     templateContext() {
         const question = this.getProp("question") || "";
         return {
@@ -57,7 +73,7 @@ class SfConfirm extends ConfirmSurface {
             question,
             questionLabel: this.sfWord("question-label"),
             appearance: this.getProp("appearance") === "card" ? "card" : "inline",
-            destructive: Boolean(this.getProp("destructive")),
+            danger: this.danger,
         };
     }
 
@@ -68,6 +84,16 @@ class SfConfirm extends ConfirmSurface {
     onConnected() {
         super.onConnected?.();
         this.addEventListener("keydown", this._onKeydown);
+        // The question put in place of what was pressed (a row's delete): the
+        // pressed control is gone, so the focus fell to the page. It goes to
+        // the safe answer once the answers are drawn (decision C25). A
+        // question printed with the page, before the person did anything,
+        // takes nothing.
+        if (this.shownState === "open" && focusWasLost(this.ownerDocument)) {
+            this.whenRendered(() => {
+                if (focusWasLost(this.ownerDocument)) this.focusSafeAnswer();
+            });
+        }
     }
 
     onDisconnected() {
@@ -84,6 +110,14 @@ class SfConfirm extends ConfirmSurface {
         event.stopPropagation();
         this.cancel();
     }
+}
+
+// The focus is nowhere -- on the page itself -- after the person has acted on
+// it: the control they pressed left the page.
+function focusWasLost(document) {
+    const active = document?.activeElement;
+    const nowhere = !active || active === document.body || active === document.documentElement;
+    return nowhere && globalThis.navigator?.userActivation?.hasBeenActive === true;
 }
 
 SfConfirm.define("sf-confirm");

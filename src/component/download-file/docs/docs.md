@@ -22,3 +22,18 @@ never broken inside a word; the whole name stays the accessible name and the
 Pass a known human-readable file size when possible. For compatibility, an
 empty size can still trigger the existing `Content-Length` lookup. The icon is
 decorative; the filename or `aria-label` owns the accessible name.
+
+Since component.download-file 1.2.0 (decision C25, 2026-11-09):
+
+- A file link downloads in the same tab. A link with `target="_blank"` is a
+  file opened to view: it carries `__tab`, the `open_in_new` sign after the
+  name, and `__tab-words`, «(откроется в новой вкладке)» for a screen reader.
+- The type and the size are two facts in `__meta`: `__type` (PDF), then
+  `__size` (2,4 МБ), a dot between them only when both are there.
+- A size the component asks for is written in the page's language by the core
+  formatter (`SF.format.fileSize`): «2,4 МБ», not «2.4MB».
+- No invented file: an absent name is the link's last part, an absent size is
+  asked of the file. The defaults were File.pdf and 36MB.
+- A root marked `aria-busy="true"` is being prepared: it takes no press, the
+  hover and press fills stand still and the pointer says progress. `__spinner`
+  is the Framework spinner in the sign's box (the Smart element draws it).

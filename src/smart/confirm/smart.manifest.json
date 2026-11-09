@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.0.4",
+  "version": "1.1.1",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -79,10 +79,19 @@
         "default": false,
         "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
       },
+      "status": {
+        "type": "string",
+        "default": "",
+        "description": "What the acceptance does (decision C13): danger, a delete or anything that cannot be undone. The accepting answer is then a filled danger button and the declining one quiet (decision C25). destructive is its former name.",
+        "enum": [
+          "",
+          "danger"
+        ]
+      },
       "destructive": {
         "type": "boolean",
         "default": false,
-        "description": "The acceptance destroys something (a delete): the accepting answer wears the error status."
+        "description": "Former name of status=\"danger\" (decision C13): read as danger and noted in SF.deprecations until 2027-01-01."
       },
       "appearance": {
         "type": "string",
@@ -91,6 +100,18 @@
         "enum": [
           "inline",
           "card"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The step of the control ladder the two answers stand on: 1, a field's and a button's, unless the page says otherwise. A compact region (data-sf-density=\"compact\", decision C22) moves them down a step by itself.",
+        "enum": [
+          "1/3",
+          "1/2",
+          "1",
+          "2",
+          "3"
         ]
       },
       "accept-text": {
@@ -301,15 +322,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "a96ba85d06175e5a33bea6ff4c45f34112ca81054db4f8b8636ad72c9214b090"
+        "sha256": "ed426c4351ebea080c0d0f15602110b09147323a1372a92fca97097be355caf9"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "e92841fa939ea34f785f849b6e7ae7f49d1df8303a5785f8c204de1e0993d12d"
+        "sha256": "7f3d63333340e203694a54a93cfae8a4bba2c881e362554441cd8ff761e4875a"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "4f3ae5b444e571a4d3dd9c9c778b8e909589d71390df3e03295ec5301c23197f"
+        "sha256": "03ae22df0c3cd402973149ed082a4ae52310fda4552562b4e905bfb68494483c"
       },
       {
         "path": "src/smart/confirm/rule.js",
@@ -317,7 +338,7 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "1bea3681329624df806518ffc33575cfb8ca1fda8d0a32ed62ddbc2e8963cfa7"
+        "sha256": "0649cc2d10bd8d7788636f735b78532371d4e590f32ad7706e3d98d6131bb7de"
       },
       {
         "path": "src/smart/confirm/component.json",
@@ -346,7 +367,7 @@
       "events",
       "accessibility"
     ],
-    "minimal_example": "<sf-confirm question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" destructive></sf-confirm>",
+    "minimal_example": "<sf-confirm question=\"Удалить файл «Отчёт.pdf»?\" confirm-id=\"f-17\" accept-text=\"Удалить\" status=\"danger\"></sf-confirm>",
     "owner_commands": [
       "npm run contract:verify",
       "node scripts/run-browser-probes.mjs <output>"

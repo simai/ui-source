@@ -4162,6 +4162,11 @@
           "component": "sf-file-download",
           "from": "sf-download-file:click",
           "to": "sf-download-file-download"
+        },
+        {
+          "component": "sf-file-download",
+          "from": "sf-download-file-retry",
+          "to": "sf-file-download-retry"
         }
       ],
       "deprecated_on": "2026-11-03",
@@ -7116,6 +7121,75 @@
       "manual": "Drop the colour class; keep or rename the shadow class to its place (shadow-raised, shadow-overlay). Where a colour carried meaning, say it with the element's own fill, outline or status, not with its shadow.",
       "owner": "ui-source",
       "source": "src/utility/box-shadow-color, src/utility/drop-shadow-color, src/core/scss/_sf_css__shadow.scss"
+    },
+    {
+      "id": "attribute-confirm-destructive-to-status-danger",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-confirm names a dangerous acceptance the way the controls do (decision C13): status=\"danger\". destructive, the boolean it had, reads as danger and is noted once in SF.deprecations. A dangerous question draws a filled danger accepting answer and a quiet declining one (decision C25).",
+      "items": [
+        {
+          "component": "sf-confirm",
+          "from": "destructive",
+          "to": "status"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-confirm question=\"Удалить файл?\" accept-text=\"Удалить\" destructive>",
+        "after": "<sf-confirm question=\"Удалить файл?\" accept-text=\"Удалить\" status=\"danger\">"
+      },
+      "manual": "Write status=\"danger\" for the boolean destructive on sf-confirm (a value, not a rename: the attribute alias shim would carry the empty value across). Nothing else changes.",
+      "source": "src/smart/confirm/index.js get danger; ui-control control/docs-review/decisions.md C13, C25"
+    },
+    {
+      "id": "value-button-copy-link-to-ghost",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-button-copy's look without a fill is called ghost, as on sf-button and sf-button-icon (decision C15); link, which drew the same, is its former name, and ghost is the default.",
+      "items": [
+        {
+          "component": "sf-button-copy",
+          "attribute": "appearance",
+          "from": "link",
+          "to": "ghost"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-button-copy appearance=\"link\" value=\"A-1042\">",
+        "after": "<sf-button-copy appearance=\"ghost\" value=\"A-1042\">"
+      },
+      "source": "src/smart/button-copy/aliases.json"
+    },
+    {
+      "id": "attribute-file-download-icon-to-file-type",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-file-download keeps the download sign (decision C25): a file-type glyph set with icon took its place and read as «open a document». The type is said in words with file-type, before the size («PDF · 2,4 МБ»). icon is still drawn and noted once until the date.",
+      "items": [
+        {
+          "component": "sf-file-download",
+          "from": "icon",
+          "to": "file-type"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-file-download file-name=\"Договор.docx\" file-size=\"DOCX\" icon=\"description\">",
+        "after": "<sf-file-download file-name=\"Договор.docx\" file-type=\"DOCX\" file-size=\"1,1 МБ\">"
+      },
+      "manual": "Drop icon and write the file's type in file-type (PDF, DOCX, ZIP). A type written into file-size moves to file-type too; file-size keeps the size only.",
+      "source": "src/smart/file-download/index.js signIcon; ui-control control/docs-review/decisions.md C25"
     }
   ]
 }

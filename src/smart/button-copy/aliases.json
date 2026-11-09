@@ -65,6 +65,17 @@
       "mode": "same-detail",
       "section": "§8",
       "note": "the event name carries the tag"
+    },
+    {
+      "from": "link",
+      "to": "ghost",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-button-copy",
+      "since": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-button-copy-link-to-ghost (decision C15): ghost is the name, link its former one; they drew the same"
     }
   ]
 }

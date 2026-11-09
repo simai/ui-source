@@ -1,6 +1,6 @@
-// The behaviour of a question put to a person in place: two answers of equal
-// standing, a pending state while the answer is applied, the outcome, and an
-// optional time the offer runs out. sf-confirm (the plain question) and
+// The behaviour of a question put to a person in place: two answers, a
+// pending state while the answer is applied, the outcome, and an optional time
+// the offer runs out. sf-confirm (the plain question) and
 // sf-confirm-change (the same question over values as they were and as they
 // will be) are this one surface (duplication audit 2026-11-03, A-5): it was
 // written once in sf-confirm-change and five more times by hand in the chat
@@ -29,6 +29,11 @@ export const CONFIRM_STATES = Object.freeze(["open", "pending", "accepted", "dec
 // A timer longer than this is not a timer setTimeout keeps: past 2^31-1 ms it
 // fires at once. An offer valid for longer than 24 days is checked again daily.
 const LONGEST_WAIT = 24 * 60 * 60 * 1000;
+
+// The steps of the control ladder the answers stand on (C22): the element's
+// size, else 1, the size of a field and a button beside it. Compactness is
+// the region's density (data-sf-density), never a smaller size by hand.
+export const CONFIRM_SIZES = Object.freeze(["1/3", "1/2", "1", "2", "3"]);
 
 // The glyph the status line shows beside its words, per state.
 export const CONFIRM_ICON = Object.freeze({
@@ -120,6 +125,8 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
                 // Not named `disabled`: that is the setting, and this is more --
                 // the setting, or any state but open.
                 answersLocked: this.getProp("disabled") || shown !== "open",
+                // The step the answers stand on: a page's size, else 1 (C22).
+                size: CONFIRM_SIZES.includes(this.getAttribute("size")) ? this.getAttribute("size") : "1",
             };
         }
 
@@ -183,7 +190,12 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
         open(...args) {
             // (params, {signal}): the parameters are none; the second is the ask's.
             const {signal} = args[1] ?? {};
-            if (this.state !== "open") this.state = "open";
+            const reopened = this.state !== "open";
+            if (reopened) this.state = "open";
+            // The question is put to the person now: focus waits on the safe
+            // answer (decision C25), so a stray Enter or Space only takes the
+            // question back.
+            this.whenRendered(() => this.focusSafeAnswer(), {next: reopened});
             return signal ? this.waitForAnswer(signal) : applied();
         }
 
@@ -246,21 +258,52 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
         focusStatus() {
             const target = this.querySelector(`.${block}__status`);
             if (!target) return;
-            const buttons = this.querySelector(`.${block}__actions:not([hidden])`);
-            if (buttons && this.state === "open") {
-                buttons.querySelector("button")?.focus();
-                return;
-            }
+            if (this.state === "open" && this.focusSafeAnswer()) return;
             target.focus({preventScroll: true});
+        }
+
+        // The answer that changes nothing -- the declining one -- takes the
+        // focus whenever the question is put (decision C25, as Primer's
+        // ConfirmationDialog does for a dangerous one): Enter or Space pressed
+        // by habit closes the question, and the accepting answer needs a
+        // pointer or Tab. Answers false when there is no answer to focus.
+        // The surface's after-render can come before the answer can take the
+        // focus (its sf-button is drawn, or its region shown, a frame later):
+        // the focus then tries again for a few frames, unless the person has
+        // moved it meanwhile.
+        focusSafeAnswer(frames = 10) {
+            if (this.shownState !== "open" || this.getProp("disabled")) return false;
+            const host = this.querySelector(`.${block}__actions:not([hidden]) [data-action="decline"]`);
+            const button = host?.matches("button") ? host : host?.querySelector("button");
+            button?.focus({preventScroll: true});
+            const doc = this.ownerDocument;
+            if (button && doc.activeElement === button) return true;
+            const view = doc.defaultView;
+            if (host && frames > 0 && view?.requestAnimationFrame) {
+                view.requestAnimationFrame(() => {
+                    const active = doc.activeElement;
+                    if (!active || active === doc.body || this.contains(active)) this.focusSafeAnswer(frames - 1);
+                });
+            }
+            return false;
         }
     };
 }
 
 // The surface's footer, the same in every template: the status line, then the
-// two answers. `block` is the drawn surface's class; `acceptStatus` "error"
-// marks a destructive acceptance (a delete).
+// two answers. `block` is the drawn surface's class; `acceptStatus` "danger"
+// marks a destructive acceptance (a delete, decision C13).
+//
+// The answers (decision C25): a plain question offers two outlined answers of
+// one weight. A dangerous one fills the accepting answer with the danger
+// colour and leaves the declining one quiet (ghost, no frame), so the two are
+// told apart by more than the red of a word. Both stand on the element's size
+// (context.size, 1 unless the page gives one); a size a template gives is
+// relative, so a compact region (data-sf-density, C22) moves them down a step.
 export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
     const {component} = context;
+    const danger = acceptStatus === "danger" || acceptStatus === "error";
+    const size = context.size || "1";
     return html`
             <footer class="${block}__footer">
                 <!-- Always in the page, empty while there is nothing to say: a live
@@ -277,10 +320,10 @@ export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
                      the person sees which answer is on its way. -->
                 <div class="${block}__actions" ?hidden=${!context.open && !context.pending}>
                     <sf-button
-                            appearance="outline"
+                            appearance=${danger ? "default" : "outline"}
                             scheme="primary"
-                            status=${acceptStatus || nothing}
-                            size="1/2"
+                            status=${danger ? "danger" : nothing}
+                            size=${size}
                             text=${context.acceptText}
                             data-action="accept"
                             ?loading=${context.pressed === true}
@@ -288,9 +331,9 @@ export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
-                            appearance="outline"
+                            appearance=${danger ? "ghost" : "outline"}
                             scheme="on-surface"
-                            size="1/2"
+                            size=${size}
                             text=${context.declineText}
                             data-action="decline"
                             ?loading=${context.pressed === false}

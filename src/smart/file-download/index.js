@@ -1,7 +1,10 @@
 import {
   bindDownloadFile,
+  buildAnchorDownload,
+  nameFromHref,
   unbindDownloadFile,
 } from '../../component/download-file/js/_download-file';
+import { noteDeprecated } from '../../core/js/deprecations';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderDownloadFileTemplate } from './js/templates/default';
@@ -23,25 +26,83 @@ const DownloadFileElement = elementFromManifest(manifest, {
   aliases,
 });
 
+const STATES = ['ready', 'preparing', 'error'];
+
 class SfDownloadFile extends DownloadFileElement {
   constructor() {
     super();
     this._boundRoot = null;
+    // A press the host answered by preparing the file: when the file is ready
+    // (state back to ready with an href) it is fetched once, as the person
+    // asked (decision C25). A file prepared before anyone pressed is not.
+    this._awaiting = false;
+    this._onAlertAction = (event) => this.onAlertAction(event);
+  }
+
+  get shownState() {
+    const value = this.getAttribute('state');
+    return STATES.includes(value) ? value : 'ready';
   }
 
   get templateName() {
     return this.getAttribute('template') || 'default';
   }
 
+  // The sign is the download sign (decision C25): a file-type glyph in its
+  // place read as «open a document». icon is still drawn until 2027-01-01 and
+  // noted once; the type is file-type, in words.
+  get signIcon() {
+    const icon = this.getAttribute('icon');
+    if (!icon || icon === 'download') return 'download';
+    if (!this._iconNoted) {
+      this._iconNoted = true;
+      noteDeprecated({ component: 'sf-file-download', tag: 'sf-file-download', kind: 'setting', attribute: 'icon',
+        from: 'icon', to: 'file-type', since: '2026-11-09', remove_after: '2027-01-01' });
+    }
+    return icon;
+  }
+
   templateContext() {
     const props = this.getPropsContext();
+    const href = this.getAttribute('href') || '';
+    const opensTab = Boolean(href) && this.getAttribute('target') === '_blank';
 
     return this.createTemplateContext({
       ...props,
       size: this.size,
+      state: this.shownState,
+      // No invented file: an absent name is the link's last part, else «Файл».
+      fileName: this.getAttribute('file-name') || nameFromHref(href) || this.sfWord('file'),
+      fileType: this.getAttribute('file-type') || '',
+      icon: this.signIcon,
+      opensTab,
+      // A file link downloads where the person is (decision C25): the
+      // download semantics are the default, a tab opened to view has none.
+      download: Boolean(href) && !opensTab,
+      errorText: this.getAttribute('error-text') || '',
+      words: {
+        preparing: this.sfWord('preparing-text'),
+        errorHeading: this.sfWord('error-heading'),
+        retry: this.sfWord('retry-text'),
+        newTab: this.sfWord('new-tab-text'),
+      },
       ariaLabel: this.getAttribute('aria-label') || '',
       component: this,
     });
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+    if (name !== 'state' || oldValue === newValue) return;
+    const next = STATES.includes(newValue) ? newValue : 'ready';
+    if (next === 'error') return;
+    if (next === 'ready' && this._awaiting && oldValue === 'preparing') {
+      this._awaiting = false;
+      const href = this.getAttribute('href');
+      if (href && !this.hasAttribute('disabled')) {
+        buildAnchorDownload(href, this.getAttribute('file-name') || nameFromHref(href));
+      }
+    }
   }
 
   template() {
@@ -49,8 +110,27 @@ class SfDownloadFile extends DownloadFileElement {
   }
 
   // The class binder's activation, as the element's request: false when a
-  // listener refused it.
-  requestDownload = (detail) => this.sfEmit('download', detail, { cancelable: true });
+  // listener refused it. A refused request is the host taking the download
+  // over -- preparing the file, perhaps -- so the press is remembered.
+  requestDownload = (detail) => {
+    const delivered = this.sfEmit('download', detail, { cancelable: true });
+    this._awaiting = !delivered;
+    return delivered;
+  };
+
+  // «Повторить» under a file that could not be prepared: the host is asked to
+  // make it again (vocabulary §5 retry); the press counts as the person's.
+  onAlertAction(event) {
+    if (event.detail?.action !== 'retry' || !event.target?.closest?.('.sf-download-file__error')) return;
+    event.stopPropagation();
+    this._awaiting = true;
+    this.sfEmit('retry', { href: this.getAttribute('href') || '', fileName: this.getAttribute('file-name') || '' });
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    this.addEventListener('sf-alert-action', this._onAlertAction);
+  }
 
   afterRender() {
     if (this._boundRoot) {
@@ -68,6 +148,7 @@ class SfDownloadFile extends DownloadFileElement {
   }
 
   onDisconnected() {
+    this.removeEventListener('sf-alert-action', this._onAlertAction);
     if (this._boundRoot) {
       unbindDownloadFile(this._boundRoot);
       this._boundRoot = null;

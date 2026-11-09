@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-download's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/download-file (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.file-download",
   "tag": "sf-file-download",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -20,18 +20,23 @@
     },
     "file-name": {
       "type": "string",
-      "default": "File.pdf",
-      "summary": "Visible filename and default native download name."
+      "default": "",
+      "summary": "The file's visible name and the name it is saved under. Empty: the link's last part, else «Файл» in the page's language."
     },
     "file-size": {
       "type": "string",
       "default": "",
-      "summary": "The size as text (2,4 МБ); empty with href, the size is asked with one HEAD request"
+      "summary": "The size as text, in the page's units («2,4 МБ»). Empty with href: asked with one HEAD request and written in the page's language."
+    },
+    "file-type": {
+      "type": "string",
+      "default": "",
+      "summary": "The file's type in words (PDF, XLSX), shown before the size: «PDF · 2,4 МБ» (decision C25). Never in file-size."
     },
     "icon": {
       "type": "icon",
       "default": "download",
-      "summary": "Decorative icon name."
+      "summary": "Former way to name the file's type by a glyph, which took the download sign's place (decision C25): give the type in file-type. Still drawn and noted in SF.deprecations until 2027-01-01."
     },
     "href": {
       "type": "string",
@@ -41,16 +46,32 @@
     "download": {
       "type": "boolean",
       "default": false,
-      "summary": "Apply native download semantics to an anchor destination."
+      "summary": "Kept for compatibility: a file link downloads in the same tab whether or not it is given (decision C25); only target=\"_blank\" opens a tab instead."
     },
     "disabled": {
       "type": "boolean",
       "default": false,
       "summary": "Render a disabled button with no live destination."
     },
+    "state": {
+      "type": "enum",
+      "values": [
+        "ready",
+        "preparing",
+        "error"
+      ],
+      "default": "ready",
+      "summary": "ready: the file can be fetched. preparing: the application is making it -- a spinner in the sign's place, «Готовим файл…», aria-busy, a press is ignored; when the host sets ready again with an href, the file a person pressed for is fetched once. error: it could not be made -- an error notice «Не удалось подготовить файл» with «Повторить» under the file (decision C25)."
+    },
+    "error-text": {
+      "type": "string",
+      "default": "",
+      "summary": "More words in the error notice (what went wrong, what to do); the heading is «Не удалось подготовить файл»."
+    },
     "target": {
       "type": "string",
-      "default": "_blank"
+      "default": "",
+      "summary": "Where the link opens. Empty (default): the file downloads in the same tab. _blank: the file is opened to view in a new tab; the link shows the open-in-new sign and says «(откроется в новой вкладке)» to a screen reader (decision C25)."
     }
   },
   "values": {},
@@ -61,7 +82,15 @@
         "file-name": "string",
         "download": "boolean"
       },
-      "cancelable": true
+      "cancelable": true,
+      "summary": "A person pressed the file: the request to fetch it, cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\", then ready with the href, or error."
+    },
+    "retry": {
+      "carries": {
+        "href": "string",
+        "file-name": "string"
+      },
+      "summary": "A person pressed «Повторить» under a file that could not be prepared (vocabulary §5 retry): the host prepares it again and sets the state."
     }
   },
   "actions": {},
@@ -84,6 +113,19 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-alert",
+      "$comment": [
+        "The notice under a file that could not be prepared (state error, decision C25)."
+      ]
+    },
+    {
+      "name": "spinner",
+      "lazy": true,
+      "$comment": [
+        "The spinner in the sign's place while the file is prepared: its box is the class sheet's, the motion the spinner sheet's."
+      ]
     }
   ],
   "templates": {
@@ -96,7 +138,7 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "A native <a> while href is set and the file is not disabled, a native <button> otherwise; the file name is the visible text.",
+    "$comment": "A native <a> while href is set and the file is not disabled, a native <button> otherwise; the file name is the visible text. Preparing: aria-busy=\"true\" on it, the words «Готовим файл…» in its name. A link that opens a tab adds «(откроется в новой вкладке)» to its name.",
     "role": "link",
     "name": {
       "from": [
@@ -113,31 +155,38 @@
   "css-variables": {
     "--sf-download-file-background-color": {
       "type": "color",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The fill at rest; hover, press and the disabled state have their own."
     },
     "--sf-download-file-border-color": {
       "type": "color",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The border at rest."
     },
     "--sf-download-file-radius": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The corner."
     },
     "--sf-download-file-padding": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The inner padding."
     },
     "--sf-download-file-gap": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "Space between the sign, the name and the type and size."
     },
     "--sf-download-file-icon-size": {
       "type": "length",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The sign's size (and the spinner's while the file is prepared)."
     },
     "--sf-download-file-icon-color": {
       "type": "color",
-      "state": "default"
+      "state": "default",
+      "x-summary": "The sign's ink (and the spinner's)."
     }
   },
   "aliases": {
@@ -183,6 +232,16 @@
         "mode": "same-detail",
         "section": "§8",
         "note": "the event name carries the tag"
+      },
+      {
+        "from": "sf-download-file-retry",
+        "to": "sf-file-download-retry",
+        "kind": "event",
+        "since": "2026-11-09",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
       }
     ]
   },
@@ -212,14 +271,17 @@
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0: the tag is sf-file-download (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.file-download and the bundle cl-file-download follow it. sf-download-file stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-file-download, sf-download-file) (change journal tag-sf-download-file-to-sf-file-download, path-smart-download-file-to-file-download).",
-    "version 1.2.1 (2026-11-08): one height per size, the button's (docs review rule C01; component.download-file 1.1.0): sizes 1/3, 1/2, 1, 2 and 3 stand 24, 32, 40, 48 and 56 px on a wide screen beside an sf-button of the same size -- they stood 26, 38, 42, 54 and 70 -- with the button's icon, side padding and label inset from the size ladder and the border inside the height. The file name is one line ending in an ellipsis when it does not fit (it broke inside words at size 3) and carries the whole name as its title. The keys a person presses are listed: Tab reaches it, Enter follows the link or presses the button, Space presses the button (msg-c84f2727, the family's keys). The documentation names the request sf-file-download-download, the event the probe page listens to. Settings, values and events are unchanged."
+    "version 1.2.1 (2026-11-08): one height per size, the button's (docs review rule C01; component.download-file 1.1.0): sizes 1/3, 1/2, 1, 2 and 3 stand 24, 32, 40, 48 and 56 px on a wide screen beside an sf-button of the same size -- they stood 26, 38, 42, 54 and 70 -- with the button's icon, side padding and label inset from the size ladder and the border inside the height. The file name is one line ending in an ellipsis when it does not fit (it broke inside words at size 3) and carries the whole name as its title. The keys a person presses are listed: Tab reaches it, Enter follows the link or presses the button, Space presses the button (msg-c84f2727, the family's keys). The documentation names the request sf-file-download-download, the event the probe page listens to. Settings, values and events are unchanged.",
+    "version 1.3.0 (2026-11-09): a minor (decision C25; docs review pre-check 2026-11-09 DF-02, DF-03, DF-04, DF-08, DF-09). state ready|preparing|error: preparing puts the Framework's spinner in the sign's box, «Готовим файл…» in place of the type and the size and aria-busy on the link or button, and a press does nothing; the host that cancelled the request and prepared the file sets ready with the href, and the file is fetched once for the person who pressed. error keeps the file and puts an sf-alert «Не удалось подготовить файл» (error-text its words) with «Повторить» under it; the press sends sf-file-download-retry {href, fileName}. file-type gives the type in words before the size («PDF · 2,4 МБ»); icon, which put a type glyph in the download sign's place, is still drawn but noted once until 2027-01-01 (change journal setting-file-download-icon-to-file-type). A file link downloads in the same tab: target is empty by default (it was _blank) and the download semantics are on unless target=\"_blank\", which is a file opened to view and shows the open_in_new sign after the name with «(откроется в новой вкладке)» for a screen reader. An absent file-name is the link's last part, else «Файл» (it was File.pdf). The size the component asks for (HEAD) is written in the page's language by the core formatter, «2,4 МБ» (it was «2.4MB»): component.download-file 1.2.0. The public variables carry an x-summary for the reference. The request's name is unchanged (sf-file-download-download; a shorter name is a proposal to the owner)."
   ],
   "x-registry": {
     "contracts": {
       "owner_semantics": {
         "resource": "href renders a native anchor",
         "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-download",
-        "disabled": "disabled button with no live destination"
+        "disabled": "disabled button with no live destination",
+        "preparing": "state preparing: spinner in the sign's place, aria-busy, presses ignored; ready again with an href fetches the file once for the person who pressed",
+        "error": "state error: an sf-alert with «Повторить» under the file; its press sends retry"
       },
       "canonical_elements": {
         "type": "string",
@@ -228,7 +290,13 @@
           "sf-download-file__main",
           "sf-download-file__icon",
           "sf-download-file__name",
-          "sf-download-file__size"
+          "sf-download-file__size",
+          "sf-download-file__meta",
+          "sf-download-file__type",
+          "sf-download-file__spinner",
+          "sf-download-file__status",
+          "sf-download-file__tab",
+          "sf-download-file__error"
         ]
       },
       "interaction_states": {
@@ -248,7 +316,9 @@
       "visual_states": [
         "default",
         "active",
-        "disabled"
+        "disabled",
+        "loading",
+        "error"
       ]
     },
     "ownership": {
@@ -293,7 +363,8 @@
         "Do not leave href on an unavailable file",
         "Do not use the decorative icon as the accessible name",
         "Do not copy generated ui-smart code",
-        "Do not move host data or access decisions into the component"
+        "Do not move host data or access decisions into the component",
+        "Do not put the file type in file-size or in icon: give it in file-type"
       ],
       "required_reads": [
         "inputs",
@@ -302,7 +373,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-file-download file-name=\"Report.pdf\" file-size=\"2.4 MB\" href=\"/files/report.pdf\" download></sf-file-download>",
+      "minimal_example": "<sf-file-download file-name=\"Отчёт за октябрь.pdf\" file-type=\"PDF\" file-size=\"2,4 МБ\" href=\"/files/report.pdf\"></sf-file-download>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
