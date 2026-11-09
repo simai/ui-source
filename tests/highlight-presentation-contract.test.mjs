@@ -13,10 +13,10 @@ test('Highlight uses compact Framework tokens and a transparent code surface', a
     read('src/component/highlight/scss/_theme.scss'),
   ]);
 
-  assert.match(
-    defaults,
-    /&-head\s*\{[\s\S]*padding:\s*var\(--sf-space-1\\\/3\) var\(--sf-space-1\);/,
-  );
+  // The head is a step of the height ladder (C18, simai/ui-source#31): no
+  // block padding, the inline inset from the space ladder.
+  assert.match(defaults, /&-head\s*\{[\s\S]*padding:\s*0 var\(--sf-space-1\);/);
+  assert.match(defaults, /min-block-size:\s*var\(--sf-ui-1--control-height\);/);
   assert.match(
     defaults,
     /&-wrap\s*\{[\s\S]*padding:\s*0;[\s\S]*> \.sf-scrollbar__viewport:not\(\[class\*='p-'\]\)\s*\{[\s\S]*padding:\s*var\(--sf-space-1\);/,
