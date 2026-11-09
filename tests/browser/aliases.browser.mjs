@@ -163,6 +163,13 @@ try {
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
+  // A local distribution (a candidate served on 127.0.0.1) is fetched by the
+  // driver and handed to the page: Chrome blocks a public origin's request to
+  // the loopback space (Private Network Access), so the page would load no Core
+  // and wait for elements that never come.
+  if (/^https?:\/\/(?:127\.0\.0\.1|localhost|\[::1\])[:/]/u.test(DISTR)) {
+    await page.route(`${DISTR}**`, async (route) => route.fulfill({response: await route.fetch()}));
+  }
   await page.route(`${ORIGIN}**`, (route) => {
     const file = files[new URL(route.request().url()).pathname.slice(1)];
     return file ? route.fulfill({contentType: file[0], body: file[1]}) : route.fulfill({status: 404, body: ''});
