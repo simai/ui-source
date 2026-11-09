@@ -312,6 +312,9 @@ its components take it from the shared runtime
   (`relation: [{name: 'cl-chart-core'}]`), so the Loader fetches the core once,
   before the first component that needs it runs. The build refuses a
   component that imports the core without that relation.
+  In the set's overlay (`SET_ROOT`) the loader-relations contract counts
+  that rule, `cl-<simai.core.folder>`, as a rule of the set; a relation to
+  any other core name stays dangling.
 - Every module of the folder is in the core, and a page with one component
   fetches all of it: keep there only what two or more components share. A
   module one component alone imports belongs in that component's folder
