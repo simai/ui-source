@@ -118,6 +118,7 @@
     "src/core/js/composition/utilities.mjs",
     "src/core/js/control-spacing.js",
     "src/core/js/core-modules.js",
+    "src/core/js/density.js",
     "src/core/js/deprecations.js",
     "src/core/js/early-port.js",
     "src/core/js/effects.js",

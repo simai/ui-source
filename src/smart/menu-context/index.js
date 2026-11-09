@@ -1,4 +1,5 @@
 import SfBaseElement from "../../core/js/smart-base";
+import { followDensity } from "../../core/js/density.js";
 import { elementFromManifest } from "../../core/js/element-manifest";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
@@ -937,6 +938,8 @@ class SfContextMenu extends ContextMenuElement {
         child.remove();
       }
     });
+    // In the density of the menu it opens from, wherever it is placed (C22).
+    followDensity(child, this);
     (this.closest("dialog[open]") || document.body).append(child);
     this._submenu = child;
     // The submenu's first row stands level with the row that opened it: the

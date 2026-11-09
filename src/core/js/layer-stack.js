@@ -467,6 +467,17 @@ const THEMES = ['theme-dark', 'theme-light'];
  * longer different is taken back, so a host moved to another area takes that
  * area's values.
  */
+// The density a host stands in (C22; core/js/density.js says the same): the
+// nearest region's, or "normal" under an explicit size. Written here, not
+// imported: this module is loaded on its own (shared runtime, tests).
+function densityOf(from) {
+  for (let node = from; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
+    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
+  }
+  return null;
+}
+
 export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], area = false, except = []} = {}) {
   if (!portal || !host?.isConnected) return;
   const doc = host.ownerDocument;
@@ -480,6 +491,11 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], a
   // does before it announces the change (simai/ui-source#55).
   if (!nearest || nearest === doc.documentElement) portal.dataset.sfLayerLang = 'page';
   else delete portal.dataset.sfLayerLang;
+  // The density (C22): the ladder the host stands on, so a window or a drawer
+  // at the end of the body is as dense as the page region that opened it.
+  const density = densityOf(host);
+  if (density) portal.setAttribute('data-sf-density', density);
+  else portal.removeAttribute('data-sf-density');
   const declared = host.closest('[dir]')?.getAttribute('dir');
   const dir = declared && declared !== 'auto' ? declared : view.getComputedStyle(host).direction;
   if (dir) portal.setAttribute('dir', dir);
