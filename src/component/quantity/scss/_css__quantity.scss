@@ -272,16 +272,16 @@
 .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
   --sf-quantity-wrap--block-size: var(--sf-ui-1\/2--control-height);
   --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-ui-1\/3--control-height)) / 2 - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-ui-1\/3--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-4)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-4)) / 2 - var(--sf-px)));
   --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
 }
 
 .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-count {
-  --sf-icon-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
-  --sf-icon-button--padding-inline-end: var(--sf-ui-1\/3--space-y-tightness-default);
-  --sf-icon-button--padding-inline-start: var(--sf-ui-1\/3--space-y-tightness-default);
-  --sf-icon-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
+  --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
+  --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
+  --sf-icon-button--padding-top: var(--sf-space-1\/4);
 }
 
 .sf-quantity.sf-quantity--size-1\/2 .sf-icon {

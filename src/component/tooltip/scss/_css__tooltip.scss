@@ -144,10 +144,10 @@
 }
 
 .sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-content {
-  --sf-tooltip-content--padding-bottom: var(--sf-tooltip-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+  --sf-tooltip-content--padding-bottom: var(--sf-tooltip-padding-block, var(--sf-space-1\/4));
   --sf-tooltip-content--padding-inline-end: var(--sf-tooltip-padding-inline, var(--sf-ui-1\/3--space-x));
   --sf-tooltip-content--padding-inline-start: var(--sf-tooltip-padding-inline, var(--sf-ui-1\/3--space-x));
-  --sf-tooltip-content--padding-top: var(--sf-tooltip-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+  --sf-tooltip-content--padding-top: var(--sf-tooltip-padding-block, var(--sf-space-1\/4));
 }
 
 .sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-text {
