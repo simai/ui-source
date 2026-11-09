@@ -1,4 +1,4 @@
-import { html, nothing, render } from 'lit';
+import { html, nothing } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
