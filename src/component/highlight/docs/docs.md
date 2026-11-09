@@ -35,7 +35,8 @@ controls retain their UI radius. Spacing, typography, borders and syntax colors
 come from semantic Framework tokens.
 The head lays itself out in the component's own rule -- the language at the
 start, the wrap toggle and copy at the end, on one axis -- so it needs no
-utility sheet. The code surface offers five public variables:
+utility sheet. Its height is the control height of ladder step 1
+(`--sf-ui-1--control-height`), one step above the size-1/2 icon buttons it holds. The code surface offers five public variables:
 `--sf-highlight-radius` (default `--sf-radius--surface`; a host that nests the
 block, such as a chat bubble, sets it to follow its own corner),
 `--sf-highlight-background-color`, `--sf-highlight-color`,

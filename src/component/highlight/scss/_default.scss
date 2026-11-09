@@ -29,7 +29,7 @@
   .sf {
     &--highlight {
       &-head {
-        padding: var(--sf-space-1\/3) var(--sf-space-1);
+        padding: 0 var(--sf-space-1);
         margin-bottom: var(--sf-space-1\/2);
       }
 
@@ -58,14 +58,19 @@
      content-main-between items-center), and highlight declares no utility
      relation, so on a page without that sheet the head was a block box and
      both ends packed left, off one axis (ui-chat D-08, simai/ui-source#31). */
+  /* Its height is a step of the height ladder (C18): the control height of
+     step 1, one step above the size-1/2 icon buttons it holds, so they stand
+     on its middle with the same room above and below. It was the line box plus
+     2 x --sf-space-1/3, 45px on the desktop -- off the ladder. */
   :is(.sf-highlight__head, .sf--highlight-head) {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-block-size: var(--sf-ui-1--control-height);
   }
 
   .sf-highlight__head {
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    padding: 0 var(--sf-space-1);
     margin: 0;
     border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
@@ -118,7 +123,7 @@
 
   .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
     margin: 0;
-    padding-block: var(--sf-space-1\/3);
+    padding-block: 0;
     padding-inline: var(--sf-space-1);
     border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
