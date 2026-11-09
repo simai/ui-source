@@ -210,10 +210,31 @@ test('smart menu: the manifest is the element', () => {
   const sent = new Set([...source.matchAll(/this\.sfEmit\('([^']+)'/gu)].map((match) => match[1]));
   assert.deepEqual(Object.keys(JSON.parse(read('src/smart/menu/component.json')).events).sort(), [...sent].sort());
   assert.doesNotMatch(source, /new CustomEvent\(/u);
-  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'label', 'href', 'icon', 'badge', 'current', 'disabled', 'open', 'children', 'region']);
+  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'label', 'href', 'icon', 'badge', 'count', 'status', 'current', 'disabled', 'open', 'children', 'region', 'target', 'external', 'group', 'collapsible', 'items']);
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/u);
   // The Pro admin menu is another component: nothing of it is used here.
   assert.doesNotMatch(source + template, /admin-menu|sf-admin/u);
+});
+
+// A field the element reads from an item is public, so the manifest declares
+// it (C30 amended): every field normaliseItem reads, and every field of the
+// items setting's port, is in item_contract. key, text and title are the
+// first release's tolerated spellings of id and label, read but not offered.
+test('smart menu: item_contract declares every item field the renderer reads', () => {
+  const items = read('src/smart/menu/items.mjs');
+  const body = items.slice(items.indexOf('export function normaliseItem('), items.indexOf('export function normaliseItems('));
+  assert.ok(body.length > 200, 'normaliseItem is found');
+  const tolerated = new Set(['key', 'text', 'title']);
+  const readFields = new Set([...body.matchAll(/\bitem\.([a-z][a-zA-Z]*)/gu)].map((match) => match[1]).filter((name) => !tolerated.has(name)));
+  const declared = new Set(Object.keys(manifest.item_contract.properties));
+  assert.deepEqual([...readFields].filter((name) => !declared.has(name)), [], 'every field normaliseItem reads is declared');
+  const port = Object.keys(JSON.parse(read('src/smart/menu/component.json')).settings.items.of);
+  assert.deepEqual(port.filter((name) => !declared.has(name)), [], 'every field of the port is declared');
+  assert.equal(manifest.item_contract.additionalProperties, false);
+  // A group item and a linked item both validate against the contract.
+  for (const item of [{group: true, label: 'Магазин', collapsible: true, items: [{label: 'Оплата'}]}, {label: 'Docs', href: 'https://example.com', target: '_blank', external: true, count: 3, status: 'warning'}]) {
+    assert.deepEqual(Object.keys(item).filter((name) => !declared.has(name)), []);
+  }
 });
 
 test('smart menu: the loader knows it and asks for what it draws with', () => {

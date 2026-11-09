@@ -630,6 +630,21 @@
           "type": "string",
           "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
         },
+        "count": {
+          "type": "number",
+          "description": "A count by its own name: the same as a badge holding a whole number (the class counter)."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "warning",
+            "error",
+            "info",
+            "neutral"
+          ],
+          "description": "A status dot of that tone at the row's end, before the counter; its word ends the link's name."
+        },
         "current": {
           "type": "boolean",
           "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
@@ -652,6 +667,29 @@
         "region": {
           "type": "string",
           "description": "A row's first-level branch opens a region (a mega menu) instead of a panel: the name of a <template slot=\"region-<name>\"> inside the element, else its children drawn as columns."
+        },
+        "target": {
+          "type": "string",
+          "description": "The link's target (_blank for a new tab, with rel noopener). A target other than _self draws ↗ after the words; _blank says in the link's name that it opens in a new tab."
+        },
+        "external": {
+          "type": "boolean",
+          "description": "A link that leaves the site without a target of its own: ↗ after the words."
+        },
+        "group": {
+          "type": "boolean",
+          "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the compact rail draw the items in the group's place, without the heading."
+        },
+        "collapsible": {
+          "type": "boolean",
+          "description": "A group whose heading is a button that opens and closes it (aria-expanded); a group is open unless open is false."
+        },
+        "items": {
+          "type": "array",
+          "description": "A group's items, the same as children.",
+          "items": {
+            "type": "object"
+          }
         }
       },
       "required": [
