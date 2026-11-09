@@ -103,6 +103,7 @@
         "component.buttons",
         "component.icon-buttons",
         "component.inputs",
+        "smart.avatar",
         "smart.button",
         "smart.chat-composer",
         "smart.chat-interlocutor",
