@@ -16,7 +16,7 @@
     "src/component/highlight/scss/_theme.scss",
     "src/component/highlight/scss/index.scss"
   ],
-  "content_sha256": "952322e47a42ea288dcca5ef9dac70c1e4f61931de0c38b7061278d4c6418fba",
+  "content_sha256": "a3b73e42ee741bc1fb58cd7518eefd6d693db5d67eca84d7e5acfa4d48905e77",
   "dependencies": [
     {
       "id": "component.clipboard",
