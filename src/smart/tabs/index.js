@@ -1,8 +1,9 @@
-import { html, nothing, render } from 'lit';
+import { html, nothing } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
 import { isTag } from '../../core/js/tag-aliases.js';
+import { followDensity, RELATIVE } from '../../core/js/density.js';
 import { renderTabsTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -19,6 +20,9 @@ const TabsElement = elementFromManifest(manifest, {
   lang: { en, ru },
   source: 'ru',
   aliases,
+  // setData(data, reason) and setPanels(panels, reason) take their fields in
+  // order; the runtime gives them the object form of §4.4 as well.
+  positional: ['set-data', 'set-panels'],
 });
 
 // A page's or an assembly's own panels: direct children of the host
@@ -712,6 +716,7 @@ class SfTabs extends TabsElement {
     const menu = await this.standardMenu('_moreMenu', (id) => this.activate(Number(id), null, { person: true }));
     menu.setAttribute('aria-label', this.text('more'));
     menu.setAttribute('size', this.menuSize());
+    followDensity(menu, this);
     menu.entries = entries;
     menu.toggleFor(anchor);
   }
@@ -750,6 +755,7 @@ class SfTabs extends TabsElement {
   async openSettings(anchor) {
     const menu = await this.settingsMenu();
     menu.setAttribute('size', this.menuSize());
+    followDensity(menu, this);
     this.renderSettingsList();
     menu.toggleFor(anchor, {width: 'content'});
   }
@@ -772,6 +778,7 @@ class SfTabs extends TabsElement {
     reset.setAttribute('appearance', 'outline');
     reset.setAttribute('scheme', 'on-surface');
     reset.setAttribute('size', this.menuSize());
+    reset.setAttribute(RELATIVE, '');
     reset.setAttribute('text', this.text('reset'));
     reset.addEventListener('click', () => this.resetSettings());
     menu.append(body, reset);
@@ -804,7 +811,7 @@ class SfTabs extends TabsElement {
       if (shown) next.delete(key); else next.add(key);
       this.changeSettings({order: items.map((entry) => entry.key), hidden: [...next]}, 'visibility');
     };
-    render(html`
+    this.drawInto(html`
       <sf-sortable class="sf-tabs-settings-list" group="sf-tabs-settings" label=${this.text('customize')}
                    @sf-sortable-move=${onIntent}>
         ${items.map((item) => html`

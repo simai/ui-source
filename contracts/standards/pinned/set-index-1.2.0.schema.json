@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/set-index.v1.json",
+  "x-simai-version": "1.2.0",
+  "title": "SIMAI Framework component set compatibility index",
+  "description": "The one compatibility index of every component set (standard simai.component-set, one-compatibility-index): one row per set release, with the npm version, the SIMAI Framework it was built over and the lowest core.runtime it needs, the sets it requires and the digest of its receipt. The Loader reads it to place a set a page names without a base: the newest release of the set whose core_runtime this Core meets, served from @simai-studio/<set>@<version>/dist/smart. Published as index.json of the npm package @simai-studio/sets (the Loader reads https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json unless SF_BOOT_CONFIG.setIndex says otherwise); written only by the set release route (ui-builder scripts/set-index.py), never by hand. A row is never removed and its facts never change: a fix is a new release and a new row. Since 1.1.0 a row may carry pairs, the further free pairs the same release, unchanged, was re-receipted over (ui-builder scripts/pair-receipt.py); pairs only grows. Since 1.2.0 a row may carry range, the digests of its pair range (ui-builder scripts/set-pair-range.py): the SIMAI Framework interface its released bytes take from the free pair, by which a consumer that pins exact pairs may accept the release over another pair that still offers it; a row's range is set once. The Loader chooses by core_runtime and reads neither pairs nor range.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "schema_version", "sets", "releases"],
+  "properties": {
+    "schema": {"const": "simai.framework.set-index"},
+    "schema_version": {"const": 1},
+    "summary": {"type": "string"},
+    "sets": {
+      "type": "array",
+      "description": "Every set with at least one release: what a consumer needs to list it without reading its passport.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "repository", "npm", "licence", "docs"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "title": {"type": "string", "minLength": 1},
+          "repository": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*/ui-[a-z][a-z0-9-]*$"},
+          "npm": {"type": "string", "pattern": "^@simai-studio/[a-z][a-z0-9-]*$"},
+          "licence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["class", "spdx"],
+            "properties": {
+              "class": {"enum": ["simai-pro", "framework"]},
+              "spdx": {"type": "string", "minLength": 1}
+            }
+          },
+          "docs": {"type": "string", "pattern": "^https://[a-z0-9.-]+(/.*)?$"}
+        }
+      }
+    },
+    "releases": {
+      "type": "array",
+      "description": "One row per release, in the order they were published.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["set", "release", "version", "source_revision", "framework", "requires_sets", "receipt_sha256", "published_on"],
+        "properties": {
+          "set": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "release": {"type": "string", "pattern": "^[a-z][a-z0-9-]*-[0-9a-f]{12}$", "description": "<set>-<first 12 hex of source_revision>, the tag on the set's repository."},
+          "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$", "description": "The npm version of @simai-studio/<set>."},
+          "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "framework": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["core_runtime", "source_revision", "pair"],
+            "properties": {
+              "core_runtime": {"type": "string", "pattern": "^>=[0-9]+\\.[0-9]+\\.[0-9]+$", "description": "The lowest core.runtime the release needs; every SIMAI Framework pair at or above it runs it."},
+              "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+              "pair": {"type": "string", "pattern": "^ui-[0-9a-f]{12}$", "description": "The free release the set was built and tested over."}
+            }
+          },
+          "requires_sets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "range"],
+              "properties": {
+                "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+                "range": {"type": "string", "minLength": 1}
+              }
+            }
+          },
+          "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "archive_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "published_on": {"type": "string", "format": "date"},
+          "pairs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Since 1.1.0. The free pairs other than framework.pair this release runs over, each through a pair receipt (simai.framework.set-pair-receipt v1, the GitHub release asset pair-receipt-<pair>.json): the set rebuilt over the pair gave the released bytes again apart from the passport's source revision, and its gates passed over the pair against the released bytes. In the order received; a pair once, never framework.pair; entries are only added.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["pair", "source_revision", "receipt_sha256", "received_on"],
+              "properties": {
+                "pair": {"type": "string", "pattern": "^ui-[0-9a-f]{12}$"},
+                "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$", "description": "The ui-source revision the pair was built from."},
+                "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the pair receipt file."},
+                "received_on": {"type": "string", "format": "date"}
+              }
+            }
+          },
+          "range": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sha256", "interface_sha256"],
+            "description": "Since 1.2.0. The pair range of the release (simai.framework.set-pair-range v1, the GitHub release asset pair-range.json and contracts/pair-ranges/<release>.json in the set's repository), written once from the released bytes over framework.pair: what they take from the free pair at runtime (core.runtime minimum, shared runtime ABI and imported names, relations to free rules, its own tags, the free tags it renders, its package core folder, the --sf-* properties it reads bare, the public window.SF names it calls). A consumer that pins exact pairs may accept the release over a pair where every requirement still holds; the range covers no behaviour behind an unchanged interface. Set once, never changed.",
+            "properties": {
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the pair range file, byte for byte."},
+              "interface_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the canonical JSON of the range's requires (keys sorted, separators , and :, UTF-8, / and non-ASCII unescaped): two releases with the same digest need the same things of a pair."}
+            }
+          }
+        }
+      }
+    }
+  }
+}

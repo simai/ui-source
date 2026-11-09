@@ -71,7 +71,7 @@
     /* Two layers, composed rather than replaced: the focus line the ring puts
        inside the button, and whatever elevation the button already carries.
        Written as one shorthand, a focus rule would wipe the elevation. */
-    box-shadow: var(--sf-button--focus-inset, 0 0 #0000), var(--sf-button--box-shadow, 0 0 #0000);
+    box-shadow: var(--sf-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-button--box-shadow, 0 0 var(--sf-transparent));
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */

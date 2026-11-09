@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.5.2",
+  "version": "1.5.4",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -384,7 +384,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "3dc034cb3a603afe4652b9bcc8604fbd6e2c3d2f59e3fdeb4fd09056576aea21"
+        "sha256": "7b232e0dc96cad9055835a72a39bc41b0bb45fef24f0fe7a42d547d3ee4f0167"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -79,12 +79,15 @@
         inset-inline-start: -1px;
         max-inline-size: 100%;
         overflow: hidden;
-        padding: 0 var(--sf-space-1, .25rem);
-        border-radius: var(--sf-radius-1, .25rem) var(--sf-radius-1, .25rem) 0 0;
+        padding: 0 var(--sf-space-1);
+        border-radius: var(--sf-radius-1) var(--sf-radius-1) 0 0;
         background: var(--sf-composition-overlay-color);
         color: var(--sf-on-primary, HighlightText);
-        font-size: var(--sf-text-1--size, .75rem);
-        line-height: var(--sf-text-1--height, 1.25rem);
+        /* 12 on a 20 line at every width: the size ladder's b2 and c0 (the
+           names read before, --sf-text-1--size and --sf-text-1--height, never
+           existed, so these were always the drawn values). */
+        font-size: var(--sf-b2);
+        line-height: var(--sf-c0);
         white-space: nowrap;
         text-overflow: ellipsis;
     }
@@ -106,7 +109,7 @@
 
     .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-toolbar {
         position: sticky;
-        top: var(--sf-space-1\/4, .25rem);
+        top: var(--sf-space-1\/4);
         flex: none;
     }
 
@@ -118,15 +121,15 @@
         position: fixed;
         z-index: 2;
         display: flex;
-        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1\/4, .25rem));
-        margin-block-end: var(--sf-space-1\/4, .25rem);
-        padding: var(--sf-space-1\/4, .25rem);
-        border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1, .25rem));
+        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1\/4));
+        margin-block-end: var(--sf-space-1\/4);
+        padding: var(--sf-space-1\/4);
+        border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1));
         /* A toolbar floats over the page: step 2's surface and shadow. */
-        background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-elevation-2--surface, Canvas));
-        --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+        background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
+        --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
         color: var(--sf-on-surface, CanvasText);
-        box-shadow: var(--sf-elevation-2--shadow);
+        box-shadow: var(--sf-shadow-overlay);
         pointer-events: auto;
     }
 
@@ -140,13 +143,14 @@
         cursor: pointer;
     }
 
-    // A text action stands on the same ladder as an icon one: 32 px, so the toolbar is 40.
+    // A text action stands on the same ladder as an icon one: the control height
+    // of size 1/2 (28 mobile, 32 desktop), so the toolbar is 36 / 40.
     .sf-composition-overlay-action {
         box-sizing: border-box;
-        min-block-size: var(--sf-space-4, 2rem);
-        padding: 0 var(--sf-space-1\/2, .5rem);
+        min-block-size: var(--sf-ui-1\/2--control-height);
+        padding: 0 var(--sf-space-1\/2);
         border: 1px solid var(--sf-outline, GrayText);
-        border-radius: var(--sf-radius-1, .25rem);
+        border-radius: var(--sf-radius-1);
         background: var(--sf-surface-1, Canvas);
         color: var(--sf-on-surface, CanvasText);
     }
@@ -162,8 +166,8 @@
     // button has drawn, and the toolbar never changes width.
     .sf-composition-overlay-tool {
         flex: none;
-        min-inline-size: var(--sf-space-4, 2rem);
-        min-block-size: var(--sf-space-4, 2rem);
+        min-inline-size: var(--sf-ui-1\/2--control-height);
+        min-block-size: var(--sf-ui-1\/2--control-height);
     }
 
     .sf-composition-overlay-tool[data-sf-overlay-grip] .sf-icon-button:not(:disabled) {
@@ -184,8 +188,8 @@
         display: grid;
         place-items: center;
         box-sizing: border-box;
-        block-size: 1.5rem;
-        margin-block-start: -.75rem;
+        block-size: var(--sf-c2);
+        margin-block-start: calc(var(--sf-c2) / -2);
         padding: 0;
         border: 0;
         background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% 2px no-repeat;
@@ -200,12 +204,12 @@
     }
 
     .sf-composition-overlay-insert-mark {
-        inline-size: 1.5rem;
-        block-size: 1.5rem;
+        inline-size: var(--sf-c2);
+        block-size: var(--sf-c2);
         border-radius: 50%;
         background:
-            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / .75rem 2px no-repeat,
-            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / 2px .75rem no-repeat,
+            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / var(--sf-b2) 2px no-repeat,
+            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / 2px var(--sf-b2) no-repeat,
             var(--sf-composition-overlay-color);
     }
 
@@ -215,7 +219,7 @@
     }
 
     .sf-composition-overlay-insert[aria-pressed="true"] {
-        background-size: 100% 3px;
+        background-size: 100% var(--sf-a3);
     }
 
     .sf-composition-overlay-action:focus-visible,
@@ -239,7 +243,7 @@
     .sf-composition-overlay-drop {
         position: fixed;
         z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
-        border-radius: 2px;
+        border-radius: var(--sf-radius-1\/3);
         background: var(--sf-primary, Highlight);
         pointer-events: none;
     }

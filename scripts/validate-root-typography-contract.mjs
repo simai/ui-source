@@ -12,6 +12,8 @@ const typographyPath = path.join(
     "src/core/scss/_sf_css__typograpy.scss",
 );
 const corePath = path.join(repositoryRoot, "src/core/scss/index.scss");
+// The @font-face rules live in their own partial, which the core entry uses.
+const fontsPath = path.join(repositoryRoot, "src/core/scss/_sf_css__fonts.scss");
 const textSizePath = path.join(
     repositoryRoot,
     "src/core/figma_variables/figma_text_text_size.scss",
@@ -75,6 +77,7 @@ function activeLines(block)
 
 const typography = read(typographyPath);
 const core = read(corePath);
+const fonts = read(fontsPath);
 const rootLines = activeLines(selectorBlock(typography, ":root"));
 const bodyLines = activeLines(selectorBlock(typography, "body"));
 const defaultDeclarations = [
@@ -143,17 +146,20 @@ for (const familyToken of [
 {
     assert.match(
         typography,
-        new RegExp(`${familyToken}:\\s*\"Inter Variable\",\\s*\"Inter Fallback\",\\s*sans-serif;`),
+        // The metric-compatible fallback follows the webfont directly; system
+        // faces may stand between it and the generic family.
+        new RegExp(`${familyToken}:\\s*\"Inter Variable\",\\s*\"Inter Fallback\",[^;]*\\bsans-serif;`),
         `missing metric-compatible fallback in ${familyToken}`,
     );
 }
 
-assert.match(core, /font-family:\s*['\"]Inter Fallback['\"]/);
-assert.match(core, /src:\s*local\(['\"]Arial['\"]\)/);
-assert.match(core, /ascent-override:\s*90\.2%/);
-assert.match(core, /descent-override:\s*22\.48%/);
-assert.match(core, /line-gap-override:\s*0%/);
-assert.match(core, /size-adjust:\s*107\.4%/);
+assert.match(core, /@use\s+['\"]sf_css__fonts['\"]/);
+assert.match(fonts, /font-family:\s*['\"]Inter Fallback['\"]/);
+assert.match(fonts, /src:\s*local\(['\"]Arial['\"]\)/);
+assert.match(fonts, /ascent-override:\s*90\.2%/);
+assert.match(fonts, /descent-override:\s*22\.48%/);
+assert.match(fonts, /line-gap-override:\s*0%/);
+assert.match(fonts, /size-adjust:\s*107\.4%/);
 
 process.stdout.write(`${JSON.stringify({
     status: "PASS",

@@ -1,0 +1,208 @@
+#!/usr/bin/env node
+// Density (owner decision C22, 2026-11-09): data-sf-density="compact" on the
+// root or on any container moves every component one step down the one size
+// ladder -- control height, padding, gap, icon and text together (40 -> 32,
+// 24 -> 20, 16 -> 14). An explicit size on a component wins. Nothing is
+// scaled: no rem, no font-size alone (C18), only steps.
+//
+// The mechanism is the ladder variables themselves (C19, core first): inside a
+// compact region each step variable holds the value of the step below it, so a
+// component reads its own steps and needs no compact rule of its own. Custom
+// properties inherit, so the region reaches every element under it; Smart
+// components draw in light DOM, so the attribute selectors below reach them
+// too.
+//
+// An explicit size: a Smart element whose page gave it a size attribute is
+// drawn at that size whatever the region says, so the region's shift is
+// undone under it (the normal values again). A size a component's template
+// gives to an element it draws is relative to the component's own size and is
+// not explicit: smart-base marks those data-sf-size-relative, and they follow
+// the region with their parent.
+//
+// Desktop only (>= 60rem): below it the phone ladder already is the dense one
+// (control 36, text 14) and its touch targets stay; the rule that set compact
+// body text was desktop-only before as well.
+//
+// The values are read from the ladder files as they are built (desktop
+// blocks), not from a second table: when a ladder step changes, rerun this
+// script; --check fails while the projection is stale.
+//
+// Usage: node scripts/generate-density.mjs [--check] [--print-table]
+import {createHash} from 'node:crypto';
+import {readFileSync, writeFileSync, existsSync} from 'node:fs';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const VARIABLES = 'src/core/figma_variables';
+const OUTPUT = 'src/core/scss/_sf_css__density.scss';
+const DESKTOP = '60rem';
+
+// The control ladder. A step below the lowest stays at the lowest: 1/3 is a
+// 24px control, the smallest target (WCAG 2.5.8), and text under 12 is a
+// label, not body.
+export const CONTROL_STEPS = ['1/3', '1/2', '1', '2', '3'];
+export const ICON_STEPS = ['1/3', '1/2', '1', '2', '3', '4', '5', '6', '7'];
+export const SPACE_STEPS = ['1/4', '1/3', '1/2', '1', '2', '3', '4', '5', '6', '7', '8'];
+
+// [file, variable name for a step, steps]
+export const FAMILIES = [
+  ['figma_text_text_size.scss', (s) => `--sf-text--size-${s}`, CONTROL_STEPS],
+  ['figma_text_body_text_height.scss', (s) => `--sf-text--height-${s}`, CONTROL_STEPS],
+  ['figma_ui_tightness_default.scss', (s) => `--sf-ui-${s}--space-y-tightness-default`, CONTROL_STEPS],
+  ['figma_ui_tightness_low.scss', (s) => `--sf-ui-${s}--space-y-tightness-low`, CONTROL_STEPS],
+  ['figma_ui_tightness_high.scss', (s) => `--sf-ui-${s}--space-y-tightness-high`, CONTROL_STEPS],
+  ['figma_ui_tightness_highest.scss', (s) => `--sf-ui-${s}--space-y-tightness-highest`, CONTROL_STEPS],
+  ['figma_ui_space_x.scss', (s) => `--sf-ui-${s}--space-x`, CONTROL_STEPS],
+  ['figma_ui_text_space_x.scss', (s) => `--sf-ui-${s}--text-space-x`, CONTROL_STEPS],
+  ['figma_uncategorized.scss', (s) => `--sf-ui-${s}--space-y`, CONTROL_STEPS],
+  ['figma_icon_sizes.scss', (s) => `--sf-icon-size-${s}`, ICON_STEPS],
+  ['figma_space.scss', (s) => `--sf-space-${s}`, SPACE_STEPS],
+];
+
+// Declared on :root from the step variables: a custom property is resolved
+// where it is declared, so these would keep the root's values in a region
+// unless declared again there. Read from their files, written as they are.
+const DERIVED = [
+  ['figma_text_text_size.scss', CONTROL_STEPS.map((s) => `--sf-text-size-${s}`)],
+  ['figma_text_body_text_height.scss', CONTROL_STEPS.map((s) => `--sf-text-height-${s}`)],
+  ['figma_ui_control_height.scss', CONTROL_STEPS.map((s) => `--sf-ui-${s}--control-height`)],
+  ['figma_typography_roles.scss', ['--sf-text-small--size', '--sf-text-small--height', '--sf-text-medium--size', '--sf-text-medium--height', '--sf-text-large--size', '--sf-text-large--height']],
+];
+
+const esc = (name) => name.replaceAll('/', '\\/');
+const read = (file) => readFileSync(join(root, VARIABLES, file), 'utf8');
+
+// The declarations of a file's desktop block (or of the file when it has no
+// media block: one value on every width), later ones winning.
+function desktopDeclarations(file) {
+  const text = read(file);
+  const at = text.indexOf(`@media (min-width: ${DESKTOP})`);
+  const block = at === -1 ? text : text.slice(at);
+  const values = new Map();
+  for (const match of block.matchAll(/(--sf-[^:\s]+)\s*:\s*([^;]+);/gu)) values.set(match[1].replaceAll('\\/', '/'), match[2].trim());
+  return values;
+}
+
+function rootDeclarations(file) {
+  const text = read(file);
+  const at = text.indexOf('@media');
+  const block = at === -1 ? text : text.slice(0, at);
+  const values = new Map();
+  for (const match of block.matchAll(/(--sf-[^:\s]+)\s*:\s*([^;]+);/gu)) values.set(match[1].replaceAll('\\/', '/'), match[2].trim());
+  return values;
+}
+
+export function ladder() {
+  const rows = [];
+  for (const [file, name, steps] of FAMILIES) {
+    const values = desktopDeclarations(file);
+    steps.forEach((step, index) => {
+      const variable = name(step);
+      const normal = values.get(variable);
+      if (!normal) throw new Error(`${file}: no desktop value for ${variable}`);
+      const below = name(steps[Math.max(0, index - 1)]);
+      rows.push({variable, step, normal, compact: values.get(below), from: file});
+    });
+  }
+  return rows;
+}
+
+function derived() {
+  const rows = [];
+  for (const [file, names] of DERIVED) {
+    const values = rootDeclarations(file);
+    for (const name of names) {
+      const value = values.get(name);
+      if (!value) throw new Error(`${file}: no root declaration of ${name}`);
+      rows.push([name, value]);
+    }
+  }
+  return rows;
+}
+
+export function sourceDigest() {
+  const hash = createHash('sha256');
+  for (const file of [...new Set([...FAMILIES.map(([file]) => file), ...DERIVED.map(([file]) => file)])].sort()) hash.update(`${file}\n${read(file)}\n`);
+  return hash.digest('hex');
+}
+
+// A page's own size attribute, not a native one (input size, select size),
+// not a width (a drawer's size: manifest x-scale, mark data-sf-size-scale)
+// and not part of a printed first-paint picture.
+export const EXPLICIT = ':not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *)';
+
+export function render() {
+  const rows = ladder();
+  const aliases = derived();
+  const block = (pick, indent) => [
+    ...rows.map((row) => `${indent}${esc(row.variable)}: ${row[pick]};`),
+    ...aliases.map(([name, value]) => `${indent}${esc(name)}: ${value};`),
+    `${indent}--sf-text--size: var(--sf-text--size-1);`,
+    `${indent}--sf-text--height: var(--sf-text--height-1);`,
+  ].join('\n');
+  return `/*
+ * Generated by scripts/generate-density.mjs from the ladder files in
+ * src/core/figma_variables (desktop blocks). Do not edit by hand.
+ * source-sha256: ${sourceDigest()}
+ *
+ * Density (owner decision C22): data-sf-density="compact" on the root or on
+ * a container moves every component one ladder step down -- height, padding,
+ * gap, icon and text together. Each step variable holds the value of the step
+ * below; components read their steps as always. An element with an explicit
+ * size (a page's size attribute) takes the normal ladder back under it;
+ * data-sf-density="normal" does the same for a region. Desktop only: below
+ * 60rem the phone ladder already is the dense one.
+ */
+@layer sf.base {
+  @media (min-width: ${DESKTOP}) {
+    [data-sf-density="compact"] {
+${block('compact', '      ')}
+    }
+
+    [data-sf-density="compact"] ${EXPLICIT},
+    [data-sf-density="normal"] {
+${block('normal', '      ')}
+    }
+
+    /* On <html> the variables only, which body reads: a font-size on the
+       root element would move rem, and with it every step of the ladder.
+       An explicit size takes the normal body text back too, for the text a
+       component inherits rather than sizes. */
+    [data-sf-density="compact"]:not(:root),
+    [data-sf-density="compact"] ${EXPLICIT},
+    [data-sf-density="normal"]:not(:root) {
+      font-size: var(--sf-text--size);
+      line-height: var(--sf-text--height);
+    }
+  }
+}
+`;
+}
+
+const px = (value) => {
+  const match = /var\(--sf-([a-i])(\d)\)/u.exec(value);
+  if (!match) return value;
+  const start = {a: 0, b: 10, c: 20, d: 40, e: 80, f: 160, g: 320, h: 640, i: 1280}[match[1]];
+  const step = {a: 1, b: 1, c: 2, d: 4, e: 8, f: 16, g: 32, h: 64, i: 128}[match[1]];
+  return `${start + step * Number(match[2])}px`;
+};
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  const args = new Set(process.argv.slice(2));
+  if (args.has('--print-table')) {
+    for (const row of ladder()) process.stdout.write(`${row.variable}\t${px(row.normal)}\t${px(row.compact)}\n`);
+  } else {
+    const expected = render();
+    const target = join(root, OUTPUT);
+    if (args.has('--check')) {
+      const actual = existsSync(target) ? readFileSync(target, 'utf8') : null;
+      if (actual !== expected) {
+        process.stderr.write(`density projection is stale: ${OUTPUT}\nrun node scripts/generate-density.mjs\n`);
+        process.exitCode = 1;
+      }
+    } else {
+      writeFileSync(target, expected);
+    }
+  }
+}

@@ -6,7 +6,7 @@
   "summary": "Deterministic reference fixture for sf-button-copy.",
   "locale": "ru",
   "props": {
-    "value": "npm i @simai/ui",
+    "value": "npm i @simai-studio/ui",
     "label": "Скопировать команду"
   },
   "children": [],

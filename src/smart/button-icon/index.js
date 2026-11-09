@@ -214,11 +214,8 @@ class SfIconButton extends IconButtonElement {
 
   resolveUpdateMode(changedAttributes = []) {
     // loading is drawn by the template, not patched: it puts the spinner in
-    // place of the icon (simai/ui-source#10). So is icon: it is the sf-icon's
-    // setting, and writing the glyph's text by hand left the sf-icon on its
-    // old name (its subset not asked for, its lit text part detached), or
-    // changed nothing when the sf-icon had not drawn yet.
-    const directPatchAttributes = ['disabled', 'aria-label'];
+    // place of the icon (simai/ui-source#10).
+    const directPatchAttributes = ['disabled', 'aria-label', 'icon'];
     // A cycle's name and icon come from its item: drawn, not patched.
     if (this.cycleState()) return 'lit';
 
@@ -247,6 +244,21 @@ class SfIconButton extends IconButtonElement {
         button.setAttribute('aria-label', nameWithBadge(label, elementBadge(this).phrase));
       } else {
         button.removeAttribute('aria-label');
+      }
+    }
+
+    if (changedAttributes.includes('icon')) {
+      // The glyph is sf-icon's: its icon setting is changed, and it draws the
+      // name and asks the Loader for it. Writing the glyph's text here took
+      // lit's markers out of sf-icon's drawing and left its icon attribute on
+      // the old name; moved afterwards (sf-drawer taking its column under
+      // body), the icon drew again and threw "Cannot set properties of null
+      // (setting 'data')".
+      const iconElement = button.querySelector(':scope > sf-icon');
+      if (iconElement) {
+        iconElement.setAttribute('icon', this.icon);
+      } else if (!this.loading) {
+        return false;
       }
     }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard-step",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Wizard step",
   "summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
   "kind": "smart",

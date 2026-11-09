@@ -114,8 +114,8 @@
      variable (those are the page's); its hover and pressed states (layer
      sf.states) still write the same internal fill over it. */
   .sf-list-feed__jump > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
-    --sf-icon-button--background-color: var(--sf-elevation-2--surface);
-    box-shadow: var(--sf-elevation-2--shadow);
+    --sf-icon-button--background-color: var(--sf-surface-popup);
+    box-shadow: var(--sf-shadow-overlay);
   }
 
   /* --- the default entry --------------------------------------------------

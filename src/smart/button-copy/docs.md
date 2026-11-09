@@ -6,7 +6,7 @@
 ```html
 <code id="token">sk_test_51H…</code>
 <sf-button-copy target="#token" label="Скопировать ключ"></sf-button-copy>
-<sf-button-copy value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-button-copy>
+<sf-button-copy value="npm i @simai-studio/ui" text="Копировать" label="Скопировать команду"></sf-button-copy>
 ```
 
 Что копируется:
@@ -20,8 +20,11 @@
 - `text` — видимая подпись. Без неё кнопка — только значок.
 - `label` — доступное имя: что именно копируется («Скопировать команду»). По
   умолчанию «Копировать». Если на странице несколько кнопок, называйте каждую.
-- `size` — `1/3`, `1/2` (по умолчанию), `1`, `2`. `appearance` — `link` (по
-  умолчанию), `ghost`, `outline` или `tonal`. `root-style` ложится на саму
+- `size` — `1/3`, `1/2`, `1` (по умолчанию, как у поля и кнопки рядом), `2`.
+  В компактной области (`data-sf-density="compact"`) кнопка сама опускается на
+  ступень. `appearance` — `ghost` (по умолчанию, без подложки), `outline` или
+  `tonal`; `link` — старое имя `ghost`. Значок — тихого нейтрального цвета
+  (`on-surface-variant`), при наведении темнеет. `root-style` ложится на саму
   кнопку.
 - `icon` — значок в покое (по умолчанию `content_copy`): `link` для ссылки,
   `key` для ключа. `success-icon` — значок после копирования (по умолчанию `check`).

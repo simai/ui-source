@@ -106,7 +106,7 @@ test('sf-drawer: the panel from its manifest; drawer:* names follow with the old
   const source = read('src/smart/drawer/index.js');
   assert.doesNotMatch(source, /Math\.random/, 'no random ids (#41)');
   assert.match(source, /const generated = partId\(instancePath\(this\)\);/);
-  assert.match(source, /carryLayerOrigin\(portal, this, \{variables: DRAWER_VARIABLES, inherited: true\}\)/);
+  assert.match(source, /carryLayerOrigin\(portal, this, \{variables: DRAWER_VARIABLES, area: true, except: \['--sf-drawer-'\]\}\)/);
   assert.match(source, /this\.emitDrawerEvent\('close', true, \{reason, unsaved: Boolean\(this\.unsaved\)\}\)/);
   assert.match(source, /event\.key === 'Escape' && this\.closeOnEsc && this\.dismissible/);
 });
@@ -120,7 +120,7 @@ test('sf-popover: requests before, facts after; role on the host is a dated alia
   assert.doesNotMatch(source, /get role\(\)/, 'the prototype role stays the browser\'s (§3.1)');
   assert.match(source, /this\.close\(\{reason: 'escape'\}\)/);
   assert.match(source, /this\.close\(\{reason: 'outside'\}\)/);
-  assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-elevation-2--surface\)\);/);
+  assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/);
 });
 
 test('sf-dropdown: change carries data only; sf-dropdown:change keeps root through its adapter; no module counter ids', () => {

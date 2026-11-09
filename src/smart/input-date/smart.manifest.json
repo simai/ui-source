@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -414,9 +414,19 @@
       "summary": "Open the popup; optionally move focus into the calendar.",
       "arguments": [
         {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "options"
+            ]
           }
         }
       ],
@@ -428,9 +438,19 @@
       "summary": "Close the popup; optionally restore focus to the field.",
       "arguments": [
         {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "options"
+            ]
           }
         }
       ],
@@ -449,9 +469,19 @@
       "summary": "Choose a quick range: set its dates, show the month it ends in and emit change once.",
       "arguments": [
         {
-          "name": "item",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "item": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "item"
+            ]
           }
         }
       ],

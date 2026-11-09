@@ -364,7 +364,7 @@ class SfSearch extends SearchElement {
     portal.className = 'sf-search-portal';
     portal.setAttribute('data-sf-search-portal', this._id);
     home.append(portal);
-    carryLayerOrigin(portal, this, {prefixes: ['--sf-search-'], inherited: true});
+    carryLayerOrigin(portal, this, {prefixes: ['--sf-search-'], area: true, except: ['--sf-search-']});
     this._portal = portal;
     this._contained = home !== document.body;
     portal.classList.toggle('sf-search-portal--contained', this._contained);
@@ -963,7 +963,7 @@ class SfSearch extends SearchElement {
       keyClear: this.sfWord('key-clear-label'),
       keyClose: this.sfWord('key-close-label'),
     };
-    render(renderSearchWindow({
+    this.drawInto(renderSearchWindow({
       component: this,
       ids: {dialog: `${this._id}-dialog`, option: (index) => `${this._id}-option-${index}`},
       query: this.query,

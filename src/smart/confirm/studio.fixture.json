@@ -10,7 +10,7 @@
     "state": "open",
     "confirm-id": "f-17",
     "accept-text": "Удалить",
-    "destructive": true
+    "status": "danger"
   },
   "children": [],
   "state": "default"

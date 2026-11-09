@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-feed",
-  "version": "1.0.3",
+  "version": "1.1.1",
   "title": "Feed",
   "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
   "kind": "composite",
@@ -227,57 +227,64 @@
       "summary": "Replace the whole feed and show its end. What it holds is not announced.",
       "arguments": [
         {
-          "name": "items",
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": [
-                    "string",
-                    "number"
-                  ],
-                  "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
-                },
-                "author": {
-                  "type": "string",
-                  "description": "Who wrote it, as an id: consecutive entries of one author make a run."
-                },
-                "author-name": {
-                  "type": "string",
-                  "description": "The name the default renderer and the default announcement say."
-                },
-                "own": {
-                  "type": "boolean",
-                  "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
-                },
-                "growing": {
-                  "type": "boolean",
-                  "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
-                },
-                "text": {
-                  "type": "string",
-                  "description": "Plain text; the default renderer draws it as text, never as markup."
-                }
-              },
-              "required": [
-                "id"
-              ],
-              "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
-            }
-          }
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "hasMore": {
-                "type": "boolean",
-                "default": false
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+                    },
+                    "author": {
+                      "type": "string",
+                      "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+                    },
+                    "author-name": {
+                      "type": "string",
+                      "description": "The name the default renderer and the default announcement say."
+                    },
+                    "own": {
+                      "type": "boolean",
+                      "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+                    },
+                    "growing": {
+                      "type": "boolean",
+                      "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Plain text; the default renderer draws it as text, never as markup."
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
+                }
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "hasMore": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
               }
-            }
+            },
+            "required": [
+              "items"
+            ]
           }
         }
       ],
@@ -290,57 +297,64 @@
       "summary": "Earlier history above, without moving what is being read; ends the earlier request.",
       "arguments": [
         {
-          "name": "items",
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": [
-                    "string",
-                    "number"
-                  ],
-                  "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
-                },
-                "author": {
-                  "type": "string",
-                  "description": "Who wrote it, as an id: consecutive entries of one author make a run."
-                },
-                "author-name": {
-                  "type": "string",
-                  "description": "The name the default renderer and the default announcement say."
-                },
-                "own": {
-                  "type": "boolean",
-                  "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
-                },
-                "growing": {
-                  "type": "boolean",
-                  "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
-                },
-                "text": {
-                  "type": "string",
-                  "description": "Plain text; the default renderer draws it as text, never as markup."
-                }
-              },
-              "required": [
-                "id"
-              ],
-              "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
-            }
-          }
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "hasMore": {
-                "type": "boolean",
-                "default": false
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+                    },
+                    "author": {
+                      "type": "string",
+                      "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+                    },
+                    "author-name": {
+                      "type": "string",
+                      "description": "The name the default renderer and the default announcement say."
+                    },
+                    "own": {
+                      "type": "boolean",
+                      "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+                    },
+                    "growing": {
+                      "type": "boolean",
+                      "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "Plain text; the default renderer draws it as text, never as markup."
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "description": "Plain data. Any further fields are the host renderer's; the feed reads only these."
+                }
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "hasMore": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
               }
-            }
+            },
+            "required": [
+              "items"
+            ]
           }
         }
       ],
@@ -353,65 +367,69 @@
       "summary": "Add an entry at the end or update it in place; drawn again only when something it shows changed.",
       "arguments": [
         {
-          "name": "item",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
-            "description": "Plain data. Any further fields are the host renderer's; the feed reads only these.",
             "properties": {
-              "id": {
-                "type": [
-                  "string",
-                  "number"
-                ],
-                "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+              "item": {
+                "type": "object",
+                "description": "Plain data. Any further fields are the host renderer's; the feed reads only these.",
+                "properties": {
+                  "id": {
+                    "type": [
+                      "string",
+                      "number"
+                    ],
+                    "description": "The stable key of the entry; an entry that changes key is upserted with replaces."
+                  },
+                  "author": {
+                    "type": "string",
+                    "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+                  },
+                  "author-name": {
+                    "type": "string",
+                    "description": "The name the default renderer and the default announcement say."
+                  },
+                  "own": {
+                    "type": "boolean",
+                    "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
+                  },
+                  "growing": {
+                    "type": "boolean",
+                    "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Plain text; the default renderer draws it as text, never as markup."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               },
-              "author": {
-                "type": "string",
-                "description": "Who wrote it, as an id: consecutive entries of one author make a run."
+              "view": {
+                "type": "object",
+                "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
               },
-              "author-name": {
-                "type": "string",
-                "description": "The name the default renderer and the default announcement say."
-              },
-              "own": {
-                "type": "boolean",
-                "description": "The reader wrote it: drawn on the end side, followed to the end, never announced by default."
-              },
-              "growing": {
-                "type": "boolean",
-                "description": "The other side is still writing it (a stream): aria-busy on the item, not announced until it is finished."
-              },
-              "text": {
-                "type": "string",
-                "description": "Plain text; the default renderer draws it as text, never as markup."
+              "options": {
+                "type": "object",
+                "properties": {
+                  "replaces": {
+                    "type": [
+                      "string",
+                      "number",
+                      "null"
+                    ],
+                    "description": "The id the entry had before (a local key the server has now numbered): it keeps its place."
+                  }
+                }
               }
             },
             "required": [
-              "id"
+              "item"
             ]
-          }
-        },
-        {
-          "name": "view",
-          "schema": {
-            "type": "object",
-            "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
-          }
-        },
-        {
-          "name": "options",
-          "schema": {
-            "type": "object",
-            "properties": {
-              "replaces": {
-                "type": [
-                  "string",
-                  "number",
-                  "null"
-                ],
-                "description": "The id the entry had before (a local key the server has now numbered): it keeps its place."
-              }
-            }
           }
         }
       ],
@@ -424,14 +442,22 @@
       "summary": "Merge into the view of an entry already shown.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
-        },
-        {
-          "name": "view",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
-            "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
+            "properties": {
+              "id": {},
+              "view": {
+                "type": "object",
+                "description": "What the host knows that the entry does not (a stopped wait, the person's rating). Reaches the renderer as context.view and is part of what decides a redraw."
+              }
+            },
+            "required": [
+              "id",
+              "view"
+            ]
           }
         }
       ],
@@ -444,8 +470,18 @@
       "summary": "Take one entry off; a stream it was ends cancelled. remove() stays the browser's own.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -457,8 +493,18 @@
       "summary": "Stop drawing a growing entry now; the stream ends cancelled.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -469,8 +515,15 @@
       "summary": "Draw one entry again, or all of them, after the renderer's own inputs changed.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            }
+          }
         }
       ],
       "returns": {
@@ -498,18 +551,25 @@
       "summary": "Scroll to the last entry; with focus, focus moves to it.",
       "arguments": [
         {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
             "type": "object",
             "properties": {
-              "instant": {
-                "type": "boolean"
-              },
-              "focus": {
-                "type": "boolean"
-              },
-              "settle": {
-                "type": "boolean"
+              "options": {
+                "type": "object",
+                "properties": {
+                  "instant": {
+                    "type": "boolean"
+                  },
+                  "focus": {
+                    "type": "boolean"
+                  },
+                  "settle": {
+                    "type": "boolean"
+                  }
+                }
               }
             }
           }
@@ -524,9 +584,19 @@
       "summary": "Say something once through the feed's polite live region (cut at 240 characters).",
       "arguments": [
         {
-          "name": "text",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
           }
         }
       ],
@@ -762,7 +832,7 @@
       },
       {
         "path": "src/smart/list-feed/js/templates/default.css",
-        "sha256": "062c57548085c58e394afb3e765f51c7936490cf5fa86b33d5c31097bc3489c5"
+        "sha256": "7d97478d645396acc632926661b619f8f0b8569e96fe7de7d2351122c40add8a"
       },
       {
         "path": "src/smart/list-feed/rule.js",
@@ -774,7 +844,7 @@
       },
       {
         "path": "src/smart/list-feed/component.json",
-        "sha256": "3c07015df48c0e132cace3d44cc0524e2b47973112c976b72cbadc1dbf73432b"
+        "sha256": "aba9ea5597985b8b692917289d102a50b8e13574fc36e11105958d8ee02c1a66"
       },
       {
         "path": "src/smart/list-feed/lang/en.json",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -161,7 +161,8 @@
     "text: show-text prints the clamped value with a per cent sign; its size is a text step that keeps «100%» inside the line (--sf-text-size-1/5, 1/4, 1/3 at 1/2, 1, 2; measured in Inter: 23, 29, 35 px inside 24, 32, 40 px). The slot content takes its place when given.",
     "chunk: the progress family's action (vocabulary §5.2), the same as sf-progress-bar's: done of total in per cent, refused for a total that is not positive.",
     "skeleton: none; the ring has no port and no late data: its snapshot is its first paint (§5.4).",
-    "box: no x-published root variable. The ring's box is a token a page already has (--sf-ui-<size>--control-height, or --sf-progress-ring-size where the page sets one), and the printed first paint carries the class sheet's box, so nothing is published on :root for a page to reserve it (§5.4)."
+    "box: no x-published root variable. The ring's box is a token a page already has (--sf-ui-<size>--control-height, or --sf-progress-ring-size where the page sets one), and the printed first paint carries the class sheet's box, so nothing is published on :root for a page to reserve it (§5.4).",
+    "version 1.0.2 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

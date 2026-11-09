@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-overlay",
-  "version": "1.5.4",
+  "version": "1.6.4",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -223,9 +223,19 @@
       "summary": "Draws over a canvas element; the canvas is never modified",
       "arguments": [
         {
-          "name": "canvas",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "canvas": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "canvas"
+            ]
           }
         }
       ],
@@ -241,9 +251,19 @@
       "summary": "Draws over a same-origin iframe canvas fed by set-nodes",
       "arguments": [
         {
-          "name": "iframe",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "iframe": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "iframe"
+            ]
           }
         }
       ],
@@ -259,15 +279,23 @@
       "summary": "Reads a Composition Document's nodes",
       "arguments": [
         {
-          "name": "document",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
-          }
-        },
-        {
-          "name": "options",
-          "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "document": {
+                "type": "object"
+              },
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "document",
+              "options"
+            ]
           }
         }
       ],
@@ -283,15 +311,23 @@
       "summary": "Reads a flat node list (framed mode)",
       "arguments": [
         {
-          "name": "nodes",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "array"
-          }
-        },
-        {
-          "name": "options",
-          "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "nodes": {
+                "type": "array"
+              },
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "nodes",
+              "options"
+            ]
           }
         }
       ],
@@ -307,10 +343,20 @@
       "summary": "filter({parent_id, slot, index}, item) hides the places a drop may not take",
       "arguments": [
         {
-          "name": "filter",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
-            "description": "A function (place, item) => boolean; place is {parent_id, slot, index}"
+            "properties": {
+              "filter": {
+                "type": "object",
+                "description": "A function (place, item) => boolean; place is {parent_id, slot, index}"
+              }
+            },
+            "required": [
+              "filter"
+            ]
           }
         }
       ],
@@ -326,9 +372,19 @@
       "summary": "Writes the selected node's actions (the actions setting)",
       "arguments": [
         {
-          "name": "actions",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "array"
+            "type": "object",
+            "properties": {
+              "actions": {
+                "type": "array"
+              }
+            },
+            "required": [
+              "actions"
+            ]
           }
         }
       ],
@@ -344,9 +400,19 @@
       "summary": "Writes the host's own words (the messages setting)",
       "arguments": [
         {
-          "name": "messages",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "messages": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "messages"
+            ]
           }
         }
       ],
@@ -362,11 +428,21 @@
       "summary": "Writes the marked insertion place (the insertion-target setting)",
       "arguments": [
         {
-          "name": "target",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": [
-              "object",
-              "null"
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "target"
             ]
           }
         }
@@ -383,13 +459,21 @@
       "summary": "Selects a node; {focus, emit}",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "id": {},
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "options"
+            ]
           }
         }
       ],
@@ -405,9 +489,19 @@
       "summary": "Starts a plain-string edit of an editable node",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
           }
         }
       ],
@@ -837,11 +931,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/editor-overlay/index.js",
-        "sha256": "522bc3f0db8944de6ca3854f8050e2e30cf5751ba99df91f753d88c7d54ba1d6"
+        "sha256": "1e1369185c9e31e038f27e73b5f19ea02c0811608b26299023e7d1de305c7d57"
       },
       {
         "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "7966a790c5ad940affc4a446be59fe65ef97f7c519037999a8c11a24fcb393c4"
+        "sha256": "8fd72727277c404bfc62b9ccbf9e919b42149a6ec9899a65c6894f38ae507bf9"
       },
       {
         "path": "src/smart/editor-overlay/rule.js",
@@ -853,7 +947,7 @@
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "99ef6c4f3a5efd73a982383ce4f0089abe1e0c68cc08de9307b6466fce931615"
+        "sha256": "b7a7e3433c4c7a31b2d8e9495ef9cf4440f711802269e7294255b79a68337cf8"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
@@ -869,7 +963,7 @@
       },
       {
         "path": "src/core/js/layer-stack.js",
-        "sha256": "7e68d55458bfd34116bb1b6af440f01209a82b5a65adba50080db2988e7727bd"
+        "sha256": "3d3886c944241ff09940f7adbbeca903508a5737036e25c6e775c988f581f617"
       }
     ],
     "generated_runtime": []

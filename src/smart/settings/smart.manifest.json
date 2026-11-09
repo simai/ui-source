@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
   "kind": "smart",
@@ -99,14 +99,22 @@
       "summary": "Writes one setting's value into its item: the page's answer to a cancelled change, or a value restored on load. Raises nothing. Refused with not-found when no item carries the id, with invalid when the item cannot hold the value",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "id",
+              "value"
+            ]
           }
-        },
-        {
-          "name": "value",
-          "schema": {}
         }
       ],
       "returns": {
@@ -118,9 +126,19 @@
       "summary": "Writes a map of values -- {id: value} -- into the items that carry those ids: a panel restored from storage in one call. Raises nothing. Refused with not-found when no id of the map is an item's",
       "arguments": [
         {
-          "name": "values",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "values"
+            ]
           }
         }
       ],
@@ -133,9 +151,19 @@
       "summary": "Goes straight to one setting: a popup opens against its trigger, the drill look opens the levels down to it, and the focus goes to its row. Refused with not-found when no item carries the id; unavailable with no-trigger for a popup whose trigger is not in the page; cancelled when the menu's open was cancelled",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
           }
         }
       ],
@@ -330,7 +358,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "a3791ddc59d3b7981ff3980db037367027b0ae7c4e3d9615f6be6dcf27159b67"
+        "sha256": "a5bfc04329b9a5c4598efa7ff36ef942e02a2bab88ab242b6b59af155b4e1848"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",

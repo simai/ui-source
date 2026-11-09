@@ -14,32 +14,32 @@ import {themeSource} from './support/theme-source.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-test('a raised surface is declared for every step, each above the last', () => {
+// The places (C16, C20): a card, a raised place, a popup and a nested popup,
+// each a surface step above the last in the dark theme. A window and a drawer
+// stand on the popup's surface and are told apart by the scrim.
+const PLACES = ['card', 'raised', 'popup', 'popup-nested'];
+
+test('a raised surface is declared for every place, each above the last', () => {
   const theme = themeSource();
   const steps = [];
-  for (const step of [1, 2, 3, 4, 5]) {
+  for (const place of PLACES) {
     const found = theme.match(
-      new RegExp(`--sf-elevation-${step}--surface: light-dark\\(var\\(--sf-surface-(?:0|page)\\), var\\(--sf-surface-(\\d)\\)\\)`, 'u'),
+      new RegExp(`--sf-surface-${place}: light-dark\\(var\\(--sf-surface-(?:0|page)\\), var\\(--sf-surface-(\\d)\\)\\)`, 'u'),
     );
-    assert.ok(found, `step ${step} keeps the ordinary surface in the light theme and rises in the dark one`);
+    assert.ok(found, `${place} keeps the ordinary surface in the light theme and rises in the dark one`);
     steps.push(Number(found[1]));
   }
 
-  // The page itself stands on surface 0, so the first step has to leave it. At
+  // The page itself stands on surface 0, so the first place has to leave it. At
   // surface 1 it did not: 1.10:1 against the page, which nobody sees on a large
-  // filled area. Every step after it stands strictly higher than the one below,
-  // except the last, which may share the top of the ladder.
-  assert.ok(steps[0] > 1, `the first step must clear surface 1, found surface ${steps[0]}`);
-  for (let i = 1; i < steps.length - 1; i += 1) {
+  // filled area. Every place after it stands strictly higher than the one below.
+  assert.ok(steps[0] > 1, `the card must clear surface 1, found surface ${steps[0]}`);
+  for (let i = 1; i < steps.length; i += 1) {
     assert.ok(
       steps[i] > steps[i - 1],
-      `step ${i + 1} stands on surface ${steps[i]}, not above step ${i} on surface ${steps[i - 1]}`,
+      `${PLACES[i]} stands on surface ${steps[i]}, not above ${PLACES[i - 1]} on surface ${steps[i - 1]}`,
     );
   }
-  assert.ok(
-    steps[4] >= steps[3],
-    'the last step may share the top of the ladder, never fall below it',
-  );
 
   for (const surface of new Set(steps)) {
     assert.match(
@@ -83,19 +83,20 @@ test('a shadow comes from a role, not from a colour written by hand', () => {
 // a track and keeps its own colour, so the list names the panels rather than
 // guessing from what stands near a shadow.
 const RAISED_PANELS = [
-  ['src/component/context-menu/scss/_css__context_menu.scss', 3],
-  ['src/component/menu/scss/_css__menu.scss', 2],
-  ['src/component/datepicker/scss/_css_datepicker.scss', 3],
-  ['src/component/country-code/scss/_css_country_code.scss', 3],
-  ['src/smart/drawer/scss/_smart__drawer.scss', 4],
+  ['src/component/context-menu/scss/_css__context_menu.scss', 'popup'],
+  ['src/component/menu/scss/_css__menu.scss', 'popup'],
+  ['src/component/datepicker/scss/_css_datepicker.scss', 'popup'],
+  ['src/component/country-code/scss/_css_country_code.scss', 'popup'],
+  ['src/component/pagination/scss/_css__pagination.scss', 'raised'],
+  ['src/smart/drawer/scss/_smart__drawer.scss', 'popup'],
 ];
 
-test('a panel that opens above the page stands on the surface of its step', () => {
+test('a panel that opens above the page stands on the surface of its place', () => {
   const offenders = [];
-  for (const [path, step] of RAISED_PANELS) {
+  for (const [path, place] of RAISED_PANELS) {
     const source = read(path);
-    if (!source.includes(`var(--sf-elevation-${step}--surface)`)) {
-      offenders.push(`${path}: step ${step} is not on its raised surface`);
+    if (!source.includes(`var(--sf-surface-${place})`)) {
+      offenders.push(`${path}: not on the ${place} surface`);
     }
   }
   assert.deepEqual(offenders, [],
@@ -107,10 +108,13 @@ test('a panel that opens above the page stands on the surface of its step', () =
 // mean height — in the dark theme that leaves the panel flat.
 test('one class carries a whole level', () => {
   const source = read('src/utility/elevation/default/scss/_sf_css__elevation.scss');
-  assert.match(source, /background-color: var\(--sf-elevation-#\{\$level\}--surface\)/u,
-    'the class sets the surface');
-  assert.match(source, /box-shadow: var\(--sf-elevation-#\{\$level\}--shadow\)/u,
-    'and the shadow, in the same declaration block');
+  // C20: each level keeps its surface and takes its place's shadow.
+  for (const [level, surface, shadow] of [[1, 'card', 'raised'], [2, 'popup', 'overlay'], [3, 'popup', 'overlay'], [4, 'popup-nested', 'modal'], [5, 'popup-nested', 'modal']]) {
+    assert.match(source, new RegExp(`${level}: \\('surface-${surface}', 'shadow-${shadow}', 'on-surface-${surface}-variant'\\)`, 'u'),
+      `level ${level}: the ${surface} surface, the ${shadow} shadow and the dim ink`);
+  }
+  assert.match(source, /background-color: var\(--sf-#\{\$surface\}\);\n {8}box-shadow: var\(--sf-#\{\$shadow\}\);/u,
+    'the class sets the surface and the shadow, in the same declaration block');
   const bundle = read('src/core/utility-full.js');
   assert.match(bundle, /utility\/elevation\/default\/index\.scss/u,
     'and the group is in the bundle, otherwise the class does not exist');

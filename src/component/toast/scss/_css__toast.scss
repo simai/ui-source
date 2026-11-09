@@ -23,11 +23,11 @@
        translucent fills: painted alone they let the table under a toast read
        through its text (owner, 2026-10-12). So the toast stands on the raised
        surface of its step, with its shadow, and the status tints it. */
-    background-color: var(--sf-elevation-3--surface);
-    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
-    --sf-badge--surface: var(--sf-elevation-3--surface);
+    background-color: var(--sf-surface-popup);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    --sf-badge--surface: var(--sf-surface-popup);
     background-image: linear-gradient(var(--sf-toast--background-color), var(--sf-toast--background-color));
-    box-shadow: var(--sf-elevation-3--shadow);
+    box-shadow: var(--sf-shadow-overlay);
     color: var(--sf-toast--content-color, var(--sf-on-surface));
     opacity: 1;
     transform: translateY(var(--sf-0));

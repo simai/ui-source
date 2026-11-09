@@ -455,11 +455,30 @@ const THEMES = ['theme-dark', 'theme-light'];
  * the host's resolved lang and dir, the theme of its nearest themed ancestor,
  * and the computed values of the host's variables that differ from those
  * where the portal stands -- `variables` by name, `prefixes` by the start of
- * the name, and with `inherited` every variable the host inherits, except the
- * private names of the layer families. It looks and speaks as if it stood
- * where its host stands.
+ * the name. It looks and speaks as if it stood where its host stands.
+ *
+ * With `area`, every custom property whose value at the host differs from the
+ * portal's is carried as well (simai/ui-source#46 item 1): a block's retuned
+ * role (--sf-primary), a part's public variable (--sf-button-background-color)
+ * and a page's own name reach the layer's content. `except` names the layer's
+ * own prefixes (--sf-modal-) that the area does not carry: its public names
+ * still travel in `variables`, and the private ones an outer window sets on
+ * its panel never reach a window opened from it. A name carried before and no
+ * longer different is taken back, so a host moved to another area takes that
+ * area's values.
  */
-export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], inherited = false} = {}) {
+// The density a host stands in (C22; core/js/density.js says the same): the
+// nearest region's, or "normal" under an explicit size. Written here, not
+// imported: this module is loaded on its own (shared runtime, tests).
+function densityOf(from) {
+  for (let node = from; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
+    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
+  }
+  return null;
+}
+
+export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], area = false, except = []} = {}) {
   if (!portal || !host?.isConnected) return;
   const doc = host.ownerDocument;
   const view = doc.defaultView;
@@ -472,6 +491,11 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], i
   // does before it announces the change (simai/ui-source#55).
   if (!nearest || nearest === doc.documentElement) portal.dataset.sfLayerLang = 'page';
   else delete portal.dataset.sfLayerLang;
+  // The density (C22): the ladder the host stands on, so a window or a drawer
+  // at the end of the body is as dense as the page region that opened it.
+  const density = densityOf(host);
+  if (density) portal.setAttribute('data-sf-density', density);
+  else portal.removeAttribute('data-sf-density');
   const declared = host.closest('[dir]')?.getAttribute('dir');
   const dir = declared && declared !== 'auto' ? declared : view.getComputedStyle(host).direction;
   if (dir) portal.setAttribute('dir', dir);
@@ -491,41 +515,32 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], i
   if (wanted) portal.dataset.sfLayerTheme = wanted;
   else delete portal.dataset.sfLayerTheme;
 
-  if (!variables.length && !prefixes.length && !inherited) return;
-  const own = view.getComputedStyle(host);
   const previous = (portal.dataset.sfLayerVariables || '').split(' ').filter(Boolean);
-  // What the portal's place gives it, without what an earlier pass carried:
-  // the same values set again are not a difference.
-  for (const name of previous) portal.style.removeProperty(name);
-  const there = view.getComputedStyle(portal);
+  if (!variables.length && !prefixes.length && !area) {
+    for (const name of previous) portal.style.removeProperty(name);
+    delete portal.dataset.sfLayerVariables;
+    return;
+  }
+  const own = view.getComputedStyle(host);
   const names = new Set(variables);
-  const publicNames = new Set(variables);
-  if (prefixes.length || inherited) {
+  if (prefixes.length || area) {
     for (const name of own) {
       if (!name.startsWith('--')) continue;
       if (prefixes.some((prefix) => name.startsWith(prefix))) names.add(name);
-      // Every variable the host inherits from the area it stands in: the
-      // values an assembly or a page block sets for the parts inside it
-      // (--sf-switch-checked-background-color on an order, the tokens a page
-      // retunes on its dark block). A layer's own private names stay where
-      // they were set: an outer window's --sf-modal-width is not carried
-      // into a window opened from it (simai/ui-source#46).
-      else if (inherited && (publicNames.has(name) || !LAYER_FAMILIES.some((family) => name.startsWith(family)))) names.add(name);
+      else if (area && !except.some((prefix) => name.startsWith(prefix))) names.add(name);
     }
   }
+  // Compared with the portal as it stands without what was carried before,
+  // its theme class already applied: what the theme gives it again is not
+  // written twice.
+  for (const name of previous) portal.style.removeProperty(name);
+  const there = view.getComputedStyle(portal);
   const kept = [];
   for (const name of names) {
     const value = own.getPropertyValue(name).trim();
-    if (value && value !== there.getPropertyValue(name).trim()) {
-      portal.style.setProperty(name, value);
-      kept.push(name);
-    }
+    if (value && value !== there.getPropertyValue(name).trim()) kept.push([name, value]);
   }
-  if (kept.length) portal.dataset.sfLayerVariables = kept.join(' ');
+  for (const [name, value] of kept) portal.style.setProperty(name, value);
+  if (kept.length) portal.dataset.sfLayerVariables = kept.map(([name]) => name).join(' ');
   else delete portal.dataset.sfLayerVariables;
 }
-
-// The variable families of the layers themselves: what a modal, a drawer or a
-// search window sets on its own panel for its own drawing. Only the names a
-// layer's manifest declares public cross into a portal by inheritance.
-const LAYER_FAMILIES = ['--sf-modal-', '--sf-drawer-', '--sf-search-'];

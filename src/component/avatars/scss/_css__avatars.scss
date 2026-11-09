@@ -61,6 +61,28 @@
     --sf-avatar-badge--border-color: var(--sf-surface-0);
   }
 
+  /* The badge drawings take their inks from the colour roles (C18): the
+     company plate is the error role with on-error for its glyph, the
+     verified plate the primary role with on-primary. In the light theme the
+     verified badge is the drawing's own colour (primary-40 on white) and the
+     company plate is the error role's tone 40; in the dark theme both follow
+     their roles (tone 80 plates, tone 20 glyphs). */
+  .sf-avatar-badge--company .sf-avatar-badge-plate {
+    fill: var(--sf-error);
+  }
+
+  .sf-avatar-badge--company .sf-avatar-badge-glyph {
+    fill: var(--sf-on-error);
+  }
+
+  .sf-avatar-badge--verified .sf-avatar-badge-plate {
+    fill: var(--sf-primary);
+  }
+
+  .sf-avatar-badge--verified .sf-avatar-badge-glyph {
+    fill: var(--sf-on-primary);
+  }
+
   .sf-avatar.sf-avatar--size-2 .sf-icon {
     --sf-icon--font-size: var(--sf-icon-size-4);
     --sf-icon--height: var(--sf-icon-size-4);

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.5.0",
+  "version": "1.6.1",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -68,7 +68,7 @@
       "sticky": {
         "type": "boolean",
         "default": false,
-        "description": "The bar stays at the top of the window while the page scrolls"
+        "description": "The bar stays at the top of the window while the page scrolls; flat at the top of the page, it takes the raised shadow while content runs under it (host state data-scrolled)"
       },
       "size": {
         "type": "string",
@@ -118,14 +118,24 @@
       "summary": "Closes the side panel; refused when it is closed already or a page cancels sf-site-header-close",
       "arguments": [
         {
-          "name": "reason",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "enum": [
-              "close",
-              "escape",
-              "outside",
-              "cancelled",
-              "api"
+            "type": "object",
+            "properties": {
+              "reason": {
+                "enum": [
+                  "close",
+                  "escape",
+                  "outside",
+                  "cancelled",
+                  "api"
+                ]
+              }
+            },
+            "required": [
+              "reason"
             ]
           }
         }
@@ -347,7 +357,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "0494ffc5884054a5caf7b1509a07aa082927638e2c1d7fd23ac291ccae4c08c7"
+        "sha256": "b39c2f63cc602be600dd714ad6e1090120c404eb0c646cc44dfe91bd18690b41"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -355,7 +365,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "7da7fb8144feea568d38bfddf432ddd2e8b40b8120a571a42cf96ccb7cad6372"
+        "sha256": "b99b79fd41d7570c78ca04d0b0c75a254a9f62aa799d90b08741c168c65f99f4"
       },
       {
         "path": "src/smart/header-site/rule.js",

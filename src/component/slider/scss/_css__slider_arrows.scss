@@ -27,6 +27,8 @@
 
 .sf-slider-arrows--light, .sf-slider-arrows--dark {
   --sf-slider-arrows--backdrop-filter: var(--sf-ui-blur-medium);
-  --sf-slider-arrows--box-shadow: var(--sf-blur-medium);
+  /* The raised place (C20). It read --sf-blur-medium, a length (4px), which
+     is no shadow: the declaration was dropped and the arrows had none. */
+  --sf-slider-arrows--box-shadow: var(--sf-shadow-raised);
 }
 }

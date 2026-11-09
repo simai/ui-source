@@ -1,4 +1,16 @@
 import { html, nothing } from 'lit';
+import { shortcutView } from '../../../../component/kbd/js/shortcut';
+
+// The trigger's shortcut after the words: the kbd component's keys, which it
+// draws plain and quiet in a tooltip (C04). The page's shortcut slot wins.
+function shortcutTemplate(context) {
+  if (context.component?.hasSlotContent?.('shortcut')) {
+    return html`<span class="sf-tooltip-shortcut">${context.component.getSlotContent('shortcut')}</span>`;
+  }
+  const {keys, join} = shortcutView(context.shortcut);
+  if (!keys.length) return nothing;
+  return html`<kbd class="sf-kbd--group sf-tooltip-shortcut">${keys.map((key, at) => html`${at && join ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${key.square ? 'sf-kbd--square' : nothing}>${key.text}</kbd>`)}</kbd>`;
+}
 
 function contentTemplate(context) {
   if (context.component?.hasSlotContent?.('content')) {
@@ -17,7 +29,7 @@ function contentTemplate(context) {
     <div class="sf-tooltip-content flex flex-col">
       <div class="sf-tooltip-wrap flex flex-col">
         ${textContent
-          ? html`<div class="sf-tooltip-text">${textContent}</div>`
+          ? html`<div class="sf-tooltip-text">${textContent}${shortcutTemplate(context)}</div>`
           : nothing}
         ${supportingContent
           ? html`<div class="sf-tooltip-supporting-text">${supportingContent}</div>`

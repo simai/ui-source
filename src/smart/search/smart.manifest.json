@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.5.1",
+  "version": "1.6.3",
   "title": "Site search",
   "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
@@ -135,14 +135,24 @@
       "summary": "Closes the window; refused when it is closed already or a page cancels sf-search-close",
       "arguments": [
         {
-          "name": "reason",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "enum": [
-              "close",
-              "escape",
-              "outside",
-              "cancelled",
-              "api"
+            "type": "object",
+            "properties": {
+              "reason": {
+                "enum": [
+                  "close",
+                  "escape",
+                  "outside",
+                  "cancelled",
+                  "api"
+                ]
+              }
+            },
+            "required": [
+              "reason"
             ]
           }
         }
@@ -398,7 +408,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "03db918afbedb1bd9cc85301628409cdc8f150b05ab220b370344cb39b31b7e6"
+        "sha256": "c19e91b5e687ee39f75dcb9e21750bc841775b61f997de9ce8207de87ed939a7"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
@@ -406,7 +416,7 @@
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "c2baf69617bec5f0c1805aa801b44fcc03004ea8f3103de936f5d595efa5bfcb"
+        "sha256": "1c8fe55072fe9ecf99daabb86b86a7974c37811577d1fde9b9cc91298b448517"
       },
       {
         "path": "src/smart/search/rule.js",

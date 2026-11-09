@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-description",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "title": "Description list",
   "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
   "kind": "smart",
@@ -152,7 +152,7 @@
     "effects": "host",
     "forbidden_client_responsibilities": [
       "loading or saving the facts (the host sets the list)",
-      "editing a value (sf-property-view does that)"
+      "editing a value (sf-view-properties does that)"
     ]
   },
   "security": {
@@ -246,7 +246,7 @@
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "5d702d2edf60bfc105b13c1c22f4fd612799188a34d64764032bf15aedc916c7"
+        "sha256": "fe84db712415d32c76482f82ddbf01bd3363200eaf0d1e96d1ed25e85f01c37d"
       }
     ],
     "generated_runtime": []
@@ -254,7 +254,7 @@
   "ai_guidance": {
     "use_when": "Use sf-list-description for read-only facts as label and value: a site summary, server facts, a record's header, a job's parameters, licence details.",
     "do_not": [
-      "Do not use it to edit values; sf-property-view does that",
+      "Do not use it to edit values; sf-view-properties does that",
       "Do not put markup in a value; it is text, the link and the copy button are settings",
       "Do not use it for a table of many records; sf-data-view does that"
     ],

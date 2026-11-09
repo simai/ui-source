@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-scale",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Progress Scale",
   "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "kind": "smart",
@@ -125,15 +125,23 @@
       "summary": "The action chunk.",
       "arguments": [
         {
-          "name": "done",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "number"
-          }
-        },
-        {
-          "name": "total",
-          "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "done": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "done",
+              "total"
+            ]
           }
         }
       ],

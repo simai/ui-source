@@ -7,7 +7,10 @@ used by its generated close action. Smart Modal and Gallery inherit them. When
 loading assets manually, include those component styles as well as Modal styles;
 loading just modal.js/modal.css does not supply the close glyph.
 
-Keyboard navigation belongs to the top modal. From the initially focused panel,
+Keyboard navigation belongs to the top modal. The window opens with the focus
+on the element inside it that carries the standard `autofocus` attribute, as a
+native `<dialog>` does (an `sf-button` hands it to its inner button); without
+one, the panel takes it. From the initially focused panel,
 Tab enters its first available control and Shift+Tab enters its last. Hidden,
 disabled, inert and negative-tabindex controls are not tab boundaries. A panel
 with no available controls retains focus on itself. These rules are shared with
@@ -53,8 +56,15 @@ overlay), `cancelled` (a page control with `data-sf-modal-close`) or `api`
 Slot content is the page's: the window places the page's own nodes in its
 portal and never copies them, so a listener, a property and the node itself
 survive opening and closing (§4.5). The portal carries the element's resolved
-`lang` and `dir` and the theme of its nearest `.theme-dark`/`.theme-light`
-area. `<sf-modal id="x">` no longer gives the window's root the same id.
+`lang` and `dir`, the theme of its nearest `.theme-dark`/`.theme-light`
+area, and the variables of the area it stands in: since 1.5.0 every custom
+property that resolves differently there than at the end of the body (a
+block's `--sf-button-background-color`, a retuned `--sf-primary`, a page's own
+`--brand`) is written on the portal, so the window and its content look as
+they would where the element is declared. The window's own `--sf-modal-*`
+public variables travel by name; its private ones never do, so a window opened
+from another does not take the outer panel's sizes. `<sf-modal id="x">` no
+longer gives the window's root the same id.
 
 Since 1.1.0 every `modal:*` event bubbles and is composed, as in the base modal
 component and `sf-drawer`, so a host can listen on `document`;
@@ -168,7 +178,7 @@ remain on the separate compact-control radius contract.
 
 Use `overlay-preset` for the standard SIMAI Framework modal behavior:
 
-- `default` (the default value) uses a fixed black 60% scrim without blur;
+- `default` (the default value) uses the shared black 64 scrim (C20) without blur;
 - `focus` uses the same scrim and adds `backdrop-blur-small`.
 
 The scrim is theme-independent. If `backdrop-filter` is unavailable, the
@@ -241,11 +251,15 @@ its own layout. The defaults sit under the utilities, so a utility in
 `footer-class` still wins -- `content-main-between` for a footer that also
 holds a checkbox at the start (simai/ui-source#26).
 
+A dangerous question (decision C25): the action is a filled danger button,
+«Отмена» is quiet and takes the focus when the window opens, so a stray Enter
+or Space only closes the window; Escape closes it too.
+
 ```html
 <sf-modal id="delete-letter" title="Удалить письмо?">
   <p slot="content">Письмо нельзя будет восстановить.</p>
-  <sf-button slot="footer" text="Отмена" appearance="outline" data-sf-modal-close="delete-letter"></sf-button>
-  <sf-button slot="footer" text="Удалить" status="error"></sf-button>
+  <sf-button slot="footer" text="Отмена" appearance="ghost" scheme="on-surface" autofocus data-sf-modal-close="delete-letter"></sf-button>
+  <sf-button slot="footer" text="Удалить" status="danger"></sf-button>
 </sf-modal>
 ```
 

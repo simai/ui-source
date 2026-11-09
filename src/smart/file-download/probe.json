@@ -10,6 +10,9 @@
       "  <sf-file-download id=\"d-btn\" file-name=\"Выгрузка.csv\" file-size=\"—\"></sf-file-download>",
       "  <sf-file-download id=\"d-off\" file-name=\"Архив.zip\" file-size=\"120 МБ\" href=\"/fixture/zip\" disabled></sf-file-download>",
       "  <sf-file-download id=\"d-bad\" file-name=\"x.txt\" file-size=\"1 КБ\" size=\"7\"></sf-file-download>",
+      "  <sf-file-download id=\"d-prep\" file-name=\"Отчёт.xlsx\" file-type=\"XLSX\"></sf-file-download>",
+      "  <sf-file-download id=\"d-tab\" file-name=\"Договор.pdf\" file-type=\"PDF\" file-size=\"84 КБ\" href=\"/fixture/report\" target=\"_blank\"></sf-file-download>",
+      "  <sf-file-download id=\"d-plain\" file-size=\"3 КБ\" href=\"/fixture/files/%D0%A1%D0%BE%D1%81%D1%82%D0%B0%D0%B2.csv\"></sf-file-download>",
       "</main>"
     ]
   },
@@ -121,6 +124,65 @@
         },
         {
           "check": "getComputedStyle(document.querySelector('#d-btn .sf-download-file')).borderTopColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p7-plain-link-same-tab",
+      "title": "a file link with neither download nor target downloads in the same tab, named by its last part; the type stands before the size (decision C25)",
+      "covers": "settings.target default, settings.download, settings.file-name default, settings.file-type",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#d-plain a.sf-download-file'); return a && !a.hasAttribute('target') && a.getAttribute('download') === 'Состав.csv' && a.querySelector('.sf-download-file__name').textContent === 'Состав.csv' && document.querySelector('#d-tab .sf-download-file__type').textContent === 'PDF' && document.querySelector('#d-tab .sf-download-file__size').textContent === '84 КБ'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-open-tab-says-so",
+      "title": "target=\"_blank\" opens a tab to view, with the open_in_new sign and words for a screen reader, and no download",
+      "covers": "settings.target _blank, decision C25",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#d-tab a.sf-download-file'); return a && a.getAttribute('target') === '_blank' && !a.hasAttribute('download') && a.querySelector('.sf-download-file__tab').textContent === 'open_in_new' && a.textContent.includes('(откроется в новой вкладке)') && a.querySelector('.sf-download-file__icon').textContent === 'download'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-preparing-then-error-then-retry",
+      "title": "the host takes the press and prepares the file: spinner in the sign's place, «Готовим файл…», aria-busy, a second press sends nothing; error shows «Не удалось подготовить файл» with «Повторить», whose press sends sf-file-download-retry (decision C25)",
+      "covers": "settings.state, events.retry, events.download cancelable",
+      "steps": [
+        {
+          "script": "(() => { window.__n = 0; const f = document.querySelector('#d-prep'); f.addEventListener('sf-file-download-download', (e) => { window.__n += 1; e.preventDefault(); f.setAttribute('state', 'preparing'); }); return true; })()"
+        },
+        {
+          "user": "click:#d-prep button",
+          "wait": 150,
+          "check": "(() => { const b = document.querySelector('#d-prep button'); return window.__n === 1 && b.getAttribute('aria-busy') === 'true' && b.querySelector('.sf-download-file__spinner') && !b.querySelector('.sf-download-file__icon') && b.textContent.includes('Готовим файл…'); })()"
+        },
+        {
+          "user": "click:#d-prep button",
+          "wait": 80,
+          "check": "window.__n === 1"
+        },
+        {
+          "script": "(() => { document.querySelector('#d-prep').setAttribute('state', 'error'); return true; })()",
+          "wait": 300,
+          "check": "(() => { const n = document.querySelector('#d-prep sf-alert.sf-download-file__error'); return n && n.getAttribute('heading') === 'Не удалось подготовить файл' && n.getAttribute('action-text') === 'Повторить' && !document.querySelector('#d-prep button.sf-download-file').hasAttribute('aria-busy'); })()"
+        },
+        {
+          "script": "(() => { const n = document.querySelector('#d-prep sf-alert'); const b = n.querySelector('[data-action=\"retry\"], [data-alert-action=\"retry\"]'); (b?.matches('button') ? b : b?.querySelector('button'))?.click(); return true; })()",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-file-download-retry",
+                "count": 1,
+                "detail": {
+                  "fileName": "Отчёт.xlsx"
+                }
+              }
+            ]
+          }
         }
       ]
     }

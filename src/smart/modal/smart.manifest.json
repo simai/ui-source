@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.4.7",
+  "version": "1.5.6",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -187,7 +187,7 @@
       "overlay-preset": {
         "type": "string",
         "default": "default",
-        "description": "The scrim: default, a fixed 60% black scrim; focus, the same with a small backdrop blur.",
+        "description": "The scrim: default, the shared black 64 scrim; focus, the same with a small backdrop blur.",
         "enum": [
           "default",
           "focus"
@@ -289,9 +289,16 @@
       "summary": "Opens the window, or brings it to the front when already open. Dispatches sf-modal-open (cancelable), then sf-modal-opened once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
       "arguments": [
         {
-          "name": "animate",
+          "name": "args",
+          "type": "object|boolean",
+          "required": false,
           "schema": {
-            "type": "boolean"
+            "type": "object",
+            "properties": {
+              "animate": {
+                "type": "boolean"
+              }
+            }
           }
         }
       ],
@@ -304,15 +311,22 @@
       "summary": "Closes the window after sf-modal-close (cancelable), runs the close transition, restores focus and dispatches sf-modal-closed. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
       "arguments": [
         {
-          "name": "reason",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "enum": [
-              "close",
-              "escape",
-              "outside",
-              "cancelled",
-              "api"
-            ]
+            "type": "object",
+            "properties": {
+              "reason": {
+                "enum": [
+                  "close",
+                  "escape",
+                  "outside",
+                  "cancelled",
+                  "api"
+                ]
+              }
+            }
           }
         }
       ],
@@ -355,9 +369,16 @@
       "summary": "The action confirm.",
       "arguments": [
         {
-          "name": "value",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "object"
+              }
+            }
           }
         }
       ],
@@ -1413,7 +1434,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "622d9afbd473f7c141ff5d40d0dc961b9dcf5838a9496a1a88f2976abe77107e"
+        "sha256": "0780ea950163ac4d9b07f6efa0624761d349c8c4acda2cfc3b85f3063e0cabbb"
       }
     ],
     "generated_runtime": [

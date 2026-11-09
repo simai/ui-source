@@ -821,7 +821,7 @@
           "name": "--sf-modal-background-color",
           "role": "background",
           "summary": "The panel's fill; the backdrop keeps its own.",
-          "default": "var(--sf-surface-1, #fff)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -886,7 +886,7 @@
           "name": "--sf-tooltip-background-color",
           "role": "background",
           "summary": "The tooltip's fill, its tail included.",
-          "default": "var(--sf-elevation-2--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -905,7 +905,7 @@
         {
           "name": "--sf-tooltip-border-color",
           "role": "border-color",
-          "summary": "The border colour of the light appearance; the dark one has no border.",
+          "summary": "The border colour; every appearance reads it (the dark one draws no border until a width is set).",
           "default": "var(--sf-outline-variant)",
           "since": "2026-10-18",
           "varies_with": [
@@ -915,7 +915,7 @@
         {
           "name": "--sf-tooltip-border-width",
           "role": "border-width",
-          "summary": "The border width of the light appearance on every side; the dark one has no border.",
+          "summary": "The border width on every side: one hairline on the light appearance, none on the dark one unless set.",
           "default": "var(--sf-px)",
           "since": "2026-10-18",
           "varies_with": [
@@ -1081,7 +1081,7 @@
           "name": "--sf-context-menu-background-color",
           "role": "background",
           "summary": "The menu's fill, its sticky footer included.",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-18"
         },
         {
@@ -1527,7 +1527,7 @@
           "name": "--sf-menu-submenu-background-color",
           "role": "background",
           "summary": "The fill of a horizontal menu's panel, which the counters in it are ringed with.",
-          "default": "var(--sf-elevation-2--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-25",
           "varies_with": [
             "orientation"
@@ -1667,7 +1667,7 @@
           "name": "--sf-country-code-list-background-color",
           "role": "background",
           "summary": "The fill of the open list of countries.",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-27"
         }
       ]
@@ -1701,7 +1701,7 @@
           "name": "--sf-color-swatches-gap",
           "role": "gap",
           "summary": "The space between presets.",
-          "default": "var(--sf-space-1\\/2, 4px)",
+          "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
@@ -1817,7 +1817,7 @@
           "name": "--sf-datepicker-background-color",
           "role": "background",
           "summary": "The calendar's surface, and its month and year lists.",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-27"
         },
         {
@@ -2245,7 +2245,7 @@
           "name": "--sf-help-mark-background-color",
           "role": "background",
           "summary": "The explanation's surface.",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "state": "open",
           "since": "2026-10-27"
         },
@@ -2843,7 +2843,7 @@
           "name": "--sf-profile-picker-panel-background-color",
           "role": "background",
           "summary": "The open panel's fill.",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-27"
         }
       ]
@@ -3158,15 +3158,15 @@
           "name": "--sf-search-background-color",
           "role": "background",
           "summary": "The surface of the field and of the results card. The former name --sf-search-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-elevation-3--surface)",
+          "default": "var(--sf-surface-popup)",
           "state": "open",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-search-scrim-color",
           "role": "background",
-          "summary": "The scrim between the window and the page, a colour with its own transparency; by default the shared scrim every window draws (core --sf-scrim-color at --sf-scrim-opacity).",
-          "default": "color-mix(in srgb, var(--sf-scrim-color) var(--sf-scrim-opacity), transparent)",
+          "summary": "The scrim between the window and the page, a colour with its own transparency; by default the shared scrim every window draws (core --sf-scrim-color, black 64).",
+          "default": "var(--sf-scrim-color)",
           "state": "open",
           "since": "2026-10-30"
         },
@@ -3459,7 +3459,7 @@
           "name": "--sf-lookup-list-background-color",
           "role": "background",
           "summary": "The open list's surface.",
-          "default": "var(--sf-elevation-2--surface)",
+          "default": "var(--sf-surface-popup)",
           "state": "open",
           "since": "2026-10-30"
         }
@@ -3556,7 +3556,7 @@
           "name": "--sf-workspace-drawer-background-color",
           "role": "background",
           "summary": "The panel's fill while it is a drawer over main; a column keeps the page's. The former name --sf-workspace-drawer-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-elevation-4--surface)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-11-08"
         }
       ]
@@ -4050,7 +4050,7 @@
           "name": "--sf-tile-metric-min-width",
           "role": "min-inline-size",
           "summary": "The narrowest column of sf-tile-metric-grid, the row of tiles that wraps.",
-          "default": "14rem",
+          "default": "var(--sf-f4)",
           "since": "2026-11-07"
         }
       ]
@@ -4193,6 +4193,47 @@
       ]
     },
     {
+      "component": "highlight",
+      "selector": ".sf-code-surface",
+      "variables": [
+        {
+          "name": "--sf-highlight-radius",
+          "role": "radius",
+          "summary": "The code block's corners. A host that nests the block -- a code block in a chat bubble -- sets it to follow its own corner.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-background-color",
+          "role": "background",
+          "summary": "The code block's fill, under the head and the code.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-color",
+          "role": "color",
+          "summary": "The code block's text, where a token has no colour of its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-color",
+          "role": "border-color",
+          "summary": "The block's edge and the line under its head.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-width",
+          "role": "border-width",
+          "summary": "The width of the block's edge and of the line under its head.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-09"
+        }
+      ]
+    },
+    {
       "component": "list-description",
       "selector": "sf-list-description, .sf-list-description",
       "variables": [
@@ -4303,7 +4344,7 @@
           "name": "--sf-choice-min-inline-size",
           "role": "min-inline-size",
           "summary": "The narrowest a card may be in the grid; fewer columns where it would be narrower.",
-          "default": "15rem",
+          "default": "var(--sf-f5)",
           "since": "2026-11-08"
         },
         {

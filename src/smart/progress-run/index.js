@@ -131,6 +131,10 @@ const ProgressRunElement = elementFromManifest(manifest, {
     step(args = {}) {
       const id = text(args?.id);
       if (!this.steps.some((step) => text(step?.id) === id)) return refused('missing');
+      // The changes belong to the host's current list: one the run has not
+      // read yet starts them afresh now, not at the next read (which dropped a
+      // change made before the first render).
+      this.syncStepsSource();
       const change = {};
       for (const key of ['state', 'text', 'started', 'finished', 'duration']) {
         if (Object.prototype.hasOwnProperty.call(args, key)) change[key] = args[key];
@@ -168,12 +172,16 @@ class SfProgressRun extends ProgressRunElement {
     this.stopTimer();
   }
 
+  // A new list from the host clears the changes made over the old one.
+  syncStepsSource() {
+    if (this.steps === this._stepsSource) return;
+    this._stepsSource = this.steps;
+    this._changes.clear();
+  }
+
   // The steps the run shows: the host's list with the step changes on it.
   get list() {
-    if (this.steps !== this._stepsSource) {
-      this._stepsSource = this.steps;
-      this._changes.clear();
-    }
+    this.syncStepsSource();
     const changed = (Array.isArray(this.steps) ? this.steps : []).map((step) => {
       const change = step && typeof step === 'object' ? this._changes.get(text(step.id)) : null;
       return change ? {...step, ...change} : step;

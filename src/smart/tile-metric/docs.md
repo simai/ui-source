@@ -68,7 +68,7 @@ the numbers, so the page can feed it data later.
 ## A row of tiles
 
 The class `sf-tile-metric-grid` on the tiles' parent is a grid of columns at
-least `--sf-tile-metric-min-width` (14rem) wide that wraps, one column on a
+least `--sf-tile-metric-min-width` (14rem, the size step f4) wide that wraps, one column on a
 phone; tiles in a row share their height.
 
 ## Geometry

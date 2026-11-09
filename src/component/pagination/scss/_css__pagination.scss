@@ -7,8 +7,11 @@
    the control height of the step, the row's padding above and below it, and
    the line under it. One value per step of the size ladder (size 1/2 and 1),
    from the tokens the row is drawn with, never a number typed into a page.
-   On the root, because a page reads them outside the pagination. */
-:root {
+   On the root, because a page reads them outside the pagination; again on a
+   density region (C22), whose ladder steps differ from the root's, so a page
+   in the region reads the row the region draws. */
+:root,
+[data-sf-density] {
   --sf-pagination-block-size-1\/2: calc(2 * var(--sf-space-1) + var(--sf-ui-1\/2--control-height) + var(--sf-px));
   --sf-pagination-block-size-1: calc(2 * var(--sf-space-1) + var(--sf-ui-1--control-height) + var(--sf-px));
 }
@@ -234,9 +237,9 @@
    pagination when a page row carries it, and by the data view at the end of the
    card. Hence the unscoped selector — it is the same band either way. */
 .sf-pagination-actions {
-  /* It floats over the rows (sticky): step 2's surface, not the page's. */
-  --sf-pagination-actions--background-color: var(--sf-elevation-2--surface);
-  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+  /* It floats over the rows (sticky): the raised place (C20), not the page. */
+  --sf-pagination-actions--background-color: var(--sf-surface-raised);
+  --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
   --sf-pagination-actions--border-color: var(--sf-outline-variant);
   --sf-pagination-actions--gap: var(--sf-space-1);
   --sf-pagination-actions--padding-block: var(--sf-space-1);
@@ -254,7 +257,7 @@
   /* It is a surface of its own -- it floats over the rows and holds the bottom
      of the card -- so it is rounded like one. */
   border-radius: var(--sf-pagination-actions--radius);
-  box-shadow: var(--sf-elevation-2--shadow);
+  box-shadow: var(--sf-shadow-raised);
   z-index: var(--sf-z-index-3);
 }
 

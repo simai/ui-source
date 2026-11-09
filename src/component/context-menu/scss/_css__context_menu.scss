@@ -4,7 +4,7 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-context-menu {
   background-color: var(--sf-context-menu--background-color, transparent);
-  box-shadow: var(--sf-context-menu--box-shadow, var(--sf-elevation-3--shadow));
+  box-shadow: var(--sf-context-menu--box-shadow, var(--sf-shadow-overlay));
   border-end-end-radius: var(--sf-context-menu--border-end-end-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
   border-end-start-radius: var(--sf-context-menu--border-end-start-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
   border-start-end-radius: var(--sf-context-menu--border-start-end-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
@@ -23,8 +23,8 @@
   /* The profile menu's surface is every menu's (owner, 2026-10-12): the
      third step, as every panel that floats over the page, and a hairline
      that keeps its edge where the shadow does not show. */
-  --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-elevation-3--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
   --sf-badge--surface: var(--sf-context-menu-content--background-color);
   border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
   /* The inset: a row's highlight stands --sf-space-1/4 from the panel's

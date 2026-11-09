@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "title": "Alert bar",
   "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
@@ -88,9 +88,19 @@
       "summary": "Closes the item with this id as its close button would, sending sf-alert-bar-close with reason api: refused {reason: missing} for an id the bar does not show, {reason: danger} for an error item or one with dismissible false, {reason: prevented} when a page cancels sf-alert-bar-close",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
           }
         }
       ],
@@ -309,7 +319,7 @@
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "d11d56effb3e3d8fc7a59559a5b31fc8054ccc0581ccea95976c383725c5df2d"
+        "sha256": "7ffa0e9e72c2df759987b30c6c2a994909ba43a483a63a4eb97394204d4fe62b"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
@@ -317,7 +327,7 @@
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "67cf07ce965d55fcf3a6f91eec6d843bf94c31814d494d5e34a6a9f8504a1232"
+        "sha256": "31f1dcba72e6b44548a3ffb91055fc01da1271c09df260e9fdb363bb23651375"
       }
     ],
     "generated_runtime": []

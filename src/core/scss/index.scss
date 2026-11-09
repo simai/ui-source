@@ -28,6 +28,8 @@
 @use 'sf_css__max_container';
 // fix bottom
 @use 'sf_css__typograpy';
+// after the ladder: a region's density re-declares its steps
+@use 'sf_css__density';
 @use 'sf_css__link';
 // fix bottom
 @use 'sf_css__breakpoint';

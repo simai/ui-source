@@ -386,6 +386,11 @@
       "property": "backdrop",
       "reason": "backdrop (surface, color or media) tells the control what it stands on, so it takes the ink of that place (owner decisions C14, D11c, 2026-11-08). The value surface names the kind of place under the control -- a surface, a coloured place, a photo -- not a look of the control, so it answers where the control stands, not the appearance question.",
       "kept_for": "the appearance of the control stays its own setting; backdrop only changes the ink the look is drawn in."
+    },
+    {
+      "component": "file-download",
+      "property": "state",
+      "reason": "the value says where the file's preparation stands -- ready, preparing, or error when the application could not make the file (decision C25) -- the lifecycle of one request, as sf-confirm's state is; error names that outcome, not a status the control reports about the world, and the control has no status axis."
     }
   ],
   "size_ladder": {

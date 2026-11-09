@@ -41,6 +41,8 @@
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-0)));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card-radius, var(--sf-radius--surface));
+    // At rest a card is the flat place (C20): no shadow, its edge is the line.
+    box-shadow: var(--sf-shadow-flat);
     overflow-wrap: break-word;
     // A narrow card (three on a phone) breaks a long word at a hyphen where
     // the language allows it; overflow-wrap breaks it anywhere only when no
@@ -52,11 +54,29 @@
     margin-block: var(--sf-0);
   }
 
+  // A card that is itself the control -- a link, a button -- rises under the
+  // pointer: the raised place (C20), its shadow and, in the dark theme, the
+  // surface a step lighter. A card the page painted keeps its own fill.
+  .sf-card:is(a[href], button):not(.sf-card--plain) {
+    transition: box-shadow var(--sf-duration-fast) var(--sf-animation), background-color var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-card:is(a[href], button):not(.sf-card--plain):hover {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
+    box-shadow: var(--sf-shadow-raised);
+  }
+
   .sf-card--plain {
     padding: var(--sf-0);
     background-color: var(--sf-transparent);
     border-color: var(--sf-transparent);
     border-radius: var(--sf-0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-card:is(a[href], button):not(.sf-card--plain) {
+      transition: none;
+    }
   }
 
   @media (forced-colors: active) {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-download",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -24,6 +24,8 @@
     "uses": [
       "component.download-file",
       "component.icons",
+      "component.spinner",
+      "smart.alert",
       "smart.icon"
     ],
     "public_parts": []
@@ -60,18 +62,23 @@
       },
       "file-name": {
         "type": "string",
-        "default": "File.pdf",
-        "description": "Visible filename and default native download name."
+        "default": "",
+        "description": "The file's visible name and the name it is saved under. Empty: the link's last part, else «Файл» in the page's language."
       },
       "file-size": {
         "type": "string",
         "default": "",
-        "description": "The size as text (2,4 МБ); empty with href, the size is asked with one HEAD request"
+        "description": "The size as text, in the page's units («2,4 МБ»). Empty with href: asked with one HEAD request and written in the page's language."
+      },
+      "file-type": {
+        "type": "string",
+        "default": "",
+        "description": "The file's type in words (PDF, XLSX), shown before the size: «PDF · 2,4 МБ» (decision C25). Never in file-size."
       },
       "icon": {
         "type": "string",
         "default": "download",
-        "description": "Decorative icon name."
+        "description": "Former way to name the file's type by a glyph, which took the download sign's place (decision C25): give the type in file-type. Still drawn and noted in SF.deprecations until 2027-01-01."
       },
       "href": {
         "type": "string",
@@ -81,16 +88,32 @@
       "download": {
         "type": "boolean",
         "default": false,
-        "description": "Apply native download semantics to an anchor destination."
+        "description": "Kept for compatibility: a file link downloads in the same tab whether or not it is given (decision C25); only target=\"_blank\" opens a tab instead."
       },
       "disabled": {
         "type": "boolean",
         "default": false,
         "description": "Render a disabled button with no live destination."
       },
+      "state": {
+        "type": "string",
+        "default": "ready",
+        "description": "ready: the file can be fetched. preparing: the application is making it -- a spinner in the sign's place, «Готовим файл…», aria-busy, a press is ignored; when the host sets ready again with an href, the file a person pressed for is fetched once. error: it could not be made -- an error notice «Не удалось подготовить файл» with «Повторить» under the file (decision C25).",
+        "enum": [
+          "ready",
+          "preparing",
+          "error"
+        ]
+      },
+      "error-text": {
+        "type": "string",
+        "default": "",
+        "description": "More words in the error notice (what went wrong, what to do); the heading is «Не удалось подготовить файл»."
+      },
       "target": {
         "type": "string",
-        "default": "_blank"
+        "default": "",
+        "description": "Where the link opens. Empty (default): the file downloads in the same tab. _blank: the file is opened to view in a new tab; the link shows the open-in-new sign and says «(откроется в новой вкладке)» to a screen reader (decision C25)."
       },
       "aria-label": {
         "type": "string",
@@ -104,7 +127,9 @@
     "owner_semantics": {
       "resource": "href renders a native anchor",
       "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-download",
-      "disabled": "disabled button with no live destination"
+      "disabled": "disabled button with no live destination",
+      "preparing": "state preparing: spinner in the sign's place, aria-busy, presses ignored; ready again with an href fetches the file once for the person who pressed",
+      "error": "state error: an sf-alert with «Повторить» under the file; its press sends retry"
     },
     "canonical_elements": {
       "type": "string",
@@ -113,7 +138,13 @@
         "sf-download-file__main",
         "sf-download-file__icon",
         "sf-download-file__name",
-        "sf-download-file__size"
+        "sf-download-file__size",
+        "sf-download-file__meta",
+        "sf-download-file__type",
+        "sf-download-file__spinner",
+        "sf-download-file__status",
+        "sf-download-file__tab",
+        "sf-download-file__error"
       ]
     },
     "interaction_states": {
@@ -131,7 +162,7 @@
   "methods": {},
   "events": {
     "sf-file-download-download": {
-      "summary": "download (vocabulary).",
+      "summary": "A person pressed the file: the request to fetch it, cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\", then ready with the href, or error.",
       "payload": {
         "type": "object",
         "required": [
@@ -148,6 +179,26 @@
           },
           "download": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
+    "sf-file-download-retry": {
+      "summary": "A person pressed «Повторить» under a file that could not be prepared (vocabulary §5 retry): the host prepares it again and sets the state.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "href",
+          "fileName"
+        ],
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
           }
         },
         "additionalProperties": true
@@ -179,6 +230,13 @@
         "type": "object"
       },
       "alias_of": "sf-file-download-download"
+    },
+    "sf-download-file-retry": {
+      "summary": "Dated alias of sf-file-download-retry until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-file-download-retry"
     }
   },
   "state": {
@@ -186,7 +244,9 @@
     "visual_states": [
       "default",
       "active",
-      "disabled"
+      "disabled",
+      "loading",
+      "error"
     ]
   },
   "persistence": {
@@ -290,7 +350,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-download/index.js",
-        "sha256": "0498cd7de1756bd54808ba5ad96c23c74152434a6786c45a88efdb57623638c7"
+        "sha256": "e488744f2af156867d0817a110d90b0391f18a543eaebcc0ddc66b6f720b9cc1"
       }
     ],
     "generated_runtime": [
@@ -309,7 +369,8 @@
       "Do not leave href on an unavailable file",
       "Do not use the decorative icon as the accessible name",
       "Do not copy generated ui-smart code",
-      "Do not move host data or access decisions into the component"
+      "Do not move host data or access decisions into the component",
+      "Do not put the file type in file-size or in icon: give it in file-type"
     ],
     "required_reads": [
       "inputs",
@@ -318,7 +379,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-file-download file-name=\"Report.pdf\" file-size=\"2.4 MB\" href=\"/files/report.pdf\" download></sf-file-download>",
+    "minimal_example": "<sf-file-download file-name=\"Отчёт за октябрь.pdf\" file-type=\"PDF\" file-size=\"2,4 МБ\" href=\"/files/report.pdf\"></sf-file-download>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

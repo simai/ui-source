@@ -7,8 +7,8 @@
 
 // The handle is a plain solid disc (owner, 2026-11-01): the hollow ring with a
 // surface-coloured centre read in the dark theme as a hole the fill line ran
-// into, and a white ring around the disc looked out of place too. A soft shadow
-// lifts it; the fill ends at the handle's centre, under the disc.
+// into, and a white ring around the disc looked out of place too. The raised
+// shadow (C20) lifts it; the fill ends at the handle's centre, under the disc.
 //
 // A ring of the surface is opt-in internal wiring: --sf-thumb-handle--ring-width
 // (0 by default) and --sf-thumb-handle--ring-color, the surface the slider
@@ -21,7 +21,7 @@
   border-end-start-radius: var(--sf-thumb-handle--border-end-start-radius, var(--sf-radius-circle));
   border-start-end-radius: var(--sf-thumb-handle--border-start-end-radius, var(--sf-radius-circle));
   border-start-start-radius: var(--sf-thumb-handle--border-start-start-radius, var(--sf-radius-circle));
-  box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), var(--sf-ui-shadow-1));
+  box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), var(--sf-shadow-raised));
   height: var(--sf-thumb-handle--height, var(--sf-ui-1\/3--control-height));
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, box-shadow;
@@ -60,7 +60,8 @@
 }
 
 .sf-thumb.sf-thumb--label-tooltip .sf-tooltip-content {
-  --sf-tooltip-content--box-shadow: var(--sf-ui-shadow-1);
+  /* The value over the handle stands over the page: the overlay place (C20). */
+  --sf-tooltip-content--box-shadow: var(--sf-shadow-overlay);
 }
 
 .sf-thumb.sf-thumb--label-tooltip .sf-tooltip-text {
@@ -78,11 +79,11 @@
 // the disc: 8% on hover, 12% while the handle is held.
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-handle {
   background-color: var(--sf-thumb-handle--hover-background-color, var(--sf-primary-hover));
-  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-select), var(--sf-ui-shadow-1);
+  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-select), var(--sf-shadow-raised);
 }
 
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):active .sf-thumb-handle {
-  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-active), var(--sf-ui-shadow-1);
+  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-active), var(--sf-shadow-raised);
 }
 
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-inner {

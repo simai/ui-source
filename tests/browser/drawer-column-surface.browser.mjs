@@ -6,7 +6,7 @@
 // the dark theme:
 //   - in a dock host with the room (at least 48rem) the docked panel says
 //     data-sf-drawer-column="true", paints --sf-surface-0 -- the colour of the
-//     page beside it, not the raised --sf-elevation-4--surface -- draws no
+//     page beside it, not the modal place's --sf-surface-popup (C20; it was --sf-elevation-4--surface) -- draws no
 //     shadow, and keeps the page's --sf-on-surface-variant;
 //   - narrowed under 48rem the same panel floats over the page: column
 //     "false", the raised surface and a shadow, as a floating panel;
@@ -67,7 +67,7 @@ try {
       variant.remove();
       return {
         column: root.getAttribute('data-sf-drawer-column'), background: style.backgroundColor, shadow: style.boxShadow,
-        variant: panelVariant, page: resolveColor('var(--sf-surface-0)'), raised: resolveColor('var(--sf-elevation-4--surface)'),
+        variant: panelVariant, page: resolveColor('var(--sf-surface-0)'), raised: resolveColor('var(--sf-surface-popup)'),
         pageVariant: resolveColor('var(--sf-on-surface-variant)'), padding: getComputedStyle(document.getElementById('host')).paddingInlineStart,
       };
     }, id);

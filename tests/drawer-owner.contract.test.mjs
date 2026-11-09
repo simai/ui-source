@@ -51,7 +51,7 @@ test('Smart Drawer geometry uses semantic tokens and logical placement', async (
   // repeating the list, or the template and the getter could disagree.
   assert.match(source, /get size\(\) \{\s*return this\.getProp\('size'\);/);
   assert.match(styles, /var\(--sf-radius--surface\)/);
-  assert.match(styles, /var\(--sf-elevation-4--shadow\)/);
+  assert.match(styles, /var\(--sf-shadow-modal\)/);
   assert.match(styles, /var\(--sf-duration-normal\)/);
   assert.match(styles, /prefers-reduced-motion/);
   assert.match(styles, /data-sf-drawer-placement='inline-start'/);
@@ -92,10 +92,10 @@ test('Smart Drawer: a docked column takes the page surface (simai/ui-source#26)'
   assert.match(source, /drawer\.setDockColumn\(column\)/);
   // A column: the page's surface and no shadow; the raised surface and its
   // dimmed-text role stay with a floating panel.
-  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-0\)\);[^}]*box-shadow: none;/);
-  assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-elevation-4--surface\)\);[^}]*--sf-on-surface-variant: var\(--sf-on-elevation-4--variant\);/);
+  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-0\)\);[^}]*box-shadow: var\(--sf-shadow-flat\);/);
+  assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-surface-popup\)\);[^}]*--sf-on-surface-variant: var\(--sf-on-surface-popup-variant\);/);
   // A docked drawer that floats (a narrow host) keeps its shadow.
-  assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: none/);
+  assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: (?:none|var\(--sf-shadow-flat\))/);
 });
 
 test('Smart Drawer: a configurable dock threshold and a switch that hides a docked column (simai/ui-source#25)', async () => {

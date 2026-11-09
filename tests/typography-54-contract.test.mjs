@@ -12,13 +12,13 @@ import { projections } from "../scripts/generate-adaptive-sizing-contract.mjs";
 const read = relativePath => fs.readFileSync(repositoryPath(relativePath), "utf8");
 
 const expectedTitleHeights = {
-    mobile: [16, 16, 20, 24, 24, 28, 32, 36, 40, 48, 52, 56],
-    desktop: [16, 24, 28, 32, 36, 40, 48, 56, 64, 76, 80, 96],
+    mobile: [16, 18, 20, 24, 26, 28, 32, 36, 40, 48, 52, 56],
+    desktop: [18, 24, 28, 32, 36, 40, 48, 56, 64, 76, 80, 96],
 };
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.4.0");
+    assert.equal(contract.meta.version, "1.5.0");
 
     for (const mode of ["mobile", "desktop"])
     {
@@ -34,12 +34,13 @@ test("5.4 title heights and semantic roles are canonical contract data", () => {
         height: "6",
         size: "6",
     });
-    // The content heading ladder (docs review R022): h3 and h4 sit two rungs
-    // below h2, on the body-large and body rungs, set apart by weight.
+    // The heading ladder (owner decision C21, 2026-11-08, replacing R022's):
+    // h1 6, h2 5, h3 3, h4 2, h5 and h6 1 -- no level larger than the one above
+    // (tests/heading-ladder.contract.test.mjs measures it).
     assert.deepEqual(
         Object.fromEntries(Object.entries(contract.typography.roles.heading)
             .map(([level, role]) => [level, role.size])),
-        { 1: "6", 2: "5", 3: "2", 4: "1", 5: "2", 6: "1" },
+        { 1: "6", 2: "5", 3: "3", 4: "2", 5: "1", 6: "1" },
     );
     assert.deepEqual(contract.typography.roles.display["1"], {
         height: "12",

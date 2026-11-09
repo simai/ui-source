@@ -47,3 +47,43 @@ test('the padding ladder and the radius ladder share the steps the rule uses', (
     assert.ok(radius.has(step), `the rule pairs p-${step} with radius-${step}, which is not offered`);
   }
 });
+
+// The nesting check ui-chat asked for (simai/ui-source#31), against the
+// step-down rule: a container p-N radius-N holds a block radius-(N-1). An
+// inner corner larger than the outer one, with an inset smaller than that
+// inner corner, would bulge past the container's curve; and a container's own
+// corner wider than its inset would let its content touch the curve. Checked
+// on both ladders, mobile and desktop (60rem), in pixels from the primitives
+// of the adaptive-sizing contract (docs/foundation-radius-nesting.md).
+const primitives = JSON.parse(read('src/core/contracts/adaptive-sizing.v1.json')).primitives;
+const px = (token) => {
+  const match = /^--sf-([a-i])(\d)$/u.exec(token);
+  if (!match) return null;
+  const {startPx, stepPx} = primitives[match[1]];
+  return startPx + stepPx * Number(match[2]);
+};
+const ladder = (path, name) => {
+  const source = read(path);
+  const desktopAt = source.indexOf('@media (min-width: 60rem)');
+  const parse = (part) => Object.fromEntries([...part.matchAll(new RegExp(`--sf-${name}-((?:[0-9]+)(?:\\\\\\/[0-9]+)?):\\s*var\\((--sf-[a-i]\\d)\\)`, 'gu'))]
+    .map(([, step, token]) => [step.replace(/\\/gu, ''), px(token)]));
+  return {mobile: parse(source.slice(0, desktopAt)), desktop: {...parse(source.slice(0, desktopAt)), ...parse(source.slice(desktopAt))}};
+};
+
+test('the step-down rule never puts a larger corner inside a smaller one (simai/ui-source#31)', () => {
+  const radius = ladder('src/core/figma_variables/figma_radius.scss', 'radius');
+  const space = ladder('src/core/figma_variables/figma_space.scss', 'space');
+  const steps = ['1/2', '1', '2', '3', '4'];
+  for (const mode of ['mobile', 'desktop']) {
+    for (const [index, step] of steps.entries()) {
+      const outer = radius[mode][step];
+      const inset = space[mode][step];
+      assert.ok(Number.isFinite(outer) && Number.isFinite(inset), `${mode}: radius-${step} and p-${step} resolve to pixels`);
+      assert.ok(outer <= inset, `${mode}: radius-${step} (${outer}px) is wider than p-${step} (${inset}px)`);
+      if (index === 0) continue;
+      const inner = radius[mode][steps[index - 1]];
+      assert.ok(!(inner > outer && inset < inner), `${mode}: radius-${steps[index - 1]} (${inner}px) inside radius-${step} (${outer}px) with p-${step} (${inset}px)`);
+      assert.ok(inner <= outer, `${mode}: the ladder steps down, radius-${steps[index - 1]} <= radius-${step}`);
+    }
+  }
+});

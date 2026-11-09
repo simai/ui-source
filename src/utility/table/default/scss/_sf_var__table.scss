@@ -10,7 +10,7 @@
 $table-color: var(--sf-on-surface);
 $table-bg: inherit;
 $table-border-color: var(--sf-outline-variant);
-$table-accent-bg: #0000;
+$table-accent-bg: var(--sf-transparent);
 
 $table-stripe-color: var(--sf-on-surface);
 $table-stripe-bg: var(--sf-surface-transparent-select);
@@ -25,10 +25,11 @@ $table-hover-bg: var(--sf-surface-transparent-hover);
 // ladder (duplication audit 2026-11-03, A-4) shifted every table that
 // inherits them -- the Pro view tables by 4px off the field-label axis at
 // 1440px -- so the ladder waits for a change that measures its consumers.
-$table-cell-padding-y: .5rem;
-$table-cell-padding-x: .5rem;
-$table-cell-padding-y-sm: .25rem;
-$table-cell-padding-x-sm: .25rem;
+// Fixed, but steps of the size ladder (C18): a8 is 8px, a4 is 4px.
+$table-cell-padding-y: var(--sf-a8);
+$table-cell-padding-x: var(--sf-a8);
+$table-cell-padding-y-sm: var(--sf-a4);
+$table-cell-padding-x-sm: var(--sf-a4);
 
 $table-array-layout: (
     auto: auto,

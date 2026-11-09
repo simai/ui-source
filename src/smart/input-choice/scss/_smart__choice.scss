@@ -10,7 +10,7 @@
    them. */
 .sf-choice {
   --sf-choice--gap: var(--sf-choice-gap, var(--sf-space-1\/2));
-  --sf-choice--min-inline-size: var(--sf-choice-min-inline-size, 15rem);
+  --sf-choice--min-inline-size: var(--sf-choice-min-inline-size, var(--sf-f5));
   --sf-choice--padding: var(--sf-choice-padding, var(--sf-space-1\/2));
   --sf-choice--radius: var(--sf-choice-radius, var(--sf-radius--ui));
   --sf-choice--background-color: var(--sf-choice-background-color, var(--sf-transparent));

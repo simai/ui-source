@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.special",
   "kind": "module",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "owner": "simai/ui-source",
   "summary": "The panel for visually impaired visitors of the Bitrix SF4/SF5 site templates (BX.message), internal: loaded by the class sf-special, kept for the Bitrix sites and out of the documentation.",
   "includes": [
@@ -20,15 +20,20 @@
     "src/component/special/scss/_image.scss",
     "src/component/special/scss/_interval.scss",
     "src/component/special/scss/_kerning.scss",
+    "src/component/special/scss/_tokens.scss",
     "src/component/special/scss/_white.scss",
     "src/component/special/scss/_yellow.scss",
     "src/component/special/scss/index.scss"
   ],
-  "content_sha256": "90e88c72aa26a5cc44a0d415518b1b5e05746f6bc1f0ac09b05e1864711dbbef",
+  "content_sha256": "5440a5bcd060641288333d5ba8330715cbe9dc6850f068ae751b29c13d4ea854",
   "dependencies": [
     {
       "id": "module.sf-system",
       "range": "^2.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.5.0"
     },
     {
       "id": "tokens.size",

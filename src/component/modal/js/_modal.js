@@ -1,7 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
-import { trapModalFocus } from './_focus';
+import { focusModalInitial, trapModalFocus } from './_focus';
 import { freezeModalContent } from './_closing';
 import { scheduleModalClose, scheduleModalFrame } from './_motion';
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
@@ -440,7 +440,7 @@ class Modal extends ComponentObserver {
     surface.className = joinClasses(
       isInline
         ? 'bg-surface border border-outline-variant radius-surface p-2 flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-3 p-2 flex flex-col gap-1 min-w-0',
+        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-2 flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');
@@ -944,7 +944,8 @@ class Modal extends ComponentObserver {
       return;
     }
     panel.setAttribute('tabindex', '-1');
-    panel.focus();
+    // The page's [autofocus] inside the window first (decision C25), else the panel.
+    focusModalInitial(panel);
   }
 
   applyStackPosition(index = getModalLayerIndex(this)) {

@@ -21,6 +21,16 @@ const roleNumber = role => {
 const orderedEntries = aliases => Object.entries(aliases).sort(
     ([left], [right]) => roleNumber(left) - roleNumber(right),
 );
+// The desktop threshold is written in rem, as every breakpoint of the size
+// ladder is (src/core/scss/vars/_sf_var__breakpoint.scss, lg: 60rem).
+const desktopMedia = `@media (min-width: ${
+    contract.modes.desktop.minWidthPx / contract.meta.nominalRootPx
+}rem)`;
+const renderNote = (lines, indentation) => lines.map(
+    (line, index) => `${indentation}${index === 0 ? "/* " : "   "}${line}${
+        index === lines.length - 1 ? " */" : ""
+    }`,
+);
 const header = [
     "/*",
     " * Generated from src/core/contracts/adaptive-sizing.v1.json.",
@@ -52,7 +62,7 @@ function renderAliasProjection(variablePrefix, aliases, compatibilityPrefix = nu
 ${declarations("mobile", "    ")}
   }
 
-  @media (min-width: ${contract.modes.desktop.minWidthPx}px) {
+  ${desktopMedia} {
     :root {
 ${declarations("desktop", "      ")}
     }
@@ -76,6 +86,16 @@ function renderSemanticRoles()
         for (const [role, definition] of Object.entries(definitions))
         {
             const prefix = roleTokenPrefix[group];
+            if ("fixedSize" in definition)
+            {
+                // A role pinned to primitives: it does not follow the mode.
+                declarations.push(
+                    ...renderNote(definition.note ?? [], "    "),
+                    `    --sf-${prefix}-${role}--size: ${aliasValue(definition.fixedSize)};`,
+                    `    --sf-${prefix}-${role}--height: ${aliasValue(definition.fixedHeight)};`,
+                );
+                continue;
+            }
             const heightFamily = ["heading", "display"].includes(group)
                 ? "title--height"
                 : "text--height";
@@ -164,7 +184,7 @@ function renderTightnessProjection(tightness)
 ${declarations("mobile", "    ")}
   }
 
-  @media (min-width: ${contract.modes.desktop.minWidthPx}px) {
+  ${desktopMedia} {
     :root {
 ${declarations("desktop", "      ")}
     }

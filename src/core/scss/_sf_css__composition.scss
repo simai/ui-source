@@ -10,7 +10,7 @@
 @layer sf.components {
     .sf-composition-regions {
         --sf-composition-region-side: minmax(0, var(--sf-f6));
-        --sf-composition-region-gap: var(--sf-space-4, 1rem);
+        --sf-composition-region-gap: var(--sf-space-4);
         container-type: inline-size;
         display: block;
         min-inline-size: 0;
@@ -36,10 +36,10 @@
     .sf-composition-unknown {
         display: block;
         min-inline-size: 0;
-        padding-block: var(--sf-space-2, .5rem);
-        padding-inline: var(--sf-space-3, .75rem);
+        padding-block: var(--sf-space-2);
+        padding-inline: var(--sf-space-3);
         border: 1px dashed var(--sf-outline-variant, GrayText);
-        border-radius: var(--sf-radius-1, .25rem);
+        border-radius: var(--sf-radius-1);
         color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
         overflow-wrap: anywhere;
     }
@@ -106,7 +106,7 @@
     :where(.sf-composition-columns) {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
-        gap: var(--sf-space-4, 1rem);
+        gap: var(--sf-space-4);
         min-inline-size: 0;
     }
 
@@ -214,7 +214,7 @@
 @layer sf.components {
     .sf-editor-field {
         display: grid;
-        gap: var(--sf-space-1, .25rem);
+        gap: var(--sf-space-1);
         min-inline-size: 0;
         color: var(--sf-on-surface, CanvasText);
     }
@@ -222,7 +222,7 @@
     .sf-editor-field[data-sf-field-kind="toggle"] {
         grid-template-columns: auto minmax(0, 1fr);
         align-items: center;
-        column-gap: var(--sf-space-2, .5rem);
+        column-gap: var(--sf-space-2);
     }
 
     .sf-editor-field[data-sf-field-kind="toggle"] > .sf-editor-field-help {
@@ -232,18 +232,18 @@
     .sf-editor-field-control:not([type="checkbox"]) {
         min-inline-size: 0;
         max-inline-size: 100%;
-        padding-block: var(--sf-space-1, .25rem);
-        padding-inline: var(--sf-space-2, .5rem);
+        padding-block: var(--sf-space-1);
+        padding-inline: var(--sf-space-2);
         border: 1px solid var(--sf-outline, GrayText);
-        border-radius: var(--sf-radius-1, .25rem);
+        border-radius: var(--sf-radius-1);
         background: var(--sf-surface-1, Canvas);
         color: var(--sf-on-surface, CanvasText);
         font: inherit;
     }
 
     .sf-editor-field-control[type="checkbox"] {
-        inline-size: 1.25rem;
-        block-size: 1.25rem;
+        inline-size: var(--sf-c0);
+        block-size: var(--sf-c0);
         margin: 0;
         accent-color: var(--sf-primary, AccentColor);
     }
@@ -399,17 +399,17 @@ $sf-workspace-wide-default: h6;
         $scope: sf-workspace-scope(wide, $step, $sf-workspace-wide-default);
 
         // Below the wide width the open panel is a drawer at the end edge,
-        // over main, on the drawer's surface; its shadow is the scrim, the
-        // shared one (core --sf-scrim-color, --sf-scrim-opacity).
+        // over main, the modal place (C20): the popup surface, the modal
+        // shadow and, spread over the workspace, the shared scrim (black 64).
         @container sf-workspace (width < #{$width}) {
             #{$scope} > .sf-workspace-panel {
                 position: absolute;
                 // Above anything main raises; the workspace is its own stacking
                 // context (a size container), so this stays inside it.
                 z-index: var(--sf-z-index-layer, 9000);
-                background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface)));
+                background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-surface-popup)));
                 color: var(--sf-on-surface);
-                box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-scrim-color, var(--sf-black)) var(--sf-scrim-opacity, var(--sf-opacity-60)), transparent);
+                box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));
 
                 // It slides in from its edge, unless motion is reduced.
                 @media (prefers-reduced-motion: no-preference) {
