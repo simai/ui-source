@@ -577,12 +577,14 @@ try {
           document.querySelector('#admin').append(probe);
           const control = probe.getBoundingClientRect().height;
           probe.remove();
-          return {control, heights: [...new Set(rows.map((row) => Math.round(row.getBoundingClientRect().height)))],
+          const x = (label) => rows.find((row) => row.querySelector('.sf-menu-element-text')?.textContent.trim() === label)?.querySelector('.sf-menu-element-text').getBoundingClientRect().left;
+          return {control, first: x('Магазин'), second: ['Заказы', 'Товары', 'Клиенты'].map(x), heights: [...new Set(rows.map((row) => Math.round(row.getBoundingClientRect().height)))],
             icons: [...new Set([...document.querySelectorAll('#admin .sf-menu-element-icon')].map((icon) => Math.round(icon.getBoundingClientRect().height)))]};
         });
         seen[`admin390-${theme}-${run}`] = admin;
         check(admin.heights.length === 1 && admin.heights[0] === admin.control, `${k}: compact admin rows are one height on a phone, the ladder's ${admin.control} (${admin.heights.join(',')})`);
         check(admin.icons.length === 1 && admin.icons[0] === 20, `${k}: the admin's icons are 20, inside the line (${admin.icons.join(',')})`);
+        check(admin.first !== undefined && admin.second.every((one) => one !== undefined && Math.abs(one - admin.first) <= 0.5), `${k}: on a phone too the admin's second-level words stand under the first level's (${admin.first} / ${admin.second.join(',')})`);
         await tab.locator('#h .sf-site-header-menu-button button').click();
         await tab.waitForTimeout(450);
         const phone = await tab.evaluate(() => {
