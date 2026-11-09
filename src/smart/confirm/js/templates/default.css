@@ -80,7 +80,7 @@
   /* On a narrow screen the two answers share the width equally (a media query,
      not a container query: an inline question as wide as its content would
      otherwise collapse). */
-  @media (max-width: 479px) {
+  @media (width < 32rem) { /* below sm */
     .sf-confirm__actions {
       display: grid;
       grid-template-columns: 1fr 1fr;

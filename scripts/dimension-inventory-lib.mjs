@@ -31,6 +31,8 @@ export function scanDimensions(source, file) {
     const category = inComment ? 'comment-review'
       : /^(?:component\/(?:fancybox|swiper|icon|jquery)\/|plugin\/)/.test(file) ? 'vendor-review'
       : kind === 'runtime-expression' ? 'runtime-review'
+      // A zero length is the same in every unit: no step of any ladder is involved.
+      : /^-?(?:0+(?:\.0*)?|\.0+)$/.test(match[1]) ? 'zero-length-review'
       : /@(?:media|container)\b/.test(context) ? 'condition-review'
       : /(?:\/scss\/_?sf_var__|^core\/(?:scss\/vars\/|figma_variables\/|contracts\/|scss\/_sf_css__size\.scss$))/.test(file) ? 'definition-review'
       : /\.(?:js|mjs|cjs|json)$/.test(file) ? 'script-data-template-review' : 'style-review';
@@ -41,23 +43,29 @@ export function scanDimensions(source, file) {
 
 export function reviewDimensionFindings(findings, policy) {
   if (!policy?.rules?.length) return findings;
+  // A rule names one category or a list of them; textPattern (optional) narrows
+  // it to the length itself, so a rule can accept a value set -- the size
+  // steps, the hairlines -- rather than every length on a matching line.
   const rules = policy.rules.map(rule => ({
     ...rule,
+    categories: [].concat(rule.category),
     fileRegex: new RegExp(rule.filePattern, 'u'),
     contextRegex: new RegExp(rule.contextPattern, 'u'),
+    textRegex: new RegExp(rule.textPattern ?? '', 'u'),
   }));
   return findings.map(finding => {
     const matches = rules.filter(rule =>
-      rule.category === finding.category
+      rule.categories.includes(finding.category)
       && rule.fileRegex.test(finding.file)
-      && rule.contextRegex.test(finding.context));
+      && rule.contextRegex.test(finding.context)
+      && rule.textRegex.test(finding.text));
     if (matches.length !== 1) return {
       ...finding,
       status: matches.length ? 'policy-conflict' : 'unreviewed',
       policyMatches: matches.map(rule => rule.id),
     };
     const [rule] = matches;
-    return {...finding, status: rule.status, policyRule: rule.id, reason: rule.reason};
+    return {...finding, status: rule.status, policyRule: rule.id, reason: rule.reason, ...(rule.task ? {task: rule.task} : {})};
   });
 }
 
@@ -88,5 +96,8 @@ export function inventory(root, {policy = null} = {}) {
     limitations: ['Lexical candidates including comments and strings, not parsed violations', 'Unitless JSON dimension fields require schema-aware review', 'Nested or multiline interpolation is not covered', 'A policy match records a reviewed boundary but does not turn runtime geometry into a design token'],
     files, findingCount: reviewedFindings.length, byCategory, byLayer, byStatus,
     unresolvedCount: reviewedFindings.filter(finding => ['unreviewed', 'policy-conflict'].includes(finding.status)).length,
+    // Reviewed defects whose fix belongs to a named later task: counted apart,
+    // so the gate stays green without calling them accepted.
+    deferredCount: reviewedFindings.filter(finding => finding.status === 'reviewed-deferred').length,
     findings: reviewedFindings};
 }

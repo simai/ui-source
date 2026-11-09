@@ -7,8 +7,11 @@
    the control height of the step, the row's padding above and below it, and
    the line under it. One value per step of the size ladder (size 1/2 and 1),
    from the tokens the row is drawn with, never a number typed into a page.
-   On the root, because a page reads them outside the pagination. */
-:root {
+   On the root, because a page reads them outside the pagination; again on a
+   density region (C22), whose ladder steps differ from the root's, so a page
+   in the region reads the row the region draws. */
+:root,
+[data-sf-density] {
   --sf-pagination-block-size-1\/2: calc(2 * var(--sf-space-1) + var(--sf-ui-1\/2--control-height) + var(--sf-px));
   --sf-pagination-block-size-1: calc(2 * var(--sf-space-1) + var(--sf-ui-1--control-height) + var(--sf-px));
 }

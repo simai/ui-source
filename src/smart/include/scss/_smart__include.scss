@@ -61,7 +61,7 @@
 }
 
 .sf-include-message {
-  flex: 1 1 12em;
+  flex: 1 1 var(--sf-f2);
   min-inline-size: 0;
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);

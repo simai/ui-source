@@ -641,7 +641,7 @@ class SfModal extends ModalElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer(changedAttributes);
     }
-    render(templateResult, this.resolveRenderTarget());
+    this.drawInto(templateResult, this.resolveRenderTarget());
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {
       changedAttributes,

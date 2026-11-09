@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.size",
   "kind": "tokens",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "owner": "simai/ui-source",
   "summary": "The size ladder: control heights, icon sizes, the tightness steps, floating labels, the viewport and container sizes.",
   "includes": [
@@ -36,7 +36,7 @@
     "src/core/scss/vars/_sf_var__max_container.scss",
     "src/core/scss/vars/_sf_var__size.scss"
   ],
-  "content_sha256": "07026e9f58ad7c4a9b076e3d7f86abdca283a9624b16a2384ce72ab654f4e475",
+  "content_sha256": "24384a3b3c2e5da351040199420e3dc245d20f368f60c6354926875e6704157c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

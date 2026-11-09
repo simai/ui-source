@@ -79,7 +79,7 @@
 
   .sf-color-swatches {
     display: inline-flex;
-    gap: var(--sf-color-swatches-gap, var(--sf-space-1\/2, 4px));
+    gap: var(--sf-color-swatches-gap, var(--sf-space-1\/2));
     margin-inline-start: var(--sf-space-1);
   }
 

@@ -128,7 +128,7 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   scrollbar-width: thin;
-  padding-block: var(--sf-focus--width, 2px);
+  padding-block: var(--sf-focus--width);
 }
 
 /* The compact line: the step's label, «Все шаги» and the bar. Drawn in the
@@ -370,7 +370,7 @@
 }
 
 .sf-wizard-plan > li > :first-child {
-  flex: 1 1 16rem;
+  flex: 1 1 var(--sf-f6);
   min-inline-size: 0;
 }
 

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.42.1",
+  "version": "1.42.2",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -118,6 +118,7 @@
     "src/core/js/composition/utilities.mjs",
     "src/core/js/control-spacing.js",
     "src/core/js/core-modules.js",
+    "src/core/js/density.js",
     "src/core/js/deprecations.js",
     "src/core/js/early-port.js",
     "src/core/js/effects.js",
@@ -208,7 +209,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "a74e5cb7af03eaa9812aa09c4eae973a25af1aaa46d2f8c78d8ebf04efeebbdb",
+  "content_sha256": "ba70e8a385126af171f8931ebdc39b91fc897b6597e99142a46cd80e008a80b2",
   "dependencies": [
     {
       "id": "core.styles",

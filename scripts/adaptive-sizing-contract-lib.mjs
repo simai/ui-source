@@ -184,6 +184,26 @@ export function validateContract(candidate = contract)
         );
         for (const [role, definition] of Object.entries(definitions))
         {
+            if ("fixedSize" in definition)
+            {
+                // Pinned to primitives, the same value in both modes.
+                assert.deepEqual(
+                    Object.keys(definition).filter(key => key !== "note").sort(),
+                    ["fixedHeight", "fixedSize"],
+                    `semantic typography ${group}.${role} must pin size and height`,
+                );
+                aliasPx(definition.fixedSize, candidate);
+                aliasPx(definition.fixedHeight, candidate);
+                if ("note" in definition)
+                {
+                    assert.ok(
+                        Array.isArray(definition.note)
+                        && definition.note.every(line => typeof line === "string"),
+                        `semantic typography ${group}.${role} note must be lines`,
+                    );
+                }
+                continue;
+            }
             assert.deepEqual(
                 Object.keys(definition).sort(),
                 ["height", "size"],

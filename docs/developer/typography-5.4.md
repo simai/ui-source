@@ -5,6 +5,17 @@ semantic Label, Body Text, Heading and Display roles. The contract source is
 `src/core/contracts/adaptive-sizing.v1.json`; generated SCSS projections carry
 its SHA-256 and must pass `npm run adaptive-sizing:check`.
 
+The contract is the only source of those projections: a value is changed in
+the contract (or, for how it is written, in
+`scripts/generate-adaptive-sizing-contract.mjs`) and the sheets are
+regenerated, never edited by hand. Since contract 1.5.0 the desktop media query
+is written in rem (`60rem`, as the breakpoint ladder is), and a semantic role
+may be pinned to primitives with `fixedSize`/`fixedHeight` (and an optional
+`note`, written as a comment) instead of following a size rung; Label large is
+pinned to `b4`/`c0`, 14/20 in both modes.
+`tests/adaptive-sizing-contract.test.mjs` regenerates the sheets in a scratch
+copy and fails when the result differs from the repository.
+
 ## Public variables
 
 Canonical 5.4 base variables use the double delimiter:
