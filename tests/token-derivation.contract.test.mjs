@@ -37,6 +37,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PRIMITIVE_SOURCES = [
   /src\/core\/scss\/vars\//,              // the size, space and palette maps
   /_sf_figma_colors_variables\.scss$/,    // the colour primitives
+  /_sf_static_palette\.scss$/,            // the static palette, generated (C17)
 ];
 
 // The two lengths no ladder step can spell, each with its reason.
