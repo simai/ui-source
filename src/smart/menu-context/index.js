@@ -20,6 +20,10 @@ const ContextMenuElement = elementFromManifest(manifest, {
   lang: { en, ru },
   source: "ru",
   aliases,
+  // openFor(anchor, options), toggleFor(anchor, options) and chooseTab(index)
+  // take their fields in order; the runtime gives them the object form of
+  // §4.4 as well: openFor({anchor, options}), chooseTab({index}).
+  positional: ["open-for", "toggle-for", "choose-tab"],
 });
 
 // Prefer the helper Core published; a bundle loaded without core.js still
@@ -766,10 +770,14 @@ class SfContextMenu extends ContextMenuElement {
   }
 
   // ─── opening (the menu owns its lifecycle when opened through openFor) ────
+  // Both answer an outcome (§4.4): applied with `value`, whether the menu is
+  // open afterwards; refused {reason: prevented} when a listener kept it as it
+  // was, {reason: invalid} for an anchor that is not an element; unavailable
+  // when the menu has no surface to open.
   toggleFor(anchor, options = {}) {
     if (this._owned?.anchor === anchor) {
-      this.close();
-      return Promise.resolve(false);
+      const closed = this.close();
+      return Promise.resolve(closed ? {outcome: "applied", value: false} : {outcome: "refused", reason: "prevented"});
     }
     return this.openFor(anchor, options);
   }
@@ -787,14 +795,14 @@ class SfContextMenu extends ContextMenuElement {
   // a site switcher, a profile button (owner, 2026-10-14) -- a long line ending
   // in an ellipsis; a CSS length fixes it. The attribute gives the default.
   async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width} = {}) {
-    if (!(anchor instanceof Element)) throw new TypeError("A menu opens for an element");
+    if (!(anchor instanceof Element)) return {outcome: "refused", reason: "invalid"};
     if (this._owned) this.close({restoreFocus: false, ask: false});
     // The request first (§19, vocabulary §4): a listener that prevents it keeps
     // the menu closed.
-    if (!this.sfEmit("open", {}, {cancelable: true})) return false;
+    if (!this.sfEmit("open", {}, {cancelable: true})) return {outcome: "refused", reason: "prevented"};
     await this.whenRendered();
     const surface = this.surface();
-    if (!surface) return false;
+    if (!surface) return {outcome: "unavailable", reason: "no-surface"};
     // Focus goes back where it was, or to the control that opened the menu
     // when it was nowhere -- a press on an sf-button leaves it on the body in
     // some browsers, and the menu returned it there. A host element is not
@@ -854,7 +862,7 @@ class SfContextMenu extends ContextMenuElement {
       if (field && focus !== "last") field.focus({preventScroll: true});
       else (focus === "last" ? items[items.length - 1] : items[0])?.focus({preventScroll: true});
     }
-    return true;
+    return {outcome: "applied", value: true};
   }
 
   // reason says why (standard 1.3.8 §19.3): escape, outside, close (the head's

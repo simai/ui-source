@@ -417,12 +417,56 @@ function defineMembers(target, members) {
   }
 }
 
+// The positional form (§4.4 "MAY") names only the parameters a call gave:
+// step(id, state) is {id, state}, not {id, state, text: undefined, ...}, so an
+// action that writes the fields it was given leaves the others alone.
 function parameters(action, args) {
   if (args.length === 1 && isPlainObject(args[0])
     && (action.with.length !== 1 || Object.keys(args[0]).every((key) => action.with.includes(key)))) {
     return {...args[0]};
   }
-  return Object.fromEntries(action.with.map((name, index) => [name, args[index]]));
+  return Object.fromEntries(action.with.slice(0, args.length)
+    .map((name, index) => [name, args[index]])
+    .filter(([, value]) => value !== undefined));
+}
+
+// A class-written action whose method takes its `with` fields in declared
+// order (elementFromManifest's `positional`) also takes them as one object
+// (§4.4): a single plain object that names declared parameters only, at least
+// one, becomes the arguments in order. Anything else -- the fields in order,
+// an element, a list, an object of the action's own data -- goes through as
+// it came. The method's answer is left as the class gives it.
+const objectFormClasses = new WeakSet();
+
+function positionalArguments(names, args) {
+  if (args.length !== 1 || !isPlainObject(args[0]) || !names.length) return args;
+  const given = Object.keys(args[0]);
+  const camel = names.map(camelName);
+  if (!given.length || !given.every((key) => names.includes(key) || camel.includes(key))) return args;
+  const ordered = names.map((name, index) => (Object.prototype.hasOwnProperty.call(args[0], name) ? args[0][name] : args[0][camel[index]]));
+  while (ordered.length && ordered[ordered.length - 1] === undefined) ordered.pop();
+  return ordered;
+}
+
+function takeObjectForms(Class, baseProto, actions, positional) {
+  if (!positional.size || typeof Class !== 'function' || objectFormClasses.has(Class)) return;
+  objectFormClasses.add(Class);
+  for (const action of actions) {
+    if (!positional.has(action.name) || !action.with.length) continue;
+    for (let proto = Class.prototype; proto && proto !== baseProto; proto = Object.getPrototypeOf(proto)) {
+      const own = Object.getOwnPropertyDescriptor(proto, action.method);
+      if (!own) continue;
+      const run = own.value;
+      if (typeof run !== 'function' || run.sfObjectForm || !own.configurable) break;
+      const names = action.with;
+      const wrapped = function objectFormAction(...args) {
+        return run.apply(this, positionalArguments(names, args));
+      };
+      wrapped.sfObjectForm = true;
+      Object.defineProperty(proto, action.method, {...own, value: wrapped});
+      break;
+    }
+  }
 }
 
 function defineActions(target, actions, implementations, events) {
@@ -495,8 +539,13 @@ function isShown(element) {
  *             camelCase keys before §11's language files). A word registered
  *             under an old key is said until the day, noted once in
  *             SF.deprecations.
+ *   positional
+ *             the actions whose method the class writes itself and takes the
+ *             `with` fields in declared order (`setData(data, reason)`): the
+ *             runtime gives each the object form too (§4.4), so
+ *             `setData({data, reason})` is the same call.
  */
-export function elementFromManifest(manifest, {base, lang = {}, source, aliases, actions = {}, formerWords} = {}) {
+export function elementFromManifest(manifest, {base, lang = {}, source, aliases, actions = {}, formerWords, positional = []} = {}) {
   const Base = base || globalThis.SF?.smart?.SfBaseElement;
   if (typeof Base !== 'function') throw new TypeError('elementFromManifest: a base class is required');
   const read = readManifest(manifest);
@@ -509,6 +558,7 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
   const words = Object.fromEntries(Object.entries(lang).map(([locale, file]) => [locale.toLowerCase(), {...(file?.runtime || {})}]));
   const sourceLanguage = source || Object.keys(words)[0] || '';
   const formerKeys = formerWords?.words || {};
+  const positionalActions = new Set([].concat(positional ?? []));
   const formAssociated = Boolean(read.form) && typeof globalThis.ElementInternals === 'function'
     && typeof globalThis.ElementInternals.prototype?.setFormValue === 'function';
 
@@ -528,6 +578,7 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
     constructor() {
       super();
       completeOwnAccessors(new.target, ManifestElement.prototype, read.members);
+      takeObjectForms(new.target, ManifestElement.prototype, read.actions, positionalActions);
       this.sfInternals = formAssociated && typeof this.attachInternals === 'function' ? this.attachInternals() : null;
     }
 

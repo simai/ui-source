@@ -324,9 +324,11 @@ export function createSortableInserter(list) {
     surface.setAttribute('aria-label', listName(list) ? `${text('menu')}: ${listName(list)}` : text('menu'));
     surface.search = { placeholder: text('search'), empty: text('empty') };
     surface.entries = toEntries(list);
-    const opened = await surface.openFor(button, { side: 'block-end', align: 'start', focus: 'first' });
+    // openFor answers an outcome (sf-menu-context 1.12.2); a menu of an earlier
+    // pair answered a boolean. The inserter's own answer stays a boolean.
+    const answer = await surface.openFor(button, { side: 'block-end', align: 'start', focus: 'first' });
     place();
-    return opened;
+    return answer === true || answer?.outcome === 'applied';
   }
 
   // A choice is the host's to apply: it hears the place and the kind, and a

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -409,8 +409,8 @@
       "emits": "open",
       "summary": "Open beside an element: top layer, anchored by SF.Position with flip and shift, focus on the first item (or 'last', or 'none'). The menu then owns its lifecycle: Escape, Tab, a press outside and a choice close it and return the focus -- to where it was, or to the anchor's own control when it was nowhere.",
       "x-returns": {
-        "type": "Promise<boolean>",
-        "description": "Resolves once the menu is rendered and open: whether it opened."
+        "type": "Promise<object>",
+        "description": "Resolves once the menu is rendered and open, to an outcome: {outcome: applied, value: true}; refused with prevented (a listener kept it closed) or invalid (the anchor is not an element); unavailable with no-surface."
       }
     },
     "toggle-for": {
@@ -431,8 +431,8 @@
       ],
       "summary": "Close when already open for this anchor, otherwise openFor().",
       "x-returns": {
-        "type": "Promise<boolean>",
-        "description": "Resolves to whether the menu is open afterwards."
+        "type": "Promise<object>",
+        "description": "Resolves to an outcome whose value says whether the menu is open afterwards: {outcome: applied, value: false} when it closed, openFor()'s outcome when it opened; refused with prevented when a listener kept it open."
       }
     },
     "close": {
@@ -855,7 +855,7 @@
     "version 1.10.0 (2026-11-08): a minor (owner decision 2026-11-07, docs review R030, rule C04; component.kbd 1.1.0, component.context-menu 1.4.2). An entry's shortcut is written as sf-button's is -- mod+c, shift+mod+z, escape, F2 -- and drawn in this platform's words: on an Apple platform the glyphs side by side (⇧⌘Z), elsewhere words joined with + (Ctrl+Shift+Z); a value that is not that notation (⇧⌘L, «Ctrl K») is shown as written. The keys are the kbd component's: <kbd class=\"sf-kbd--group sf-context-menu-item-shortcut\"> with a <kbd> per key; inside a menu the kbd sheet draws them as plain glyphs, 0.875em, in --sf-on-surface-variant (a disabled entry's in its ink). The menu sheet no longer styles them; kbd is a relation.",
     "version 1.11.0: an entry takes status: \"danger\" (\"error\" read as its alias), the status word every control uses (owner decision C13, docs review R031); danger: true keeps working.",
     "version 1.12.0 (2026-11-08; one number above the unreleased 1.11.0 and 1.10.1 it joins): a patch (C06, DEV measurement of the docs on ui-0c23f6a0af12; component.context-menu 1.4.3). In a menu without a leading column (no row has an icon, a tick or a picture) the search header's text stands over the rows' text and its icon at the header's end; the text stood a search icon and a gap (24-28px) right of the rows'. With a leading column nothing changes. Settings, entries, events and keys are unchanged.",
-    "version 1.13.2: the menu stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08) through the class context menu (component.context-menu 1.5.0) -- --sf-shadow-overlay on --sf-surface-popup, two layers at black 16 and 8 in the light theme where level 3 drew three at 24, 12 and 8. Settings, values, events and keys unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, close({reason}), setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). openFor(anchor, options?), toggleFor(anchor, options?) and chooseTab(index) stay positional in the reference, as the element's methods take them: openFor and toggleFor want the anchor element first, chooseTab the index (x-registry.action-calls positional). Settings, values, events and keys unchanged. Also: a submenu placed on the body takes the density of the menu it opens from (density, decision C22): a compact menu opens compact submenus."
+    "version 1.13.3: the menu stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08) through the class context menu (component.context-menu 1.5.0) -- --sf-shadow-overlay on --sf-surface-popup, two layers at black 16 and 8 in the light theme where level 3 drew three at 24, 12 and 8. Settings, values, events and keys unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, close({reason}), setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). openFor(anchor, options?), toggleFor(anchor, options?) and chooseTab(index) stay positional in the reference, as the element's methods take them: openFor and toggleFor want the anchor element first, chooseTab the index (x-registry.action-calls positional). Settings, values, events and keys unchanged. Also: a submenu placed on the body takes the density of the menu it opens from (density, decision C22): a compact menu opens compact submenus. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, close({reason}), setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). openFor(anchor, options?), toggleFor(anchor, options?) and chooseTab(index) stay positional in the reference, as the element's methods take them: openFor and toggleFor want the anchor element first, chooseTab the index (x-registry.action-calls positional). Settings, values, events and keys unchanged. Also: a patch, nothing drawn differently. openFor, toggleFor and chooseTab take the object form of their action too (standard §4.4): openFor({anchor, options}) opens, where it threw a TypeError, and chooseTab({index}) chooses, where it did nothing. The runtime gives the class-written methods that form (elementFromManifest's positional, core.runtime 1.43.0); the positional calls stay as they were. openFor and toggleFor answer an outcome (§4.4), not a boolean: applied with value true or false (open afterwards), refused with prevented or invalid, unavailable with no-surface; an anchor that is not an element is refused instead of thrown. A caller that tested the boolean reads `answer === true || answer?.outcome === 'applied'` (core effects, the sortable inserter and sf-settings do). The reference gives the three one object argument (x-registry.action-calls no longer says positional). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "item_contract": {
@@ -1094,9 +1094,6 @@
       "aria-label"
     ],
     "action-calls": {
-      "open-for": "positional",
-      "toggle-for": "positional",
-      "choose-tab": "positional",
       "show": "object|string"
     }
   }

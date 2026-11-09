@@ -428,7 +428,7 @@
       },
       {
         "path": "src/core/js/composition/sortable-inserter.mjs",
-        "sha256": "67123eafb7bf230e19533be3434297751770fefd6aa43ed0bded36c693b28682"
+        "sha256": "434c645059ee236032db5a208ab3ecb3714efe670c1ab98510dee1e45654c128"
       }
     ],
     "generated_runtime": []

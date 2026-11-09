@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -293,65 +293,79 @@
       "summary": "Open beside an element: top layer, anchored by SF.Position with flip and shift, focus on the first item (or 'last', or 'none'). The menu then owns its lifecycle: Escape, Tab, a press outside and a choice close it and return the focus -- to where it was, or to the anchor's own control when it was nowhere.",
       "arguments": [
         {
-          "name": "anchor",
-          "schema": {
-            "type": "object"
-          }
-        },
-        {
-          "name": "options",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
             "type": "object",
             "properties": {
-              "side": {
-                "type": "string",
-                "default": "block-end"
+              "anchor": {
+                "type": "object"
               },
-              "align": {
-                "type": "string",
-                "default": "start"
-              },
-              "focus": {
-                "type": "string",
-                "enum": [
-                  "first",
-                  "last",
-                  "none"
-                ],
-                "default": "first"
-              },
-              "offset": {
-                "type": "string",
-                "summary": "The gap between the anchor and the menu: a token (var(--sf-space-1\\/3)), a CSS length, or a number of pixels. Left out, --sf-space-1/4."
+              "options": {
+                "type": "object",
+                "properties": {
+                  "side": {
+                    "type": "string",
+                    "default": "block-end"
+                  },
+                  "align": {
+                    "type": "string",
+                    "default": "start"
+                  },
+                  "focus": {
+                    "type": "string",
+                    "enum": [
+                      "first",
+                      "last",
+                      "none"
+                    ],
+                    "default": "first"
+                  },
+                  "offset": {
+                    "type": "string",
+                    "summary": "The gap between the anchor and the menu: a token (var(--sf-space-1\\/3)), a CSS length, or a number of pixels. Left out, --sf-space-1/4."
+                  }
+                }
               }
-            }
+            },
+            "required": [
+              "anchor"
+            ]
           }
         }
       ],
       "returns": {
-        "type": "Promise<boolean>",
-        "description": "Resolves once the menu is rendered and open: whether it opened."
+        "type": "Promise<object>",
+        "description": "Resolves once the menu is rendered and open, to an outcome: {outcome: applied, value: true}; refused with prevented (a listener kept it closed) or invalid (the anchor is not an element); unavailable with no-surface."
       }
     },
     "toggleFor": {
       "summary": "Close when already open for this anchor, otherwise openFor().",
       "arguments": [
         {
-          "name": "anchor",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
-          }
-        },
-        {
-          "name": "options",
-          "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "anchor": {
+                "type": "object"
+              },
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "anchor"
+            ]
           }
         }
       ],
       "returns": {
-        "type": "Promise<boolean>",
-        "description": "Resolves to whether the menu is open afterwards."
+        "type": "Promise<object>",
+        "description": "Resolves to an outcome whose value says whether the menu is open afterwards: {outcome: applied, value: false} when it closed, openFor()'s outcome when it opened; refused with prevented when a listener kept it open."
       }
     },
     "close": {
@@ -389,9 +403,19 @@
       "summary": "Choose a tab by index and emit sf-context-menu-tab.",
       "arguments": [
         {
-          "name": "index",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "index"
+            ]
           }
         }
       ],

@@ -955,7 +955,10 @@ async function openAbout(document, x, y, choice) {
   document.body.append(anchor);
   aboutAnchor?.remove();
   aboutAnchor = anchor;
-  const opened = await menu.openFor(anchor, {side: 'block-end', align: 'start', focus: 'first'});
+  // openFor answers an outcome (sf-menu-context 1.12.2); a menu of an earlier
+  // pair answered a boolean.
+  const answer = await menu.openFor(anchor, {side: 'block-end', align: 'start', focus: 'first'});
+  const opened = answer === true || answer?.outcome === 'applied';
   if (!opened && aboutAnchor === anchor) {
     anchor.remove();
     aboutAnchor = null;

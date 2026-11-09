@@ -16,4 +16,8 @@ import './scss/index.scss';
 
 globalThis.SF = globalThis.SF || {};
 globalThis.SF.CompositionOverlay = Object.freeze({ OVERLAY_EVENTS, OVERLAY_EVENTS_FORMER_TAG, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, overlayNodes });
-defineCompositionOverlay(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
+// The overlay's methods take their fields in order (setNodes(nodes, options));
+// the runtime gives each the object form of §4.4 as well (setNodes({nodes,
+// options}), setMessages({messages})).
+const positional = ['attach', 'attach-frame', 'set-document', 'set-nodes', 'set-drop-filter', 'set-actions', 'set-messages', 'set-insertion-target', 'select', 'edit'];
+defineCompositionOverlay(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases, positional})});
