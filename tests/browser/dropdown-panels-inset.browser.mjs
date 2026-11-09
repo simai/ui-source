@@ -91,8 +91,9 @@ const KINDS = {
     area: '#x .sf-list-container-wrap',
     mark: 'sf-list-container-wrap--scrollbar',
     rows: '#x .sf-list-item[role="option"]',
-    first: (row) => row.querySelector('.sf-list-item-wrap')?.firstElementChild,
-    icon: (row) => row.querySelector('.sf-list-item-wrap > .sf-icon'),
+    // An icon row's picture is the glyph of an sf-icon (display: contents, sf-list-item 1.2.7).
+    first: (row) => { const first = row.querySelector('.sf-list-item-wrap')?.firstElementChild; return first?.localName === 'sf-icon' ? first.firstElementChild : first; },
+    icon: (row) => row.querySelector('.sf-list-item-wrap > .sf-icon, .sf-list-item-wrap > sf-icon > .sf-icon'),
     text: (row) => row.querySelector('.sf-list-item-container'),
     search: '#x .sf-list-search',
     searchIcon: '#x .sf-list-search-icon',

@@ -299,7 +299,7 @@ class SfContextMenu extends ContextMenuElement {
   // panel fitted to its room, a window made smaller.
   scrollArea() {
     return this.querySelector(".sf-context-menu-content--search > .sf-context-menu-list")
-      ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .relative > .sf-context-menu-content");
+      ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .sf-context-menu-frame > .sf-context-menu-content");
   }
 
   // The mark itself is shared with every dropping panel

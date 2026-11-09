@@ -42,7 +42,7 @@ async page => {
   check('native activation remains owned by the action', await page.evaluate(() => window.contextActions === 1));
   await page.keyboard.press('Tab');
   check('Tab leaves the composite menu for host-owned dismissal', await page.locator('#after').evaluate(node => node === document.activeElement));
-  check('surface keeps the required relative wrapper and renders no tail', await menu.evaluate(host => Boolean(host.querySelector(':scope > .sf-context-menu > .relative > .sf-context-menu-content')) && !host.querySelector('.sf-context-menu-tooltip')));
+  check('surface keeps its frame and renders no tail', await menu.evaluate(host => Boolean(host.querySelector(':scope > .sf-context-menu > .sf-context-menu-frame > .sf-context-menu-content')) && !host.querySelector('.sf-context-menu-tooltip')));
 
   await page.evaluate(() => document.documentElement.dir = 'rtl');
   check('preferred logical position remains direction-neutral in RTL', await menu.evaluate(host => host.position === 'bottom-inline-start'));

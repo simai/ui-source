@@ -16,7 +16,7 @@ test('Context Menu uses the semantic surface radius and draws no tail', () => {
 });
 
 test('Context Menu content owns bounded scrolling',()=>{
-  assert.match(custom,/\.sf-context-menu > \.relative \{/);
+  assert.match(custom,/\.sf-context-menu > :is\(\.relative, \.sf-context-menu-frame\) \{\s*position: relative;/);
   assert.match(custom,/--sf-context-menu-available-block-size, none/);
   assert.match(base,/\.sf-context-menu \.sf-context-menu-content \{[\s\S]*overflow: auto/);
   assert.match(base,/\.sf-context-menu \.sf-context-menu-content \{[\s\S]*scroll-behavior: auto/);
@@ -61,4 +61,16 @@ test('the C32 acceptance fixes are in the sources', () => {
   assert.match(list,/\.sf-list:not\(\[data-sf-portal\], \.sf-list--free-width\) \{[^}]*inline-size: max-content;/);
   assert.match(list,/\.sf-list\[data-sf-align="end"\]:not\(\[data-sf-portal\], \.sf-list--free-width\) \{\s*inset-inline-start: auto;\s*inset-inline-end: 0;/);
   assert.match(portal,/export function alignDropdownInPlace\(list\)/);
+});
+
+// The Smart menu's box is the sheet's, not utilities' (sf-menu-context 1.14.1):
+// on a Docara page the Loader linked utility/position after the first frame.
+test('Smart Context Menu lays its box out without utilities',async()=>{
+  const {readFile}=await import('node:fs/promises');
+  const template=await readFile(new URL('../src/smart/menu-context/js/templates/default.js',import.meta.url),'utf8');
+  assert.doesNotMatch(template,/class="relative"/);
+  assert.doesNotMatch(template,/^\s*"(?:flex|flex-col|flex-1)",$/mu);
+  assert.match(template,/<div class="sf-context-menu-frame">/);
+  assert.match(custom,/@layer sf\.base \{\s*\.sf-context-menu:has\(> \.sf-context-menu-frame\) \{\s*display: flex;/);
+  assert.match(custom,/\.sf-context-menu-frame > \.sf-context-menu-content \{\s*display: flex;\s*flex-direction: column;\s*flex: 1 1 0%;/);
 });

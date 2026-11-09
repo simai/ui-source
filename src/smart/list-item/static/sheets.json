@@ -21,6 +21,7 @@
     "utility/flex-direction/default/css/default.min.css",
     "utility/flex-wrap/default/css/default.min.css",
     "utility/flex/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/gap/default/css/default.min.css",
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css"
@@ -42,6 +43,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
@@ -62,6 +64,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
@@ -82,6 +85,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
@@ -102,6 +106,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
@@ -122,6 +127,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
@@ -142,6 +148,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/gap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css"
