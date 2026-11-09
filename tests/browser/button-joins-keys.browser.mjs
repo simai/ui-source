@@ -241,10 +241,7 @@ try {
     }
     for (const row of keyRows) {
       const key = seen.keys[row.id];
-      // The one look under the line for a reason outside the key, held at its
-      // floor: see KNOWN in button-shortcut-contrast.browser.mjs.
-      const known = theme === 'dark' && row.id === 'k-surface-on-surface-variant-none' && key.text >= 4.38;
-      if (key.text < 4.5 && !known) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
+      if (key.text < 4.5) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
       if (key.fillAgainstButton <= 1.05) failures.push(`${theme} ${row.id}: the key's fill does not show on the button (${key.fillAgainstButton}:1)`);
     }
     for (const row of widthRows) {

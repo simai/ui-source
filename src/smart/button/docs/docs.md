@@ -42,12 +42,17 @@ Main attributes:
   the `outline`, `surface` and `ghost` appearances is drawn the same way: the
   on-surface button with the label and the icons in `--sf-secondary`, at rest,
   hovered and pressed; `default` and `tonal` secondary keep their own fill.
+  `on-surface-variant` is not a look of `surface` (1.11.0, as C15 did on the
+  icon buttons: the quiet ink on the surface fill fell under 4.5:1 in the dark
+  theme); written there it draws as `on-surface` until 2027-01-01 and warns
+  once in the console. For a quiet search trigger take `tonal` or `outline`.
 - `status="danger"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone (1.9.0, decision C13:
   controls say `danger`, fields and messages say `error`; `error` is read as
   `danger`). It paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
-  control and only its colour says what it does. A status wins over the scheme,
+  control and only its colour says what it does -- on every appearance,
+  `surface` included (1.11.0: before, surface danger drew the plain ink). A status wins over the scheme,
   because the two cannot both colour the control.
 - `text`
 - `icon`
