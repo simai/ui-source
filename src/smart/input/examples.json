@@ -87,6 +87,19 @@
       }
     },
     {
+      "name": "shortcut",
+      "title": "Сочетание клавиш",
+      "settings": {
+        "label": "Поиск по разделу",
+        "placeholder": "Поиск",
+        "icon-start": "search",
+        "shortcut": "mod+k"
+      },
+      "expect": {
+        "shortcut": "mod+k"
+      }
+    },
+    {
       "name": "invalid",
       "title": "Ошибка",
       "settings": {

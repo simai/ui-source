@@ -57,23 +57,65 @@ test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha
   assert.match(keycap, /box-shadow: inset 0 calc\(-1 \* var\(--sf-px\)\) 0/u);
   const plain = css.slice(css.indexOf('@mixin plain'), css.indexOf('@layer'));
   assert.match(plain, /color: var\(--sf-kbd-plain-color, var\(--sf-on-surface-variant\)\)/u);
-  assert.match(plain, /font-size: 0\.875em/u);
+  // The row's own label step (C38): a variable, 1em by default.
+  assert.match(plain, /font-size: var\(--sf-kbd--plain-font-size, 1em\)/u);
   // Every mixed step is one of the alpha scale's eleven.
   for (const [, step] of css.matchAll(/currentColor (\d+)%/gu)) {
     assert.ok([4, 8, 12, 16, 20, 24, 28, 32, 48, 64, 80].includes(Number(step)), `${step}% is off the alpha scale`);
   }
 });
 
-test('Kbd sizes come from the text around it: em only in its own variables, no pixels', async () => {
+// Owner decision C38 (2026-11-09, replaces C04's 0.8125em / 1.6em): a cap or a
+// key takes the text step one below its place's -- the plate that step's line
+// height, the letters its size, never below 1/3. The kbd sheet reads the
+// place from its size and text classes: a host sets none of a key's
+// variables (the Framework never sets a public variable, and the internal
+// ones are the component's).
+test('Kbd sizes come from the ladder: the step below the place, never below 1/3', async () => {
   const css = await read('src/component/kbd/scss/_kbd.scss');
   const code = css.replace(/\/\/[^\n]*/gu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
   assert.doesNotMatch(code, /(?:^|[\s:(,])-?\d*\.?\d+(?:px|rem)\b/mu, 'no pixel or rem literal');
+  // em is left only where a plain glyph is the row's own text.
   for (const [declaration] of code.matchAll(/[^;{}\n]*\d\.?\d*em\b[^;{}\n]*/gu)) {
-    assert.match(declaration.trim(), /^(?:--sf-kbd--[a-z-]+: var\(--sf-kbd-[a-z-]+, [\d.]+em\)|[a-z-]+: var\(--sf-kbd-[a-z-]+, [\d.]+em\)|font-size: 0\.875em|gap: 0\.125em)$/u, declaration.trim());
+    assert.match(declaration.trim(), /^(?:font-size: var\(--sf-kbd--plain-font-size, 1em\)|gap: 0\.125em)$/u, declaration.trim());
   }
+  assert.match(code, /--sf-kbd--size: var\(--sf-kbd-size, var\(--sf-kbd--step-size, var\(--sf-text-height-1\\\/2\)\)\)/u);
+  assert.match(code, /font-size: var\(--sf-kbd-font-size, var\(--sf-kbd--step-font-size, var\(--sf-text-size-1\\\/2\)\)\)/u);
+  assert.match(code, /--sf-kbd--padding-inline: var\(--sf-kbd-padding-inline, var\(--sf-space-1\\\/4\)\)/u);
+  assert.doesNotMatch(code, /gap: var\(--sf-kbd-gap, (?!var\(--sf-space-1\\\/4\)\))/u);
   for (const token of ['--sf-radius--ui', '--sf-text--family', '--sf-font-weight-medium', '--sf-outline-variant', '--sf-on-surface-variant', '--sf-surface-1', '--sf-on-surface', '--sf-px']) {
     assert.ok(css.includes(token), `missing ${token}`);
   }
+  // The place list: each host size and text class says the step below its own.
+  const list = code.slice(code.indexOf('$steps: ('), code.indexOf('\n);', code.indexOf('$steps: (')));
+  const stepOf = {};
+  for (const [, step, places] of list.matchAll(/'([^']+)': \(((?:[^()]|\([^()]*\))*)\)/gu)) {
+    for (const [, place] of places.matchAll(/'([^']+)'/gu)) stepOf[place.replace(/\\\\/gu, '\\')] = step.replace(/\\\\/gu, '\\');
+  }
+  const expect = {'1\\/3': '1\\/3', '1\\/2': '1\\/3', 1: '1\\/2', 2: '1', 3: '2'};
+  for (const host of ['.sf-button.sf-button--size-', '.sf-input.sf-input--size-']) {
+    for (const [size, step] of Object.entries(expect)) assert.equal(stepOf[`${host}${size}`], step, `${host}${size}`);
+  }
+  for (const [place, step] of Object.entries({':root': '1\\/2', '[data-sf-density]:not(:root)': '1\\/2', '.sf-text-1\\/2': '1\\/3', '.text-small': '1\\/3', '.sf-text-1': '1\\/2', '.sf-text-2': '1', '.sf-text-3': '2'})) {
+    assert.equal(stepOf[place], step, place);
+  }
+  assert.match(code, /--sf-kbd--step-size: var\(--sf-text-height-#\{\$step\}\);\s*--sf-kbd--step-font-size: var\(--sf-text-size-#\{\$step\}\);/u);
+});
+
+// A bare control without a size class is the default size 1 and takes its
+// step, 1/2, not its text's (DEV review of C38, 2026-11-09). The rule comes
+// before the map, so a size class on the same element says otherwise.
+test('Kbd in a bare button, combobox or searchbox takes the control step', async () => {
+  const css = await read('src/component/kbd/scss/_kbd.scss');
+  const code = css.replace(/\/\/[^\n]*/gu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
+  const bare = /^\$bare-controls: '([^']+)';/mu.exec(code)?.[1] ?? '';
+  const places = bare.split(',').map((place) => place.trim());
+  for (const place of ['button', '[role="button"]', '[role="combobox"]', '[role="searchbox"]']) assert.ok(places.includes(place), `bare control ${place}`);
+  for (const place of places) assert.doesNotMatch(place, /\./u, `${place} is bare: no class`);
+  const rule = /:where\(#\{\$bare-controls\}\) \{\s*--sf-kbd--step-size: var\(--sf-text-height-1\\\/2\);\s*--sf-kbd--step-font-size: var\(--sf-text-size-1\\\/2\);\s*\}/u.exec(code);
+  assert.ok(rule, 'bare controls set step 1/2');
+  const map = code.indexOf('@each $step, $places in $steps');
+  assert.ok(map > 0 && rule.index < map, 'the bare rule comes before the size map');
 });
 
 test('Hosts render shortcuts through the shared view and never style a key', async () => {

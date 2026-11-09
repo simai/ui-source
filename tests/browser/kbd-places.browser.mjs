@@ -9,16 +9,17 @@
 // on Windows (the platform emulated before the page runs):
 //
 //   - caps in buttons and in the search trigger (filled, outline, link,
-//     tonal): no edge, the text face at weight 500, letters 0.8125em of the
-//     label, 1.6em high, a key of one character square, 0.25em apart; ink the
+//     tonal): no edge, the text face at weight 500, sized from the ladder
+//     (owner decision C38: a size 1 button's caps are step 1/2, 20 high with
+//     letters of 14), a key of one character square, --sf-space-1/4 apart; ink the
 //     label's own, fill that ink at 8 %; caps stand apart (a + written
 //     between Windows words is not drawn);
 //   - plain glyphs in a menu (sf-menu-context entries) and in a tooltip: no
-//     fill, no edge, no room, 0.875em of the row's text; in a menu
+//     fill, no edge, no room, the row's own text (C38); in a menu
 //     --sf-on-surface-variant, in a tooltip the tooltip's ink at 64 %; on a
 //     Mac ⇧⌘Z side by side, on Windows Ctrl+Shift+Z joined;
 //   - keycaps in running text: a 1px --sf-outline-variant edge and an inset
-//     bottom edge, the text face, 0.8125em;
+//     bottom edge, the text face, step 1/2 in body text (20/14);
 //   - appearance="plain" in a button and appearance="cap" in running text win
 //     over the place.
 import {createServer} from 'node:http';
@@ -135,7 +136,13 @@ const MEASURE = () => {
     };
   });
   const tipGroup = document.querySelector('#tip .sf-kbd--group');
+  const step = document.createElement('span');
+  step.style.cssText = 'position:absolute;display:block;block-size:var(--sf-text-height-1\\/2);inline-size:var(--sf-text-size-1\\/2);padding-inline-start:var(--sf-space-1\\/4)';
+  document.body.append(step);
+  const stepHalf = {height: step.getBoundingClientRect().height, letters: parseFloat(getComputedStyle(step).inlineSize), space: parseFloat(getComputedStyle(step).paddingInlineStart)};
+  step.remove();
   return {
+    stepHalf,
     textFamily: (() => { const probe = document.createElement('span'); probe.style.fontFamily = 'var(--sf-text--family)'; document.body.append(probe); const value = getComputedStyle(probe).fontFamily; probe.remove(); return value; })(),
     variant: role('--sf-on-surface-variant'),
     outlineVariant: role('--sf-outline-variant'),
@@ -200,12 +207,12 @@ try {
         if (JSON.stringify(caps) !== JSON.stringify(words[id])) fail(`${id} reads ${caps}, expected ${words[id]}`);
         if (drawn.joins.some((display) => display !== 'none')) fail(`${id} draws a + between caps`);
         if (platform === 'win' && drawn.keys.length > 1 && drawn.joins.length !== drawn.keys.length - 1) fail(`${id} wrote ${drawn.joins.length} joins between ${drawn.keys.length} Windows words`);
-        if (!near(drawn.gap, drawn.label.size * 0.25)) fail(`${id}: caps ${drawn.gap}px apart, not 0.25em of the label`);
+        if (!near(drawn.gap, m.stepHalf.space)) fail(`${id}: caps ${drawn.gap}px apart, not --sf-space-1/4 (${m.stepHalf.space}px)`);
         drawn.keys.forEach((key, at) => {
           if (key.border !== '0px' || key.shadow !== 'none') fail(`${id} ${key.text}: an edge (${key.border}, ${key.shadow})`);
           if (key.weight !== '500' || key.family !== m.textFamily) fail(`${id} ${key.text}: face ${key.weight} ${key.family}`);
-          if (!near(key.fontSize, drawn.label.size * 0.8125, 0.05)) fail(`${id} ${key.text}: letters ${key.fontSize}px, the label ${drawn.label.size}px`);
-          if (!near(key.height, key.fontSize * 1.6)) fail(`${id} ${key.text}: ${key.height}px high, not 1.6em of ${key.fontSize}px`);
+          if (!near(key.fontSize, m.stepHalf.letters, 0.05)) fail(`${id} ${key.text}: letters ${key.fontSize}px, not step 1/2 (${m.stepHalf.letters}px)`);
+          if (!near(key.height, m.stepHalf.height)) fail(`${id} ${key.text}: ${key.height}px high, not the step 1/2 line (${m.stepHalf.height}px)`);
           if (drawn.square[at] && !near(key.width, key.height)) fail(`${id} ${key.text}: a one-character key ${key.width}x${key.height}, not square`);
           if (!drawn.square[at] && key.width < key.height - 0.3) fail(`${id} ${key.text}: narrower than high`);
           if (!same(key.color, m.expectCap[id].ink) || !same(key.background, m.expectCap[id].fill)) fail(`${id} ${key.text}: ${key.color} on ${key.background}, expected ${m.expectCap[id].ink} on ${m.expectCap[id].fill}`);
@@ -221,7 +228,7 @@ try {
         for (const key of row.keys) {
           if (!key.background.endsWith(', 0)') && key.background !== 'transparent') fail(`${row.shown}: a fill ${key.background}`);
           if (key.border !== '0px' || key.padding !== 0) fail(`${row.shown}: an edge or room (${key.border}, ${key.padding})`);
-          if (!near(key.fontSize, key.parentSize * 0.875, 0.05)) fail(`${row.shown}: ${key.fontSize}px of a ${key.parentSize}px row`);
+          if (!near(key.fontSize, key.parentSize, 0.05)) fail(`${row.shown}: ${key.fontSize}px of a ${key.parentSize}px row`);
           const ink = row.disabled ? key.parentColor : row.variant;
           if (!same(key.color, ink)) fail(`${row.shown}${row.disabled ? ' (disabled)' : ''}: ink ${key.color}, expected ${ink}`);
         }
@@ -230,17 +237,17 @@ try {
       // Plain glyphs in a tooltip.
       for (const key of m.tip.keys) {
         if (!same(key.color, m.tip.expect)) fail(`tooltip ${key.text}: ink ${key.color}, expected the tooltip's at 64 % ${m.tip.expect}`);
-        if (key.border !== '0px' || key.padding !== 0 || !near(key.fontSize, key.parentSize * 0.875, 0.05)) fail(`tooltip ${key.text}: not plain`);
+        if (key.border !== '0px' || key.padding !== 0 || !near(key.fontSize, key.parentSize, 0.05)) fail(`tooltip ${key.text}: not plain`);
       }
 
       // Keycaps in running text.
       for (const key of m.prose) {
         if (key.border !== '1px' || key.borderColor !== m.outlineVariant || !key.shadow.includes('inset')) fail(`prose ${key.text}: edge ${key.border} ${key.borderColor} ${key.shadow}`);
-        if (key.family !== m.textFamily || !near(key.fontSize, key.parentSize * 0.8125, 0.05) || !near(key.height, key.fontSize * 1.6)) fail(`prose ${key.text}: ${key.family} ${key.fontSize}px ${key.height}px`);
+        if (key.family !== m.textFamily || !near(key.fontSize, m.stepHalf.letters, 0.05) || !near(key.height, m.stepHalf.height)) fail(`prose ${key.text}: ${key.family} ${key.fontSize}px ${key.height}px`);
       }
 
       // Said outright.
-      if (m.saidPlain.padding !== 0 || m.saidPlain.border !== '0px' || !near(m.saidPlain.fontSize, m.saidPlain.parentSize * 0.875, 0.05)) fail('appearance="plain" in a button is not plain');
+      if (m.saidPlain.padding !== 0 || m.saidPlain.border !== '0px' || !near(m.saidPlain.fontSize, m.saidPlain.parentSize, 0.05)) fail('appearance="plain" in a button is not plain');
       if (m.saidCap.border !== '0px' || m.saidCap.shadow !== 'none' || m.saidCap.background.endsWith(', 0)')) fail('appearance="cap" in running text is not a cap');
       await tab.close();
     }

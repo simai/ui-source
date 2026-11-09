@@ -38,6 +38,11 @@ Main attributes:
 - `name`
 - `icon-start`
 - `text-end`
+- `shortcut` — a key combination drawn at the end of the field as kbd keys
+  (`mod+k` reads ⌘K on a Mac, Ctrl K elsewhere) and written as
+  `aria-keyshortcuts` on the native input; the keys take the text step one
+  below the value's (decision C38). A hint only: the field does not listen to
+  it -- a page that focuses the field on the combination listens itself
 - `hint-icon`
 - `root-class`
 - `root-style`

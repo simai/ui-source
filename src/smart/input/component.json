@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
   "id": "smart.input",
   "tag": "sf-input",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -133,6 +133,11 @@
       "type": "string",
       "optional": true
     },
+    "shortcut": {
+      "type": "string",
+      "default": "",
+      "summary": "A key combination drawn at the end of the field as the kbd component's soft caps in the muted ink (owner decisions C04, C38): words joined by +, e.g. mod+k (⌘K on a Mac, Ctrl K elsewhere), shift+mod+p, / or escape; mod is Cmd on Apple platforms and Ctrl elsewhere. The keys take the text step one below the value's (size 1 a plate of 20 with letters of 14). Written as aria-keyshortcuts on the native input. A hint only: the field does not listen to it. Empty: no keys"
+    },
     "hint-icon": {
       "type": "icon",
       "default": ""
@@ -248,6 +253,13 @@
       "name": "icon-buttons",
       "$comment": [
         "The reset back to an inherited value is an icon button (simai/ui-source#28)."
+      ]
+    },
+    {
+      "name": "kbd",
+      "$comment": [
+        "The keys of a shortcut are the kbd component's (soft caps inside a field):",
+        "fetched with the field, so the first paint draws them as they stay."
       ]
     }
   ],
@@ -394,7 +406,8 @@
     "version 1.5.0 (2026-11-08): a minor (§4.10): input-type takes number and the settings min, max and step are added (Larena after sf-wizard, msg-12cd5ef6). A number field is the browser's own: min, max and step go to the native input as given (only on a number field), its validation is the field's -- range underflow, range overflow and step mismatch make the field and its form invalid, as required does -- and inputmode (numeric, decimal) picks the phone keyboard. The value stays a string, the text the native input holds, and the form submits it under name. A stepper with buttons stays sf-input-quantity.",
     "version 1.5.1: with a hint or an error and an inherited value, the inherited sentence is also a hidden note that aria-describedby names after the message, because a browser reads aria-describedby instead of aria-description and the sentence went unsaid (helpers/inherited-value.js, syncInheritedNote). Nothing is drawn differently.",
     "version 1.6.1 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
-    "version 1.6.0: size takes 1/3 and 3 again for sf-input alone, on the control ladder (--sf-ui-<size>--control-height): .sf-input drew no height at those steps and fell to its 20px line; radius (\"\", default, square, rounded) draws the field as sf-button's radius does, rounded a pill. Actions block, item 4 (docs review 2026-11-08)."
+    "version 1.6.0: size takes 1/3 and 3 again for sf-input alone, on the control ladder (--sf-ui-<size>--control-height): .sf-input drew no height at those steps and fell to its 20px line; radius (\"\", default, square, rounded) draws the field as sf-button's radius does, rounded a pill. Actions block, item 4 (docs review 2026-11-08).",
+    "version 1.7.0 (2026-11-09): a minor (§4.10): the setting shortcut (owner decision C38; C04 names the field beside the button). It draws the combination at the end of the field, after text-end, as the kbd component's keys -- <span class=\"sf-input-right sf-input-shortcut\" aria-hidden=\"true\"> holding <kbd class=\"sf-kbd--group\"> with a <kbd> per key (sf-kbd--square on a one-character key; off an Apple platform a <span class=\"sf-kbd-join\">+</span> between words) -- in the muted ink, and as aria-keyshortcuts on the native input. The keys take the text step one below the value's, read by the kbd sheet from the field's size class (component.kbd 1.3.0: 1/3 and 1/2 a plate of 16, 1 20, 2 24, 3 28), and the field's end is a centred flex row (component.inputs 1.3.0), so a key sits on the field's middle (it sat 1-2 px low). The field does not listen to the combination. kbd is a relation."
   ],
   "x-rule": {
     "$comment-after": [

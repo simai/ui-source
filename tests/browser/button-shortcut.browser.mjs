@@ -10,8 +10,10 @@
 // its size, the icon, the label and the keys on one centre line, the label
 // starting after the icon and the keys at the end; the label and the icon in
 // the quieter ink; the keys the kbd component's soft caps (owner decision
-// 2026-11-07, docs review R030, rule C04): sized from the label (0.8125em
-// letters, 1.6em high), their ink the label's own and their fill that ink
+// 2026-11-07, docs review R030, rule C04): sized from the ladder (owner
+// decision C38: the text step one below the label's -- a size 1 button's
+// caps are the line height and the size of step 1/2, 20/14 on a desktop,
+// 16/12 on a phone), their ink the label's own and their fill that ink
 // at 8 %, no edge; the key box the same before and after the kbd sheet
 // arrives.
 //
@@ -151,9 +153,15 @@ try {
     probe.style.position = 'absolute';
     const ladder = probe.getBoundingClientRect().height;
     probe.remove();
-    // A cap is 1.6em of letters at 0.8125em of the label (owner decision C04).
+    // A cap of a size 1 button is step 1/2: its line height high, its size
+    // the letters (owner decision C38).
     const labelSize = parseFloat(getComputedStyle(label).fontSize);
-    const keyLadder = labelSize * 0.8125 * 1.6;
+    const step = document.createElement('span');
+    step.style.cssText = 'position:absolute;display:block;block-size:var(--sf-text-height-1\\/2);inline-size:var(--sf-text-size-1\\/2)';
+    button.append(step);
+    const keyLadder = step.getBoundingClientRect().height;
+    const keyLetters = step.getBoundingClientRect().width;
+    step.remove();
     // The ink the caps should wear: the label's own, the fill that ink at 8 %.
     const mix = document.createElement('span');
     mix.style.color = getComputedStyle(label).color;
@@ -168,6 +176,7 @@ try {
       height: b.height,
       ladder,
       keyLadder,
+      keyLetters,
       width: b.width,
       stageInner: stage.width - 32,
       centres: [centre(box(icon)), centre(text), centre(box(group))].map((value) => Math.round((value - centre(b)) * 100) / 100),
@@ -194,8 +203,8 @@ try {
   seen.geometry = geometry;
   seen.firstBox = firstBox;
   if (Math.abs(geometry.height - geometry.ladder) > 0.5) failures.push(`the trigger is ${geometry.height}px tall, the size 1 control height is ${geometry.ladder}px`);
-  if (geometry.keyHeights.some((height) => Math.abs(height - geometry.keyLadder) > 0.5)) failures.push(`the keys are ${geometry.keyHeights}px tall, not 1.6em of 0.8125em of the label (${geometry.keyLadder}px)`);
-  if (Math.abs(parseFloat(geometry.keyFace[0]) - geometry.labelSize * 0.8125) > 0.05 || geometry.keyFace[1] !== '500') failures.push(`the caps' letters are ${geometry.keyFace}, not 0.8125em of the ${geometry.labelSize}px label at weight 500`);
+  if (geometry.keyHeights.some((height) => Math.abs(height - geometry.keyLadder) > 0.5)) failures.push(`the keys are ${geometry.keyHeights}px tall, not the step 1/2 line height (${geometry.keyLadder}px)`);
+  if (Math.abs(parseFloat(geometry.keyFace[0]) - geometry.keyLetters) > 0.05 || geometry.keyFace[1] !== '500') failures.push(`the caps' letters are ${geometry.keyFace}, not step 1/2 (${geometry.keyLetters}px) at weight 500`);
   if (geometry.keyColour !== geometry.capInk || geometry.keyFill !== geometry.capFill) failures.push(`the caps wear ${geometry.keyColour} on ${geometry.keyFill}, not the label's ink (${geometry.capInk}) on 8 % of it (${geometry.capFill})`);
   if (geometry.keyEdge !== '0px') failures.push(`a cap has an edge of ${geometry.keyEdge}`);
   if (Math.abs(geometry.width - geometry.stageInner) > 0.5) failures.push(`the stretched trigger is ${geometry.width}px wide in a ${geometry.stageInner}px row`);
@@ -252,7 +261,10 @@ try {
     button.append(probe);
     const ladder = probe.getBoundingClientRect().height;
     probe.remove();
-    const keyLadder = parseFloat(getComputedStyle(button.querySelector('.sf-button-text-container')).fontSize) * 0.8125 * 1.6;
+    probe.style.blockSize = 'var(--sf-text-height-1\\/2)';
+    button.append(probe);
+    const keyLadder = probe.getBoundingClientRect().height;
+    probe.remove();
     const b = button.getBoundingClientRect();
     const centre = (rect) => rect.top + rect.height / 2;
     return {

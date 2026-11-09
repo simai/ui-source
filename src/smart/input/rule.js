@@ -10,6 +10,9 @@ SF.RuleLoader['cl-input'] = {
     { name: 'cl-icon' },
     // The reset back to an inherited value is an icon button (simai/ui-source#28).
     { name: 'icon-buttons' },
+    // The keys of a shortcut are the kbd component's (soft caps inside a field):
+    // fetched with the field, so the first paint draws them as they stay.
+    { name: 'kbd' },
   ],
 };
 

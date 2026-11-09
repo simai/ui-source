@@ -1,6 +1,7 @@
 import { html, nothing } from 'lit';
 import { createFieldContract } from '../../../../component/field-contract';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
+import { ariaKeyShortcuts, parseShortcut, shortcutView } from '../../../../component/kbd/js/shortcut';
 import './default.css'
 export function renderInputTemplate(context) {
   const {
@@ -41,7 +42,13 @@ export function renderInputTemplate(context) {
     maskPlaceholderChar,
     maskOptions,
     ariaLabel,
+    shortcut,
   } = context;
+  // The shortcut's keys (C04, C38): the kbd component's, read in this
+  // platform's words; the field draws them at its end and never styles them.
+  // The native input says the combination in aria-keyshortcuts.
+  const {keys: shortcutKeys, join: shortcutJoin} = shortcutView(shortcut);
+  const keyShortcuts = ariaKeyShortcuts(parseShortcut(shortcut));
   const maskLazyValue = maskLazy === '' ? '' : String(maskLazy);
   // A number field (1.5.0) takes the native range and step; other types do
   // not carry them.
@@ -119,6 +126,7 @@ export function renderInputTemplate(context) {
       ? context.component.getSlotContent('right')
       : html`
           ${rightText ? html`<span class="sf-input-right"><span class="sf-input-text">${rightText}</span></span>` : ''}
+          ${shortcutKeys.length ? html`<span class="sf-input-right sf-input-shortcut" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutKeys.map((key, at) => html`${at && shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${key.square ? 'sf-kbd--square' : nothing}>${key.text}</kbd>`)}</kbd></span>` : ''}
           ${hintIcon ? html`<span class="sf-input-hint flex"><sf-icon icon="${hintIcon}"></sf-icon></span>` : ''}
         `;
 
@@ -179,6 +187,7 @@ export function renderInputTemplate(context) {
                 ?readonly=${readonly}
                 ?required=${field.required}
                 aria-label=${accessibleName}
+                aria-keyshortcuts=${keyShortcuts || nothing}
                 aria-invalid=${field.invalid ? 'true' : nothing}
                 aria-describedby=${messageContent ? field.messageId : nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}
@@ -209,6 +218,7 @@ export function renderInputTemplate(context) {
                 ?readonly=${readonly}
                 ?required=${field.required}
                 aria-label=${accessibleName}
+                aria-keyshortcuts=${keyShortcuts || nothing}
                 aria-invalid=${field.invalid ? 'true' : nothing}
                 aria-describedby=${messageContent ? field.messageId : nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}

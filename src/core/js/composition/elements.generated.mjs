@@ -302,7 +302,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.11.0"
+    "version": "1.11.1"
   },
   "sf-button-icon": {
     "inputs": {
@@ -888,6 +888,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "shortcut": {
+          "default": "",
+          "type": "string"
+        },
         "size": {
           "default": "1",
           "enum": [
@@ -916,7 +920,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.6.1"
+    "version": "1.7.0"
   },
   "sf-input-textarea": {
     "inputs": {
