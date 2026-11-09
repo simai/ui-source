@@ -33,7 +33,7 @@ import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
 import {chromium} from 'playwright';
-import {PATH_LINE, lineOk} from './menu-path-line.mjs';
+import {PATH_LINE, lineOk} from '../fixtures/menu-path-line.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
