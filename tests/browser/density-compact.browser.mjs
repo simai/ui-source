@@ -73,8 +73,8 @@ const body = () => SUBJECTS.map(([name, size, markup]) => `<section class="row" 
   <div class="cell" id="menu--compact" data-sf-density="compact" style="inline-size:240px"><sf-menu aria-label="Разделы" items='${items}'></sf-menu></div>
 </section>
 <section class="row" data-name="layers" data-sf-density="compact">
-  <sf-drawer id="layer-drawer" size="1/2" label="Панель"><div class="layer-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-drawer>
-  <sf-modal id="layer-modal" size="1/2" heading="Окно"><div slot="content" class="layer-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-modal>
+  <sf-drawer id="layer-drawer" size="1/2" label="Панель"><div class="layer-probe" id="layer-drawer-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-drawer>
+  <sf-modal id="layer-modal" size="1/2" heading="Окно"><div slot="content" class="layer-probe" id="layer-modal-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-modal>
 </section>
 <section class="row" data-name="ladder">
   <div class="cell" id="ladder--normal"><i class="probe" style="block-size:var(--sf-ui-1--control-height)"></i><i class="icon" style="block-size:var(--sf-icon-size-3)"></i><span class="text" style="font-size:var(--sf-text-size-1)">Т</span><p class="body">Текст</p></div>
@@ -172,10 +172,9 @@ try {
         const layers = {};
         for (const id of ['layer-drawer', 'layer-modal']) {
           await tab.evaluate((name) => document.getElementById(name).open(), id);
-          await tab.waitForFunction(() => Array.from(document.querySelectorAll('.layer-probe .sf-button')).some((button) => button.getBoundingClientRect().height > 0), null, {timeout: 10000});
+          await tab.waitForFunction((name) => Array.from(document.querySelectorAll(`#${name}-probe .sf-button`)).some((button) => button.getBoundingClientRect().height > 0), id, {timeout: 10000});
           await tab.waitForTimeout(300);
-          layers[id] = await tab.evaluate(() => Array.from(document.querySelectorAll('.layer-probe')).filter((probe) => probe.getBoundingClientRect().height > 0)
-            .flatMap((probe) => Array.from(probe.querySelectorAll('.sf-button')).map((button) => Math.round(button.getBoundingClientRect().height))));
+          layers[id] = await tab.evaluate((name) => Array.from(document.querySelectorAll(`#${name}-probe .sf-button`)).map((button) => Math.round(button.getBoundingClientRect().height)), id);
           await tab.evaluate((name) => document.getElementById(name).close?.(), id);
           await tab.waitForTimeout(300);
         }

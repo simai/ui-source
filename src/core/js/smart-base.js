@@ -616,6 +616,10 @@ class SfBaseElement extends HTMLElement {
     this.constructor.ensureStyleReadinessCss();
     this.captureHostStyle();
     this.applyHostDisplayStyle();
+    // The sized elements the page put in this element are the page's (density,
+    // C22): taken before anything moves them (a drawer takes its content to
+    // its panel at the end of the body).
+    if (!this._sfSizedBefore) this._sfSizedBefore = sizedBefore(this);
     this.captureSlotTemplates();
     this.markSizeScale();
     this.__sfSourceCaptured = true;
@@ -2590,7 +2594,7 @@ class SfBaseElement extends HTMLElement {
   drawInto(result, container) {
     if (!container) return;
     drawing(() => render(result, container));
-    markRelativeSizes(container, container === this ? (this._sfSizedBefore ??= sizedBefore(this)) : null);
+    markRelativeSizes(container, this._sfSizedBefore ??= sizedBefore(this));
   }
 
   // A copy of captured page content is the page's as well (density, C22): a
