@@ -100,6 +100,8 @@ const FOLDERS = {
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.
   code: 'core',
+  // The code block (2026-11-09, simai/ui-source#31): the code surface's corner, fill, ink and edge.
+  highlight: 'highlight',
   // Keys (2026-11-08, R030, rule C04): one look per place, in the kbd sheet.
   kbd: 'kbd',
   // The display parts of the structured-content types (2026-11-01): CSS only.
