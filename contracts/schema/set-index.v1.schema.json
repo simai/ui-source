@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/set-index.v1.json",
-  "x-simai-version": "1.1.0",
+  "x-simai-version": "1.2.0",
   "title": "SIMAI Framework component set compatibility index",
-  "description": "The one compatibility index of every component set (standard simai.component-set, one-compatibility-index): one row per set release, with the npm version, the SIMAI Framework it was built over and the lowest core.runtime it needs, the sets it requires and the digest of its receipt. The Loader reads it to place a set a page names without a base: the newest release of the set whose core_runtime this Core meets, served from @simai-studio/<set>@<version>/dist/smart. Published as index.json of the npm package @simai-studio/sets (the Loader reads https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json unless SF_BOOT_CONFIG.setIndex says otherwise); written only by the set release route (ui-builder scripts/set-index.py), never by hand. A row is never removed and its facts never change: a fix is a new release and a new row. Since 1.1.0 a row may carry pairs, the further free pairs the same release, unchanged, was re-receipted over (ui-builder scripts/pair-receipt.py); pairs only grows. The Loader chooses by core_runtime and does not read pairs.",
+  "description": "The one compatibility index of every component set (standard simai.component-set, one-compatibility-index): one row per set release, with the npm version, the SIMAI Framework it was built over and the lowest core.runtime it needs, the sets it requires and the digest of its receipt. The Loader reads it to place a set a page names without a base: the newest release of the set whose core_runtime this Core meets, served from @simai-studio/<set>@<version>/dist/smart. Published as index.json of the npm package @simai-studio/sets (the Loader reads https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json unless SF_BOOT_CONFIG.setIndex says otherwise); written only by the set release route (ui-builder scripts/set-index.py), never by hand. A row is never removed and its facts never change: a fix is a new release and a new row. Since 1.1.0 a row may carry pairs, the further free pairs the same release, unchanged, was re-receipted over (ui-builder scripts/pair-receipt.py); pairs only grows. Since 1.2.0 a row may carry range, the digests of its pair range (ui-builder scripts/set-pair-range.py): the SIMAI Framework interface its released bytes take from the free pair, by which a consumer that pins exact pairs may accept the release over another pair that still offers it; a row's range is set once. The Loader chooses by core_runtime and reads neither pairs nor range.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "schema_version", "sets", "releases"],
@@ -87,6 +87,16 @@
                 "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the pair receipt file."},
                 "received_on": {"type": "string", "format": "date"}
               }
+            }
+          },
+          "range": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sha256", "interface_sha256"],
+            "description": "Since 1.2.0. The pair range of the release (simai.framework.set-pair-range v1, the GitHub release asset pair-range.json and contracts/pair-ranges/<release>.json in the set's repository), written once from the released bytes over framework.pair: what they take from the free pair at runtime (core.runtime minimum, shared runtime ABI and imported names, relations to free rules, its own tags, the free tags it renders, its package core folder, the --sf-* properties it reads bare, the public window.SF names it calls). A consumer that pins exact pairs may accept the release over a pair where every requirement still holds; the range covers no behaviour behind an unchanged interface. Set once, never changed.",
+            "properties": {
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the pair range file, byte for byte."},
+              "interface_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "The sha256 of the canonical JSON of the range's requires (keys sorted, separators , and :, UTF-8, / and non-ASCII unescaped): two releases with the same digest need the same things of a pair."}
             }
           }
         }

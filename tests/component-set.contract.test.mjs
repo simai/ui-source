@@ -15,7 +15,7 @@ const root = new URL('../', import.meta.url);
 const read = (relative) => readFileSync(new URL(relative, root));
 const json = (relative) => JSON.parse(read(relative).toString('utf8'));
 
-const STANDARD = 'contracts/standards/simai.component-set/1.1.1/standard.json';
+const STANDARD = 'contracts/standards/simai.component-set/1.2.0/standard.json';
 const PASSPORT_SCHEMA = 'contracts/schema/component-set.v1.schema.json';
 const REGISTRY_SCHEMA = 'contracts/schema/name-registry.v1.schema.json';
 const REGISTRY = 'contracts/registry/names.json';
@@ -94,7 +94,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
 });
 
 test('the standards index lists the set standard', () => {
-  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.1\.1 \|/u);
+  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.2\.0 \|/u);
 });
 
 test('a set passport takes the pinned form and its own rules', () => {
@@ -126,7 +126,7 @@ test('a set passport takes the pinned form and its own rules', () => {
 test('the compatibility index takes its pinned form, pairs included', () => {
   const schema = json(INDEX_SCHEMA);
   const index = json(INDEX_FIXTURE);
-  assert.equal(schema['x-simai-version'], '1.1.0');
+  assert.equal(schema['x-simai-version'], '1.2.0');
   assert.deepEqual(validate(schema, index), []);
   const listed = index.releases.filter((row) => row.pairs);
   assert.ok(listed.length > 0, 'the fixture holds a row with pairs');
@@ -143,6 +143,26 @@ test('the compatibility index takes its pinned form, pairs included', () => {
   assert.notDeepEqual(broken((value) => { value.releases[0].pairs[0].version = '1.0.1'; return value; }), [], 'an unknown key in a pair');
   assert.notDeepEqual(broken((value) => { delete value.releases[0].pairs[0].receipt_sha256; return value; }), [], 'a pair without its receipt digest');
   assert.notDeepEqual(broken((value) => { value.releases[0].note = 'x'; return value; }), [], 'an unknown row key');
+});
+
+// Standard 1.2.0 (owner decision 2026-11-09, set pair ranges): a release row
+// may name its pair range by two digests, the range file's and its interface's.
+test('a release row names its pair range by its two digests and nothing else', () => {
+  const schema = json(INDEX_SCHEMA);
+  const index = json(INDEX_FIXTURE);
+  const ranged = index.releases.filter((row) => row.range);
+  assert.ok(ranged.length > 0, 'the fixture holds a row with a range');
+  for (const row of ranged) assert.deepEqual(Object.keys(row.range).sort(), ['interface_sha256', 'sha256'], row.release);
+  const at = index.releases.indexOf(ranged[0]);
+  const broken = (change) => validate(schema, change(structuredClone(index)));
+  assert.notDeepEqual(broken((value) => { delete value.releases[at].range.interface_sha256; return value; }), [], 'a range without its interface digest');
+  assert.notDeepEqual(broken((value) => { value.releases[at].range.sha256 = 'x'; return value; }), [], 'a digest that is not 64 hex');
+  assert.notDeepEqual(broken((value) => { value.releases[at].range.pairs = ['ui-1ec283e856cd']; return value; }), [], 'a range is not a list of pairs');
+  const standard = json(STANDARD);
+  const route = standard.requirements.find(({id}) => id === 'one-release-route');
+  assert.match(route.text, /pair-range\.json/u);
+  assert.match(route.text, /contracts\/pair-ranges\/<release>\.json/u);
+  assert.match(standard.requirements.find(({id}) => id === 'one-framework-pair').text, /pair range/u);
 });
 
 test('the shared name registry takes its pinned form', () => {
