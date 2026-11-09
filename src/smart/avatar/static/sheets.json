@@ -208,6 +208,26 @@
       "utility/white-space/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
+    "hue-purple": [
+      "component/avatars/css/avatars.min.css",
+      "component/badges/css/badges.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/background-color/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/element-position/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/height/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/overflow/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css",
+      "utility/white-space/default/css/default.min.css",
+      "utility/width/default/css/default.min.css"
+    ],
     "hue-sky": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
@@ -229,26 +249,6 @@
       "utility/width/default/css/default.min.css"
     ],
     "hue-teal": [
-      "component/avatars/css/avatars.min.css",
-      "component/badges/css/badges.min.css",
-      "core/css/core.css",
-      "utility/align-items/default/css/default.min.css",
-      "utility/background-color/default/css/default.min.css",
-      "utility/display/default/css/default.min.css",
-      "utility/element-position/default/css/default.min.css",
-      "utility/flex-direction/default/css/default.min.css",
-      "utility/flex/default/css/default.min.css",
-      "utility/height/default/css/default.min.css",
-      "utility/justify-content/default/css/default.min.css",
-      "utility/overflow/default/css/default.min.css",
-      "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css",
-      "utility/text-overflow/default/css/default.min.css",
-      "utility/transition-property/default/css/default.min.css",
-      "utility/white-space/default/css/default.min.css",
-      "utility/width/default/css/default.min.css"
-    ],
-    "hue-violet": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
       "core/css/core.css",
