@@ -652,7 +652,37 @@ export function installIconSubsetRuntime(
     return true;
   };
 
+  // A disclosure swaps its glyph when it opens or closes (the menus' ⌄ / ⌃,
+  // a column's › / ⌄). The glyph it swaps to goes in the same font request
+  // as the one drawn, so the swap never waits for a second font with the
+  // icon blank: each name here brings its partners along, with the same
+  // weight, fill, grade, size and style.
+  const iconSwapPartners = Object.freeze({
+    keyboard_arrow_down: ["keyboard_arrow_up", "chevron_right"],
+    keyboard_arrow_up: ["keyboard_arrow_down"],
+    chevron_right: ["keyboard_arrow_down"],
+    expand_more: ["expand_less"],
+    expand_less: ["expand_more"],
+    arrow_drop_down: ["arrow_drop_up"],
+    arrow_drop_up: ["arrow_drop_down"],
+  });
+
   SFLoaderPlugin.prototype.trackIconDescriptor = function (
+    icon = "",
+    attrs = {},
+  ) {
+    const normalizedIcon = String(icon || "").trim();
+    let added = this.trackIconDescriptorOnly(normalizedIcon, attrs);
+    const partners = Object.hasOwn(iconSwapPartners, normalizedIcon)
+      ? iconSwapPartners[normalizedIcon]
+      : [];
+    partners.forEach((partner) => {
+      added += this.trackIconDescriptorOnly(partner, attrs);
+    });
+    return added;
+  };
+
+  SFLoaderPlugin.prototype.trackIconDescriptorOnly = function (
     icon = "",
     attrs = {},
   ) {
