@@ -1,5 +1,5 @@
 import SfBaseElement from "../../core/js/smart-base";
-import { followDensity } from "../../core/js/density.js";
+import { densityOf, followDensity, RELATIVE } from "../../core/js/density.js";
 import { elementFromManifest } from "../../core/js/element-manifest";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
@@ -821,6 +821,14 @@ class SfContextMenu extends ContextMenuElement {
     };
     anchor.setAttribute("aria-haspopup", "menu");
     anchor.setAttribute("aria-expanded", "true");
+    // The density of the control that opens it (C22): the panel is drawn
+    // where the menu element stands -- often on <body>, outside the compact
+    // region of the toolbar or table that opens it -- so two menus of one
+    // compact page drew at two sizes. A size the page gave the menu wins.
+    if (!this.hasAttribute("size") || this.hasAttribute(RELATIVE)) {
+      this._owned.density = surface.getAttribute("data-sf-density");
+      surface.setAttribute("data-sf-density", densityOf(anchor) ?? "normal");
+    }
     // The top layer, where the platform has it: above every stacking context
     // and every clipping box, so a menu in a scrolled card is never cut and
     // never under the table it belongs to.
@@ -900,6 +908,10 @@ class SfContextMenu extends ContextMenuElement {
       surface.removeAttribute("popover");
       surface.classList.remove("sf-context-menu--open");
       surface.style.removeProperty("z-index");
+      if (owned.density !== undefined) {
+        if (owned.density === null) surface.removeAttribute("data-sf-density");
+        else surface.setAttribute("data-sf-density", owned.density);
+      }
     }
     const {anchor} = owned;
     if (owned.haspopup === null) anchor.removeAttribute("aria-haspopup");
@@ -947,7 +959,7 @@ class SfContextMenu extends ContextMenuElement {
       }
     });
     // In the density of the menu it opens from, wherever it is placed (C22).
-    followDensity(child, this);
+    followDensity(child, this.surface() ?? this);
     (this.closest("dialog[open]") || document.body).append(child);
     this._submenu = child;
     // The submenu's first row stands level with the row that opened it: the

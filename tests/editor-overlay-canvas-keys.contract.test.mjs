@@ -182,8 +182,8 @@ test('the version moves to 1.5.1 or later in the manifests', async () => {
   const manifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   const component = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/component.json', import.meta.url), 'utf8'));
   // 1.5.2 carries the counted sortable id on top of 1.5.1; 1.5.3 its first-paint list after the actions block; 1.5.4 the action-calls record; 1.5.5 the object form of its actions.
-  // 1.6.0: the toolbar is the overlay place (C20).
-  assert.equal(component.version, '1.6.3');
-  assert.equal(manifest.version, '1.6.3');
+  // 1.6.0: the toolbar is the overlay place (C20); the light tooltip of its icon actions (fix/tooltip-light).
+  assert.equal(component.version, '1.6.4');
+  assert.equal(manifest.version, '1.6.4');
   assert.ok(component['x-decisions'].some((entry) => entry.startsWith('version 1.5.1 (simai/ui-source#62')), 'the decision is recorded');
 });

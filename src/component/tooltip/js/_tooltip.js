@@ -42,6 +42,16 @@ function arrowPlacement(arrow, rtl) {
 }
 
 const tooltipInstances = new WeakMap();
+
+// Whether the focus shows (the platform's :focus-visible); where the selector
+// is unknown, the focus counts as shown, as before.
+function focusVisible(element) {
+  try {
+    return element?.matches?.(':focus-visible') !== false;
+  } catch {
+    return true;
+  }
+}
 const TRIGGER_SELECTOR = '[data-tooltip]';
 const SURFACE_SELECTOR = '.sf-tooltip, sf-tooltip';
 
@@ -68,6 +78,7 @@ class SfTooltipController {
     this.onPointerLeave = this.handlePointerLeave.bind(this);
     this.onFocusIn = this.handleFocusIn.bind(this);
     this.onFocusOut = this.handleFocusOut.bind(this);
+    this.onPress = this.handlePress.bind(this);
     this.onDocumentKeydown = this.handleDocumentKeydown.bind(this);
   }
 
@@ -125,6 +136,8 @@ class SfTooltipController {
     pointerRoot.addEventListener('pointerleave', this.onPointerLeave);
     this.trigger.addEventListener('focusin', this.onFocusIn);
     this.trigger.addEventListener('focusout', this.onFocusOut);
+    this.trigger.addEventListener('pointerdown', this.onPress);
+    this.trigger.addEventListener('click', this.onPress);
     tooltipInstances.set(this.trigger, this);
   }
 
@@ -137,6 +150,8 @@ class SfTooltipController {
     pointerRoot.removeEventListener('pointerleave', this.onPointerLeave);
     this.trigger.removeEventListener('focusin', this.onFocusIn);
     this.trigger.removeEventListener('focusout', this.onFocusOut);
+    this.trigger.removeEventListener('pointerdown', this.onPress);
+    this.trigger.removeEventListener('click', this.onPress);
     this.trigger.ownerDocument.removeEventListener(
       'keydown',
       this.onDocumentKeydown,
@@ -163,17 +178,33 @@ class SfTooltipController {
     if (!this.dismissed) this.open();
   }
 
+  // The pointer leaves: the tooltip goes unless keyboard focus holds it. A
+  // focus a press left (not :focus-visible) does not, and the next hover
+  // shows the tooltip again.
   handlePointerLeave() {
     this.pointerInside = false;
-    if (!this.focusInside) {
+    const active = this.trigger.ownerDocument.activeElement;
+    if (!this.focusInside || !focusVisible(active)) {
       this.dismissed = false;
       this.close();
     }
   }
 
-  handleFocusIn() {
+  // Keyboard focus only (:focus-visible): the focus a mouse press leaves on a
+  // button is not a reason to describe it, and a tooltip that rose after a
+  // click stayed over what the click opened (owner, 2026-11-09).
+  handleFocusIn(event) {
     this.focusInside = true;
-    if (!this.dismissed) this.open();
+    if (!this.dismissed && focusVisible(event?.target ?? this.trigger)) this.open();
+  }
+
+  // A press on the trigger -- a pointer, or Enter or Space that click it --
+  // hides the tooltip; it stays hidden until the pointer leaves and the focus
+  // goes. A pointer press comes before the focus it gives, so that focus
+  // does not show it either.
+  handlePress() {
+    this.dismissed = true;
+    this.close();
   }
 
   handleFocusOut() {

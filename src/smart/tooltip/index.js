@@ -23,8 +23,9 @@ class SfTooltip extends TooltipElement {
       ...super.props,
       templateName: { attribute: 'template', default: 'default' },
       // The axis is called appearance, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      appearance: { type: String, default: 'light', values: ['light', 'dark'], aliases: ['type'] },
+      // `type` keeps working: see contracts/public-api-axes.json. dark, the
+      // inverse surface, is the plain tooltip and the default (1.2.0).
+      appearance: { type: String, default: 'dark', values: ['light', 'dark'], aliases: ['type'] },
     };
   }
 

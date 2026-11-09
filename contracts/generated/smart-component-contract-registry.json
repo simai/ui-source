@@ -3087,6 +3087,7 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.kbd",
           "component.tooltip"
         ]
       },
@@ -3099,7 +3100,7 @@
       "kind": "smart",
       "lifecycle": "released",
       "manifest_path": "src/smart/tooltip/smart.manifest.json",
-      "manifest_sha256": "66b9508070f635a503733afe3ecfed7ae4709bbbd9abe9cb3b867d925acfeae1",
+      "manifest_sha256": "4671995ecdead18f6c51d813fe21fc1c4c634c434be3cda8d21093e3eb400075",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
