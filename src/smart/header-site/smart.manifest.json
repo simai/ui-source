@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.3.2",
+  "version": "1.5.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -351,11 +351,11 @@
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "216ebfb7c9fbb256fddcbb4879e06c2535247b3aea980a1e1fe214206b87fc80"
+        "sha256": "99f489890f88bb5bf6de00da38e1a35ac327bdac4f710fc8d64c25216341e3ee"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "7a034f536f95c224de45c62573b086c38e127c799e5953765a4ea6332504dccd"
+        "sha256": "7da7fb8144feea568d38bfddf432ddd2e8b40b8120a571a42cf96ccb7cad6372"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -363,7 +363,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "669bebc09776f7f9192dd31ac4c298e816818264a3bcfa0a47dc1bd8d49fe2f8"
+        "sha256": "c032bab9232cc4de67f7c921c4c705935850a98188be4e8a9057d5ff112fc94b"
       }
     ],
     "generated_runtime": []
@@ -380,7 +380,7 @@
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-header-site>",
+    "minimal_example": "<sf-header-site><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-segmented slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-segmented></sf-header-site>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

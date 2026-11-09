@@ -7,14 +7,22 @@ import { URL } from 'node:url';
 const source = (file) => readFile(new URL(`../${file}`, import.meta.url), 'utf8');
 const uiDoc = (file) => readFile(`${process.env.UI_DOC_ROOT}/${file}`, 'utf8');
 
-test('Close remains a decorative glyph and the native Icon Button owns the action', async () => {
+test('Close is a native button standalone and stays a decorative glyph inside a containing button', async () => {
+  // Owner decision C14 (sf-button-close 1.2.0): standalone, the element draws a
+  // native <button> with a name; inside a containing button it draws only the
+  // aria-hidden cross and the containing button owns the name and the action.
   const template = await source('src/smart/button-close/js/templates/default.js');
+  const runtime = await source('src/smart/button-close/index.js');
   const manifest = JSON.parse(await source('src/smart/button-close/smart.manifest.json'));
+  assert.match(template, /<button\s+type="button"/);
+  assert.match(template, /aria-label=\$\{context\.label\}/);
+  assert.match(template, /if \(context\.glyph\) return renderCross/);
   assert.match(template, /aria-hidden="true"/);
-  assert.doesNotMatch(template, /<button|tabindex|aria-label/);
-  assert.deepEqual(manifest.accessibility.keyboard, []);
-  assert.equal(manifest.accessibility.accessible_name, 'internal');
-  assert.match(manifest.accessibility.focus, /containing native button/i);
+  assert.doesNotMatch(template, /tabindex/);
+  assert.match(runtime, /sfWord\('close'\)/);
+  assert.match(runtime, /closest\?\.\(CONTAINER\)/);
+  assert.equal(manifest.accessibility.role, 'button');
+  assert.equal(manifest.accessibility.accessible_name, 'recommended');
 });
 
 test('Smart Close closes the complete released size axis and rejects unknown input', async () => {

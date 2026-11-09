@@ -27,7 +27,7 @@ export function renderListFeedTemplate(context) {
         >
             <div class="sf-list-feed__earlier" ?hidden=${!context.hasMore}>
                 <sf-button
-                        appearance="link"
+                        appearance="ghost"
                         scheme="on-surface"
                         size="1/2"
                         icon="expand_less"
@@ -43,7 +43,7 @@ export function renderListFeedTemplate(context) {
             ${context.column}
             <div class="sf-list-feed__jump" hidden>
                 <sf-button-icon
-                        appearance="surface"
+                        appearance="tonal"
                         scheme="on-surface"
                         size="1"
                         radius="rounded"

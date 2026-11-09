@@ -167,11 +167,11 @@ export function renderTabsTemplate(context) {
             (item) => renderTab(item, context))}
         </div>
         ${context.overflow === 'more' && !vertical
-          ? html`<sf-button class="sf-tabs-more" appearance="link" scheme="on-surface" size=${context.size}
+          ? html`<sf-button class="sf-tabs-more" appearance="ghost" scheme="on-surface" size=${context.size}
                             icon-end="expand_more" text=${context.moreText} aria-haspopup="menu"></sf-button>`
           : nothing}
         ${context.configurable
-          ? html`<sf-button-icon class="sf-tabs-settings" appearance="link" scheme="on-surface" size=${context.size}
+          ? html`<sf-button-icon class="sf-tabs-settings" appearance="ghost" scheme="on-surface" size=${context.size}
                                  icon="tune" aria-label=${context.customizeText} title=${context.customizeText}
                                  aria-haspopup="dialog"></sf-button-icon>`
           : nothing}

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.0.2",
+  "version": "1.2.1",
   "title": "Progress",
   "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
   "kind": "smart",
@@ -387,11 +387,11 @@
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
-        "sha256": "1c363b44454ad0739f488ff27d79662302764cdf329e9aa1da8e4eddde3b81b1"
+        "sha256": "259b6bef056d91e2ff23d3ae63a7e2570e056c058f977cc538c989f0123ead4d"
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "fd7fa8b918725c2376749674295355100683c12523528e477814d1ae60173a34"
+        "sha256": "a55ec366052fe4ec1aadcc7a2105d9cb1b2ea2ea17820e29c85ef7adcbfe27ef"
       },
       {
         "path": "src/smart/progress-run/rule.js",
@@ -399,7 +399,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "81fe825cfc96bff53c4c679c57e0c1ed5a6986c4172ecf0538ba4655f8d73b0b"
+        "sha256": "85acfa5f5d226430ba905abfe93866a06d11de0c4100d637bbf42ed3523308d1"
       }
     ],
     "generated_runtime": []

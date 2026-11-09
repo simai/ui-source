@@ -7,10 +7,10 @@
 //       "action": {"label": "Открыть копии", "href": "/backups/"}}]}
 //   </script></sf-alert-bar>
 //
-// The items are sorted danger, warning, info, the newest first; the bar takes
+// The items are sorted error, warning, info, the newest first; the bar takes
 // the colour of the first and shows it. Several are paged «‹ 1 из N ›» and
 // listed under the bar with «Все N». A warning closes for a day, an info item
-// for good; a danger item is never closed, its button minimizes the bar to a
+// for good; an error item is never closed, its button minimizes the bar to a
 // strip that keeps the count.
 //
 // The bar stores nothing. A close, an acknowledge and an action link are
@@ -29,31 +29,37 @@ import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
+import { noteDeprecated } from '../../core/js/deprecations';
 
 // The list's id, one per bar on the page (the same on every render, so a
 // first-paint snapshot is stable).
 let sequence = 0;
 
-export const LEVELS = ['danger', 'warning', 'info'];
-const RANK = {danger: 0, warning: 1, info: 2};
+// The levels say what happened (decision C13, docs review R031): error is the
+// most serious, as on every message; danger is its former word here.
+export const LEVELS = ['error', 'warning', 'info'];
+const RANK = {error: 0, warning: 1, info: 2};
 // How a closed item is kept by the host: a warning for a day, info for good.
 export const HIDE = {warning: 'day', info: 'always'};
 // sf-alert's status icons, by the theme's status words.
-export const ICONS = {danger: 'error', warning: 'warning', info: 'info'};
+export const ICONS = {error: 'error', warning: 'warning', info: 'info'};
 // Within a day a time reads «5 минут назад»; older, as a date and a time.
 const RELATIVE_SPAN = 86400000;
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
-/** An item's level: the owner's three words; error is read as danger, anything else as info. */
+/** An item's level: error, warning or info; the former danger is read as error (noted once), anything else as info. */
 export function levelOf(value) {
   const word = text(value).toLowerCase();
-  if (word === 'error') return 'danger';
+  if (word === 'danger') {
+    noteDeprecated({component: 'sf-alert-bar', tag: 'sf-alert-bar', kind: 'value', attribute: 'items.level', from: 'danger', to: 'error', since: '2026-11-08', remove_after: '2027-01-01'});
+    return 'error';
+  }
   return LEVELS.includes(word) ? word : 'info';
 }
 
 /**
- * The items as given, made safe and sorted: danger, warning, info; inside a
+ * The items as given, made safe and sorted: error, warning, info; inside a
  * level the newest first by time. An item without an id or a text is left
  * out; one without a readable time keeps the host's order after the timed
  * ones of its level.
@@ -83,8 +89,8 @@ export function normalizeItems(value) {
       at: moment ? moment.getTime() : null,
       action,
       acknowledge,
-      // A danger item is never closed; the others unless the host says no.
-      dismissible: level !== 'danger' && item.dismissible !== false,
+      // An error item is never closed; the others unless the host says no.
+      dismissible: level !== 'error' && item.dismissible !== false,
       order,
     });
   });
@@ -159,9 +165,9 @@ class SfAlertBar extends AlertBarElement {
     return this.list[0]?.level ?? '';
   }
 
-  // Only a danger bar is minimized.
+  // Only an error bar is minimized.
   get isMinimized() {
-    return Boolean(this.minimized) && this.level === 'danger';
+    return Boolean(this.minimized) && this.level === 'error';
   }
 
   // A new list from the host: forget what was closed in the old one, find
@@ -176,9 +182,9 @@ class SfAlertBar extends AlertBarElement {
     const ids = new Set(list.map((item) => item.id));
     if (this._known) {
       const fresh = list.filter((item) => !this._known.has(item.id));
-      const danger = fresh.filter((item) => item.level === 'danger');
-      const other = fresh.filter((item) => item.level !== 'danger');
-      // A new danger item is the one thing that is read out at once (role
+      const danger = fresh.filter((item) => item.level === 'error');
+      const other = fresh.filter((item) => item.level !== 'error');
+      // A new error item is the one thing that is read out at once (role
       // alert); the rest politely (role status). A minimized bar opens again
       // for it.
       this._announce = {
@@ -264,6 +270,8 @@ class SfAlertBar extends AlertBarElement {
   closeItem(id, reason = 'close') {
     const item = this.list.find((entry) => entry.id === id);
     if (!item) return refused('missing');
+    // The reason keeps its former word: an outcome has no alias to carry a
+    // rename (change journal value-alert-bar-level-danger-to-error).
     if (!item.dismissible) return refused('danger');
     if (!this.sfEmit('close', {id: item.id, level: item.level, hide: HIDE[item.level] ?? 'always', reason}, {cancelable: true})) return refused('prevented');
     this.leave(item.id);
@@ -320,7 +328,7 @@ class SfAlertBar extends AlertBarElement {
     this._shownId = current?.id;
     const level = list[0]?.level ?? '';
     // The raw value stays under its own name; the template reads this one.
-    const isMinimized = Boolean(this.minimized) && level === 'danger';
+    const isMinimized = Boolean(this.minimized) && level === 'error';
     const word = (key, vars) => this.sfWord(key, vars ? {vars} : {});
     this.sfHostState('data-level', level);
     this.sfHostState('data-empty', count === 0);

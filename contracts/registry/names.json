@@ -42,6 +42,7 @@
         "reference",
         "resizer",
         "search",
+        "segmented",
         "settings",
         "skeleton",
         "slider",
@@ -97,10 +98,6 @@
         },
         {
           "element": "sf-button-copy",
-          "status": "released"
-        },
-        {
-          "element": "sf-button-group",
           "status": "released"
         },
         {
@@ -309,6 +306,10 @@
         },
         {
           "element": "sf-search",
+          "status": "released"
+        },
+        {
+          "element": "sf-segmented",
           "status": "released"
         },
         {

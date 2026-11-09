@@ -974,7 +974,7 @@ function renderPasswordEdit(field, value, host) {
             ></sf-input>
             <sf-button-icon
                     size=${EDIT_SIZE}
-                    appearance="link"
+                    appearance="ghost"
                     scheme="on-surface"
                     icon="visibility"
                     aria-label=${setText(host, 'showPassword')}
@@ -1479,7 +1479,8 @@ function renderBooleanEdit(field, value, host) {
     ]);
 
     return html`
-        <sf-button-group
+        <sf-segmented
+                appearance="buttons"
                 size=${EDIT_SIZE}
                 items=${items}
                 value=${value === true ? 'yes' : value === false ? 'no' : nothing}
@@ -1488,7 +1489,7 @@ function renderBooleanEdit(field, value, host) {
                     const next = event.detail?.value;
                     host.setFieldValue(field, next === 'yes' ? true : next === 'no' ? false : null);
                 }}
-        ></sf-button-group>
+        ></sf-segmented>
     `;
 }
 
@@ -1587,9 +1588,9 @@ function renderChoiceButtons(field, value, host) {
     };
 
     return html`
-        <sf-button-group
+        <sf-segmented
                 class="sf-field-choice-buttons"
-                appearance="segmented"
+                appearance="track"
                 size=${size}
                 root-class=${locked ? 'flex-wrap pointer-event-none' : 'flex-wrap'}
                 name=${fieldName(field)}
@@ -1604,7 +1605,7 @@ function renderChoiceButtons(field, value, host) {
                     const next = String(event.detail?.value ?? '');
                     host.setFieldValue(field, next === '' ? null : optionValue(next));
                 }}
-        ></sf-button-group>
+        ></sf-segmented>
     `;
 }
 

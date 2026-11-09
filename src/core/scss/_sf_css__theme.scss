@@ -1,3 +1,5 @@
+@use 'mix/mix__role_aliases' as aliases;
+
 @layer sf.base {
   /* The theme classes carry nothing but the scheme, because that is what
      light-dark() reads to choose a branch. Everything else is declared once
@@ -35,14 +37,14 @@
     --sf-success-container: light-dark(var(--sf-success-50--alfa-12), var(--sf-success-50--alfa-24));
     --sf-success-container-hover: light-dark(var(--sf-success-50--alfa-16), var(--sf-success-50--alfa-28));
     --sf-success-container-active: light-dark(var(--sf-success-50--alfa-20), var(--sf-success-50--alfa-32));
-    --sf-success-transparent-hover: light-dark(var(--sf-success-50--alfa-4), var(--sf-success-90--alfa-4));
-    --sf-success-transparent-select: light-dark(var(--sf-success-50--alfa-8), var(--sf-success-90--alfa-8));
-    --sf-success-transparent-active: light-dark(var(--sf-success-50--alfa-12), var(--sf-success-90--alfa-12));
-    --sf-success-transparent-overlay: light-dark(var(--sf-success-50--alfa-24), var(--sf-success-90--alfa-24));
+    --sf-success-state-hover: light-dark(var(--sf-success-50--alfa-4), var(--sf-success-90--alfa-4));
+    --sf-success-state-select: light-dark(var(--sf-success-50--alfa-8), var(--sf-success-90--alfa-8));
+    --sf-success-state-active: light-dark(var(--sf-success-50--alfa-12), var(--sf-success-90--alfa-12));
+    --sf-success-container-strong: light-dark(var(--sf-success-50--alfa-24), var(--sf-success-90--alfa-24));
     --sf-on-success: light-dark(var(--sf-white), var(--sf-success-20));
     --sf-on-success-container: light-dark(var(--sf-success-10), var(--sf-success-90));
     --sf-on-success-container-graphic: light-dark(var(--sf-success-50), var(--sf-success-60));
-    --sf-outline-success: light-dark(var(--sf-success-50), var(--sf-success-60));
+    --sf-success-outline: light-dark(var(--sf-success-50), var(--sf-success-60));
     --sf-warning: light-dark(var(--sf-warning-40), var(--sf-warning-80));
     --sf-error: light-dark(var(--sf-error-40), var(--sf-error-80));
     --sf-error-hover: light-dark(var(--sf-error-35), var(--sf-error-85));
@@ -50,49 +52,49 @@
     --sf-error-container: light-dark(var(--sf-error-50--alfa-12), var(--sf-error-50--alfa-24));
     --sf-error-container-hover: light-dark(var(--sf-error-50--alfa-16), var(--sf-error-50--alfa-28));
     --sf-error-container-active: light-dark(var(--sf-error-50--alfa-20), var(--sf-error-50--alfa-32));
-    --sf-error-transparent-hover: light-dark(var(--sf-error-50--alfa-4), var(--sf-error-90--alfa-4));
-    --sf-error-transparent-select: light-dark(var(--sf-error-50--alfa-8), var(--sf-error-90--alfa-8));
-    --sf-error-transparent-active: light-dark(var(--sf-error-50--alfa-12), var(--sf-error-90--alfa-12));
-    --sf-error-transparent-overlay: light-dark(var(--sf-error-50--alfa-24), var(--sf-error-90--alfa-24));
+    --sf-error-state-hover: light-dark(var(--sf-error-50--alfa-4), var(--sf-error-90--alfa-4));
+    --sf-error-state-select: light-dark(var(--sf-error-50--alfa-8), var(--sf-error-90--alfa-8));
+    --sf-error-state-active: light-dark(var(--sf-error-50--alfa-12), var(--sf-error-90--alfa-12));
+    --sf-error-container-strong: light-dark(var(--sf-error-50--alfa-24), var(--sf-error-90--alfa-24));
     --sf-on-error: light-dark(var(--sf-white), var(--sf-error-20));
     --sf-on-error-container: light-dark(var(--sf-error-10), var(--sf-error-90));
     --sf-on-error-container-graphic: light-dark(var(--sf-error-50), var(--sf-error-60));
-    --sf-outline-error: light-dark(var(--sf-error-50), var(--sf-error-60));
+    --sf-error-outline: light-dark(var(--sf-error-50), var(--sf-error-60));
     --sf-warning-hover: light-dark(var(--sf-warning-35), var(--sf-warning-85));
     --sf-warning-active: light-dark(var(--sf-warning-30), var(--sf-warning-90));
     --sf-warning-container: light-dark(var(--sf-warning-50--alfa-12), var(--sf-warning-50--alfa-24));
     --sf-warning-container-hover: light-dark(var(--sf-warning-50--alfa-16), var(--sf-warning-50--alfa-28));
     --sf-warning-container-active: light-dark(var(--sf-warning-50--alfa-20), var(--sf-warning-50--alfa-32));
-    --sf-warning-transparent-hover: light-dark(var(--sf-warning-50--alfa-4), var(--sf-warning-90--alfa-4));
-    --sf-warning-transparent-select: light-dark(var(--sf-warning-50--alfa-8), var(--sf-warning-90--alfa-8));
-    --sf-warning-transparent-active: light-dark(var(--sf-warning-50--alfa-12), var(--sf-warning-90--alfa-12));
-    --sf-warning-transparent-overlay: light-dark(var(--sf-warning-50--alfa-24), var(--sf-warning-90--alfa-24));
+    --sf-warning-state-hover: light-dark(var(--sf-warning-50--alfa-4), var(--sf-warning-90--alfa-4));
+    --sf-warning-state-select: light-dark(var(--sf-warning-50--alfa-8), var(--sf-warning-90--alfa-8));
+    --sf-warning-state-active: light-dark(var(--sf-warning-50--alfa-12), var(--sf-warning-90--alfa-12));
+    --sf-warning-container-strong: light-dark(var(--sf-warning-50--alfa-24), var(--sf-warning-90--alfa-24));
     --sf-on-warning: light-dark(var(--sf-white), var(--sf-warning-20));
     --sf-on-warning-container: light-dark(var(--sf-warning-10), var(--sf-warning-90));
     --sf-on-warning-container-graphic: light-dark(var(--sf-warning-50), var(--sf-warning-60));
-    --sf-outline-warning: light-dark(var(--sf-warning-50), var(--sf-warning-60));
+    --sf-warning-outline: light-dark(var(--sf-warning-50), var(--sf-warning-60));
     --sf-tertiary-hover: light-dark(var(--sf-tertiary-35), var(--sf-tertiary-85));
     --sf-tertiary-active: light-dark(var(--sf-tertiary-30), var(--sf-tertiary-90));
     --sf-tertiary-container: light-dark(var(--sf-tertiary-50--alfa-12), var(--sf-tertiary-50--alfa-24));
     --sf-tertiary-container-hover: light-dark(var(--sf-tertiary-50--alfa-16), var(--sf-tertiary-50--alfa-28));
     --sf-tertiary-container-active: light-dark(var(--sf-tertiary-50--alfa-20), var(--sf-tertiary-50--alfa-32));
-    --sf-tertiary-transparent-hover: light-dark(var(--sf-tertiary-50--alfa-4), var(--sf-tertiary-90--alfa-4));
-    --sf-tertiary-transparent-select: light-dark(var(--sf-tertiary-50--alfa-8), var(--sf-tertiary-90--alfa-8));
-    --sf-tertiary-transparent-active: light-dark(var(--sf-tertiary-50--alfa-12), var(--sf-tertiary-90--alfa-12));
-    --sf-tertiary-transparent-overlay: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
+    --sf-tertiary-state-hover: light-dark(var(--sf-tertiary-50--alfa-4), var(--sf-tertiary-90--alfa-4));
+    --sf-tertiary-state-select: light-dark(var(--sf-tertiary-50--alfa-8), var(--sf-tertiary-90--alfa-8));
+    --sf-tertiary-state-active: light-dark(var(--sf-tertiary-50--alfa-12), var(--sf-tertiary-90--alfa-12));
+    --sf-tertiary-container-strong: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
     --sf-on-tertiary: light-dark(var(--sf-white), var(--sf-tertiary-20));
     --sf-on-tertiary-container: light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90));
     --sf-on-tertiary-container-graphic: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60));
-    --sf-outline-tertiary: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60));
+    --sf-tertiary-outline: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60));
     --sf-secondary-hover: light-dark(var(--sf-secondary-35), var(--sf-secondary-85));
     --sf-secondary-active: light-dark(var(--sf-secondary-30), var(--sf-secondary-90));
     --sf-secondary-container: light-dark(var(--sf-secondary-50--alfa-12), var(--sf-secondary-50--alfa-24));
     --sf-secondary-container-hover: light-dark(var(--sf-secondary-50--alfa-16), var(--sf-secondary-50--alfa-28));
     --sf-secondary-container-active: light-dark(var(--sf-secondary-50--alfa-20), var(--sf-secondary-50--alfa-32));
-    --sf-secondary-transparent-hover: light-dark(var(--sf-secondary-50--alfa-4), var(--sf-secondary-90--alfa-4));
-    --sf-secondary-transparent-select: light-dark(var(--sf-secondary-50--alfa-8), var(--sf-secondary-90--alfa-8));
-    --sf-secondary-transparent-active: light-dark(var(--sf-secondary-50--alfa-12), var(--sf-secondary-90--alfa-12));
-    --sf-secondary-transparent-overlay: light-dark(var(--sf-secondary-50--alfa-24), var(--sf-secondary-90--alfa-24));
+    --sf-secondary-state-hover: light-dark(var(--sf-secondary-50--alfa-4), var(--sf-secondary-90--alfa-4));
+    --sf-secondary-state-select: light-dark(var(--sf-secondary-50--alfa-8), var(--sf-secondary-90--alfa-8));
+    --sf-secondary-state-active: light-dark(var(--sf-secondary-50--alfa-12), var(--sf-secondary-90--alfa-12));
+    --sf-secondary-container-strong: light-dark(var(--sf-secondary-50--alfa-24), var(--sf-secondary-90--alfa-24));
     --sf-on-secondary: light-dark(var(--sf-white), var(--sf-secondary-20));
     --sf-on-secondary-container: light-dark(var(--sf-secondary-10), var(--sf-secondary-90));
     --sf-on-secondary-container-graphic: light-dark(var(--sf-secondary-50), var(--sf-secondary-60));
@@ -105,14 +107,14 @@
        поверх неизвестного фона. Утилиты предлагали их с самого начала,
        а слой ролей — нет, поэтому bg-primary-transparent-select ничего
        не красил. */
-    --sf-primary-transparent-hover: light-dark(var(--sf-primary-50--alfa-4), var(--sf-primary-90--alfa-4));
-    --sf-primary-transparent-select: light-dark(var(--sf-primary-50--alfa-8), var(--sf-primary-90--alfa-8));
-    --sf-primary-transparent-active: light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-90--alfa-12));
-    --sf-primary-transparent-overlay: light-dark(var(--sf-primary-50--alfa-24), var(--sf-primary-90--alfa-24));
+    --sf-primary-state-hover: light-dark(var(--sf-primary-50--alfa-4), var(--sf-primary-90--alfa-4));
+    --sf-primary-state-select: light-dark(var(--sf-primary-50--alfa-8), var(--sf-primary-90--alfa-8));
+    --sf-primary-state-active: light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-90--alfa-12));
+    --sf-primary-container-strong: light-dark(var(--sf-primary-50--alfa-24), var(--sf-primary-90--alfa-24));
     --sf-on-primary: light-dark(var(--sf-white), var(--sf-primary-20));
     --sf-on-primary-container: light-dark(var(--sf-primary-10), var(--sf-primary-90));
     --sf-on-primary-container-graphic: light-dark(var(--sf-primary-50), var(--sf-primary-60));
-    --sf-outline-primary: light-dark(var(--sf-primary-50), var(--sf-primary-60));
+    --sf-primary-outline: light-dark(var(--sf-primary-50), var(--sf-primary-60));
     --sf-neutral-hover: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
     --sf-neutral-active: light-dark(var(--sf-neutral-30), var(--sf-neutral-90));
     --sf-neutral-container: light-dark(var(--sf-neutral-90), var(--sf-neutral-30));
@@ -130,14 +132,37 @@
     --sf-on-info: light-dark(var(--sf-white), var(--sf-info-20));
     --sf-on-info-container: light-dark(var(--sf-info-10), var(--sf-info-90));
     --sf-on-info-container-graphic: light-dark(var(--sf-info-50), var(--sf-info-60));
-    --sf-outline-info: light-dark(var(--sf-info-50), var(--sf-info-60));
-    --sf-surface-0: light-dark(var(--sf-white), var(--sf-neutral-5));
-    --sf-surface-1: light-dark(var(--sf-neutral-98), var(--sf-neutral-10));
+    --sf-info-outline: light-dark(var(--sf-info-50), var(--sf-info-60));
+    /* Information had no translucent layers, so a hover or a selection on an
+       info surface borrowed primary's (C16, surfaces research 6.3). The same
+       steps as the other statuses: 4, 8 and 12 for the states, 24 for the
+       stronger fill. */
+    --sf-info-state-hover: light-dark(var(--sf-info-50--alfa-4), var(--sf-info-90--alfa-4));
+    --sf-info-state-select: light-dark(var(--sf-info-50--alfa-8), var(--sf-info-90--alfa-8));
+    --sf-info-state-active: light-dark(var(--sf-info-50--alfa-12), var(--sf-info-90--alfa-12));
+    --sf-info-container-strong: light-dark(var(--sf-info-50--alfa-24), var(--sf-info-90--alfa-24));
+    /* The colour of the place a thing stands on (C16). A cut-out -- a badge's
+       ring, a switch's thumb gap, a table head -- reads it instead of the page,
+       so it matches a card or a popup it sits in. The page by default; a place
+       that is not the page declares its own (the bg-surface-* place
+       utilities, and later the cards and the popups). */
+    --sf-surface-place: var(--sf-surface-page);
+    /* Glass over a photo or a video (C16, C14): controls on media stand on
+       black at 48 with a blur, ink white, the same in both themes because the
+       picture does not change with the theme. Hover and press take the next
+       steps of the ink family, which the alpha scale allows as a fill for glass
+       and the scrim only. */
+    --sf-surface-media: var(--sf-black--alfa-48);
+    --sf-surface-media-hover: var(--sf-black--alfa-64);
+    --sf-surface-media-active: var(--sf-black--alfa-80);
+    --sf-on-surface-media: var(--sf-white);
+    --sf-surface-page: light-dark(var(--sf-white), var(--sf-neutral-5));
+    --sf-surface-area: light-dark(var(--sf-neutral-98), var(--sf-neutral-10));
     /* The veil over a scene, and the one translucent surface that keeps the pure
        base: it darkens what is behind a modal rather than tinting a surface, and
        on the neutral tone it came out 7.4 points lighter in the light theme --
        a veil that does not veil. */
-    --sf-surface-overlay: light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8));
+    --sf-surface-veil: light-dark(var(--sf-black--alfa-8), var(--sf-white--alfa-8));
     /* The scrim: what covers the page under a window, a panel or a sheet that
        holds the focus -- a modal, a drawer, the site header's menu, the search
        window, a workspace drawer. One colour and one strength for all of them,
@@ -157,19 +182,19 @@
        the utility generator derives `active:bg-surface-transparent` from the
        background list and reads this name bare, so the class painted nothing
        on press for exactly one published pair. The sweep that called it dead
-       searched for `var(--sf-surface-transparent-active)` in the sources, and
+       searched for `var(--sf-surface-state-active)` in the sources, and
        a generated utility is in none of them (owner, 2026-10-09).
        `overlay` stays for the same reason, and read as unused at first for the
        same reason: it is the backdrop of a modal, asked for through the
        utilities rather than through var(). */
-    --sf-surface-transparent-hover: light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4));
-    --sf-surface-transparent-select: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
-    --sf-surface-transparent-active: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-state-hover: light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4));
+    --sf-surface-state-select: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-surface-state-active: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
     /* A step above the strongest plate, and not because the ladder asks: a
        plate sits on the page, a veil covers it. At 24 the two were the same
        colour, and the backdrop of a modal was as strong as a pressed card
        (owner, 2026-10-08). */
-    --sf-surface-transparent-overlay: light-dark(var(--sf-neutral-50--alfa-32), var(--sf-neutral-90--alfa-32));
+    --sf-surface-container-strong: light-dark(var(--sf-neutral-50--alfa-32), var(--sf-neutral-90--alfa-32));
     --sf-surface-inverse: light-dark(var(--sf-neutral-20), var(--sf-neutral-90));
     /* The inverse surface under a pointer: the same five-tone step the other
        hover roles take. A carousel control read the primitives for it, there
@@ -231,7 +256,7 @@
        (effects-gallery theme audit and the ui-doc repin, 2026-10-19; issue
        simai/ui-source#3). A fill inside a fill -- an avatar in a tag -- is
        darker still and takes the primary role. */
-    --sf-on-surface-container--variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-80));
+    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-80));
     /* The tones of initials: a muted plate and the ink that reads on it over the
        surfaces 0 to 3, in both themes (tests/browser/avatar-tones.browser.mjs
        measures them). */
@@ -321,7 +346,7 @@
        under its own name. Two things were wrong with that. The system has two
        neutral boundary roles and had always had two: this one and the variant
        for the edge of a region. And in the light theme the third role came out
-       at exactly --sf-outline-disable, so a field at rest and a field nobody
+       at exactly --sf-outline-disabled, so a field at rest and a field nobody
        can type in were drawn in the same line (owner, 2026-10-08).
 
        So the value moved here and the third role is gone. What a boundary does
@@ -336,9 +361,9 @@
     /* The edge of a region -- a panel, a card, a table, a row inside one.
        Nothing is found by it, so it is not held to 1.4.11: 1.34:1 and 1.92:1. */
     --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
-    --sf-outline-secondary: light-dark(var(--sf-secondary-50), var(--sf-secondary-60));
-    --sf-disable: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
-    --sf-on-disable: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-secondary-outline: light-dark(var(--sf-secondary-50), var(--sf-secondary-60));
+    --sf-surface-disabled: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-on-surface-disabled: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
     /* The boundary of a control nobody can use, and the one role whose whole
        job is to be weaker than another. It carried the same value as
        --sf-outline in the light theme -- a field at rest and a field nobody
@@ -348,7 +373,7 @@
        step now, from the tone of the boundary rather than of the ink: 1.86:1
        light and 2.26:1 dark, under the live boundary in both (owner,
        2026-10-08). */
-    --sf-outline-disable: light-dark(var(--sf-neutral-50--alfa-48), var(--sf-neutral-60--alfa-48));
+    --sf-outline-disabled: light-dark(var(--sf-neutral-50--alfa-48), var(--sf-neutral-60--alfa-48));
     --sf-link: light-dark(var(--sf-primary-40), var(--sf-primary-80));
     --sf-mark: light-dark(var(--sf-warning-50--alfa-24), var(--sf-warning-90--alfa-24));
     // The ring is an indicator, not a wash. At 24% alpha it read 1.4:1 against
@@ -368,21 +393,21 @@
        пятиступенчатый набор укладывался в три-семь единиц яркости из 255 —
        ниже порога, на котором человек замечает разницу. Там высоту несёт
        ступень поверхности, которая в тёмной теме светлеет. */
-    --sf-elevation-1--surface: light-dark(var(--sf-surface-0), var(--sf-surface-2));
-    --sf-elevation-2--surface: light-dark(var(--sf-surface-0), var(--sf-surface-3));
-    --sf-elevation-3--surface: light-dark(var(--sf-surface-0), var(--sf-surface-4));
-    --sf-elevation-4--surface: light-dark(var(--sf-surface-0), var(--sf-surface-5));
-    --sf-elevation-5--surface: light-dark(var(--sf-surface-0), var(--sf-surface-5));
+    --sf-surface-card: light-dark(var(--sf-surface-page), var(--sf-surface-2));
+    --sf-elevation-2--surface: light-dark(var(--sf-surface-page), var(--sf-surface-3));
+    --sf-surface-popup: light-dark(var(--sf-surface-page), var(--sf-surface-4));
+    --sf-surface-popup-nested: light-dark(var(--sf-surface-page), var(--sf-surface-5));
+    --sf-elevation-5--surface: light-dark(var(--sf-surface-page), var(--sf-surface-5));
     /* The shadow of each step, beside its surface: a panel that floats takes
        both, so a theme or a product retunes height in one place (a dark theme
        may drop the shadow and keep the surface, or the reverse). The rim is a
        last layer a theme may switch on to outline raised panels in the dark;
        it is off: 0 0 0 0 transparent. */
     --sf-shadow--rim: 0 0 0 0 transparent;
-    --sf-elevation-1--shadow: var(--sf-ui-shadow-1), var(--sf-shadow--rim);
+    --sf-shadow-card: var(--sf-ui-shadow-1), var(--sf-shadow--rim);
     --sf-elevation-2--shadow: var(--sf-ui-shadow-2), var(--sf-shadow--rim);
-    --sf-elevation-3--shadow: var(--sf-ui-shadow-3), var(--sf-shadow--rim);
-    --sf-elevation-4--shadow: var(--sf-ui-shadow-4), var(--sf-shadow--rim);
+    --sf-shadow-popup: var(--sf-ui-shadow-3), var(--sf-shadow--rim);
+    --sf-shadow-popup-nested: var(--sf-ui-shadow-4), var(--sf-shadow--rim);
     --sf-elevation-5--shadow: var(--sf-ui-shadow-5), var(--sf-shadow--rim);
     /* Приглушённый текст на поднятой поверхности. В светлой теме поднятая
        поверхность остаётся обычной, поэтому значение то же, что у
@@ -390,10 +415,10 @@
        вместе с ней светлеет текст: иначе одна и та же роль даёт 4.14 на второй
        ступени и 2.93 на четвёртой при требуемых WCAG 1.4.3 четырёх с половиной.
        Значений три, а не пять: роль меняется там, где перестаёт проходить. */
-    --sf-on-elevation-1--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
     --sf-on-elevation-2--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
-    --sf-on-elevation-3--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
-    --sf-on-elevation-4--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
+    --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+    --sf-on-surface-popup-nested-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     --sf-on-elevation-5--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     /* The neutral half of the alpha scale. The base branches per scheme — ink on
        a light surface, light on a dark one — so a component asks for a degree of
@@ -409,5 +434,13 @@
     --sf-alpha-8: color-mix(in srgb, var(--sf-transparent), var(--sf-alpha-base) 8%);
     --sf-alpha-12: color-mix(in srgb, var(--sf-transparent), var(--sf-alpha-base) 12%);
     --sf-alpha-16: color-mix(in srgb, var(--sf-transparent), var(--sf-alpha-base) 16%);
+    /* The names before C16 (2026-11-08), each the new name's value: a page or
+       a product that reads --sf-surface-0 or --sf-elevation-3--surface keeps
+       working until the alias list's remove_after
+       (src/core/contracts/token-aliases.v1.json). Every rule that re-declares a
+       renamed role re-declares its alias with it -- an alias resolves where it
+       is declared, so a place that sets the new name alone would leave a reader
+       of the old one on the root's value (tests/token-aliases.contract.test.mjs). */
+    @include aliases.sf-role-aliases;
   }
 }

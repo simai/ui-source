@@ -73,7 +73,7 @@ try {
     }];
   })));
   // The inline form: one line, no heading, at a 1/2 control's height; the
-  // first action a link; an alert when the host says the person caused it.
+  // first action a ghost button (link's current name, rule C15); an alert when the host says the person caused it.
   const inline = await page.evaluate(() => {
     const line = document.querySelector('#line .sf-empty-state');
     const failed = document.querySelector('#line-error .sf-empty-state');
@@ -86,7 +86,7 @@ try {
     };
   });
   if (inline.heading || inline.role !== 'status' || !inline.text?.startsWith('search_off Ничего не найдено по') || inline.height !== inline.half
-    || inline.errorRole !== 'alert' || inline.errorLink !== 'link' || inline.errorText !== 'Не удалось загрузить') note({case: 'inline', got: inline});
+    || inline.errorRole !== 'alert' || inline.errorLink !== 'ghost' || inline.errorText !== 'Не удалось загрузить') note({case: 'inline', got: inline});
   await page.evaluate(() => { document.querySelector('#failed sf-button button')?.click(); document.querySelector('#custom sf-button button')?.click(); });
   await page.waitForTimeout(150);
   const acts = await page.evaluate(() => window.acts);

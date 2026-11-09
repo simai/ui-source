@@ -20,7 +20,7 @@
    never set here. */
 .sf-search-portal {
   --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
-  --sf-search--surface: var(--sf-search-background, var(--sf-elevation-3--surface));
+  --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-elevation-3--surface)));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   --sf-search--radius: var(--sf-search-radius, var(--sf-radius-2));
   --sf-search--pad: var(--sf-space-1\/4);

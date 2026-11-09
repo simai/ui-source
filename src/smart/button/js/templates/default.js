@@ -27,7 +27,7 @@ export function renderButtonTemplate(context) {
 
     const normalizedIconPosition = String(iconPosition || 'start').toLowerCase();
     const isIconEnd = ['right', 'end'].includes(normalizedIconPosition);
-    const leftIconName = context.iconStart ?? (iconLeft || (icon && !isIconEnd ? icon : ''));
+    const leftIconName = context.cycleView?.icon || (context.iconStart ?? (iconLeft || (icon && !isIconEnd ? icon : '')));
     const rightIconName = context.iconEnd ?? (iconRight || (icon && isIconEnd ? icon : ''));
     const component = context.component;
     const leftIconContent =
@@ -35,7 +35,7 @@ export function renderButtonTemplate(context) {
             ? component.getSlotContent('icon-start')
             : component?.hasSlotContent?.('icon-left')
             ? component.getSlotContent('icon-left')
-            : component.createIcon(leftIconName, context.pressed === true);
+            : component.createIcon(leftIconName, context.pressed === true || Boolean(context.cycleView?.pressedLook));
     const rightIconContent =
         component?.hasSlotContent?.('icon-end')
             ? component.getSlotContent('icon-end')
@@ -51,7 +51,7 @@ export function renderButtonTemplate(context) {
     const textContent =
         component?.hasSlotContent?.('text')
             ? component.getSlotContent('text')
-            : pressedLabel || text;
+            : context.cycleView?.label || pressedLabel || text;
     // The shortcut's keys sit at the end; the label then takes the free room,
     // so a stretched button reads label ... keys and text-position places it.
     // The keys are the kbd component's (soft caps inside a button); the
@@ -74,12 +74,16 @@ export function renderButtonTemplate(context) {
     const rootClasses = [
         'sf-button',
         `sf-button--size-${size}`,
-        `sf-button--${appearance || type}`,
+        // ghost (C15) is drawn by the link class, the one the sheets and
+        // their consumers select; href, not the look, makes a link.
+        `sf-button--${(appearance || type) === 'ghost' ? 'link' : (appearance || type)}`,
         // One colour name, as the styles expect: the status when one is set, the
         // scheme otherwise. A status says what the control is about -- an error
         // for something destructive -- and a scheme says which colour family it
         // takes; they cannot both paint it.
-        `sf-button--${status || scheme}`,
+        // danger (C13) is drawn with the error roles: the danger class and the
+        // error one the sheets and their consumers also select.
+        ...(status === 'danger' || status === 'error' ? ['sf-button--danger', 'sf-button--error'] : [`sf-button--${scheme}`]),
         // on-surface-variant is the on-surface family one step quieter: both
         // classes, so every on-surface rule holds and one rule quietens it.
         !status && scheme === 'on-surface-variant' ? 'sf-button--on-surface' : '',
@@ -94,7 +98,7 @@ export function renderButtonTemplate(context) {
         loading ? 'loading sf-button-state-loading' : '',
         // A toggle that is on wears the pressed look (component.buttons 1.5.0,
         // rule C12): the class carries it whether or not aria-pressed is said.
-        context.pressed ? 'sf-button--pressed' : '',
+        context.pressed || context.cycleView?.pressedLook ? 'sf-button--pressed' : '',
     ].filter(Boolean);
 
     const content = html`
@@ -144,6 +148,6 @@ export function renderButtonTemplate(context) {
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
                 aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
-        >${content}</button>
+        >${content}</button>${context.cycleView ? html`<span class="sf-button-announce sr-only" role="status" aria-live="polite" aria-atomic="true">${context.cycleView.announcement}</span>` : nothing}
     `;
 }

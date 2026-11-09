@@ -85,15 +85,15 @@ async page => {
         check(await host.getByRole('radio').count() === 2, 'one radio per group item', await host.getByRole('radio').count());
         check(await host.locator('sf-button[role],sf-button[tabindex]').count() === 0, 'Smart wrappers are not extra focus targets', null);
         await host.getByRole('radio', {name: 'Карточки', exact: true}).click();
-        await page.waitForFunction(() => document.querySelector('sf-button-group').value === 'cards');
+        await page.waitForFunction(() => document.querySelector('sf-segmented').value === 'cards');
         await page.keyboard.press('ArrowLeft');
-        await page.waitForFunction(() => document.querySelector('sf-button-group').value === 'list');
+        await page.waitForFunction(() => document.querySelector('sf-segmented').value === 'list');
         check(await host.evaluate(e => e.querySelector('[aria-checked="true"]')?.getAttribute('data-sf-button-group-value') === 'list'), 'group keyboard selection retained', null);
         await host.evaluate(e => e.setAttribute('items', 'list::Список::disabled|cards::Карточки'));
-        await page.waitForFunction(() => document.querySelector('sf-button-group button[tabindex="0"]')?.getAttribute('data-sf-button-group-value') === 'cards');
+        await page.waitForFunction(() => document.querySelector('sf-segmented button[tabindex="0"]')?.getAttribute('data-sf-button-group-value') === 'cards');
         check(await host.locator('button[tabindex="0"]').count() === 1, 'disabled selection leaves one available tab stop', null);
         await host.evaluate(e => e.setAttribute('disabled', ''));
-        await page.waitForFunction(() => !document.querySelector('sf-button-group button[tabindex="0"]'));
+        await page.waitForFunction(() => !document.querySelector('sf-segmented button[tabindex="0"]'));
         check(await host.locator('button[tabindex="0"]').count() === 0, 'disabled group has no tab stop', null);
       } else if (tag === 'sf-alert' || tag === 'sf-toast' || (tag === 'sf-file-download' && !attrs.href)) {
         await root.locator(tag === 'sf-alert' ? '[data-alert-action]' : tag === 'sf-toast' ? '[data-toast-action]' : ':scope').click();

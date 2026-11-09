@@ -40,7 +40,9 @@ a scroll area (`.sf-list-container-wrap`): that area holds the inset on every
 side and is the only part that scrolls. A search is the panel's header,
 `label.sf-list-search` holding `i.sf-list-search-icon` and
 `input.sf-list-search-input`: no frame, no fill, a row's height and the inset
-above and below, its icon and text over the rows' icon and text, a hairline
+above and below, its icon and text over the rows' icon and text (when no row has
+a picture -- icon, avatar, colour or checkbox -- its text over the rows' text
+and the icon at the header's end), a hairline
 under it across the panel that turns primary while it has the focus. A search
 written as an `sf-input` (the markup before R029) still works and keeps its
 box, the inset around it. The scrollbar shows only when the rows do not fit;

@@ -48,32 +48,29 @@ const sfButtonIconMeta = {
         "default",
         "tonal",
         "outline",
-        "link",
-        "surface",
         "ghost"
       ],
       "default": "default",
-      "description": "How the icon button looks. Surface and ghost read the neutral alpha ramp: surface keeps a faint fill and a border, ghost keeps nothing until it is hovered or focused."
+      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme."
     },
     "scheme": {
       "kind": "enum",
       "values": [
         "primary",
-        "secondary",
         "on-surface",
         "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants. A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes (rule C15): primary, on-surface (the neutral, the text colour) or on-surface-variant (the quiet neutral: a window's head, a table row, a field's clear; under a pointer its glyph darkens to on-surface). A filled (default) control keeps on-surface's inverse glyph with on-surface-variant: on a dark fill there is no quieter step. secondary was retired and is drawn as on-surface-variant. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
       "values": [
         "",
-        "error"
+        "danger"
       ],
       "default": "",
-      "description": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
     },
     "segment": {
       "kind": "enum",
@@ -194,6 +191,18 @@ const sfButtonIconMeta = {
       "default": "",
       "description": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
     },
+    "theme-cycle": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
+    },
+    "value": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The current item of a cycle (its value); a press writes the next one. Read it from the attribute or from change: the value property keeps the settings object it has always given."
+    },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",
@@ -206,8 +215,6 @@ const sfButtonIconMeta = {
         "default",
         "tonal",
         "outline",
-        "link",
-        "surface",
         "ghost"
       ],
       "default": "default",

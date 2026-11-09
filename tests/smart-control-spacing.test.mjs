@@ -16,7 +16,7 @@ for (const name of ['button', 'button-icon']) {
     assert.match(source, /resolveControlSpacing\(\{spacing: this\.getAttribute\('spacing'\)\}\)/);
   });
 }
-for (const name of ['button-group']) {
+for (const name of ['segmented']) {
   const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
   const body = source.match(/  templateContext\(\) \{([\s\S]*?)\n  \}/)[1];
   const context = new Function('resolveControlSpacing', body);

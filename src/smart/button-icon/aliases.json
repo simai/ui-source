@@ -79,6 +79,39 @@
       "note": "tightness's word, journal attribute-tightness-to-spacing"
     },
     {
+      "from": "link",
+      "to": "ghost",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-button-icon",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-icon-button-looks-c15 (rule C15): link and ghost drew the same; ghost is the name"
+    },
+    {
+      "from": "secondary",
+      "to": "on-surface-variant",
+      "kind": "value",
+      "setting": "scheme",
+      "component": "sf-button-icon",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-icon-button-looks-c15 (rule C15): secondary was drawn only in the tonal look and read as the quiet neutral elsewhere"
+    },
+    {
+      "from": "error",
+      "to": "danger",
+      "kind": "value",
+      "setting": "status",
+      "component": "sf-button-icon",
+      "since": "2026-11-08",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-control-status-error-to-danger (rule C13): a control's destructive status is danger; messages keep error"
+    },
+    {
       "from": "sf-icon-button",
       "to": "sf-button-icon",
       "kind": "tag",

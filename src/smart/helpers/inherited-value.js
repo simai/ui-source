@@ -45,7 +45,9 @@ export const INHERITED_TEXT = {
 // The marker and the reset are one step down the ladder from the field they
 // sit in, so they fit inside its box: a size 1 field (40px) holds a size 1/2
 // button (32px) with the same inset on every side.
-const STEP_DOWN = Object.freeze({'1/2': '1/3', '1': '1/2', '2': '1'});
+// sf-input's outer steps: a 3 field holds a 2 button; 1/3 is the ladder's
+// foot, so its marker and reset stay at 1/3.
+const STEP_DOWN = Object.freeze({'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'});
 
 export const inheritedStepDown = (size) => STEP_DOWN[String(size)] || '1/2';
 

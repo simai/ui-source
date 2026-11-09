@@ -45,7 +45,7 @@ const body = () => SIZES.map((size) => `
   ${APPEARANCES.map((appearance) => DENSITIES.map(([name, value]) =>
     `<sf-button size="${size}" appearance="${appearance}" scheme="on-surface" ${name}="${value}" text="Кнопка" data-a="${appearance}" data-d="${value}"></sf-button>`).join('')).join('')}
   ${['normal', 'compact', 'comfortable', 'spacious'].map((spacing) =>
-    `<sf-button-group appearance="segmented" aria-label="Период" size="${size}" spacing="${spacing}" value="w" data-d="${spacing}"><script type="application/json" data-sf-settings>{"items":[{"value":"d","label":"День"},{"value":"w","label":"Неделя"}]}</script></sf-button-group>`).join('')}
+    `<sf-segmented appearance="segmented" aria-label="Период" size="${size}" spacing="${spacing}" value="w" data-d="${spacing}"><script type="application/json" data-sf-settings>{"items":[{"value":"d","label":"День"},{"value":"w","label":"Неделя"}]}</script></sf-segmented>`).join('')}
   ${APPEARANCES.map((appearance) => DENSITIES.map(([name, value]) =>
     `<sf-button-icon size="${size}" appearance="${appearance}" scheme="on-surface" ${name}="${value}" icon="settings" aria-label="Настройки"></sf-button-icon>`).join('')).join('')}
 </div>`).join('\n') + `
@@ -91,7 +91,7 @@ const MEASURE = ({appearances, densities}) => {
         side: round(parseFloat(style.paddingInlineStart) + parseFloat(style.borderInlineStartWidth)),
         block: round(parseFloat(style.paddingTop) + parseFloat(style.borderTopWidth))};
     });
-    const groups = Array.from(row.querySelectorAll('sf-button-group')).map((group) => {
+    const groups = Array.from(row.querySelectorAll('sf-segmented')).map((group) => {
       const track = group.querySelector('.sf-button-group') ?? group.firstElementChild;
       return {d: group.dataset.d, h: round(track.getBoundingClientRect().height)};
     });
@@ -126,13 +126,13 @@ try {
       await tab.goto(`http://127.0.0.1:${server.address().port}/`);
       await tab.waitForFunction((count) => customElements.get('sf-button') && customElements.get('sf-button-group')
         && document.querySelectorAll('.row[data-size] sf-button > .sf-button').length === count
-        && document.querySelectorAll('sf-button-group .sf-button-group-segment').length === 2 * 4 * 5
+        && document.querySelectorAll('sf-segmented .sf-button-group-segment').length === 2 * 4 * 5
         && document.querySelectorAll('.row[data-size] sf-button-icon > .sf-icon-button').length === count
         && document.querySelector('#consumers .sf-datepicker-year-toggle button')
         && document.querySelectorAll('#consumers .sf-empty-state-link button').length === 2, SIZES.length * APPEARANCES.length * DENSITIES.length, {timeout: 30000})
         .catch(async () => failures.push(`${label}: the page never drew its buttons and groups ${JSON.stringify(await tab.evaluate(() => ({
           buttons: document.querySelectorAll('sf-button > .sf-button').length,
-          segments: document.querySelectorAll('sf-button-group .sf-button-group-segment').length,
+          segments: document.querySelectorAll('sf-segmented .sf-button-group-segment').length,
           icons: document.querySelectorAll('sf-button-icon > .sf-icon-button').length,
           year: Boolean(document.querySelector('#consumers .sf-datepicker-year-toggle button')),
           links: document.querySelectorAll('#consumers .sf-empty-state-link button').length,

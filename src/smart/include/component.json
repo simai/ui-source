@@ -2,7 +2,7 @@
   "$comment": "The source of sf-include's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: step 3 of ui-control's control/LEGACY-UNITS-RETIREMENT-AND-NEW-PARTS-2026-11-02.md (owner decision q-410df7e4b5), the successor of the retired class units ajax, ajaxload and lazy-load.",
   "id": "smart.include",
   "tag": "sf-include",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "kind": "leaf",
   "family": "content",
   "settings": {
@@ -164,7 +164,8 @@
     "first paint: the printed snapshot is what the element drew once its first load settled. A host printed with static markup keeps that picture until the first load settles (sfAwaitingData), then draws in one frame, so a printed part never flashes the skeleton between the server's picture and the element's.",
     "host states: data-loading and data-failed (§5.3), besides aria-busy on the region while it loads.",
     "css-variables: six public variables (§6) -- the placeholder's minimum block size, and the error state's gap, padding, border colour, radius and message colour -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
-    "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.0.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

@@ -4,7 +4,7 @@ import {html, nothing} from 'lit';
 // already has, so the element has no sheet of its own.
 //
 // - none (one language or none): nothing at all.
-// - inline (two or three): sf-button-group appearance="segmented", a radio
+// - inline (two or three): sf-segmented on its track, a radio
 //   group named by label, one segment per language labelled with its own
 //   name (compact: its code, the name kept as the segment's accessible
 //   name), each segment in its own language (lang).
@@ -24,9 +24,9 @@ function renderInline(context) {
     ariaLabel: context.compact ? language.label : '',
     lang: language.code,
   }));
-  return html`<sf-button-group
+  return html`<sf-segmented
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
-      appearance="segmented"
+      appearance="track"
       size=${context.size}
       .items=${items}
       value=${context.value}
@@ -34,14 +34,14 @@ function renderInline(context) {
       ?disabled=${context.disabled}
       @change=${(event) => context.component.onGroupChange(event)}
       @sf-button-group-change=${stop}
-    ></sf-button-group>`;
+    ></sf-segmented>`;
 }
 
 function renderMenu(context) {
   return html`<sf-button-icon
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       icon="translate"
-      appearance="link"
+      appearance="ghost"
       scheme="on-surface"
       size=${context.size}
       aria-label=${context.triggerLabel}

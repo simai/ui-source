@@ -3,7 +3,7 @@
 //
 // scheme="on-surface-variant" on sf-button-icon, on the built bytes: the
 // on-surface family one step quieter. The glyph takes --sf-on-surface-variant
-// wherever the glyph is the control -- outline, link, surface, ghost -- and a
+// wherever the glyph is the control -- outline and ghost -- and a
 // close control's cross with it; a tonal control takes its container's quieter
 // role, and a filled one keeps on-surface's inverse glyph, because on a dark
 // fill there is no quieter step. The colours are set on the control, never on
@@ -18,7 +18,9 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
-const APPEARANCES = ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'];
+// The four looks of sf-button-icon 1.6.0 (decision C15): link reads as ghost,
+// surface is drawn as tonal on-surface.
+const APPEARANCES = ['default', 'tonal', 'outline', 'ghost'];
 const SCHEMES = ['on-surface', 'on-surface-variant'];
 const control = (scheme, appearance) => `<sf-button-icon icon="share" aria-label="Поделиться" scheme="${scheme}" appearance="${appearance}"></sf-button-icon>`;
 const PAGE = `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
@@ -63,7 +65,7 @@ try {
   const errors = [];
   tab.on('pageerror', (error) => errors.push(error.message));
   await tab.goto(`${origin}/`);
-  await tab.waitForFunction(() => document.querySelectorAll('#grid sf-button-icon .sf-icon').length === 12
+  await tab.waitForFunction(() => document.querySelectorAll('#grid sf-button-icon .sf-icon').length === 8
     && document.querySelector('#cross .sf-close-icon') && document.querySelector('#off .sf-icon'), null, {timeout: 30000});
   const seen = await tab.evaluate(() => {
     const colour = (node) => (node ? getComputedStyle(node).color : null);
@@ -83,7 +85,7 @@ try {
       roles: {variant: role('variant'), surface: role('surface'), disable: role('disable')}};
   });
   const {grid, roles} = seen;
-  for (const appearance of ['outline', 'link', 'surface', 'ghost']) {
+  for (const appearance of ['outline', 'ghost']) {
     const quiet = grid[`on-surface-variant/${appearance}`];
     const loud = grid[`on-surface/${appearance}`];
     expect(`${appearance}: the glyph is the quieter role`, quiet.glyph === roles.variant && loud.glyph === roles.surface, {quiet, loud, roles});

@@ -13,8 +13,8 @@
 //    --sf-space-1/2 before the text.
 //  - C06 (sf-dropdown): the search is a header: no frame, across the panel's
 //    inner width, a row's height and the inset above and below, a hairline
-//    under it; its icon stands over the rows' icon (their text, when they have
-//    none) and its text over theirs; only the rows scroll.
+//    under it; its text over the rows' text, its icon over their icon (at the
+//    header's end, when they have none); only the rows scroll.
 //  - C07: a scrollbar only when the rows do not fit; in the inline-end inset
 //    while it takes room: the area's inline-end padding 0, the track the
 //    inset, a thumb of --sf-space-1/4 and the inset. Headless Chrome draws no
@@ -211,10 +211,13 @@ function checkRows(where, got) {
   if (h) {
     if (!near(h.start, 0) || !near(h.end, 0) || !near(h.top, 0)) note({case: `${where}: the search header spans the panel at its top`, got: h});
     if (!near(h.height, rowHeight + 2 * inset) || !near(h.line, 1) || h.frame !== 0 || h.fieldBorder !== 0) note({case: `${where}: the search header is a row and the inset above and below, a hairline under it, no frame`, got: {h, rowHeight, inset}});
+    // Text over text, always; the icon over the rows' icons, or at the
+    // header's end when the rows have no picture (C06, DEV measurement
+    // 2026-11-08: the text stood 24-32px right of the rows').
     const row = got.rows[0];
-    const under = row.iconLeft ?? row.textLeft;
-    if (!near(h.iconLeft, under)) note({case: `${where}: the search icon stands over the rows' icon or text`, got: {icon: h.iconLeft, row: under}});
-    if (row.iconLeft !== null && !near(h.textLeft, row.textLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {text: h.textLeft, row: row.textLeft}});
+    if (!near(h.textLeft, row.textLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {text: h.textLeft, row: row.textLeft}});
+    if (row.iconLeft !== null && !near(h.iconLeft, row.iconLeft)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: h.iconLeft, row: row.iconLeft}});
+    if (row.iconLeft === null && !(h.iconLeft > h.textLeft)) note({case: `${where}: rows without pictures: the search icon stands at the header's end`, got: {icon: h.iconLeft, text: h.textLeft}});
   }
 }
 

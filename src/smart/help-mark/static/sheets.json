@@ -11,6 +11,7 @@
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "core/css/core.css",
+    "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
     "smart/help-mark/css/help-mark.min.css",
     "utility/align-items/default/css/default.min.css",
@@ -20,7 +21,8 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "content": [
@@ -29,6 +31,7 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/help-mark/css/help-mark.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -38,7 +41,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "heading": [
       "component/badges/css/badges.min.css",
@@ -46,6 +50,7 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/help-mark/css/help-mark.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -55,7 +60,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/badges/css/badges.min.css",
@@ -63,6 +69,7 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/help-mark/css/help-mark.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -72,7 +79,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "small": [
       "component/badges/css/badges.min.css",
@@ -80,6 +88,7 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/help-mark/css/help-mark.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -89,7 +98,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

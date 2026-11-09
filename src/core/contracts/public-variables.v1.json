@@ -3069,11 +3069,11 @@
       "selector": "sf-site-header, .sf-site-header",
       "variables": [
         {
-          "name": "--sf-site-header-background",
+          "name": "--sf-site-header-background-color",
           "role": "background",
-          "summary": "The bar's fill.",
+          "summary": "The bar's fill. The former name --sf-site-header-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-0)",
-          "since": "2026-10-28"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-site-header-color",
@@ -3155,12 +3155,12 @@
           "since": "2026-10-30"
         },
         {
-          "name": "--sf-search-background",
+          "name": "--sf-search-background-color",
           "role": "background",
-          "summary": "The surface of the field and of the results card.",
+          "summary": "The surface of the field and of the results card. The former name --sf-search-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-elevation-3--surface)",
           "state": "open",
-          "since": "2026-10-30"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-search-scrim-color",
@@ -3208,11 +3208,11 @@
           "since": "2026-10-30"
         },
         {
-          "name": "--sf-pager-card-background",
+          "name": "--sf-pager-card-background-color",
           "role": "background",
-          "summary": "The fill of the cards and of the lesson card.",
+          "summary": "The fill of the cards and of the lesson card. The former name --sf-pager-card-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-0)",
-          "since": "2026-10-30"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-pager-card-border-color",
@@ -3285,11 +3285,11 @@
           "since": "2026-10-30"
         },
         {
-          "name": "--sf-contents-background",
+          "name": "--sf-contents-background-color",
           "role": "background",
-          "summary": "The bar's fill and the compact view's open list.",
+          "summary": "The bar's fill and the compact view's open list. The former name --sf-contents-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-0)",
-          "since": "2026-10-30"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-contents-indent",
@@ -3553,11 +3553,11 @@
           "since": "2026-10-30"
         },
         {
-          "name": "--sf-workspace-drawer-background",
+          "name": "--sf-workspace-drawer-background-color",
           "role": "background",
-          "summary": "The panel's fill while it is a drawer over main; a column keeps the page's.",
+          "summary": "The panel's fill while it is a drawer over main; a column keeps the page's. The former name --sf-workspace-drawer-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-elevation-4--surface)",
-          "since": "2026-10-30"
+          "since": "2026-11-08"
         }
       ]
     },
@@ -3566,11 +3566,11 @@
       "selector": ".sf-card",
       "variables": [
         {
-          "name": "--sf-card-background",
+          "name": "--sf-card-background-color",
           "role": "background",
-          "summary": "The card's fill.",
+          "summary": "The card's fill. The former name --sf-card-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-0)",
-          "since": "2026-11-01"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-card-color",
@@ -3642,11 +3642,11 @@
       "selector": ".sf-figure",
       "variables": [
         {
-          "name": "--sf-figure-background",
+          "name": "--sf-figure-background-color",
           "role": "background",
-          "summary": "The media box's fill, seen around contained media.",
+          "summary": "The media box's fill, seen around contained media. The former name --sf-figure-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-container)",
-          "since": "2026-11-01"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-figure-border-color",
@@ -3690,11 +3690,11 @@
       "selector": ".sf-procedure",
       "variables": [
         {
-          "name": "--sf-procedure-marker-background",
+          "name": "--sf-procedure-marker-background-color",
           "role": "background",
-          "summary": "The fill of a step's marker; a complete or current step draws its own.",
+          "summary": "The fill of a step's marker; a complete or current step draws its own. The former name --sf-procedure-marker-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-container)",
-          "since": "2026-11-01"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-procedure-marker-color",
@@ -3909,25 +3909,25 @@
       "selector": "sf-alert-bar, .sf-alert-bar",
       "variables": [
         {
-          "name": "--sf-alert-bar-danger-background",
+          "name": "--sf-alert-bar-error-background-color",
           "role": "background",
-          "summary": "The bar's fill when its most serious item is danger; the text keeps --sf-on-error.",
+          "summary": "The bar's fill when its most serious item is an error; the text keeps --sf-on-error. The former name --sf-alert-bar-danger-background is still read, under this one, until 2027-01-01 (journal value-alert-bar-level-danger-to-error; C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-error)",
-          "since": "2026-11-05"
+          "since": "2026-11-08"
         },
         {
-          "name": "--sf-alert-bar-warning-background",
+          "name": "--sf-alert-bar-warning-background-color",
           "role": "background",
-          "summary": "The bar's fill when its most serious item is a warning; the text keeps --sf-on-warning.",
+          "summary": "The bar's fill when its most serious item is a warning; the text keeps --sf-on-warning. The former name --sf-alert-bar-warning-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-warning)",
-          "since": "2026-11-05"
+          "since": "2026-11-08"
         },
         {
-          "name": "--sf-alert-bar-info-background",
+          "name": "--sf-alert-bar-info-background-color",
           "role": "background",
-          "summary": "The bar's fill when it holds only info items; the text keeps --sf-on-info.",
+          "summary": "The bar's fill when it holds only info items; the text keeps --sf-on-info. The former name --sf-alert-bar-info-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-info)",
-          "since": "2026-11-05"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-alert-bar-padding-inline",
@@ -3937,11 +3937,11 @@
           "since": "2026-11-05"
         },
         {
-          "name": "--sf-alert-bar-list-background",
+          "name": "--sf-alert-bar-list-background-color",
           "role": "background",
-          "summary": "The surface of the list of all under the bar.",
+          "summary": "The surface of the list of all under the bar. The former name --sf-alert-bar-list-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-1)",
-          "since": "2026-11-05"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-alert-bar-gap",
@@ -3971,11 +3971,11 @@
           "since": "2026-11-06"
         },
         {
-          "name": "--sf-wizard-background",
+          "name": "--sf-wizard-background-color",
           "role": "background",
-          "summary": "The frame's surface in a page.",
+          "summary": "The frame's surface in a page. The former name --sf-wizard-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-1)",
-          "since": "2026-11-06"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-wizard-border-color",
@@ -4005,11 +4005,11 @@
       "selector": "sf-tile-metric, .sf-tile-metric",
       "variables": [
         {
-          "name": "--sf-tile-metric-background",
+          "name": "--sf-tile-metric-background-color",
           "role": "background",
-          "summary": "The tile's fill.",
+          "summary": "The tile's fill. The former name --sf-tile-metric-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-0)",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-tile-metric-border-color",
@@ -4040,11 +4040,11 @@
           "since": "2026-11-07"
         },
         {
-          "name": "--sf-tile-metric-hover-background",
+          "name": "--sf-tile-metric-hover-background-color",
           "role": "hover-background",
-          "summary": "The fill of a link or button tile under the pointer.",
+          "summary": "The fill of a link or button tile under the pointer. The former name --sf-tile-metric-hover-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-container-hover)",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-tile-metric-min-width",
@@ -4060,11 +4060,11 @@
       "selector": "sf-list-attention, .sf-list-attention",
       "variables": [
         {
-          "name": "--sf-list-attention-background",
+          "name": "--sf-list-attention-background-color",
           "role": "background",
-          "summary": "The list's fill; none by default, so it is no card.",
+          "summary": "The list's fill; none by default, so it is no card. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "transparent",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-list-attention-divider-color",
@@ -4101,11 +4101,11 @@
       "selector": "sf-progress-run, .sf-progress-run",
       "variables": [
         {
-          "name": "--sf-progress-run-background",
+          "name": "--sf-progress-run-background-color",
           "role": "background",
-          "summary": "The run's fill; none by default (a drawer has its own).",
+          "summary": "The run's fill; none by default (a drawer has its own). The former name --sf-progress-run-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "transparent",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-progress-run-divider-color",
@@ -4115,11 +4115,11 @@
           "since": "2026-11-07"
         },
         {
-          "name": "--sf-progress-run-output-background",
+          "name": "--sf-progress-run-output-background-color",
           "role": "background",
-          "summary": "The output pane's fill.",
+          "summary": "The output pane's fill. The former name --sf-progress-run-output-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-1)",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-progress-run-output-color",
@@ -4149,11 +4149,11 @@
       "selector": "code",
       "variables": [
         {
-          "name": "--sf-code-background",
+          "name": "--sf-code-background-color",
           "role": "background",
-          "summary": "The plate behind a word of code in running text. Tones from existing roles only: var(--sf-tertiary-container) with --sf-code-color var(--sf-on-tertiary-container).",
+          "summary": "The plate behind a word of code in running text. Tones from existing roles only: var(--sf-tertiary-container) with --sf-code-color var(--sf-on-tertiary-container). The former name --sf-code-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "var(--sf-surface-container)",
-          "since": "2026-11-07"
+          "since": "2026-11-08"
         },
         {
           "name": "--sf-code-color",
@@ -4397,9 +4397,9 @@
           "since": "2026-11-08"
         },
         {
-          "name": "--sf-kbd-background",
+          "name": "--sf-kbd-background-color",
           "role": "background",
-          "summary": "A cap's fill (in a button or a field): the ink it sits in, mixed.",
+          "summary": "A cap's fill (in a button or a field): the ink it sits in, mixed. The former name --sf-kbd-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
           "default": "color-mix(in srgb, currentColor 12%, transparent)",
           "since": "2026-11-08"
         },

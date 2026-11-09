@@ -10,12 +10,28 @@
     --sf-inherit: inherit;
     --sf-transparent-for-focus: var(--sf-transparent);
     --sf-white: #ffffff;
+    /* Glass over media draws its ink from white on the alpha scale (C16,
+       .sf-surface-media): states 4/8/12, fill 16/20/24, line 24, boundary 64,
+       dim ink 80. */
+    --sf-white--alfa-4: #ffffff0a;
     --sf-white--alfa-8: #ffffff14;
+    --sf-white--alfa-12: #ffffff1f;
+    --sf-white--alfa-16: #ffffff29;
+    --sf-white--alfa-20: #ffffff33;
     --sf-white--alfa-24: #ffffff3d;
+    --sf-white--alfa-64: #ffffffa3;
+    --sf-white--alfa-80: #ffffffcc;
     --sf-black: #000000;
     --sf-black--alfa-4: #0000000a;
     --sf-black--alfa-8: #00000014;
     --sf-black--alfa-12: #0000001f;
+    /* Glass over a photo or a video (C16 --sf-surface-media; C14 the media
+       close button): black at 48 at rest, 64 under the pointer, 80 pressed.
+       The ink family as a fill, which the alpha scale allows for glass and
+       the scrim only. */
+    --sf-black--alfa-48: #0000007a;
+    --sf-black--alfa-64: #000000a3;
+    --sf-black--alfa-80: #000000cc;
     --sf-neutral-98: #faf9fe;
     --sf-neutral-95: #f1f0f6;
     --sf-neutral-90: #e3e2e7;
@@ -147,11 +163,17 @@
     --sf-info-98: #f9f9ff;
     --sf-info-95: #edf0ff;
     --sf-info-90: #d7e2ff;
+    --sf-info-90--alfa-4: #d7e2ff0a;
+    --sf-info-90--alfa-8: #d7e2ff14;
+    --sf-info-90--alfa-12: #d7e2ff1f;
+    --sf-info-90--alfa-24: #d7e2ff3d;
     --sf-info-85: #c2d4ff;
     --sf-info-80: #acc7ff;
     --sf-info-70: #7eabff;
     --sf-info-60: #538ff5;
     --sf-info-50: #3375d9;
+    --sf-info-50--alfa-4: #3375d90a;
+    --sf-info-50--alfa-8: #3375d914;
     --sf-info-50--alfa-12: #3375d91f;
     --sf-info-50--alfa-16: #3375d929;
     --sf-info-50--alfa-20: #3375d933;

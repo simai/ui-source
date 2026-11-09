@@ -12,6 +12,12 @@
       "  <sf-button-icon id=\"ib-badge\" icon=\"notifications\" badge-count=\"3\" size=\"2\" aria-label=\"Уведомления\"></sf-button-icon>",
       "  <sf-button-icon id=\"ib-load\" icon=\"refresh\" loading aria-label=\"Обновить\"></sf-button-icon>",
       "  <sf-button-icon id=\"ib-bad\" icon=\"add\" appearance=\"primary\" size=\"7\" aria-label=\"Неизвестно\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-err\" icon=\"delete\" status=\"error\" aria-label=\"Удалить\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-surface\" icon=\"tune\" appearance=\"surface\" aria-label=\"Фильтры\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-surface-err\" icon=\"delete\" appearance=\"surface\" status=\"danger\" aria-label=\"Удалить\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-old-looks\" icon=\"share\" appearance=\"link\" scheme=\"secondary\" aria-label=\"Поделиться\"></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-cyc\" aria-label=\"Повтор\" value=\"off\" label-pressed=\"Не так\" cycle='[{\"value\":\"off\",\"label\":\"выключен\",\"icon\":\"repeat\"},{\"value\":\"all\",\"label\":\"весь список\",\"icon\":\"repeat\",\"pressed\":true},{\"value\":\"one\",\"label\":\"один трек\",\"icon\":\"repeat_one\",\"pressed\":true}]'></sf-button-icon>",
+      "  <sf-button-icon id=\"ib-theme\" theme-cycle></sf-button-icon>",
       "</main>"
     ]
   },
@@ -138,6 +144,77 @@
         },
         {
           "check": "getComputedStyle(document.querySelector('#ib button')).backgroundColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p8-danger-looks",
+      "title": "error reads as danger, link as ghost, secondary as on-surface-variant, surface as tonal on-surface; surface with danger is red, not grey",
+      "covers": "settings.status danger, settings.appearance ghost, settings.scheme, aliases.json error, link, secondary; retired surface",
+      "steps": [
+        {
+          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--tonal') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
+          "expect": {
+            "values": {
+              "#ib-err.status": "danger",
+              "#ib-surface.appearance": "tonal",
+              "#ib-surface.scheme": "on-surface",
+              "#ib-old-looks.appearance": "ghost",
+              "#ib-old-looks.scheme": "on-surface-variant"
+            }
+          }
+        },
+        {
+          "check": "(() => { const b = document.querySelector('#ib-surface-err button'); const fill = getComputedStyle(b).backgroundColor; const probe = document.createElement('i'); probe.style.color = 'var(--sf-error-container)'; document.body.append(probe); const want = getComputedStyle(probe).color; probe.remove(); return fill === want; })()"
+        },
+        {
+          "check": "['error', 'link', 'secondary', 'surface'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
+        }
+      ]
+    },
+    {
+      "id": "p9-cycle",
+      "title": "a cycle shows the current item's icon and pressed look, names it, steps, wraps, sends change and announces; label-pressed beside it is ignored",
+      "covers": "settings.cycle, settings.value, events.change",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-cyc button'); return b.getAttribute('aria-label') === 'Повтор: выключен' && b.querySelector('sf-icon').getAttribute('icon') === 'repeat' && !b.classList.contains('sf-icon-button--pressed') && !b.hasAttribute('aria-pressed') && b.title.includes('весь список'); })()"
+        },
+        {
+          "user": "click:#ib-cyc button",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "(() => { const h = document.querySelector('#ib-cyc'); const b = h.querySelector('button'); return h.getAttribute('value') === 'all' && b.classList.contains('sf-icon-button--pressed') && b.getAttribute('aria-label') === 'Повтор: весь список' && h.querySelector('.sf-icon-button-announce').textContent.trim() === 'Повтор: весь список'; })()"
+        },
+        {
+          "user": "click:#ib-cyc button"
+        },
+        {
+          "check": "document.querySelector('#ib-cyc button sf-icon').getAttribute('icon') === 'repeat_one'"
+        },
+        {
+          "user": "click:#ib-cyc button"
+        },
+        {
+          "check": "document.querySelector('#ib-cyc').getAttribute('value') === 'off'"
+        }
+      ]
+    },
+    {
+      "id": "p10-theme-cycle",
+      "title": "a theme cycle names the theme, shows contrast for «as the system» and offers the opposite of the visible theme first",
+      "covers": "settings.theme-cycle",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-theme button'); const pref = SF.Loader?.themePreference || 'system'; const icon = b.querySelector('sf-icon').getAttribute('icon'); const want = {system: 'contrast', light: 'light_mode', dark: 'dark_mode'}[pref]; return icon === want && b.getAttribute('aria-label').startsWith('Тема: ') && b.title.includes('Нажмите'); })()"
         }
       ]
     }

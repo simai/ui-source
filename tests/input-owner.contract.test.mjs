@@ -49,7 +49,9 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
   // has to fetch: see loader-relation-completeness.contract.test.mjs. The list is
   // generated from the Loader relations (standard 1.4): the reset button's sheet too.
   assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.inputs', 'smart.icon']);
-  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
+  // sf-input keeps the ladder's outer steps (1.6.0, actions block item 4).
+  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
+  assert.deepEqual(manifest.inputs.properties.radius.enum, ['', 'default', 'square', 'rounded']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'hidden']);
   assert.deepEqual(manifest.inputs.properties['input-type'].enum, ['text', 'email', 'password', 'search', 'tel', 'url', 'number']);
   // A number field's range and step (1.5.0) are the native input's.

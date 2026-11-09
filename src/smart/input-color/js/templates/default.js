@@ -74,7 +74,7 @@ export function renderColorTemplate(context) {
             ${context.clearable && isSet && !context.hasInheritedValue
                     ? html`
                         <sf-button-icon
-                                appearance="link"
+                                appearance="ghost"
                                 size=${size}
                                 icon="restart_alt"
                                 data-action="clear"
@@ -125,7 +125,7 @@ function renderThemeTemplate(context) {
             ${context.clearable && isSet
                     ? html`
                         <sf-button-icon
-                                appearance="link"
+                                appearance="ghost"
                                 size=${size}
                                 icon="restart_alt"
                                 data-action="clear"

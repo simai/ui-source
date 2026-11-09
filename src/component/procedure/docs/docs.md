@@ -58,7 +58,7 @@ complete and it current; `props.layout`: `timeline` or `list`).
 
 | Variable | What | Default |
 |:---|:---|:---|
-| `--sf-procedure-marker-background` | the marker's fill | `--sf-surface-container` |
+| `--sf-procedure-marker-background-color` | the marker's fill | `--sf-surface-container` |
 | `--sf-procedure-marker-color` | the number | `--sf-on-surface` |
 | `--sf-procedure-line-color` | the line between markers | `--sf-outline-variant` |
 | `--sf-procedure-line-width` | the line's width | `--sf-px` |

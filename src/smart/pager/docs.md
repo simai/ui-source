@@ -120,7 +120,7 @@ stands on, the buttons the rung's control height.
 | Variable | Default | What it changes |
 |:---|:---|:---|
 | `--sf-pager-gap` | `var(--sf-ui-1--text-space-x)`, the rung's picture-to-label step | the space between the parts |
-| `--sf-pager-card-background` | `var(--sf-surface-0)` | the cards' and the lesson card's fill |
+| `--sf-pager-card-background-color` | `var(--sf-surface-0)` | the cards' and the lesson card's fill |
 | `--sf-pager-card-border-color` | `var(--sf-outline-variant)` | their edge |
 | `--sf-pager-card-radius` | `var(--sf-radius--ui)` | their corners |
 | `--sf-pager-link-color` | `var(--sf-primary)` | the titles of cards and row |

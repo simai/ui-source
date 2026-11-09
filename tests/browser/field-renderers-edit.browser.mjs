@@ -26,7 +26,7 @@ const modules = [
   'smart/smart/button-icon/js/button-icon.js', 'smart/smart/checkbox/js/checkbox.js',
   'smart/smart/list-item/js/list-item.js', 'smart/smart/input/js/input.js',
   'smart/smart/input-textarea/js/input-textarea.js', 'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/switch/js/switch.js', 'smart/smart/button-group/js/button-group.js',
+  'smart/smart/switch/js/switch.js', 'smart/smart/segmented/js/segmented.js',
   'smart/smart/input-date/js/input-date.js', 'smart/smart/spinner/js/spinner.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
@@ -89,7 +89,7 @@ try {
 
     const element = (key) => {
       const box = document.querySelector(`[data-field="${key}"]`);
-      const node = box?.querySelector('sf-input, sf-input-textarea, sf-dropdown, sf-switch, sf-button-group, sf-input-date');
+      const node = box?.querySelector('sf-input, sf-input-textarea, sf-dropdown, sf-switch, sf-segmented, sf-input-date');
       return node ? {tag: node.tagName.toLowerCase(), size: node.getAttribute('size'),
         value: node.getAttribute('value'),
         chosen: [...box.querySelectorAll('button')].filter((b) => b.className.includes('sf-button--default')).length,
@@ -165,7 +165,7 @@ try {
   } else {
     const expected = {
       title: 'sf-input', about: 'sf-input-textarea', count: 'sf-input', when: 'sf-input-date',
-      live: 'sf-switch', maybe: 'sf-button-group', status: 'sf-dropdown',
+      live: 'sf-switch', maybe: 'sf-segmented', status: 'sf-dropdown',
     };
     for (const [key, tag] of Object.entries(expected)) {
       if (rendered[key]?.tag !== tag) {

@@ -17,6 +17,7 @@
     "utility/font-weight/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css"
   ],
   "examples": {
@@ -32,6 +33,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "assistant-offer": [
@@ -46,6 +48,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "declined": [
@@ -60,6 +63,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "expired": [
@@ -74,6 +78,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "pending": [
@@ -88,6 +93,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "reference": [
@@ -102,6 +108,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "untitled": [
@@ -116,6 +123,7 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]
   }

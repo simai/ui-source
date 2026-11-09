@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "title": "Wizard",
   "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
   "kind": "smart",
@@ -500,11 +500,11 @@
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
-        "sha256": "4c8effc8176d9420f5d8981771e14fe24096b3f390a33d0d855a2ac351b90194"
+        "sha256": "c7c41abab7c701ec8dee68c67f0249f9a0da176185babce180d67a7c96cad441"
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "4ea8f7c7adbcd48a4bb94835abc0d9bc249ce121060d555e39186f5311707653"
+        "sha256": "b22868a29fabb1e9fca0f682367523c662af7dc1460eb967f8165ad4a1df40cd"
       },
       {
         "path": "src/smart/wizard/rule.js",
@@ -512,7 +512,7 @@
       },
       {
         "path": "src/smart/wizard/docs.md",
-        "sha256": "851484752c8ba3bd9a3176445d23b047a91045fb5b42b3020a27f2c276e41ea2"
+        "sha256": "6a22c91d01742c6f48812189127e1f4dbca72a40ed3bfe76145d648a1c153ee0"
       }
     ],
     "generated_runtime": []

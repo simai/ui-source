@@ -13,6 +13,7 @@
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
     "core/css/core.css",
+    "smart/button-close/css/button-close.min.css",
     "smart/button-copy/css/button-copy.min.css",
     "smart/button-icon/css/button-icon.min.css",
     "utility/align-items/default/css/default.min.css",
@@ -23,6 +24,7 @@
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css"
   ],
   "examples": {
@@ -34,6 +36,7 @@
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-copy/css/button-copy.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -44,6 +47,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "reference": [
@@ -54,6 +58,7 @@
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-copy/css/button-copy.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -64,6 +69,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "size": [
@@ -74,6 +80,7 @@
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-copy/css/button-copy.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -84,6 +91,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "target": [
@@ -94,6 +102,7 @@
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-copy/css/button-copy.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -104,6 +113,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
     "text": [
@@ -114,6 +124,7 @@
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-copy/css/button-copy.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -124,6 +135,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ]
   }

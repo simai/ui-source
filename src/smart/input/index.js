@@ -4,7 +4,7 @@ import {
 } from '../../component/inputs/js/_inputs';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
+import { inputSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, innerControlName } from '../helpers/form-field';
 import { renderInputTemplate } from './js/templates/default';
@@ -47,8 +47,10 @@ class SfInput extends FormField(InputElement) {
     this._boundRoot = null;
   }
 
+  // sf-input keeps the ladder's outer steps (1/3 and 3) that the other
+  // fields retired (field-size.js inputSize).
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input');
+    return inputSize(this.getAttribute('size') || '1');
   }
 
   // element.focus() on the host reaches the native input.
@@ -147,8 +149,8 @@ class SfInput extends FormField(InputElement) {
 
     return this.createTemplateContext({
       ...props,
-      // The size the field draws: a retired size (1/3) is the one it keeps,
-      // as the props' closed list alone would read it as the default.
+      // The size the field draws: a retired size is the one it keeps, as
+      // the props' closed list alone would read it as the default.
       size: this.size,
       leftIcon: this.iconStart,
       rightText: this.textEnd,

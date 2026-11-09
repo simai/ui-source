@@ -16,7 +16,7 @@
 // first paint is the site's (docs.md).
 //
 // It composes the Framework's parts and draws nothing of its own: the switch
-// is sf-button-group appearance="segmented", the trigger sf-button-icon with
+// is sf-segmented on its track, the trigger sf-button-icon with
 // the Material Symbols «translate» glyph, the list sf-menu-context with its
 // search. Their events stay inside: the page hears this element's change.
 //

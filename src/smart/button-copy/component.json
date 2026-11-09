@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-copy's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/copy-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button-copy",
   "tag": "sf-button-copy",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -272,7 +272,8 @@
     "version 1.1.8: the copy and its fallback are core's (core/js/clipboard.js, SF.copyText, core.runtime 1.20.0), shared with the clipboard class (reuse audit 2026-11-02, finding 11). The same order -- the Clipboard API on a secure page, execCommand over a hidden field where it is absent or refused -- and the same outcomes.",
     "version 1.2.0: the tag is sf-button-copy (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.button-copy and the bundle cl-button-copy follow it. sf-copy-button stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-button-copy, sf-copy-button) (change journal tag-sf-copy-button-to-sf-button-copy, path-smart-copy-button-to-button-copy).",
     "version 1.2.1 (2026-11-08): the keys a person presses are the button family's (msg-c84f2727): Tab reaches the button, Enter and Space press it -- the manifest listed Enter and Space without Tab. Settings, values, events and the drawing are unchanged.",
-    "version 1.2.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged."
+    "version 1.2.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
+    "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

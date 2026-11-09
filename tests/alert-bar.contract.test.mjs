@@ -16,9 +16,9 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.0.2');
+  assert.equal(manifest.version, '1.2.0');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
-  assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['danger', 'warning', 'info']);
+  assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
   assert.deepEqual(Object.keys(manifest.values), ['minimized']);
   assert.deepEqual(Object.keys(manifest.events), ['navigate', 'acknowledge', 'close', 'minimize']);
@@ -40,9 +40,9 @@ test('the order, the hide periods and the level words', async () => {
   // The pure part of index.js, read without the element: the sort and the
   // periods are the owner's decisions of 2026-11-05.
   assert.match(source, /export const HIDE = \{warning: 'day', info: 'always'\}/u);
-  assert.match(source, /const RANK = \{danger: 0, warning: 1, info: 2\}/u);
+  assert.match(source, /const RANK = \{error: 0, warning: 1, info: 2\}/u);
   assert.match(source, /if \(a\.at !== null && b\.at !== null && a\.at !== b\.at\) return b\.at - a\.at;/u);
-  assert.match(source, /dismissible: level !== 'danger' && item\.dismissible !== false/u);
+  assert.match(source, /dismissible: level !== 'error' && item\.dismissible !== false/u);
   const ru = json('src/smart/alert-bar/lang/ru.json');
   const en = json('src/smart/alert-bar/lang/en.json');
   assert.deepEqual(Object.keys(en.runtime).sort(), Object.keys(ru.runtime).sort());
@@ -50,6 +50,10 @@ test('the order, the hide periods and the level words', async () => {
   assert.equal(ru.runtime.position, '{n} из {count}');
   assert.equal(ru.runtime.all, 'Все {count}');
   assert.equal(en.events.acknowledge.label, 'Mark as seen');
+  // The most serious level is error, as on every message (decision C13);
+  // the former danger is read as error.
+  assert.equal(ru.runtime['level-error'], 'Ошибка');
+  assert.match(source, /if \(word === 'danger'\) \{/u);
 });
 
 test('it stores nothing and takes no focus', () => {
@@ -59,7 +63,7 @@ test('it stores nothing and takes no focus', () => {
   assert.doesNotMatch(code, /onConnected\(\) \{[^}]*focus\(/u);
 });
 
-test('one live region for a new danger item, one for the rest; the bar is a named region', () => {
+test('one live region for a new error item, one for the rest; the bar is a named region', () => {
   assert.match(template, /role="region" aria-label=\$\{label \|\| nothing\}/u);
   assert.match(template, /class="sf-alert-bar-live sr-only" role="alert">\$\{announce\.alert\}/u);
   assert.match(template, /class="sf-alert-bar-live sr-only" role="status">\$\{announce\.status\}/u);

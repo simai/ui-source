@@ -1,0 +1,10 @@
+{
+  "title": "Segmented control",
+  "runtime": {
+    "dark": "Dark",
+    "group": "Theme",
+    "light": "Light",
+    "system": "System",
+    "value-missing": "Choose an option."
+  }
+}

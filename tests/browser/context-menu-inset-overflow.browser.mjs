@@ -9,7 +9,7 @@
 //    a search, and a drilling level, at sizes 1/2 and 1, light and dark.
 //  - C06: the search is a header: no frame, across the panel's inner width, a
 //    row's height and the inset above and below, a hairline under it; its icon
-//    stands over the rows' icon (their text, when they have none) and its text
+//    stands over the rows' icon (at the header's end, when they have none) and its text
 //    over theirs.
 //  - C07: a scrollbar only when the rows do not fit; in the inline-end inset
 //    while it takes room: the area's inline-end padding 0, the track the
@@ -135,9 +135,11 @@ function checkInsets(where, got) {
     if (!near(h.start, 0) || !near(h.end, 0)) note({case: `${where}: the search header spans the panel`, got: h});
     if (!near(h.height, rowHeight + 2 * inset) || !near(h.line, 1) || h.frame !== 0 || h.fieldBorder !== 0) note({case: `${where}: the search header is a row and the inset above and below, a hairline under it, no frame`, got: {h, rowHeight, inset}});
     const row = got.rows[0];
-    const under = row.leadLeft ?? row.textLeft;
-    if (!near(h.iconLeft, under)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: h.iconLeft, row: under}});
-    if (row.leadLeft !== null && !near(h.textLeft, row.textLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {text: h.textLeft, row: row.textLeft}});
+    // Text over text, always; the icon over the rows' leading column, or at
+    // the header's end in a menu without one (C06, DEV measurement 2026-11-08).
+    if (!near(h.textLeft, row.textLeft)) note({case: `${where}: the search text stands over the rows' text`, got: {text: h.textLeft, row: row.textLeft}});
+    if (row.leadLeft !== null && !near(h.iconLeft, row.leadLeft)) note({case: `${where}: the search icon stands over the rows' icon`, got: {icon: h.iconLeft, row: row.leadLeft}});
+    if (row.leadLeft === null && !(h.iconLeft > h.textLeft)) note({case: `${where}: without a leading column the search icon stands at the header's end`, got: {icon: h.iconLeft, text: h.textLeft}});
   }
   if (got.head && (!near(got.head.start, inset) || !near(got.head.end, inset))) note({case: `${where}: the drilling head stands the inset inside the panel`, got: {head: got.head, inset}});
 }

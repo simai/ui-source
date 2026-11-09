@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import {themeSource} from './support/theme-source.mjs';
 
 // Two roles, one for each side of a disabled control:
 //
@@ -230,7 +231,7 @@ test('a disabled rule outweighs the resting rule it has to beat', () => {
 // the boundary rather than of the ink: 1.86:1 and 2.27:1, under the live
 // boundary and over the edge of a region (owner, 2026-10-08).
 test('the disabled roles keep the alphas the owner chose', () => {
-  const theme = read('src/core/scss/_sf_css__theme.scss');
+  const theme = themeSource();
   const value = (name) => {
     const match = theme.match(new RegExp(`--sf-${name}: ([^;]+);`, 'u'));
     return match ? match[1].trim() : null;

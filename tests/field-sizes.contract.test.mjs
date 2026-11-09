@@ -10,9 +10,13 @@ const read = (path) => readFile(new URL(path, ROOT), 'utf8').then(withoutPublicV
 
 /* Form fields come in three sizes. The two outer steps were retired because
    nothing used them and they could not hold a field's own pictures, tags and
-   targets; this file keeps the scale from growing back one component at a time. */
+   targets; this file keeps the scale from growing back one component at a time.
+   sf-input alone keeps them (actions block item 4, 2026-11-08): a plain text
+   field has no pictures or tags, and a toolbar search and a hero search stand
+   beside buttons of 1/3 and 3. */
+const INPUT_SIZES = ['1/3', '1/2', '1', '2', '3'];
 const FIELDS = {
-  inputs: 'input', textarea: 'textarea', dropdown: 'dropdown', quantity: 'quantity',
+  textarea: 'textarea', dropdown: 'dropdown', quantity: 'quantity',
   verification: 'verification', 'country-code': 'country-code', 'file-upload': 'file-upload',
 };
 const RETIRED_CLASS = /\.sf-(input|textarea|dropdown|quantity|verification|verification-form|country-code|file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
@@ -59,13 +63,23 @@ test('field sizes: no field sheet styles a retired size', async () => {
       if (RETIRED_CLASS.test(await readFile(path, 'utf8'))) found.push(path);
     }
   }
-  const smartInputs = await read('src/smart/input/js/templates/default.css');
-  if (RETIRED_CLASS.test(smartInputs)) found.push('src/smart/input/js/templates/default.css');
   assert.deepEqual(found, []);
 });
 
+test('field sizes: sf-input stands on the whole control ladder', async () => {
+  const sheet = await read('src/component/inputs/scss/_css__custom.scss');
+  for (const size of ['1\\/3', '3']) {
+    assert.ok(sheet.includes(`.sf-input.sf-input--size-${size} .sf-input-field {\n    block-size: var(--sf-ui-${size}--control-height);`), `.sf-input size ${size}`);
+  }
+  const pill = sheet.slice(sheet.indexOf('.sf-input.sf-input--radius-rounded {'));
+  assert.ok(pill.length > 0 && /^[^}]*var\(--sf-radius-rounded\)/.test(pill), 'radius rounded is a pill');
+  const manifest = JSON.parse(await read('src/smart/input/smart.manifest.json'));
+  assert.deepEqual(manifest.inputs.properties.size.enum, INPUT_SIZES);
+  assert.deepEqual(manifest.inputs.properties.radius.enum, ['', 'default', 'square', 'rounded']);
+});
+
 test('field sizes: Smart manifests offer the three sizes and nothing else', async () => {
-  for (const name of ['input', 'input-textarea', 'dropdown', 'file-upload', 'input-country']) {
+  for (const name of ['input-textarea', 'dropdown', 'file-upload', 'input-country']) {
     const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
     assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES], name);
   }

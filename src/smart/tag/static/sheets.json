@@ -14,6 +14,7 @@
     "component/icons/css/icons.min.css",
     "component/tags/css/tags.min.css",
     "core/css/core.css",
+    "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
     "smart/tag/css/tag.min.css",
     "utility/align-items/default/css/default.min.css",
@@ -26,7 +27,8 @@
     "utility/min-width/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "checkbox": [
@@ -38,6 +40,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -50,7 +53,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "count": [
       "component/avatars/css/avatars.min.css",
@@ -61,6 +65,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -73,7 +78,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "icon": [
       "component/avatars/css/avatars.min.css",
@@ -84,6 +90,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -96,7 +103,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "interactive": [
       "component/avatars/css/avatars.min.css",
@@ -107,6 +115,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -119,7 +128,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "line": [
       "component/avatars/css/avatars.min.css",
@@ -130,6 +140,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -142,7 +153,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",
@@ -153,6 +165,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -165,7 +178,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "status": [
       "component/avatars/css/avatars.min.css",
@@ -176,6 +190,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -188,7 +203,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "surface": [
       "component/avatars/css/avatars.min.css",
@@ -199,6 +215,7 @@
       "component/icons/css/icons.min.css",
       "component/tags/css/tags.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/tag/css/tag.min.css",
       "utility/align-items/default/css/default.min.css",
@@ -211,7 +228,8 @@
       "utility/min-width/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

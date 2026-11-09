@@ -97,7 +97,7 @@ export function renderAlertTemplate(context) {
                   <sf-button-icon
                           kind="close"
                           size="1"
-                          appearance="link"
+                          appearance="ghost"
                           scheme="on-surface"
                           data-close
                           data-alert-close

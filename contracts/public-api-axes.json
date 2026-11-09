@@ -3,7 +3,7 @@
   "schema_version": 1,
   "purpose": "One name per question a public input answers. The Framework grew three different meanings under the word type, and a developer could not tell from the name which one a component meant. The axes below fix the question each name answers; the alias map records every legacy name that still works, so a rename never breaks a consumer.",
   "axes": {
-    "appearance": "How the control looks: default, tonal, outline, link, surface, ghost, filled, bordered, segmented.",
+    "appearance": "How the control looks: default, tonal, outline, ghost, link, surface, filled, bordered, segmented.",
     "status": "What the control reports about the world: success, warning, error, info, neutral.",
     "kind": "What the control carries or is: an icon, an avatar, a checkbox, a folder, a file."
   },
@@ -18,6 +18,23 @@
     "danger": "error",
     "critical": "error"
   },
+  "control_status": {
+    "$comment": "Decision C13 (docs review R031, 2026-11-08): a dangerous action and an error are different words. A control -- a button, an icon button, a menu item -- says danger: it deletes, discards or cannot be undone. A message -- a field, an alert, a badge, a toast, the alert bar -- says error: something went wrong. One red: danger is drawn with the error roles. On a control, error is danger's dated alias, the reverse of status_aliases, which a message keeps.",
+    "vocabulary": [
+      "danger"
+    ],
+    "aliases": {
+      "error": "danger",
+      "critical": "danger"
+    },
+    "components": [
+      "button",
+      "button-icon"
+    ],
+    "entries": {
+      "menu-context": "an entry's status (danger; error read as danger) or danger: true"
+    }
+  },
   "rules": [
     "A new public input that answers one of these questions uses the axis name, never type.",
     "A legacy name keeps working through the prop's aliases, and is listed here until it is retired.",
@@ -30,14 +47,16 @@
       "axis": "status",
       "legacy": [],
       "state": "canonical_from_the_start",
-      "note": "a destructive control is a status, not a colour role: `scheme` keeps saying which colour family a button takes and `status` says what it is about. Only `error` is painted -- a button that succeeds or warns is a colour with no meaning until a product asks for one."
+      "note": "a destructive control is a status, not a colour role: `scheme` keeps saying which colour family a button takes and `status` says what it is about. A control's status is danger (control_status, decision C13); error and critical are its dated aliases. Only danger is painted, with the error roles.",
+      "vocabulary": "control"
     },
     {
       "component": "button-icon",
       "axis": "status",
       "legacy": [],
       "state": "canonical_from_the_start",
-      "note": "the same split as buttons: the colour family stays `scheme`, what the control is about is `status`, and only the destructive one is painted."
+      "note": "the same split as buttons: the colour family stays `scheme`, what the control is about is `status` (control_status: danger, error its dated alias), and only danger is painted.",
+      "vocabulary": "control"
     },
     {
       "component": "button",
@@ -83,11 +102,11 @@
       "note": "the class menu's presentations by name: default, documentation-tree and compact, its two modifiers."
     },
     {
-      "component": "button-group",
+      "component": "segmented",
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start",
-      "note": "segmented draws the same radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); default keeps the joined outlined buttons."
+      "note": "segmented draws the radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); since 1.4.0 (owner decision D11b, 2026-11-08) the track is the default, `buttons` keeps the joined outlined buttons for forms, and the old values segmented and default answer as track and buttons until 2027-01-01."
     },
     {
       "component": "badge",
@@ -355,6 +374,18 @@
       "component": "wizard-step",
       "property": "state",
       "reason": "the value is where the step stands in the wizard's process -- not started, done, skipped, running, or error after its action failed -- the same stages sf-steps draws (completed, skipped, running, error), not a status of the world the step reports; the step's message says what happened."
+    },
+    {
+      "component": "button-close",
+      "property": "backdrop",
+      "reason": "backdrop (surface or color) tells the control what it stands on, so it takes the ink of that place (owner decisions C14, D11c, 2026-11-08). The value surface names the kind of place under the control -- a surface, a coloured place, a photo -- not a look of the control, so it answers where the control stands, not the appearance question.",
+      "kept_for": "the appearance of the control stays its own setting; backdrop only changes the ink the look is drawn in."
+    },
+    {
+      "component": "segmented",
+      "property": "backdrop",
+      "reason": "backdrop (surface, color or media) tells the control what it stands on, so it takes the ink of that place (owner decisions C14, D11c, 2026-11-08). The value surface names the kind of place under the control -- a surface, a coloured place, a photo -- not a look of the control, so it answers where the control stands, not the appearance question.",
+      "kept_for": "the appearance of the control stays its own setting; backdrop only changes the ink the look is drawn in."
     }
   ],
   "size_ladder": {
@@ -401,7 +432,7 @@
   "change_event": {
     "rule": "Every form value control reports a committed change as `change` on its host, once per change made by the user. A value set from code is not a change. A native control's `change` bubbles from its inner input; a composite control dispatches a `change` CustomEvent on its host. Older names stay emitted with the same detail as aliases for as long as the change journal (contracts/changes/journal.json) keeps them in compatibility; the manifest marks `change` with `canonical: true` and each alias with `alias_of: \"change\"`.",
     "controls": [
-      "button-group",
+      "segmented",
       "checkbox",
       "input-code",
       "input-country",
@@ -419,7 +450,7 @@
     ],
     "aliases": [
       {
-        "component": "button-group",
+        "component": "segmented",
         "legacy": [
           "sf-button-group-change"
         ],

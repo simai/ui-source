@@ -15,13 +15,13 @@ test('button group is registered as a component and a Smart Component', async ()
   const [rules, componentRule, smartRule] = await Promise.all([
     source('src/core/js/rule.src.js'),
     source('src/component/button-group/rule.js'),
-    source('src/smart/button-group/rule.js'),
+    source('src/smart/segmented/rule.js'),
   ]);
 
   assert.match(rules, /component\/button-group\/rule\.js/);
-  assert.match(rules, /smart\/button-group\/rule\.js/);
+  assert.match(rules, /smart\/segmented\/rule\.js/);
   assert.match(componentRule, /type: 'component'/);
-  assert.match(smartRule, /tags: \['sf-button-group'\]/);
+  assert.match(smartRule, /tags: \['sf-segmented', 'sf-button-group'\]/);
   assert.match(smartRule, /name: 'button-group'/);
   assert.match(smartRule, /name: 'cl-button'/);
 });
@@ -30,8 +30,8 @@ test('button group keeps layout and state ownership separated', async () => {
   const [component, styles, smart, template] = await Promise.all([
     source('src/component/button-group/js/_button-group.js'),
     source('src/component/button-group/scss/_css__button-group.scss'),
-    source('src/smart/button-group/index.js'),
-    source('src/smart/button-group/js/templates/default.js'),
+    source('src/smart/segmented/index.js'),
+    source('src/smart/segmented/js/templates/default.js'),
   ]);
 
   assert.match(component, /syncButtonGroup/);
@@ -98,18 +98,21 @@ test('button group keeps layout and state ownership separated', async () => {
 // measures it on the built bytes; this holds the source to the same shape.
 test('button group offers a segmented appearance with the same semantics', async () => {
   const [manifest, smart, template, component, styles, variables, axes] = await Promise.all([
-    json('src/smart/button-group/smart.manifest.json'),
-    source('src/smart/button-group/index.js'),
-    source('src/smart/button-group/js/templates/default.js'),
+    json('src/smart/segmented/smart.manifest.json'),
+    source('src/smart/segmented/index.js'),
+    source('src/smart/segmented/js/templates/default.js'),
     source('src/component/button-group/js/_button-group.js'),
     source('src/component/button-group/scss/_css__button-group.scss'),
     json('src/core/contracts/public-variables.v1.json'),
     json('contracts/public-api-axes.json'),
   ]);
   const inputs = manifest.inputs.properties;
-  assert.deepEqual(inputs.appearance.enum, ['default', 'segmented']);
-  assert.equal(inputs.appearance.default, 'default');
-  assert.deepEqual(inputs.plate.enum, ['scheme', 'raised']);
+  // Owner decision D11c (1.4.0): the track is the default look, with a raised
+  // plate; the joined buttons are the buttons look.
+  assert.deepEqual(inputs.appearance.enum, ['track', 'buttons']);
+  assert.equal(inputs.appearance.default, 'track');
+  assert.deepEqual(inputs.plate.enum, ['raised', 'scheme']);
+  assert.deepEqual(inputs.backdrop.enum, ['surface', 'color', 'media']);
   assert.equal(inputs['full-width'].type, 'boolean');
   assert.deepEqual(inputs.size.enum, ['1/3', '1/2', '1', '2', '3']);
   const item = inputs.items.items.properties;
@@ -120,14 +123,18 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.ok(manifest.events.change.canonical);
   assert.doesNotMatch(template, /role="tab|tablist|aria-selected/);
   // The settings come from the component's manifest (standard 1.3.8 §4).
-  const bgManifest = JSON.parse(await source('src/smart/button-group/component.json'));
+  const bgManifest = JSON.parse(await source('src/smart/segmented/component.json'));
   // (the words, summary, are the registry's descriptions since standard 1.4)
   const typed = ({summary, ...setting}) => setting;
-  assert.deepEqual(typed(bgManifest.settings.appearance), {type: 'enum', values: ['default', 'segmented'], default: 'default'});
-  assert.deepEqual(typed(bgManifest.settings.plate), {type: 'enum', values: ['scheme', 'raised'], default: 'scheme'});
+  assert.deepEqual(typed(bgManifest.settings.appearance), {type: 'enum', values: ['track', 'buttons'], default: 'track'});
+  assert.deepEqual(typed(bgManifest.settings.plate), {type: 'enum', values: ['raised', 'scheme'], default: 'raised'});
+  assert.deepEqual(typed(bgManifest.settings.backdrop), {type: 'enum', values: ['surface', 'color', 'media'], default: 'surface'});
+  // The old values are dated aliases of the new.
+  const valueRows = bgManifest.aliases.rows.filter((row) => row.kind === 'value' && row.setting === 'appearance');
+  assert.deepEqual(valueRows.map((row) => [row.from, row.to]), [['segmented', 'track'], ['default', 'buttons']]);
   assert.deepEqual(typed(bgManifest.settings['full-width']), {type: 'boolean', default: false});
   assert.match(smart, /:scope > sf-button, :scope > button/);
-  assert.ok(axes.components.some((entry) => entry.component === 'button-group' && entry.axis === 'appearance'));
+  assert.ok(axes.components.some((entry) => entry.component === 'segmented' && entry.axis === 'appearance'));
   // Segments are buttons of the same size and text classes, all of one look, so
   // the plate never changes a width; an icon-only label stays the name.
   assert.match(template, /`sf-button--size-\$\{context\.size\}`/);
@@ -183,16 +190,16 @@ test('button group offers a segmented appearance with the same semantics', async
 // button-group-theme-switch.
 test('button group takes a radius, a form name and a theme switch', async () => {
   const [manifest, smart, template, docs] = await Promise.all([
-    json('src/smart/button-group/smart.manifest.json'),
-    source('src/smart/button-group/index.js'),
-    source('src/smart/button-group/js/templates/default.js'),
-    source('src/smart/button-group/docs/docs.md'),
+    json('src/smart/segmented/smart.manifest.json'),
+    source('src/smart/segmented/index.js'),
+    source('src/smart/segmented/js/templates/default.js'),
+    source('src/smart/segmented/docs/docs.md'),
   ]);
   const inputs = manifest.inputs.properties;
   assert.deepEqual(inputs.radius.enum, ['', 'default', 'square', 'rounded']);
   assert.equal(inputs.name.type, 'string');
   assert.equal(inputs['theme-switch'].type, 'boolean');
-  const {summary, ...radius} = JSON.parse(await source('src/smart/button-group/component.json')).settings.radius;
+  const {summary, ...radius} = JSON.parse(await source('src/smart/segmented/component.json')).settings.radius;
   assert.ok(summary);
   assert.deepEqual(radius, {type: 'enum', values: ['', 'default', 'square', 'rounded'], default: ''});
   assert.match(template, /sf-button-group--radius-\$\{context\.radius\}/);
@@ -212,9 +219,9 @@ test('button group takes a radius, a form name and a theme switch', async () => 
   assert.match(smart, /removeEventListener\('sf-theme-change'/);
   assert.doesNotMatch(smart, /sf-theme-button/);
   // The words are the language file's (standard 1.3.8 §11), the icons the code's.
-  const bgRu = await source('src/smart/button-group/lang/ru.json');
+  const bgRu = await source('src/smart/segmented/lang/ru.json');
   for (const word of ['Как в системе', 'Светлая', 'Тёмная']) assert.ok(bgRu.includes(word), word);
-  for (const word of ['brightness_auto', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
+  for (const word of ['desktop_windows', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
   assert.match(docs, /## Переключатель темы/);
   assert.match(docs, /theme-switch/);
   assert.match(docs, /## В форме/);
@@ -222,13 +229,13 @@ test('button group takes a radius, a form name and a theme switch', async () => 
 
 test('button group Studio artifacts expose a meaningful selectable fixture', async () => {
   const [manifest, fixture, scenario] = await Promise.all([
-    json('src/smart/button-group/smart.manifest.json'),
-    json('src/smart/button-group/studio.fixture.json'),
-    json('src/smart/button-group/studio.scenario.json'),
+    json('src/smart/segmented/smart.manifest.json'),
+    json('src/smart/segmented/studio.fixture.json'),
+    json('src/smart/segmented/studio.scenario.json'),
   ]);
 
-  assert.equal(manifest.id, 'smart.button-group');
-  assert.equal(manifest.custom_element, 'sf-button-group');
+  assert.equal(manifest.id, 'smart.segmented');
+  assert.equal(manifest.custom_element, 'sf-segmented');
   assert.ok(manifest.inputs.properties.items.examples[0].length >= 2);
   assert.deepEqual(manifest.inputs.properties.tightness.enum, ['', 'low', 'high', 'highest']);
   assert.deepEqual(manifest.inputs.properties.orientation.enum, ['horizontal', 'vertical']);
@@ -261,7 +268,7 @@ test('button group documentation separates generic actions from managed selectio
 test('group joins key on the attributes a segment host carries (simai/ui-source#52)', async () => {
   const [styles, template] = await Promise.all([
     source('src/component/button-group/scss/_css__button-group.scss'),
-    source('src/smart/button-group/js/templates/default.js'),
+    source('src/smart/segmented/js/templates/default.js'),
   ]);
   // sf-button-group passes appearance, scheme and segment; type is the dated
   // alias of appearance, so a join rule keyed on [type] alone matched nothing.

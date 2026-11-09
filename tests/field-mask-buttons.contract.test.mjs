@@ -102,8 +102,8 @@ test('a choice as buttons is one segmented sf-button-group; the dropdown is unch
   assert.match(body('renderChoiceEdit'), /^function renderChoiceEdit\(field, value, host\) \{\n    if \(isChoiceButtons\(field\)\) return renderChoiceButtons\(field, value, host\);\n/u);
   assert.match(body('renderChoiceEdit'), /<sf-dropdown[\s\S]*mode="select"/u);
   const buttons = body('renderChoiceButtons');
-  const group = element(buttons, 'sf-button-group');
-  assert.match(group, /appearance="segmented"/u);
+  const group = element(buttons, 'sf-segmented');
+  assert.match(group, /appearance="track"/u);
   assert.match(group, /size=\$\{size\}/u);
   assert.match(group, /root-class=\$\{locked \? 'flex-wrap pointer-event-none' : 'flex-wrap'\}/u);
   assert.match(group, /\?disabled=\$\{disabled\}/u);

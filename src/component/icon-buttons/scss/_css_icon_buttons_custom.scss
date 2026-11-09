@@ -150,6 +150,18 @@
 }
 
 @layer sf.states {
+  /* The quiet neutral meets the plain one under a pointer (decision C15,
+     docs review R033): a glyph without a fill in --sf-on-surface-variant
+     darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
+     do, so the state layer and the ink say the same thing. */
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+
   .sf-icon-button:is(:disabled, .disabled) .sf-icon-button-spinner {
     color: var(--sf-loader--color, var(--sf-on-disable));
   }

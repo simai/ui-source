@@ -38,7 +38,7 @@
     // up to the full step, so a wide card is unchanged.
     padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
     color: var(--sf-card-color, var(--sf-on-surface));
-    background-color: var(--sf-card-background, var(--sf-surface-0));
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-0)));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card-radius, var(--sf-radius--surface));
     overflow-wrap: break-word;

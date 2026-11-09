@@ -93,8 +93,8 @@ are `sf-button` of the rung below.
 
 ## Public variables
 
-`--sf-progress-run-background` (none by default),
-`--sf-progress-run-divider-color`, `--sf-progress-run-output-background`,
+`--sf-progress-run-background-color` (none by default),
+`--sf-progress-run-divider-color`, `--sf-progress-run-output-background-color`,
 `--sf-progress-run-output-color`, `--sf-progress-run-output-max-height`,
 `--sf-progress-run-padding-inline` (0 by default: a drawer has its own
 inset). The Framework never sets them.

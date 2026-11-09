@@ -536,6 +536,7 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
+    --sf-tag--close-size: var(--sf-text-size-1\/4);
   }
 
   .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
@@ -546,11 +547,13 @@
   .sf-tag.sf-tag--size-1\/2 {
     --sf-tag--font-size: var(--sf-text-size-1\/2);
     --sf-tag--line-height: var(--sf-text-height-1\/2);
+    --sf-tag--close-size: var(--sf-text-size-1\/4);
   }
 
   .sf-tag.sf-tag--size-1 {
     --sf-tag--font-size: var(--sf-text-size-1);
     --sf-tag--line-height: var(--sf-text-height-1);
+    --sf-tag--close-size: var(--sf-text-size-1\/3);
   }
 
   .sf-tag.sf-tag--size-2 {
@@ -559,6 +562,7 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
+    --sf-tag--close-size: var(--sf-text-size-1\/2);
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
@@ -572,6 +576,7 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
+    --sf-tag--close-size: var(--sf-text-size-1);
   }
 
   .sf-tag.sf-tag--size-3 .sf-tag-color-icon {
@@ -637,17 +642,23 @@
   .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
   .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
 
-  /* The remove mark follows the label: 0.7 of its font size. The button keeps
-     the whole line, so the target does not shrink with the mark. */
+  /* The remove mark is the tag size's step of the cross ladder. The button
+     keeps the whole line, so the target does not shrink with the mark. */
   .sf-tag.sf-tag--inline.sf-tag--inline .sf-close-icon {
-    --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);
-    --sf-close-icon--width: calc(var(--sf-tag--font-size) * 0.7);
+    --sf-close-icon--height: var(--sf-tag--close-size, var(--sf-text-size-1\/4));
+    --sf-close-icon--width: var(--sf-tag--close-size, var(--sf-text-size-1\/4));
   }
 }
 
 @layer sf.overrides {
+  /* The remove cross is plain (C14): no spot, the tag's ink at the ink step
+     64 at rest and full on hover and press. */
   .sf-tag > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-surface-variant);
+    --sf-close-icon--background-color: color-mix(in srgb, var(--sf-tag-color, var(--sf-on-surface)) 64%, transparent);
+  }
+
+  .sf-tag > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-tag-color, var(--sf-on-surface));
   }
 }
 
@@ -829,8 +840,10 @@
 @layer sf.states {
 /* The remove mark is drawn by the tag, whatever the close markup carries: a
    close written without a size class had no glyph at all, so a removable tag
-   in plain markup showed no mark. The mark is 0.7 of the label's font size at
-   every size, the rule inline tags in a field already follow, and it sits
+   in plain markup showed no mark. The mark is a step of the cross ladder
+   (--sf-tag--close-size: 1/4 at tag sizes 1/3 and 1/2, then 1/3, 1/2 and 1),
+   with the line of every cross, 2 px (C14; it was 0.7 of the label's font size,
+   and its line fell to 1.05-1.75 px), and it sits
    after the label at the label's own end step. The button keeps no padding of
    its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
    a checkbox's native control does. */
@@ -855,34 +868,34 @@
 }
 
 .sf-tag > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
-  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%272%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%272%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
   display: block;
 }
 
 .sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--width: calc(var(--sf-text-size-1\/3) * 0.7);
-  --sf-close-icon--height: calc(var(--sf-text-size-1\/3) * 0.7);
+  --sf-close-icon--width: var(--sf-tag--close-size);
+  --sf-close-icon--height: var(--sf-tag--close-size);
 }
 
 .sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--width: calc(var(--sf-text-size-1\/2) * 0.7);
-  --sf-close-icon--height: calc(var(--sf-text-size-1\/2) * 0.7);
+  --sf-close-icon--width: var(--sf-tag--close-size);
+  --sf-close-icon--height: var(--sf-tag--close-size);
 }
 
 .sf-tag.sf-tag--size-1 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--width: calc(var(--sf-text-size-1) * 0.7);
-  --sf-close-icon--height: calc(var(--sf-text-size-1) * 0.7);
+  --sf-close-icon--width: var(--sf-tag--close-size);
+  --sf-close-icon--height: var(--sf-tag--close-size);
 }
 
 .sf-tag.sf-tag--size-2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--width: calc(var(--sf-text-size-2) * 0.7);
-  --sf-close-icon--height: calc(var(--sf-text-size-2) * 0.7);
+  --sf-close-icon--width: var(--sf-tag--close-size);
+  --sf-close-icon--height: var(--sf-tag--close-size);
 }
 
 .sf-tag.sf-tag--size-3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--width: calc(var(--sf-text-size-3) * 0.7);
-  --sf-close-icon--height: calc(var(--sf-text-size-3) * 0.7);
+  --sf-close-icon--width: var(--sf-tag--close-size);
+  --sf-close-icon--height: var(--sf-tag--close-size);
 }
 }
 

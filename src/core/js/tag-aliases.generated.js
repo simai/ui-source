@@ -3,6 +3,7 @@
 // The dated tag aliases of the Framework and of its component packages, read by core/js/tag-aliases.js.
 export default Object.freeze([
   Object.freeze({from: 'sf-avatars', to: 'sf-avatar-group', since: '2026-11-03', remove_after: '2027-01-01'}),
+  Object.freeze({from: 'sf-button-group', to: 'sf-segmented', since: '2026-11-08', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-change-confirm', to: 'sf-confirm-change', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-close', to: 'sf-button-close', since: '2026-11-03', remove_after: '2027-01-01'}),
   Object.freeze({from: 'sf-code-input', to: 'sf-input-code', since: '2026-11-03', remove_after: '2027-01-01'}),

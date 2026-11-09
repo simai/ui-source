@@ -29,6 +29,7 @@ const refused = new Map([
   ['--sf-outline', 'the role of a boundary, not of something read'],
   ['--sf-outline-variant', 'the role of a boundary, not of something read'],
   ['--sf-outline-disable', 'the disabled role of a boundary; a glyph takes --sf-on-disable'],
+  ['--sf-outline-disabled', 'the disabled role of a boundary (C16 name); a glyph takes --sf-on-surface-disabled'],
 ]);
 
 const sheets = (directory) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {

@@ -22,7 +22,7 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <div class="sf-carousel" id="car" style="height:416px" aria-label="Gallery"><div class="sf-carousel-slider swiper"><div class="swiper-wrapper">
 <div class="swiper-slide" aria-label="Закат"><div style="height:50px">A</div></div><div class="swiper-slide" aria-label="Море"><div style="height:50px">B</div></div></div></div></div>
 <sf-breadcrumbs id="crumbs" max-items="4"><sf-breadcrumbs-item href="/">Главная</sf-breadcrumbs-item><sf-breadcrumbs-item href="/a">Раздел</sf-breadcrumbs-item><sf-breadcrumbs-item href="/b">Подраздел</sf-breadcrumbs-item><sf-breadcrumbs-item href="/c">Ещё</sf-breadcrumbs-item><sf-breadcrumbs-item href="/d">Глубже</sf-breadcrumbs-item><sf-breadcrumbs-item current>Страница</sf-breadcrumbs-item></sf-breadcrumbs>
-<sf-button-group id="group" scheme="secondary" value="b" items="a::Первый|b::Второй|c::Третий"></sf-button-group>
+<sf-segmented id="group" scheme="secondary" value="b" items="a::Первый|b::Второй|c::Третий"></sf-segmented>
 <sf-slider id="s" thumbs arrows><div slot="slide">S1</div><div slot="slide">S2</div><div slot="slide">S3</div></sf-slider>
 </body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
@@ -68,10 +68,13 @@ try {
   if (crumbs.label !== 'Показать скрытые крошки') failures.push(`breadcrumbs «…» named ${JSON.stringify(crumbs.label)}`);
   if (crumbs.visible < 6 || crumbs.ellipsis) failures.push(`breadcrumbs did not stay expanded: ${JSON.stringify(crumbs)}`);
   // A selected segment at scheme=secondary: appearance default + secondary had
-  // no styles -- no fill, the browser's 13.33px text.
+  // no styles -- no fill, the browser's 13.33px text. Since sf-segmented 1.4.0
+  // (owner decision D11c) the track is the default look and its fill is one
+  // plate that slides under the selected segment; the segments draw none.
   const group = await tab.evaluate(() => {
     const buttons = [...document.querySelectorAll('#group .sf-button')];
-    const style = (button) => { const text = button.querySelector('.sf-button-text-container') || button; return {bg: getComputedStyle(button).backgroundColor, size: getComputedStyle(text).fontSize}; };
+    const plate = document.querySelector('#group .sf-button-group-plate');
+    const style = (button) => { const text = button.querySelector('.sf-button-text-container') || button; return {bg: getComputedStyle(button.getAttribute('aria-checked') === 'true' && plate ? plate : button).backgroundColor, size: getComputedStyle(text).fontSize}; };
     return buttons.map(style);
   });
   if (group.length !== 3) failures.push(`button group drew ${group.length} segments`);

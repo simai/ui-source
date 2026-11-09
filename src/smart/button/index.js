@@ -12,6 +12,7 @@ import {
   parseShortcut,
   shortcutCaps,
 } from "../../component/kbd/js/shortcut";
+import { cycleState, hasCycle, parseCycle, pressCycle, themeCycleFollow, warnCycleToggle } from "../helpers/cycle";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -49,6 +50,8 @@ const COMPONENT_ATTRIBUTES = new Set([
   "expanded",
   "pressed",
   "text-pressed",
+  "cycle",
+  "theme-cycle",
   "shortcut",
   "shortcut-listen",
   "aria-label",
@@ -99,6 +102,35 @@ const ButtonElement = elementFromManifest(manifest, {
 });
 
 class SfButton extends ButtonElement {
+  static get props() {
+    return {
+      ...super.props,
+      // The attribute takes JSON or value::label::flags|…; the property a list.
+      cycle: {type: Array, default: [], parser: parseCycle},
+    };
+  }
+
+  // cycle is a list setting (§4.2) whose attribute keeps its JSON form, as
+  // sf-segmented's items: a list set as a property stays the instance's own.
+  get cycle() {
+    return this.getProp("cycle");
+  }
+
+  set cycle(value) {
+    Object.defineProperty(this, "cycle", {configurable: true, enumerable: true, writable: true, value});
+    this.requestComponentUpdate?.("cycle");
+  }
+
+  // The cycle (D11d): null when the button is not one. Its name is the
+  // button's aria-label, or none: then the current label is the text and the name.
+  cycleState() {
+    if (!hasCycle(this)) return null;
+    return cycleState(this, {
+      base: this.getAttribute("aria-label") || "",
+      words: (key, options) => this.sfWord(key, options),
+    });
+  }
+
   constructor() {
     super();
     this._attributeObserver = null;
@@ -184,6 +216,8 @@ class SfButton extends ButtonElement {
   // pressed is optional too: absent, the button is not a toggle and says
   // nothing; present, aria-pressed and the selected look follow it.
   get pressed() {
+    // A cycle is not a toggle: pressed is ignored beside it.
+    if (hasCycle(this)) return undefined;
     return this.hasAttribute("pressed") ? super.pressed : undefined;
   }
 
@@ -196,6 +230,13 @@ class SfButton extends ButtonElement {
     // A child parsed after connectedCallback is still the label.
     this.captureTextChildren?.();
     const props = this.getPropsContext();
+    const cycle = this.cycleState();
+    if (cycle) warnCycleToggle(this, ["pressed", "text-pressed"]);
+    const announce = Boolean(cycle && this.__sfCycleAnnounce);
+    this.__sfCycleAnnounce = false;
+    // A cycle with an icon shows the item's icon in place of the start icon;
+    // one without shows the item's label as its text.
+    const cycleIcon = cycle?.item.icon || "";
 
     return this.createTemplateContext({
       ...props,
@@ -216,17 +257,30 @@ class SfButton extends ButtonElement {
       // name and value it submits under.
       formId: this.getAttribute("form") || "",
       submitName: this.getAttribute("name") || "",
-      submitValue: this.getAttribute("value") ?? "",
+      submitValue: cycle && !cycle.theme ? cycle.item.value : this.getAttribute("value") ?? "",
       href: linkAddress(this.getAttribute("href")),
       // Where the link opens and its relation (1.7.0, Larena after sf-wizard):
       // a new tab with no rel is noopener noreferrer.
       linkTarget: this.getAttribute("target") || "",
       linkRel: linkRelation(this.getAttribute("target"), this.getAttribute("rel")),
       radius: this.radius,
-      ariaLabel: this.getAttribute("aria-label") || "",
+      // A cycle's name says its current value; without an aria-label the
+      // shown label is the name.
+      ariaLabel: cycle ? (this.getAttribute("aria-label") || (cycleIcon && !this.text) ? cycle.name : "") : this.getAttribute("aria-label") || "",
       expanded: this.expanded,
-      pressed: this.pressed,
-      textPressed: this.textPressed,
+      pressed: cycle ? undefined : this.pressed,
+      textPressed: cycle ? "" : this.textPressed,
+      // The cycle's item: its icon in place of the start icon, or, without
+      // one, its label in place of the text.
+      // cycleView, not cycle: `cycle` is the setting (the list of items).
+      cycleView: cycle ? {
+        icon: cycleIcon,
+        label: cycleIcon ? '' : cycle.item.label,
+        pressedLook: cycle.item.pressed,
+        name: cycle.name,
+        tooltip: cycle.tooltip,
+        announcement: announce ? cycle.name : "",
+      } : null,
       // The shortcut's key caps and its aria-keyshortcuts, in this platform's
       // words (component/kbd/js/shortcut.js).
       shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),
@@ -254,6 +308,11 @@ class SfButton extends ButtonElement {
       this.addEventListener("click", this._pressListener);
     }
     this.syncShortcutListener();
+    if (!this._cycleTheme) {
+      // A theme cycle follows the theme wherever it was set.
+      this._cycleTheme = () => themeCycleFollow(this);
+      globalThis.addEventListener?.("sf-theme-change", this._cycleTheme);
+    }
     super.onConnected?.();
   }
 
@@ -302,11 +361,16 @@ class SfButton extends ButtonElement {
     // A link that is off (href, disabled or loading: 1.4.0) is not pressed either.
     if (button.disabled || button.getAttribute("aria-disabled") === "true") return;
     this.sfEmit("press", {});
+    // A cycle moves to its next value after the press (D11d).
+    pressCycle(this, this.cycleState());
   }
 
   afterRender() {
     const button = this.querySelector(".sf-button");
     applyButtonAttributes(this, button);
+    // The cycle's tooltip names the current and the next value.
+    const cycle = this.cycleState();
+    if (button && cycle) button.setAttribute("title", cycle.tooltip);
 
     if (!this._attributeObserver) {
       this._attributeObserver = this.observeForwardedHostAttributes(
@@ -429,6 +493,10 @@ class SfButton extends ButtonElement {
     if (this._shortcutListener) {
       globalThis.document?.removeEventListener("keydown", this._shortcutListener);
       this._shortcutListener = null;
+    }
+    if (this._cycleTheme) {
+      globalThis.removeEventListener?.("sf-theme-change", this._cycleTheme);
+      this._cycleTheme = null;
     }
     this.disconnectForwardedHostAttributes();
     this._attributeObserver = null;

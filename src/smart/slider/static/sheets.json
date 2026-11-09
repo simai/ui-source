@@ -13,6 +13,7 @@
     "component/slider/css/slider.min.css",
     "component/swiper/css/swiper.min.css",
     "core/css/core.css",
+    "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
     "utility/align-items/default/css/default.min.css",
     "utility/background-color/default/css/default.min.css",
@@ -24,6 +25,7 @@
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/text-color/default/css/default.min.css"
   ],
   "examples": {
@@ -35,6 +37,7 @@
       "component/slider/css/slider.min.css",
       "component/swiper/css/swiper.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/background-color/default/css/default.min.css",
@@ -46,6 +49,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css"
     ],
     "next": [
@@ -56,6 +60,7 @@
       "component/slider/css/slider.min.css",
       "component/swiper/css/swiper.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/background-color/default/css/default.min.css",
@@ -67,6 +72,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css"
     ],
     "reference": [
@@ -77,6 +83,7 @@
       "component/slider/css/slider.min.css",
       "component/swiper/css/swiper.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/background-color/default/css/default.min.css",
@@ -88,6 +95,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css"
     ],
     "thumbs": [
@@ -98,6 +106,7 @@
       "component/slider/css/slider.min.css",
       "component/swiper/css/swiper.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/background-color/default/css/default.min.css",
@@ -109,6 +118,7 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css"
     ]
   }

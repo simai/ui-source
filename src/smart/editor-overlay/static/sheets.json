@@ -12,6 +12,7 @@
     "component/icons/css/icons.min.css",
     "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
+    "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
     "smart/editor-overlay/css/editor-overlay.min.css",
     "smart/sortable/css/sortable.min.css",
@@ -22,7 +23,8 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "actions": [
@@ -32,6 +34,7 @@
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/editor-overlay/css/editor-overlay.min.css",
       "smart/sortable/css/sortable.min.css",
@@ -42,7 +45,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "frame": [
       "component/badges/css/badges.min.css",
@@ -51,6 +55,7 @@
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/editor-overlay/css/editor-overlay.min.css",
       "smart/sortable/css/sortable.min.css",
@@ -61,7 +66,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "library": [
       "component/badges/css/badges.min.css",
@@ -70,6 +76,7 @@
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/editor-overlay/css/editor-overlay.min.css",
       "smart/sortable/css/sortable.min.css",
@@ -80,7 +87,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/badges/css/badges.min.css",
@@ -89,6 +97,7 @@
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
       "smart/editor-overlay/css/editor-overlay.min.css",
       "smart/sortable/css/sortable.min.css",
@@ -99,7 +108,8 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

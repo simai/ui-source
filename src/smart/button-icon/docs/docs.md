@@ -32,21 +32,24 @@ Main attributes:
 - `template`
 - `kind="icon|close"`
 - `size`
-- `appearance="default|tonal|outline|link|surface|ghost"` — surface and ghost read the
-  neutral alpha ramp rather than a colour of their own: surface keeps a faint
-  fill and a border one step stronger, ghost keeps nothing until a pointer or the
-  keyboard reaches it. The icon keeps the scheme colour, because a fill that
-  faint cannot carry one. Both are right in a light and in a dark theme without
-  being redeclared.
-- `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
-  family the control takes. `on-surface-variant` is `on-surface` one step
+- `appearance="default|tonal|outline|ghost"` — four looks (1.6.0, decision
+  C15): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
+  pointer or the keyboard reaches it. `link` is ghost's former name, a dated
+  alias. `surface` is retired: it is drawn as `tonal` in `on-surface`, and the
+  console notes it until 2027-01-01.
+- `scheme="primary|on-surface|on-surface-variant"` — which colour
+  family the control takes (`secondary` is retired and drawn as
+  `on-surface-variant` until 2027-01-01). A ghost or outline `on-surface-variant`
+  glyph darkens to `--sf-on-surface` under the pointer. `on-surface-variant` is `on-surface` one step
   quieter: the same fill and edge, the glyph in `--sf-on-surface-variant`.
   That is what a quiet trigger wants — beside a field, in a panel's head,
   next to a row — and `sf-button` says it the same way. A filled
   (`appearance="default"`) control keeps the inverse glyph of `on-surface`:
   on a dark fill there is no quieter step.
-- `status="error"` — what the control is about. The destructive one, for a
-  control that deletes, discards or cannot be undone: it paints with the error
+- `status="danger"` — what the control is about. The destructive one, for a
+  control that deletes, discards or cannot be undone (decision C13: controls
+  say `danger`, fields and messages `error`; `error` is read as `danger`). In
+  every appearance it paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
   control and only its colour says what it does. A status wins over the scheme,
   because the two cannot both colour the control.
@@ -79,7 +82,8 @@ Main attributes:
 The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 `appearance`, `variant` for `kind`, and `tightness="low|high|highest"` for
 `spacing="compact|comfortable|spacious"`. The shim writes the new attribute and
-notes each use in `SF.deprecations`.
+notes each use in `SF.deprecations`. Until 2027-01-01: `link` (ghost), `secondary`
+(on-surface-variant) and `error` (danger).
 
 - `button-attributes` — an object (a property) for an external project
   template; the built-in template does not read it.
@@ -180,3 +184,28 @@ const host = menu.querySelector('sf-button-icon');
 host.focus();
 menu.contains(document.activeElement);   // true
 ```
+
+## Cycle
+
+`cycle` makes one icon button step through several values (1.6.0, decision
+D11d), as on sf-button: items `{value, label, icon, pressed}`, `value` the
+current one, `change` with `{previous, value, item}` after a press. The icon is
+the current item's; an item with `pressed` is drawn with the pressed look and a
+filled icon.
+
+```html
+<sf-button-icon aria-label="Повтор" value="off" cycle='[
+  {"value":"off","label":"без повтора","icon":"repeat"},
+  {"value":"all","label":"повторять все","icon":"repeat","pressed":true},
+  {"value":"one","label":"повторять одну","icon":"repeat_one","pressed":true}]'></sf-button-icon>
+
+<sf-button-icon theme-cycle></sf-button-icon>
+<sf-button-icon theme-cycle="light dark"></sf-button-icon>
+```
+
+`theme-cycle` is the ready theme switch: the visible theme's opposite first,
+then the other, then «как в системе» (icon `contrast`); the name says the
+theme now («Тема: как в системе (сейчас тёмная)»), the tooltip the next one,
+and a polite live region the new one. `pressed` and `label-pressed` are ignored
+beside a cycle, with one console warning.
+

@@ -28,20 +28,24 @@ Main attributes:
 
 - `template`
 - `size`
-- `appearance="default|tonal|outline|link|surface|ghost"` — surface reads the
-  neutral alpha ramp rather than a colour of its own: a faint fill and a border
-  one step stronger, right in a light and in a dark theme without being
-  redeclared. `ghost` is the link appearance under its old name, a dated alias.
+- `appearance="default|tonal|outline|ghost|surface"` — `ghost` is the quiet
+  button with no fill and no edge until a pointer meets it (1.9.0, decision
+  C15; `link` is its former name, a dated alias). `href` makes any appearance
+  a link. surface reads the neutral alpha ramp rather than a colour of its
+  own: a faint fill and a border one step stronger, right in a light and in a
+  dark theme without being redeclared.
 - `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
   family the control takes. `on-surface-variant` is the on-surface family one
   step quieter: the fill and the edge of `on-surface`, the label and the icons
   in `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
   inverse ink). Hover, press and disabled are on-surface's. `secondary` in
-  the `outline`, `surface` and `link` appearances is drawn the same way: the
+  the `outline`, `surface` and `ghost` appearances is drawn the same way: the
   on-surface button with the label and the icons in `--sf-secondary`, at rest,
   hovered and pressed; `default` and `tonal` secondary keep their own fill.
-- `status="error"` — what the control is about. The destructive one, for a
-  control that deletes, discards or cannot be undone: it paints with the error
+- `status="danger"` — what the control is about. The destructive one, for a
+  control that deletes, discards or cannot be undone (1.9.0, decision C13:
+  controls say `danger`, fields and messages say `error`; `error` is read as
+  `danger`). It paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
   control and only its colour says what it does. A status wins over the scheme,
   because the two cannot both colour the control.
@@ -100,8 +104,8 @@ Main attributes:
 The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 `appearance`, `icon-left` and `icon-right` for `icon-start` and `icon-end`,
 `tightness="low|high|highest"` for `spacing="compact|comfortable|spacious"`, and
-the values `ghost` (link), `danger` and `critical` (error), `left` and `right`
-(icon-position start and end). The shim writes the new attribute and notes each
+the values `left` and `right` (icon-position start and end). Until 2027-01-01:
+`link` (ghost), `error` and `critical` (danger). The shim writes the new attribute and notes each
 use in `SF.deprecations`.
 
 ## Shortcut
@@ -303,3 +307,29 @@ Example:
   <span slot="icon-start"><i class="sf-icon">cloud_upload</i></span>
 </sf-button>
 ```
+
+## Cycle
+
+`cycle` makes one button step through several values (1.9.0, decision D11d):
+a speed, a repeat mode, a sort order. Its items are shaped like sf-segmented's:
+`value`, `label`, `icon`, and `pressed` for an item drawn with the pressed look.
+`value` is the current item (the first by default). A press moves to the next
+item and wraps, and sends `change` with `{previous, value, item}`.
+
+```html
+<sf-button aria-label="Скорость" value="1"
+  cycle='[{"value":"1","label":"1×"},{"value":"1.5","label":"1,5×"},{"value":"2","label":"2×"}]'></sf-button>
+```
+
+The accessible name says the current value («Скорость: 1,5×»), the tooltip the
+current and the next («… Нажмите — 2×»), and a polite live region announces the
+new value after a press. Without an icon the label is the button's text.
+
+`theme-cycle` is the ready theme switch over `SF.Loader` (`setTheme`,
+`sf-theme-change`): empty for the three themes, or `"light dark"` for two. The
+order is the visible theme's opposite first, then the other, then «как в
+системе», whose icon is `contrast`.
+
+A cycle is not a toggle: `pressed` and `text-pressed` are ignored beside it,
+and the console says so once.
+

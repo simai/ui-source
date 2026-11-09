@@ -1,47 +1,79 @@
 # sf-button-close
 
-The default template applies shared `root-class`, `style` and `root-style`
-settings to its root. Use Framework utilities and semantic tokens; the outer
-Smart host remains boxless. Styling does not replace component state or actions.
-
-Smart wrapper for the decorative base `close` glyph. `sf-button-close` is not an
-interactive control and renders with `aria-hidden="true"`. Compose it inside a
-native Icon Button; the button owns the accessible name, focus and dismiss
-effect.
-
-Tag:
-
-- `sf-button-close`
-
-Main attributes:
-
-- `size`
-- `root-class`
-
-Supported sizes are `1/4`, `1/3`, `1/2`, `1`, `2`, `3`, `4`, `5`, `6` and
-`7`. Invalid values fall back to `1/3`. Interactive Icon Button composition
-supports `1/3`, `1/2`, `1`, `2` and `3`.
-
-Example:
+Кнопка «Закрыть» SIMAI Framework — одна для всех случаев: окно, выдвижная
+панель, уведомление, плашка, метка, очистка поля, просмотр фото. Это настоящая
+кнопка: фокус с клавиатуры, Enter и Пробел, имя «Закрыть» по умолчанию (на
+языке страницы). Страница слушает её `click`.
 
 ```html
-<button
-  type="button"
-  class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center"
-  aria-label="Close notification"
->
-  <sf-button-close size="1"></sf-button-close>
-</button>
+<!-- окно, панель, уведомление, плашка -->
+<sf-button-close aria-label="Закрыть уведомление"></sf-button-close>
+<!-- соседние кнопки-иконки круглые -->
+<sf-button-close radius="rounded"></sf-button-close>
+<!-- метка, очистка поля, удаление в строке -->
+<sf-button-close appearance="plain" scheme="on-surface-variant" aria-label="Очистить поиск"></sf-button-close>
+<!-- поверх фото и видео -->
+<sf-button-close appearance="media" size="1" aria-label="Закрыть просмотр"></sf-button-close>
+<!-- на цветной плашке -->
+<sf-button-close backdrop="color"></sf-button-close>
 ```
 
-## Public variables
+## Виды
 
-A page recolours or resizes the cross without touching its classes (standard
-simai.smart-component 1.3.8 §6); each falls back to the ladder's value:
+- `appearance="ghost"` (по умолчанию) — в покое только крестик цвета
+  окружения; при наведении и нажатии под ним пятно
+  `--sf-surface-container-hover` / `--sf-surface-container-active`. Форма пятна —
+  `radius`: `default` — скруглённый квадрат элементов управления, `rounded` —
+  круг; берите как у соседних кнопок-иконок.
+- `appearance="plain"` — пятна нет никогда: крестик темнеет (из 64 % цвета в
+  полный; `on-surface-variant` — в `on-surface`), фокус с клавиатуры — кольцо
+  вокруг крестика. Метки, очистка поля, «убрать» в строке.
+- `appearance="media"` — поверх фото и видео: чёрный полупрозрачный круг
+  (48 / 64 / 80 % в покое, при наведении, при нажатии) и белый крестик;
+  одинаково в обеих темах.
 
-- `--sf-close-color` — the cross;
-- `--sf-close-background-color` — the fill behind it, none by default;
-- `--sf-close-glyph-size` — its width and height;
-- `--sf-close-padding-inline`, `--sf-close-padding-block` — the space around it.
+Квадратов и кругов с рамкой и сплошных подложек нет.
 
-The interface is `component.json`; examples are `examples.json`.
+## Настройки
+
+| Атрибут | Значения | По умолчанию |
+|---|---|---|
+| `appearance` | `ghost` · `plain` · `media` | `ghost` |
+| `radius` | `default` · `rounded` | `default` |
+| `size` | `1/3` · `1/2` · `1` · `2` · `3` | `1/3` |
+| `scheme` | `on-surface` · `on-surface-variant` | `on-surface` |
+| `backdrop` | `surface` · `color` | `surface` |
+| `disabled` | логический | нет |
+| `aria-label` | текст | «Закрыть» |
+
+- `size` — лестница элементов управления: 24 / 32 / 40 / 48 / 56 px (на
+  телефоне 24–52), как у `sf-button-icon` и `sf-button` того же размера.
+  Линия крестика — 2 px на любом размере и любой ширине экрана. Размеры
+  `1/4` и `4`–`7` остались от рисунка крестика: кнопка рисует их ближайшей
+  ступенью лестницы.
+- `backdrop="color"` — на цветной плашке крестик берёт цвет её текста
+  (`currentColor`), а пятно `ghost` — этот цвет на 8 / 12 %.
+- `scheme` у `media` не действует: крестик всегда белый.
+
+## Старое
+
+- `sf-button-icon kind="close"` — старое имя этой кнопки (до 2027-01-01); оно
+  рисует, как рисовало, новые страницы пишут `sf-button-close`.
+- Внутри нативной кнопки (`<button class="sf-icon-button …"><sf-button-close>`)
+  элемент остаётся декоративным крестиком, как до 1.2.0: `aria-hidden`, без
+  фокуса, имя и действие у внешней кнопки. Такую разметку переносите на сам
+  элемент: `<sf-button-close aria-label="…">`.
+- Голый рисунок крестика без кнопки — классы `.sf-close` и `.sf-close-icon`
+  (страница классов).
+
+## Публичные переменные
+
+Страница меняет крестик, не трогая классы (стандарт simai.smart-component
+1.3.8 §6); каждая падает на значение лестницы:
+
+- `--sf-close-color` — крестик;
+- `--sf-close-background-color` — заливка за крестиком, по умолчанию нет;
+- `--sf-close-glyph-size` — ширина и высота крестика;
+- `--sf-close-padding-inline`, `--sf-close-padding-block` — поле вокруг него.
+
+Интерфейс — `component.json`, примеры — `examples.json`.

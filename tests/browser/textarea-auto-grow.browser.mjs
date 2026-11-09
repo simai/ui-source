@@ -128,7 +128,11 @@ try {
         for (const row of Object.values(rows)) {
           const at = `${mode} ${kind} size ${row.size} at ${width}px`;
           // 1/3 and 3 are compared with the button of the size they draw as.
-          check(`${at}: an empty field is the sf-button and the sf-input height`, near(row.empty, row.button, tolerance) && near(row.empty, row.input, tolerance) && row.empty > 0, row);
+          // sf-input draws 1/3 and 3 on the control ladder since 1.6.0 (actions
+          // block, item 4) while the textarea keeps them as 1/2 and 2, so at
+          // those two steps the field is not the sf-input height.
+          const sameAsInput = KEPT[row.size] ? true : near(row.empty, row.input, tolerance);
+          check(`${at}: an empty field is the sf-button and the sf-input height`, near(row.empty, row.button, tolerance) && sameAsInput && row.empty > 0, row);
           row.rows.forEach((height, index) => {
             const n = Math.min(index + 1, MAX);
             const expected = row.empty + (n - 1) * row.line;

@@ -59,14 +59,14 @@
       }
     },
     {
-      "name": "link",
-      "title": "Ссылка",
+      "name": "ghost",
+      "title": "Без подложки",
       "settings": {
         "text": "Подробнее",
-        "appearance": "link"
+        "appearance": "ghost"
       },
       "expect": {
-        "appearance": "link"
+        "appearance": "ghost"
       }
     },
     {
@@ -98,14 +98,14 @@
       }
     },
     {
-      "name": "error",
+      "name": "danger",
       "title": "Удаление",
       "settings": {
         "text": "Удалить",
-        "status": "error"
+        "status": "danger"
       },
       "expect": {
-        "status": "error"
+        "status": "danger"
       }
     },
     {
@@ -200,6 +200,39 @@
       }
     },
     {
+      "name": "cycle",
+      "title": "Переключатель одной кнопкой",
+      "settings": {
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "value": "1",
+        "cycle": [
+          {
+            "value": "1",
+            "label": "1×"
+          },
+          {
+            "value": "1.25",
+            "label": "1,25×"
+          },
+          {
+            "value": "1.5",
+            "label": "1,5×"
+          },
+          {
+            "value": "2",
+            "label": "2×"
+          }
+        ]
+      },
+      "attributes": {
+        "aria-label": "Скорость"
+      },
+      "expect": {
+        "value": "1"
+      }
+    },
+    {
       "name": "sizes",
       "title": "Размер 3, просторная",
       "settings": {
@@ -234,6 +267,9 @@
           "  <sf-button id=\"b-rel\" text=\"Партнёр\" href=\"https://example.com/\" target=\"_blank\" rel=\"noopener\"></sf-button>",
           "  <sf-button id=\"b-self\" text=\"Раздел\" href=\"/fixture/section\" target=\"_self\"></sf-button>",
           "  <sf-button id=\"b-btn-target\" text=\"Кнопка\" target=\"_blank\" rel=\"nofollow\"></sf-button>",
+          "  <sf-button id=\"b-err\" text=\"Удалить\" status=\"error\"></sf-button>",
+          "  <sf-button id=\"b-link\" text=\"Подробнее\" appearance=\"link\"></sf-button>",
+          "  <sf-button id=\"b-cyc\" aria-label=\"Скорость\" value=\"1\" cycle='[{\"value\":\"1\",\"label\":\"1×\"},{\"value\":\"1.5\",\"label\":\"1,5×\"},{\"value\":\"2\",\"label\":\"2×\"}]' pressed></sf-button>",
           "</main>"
         ]
       },
@@ -278,14 +314,14 @@
         {
           "id": "p4-dated-aliases",
           "title": "the old names and values still draw, each noted with its dates",
-          "covers": "aliases.json type, icon-left, tightness, ghost, danger, right",
+          "covers": "aliases.json type, icon-left, tightness, ghost (now link to ghost), danger (now error to danger), right",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#b-old button'); return b.classList.contains('sf-button--link') && b.classList.contains('sf-button--error') && b.classList.contains('spacing-comfortable') && Boolean(b.querySelector('sf-icon[icon=add]')); })()",
+              "check": "(() => { const b = document.querySelector('#b-old button'); return b.classList.contains('sf-button--link') && b.classList.contains('sf-button--danger') && b.classList.contains('sf-button--error') && b.classList.contains('spacing-comfortable') && Boolean(b.querySelector('sf-icon[icon=add]')); })()",
               "expect": {
                 "values": {
-                  "#b-old.appearance": "link",
-                  "#b-old.status": "error",
+                  "#b-old.appearance": "ghost",
+                  "#b-old.status": "danger",
                   "#b-old.spacing": "comfortable",
                   "#b-old.iconPosition": "end",
                   "#b-old.iconStart": "add"
@@ -293,7 +329,7 @@
               }
             },
             {
-              "check": "['type', 'ghost', 'danger', 'icon-left', 'tightness', 'right'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2026-12-01'))"
+              "check": "['type', 'icon-left', 'tightness', 'right'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2026-12-01'))"
             }
           ]
         },
@@ -413,6 +449,58 @@
                   "#b-rel.rel": "noopener"
                 }
               }
+            }
+          ]
+        },
+        {
+          "id": "p12-danger-and-ghost",
+          "title": "status error reads as danger and appearance link as ghost, each noted; both keep their drawing classes",
+          "covers": "settings.status danger, settings.appearance ghost, aliases.json error, link",
+          "steps": [
+            {
+              "check": "(() => { const e = document.querySelector('#b-err button'); const l = document.querySelector('#b-link button'); return e.classList.contains('sf-button--danger') && e.classList.contains('sf-button--error') && l.classList.contains('sf-button--link'); })()",
+              "expect": {
+                "values": {
+                  "#b-err.status": "danger",
+                  "#b-link.appearance": "ghost"
+                }
+              }
+            },
+            {
+              "check": "['error', 'link'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2027-01-01'))"
+            }
+          ]
+        },
+        {
+          "id": "p13-cycle",
+          "title": "a cycle shows its current label, names it, steps on a press, wraps, sends change and announces; pressed beside it is ignored",
+          "covers": "settings.cycle, settings.value, events.change",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#b-cyc button'); return b.textContent.trim() === '1×' && b.getAttribute('aria-label') === 'Скорость: 1×' && b.title.includes('1,5×') && !b.hasAttribute('aria-pressed'); })()"
+            },
+            {
+              "user": "click:#b-cyc button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "change",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const h = document.querySelector('#b-cyc'); const b = h.querySelector('button'); return h.getAttribute('value') === '1.5' && b.getAttribute('aria-label') === 'Скорость: 1,5×' && h.querySelector('.sf-button-announce').textContent.trim() === 'Скорость: 1,5×'; })()"
+            },
+            {
+              "user": "click:#b-cyc button"
+            },
+            {
+              "user": "click:#b-cyc button"
+            },
+            {
+              "check": "document.querySelector('#b-cyc').getAttribute('value') === '1'"
             }
           ]
         }

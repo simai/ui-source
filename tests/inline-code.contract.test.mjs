@@ -27,11 +27,14 @@ test('the defaults are the decision: neutral plate, .2em .4em, 85 %, a 6px corne
 test('the public variables are in the contract, read first, and default to the same values', () => {
   assert.ok(entry, 'code is a component of the public-variables contract');
   const names = entry.variables.map(({name}) => name).sort();
-  assert.deepEqual(names, ['--sf-code-background', '--sf-code-color', '--sf-code-font-family', '--sf-code-font-size', '--sf-code-padding', '--sf-code-radius']);
+  assert.deepEqual(names, ['--sf-code-background-color', '--sf-code-color', '--sf-code-font-family', '--sf-code-font-size', '--sf-code-padding', '--sf-code-radius']);
   for (const variable of entry.variables) {
-    const internal = variable.name.replace('--sf-code-', '--sf-code--');
+    // --sf-code-background-color (C16) reads its former name --sf-code-background under it.
+    const former = variable.name === '--sf-code-background-color' ? '--sf-code-background' : null;
+    const internal = (former ?? variable.name).replace('--sf-code-', '--sf-code--');
     assert.equal(variable.default, rootValue(internal), `${variable.name} documents the default it falls back to`);
-    assert.ok(rule.includes(`var(${variable.name}, var(${internal}))`), `${variable.name} is read by the running-text rule`);
+    const read = former ? `var(${variable.name}, var(${former}, var(${internal})))` : `var(${variable.name}, var(${internal}))`;
+    assert.ok(rule.includes(read), `${variable.name} is read by the running-text rule`);
   }
 });
 

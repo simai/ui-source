@@ -40,7 +40,7 @@ test('tags: inline drops the block padding and sizes the remove button to the li
   const button = block('.sf-tag.sf-tag--inline.sf-tag--inline > .sf-icon-button');
   assert.match(button, /block-size: var\(--sf-tag--line, var\(--sf-tag--line-height\)\);/);
   const mark = block('.sf-tag.sf-tag--inline.sf-tag--inline .sf-close-icon');
-  assert.match(mark, /--sf-close-icon--height: calc\(var\(--sf-tag--font-size\) \* 0\.7\);/);
+  assert.match(mark, /--sf-close-icon--height: var\(--sf-tag--close-size, var\(--sf-text-size-1\\\/4\)\);/);
 });
 
 test('tags: the Smart tag exposes the sizes, spacing and inline', async () => {

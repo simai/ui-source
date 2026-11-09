@@ -2,7 +2,7 @@
   "title": "Alert bar",
   "runtime": {
     "label": "Important notices",
-    "level-danger": "Danger",
+    "level-error": "Error",
     "level-warning": "Warning",
     "level-info": "Info",
     "position": "{n} of {count}",

@@ -42,7 +42,7 @@ function renderActions(context) {
                      text=${words.replace} aria-label=${names.replace} aria-describedby=${describedBy}
                      ?disabled=${context.disabled}
                      @click=${() => component.choose()}></sf-button>
-          <sf-button class="sf-image-field-remove" size=${size} appearance="link" scheme="on-surface"
+          <sf-button class="sf-image-field-remove" size=${size} appearance="ghost" scheme="on-surface"
                      text=${words.remove} aria-label=${names.remove}
                      ?disabled=${context.disabled}
                      @click=${() => component.removeImage()}></sf-button>`

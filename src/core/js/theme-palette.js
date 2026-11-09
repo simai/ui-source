@@ -35,7 +35,10 @@ export const THEME_RULES = Object.freeze({
   primary: {hue: (source) => source.hue, chroma: (source) => source.chroma},
   secondary: {hue: (source) => source.hue, chroma: 20},
   tertiary: {hue: (source) => (source.hue + 60) % 360, chroma: 40},
-  neutral: {hue: (source) => source.hue, chroma: 5},
+  // The greys take the source's hue at chroma 5, or at the source's own chroma
+  // when that is lower (C16): a near-grey brand colour made teal or violet
+  // greys out of a hue it barely has.
+  neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
   error: {hue: 25, chroma: 85},
   warning: {hue: 60, chroma: 60},
   success: {hue: 145, chroma: 65},
@@ -66,7 +69,7 @@ export const THEME_ALPHA = Object.freeze({
   error: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   warning: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   success: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  info: {50: [12, 16, 20, 24, 28, 32]},
+  info: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
 });
 
 const alphaHex = (percent) => Math.round((percent * 255) / 100).toString(16).padStart(2, '0');

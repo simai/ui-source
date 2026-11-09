@@ -49,10 +49,12 @@ const DRAW = {
   'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'menu-context', html: '<button id="anchor" type="button">Меню</button><sf-menu-context id="menu" popup aria-label="Меню"></sf-menu-context>'
     + '<sf-menu-context submenu="drill" aria-label="Настройки" entries=\'[{"id":"sound","type":"switch","text":"Звук","value":true},{"id":"lang","text":"Язык","value":"Русский","submenu":[{"id":"ru","text":"Русский"}]}]\'></sf-menu-context>',
     open: 'const m = document.getElementById("menu"); m.entries = [{id: "a", text: "Открыть"}, {id: "b", text: "Удалить"}]; m.toggleFor(document.getElementById("anchor"))'},
-  // The variables belong to the segmented appearance; a count is drawn on a
+  // The variables belong to the track look (the segmented appearance's name
+  // since sf-segmented 1.4.0; sf-button-group is its dated alias, whose bundle
+  // only forwards); a count is drawn on a
   // segment that is not selected, so the count's own colour has a part to reach.
-  'button-group': {css: ['button-group', 'buttons'], js: 'button-group',
-    html: `<sf-button-group appearance="segmented" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>`},
+  'button-group': {css: ['button-group', 'buttons'], js: 'segmented',
+    html: `<sf-segmented appearance="track" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-segmented>`},
   // A Smart element with a sheet of its own: a css entry with a slash is a
   // path in the output. Empty, so the glyph's thumbnail is drawn without an
   // image to wait for.

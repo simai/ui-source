@@ -10,13 +10,15 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
    at sizes 2 and 3, a count at size 1/3 in size 1/2 text (the tag 28px tall),
    and a remove mark with no glyph when the close markup carried no size class.
    tests/browser/action-composition.cli.js measures the result. */
+const MARK = {'1\\/3': '1\\/4', '1\\/2': '1\\/4', '1': '1\\/3', '2': '1\\/2', '3': '1'};
 test('tag composition: label, count, picture and mark take the ladder', async () => {
   const css = await read('component/tags/scss/_css__tags.scss');
   for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-container {\n  --sf-tag-container--padding-inline-start: var(--sf-ui-${size}--text-space-x);\n  --sf-tag-container--padding-inline-end: var(--sf-ui-${size}--text-space-x);`), `label ${size}`);
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-count {\n  --sf-tag-count--font-size: var(--sf-text-size-${size});\n  --sf-tag-count--line-height: var(--sf-text-height-${size});`), `count ${size}`);
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} > .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${size});`), `icon ${size}`);
-    assert.ok(css.includes(`--sf-close-icon--width: calc(var(--sf-text-size-${size}) * 0.7);`), `mark ${size}`);
+    // The mark is the ladder cross one step under the label (C14, R036).
+    assert.ok(css.includes(`--sf-tag--close-size: var(--sf-text-size-${MARK[size]});`), `mark ${size}`);
   }
   assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--mask-image: url\(/);
   assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close::after \{\s*content: "";\s*position: absolute;\s*inset: min\(calc\(var\(--sf-px\) \* 0\), calc\(\(100% - var\(--sf-c2\)\) \/ 2\)\)/);

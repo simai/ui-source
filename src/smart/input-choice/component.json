@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -252,7 +252,8 @@
     "geometry: on the ladder. The icon box is the size 1 control height (square, ui radius, surface-container; primary-container when chosen); the title is text size 1 medium on the size 1 line, the caption text size 1/2 on-surface-variant; the mark is the half rung's icon, on the title's line, or centred on the icon box when there is one; the card's padding space-1/2, its hairline inside its box. The label row and the message line are sf-input's (text size 1/2).",
     "states: checked is two signs -- the mark filled (a dot in the ring, a check in the box) and the edge drawn twice as heavy in the primary role (an inner ring, so the box does not move) over the select step of the alpha scale; hover the state step; focus the shared ring on the card; disabled the disable roles; invalid the error edge on the cards not chosen and the error line under them; forced colours Highlight.",
     "grid: auto-fill with a minimum card width (--sf-choice-min-inline-size, 15rem); columns 1-4 is the most columns, fewer where a card would be narrower than the minimum, so a phone stacks the cards without a breakpoint of its own.",
-    "css-variables: eight, read with the role as their fallback and never set here: gap, min-inline-size, padding, radius, background-color, border-color, selected-background-color, selected-border-color."
+    "css-variables: eight, read with the role as their fallback and never set here: gap, min-inline-size, padding, radius, background-color, border-color, selected-background-color, selected-border-color.",
+    "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its studio scenario and smoke example back the Pro package reference (sf-chat-threads for chat 1.18). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "reuse_mode": "whole",
