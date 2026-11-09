@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
   "id": "smart.input",
   "tag": "sf-input",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -393,6 +393,7 @@
     "version 1.4.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01.",
     "version 1.5.0 (2026-11-08): a minor (§4.10): input-type takes number and the settings min, max and step are added (Larena after sf-wizard, msg-12cd5ef6). A number field is the browser's own: min, max and step go to the native input as given (only on a number field), its validation is the field's -- range underflow, range overflow and step mismatch make the field and its form invalid, as required does -- and inputmode (numeric, decimal) picks the phone keyboard. The value stays a string, the text the native input holds, and the form submits it under name. A stepper with buttons stays sf-input-quantity.",
     "version 1.5.1: with a hint or an error and an inherited value, the inherited sentence is also a hidden note that aria-describedby names after the message, because a browser reads aria-describedby instead of aria-description and the sentence went unsaid (helpers/inherited-value.js, syncInheritedNote). Nothing is drawn differently.",
+    "version 1.6.1 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.6.0: size takes 1/3 and 3 again for sf-input alone, on the control ladder (--sf-ui-<size>--control-height): .sf-input drew no height at those steps and fell to its 20px line; radius (\"\", default, square, rounded) draws the field as sf-button's radius does, rounded a pill. Actions block, item 4 (docs review 2026-11-08)."
   ],
   "x-rule": {
