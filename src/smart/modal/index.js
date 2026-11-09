@@ -1053,6 +1053,15 @@ class SfModal extends ModalElement {
     }
 
     if (this.hasAttribute("open") && !this._isOpen && this._modalState !== "closing") {
+      // A window put into the page already open remembers what had focus --
+      // the button that inserted it -- as open() does, so closing gives focus
+      // back there and not to the nearest landmark. A window open in the
+      // page's own markup has no opener.
+      const active = document.activeElement;
+      this._lastActive = active instanceof HTMLElement && active !== document.body &&
+        active !== document.documentElement && !this.contains(active) && !this._root()?.contains(active)
+        ? active : null;
+      this._focusReturnAncestors = captureModalFocusAncestors(this._lastActive);
       this._isOpen = true;
       this._modalState = "open";
       if (this.display !== "inline") {
