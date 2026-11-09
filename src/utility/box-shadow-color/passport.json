@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.box-shadow-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/box-shadow-color/active/index.js",

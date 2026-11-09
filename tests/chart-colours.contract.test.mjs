@@ -3,8 +3,7 @@ import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
-import {TonalPalette} from '../src/core/js/vendor/material-color-utilities/palettes/tonal_palette.js';
-import {hexFromArgb} from '../src/core/js/vendor/material-color-utilities/utils/string_utils.js';
+import {STATIC_HUE_NAMES, themeFromColor, themeVariables, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
 import {themeSource} from './support/theme-source.mjs';
 
 // The chart series roles (--sf-chart-1 .. -8), their area fills and the
@@ -30,7 +29,9 @@ import {themeSource} from './support/theme-source.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const palette = read('src/core/scss/_sf_figma_colors_variables.scss');
+// The primitives: the theme's palettes and the static palette (C17); a status
+// primitive is var() of its hue.
+const palette = `${read('src/core/scss/_sf_figma_colors_variables.scss')}\n${read('src/core/scss/_sf_static_palette.scss')}`;
 const theme = themeSource();
 
 const CONTRAST_MIN = 3;
@@ -38,11 +39,9 @@ const CVD_MIN = 15;
 const NEIGHBOUR_MIN = 25;
 const ALL_MIN = 15;
 
-// The hues of the initials, which the series reuse (tests/avatar-tones).
-const TONE_HUES = {rose: 5, amber: 65, lime: 110, green: 150, teal: 190, sky: 245, indigo: 285, violet: 325};
-const TONE_CHROMA = 48;
 
 const primitives = new Map([...palette.matchAll(/(--sf-[a-z0-9-]+): (#[0-9a-f]{6,8});/gu)].map(([, name, hex]) => [name, hex]));
+for (const [, name, target] of palette.matchAll(/(--sf-[a-z0-9-]+): var\((--sf-[a-z0-9-]+)\);/gu)) if (primitives.has(target)) primitives.set(name, primitives.get(target));
 const role = (name) => (theme.match(new RegExp(`\\s${name}: ([^;]+);`, 'u')) ?? [])[1]?.trim() ?? null;
 const branches = (name) => {
   const value = role(name);
@@ -192,17 +191,31 @@ test('eight series, each 3:1 on surfaces 0 to 2 in both themes, the first five a
   for (const line of report) t.diagnostic(line);
 });
 
-test('series 1 is the primary graphic tone, and the rest are hues of the initials, indigo aside', () => {
-  assert.equal(role('--sf-chart-1'), role('--sf-on-primary-container-graphic'));
-  const hues = SERIES.slice(1).map((name) => {
+// C17 (2026-11-08): the order is fixed and every series is a static hue, so
+// no theme colour moves a series or makes one the brand's twin; a single
+// series takes the theme colour, --sf-chart-brand.
+const ORDER = ['blue', 'amber', 'teal', 'violet', 'yellow', 'pink', 'green', 'red'];
+
+test('the series are the static hues in the decided order, each the same hue in both themes; one series is the brand', () => {
+  const hues = SERIES.map((name) => {
     const {light, dark} = branches(name);
-    const [, hue] = light.match(/^--sf-tone-([a-z]+)-\d+$/u) ?? [];
-    assert.ok(hue, `${name} takes a tone primitive: ${light}`);
-    assert.match(dark, new RegExp(`^--sf-tone-${hue}-\\d+$`, 'u'), `${name} keeps its hue in the dark theme`);
+    const [, hue] = light.match(/^--sf-([a-z]+)-\d+$/u) ?? [];
+    assert.ok(STATIC_HUE_NAMES.includes(hue), `${name} takes a static hue: ${light}`);
+    assert.match(dark, new RegExp(`^--sf-${hue}-\\d+$`, 'u'), `${name} keeps its hue in the dark theme`);
     return hue;
   });
-  assert.equal(new Set(hues).size, 7, `seven different hues: ${hues}`);
-  assert.ok(!hues.includes('indigo'), 'indigo is the primary hue\'s neighbour');
+  assert.deepEqual(hues, ORDER);
+  assert.equal(role('--sf-chart-brand'), role('--sf-on-primary-container-graphic'));
+});
+
+test('no theme colour moves a series: none reads a primitive a theme writes', () => {
+  // The series read the static palette only, so a theme -- which writes the
+  // dynamic primitives and the four statuses -- leaves them where they are.
+  const written = new Set(Object.keys(themeVariables(themeFromColor(DEFAULT_THEME_COLOR))));
+  for (const name of SERIES) {
+    const {light, dark} = branches(name);
+    for (const primitive of [light, dark]) assert.ok(!written.has(primitive), `${name} reads ${primitive}, which a theme rewrites`);
+  }
 });
 
 test('each fill is the fill family of the alpha scale on tone 50 of its series', () => {
@@ -216,17 +229,18 @@ test('each fill is the fill family of the alpha scale on tone 50 of its series',
   }
 });
 
-test('every tone primitive is the generator\'s tone of its hue', () => {
+test('every former tone primitive is var() of the static hue of its name; rose is pink, violet purple', () => {
+  const source = read('src/core/scss/_sf_figma_colors_variables.scss');
   const wrong = [];
-  for (const [name, hex] of primitives) {
-    const match = name.match(/^--sf-tone-([a-z]+)-(\d+)(?:--alfa-(\d+))?$/u);
-    if (!match) continue;
-    const [, hue, step, alpha] = match;
-    assert.ok(hue in TONE_HUES, `${name}: ${hue} is one of the eight hues`);
-    const made = hexFromArgb(TonalPalette.fromHueAndChroma(TONE_HUES[hue], TONE_CHROMA).tone(Number(step)));
-    const expected = alpha ? made + Math.round((Number(alpha) * 255) / 100).toString(16).padStart(2, '0') : made;
-    if (hex !== expected) wrong.push(`${name}: ${hex}, the generator gives ${expected}`);
+  let count = 0;
+  for (const [, name, hue, rest, value] of source.matchAll(/(--sf-tone-([a-z]+)-(\d+(?:--alfa-\d+)?)): ([^;]+);/gu)) {
+    count += 1;
+    // The former violet is HCT hue 325, the static purple; the static violet
+    // (305) is 20 degrees away, and a former tone moves at most 15.
+    const expected = `var(--sf-${({rose: 'pink', violet: 'purple'})[hue] ?? hue}-${rest})`;
+    if (value !== expected) wrong.push(`${name}: ${value}, expected ${expected}`);
   }
+  assert.ok(count > 0);
   assert.deepEqual(wrong, []);
 });
 
@@ -244,7 +258,9 @@ test('the diverging midpoint is one quiet neutral per theme, off the surfaces an
       // A cell at the midpoint is still a cell, and the quiet end of the scale.
       assert.ok(ratio > 1.1 && ratio < CONTRAST_MIN, `${scheme}: midpoint on surface-${level} is ${ratio.toFixed(2)}:1`);
     }
-    for (const family of ['error', 'success', 'primary', 'tertiary']) {
+    // The diverging pairs (C17): red to blue for data with a good and a bad
+    // side, purple to teal for data without; the theme pair as before.
+    for (const family of ['red', 'blue', 'purple', 'teal', 'primary', 'tertiary']) {
       const end = hexOf(`--sf-${family}-${ends[scheme]}`);
       const ratio = contrast(midpoint, end);
       assert.ok(ratio >= CONTRAST_MIN, `${scheme}: ${family}-${ends[scheme]} is ${ratio.toFixed(2)}:1 from the midpoint`);
@@ -253,7 +269,60 @@ test('the diverging midpoint is one quiet neutral per theme, off the surfaces an
   }
 });
 
+// The warm and the cool series and the diverging ends (C17; dispatcher
+// 2026-11-09): static hues in the research's orders, 3:1 on the surfaces in
+// both themes, and the distances measured when they were picked kept as
+// floors -- six close hues cannot meet the eight series' limits, so the floors
+// say only that a retuned primitive did not make them worse.
+const FAMILY_SETS = {
+  warm: {hues: ['red', 'orange', 'amber', 'pink', 'brown', 'yellow'], floors: {cvd: 6.5, neighbours: 12, all: 10}},
+  cool: {hues: ['blue', 'teal', 'violet', 'cyan', 'indigo', 'green'], floors: {cvd: 7, neighbours: 30, all: 11}},
+};
+const DIVERGING = {bad: 'red', good: 'blue', low: 'purple', high: 'teal'};
+
+test('the warm and the cool series are static hues in order, 3:1 on the surfaces, no closer than when they were picked', (t) => {
+  for (const [set, {hues, floors}] of Object.entries(FAMILY_SETS)) {
+    const names = hues.map((_, index) => `--sf-chart-${set}-${index + 1}`);
+    names.forEach((name, index) => {
+      const {light, dark} = branches(name);
+      assert.match(light, new RegExp(`^--sf-${hues[index]}-\\d+$`, 'u'), name);
+      assert.match(dark, new RegExp(`^--sf-${hues[index]}-\\d+$`, 'u'), name);
+    });
+    for (const scheme of THEMES) {
+      const colours = names.map((name) => resolveRole(name)[scheme]);
+      for (const [index, colour] of colours.entries()) {
+        for (const [level, ground] of surfaces(scheme).entries()) {
+          const ratio = contrast(colour, ground);
+          assert.ok(ratio >= CONTRAST_MIN, `${scheme}: ${names[index]} on surface-${level} is ${ratio.toFixed(2)}:1`);
+        }
+      }
+      const cvd = Math.min(...Object.keys(MACHADO).map((deficiency) => minimumOver(colours.slice(0, 5), deficiency)));
+      let neighbours = Infinity;
+      for (let i = 0; i + 1 < colours.length; i += 1) neighbours = Math.min(neighbours, distance(colours[i], colours[i + 1]));
+      const all = minimumOver(colours, null);
+      assert.ok(cvd >= floors.cvd, `${set} ${scheme}: series 1-5 under CVD ${cvd.toFixed(1)}`);
+      assert.ok(neighbours >= floors.neighbours, `${set} ${scheme}: neighbours ${neighbours.toFixed(1)}`);
+      assert.ok(all >= floors.all, `${set} ${scheme}: any two ${all.toFixed(1)}`);
+      t.diagnostic(`${set} ${scheme}: CVD ${cvd.toFixed(1)}, neighbours ${neighbours.toFixed(1)}, any two ${all.toFixed(1)}`);
+    }
+  }
+});
+
+test('the diverging ends are red and blue, purple and teal, tone 30 light and 80 dark, apart under every deficiency', (t) => {
+  for (const [end, hue] of Object.entries(DIVERGING)) assert.equal(role(`--sf-chart-diverging-${end}`), `light-dark(var(--sf-${hue}-30), var(--sf-${hue}-80))`, end);
+  for (const scheme of THEMES) {
+    for (const [a, b] of [['bad', 'good'], ['low', 'high']]) {
+      const [x, y] = [a, b].map((end) => resolveRole(`--sf-chart-diverging-${end}`)[scheme]);
+      for (const deficiency of [null, ...Object.keys(MACHADO)]) {
+        const value = distance(x, y, deficiency);
+        assert.ok(value >= ALL_MIN, `${scheme}: ${a}-${b} ${deficiency ?? 'normal'} ${value.toFixed(1)}`);
+      }
+      t.diagnostic(`${scheme}: ${a}-${b} ${[null, ...Object.keys(MACHADO)].map((d) => distance(x, y, d).toFixed(1)).join(' / ')}`);
+    }
+  }
+});
+
 test('the roles are documented', () => {
   const docs = read('docs/foundation-chart-colours.md');
-  for (const name of [...SERIES, '--sf-chart-N-fill', '--sf-chart-N-fill-hover', '--sf-chart-N-fill-active', '--sf-chart-midpoint']) assert.ok(docs.includes(`\`${name}\``), name);
+  for (const name of [...SERIES, '--sf-chart-warm-1', '--sf-chart-cool-1', ...Object.keys(DIVERGING).map((end) => `--sf-chart-diverging-${end}`), '--sf-chart-brand', '--sf-chart-N-fill', '--sf-chart-N-fill-hover', '--sf-chart-N-fill-active', '--sf-chart-midpoint']) assert.ok(docs.includes(`\`${name}\``), name);
 });

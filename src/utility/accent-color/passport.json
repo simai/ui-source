@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.accent-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/accent-color/default/index.js",
@@ -18,6 +18,6 @@
     "src/utility/accent-color/hover/scss/_sf_css__accent_color.scss",
     "src/utility/accent-color/hover/scss/index.scss"
   ],
-  "content_sha256": "4bf1ff750e3f41e8bfe59495b7069c55899745ddc1eb1bcae70349ba002bb086",
+  "content_sha256": "f508fe3291bb86b1b8e68608e8b134d7d5c7c7f050ad3901cf32eaeefdc88a14",
   "dependencies": []
 }

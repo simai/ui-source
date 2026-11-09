@@ -3,16 +3,19 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
-  "summary": "The colour roles and palettes: the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
+  "summary": "The colour roles and palettes: the static palette (C17, generated), the hue role classes, the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
     "src/core/contracts/colour-policy.v1.json",
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
+    "src/core/scss/_sf_static_palette.scss",
+    "src/core/scss/_sf_css__hue.scss",
     "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__color.scss",
     "src/core/scss/vars/_sf_var__color.scss",
+    "src/core/scss/vars/_sf_var__hue.scss",
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/scss/mix/_mix__places.scss",
     "src/core/contracts/token-aliases.v1.json"
@@ -21,12 +24,15 @@
     "src/core/contracts/colour-policy.v1.json",
     "src/core/contracts/token-aliases.v1.json",
     "src/core/scss/_sf_css__color.scss",
+    "src/core/scss/_sf_css__hue.scss",
     "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
     "src/core/scss/mix/_mix__places.scss",
+    "src/core/scss/_sf_static_palette.scss",
     "src/core/scss/mix/_mix__role_aliases.scss",
-    "src/core/scss/vars/_sf_var__color.scss"
+    "src/core/scss/vars/_sf_var__color.scss",
+    "src/core/scss/vars/_sf_var__hue.scss"
   ],
   "content_sha256": "f6ea278f614df84dd664bbdcd79414fb08e1dcc80b500735de52a7cbe9d3acc7",
   "dependencies": [

@@ -31,7 +31,9 @@ test('Toast presentation uses semantic surface, typography and motion tokens', a
   assert.match(css, /--sf-toast-text--font-size: var\(--sf-text-size-1\)/);
   assert.match(css, /--sf-toast-supporting-text--font-size: var\(--sf-text-size-1\)/);
   assert.match(css, /--sf-toast-text--font-weight: var\(--sf-font-weight-medium\)/);
-  for (const role of ['primary', 'error', 'warning', 'success']) {
+  // info reads the information palette, as the other statuses read theirs (C17).
+  assert.doesNotMatch(css, /--sf-on-primary-container/);
+  for (const role of ['info', 'error', 'warning', 'success']) {
     assert.match(css, new RegExp(`--sf-toast--content-color: var\\(--sf-on-${role}-container\\)`));
   }
   assert.match(css, /prefers-reduced-motion: reduce/);

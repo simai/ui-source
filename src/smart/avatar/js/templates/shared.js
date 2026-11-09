@@ -73,8 +73,10 @@ export function avatarClasses(context, options = {}) {
             "content-main-center",
         );
 
-        if (context.resolvedTone) {
-            classes.push(`sf-avatar--tone-${context.resolvedTone}`);
+        // The hue's role set (core .sf-hue-<name>, C17); the class sheet
+        // draws the plate and the ink from it.
+        if (context.resolvedHue) {
+            classes.push(`sf-hue-${context.resolvedHue}`);
         }
     }
 

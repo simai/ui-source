@@ -14,24 +14,17 @@ $infix:'';
     }
 }
 
-// Palette colors (raw)
+// The legacy palette classes, on the static palette (C17; the shade map in
+// core/scss/vars/_sf_var__color.scss).
 @each $palette-name, $palette-map in $color-array {
-    @each $shade-key, $shade-rgb in $palette-map {
+    @each $shade-key, $token in $palette-map {
         @if $shade-key == default {
             .#{$infix}border-#{$palette-name} {
-                border-color: rgb(
-                    map-get($shade-rgb, r),
-                    map-get($shade-rgb, g),
-                    map-get($shade-rgb, b)
-                );
+                border-color: var(--sf-#{$token});
             }
         } @else {
             .#{$infix}border-#{$palette-name}-#{$shade-key} {
-                border-color: rgb(
-                    map-get($shade-rgb, r),
-                    map-get($shade-rgb, g),
-                    map-get($shade-rgb, b)
-                );
+                border-color: var(--sf-#{$token});
             }
         }
     }

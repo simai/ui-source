@@ -1,0 +1,11 @@
+// SIMAI Framework
+// https://simai.io
+
+// The names a hue setting takes (owner decision C17, 2026-11-08): the sixteen
+// static hues of src/core/js/theme-palette.js STATIC_HUES, in its order, and
+// the theme's primary, secondary and tertiary. core/scss/_sf_css__hue.scss
+// gives each a .sf-hue-<name> role set; a component that draws on a hue
+// lists the classes from here (tests/static-palette.contract.test.mjs).
+
+$sf-static-hues: ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray') !default;
+$sf-theme-hues: ('primary', 'secondary', 'tertiary') !default;

@@ -506,7 +506,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "component/theme-palette (SF.Loader.ensurePlugin('theme-palette') or data-sf-theme-palette), and smart/theme-generator",
-      "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives and the 104 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 232 variables in all.",
+      "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives and the 160 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 288 variables in all.",
       "members": [
         "themeFromColor",
         "themeFromHct",

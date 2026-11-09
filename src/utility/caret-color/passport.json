@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.caret-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/caret-color/default/index.js",
@@ -13,6 +13,6 @@
     "src/utility/caret-color/default/scss/_sf_var__caret_color.scss",
     "src/utility/caret-color/default/scss/index.scss"
   ],
-  "content_sha256": "0720c810bee8f09782ae8d973e90359090579c1995d013f0f3c4132c869cdfbe",
+  "content_sha256": "7faa2c857e7b5e80c196efcdd606268d76b32f9940ae31885f75ca878da1d176",
   "dependencies": []
 }

@@ -14,13 +14,19 @@ a real destination or action.
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
 - state: online/offline indicator and company/verification badge;
-- tone, on initials only: `.sf-avatar--text.sf-avatar--tone-<name>`, where name
-  is `rose`, `amber`, `lime`, `green`, `teal`, `sky`, `indigo` or `violet`. A muted
-  fill and an ink that reads on it in both themes, from the tokens
-  `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`. An image or a
-  placeholder stays as it is, and `--sf-avatar-background-color` and
-  `--sf-avatar-color` still win. A server picks a tone from a name the way the
-  Smart Avatar's documentation describes.
+- hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
+  hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
+  `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,
+  `brown`, `gray`) or the theme's `primary`, `secondary` or `tertiary` (owner
+  decision C17). `sf-hue-<name>` gives the element the hue's roles, and the
+  initials stand on `--sf-hue-container` in `--sf-on-hue-container`, in both
+  themes. An image or a placeholder stays as it is, and
+  `--sf-avatar-background-color` and `--sf-avatar-color` still win. A server
+  picks a hue from a name the way the Smart Avatar's documentation describes.
+  The former classes `.sf-avatar--tone-<name>` (`rose` is `pink`, `violet`
+  is `purple`) and the
+  tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
+  draw the same until 2027-01-01.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.

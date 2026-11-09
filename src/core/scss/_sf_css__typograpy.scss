@@ -88,7 +88,9 @@
     --sf-display--weight: 300;
     --sf-text--style: inherit;
     --sf-text--tracking: inherit;
-    --sf-mark--color: var(--sf-warning-transparent-overlay);
+    // The mark's plate is the mark role, the static yellow (C17); it read the
+    // warning's strong container before.
+    --sf-mark--color: var(--sf-mark);
     // Code in running text (owner, 2026-11-02). These four were declared and
     // read by nothing, the colour and the plate on the tertiary container: too
     // loud for a word in a sentence. The plate is the neutral one a tag or a

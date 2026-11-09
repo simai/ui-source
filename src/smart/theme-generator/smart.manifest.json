@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "title": "Theme generator",
   "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
@@ -117,7 +117,7 @@
       }
     },
     "toCSS": {
-      "summary": "The theme as one stylesheet rule of its 128 primitives and 104 translucent steps, under the given selector or the `selector` attribute.",
+      "summary": "The theme as one stylesheet rule of its 128 primitives and 160 translucent steps, under the given selector or the `selector` attribute.",
       "arguments": [
         {
           "name": "selector",
@@ -233,7 +233,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 232 custom properties -- 128 tones and 104 translucent steps -- {name: value}."
+            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -264,7 +264,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 232 custom properties -- 128 tones and 104 translucent steps -- {name: value}."
+            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -295,7 +295,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 232 custom properties -- 128 tones and 104 translucent steps -- {name: value}."
+            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -326,7 +326,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 232 custom properties -- 128 tones and 104 translucent steps -- {name: value}."
+            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -467,7 +467,7 @@
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "7e015da3f78ca3362abb1e6052159e7f5205386161a22cf2d33d0d2835cb022e"
+        "sha256": "b763997dfcc874498ffb8cb7bd60a89663a9230a7c0211347de4f768cc27bed0"
       }
     ],
     "generated_runtime": []

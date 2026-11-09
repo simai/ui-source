@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.avatars",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/avatars/docs/docs.md",
