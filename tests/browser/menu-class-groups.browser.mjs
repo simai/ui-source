@@ -40,6 +40,7 @@ const page = `<!doctype html><html lang="en" class="theme-light"><head><meta cha
       <li class="sf-menu-item"><a class="sf-menu-element" href="#d"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Health</span></span></a></li>
     </ul>
   </li>
+  <li class="sf-menu-item" id="leaf"><a class="sf-menu-element" href="#e"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Overview</span></span></a></li>
   <li class="sf-menu-item" id="branch">Project<ul class="sf-menu"><li class="sf-menu-item">Documents</li></ul></li>
 </ul></nav></body></html>`;
 
@@ -87,7 +88,8 @@ try {
         expanded: toggle.getAttribute('aria-expanded'), controls: toggle.getAttribute('aria-controls'),
         controlsList: document.getElementById(toggle.getAttribute('aria-controls') || '') === document.querySelector('#collapsible > .sf-menu'),
         branchNested: Boolean(document.querySelector('#branch > button.sf-menu-element')) && document.querySelector('#branch > .sf-menu').hidden,
-        topRowHeight: Math.round(document.querySelector('#branch > .sf-menu-element').getBoundingClientRect().height),
+        topRowHeight: Math.round(document.querySelector('#leaf > .sf-menu-element').getBoundingClientRect().height),
+        leafLevel1: document.querySelector('#leaf > .sf-menu-element').classList.contains('sf-menu-element--level-1'),
       };
     });
     const before = await read();
@@ -100,6 +102,7 @@ try {
       check(g.rowHeight === before.topRowHeight, `load ${load}: ${id} row height ${g.rowHeight} != first-level ${before.topRowHeight}`);
     }
     check(before.expanded === 'true' && before.controlsList, `load ${load}: collapsible button not wired (${before.expanded}, ${before.controls})`);
+    check(before.leafLevel1, `load ${load}: the first-level leaf is not level 1`);
     check(before.branchNested, `load ${load}: the real branch did not nest`);
     await tab.click('#watch-heading');
     const closed = await read();
