@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.styles",
   "kind": "core",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "owner": "simai/ui-source",
   "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions and the workspace layout, placeholders and touch fields.",
   "includes": [
@@ -14,6 +14,7 @@
     "src/core/figma_variables/img.png",
     "src/core/scss/_base.scss",
     "src/core/scss/_sf_css__composition.scss",
+    "src/core/scss/_sf_css__density.scss",
     "src/core/scss/_sf_css__loader.scss",
     "src/core/scss/_sf_css__logo.scss",
     "src/core/scss/_sf_css__placeholder.scss",
@@ -26,7 +27,7 @@
     "src/core/scss/mix/_mix__common.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "df9f0dafdd50e3cb86b9015eea1b3f366ef6973e672efadef4be283fc703f883",
+  "content_sha256": "4da0b93e151b2c019ca4fd535a89916e350558e75ac497cc27a588345348ba3b",
   "dependencies": [
     {
       "id": "font.inter",
