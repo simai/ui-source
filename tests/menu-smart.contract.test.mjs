@@ -268,13 +268,32 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   const rest = block.slice(block.indexOf('.sf-menu.sf-menu--navigation .sf-menu-element {'));
   assert.match(rest.slice(0, rest.indexOf('}')), /--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
   assert.doesNotMatch(block, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
-  // The states are the alpha scale's role tokens: state 4, 12 and 8, the fill
-  // family's 24 for the current page -- never a number of its own.
+  // (The current page's medium label is the current-plate mixin's, above the block.)
+  // The states are the alpha scale's role tokens: state 4 and 12; an open
+  // branch is not filled (C23) -- never a number of its own.
   assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
   assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
-  assert.match(rule(`${enabled}:is(.open, [aria-expanded='true'])`), /var\(--sf-surface-transparent-select\)/u);
+  assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
+  assert.doesNotMatch(block, /--sf-surface-transparent-select/u);
+  // The current page (C23, owner 2026-11-09): the primary plate of the fill
+  // family (primary-container-active, 20 light / 32 dark), its ink and a
+  // medium label, written once in the current-plate mixin; the bar only on a
+  // closed branch of a column.
   const current = `${enabled}:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))`;
-  assert.match(rule(current), /--sf-menu-element--background-color: var\(--sf-surface-container-active\);/u);
+  assert.match(rule(current), /@include current-plate;/u);
+  const plate = sheet.slice(sheet.indexOf('@mixin current-plate {'), sheet.indexOf('}', sheet.indexOf('@mixin current-plate {')));
+  assert.match(plate, /--sf-menu-element--background-color: var\(--sf-primary-container-active\);/u);
+  assert.match(plate, /--sf-menu-element--color: var\(--sf-on-primary-container\);/u);
+  assert.match(plate, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.doesNotMatch(plate, /::before|--sf-primary\)/u);
+  const bar = sheet.slice(sheet.indexOf('@mixin holds-current-bar {'), sheet.indexOf('@layer sf.components'));
+  assert.match(bar, /\.sf-menu-item:not\(\.open\):has\(> \.sf-menu :is\(\[aria-current='page'\], \[aria-current='true'\]\)\) > \.sf-menu-element:not\(\[aria-current\]\)::before/u);
+  assert.match(bar, /\.sf-menu-element\.sf-menu-element--holds-current:not\(\[aria-current\]\)::before/u);
+  assert.match(bar, /inline-size: var\(--sf-a3\);\s*block-size: var\(--sf-icon-size-1\);/u);
+  assert.match(bar, /background-color: var\(--sf-primary\);/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal)'), /@include holds-current-bar;/u);
+  assert.match(read('src/component/menu/scss/_css__menu_compact.scss'), /@include menu\.current-plate;[\s\S]*@include menu\.holds-current-bar;/u);
+  assert.match(read('src/smart/menu/js/templates/default.js'), /holds \? 'sf-menu-element--holds-current' : ''/u);
   assert.doesNotMatch(block, /rgba?\(|#[0-9a-f]{3,8}\b|--sf-[a-z0-9-]+--alfa-/iu);
   // The current page's plate comes after the pointer's states at the same
   // weight, so hover and press never lighten it.

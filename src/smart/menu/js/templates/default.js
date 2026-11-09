@@ -50,11 +50,15 @@ const renderTrailing = (glyph) => html`<span class="sf-icon-button" aria-hidden=
 
 function renderRow(context, item, level, branch, open, submenuId) {
   const current = context.currentId === item.id;
+  // A row with items under it that holds the current page and shows no list
+  // -- a closed branch, a rail row -- takes the class menu's bar (C23).
+  const holds = item.children.length > 0 && !open && context.holding.has(item.id);
   const classes = joinClasses(
     'sf-menu-element',
     levelClass(level),
     branch ? 'sf-menu-element--has-submenu' : '',
     open ? 'open' : '',
+    holds ? 'sf-menu-element--holds-current' : '',
     item.disabled ? 'disabled' : '',
   );
   const linked = Boolean(item.href) && !item.disabled;

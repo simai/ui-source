@@ -27,7 +27,9 @@ returns focus to its disclosure. A click outside the horizontal menu closes
 its open top-level branch. On small screens, render the same navigation data in
 a vertical drawer instead of shrinking the horizontal menu into several rows.
 
-Use `aria-current="page"` on the current link. A disabled disclosure uses a
+Use `aria-current="page"` on the current link. The documentation tree preset
+marks it with the navigation plate (C23), leaves an open branch unfilled and
+puts the bar on a closed branch that holds it. A disabled disclosure uses a
 disabled button and cannot be toggled. Prefer removing unavailable navigation
 destinations over presenting a disabled link.
 
@@ -42,13 +44,24 @@ header draws them, with or without `sf-menu--horizontal`: rows with no border
 and no fill at rest, `--sf-on-surface` words, and the ordinary row's size 1
 height, `space-1` side padding, text size 1, `--sf-radius--ui` and focus ring.
 A pointer lays the state family of the alpha scale over a row
-(`--sf-surface-transparent-hover`, `-active` on press), an open branch takes
-`--sf-surface-transparent-select`, and the current page (`aria-current="page"`
-or `"true"` on the row or on the link inside it) is a plate of
-`--sf-surface-container-active`, which the pointer does not change. Rows stand
-`space-1/4` apart unless `--sf-menu-gap` says otherwise. In forced colours the
-current page is framed instead. Submenus keep their panel and take the same
-row states.
+(`--sf-surface-transparent-hover`, `-active` on press); an open branch is not
+filled, its open list shows it is open. The current page (`aria-current="page"`
+or `"true"` on the row or on the link inside it; decision C23) is a primary
+plate of the fill family, `--sf-primary-container-active` (primary at 20 in
+the light theme, 32 in the dark one), with `--sf-on-primary-container` words
+and icon and a medium label, and no bar; the pointer does not change it.
+Where there is no plate, a bar of `--sf-primary`, 3 by 16, stands at the
+row's inline start: on a closed branch of a column whose list holds the
+current page (found in the markup, or marked `sf-menu-element--holds-current`
+when the list is not in the markup). A header row's first level draws no bar.
+Rows stand `space-1/4` apart unless `--sf-menu-gap` says otherwise. In forced
+colours the current page is framed instead and the bar takes the system's
+highlight. Submenus keep their panel and take the same row states.
+
+One navigation tree -- a site, documentation -- is at most two levels deep
+(decision C24). The four levels the class draws serve an admin menu's second
+panel, which holds the second to fourth levels of the section chosen in its
+first panel.
 
 ```html
 <nav aria-label="Sections">
@@ -67,7 +80,10 @@ end, capped at 99+, hidden at 0, and its phrase ends the row's name. Add
 `sf-menu--compact` to the root `sf-menu` for a rail of top-level destinations:
 each row shows its icon or avatar alone, its words stay in its name out of
 sight, and the counter moves onto the icon's top end corner with the anchored
-badge's geometry and ring (step 1). Branches do not open in a compact menu. See
+badge's geometry and ring (step 1). Branches do not open in a compact menu.
+The row that is the current page takes the navigation plate; a row whose
+hidden list holds the current page, or one marked
+`sf-menu-element--holds-current`, takes the bar beside its icon (C23). See
 the Badges documentation, section «Бейдж на якоре» (simai/ui-source#12).
 
 ## Smart Menu and public variables

@@ -581,6 +581,8 @@ class SfSmartMenu extends MenuElement {
       items,
       open: new Set(this.openIds),
       currentId,
+      // The branches above the current page: a closed one draws the bar (C23).
+      holding: new Set(currentId ? pathTo(all, currentId) || [] : []),
       // collapse narrow: the button is a selector showing the current item.
       selector,
       selectedItem: selector && currentId ? findItem(all, currentId) : null,

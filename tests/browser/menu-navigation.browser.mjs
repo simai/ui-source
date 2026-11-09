@@ -5,8 +5,10 @@
 // navigation-align center, as Docara's header draws its sections. At 1440 px,
 // in the light and the dark theme and at the bar's sizes 1/2 and 1, a row is
 // the size 1 control height (40 px), space-1 (16 px) at its sides, the ui
-// radius, no border, on-surface words, transparent at rest and the fill
-// family's plate (--sf-surface-container-active, 24 %) on the current page;
+// radius, no border, on-surface words, transparent at rest; the current page
+// (C23, owner 2026-11-09) is the primary plate of the fill family
+// (--sf-primary-container-active: primary 20 % light, 32 % dark) with
+// on-primary-container words and a medium label;
 // a pointer lays the state family's hover step over a row and leaves the
 // current page's plate as it is; the nav stands at the bar's true centre and
 // clear of the brand and the tools. At 390 px the bar is collapsed: the nav
@@ -59,9 +61,12 @@ await new Promise((settle) => server.once('listening', settle));
 
 const failures = [];
 const seen = {};
-// The fill family's 24 % step and the state family's 4 % step on the theme's
-// neutral tone: neutral-50 in the light theme, neutral-90 in the dark.
+// The state family's 4 % step on the theme's neutral tone: neutral-50 in the
+// light theme, neutral-90 in the dark. The current plate: primary-50 at 20 %
+// (light) and 32 % (dark), the default theme colour; its ink primary-10 / -90.
 const TONE = {light: '118, 119, 124', dark: '227, 226, 231'};
+const PLATE = {light: 'rgba(0, 115, 237, 0.2)', dark: 'rgba(0, 115, 237, 0.32)'};
+const INK = {light: 'rgb(0, 26, 64)', dark: 'rgb(215, 226, 255)'};
 const transparent = (colour) => /rgba\(\d+, \d+, \d+, 0\)|transparent/u.test(colour);
 
 const measure = (tab) => tab.evaluate(() => {
@@ -112,10 +117,12 @@ try {
           if (row.paddingStart !== '16px' || row.paddingEnd !== '16px') failures.push(`${key}: the ${name} row's padding is ${row.paddingStart} ${row.paddingEnd}, expected 16px 16px`);
           if (row.radius !== tokens.radius || row.radius !== '4px') failures.push(`${key}: the ${name} row's radius is ${row.radius}, expected the ui radius ${tokens.radius} (4px)`);
           if (row.border !== '0px') failures.push(`${key}: the ${name} row has a ${row.border} border`);
-          if (row.color !== tokens.onSurface) failures.push(`${key}: the ${name} row's words are ${row.color}, expected on-surface ${tokens.onSurface}`);
-          if (row.size !== '16px' || row.weight !== '400') failures.push(`${key}: the ${name} row's type is ${row.size}/${row.weight}, expected 16px/400`);
+          const ink = name === 'current' ? INK[theme] : tokens.onSurface;
+          if (row.color !== ink) failures.push(`${key}: the ${name} row's words are ${row.color}, expected ${ink}`);
+          const weight = name === 'current' ? '500' : '400';
+          if (row.size !== '16px' || row.weight !== weight) failures.push(`${key}: the ${name} row's type is ${row.size}/${row.weight}, expected 16px/${weight}`);
         }
-        if (current.background !== `rgba(${TONE[theme]}, 0.24)`) failures.push(`${key}: the current page's plate is ${current.background}, expected rgba(${TONE[theme]}, 0.24)`);
+        if (current.background !== PLATE[theme]) failures.push(`${key}: the current page's plate is ${current.background}, expected ${PLATE[theme]}`);
         if (!transparent(other.background)) failures.push(`${key}: a row at rest is filled: ${other.background}`);
       }
       // The true centre, and clear of both sides.
@@ -131,7 +138,7 @@ try {
       await currentRow.hover();
       await tab.waitForTimeout(150);
       const hoveredCurrent = await currentRow.evaluate((row) => getComputedStyle(row).backgroundColor);
-      if (hoveredCurrent !== `rgba(${TONE[theme]}, 0.24)`) failures.push(`${key}: the hovered current page is ${hoveredCurrent}, expected its plate`);
+      if (hoveredCurrent !== PLATE[theme]) failures.push(`${key}: the hovered current page is ${hoveredCurrent}, expected its plate`);
       seen[`${key}-1440`].hover = {rest: hovered, current: hoveredCurrent};
       await tab.close();
 
@@ -150,7 +157,7 @@ try {
       const orientation = await narrow.evaluate(() => document.querySelector('#m').getAttribute('orientation'));
       seen[`${key}-390`] = {closed: {collapsed: closed.collapsed, listShown: closed.listShown}, open: {orientation, current: open.current, other: open.other}};
       if (orientation !== 'vertical') failures.push(`${key}: 390: the menu is ${orientation} in the panel`);
-      if (!open.current || open.current.border !== '0px' || open.current.background !== `rgba(${TONE[theme]}, 0.24)`) failures.push(`${key}: 390: the panel's current row is ${JSON.stringify(open.current)}`);
+      if (!open.current || open.current.border !== '0px' || open.current.background !== PLATE[theme]) failures.push(`${key}: 390: the panel's current row is ${JSON.stringify(open.current)}`);
       if (!open.other || !transparent(open.other.background) || open.other.border !== '0px') failures.push(`${key}: 390: the panel's other row is ${JSON.stringify(open.other)}`);
       await narrow.close();
     }
