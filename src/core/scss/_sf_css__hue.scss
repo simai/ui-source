@@ -20,16 +20,14 @@
 //   --sf-hue-outline               line                 50 / 60
 //
 // the steps of the status roles (--sf-success-container and the rest), light
-// and dark side by side. The names are tests/static-palette.contract.test.mjs's:
-// the sixteen static hues of theme-palette.js STATIC_HUES and the theme's
-// primary, secondary and tertiary. Neutral is left out: the greys have no
+// and dark side by side. The names are vars/_sf_var__hue.scss's: the sixteen
+// static hues of theme-palette.js STATIC_HUES and the theme's primary,
+// secondary and tertiary. Neutral is left out: the greys have no
 // tone-50 step at 28, and gray is the theme-independent grey. In sf.base with
 // the theme, so a utility on the same element still wins.
 
 @use 'sass:list';
-
-$sf-static-hues: ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray');
-$sf-theme-hues: ('primary', 'secondary', 'tertiary');
+@use 'vars/sf_var__hue' as *;
 
 @layer sf.base {
   @each $hue in list.join($sf-static-hues, $sf-theme-hues) {

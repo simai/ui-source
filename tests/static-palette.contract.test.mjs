@@ -54,7 +54,8 @@ test('a status is its hue: the theme makes the same palette, and the status prim
 
 test('.sf-hue-<name> gives every static hue and the three theme palettes one role set', () => {
   const sheet = read('src/core/scss/_sf_css__hue.scss');
-  const list = (name) => sheet.match(new RegExp(`^\\$${name}: \\(([^)]*)\\);`, 'mu'))?.[1].split(',').map((item) => item.trim().replace(/^'(.*)'$/u, '$1'));
+  const names = read('src/core/scss/vars/_sf_var__hue.scss');
+  const list = (name) => names.match(new RegExp(`^\\$${name}: \\(([^)]*)\\) !default;`, 'mu'))?.[1].split(',').map((item) => item.trim().replace(/^'(.*)'$/u, '$1'));
   assert.deepEqual(list('sf-static-hues'), [...STATIC_HUE_NAMES]);
   assert.deepEqual(list('sf-theme-hues'), ['primary', 'secondary', 'tertiary']);
   const roles = [...sheet.matchAll(/^ {6}(--sf-[a-z-]+):/gmu)].map(([, name]) => name);

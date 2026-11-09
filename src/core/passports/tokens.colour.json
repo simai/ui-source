@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "summary": "The colour roles and palettes: the static palette (C17, generated), the hue role classes, the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
@@ -15,6 +15,7 @@
     "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__color.scss",
     "src/core/scss/vars/_sf_var__color.scss",
+    "src/core/scss/vars/_sf_var__hue.scss",
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/contracts/token-aliases.v1.json"
   ],
@@ -28,9 +29,10 @@
     "src/core/scss/_sf_figma_colors_variables.scss",
     "src/core/scss/_sf_static_palette.scss",
     "src/core/scss/mix/_mix__role_aliases.scss",
-    "src/core/scss/vars/_sf_var__color.scss"
+    "src/core/scss/vars/_sf_var__color.scss",
+    "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "519bf47625c2b80bdb2c4accff35e7a09ae81a7ee8cb1fd4071746a4bbd6b330",
+  "content_sha256": "2afb1160ce235136c4833d5355f88f4d8165a22867f017c543ae370f92523edc",
   "dependencies": [
     {
       "id": "tokens.elevation",

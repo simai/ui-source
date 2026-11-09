@@ -12,10 +12,11 @@
       "  <sf-avatar id=\"a-old\" template=\"card\" title=\"Вера Петрова\"></sf-avatar>",
       "  <sf-avatar id=\"a-badge\" text=\"АБ\" aria-label=\"Анна Белова\" badge-count=\"3\"></sf-avatar>",
       "  <sf-avatar id=\"a-bad\" text=\"X\" size=\"9\" shape=\"oval\"></sf-avatar>",
+      "  <sf-avatar id=\"a-hue\" text=\"RM\" hue=\"pink\"></sf-avatar>",
       "  <sf-avatar id=\"a-tone\" text=\"RM\" tone=\"rose\"></sf-avatar>",
-      "  <sf-avatar id=\"a-auto\" heading=\"Boris Ilyin\" tone=\"auto\"></sf-avatar>",
-      "  <sf-avatar id=\"a-tone-image\" image-url=\"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=\" text=\"RM\" tone=\"rose\"></sf-avatar>",
-      "  <sf-avatar id=\"a-tone-none\" tone=\"auto\"></sf-avatar>",
+      "  <sf-avatar id=\"a-auto\" heading=\"Boris Ilyin\" hue=\"auto\"></sf-avatar>",
+      "  <sf-avatar id=\"a-tone-image\" image-url=\"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=\" text=\"RM\" hue=\"pink\"></sf-avatar>",
+      "  <sf-avatar id=\"a-tone-none\" hue=\"auto\"></sf-avatar>",
       "</main>"
     ]
   },
@@ -112,17 +113,18 @@
       ]
     },
     {
-      "id": "p8-tone",
-      "title": "a named tone and auto reach the initials, and nothing else takes one",
-      "covers": "settings.tone",
+      "id": "p8-hue",
+      "title": "a named hue and auto reach the initials, the former tone too, and nothing else takes one",
+      "covers": "settings.hue",
       "steps": [
         {
-          "check": "(() => { const tone = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-avatar--tone-')).join(); return tone('#a-tone') === 'sf-avatar--tone-rose' && tone('#a-auto') === 'sf-avatar--tone-violet' && tone('#a-tone-image') === '' && tone('#a-tone-none') === '' && tone('#a') === ''; })()",
+          "check": "(() => { const hue = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-hue-') || one.startsWith('sf-avatar--tone-')).join(); return hue('#a-hue') === 'sf-hue-pink' && hue('#a-tone') === 'sf-hue-pink' && hue('#a-auto') === 'sf-hue-violet' && hue('#a-tone-image') === '' && hue('#a-tone-none') === '' && hue('#a') === ''; })()",
           "expect": {
             "values": {
+              "#a-hue.hue": "pink",
               "#a-tone.tone": "rose",
-              "#a-auto.tone": "auto",
-              "#a.tone": ""
+              "#a-auto.hue": "auto",
+              "#a.hue": ""
             }
           }
         }

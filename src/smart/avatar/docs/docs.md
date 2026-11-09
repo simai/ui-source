@@ -17,8 +17,11 @@ Loading model:
 - `image-url`
 - `image-alt`
 - `text`
-- `tone`: empty `| auto | rose | amber | lime | green | teal | sky | indigo |
-  violet` -- see "Tones"
+- `hue`: empty `| auto` or a hue of the static palette: `red | orange | amber |
+  yellow | lime | green | teal | cyan | sky | blue | indigo | violet | purple |
+  pink | brown | gray` -- see "Hues"
+- `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
+  its `rose` is `pink`
 - `status`: `none | online | offline | company | verified`
 - `aria-label` — a host attribute: the button's name, «Аватар» / "Avatar" when unset
 - `heading` — the name the label and card templates print; `title` is its
@@ -45,28 +48,33 @@ Availability and verification badges are decorative projections. Include the
 status in visible text or the native control's accessible name; color alone is
 not a status contract.
 
-## Tones
+## Hues
 
-People recognise a conversation by its avatar. `tone` draws the initials on a
-muted fill of one hue, in both themes, at every size:
+People recognise a conversation by its avatar. `hue` draws the initials on the
+container of one hue of the static palette, in its ink, in both themes, at every
+size (owner decision C17: an avatar has no colours of its own):
 
 ```html
-<sf-avatar heading="Boris Ilyin" tone="teal"></sf-avatar>
-<sf-avatar heading="Boris Ilyin" tone="auto"></sf-avatar>
+<sf-avatar heading="Boris Ilyin" hue="teal"></sf-avatar>
+<sf-avatar heading="Boris Ilyin" hue="auto"></sf-avatar>
 ```
 
 - Empty (the default) is the neutral look.
-- Only initials take a tone: an avatar with `image-url` shows the image with no
+- Only initials take a hue: an avatar with `image-url` shows the image with no
   fill, and the placeholder icon stays neutral. The `card` template draws no
   initials, so it takes none.
 - `--sf-avatar-background-color` and `--sf-avatar-color` still win.
-- The plain classes are `sf-avatar--text sf-avatar--tone-<name>`.
+- The plain classes are `sf-avatar--text sf-hue-<name>`: `sf-hue-<name>` gives
+  the element the hue's roles (`--sf-hue-container`, `--sf-on-hue-container`
+  and the rest), and the class sheet draws the initials from them.
+- Until 2027-01-01 the former `tone` setting is read when `hue` is empty (`rose`
+  is `pink`), and the former classes `sf-avatar--tone-<name>` still draw.
 
-`auto` picks the tone from the name: `heading`, else the host's `aria-label`,
+`auto` picks the hue from the name: `heading`, else the host's `aria-label`,
 else `text`. It hashes the whole name, not the two letters, so two people with
 the same initials differ. No name means the neutral look.
 
-The same name gives the same tone in every browser and on a server, so a server
+The same name gives the same hue in every browser and on a server, so a server
 can print the class in the first paint. The algorithm (`js/tone.mjs`):
 
 1. Take the UTF-8 bytes of the name exactly as given: no trimming, no change of
@@ -74,35 +82,36 @@ can print the class in the first paint. The algorithm (`js/tone.mjs`):
 2. FNV-1a, 32 bits: start from `2166136261`; for each byte, XOR the byte in,
    then multiply by `16777619`, modulo 2^32.
 3. Fold: `hash = hash XOR (hash >> 16)`, an unsigned shift.
-4. The tone is `tones[hash mod 8]`, in this order: `rose`, `amber`, `lime`,
-   `green`, `teal`, `sky`, `indigo`, `violet`.
+4. The hue is `hues[hash mod 8]`, in this order: `pink`, `amber`, `lime`,
+   `green`, `teal`, `sky`, `indigo`, `violet` -- the slots of the former tones,
+   so a name keeps its place (`rose` was the first).
 
 ```php
-function sf_avatar_tone(string $name): string {
+function sf_avatar_hue(string $name): string {
     if ($name === '') return '';
     $hash = 2166136261;
     foreach (str_split($name) as $byte) {
         $hash = (($hash ^ ord($byte)) * 16777619) & 0xFFFFFFFF;
     }
     $hash ^= $hash >> 16;
-    return ['rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'][$hash % 8];
+    return ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'][$hash % 8];
 }
 ```
 
 ```python
-def sf_avatar_tone(name: str) -> str:
+def sf_avatar_hue(name: str) -> str:
     if not name:
         return ""
     hash = 2166136261
     for byte in name.encode("utf-8"):
         hash = ((hash ^ byte) * 16777619) & 0xFFFFFFFF
     hash ^= hash >> 16
-    return ("rose", "amber", "lime", "green", "teal", "sky", "indigo", "violet")[hash % 8]
+    return ("pink", "amber", "lime", "green", "teal", "sky", "indigo", "violet")[hash % 8]
 ```
 
 For example `Boris Ilyin` is `violet` and an empty name is the neutral look. The
-list and its order are part of the algorithm: a later named tone will not join
-`auto`, so a name keeps its tone across releases.
+list and its order are part of the algorithm: a later named hue will not join
+`auto`, so a name keeps its hue across releases.
 
 ## Lifecycle events
 

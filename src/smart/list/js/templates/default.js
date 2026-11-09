@@ -36,7 +36,7 @@ import "./default.css";
 // badge take the row's line (sf-badge line), so they never make a row taller.
 const BADGE_STATUS = {neutral: nothing, info: "info", success: "success", warning: "warning", error: "error"};
 
-// tone auto picks the initials' tone from the row's title (sf-avatar reads its
+// hue auto picks the initials' hue from the row's title (sf-avatar reads its
 // aria-label), so a conversation keeps its colour whatever its initials.
 const leadContent = (context, item) => {
     const avatar = context.avatarOf(item);
@@ -46,7 +46,7 @@ const leadContent = (context, item) => {
         return html`<sf-avatar
                 aria-hidden="true"
                 aria-label=${String(item.text ?? "") || nothing}
-                tone="auto"
+                hue="auto"
                 size=${wide ? size : "1"}
                 line=${wide ? nothing : size}
                 shape=${avatar.shape}

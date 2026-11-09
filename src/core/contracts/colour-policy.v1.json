@@ -122,14 +122,6 @@
       "contextPattern": "boxShadow",
       "status": "deferred-c20-shadows",
       "reason": "The special panel's swatch-row shadow belongs to the shadow decision (C20); remove this rule when C20 lands."
-    },
-    {
-      "id": "legacy-palette-utilities-c17",
-      "category": "style-review",
-      "filePattern": "^utility/(?:text-color/default/scss/_sf_css__color_base|border-color/default/scss/_sf_css__border_color|background-color/default/scss/_sf_css__background_color)\\.scss$",
-      "contextPattern": "^(?:background-color|border-color|color): rgb\\($",
-      "status": "deferred-c17-static-palette",
-      "reason": "The legacy $color-array classes (color-, border-, bg- with white, black and gray, red, orange, yellow, green, blue, purple, pink at 0-9) emit a second palette. C17 decided its replacement, the static palette primitives --sf-<hue>-<tone>, which do not exist in source yet; the classes move onto them, with an alias map, when the static palette lands. Remove this rule then."
     }
   ]
 }

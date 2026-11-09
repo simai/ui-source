@@ -48,24 +48,17 @@
         }
     }
 
-    // Palette colors (raw)
+    // The legacy palette classes, on the static palette (C17; the shade map in
+    // core/scss/vars/_sf_var__color.scss).
     @each $palette-name, $palette-map in $color-array {
-        @each $shade-key, $shade-rgb in $palette-map {
+        @each $shade-key, $token in $palette-map {
             @if $shade-key == default {
                 .#{$infix}bg-#{$palette-name} {
-                    background-color: rgb(
-                        map-get($shade-rgb, r),
-                        map-get($shade-rgb, g),
-                        map-get($shade-rgb, b)
-                    );
+                    background-color: var(--sf-#{$token});
                 }
             } @else {
                 .#{$infix}bg-#{$palette-name}-#{$shade-key} {
-                    background-color: rgb(
-                        map-get($shade-rgb, r),
-                        map-get($shade-rgb, g),
-                        map-get($shade-rgb, b)
-                    );
+                    background-color: var(--sf-#{$token});
                 }
             }
         }

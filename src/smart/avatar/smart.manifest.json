@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -94,10 +94,35 @@
         "type": "string",
         "default": ""
       },
+      "hue": {
+        "type": "string",
+        "default": "",
+        "description": "The hue of the static palette the initials are drawn in (owner decision C17): the plate is the hue's container, the ink its on-container. Empty: the neutral look. auto: one of eight hues (pink, amber, lime, green, teal, sky, indigo, violet) picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a hue: an image and the placeholder stay as they are. --sf-avatar-background-color and --sf-avatar-color still win.",
+        "enum": [
+          "",
+          "auto",
+          "red",
+          "orange",
+          "amber",
+          "yellow",
+          "lime",
+          "green",
+          "teal",
+          "cyan",
+          "sky",
+          "blue",
+          "indigo",
+          "violet",
+          "purple",
+          "pink",
+          "brown",
+          "gray"
+        ]
+      },
       "tone": {
         "type": "string",
         "default": "",
-        "description": "The muted tone the initials are drawn in. Empty: the neutral look. auto: one tone picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a tone: an image and the placeholder stay as they are. --sf-avatar-background-color and --sf-avatar-color still win.",
+        "description": "The former name of hue, until 2027-01-01: read when hue is empty, rose as pink (the tones of initials are the static hues of their names since C17). Write hue.",
         "enum": [
           "",
           "auto",
@@ -286,7 +311,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "8ac95abc9ad0692e160de41be9d6c390f7d826c8a6a4da2eb1c3212c470cd017"
+        "sha256": "c56c875a5181010be49fed6edf346b3edf525482a125bd74b276f03fa93b22f1"
       }
     ],
     "generated_runtime": [

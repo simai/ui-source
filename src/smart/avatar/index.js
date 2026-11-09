@@ -5,7 +5,7 @@ import { renderCardTemplate } from "./js/templates/card";
 import { renderDefaultTemplate } from "./js/templates/default";
 import { renderLabelTemplate } from "./js/templates/label";
 import { getInitials } from "../helpers/text";
-import { resolveAvatarTone } from "./js/tone.mjs";
+import { resolveAvatarHue } from "./js/tone.mjs";
 import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -99,18 +99,20 @@ class SfAvatar extends AvatarElement {
     );
   }
 
-  // The tone the initials are drawn in: the named one, or for auto the one of
-  // the name, the words the initials stand for rather than the two letters, so
-  // two people with the same initials differ. Only initials take a tone: a
-  // picture covers the fill and the placeholder stays neutral.
-  get resolvedTone() {
+  // The hue the initials are drawn in (C17): the named one, or for auto the
+  // one of the name, the words the initials stand for rather than the two
+  // letters, so two people with the same initials differ. Only initials take a
+  // hue: a picture covers the fill and the placeholder stays neutral. The
+  // former tone setting is read when hue is empty (rose is pink).
+  get resolvedHue() {
     if (!this.isText) {
       return "";
     }
 
-    return resolveAvatarTone(
-      this.tone,
+    return resolveAvatarHue(
+      this.hue,
       this.heading || this.getAttribute("aria-label") || this.text,
+      this.tone,
     );
   }
 
@@ -134,7 +136,7 @@ class SfAvatar extends AvatarElement {
       component: this,
       isImage: this.isImage,
       isText: this.isText,
-      resolvedTone: this.resolvedTone,
+      resolvedHue: this.resolvedHue,
       text: this.displayText,
       rootClass: this.getRootClass(),
       rootStyle: this.getRootStyle(),
@@ -196,6 +198,7 @@ class SfAvatar extends AvatarElement {
       imageUrl: this.imageUrl,
       imageAlt: this.imageAlt,
       text: this.text,
+      hue: this.hue,
       tone: this.tone,
       status: this.status,
       ariaLabel: this.ariaLabel,
