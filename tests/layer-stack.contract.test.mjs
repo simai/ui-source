@@ -53,7 +53,8 @@ function reset() {
     matches: () => false, closest: () => null, getClientRects: () => [{}], hasAttribute: () => false,
     setAttribute() {}, getAttribute: () => null, removeAttribute() {}, addEventListener() {}, removeEventListener() {},
     contains(other) { for (let n = other; n; n = n.parentElement) if (n === this) return true; return false; },
-    focus() { doc.activeElement = this; }});
+    focus() { doc.activeElement = this; },
+    blur() { if (doc.activeElement === this) doc.activeElement = doc.body; }});
   doc.body = node('body');
   return {doc, node};
 }
@@ -159,6 +160,37 @@ test('a layer that closes under another one moves no focus; one whose opener is 
   assert.equal(next.activeElement, lowerRoot);
   assert.ok(log.includes('lower:focus-in'));
   assert.equal(modalBundle.isTopLayer(lower), true);
+});
+
+test('a layer opened while nothing had focus gives it back to the body, not to a landmark (§19.2)', () => {
+  const {doc, node} = reset();
+  // As in a browser: the body is active when nothing is focused, and its
+  // focus() takes nothing.
+  doc.body.focus = () => {};
+  doc.activeElement = doc.body;
+  const written = [];
+  const main = node('main');
+  main.setAttribute = (name, value) => written.push([name, value]);
+  doc.querySelectorAll = () => [main];
+  const modalRoot = node('modal-root');
+  const modal = layer(modalBundle, 'modal', 'modal', {root: modalRoot});
+  node('in-modal', modalRoot).focus();
+  press('Escape');
+  assert.equal(modalBundle.hasLayer(modal), false);
+  assert.equal(doc.activeElement, doc.body);
+  // The page's own <main> took no focus and no temporary tabindex.
+  assert.deepEqual(written, []);
+
+  // An opener that is gone still falls back to the landmark.
+  const {doc: next, node: make} = reset();
+  const landmark = make('main');
+  next.querySelectorAll = () => [landmark];
+  const gone = make('gone');
+  gone.focus();
+  const second = layer(drawerBundle, 'drawer', 'panel', {root: make('drawer-root')});
+  gone.isConnected = false;
+  drawerBundle.closeLayer(second);
+  assert.equal(next.activeElement, landmark);
 });
 
 test('only the top layer hears Tab; a control that handled Escape keeps it', () => {

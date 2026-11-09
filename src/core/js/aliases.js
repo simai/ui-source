@@ -490,25 +490,65 @@ function installAction(state, element, row, refuse) {
 
 // --- install ----------------------------------------------------------------
 
-export function uninstallAliases(element) {
+// Takes the installed table's wrappers and accessors away, and nothing else.
+function detach(element) {
   const store = shared();
   const state = element && store.elements.get(element);
-  if (!state) return false;
+  if (!state) return null;
   store.elements.delete(element);
   state.observer?.disconnect();
   state.controller.abort();
   for (const restore of state.restore.reverse()) restore();
+  return state;
+}
+
+// An install over another one -- a page's table over the one the component
+// installed from its aliases.json -- replaces it while it stands, and its
+// uninstall puts the one under it back, so the element is again as the
+// component made it. Before core.runtime 1.47.1 the component's own old
+// names were gone for good after a page's install and uninstall (lab
+// aliases, uninstall-restores). Installing the same table again replaces it in place.
+// A table under another one whose signal ended, or whose own handle was
+// uninstalled, is not put back.
+function restoreUnder(element, layer) {
+  for (let under = layer; under; under = under.under) {
+    if (under.removed || under.options.signal?.aborted) continue;
+    install(element, under.table, under.options, under);
+    return;
+  }
+}
+
+export function uninstallAliases(element) {
+  const state = detach(element);
+  if (!state) return false;
+  restoreUnder(element, state.layer.under);
   return true;
 }
 
-export function installAliases(element, table, {signal, adapters = {}, tag} = {}) {
+export function installAliases(element, table, options = {}) {
   if (!element || typeof element.dispatchEvent !== 'function') throw new TypeError('[SIMAI Framework] SF.aliases.install needs an element');
-  uninstallAliases(element);
+  return install(element, table, options, null);
+}
+
+function install(element, table, options, layer) {
+  const {signal, adapters = {}, tag} = options;
   const read = readAliasTable(table, {tag: tag || element.localName || ''});
   const refused = [...read.refused];
-  const handle = {installed: 0, refused, uninstall: () => uninstallAliases(element)};
+  if (!layer) {
+    const previous = shared().elements.get(element)?.layer ?? null;
+    const under = previous && previous.table !== table ? previous : previous?.under ?? null;
+    layer = {table, options: {signal, adapters, tag}, under, removed: false, handle: null};
+    layer.handle = {installed: 0, refused, uninstall: () => uninstallLayer(element, layer)};
+  } else {
+    layer.handle.installed = 0;
+    layer.handle.refused = refused;
+  }
+  const handle = layer.handle;
+  // An install that never starts leaves what the element has.
   if (signal?.aborted) return handle;
+  detach(element);
   const state = {
+    layer,
     rows: read.rows,
     adapters,
     byNew: new Map(),
@@ -566,8 +606,23 @@ export function installAliases(element, table, {signal, adapters = {}, tag} = {}
   }
 
   shared().elements.set(element, state);
-  signal?.addEventListener?.('abort', () => uninstallAliases(element), {once: true, signal: state.controller.signal});
+  signal?.addEventListener?.('abort', () => uninstallLayer(element, layer), {once: true, signal: state.controller.signal});
   return handle;
+}
+
+// A handle's uninstall takes away its own table: the one standing, which puts
+// the one under it back, or one under another, which is then not put back.
+function uninstallLayer(element, layer) {
+  const top = shared().elements.get(element)?.layer;
+  if (top === layer) return uninstallAliases(element);
+  for (let above = top; above; above = above.under) {
+    if (above.under === layer) {
+      layer.removed = true;
+      above.under = layer.under;
+      return true;
+    }
+  }
+  return false;
 }
 
 // For code that sends an event by name: through the element's aliases when
