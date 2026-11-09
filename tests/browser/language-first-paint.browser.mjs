@@ -8,8 +8,9 @@
 // component sheets come with the code), and every animation frame recorded
 // from the first one:
 //   - a header row of a brand, sf-language mode="menu" (its languages in an
-//     island, so no attribute says how many) and a button after it; the
-//     button never moves, from the first frame with the row to the last;
+//     island, so no attribute says how many), a tool before it and a button
+//     after it; neither moves, from the first frame with the row to the last
+//     (the tools before it are what moved in Docara);
 //   - mode menu and search at each size of the ladder (1/3, 1/2, 1, 2, 3):
 //     before the element draws, its box is a square one control of its size
 //     high, and that is the drawn trigger's box -- the column of buttons after
@@ -55,6 +56,7 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 </style>
 <script src="/distr/core/js/core.js"></script></head><body>
 <div class="bar"><span class="brand">SIMAI</span>
+  <span id="header-before" class="mark"></span>
   <sf-language id="header" mode="menu" size="1" label="Язык" apply="none"><script type="application/json" data-sf-settings>${island}</script></sf-language>
   <span id="header-after" class="mark"></span></div>
 ${SIZES.map((size) => ['menu', 'search'].map((mode) => `<div class="row"><sf-language data-case="${mode} ${size}" mode="${mode}" size="${size}" languages="ru en de fr es" apply="none"></sf-language><span class="mark after"></span></div>`).join('')).join('')}
@@ -69,7 +71,7 @@ const WATCH = `(() => {
     const header = document.getElementById('header');
     if (header) {
       const after = document.getElementById('header-after');
-      const record = {t: Math.round(performance.now()), header: {defined: header.matches(':defined'), look: header.getAttribute('data-look'), x: after ? r(after.getBoundingClientRect().left) : null}, cases: {}};
+      const record = {t: Math.round(performance.now()), header: {defined: header.matches(':defined'), look: header.getAttribute('data-look'), x: after ? r(after.getBoundingClientRect().left) : null, before: document.getElementById('header-before') ? r(document.getElementById('header-before').getBoundingClientRect().left) : null}, cases: {}};
       for (const host of document.querySelectorAll('sf-language[data-case]')) {
         const row = host.parentElement;
         const box = host.getBoundingClientRect();
@@ -138,6 +140,9 @@ try {
     // A frame taken before the parser reached a node records nothing for it.
     const headerXs = [...new Set(frames.map((frame) => frame.header.x).filter((x) => x !== null))];
     if (headerXs.length !== 1) failures.push(`${theme} ${width}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
+    // The tools before it are what moved in Docara: the bar ends with the picker, so it grows toward them.
+    const beforeXs = [...new Set(frames.map((frame) => frame.header.before).filter((x) => x !== null))];
+    if (beforeXs.length !== 1) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
     for (const [name, end] of Object.entries(last?.cases ?? {})) {
       const [mode] = name.split(' ');
       const before = frames.map((frame) => frame.cases[name]).filter((one) => one && !one.look);
