@@ -1,13 +1,19 @@
 // SIMAI Framework
 // https://simai.io
 
-// SHADOW
+// SHADOW (C20, 2026-11-08)
 
+// The four places: the class names the place, the theme draws it.
+$shadow-places: (flat, raised, overlay, modal);
+
+// The numbered classes are former names of a place until 2027-01-01
+// (src/core/contracts/token-aliases.v1.json, utilities): 0 is flat, 1 raised,
+// 2 and 3 overlay, 4 and 5 modal.
 $shadow-array: (
-  0: 0,
-  1: 1,
-  2: 2,
-  3: 4,
-  4: 8,
-  5: 16
+  0: flat,
+  1: raised,
+  2: overlay,
+  3: overlay,
+  4: modal,
+  5: modal
 );

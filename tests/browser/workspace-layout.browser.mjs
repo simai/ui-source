@@ -146,7 +146,7 @@ try {
   check('middle: focus moved into the drawer', s.active === 'panel-first', s);
   check('middle: no event for a width change', s.events.length === 0, s);
   const shadow = await tab.evaluate(() => getComputedStyle(document.querySelector('#ws > .sf-workspace-panel')).boxShadow);
-  check('middle: the drawer carries the scrim', /(?:rgba\(0, 0, 0, 0\.6\)|color\(srgb 0 0 0 \/ 0\.6\)) 0px 0px 0px \d+px$/u.test(shadow), {shadow});
+  check('middle: the drawer carries the scrim', /(?:rgba\(0, 0, 0, 0\.64\)|color\(srgb 0 0 0 \/ 0\.64\)) 0px 0px 0px \d+px$/u.test(shadow), {shadow});
   // Tab stays in the drawer.
   await tab.keyboard.press('Tab');
   await tab.keyboard.press('Tab');

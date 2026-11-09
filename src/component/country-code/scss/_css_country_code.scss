@@ -414,9 +414,9 @@
 .sf-country-code.open .sf-country-code-list {
   /* Поднят: поверхность берёт ступень своей высоты, иначе в тёмной теме
      подъём не виден — там чёрная тень ничего не даёт. */
-  --sf-country-code-list--background-color: var(--sf-country-code-list-background-color, var(--sf-elevation-3--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
-  --sf-country-code-list--box-shadow: var(--sf-elevation-3--shadow);
+  --sf-country-code-list--background-color: var(--sf-country-code-list-background-color, var(--sf-surface-popup));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  --sf-country-code-list--box-shadow: var(--sf-shadow-overlay);
   --sf-country-code-list--padding-bottom: var(--sf-space-1\/3);
   --sf-country-code-list--padding-inline-end: var(--sf-space-1\/3);
   --sf-country-code-list--padding-inline-start: var(--sf-space-1\/3);

@@ -1,4 +1,5 @@
 @use 'mix/mix__role_aliases' as aliases;
+@use 'mix/mix__shadow' as shadow;
 
 @layer sf.base {
   /* The theme classes carry nothing but the scheme, because that is what
@@ -169,9 +170,14 @@
        the same in both themes: black at 60 dims a dark page as it dims a light
        one. Each drew its own before, and they disagreed: black 60 in three
        places, a light neutral at 32 in the search window (reuse audit
-       2026-11-02). A component's own scrim variables still win over these. */
-    --sf-scrim-color: var(--sf-black);
-    --sf-scrim-opacity: var(--sf-opacity-60);
+       2026-11-02). A component's own scrim variables still win over these.
+       Since C16 and C20 (2026-11-08) the strength is in the colour: black at 64,
+       an ink step of the alpha scale (allowed as a fill for glass and the scrim
+       only), drawn at full opacity -- the window and the drawer stand off the
+       page by the scrim, not by a darker shadow. A page that sets
+       --sf-scrim-opacity still dims the colour further. */
+    --sf-scrim-color: var(--sf-black--alfa-64);
+    --sf-scrim-opacity: 1;
     --sf-surface-2: light-dark(var(--sf-neutral-95), var(--sf-neutral-15));
     --sf-surface-3: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
     --sf-surface-4: light-dark(var(--sf-neutral-85), var(--sf-neutral-25));
@@ -384,31 +390,55 @@
     --sf-link-active: light-dark(var(--sf-primary-30), var(--sf-primary-90));
     --sf-link-visited: light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80));
     --sf-code: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
-    --sf-shadow--color-fill: var(--sf-black--alfa-12);
-    --sf-shadow--color-outline: var(--sf-black--alfa-8);
-    --sf-shadow--color-shading: var(--sf-black--alfa-4);
+    /* Shadows (C20, owner 2026-11-08; ui-control prototypes/shadows.html).
+       Two colours, both steps of the alpha scale: the key shadow, short and
+       sharp at the edge, black at 16 in the light theme and 28 in the dark (a
+       fill step, the dark one twelve higher as every fill is); and the ambient
+       shadow, wide and soft, black at 8 in the light theme and none in the
+       dark, where black on a near-black page shows nothing. Declared here, on
+       the theme root, beside the places that read them: built on :root, the
+       former --sf-ui-shadow-N read the core's colours (24/12/8) and never the
+       theme's (12/8/4). */
+    --sf-shadow-key-color: light-dark(var(--sf-black--alfa-16), var(--sf-black--alfa-28));
+    --sf-shadow-ambient-color: light-dark(var(--sf-black--alfa-8), var(--sf-transparent));
+    /* Four shadows, named by the place, not by a number. Offsets and blurs are
+       steps of the size ladder. A component reads one of these four and
+       nothing else: no rgb(), no color-mix, no level.
+         flat     the page, an area, a card at rest: no shadow, the edge is a
+                  line (--sf-outline-variant);
+         raised   a card under the pointer, a sticky bar while content runs
+                  under it, a handle, a plate;
+         overlay  what stands over the page without holding it: a dropdown, a
+                  menu, a popover, a tooltip, a toast;
+         modal    what holds the page: a window, a drawer, always over the
+                  scrim (black 64). */
+    --sf-shadow-flat: none;
+    /* raised: 0 1px 2px key, 0 2px 8px ambient; overlay: 0 2px 4px key, 0 8px
+       16px ambient; modal: 0 4px 8px key, 0 16px 32px ambient
+       (mix/_mix__shadow.scss). */
+    --sf-shadow-raised: #{shadow.sf-shadow('raised')};
+    --sf-shadow-overlay: #{shadow.sf-shadow('overlay')};
+    --sf-shadow-modal: #{shadow.sf-shadow('modal')};
     /* Высота — это две вещи сразу: тень под элементом и поверхность под ним.
        В светлой теме работает тень, и поднятая поверхность остаётся обычной.
        В тёмной тень не работает вовсе: она чёрная, фон почти чёрный, и весь
        пятиступенчатый набор укладывался в три-семь единиц яркости из 255 —
        ниже порога, на котором человек замечает разницу. Там высоту несёт
-       ступень поверхности, которая в тёмной теме светлеет. */
+       ступень поверхности, которая в тёмной теме светлеет: карточка, поднятая,
+       всплывающая, вложенная всплывающая -- каждая на ступень светлее (C16,
+       C20). Окно и шторка стоят на всплывающей и отделяются затемнением. */
     --sf-surface-card: light-dark(var(--sf-surface-page), var(--sf-surface-2));
-    --sf-elevation-2--surface: light-dark(var(--sf-surface-page), var(--sf-surface-3));
+    --sf-surface-raised: light-dark(var(--sf-surface-page), var(--sf-surface-3));
     --sf-surface-popup: light-dark(var(--sf-surface-page), var(--sf-surface-4));
     --sf-surface-popup-nested: light-dark(var(--sf-surface-page), var(--sf-surface-5));
-    --sf-elevation-5--surface: light-dark(var(--sf-surface-page), var(--sf-surface-5));
-    /* The shadow of each step, beside its surface: a panel that floats takes
-       both, so a theme or a product retunes height in one place (a dark theme
-       may drop the shadow and keep the surface, or the reverse). The rim is a
-       last layer a theme may switch on to outline raised panels in the dark;
-       it is off: 0 0 0 0 transparent. */
-    --sf-shadow--rim: 0 0 0 0 transparent;
-    --sf-shadow-card: var(--sf-ui-shadow-1), var(--sf-shadow--rim);
-    --sf-elevation-2--shadow: var(--sf-ui-shadow-2), var(--sf-shadow--rim);
-    --sf-shadow-popup: var(--sf-ui-shadow-3), var(--sf-shadow--rim);
-    --sf-shadow-popup-nested: var(--sf-ui-shadow-4), var(--sf-shadow--rim);
-    --sf-elevation-5--shadow: var(--sf-ui-shadow-5), var(--sf-shadow--rim);
+    /* The C16 names of the shadows (2026-11-08) join the four places: a card's
+       shadow is the raised one, a popup's and a nested popup's the overlay.
+       Former names until the alias list's remove_after (token-aliases.v1.json,
+       shadows); --sf-elevation-1/3/4--shadow follow them through the C16
+       aliases. */
+    --sf-shadow-card: var(--sf-shadow-raised);
+    --sf-shadow-popup: var(--sf-shadow-overlay);
+    --sf-shadow-popup-nested: var(--sf-shadow-overlay);
     /* Приглушённый текст на поднятой поверхности. В светлой теме поднятая
        поверхность остаётся обычной, поэтому значение то же, что у
        --sf-on-surface-variant. В тёмной поверхность светлеет со ступенью, и
@@ -416,10 +446,9 @@
        ступени и 2.93 на четвёртой при требуемых WCAG 1.4.3 четырёх с половиной.
        Значений три, а не пять: роль меняется там, где перестаёт проходить. */
     --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
-    --sf-on-elevation-2--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+    --sf-on-surface-raised-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     --sf-on-surface-popup-nested-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
-    --sf-on-elevation-5--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     /* The neutral half of the alpha scale. The base branches per scheme — ink on
        a light surface, light on a dark one — so a component asks for a degree of
        contrast rather than for black or white, and every step above is one
@@ -442,5 +471,9 @@
        is declared, so a place that sets the new name alone would leave a reader
        of the old one on the root's value (tests/token-aliases.contract.test.mjs). */
     @include aliases.sf-role-aliases;
+    /* The names before C20 (2026-11-08): the numbered levels, the layer
+       styles and the shadow colours, each var() of its place until the alias
+       list's remove_after (token-aliases.v1.json, shadows). */
+    @include aliases.sf-shadow-aliases;
   }
 }

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.drop-shadow",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/drop-shadow/default/index.js",
@@ -18,15 +18,11 @@
     "src/utility/drop-shadow/hover/scss/_sf_css__filter_drop_shadow.scss",
     "src/utility/drop-shadow/hover/scss/index.scss"
   ],
-  "content_sha256": "46ae00162e740f3edda70c1a2bb34cfedc8d61476d446c9607cde58d681fba1f",
+  "content_sha256": "4a964777ee9f6c8734d8f71d9f3bdd42fa77f266c3e2aa2f9bcc765e4957351e",
   "dependencies": [
     {
-      "id": "tokens.breakpoint",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.size",
-      "range": "^1.0.0"
+      "id": "tokens.elevation",
+      "range": "^1.1.0"
     }
   ]
 }

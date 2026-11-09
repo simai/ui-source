@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -187,7 +187,7 @@
       "overlay-preset": {
         "type": "string",
         "default": "default",
-        "description": "The scrim: default, a fixed 60% black scrim; focus, the same with a small backdrop blur.",
+        "description": "The scrim: default, the shared black 64 scrim; focus, the same with a small backdrop blur.",
         "enum": [
           "default",
           "focus"

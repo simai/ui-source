@@ -178,9 +178,9 @@
 .sf-tooltip--light .sf-tooltip-content {
   /* A light tooltip is a raised surface, like every floating one: the plain
      surface-1 with no border or shadow vanished into a light page. */
-  --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-elevation-2--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-  box-shadow: var(--sf-elevation-2--shadow);
+  --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-surface-popup));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  box-shadow: var(--sf-shadow-overlay);
   border: var(--sf-tooltip-border-width, var(--sf-px)) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
 }
 

@@ -218,9 +218,9 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-elevation-2--surface)));
-    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    box-shadow: var(--sf-elevation-2--shadow);
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-popup)));
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    box-shadow: var(--sf-shadow-overlay);
   }
 
   /* A row of the open list is a menu's row: the control height of the size,
@@ -296,9 +296,9 @@
     inset-inline-end: calc(100% + var(--sf-space-1\/4));
     padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-elevation-2--surface);
-    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    box-shadow: var(--sf-elevation-2--shadow);
+    background-color: var(--sf-surface-popup);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    box-shadow: var(--sf-shadow-overlay);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;

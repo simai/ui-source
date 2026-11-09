@@ -41,7 +41,9 @@
         margin: 0;
         pointer-events: none;
         opacity: var(--sf-sortable-ghost-opacity, .9);
-        box-shadow: var(--sf-ui-shadow-4, 0 4px 12px rgb(0 0 0 / 30%));
+        /* The dragged copy stands over the page: the overlay place (C20), no
+           value of its own. */
+        box-shadow: var(--sf-shadow-overlay);
     }
 
     .sf-sortable-indicator {
@@ -155,10 +157,10 @@
         align-items: center;
         justify-content: center;
         margin: 0;
-        background-color: var(--sf-elevation-1--surface, Canvas);
-        --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
+        background-color: var(--sf-surface-raised, Canvas);
+        --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
         background-image: linear-gradient(var(--sf-icon-button--background-color, transparent), var(--sf-icon-button--background-color, transparent));
-        --sf-icon-button--box-shadow: var(--sf-elevation-1--shadow);
+        --sf-icon-button--box-shadow: var(--sf-shadow-raised);
     }
 
     html[data-sf-sortable-active] .sf-sortable-insert {

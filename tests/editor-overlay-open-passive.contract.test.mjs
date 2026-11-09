@@ -180,8 +180,9 @@ test('the manifest declares passive and open as the element does', async () => {
   const manifest = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   const component = JSON.parse(await readFile(new URL('../src/smart/editor-overlay/component.json', import.meta.url), 'utf8'));
   // 1.5.1 (#62) adds the canvas keys, 1.5.2 the counted sortable id, 1.5.3 its first-paint list; passive and open are as 1.5.0 made them.
-  assert.equal(component.version, '1.5.4');
-  assert.equal(manifest.version, '1.5.4');
+  // 1.6.0: the toolbar is the overlay place (C20).
+  assert.equal(component.version, '1.6.1');
+  assert.equal(manifest.version, '1.6.1');
   assert.deepEqual([manifest.inputs.properties.passive.type, manifest.inputs.properties.passive.default], ['boolean', false]);
   const open = manifest.events['sf-editor-overlay-open'];
   assert.deepEqual(open.payload.required, ['ids', 'id', 'node', 'point', 'trigger']);

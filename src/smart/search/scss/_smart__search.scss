@@ -20,8 +20,8 @@
    never set here. */
 .sf-search-portal {
   --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
-  --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-elevation-3--surface)));
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-surface-popup)));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
   --sf-search--radius: var(--sf-search-radius, var(--sf-radius-2));
   --sf-search--pad: var(--sf-space-1\/4);
   --sf-search--row-pad: var(--sf-space-1\/2);
@@ -49,8 +49,8 @@
   /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
      own colour, which is then the whole scrim, as it always was. It was a light
      neutral at 32 of its own, where every other window dims the page with
-     black at 60 (reuse audit 2026-11-02). */
-  background: var(--sf-search-scrim-color, color-mix(in srgb, var(--sf-scrim-color, var(--sf-black)) var(--sf-scrim-opacity, var(--sf-opacity-60)), transparent));
+     the shared black (reuse audit 2026-11-02), at 64 since C16 and C20. */
+  background: var(--sf-search-scrim-color, var(--sf-scrim-color, var(--sf-black--alfa-64)));
 }
 
 .sf-search-window {
@@ -100,8 +100,8 @@
   padding-inline-end: calc(var(--sf-search--axis) + var(--sf-search--row-glyph) / 2 - var(--sf-ui-1\/2--control-height) / 2);
   border-radius: var(--sf-radius-rounded);
   background: var(--sf-search--surface);
-  box-shadow: var(--sf-elevation-3--shadow);
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  box-shadow: var(--sf-shadow-overlay);
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
 }
 
 .sf-search-glyph {
@@ -166,8 +166,8 @@
   overscroll-behavior: contain;
   border-radius: var(--sf-search--radius);
   background: var(--sf-search--surface);
-  box-shadow: var(--sf-elevation-3--shadow);
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  box-shadow: var(--sf-shadow-overlay);
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
 }
 
 .sf-search-body {
@@ -504,7 +504,7 @@
     max-block-size: none;
     gap: 0;
     background: var(--sf-search--surface);
-    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
   }
 
   .sf-search-field {

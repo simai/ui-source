@@ -168,7 +168,7 @@ remain on the separate compact-control radius contract.
 
 Use `overlay-preset` for the standard SIMAI Framework modal behavior:
 
-- `default` (the default value) uses a fixed black 60% scrim without blur;
+- `default` (the default value) uses the shared black 64 scrim (C20) without blur;
 - `focus` uses the same scrim and adds `backdrop-blur-small`.
 
 The scrim is theme-independent. If `backdrop-filter` is unavailable, the

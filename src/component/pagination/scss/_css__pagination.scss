@@ -234,9 +234,9 @@
    pagination when a page row carries it, and by the data view at the end of the
    card. Hence the unscoped selector — it is the same band either way. */
 .sf-pagination-actions {
-  /* It floats over the rows (sticky): step 2's surface, not the page's. */
-  --sf-pagination-actions--background-color: var(--sf-elevation-2--surface);
-  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+  /* It floats over the rows (sticky): the raised place (C20), not the page. */
+  --sf-pagination-actions--background-color: var(--sf-surface-raised);
+  --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
   --sf-pagination-actions--border-color: var(--sf-outline-variant);
   --sf-pagination-actions--gap: var(--sf-space-1);
   --sf-pagination-actions--padding-block: var(--sf-space-1);
@@ -254,7 +254,7 @@
   /* It is a surface of its own -- it floats over the rows and holds the bottom
      of the card -- so it is rounded like one. */
   border-radius: var(--sf-pagination-actions--radius);
-  box-shadow: var(--sf-elevation-2--shadow);
+  box-shadow: var(--sf-shadow-raised);
   z-index: var(--sf-z-index-3);
 }
 

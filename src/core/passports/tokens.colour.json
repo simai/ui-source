@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "owner": "simai/ui-source",
   "summary": "The colour roles and palettes: the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
@@ -30,10 +30,6 @@
   "dependencies": [
     {
       "id": "tokens.elevation",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.opacity",
       "range": "^1.0.0"
     }
   ]

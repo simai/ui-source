@@ -1,36 +1,33 @@
+@use '../../../../core/scss/mix/mix__shadow' as shadow;
 @use 'var__shadow' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
 
-// SHADOW
+// SHADOW (C20, 2026-11-08)
+//
+// .shadow-flat, -raised, -overlay, -modal: the place shadows of the theme. The
+// shadow is drawn from the geometry on this element, so a key or an ambient
+// colour set here (the coloured utilities, until 2027-01-01) reaches it.
 
-// @include layer-priority(utility,default) {
-    
-    // Box Shadow
-    @each $shadow-name, $shadow-value in $shadow-array {
-        .shadow-#{$shadow-name} {
-            --sf-shadow--level-ratio: #{$shadow-value};
-            @if $shadow-name == 0 {
-                box-shadow: none;
-            } @else {
-                box-shadow: var(
-                    --sf-ui-shadow-#{$shadow-name},
-                    0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                        calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                        calc(-1 * var(--sf-a1) * var(--sf-shadow--level-ratio))
-                        var(--sf-shadow--color-fill),
-                    0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
-                        calc(var(--sf-a3) * var(--sf-shadow--level-ratio))
-                        0 var(--sf-shadow--color-outline),
-                    0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
-                        calc(var(--sf-a4) * var(--sf-shadow--level-ratio))
-                        calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
-                        var(--sf-shadow--color-shading)
-                );
-            }
-        }
+@mixin place-shadow($place) {
+    @if $place == flat {
+        box-shadow: var(--sf-shadow-flat);
+    } @else {
+        box-shadow: shadow.sf-shadow($place);
     }
+}
 
-// }
+@each $place in $shadow-places {
+    .shadow-#{$place} {
+        @include place-shadow($place);
+    }
+}
+
+// Former names (0-5), each the shadow of its place.
+@each $level, $place in $shadow-array {
+    .shadow-#{$level} {
+        @include place-shadow($place);
+    }
+}
 }

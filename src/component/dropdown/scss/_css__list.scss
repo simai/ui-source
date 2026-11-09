@@ -59,9 +59,9 @@
   .sf-list--menu {
     --sf-list--border-width: 0;
     /* The open list's public variable (sf-dropdown component.json, §6). */
-    --sf-list--background-color: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
-    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    --sf-badge--surface: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
+    --sf-list--background-color: var(--sf-dropdown-list-background-color, var(--sf-surface-popup));
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    --sf-badge--surface: var(--sf-dropdown-list-background-color, var(--sf-surface-popup));
     /* The inset (owner C05, docs review R029, 2026-11-07; it replaces R017's
        1/3): a row's highlight stands --sf-space-1/4 from the panel's edge on
        every side, as a context menu's does. The same inset is the scrollbar's
@@ -80,7 +80,7 @@
        rule set the variable only under .open, a class the script never puts
        on the root -- it writes sf-dropdown--open, and the portal context drops
        the open modifiers altogether -- so the list never had a shadow. */
-    --sf-list--box-shadow: var(--sf-elevation-2--shadow);
+    --sf-list--box-shadow: var(--sf-shadow-overlay);
   }
 
   .sf-dropdown .sf-list.sf-list--size-1\/2,

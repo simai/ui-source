@@ -1,0 +1,39 @@
+// SIMAI Framework
+// https://simai.io
+
+// SHADOW PLACES (C20, the shadow system, 2026-11-08)
+//
+// The geometry of the four place shadows, written once. The theme declares
+// --sf-shadow-raised, -overlay and -modal from it; the shadow utilities draw
+// it on their own element, so a key or an ambient colour set on that element
+// (the coloured utilities, kept until 2027-01-01) reaches the shadow.
+// Offsets and blurs are steps of the size ladder: 1/2, 2/8, 2/4, 8/16, 4/8,
+// 16/32 px at the root size.
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:string';
+
+$sf-shadow-geometry: (
+  'raised': (('0', 'var(--sf-px)', 'var(--sf-a2)', 'key'), ('0', 'var(--sf-a2)', 'var(--sf-a8)', 'ambient')),
+  'overlay': (('0', 'var(--sf-a2)', 'var(--sf-a4)', 'key'), ('0', 'var(--sf-a8)', 'var(--sf-b6)', 'ambient')),
+  'modal': (('0', 'var(--sf-a4)', 'var(--sf-a8)', 'key'), ('0', 'var(--sf-b6)', 'var(--sf-c6)', 'ambient')),
+);
+
+// A box-shadow list: "0 1px 2px <key>, 0 2px 8px <ambient>".
+@function sf-shadow($place) {
+  $layers: ();
+  @each $x, $y, $blur, $colour in map.get($sf-shadow-geometry, $place) {
+    $layers: list.append($layers, string.unquote('#{$x} #{$y} #{$blur} var(--sf-shadow-#{$colour}-color)'), comma);
+  }
+  @return $layers;
+}
+
+// A filter: one drop-shadow() per layer (a filter takes no list).
+@function sf-drop-shadow($place) {
+  $filters: ();
+  @each $x, $y, $blur, $colour in map.get($sf-shadow-geometry, $place) {
+    $filters: list.append($filters, string.unquote('drop-shadow(#{$x} #{$y} #{$blur} var(--sf-shadow-#{$colour}-color))'), space);
+  }
+  @return $filters;
+}

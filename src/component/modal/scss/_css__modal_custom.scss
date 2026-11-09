@@ -14,9 +14,10 @@
 }
 
 .sf-modal {
-  /* The shared scrim (core --sf-scrim-color, --sf-scrim-opacity). */
+  /* The shared scrim (core --sf-scrim-color, --sf-scrim-opacity): black at
+     64 (C16, C20), drawn at full opacity; no raw fallback (C18). */
   --sf-modal-overlay-background: var(--sf-scrim-color);
-  --sf-modal-overlay-opacity: var(--sf-scrim-opacity, var(--sf-opacity-60, 0.6));
+  --sf-modal-overlay-opacity: var(--sf-scrim-opacity, 1);
   --sf-modal-iframe-min-height: var(--sf-g2);
 }
 
@@ -98,7 +99,7 @@
   --sf-modal-surface-gap: var(--sf-modal-gap, var(--sf-space-1));
   --sf-modal-surface-padding: var(--sf-modal-padding-block, var(--sf-space-2)) var(--sf-modal-padding-inline, var(--sf-space-2));
   --sf-modal-surface-radius: var(--sf-modal-radius, var(--sf-radius--surface));
-  --sf-modal-surface-shadow: none;
+  --sf-modal-surface-shadow: var(--sf-shadow-flat);
 
   background-color: var(--sf-modal-surface-bg);
   --sf-badge--surface: var(--sf-modal-surface-bg);
@@ -113,10 +114,11 @@
 }
 
 .sf-modal-surface--elevated {
-  /* Elevated is a step, not a shadow alone: surface and shadow of step 3. */
-  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-elevation-3--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
-  --sf-modal-surface-shadow: var(--sf-elevation-3--shadow);
+  /* Elevated is a place, not a shadow alone: the window stands on the popup
+     surface with the modal shadow, over the scrim (C20). */
+  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-popup));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  --sf-modal-surface-shadow: var(--sf-shadow-modal);
 }
 
 .sf-modal [data-sf-modal-overlay] {

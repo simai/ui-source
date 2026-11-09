@@ -6,30 +6,23 @@ import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
-test('all themes use the same dark shadow color basis', async () => {
+test('all themes draw shadows from two black steps of the alpha scale', async () => {
   const [theme, shadow] = await Promise.all([
     read('src/core/scss/_sf_css__theme.scss'),
     read('src/core/scss/_sf_css__shadow.scss'),
   ]);
 
-  // The shadow basis is the same in both themes, so each of these is one plain
-  // declaration — no light-dark() branch, because there is nothing to choose
-  // between. A --sf-white here would mean a theme had started lifting its own
-  // shadows, which is what this guards.
-  for (const [token, basis] of [
-    ['fill', 'alfa-12'],
-    ['outline', 'alfa-8'],
-    ['shading', 'alfa-4'],
-  ]) {
-    const declaration = new RegExp(
-      `--sf-shadow--color-${token}: var\\(--sf-black--${basis}\\);`,
-      'g',
-    );
-    assert.equal(theme.match(declaration)?.length, 1, `--sf-shadow--color-${token}`);
-  }
-  assert.doesNotMatch(theme, /--sf-shadow--color-\w+: var\(--sf-white/);
-  assert.doesNotMatch(shadow, /var\(--sf-on-surface/);
-  assert.match(shadow, /var\(--sf-shadow--color, var\(--sf-black, #000\)\)/);
+  // C20: the key shadow is black at 16 / 28 and the ambient one black at 8 /
+  // none, each declared once on the theme root. A --sf-white here would mean
+  // a theme had started lifting its own shadows, which is what this guards;
+  // and the core declares no shadow colour of its own (it used to, at 24/12/8,
+  // and the layer styles read those instead of the theme's).
+  assert.equal(theme.match(/--sf-shadow-key-color: light-dark\(var\(--sf-black--alfa-16\), var\(--sf-black--alfa-28\)\);/g)?.length, 1);
+  assert.equal(theme.match(/--sf-shadow-ambient-color: light-dark\(var\(--sf-black--alfa-8\), var\(--sf-transparent\)\);/g)?.length, 1);
+  assert.doesNotMatch(theme, /--sf-shadow-[a-z-]*color: [^;]*--sf-white/);
+  const code = shadow.replace(/^\s*\/\/.*$/gmu, '');
+  assert.doesNotMatch(code, /--sf-shadow--color-/);
+  assert.doesNotMatch(code, /var\(--sf-on-surface/);
 });
 
 test('modal overlay keeps a fixed scrim and composes optional backdrop blur', async () => {
@@ -40,9 +33,11 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
     read('src/smart/modal/docs/docs.md'),
   ]);
 
-  // The shared scrim of the core first (reuse audit 2026-11-02), black at 60.
+  // The shared scrim of the core first (reuse audit 2026-11-02), black at 64
+  // since C16 and C20: the strength is in the colour, drawn at full opacity;
+  // the core token is always defined, so no raw fallback (C18).
   assert.match(styles, /--sf-modal-overlay-background: var\(--sf-scrim-color\);/);
-  assert.match(styles, /--sf-modal-overlay-opacity: var\(--sf-scrim-opacity, var\(--sf-opacity-60, 0\.6\)\)/);
+  assert.match(styles, /--sf-modal-overlay-opacity: var\(--sf-scrim-opacity, 1\)/);
   assert.match(styles, /background-color: var\(--sf-modal-overlay-background\)/);
   assert.match(styles, /opacity: var\(--sf-modal-overlay-opacity\)/);
 
@@ -62,7 +57,7 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
   assert.match(template, /data-sf-modal-overlay-preset=/);
 
   assert.match(docs, /overlay-preset="default\|focus"/);
-  assert.match(docs, /fixed black 60% scrim without blur/);
+  assert.match(docs, /shared black 64 scrim \(C20\) without blur/);
   assert.match(docs, /`blur-\*` blurs the element itself/);
   assert.match(docs, /`backdrop-blur-\*` blurs content behind/);
 });
