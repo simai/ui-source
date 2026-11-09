@@ -20,6 +20,16 @@
     "utility/text-max-width/default/css/default.min.css"
   ],
   "examples": {
+    "admin": [
+      "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/menu/css/menu.min.css",
+      "core/css/core.css",
+      "smart/menu/css/menu.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
     "button": [
       "component/badges/css/badges.min.css",
       "component/dot/css/dot.min.css",
@@ -77,6 +87,26 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "sections": [
+      "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/menu/css/menu.min.css",
+      "core/css/core.css",
+      "smart/menu/css/menu.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "site-column": [
+      "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/menu/css/menu.min.css",
+      "core/css/core.css",
+      "smart/menu/css/menu.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "site-row": [
       "component/badges/css/badges.min.css",
       "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",

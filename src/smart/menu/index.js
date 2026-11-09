@@ -22,12 +22,18 @@ import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
+  HOVER_CLOSE_DELAY,
+  HOVER_OPEN_DELAY,
   MENU_APPEARANCES,
   MENU_COLLAPSE,
+  MENU_OPEN_ON,
   MENU_ORIENTATIONS,
+  MENU_OVERFLOW,
+  MORE_ID,
   ROW_APPEARANCES,
   currentItemId,
   findItem,
+  fitRow,
   itemsFromList,
   normaliseItems,
   openBranches,
@@ -70,6 +76,9 @@ class SfSmartMenu extends MenuElement {
       current: {default: ''},
       currentFromLocation: {attribute: 'current-from-location', type: Boolean, default: false},
       collapse: {default: 'auto', values: MENU_COLLAPSE},
+      overflow: {default: 'collapse', values: MENU_OVERFLOW},
+      moreLabel: {attribute: 'more-label', default: ''},
+      openOn: {attribute: 'open-on', default: 'click', values: MENU_OPEN_ON},
       label: {default: ''},
       toggleLabel: {attribute: 'toggle-label', default: ''},
       sticky: {type: Boolean, default: false},
@@ -99,6 +108,13 @@ class SfSmartMenu extends MenuElement {
     this._escapeTaken = false;
     // Under the md breakpoint (a phone), for collapse narrow.
     this._narrow = false;
+    // overflow more: the ids of the first-level items that left the row for
+    // «Ещё», in their order.
+    this._overflowHidden = [];
+    // open-on hover: the timers of the branches the pointer rests on or left.
+    this._hoverTimers = new Map();
+    // A region's template, stamped once per name, so a render keeps its nodes.
+    this._regionNodes = new Map();
     // A value set as a property before the element was defined is an own
     // property that would hide the accessor; it is taken through it.
     if (Object.prototype.hasOwnProperty.call(this, 'items')) {
@@ -109,6 +125,9 @@ class SfSmartMenu extends MenuElement {
     this.addEventListener('click', this.onClick);
     this.addEventListener('focusin', this.onFocusChange);
     this.addEventListener('focusout', this.onFocusOut);
+    this.addEventListener('keydown', this.onKeydown);
+    this.addEventListener('pointerover', this.onPointerOver);
+    this.addEventListener('pointerout', this.onPointerOut);
   }
 
   attributeChangedCallback(name, previous, next) {
@@ -153,6 +172,11 @@ class SfSmartMenu extends MenuElement {
       if (this.collapse === 'narrow') this.requestComponentUpdate('narrow');
     };
     this._narrowMedia?.addEventListener?.('change', this._onNarrow);
+    // The words of a row change their width when the font arrives: «Ещё» is
+    // measured again then.
+    this._onFonts = () => this.measureFit();
+    document.fonts?.addEventListener?.('loadingdone', this._onFonts);
+    document.fonts?.ready?.then?.(() => this.isConnected && this.measureFit());
   }
 
   onDisconnected() {
@@ -161,6 +185,9 @@ class SfSmartMenu extends MenuElement {
     window.removeEventListener('hashchange', this._onLocation);
     this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
     this._narrowMedia = null;
+    document.fonts?.removeEventListener?.('loadingdone', this._onFonts);
+    for (const timer of this._hoverTimers.values()) clearTimeout(timer);
+    this._hoverTimers.clear();
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
     this._observed = null;
@@ -185,6 +212,37 @@ class SfSmartMenu extends MenuElement {
     return items.length ? items : this._childItems;
   }
 
+  // A row with overflow more: the items that left the row stand under the
+  // trailing «Ещё» branch.
+  get moreActive() {
+    return this.overflow === 'more' && this.flyouts;
+  }
+
+  // The tree the open panels, the current path and the keys walk: the items,
+  // or -- in a row with overflow more -- the row's items with the ones that
+  // left it under «Ещё».
+  get treeItems() {
+    const items = this.menuItems;
+    if (!this.moreActive) return items;
+    const row = withoutGroups(items);
+    const hidden = new Set(this._overflowHidden);
+    return [...row.filter((item) => !hidden.has(item.id)), this.moreItem(row.filter((item) => hidden.has(item.id)))];
+  }
+
+  // «Ещё» -- the more-label words -- or «Меню» when no item stays in the row.
+  moreItem(children = []) {
+    const none = children.length > 0 && children.length === withoutGroups(this.menuItems).length;
+    const label = none
+      ? this.getAttribute('toggle-label') || this.sfWord('toggle-label')
+      : this.getAttribute('more-label') || this.sfWord('more-label');
+    return {id: MORE_ID, label, href: '', icon: '', badge: '', status: '', current: false, disabled: false, open: false, region: '', children};
+  }
+
+  // The ids of the first-level items that left the row for «Ещё».
+  get overflowHidden() {
+    return this.moreActive ? [...this._overflowHidden] : [];
+  }
+
   // orientation, appearance, collapse, current-from-location and the words are
   // the manifest's accessors (attribute and property).
 
@@ -198,7 +256,7 @@ class SfSmartMenu extends MenuElement {
   get collapsed() {
     if (this.collapse === 'always') return true;
     if (this.collapse === 'narrow') return this._narrow;
-    return this.collapse === 'auto' && this.horizontal && this._autoCollapsed;
+    return this.collapse === 'auto' && this.overflow === 'collapse' && this.horizontal && this._autoCollapsed;
   }
 
   // Branches open as panels beside the row: a row that is shown as a row.
@@ -231,7 +289,7 @@ class SfSmartMenu extends MenuElement {
   // The ids of the open branches, outermost first.
   get openIds() {
     this.syncMode();
-    return [...openBranches(this.menuItems, this._openState, this.currentId, !this.flyouts)];
+    return [...openBranches(this.treeItems, this._openState, this.currentId, !this.flyouts)];
   }
 
   isOpen(id) {
@@ -239,7 +297,7 @@ class SfSmartMenu extends MenuElement {
   }
 
   item(id) {
-    return findItem(this.menuItems, id);
+    return findItem(this.treeItems, id);
   }
 
   // The actions open, close and toggle {id} and close-all (§4.4): each
@@ -282,7 +340,7 @@ class SfSmartMenu extends MenuElement {
     if (before.has(item.id) === Boolean(open)) return {outcome: 'refused', reason: 'already'};
     const after = new Set(before);
     if (this.flyouts) {
-      const above = new Set(pathTo(this.menuItems, item.id) || []);
+      const above = new Set(pathTo(this.treeItems, item.id) || []);
       for (const other of before) if (!above.has(other)) after.delete(other);
       if (open) after.add(item.id);
     } else if (open) {
@@ -303,14 +361,14 @@ class SfSmartMenu extends MenuElement {
 
   applyOpen(before, after, source, asked) {
     const changed = [];
-    walkItems(this.menuItems, (one) => {
+    walkItems(this.treeItems, (one) => {
       if (one.children.length && before.has(one.id) !== after.has(one.id)) changed.push(one);
     });
     if (!changed.length) return false;
     for (const one of changed) this._openState.set(one.id, after.has(one.id));
     this.requestComponentUpdate('open');
     // The branch asked for first, then the ones it closed, innermost first.
-    const depth = (one) => (pathTo(this.menuItems, one.id) || []).length;
+    const depth = (one) => (pathTo(this.treeItems, one.id) || []).length;
     changed.sort((a, b) => (a.id === asked ? -1 : b.id === asked ? 1 : depth(b) - depth(a)));
     // sf-menu-toggle, then its old name sf-menu:toggle with the same detail
     // (aliases.json, until 2026-12-01).
@@ -368,8 +426,203 @@ class SfSmartMenu extends MenuElement {
       return;
     }
     const link = this.ownControl(event.target, 'a[data-sf-menu-link]');
-    if (link) this.onNavigate(event, link);
+    if (link) {
+      this.onNavigate(event, link);
+      return;
+    }
+    // A link of a region's own template is the host's: following it closes
+    // the region, as a menu link does.
+    const regionLink = this.ownControl(event.target, '.sf-menu-region a[href]');
+    if (regionLink && this.flyouts && !event.defaultPrevented) this.closeFlyouts('user');
   };
+
+  // open-on hover (C30): a pointer resting on a row's branch opens it after
+  // 300 ms; once it has been outside a branch and its panel for 500 ms the
+  // branch closes. A press still opens and closes; a touch is a press.
+  hoverOpens(event) {
+    return this.openOn === 'hover' && this.flyouts && event.pointerType !== 'touch';
+  }
+
+  // The ids of the items whose rows or panels hold a node, innermost first.
+  itemChain(node) {
+    const chain = [];
+    for (let li = node?.closest?.('[data-sf-menu-item]'); li && this.contains(li); li = li.parentElement?.closest('[data-sf-menu-item]')) {
+      chain.push(li.dataset.sfMenuItem);
+    }
+    return chain;
+  }
+
+  hoverTimer(key, delay, run) {
+    if (this._hoverTimers.has(key)) return;
+    this._hoverTimers.set(key, setTimeout(() => {
+      this._hoverTimers.delete(key);
+      if (this.isConnected && this.flyouts) run();
+    }, delay));
+  }
+
+  clearHoverTimer(key) {
+    const timer = this._hoverTimers.get(key);
+    if (timer === undefined) return;
+    clearTimeout(timer);
+    this._hoverTimers.delete(key);
+  }
+
+  onPointerOver = (event) => {
+    if (!this.hoverOpens(event)) return;
+    const chain = new Set(this.itemChain(event.target));
+    for (const key of [...this._hoverTimers.keys()]) {
+      const [kind, id] = key.split('\u0000');
+      if ((kind === 'close' && chain.has(id)) || (kind === 'open' && !chain.has(id))) this.clearHoverTimer(key);
+    }
+    const [id] = chain;
+    const item = id ? this.item(id) : null;
+    if (!item?.children.length || item.disabled || this.isOpen(id)) return;
+    this.hoverTimer(`open\u0000${id}`, HOVER_OPEN_DELAY, () => this.setOpen(id, true, 'user'));
+  };
+
+  onPointerOut = (event) => {
+    if (!this.hoverOpens(event)) return;
+    const next = event.relatedTarget instanceof Node && this.contains(event.relatedTarget) ? new Set(this.itemChain(event.relatedTarget)) : new Set();
+    for (const key of [...this._hoverTimers.keys()]) {
+      const [kind, id] = key.split('\u0000');
+      if (kind === 'open' && !next.has(id)) this.clearHoverTimer(key);
+    }
+    for (const id of this.openIds) {
+      if (next.has(id)) continue;
+      this.hoverTimer(`close\u0000${id}`, HOVER_CLOSE_DELAY, () => {
+        if (this.isOpen(id)) this.setOpen(id, false, 'user');
+      });
+    }
+  };
+
+  // The arrows of a row (WAI-ARIA disclosure navigation, the optional keys):
+  // Left and Right walk the row's first level, Home and End go to its ends,
+  // Down and Up open a branch and enter its panel at the first or the last
+  // row; in a panel Down and Up walk its rows, Home and End go to its ends,
+  // Right opens a side panel and enters it, Left closes the side panel the
+  // focus is in and gives the focus back to its branch; in a region Down and
+  // Up walk its links and Left and Right its columns. Tab, Enter, Space and
+  // Escape are as before. A column has no arrows: it is not a tree widget.
+  onKeydown = (event) => {
+    if (!this.flyouts || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    const key = event.key;
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) return;
+    const li = event.target?.closest?.('[data-sf-menu-item]');
+    if (!li || !this.contains(li)) return;
+    const region = event.target.closest('.sf-menu-region');
+    const handled = region && li.contains(region)
+      ? this.regionKey(region, event.target, key)
+      : li.dataset.sfMenuLevel === '1' ? this.rowKey(li, key) : this.panelKey(li, event.target, key);
+    if (handled) event.preventDefault();
+  };
+
+  // The control a row's item is reached by: its link, or its branch button.
+  rowControl(li) {
+    const row = li?.querySelector(':scope > .sf-menu-element');
+    if (!row) return null;
+    const control = row.matches('a[href], button') ? row : row.querySelector(':scope > a[href], :scope > button');
+    return control && !control.disabled ? control : null;
+  }
+
+  // The items of one list that can be reached, in order.
+  reachable(list) {
+    return Array.from(list?.children || []).filter((li) => li.matches('[data-sf-menu-item]:not([hidden])') && this.rowControl(li));
+  }
+
+  // Opens a branch if it is closed, then gives the focus to the first or the
+  // last control of its panel.
+  enterBranch(li, last = false) {
+    const id = li.dataset.sfMenuItem;
+    const focusInside = () => {
+      const panel = li.querySelector(':scope > .sf-menu, :scope > .sf-menu-region');
+      if (!panel) return;
+      const controls = panel.matches('.sf-menu-region')
+        ? this.regionControls(panel)
+        : this.reachable(panel).map((one) => this.rowControl(one));
+      (last ? controls[controls.length - 1] : controls[0])?.focus();
+    };
+    if (this.isOpen(id)) {
+      focusInside();
+      return true;
+    }
+    const outcome = this.setOpen(id, true, 'user');
+    if (outcome.outcome !== 'applied') return false;
+    this.whenRendered(focusInside, {next: true});
+    return true;
+  }
+
+  rowKey(li, key) {
+    const items = this.reachable(li.parentElement);
+    const at = items.indexOf(li);
+    if (at < 0) return false;
+    if (key === 'ArrowLeft' || key === 'ArrowRight') {
+      this.rowControl(items[(at + (key === 'ArrowRight' ? 1 : -1) + items.length) % items.length])?.focus();
+      return true;
+    }
+    if (key === 'Home' || key === 'End') {
+      this.rowControl(items[key === 'Home' ? 0 : items.length - 1])?.focus();
+      return true;
+    }
+    if (!li.matches('.sf-menu-item--has-submenu')) return false;
+    return this.enterBranch(li, key === 'ArrowUp');
+  }
+
+  panelKey(li, target, key) {
+    const items = this.reachable(li.parentElement);
+    const at = items.indexOf(li);
+    if (at < 0) return false;
+    // Inside the vertical-to-horizontal sense of the row: the side a panel
+    // opens to is the row's inline end, mirrored in RTL.
+    const rtl = getComputedStyle(this.querySelector(':scope > nav') || this).direction === 'rtl';
+    const inward = rtl ? 'ArrowLeft' : 'ArrowRight';
+    if (key === 'ArrowDown' || key === 'ArrowUp') {
+      this.rowControl(items[(at + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length])?.focus();
+      return true;
+    }
+    if (key === 'Home' || key === 'End') {
+      this.rowControl(items[key === 'Home' ? 0 : items.length - 1])?.focus();
+      return true;
+    }
+    if (key === inward) {
+      if (!li.matches('.sf-menu-item--has-submenu')) return false;
+      return this.enterBranch(li);
+    }
+    // Outward from a side panel: it closes and its branch takes the focus.
+    const owner = li.parentElement?.closest('[data-sf-menu-item]');
+    if (!owner || owner.dataset.sfMenuLevel === '1') return false;
+    this.setOpen(owner.dataset.sfMenuItem, false, 'user');
+    this.focusAfterRender(`[data-sf-menu-item="${CSS.escape(owner.dataset.sfMenuItem)}"] > .sf-menu-element [data-sf-menu-toggle], [data-sf-menu-item="${CSS.escape(owner.dataset.sfMenuItem)}"] > [data-sf-menu-toggle]`);
+    return true;
+  }
+
+  regionControls(region) {
+    return Array.from(region.querySelectorAll('a[href], button:not(:disabled), [tabindex]:not([tabindex="-1"])'))
+      .filter((node) => node.getClientRects().length > 0);
+  }
+
+  regionKey(region, target, key) {
+    const controls = this.regionControls(region);
+    const at = controls.indexOf(target.closest('a[href], button, [tabindex]'));
+    if (at < 0 || !controls.length) return false;
+    if (key === 'ArrowDown' || key === 'ArrowUp') {
+      controls[(at + (key === 'ArrowDown' ? 1 : -1) + controls.length) % controls.length].focus();
+      return true;
+    }
+    if (key === 'Home' || key === 'End') {
+      controls[key === 'Home' ? 0 : controls.length - 1].focus();
+      return true;
+    }
+    // A column is a child of the region (or of its columns' grid) that holds
+    // controls: Left and Right go to the first control of the one beside.
+    const columns = Array.from(region.querySelectorAll(':scope > *, :scope > .sf-menu-region-columns > *'))
+      .filter((column) => !column.matches('.sf-menu-region-columns') && this.regionControls(column).length);
+    const column = columns.findIndex((one) => one.contains(target));
+    if (column < 0) return false;
+    const rtl = getComputedStyle(region).direction === 'rtl';
+    const step = (key === 'ArrowRight') !== rtl ? 1 : -1;
+    this.regionControls(columns[(column + step + columns.length) % columns.length])[0]?.focus();
+    return true;
+  }
 
   // A link's own press: a cancellable sf-menu-navigate first (and its old name
   // sf-menu:navigate, one cancel for both), so a host that routes the page
@@ -460,7 +713,7 @@ class SfSmartMenu extends MenuElement {
     if (!this.flyouts) return null;
     const open = new Set(this.openIds);
     if (!open.size) return null;
-    const depth = (id) => (pathTo(this.menuItems, id) || []).length;
+    const depth = (id) => (pathTo(this.treeItems, id) || []).length;
     const focused = document.activeElement;
     const ids = [...open].sort((a, b) => depth(b) - depth(a));
     const withFocus = ids.find((id) => this.querySelector(`[data-sf-menu-item="${CSS.escape(id)}"]`)?.contains(focused));
@@ -486,7 +739,7 @@ class SfSmartMenu extends MenuElement {
     if (this.flyouts) {
       for (const id of this.openIds) {
         const row = this.querySelector(`[data-sf-menu-item="${CSS.escape(id)}"]`);
-        const submenu = row?.querySelector(':scope > ul.sf-menu');
+        const submenu = row?.querySelector(':scope > ul.sf-menu, :scope > .sf-menu-region');
         if (!submenu || submenu.hidden) continue;
         wanted.add(submenu);
         const current = this._anchors.get(submenu);
@@ -495,12 +748,35 @@ class SfSmartMenu extends MenuElement {
           continue;
         }
         const saved = ['min-width', 'overflow-y'].map((name) => [name, submenu.style.getPropertyValue(name), submenu.style.getPropertyPriority(name)]);
-        // min-inline-size: 100% would resolve against the viewport once fixed.
-        submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
         submenu.style.overflowY = 'auto';
-        const anchor = positioning().anchor(row, submenu, {
-          side: row.dataset.sfMenuLevel === '1' ? 'block-end' : 'inline-end', align: 'start', offset: 0, fitHeight: true,
-        });
+        let anchor;
+        if (submenu.matches('.sf-menu-region')) {
+          // A region is as wide as the header the row stands in -- else the
+          // row's own nav -- and opens under it.
+          const header = this.closest('.sf-site-header, header') || this.querySelector(':scope > nav') || row;
+          anchor = positioning().anchor(header, submenu, {side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true});
+        } else if (row.dataset.sfMenuLevel === '1') {
+          // min-inline-size: 100% would resolve against the viewport once fixed.
+          submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
+          anchor = positioning().anchor(row, submenu, {side: 'block-end', align: 'start', offset: 'var(--sf-space-1\\/4)', fitHeight: true});
+        } else {
+          // A side panel stands beside the panel its row is in, not over it:
+          // past that panel's own edge (its padding and border) by the gap
+          // between panels, its first row level with the row that opened it.
+          // At the window's edge it opens to the other side (data-sf-side
+          // inline-start), and the class sheet turns the row's chevron.
+          const panel = row.parentElement;
+          submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
+          const outer = panel.getBoundingClientRect();
+          const box = row.getBoundingClientRect();
+          const own = getComputedStyle(submenu);
+          const gap = positioning().resolveLength('var(--sf-space-1\\/4)', this);
+          anchor = positioning().anchor(row, submenu, {
+            side: 'inline-end', align: 'start', fitHeight: true,
+            offset: Math.max(outer.right - box.right, box.left - outer.left) + gap,
+            alignmentOffset: -((parseFloat(own.paddingTop) || 0) + (parseFloat(own.borderTopWidth) || 0)),
+          });
+        }
         this._anchors.set(submenu, {anchor, saved});
       }
     }
@@ -535,7 +811,12 @@ class SfSmartMenu extends MenuElement {
   measureFit() {
     const nav = this._observed;
     if (!nav?.isConnected) return;
-    if (this.collapse !== 'auto' || !this.horizontal) {
+    if (this.moreActive) {
+      this.measureOverflow(nav);
+      return;
+    }
+    if (this._overflowHidden.length) this.setOverflowHidden([]);
+    if (this.collapse !== 'auto' || this.overflow !== 'collapse' || !this.horizontal) {
       if (this._autoCollapsed) {
         this._autoCollapsed = false;
         this.requestComponentUpdate('collapse');
@@ -557,6 +838,52 @@ class SfSmartMenu extends MenuElement {
     }
   }
 
+  // overflow more (priority+, C30): each first-level item's width is measured
+  // as the row draws it -- every item and «Ещё» shown for the measure, in the
+  // same task, so nothing is painted -- and the items that do not fit leave
+  // the row from its end; the section that holds the current page stays
+  // while it fits beside «Ещё». sf-menu-overflow says which left, each time
+  // that changes.
+  measureOverflow(nav) {
+    const list = nav.querySelector(':scope > ul.sf-menu');
+    const more = list?.querySelector(':scope > .sf-menu-item--more');
+    if (!list || !more) return;
+    const tops = Array.from(list.children).filter((li) => li !== more && li.matches('[data-sf-menu-item], [data-sf-menu-placeholder]'));
+    const was = [...tops, more].map((li) => li.hidden);
+    for (const li of [...tops, more]) li.hidden = false;
+    const widths = tops.map((li) => li.getBoundingClientRect().width);
+    const moreWidth = more.getBoundingClientRect().width;
+    [...tops, more].forEach((li, at) => {
+      li.hidden = was[at];
+    });
+    const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+    const ids = tops.map((li) => li.dataset.sfMenuItem || li.dataset.sfMenuPlaceholder);
+    const currentId = this.currentId;
+    const above = currentId ? [currentId, ...(pathTo(this.menuItems, currentId) || [])] : [];
+    const keep = ids.findIndex((id) => above.includes(id));
+    const stays = new Set(fitRow(widths, moreWidth, nav.clientWidth, gap, keep));
+    this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)));
+  }
+
+  setOverflowHidden(hidden) {
+    if (hidden.length === this._overflowHidden.length && hidden.every((id, at) => id === this._overflowHidden[at])) return;
+    // A row in a box that takes its width from its content (a header not yet
+    // drawn, a shrink-to-fit cell) gets wider when items leave it and
+    // narrower when they come back: going straight back to the set it just
+    // left, sooner than a frame or two, is that loop -- the row keeps the
+    // set with more items under «Ещё» until its width changes on its own.
+    const key = hidden.join('\u0000');
+    const now = typeof performance === 'undefined' ? Date.now() : performance.now();
+    const flip = this._overflowFlip;
+    if (flip && flip.back === key && now - flip.at < 100 && hidden.length < this._overflowHidden.length) return;
+    this._overflowFlip = {back: this._overflowHidden.join('\u0000'), at: now};
+    // A panel open over the row was placed for the row as it was.
+    if (this.flyouts) this.closeFlyouts('method');
+    this._overflowHidden = hidden;
+    this.requestComponentUpdate('overflow');
+    this.sfEmit('overflow', {hidden: [...hidden]});
+  }
+
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.syncAnchors();
@@ -571,6 +898,8 @@ class SfSmartMenu extends MenuElement {
     const all = this.menuItems;
     const items = this.groupsDrawn ? all : withoutGroups(all);
     const currentId = this.currentId;
+    const tree = this.treeItems;
+    const moreActive = this.moreActive;
     const selector = this.collapse === 'narrow' && this.collapsed;
     return this.createTemplateContext({
       ...props,
@@ -582,7 +911,14 @@ class SfSmartMenu extends MenuElement {
       open: new Set(this.openIds),
       currentId,
       // The branches above the current page: a closed one draws the bar (C23).
-      holding: new Set(currentId ? pathTo(all, currentId) || [] : []),
+      holding: new Set(currentId ? pathTo(tree, currentId) || [] : []),
+      // overflow more: the first-level items that left the row (drawn there
+      // as placeholders) and the «Ещё» branch that holds them.
+      hidden: new Set(moreActive ? this._overflowHidden : []),
+      moreItem: moreActive ? tree[tree.length - 1] : null,
+      moreShown: moreActive && this._overflowHidden.length > 0,
+      moreId: MORE_ID,
+      regionContent: (name) => this.regionNodes(name),
       // collapse narrow: the button is a selector showing the current item.
       selector,
       selectedItem: selector && currentId ? findItem(all, currentId) : null,
@@ -597,6 +933,18 @@ class SfSmartMenu extends MenuElement {
       domId: (id) => this.domId(id),
       rootClass: this.getRootClass(),
     });
+  }
+
+  // A region's template (<template slot="region-<name>">), stamped once: the
+  // region keeps its nodes from one render to the next.
+  regionNodes(name) {
+    if (!name) return null;
+    if (this._regionNodes.has(name)) return this._regionNodes.get(name);
+    const nodes = this._slotTemplates.get(`region-${name}`) || [];
+    if (!nodes.length) return null;
+    const stamped = nodes.map((node) => node.cloneNode(true));
+    this._regionNodes.set(name, stamped);
+    return stamped;
   }
 
   template() {

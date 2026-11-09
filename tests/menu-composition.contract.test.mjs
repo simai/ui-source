@@ -9,7 +9,9 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
    list's of the same size. tests/browser/panel-composition.cli.js measures. */
 test('menu composition: a menu row gives up its border', async () => {
   const css = await read('component/menu/scss/_css__menu_element.scss');
-  assert.equal((css.match(/calc\(\(var\(--sf-ui-1--control-height\) - var\(--sf-text-height-1\)\) \/ 2 - var\(--sf-menu-element--border-width\)\)/g) || []).length, 2);
+  // The block padding, top and bottom, and (C30) the split row's disclosure
+  // button stretching over that same padding.
+  assert.equal((css.match(/calc\(\(var\(--sf-ui-1--control-height\) - var\(--sf-text-height-1\)\) \/ 2 - var\(--sf-menu-element--border-width\)\)/g) || []).length, 4);
 });
 
 test('menu composition: a context menu publishes its axis and its items take it', async () => {

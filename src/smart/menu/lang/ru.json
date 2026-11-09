@@ -2,6 +2,7 @@
   "title": "Меню",
   "runtime": {
     "toggle-label": "Меню",
+    "more-label": "Ещё",
     "status-success": "в порядке",
     "status-warning": "внимание",
     "status-error": "ошибка",

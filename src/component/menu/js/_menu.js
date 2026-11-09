@@ -394,11 +394,14 @@ function applyDisclosureState(root, element, suppliedToggle, expanded, isBranch)
 
 function applyTrailingState(trailing, root, expanded) {
   const horizontalTopLevel = isHorizontalTopLevel(root);
+  // A deeper branch of a horizontal row opens its panel to the side: its
+  // indicator points to that side whether open or not (C30).
+  const sideBranch = !horizontalTopLevel && Boolean(root?.closest('.sf-menu.sf-menu--horizontal'));
   const trailingIcon =
     root.getAttribute('trailing-icon') ||
     (horizontalTopLevel
       ? (expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down')
-      : (expanded ? 'keyboard_arrow_down' : 'chevron_right'));
+      : (expanded && !sideBranch ? 'keyboard_arrow_down' : 'chevron_right'));
 
   trailing.classList.toggle(
     'disabled',

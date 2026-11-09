@@ -15,6 +15,18 @@
     max-inline-size: 100%;
   }
 
+  // overflow more (C30): the row takes the room it is given -- a header's
+  // nav beside the brand and the actions -- so the room is measured, not
+  // the words; what does not fit goes to «Ещё».
+  // Its words are not its width: a nav in a row that shrinks to its content
+  // (a header's nav slot) would grow back with each item that stays and lose
+  // it again -- the room is the container's alone (contain: inline-size).
+  .sf-smart-menu[data-overflow='more'] {
+    flex: 1 1 auto;
+    inline-size: 100%;
+    contain: inline-size;
+  }
+
   // The button and the column it opens stand apart by the class menu's own gap
   // between rows. Collapsed, the <nav> takes the room it is given in a row of
   // the page -- a header beside a logo -- so the width the row needs is seen

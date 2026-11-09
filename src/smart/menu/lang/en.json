@@ -2,6 +2,7 @@
   "title": "Menu",
   "runtime": {
     "toggle-label": "Menu",
+    "more-label": "More",
     "status-success": "all good",
     "status-warning": "needs attention",
     "status-error": "error",

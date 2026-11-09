@@ -107,7 +107,8 @@ test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it
   const {rows} = readAliasTable(json('src/smart/menu/aliases.json'), {tag: 'sf-menu'});
   assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-menu:navigate', 'sf-menu-navigate', 'same-detail'], ['sf-menu:toggle', 'sf-menu-toggle', 'same-detail']]);
   // simai/ui-source#44 item 2: Escape is a panel's key; in accessibility.keys it says when.
-  assert.deepEqual(manifest.keyboard.panel, {Escape: 'close'});
+  // C30 adds the APG disclosure-navigation arrows to a panel and to the row.
+  assert.deepEqual(manifest.keyboard.panel, {Escape: 'close', ArrowDown: 'next', ArrowUp: 'previous', Home: 'first', End: 'last', ArrowRight: 'open', ArrowLeft: 'close'});
   assert.ok(!('Escape' in manifest.keyboard.host));
   assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {orientation: 'horizontal', appearance: 'navigation'}, {collapse: 'always'}, {collapse: 'narrow'}]);
   const source = read('src/smart/menu/index.js');
