@@ -108,14 +108,6 @@
       "reason": "<input type=color> accepts only a #rrggbb value; #000000 is the browser's own empty value."
     },
     {
-      "id": "shadow-colours-c20",
-      "category": "style-review",
-      "filePattern": "^(?:core/scss/_sf_css__shadow\\.scss|smart/sortable/scss/_smart__sortable\\.scss)$",
-      "contextPattern": "(?:--sf-shadow--color|box-shadow)",
-      "status": "deferred-c20-shadows",
-      "reason": "Shadow colours belong to the shadow decision (C20) and its own branch; remove this rule when C20 lands."
-    },
-    {
       "id": "legacy-panel-shadow-c20",
       "category": "script-data-template-review",
       "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",
