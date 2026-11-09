@@ -27,6 +27,13 @@
 // blocks), not from a second table: when a ladder step changes, rerun this
 // script; --check fails while the projection is stale.
 //
+// Popup widths (owner decision C32, 2026-11-09): a width tied to text follows
+// the text. The compact width of each --sf-popup-*-width (core/scss/
+// _sf_css__size.scss) is its normal width times the ratio of the compact body
+// text to the normal one (14/16), rounded up to the next step of the size
+// scale (C18), so the common row never clips: 160 -> 144, 288 -> 256,
+// 320 -> 288, 384 -> 352.
+//
 // Usage: node scripts/generate-density.mjs [--check] [--print-table]
 import {createHash} from 'node:crypto';
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
@@ -68,6 +75,17 @@ const DERIVED = [
   ['figma_text_body_text_height.scss', CONTROL_STEPS.map((s) => `--sf-text-height-${s}`)],
   ['figma_ui_control_height.scss', CONTROL_STEPS.map((s) => `--sf-ui-${s}--control-height`)],
   ['figma_typography_roles.scss', ['--sf-text-small--size', '--sf-text-small--height', '--sf-text-medium--size', '--sf-text-medium--height', '--sf-text-large--size', '--sf-text-large--height']],
+];
+
+// The popup widths, declared on :root in the size tokens.
+const WIDTHS_FILE = 'src/core/scss/_sf_css__size.scss';
+export const WIDTHS = [
+  '--sf-popup-menu-min-width',
+  '--sf-popup-menu-max-width',
+  '--sf-popup-list-max-width',
+  '--sf-popup-panel-width',
+  '--sf-popup-form-width',
+  '--sf-popup-form-wide-width',
 ];
 
 const esc = (name) => name.replaceAll('/', '\\/');
@@ -140,9 +158,47 @@ function derived() {
   return rows;
 }
 
+// The size scale: a range letter starts at a length and climbs in its own
+// step (core/scss/vars/_sf_var__size.scss), ten steps a range.
+const RANGES = {a: [0, 1], b: [10, 1], c: [20, 2], d: [40, 4], e: [80, 8], f: [160, 16], g: [320, 32], h: [640, 64], i: [1280, 128]};
+export const STEPS = Object.entries(RANGES)
+  .flatMap(([letter, [start, step]]) => Array.from({length: 10}, (_, index) => [`--sf-${letter}${index}`, start + step * index]))
+  .sort((a, b) => a[1] - b[1]);
+const stepPx = (value) => {
+  const match = /^var\((--sf-[a-i]\d)\)$/u.exec(String(value).trim());
+  return match ? STEPS.find(([name]) => name === match[1])?.[1] ?? null : null;
+};
+
+// The text ratio: the compact body text over the normal one (size 1).
+export function textRatio() {
+  const row = ladder().find((entry) => entry.variable === '--sf-text--size-1');
+  const normal = stepPx(row?.normal);
+  const compact = stepPx(row?.compact);
+  if (!normal || !compact) throw new Error('no step for --sf-text--size-1 in the ladder');
+  return compact / normal;
+}
+
+// Each popup width at both densities: the compact one is the first step at or
+// above normal x ratio.
+export function widths() {
+  const text = readFileSync(join(root, WIDTHS_FILE), 'utf8');
+  const ratio = textRatio();
+  return WIDTHS.map((variable) => {
+    const match = new RegExp(`${variable}\\s*:\\s*([^;]+);`, 'u').exec(text);
+    if (!match) throw new Error(`${WIDTHS_FILE}: no declaration of ${variable}`);
+    const normal = match[1].trim();
+    const px = stepPx(normal);
+    if (px === null) throw new Error(`${variable}: ${normal} is not a step of the size scale`);
+    const target = px * ratio;
+    const [step] = STEPS.find(([, length]) => length >= target - 1e-9);
+    return {variable, normal, compact: `var(${step})`};
+  });
+}
+
 export function sourceDigest() {
   const hash = createHash('sha256');
   for (const file of [...new Set([...FAMILIES.map(([file]) => file), ...DERIVED.map(([file]) => file)])].sort()) hash.update(`${file}\n${read(file)}\n`);
+  hash.update(`${WIDTHS_FILE}\n${widths().map((row) => `${row.variable}:${row.normal}`).join('\n')}\n`);
   return hash.digest('hex');
 }
 
@@ -154,8 +210,10 @@ export const EXPLICIT = ':not(input, select, textarea)[size]:not([data-sf-size-r
 export function render() {
   const rows = ladder();
   const aliases = derived();
+  const popup = widths();
   const block = (pick, indent) => [
     ...rows.map((row) => `${indent}${esc(row.variable)}: ${row[pick]};`),
+    ...popup.map((row) => `${indent}${row.variable}: ${row[pick]};`),
     ...aliases.map(([name, value]) => `${indent}${esc(name)}: ${value};`),
     `${indent}--sf-text--size: var(--sf-text--size-1);`,
     `${indent}--sf-text--height: var(--sf-text--height-1);`,
@@ -172,6 +230,9 @@ export function render() {
  * size (a page's size attribute) takes the normal ladder back under it;
  * data-sf-density="normal" does the same for a region. Desktop only: below
  * 60rem the phone ladder already is the dense one.
+ *
+ * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
+ * next step of the size scale.
  */
 @layer sf.base {
   @media (min-width: ${DESKTOP}) {
@@ -210,7 +271,7 @@ const px = (value) => {
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const args = new Set(process.argv.slice(2));
   if (args.has('--print-table')) {
-    for (const row of ladder()) process.stdout.write(`${row.variable}\t${px(row.normal)}\t${px(row.compact)}\n`);
+    for (const row of [...ladder(), ...widths()]) process.stdout.write(`${row.variable}\t${px(row.normal)}\t${px(row.compact)}\n`);
   } else {
     const expected = render();
     const target = join(root, OUTPUT);

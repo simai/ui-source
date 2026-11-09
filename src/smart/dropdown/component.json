@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -229,6 +229,13 @@
     },
     {
       "name": "cl-button-icon"
+    },
+    {
+      "name": "cl-icon",
+      "$comment": [
+        "The picture of a single choice in the field and an icon tag's icon are sf-icon elements,",
+        "so their names reach the first icon font request (2026-11-09, as sf-tag 1.3.2)."
+      ]
     }
   ],
   "templates": {
@@ -379,7 +386,8 @@
     "version 1.7.0 (2026-11-07): a minor (a look and the list's markup; settings, values, events and keys unchanged; owner C05-C07, docs review R029, which replaces R017's 1/3 inset; component.dropdown 1.2.0). The open list is a dropping panel with the context menu's geometry, from the shared partial component/context-menu/scss/_panel.scss: an option's highlight stands --sf-space-1/4 from the panel's edge, is as tall as a control of its size and rounded --sf-radius--ui, and its picture or text stands --sf-space-1/2 inside it, the picture --sf-space-1/2 before the text (before, an option lined up with its field). The list says its size (sf-list--size-1/2, -1, -2) and draws no padding: its scroll area holds the inset on every side and is the only part that scrolls. The search is the panel's header, not a boxed sf-input: label.sf-list-search with i.sf-list-search-icon before input.sf-list-search-input -- no frame, no fill, a row's height and the inset above and below, its icon and text over the rows' icon and text, a hairline across the panel under it that turns primary while it has the focus. The scrollbar shows only when the rows do not fit; while it takes room in the layout the scroll area is marked sf-list-container-wrap--scrollbar (component/panel-scrollbar.js, offsetWidth - clientWidth through a ResizeObserver; the portal marks a portalled list, the element a list in place) and gives up its inline-end padding, the track the inset, a thumb of --sf-space-1/4 and the inset again (::-webkit-scrollbar; Firefox thin). Probe dropdown-panels-inset.",
     "version 1.7.1: the inherited state comes with the family's hidden note (helpers/inherited-value.js, syncInheritedNote): when something else describes the control through aria-describedby, the inherited sentence is named there too, because a browser reads aria-describedby instead of aria-description. Its button is described by its summary (the shown option, component/dropdown/interaction.js), so the inherited sentence used to go unsaid; it now follows the summary.",
     "version 1.7.4 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
-    "version 1.7.3 (2026-11-08; one number above the two unreleased 1.7.2 it joins): a patch (C06, DEV measurement of the docs on ui-0c23f6a0af12; component.dropdown 1.2.1). When no option has a picture (icon, avatar, colour or checkbox), the search header's text stands over the rows' text and its icon at the header's end; the text stood a search icon and a gap (24-32px) right of the rows'. With pictures nothing changes: icon over icon, text over text. Settings, values, events and keys are unchanged. Its shared helper src/smart/helpers/inherited-value.js changed with the actions block (module.smart-helpers 1.3.0)."
+    "version 1.7.3 (2026-11-08; one number above the two unreleased 1.7.2 it joins): a patch (C06, DEV measurement of the docs on ui-0c23f6a0af12; component.dropdown 1.2.1). When no option has a picture (icon, avatar, colour or checkbox), the search header's text stands over the rows' text and its icon at the header's end; the text stood a search icon and a gap (24-32px) right of the rows'. With pictures nothing changes: icon over icon, text over text. Settings, values, events and keys are unchanged. Its shared helper src/smart/helpers/inherited-value.js changed with the actions block (module.smart-helpers 1.3.0).",
+    "version 1.8.0 (2026-11-09): a minor (owner decision C32, the popup widths; component.dropdown 1.5.0, core.runtime position). The list at a field is at least the field and as wide as its longest option up to the list's step or the field, whichever is wider: --sf-popup-list-max-width, 20rem, 18rem in compact density. It was exactly the field, so a short field cut every longer option. Anchored, the positioning gives the field's width as the list's minimum (SF.Position matchWidth \"min\"); in place (portal=\"false\") the field's box does. A list under a trigger of its own and a grid keep their widths. Settings, events and keys unchanged. In place (portal=\"false\") the list takes its options' width between the same limits and, near the screen's inline end, hangs from the field's end (data-sf-align=\"end\", measured on opening; DEV acceptance, 2026-11-09). The pictures of a choice draw on time: the single choice's icon in the field and an icon tag's icon (mode=\"tag\") printed a bare <i class=\"sf-icon\"> after the page's icon scan, so their names missed the first icon_names request and the glyph came late; both are sf-icon elements now (root-class sf-dropdown-field-visual / sf-tag-icon), cl-icon is a relation, and the field's picture rules reach the glyph inside the sf-icon (tests/browser/dropdown-icon-glyph.browser.mjs)."
   ],
   "x-rule": {
     "$comment": [

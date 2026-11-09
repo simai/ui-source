@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.13.6",
+  "version": "1.14.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -136,7 +136,7 @@
       "width": {
         "type": "string",
         "default": "content",
-        "description": "How wide openFor() opens the menu: content (its longest line, between --sf-context-menu--min-inline-size and --sf-context-menu--max-inline-size), trigger (exactly the control that opened it; a long line ends in an ellipsis) or a CSS length. openFor(anchor, {width}) overrides it."
+        "description": "How wide openFor() opens the menu, by what it holds (decision C32; the steps are core's --sf-popup-*-width, compact density moves them with the text): content (a menu: its longest line, between --sf-popup-menu-min-width and --sf-popup-menu-max-width, 10-18rem, 9-16rem compact), list (choices at a field: at least the trigger, up to --sf-popup-list-max-width or the trigger, whichever is wider), panel (a panel with a search and actions: --sf-popup-panel-width or the trigger, whichever is wider, fixed), form and form-wide (a form: --sf-popup-form-width or --sf-popup-form-wide-width; on a phone (below 44rem) a sheet at the bottom of the screen, its whole width, over the scrim; focus goes to its first field and Escape closes it), trigger (exactly the control that opened it; a long line ends in an ellipsis) or a CSS length. Every kind stays inside the screen. While open the menu publishes the trigger's width as --sf-context-menu-trigger-inline-size. openFor(anchor, {width}) overrides it."
       },
       "tabs": {
         "type": [
@@ -949,7 +949,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "71c2f1f39b26000233945595351e3be3fd2fbcc09aa1bc8ff7025b8284c5a2f4"
+        "sha256": "8891f6ee2b388e2ab64052bbfcf8763fc604ddf9d454ce814958337cd3f3c45a"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
@@ -957,7 +957,7 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "0de1d63cda52cd8247af8e221dc4823be49d20f4b7631d5da451050064f76519"
+        "sha256": "3b7ee3b51da9297192f7ac0681d1015485da57ef2613cfe156eeb436d7785524"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

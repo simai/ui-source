@@ -43,3 +43,28 @@
 	--sf-z-index-layer: #{zIndexVars.$z-index-layer};
 	--sf-z-index-layer-step: #{zIndexVars.$z-index-layer-step};
 }
+
+// In the base layer with the ladder it is read with: the density regions
+// (core/scss/_sf_css__density.scss, the same layer, later) redeclare them.
+@layer sf.base {
+	:root {
+		// Popup widths (owner decision C32, 2026-11-09; research
+		// ui-control control/research/2026-11-09-dropdown-widths.md): the steps a
+		// panel that drops down takes, by what it holds. A menu of commands is as
+		// wide as its longest line between the menu's two clamps; a list at a
+		// field is at least the field and grows to the list's step or the field,
+		// whichever is wider; a panel with a search and actions (a views picker)
+		// is the panel's step or its trigger, whichever is wider -- fixed, so the
+		// search never makes it jump; a form in a popup is the form's step, or
+		// the wide one for two columns or long hints. These are the normal
+		// density's; data-sf-density="compact" moves each with the text
+		// (x 14/16, rounded up to the next step: core/scss/_sf_css__density.scss,
+		// generated). The phone keeps them, capped by the screen.
+		--sf-popup-menu-min-width: var(--sf-f0);
+		--sf-popup-menu-max-width: var(--sf-f8);
+		--sf-popup-list-max-width: var(--sf-g0);
+		--sf-popup-panel-width: var(--sf-g0);
+		--sf-popup-form-width: var(--sf-g0);
+		--sf-popup-form-wide-width: var(--sf-g2);
+	}
+}

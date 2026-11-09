@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -26,6 +26,7 @@
       "component.icon-buttons",
       "component.inputs",
       "smart.button-icon",
+      "smart.icon",
       "smart.input",
       "smart.list-item"
     ],
@@ -451,15 +452,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "bda9dcdedfc778448aff5e5ce7bdd88d85632c0ffee76514d7506b74fe8990d0"
+        "sha256": "b94c84190aa7f8e774603a526c8e8d0a76286010ad3a67b86d0a0127239ca445"
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "b70bc038b3fd1524ce97fc09253934dbc38556b9cdb186aad8ede6670e285d42"
+        "sha256": "2b4d4f6f7673b009586e9691819c8091a4228b0c2428a76d0421db55cdc7fe96"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "47984df026287328469c4c2e781e73537b8baac267ba0d239bde7ac420dbd83a"
+        "sha256": "1303352a6a56ae6adf65210deb9b163c96e28421de1d20d2f5e2e29297e6ab6f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

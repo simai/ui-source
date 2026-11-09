@@ -21,13 +21,17 @@ test('dropdown field: a single choice shows its picture in front of the label', 
 
 test('dropdown field: the picture takes the input\'s leading step', async () => {
   const css = await read('component/dropdown/scss/_css__custom.scss');
-  assert.match(css, /\.sf-dropdown\.sf-dropdown \.sf-dropdown-field\.sf-dropdown-field:has\(> \.sf-dropdown-field-visual\) > input:not\(\[type="hidden"\]\) \{\s*--sf-dropdown-input--padding-inline-start: 0;/);
+  assert.match(css, /\.sf-dropdown\.sf-dropdown \.sf-dropdown-field\.sf-dropdown-field:has\(> \.sf-dropdown-field-visual, > sf-icon > \.sf-dropdown-field-visual\) > input:not\(\[type="hidden"\]\) \{\s*--sf-dropdown-input--padding-inline-start: 0;/);
 });
 
 test('dropdown field: the picture is no taller than the field line', async () => {
   const css = await read('component/dropdown/scss/_css__custom.scss');
   for (const [cls, vars] of [['sf-icon', ['--sf-icon--height', '--sf-icon--width']], ['sf-avatar', ['--sf-avatar--height', '--sf-avatar--width']], ['sf-tag-color-icon', ['--sf-tag-color-icon--height', '--sf-tag-color-icon--width']]]) {
-    const start = css.indexOf(`.sf-dropdown .sf-dropdown-field > .${cls}.sf-dropdown-field-visual {`);
+    // An icon is the glyph of an sf-icon (sf-dropdown 1.8.0): both selectors.
+    const head = cls === 'sf-icon'
+      ? `.sf-dropdown .sf-dropdown-field > .sf-icon.sf-dropdown-field-visual,\n.sf-dropdown .sf-dropdown-field > sf-icon > .sf-icon.sf-dropdown-field-visual {`
+      : `.sf-dropdown .sf-dropdown-field > .${cls}.sf-dropdown-field-visual {`;
+    const start = css.indexOf(head);
     assert.notEqual(start, -1, cls);
     const rule = css.slice(start, css.indexOf('}', start));
     for (const name of vars) assert.ok(rule.includes(`${name}: var(--sf-dropdown-tag-line--box);`), `${cls} ${name}`);

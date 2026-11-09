@@ -278,8 +278,10 @@ class SfLookup extends FormField(LookupElement) {
     super.onDisconnected?.();
   }
 
-  // The panel is a manual popover in the top layer, anchored under the frame
-  // at its width; it flips above when there is no room (SF.Position).
+  // The panel is a manual popover in the top layer, anchored under the frame;
+  // it flips above when there is no room (SF.Position). It is at least the
+  // frame and grows with its longest option up to the list's step or the
+  // frame, whichever is wider (decision C32; the cap is the sheet's).
   _syncPanel({force} = {}) {
     const panel = this.querySelector('.sf-lookup-panel');
     const frame = this.querySelector('.sf-lookup-frame');
@@ -292,7 +294,7 @@ class SfLookup extends FormField(LookupElement) {
       }
       if (!this._anchor || this._anchorPanel !== panel) {
         this._anchor?.stop();
-        this._anchor = position().anchor(frame, panel, {side: 'block-end', align: 'start', matchWidth: true, fitHeight: true, autoUpdate: true});
+        this._anchor = position().anchor(frame, panel, {side: 'block-end', align: 'start', matchWidth: 'min', fitHeight: true, autoUpdate: true});
         this._anchorPanel = panel;
       } else {
         this._anchor.update();

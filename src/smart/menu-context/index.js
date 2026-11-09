@@ -31,6 +31,22 @@ const ContextMenuElement = elementFromManifest(manifest, {
 const position = () => globalThis.SF?.Position || BundledPosition;
 const TYPEAHEAD_MS = 500;
 
+// How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
+// class sheet sizes each from core's --sf-popup-*-width steps, which follow
+// the density. "content" (the default) is the menu's rule.
+const WIDTH_KINDS = new Set(["list", "panel", "form", "form-wide"]);
+const FORM_KINDS = new Set(["form", "form-wide"]);
+// On a phone -- below the md breakpoint, where core declares
+// --sf-breakpoint-md -- a form is a sheet at the bottom of the screen. A
+// tablet (md up to lg) has room for the form's step beside its control, so it
+// keeps the anchored form; a sheet there was a full-width strip for a field
+// (C32 acceptance, 2026-11-09).
+const onPhone = () => !getComputedStyle(document.documentElement).getPropertyValue("--sf-breakpoint-md").trim();
+// What a form, a panel or a slot's own markup holds instead of rows: the
+// first of these takes the focus when the menu has no row and no search.
+const TABBABLE = 'input:not([type="hidden"]), select, textarea, button, a[href], [tabindex]:not([tabindex="-1"]), [contenteditable=""], [contenteditable="true"]';
+const editable = (element) => Boolean(element?.matches?.('input, select, textarea, [contenteditable=""], [contenteditable="true"]'));
+
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
 // A row's path in the tree, the way the template writes it into the markup:
 // "2" is a row of the level and "2/1" a row inside that row -- its submenu, or
@@ -662,6 +678,14 @@ class SfContextMenu extends ContextMenuElement {
     return this.querySelector(".sf-context-menu-search-input");
   }
 
+  // The controls of the open surface that Tab reaches, in order.
+  tabbables() {
+    const surface = this.surface() ?? this;
+    return Array.from(surface.querySelectorAll(TABBABLE)).filter((element) => !element.matches(":disabled")
+      && !element.closest('[hidden], [inert]') && element.getClientRects().length > 0
+      && getComputedStyle(element).visibility !== "hidden");
+  }
+
   // One option of a choice row: the menu marks it at once, so the row shows
   // the choice while the host applies it, and stays open -- a theme is tried,
   // not committed. The row is found by its path, so a choice row inside a
@@ -791,9 +815,14 @@ class SfContextMenu extends ContextMenuElement {
   }
 
   // width: "content" (the default) lets the menu be as wide as its longest
-  // line; "trigger" makes it exactly as wide as the control that opened it --
-  // a site switcher, a profile button (owner, 2026-10-14) -- a long line ending
-  // in an ellipsis; a CSS length fixes it. The attribute gives the default.
+  // line, between the menu's clamps; "trigger" makes it exactly as wide as the
+  // control that opened it -- a site switcher, a profile button (owner,
+  // 2026-10-14) -- a long line ending in an ellipsis; a CSS length fixes it.
+  // The kinds of decision C32 size it by what it holds: "list" (at least the
+  // trigger, up to the list's step or the trigger), "panel" (the panel's step
+  // or the trigger, whichever is wider), "form" and "form-wide" (the form's
+  // steps; on a phone a sheet at the bottom, the screen's width). The
+  // attribute gives the default.
   async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width} = {}) {
     if (!(anchor instanceof Element)) return {outcome: "refused", reason: "invalid"};
     if (this._owned) this.close({restoreFocus: false, ask: false});
@@ -840,7 +869,19 @@ class SfContextMenu extends ContextMenuElement {
       surface.style.zIndex = "var(--sf-z-index-9)";
     }
     const content = this.querySelector(".sf-context-menu-content");
-    const sized = width && width !== "content";
+    const kind = WIDTH_KINDS.has(width) ? width : "";
+    // The control's width, for the kinds that read it (C32), public while
+    // the menu is open: a page may size a part of the panel by it.
+    const triggerWidth = () => `${(position().referenceRect?.(anchor) ?? anchor.getBoundingClientRect()).width}px`;
+    surface.style.setProperty("--sf-context-menu-trigger-inline-size", triggerWidth());
+    this._owned.trigger = triggerWidth;
+    if (content) {
+      if (kind) content.setAttribute("data-sf-width", kind);
+      else content.removeAttribute("data-sf-width");
+      this._owned.kindContent = content;
+    }
+    const sheet = FORM_KINDS.has(kind) && onPhone();
+    const sized = width && width !== "content" && !kind;
     if (sized && content) {
       // A display: contents trigger (sf-button-icon, sf-button) is as wide as
       // what it draws (#68).
@@ -853,10 +894,37 @@ class SfContextMenu extends ContextMenuElement {
     }
     // offset: the gap between the trigger and the menu, a token or a length
     // (simai/ui-source#69); left out, the positioning's own --sf-space-1/4.
-    this._owned.position = position().anchor(anchor, surface, {
-      side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
-      ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
-    });
+    // A form on a phone is not anchored: it is a sheet at the bottom of the
+    // screen (the sheet's rules are the class sheet's).
+    const owned = this._owned;
+    const place = (asSheet) => {
+      owned.position?.stop();
+      owned.position = null;
+      owned.sheet = asSheet;
+      if (asSheet) {
+        surface.setAttribute("data-sf-sheet", "");
+        return;
+      }
+      surface.removeAttribute("data-sf-sheet");
+      owned.position = position().anchor(anchor, surface, {
+        side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
+        ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
+        // The trigger may change its width while the menu is open (a field
+        // that grows): the width the kinds read follows it.
+        onPosition: () => {
+          if (this._owned?.anchor === anchor) surface.style.setProperty("--sf-context-menu-trigger-inline-size", triggerWidth());
+        },
+      });
+    };
+    place(sheet);
+    // A form stays what the screen makes it: opened wide and the window
+    // narrowed to a phone, it becomes the sheet; widened, it is anchored again.
+    if (FORM_KINDS.has(kind)) {
+      owned.onResize = () => {
+        if (this._owned === owned && onPhone() !== owned.sheet) place(onPhone());
+      };
+      window.addEventListener("resize", owned.onResize);
+    }
     // A menu it opens owns Escape, so the root says a surface is open: a record
     // panel listening on the document in capture runs before the menu's own
     // listener and would otherwise close with it. The outside press comes from
@@ -867,8 +935,13 @@ class SfContextMenu extends ContextMenuElement {
       this.syncMenuItems();
       const items = this.availableMenuItems();
       const field = this.searchField();
+      const row = focus === "last" ? items[items.length - 1] : items[0];
       if (field && focus !== "last") field.focus({preventScroll: true});
-      else (focus === "last" ? items[items.length - 1] : items[0])?.focus({preventScroll: true});
+      else if (row) row.focus({preventScroll: true});
+      // A form or a slot's own markup has no row: its first control takes
+      // the focus, so the keys -- Escape among them -- reach the menu (C32
+      // acceptance, 2026-11-09: the focus stayed on the trigger).
+      else this.tabbables()[focus === "last" ? this.tabbables().length - 1 : 0]?.focus({preventScroll: true});
     }
     return {outcome: "applied", value: true};
   }
@@ -898,9 +971,11 @@ class SfContextMenu extends ContextMenuElement {
     }
     clearTimeout(this._hoverTimer);
     owned.position?.stop();
+    if (owned.onResize) window.removeEventListener("resize", owned.onResize);
     for (const name of ["--sf-context-menu--min-inline-size", "--sf-context-menu--max-inline-size", "inline-size"]) {
       owned.sizedContent?.style.removeProperty(name);
     }
+    owned.kindContent?.removeAttribute("data-sf-width");
     holdOpenSurfaceMark(this, false);
     const surface = this.surface();
     if (surface) {
@@ -908,6 +983,8 @@ class SfContextMenu extends ContextMenuElement {
       surface.removeAttribute("popover");
       surface.classList.remove("sf-context-menu--open");
       surface.style.removeProperty("z-index");
+      surface.style.removeProperty("--sf-context-menu-trigger-inline-size");
+      surface.removeAttribute("data-sf-sheet");
       if (owned.density !== undefined) {
         if (owned.density === null) surface.removeAttribute("data-sf-density");
         else surface.setAttribute("data-sf-density", owned.density);
@@ -1038,11 +1115,25 @@ class SfContextMenu extends ContextMenuElement {
       this.drillBack();
       return;
     }
-    if (event.key === "Escape" || (event.key === outward && this._owned.parentMenu)) {
+    if (event.key === "Escape" || (event.key === outward && this._owned.parentMenu && !editable(event.target))) {
       event.preventDefault();
       event.stopPropagation();
       this.close({reason: event.key === "Escape" ? "escape" : "api"});
       return;
+    }
+    // In a form or a panel Tab walks its controls. Past the last (or before
+    // the first) it leaves a popup for the page; a sheet, which covers the
+    // page, takes it round to the other end.
+    if (event.key === "Tab" && !this.menuItems().includes(event.target) && this.tabbables().length > 1) {
+      const controls = this.tabbables();
+      const at = controls.indexOf(event.target);
+      const edge = event.shiftKey ? 0 : controls.length - 1;
+      if (at !== edge && at >= 0) return;
+      if (this._owned.sheet) {
+        event.preventDefault();
+        controls[event.shiftKey ? controls.length - 1 : 0].focus();
+        return;
+      }
     }
     if (event.key === "Tab") {
       // Tab leaves the menu for the page; the menu does not trap it.
@@ -1057,7 +1148,8 @@ class SfContextMenu extends ContextMenuElement {
       else this.openSubmenu(row, entry, {focus: "first"});
       return;
     }
-    if (event.key.length === 1 && event.key !== " ") this.typeahead(event);
+    // Letters typed into a form's field are the field's.
+    if (event.key.length === 1 && event.key !== " " && !editable(event.target)) this.typeahead(event);
   }
 
   // Enter in the search field: the first row the query left is chosen, as a
@@ -1127,7 +1219,8 @@ class SfContextMenu extends ContextMenuElement {
       // The menu's size: "1/2" (32px rows, the default) or "1" (40px rows).
       size: { default: "1/2" },
       // How wide the menu opens: "content" (its longest line, the default),
-      // "trigger" (exactly the control that opened it) or a CSS length.
+      // "trigger" (exactly the control that opened it), a kind of decision
+      // C32 ("list", "panel", "form", "form-wide") or a CSS length.
       width: { default: "content" },
       // A panel with tabs (owner, 2026-10-15): the tabs and the way out on a
       // head that never scrolls, the rows of the chosen tab in a body that

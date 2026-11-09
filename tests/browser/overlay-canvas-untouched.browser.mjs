@@ -8,7 +8,7 @@
 // composition-overlay (2026-11-09), which only a served lab ran: the canvas
 // changed for several pairs while every release check was green (a modal
 // drawer closing with nothing focused gave the canvas's own <main> the focus
-// and a temporary tabindex; core.runtime 1.48.0).
+// and a temporary tabindex; core.runtime 1.49.0).
 //
 // On the built bytes, in the light and the dark theme, three loads each, with
 // the mouse and the keyboard (no dispatched events):

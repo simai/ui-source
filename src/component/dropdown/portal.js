@@ -39,6 +39,28 @@ export function triggerOf(root) {
   return root?.querySelector('.sf-dropdown-field, .sf-dropdown-trigger') ?? null;
 }
 
+// A list that stays in place (portal="false") cannot move to stay inside the
+// screen, but it can grow the other way: when the width C32 gives it would
+// cross the screen's inline end, it hangs from the field's end instead of its
+// start (data-sf-align="end"). Measured with the attribute off, each opening.
+export function alignDropdownInPlace(list) {
+  if (!list || list.hidden || list.hasAttribute('data-sf-portal')) {
+    list?.removeAttribute('data-sf-align');
+    return;
+  }
+  list.removeAttribute('data-sf-align');
+  const rect = list.getBoundingClientRect();
+  const field = (list.offsetParent ?? list.parentElement)?.getBoundingClientRect();
+  if (!field || !rect.width) return;
+  const rtl = getComputedStyle(list).direction === 'rtl';
+  const screen = document.documentElement.clientWidth;
+  const over = rtl ? rect.left < 0 : rect.right > screen;
+  // Hung from the end it must fit better: the room on the other side of the
+  // field is larger than the room it had.
+  const room = rtl ? screen - field.left : field.right;
+  if (over && room > (rtl ? field.right : screen - field.left)) list.setAttribute('data-sf-align', 'end');
+}
+
 export function positionDropdownPortal(root, list) {
   const state = portals.get(list);
   if (!state || !root.isConnected || list.hidden) return false;
@@ -61,10 +83,12 @@ export function positionDropdownPortal(root, list) {
     state.anchor = position().anchor(field, list, {
       side: 'block-end',
       align: 'start',
-      // A list matches the width of a field, because a field is as wide as the
-      // list it opens. A trigger of the consumer's own is not: an icon button
+      // A list at a field is at least the field (decision C32): it grows with
+      // its longest option up to the list's step (--sf-popup-list-max-width)
+      // or the field, whichever is wider, and never stands narrower than the
+      // field. A trigger of the consumer's own is not a field: an icon button
       // would make the list the width of a glyph.
-      matchWidth: field.classList.contains('sf-dropdown-field'),
+      matchWidth: field.classList.contains('sf-dropdown-field') ? 'min' : false,
       fitHeight: true,
       autoUpdate: false,
       onPosition: ({side}) => {
@@ -93,6 +117,9 @@ export function openDropdownPortal(root, list, onUnavailable) {
     };
     portals.set(list,state);
     root.__sfDropdownPortalList=list;
+    // Marked before it is placed: the list's cap (C32) is read as it is
+    // anchored, and a list in place keeps the field's box for its own.
+    list.setAttribute('data-sf-portal','');
     if(state.native)list.setAttribute('popover','manual');
     else {
       state.parent=list.parentNode;state.next=list.nextSibling;
@@ -154,6 +181,7 @@ export function closeDropdownPortal(list) {
     if(value)state.wrap.style.setProperty(name,value,priority);else state.wrap.style.removeProperty(name);
   }
   delete list.dataset.placement;delete state.root.dataset.placement;
+  list.removeAttribute('data-sf-portal');
   state.root.classList.remove('sf-dropdown--drop-up','sf-dropdown--drop-down');
   if(state.root.__sfDropdownPortalList===list)delete state.root.__sfDropdownPortalList;
   portals.delete(list);

@@ -1,6 +1,6 @@
 import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction';
 import { bindFormReset } from '../../form-reset-helper';
-import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal } from '../portal';
+import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../portal';
 import { retireFieldSizeClass } from '../../field-size';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 
@@ -453,6 +453,7 @@ function openDropdown(root) {
   syncToggleIcon(root, true);
   applyDropdownViewport(root, 4);
   positionPortalList(root);
+  if (!isPortalDropdown(root)) alignDropdownInPlace(list);
   root.__sfDropdownInteraction?.refresh();
 }
 

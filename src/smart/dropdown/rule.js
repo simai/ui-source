@@ -13,5 +13,8 @@ SF.RuleLoader['cl-dropdown'] = {
     { name: 'cl-list-item' },
     { name: 'cl-input' },
     { name: 'cl-button-icon' },
+    // The picture of a single choice in the field and an icon tag's icon are sf-icon elements,
+    // so their names reach the first icon font request (2026-11-09, as sf-tag 1.3.2).
+    { name: 'cl-icon' },
   ],
 };

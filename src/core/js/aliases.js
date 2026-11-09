@@ -505,7 +505,7 @@ function detach(element) {
 // An install over another one -- a page's table over the one the component
 // installed from its aliases.json -- replaces it while it stands, and its
 // uninstall puts the one under it back, so the element is again as the
-// component made it. Before core.runtime 1.48.0 the component's own old
+// component made it. Before core.runtime 1.49.0 the component's own old
 // names were gone for good after a page's install and uninstall (lab
 // aliases, uninstall-restores). Installing the same table again replaces it in place.
 // A table under another one whose signal ended, or whose own handle was
