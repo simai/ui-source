@@ -15,7 +15,7 @@
     "src/component/tooltip/scss/_css__tooltip_custom.scss",
     "src/component/tooltip/scss/index.scss"
   ],
-  "content_sha256": "5d8bae271b85b3c05f64bd778ccdd8a8796189a6af823a2b87d2ba93b456c239",
+  "content_sha256": "ddb9047e58479218cab0c8885af9798091424cf0fe78e0cff92f6465a46c12fe",
   "dependencies": [
     {
       "id": "core.runtime",
