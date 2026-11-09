@@ -352,6 +352,9 @@ try {
           return value;
         };
         const down = {'1/2': '1/3', 1: '1/2', 2: '1'}[size];
+        // At 1/2 the steppers are inner parts on the icon ladder (C19): 24, not
+        // the 1/3 control height, which C27 moved to 28 on desktop.
+        const length = (name) => { const probe = document.createElement('div'); probe.style.blockSize = `var(${name})`; document.body.append(probe); const value = probe.getBoundingClientRect().height; probe.remove(); return value; };
         const qWrap = quantity.querySelector('.sf-quantity-wrap');
         const iField = input.querySelector('.sf-input-field');
         const stepper = quantity.querySelector('.sf-quantity-count').getBoundingClientRect();
@@ -360,7 +363,7 @@ try {
           quantity: round(wrapRect.height), input: round(iField.getBoundingClientRect().height), control: control(String(size)),
           quantityLine: line(qWrap, qWrap.querySelector('input')), inputLine: line(iField, iField.querySelector('input')),
           fieldTop: round(wrapRect.top - iField.getBoundingClientRect().top),
-          stepper: round(stepper.height), stepperWidth: round(stepper.width), stepperControl: control(down),
+          stepper: round(stepper.height), stepperWidth: round(stepper.width), stepperControl: size === '1/2' ? round(length('--sf-icon-size-3')) : control(down),
           stepperGapTop: round(stepper.top - wrapRect.top), stepperGapStart: round(stepper.left - wrapRect.left),
         }];
       })),

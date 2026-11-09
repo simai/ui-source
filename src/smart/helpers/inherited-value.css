@@ -17,6 +17,16 @@
   .sf-field-inherited-slot--size-1\/2 {
     --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px));
   }
+  /* At 1/2 the reset is a 1/3 icon button, whose padding is the 1/3 control
+     tightness; that grew with the 1/3 control (C27), the reset must not. It is
+     an inner part of the field: the icon ladder (24 = --sf-icon-size-3) with
+     the 1/4 space around its glyph, as the inset above reckons. */
+  .sf-field-inherited-slot--size-1\/2 > .sf-field-reset {
+    --sf-icon-button--padding-top: var(--sf-space-1\/4);
+    --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
+  }
   .sf-field-inherited-slot--size-1 {
     --sf-field-inherited-slot--inset: calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px));
   }

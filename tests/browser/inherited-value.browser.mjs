@@ -240,7 +240,9 @@ try {
           rows.push({
             kind, size,
             field: f.height, plainField: plainField.getBoundingClientRect().height,
-            button: b.height, buttonWidth: b.width, ladder: length(`--sf-ui-${STEP[size].replace('/', '\\/')}--control-height`),
+            button: b.height, buttonWidth: b.width, // At 1/2 the reset is an inner part on the icon ladder (C19): 24, not the
+            // 1/3 control height, which C27 moved to 28 on desktop.
+            ladder: length(size === '1/2' ? '--sf-icon-size-3' : `--sf-ui-${STEP[size].replace('/', '\\/')}--control-height`),
             above: b.top - f.top - border, below: f.bottom - b.bottom - border,
             after: kind === 'input' ? f.right - b.right - border : null,
             clearOfChevron: chevron ? b.right <= chevron.left + 0.5 : true,
