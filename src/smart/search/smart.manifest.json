@@ -398,7 +398,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "90925687132124166e020ca5dd359c6d9f69b43ae79511aba3407abcc904e73b"
+        "sha256": "3c6d588265951635331aad09237f132433d421c8f0b6b5e3faa2d1cf432e7433"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
