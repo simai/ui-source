@@ -28,13 +28,13 @@
     "src/core/scss/_sf_css__surface_places.scss",
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
-    "src/core/scss/mix/_mix__places.scss",
     "src/core/scss/_sf_static_palette.scss",
+    "src/core/scss/mix/_mix__places.scss",
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "f6ea278f614df84dd664bbdcd79414fb08e1dcc80b500735de52a7cbe9d3acc7",
+  "content_sha256": "3726b03204301b477ccc570eb9678152d86f62f638916991bca25cd1dffa68df",
   "dependencies": [
     {
       "id": "tokens.elevation",

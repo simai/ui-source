@@ -385,7 +385,7 @@
       },
       {
         "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
-        "sha256": "519728181256ecd4ed93206bf516c6a49f97eeb9c6972aeb8ac6d4ed6283ee9b"
+        "sha256": "ad605ee51b010f5756aaed6c375582303d794be8d30d2a549941bb41d619042d"
       },
       {
         "path": "src/smart/editor-inline/rule.js",

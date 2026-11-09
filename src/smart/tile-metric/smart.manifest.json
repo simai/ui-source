@@ -311,7 +311,7 @@
       },
       {
         "path": "src/smart/tile-metric/scss/_smart__tile-metric.scss",
-        "sha256": "3806333352414a5f753604bf4132a9836c9e2ec2ea2cb49fd896309984fe6125"
+        "sha256": "7e241488d976184093aaffa14d228231e47c168b72799fbb47ec72ded1541f2f"
       },
       {
         "path": "src/smart/tile-metric/rule.js",

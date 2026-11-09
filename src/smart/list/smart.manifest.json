@@ -767,7 +767,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "67d567633add79d86ee64dd6ce2b8e8a2dc2d0002c38ab9df3d5b8bb4a8e26c8"
+        "sha256": "5ddd2039648a4ecffcdb35c81c7a6f60669241256dbab466993b4c98aec823c4"
       },
       {
         "path": "src/smart/list/lang/en.json",
