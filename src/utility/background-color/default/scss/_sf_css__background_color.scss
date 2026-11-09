@@ -63,7 +63,12 @@
     // не может, у ступеней поверхности его нет в теме. Список ролей с состояниями
     // лежит рядом и до сих пор не читался, поэтому hover:bg-transparent просил
     // --sf-transparent-hover, которого никто не объявлял.
-    @each $event in ('active', 'hover') {
+    //
+    // Hover first, then active: a block with both (hover:bg-x active:bg-y) is
+    // hovered while it is pressed, and the later rule wins, so the pressed
+    // colour has to come last, as :active follows :hover. They only paint:
+    // the place stays the block's own (C16).
+    @each $event in ('hover', 'active') {
         @each $bg-color-name, $bg-color-value in $back-color-hover-active-array {
             .#{$event}\:bg-#{$bg-color-name}:#{$event} {
                 background-color: var(--sf-#{$bg-color-value}-#{$event});
