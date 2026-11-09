@@ -552,6 +552,27 @@
           "check": "document.querySelector(\"#settings [data-sf-entry='0'] .sf-context-menu-item-label\").getBoundingClientRect().height > 20"
         }
       ]
+    },
+    {
+      "id": "p18-items-property",
+      "title": "the older list form set as a property draws its rows, and Escape inside it closes it",
+      "covers": "settings.items (property), events.close",
+      "steps": [
+        {
+          "script": "(() => { const menu = document.createElement('sf-menu-context'); menu.id = 'legacy'; menu.setAttribute('aria-label', 'Настройки меню'); menu.setAttribute('popup', ''); menu.items = [{component: 'sf-button', props: {text: 'Сохранить'}}, {component: 'sf-button', props: {text: 'Скрыть'}}]; document.getElementById('area').append(menu); return true; })()",
+          "wait": 600
+        },
+        {
+          "check": "[...document.querySelectorAll('#legacy sf-button')].map((button) => button.getAttribute('text')).join('|') === 'Сохранить|Скрыть'"
+        },
+        {
+          "script": "(document.getElementById('legacy').openFor(document.getElementById('anchor')), true)",
+          "wait": 500
+        },
+        {
+          "check": "document.querySelector('#legacy .sf-context-menu').getBoundingClientRect().height > 40"
+        }
+      ]
     }
   ]
 }

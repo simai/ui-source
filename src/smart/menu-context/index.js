@@ -1211,6 +1211,11 @@ class SfContextMenu extends ContextMenuElement {
 
     return this.createTemplateContext({
       ...props,
+      // The older list form set as a property (`.items=${…}`, sf-admin-menu's
+      // settings menu) is kept by the manifest's accessor, which the props
+      // above do not read: they gave the default, an empty list, and the menu
+      // drew an empty panel. JSON in the attribute is still the props' reading.
+      items: this.hasAttribute("items") ? props.items : this.items,
       entries: this.entries,
       search: level.search ?? this.search,
       query: this.query,
