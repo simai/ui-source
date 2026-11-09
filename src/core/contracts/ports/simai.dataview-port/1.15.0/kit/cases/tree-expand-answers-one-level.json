@@ -1,0 +1,53 @@
+{
+  "id": "tree-expand-answers-one-level",
+  "intent": "tree.expand",
+  "capability": "tree",
+  "summary": "Expanding a node answers its children alone, named by tree.parent, paged like a query.",
+  "given": {
+    "records": [
+      {
+        "id": "site",
+        "parent": null,
+        "has_children": true,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      },
+      {
+        "id": "about",
+        "parent": "site",
+        "has_children": false,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      },
+      {
+        "id": "team",
+        "parent": "about",
+        "has_children": false,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "tree.expand",
+    "payload": {
+      "id": "site",
+      "cursor": null,
+      "sequence": 2
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "tree"
+    ],
+    "note": "records holds about and not team; tree is {mode: tree, parent: site}. A child that has children of its own says has_children: true."
+  }
+}

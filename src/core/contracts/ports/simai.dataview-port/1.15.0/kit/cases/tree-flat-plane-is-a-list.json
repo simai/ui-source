@@ -1,0 +1,43 @@
+{
+  "id": "tree-flat-plane-is-a-list",
+  "intent": "query.change",
+  "capability": "tree",
+  "summary": "A plane with no nesting answers mode flat, and the view is an ordinary list.",
+  "given": {
+    "plane": {
+      "kind": "flat"
+    },
+    "records": [
+      {
+        "id": "g1",
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "query": {
+        "search": "",
+        "filters": {},
+        "sort": [],
+        "window": {
+          "cursor": null,
+          "limit": 50
+        }
+      },
+      "sequence": 1
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "tree"
+    ],
+    "note": "tree.mode is flat; records carry no parent and no has_children."
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "query-echoes-applied",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "The host answers a search and filter request and echoes what it actually applied.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ],
+    "filters_supported": [
+      "status"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "search": "ann",
+        "filters": {
+          "status": [
+            "active"
+          ]
+        },
+        "sort": [
+          {
+            "key": "name",
+            "direction": "asc"
+          }
+        ],
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "total",
+      "echo"
+    ],
+    "echo_must_equal": {
+      "search": "ann",
+      "filters": {
+        "status": [
+          "active"
+        ]
+      },
+      "sort": [
+        {
+          "key": "name",
+          "direction": "asc"
+        }
+      ],
+      "page": 1,
+      "per_page": 25
+    },
+    "note": "filters_chosen equals what was asked; filters equals what was applied; filters_rejected is empty."
+  }
+}
