@@ -2245,6 +2245,70 @@ export function installIconSubsetRuntime(
     }
   };
 
+  // Resolves when the page's first icon request may go: after sf-loader-ready,
+  // then a frame after every Smart tag the Loader asked for and still holds is
+  // defined (a tag drawn by one just defined is waited for in the next round).
+  // A page slow to become ready lets it go at budgetMs -- unless a Smart tag
+  // the Loader asked for is still on the way: the elements that draw the
+  // page's other icons are not there yet, and a request sent now holds a few
+  // names and costs a second whole font a moment later (probe tag-icon-glyph
+  // under load: the button's search alone at 2.5 s, the tags' names at 3 s).
+  // Then it waits for those tags, up to capMs.
+  SFLoaderPlugin.prototype.holdFirstIconRequest = async function (
+    budgetMs = 2500,
+    capMs = 8000,
+  ) {
+    const started = Date.now();
+    const capLeft = () => Math.max(0, started + capMs - Date.now());
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const frame = () =>
+      Promise.race([
+        new Promise((resolve) =>
+          typeof requestAnimationFrame === "function"
+            ? requestAnimationFrame(() => setTimeout(resolve, 0))
+            : setTimeout(resolve, 16),
+        ),
+        sleep(capLeft()),
+      ]);
+    const registry = window.customElements;
+    // Asked for and not defined yet. A store installed by an older bundle has
+    // no asked(); its held() also lists the tags Core held while parsing.
+    const onTheWay = () => {
+      const pending = window.SF?.__internal?.pendingTags;
+      const tags = pending?.asked?.() || pending?.held?.() || [];
+      return registry ? tags.filter((tag) => !registry.get(tag)) : [];
+    };
+
+    await new Promise((resolve) => {
+      let timer = 0;
+      const release = () => {
+        window.removeEventListener("sf-loader-ready", release);
+        clearTimeout(timer);
+        resolve();
+      };
+      const check = () => {
+        const elapsed = Date.now() - started;
+        if (elapsed >= capMs || (elapsed >= budgetMs && !onTheWay().length)) {
+          release();
+          return;
+        }
+        timer = setTimeout(check, Math.max(50, budgetMs - elapsed));
+      };
+      window.addEventListener("sf-loader-ready", release);
+      timer = setTimeout(check, budgetMs);
+    });
+
+    for (let round = 0; round < 8 && capLeft() > 0; round += 1) {
+      await frame();
+      const waiting = onTheWay();
+      if (!waiting.length) return;
+      await Promise.race([
+        Promise.all(waiting.map((tag) => registry.whenDefined(tag))),
+        sleep(capLeft()),
+      ]);
+    }
+  };
+
   SFLoaderPlugin.prototype.loadFonts = async function () {
     if (!this.isIconSubsetEnabled()) {
       return false;
@@ -2257,18 +2321,19 @@ export function installIconSubsetRuntime(
     // before the page showed its icons. A frame after ready, the elements have
     // drawn theirs and one request carries them all. A page that is slow to
     // become ready sends it on the timer.
+    //
+    // Ready is not yet every element drawn: it is dispatched when the Smart
+    // bundles' scripts have run, and a bundle whose element is defined a
+    // moment later (sf-tag after sf-button) draws its sf-icon after the frame
+    // that followed ready. Under load the first request then held the
+    // button's search alone and the tags' names went in a second request,
+    // their glyphs blank until a second font came back (probe tag-icon-glyph,
+    // pair 1110). So the hold also waits for the Smart tags the Loader still
+    // holds -- asked for, not yet defined -- and a frame after they are
+    // (holdFirstIconRequest).
     if (this.eventSend === false && !this.iconFirstRequestReleased) {
       if (!this.iconFirstRequestHeld) {
-        this.iconFirstRequestHeld = new Promise((resolve) => {
-          let timer = 0;
-          const release = () => {
-            window.removeEventListener("sf-loader-ready", release);
-            clearTimeout(timer);
-            requestAnimationFrame(() => setTimeout(resolve, 0));
-          };
-          timer = setTimeout(release, 2500);
-          window.addEventListener("sf-loader-ready", release);
-        }).then(() => {
+        this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
           this.iconFirstRequestHeld = null;
           return this.loadFonts();

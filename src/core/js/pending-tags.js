@@ -117,6 +117,9 @@ export function installPendingTags(win = typeof window !== 'undefined' ? window 
     releaseUnasked,
     isHeld: (tag) => held.has(String(tag || '').toLowerCase()),
     held: () => [...held.keys()],
+    // The tags whose module the Loader asked for and that are not defined yet
+    // (the first icon request waits for them; iconSubsetRuntime.js).
+    asked: () => [...held].filter(([, entry]) => entry.asked).map(([tag]) => tag),
   };
   internal.pendingTags = api;
   return api;

@@ -400,6 +400,105 @@ test('the first request waits for the page to become ready and carries every ico
   }
 });
 
+// Pair 1110, probe tag-icon-glyph: a cold page under load sent the button's
+// search alone at the 2.5 s budget while sf-tag's bundle was still on the way,
+// and the tags' names went in a second request. The first request waits for
+// the Smart tags the Loader asked for, after ready and past the budget.
+const withHeldTags = async (run) => {
+  const defined = new Map();
+  const waiters = new Map();
+  const asked = new Set();
+  const listeners = new Map();
+  const original = {
+    addEventListener: globalThis.window.addEventListener,
+    removeEventListener: globalThis.window.removeEventListener,
+    requestAnimationFrame: globalThis.requestAnimationFrame,
+    customElements: globalThis.window.customElements,
+    SF: globalThis.window.SF,
+  };
+  globalThis.window.addEventListener = (type, fn) => listeners.set(type, fn);
+  globalThis.window.removeEventListener = (type) => listeners.delete(type);
+  globalThis.requestAnimationFrame = (fn) => globalThis.setTimeout(fn, 0);
+  globalThis.window.customElements = {
+    get: (tag) => defined.get(tag),
+    whenDefined: (tag) => new Promise((resolve) => waiters.set(tag, resolve)),
+  };
+  const internal = {pendingTags: {held: () => [...asked], asked: () => [...asked]}};
+  globalThis.window.SF = {...(original.SF || {}), __internal: internal};
+  const define = (tag) => {
+    defined.set(tag, class {});
+    asked.delete(tag);
+    waiters.get(tag)?.();
+  };
+  try {
+    await run({asked, define, listeners});
+  } finally {
+    globalThis.window.addEventListener = original.addEventListener;
+    globalThis.window.removeEventListener = original.removeEventListener;
+    globalThis.requestAnimationFrame = original.requestAnimationFrame;
+    globalThis.window.customElements = original.customElements;
+    globalThis.window.SF = original.SF;
+  }
+};
+const iconState = () => new Map([['loading', false], ['type', new Set(['outlined'])]]);
+
+test('the first request waits after ready for a Smart tag the Loader asked for and is still defining', async () => {
+  await withHeldTags(async ({asked, define, listeners}) => {
+    const loader = new TestLoader();
+    loader.eventSend = false;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    asked.add('sf-tag');
+    loader.uniqueIcons.set('search', iconState());
+    const first = loader.loadFonts();
+    loader.eventSend = true;
+    listeners.get('sf-loader-ready')();
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 20));
+    assert.deepEqual(calls, [], 'ready with sf-tag still on the way sends nothing');
+    loader.uniqueIcons.set('label', iconState());
+    define('sf-tag');
+    await first;
+    assert.deepEqual(calls, [['label', 'search']]);
+  });
+});
+
+test('a page slow to become ready holds the first request past the budget while an asked Smart tag is on the way', async () => {
+  await withHeldTags(async ({asked, define}) => {
+    const loader = new TestLoader();
+    loader.eventSend = false;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    loader.holdFirstIconRequest = ((hold) => function () { return hold.call(this, 30, 400); })(loader.holdFirstIconRequest);
+    asked.add('sf-tag');
+    loader.uniqueIcons.set('search', iconState());
+    const first = loader.loadFonts();
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 120));
+    assert.deepEqual(calls, [], 'past the budget, sf-tag on the way: still held');
+    loader.uniqueIcons.set('sell', iconState());
+    define('sf-tag');
+    await first;
+    assert.deepEqual(calls, [['search', 'sell']]);
+  });
+});
+
+test('a page slow to become ready with nothing on the way sends the first request at the budget', async () => {
+  await withHeldTags(async () => {
+    const loader = new TestLoader();
+    loader.eventSend = false;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    loader.holdFirstIconRequest = ((hold) => function () { return hold.call(this, 30, 400); })(loader.holdFirstIconRequest);
+    loader.uniqueIcons.set('search', iconState());
+    const started = Date.now();
+    await loader.loadFonts();
+    assert.deepEqual(calls, [['search']]);
+    assert.ok(Date.now() - started < 300, 'released at the budget, not the cap');
+  });
+});
+
 test('icons the page declares in icons.preload go in the first request, tracked as scanned ones', async () => {
   const loader = new TestLoader();
   const calls = [];
