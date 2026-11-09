@@ -53,6 +53,32 @@ playwright is missing, resolves outside the repository or differs from the
 declared version. A git worktree without `node_modules` borrows the main
 checkout's through a symlink, so install there first.
 
+#### Working in a git worktree
+
+Each worktree needs the declared playwright before its first probe or
+first-paint run, in one of two ways:
+
+- Borrow (no install): keep the main checkout at a `main` that declares
+  playwright and run `yarn install --frozen-lockfile` there once. A worktree
+  with no `node_modules` of its own then links the main checkout's on its first
+  probe run. The link is made only when the main checkout holds exactly the
+  declared version; a main checkout from before the devDependency (or behind a
+  version bump) has none to lend, and the run stops with what to do.
+- Install (about a second from the yarn cache, about 70 MB):
+
+  ```bash
+  yarn install --frozen-lockfile --prefer-offline --ignore-scripts
+  ```
+
+  `--ignore-scripts` is safe here: no dependency needs an install script for
+  the checks, and playwright downloads no browser anyway. The folder goes with
+  the worktree when it is removed.
+
+Do not run `yarn install` in a worktree whose `node_modules` is a borrowed
+link: it would rewrite the main checkout's `node_modules` to the worktree's
+lockfile. Remove the link first (`rm node_modules`, a symlink, not the folder
+it points to), then install.
+
 Installing the package downloads no browser. Point `PLAYWRIGHT_BROWSERS_PATH`
 at a folder holding the build the pinned version wants (the release route uses
 `<GitHub>/.playwright-browsers`, because the shared
