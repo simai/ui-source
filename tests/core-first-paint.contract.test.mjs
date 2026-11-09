@@ -227,7 +227,7 @@ test('the first render replaces static markup in the same task, and keeps slots'
   // shows both and none shows neither.
   assert.match(
     slice(base, '  async renderComponent(', '  shouldWaitForStylesReady() {'),
-    /this\.prepareRenderContainer\(changedAttributes\);\s*this\.markStylePending\(this\);\s*render\(templateResult, this\);/u,
+    /this\.prepareRenderContainer\(changedAttributes\);\s*this\.markStylePending\(this\);[\s\S]{0,400}?drawing\(\(\) => render\(templateResult, this\)\);/u,
   );
 });
 

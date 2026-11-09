@@ -36,8 +36,6 @@
 // without one. One whose `isConnected` is false is passed over, so a layer
 // removed without closing cannot hold every key on the page.
 
-import {densityOf} from './density.js';
-
 const STACK_KEY = Symbol.for('sf.layerStack');
 
 // The scale's defaults, the same as core's tokens: 9000 is where the modal
@@ -459,6 +457,17 @@ const THEMES = ['theme-dark', 'theme-light'];
  * where the portal stands -- `variables` by name, `prefixes` by the start of
  * the name. It looks and speaks as if it stood where its host stands.
  */
+// The density a host stands in (C22; core/js/density.js says the same): the
+// nearest region's, or "normal" under an explicit size. Written here, not
+// imported: this module is loaded on its own (shared runtime, tests).
+function densityOf(from) {
+  for (let node = from; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
+    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
+  }
+  return null;
+}
+
 export function carryLayerOrigin(portal, host, {variables = [], prefixes = []} = {}) {
   if (!portal || !host?.isConnected) return;
   const doc = host.ownerDocument;
