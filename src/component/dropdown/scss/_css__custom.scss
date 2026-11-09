@@ -139,8 +139,19 @@
   left: auto;
   right: auto;
   inset-inline-start: 0;
+  /* Its own width between the two: hung from the field's start, an
+     absolutely placed list shrinks to the field and never reached the step
+     (C32 acceptance, 2026-11-09). */
+  inline-size: max-content;
   min-inline-size: 100%;
-  max-inline-size: max(100%, var(--sf-popup-list-max-width));
+  max-inline-size: max(100%, min(var(--sf-popup-list-max-width), calc(100vi - var(--sf-space-1))));
+}
+
+/* Near the screen's inline end the list hangs from the field's end; the
+   dropdown measures this on opening. */
+.sf-dropdown .sf-list[data-sf-align="end"]:not([data-sf-portal], .sf-list--free-width) {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
 }
 
 .sf-list[data-sf-portal]:not(.sf-list--free-width) {
@@ -239,7 +250,8 @@
 /* The picture of a single choice, in front of its label in the field. The
    ceiling is the field line: a picture's own box must never set the field's
    height, whatever kind of picture comes next. */
-.sf-dropdown .sf-dropdown-field > .sf-dropdown-field-visual {
+.sf-dropdown .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual {
   flex-shrink: 0;
   max-block-size: var(--sf-dropdown-tag-line--box);
 }
@@ -248,13 +260,16 @@
    label keeps from its picture, so the value and the option label start on
    one axis. The step is the picture's margin alone: the field's own gap would
    add 4px that the option does not have. */
-.sf-dropdown .sf-dropdown-field:has(> .sf-dropdown-field-visual) {
+.sf-dropdown .sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) {
   column-gap: 0;
 }
 
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1\/2--text-space-x); }
-.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1--text-space-x); }
-.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-2--text-space-x); }
+.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1\/2--text-space-x); }
+.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1--text-space-x); }
+.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-2--text-space-x); }
 
 /* A flag keeps its proportions at the optical size of an icon on the same
    line: three quarters of it, as an icon's glyph fills about three quarters of
@@ -265,8 +280,11 @@
 
 /* No taller than the field line, or a field with a picture grows past a field
    without one (an avatar made a size 1 field 50px, an icon 42px). The colour
-   dot is sized here because its size otherwise lives on the tag around it. */
-.sf-dropdown .sf-dropdown-field > .sf-icon.sf-dropdown-field-visual {
+   dot is sized here because its size otherwise lives on the tag around it. An
+   icon is the glyph of an sf-icon (display: contents), so its name reaches the
+   first icon font request (sf-dropdown 1.8.0). */
+.sf-dropdown .sf-dropdown-field > .sf-icon.sf-dropdown-field-visual,
+.sf-dropdown .sf-dropdown-field > sf-icon > .sf-icon.sf-dropdown-field-visual {
   --sf-icon--font-size: var(--sf-dropdown-tag-line--box);
   --sf-icon--height: var(--sf-dropdown-tag-line--box);
   --sf-icon--width: var(--sf-dropdown-tag-line--box);
@@ -292,7 +310,7 @@
 /* The picture takes the input's leading step, so the label follows it at one
    gap instead of a gap plus the input's own padding. Doubled class: the
    per-size input rules set the same variable. */
-.sf-dropdown.sf-dropdown .sf-dropdown-field.sf-dropdown-field:has(> .sf-dropdown-field-visual) > input:not([type="hidden"]) {
+.sf-dropdown.sf-dropdown .sf-dropdown-field.sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) > input:not([type="hidden"]) {
   --sf-dropdown-input--padding-inline-start: 0;
 }
 

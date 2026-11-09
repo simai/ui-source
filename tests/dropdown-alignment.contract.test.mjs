@@ -34,9 +34,10 @@ test('dropdown alignment: an option is a dropping panel row, its content --sf-sp
   assert.match(custom, /--sf-list-item-container--padding-inline-start: 0;/);
   assert.ok(!custom.includes('var(--sf-list--padding-left, 0px)'), 'no option gives the list inset back');
   for (const size of SIZES) {
-    assert.ok(custom.includes(`.sf-dropdown.sf-dropdown--size-${size} .sf-dropdown-field > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-${size}--text-space-x); }`), `label step ${size}`);
+    // The picture, or the glyph of the sf-icon that draws it (sf-dropdown 1.8.0).
+    assert.ok(custom.includes(`.sf-dropdown.sf-dropdown--size-${size} .sf-dropdown-field > .sf-dropdown-field-visual,\n.sf-dropdown.sf-dropdown--size-${size} .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-${size}--text-space-x); }`), `label step ${size}`);
   }
-  assert.match(custom, /\.sf-dropdown \.sf-dropdown-field:has\(> \.sf-dropdown-field-visual\) \{\s*column-gap: 0;/);
+  assert.match(custom, /\.sf-dropdown \.sf-dropdown-field:has\(> \.sf-dropdown-field-visual, > sf-icon > \.sf-dropdown-field-visual\) \{\s*column-gap: 0;/);
   assert.match(custom, /inset-inline-end: calc\(var\(--sf-dropdown-field--padding-inline-end\) - var\(--sf-icon-button--padding-inline-end, 0px\)\);/);
 });
 

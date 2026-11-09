@@ -23,8 +23,22 @@
 //   form-wide    width="form-wide": the wide form's step; on the phone a sheet
 //   dropdown-narrow / dropdown-wide  sf-dropdown at a 10rem / 26rem field
 //   lookup-narrow / lookup-wide      sf-input-lookup at a 10rem / 26rem frame
+//   inplace-start / inplace-end      sf-dropdown portal="false" at a 10rem field,
+//                                    at the start and at the inline end of the screen
 // The list rule: at least the field, no wider than max(field, the list's step).
 // Every popup stays inside the screen. The console stays clean.
+//
+// The acceptance fixes (DEV, 2026-11-09):
+//   - an in-place list widens past its field, and near the inline end hangs
+//     from the field's end (data-sf-align="end");
+//   - form, wide form and panel opened with the default focus put the focus
+//     inside (the form's first field, the panel's search) and close on Escape,
+//     the focus back on the trigger -- popup and phone sheet alike;
+//   - Tab inside a form stays in it (a sheet takes it round);
+//   - a form opened wide becomes the sheet when the window narrows to a phone,
+//     and is anchored again when it widens;
+//   - the sheet keeps clear of the safe area (env(safe-area-inset-bottom));
+//   - a 768 tablet (md up to lg) keeps the anchored form at its step.
 //
 // --measure-only records the numbers without asserting (the base pair's
 // "before" column): the menus open without a kind there, as a page opened
@@ -115,6 +129,8 @@ main{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sf-spac
   <div class="f26"><sf-dropdown id="dd-wide" label="Статус" name="s2" options='${j(DD_SHORT)}'></sf-dropdown></div>
   <div class="f10"><sf-input-lookup id="lk-narrow" label="Сотрудник" name="u1" min-length="0"></sf-input-lookup></div>
   <div class="f26"><sf-input-lookup id="lk-wide" label="Сотрудник" name="u2" min-length="0"></sf-input-lookup></div>
+  <div class="f10"><sf-dropdown id="ip-start" portal="false" label="Статус" name="s3" options='${j(DD_LONG)}'></sf-dropdown></div>
+  <div class="f10" style="align-self:flex-end"><sf-dropdown id="ip-end" portal="false" label="Статус" name="s4" options='${j(DD_LONG)}'></sf-dropdown></div>
 </main>
 <sf-menu-context id="m-short" popup aria-label="Действия" entries='${j(SHORT)}'></sf-menu-context>
 <sf-menu-context id="m-long" popup aria-label="Действия" entries='${j(LONG)}'></sf-menu-context>
@@ -132,7 +148,10 @@ const MENUS = [
   ['list-narrow', 'm-list', 't-narrow'], ['list-wide', 'm-list-short', 't-wide'],
   ['panel-narrow', 'm-panel', 't-narrow'], ['panel-wide', 'm-panel', 't-wide'],
   ['tabs', 'm-tabs', 't-narrow'], ['form', 'm-form', 't-narrow'], ['form-wide', 'm-form-wide', 't-narrow']];
-const FIELDS = [['dropdown-narrow', 'dd-narrow'], ['dropdown-wide', 'dd-wide'], ['lookup-narrow', 'lk-narrow'], ['lookup-wide', 'lk-wide']];
+const FIELDS = [['dropdown-narrow', 'dd-narrow'], ['dropdown-wide', 'dd-wide'], ['lookup-narrow', 'lk-narrow'], ['lookup-wide', 'lk-wide'],
+  ['inplace-start', 'ip-start'], ['inplace-end', 'ip-end']];
+// [case, menu id, what takes the focus]
+const FOCUSED = [['form', 'm-form', 'input'], ['form-wide', 'm-form-wide', 'input'], ['panel', 'm-panel', '.sf-context-menu-search-input']];
 
 // C32, in px (rem = 16): normal (desktop and phone) and compact (desktop).
 const STEPS = {
@@ -215,8 +234,12 @@ async function measureField(tab, id) {
     const list = lookup ? host.querySelector('.sf-lookup-panel') : (host.__sfDropdownPortalList || host.querySelector('.sf-list'));
     const field = lookup ? host.querySelector('.sf-lookup-frame') : host.querySelector('.sf-dropdown-field');
     const l = list.getBoundingClientRect(); const f = field.getBoundingClientRect();
+    const option = list.querySelector('[role="option"]');
     return {width: Math.round(l.width * 10) / 10, field: Math.round(f.width * 10) / 10, shown: l.width > 0 && l.height > 0,
-      inside: l.left >= -0.5 && l.right <= document.documentElement.clientWidth + 0.5};
+      inside: l.left >= -0.5 && l.right <= document.documentElement.clientWidth + 0.5,
+      portal: list.hasAttribute('data-sf-portal'), align: list.getAttribute('data-sf-align') || '',
+      endGap: Math.round(Math.abs(l.right - f.right)), startGap: Math.round(Math.abs(l.left - f.left)),
+      row: option ? Math.round(option.getBoundingClientRect().height) : 0};
   }, id);
   return value;
 }
@@ -236,6 +259,83 @@ for (const theme of ['light', 'dark']) {
   scenes.push({theme, width: 1280, density: 'normal', label: 'normal'});
   scenes.push({theme, width: 1280, density: 'compact', label: 'compact'});
   scenes.push({theme, width: 390, density: 'compact', label: 'phone'});
+  scenes.push({theme, width: 768, density: 'compact', label: 'tablet'});
+}
+
+// Default focus, Escape, Tab: opened as a page opens it, by the trigger.
+async function focusAndEscape(tab, tag, label) {
+  for (const [name, menu, target] of FOCUSED) {
+    const state = await tab.evaluate(async ([menuId, selector]) => {
+      const host = document.getElementById(menuId);
+      const trigger = document.getElementById('t-narrow');
+      trigger.focus();
+      await host.openFor(trigger);
+      await new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle)));
+      const active = document.activeElement;
+      return {inside: host.contains(active), matches: Boolean(active?.matches?.(selector)), tag: active?.tagName,
+        sheet: host.querySelector(':scope > .sf-context-menu').hasAttribute('data-sf-sheet')};
+    }, [menu, target]);
+    ok(`${tag} ${name}: opening puts the focus inside (${target})`, state.inside && state.matches, JSON.stringify(state));
+    if (name.startsWith('form')) {
+      // Tab from the field goes on inside the form, never closing it.
+      await tab.keyboard.press('Tab');
+      const afterTab = await tab.evaluate((menuId) => {
+        const host = document.getElementById(menuId);
+        return {open: host.querySelector(':scope > .sf-context-menu').classList.contains('sf-context-menu--open'), inside: host.contains(document.activeElement)};
+      }, menu);
+      ok(`${tag} ${name}: Tab walks the form`, afterTab.open && afterTab.inside, JSON.stringify(afterTab));
+      if (state.sheet) {
+        // From the last control round to the first.
+        await tab.keyboard.press('Tab');
+        await tab.keyboard.press('Tab');
+        const wrapped = await tab.evaluate((menuId) => {
+          const host = document.getElementById(menuId);
+          return {open: host.querySelector(':scope > .sf-context-menu').classList.contains('sf-context-menu--open'), inside: host.contains(document.activeElement)};
+        }, menu);
+        ok(`${tag} ${name}: a sheet keeps Tab inside`, wrapped.open && wrapped.inside, JSON.stringify(wrapped));
+      }
+    }
+    await tab.keyboard.press('Escape');
+    await frames(tab);
+    const closed = await tab.evaluate((menuId) => {
+      const host = document.getElementById(menuId);
+      return {open: host.querySelector(':scope > .sf-context-menu').classList.contains('sf-context-menu--open'), back: document.activeElement?.id};
+    }, menu);
+    ok(`${tag} ${name}: Escape closes it, the focus back on the trigger`, !closed.open && closed.back === 't-narrow', JSON.stringify(closed));
+    if (closed.open) await closeMenu(tab, menu);
+  }
+}
+
+// A form opened wide, the window narrowed to a phone and widened again.
+async function narrowAndWiden(tab, tag, width) {
+  const read = () => tab.evaluate(() => {
+    const surface = document.querySelector('#m-form > .sf-context-menu');
+    const r = surface.getBoundingClientRect();
+    return {sheet: surface.hasAttribute('data-sf-sheet'), left: Math.round(r.left), width: Math.round(r.width), bottom: Math.round(r.bottom), screen: innerWidth, height: innerHeight};
+  });
+  await tab.evaluate(async () => document.getElementById('m-form').openFor(document.getElementById('t-narrow'), {focus: 'none'}));
+  await frames(tab);
+  const wide = await read();
+  await tab.setViewportSize({width: 390, height: 900});
+  await tab.waitForTimeout(200);
+  const narrow = await read();
+  await tab.setViewportSize({width, height: 900});
+  await tab.waitForTimeout(200);
+  const again = await read();
+  ok(`${tag} form: anchored wide, a sheet once narrowed, anchored once widened`,
+    !wide.sheet && narrow.sheet && narrow.left === 0 && near(narrow.width, 390) && near(narrow.bottom, narrow.height) && !again.sheet && near(again.width, wide.width),
+    JSON.stringify({wide, narrow, again}));
+  await closeMenu(tab, 'm-form');
+}
+
+// The sheet's content adds the safe area to its bottom inset.
+async function safeArea(tab, tag) {
+  const found = await tab.evaluate(() => {
+    const walk = (rules) => Array.from(rules).some((rule) => (rule.cssRules && walk(rule.cssRules))
+      || (rule.selectorText?.includes('data-sf-sheet') && rule.style?.getPropertyValue('padding-bottom').includes('safe-area-inset-bottom')));
+    return Array.from(document.styleSheets).some((sheet) => { try { return walk(sheet.cssRules); } catch { return false; } });
+  });
+  ok(`${tag} sheet: bottom inset reads env(safe-area-inset-bottom)`, found);
 }
 
 for (const scene of scenes) {
@@ -275,8 +375,10 @@ for (const scene of scenes) {
       }
       await closeMenu(tab, menu);
     }
+    let anchoredRow = 0;
     for (const [name, id] of FIELDS) {
       const f = await measureField(tab, id);
+      if (name === 'dropdown-narrow') anchoredRow = f.row;
       if (load === 1) {
         record[name] = f;
         if (shots) await tab.screenshot({path: join(shots, `${key}-${name}.png`)});
@@ -285,10 +387,24 @@ for (const scene of scenes) {
         ok(`${tag} ${name}: shown, inside the screen`, f.shown && f.inside, JSON.stringify(f));
         ok(`${tag} ${name}: at least the field (${f.width} >= ${f.field})`, f.width >= f.field - 0.6);
         ok(`${tag} ${name}: at most max(field, ${steps.listMax}) (${f.width})`, f.width <= Math.max(f.field, steps.listMax) + 0.6);
-        if (name.endsWith('-narrow')) ok(`${tag} ${name}: long options widen it past the field (${f.width} > ${f.field})`, f.width > f.field + 8);
+        if (name.endsWith('-narrow') && !name.startsWith('inplace')) ok(`${tag} ${name}: long options widen it past the field (${f.width} > ${f.field})`, f.width > f.field + 8);
         if (name.endsWith('-wide')) ok(`${tag} ${name}: short options keep the field (${f.width} = ${f.field})`, near(f.width, f.field));
+        if (name.startsWith('inplace')) {
+          ok(`${tag} ${name}: stays in place`, !f.portal, JSON.stringify(f));
+          ok(`${tag} ${name}: long options widen it past the field (${f.width} > ${f.field})`, f.width > f.field + 8, JSON.stringify(f));
+          // The same rows as the anchored list of the same options: no wrapping
+          // the field's width forced (it was 3-5 lines, 112-136 px).
+          ok(`${tag} ${name}: rows as tall as the anchored list's (${f.row} <= ${anchoredRow})`, f.row > 0 && f.row <= anchoredRow + 1, JSON.stringify(f));
+          if (name === 'inplace-end') ok(`${tag} ${name}: hangs from the field's end`, f.align === 'end' && f.endGap <= 1, JSON.stringify(f));
+          else ok(`${tag} ${name}: hangs from the field's start`, f.align === '' && f.startGap <= 1, JSON.stringify(f));
+        }
       }
       await closeField(tab, id);
+    }
+    if (!MEASURE_ONLY) {
+      await focusAndEscape(tab, tag, scene.label);
+      if (scene.width === 1280 && load === 1) await narrowAndWiden(tab, tag, scene.width);
+      if (load === 1) await safeArea(tab, tag);
     }
     const overflow = await tab.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     if (!MEASURE_ONLY) ok(`${tag}: no sideways scroll`, !overflow);

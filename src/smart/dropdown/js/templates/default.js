@@ -46,12 +46,17 @@ const FIELD_TAG = Object.freeze({
   "2": {size: "2", spacing: "compact"},
 });
 
-// A single choice shows its picture in the field as well as its label.
+// A single choice shows its picture in the field as well as its label. The
+// pictures of a choice -- this one and an icon tag's -- are sf-icon elements,
+// as in every other component: the element tells the Loader its name, so the
+// name joins the first icon font request. A bare <i class="sf-icon"> drawn
+// here after the page's scan was found only later and its glyph came late
+// (the defect sf-tag 1.3.2 fixed, 2026-11-09).
 function renderFieldVisual(context) {
   if (context.multiple || context.selectedOptions?.length !== 1) return nothing;
   const option = context.selectedOptions[0];
   if (option.type === "icon" && option.icon) {
-    return html`<i class="sf-icon sf-dropdown-field-visual" aria-hidden="true">${option.icon}</i>`;
+    return html`<sf-icon icon=${option.icon} root-class="sf-dropdown-field-visual" aria-hidden="true"></sf-icon>`;
   }
   if (option.type === "color" && option.colorClass) {
     return html`<span class="sf-tag-color-icon sf-dropdown-field-visual ${option.colorClass}" aria-hidden="true"></span>`;
@@ -79,7 +84,7 @@ function renderTag(context, option) {
         ? html`<span class="sf-tag-color-icon ${option.colorClass}" aria-hidden="true"></span>`
         : nothing}
       ${option.type === "icon"
-        ? html`<i class="sf-icon sf-tag-icon" aria-hidden="true">${option.icon}</i>`
+        ? html`<sf-icon icon=${option.icon} root-class="sf-tag-icon" aria-hidden="true"></sf-icon>`
         : nothing}
       ${option.type === "avatar"
         ? html`

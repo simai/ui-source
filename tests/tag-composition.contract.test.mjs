@@ -16,7 +16,7 @@ test('tag composition: label, count, picture and mark take the ladder', async ()
   for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-container {\n  --sf-tag-container--padding-inline-start: var(--sf-ui-${size}--text-space-x);\n  --sf-tag-container--padding-inline-end: var(--sf-ui-${size}--text-space-x);`), `label ${size}`);
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-count {\n  --sf-tag-count--font-size: var(--sf-text-size-${size});\n  --sf-tag-count--line-height: var(--sf-text-height-${size});`), `count ${size}`);
-    assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} > .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${size});`), `icon ${size}`);
+    assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} > .sf-icon,\n.sf-tag.sf-tag--size-${size} > sf-icon > .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${size});`), `icon ${size}`);
     // The mark is the ladder cross one step under the label (C14, R036).
     assert.ok(css.includes(`--sf-tag--close-size: var(--sf-text-size-${MARK[size]});`), `mark ${size}`);
   }

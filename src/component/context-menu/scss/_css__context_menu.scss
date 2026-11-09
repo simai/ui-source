@@ -882,10 +882,11 @@
   inline-size: var(--sf-popup-form-wide-width);
 }
 
-/* A form on a phone (below the desktop ladder, 60rem): a sheet docked to the
+/* A form on a phone (below the md breakpoint, 44rem): a sheet docked to the
    bottom edge, the screen's whole width, over the scrim -- the sheet's place
    of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
-   sf-menu-context marks the surface data-sf-sheet and does not anchor it. */
+   sf-menu-context marks the surface data-sf-sheet and does not anchor it.
+   The content keeps clear of a phone's home indicator (safe area). */
 .sf-context-menu[data-sf-sheet] {
   --sf-context-menu--box-shadow: var(--sf-shadow-modal);
   position: fixed;
@@ -915,6 +916,7 @@
   border-end-start-radius: 0;
   border-block-end-width: 0;
   border-inline-width: 0;
+  padding-bottom: calc(var(--sf-context-menu-content--padding-bottom) + env(safe-area-inset-bottom, var(--sf-a0)));
 }
 
 /* The head is a row of its own, as tall as a control and a step of space

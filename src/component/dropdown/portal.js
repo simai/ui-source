@@ -39,6 +39,28 @@ export function triggerOf(root) {
   return root?.querySelector('.sf-dropdown-field, .sf-dropdown-trigger') ?? null;
 }
 
+// A list that stays in place (portal="false") cannot move to stay inside the
+// screen, but it can grow the other way: when the width C32 gives it would
+// cross the screen's inline end, it hangs from the field's end instead of its
+// start (data-sf-align="end"). Measured with the attribute off, each opening.
+export function alignDropdownInPlace(list) {
+  if (!list || list.hidden || list.hasAttribute('data-sf-portal')) {
+    list?.removeAttribute('data-sf-align');
+    return;
+  }
+  list.removeAttribute('data-sf-align');
+  const rect = list.getBoundingClientRect();
+  const field = (list.offsetParent ?? list.parentElement)?.getBoundingClientRect();
+  if (!field || !rect.width) return;
+  const rtl = getComputedStyle(list).direction === 'rtl';
+  const screen = document.documentElement.clientWidth;
+  const over = rtl ? rect.left < 0 : rect.right > screen;
+  // Hung from the end it must fit better: the room on the other side of the
+  // field is larger than the room it had.
+  const room = rtl ? screen - field.left : field.right;
+  if (over && room > (rtl ? field.right : screen - field.left)) list.setAttribute('data-sf-align', 'end');
+}
+
 export function positionDropdownPortal(root, list) {
   const state = portals.get(list);
   if (!state || !root.isConnected || list.hidden) return false;

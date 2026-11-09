@@ -4,7 +4,7 @@ import { fieldSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
-import { openDropdownPortal, closeDropdownPortal } from '../../component/dropdown/portal';
+import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
@@ -708,6 +708,8 @@ class SfDropdown extends DropdownElement {
   positionPortalList() {
     if (!this._list || !this._dropdownRoot || !this.portal || !this._open) {
       closeDropdownPortal(this._list);
+      // In place: the list grows toward the side the screen has room on.
+      if (this._open) alignDropdownInPlace(this._list);
       return;
     }
     openDropdownPortal(this._dropdownRoot,this._list,()=>this.closeDropdown());
