@@ -163,6 +163,12 @@ const sfInputMeta = {
       "valueType": "string",
       "default": ""
     },
+    "shortcut": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A key combination drawn at the end of the field as the kbd component's soft caps in the muted ink (owner decisions C04, C38): words joined by +, e.g. mod+k (⌘K on a Mac, Ctrl K elsewhere), shift+mod+p, / or escape; mod is Cmd on Apple platforms and Ctrl elsewhere. The keys take the text step one below the value's (size 1 a plate of 20 with letters of 14). Written as aria-keyshortcuts on the native input. A hint only: the field does not listen to it. Empty: no keys"
+    },
     "hint-icon": {
       "kind": "custom",
       "valueType": "string",

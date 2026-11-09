@@ -4398,29 +4398,29 @@
         {
           "name": "--sf-kbd-size",
           "role": "size",
-          "summary": "A cap's and a key's height and least width, relative to its own letters.",
-          "default": "1.6em",
+          "summary": "A cap's and a key's height and least width: the line height of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
+          "default": "var(--sf-text-height-1\\/2)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-kbd-padding-inline",
           "role": "padding-inline",
           "summary": "The room on each side of a cap's or a key's letters.",
-          "default": "0.4em",
+          "default": "var(--sf-space-1\\/4)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-kbd-gap",
           "role": "gap",
           "summary": "The space between the keys of a combination drawn as caps or keys.",
-          "default": "0.25em",
+          "default": "var(--sf-space-1\\/4)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-kbd-font-size",
           "role": "font-size",
-          "summary": "A cap's and a key's letters against the text around them.",
-          "default": "0.8125em",
+          "summary": "A cap's and a key's letters: the size of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
+          "default": "var(--sf-text-size-1\\/2)",
           "since": "2026-11-08"
         },
         {

@@ -7,24 +7,35 @@
 //          hairline outline-variant edge and an inset bottom edge;
 //   cap    in a control -- a button, a field, a combobox or search box -- a
 //          soft cap without an edge, in the text face at medium weight, sized
-//          from the text around it, its fill and ink mixed from the ink it
+//          from the place's step (below), its fill and ink mixed from the ink it
 //          sits in (the ink whole, the fill 8 % of it), so it reads on a
 //          filled button with no inverse rule;
 //   plain  in a list of commands -- a menu, a list box, a tooltip -- glyphs
-//          without a cap, a step smaller and in the muted ink (in a tooltip
-//          the tooltip's own ink, quieter).
+//          without a cap, at the row's own text step (the label's size) in
+//          the muted ink (in a tooltip the tooltip's own ink, quieter).
 //
-// The sizes are the text's: a cap or a key is 0.8125em of the text around it
-// (13 of 16 px), 1.6em of its own letters high and at least as wide (about
-// 21 px), 0.4em of room on each side; keys of a combination stand 0.25em
-// apart. Caps and keys stand apart; plain glyphs join with + where the
+// The sizes are the ladder's (owner decision C38, 2026-11-09, which replaces
+// C04's 0.8125em / 1.6em; ui-control control/research/2026-11-09-kbd-sizing.md,
+// prototypes/kbd-sizing.html): a cap or a key takes the text step one below
+// the text of the place it stands in -- the plate is that step's line height,
+// the letters that step's size, never below step 1/3: a button or a field
+// of size 1/3 and 1/2 a plate of 16 with letters of 12, size 1 20/14, size 2
+// 24/16, size 3 28/20; a text class its own step down (14/20 text 16/12);
+// body text 16/24 step 1/2, 20/14. The places are read here, from their size
+// and text classes (a host never sets a key's variables, public or internal:
+// tests/public-variables.contract.test.mjs, tools/lint-kbd-styles.mjs). The
+// tokens are the responsive ones, so the phone ladder (a button 1/2 and 1
+// there take 16) and compact density follow. Room on each side and the gap
+// between keys are --sf-space-1/4. Plain glyphs are the row's own text, 1em.
+// Caps and keys stand apart; plain glyphs join with + where the
 // platform spells modifiers as words (the .sf-kbd-join marks the shared
 // shortcut renderer writes, js/shortcut.js). A key of one character is a
 // square (.sf-kbd--square).
 //
-// Public variables (src/core/contracts/public-variables.v1.json): the size,
-// the room, the gap, the corner, the face, the cap's fill and ink, the key's
-// edge and the plain ink. Everything --sf-kbd--* is internal.
+// Public variables (src/core/contracts/public-variables.v1.json): the size
+// and the letters, the room, the gap, the corner, the face, the cap's fill and
+// ink, the key's edge, the plain ink and the plain letters. Everything
+// --sf-kbd--* is internal.
 
 // A key: a <kbd> without keys inside it, or the class fallback.
 $key: 'kbd:not(.sf-kbd--group):not(:has(> kbd)), .sf-kbd:not(.sf-kbd--group)';
@@ -51,7 +62,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   padding-inline: var(--sf-kbd--padding-inline);
   border-radius: var(--sf-kbd-radius, var(--sf-radius--ui));
   font-family: var(--sf-kbd-font-family, var(--sf-text--family));
-  font-size: var(--sf-kbd-font-size, 0.8125em);
+  font-size: var(--sf-kbd-font-size, var(--sf-kbd--step-font-size, var(--sf-text-size-1\/2)));
   font-weight: var(--sf-font-weight-medium);
 }
 
@@ -78,6 +89,9 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   box-shadow: none;
 }
 
+// Plain glyphs are the row's own text (C38): 1em, through an internal
+// variable a place whose glyphs sit in a smaller wrapper than its label would
+// set in this sheet's place list.
 @mixin plain {
   inline-size: auto;
   min-inline-size: var(--sf-0);
@@ -89,14 +103,42 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   border-radius: var(--sf-0);
   box-shadow: none;
   font-family: inherit;
-  font-size: 0.875em;
+  font-size: var(--sf-kbd--plain-font-size, 1em);
   font-weight: inherit;
 }
 
+// The step a place says (owner decision C38): the text step one below its
+// own, never below 1/3. The root and a density region hold their body
+// text's, resolved where that text's size is set (a region sets its own
+// font-size, core _sf_css__density.scss): a key in a compact region's plain
+// 14/20 paragraph is 16/12, in the page's 16/24 text 20/14.
+$steps: (
+  '1\\/3': (
+    '.sf-button.sf-button--size-1\\/3', '.sf-button.sf-button--size-1\\/2',
+    '.sf-input.sf-input--size-1\\/3', '.sf-input.sf-input--size-1\\/2',
+    '.sf-text-1\\/4', '.sf-text-1\\/3', '.sf-text-1\\/2', '.text-1\\/4', '.text-1\\/3', '.text-1\\/2',
+    '.sf-body-small', '.body-text-small', '.text-small'
+  ),
+  '1\\/2': (
+    ':root', '[data-sf-density]:not(:root)', '.sf-button.sf-button--size-1', '.sf-input.sf-input--size-1',
+    '.sf-text-1', '.text-1', '.sf-body-medium', '.body-text', '.body-text-medium', '.text-medium'
+  ),
+  '1': ('.sf-button.sf-button--size-2', '.sf-input.sf-input--size-2', '.sf-text-2', '.text-2', '.sf-body-large', '.body-text-large', '.text-large'),
+  '2': ('.sf-button.sf-button--size-3', '.sf-input.sf-input--size-3', '.sf-text-3', '.text-3'),
+  '3': ('.sf-text-4', '.text-4'),
+);
+
 @layer sf.components {
+  @each $step, $places in $steps {
+    :where(#{$places}) {
+      --sf-kbd--step-size: var(--sf-text-height-#{$step});
+      --sf-kbd--step-font-size: var(--sf-text-size-#{$step});
+    }
+  }
+
   :where(#{$key}) {
-    --sf-kbd--size: var(--sf-kbd-size, 1.6em);
-    --sf-kbd--padding-inline: var(--sf-kbd-padding-inline, 0.4em);
+    --sf-kbd--size: var(--sf-kbd-size, var(--sf-kbd--step-size, var(--sf-text-height-1\/2)));
+    --sf-kbd--padding-inline: var(--sf-kbd-padding-inline, var(--sf-space-1\/4));
 
     display: inline-flex;
     flex: none;
@@ -124,7 +166,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
     flex: none;
     box-sizing: border-box;
     align-items: center;
-    gap: var(--sf-kbd-gap, 0.25em);
+    gap: var(--sf-kbd-gap, var(--sf-space-1\/4));
     inline-size: auto;
     min-inline-size: var(--sf-0);
     block-size: auto;
@@ -180,7 +222,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   }
 
   :where(#{said-group(cap)}) {
-    gap: var(--sf-kbd-gap, 0.25em);
+    gap: var(--sf-kbd-gap, var(--sf-space-1\/4));
   }
 
   :where(#{said-group(cap)}) > :where(.sf-kbd-join) {
@@ -204,7 +246,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   }
 
   :where(#{said-group(key)}) {
-    gap: var(--sf-kbd-gap, 0.25em);
+    gap: var(--sf-kbd-gap, var(--sf-space-1\/4));
   }
 
   :where(#{said-group(key)}) > :where(.sf-kbd-join) {

@@ -163,9 +163,13 @@ elsewhere). With a shortcut the label takes the free room, so a stretched
 button reads label … keys and `text-position` places the label.
 
 Inside a button the keys are soft caps (owner decision 2026-11-07, docs
-review R030): no edge, the text face at medium weight, sized from the label --
-letters at 0.8125em, a cap 1.6em high and at least as wide, 0.4em of room,
-0.25em between caps. Their ink is the label's own and their fill that ink at
+review R030): no edge, the text face at medium weight, sized from the ladder
+(owner decision C38, which replaced the 0.8125em / 1.6em sizes): a cap takes
+the text step one below the label's -- size 1/3 and 1/2 a cap 16 high with
+letters of 12, size 1 20/14, size 2 24/16, size 3 28/20; on a phone sizes
+1/2 and 1 take 16, and compact density moves a button without a size one
+step down with its label. `--sf-space-1/4` of room on each side and between
+caps. Their ink is the label's own and their fill that ink at
 8 %, so they read on every appearance and scheme, filled or not, light or
 dark, with nothing of the button's own: at least 4.5:1 against the fill
 (tests/browser/button-shortcut-contrast.browser.mjs; until 1.10.1 the ink was
