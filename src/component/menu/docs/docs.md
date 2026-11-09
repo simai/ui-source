@@ -35,7 +35,7 @@ a vertical drawer instead of shrinking the horizontal menu into several rows.
 
 Use `aria-current="page"` on the current link. The documentation tree preset
 marks it with the navigation plate (C23), leaves an open branch unfilled and
-puts the bar on a closed branch that holds it. A disabled disclosure uses a
+gives a closed branch that holds it a medium label (C30 amended, R065 a). A disabled disclosure uses a
 disabled button and cannot be toggled. Prefer removing unavailable navigation
 destinations over presenting a disabled link.
 
@@ -56,13 +56,45 @@ or `"true"` on the row or on the link inside it; decision C23) is a primary
 plate of the fill family, `--sf-primary-container-active` (primary at 20 in
 the light theme, 32 in the dark one), with `--sf-on-primary-container` words
 and icon and a medium label, and no bar; the pointer does not change it.
-Where there is no plate, a bar of `--sf-primary`, 3 by 16, stands at the
-row's inline start: on a closed branch of a column whose list holds the
-current page (found in the markup, or marked `sf-menu-element--holds-current`
-when the list is not in the markup). A header row's first level draws no bar.
 Rows stand `space-1/4` apart unless `--sf-menu-gap` says otherwise. In forced
-colours the current page is framed instead and the bar takes the system's
-highlight. Submenus keep their panel and take the same row states.
+colours the current page is framed instead and the path's line takes the
+system's highlight. Submenus keep their panel and take the same row states.
+
+The path to the current page (decision C30 amended 2026-11-09: R065, R072,
+R084) has one sign. A row that leads to the current page without being it --
+a closed branch of a column whose list holds it (found in the markup, or
+marked `sf-menu-element--holds-current` when the list is not in the markup),
+every level of the path in a row's panels -- has a medium label. Where the
+box it stands in has a border of its own, a 2 px `--sf-primary` line lies on
+that border at the row: it covers the border pixel and goes the rest inside,
+as tall as the row, its inner corners rounded, clear of the corner's curve on
+the box's first and last row. A row's panels always have their border; a
+column has one with `sf-menu--bordered` on the root list (a hairline of
+`--sf-outline-variant` at `--sf-radius--surface`, the plates `space-1/4` in
+from it on every side). A box that scrolls (`sf-menu--scroll`) clips its
+border area, so there the line stands one pixel inside. A branch's › stays
+neutral: it says only that there is a level under the row. The 3 px bar is
+retired everywhere: the compact rail, whose rows are an icon alone, takes the
+same line on its start edge (it has no border and no inset), without the
+weight. A list whose first row is not at its box's corner (sf-menu with
+search and bordered: the frame goes round the head as well) sets
+`--sf-menu--radius-block-start: 0`.
+
+A column (`sf-menu--navigation` without `sf-menu--horizontal`; C05, R083)
+stands its plates `space-1/4` (`--sf-menu--inset`) in from its edge on both
+sides, and the words `space-1/2` (`--sf-menu--row-padding`) in from the
+plate; each deeper level is a `space-1` step further. A group heading in a
+column is a row's height, the rows' size and weight of type, in
+`--sf-on-surface-variant`, its words on the first level's line (R070). When
+the column scrolls and its scrollbar takes room, `sf-menu--scrollbar` gives
+the scrollbar's own gap back from the end padding, so a plate stands as far
+from the thumb as from the start edge (C07). Only the list's own scrolling
+gives the gap back: a column that scrolls as a whole (sf-menu `sticky`) or
+inside a page's scroller keeps the full inset, and the scrollbar stands
+outside it. A row's link that leaves the
+site may end with `.sf-icon.sf-menu-element-external` (↗, the half step's
+icon in `--sf-on-surface-variant`). The words a search matched are drawn by
+`::highlight(sf-menu-match)` with `--sf-mark`.
 
 A navigation tree is up to four levels deep (decision C30, which replaces
 the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
@@ -75,8 +107,8 @@ the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
   plate instead, for a header with no bottom border;
 - an open branch, on the first level and in a panel, has the neutral
   `--sf-surface-transparent-select` plate, never primary;
-- in a panel, a closed row whose list holds the current page has a medium
-  label and a primary ›; panels draw no bar.
+- in a panel, every row on the path to the current page has a medium label
+  and the 2 px line on the panel's start border; the › stays neutral.
 
 A section that is a page and has subsections is a split row: the link and
 a native button beside it (`aria-expanded`, `aria-controls`, named
@@ -117,7 +149,8 @@ sight, and the counter moves onto the icon's top end corner with the anchored
 badge's geometry and ring (step 1). Branches do not open in a compact menu.
 The row that is the current page takes the navigation plate; a row whose
 hidden list holds the current page, or one marked
-`sf-menu-element--holds-current`, takes the bar beside its icon (C23). See
+`sf-menu-element--holds-current`, takes the path's 2 px line on the rail's
+start edge, as tall as the row (C30 amended). See
 the Badges documentation, section «Бейдж на якоре» (simai/ui-source#12).
 
 ## Groups

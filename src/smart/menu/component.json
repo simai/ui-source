@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu",
   "tag": "sf-menu",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -62,6 +62,16 @@
           "optional": true,
           "summary": "A row's first-level branch that opens a region (a mega menu) under the header instead of a panel: the name of a <template slot=\"region-<name>\"> written inside the element, any markup; without that template the region draws the item's children as columns. In a column, a deeper level or the «Ещё» panel it is an ordinary branch."
         },
+        "target": {
+          "type": "string",
+          "optional": true,
+          "summary": "The link's target (_blank for a new tab, with rel noopener). A target other than _self draws ↗ after the words, and _blank says in the link's name that it opens in a new tab."
+        },
+        "external": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "A link that leaves the site without a target of its own: ↗ after the words (data-external on the <li> or the <a> in markup)."
+        },
         "group": {
           "type": "boolean",
           "optional": true,
@@ -79,7 +89,7 @@
         }
       },
       "x-markup": "the attribute takes the same list as JSON; without it a nested <ul><li><a> written inside is the menu; children has the same shape",
-      "summary": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, region?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
+      "summary": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, region?, target?, external?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
       "examples": [
         [
           {
@@ -226,6 +236,21 @@
       "type": "boolean",
       "default": false,
       "summary": "The menu stays in sight while the page scrolls (position sticky at --sf-menu-sticky-top, 0 by default), and scrolls inside itself when it is taller than the view. For a section navigation beside a long page."
+    },
+    "bordered": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A column with a border of its own (C30 amended 2026-11-09, R072 e): a hairline of outline-variant at the surface radius, the plates space-1/4 in from it on every side, and the path to the current page marked by a 2 px primary line on its start border at the closed branch that holds it, besides the medium label. Without it a column has no frame and marks the path with the medium label alone (R065 a). A row ignores it: its panels always have the line (R084)."
+    },
+    "search": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A search field over a column (C30 amended 2026-11-09, R071 a; off by default, never by the number of items): the rows are filtered as the field is typed in -- without case, ё as е, on the items' words and the group headings; a match keeps its parents, opened, a matching item keeps its children, closed, a matching heading keeps its group -- and the matched words are highlighted (::highlight(sf-menu-match), --sf-mark). Down from the field enters the results, Down and Up walk them, Up from the first goes back; Escape clears the field, or goes back to it from the results. A polite live region says how many matched; «Ничего не найдено» when none. The field stands still and the rows scroll when the host gives the menu a height. A row ignores it."
+    },
+    "search-placeholder": {
+      "type": "string",
+      "default-from": "runtime.search-placeholder",
+      "summary": "The words in the search field, and its name; «Поиск» / «Search» in the page language when not set."
     }
   },
   "values": {
@@ -272,6 +297,13 @@
         }
       },
       "summary": "A row with overflow more changed which first-level items it shows: hidden, the ids of the items now in «Ещё», in their order (empty when all fit again)."
+    },
+    "search": {
+      "carries": {
+        "query": "string",
+        "count": "number"
+      },
+      "summary": "The search field's words changed: query, the words trimmed (empty when cleared), and count, how many item words and group headings match."
     }
   },
   "actions": {
@@ -367,6 +399,12 @@
       "$comment": [
         "An item's status is the class dot of its tone (.sf-dot), drawn by the dot",
         "sheet without an element per row."
+      ]
+    },
+    {
+      "name": "cl-input",
+      "$comment": [
+        "The search field over a column (search, C30 amended R071 a) is sf-input; the page that loads the menu on demand fetches it."
       ]
     }
   ],
@@ -501,7 +539,8 @@
   "x-words": [
     "label",
     "toggle-label",
-    "more-label"
+    "more-label",
+    "search-placeholder"
   ],
   "x-renamed": [
     "events.sf-menu:navigate → navigate: vocabulary §5 navigate, the DOM name sf-menu-navigate; the colon name a dated same-detail alias",
@@ -528,7 +567,8 @@
     "version 1.3.0 (2026-11-08, Larena msg-993e1e39 item 4 -- section navigation for an entity page): a minor, all additions. First-level groups {group: true, label, collapsible?, open?, items | children}: a heading (words, or a disclosure button with aria-expanded when collapsible) over a list the heading names (aria-labelledby); the group's items are first-level rows, so the text axis is the rows' own and the heading's words stand on it. A group is open unless open is false; one that is not collapsible is always open, and open/close/toggle refuse it with reason fixed; a row and the compact rail draw the items in the group's place. An item's status (success, warning, error, info, neutral) is the class dot (component dot) at the row's end before the counter, its word in the link's name; count is badge's count by its own name. collapse narrow: the menu is the button under the md breakpoint and the button is a selector showing the current item (its icon and words, named «<label>: <item>»). sticky keeps the menu in sight (--sf-menu-sticky-top, the tenth public variable). current-from-location matches a section link (#address) against location.hash, so in-page panels and real URLs both work. Not a second tabs component: sf-tabs stays the tab strip of one panel set; this is navigation (WAI-ARIA disclosure, no roles of an application menu).",
     "version 1.3.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, open({id}), close({id}), toggle({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, open(<string>), close(<string>), toggle(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.4.1 (2026-11-09): a minor (decision C23, owner 2026-11-09). A navigation menu marks the current page with a primary plate (--sf-primary-container-active, on-primary-container ink, a medium label) and no bar; an open branch is no longer filled; a closed branch, or a rail row, above the current page takes a primary bar at its inline start, written by sf-menu as sf-menu-element--holds-current. One above the released 1.3.1 and C23's 1.4.0.",
-    "version 1.5.0 (2026-11-09, owner decision C30 refined after remarks R057-R060, study control/research/2026-11-09-menu-simple.md section 8, prototype prototypes/menu-simple.html): a minor, all additions, and the looks the decision fixes. One tag, four looks: the site row (orientation horizontal, appearance navigation), the site column (four levels, C23 built in), the simple admin (the column with icons on the first level, density compact, two levels) and the phone (the same tree in sf-header-site's panel, the path to the current page open; no drill-in). New settings: overflow more|collapse|none (default collapse, today's behaviour; more is priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch, the section holding the current page stays while it fits beside it, «Меню» when none is left), more-label (the «Ещё» words, lang more-label), open-on hover|click (default hover: a mouse opens a panel after 300 ms, a region after 500 ms, closes 500 ms after leaving; touch, pen and keys through the chevron), indicator line|fill (default line). A section that is a page and has subsections is a split control in the row and in its panels: the name a link, the chevron a button named «<раздел>: подразделы» (lang subsections); no «all items» row in a panel or a region. An item's region names a <template slot=\"region-<name>\">: a row's first-level branch opens a region as wide as the header under it, holding that markup, or its children as columns without one. Event sf-menu-overflow {hidden: [ids]}. A row's side panels stand beside their panel (past its padding and border by space-1/4, the first row level with the branch) and flip at the window's edge; the chevron of a side branch is always › (R059). The first panel stands space-1/4 under its branch. The row's current section: a 2 px line on the header's bottom border (sf-header-site publishes the edge as --sf-site-header--edge) and a medium label, or the C23 plate with indicator fill (R060); an open branch of the row and of its panels has the neutral select plate; a closed panel row that holds the current page has a medium label and a primary › (R057), no bar. Arrow keys in a row (the optional keys of the WAI-ARIA disclosure pattern); a column keeps none. The class sheet (component.menu 1.5.0): one indent step (space-1) per level, the second level's words under the first level's when it has icons, the row's line, fill, open plate and panel path, the region. Names settled: overflow, more-label, open-on, indicator, region + <template slot=\"region-<name>\">, sf-menu-overflow {hidden}; the trailing branch's id is @more, so an item id starting with @ is renamed by its place. Acceptance (DEV 2026-11-09): a row's first panel and «Ещё»'s stand the gap under the header's edge (--sf-site-header--edge), so the current section's line stays in sight; an open path row keeps its medium label and primary › on the select plate; side levels take the side with room for the whole chain and keep it (no zig-zag); a row's icon box is the line's size, so a phone's icon row is no taller than its neighbours."
+    "version 1.5.0 (2026-11-09, owner decision C30 refined after remarks R057-R060, study control/research/2026-11-09-menu-simple.md section 8, prototype prototypes/menu-simple.html): a minor, all additions, and the looks the decision fixes. One tag, four looks: the site row (orientation horizontal, appearance navigation), the site column (four levels, C23 built in), the simple admin (the column with icons on the first level, density compact, two levels) and the phone (the same tree in sf-header-site's panel, the path to the current page open; no drill-in). New settings: overflow more|collapse|none (default collapse, today's behaviour; more is priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch, the section holding the current page stays while it fits beside it, «Меню» when none is left), more-label (the «Ещё» words, lang more-label), open-on hover|click (default hover: a mouse opens a panel after 300 ms, a region after 500 ms, closes 500 ms after leaving; touch, pen and keys through the chevron), indicator line|fill (default line). A section that is a page and has subsections is a split control in the row and in its panels: the name a link, the chevron a button named «<раздел>: подразделы» (lang subsections); no «all items» row in a panel or a region. An item's region names a <template slot=\"region-<name>\">: a row's first-level branch opens a region as wide as the header under it, holding that markup, or its children as columns without one. Event sf-menu-overflow {hidden: [ids]}. A row's side panels stand beside their panel (past its padding and border by space-1/4, the first row level with the branch) and flip at the window's edge; the chevron of a side branch is always › (R059). The first panel stands space-1/4 under its branch. The row's current section: a 2 px line on the header's bottom border (sf-header-site publishes the edge as --sf-site-header--edge) and a medium label, or the C23 plate with indicator fill (R060); an open branch of the row and of its panels has the neutral select plate; a closed panel row that holds the current page has a medium label and a primary › (R057), no bar. Arrow keys in a row (the optional keys of the WAI-ARIA disclosure pattern); a column keeps none. The class sheet (component.menu 1.5.0): one indent step (space-1) per level, the second level's words under the first level's when it has icons, the row's line, fill, open plate and panel path, the region. Names settled: overflow, more-label, open-on, indicator, region + <template slot=\"region-<name>\">, sf-menu-overflow {hidden}; the trailing branch's id is @more, so an item id starting with @ is renamed by its place. Acceptance (DEV 2026-11-09): a row's first panel and «Ещё»'s stand the gap under the header's edge (--sf-site-header--edge), so the current section's line stays in sight; an open path row keeps its medium label and primary › on the select plate; side levels take the side with room for the whole chain and keep it (no zig-zag); a row's icon box is the line's size, so a phone's icon row is no taller than its neighbours.",
+    "version 1.6.0 (2026-11-09, owner decision C30 amended in ui-control 9a86d1a1 after R065, R070-R072, R083, R084; C05, C06, C07; prototype prototypes/menu-simple.html #r084, #r065-sec, #r071-sec, #r083; study control/research/2026-11-09-menu-simple.md rounds 4-5): a minor. The path to the current page has one sign: a medium label, and where the box the row stands in has a border of its own -- every panel of a row, a column with bordered -- a 2 px primary line on that border at the row, covering the border pixel, the row's height, inner corners rounded, clear of the corner's curve on the box's first and last row, one pixel inside while the box scrolls (sf-menu writes sf-menu--scroll). The › of a panel row is neutral again: it says only that there is a level under the row (R084, replacing the primary › of 1.5.0). A column without a border marks a closed branch on the path with the medium label alone (R065 a); the 3 px bar is retired everywhere: the compact rail, whose rows are an icon alone, takes the same 2 px line on its start edge without the weight (DEV answer b). With search, bordered frames the whole menu, the head with the rows, with no hairline under the head (DEV acceptance minor 1). The scrollbar's gap is given back only when the menu's own list scrolls; a sticky menu or a column in a page scroller keeps the full inset. An item's key, text and title are read as the first release's spellings of id and label until 2027-01-01 and declared nowhere (journal sf-menu-item-field-aliases). New settings: bordered (R072 e), search and search-placeholder (R071 a), event sf-menu-search {query, count}; items take target and external (↗; _blank adds rel noopener and «откроется в новой вкладке» to the link's name). A column's group headings are a row's height, the rows' size and weight of type, on-surface-variant, the words on the first level's line (R070). A column's plates stand space-1/4 in from its edge on both sides, the words space-1/2 in from the plate, each deeper level space-1 further; a column whose scrollbar takes room gives the scrollbar's own gap back from its end padding (sf-menu--scrollbar, C07). The search field is sf-input (filled, rounded), its magnifier over the rows' icons (C06), with no size of its own, so a compact region takes it to the rows' height."
   ],
   "x-rule": {
     "$comment": [
@@ -590,6 +630,21 @@
           "type": "string",
           "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
         },
+        "count": {
+          "type": "number",
+          "description": "A count by its own name: the same as a badge holding a whole number (the class counter)."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "warning",
+            "error",
+            "info",
+            "neutral"
+          ],
+          "description": "A status dot of that tone at the row's end, before the counter; its word ends the link's name."
+        },
         "current": {
           "type": "boolean",
           "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
@@ -612,6 +667,29 @@
         "region": {
           "type": "string",
           "description": "A row's first-level branch opens a region (a mega menu) instead of a panel: the name of a <template slot=\"region-<name>\"> inside the element, else its children drawn as columns."
+        },
+        "target": {
+          "type": "string",
+          "description": "The link's target (_blank for a new tab, with rel noopener). A target other than _self draws ↗ after the words; _blank says in the link's name that it opens in a new tab."
+        },
+        "external": {
+          "type": "boolean",
+          "description": "A link that leaves the site without a target of its own: ↗ after the words."
+        },
+        "group": {
+          "type": "boolean",
+          "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the compact rail draw the items in the group's place, without the heading."
+        },
+        "collapsible": {
+          "type": "boolean",
+          "description": "A group whose heading is a button that opens and closes it (aria-expanded); a group is open unless open is false."
+        },
+        "items": {
+          "type": "array",
+          "description": "A group's items, the same as children.",
+          "items": {
+            "type": "object"
+          }
         }
       },
       "required": [

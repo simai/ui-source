@@ -18,5 +18,7 @@ SF.RuleLoader['cl-menu'] = {
     // An item's status is the class dot of its tone (.sf-dot), drawn by the dot
     // sheet without an element per row.
     { name: 'dot' },
+    // The search field over a column (search, C30 amended R071 a) is sf-input; the page that loads the menu on demand fetches it.
+    { name: 'cl-input' },
   ],
 };

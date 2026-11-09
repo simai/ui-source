@@ -20,6 +20,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
   HOVER_CLOSE_DELAY,
@@ -34,15 +35,23 @@ import {
   MORE_ID,
   ROW_APPEARANCES,
   currentItemId,
+  filterItems,
   findItem,
+  foldWords,
   fitRow,
   itemsFromList,
   normaliseItems,
+  onItemAlias,
   openBranches,
   pathTo,
   walkItems,
   withoutGroups,
 } from './items.mjs';
+
+// An item spelled the first release's way (key, text, title) is noted on the
+// page's deprecation list until the date it leaves (journal record
+// sf-menu-item-field-aliases).
+onItemAlias((from, to) => noteDeprecated({component: 'sf-menu', kind: 'property', attribute: 'items', from, to, remove_after: '2027-01-01'}));
 import './scss/index.scss';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -88,6 +97,9 @@ class SfSmartMenu extends MenuElement {
       label: {default: ''},
       toggleLabel: {attribute: 'toggle-label', default: ''},
       sticky: {type: Boolean, default: false},
+      bordered: {type: Boolean, default: false},
+      search: {type: Boolean, default: false},
+      searchPlaceholder: {attribute: 'search-placeholder', default: ''},
       rootClass: {default: ''},
     };
   }
@@ -121,6 +133,10 @@ class SfSmartMenu extends MenuElement {
     this._hoverTimers = new Map();
     // A region's template, stamped once per name, so a render keeps its nodes.
     this._regionNodes = new Map();
+    // search: what the field holds, and the ranges this element lays in the
+    // shared sf-menu-match highlight.
+    this._query = '';
+    this._matchRanges = [];
     // A value set as a property before the element was defined is an own
     // property that would hide the accessor; it is taken through it.
     if (Object.prototype.hasOwnProperty.call(this, 'items')) {
@@ -134,6 +150,7 @@ class SfSmartMenu extends MenuElement {
     this.addEventListener('keydown', this.onKeydown);
     this.addEventListener('pointerover', this.onPointerOver);
     this.addEventListener('pointerout', this.onPointerOut);
+    this.addEventListener('input', this.onSearchInput);
   }
 
   attributeChangedCallback(name, previous, next) {
@@ -199,6 +216,10 @@ class SfSmartMenu extends MenuElement {
     this._observed = null;
     for (const submenu of [...this._anchors.keys()]) this.releaseAnchor(submenu);
     this.holdSurface(false);
+    this._scrollObserver?.disconnect();
+    this._scrollObserver = null;
+    this._scrollWatched = null;
+    this.setMatchRanges([]);
   }
 
   // The items, from the property or the attribute, else from the markup.
@@ -523,6 +544,7 @@ class SfSmartMenu extends MenuElement {
   // Up walk its links and Left and Right its columns. Tab, Enter, Space and
   // Escape are as before. A column has no arrows: it is not a tree widget.
   onKeydown = (event) => {
+    if (this.searchActive && this.searchKey(event)) return;
     if (!this.flyouts || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
     const key = event.key;
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) return;
@@ -750,6 +772,176 @@ class SfSmartMenu extends MenuElement {
     return this.querySelector('[data-sf-menu-panel-toggle], a[href], button:not(:disabled)');
   }
 
+  // search (C30 amended 2026-11-09, R071 a): a column only -- a row keeps a
+  // search button in its header.
+  get searchActive() {
+    return Boolean(this.search) && !this.flyouts && this.appearance !== 'compact';
+  }
+
+  get searchQuery() {
+    return this.searchActive ? this._query.trim() : '';
+  }
+
+  // The items the field leaves, or null while it is empty.
+  searchResult() {
+    const query = this.searchQuery;
+    if (!query) return null;
+    const all = this.menuItems;
+    return filterItems(this.groupsDrawn ? all : withoutGroups(all), query);
+  }
+
+  searchField() {
+    return this.querySelector('[data-sf-menu-search] input');
+  }
+
+  onSearchInput = (event) => {
+    const field = event.target;
+    if (!this.searchActive || field?.localName !== 'input' || !field.closest?.('[data-sf-menu-search]')) return;
+    if (field.value === this._query) return;
+    this._query = field.value;
+    this.requestComponentUpdate('search');
+    const result = this.searchResult();
+    this.sfEmit('search', {query: this.searchQuery, count: result ? result.count : 0});
+  };
+
+  setQuery(value) {
+    const field = this.searchField();
+    if (field) field.value = value;
+    if (value === this._query) return;
+    this._query = value;
+    this.requestComponentUpdate('search');
+    const result = this.searchResult();
+    this.sfEmit('search', {query: this.searchQuery, count: result ? result.count : 0});
+  }
+
+  // The rows a person walks with the arrows from the field: each row's own
+  // control -- its link, its branch button, a group's heading button -- not
+  // a split row's chevron.
+  searchRows() {
+    const list = this.querySelector(':scope > nav > ul.sf-menu');
+    if (!list || list.hidden) return [];
+    return [...list.querySelectorAll('.sf-menu-element:is(a[href], button), .sf-menu-element > a.sf-menu-element-wrap[href], button.sf-menu-group-heading')]
+      .filter((control) => !control.disabled && !control.closest('[hidden]'));
+  }
+
+  // Down from the field enters the first result, Down and Up walk the
+  // results, Up from the first gives the focus back to the field; Escape in
+  // the field clears it, in the results goes back to the field.
+  searchKey(event) {
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return false;
+    const key = event.key;
+    if (!['ArrowDown', 'ArrowUp', 'Escape'].includes(key)) return false;
+    const field = this.searchField();
+    if (!field) return false;
+    const inField = event.target === field;
+    if (inField) {
+      if (key === 'Escape') {
+        if (!field.value) return false;
+        event.preventDefault();
+        event.stopPropagation();
+        this.setQuery('');
+        return true;
+      }
+      if (key === 'ArrowDown') {
+        const first = this.searchRows()[0];
+        if (!first) return false;
+        event.preventDefault();
+        first.focus();
+        return true;
+      }
+      return false;
+    }
+    const rows = this.searchRows();
+    const at = rows.indexOf(event.target);
+    if (at === -1) return false;
+    event.preventDefault();
+    if (key === 'Escape') {
+      event.stopPropagation();
+      field.focus();
+    } else if (key === 'ArrowDown') {
+      rows[Math.min(at + 1, rows.length - 1)].focus();
+    } else if (at === 0) {
+      field.focus();
+    } else {
+      rows[at - 1].focus();
+    }
+    return true;
+  }
+
+  // The words that match, highlighted without touching the markup (the CSS
+  // Custom Highlight API): ::highlight(sf-menu-match) draws them with the
+  // Framework's mark colour. The highlight is shared by every sf-menu on the
+  // page; each keeps its own ranges in it.
+  syncSearchHighlight() {
+    const query = foldWords(this.searchQuery).trim();
+    const ranges = [];
+    if (query) {
+      for (const node of this.querySelectorAll(':scope > nav > ul.sf-menu :is(.sf-menu-element-text, .sf-menu-group-label)')) {
+        // The words are a text node between the template's markers.
+        for (const words of node.childNodes) {
+          if (words.nodeType !== 3) continue;
+          const folded = foldWords(words.data);
+          let at = folded.indexOf(query);
+          while (at !== -1) {
+            const range = document.createRange();
+            range.setStart(words, at);
+            range.setEnd(words, at + query.length);
+            ranges.push(range);
+            at = folded.indexOf(query, at + query.length);
+          }
+        }
+      }
+    }
+    this.setMatchRanges(ranges);
+  }
+
+  setMatchRanges(ranges) {
+    const registry = globalThis.CSS?.highlights;
+    const Kind = globalThis.Highlight;
+    if (!registry || typeof Kind !== 'function') return;
+    let highlight = registry.get('sf-menu-match');
+    if (!highlight && ranges.length) {
+      highlight = new Kind();
+      registry.set('sf-menu-match', highlight);
+    }
+    if (!highlight) return;
+    for (const range of this._matchRanges) highlight.delete(range);
+    for (const range of ranges) highlight.add(range);
+    this._matchRanges = ranges;
+    if (!highlight.size) registry.delete('sf-menu-match');
+  }
+
+  // A box that scrolls says so with sf-menu--scroll -- a box with a border
+  // draws the path's line one pixel inside it then, as the border area is
+  // clipped (R084) -- and with sf-menu--scrollbar when its scrollbar takes
+  // room: a column gives the scrollbar its end padding back (C07). A row's panel scrolls only when it does not fit; else nothing
+  // clips the line on its border.
+  syncScroll(box, panel = false) {
+    if (!box?.isConnected) return;
+    if (panel) box.style.overflowY = 'visible';
+    const over = box.scrollHeight > box.clientHeight + 1;
+    if (panel) box.style.overflowY = over ? 'auto' : 'visible';
+    const style = getComputedStyle(box);
+    const scrolls = over && (panel || ['auto', 'scroll'].includes(style.overflowY));
+    const bar = box.offsetWidth - box.clientWidth - (parseFloat(style.borderLeftWidth) || 0) - (parseFloat(style.borderRightWidth) || 0);
+    box.classList.toggle('sf-menu--scroll', scrolls);
+    box.classList.toggle('sf-menu--scrollbar', scrolls && bar > 0.5);
+  }
+
+  watchColumnScroll() {
+    const list = this.flyouts ? null : this.querySelector(':scope > nav > ul.sf-menu');
+    if (this._scrollWatched === list) {
+      if (list) this.syncScroll(list);
+      return;
+    }
+    this._scrollObserver?.disconnect();
+    this._scrollWatched = list;
+    if (!list || typeof ResizeObserver === 'undefined') return;
+    this._scrollObserver = new ResizeObserver(() => this.syncScroll(list));
+    this._scrollObserver.observe(list);
+    this.syncScroll(list);
+  }
+
   // A row's panels are placed by the Framework's geometry, as the class menu
   // places them: the first level below its item, deeper ones to the inline
   // end; both flip and shift inside the viewport instead of overflowing it.
@@ -764,6 +956,7 @@ class SfSmartMenu extends MenuElement {
         const current = this._anchors.get(submenu);
         if (current) {
           current.anchor.update();
+          this.syncScroll(submenu, true);
           continue;
         }
         const saved = ['min-width', 'overflow-y'].map((name) => [name, submenu.style.getPropertyValue(name), submenu.style.getPropertyPriority(name)]);
@@ -773,7 +966,7 @@ class SfSmartMenu extends MenuElement {
           // A region is as wide as the header the row stands in -- else the
           // row's own nav -- and opens under it.
           const header = this.closest('.sf-site-header, header') || this.querySelector(':scope > nav') || row;
-          anchor = positioning().anchor(header, submenu, {side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true});
+          anchor = positioning().anchor(header, submenu, {side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true, onPosition: () => this.syncScroll(submenu, true)});
         } else if (row.dataset.sfMenuLevel === '1') {
           // min-inline-size: 100% would resolve against the viewport once fixed.
           submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
@@ -781,7 +974,8 @@ class SfSmartMenu extends MenuElement {
           // sf-header-site says how far its edge is below the row
           // (--sf-site-header--edge), so the current section's line on that
           // edge stays in sight while the panel is open (C30, R060).
-          anchor = positioning().anchor(row, submenu, {side: 'block-end', align: 'start', offset: 'calc(var(--sf-site-header--edge, calc(var(--sf-px) * 0)) + var(--sf-space-1\\/4))', fitHeight: true});
+          anchor = positioning().anchor(row, submenu, {side: 'block-end', align: 'start', offset: 'calc(var(--sf-site-header--edge, calc(var(--sf-px) * 0)) + var(--sf-space-1\\/4))', fitHeight: true,
+            onPosition: () => this.syncScroll(submenu, true)});
         } else {
           // A side panel stands beside the panel its row is in, not over it:
           // past that panel's own edge (its padding and border) by the gap
@@ -815,9 +1009,13 @@ class SfSmartMenu extends MenuElement {
             side, align: 'start', fitHeight: true,
             offset: Math.max(outer.right - box.right, box.left - outer.left) + gap,
             alignmentOffset: -((parseFloat(own.paddingTop) || 0) + (parseFloat(own.borderTopWidth) || 0)),
+            // The height it is given is known once placed: a panel cut to
+            // the window scrolls, and its path line steps inside (R084).
+            onPosition: () => this.syncScroll(submenu, true),
           });
         }
         this._anchors.set(submenu, {anchor, saved});
+        this.syncScroll(submenu, true);
       }
     }
     for (const submenu of [...this._anchors.keys()]) if (!wanted.has(submenu)) this.releaseAnchor(submenu);
@@ -939,6 +1137,8 @@ class SfSmartMenu extends MenuElement {
     this.syncAnchors();
     this.observeWidth();
     this.syncSurface();
+    this.watchColumnScroll();
+    this.syncSearchHighlight();
     return undefined;
   }
 
@@ -946,7 +1146,8 @@ class SfSmartMenu extends MenuElement {
     const props = this.getPropsContext();
     this.syncMode();
     const all = this.menuItems;
-    const items = this.groupsDrawn ? all : withoutGroups(all);
+    const result = this.searchResult();
+    const items = result ? result.items : this.groupsDrawn ? all : withoutGroups(all);
     const currentId = this.currentId;
     const tree = this.treeItems;
     const moreActive = this.moreActive;
@@ -958,7 +1159,9 @@ class SfSmartMenu extends MenuElement {
       // <path>--menu-<n>, n the item's place in this element's own map.
       id: partId(instancePath(this, {kind: 'sf-menu'})),
       items,
-      open: new Set(this.openIds),
+      // While the field holds words, the branches that lead to a match are
+      // open and the others closed, whatever the person had opened.
+      open: result ? result.open : new Set(this.openIds),
       currentId,
       // The branches above the current page: a closed one draws the bar (C23).
       holding: new Set(currentId ? pathTo(tree, currentId) || [] : []),
@@ -976,6 +1179,13 @@ class SfSmartMenu extends MenuElement {
       // A split row's chevron is named after its section: «Каталог: подразделы».
       subsectionsName: (label) => `${label}: ${this.sfWord('subsections')}`,
       indicator: this.indicator,
+      bordered: this.bordered,
+      search: this.searchActive,
+      searchPlaceholder: this.getAttribute('search-placeholder') || this.sfWord('search-placeholder'),
+      searchEmpty: Boolean(result) && result.items.length === 0,
+      searchEmptyWords: this.sfWord('search-empty'),
+      searchStatus: result ? (result.items.length ? this.sfWord('search-found', {count: result.count}) : this.sfWord('search-empty')) : '',
+      newTabWords: this.sfWord('new-tab'),
       flyouts: this.flyouts,
       collapsed: this.collapsed,
       panelOpen: this.panelOpen,

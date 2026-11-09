@@ -8,6 +8,10 @@
     "status-error": "error",
     "status-info": "something new",
     "status-neutral": "no data",
-    "subsections": "subsections"
+    "subsections": "subsections",
+    "search-placeholder": "Search",
+    "search-found": "Found: {n}",
+    "search-empty": "Nothing found",
+    "new-tab": "opens in a new tab"
   }
 }

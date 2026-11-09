@@ -6,8 +6,9 @@
 // on the built bytes with the real Loader, at 1440 and 390 px, light and dark.
 //
 // sf-menu 1.3.0, a grouped section navigation (appearance navigation,
-// sticky, collapse narrow): a group's heading is the half rung's control
-// height, its words on the rows' text axis; the rows are the size 1 control
+// sticky, collapse narrow): a group's heading is a row's height, the rows'
+// size of type (C30 amended 2026-11-09, R070), its words on the rows' text
+// axis; the rows are the size 1 control
 // height; the status dot stands before the counter at the row's end; the
 // collapsible heading is a disclosure button; sticky keeps the menu in view
 // while the page scrolls; under md the menu is a selector button showing the
@@ -150,14 +151,14 @@ for (const theme of ['light', 'dark']) {
           heading: r(heading).height, toggle: r(toggle).height, row: r(row).height,
           headLeft: r(headText).left, rowTextLeft: r(rowText).left, iconLeft: r(row.querySelector('.sf-menu-element-icon')).left,
           dotRight: r(dot).right, rowRight: r(row).right, countRight: r(count).right, dotSize: r(dot.querySelector('.sf-dot-item')).width,
-          headingFont: style.fontSize, headingColor: style.color,
+          headingFont: style.fontSize, headingColor: style.color, rowFont: getComputedStyle(row).fontSize,
           named: document.getElementById(list.getAttribute('aria-labelledby'))?.textContent.trim(),
           linkName: row.textContent.replace(/\s+/gu, ' ').trim(), current: row.getAttribute('aria-current'),
           currentFill: getComputedStyle(row).backgroundColor, toggleExpanded: toggle.getAttribute('aria-expanded'),
         };
       });
       numbers[`menu ${label}`] = m;
-      ok(`menu ${label}: a group heading is the half rung's control height (${t.controlHalf}), a collapsible one too`, near(m.heading, t.controlHalf) && near(m.toggle, t.controlHalf), JSON.stringify(m));
+      ok(`menu ${label}: a group heading is a row's height (${t.control1}) in the rows' size of type, a collapsible one too (R070)`, near(m.heading, t.control1) && near(m.toggle, t.control1) && m.headingFont === m.rowFont, JSON.stringify(m));
       ok(`menu ${label}: a row is the size 1 control height (${t.control1})`, near(m.row, t.control1), JSON.stringify(m));
       ok(`menu ${label}: the heading's words start where a row starts its icon (one text axis)`, near(m.headLeft, m.iconLeft, 1), JSON.stringify({head: m.headLeft, icon: m.iconLeft}));
       ok(`menu ${label}: the heading names its list; the status word ends the link's name; the current row is the page`, m.named === 'Сайт' && /Адрес.*внимание/u.test(m.linkName) && m.current === 'page', JSON.stringify(m));
@@ -202,7 +203,7 @@ for (const theme of ['light', 'dark']) {
       // On a phone the class row with an icon is the icon's 24 px plus its
       // padding, 40 px, over the rung's 36 (the class menu's own geometry,
       // the same without groups): the selector is that row's height.
-      ok(`menu ${label}: the selector is a row's height, a heading the half rung's`, near(rows.row, s.h) && near(rows.heading, t.controlHalf), JSON.stringify({rows, t}));
+      ok(`menu ${label}: the selector is a row's height, a heading too (R070)`, near(rows.row, s.h) && near(rows.heading, t.control1), JSON.stringify({rows, t}));
       if (shots) await tab.screenshot({path: join(shots, `menu-selector-open-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 520}});
       await tab.click('#nav a[data-sf-menu-link="code"]');
       await tab.waitForTimeout(200);

@@ -9199,6 +9199,45 @@
       },
       "manual": "With appearance=\"surface\" write scheme=\"on-surface\"; to keep the quiet scheme take appearance=\"tonal\" or \"outline\" with scheme=\"on-surface-variant\". The component notes the use in SF.deprecations and warns once per page in the console.",
       "source": "src/smart/button/index.js retiredSurfaceQuiet; ui-control control/research/2026-11-09-buttons-review.md"
+    },
+    {
+      "id": "sf-menu-item-field-aliases",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "property",
+      "summary": "sf-menu reads an item's id and label under the first release's spellings as well: key for id, text and title for label. They are in no contract (item_contract declares id and label only, decision of DEV on C30 amended) and leave on the date; write id and label.",
+      "items": [
+        {
+          "component": "sf-menu",
+          "attribute": "items",
+          "from": "key",
+          "to": "id",
+          "match": "[\"']?\\bkey[\"']?\\s*:"
+        },
+        {
+          "component": "sf-menu",
+          "attribute": "items",
+          "from": "text",
+          "to": "label",
+          "match": "[\"']?\\btext[\"']?\\s*:"
+        },
+        {
+          "component": "sf-menu",
+          "attribute": "items",
+          "from": "title",
+          "to": "label",
+          "match": "[\"']?\\btitle[\"']?\\s*:"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "In the items given to sf-menu (the property or the items attribute's JSON), rename an item's key to id and its text or title to label. Other objects with these keys are not the menu's: rewrite by hand where the object is a menu item.",
+      "examples": {
+        "before": "menu.items = [{key: 'docs', text: 'Документация', href: '/docs/'}];",
+        "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
+      },
+      "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
     }
   ]
 }

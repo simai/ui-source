@@ -39,11 +39,22 @@ function renderStatus(context, item) {
   return html`<span class=${`sf-dot sf-dot--size-1/2 sf-dot--${item.status}`} aria-hidden="true"><span class="sf-dot-item"></span></span><span class="sf-menu-element-status">${context.statusWord(item.status)}</span>`;
 }
 
+// A link that leaves the site (C30 amended, R071): ↗ at the row's end, and
+// in the link's name, out of sight, that it opens in a new tab when it does.
+function renderExternal(context, item) {
+  if (!item.external) return nothing;
+  return html`<i class="sf-icon sf-menu-element-external" aria-hidden="true">arrow_outward</i>${item.target === '_blank' ? html`<span class="sf-menu-element-status">${context.newTabWords}</span>` : nothing}`;
+}
+
 // What a row holds, in the class order: an icon, the words, a status dot and a
 // counter.
 function renderWrapContent(context, item) {
-  return html`${item.icon ? html`<i class="sf-icon sf-menu-element-icon" aria-hidden="true">${item.icon}</i>` : nothing}<span class="sf-menu-element-text">${item.label}</span>${renderStatus(context, item)}${renderBadge(item)}`;
+  return html`${item.icon ? html`<i class="sf-icon sf-menu-element-icon" aria-hidden="true">${item.icon}</i>` : nothing}<span class="sf-menu-element-text">${item.label}</span>${renderStatus(context, item)}${renderBadge(item)}${renderExternal(context, item)}`;
 }
+
+// A link's own target: rel noopener for a new tab.
+const targetOf = (item) => item.target || nothing;
+const relOf = (item) => (item.target === '_blank' ? 'noopener' : nothing);
 
 const renderWrap = (context, item) => html`<span class="sf-menu-element-wrap">${renderWrapContent(context, item)}</span>`;
 
@@ -79,6 +90,7 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
     // words in the row's place.
     if (linked) {
       return html`<a class=${classes} href=${item.href} aria-current=${current ? 'page' : nothing}
+                     target=${targetOf(item)} rel=${relOf(item)}
                      data-sf-menu-link=${own(item.id)}>${renderWrap(context, item)}</a>`;
     }
     if (item.disabled) return html`<a class=${classes} aria-disabled="true">${renderWrap(context, item)}</a>`;
@@ -92,6 +104,7 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
     return html`<div class=${classes}>
       ${linked
         ? html`<a class="sf-menu-element-wrap" href=${item.href} aria-current=${current ? 'page' : nothing}
+                  target=${targetOf(item)} rel=${relOf(item)}
                   data-sf-menu-link=${own(item.id)}>${renderWrapContent(context, item)}</a>`
         : html`<a class="sf-menu-element-wrap" aria-disabled="true">${renderWrapContent(context, item)}</a>`}
       <button class="sf-icon-button" type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${own(submenuId)}
@@ -229,6 +242,19 @@ function renderPanelToggle(context) {
   </button>`;
 }
 
+// A column's search (C30 amended, R071 a): a field over the rows -- the
+// Framework's sf-input, filled and rounded, its magnifier over the rows'
+// icons (C06) -- and a polite live region that says how many matched. The
+// field stands still; the rows under it scroll.
+function renderSearch(context) {
+  return html`<div class="sf-smart-menu-search">
+    <sf-input class="sf-smart-menu-search-field" input-type="search" appearance="filled" radius="rounded" icon-start="search"
+              placeholder=${context.searchPlaceholder} aria-label=${context.searchPlaceholder}
+              autocomplete="off" data-sf-menu-search></sf-input>
+    <span class="sf-menu-element-status" role="status" aria-live="polite" aria-atomic="true">${context.searchStatus}</span>
+  </div>`;
+}
+
 // The class markup inside a named <nav>: ul.sf-menu > li.sf-menu-item > the
 // row and the nested ul.sf-menu. The whole of it carries data-sf-menu-owned,
 // so the class runtime, loaded beside it for the sheet, leaves it to the
@@ -241,18 +267,22 @@ export function renderMenuTemplate(context) {
     // The row's current section: a line on the header's edge (default) or,
     // with indicator fill, the C23 plate (C30).
     context.flyouts && context.indicator === 'fill' ? 'sf-menu--indicator-fill' : '',
+    // A column with a border of its own: the path's line lies on it (R072 e).
+    !context.flyouts && context.bordered ? 'sf-menu--bordered' : '',
   );
   return html`
-    <nav class=${joinClasses('sf-smart-menu', context.collapsed ? 'sf-smart-menu--collapsed' : '', context.rootClass)}
+    <nav class=${joinClasses('sf-smart-menu', context.collapsed ? 'sf-smart-menu--collapsed' : '', context.search ? 'sf-smart-menu--search' : '', context.rootClass)}
          style=${context.rootStyle || nothing}
          aria-label=${context.label || nothing}
          data-orientation=${context.flyouts ? 'horizontal' : 'vertical'}
          data-overflow=${context.moreItem ? 'more' : nothing}
          data-sf-menu-owned>
       ${context.collapsed ? renderPanelToggle(context) : nothing}
-      <ul class=${listClasses} id=${`${context.id}--list`} ?hidden=${context.collapsed && !context.panelOpen}>
+      ${context.search ? renderSearch(context) : nothing}
+      <ul class=${listClasses} id=${`${context.id}--list`} ?hidden=${(context.collapsed && !context.panelOpen) || context.searchEmpty}>
         ${renderItems(context, context.items, 1)}${context.moreItem ? renderItem(context, context.moreItem, 1) : nothing}
       </ul>
+      ${context.search && context.searchEmpty ? html`<p class="sf-smart-menu-search-empty">${context.searchEmptyWords}</p>` : nothing}
     </nav>
   `;
 }

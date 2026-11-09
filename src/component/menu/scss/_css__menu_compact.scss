@@ -44,7 +44,10 @@
   // The rail marks the current page as the navigation column does (C23, owner
 // 2026-11-09): the row that is the current page takes the primary plate and
 // on-primary-container icon; the row whose section holds it -- the rail draws
-// no branch, so it has no plate -- takes the bar at its icon's side.
+// no branch, so it has no plate -- takes the path's 2 px primary line on the
+// rail's start edge, as tall as the row (C30 amended, DEV answer b): the same
+// sign as a row's panel and a bordered column. The rail has no border and no
+// inset, so the line's place is the rail's own edge.
   .sf-menu.sf-menu--compact .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
     @include menu.current-plate;
   }
@@ -54,7 +57,9 @@
   }
 
   .sf-menu.sf-menu--compact {
-    @include menu.holds-current-bar;
+    --sf-menu--inset: calc(var(--sf-px) * 0);
+    --sf-menu--border-width: calc(var(--sf-px) * 0);
+    @include menu.path-line('.sf-menu-element.sf-menu-element--holds-current:not([aria-current])');
   }
 
   // An avatar is round unless it is the square one.

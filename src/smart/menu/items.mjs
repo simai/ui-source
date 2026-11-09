@@ -56,9 +56,23 @@ const text = (value) => (value === null || value === undefined ? '' : String(val
 // (`children`, or `items` by the shape of a grouped navigation), never a
 // destination itself. Its items are first-level rows; a group is open unless
 // it says `open: false`, and only a `collapsible` one is opened and closed.
+// The first release's spellings of an item's fields -- key for id, text and
+// title for label -- are read until 2027-01-01 and never offered: they are
+// in no contract, and contracts/changes/journal.json records them
+// (sf-menu-item-field-aliases). The element hands in its runtime note, so this
+// module stays free of the page and runs in Node.
+export const ITEM_FIELD_ALIASES = Object.freeze({key: 'id', text: 'label', title: 'label'});
+let noteAlias = () => {};
+export function onItemAlias(note) {
+  noteAlias = typeof note === 'function' ? note : () => {};
+}
+
 export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) {
   if (typeof item === 'string') item = {label: item};
   if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+  if (item.id == null && item.key != null) noteAlias('key', 'id');
+  if (item.label == null && item.text != null) noteAlias('text', 'label');
+  else if (item.label == null && item.title != null) noteAlias('title', 'label');
   const own = text(item.id ?? item.key).trim().replace(/^@.*$/u, '');
   const id = own || (parentId ? `${parentId}-${index + 1}` : `item-${index + 1}`);
   if (seen.has(id)) return null;
@@ -87,6 +101,11 @@ export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) 
     // columns. Elsewhere -- a column, a deeper level, the «Ещё» panel -- it
     // is an ordinary branch.
     region: group ? '' : text(item.region).trim(),
+    // A link that leaves the site or opens elsewhere (C30 amended, R071): its
+    // target is the link's, and an item with a target of its own (_blank) or
+    // external: true draws ↗ after its words.
+    target: group ? '' : text(item.target).trim(),
+    external: !group && (Boolean(item.external) || (Boolean(text(item.target).trim()) && text(item.target).trim() !== '_self')),
     children,
   };
   if (group) {
@@ -267,6 +286,8 @@ export function itemsFromList(list) {
           : has(li, 'data-open') || Boolean(li.classList?.contains?.('open')),
         group: has(li, 'data-group'),
         region: attr(li, 'data-region') || '',
+        target: attr(link, 'target') || '',
+        external: has(li, 'data-external') || has(link, 'data-external'),
         collapsible: has(li, 'data-collapsible'),
         status: attr(li, 'data-status') || '',
         children: nested ? itemsFromList(nested) : [],
@@ -303,4 +324,63 @@ export function fitRow(widths, moreWidth, available, gap = 0, keep = -1) {
     stays.push(index);
   }
   return stays.sort((a, b) => a - b);
+}
+
+// Search in a column (C30 amended 2026-11-09, R071 a). Words are compared
+// without case and with ё as е; one character stays one character, so a
+// place in the folded words is the same place in the words drawn.
+export function foldWords(value) {
+  let folded = '';
+  for (const unit of text(value)) {
+    const lower = unit.toLowerCase();
+    folded += lower === 'ё' ? 'е' : lower.length === unit.length ? lower : unit;
+  }
+  return folded;
+}
+
+// Where `query` stands in `words`: [start, end] pairs, none when it does not.
+export function matchesIn(words, query) {
+  const needle = foldWords(query).trim();
+  if (!needle) return [];
+  const haystack = foldWords(words);
+  const found = [];
+  let at = haystack.indexOf(needle);
+  while (at !== -1) {
+    found.push([at, at + needle.length]);
+    at = haystack.indexOf(needle, at + needle.length);
+  }
+  return found;
+}
+
+// The items a query keeps: an item whose words match stays with all its
+// children, closed unless one of them matches too; an item one of whose
+// descendants matches stays, open, with only the branches that lead to a
+// match; a group whose heading matches stays whole. Answers {items, open,
+// count}: the tree to draw, the ids to draw open (groups and the branches
+// leading to a match) and how many words matched.
+export function filterItems(items, query) {
+  const open = new Set();
+  let count = 0;
+  const keep = (item, whole) => {
+    const hit = matchesIn(item.label, query).length > 0;
+    if (hit) count += 1;
+    if (whole) {
+      // Under a matching heading or parent: everything stays; matches below
+      // still count and still open their branch.
+      const children = item.children.map((child) => keep(child, true));
+      if (item.children.some((child, at) => children[at].leads)) open.add(item.id);
+      return {item: {...item, children: children.map((entry) => entry.item)}, leads: hit || children.some((entry) => entry.leads)};
+    }
+    if (hit) {
+      const children = item.children.map((child) => keep(child, true));
+      if (item.group || children.some((entry) => entry.leads)) open.add(item.id);
+      return {item: {...item, children: children.map((entry) => entry.item)}, leads: true};
+    }
+    const children = item.children.map((child) => keep(child, false)).filter(Boolean);
+    if (!children.length) return null;
+    open.add(item.id);
+    return {item: {...item, children: children.map((entry) => entry.item)}, leads: true};
+  };
+  const kept = items.map((item) => keep(item, false)).filter(Boolean);
+  return {items: kept.map((entry) => entry.item), open, count};
 }

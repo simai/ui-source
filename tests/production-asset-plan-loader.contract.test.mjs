@@ -58,7 +58,7 @@ test('an unbound flat menu has the same level-one geometry as the bound menu', (
   );
   assert.match(
     menuElementStyles,
-    /\.sf-menu-element--level-1 \{\s*--sf-menu-element--padding-inline-start: var\(--sf-space-1\)/,
+    /\.sf-menu-element--level-1 \{\s*--sf-menu-element--padding-inline-start: var\(--sf-menu--row-padding, var\(--sf-space-1\)\)/,
   );
 });
 
