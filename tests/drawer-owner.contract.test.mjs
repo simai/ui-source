@@ -90,10 +90,10 @@ test('Smart Drawer: a docked column takes the page surface (simai/ui-source#26)'
   // page; the manager decides it per drawer.
   assert.match(source, /data-sf-drawer-column=\$\{context\.column \? 'true' : 'false'\}/);
   assert.match(source, /drawer\.setDockColumn\(column\)/);
-  // A column: the page's surface and no shadow; the raised surface and its
+  // A column: the area (C16 S4a, a column beside the page) and no shadow; the raised surface and its
   // dimmed-text role stay with a floating panel.
-  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-0\)\);[^}]*box-shadow: var\(--sf-shadow-flat\);/);
-  assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-surface-popup\)\);[^}]*--sf-on-surface-variant: var\(--sf-on-surface-popup-variant\);/);
+  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-area\)\);[^}]*box-shadow: var\(--sf-shadow-flat\);/);
+  assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-surface-popup\)\);[^}]*@include places\.sf-place\(var\(--sf-drawer-background, var\(--sf-surface-popup\)\), var\(--sf-on-surface-popup-variant\)\);/);
   // A docked drawer that floats (a narrow host) keeps its shadow.
   assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: (?:none|var\(--sf-shadow-flat\))/);
 });

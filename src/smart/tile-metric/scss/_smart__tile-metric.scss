@@ -1,3 +1,13 @@
+@use '../../../core/scss/mix/mix__places' as places;
+
+// A tile is a place (C16): a cut-out and the dim ink on it take the card's.
+// In sf.base, so a utility on the tile still wins.
+@layer sf.base {
+  .sf-tile-metric {
+    @include places.sf-place(var(--sf-tile-metric-background-color, var(--sf-tile-metric-background, var(--sf-surface-card))), var(--sf-on-surface-card-variant));
+  }
+}
+
 @layer sf.components {
 /* sf-tile-metric (standard simai.smart-component 1.3.14 §6). One rung S of
    the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 or
@@ -37,7 +47,8 @@ sf-tile-metric {
   padding: var(--sf-tile-metric--padding);
   border: var(--sf-tile-metric--border) solid var(--sf-tile-metric-border-color, var(--sf-outline-variant));
   border-radius: var(--sf-tile-metric-radius, var(--sf-radius--surface));
-  background: var(--sf-tile-metric-background-color, var(--sf-tile-metric-background, var(--sf-surface-0)));
+  // A tile is a card (C16): the card place, a step lighter in the dark.
+  background: var(--sf-tile-metric-background-color, var(--sf-tile-metric-background, var(--sf-surface-card)));
   color: var(--sf-on-surface);
   font: inherit;
   font-family: var(--sf-text--family);
@@ -196,7 +207,7 @@ sf-tile-metric {
 .sf-tile-metric-skeleton {
   display: block;
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-skeleton-base, var(--sf-ui-skeleton));
+  background: var(--sf-skeleton-base, var(--sf-surface-container));
 }
 
 .sf-tile-metric-skeleton--value {

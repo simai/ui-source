@@ -176,7 +176,8 @@
     padding-inline: var(--sf-list--text-inset);
     border: var(--sf-px) solid var(--sf-outline);
     border-radius: var(--sf-list--row-radius);
-    background: var(--sf-surface-0);
+    /* A bordered field: no plate of its own (C16). */
+    background: var(--sf-transparent);
     color: inherit;
     font: inherit;
     font-size: var(--sf-list--font-size);

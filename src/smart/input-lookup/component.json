@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -307,7 +307,8 @@
     "version 1.2.2 (2026-11-07): a patch (owner C05-C07, docs review R029, which replaces R017's 1/3 inset). The list is a dropping panel with the context menu's geometry, from the shared partial component/context-menu/scss/_panel.scss: rows and their fills stand --sf-space-1/4 from the panel's edge (--sf-lookup--panel-padding), a row is as tall as a control of the lookup's size (--sf-ui-<size>--control-height; a caption makes it taller) and rounded --sf-radius--ui, and its avatar or text stands --sf-space-1/2 inside the highlight, the state line and the actions on the same line (before, a row's text kept the field's axis). The scrollbar shows only when the rows do not fit; while it takes room the panel is marked sf-lookup-panel--scrollbar (component/panel-scrollbar.js) and gives up its inline-end padding, the track the inset, a thumb of --sf-space-1/4 and the inset again. Settings, values, events and keys unchanged; probe dropdown-panels-inset.",
     "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.4 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-09): the list stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). Nothing else changes."
+    "version 1.3.0 (2026-11-09): the list stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). Nothing else changes.",
+    "version 1.4.0 (2026-11-09): the field is transparent at rest (C16, the background system, owner 2026-11-08); the list declares a popup place."
   ],
   "x-registry": {
     "reuse_mode": "whole",

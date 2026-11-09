@@ -61,7 +61,10 @@
 
   .sf-tree .sf-tree-item.active > .sf-tree-item-container,
   .sf-tree .sf-tree-item[aria-selected='true'] > .sf-tree-item-container {
-    background: var(--sf-tree-selected-background-color, var(--sf-surface-container-active));
+    /* The selected role (C16), with its ink. */
+    background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
+    color: var(--sf-on-primary-container);
+    --sf-icon--color: var(--sf-on-primary-container);
   }
 
   // A row is flush against the rows above and below it, so the ring turns

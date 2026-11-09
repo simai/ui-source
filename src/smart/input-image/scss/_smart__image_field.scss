@@ -31,7 +31,7 @@
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
   --sf-image-field--border-color: var(--sf-image-field-border-color, var(--sf-outline));
-  --sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-surface-0));
+  --sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-transparent));
   --sf-image-field--border-style: solid;
 }
 
@@ -179,7 +179,9 @@
 .sf-image-field.dragover {
   --sf-image-field--background-color: var(--sf-primary-transparent-select);
   --sf-image-field--border-color: var(--sf-outline-primary);
-  --sf-image-field--border-style: solid;
+  /* A drop target keeps its dashed edge in the primary outline (C16, surfaces
+     research 5.2), as sf-file-upload's does. */
+  --sf-image-field--border-style: dashed;
 }
 
 .sf-image-field.error {

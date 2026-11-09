@@ -1,7 +1,9 @@
 @layer sf.components {
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
 .sf-skeleton {
-  --sf-skeleton-base: var(--sf-ui-skeleton);
+  /* A control's fill and its pressed step (C16): the skeleton stands where a
+     line of text or a plate will, on whatever place it is on. */
+  --sf-skeleton-base: var(--sf-surface-container);
   --sf-skeleton-highlight: var(--sf-surface-container-active);
   --sf-skeleton-duration: calc(var(--sf-duration-slow) * 3);
   display: flex;

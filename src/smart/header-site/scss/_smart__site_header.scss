@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
 /* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
@@ -202,8 +203,8 @@
     overscroll-behavior: contain;
     background: var(--sf-surface-popup);
     box-shadow: var(--sf-shadow-modal);
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
     color: var(--sf-on-surface);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
   }
 
   /* The panel's head is as tall as the bar, its close button on the axis of

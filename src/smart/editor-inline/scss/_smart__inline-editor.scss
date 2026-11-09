@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 // In-place inline editor (startInlineEdit). The edited element shows a
 // visible editing state; the formatting toolbar floats above it. The public
 // variables (standard 1.3.8 §6): the edited element's outline, the toolbar's
@@ -23,7 +24,7 @@
         border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius-1, .25rem));
         /* A toolbar floats over the page: step 2's surface and shadow. */
         background: var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas));
-        --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+        @include places.sf-place(var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
         color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
     }

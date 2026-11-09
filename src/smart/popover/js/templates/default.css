@@ -23,9 +23,34 @@
     overflow: auto;
     border-radius: var(--sf-popover-radius, var(--sf-radius--surface));
     background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
-    color: var(--sf-popover-color, inherit);
+    /* The popup's own ink (C16): inherited, a popover opened from a coloured
+       block took the block's text colour onto the popup's plate. */
+    color: var(--sf-popover-color, var(--sf-on-surface));
+    /* The popup is a place (C16; core mix/_mix__places.scss, sf-place, written
+       out because this sheet is not Sass; tests/surface-places.contract.test.mjs
+       holds it equal to the mixin): its colour for a cut-out, its dim ink and
+       the theme's roles back, so a popover opened on a coloured block is an
+       ordinary popover. */
+    --sf-surface-place: var(--sf-popover-background-color, var(--sf-surface-popup));
+    --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
     --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-    --sf-badge--surface: var(--sf-popover-background-color, var(--sf-surface-popup));
+    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
+    --sf-surface-state-hover: light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4));
+    --sf-surface-state-select: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-surface-state-active: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
+    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
+    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+    --sf-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+    --sf-surface-disabled: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-on-surface-disabled: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-disable: var(--sf-surface-disabled);
+    --sf-on-disable: var(--sf-on-surface-disabled);
+    --sf-on-surface-container--variant: var(--sf-on-surface-container-variant);
+    --sf-surface-transparent-active: var(--sf-surface-state-active);
+    --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+    --sf-surface-transparent-select: var(--sf-surface-state-select);
     box-shadow: var(--sf-popover-shadow, var(--sf-shadow-overlay));
   }
 

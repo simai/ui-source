@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-rich's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
   "id": "smart.input-rich",
   "tag": "sf-input-rich",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -244,7 +244,8 @@
     "version 1.0.3: the editor is unchanged. The subset module it carries (core/js/composition/html-subset.mjs) gains the paste profile of a structured-content editor, cleanTree(tree, {profile: 'paste'}), which keeps pre and simple tables as blocks of their own (simai/ui-source#66); html@1 and every value this editor writes stay as they were.",
     "version 1.1.0: the tag is sf-input-rich (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-rich and the bundle cl-input-rich follow it. sf-rich-text stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-rich, sf-rich-text) (change journal tag-sf-rich-text-to-sf-input-rich, path-smart-rich-text-to-input-rich).",
     "version 1.1.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
-    "version 1.1.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged."
+    "version 1.1.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-09): the field is transparent at rest, so it stands on any place (C16, the background system, owner 2026-11-08)."
   ],
   "x-registry": {
     "reuse_mode": "whole",

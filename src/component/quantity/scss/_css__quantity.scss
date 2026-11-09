@@ -71,7 +71,7 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-quantity-wrap--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-quantity .sf-quantity-wrap {
   min-inline-size: 0;
-  --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-0));
+  --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-transparent));
   --sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;
   --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));
   --sf-quantity-wrap--border-end-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));

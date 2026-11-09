@@ -10,7 +10,9 @@
 
 .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
   border: var(--sf-px) solid;
-  border-color: var(--sf-white, transparent);
+  /* The cut-out between overlapping avatars is the place they stand on
+     (C16): white in both themes drew a white ring on a dark page. */
+  border-color: var(--sf-surface-place, transparent);
   border-style: solid;
   border-width: var(--sf-px);
 }

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.carousel",
   "kind": "component",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/carousel/index.js",
@@ -14,7 +14,7 @@
     "src/component/carousel/scss/_var__carousel.scss",
     "src/component/carousel/scss/index.scss"
   ],
-  "content_sha256": "b50776f3f05499fd9dce03abbf38707bd38bc7302be0acb14a5e62209e593257",
+  "content_sha256": "987b6961133fb7d2dd6071d6082d67868d8ceae3605a459de72cdbe9e04770cf",
   "dependencies": [
     {
       "id": "component.swiper",
@@ -27,6 +27,10 @@
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.2.0"
     },
     {
       "id": "tokens.opacity",

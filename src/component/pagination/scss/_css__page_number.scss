@@ -80,6 +80,12 @@
   --sf-page-number--font-weight: var(--sf-font-weight-medium);
 }
 
+/* The current page is the selected role (C16): primary-container at rest; a
+   press keeps the pressed step above. */
+.sf-page-number.selected:not(:active) {
+  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container));
+}
+
 .sf-page-number--ellipsis {
   --sf-page-number--background-color: transparent;
   --sf-page-number--border-bottom-width: 0;

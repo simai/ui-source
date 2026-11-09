@@ -52,16 +52,24 @@ test('no source writes a former name; a rule that writes a renamed role includes
     if (!statSync(path).isFile() || path.endsWith('_mix__role_aliases.scss')) continue;
     const css = readFileSync(path, 'utf8');
     const short = path.slice(root.length + 1);
-    for (const [from] of pairs) {
-      if (new RegExp(`${from}\\s*:`, 'u').test(css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/^\s*\/\/.*$/gmu, ''))) wrong.push(`${short}: writes ${from}`);
+    // A plain CSS sheet (a Smart template) cannot include the mixin: it writes
+    // the alias out, the former name as exactly var() of the new one (C16
+    // places; tests/surface-places.contract.test.mjs holds the block equal to
+    // the mixin). Anything else written to a former name is wrong.
+    const literal = path.endsWith('.css');
+    const bare = css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/^\s*\/\/.*$/gmu, '');
+    for (const [from, to] of pairs) {
+      const writes = [...bare.matchAll(new RegExp(`${from}\\s*:\\s*([^;]+);`, 'gu'))].map(([, value]) => value.trim());
+      if (writes.some((value) => !(literal && value === `var(${to})`))) wrong.push(`${short}: writes ${from}`);
     }
     // Every block that declares a new name of a renamed role names it to the mixin.
     for (const [, body] of css.matchAll(/\{([^{}]*)\}/gu)) {
       const written = [...body.matchAll(/(--sf-[a-z0-9-]+)\s*:/gu)].map(([, name]) => name).filter((name) => byNew.has(name));
       if (!written.length) continue;
       const all = /sf-role-aliases;/u.test(body);
+      const spelled = (name) => literal && new RegExp(`${byNew.get(name)}\\s*:\\s*var\\(${name}\\)`, 'u').test(body);
       const named = new Set([...(body.match(/sf-role-aliases\(([^;]*)\);/u)?.[1] ?? '').matchAll(/'([a-z0-9-]+)'/gu)].map(([, name]) => `--sf-${name}`));
-      for (const name of written) if (!all && !named.has(name)) wrong.push(`${short}: writes ${name} without its alias ${byNew.get(name)}`);
+      for (const name of written) if (!all && !named.has(name) && !spelled(name)) wrong.push(`${short}: writes ${name} without its alias ${byNew.get(name)}`);
     }
   }
   assert.deepEqual(wrong, []);

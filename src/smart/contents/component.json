@@ -2,7 +2,7 @@
   "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
   "id": "smart.contents",
   "tag": "sf-contents",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -245,7 +245,8 @@
     "version 1.1.3: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; behaviour unchanged.",
     "version 1.1.4 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.0 background-color-names: the public variable --sf-contents-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-contents-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
-    "version 1.3.0 (2026-11-09): the bar and the compact view's open list stand over the page: the overlay place (C20, the shadow system, owner 2026-11-08) -- --sf-shadow-overlay on the popup surface (--sf-surface-popup, a step lighter in the dark theme than the level-2 surface it had). No setting, value or event changes."
+    "version 1.3.0 (2026-11-09): the bar and the compact view's open list stand over the page: the overlay place (C20, the shadow system, owner 2026-11-08) -- --sf-shadow-overlay on the popup surface (--sf-surface-popup, a step lighter in the dark theme than the level-2 surface it had). No setting, value or event changes.",
+    "version 1.4.0 (2026-11-09): the panel declares a popup place (C16, the background system, owner 2026-11-08) (--sf-surface-place and the theme's roles back); the current entry is primary-container with its ink."
   ],
   "x-registry": {
     "capabilities": [

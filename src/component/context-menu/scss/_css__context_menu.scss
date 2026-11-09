@@ -1,4 +1,5 @@
 @use 'panel';
+@use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -24,8 +25,7 @@
      third step, as every panel that floats over the page, and a hairline
      that keeps its edge where the shadow does not show. */
   --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-  --sf-badge--surface: var(--sf-context-menu-content--background-color);
+  @include places.sf-place(var(--sf-context-menu-content--background-color), var(--sf-on-surface-popup-variant));
   border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
   /* The inset: a row's highlight stands --sf-space-1/4 from the panel's
      edge, on every side (owner C05, docs review R029, 2026-11-07; it replaces
@@ -125,10 +125,12 @@
   background-color: var(--sf-surface-container-hover);
 }
 
+/* Selected or current is one role in every component (C16): primary-container
+     with its ink. */
 .sf-context-menu-item--current {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  --sf-icon--color: var(--sf-on-secondary-container);
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
 }
 
 /* The chosen row of a pick-one list -- a language, a drilled choice's option:
@@ -138,13 +140,13 @@
    pointer over it takes the family's next step; hover elsewhere stays the
    neutral plate and the focus stays the ring, so the three never read alike. */
 .sf-context-menu-item--chosen {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  --sf-icon--color: var(--sf-on-secondary-container);
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
 }
 
 .sf-context-menu-item--chosen:not(:disabled):hover {
-  background-color: var(--sf-secondary-container-hover);
+  background-color: var(--sf-primary-container-hover);
 }
 
 .sf-context-menu-item:disabled {
@@ -449,10 +451,10 @@
 }
 
 .sf-context-menu-choice-option[aria-checked="true"] {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
-  --sf-icon--color: var(--sf-on-secondary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
 }
 
 /* The framed full-width band: every option across the panel, one segment

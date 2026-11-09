@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
@@ -24,8 +25,7 @@
        through its text (owner, 2026-10-12). So the toast stands on the raised
        surface of its step, with its shadow, and the status tints it. */
     background-color: var(--sf-surface-popup);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-    --sf-badge--surface: var(--sf-surface-popup);
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
     background-image: linear-gradient(var(--sf-toast--background-color), var(--sf-toast--background-color));
     box-shadow: var(--sf-shadow-overlay);
     color: var(--sf-toast--content-color, var(--sf-on-surface));

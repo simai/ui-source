@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 // Editor canvas overlay (sf-editor-overlay). Placed in the scroller of its
 // canvas, the parts lie in the scrolled content and travel with it; anywhere else
 // they are fixed to the viewport. Either way above the canvas and below drawers
@@ -124,7 +125,7 @@
         border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1, .25rem));
         /* A toolbar floats over the page: step 2's surface and shadow. */
         background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
-        --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+        @include places.sf-place(var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
         color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
         pointer-events: auto;

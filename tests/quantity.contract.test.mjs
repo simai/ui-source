@@ -198,7 +198,7 @@ test('quantity: the public variables wrap the values the class sheet drew before
   assert.equal(entry.variables.length, 10);
   for (const variable of entry.variables) assert.equal(variable.since, variable.state ? '2026-10-27' : '2026-10-25', variable.name);
   for (const line of [
-    '--sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-0));',
+    '--sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-transparent));',
     '--sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;',
     '--sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));',
     '--sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));',

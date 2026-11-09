@@ -11,7 +11,7 @@
        single dash after the block, never set by the Framework, read where the
        resting box is drawn -- here and by size -- and not by checked, hover,
        pressed, error or disabled, so states still show. */
-    --sf-checkbox-box--background-color: var(--sf-checkbox-background-color, var(--sf-surface-0));
+    --sf-checkbox-box--background-color: var(--sf-checkbox-background-color, var(--sf-surface-place));
     --sf-checkbox-box--border: var(--sf-checkbox-border-width, var(--sf-px)) solid;
     --sf-checkbox-box--border-color: var(--sf-checkbox-border-color, var(--sf-outline));
     --sf-checkbox-box--border-end-end-radius: var(--sf-checkbox-radius, var(--sf-radius--ui));

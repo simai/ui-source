@@ -118,7 +118,7 @@
    --sf-dropdown-background-color, --sf-dropdown-border-color) over the role
    tokens; hover, focus, disabled and error keep their own. */
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
-  --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-0));
+  --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-transparent));
   --sf-dropdown-field--border-color: var(--sf-dropdown-border-color, var(--sf-outline));
 }
 
@@ -308,7 +308,7 @@
 }
 
 .sf-dropdown.open .sf-dropdown-field {
-  --sf-dropdown-field--background-color: var(--sf-surface-0);
+  --sf-dropdown-field--background-color: var(--sf-transparent);
   --sf-dropdown-field--border-color: var(--sf-primary-active);
 }
 
@@ -331,7 +331,7 @@
   /* Doubled classes: it has to outrank the hover rule, which also matches while
      the pointer that opened the list is still over the field. */
   .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error):not(:has(> .sf-dropdown-field > :disabled)):is(.open, :focus-within) .sf-dropdown-field.sf-dropdown-field {
-    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--background-color: var(--sf-transparent);
     --sf-dropdown-field--border-color: var(--sf-outline);
   }
 }

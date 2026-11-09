@@ -154,7 +154,7 @@ test('image field: the public variables wrap the values it drew before', () => {
   for (const variable of entry.variables) assert.equal(variable.since, '2026-10-24', variable.name);
   for (const line of [
     '--sf-image-field--border-color: var(--sf-image-field-border-color, var(--sf-outline));',
-    '--sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-surface-0));',
+    '--sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-transparent));',
     'column-gap: var(--sf-image-field-gap, var(--sf-image-field--inset));',
     'padding-block: var(--sf-image-field-padding-block, var(--sf-image-field--inset));',
     'padding-inline: var(--sf-image-field-padding-inline, var(--sf-image-field--inset));',

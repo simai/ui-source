@@ -17,7 +17,7 @@
   background-color: var(--sf-file-upload--background-color);
   border-color: var(--sf-file-upload--border-color, transparent);
   box-shadow: var(--sf-file-upload--box-shadow);
-  --sf-file-upload--background-color: var(--sf-file-upload-background-color, var(--sf-surface-0));
+  --sf-file-upload--background-color: var(--sf-file-upload-background-color, var(--sf-transparent));
   --sf-file-upload--border-color: var(--sf-file-upload-border-color, var(--sf-outline));
 }
 
