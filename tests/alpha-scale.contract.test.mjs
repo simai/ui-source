@@ -58,7 +58,10 @@ test('every alpha primitive is drawn with', () => {
   // The shadow system (C20) left two steps of black unread; they stay, by name
   // and with a reason, until the alias list's remove_after -- a page or a
   // product may have written them (token-aliases.v1.json, shadows).
-  const kept = new Set(JSON.parse(read('src/core/contracts/token-aliases.v1.json')).shadows.primitives_kept.map(({name}) => name));
+  // The background system's values (C16 S3) left two more: the dark
+  // boundary's former step and the former skeleton's.
+  const aliases = JSON.parse(read('src/core/contracts/token-aliases.v1.json'));
+  const kept = new Set([...aliases.shadows.primitives_kept, ...(aliases.primitives_kept ?? [])].map(({name}) => name));
   for (const name of kept) assert.ok(declared.has(name) && !used.has(name), `${name}: kept for consumers, so declared and read by nothing in src`);
   const unused = [...declared].filter((name) => !used.has(name) && !kept.has(name)).sort();
   // A palette is read as the set of answers the system has. One that carries
@@ -143,7 +146,8 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
   const placesPath = 'src/core/scss/_sf_css__surface_places.scss';
   const allowed = new Set(['--sf-surface-media', '--sf-surface-media-hover', '--sf-surface-media-active', '--sf-scrim-color']);
   const wrong = [];
-  for (const path of [themePath, placesPath]) {
+  // The skeletons are a fill since C16 S3 (16 and 24), no longer ink 48.
+  for (const path of [themePath, placesPath, 'src/core/scss/_sf_css__placeholder.scss', 'src/core/figma_variables/figma_layer_styles.scss', 'src/component/skeleton/scss/_skeleton.scss']) {
     for (const [, name, value] of read(path).matchAll(/(--sf-[a-z0-9-]+):\s*([^;]+);/gu)) {
       if (name.startsWith('--sf-on-') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
       if (!/--alfa-(48|64|80)\b/u.test(value)) continue;
@@ -151,4 +155,20 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
     }
   }
   assert.deepEqual(wrong, [], 'an ink step as a fill is glass or the scrim');
+});
+
+// A fill on a coloured place (C16, owner 2026-11-08): on a strong colour the
+// control fill is the place's ink at 12, 16 and 20 -- a named exception to the
+// neutral plate's 16/20/24, because white at 16 already gave 4.40 on a
+// near-grey header (surfaces research 4.1). 12 there equals the pressed state;
+// the two are never next to each other. The states stay 4/8/12, the line 24,
+// the boundary 64 and the dim ink 80.
+test('a strong coloured place fills at 12, 16 and 20 of its ink, and nothing else is off the neutral steps', () => {
+  const mix = read('src/core/scss/mix/_mix__places.scss');
+  const strong = mix.slice(mix.indexOf('@mixin sf-place-strong'));
+  const step = (role) => Number((strong.match(new RegExp(`--sf-${role}: #\\{sf-ink\\(\\$c, (\\d+)\\)\\}`, 'u')) ?? [])[1]);
+  assert.deepEqual(['surface-container', 'surface-container-hover', 'surface-container-active'].map(step), [12, 16, 20]);
+  assert.deepEqual(['surface-state-hover', 'surface-state-select', 'surface-state-active'].map(step), [4, 8, 12]);
+  assert.deepEqual(['outline-variant', 'outline', 'on-surface-variant'].map(step), [24, 64, 80]);
+  for (const value of [...strong.matchAll(/sf-ink\(\$c, (\d+)\)/gu)].map(([, n]) => Number(n))) assert.ok(SCALE.includes(value), `${value} is a step of the scale`);
 });

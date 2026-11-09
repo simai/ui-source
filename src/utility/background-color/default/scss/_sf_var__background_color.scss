@@ -58,6 +58,8 @@ $back-color-array:(
     'surface-state-select': 'surface-state-select',
     'surface-container-strong': 'surface-container-strong',
     'surface-veil': 'surface-veil',
+    // The scrim (C16 S3): what covers the page under a window; a veil is not one.
+    'scrim': 'scrim-color',
     'surface-disabled': 'surface-disabled',
     'primary-state-select': 'primary-state-select',
     'primary-container-strong': 'primary-container-strong',

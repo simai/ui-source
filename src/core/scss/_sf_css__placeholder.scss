@@ -28,7 +28,7 @@
    The shape still names the kind for a manifest and a page; the room is the
    page's (it knows the loaded box) or the printed first paint's. */
 :where([data-sf-skeleton]):not(:defined):not(:has(> [data-sf-static])) {
-  --sf-skeleton-base: var(--sf-neutral-60--alfa-48);
+  --sf-skeleton-base: var(--sf-surface-container);
   --sf-skeleton-line: var(--sf-text-height-1);
   --sf-skeleton-bar: var(--sf-text-size-1);
   display: block;
@@ -75,7 +75,7 @@
    rows -- in that region only; the shell around it stays as it is. The
    region keeps its size, so nothing below it moves while the answer comes. */
 [data-sf-region-loading] {
-  --sf-skeleton-base: var(--sf-neutral-60--alfa-48);
+  --sf-skeleton-base: var(--sf-surface-container);
   --sf-skeleton-row: calc(var(--sf-text-height-1) + 2 * var(--sf-space-1));
   background-repeat: no-repeat;
   background-image:
@@ -118,7 +118,7 @@
      picture already shows it, or the element does not show it yet. */
 .sf-first-paint-bar {
   color: transparent !important;
-  background-color: var(--sf-neutral-60--alfa-48);
+  background-color: var(--sf-surface-container);
   border-radius: var(--sf-radius--ui);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -127,7 +127,7 @@
 }
 
 .sf-first-paint-fill {
-  background-color: var(--sf-neutral-60--alfa-48);
+  background-color: var(--sf-surface-container);
 }
 
 :where(:not(:defined), :has(> [data-sf-static])) > [data-sf-held] {

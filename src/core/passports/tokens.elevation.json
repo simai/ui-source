@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.elevation",
   "kind": "tokens",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "summary": "Elevation: the four place shadows (C20) and their geometry, blur and filters.",
   "includes": [
@@ -20,7 +20,7 @@
     "src/core/scss/_sf_css__shadow.scss",
     "src/core/scss/mix/_mix__shadow.scss"
   ],
-  "content_sha256": "a8d74e78418ec78f26dfcaccf06b60db28fd2a9fd2266a32ba49e7e15683bab2",
+  "content_sha256": "8538158456fa9339a7b918883bff51a8db4c0463b08534d7ddd53fd996246970",
   "dependencies": [
     {
       "id": "tokens.border",

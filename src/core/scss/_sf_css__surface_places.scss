@@ -14,9 +14,8 @@
 // roles and a control needs no new one. In sf.base with the theme, so a
 // utility on the same element still wins.
 //
-// Coloured places are held (owner's question, 2026-11-08): the proposal is
-// that the bg-<role> and bg-<role>-container utilities become places rather
-// than a second class family.
+// Coloured places are the bg-<role> and bg-<role>-container utilities (owner,
+// 2026-11-08), not a second class family: mix/_mix__places.scss.
 
 @use 'mix/mix__role_aliases' as aliases;
 
@@ -25,6 +24,7 @@
     background-color: var(--sf-surface-media);
     color: var(--sf-on-surface-media);
     backdrop-filter: blur(var(--sf-blur-large));
+    --sf-surface-place: var(--sf-surface-media);
     --sf-on-surface: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);

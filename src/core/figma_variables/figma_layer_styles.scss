@@ -5,6 +5,10 @@
     --sf-ui-blur-large: blur(var(--sf-blur-large));;
     --sf-ui-blur-surface-overlay: blur(var(--sf-surface-overlay--blur));;
     --sf-ui-focus: 0 0 0 var(--sf-focus-outline-width) var(--sf-focus);
-    --sf-ui-skeleton: linear-gradient(180deg, var(--sf-neutral-80--alfa-48) 0%, var(--sf-neutral-60--alfa-48) 100%);
+    /* The skeleton is a control's fill since C16 (owner, 2026-11-08): 16, and
+       the wave's highlight 24 (--sf-surface-container-active). It was a
+       gradient of two ink steps (48), which the alpha scale keeps for what is
+       read; the Framework's skeletons read --sf-surface-container. */
+    --sf-ui-skeleton: var(--sf-surface-container);
   }
 }
