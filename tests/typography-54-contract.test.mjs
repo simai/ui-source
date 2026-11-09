@@ -18,7 +18,7 @@ const expectedTitleHeights = {
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.5.0");
+    assert.equal(contract.meta.version, "1.6.0");
 
     for (const mode of ["mobile", "desktop"])
     {
