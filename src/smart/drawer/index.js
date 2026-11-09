@@ -622,8 +622,10 @@ class SfDrawer extends DrawerElement {
     if (!this._isMounted || token !== this._renderToken) return;
     const portal = this.resolvePortalRoot();
     // The portal stands at the end of the body; it speaks and looks as the
-    // drawer does where it stands (standard 1.3.8 §19.1).
-    carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES});
+    // drawer does where it stands (standard 1.3.8 §19.1), with the variables
+    // of its area but none of its own private --sf-drawer-* names
+    // (simai/ui-source#46 item 1, as sf-modal).
+    carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES, area: true, except: ['--sf-drawer-']});
     // Static markup printed for the first paint goes as the drawer draws
     // (standard 1.3.8 §5.4); the panel itself is rendered in the portal.
     if (!this.__sfFirstPaintEnded) {
