@@ -25,11 +25,15 @@
     "src/component/special/scss/_yellow.scss",
     "src/component/special/scss/index.scss"
   ],
-  "content_sha256": "6b4efeeaa34157051ae72409f791d3729b51d055182f984fbfede8cfb7e99434",
+  "content_sha256": "5440a5bcd060641288333d5ba8330715cbe9dc6850f068ae751b29c13d4ea854",
   "dependencies": [
     {
       "id": "module.sf-system",
       "range": "^2.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.5.0"
     },
     {
       "id": "tokens.size",
