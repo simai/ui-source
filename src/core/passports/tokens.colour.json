@@ -3,10 +3,11 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "owner": "simai/ui-source",
   "summary": "The colour roles and palettes: the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
+    "src/core/contracts/colour-policy.v1.json",
     "src/core/scss/_sf_css__theme.scss",
     "src/core/scss/_sf_figma_colors_variables.scss",
     "src/core/scss/_sf_css__surface_places.scss",
@@ -16,6 +17,7 @@
     "src/core/contracts/token-aliases.v1.json"
   ],
   "files": [
+    "src/core/contracts/colour-policy.v1.json",
     "src/core/contracts/token-aliases.v1.json",
     "src/core/scss/_sf_css__color.scss",
     "src/core/scss/_sf_css__surface_places.scss",
@@ -24,7 +26,7 @@
     "src/core/scss/mix/_mix__role_aliases.scss",
     "src/core/scss/vars/_sf_var__color.scss"
   ],
-  "content_sha256": "bd1a4beb40bd2ee68f044297990200ce32ca96076d3be2937726849d7595f4e9",
+  "content_sha256": "bbfdccbc82076096ac63908c2c59d168a54eb9c3536a84e7a1e32007a69f5890",
   "dependencies": [
     {
       "id": "tokens.elevation",

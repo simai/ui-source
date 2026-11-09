@@ -92,7 +92,7 @@
 }
 
 .sf-modal-surface {
-  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-1, #fff));
+  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-area));
   --sf-modal-surface-border-color: var(--sf-modal-border-color, var(--sf-outline-variant, transparent));
   --sf-modal-surface-border-style: solid;
   --sf-modal-surface-border-width: var(--sf-modal-border-width, var(--sf-border-width, var(--sf-px)));

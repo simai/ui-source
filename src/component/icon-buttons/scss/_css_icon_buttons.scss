@@ -60,7 +60,7 @@
     border-bottom-width: var(--sf-icon-button--border-bottom-width, 0);
     border-inline-start-width: var(--sf-icon-button--border-inline-start-width, 0);
     border-style: var(--sf-icon-button--border-style, solid);
-    box-shadow: var(--sf-icon-button--focus-inset, 0 0 #0000), var(--sf-icon-button--box-shadow, 0 0 #0000);
+    box-shadow: var(--sf-icon-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-icon-button--box-shadow, 0 0 var(--sf-transparent));
   }
 
   .sf-icon-button .sf-close-icon {
