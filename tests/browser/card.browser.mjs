@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // .sf-card on the built sheets, light and dark, 1280 and 390 px: a hairline
-// edge in the outline-variant role on the page surface, the surface radius,
+// edge in the outline-variant role on --sf-surface-card (C16), the surface radius,
 // space-2 inside, the blocks in one column one text gap apart with their own
 // margins taken off; sf-card--plain has no fill, no edge and no padding; a
 // long word wraps inside the card instead of widening the page.
@@ -35,7 +35,7 @@ try {
         const text = document.getElementById('text').getBoundingClientRect();
         return {
           border: card.borderTopWidth, borderColor: card.borderTopColor, outline: color('var(--sf-outline-variant)'),
-          background: card.backgroundColor, surface: (() => { probe.style.cssText = 'background-color:var(--sf-surface-0)'; return getComputedStyle(probe).backgroundColor; })(),
+          background: card.backgroundColor, surface: (() => { probe.style.cssText = 'background-color:var(--sf-surface-card)'; return getComputedStyle(probe).backgroundColor; })(),
           radius: card.borderTopLeftRadius, surfaceRadius: resolve('var(--sf-radius--surface)'),
           padding: card.paddingTop, paddingInline: card.paddingLeft, space2: resolve('var(--sf-space-2)'),
           gap: Math.round(text.top - title.bottom), textGap: parseFloat(resolve('var(--sf-content--space-text)')),
@@ -47,7 +47,7 @@ try {
       seen[where] = state;
       const check = (ok, said) => { if (!ok) failures.push({where, said, state}); };
       check(state.border === '1px' && state.borderColor === state.outline, 'a 1 px edge in outline-variant');
-      check(state.background === state.surface, 'the page surface fill');
+      check(state.background === state.surface, 'the card surface fill (C16: --sf-surface-card)');
       check(state.radius === state.surfaceRadius, 'the surface radius');
       check(state.padding === state.space2 && state.paddingInline === state.space2, 'space-2 inside');
       check(Math.abs(state.gap - state.textGap) <= 1 && state.titleMargin === '0px', 'one text gap between blocks, their margins off');

@@ -565,6 +565,11 @@
     color: var(--sf-on-surface);
   }
 
+  // A selected pill is primary-container (C16): its own colour is that ink.
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
+    color: var(--sf-on-primary-container);
+  }
+
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) {
     color: var(--sf-on-primary);
   }
