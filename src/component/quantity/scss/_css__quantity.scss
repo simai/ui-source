@@ -272,8 +272,8 @@
 .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
   --sf-quantity-wrap--block-size: var(--sf-ui-1\/2--control-height);
   --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-4)) / 2 - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-4)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px)));
   --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
 }
 

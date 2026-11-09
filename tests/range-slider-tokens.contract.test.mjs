@@ -10,7 +10,7 @@ test('thumb geometry inherits host tokens and falls back to the icon ladder',asy
   const visual=await read('_css__thumbs.scss'),layout=await read('_css__range_slider_custom.scss');
   for(const dimension of ['height','width']){
     assert.doesNotMatch(visual,new RegExp(`--sf-thumb-handle--${dimension}:`));
-    const declaration=`${dimension}: var(--sf-thumb-handle--${dimension}, var(--sf-icon-size-4));`;
+    const declaration=`${dimension}: var(--sf-thumb-handle--${dimension}, var(--sf-icon-size-3));`;
     assert.doesNotMatch(visual+layout,/ui-1\\\/3--control-height/);
     assert.ok(visual.includes(declaration));
     assert.ok(layout.includes(declaration));

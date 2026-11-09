@@ -212,7 +212,7 @@ test('quantity: the public variables wrap the values the class sheet drew before
   // Size 1/2's steppers are the 24 box of the icon ladder with the 4 of the
   // space ladder (C19 after C27: the 1/3 control height moved to 28 and is a
   // control's, not a stepper's).
-  const stepperBox = {'1/2': ['var(--sf-icon-size-4)', 'var(--sf-space-1\\/4)']};
+  const stepperBox = {'1/2': ['var(--sf-icon-size-3)', 'var(--sf-space-1\\/4)']};
   for (const [size, down] of [['1', '1\\/2'], ['2', '1'], ['1\\/2', '1\\/3']]) {
     const [inner, pad] = stepperBox[size.replace('\\', '')] || [`var(--sf-ui-${down}--control-height)`, `var(--sf-ui-${down}--space-y-tightness-default)`];
     assert.ok(sheet.includes(`--sf-quantity-wrap--block-size: var(--sf-ui-${size}--control-height);`), size);

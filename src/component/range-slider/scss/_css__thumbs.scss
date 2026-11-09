@@ -22,11 +22,11 @@
   border-start-end-radius: var(--sf-thumb-handle--border-start-end-radius, var(--sf-radius-circle));
   border-start-start-radius: var(--sf-thumb-handle--border-start-start-radius, var(--sf-radius-circle));
   box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-0)), var(--sf-ui-shadow-1));
-  height: var(--sf-thumb-handle--height, var(--sf-icon-size-4));
+  height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, box-shadow;
   transition-timing-function: var(--sf-animation);
-  width: var(--sf-thumb-handle--width, var(--sf-icon-size-4));
+  width: var(--sf-thumb-handle--width, var(--sf-icon-size-3));
 }
 
 // The centre is drawn only on request: unset, it is transparent and the handle

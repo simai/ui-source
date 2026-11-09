@@ -1,13 +1,13 @@
 @layer sf.components {
 .sf-range-slider {
-  min-height: var(--sf-thumb-handle--height, var(--sf-icon-size-4));
+  min-height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));
   position: relative;
   touch-action: none;
   user-select: none;
 }
 
 .sf-range-slider .sf-range-slider-base {
-  height: var(--sf-thumb-handle--height, var(--sf-icon-size-4));
+  height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));
   position: relative;
   width: 100%;
 }
@@ -48,11 +48,11 @@
   border: 0;
   box-shadow: none;
   cursor: grab;
-  height: var(--sf-thumb-handle--height, var(--sf-icon-size-4));
+  height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));
   outline: none;
   position: absolute;
   top: 0;
-  width: var(--sf-thumb-handle--width, var(--sf-icon-size-4));
+  width: var(--sf-thumb-handle--width, var(--sf-icon-size-3));
   z-index: 2;
 }
 
@@ -87,7 +87,7 @@
 .sf-range-slider .sf-range-slider-handle-lower,
 .sf-range-slider .sf-range-slider-handle-upper {
   inset-inline-end: auto;
-  inset-inline-start: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-4)) / -2);
+  inset-inline-start: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-3)) / -2);
 }
 
 .sf-range-slider .sf-range-slider-visual {

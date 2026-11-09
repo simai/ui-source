@@ -15,7 +15,7 @@
   }
 
   .sf-field-inherited-slot--size-1\/2 {
-    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-4)) / 2 - var(--sf-px));
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px));
   }
   .sf-field-inherited-slot--size-1 {
     --sf-field-inherited-slot--inset: calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px));
