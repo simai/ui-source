@@ -38,8 +38,7 @@ const needsLab = new Set([
   'composition-editor-field-kinds', 'composition-inline-editor', 'composition-inline-toolbar', 'composition-overlay',
   'composition-regions', 'composition-sortable',
   'position', 'position-surfaces', 'drawer-docked',
-  // Takes a distribution URL (a published pair by default), not a build root.
-  'aliases',
+  // aliases left this list on 2026-11-09: it serves a build root itself.
 ]);
 
 // Each probe states what it wants, in the error it throws when it is not given it.

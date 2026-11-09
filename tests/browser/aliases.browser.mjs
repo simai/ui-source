@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-// Usage: node this-file [distribution-url]
-//   PLAYWRIGHT_MODULE=/abs/playwright/index.mjs picks another Playwright;
-//   the default distribution is the published pair below on jsDelivr.
+// Usage: node this-file /absolute/path/to/build/output
+//        node this-file <distribution-url>
+//   A build output root (the release runner's way: core/, smart/, component/,
+//   utility/ under it) is served on loopback as a distribution; a URL is used as
+//   it is, e.g. https://cdn.jsdelivr.net/npm/@simai-studio/ui@5.20261025.1053/distr/
+//   for a published pair. PLAYWRIGHT_MODULE=/abs/playwright/index.mjs picks
+//   another Playwright.
 //
 // Dated aliases (standard simai.smart-component 1.3.8 §16.20, §8) on real
 // components of a released pair, which still send the old colon names:
@@ -23,13 +27,31 @@
 //   sends the old name alone and installs nothing; a later one sends the new
 //   name and installs its own aliases.json, which a page's install replaces
 //   only while it stands.
-import {readFileSync} from 'node:fs';
+import {createServer} from 'node:http';
+import {existsSync, readFileSync, statSync} from 'node:fs';
+import {extname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 
-const PAIR = '5.20261025.1053';
-const DISTR = (process.argv[2] || `https://cdn.jsdelivr.net/npm/@simai-studio/ui@${PAIR}/distr/`).replace(/\/?$/u, '/');
+if (!process.argv[2]) throw new Error('Build output root is required (or a distribution URL)');
+let server = null;
+const serveBuild = async (out) => {
+  const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), smart: join(out, 'smart', 'smart'),
+    component: join(out, 'component', 'component'), utility: join(out, 'utility', 'utility')};
+  for (const name of ['core', 'smart', 'component', 'utility']) if (!existsSync(parts[name])) throw new Error(`the output has no ${name}: ${parts[name]}`);
+  const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml'};
+  server = createServer((request, response) => {
+    const match = decodeURIComponent(new URL(request.url, 'http://probe').pathname).match(/^\/distr\/([^/]+)\/(.+)$/u);
+    const file = match && parts[match[1]] ? join(parts[match[1]], match[2]) : '';
+    if (!file || !existsSync(file) || statSync(file).isDirectory()) { response.writeHead(404); return response.end(); }
+    response.writeHead(200, {'content-type': `${types[extname(file)] ?? 'application/octet-stream'}; charset=utf-8`, 'access-control-allow-origin': '*'});
+    return response.end(readFileSync(file));
+  }).listen(0, '127.0.0.1');
+  await new Promise((settle) => server.once('listening', settle));
+  return `http://127.0.0.1:${server.address().port}/distr/`;
+};
+const DISTR = (/^https?:/u.test(process.argv[2]) ? process.argv[2] : await serveBuild(resolve(process.argv[2]))).replace(/\/?$/u, '/');
 const ORIGIN = 'http://aliases.test/';
 const source = (path) => readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8');
 const JS = 'text/javascript; charset=utf-8';
@@ -212,5 +234,6 @@ try {
   console.log(`${total - failed}/${total} on ${DISTR}`);
 } finally {
   await browser.close();
+  server?.close();
 }
 process.exitCode = failed ? 1 : 0;
