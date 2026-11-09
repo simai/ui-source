@@ -127,7 +127,8 @@ try {
   for (const path of Object.keys(pages)) {
     counts[path] = {loads: LOADS, clean: 0};
     for (let load = 0; load < LOADS; load += 1) {
-      const context = await browser.newContext({viewport: {width: 1050, height: 800}});
+      // The runtime follows the colour scheme: a dark page needs a dark one too.
+      const context = await browser.newContext({viewport: {width: 1050, height: 800}, colorScheme: path.includes('theme-dark') ? 'dark' : 'light'});
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(String(error)));
@@ -135,8 +136,8 @@ try {
       const before = failures.length;
       await page.goto(`${base}${path}`);
       if (path.startsWith('/record')) {
-        await page.waitForFunction(() => document.querySelector('[data-sf-drawer-portal] #docked'), null, {timeout: 15000}).catch(() => {});
-        await page.waitForTimeout(1500);
+        // Drawn at the latest 10 s after load, however late its script came.
+        await page.waitForFunction(() => document.querySelector('[data-sf-drawer-portal] #docked > i.sf-icon'), null, {timeout: 10000}).catch(() => {});
         const docked = await page.evaluate(readIcons, ['#docked']);
         for (const fault of iconFaults(docked)) failures.push({path, load, round: 'load', ...fault});
         const icons = ['[data-sf-drawer-edge] #close sf-icon', '[data-sf-drawer-edge] #copy sf-icon', '[data-sf-drawer-portal] #row'];
@@ -146,13 +147,22 @@ try {
           await page.evaluate(async ({round, wanted}) => {
             await customElements.whenDefined('sf-drawer');
             const drawer = document.getElementById('w');
+            // Held before the move: a closed drawer that moves takes its edge
+            // out of the page, and the icon changes while it is out.
+            const close = document.getElementById('close');
             if (round > 0) document.getElementById(round % 2 ? 'box-b' : 'box-a').append(drawer);
-            document.getElementById('close')?.setAttribute('icon', wanted);
+            close?.setAttribute('icon', wanted);
             drawer.open();
           }, {round, wanted});
           await page.waitForFunction(() => document.getElementById('w')?.openState === true
             && document.querySelector('[data-sf-drawer-edge] #close'), null, {timeout: 10000}).catch(() => {});
           await page.waitForTimeout(rand(400, 1400));
+          // Then up to 10 s more for every icon to draw its name.
+          await page.waitForFunction(({icons, wanted}) => icons.every((selector, index) => {
+            const icon = document.querySelector(selector);
+            const text = icon?.querySelector(':scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon')?.textContent.trim();
+            return text && text === icon.getAttribute('icon') && (index > 0 || text === wanted);
+          }), {icons, wanted}, {timeout: 10000}).catch(() => {});
           const result = await page.evaluate(readIcons, icons);
           for (const fault of iconFaults(result, {[icons[0]]: wanted})) failures.push({path, load, round, ...fault});
           await page.evaluate(() => document.getElementById('w').close());
@@ -167,6 +177,10 @@ try {
             await page.evaluate((id) => document.getElementById(id).open(), id);
             await page.waitForFunction((id) => document.querySelector(`[data-sf-modal-portal="${id}"] [data-sf-modal-state="open"] .sf-modal-surface`), id, {timeout: 10000}).catch(() => {});
             await page.waitForTimeout(rand(400, 1000));
+            if (id === 'm-order') {
+              await page.waitForFunction(() => document.querySelector('[data-sf-modal-portal="m-order"] #gift .sf-switch-toggler')
+                && document.querySelector('[data-sf-modal-portal="m-order"] #m-icon > i.sf-icon'), null, {timeout: 10000}).catch(() => {});
+            }
             surfaces[id] = await page.evaluate(({id, round}) => {
               const portal = document.querySelector(`[data-sf-modal-portal="${id}"]`);
               const surface = portal?.querySelector('.sf-modal-surface');

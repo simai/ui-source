@@ -89,7 +89,8 @@ try {
   for (const path of Object.keys(pages)) {
     measured[path] = [];
     for (let load = 0; load < LOADS; load += 1) {
-      const context = await browser.newContext();
+      // The runtime follows the colour scheme: a dark page needs a dark one too.
+      const context = await browser.newContext({colorScheme: path.includes('theme-dark') ? 'dark' : 'light'});
       const tab = await context.newPage();
       const errors = [];
       tab.on('pageerror', (error) => errors.push(String(error)));
