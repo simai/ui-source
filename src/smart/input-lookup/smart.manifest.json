@@ -420,7 +420,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "aa333942f9f24d13fc30856e54c0edc5f2aec10a6adf0c081240dfb5faa864c1"
+        "sha256": "697be24931b4535d07e75006563caf7dd71e22a48b8c0f89c381b919bfc49702"
       },
       {
         "path": "src/smart/input-lookup/rule.js",

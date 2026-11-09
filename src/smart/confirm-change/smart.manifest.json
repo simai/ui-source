@@ -502,7 +502,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "b46646d60f9400933dd39a659fa7be16843b7e706dbec735b4efd68ec6f21e3a"
+        "sha256": "664cb3bf32bd4ea069ea375391f125d6067e4e8d7cee794bcda09a1162a71582"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

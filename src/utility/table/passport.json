@@ -13,7 +13,7 @@
     "src/utility/table/default/scss/_sf_var__table.scss",
     "src/utility/table/default/scss/index.scss"
   ],
-  "content_sha256": "947d771024c2785be1aaa4154c948eb4773f3d5303eb874fc25db8e3ec891aab",
+  "content_sha256": "646e44f02008debca3847c194dd7a106681033e72db9940eb8c7a3eef3d84507",
   "dependencies": [
     {
       "id": "tokens.colour",
