@@ -3,6 +3,7 @@ import { elementFromManifest } from "../../core/js/element-manifest";
 import { renderButtonTemplate } from "./js/templates/default";
 import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import { noteDeprecated } from "../../core/js/deprecations.js";
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
@@ -21,6 +22,7 @@ import ru from "./lang/ru.json";
 const COMPONENT_ATTRIBUTES = new Set([
   "template",
   "size",
+  "height",
   "appearance",
   "type",
   "scheme",
@@ -60,6 +62,35 @@ const COMPONENT_ATTRIBUTES = new Set([
   "id",
   "slot",
 ]);
+
+// height (1.10.0, decision C27): the size's tightness steps. A value outside
+// the list reads as default and is said once per button.
+const HEIGHTS = new Set(["low", "default", "high", "highest"]);
+function buttonHeight(host) {
+  const raw = host.getAttribute("height");
+  if (raw === null || raw === "") return "default";
+  const value = raw.trim().toLowerCase();
+  if (HEIGHTS.has(value)) return value;
+  if (!host.__sfHeightWarned) {
+    host.__sfHeightWarned = true;
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-button: height="${raw}" is not a height; write low, default, high or highest (the size's steps). Read as default.`);
+  }
+  return "default";
+}
+
+// spacing is deprecated (1.10.0, decision C27; journal
+// attribute-button-spacing-to-height): it keeps drawing the side padding
+// until 2027-01-01 and is not turned into a height. It is noted in
+// SF.deprecations and said once per page in the console -- the decision asks
+// for the warning whether or not the page opted in to them.
+function noteSpacing(host) {
+  if (!host.hasAttribute("spacing")) return;
+  noteDeprecated({component: "sf-button", kind: "attribute", from: "spacing", to: "height", since: "2026-11-09", remove_after: "2027-01-01"});
+  const root = globalThis.SF = globalThis.SF || {};
+  if (root.__sfButtonSpacingWarned) return;
+  Object.defineProperty(root, "__sfButtonSpacingWarned", {value: true, configurable: true});
+  globalThis.console?.warn?.("[SIMAI Framework] sf-button: spacing is deprecated until 2027-01-01 and draws the side padding only; write height=\"low|default|high|highest\" for the control height. See contracts/changes/journal.json (attribute-button-spacing-to-height).");
+}
 
 // href (1.4.0) takes the addresses a link may follow: a relative one, a
 // fragment, http(s), mailto and tel. Any other scheme (javascript:, data:)
@@ -232,6 +263,7 @@ class SfButton extends ButtonElement {
     const props = this.getPropsContext();
     const cycle = this.cycleState();
     if (cycle) warnCycleToggle(this, ["pressed", "text-pressed"]);
+    noteSpacing(this);
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // A cycle with an icon shows the item's icon in place of the start icon;
@@ -289,6 +321,7 @@ class SfButton extends ButtonElement {
       shortcutJoin: !isApplePlatform(),
       ariaKeyShortcuts: ariaKeyShortcuts(parseShortcut(this.shortcut)),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
+      height: buttonHeight(this),
       component: this,
     });
   }
@@ -398,6 +431,7 @@ class SfButton extends ButtonElement {
     return {
       template: this.templateName,
       size: this.size,
+      height: buttonHeight(this),
       appearance: this.appearance,
       type: this.appearance,
       scheme: this.scheme,

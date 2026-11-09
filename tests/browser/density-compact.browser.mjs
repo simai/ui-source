@@ -138,7 +138,9 @@ const MEASURE = (subjects) => {
 
 const same = (a, b) => a && b && ['h', 'icon', 'font'].every((key) => a[key] === b[key]);
 // One step below on the metric's own ladder (desktop px); the lowest stays.
-const LADDERS = {h: [24, 32, 40, 48, 56], icon: [12, 14, 16, 20, 24, 28, 32, 36, 40], font: [12, 14, 16, 20, 24]};
+// The desktop UI height ladder (decision C27 put 28 on it for size 1/3: a
+// compact 1/2 row stands 28, one rung below 32).
+const LADDERS = {h: [20, 24, 28, 32, 40, 48, 56, 68, 80], icon: [12, 14, 16, 20, 24, 28, 32, 36, 40], font: [12, 14, 16, 20, 24]};
 const below = (key, value) => {
   const ladder = LADDERS[key];
   const at = ladder.indexOf(value);

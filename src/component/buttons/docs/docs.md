@@ -65,6 +65,13 @@ the Smart `sf-button` projection.
   under names that read backwards -- `low` is the least space -- and stay as
   compatibility names. Put one density class on a button; the constructor's
   `spacing` option wins over `tightness`, as on the Smart element;
+- height (1.8.0, decision C27): the default, `sf-button--height-low`,
+  `sf-button--height-high` or `sf-button--height-highest` -- the size's
+  tightness step as the block padding, so the control stands at line height +
+  2 x the step (size 1 on desktop 32 / 40 / 48 / 56), and the side padding grows
+  by the same step less the default one; the constructor's option is `height`.
+  Declared after the density classes: a button that carries both takes its
+  sides from the height. The Smart `spacing` is deprecated in favour of it;
 - radius: the normal control radius `--sf-radius--ui`, or the explicit
   `radius-square` and `radius-rounded` overrides.
 

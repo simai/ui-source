@@ -93,6 +93,19 @@ function rootDeclarations(file) {
   return values;
 }
 
+// The control heights (decision C27): a height setting picks a tightness of
+// its size -- low, default, high, highest -- and size 1/3 has no size below
+// it. There the compact step is the tightness below in the same size (default
+// takes low's, high default's, highest high's; low stays), so a compact 1/3
+// stands one ladder step lower as every other size does (28 -> 24 at default)
+// and never below low, the 24px target.
+export const TIGHTNESS_BELOW = {
+  'figma_ui_tightness_low.scss': 'figma_ui_tightness_low.scss',
+  'figma_ui_tightness_default.scss': 'figma_ui_tightness_low.scss',
+  'figma_ui_tightness_high.scss': 'figma_ui_tightness_default.scss',
+  'figma_ui_tightness_highest.scss': 'figma_ui_tightness_high.scss',
+};
+
 export function ladder() {
   const rows = [];
   for (const [file, name, steps] of FAMILIES) {
@@ -101,8 +114,14 @@ export function ladder() {
       const variable = name(step);
       const normal = values.get(variable);
       if (!normal) throw new Error(`${file}: no desktop value for ${variable}`);
-      const below = name(steps[Math.max(0, index - 1)]);
-      rows.push({variable, step, normal, compact: values.get(below), from: file});
+      let compact = values.get(name(steps[Math.max(0, index - 1)]));
+      if (index === 0 && TIGHTNESS_BELOW[file]) {
+        const lower = TIGHTNESS_BELOW[file];
+        const family = FAMILIES.find(([other]) => other === lower);
+        compact = desktopDeclarations(lower).get(family[1](step));
+        if (!compact) throw new Error(`${lower}: no desktop value for ${family[1](step)}`);
+      }
+      rows.push({variable, step, normal, compact, from: file});
     });
   }
   return rows;

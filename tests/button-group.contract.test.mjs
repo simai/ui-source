@@ -60,8 +60,11 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.match(smart, /syncButtonSemantics/);
   assert.match(template, /role="radiogroup"/);
   assert.match(template, /segment=/);
-  // spacing, the axis; tightness is its legacy name (2026-10-13).
-  assert.match(template, /spacing=/);
+  // spacing, the axis; tightness is its legacy name (2026-10-13). The group's
+  // spacing reaches its sf-button segments as the class sheet's spacing class,
+  // not as sf-button's spacing, deprecated by decision C27.
+  assert.match(template, /root-class=\$\{context\.spacing && context\.spacing !== 'normal' \? `spacing-\$\{context\.spacing\}`/);
+  assert.doesNotMatch(template, /<sf-button[^>]*\sspacing=/);
   assert.match(styles, /border-start-end-radius: 0/);
   assert.match(styles, /border-end-start-radius: 0/);
   assert.doesNotMatch(styles, /margin-inline-start:\s*-1px/);
