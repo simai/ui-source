@@ -68,6 +68,14 @@
   min-inline-size: 0;
 }
 
+/* What the page puts in the brand may be narrower than its own width, so a
+   brand that gives way (the collapsed bar below) can close down to its text's
+   own ellipsis. :where keeps it at no weight: the page's markup stays in
+   charge. */
+:where(.sf-site-header-brand > *) {
+  min-inline-size: 0;
+}
+
 /* The brand's picture: the page's <img> or <svg>, one height. :where keeps the
    rule at no weight, so the page's own markup stays in charge of the rest. */
 .sf-site-header-brand :where(a) {
@@ -175,6 +183,13 @@
 
   .sf-site-header-tools {
     margin-inline-start: auto;
+  }
+
+  /* The brand gives way, the tools stay whole: a bar narrower than the menu
+     button, the brand and the tools shrinks the brand (its text ends in the
+     page's own ellipsis) instead of scrolling the page sideways. */
+  .sf-site-header-brand {
+    flex: 0 1 auto;
   }
 
   .sf-site-header-panel {
