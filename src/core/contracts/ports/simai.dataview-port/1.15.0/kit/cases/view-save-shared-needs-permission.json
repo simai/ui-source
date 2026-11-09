@@ -1,0 +1,27 @@
+{
+  "id": "view-save-shared-needs-permission",
+  "capability": "shared-saved-views",
+  "given": {
+    "capabilities": [
+      "saved-views"
+    ],
+    "saved_views": []
+  },
+  "when": {
+    "intent": "view.save_shared",
+    "payload": {
+      "key": "team",
+      "label": "Team",
+      "target": "shared",
+      "revision": "v1"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The host cannot write a shared view without its separate capability."
+  },
+  "intent": "view.save_shared"
+}

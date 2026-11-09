@@ -1,0 +1,29 @@
+{
+  "id": "count-without-the-capability-is-not-offered",
+  "intent": "query.count",
+  "capability": "count-on-request",
+  "summary": "A host that cannot count is never asked, and says so plainly if it is.",
+  "given": {
+    "records": [],
+    "capabilities": [
+      "row-actions"
+    ]
+  },
+  "when": {
+    "intent": "query.count",
+    "payload": {
+      "query": {
+        "search": "",
+        "filters": {}
+      },
+      "reason": "total"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Without the capability the view offers no link and asks for no number; this case is here so the refusal is still honest."
+  }
+}

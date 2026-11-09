@@ -1,0 +1,83 @@
+{
+  "id": "columns-name-their-list-place",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "The host names each column's place in a list row, so a list of resources draws its status, title, supporting line and facts from the host's columns.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ],
+        "state": "ok",
+        "name": "shop.example",
+        "domain": "shop.example",
+        "kind": "Laravel",
+        "ssl": {
+          "text": "SSL 12 days",
+          "status": "warning"
+        },
+        "backup": "Backup today",
+        "notes": "Moved from the old server"
+      }
+    ],
+    "columns": [
+      {
+        "key": "state",
+        "label": "State",
+        "list": "status"
+      },
+      {
+        "key": "name",
+        "label": "Name",
+        "role": "title",
+        "list": "title"
+      },
+      {
+        "key": "domain",
+        "label": "Domain",
+        "list": "supporting"
+      },
+      {
+        "key": "kind",
+        "label": "Kind",
+        "list": "supporting"
+      },
+      {
+        "key": "ssl",
+        "label": "SSL",
+        "list": "fact"
+      },
+      {
+        "key": "backup",
+        "label": "Backup",
+        "list": "fact"
+      },
+      {
+        "key": "notes",
+        "label": "Notes",
+        "list": "hidden"
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "columns"
+    ],
+    "note": "Every column carries one of the five places. In a list row: the state is a dot (ok, warning, error, stopped, or the dot's own names) whose word is its tooltip; the name is the record's link; domain and kind are joined with « · » into the second line, in column order; ssl and backup are unlabelled badges in columns of one width, quiet when fine and warning or error when the value says so ({text, status, tip}); notes is left out. The table draws every column as before: list changes the list row only."
+  }
+}

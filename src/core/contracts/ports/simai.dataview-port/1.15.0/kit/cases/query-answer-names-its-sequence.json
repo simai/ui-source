@@ -1,0 +1,24 @@
+{
+  "id": "query-answer-names-its-sequence",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "An answer to query.change names the sequence of the request it answers, so the view can drop an answer to an older one.",
+  "given": {},
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 7,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "note": "The answer's sequence is the request's: 7 here."
+  }
+}

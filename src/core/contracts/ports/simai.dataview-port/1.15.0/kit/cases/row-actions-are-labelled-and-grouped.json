@@ -1,0 +1,42 @@
+{
+  "id": "row-actions-are-labelled-and-grouped",
+  "intent": "query.change",
+  "capability": "row-actions",
+  "summary": "The host's own actions arrive with their labels, and actions sharing a group become one item with a submenu.",
+  "given": {
+    "records": [
+      {
+        "id": "about",
+        "revision": "r1",
+        "actions": [
+          "rename",
+          "publish:ru",
+          "publish:en"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "query": {
+        "search": "",
+        "filters": {},
+        "sort": [],
+        "window": {
+          "cursor": null,
+          "limit": 50
+        }
+      },
+      "sequence": 1
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "row_actions"
+    ],
+    "note": "row_actions labels rename, publish:ru and publish:en; the two publish actions share group publish with group_label Опубликовать."
+  }
+}

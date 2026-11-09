@@ -1,0 +1,28 @@
+{
+  "id": "view-save-conflict",
+  "intent": "view.save",
+  "capability": "saved-views",
+  "summary": "Saving a stored view someone else changed is a conflict.",
+  "given": {
+    "saved_views": [
+      {
+        "key": "mine",
+        "revision": "v5"
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "key": "mine",
+      "revision": "v4"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "The view is one object; its parts are not saved separately."
+  }
+}
