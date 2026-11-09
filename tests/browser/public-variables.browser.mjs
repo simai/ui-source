@@ -267,6 +267,11 @@ const DRAW = {
   code: {css: [], js: [], html: '<p>Run <code>npm test</code> before a commit.</p>'},
   // A key in running text, a cap in a button, plain glyphs in a menu.
   kbd: {css: ['kbd'], js: [], html: '<p>Press <kbd>Esc</kbd> to close.</p><button type="button">Find <kbd class="sf-kbd--group"><kbd class="sf-kbd--square">⌘</kbd><kbd>Shift</kbd></kbd></button><div role="menu"><kbd>F2</kbd></div>'},
+  // The code block (2026-11-08, simai/ui-source#31 items 2-3): the surface
+  // markup the script writes (head, scroll), drawn by the class sheet alone:
+  // fill, edge, corner, inset; the head's height is measured by
+  // tests/browser/highlight-head-layout.browser.mjs.
+  highlight: {css: ['highlight'], js: [], html: '<div class="sf-highlight sf-code-surface"><div class="sf-highlight__head">js</div><div class="sf-code-surface__scroll"><pre><code class="language-js">const a = 1;</code></pre></div></div>'},
   card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
   figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
   procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},
