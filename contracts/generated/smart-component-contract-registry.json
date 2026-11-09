@@ -291,6 +291,7 @@
           "props": [
             "template",
             "size",
+            "height",
             "appearance",
             "scheme",
             "status",
@@ -345,13 +346,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "e3ced72c606070a9dddfdaf227821b81ea5e38aafd8908917f95ff39d49afa20",
+      "manifest_sha256": "f6c98ae69f8586c5de19aec641a88c5f4d98f5fcbd2cab474186f8b1402ab1f4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
+      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
       "tags": [
         "buttons"
       ],
@@ -682,7 +683,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "12716666183c9303c1d07ab2f6fbb75e208ad7d344e8b1463f8115078d9007a6",
+      "manifest_sha256": "bd8b1494f4896357bddef9ebc5e55658db4ecb2cf3df18cb00439042c02dd5b6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1183,7 +1184,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "c4fbec5df00106838d01347975044d09cb59dc7660b78a87cf0227f3e9b052b0",
+      "manifest_sha256": "8974059e6c6a7b96f3fa95a7e4429ccd8805c5b769dfd2284ee39ae0312e44ff",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1312,7 +1313,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "91785d76fce7f2a78a53db1b6b84d29644077e0d7ac70792b2b1008b829c125d",
+      "manifest_sha256": "e1114acf61810163805c98ed67b5263e953c3a63c3688e693d9f496b1d37fceb",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1622,7 +1623,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-textarea/smart.manifest.json",
-      "manifest_sha256": "61a5511fba185c4a0ac963368fd96c1cee01889850240137f3b0809f05f39d5d",
+      "manifest_sha256": "b579756f2ee2f1e298fefbf435ba098b216c66e8d037daad273e1d758433525a",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2558,7 +2559,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/segmented/smart.manifest.json",
-      "manifest_sha256": "4afc7e754d89c3e6cc7700fe1d951d8a96ee633b7c1d8c597f7fec18b4b23405",
+      "manifest_sha256": "4454578b43f08ae5ef4cb2b93aef9f6e0de908b040177c75bf75a0a7d51ea200",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2861,7 +2862,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "4abf0636ec3dcb9d64c33b1b74c5fc00799b8757cbb38d7954824bfc740618c4",
+      "manifest_sha256": "4fb7483795bc0958cc82d9c5b02ea63b6b42b539053780bc6fb02d401197dfa1",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

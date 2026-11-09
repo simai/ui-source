@@ -23,7 +23,7 @@
     "src/component/avatars/scss/_css__avatars_group.scss",
     "src/component/avatars/scss/index.scss"
   ],
-  "content_sha256": "b59b1b25899fb24cd9910052f3e3db4fea0fa40aae8818fc9f3036f4415ee094",
+  "content_sha256": "ae783e103c378a9677d33a09f6a39e1b23883cc4d299cad8ea9b7b78e5995977",
   "dependencies": [
     {
       "id": "tokens.border",
