@@ -56,9 +56,23 @@ const text = (value) => (value === null || value === undefined ? '' : String(val
 // (`children`, or `items` by the shape of a grouped navigation), never a
 // destination itself. Its items are first-level rows; a group is open unless
 // it says `open: false`, and only a `collapsible` one is opened and closed.
+// The first release's spellings of an item's fields -- key for id, text and
+// title for label -- are read until 2027-01-01 and never offered: they are
+// in no contract, and contracts/changes/journal.json records them
+// (sf-menu-item-field-aliases). The element hands in its runtime note, so this
+// module stays free of the page and runs in Node.
+export const ITEM_FIELD_ALIASES = Object.freeze({key: 'id', text: 'label', title: 'label'});
+let noteAlias = () => {};
+export function onItemAlias(note) {
+  noteAlias = typeof note === 'function' ? note : () => {};
+}
+
 export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) {
   if (typeof item === 'string') item = {label: item};
   if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+  if (item.id == null && item.key != null) noteAlias('key', 'id');
+  if (item.label == null && item.text != null) noteAlias('text', 'label');
+  else if (item.label == null && item.title != null) noteAlias('title', 'label');
   const own = text(item.id ?? item.key).trim().replace(/^@.*$/u, '');
   const id = own || (parentId ? `${parentId}-${index + 1}` : `item-${index + 1}`);
   if (seen.has(id)) return null;

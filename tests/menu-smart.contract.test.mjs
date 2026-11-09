@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import {
+  ITEM_FIELD_ALIASES,
   LEVEL_LIMIT,
   MENU_APPEARANCES,
   MENU_COLLAPSE,
@@ -12,6 +13,7 @@ import {
   itemsFromList,
   normaliseItems,
   normalisePath,
+  onItemAlias,
   openBranches,
   pathTo,
 } from '../src/smart/menu/items.mjs';
@@ -219,12 +221,15 @@ test('smart menu: the manifest is the element', () => {
 // A field the element reads from an item is public, so the manifest declares
 // it (C30 amended): every field normaliseItem reads, and every field of the
 // items setting's port, is in item_contract. key, text and title are the
-// first release's tolerated spellings of id and label, read but not offered.
+// first release's spellings of id and label, read but not offered, recorded
+// in the change journal until 2027-01-01 (DEV answer d).
 test('smart menu: item_contract declares every item field the renderer reads', () => {
   const items = read('src/smart/menu/items.mjs');
   const body = items.slice(items.indexOf('export function normaliseItem('), items.indexOf('export function normaliseItems('));
   assert.ok(body.length > 200, 'normaliseItem is found');
-  const tolerated = new Set(['key', 'text', 'title']);
+  assert.deepEqual(ITEM_FIELD_ALIASES, {key: 'id', text: 'label', title: 'label'});
+  const tolerated = new Set(Object.keys(ITEM_FIELD_ALIASES));
+  for (const name of tolerated) assert.ok(!(name in manifest.item_contract.properties), `${name} stays undeclared`);
   const readFields = new Set([...body.matchAll(/\bitem\.([a-z][a-zA-Z]*)/gu)].map((match) => match[1]).filter((name) => !tolerated.has(name)));
   const declared = new Set(Object.keys(manifest.item_contract.properties));
   assert.deepEqual([...readFields].filter((name) => !declared.has(name)), [], 'every field normaliseItem reads is declared');
@@ -234,6 +239,25 @@ test('smart menu: item_contract declares every item field the renderer reads', (
   // A group item and a linked item both validate against the contract.
   for (const item of [{group: true, label: 'Магазин', collapsible: true, items: [{label: 'Оплата'}]}, {label: 'Docs', href: 'https://example.com', target: '_blank', external: true, count: 3, status: 'warning'}]) {
     assert.deepEqual(Object.keys(item).filter((name) => !declared.has(name)), []);
+  }
+});
+
+test('smart menu: the item field aliases are recorded, dated and noted when used', () => {
+  const journal = JSON.parse(read('contracts/changes/journal.json'));
+  const record = journal.records.find((entry) => entry.id === 'sf-menu-item-field-aliases');
+  assert.ok(record, 'the journal records the aliases');
+  assert.equal(record.stage, 'compat');
+  assert.equal(record.remove_after, '2027-01-01');
+  assert.deepEqual(record.items.map(({from, to}) => [from, to]), Object.entries(ITEM_FIELD_ALIASES));
+  assert.match(source, /onItemAlias\(\(from, to\) => noteDeprecated\(\{component: 'sf-menu', kind: 'property', attribute: 'items', from, to, remove_after: '2027-01-01'\}\)\);/u);
+  const noted = [];
+  onItemAlias((from, to) => noted.push(`${from}>${to}`));
+  try {
+    const [first, second, third] = normaliseItems([{key: 'a', text: 'A'}, {id: 'b', title: 'B'}, {id: 'c', label: 'C', text: 'ignored'}]);
+    assert.deepEqual([first.id, first.label, second.label, third.label], ['a', 'A', 'B', 'C']);
+    assert.deepEqual(noted, ['key>id', 'text>label', 'title>label']);
+  } finally {
+    onItemAlias(null);
   }
 });
 
@@ -331,8 +355,8 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-transparent-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
-  // medium label, written once in the current-plate mixin; the bar only on
-  // the compact rail (C30 amended: R065, R072, R084).
+  // medium label, written once in the current-plate mixin; the path's line,
+  // never a bar (C30 amended: R065, R072, R084; DEV answer b).
   const current = `${enabled}:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))`;
   assert.match(rule(current), /@include current-plate;/u);
   const plate = sheet.slice(sheet.indexOf('@mixin current-plate {'), sheet.indexOf('}', sheet.indexOf('@mixin current-plate {')));
@@ -340,11 +364,8 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(plate, /--sf-menu-element--color: var\(--sf-on-primary-container\);/u);
   assert.match(plate, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);/u);
   assert.doesNotMatch(plate, /::before|--sf-primary\)/u);
-  const bar = sheet.slice(sheet.indexOf('@mixin holds-current-bar {'), sheet.indexOf('// The path mark (C30 amended'));
-  assert.doesNotMatch(bar, /:has\(/u);
-  assert.match(bar, /\.sf-menu-element\.sf-menu-element--holds-current:not\(\[aria-current\]\)::before/u);
-  assert.match(bar, /inline-size: var\(--sf-a3\);\s*block-size: var\(--sf-icon-size-1\);/u);
-  assert.match(bar, /background-color: var\(--sf-primary\);/u);
+  // The 3px bar (C23) is retired everywhere, the rail included (DEV answer b).
+  assert.doesNotMatch(sheet, /holds-current-bar|var\(--sf-a3\)/u);
   // The path mark (C30 amended, R065 a, R072 e, R084): a column has the
   // medium label; a bordered column and a row's panels the line on their
   // border as well; the › is never primary.
@@ -361,7 +382,11 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(path, /&\.sf-menu--scroll \{\n    --sf-menu--line-border: calc\(var\(--sf-px\) \* 0\);/u);
   const line = sheet.slice(sheet.indexOf('@mixin row-current-line {'), sheet.indexOf('@mixin row-current-fill {'));
   assert.match(line, /inset-block-end: calc\(-1 \* var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\)\);[\s\S]*block-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
-  assert.match(read('src/component/menu/scss/_css__menu_compact.scss'), /@include menu\.current-plate;[\s\S]*@include menu\.holds-current-bar;/u);
+  // The compact rail: the plate on the current row, the path's line on the
+  // rail's start edge at the row whose section holds it (no border, no inset).
+  const compact = read('src/component/menu/scss/_css__menu_compact.scss');
+  assert.match(compact, /@include menu\.current-plate;[\s\S]*--sf-menu--inset: calc\(var\(--sf-px\) \* 0\);\n    --sf-menu--border-width: calc\(var\(--sf-px\) \* 0\);\n    @include menu\.path-line\('\.sf-menu-element\.sf-menu-element--holds-current:not\(\[aria-current\]\)'\);/u);
+  assert.doesNotMatch(compact, /holds-current-bar/u);
   assert.match(read('src/smart/menu/js/templates/default.js'), /holds \? 'sf-menu-element--holds-current' : ''/u);
   assert.doesNotMatch(block, /rgba?\(|#[0-9a-f]{3,8}\b|--sf-[a-z0-9-]+--alfa-/iu);
   // The current page's plate comes after the pointer's states at the same

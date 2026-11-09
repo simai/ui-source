@@ -108,6 +108,31 @@
     --sf-input-field--padding-inline-end: calc(var(--sf-space-1\/2) - var(--sf-px));
   }
 
+  // A bordered menu with search (DEV acceptance of 68355b14, minor 1): the
+  // frame goes round the whole menu, the head with the rows, as the settings
+  // column of the prototype (#r071-sec) -- one frame, no hairline under the
+  // head, no second top line with its corner arc. The list draws no border of
+  // its own; it always scrolls (overflow auto) and so clips at the frame's
+  // inner edge, where the path's line stands, as in any box that scrolls. Its
+  // first row is not at a corner (the head is above it); its last is, inside
+  // the frame's pixel.
+  .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) {
+    box-sizing: border-box;
+    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius--surface);
+  }
+
+  .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) > .sf-smart-menu-search {
+    border-block-end: var(--sf-0);
+  }
+
+  .sf-smart-menu.sf-smart-menu--search > ul.sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+    --sf-menu--border-width: calc(var(--sf-px) * 0);
+    --sf-menu--radius: calc(var(--sf-radius--surface) - var(--sf-px));
+    --sf-menu--radius-block-start: calc(var(--sf-px) * 0);
+    border-radius: var(--sf-0);
+  }
+
   .sf-smart-menu.sf-smart-menu--search > ul.sf-menu {
     flex: 1 1 auto;
     min-block-size: var(--sf-0);

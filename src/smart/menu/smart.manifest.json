@@ -736,11 +736,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "70db58fb2b148f2bcc71fc729c8a365c4cab3e7f49202f96c235c39fd7ac39ef"
+        "sha256": "4a2a948fa333b6cb677fee2c61dd54c87e93d03bd97f019b41c39a955f354fe6"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "223ad3e90ed7caaab81ff9c42b5d62a462ef1e5c79ac544fc79b5fea81f274a1"
+        "sha256": "291327b87089fe8c2bc35090ccdc2877fe0f941cb2554154919762552a583343"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
@@ -748,7 +748,7 @@
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "f16faee8761d1fd231ddd8858c07d1c6d655c678201fb7f993067312fad708d3"
+        "sha256": "a611eeda93c2d73e9a391ebf5eb0bd81ea47bc5d9a9cab6fcd131f15cdc51c4c"
       },
       {
         "path": "src/smart/menu/rule.js",
@@ -756,7 +756,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "d472b136b9f4d0325769d447fdca05b9ec49b13df7491746c7ce318b1af808ef"
+        "sha256": "647b336526fea97b91ee78ff9ebb0bcc487b7b2f556ad788ac22d236946d22bc"
       }
     ],
     "generated_runtime": []

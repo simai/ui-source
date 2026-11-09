@@ -13,7 +13,8 @@
 // R072 e / R065 a: a bordered column draws the 2 px line on its own start
 //   border at the closed branch that holds the current page, clear of the
 //   corner's curve on its first row; a column without a border has the
-//   medium label alone; the compact rail keeps its bar;
+//   medium label alone; the compact rail takes the same line on its start
+//   edge (DEV answer b); a bordered menu with search has one frame (minor 1);
 // R070: a column's group headings are a row's height, the rows' size and
 //   weight of type, on-surface-variant, the words on the first level's line;
 // R083 / C05: the plates stand space-1/4 in from the column's edge on both
@@ -191,11 +192,80 @@ try {
           `${k}: a column without a border marks the closed branch with the medium label alone, no bar, no line (${JSON.stringify(plain)})`);
         const rail = await tab.evaluate(() => {
           const row = document.querySelector('#rail [data-sf-menu-item="pumps"] > .sf-menu-element');
+          const list = row.closest('ul.sf-menu');
           const before = getComputedStyle(row, '::before');
-          return {holds: row.classList.contains('sf-menu-element--holds-current'), width: before.width, height: before.height, content: before.content};
+          const box = row.getBoundingClientRect();
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--sf-primary)';
+          list.append(probe);
+          const primary = getComputedStyle(probe).color;
+          probe.remove();
+          return {holds: row.classList.contains('sf-menu-element--holds-current'), content: before.content, width: before.width, background: before.backgroundColor, primary,
+            offset: box.left + (parseFloat(before.left) || 0) - list.getBoundingClientRect().left, top: parseFloat(before.top) || 0, bottom: parseFloat(before.bottom) || 0,
+            height: parseFloat(before.height) || 0, rowHeight: box.height, radiusStart: before.borderTopLeftRadius, radiusEnd: before.borderTopRightRadius,
+            rowBorder: (parseFloat(getComputedStyle(row).borderTopWidth) || 0) + (parseFloat(getComputedStyle(row).borderBottomWidth) || 0),
+            plate: getComputedStyle(row).backgroundColor, listBorder: getComputedStyle(list).borderLeftWidth};
         });
         k = key('rail');
-        check(rail.holds && rail.content !== 'none' && rail.width === '3px', `${k}: the compact rail keeps its bar, its rows being an icon alone (${JSON.stringify(rail)})`);
+        check(rail.holds && rail.content !== 'none' && rail.width === '2px' && rail.background === rail.primary && Math.abs(rail.offset) <= 0.5
+          && rail.top === 0 && rail.bottom === 0 && Math.abs(rail.height - (rail.rowHeight - rail.rowBorder)) <= 0.5 && rail.radiusStart === '0px' && rail.radiusEnd === '2px' && rail.listBorder === '0px',
+        `${k}: the compact rail marks the section holding the current page with the path's 2 px primary line on its start edge, the row's full height inside its own transparent border, no 3 px bar (${JSON.stringify(rail)})`);
+        check(/, 0\)$/u.test(rail.plate) || rail.plate === 'transparent', `${k}: the row holding the current page has no plate, as everywhere on the path (${rail.plate})`);
+        // The rail's current row keeps the C23 plate.
+        await tab.evaluate(() => { document.querySelector('#rail').current = 'valves'; });
+        await tab.waitForTimeout(150);
+        const railCurrent = await tab.evaluate(() => {
+          const row = document.querySelector('#rail [data-sf-menu-item="valves"] > .sf-menu-element');
+          const probe = document.createElement('span');
+          probe.style.backgroundColor = 'var(--sf-primary-container-active)';
+          row.closest('ul.sf-menu').append(probe);
+          const want = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return {plate: getComputedStyle(row).backgroundColor, want, line: getComputedStyle(row, '::before').content};
+        });
+        check(railCurrent.plate === railCurrent.want && (railCurrent.line === 'none' || railCurrent.line === 'normal'),
+          `${k}: the rail's current row keeps the C23 plate and draws no line (${JSON.stringify(railCurrent)})`);
+        await tab.evaluate((value) => { document.querySelector('#rail').current = value; }, 'centrifugal');
+
+        // DEV acceptance minor 1: a bordered menu with search has one frame
+        // round the head and the rows -- no hairline under the head, no second
+        // top line with its corner arc; the path's line inside the frame.
+        k = key('bordered search frame');
+        await tab.evaluate(() => document.querySelector('#scrolling').close('long'));
+        await tab.waitForTimeout(200);
+        const framed = await tab.evaluate(() => {
+          const nav = document.querySelector('#scrolling nav');
+          const head = nav.querySelector('.sf-smart-menu-search');
+          const list = nav.querySelector(':scope > ul.sf-menu');
+          const row = list.querySelector('[data-sf-menu-item="long"] > .sf-menu-element');
+          const probe = document.createElement('div');
+          probe.style.cssText = 'border-top: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius--surface); color: var(--sf-primary)';
+          nav.append(probe);
+          const want = getComputedStyle(probe);
+          const wantColour = want.borderTopColor;
+          const wantRadius = want.borderTopLeftRadius;
+          const primary = want.color;
+          probe.remove();
+          const n = getComputedStyle(nav);
+          const l = getComputedStyle(list);
+          const before = getComputedStyle(row, '::before');
+          const navBox = nav.getBoundingClientRect();
+          const rowBox = row.getBoundingClientRect();
+          return {navTop: n.borderTopWidth, navStart: n.borderLeftWidth, navColour: n.borderTopColor, wantColour, navRadius: n.borderTopLeftRadius, wantRadius,
+            headLine: getComputedStyle(head).borderBottomWidth, headTop: head.getBoundingClientRect().top - navBox.top,
+            listTop: l.borderTopWidth, listStart: l.borderLeftWidth, listRadius: l.borderTopLeftRadius,
+            line: before.content, width: before.width, background: before.backgroundColor, primary,
+            offset: rowBox.left + (parseFloat(before.left) || 0) - navBox.left, top: parseFloat(before.top) || 0, weight: getComputedStyle(row.querySelector('a') || row).fontWeight};
+        });
+        seen[`framed-${theme}-${run}`] = framed;
+        check(framed.navTop === '1px' && framed.navStart === '1px' && framed.navColour === framed.wantColour && framed.navRadius === framed.wantRadius,
+          `${k}: the frame goes round the whole menu, a hairline of outline-variant at the surface radius (${JSON.stringify(framed)})`);
+        check(framed.headLine === '0px' && Math.abs(framed.headTop - 1) <= 0.5 && framed.listTop === '0px' && framed.listStart === '0px' && framed.listRadius === '0px',
+          `${k}: one top line -- the head is inside the frame with no hairline under it, the list draws no border of its own (head ${framed.headLine} at ${framed.headTop}, list ${framed.listTop}/${framed.listStart}/${framed.listRadius})`);
+        check(framed.line !== 'none' && framed.width === '2px' && framed.background === framed.primary && Math.abs(framed.offset - 1) <= 0.5 && framed.top === 0 && framed.weight === '500',
+          `${k}: the closed branch holding the current page has the 2 px line just inside the frame (the list scrolls), full height under the head (offset ${framed.offset}, top ${framed.top})`);
+        await tab.evaluate(() => document.querySelector('#scrolling').open('long'));
+        await tab.waitForTimeout(200);
 
         // R083 / C05: plates and words in the column, normal and compact.
         k = key('R083 inset');
@@ -285,10 +355,6 @@ try {
         check(scroll.scroll && scroll.scrollbar && scroll.bar > 0, `${k}: the long column scrolls and its scrollbar takes room (${scroll.bar}px)`);
         check(near(scroll.start, scroll.inset) && near(scroll.paddingEnd, Math.max(0, scroll.inset - scroll.thumbInset)) && near(scroll.toBar + scroll.thumbInset, scroll.inset),
           `${k}: plate → thumb (${scroll.toBar} + ${scroll.thumbInset}) = edge → plate (${scroll.start}), end padding ${scroll.paddingEnd}`);
-        await tab.evaluate(() => document.querySelector('#scrolling').close('long'));
-        await tab.waitForTimeout(200);
-        const unscrolled = await tab.evaluate(PATH_LINE, '#scrolling [data-sf-menu-item="long"] > .sf-menu-element');
-        check(lineOk(unscrolled), `${k}: closed, the bordered column no longer scrolls and its path line lies on the border (offset ${unscrolled.offset}, scroll ${unscrolled.scroll})`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
       }

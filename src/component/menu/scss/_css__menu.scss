@@ -12,41 +12,6 @@
   --sf-menu-element--font-weight: var(--sf-font-weight-medium);
 }
 
-// The rail's bar (C23): a compact rail draws no branch and its rows are an
-// icon alone, so a weight would not show -- the row whose section holds the
-// current page keeps a bar of primary, 3 by 16 (a3 by icon size 1), at its
-// inline start, flush with it, its free end rounded. Only the rail: columns
-// and a row's panels take the path mark below (C30 amended, R065, R072,
-// R084). A bar is never on a plate.
-@mixin holds-current-bar {
-  .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
-    position: relative;
-  }
-
-  .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 50%;
-    inset-inline-start: var(--sf-0);
-    inline-size: var(--sf-a3);
-    block-size: var(--sf-icon-size-1);
-    translate: 0 -50%;
-    border-start-start-radius: var(--sf-0);
-    border-end-start-radius: var(--sf-0);
-    border-start-end-radius: var(--sf-radius--ui);
-    border-end-end-radius: var(--sf-radius--ui);
-    background-color: var(--sf-primary);
-    pointer-events: none;
-  }
-
-  @media (forced-colors: active) {
-    .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
-      forced-color-adjust: none;
-      background-color: Highlight;
-    }
-  }
-}
-
 // The path mark (C30 amended 2026-11-09: R084, R072 e, R065 a): a row that
 // leads to the current page without being it -- a closed branch that holds
 // it in a column, every level of the path in a row's panels -- says so with a
@@ -58,7 +23,9 @@
 // stays neutral: it says only that there is a level under the row. A row's
 // closed branch is found by :has (its list is in the markup, hidden), or by
 // sf-menu-element--holds-current, which sf-menu writes when the list is not
-// drawn at all. The 3px bar (C23) is retired.
+// drawn at all. The 3px bar (C23) is retired everywhere, the compact rail
+// included: its rows are an icon alone, so it takes the line without the
+// weight (C30 amended, DEV answer b).
 //
 // The box says where its border is: --sf-menu--inset (its padding: border to
 // plate, C05) and --sf-menu--border-width; --sf-menu--radius lets the line
@@ -100,8 +67,10 @@ $path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-curren
   }
 
   // The box's first and last row: the line keeps clear of the corner's curve.
+  // A box whose first row is not at a corner (sf-menu with search and
+  // bordered: the head is above it) sets --sf-menu--radius-block-start to 0.
   > .sf-menu-item:first-child > .sf-menu-element {
-    --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+    --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius-block-start, var(--sf-menu--radius, calc(var(--sf-px) * 0))) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
   }
 
   > .sf-menu-item:last-child > .sf-menu-element {

@@ -20,6 +20,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
   HOVER_CLOSE_DELAY,
@@ -40,11 +41,17 @@ import {
   fitRow,
   itemsFromList,
   normaliseItems,
+  onItemAlias,
   openBranches,
   pathTo,
   walkItems,
   withoutGroups,
 } from './items.mjs';
+
+// An item spelled the first release's way (key, text, title) is noted on the
+// page's deprecation list until the date it leaves (journal record
+// sf-menu-item-field-aliases).
+onItemAlias((from, to) => noteDeprecated({component: 'sf-menu', kind: 'property', attribute: 'items', from, to, remove_after: '2027-01-01'}));
 import './scss/index.scss';
 import manifest from './component.json';
 import aliases from './aliases.json';

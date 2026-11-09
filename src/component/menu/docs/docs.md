@@ -74,7 +74,11 @@ column has one with `sf-menu--bordered` on the root list (a hairline of
 from it on every side). A box that scrolls (`sf-menu--scroll`) clips its
 border area, so there the line stands one pixel inside. A branch's › stays
 neutral: it says only that there is a level under the row. The 3 px bar is
-retired, except on the compact rail, whose rows are an icon alone.
+retired everywhere: the compact rail, whose rows are an icon alone, takes the
+same line on its start edge (it has no border and no inset), without the
+weight. A list whose first row is not at its box's corner (sf-menu with
+search and bordered: the frame goes round the head as well) sets
+`--sf-menu--radius-block-start: 0`.
 
 A column (`sf-menu--navigation` without `sf-menu--horizontal`; C05, R083)
 stands its plates `space-1/4` (`--sf-menu--inset`) in from its edge on both
@@ -84,7 +88,10 @@ column is a row's height, the rows' size and weight of type, in
 `--sf-on-surface-variant`, its words on the first level's line (R070). When
 the column scrolls and its scrollbar takes room, `sf-menu--scrollbar` gives
 the scrollbar's own gap back from the end padding, so a plate stands as far
-from the thumb as from the start edge (C07). A row's link that leaves the
+from the thumb as from the start edge (C07). Only the list's own scrolling
+gives the gap back: a column that scrolls as a whole (sf-menu `sticky`) or
+inside a page's scroller keeps the full inset, and the scrollbar stands
+outside it. A row's link that leaves the
 site may end with `.sf-icon.sf-menu-element-external` (↗, the half step's
 icon in `--sf-on-surface-variant`). The words a search matched are drawn by
 `::highlight(sf-menu-match)` with `--sf-mark`.
@@ -142,7 +149,8 @@ sight, and the counter moves onto the icon's top end corner with the anchored
 badge's geometry and ring (step 1). Branches do not open in a compact menu.
 The row that is the current page takes the navigation plate; a row whose
 hidden list holds the current page, or one marked
-`sf-menu-element--holds-current`, takes the bar beside its icon (C23). See
+`sf-menu-element--holds-current`, takes the path's 2 px line on the rail's
+start edge, as tall as the row (C30 amended). See
 the Badges documentation, section «Бейдж на якоре» (simai/ui-source#12).
 
 ## Groups
