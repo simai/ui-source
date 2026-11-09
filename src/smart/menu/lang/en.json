@@ -2,10 +2,12 @@
   "title": "Menu",
   "runtime": {
     "toggle-label": "Menu",
+    "more-label": "More",
     "status-success": "all good",
     "status-warning": "needs attention",
     "status-error": "error",
     "status-info": "something new",
-    "status-neutral": "no data"
+    "status-neutral": "no data",
+    "subsections": "subsections"
   }
 }

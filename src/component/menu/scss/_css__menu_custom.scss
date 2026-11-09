@@ -14,4 +14,11 @@
 .sf-menu > .sf-menu-item:not(.open) > .sf-menu {
   display: none;
 }
+
+/* A hidden item (a row's item that went to «Ещё», C30) takes no room: the
+   item's own display would otherwise win over the hidden attribute. */
+.sf-menu > .sf-menu-item[hidden],
+.sf-menu .sf-menu-region[hidden] {
+  display: none;
+}
 }

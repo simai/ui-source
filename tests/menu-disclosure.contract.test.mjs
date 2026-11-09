@@ -36,7 +36,9 @@ test('Menu preserves authored nodes and dynamic branch ownership',()=>{
 });
 
 test('Menu uses disclosure glyph semantics and keyboard-visible paint',()=>{
-  assert.match(js,/expanded \? 'keyboard_arrow_down' : 'chevron_right'/);
+  // A column turns its indicator down when open; a horizontal row's side
+  // branch keeps pointing to the side its panel opens to (C30).
+  assert.match(js,/expanded && !sideBranch \? 'keyboard_arrow_down' : 'chevron_right'/);
   assert.match(elementCss,/:focus-visible/);
   // The ring is the shared outline turned inwards, so it stays inside the item
   // instead of covering the edge of its neighbour.

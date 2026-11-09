@@ -533,3 +533,19 @@ test('the offline and self-hosted settings are documented', async () => {
   }
   assert.match(documentation, /component\/icons\/fonts\/MaterialSymbols-Outlined\.woff2/);
 });
+
+test('a disclosure glyph brings the glyph it swaps to into the same request', () => {
+  const loader = new TestLoader();
+  const attrs = {weight: '400', type: 'outlined'};
+  // ⌄ brings ⌃ (a row opening) and › (a column closing): three names, one request.
+  assert.equal(loader.trackIconDescriptor('keyboard_arrow_down', attrs), 3);
+  assert.ok(loader.uniqueIcons.has('keyboard_arrow_up'));
+  assert.ok(loader.uniqueIcons.has('chevron_right'));
+  assert.equal(loader.uniqueIcons.get('keyboard_arrow_up').get('weight').has('400'), true);
+  // The swap itself then asks for nothing new.
+  assert.equal(loader.trackIconDescriptor('keyboard_arrow_up', attrs), 0);
+  assert.equal(loader.trackIconDescriptor('chevron_right', attrs), 0);
+  assert.equal(loader.trackIconDescriptor('expand_more', attrs), 2);
+  // A name with no partner tracks itself alone.
+  assert.equal(loader.trackIconDescriptor('menu', attrs), 1);
+});

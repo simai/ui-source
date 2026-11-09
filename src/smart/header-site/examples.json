@@ -268,7 +268,7 @@
           "covers": "lang runtime.menu-label, runtime.label (§11.1)",
           "steps": [
             {
-              "check": "document.querySelector('#en .sf-site-header-menu-button button').getAttribute('aria-label') === 'Open menu' && document.querySelector('#en .sf-site-header-panel-heading').textContent.trim() === 'Navigation'"
+              "check": "document.querySelector('#en .sf-site-header-menu-button button').getAttribute('aria-label') === 'Open menu' && document.querySelector('#en .sf-site-header-panel-heading').textContent.trim() === 'Menu'"
             }
           ]
         },

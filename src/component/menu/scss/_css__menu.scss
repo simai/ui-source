@@ -50,6 +50,98 @@
     }
   }
 }
+/* A row panel's path (C30, R057): a row whose list holds the current page
+   says so with a medium label and its › in primary -- two cues, no mark of
+   its own. Open, it keeps both on the neutral select plate. Applied on the
+   panels of a row. */
+@mixin holds-current-path {
+  .sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
+  .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
+    --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+
+    .sf-icon-button .sf-icon {
+      --sf-icon--color: var(--sf-primary);
+    }
+  }
+}
+
+/* The first-level item of a header row that is the current page or holds it
+   (C30, R060). */
+$row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))), :has(> :is(.sf-menu, .sf-menu-region) :is([aria-current='page'], [aria-current='true'])), :has(> .sf-menu-element.sf-menu-element--holds-current))";
+
+/* line (the default): a 2 px primary line under the whole control lying ON
+   the header's bottom border, as the sf-tabs indicator -- it takes that
+   segment of the border's place -- and a medium label. sf-header-site
+   publishes how far its edge is below the row (--sf-site-header--edge); in
+   any other place the line lies at the row's own end. The C23 plate is not
+   drawn at this level: the line is the mark. Applied on the row's root. */
+@mixin row-current-line {
+  > .sf-menu-item {
+    position: relative;
+  }
+
+  #{$row-current} {
+    > .sf-menu-element {
+      --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+      --sf-menu-element--color: var(--sf-on-surface);
+    }
+
+    // The pointer's states over a current row, as over any other; the plate
+    // that the navigation look gives the current page is not drawn here.
+    > .sf-menu-element:not(.open) {
+      --sf-menu-element--background-color: var(--sf-transparent);
+    }
+
+    > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+      --sf-menu-element--background-color: var(--sf-surface-transparent-hover);
+    }
+
+    > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+      --sf-menu-element--background-color: var(--sf-surface-transparent-active);
+    }
+
+    > .sf-menu-element .sf-menu-element-icon {
+      --sf-icon--color: var(--sf-on-surface);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      /* The fallback is a zero length: a bare 0 makes the calc a number,
+         which an inset refuses. */
+      inset-block-end: calc(-1 * var(--sf-site-header--edge, calc(var(--sf-px) * 0)));
+      inset-inline: var(--sf-space-1\/4);
+      block-size: var(--sf-a2);
+      border-start-start-radius: var(--sf-a2);
+      border-start-end-radius: var(--sf-a2);
+      border-end-start-radius: var(--sf-0);
+      border-end-end-radius: var(--sf-0);
+      background-color: var(--sf-primary);
+      pointer-events: none;
+    }
+
+    @media (forced-colors: active) {
+      &::after {
+        forced-color-adjust: none;
+        background-color: Highlight;
+      }
+    }
+  }
+}
+
+/* fill: the C23 plate on the control, its ink and a medium label, for a
+   header with no bottom border to lie on (over a photo, transparent). */
+@mixin row-current-fill {
+  #{$row-current} > .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+    @include current-plate;
+
+    .sf-menu-element-icon,
+    .sf-icon-button .sf-icon {
+      --sf-icon--color: var(--sf-on-primary-container);
+    }
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-menu {
@@ -137,6 +229,129 @@
   --sf-menu-element--padding-inline-start: var(--sf-space-1);
 }
 
+/* A row's deeper branch opens a panel to the side (C30): its chevron is ›
+   whether the panel is open or not, mirrored in RTL only. Which side the
+   panel stands on follows the room (SF.Position flips it at the window's
+   edge); the chevron never turns with it (R059). */
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element .sf-icon-button .sf-icon {
+  transform: none;
+}
+
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element:dir(rtl) .sf-icon-button .sf-icon {
+  transform: scaleX(-1);
+}
+
+/* A section that is a page and has subsections is a split control (C30,
+   R058; APG disclosure navigation with top-level links): its name is a link,
+   the chevron beside it a button. Under a coarse pointer the chevron is a
+   whole control wide, so a finger finds it. */
+@media (pointer: coarse) {
+  .sf-menu.sf-menu--horizontal .sf-menu-element > button.sf-icon-button {
+    min-inline-size: var(--sf-ui-1--control-height);
+  }
+}
+
+/* A region (a mega menu, C30): the panel a row's first-level branch opens
+   when it holds more than a list -- as wide as the header, under it -- filled
+   with whatever markup the page gives, or with the branch's children as
+   columns: each child with children of its own a column, its row the head
+   (a size 1 row, medium), its children the links (the half rung's height,
+   text size 1), theirs the small links (the third rung's height, text 1/2,
+   on-surface-variant, a half step in). The children without any stand in a
+   line under the columns, past a hairline. The surface, frame, radius and
+   shadow are a popup's (C20 overlay). Columns are at least 13rem, a text
+   column's width (a C18 exception). */
+.sf-menu .sf-menu-region {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: var(--sf-space-1);
+  z-index: var(--sf-menu-horizontal-submenu--z-index, 3);
+  padding: var(--sf-space-1);
+  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+  border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--surface)));
+  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
+  @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+  box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-shadow-overlay));
+  color: var(--sf-on-surface);
+  overscroll-behavior: contain;
+}
+
+.sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu-region {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  inline-size: max-content;
+}
+
+.sf-menu-region-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--sf-f3), 1fr));
+  gap: var(--sf-space-1);
+}
+
+.sf-menu-region-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: var(--sf-0);
+}
+
+.sf-menu-region-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+  list-style: none;
+}
+
+.sf-menu-region-list > li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+}
+
+.sf-menu-region-list.sf-menu-region-list--small {
+  padding-inline-start: var(--sf-space-1\/2);
+}
+
+.sf-menu-region-foot {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1\/4) var(--sf-space-1);
+  padding-block-start: var(--sf-space-1\/2);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-menu .sf-menu-region .sf-menu-element {
+  --sf-menu-element--border-width: calc(var(--sf-px) * 0);
+  --sf-menu-element--border-color: var(--sf-transparent);
+  --sf-menu-element--padding-inline-start: var(--sf-space-1\/2);
+  --sf-menu-element--padding-inline-end: var(--sf-space-1\/2);
+}
+
+.sf-menu .sf-menu-region .sf-menu-element.sf-menu-region-head {
+  --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-menu .sf-menu-region .sf-menu-element.sf-menu-region-link {
+  --sf-menu-element--padding-block: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
+}
+
+.sf-menu .sf-menu-region .sf-menu-element.sf-menu-region-small {
+  --sf-menu-element--padding-block: calc((var(--sf-ui-1\/3--control-height) - var(--sf-text-height-1\/2)) / 2);
+  --sf-menu-element--font-size: var(--sf-text-size-1\/2);
+  --sf-menu-element--line-height: var(--sf-text-height-1\/2);
+  --sf-menu-element--color: var(--sf-on-surface-variant);
+}
+
+.sf-menu .sf-menu-region .sf-menu-region-foot .sf-menu-element {
+  inline-size: auto;
+}
+
 /* Header navigation (sf-menu appearance navigation): the site's sections in
    a header row -- and the same rows as a column, in a side panel or a sidebar.
    A row has no frame and no fill at rest; a pointer lays the state family of
@@ -182,9 +397,31 @@
 }
 
 /* The bar: a closed branch of a column that holds the current page. A
-   header row's first level opens panels, not a column, and draws no bar. */
+   header row draws no bar: its first level has the line (or the plate), its
+   panels the path mark (C30). */
 .sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
   @include holds-current-bar;
+}
+
+/* A row: an open branch -- the first level and a panel's row -- takes the
+   neutral select plate of the alpha scale, never primary, so open and
+   current cannot look alike (C30, R060); its first-level chevron is ⌃. */
+.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+  --sf-menu-element--background-color: var(--sf-surface-transparent-select);
+}
+
+.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+  @include holds-current-path;
+}
+
+/* A header row's current section (C30): the line on the header's edge, or
+   with sf-menu--indicator-fill the C23 plate. The mixins are above the layer. */
+.sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
+  @include row-current-line;
+}
+
+.sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
+  @include row-current-fill;
 }
 
 .sf-menu.sf-menu--navigation .sf-menu-element:disabled,

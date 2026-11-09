@@ -5,14 +5,20 @@ when it represents site or section navigation. Keep native list and link
 semantics; do not add `role="menu"` unless implementing the separate application
 menu keyboard model.
 
-A branch has one native button with `aria-expanded` and `aria-controls`. Its
-indicator points right while collapsed and down while expanded, mirroring the
-horizontal direction in RTL. When a branch title is also a destination, keep
+A branch has one native button with `aria-expanded` and `aria-controls`. In a
+column its indicator points right while collapsed and down while expanded,
+mirroring the horizontal direction in RTL. In a horizontal row the first level
+points down (up while open), and a deeper branch, whose panel opens to the
+side, is always › (mirrored in RTL only): the runtime puts the panel on the
+side that has room, and the indicator does not turn with it (C30, R059). When a branch title is also a destination, keep
 the link and disclosure button as separate siblings inside the row.
 
 `sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-menu-element-wrap` and
 `sf-menu-element-text` form a complete layout without flex utilities. Levels
-one through four use semantic spacing. Compact rows use `--sf-radius--ui`,
+one through four step in by one `space-1` each; deeper levels draw as the
+fourth. A column whose first-level rows carry an icon starts its second level
+under the first level's words (icon size plus the wrap gap), so the simple
+admin column reads as one text axis. Compact rows use `--sf-radius--ui`,
 Framework typography and role colors.
 
 Add `sf-menu--horizontal` only to the root `sf-menu` for navigation in a page
@@ -58,10 +64,38 @@ Rows stand `space-1/4` apart unless `--sf-menu-gap` says otherwise. In forced
 colours the current page is framed instead and the bar takes the system's
 highlight. Submenus keep their panel and take the same row states.
 
-One navigation tree -- a site, documentation -- is at most two levels deep
-(decision C24). The four levels the class draws serve an admin menu's second
-panel, which holds the second to fourth levels of the section chosen in its
-first panel.
+A navigation tree is up to four levels deep (decision C30, which replaces
+the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
+
+- the first-level section that is the current page or holds it has a medium
+  label and a 2 px `--sf-primary` line under the whole control, lying on the
+  header's bottom border as the tabs' indicator does (the line sits
+  `--sf-site-header--edge` below the item, which `sf-header-site` publishes;
+  0 elsewhere); with `sf-menu--indicator-fill` on the root it takes the C23
+  plate instead, for a header with no bottom border;
+- an open branch, on the first level and in a panel, has the neutral
+  `--sf-surface-transparent-select` plate, never primary;
+- in a panel, a closed row whose list holds the current page has a medium
+  label and a primary ›; panels draw no bar.
+
+A section that is a page and has subsections is a split row: the link and
+a native button beside it (`aria-expanded`, `aria-controls`, named
+«<section>: подразделы»); under a coarse pointer the button is a whole
+control wide.
+
+A row's icon, branch indicator and counter sit inside the row's line height:
+the icon and the split-row disclosure take `--sf-menu-element--line-height`,
+the counter overhangs the line by negative block margins, so a compact row
+with a counter is the compact control height (32 on the desktop), not the
+badge's 24 plus padding.
+
+A first-level item may carry a wide region instead of a panel:
+`.sf-menu-region` (role `group`, hidden while closed) spans the header under
+the row. `.sf-menu-region-columns` lays `.sf-menu-region-column`s on a grid;
+a column has a `.sf-menu-region-head` link, a `.sf-menu-region-list` of
+links (`.sf-menu-region-link`, `--small` for third-level text) and the region
+may end with a `.sf-menu-region-foot` row. Smart Menu draws it from a
+`<template slot="region-<name>">` or from the item's children.
 
 ```html
 <nav aria-label="Sections">

@@ -430,7 +430,9 @@ try {
   check('navigate: a press with a modifier is the browser\'s, no event', !sent.some((one) => one.type === 'sf-menu-navigate'), {sent});
   for (const extra of browser.contexts()[0].pages().slice(1)) await extra.close();
 
-  // 390: the row becomes the button; nothing scrolls sideways.
+  // 390: the row becomes the button; nothing scrolls sideways. The button is
+  // a row of the phone ladder (size 1, 36): its icon box is the line's size
+  // (C30 acceptance), not the icon step's 24, which stood it 40.
   await page.setViewportSize({width: 390, height: 900});
   await page.waitForTimeout(400);
   const narrow = await page.evaluate(() => {
@@ -441,11 +443,19 @@ try {
       toggle: Boolean(toggle), expanded: toggle?.getAttribute('aria-expanded'), controls: toggle ? document.getElementById(toggle.getAttribute('aria-controls')) === list : null,
       listHidden: list.hidden, horizontal: list.classList.contains('sf-menu--horizontal'),
       height: toggle ? Math.round(toggle.getBoundingClientRect().height * 100) / 100 : null,
-      words: toggle?.querySelector('.sf-menu-element-text')?.textContent.trim()};
+      words: toggle?.querySelector('.sf-menu-element-text')?.textContent.trim(),
+      ladder: (() => {
+        const probe = document.createElement('div');
+        probe.style.blockSize = 'var(--sf-ui-1--control-height)';
+        host.append(probe);
+        const value = probe.getBoundingClientRect().height;
+        probe.remove();
+        return value;
+      })()};
   });
   evidence.narrow = narrow;
   check('390: the row is the menu button, nothing scrolls sideways', narrow.scroll <= 0 && narrow.toggle && narrow.expanded === 'false'
-    && narrow.controls && narrow.listHidden && !narrow.horizontal && narrow.words === 'Меню' && Math.abs(narrow.height - 40) < 0.5, narrow);
+    && narrow.controls && narrow.listHidden && !narrow.horizontal && narrow.words === 'Меню' && Math.abs(narrow.height - narrow.ladder) < 0.5, narrow);
   await page.click('#row [data-sf-menu-panel-toggle]');
   await page.waitForTimeout(250);
   const opened = await page.evaluate(() => {

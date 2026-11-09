@@ -21,6 +21,25 @@ export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
 // narrower than the md breakpoint -- a phone -- whose words are then the
 // current item's, a compact selector of the sections.
 export const MENU_COLLAPSE = Object.freeze(['auto', 'always', 'narrow', 'none']);
+// What a row of links does when its items do not fit (C30, the values of
+// sf-tabs' overflow where they mean the same): more, the items that do not fit
+// leave the row for a trailing «Ещё» branch -- priority+ -- and the section
+// holding the current page stays; collapse, the whole row becomes the button
+// (collapse auto); none, the row stays as it is.
+export const MENU_OVERFLOW = Object.freeze(['more', 'collapse', 'none']);
+// How a row's branch opens: a press (the default, WAI-ARIA and USWDS), or a
+// pointer resting on it -- the hover delays of NN/g, 300 ms to open and
+// 500 ms outside before it closes -- with the press still working.
+export const MENU_OPEN_ON = Object.freeze(['click', 'hover']);
+export const MENU_INDICATORS = Object.freeze(['line', 'fill']);
+export const HOVER_OPEN_DELAY = 300;
+// A region (a mega menu) is a bigger change of the page: it waits longer.
+export const HOVER_REGION_OPEN_DELAY = 500;
+export const HOVER_CLOSE_DELAY = 500;
+// The id of the trailing «Ещё» branch of a row with overflow more. An item id
+// never starts with @ in a host's data by this rule: one that does is
+// renamed by its place.
+export const MORE_ID = '@more';
 // The tones of an item's status dot: the class dot's tones (src/component/dot).
 export const MENU_STATUSES = Object.freeze(['success', 'warning', 'error', 'info', 'neutral']);
 // The class menu draws four levels; a deeper one is drawn as the fourth.
@@ -40,7 +59,7 @@ const text = (value) => (value === null || value === undefined ? '' : String(val
 export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) {
   if (typeof item === 'string') item = {label: item};
   if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
-  const own = text(item.id ?? item.key).trim();
+  const own = text(item.id ?? item.key).trim().replace(/^@.*$/u, '');
   const id = own || (parentId ? `${parentId}-${index + 1}` : `item-${index + 1}`);
   if (seen.has(id)) return null;
   seen.add(id);
@@ -62,6 +81,12 @@ export function normaliseItem(item, index = 0, parentId = '', seen = new Set()) 
     current: !group && Boolean(item.current),
     disabled: Boolean(item.disabled),
     open: group ? item.open !== false : Boolean(item.open),
+    // A row's first-level branch that opens a region (a mega menu) instead of
+    // a panel: the name of a <template slot="region-<name>"> written inside
+    // the element; without one the region draws the item's children as
+    // columns. Elsewhere -- a column, a deeper level, the «Ещё» panel -- it
+    // is an ordinary branch.
+    region: group ? '' : text(item.region).trim(),
     children,
   };
   if (group) {
@@ -241,6 +266,7 @@ export function itemsFromList(list) {
           ? attr(li, 'data-open') !== 'false'
           : has(li, 'data-open') || Boolean(li.classList?.contains?.('open')),
         group: has(li, 'data-group'),
+        region: attr(li, 'data-region') || '',
         collapsible: has(li, 'data-collapsible'),
         status: attr(li, 'data-status') || '',
         children: nested ? itemsFromList(nested) : [],
@@ -252,4 +278,29 @@ export function itemsFromList(list) {
 // to the first level, in its place, and draws no heading.
 export function withoutGroups(items) {
   return items.flatMap((item) => (item.group ? item.children : [item]));
+}
+
+// Which first-level items of a row stay in it when the row is `available`
+// wide (priority+, C30): every item when all fit; else, from the start, as
+// many as fit beside the «Ещё» button, the item at `keep` (the section that
+// holds the current page) first of all -- unless it does not fit beside the
+// button either. Widths are each item's own, `gap` the row's gap. Answers the
+// indexes that stay, in order; none means the button alone, then «Меню».
+export function fitRow(widths, moreWidth, available, gap = 0, keep = -1) {
+  const count = widths.length;
+  const all = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, count - 1);
+  if (all <= available + 0.5) return widths.map((_, index) => index);
+  const stays = [];
+  let used = moreWidth;
+  if (keep >= 0 && keep < count && used + gap + widths[keep] <= available + 0.5) {
+    used += gap + widths[keep];
+    stays.push(keep);
+  }
+  for (let index = 0; index < count; index += 1) {
+    if (index === keep) continue;
+    if (used + gap + widths[index] > available + 0.5) break;
+    used += gap + widths[index];
+    stays.push(index);
+  }
+  return stays.sort((a, b) => a - b);
 }

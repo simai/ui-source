@@ -321,6 +321,268 @@
           "current": "address"
         }
       }
+    },
+    {
+      "name": "site-row",
+      "title": "Строка сайта: лишнее — в «Ещё»",
+      "settings": {
+        "label": "Разделы",
+        "orientation": "horizontal",
+        "appearance": "navigation",
+        "overflow": "more",
+        "current": "desks",
+        "items": [
+          {
+            "id": "home",
+            "label": "Главная",
+            "href": "#home"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "href": "#catalog",
+            "children": [
+              {
+                "id": "furniture",
+                "label": "Мебель",
+                "href": "#furniture",
+                "children": [
+                  {
+                    "id": "tables",
+                    "label": "Столы",
+                    "href": "#tables",
+                    "children": [
+                      {
+                        "id": "desks",
+                        "label": "Письменные",
+                        "href": "#desks"
+                      },
+                      {
+                        "id": "dining",
+                        "label": "Обеденные",
+                        "href": "#dining"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "chairs",
+                    "label": "Стулья",
+                    "href": "#chairs"
+                  }
+                ]
+              },
+              {
+                "id": "light",
+                "label": "Свет",
+                "href": "#light"
+              }
+            ]
+          },
+          {
+            "id": "services",
+            "label": "Услуги",
+            "href": "#services",
+            "children": [
+              {
+                "id": "design",
+                "label": "Дизайн",
+                "href": "#design"
+              },
+              {
+                "id": "delivery",
+                "label": "Доставка",
+                "href": "#delivery"
+              }
+            ]
+          },
+          {
+            "id": "projects",
+            "label": "Проекты",
+            "href": "#projects"
+          },
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about"
+          },
+          {
+            "id": "news",
+            "label": "Новости",
+            "href": "#news"
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "parent": "<div style=\"inline-size: 560px\"></div>",
+      "expect": {
+        "name": "Разделы",
+        "values": {
+          "current": "desks"
+        }
+      }
+    },
+    {
+      "name": "site-column",
+      "title": "Колонка сайта: четыре уровня",
+      "settings": {
+        "label": "Разделы",
+        "appearance": "navigation",
+        "current": "desks",
+        "items": [
+          {
+            "id": "home",
+            "label": "Главная",
+            "href": "#home"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "href": "#catalog",
+            "children": [
+              {
+                "id": "furniture",
+                "label": "Мебель",
+                "href": "#furniture",
+                "children": [
+                  {
+                    "id": "tables",
+                    "label": "Столы",
+                    "href": "#tables",
+                    "children": [
+                      {
+                        "id": "desks",
+                        "label": "Письменные",
+                        "href": "#desks"
+                      },
+                      {
+                        "id": "dining",
+                        "label": "Обеденные",
+                        "href": "#dining"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "chairs",
+                    "label": "Стулья",
+                    "href": "#chairs"
+                  }
+                ]
+              },
+              {
+                "id": "light",
+                "label": "Свет",
+                "href": "#light"
+              }
+            ]
+          },
+          {
+            "id": "services",
+            "label": "Услуги",
+            "href": "#services",
+            "children": [
+              {
+                "id": "design",
+                "label": "Дизайн",
+                "href": "#design"
+              },
+              {
+                "id": "delivery",
+                "label": "Доставка",
+                "href": "#delivery"
+              }
+            ]
+          },
+          {
+            "id": "projects",
+            "label": "Проекты",
+            "href": "#projects"
+          },
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about"
+          },
+          {
+            "id": "news",
+            "label": "Новости",
+            "href": "#news"
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Разделы",
+        "values": {
+          "current": "desks"
+        }
+      }
+    },
+    {
+      "name": "admin",
+      "title": "Простая админка: иконки у первого уровня, плотный вид",
+      "settings": {
+        "label": "Администрирование",
+        "appearance": "navigation",
+        "current": "users",
+        "items": [
+          {
+            "id": "dashboard",
+            "label": "Обзор",
+            "href": "#dashboard",
+            "icon": "dashboard"
+          },
+          {
+            "id": "people",
+            "label": "Люди",
+            "icon": "group",
+            "children": [
+              {
+                "id": "users",
+                "label": "Пользователи",
+                "href": "#users",
+                "badge": "12"
+              },
+              {
+                "id": "roles",
+                "label": "Роли",
+                "href": "#roles"
+              }
+            ]
+          },
+          {
+            "id": "settings",
+            "label": "Настройки",
+            "icon": "settings",
+            "children": [
+              {
+                "id": "general",
+                "label": "Общие",
+                "href": "#general"
+              },
+              {
+                "id": "mail",
+                "label": "Почта",
+                "href": "#mail"
+              }
+            ]
+          }
+        ]
+      },
+      "parent": "<div data-sf-density=\"compact\" style=\"inline-size: 280px\"></div>",
+      "expect": {
+        "name": "Администрирование",
+        "values": {
+          "current": "users"
+        }
+      }
     }
   ],
   "pages": [

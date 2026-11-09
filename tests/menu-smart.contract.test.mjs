@@ -70,7 +70,8 @@ test('smart menu: the current page from current, the location, or the item flag'
   assert.deepEqual(pathTo(items, 'catalog-2-1'), ['catalog', 'catalog-2']);
   assert.equal(pathTo(items, 'missing'), null);
   // The link of the current page says so, and nothing else does.
-  assert.equal((template.match(/aria-current=\$\{current \? 'page' : nothing\}/gu) || []).length, 3);
+  // (A row, a split row's link, a group-less span and -- C30 -- a region's link.)
+  assert.equal((template.match(/aria-current=\$\{current \? 'page' : nothing\}/gu) || []).length, 4);
 });
 
 test('smart menu: a column opens the way to the current page; a row opens only when asked', () => {
@@ -81,7 +82,7 @@ test('smart menu: a column opens the way to the current page; a row opens only w
   assert.deepEqual([...openBranches(items, new Map([['catalog', true]]), null, false)], ['catalog']);
   // A row's open panels are one chain: opening a branch closes every panel
   // not above it.
-  assert.match(source, /if \(this\.flyouts\) \{\n      const above = new Set\(pathTo\(this\.menuItems, item\.id\) \|\| \[\]\);\n      for \(const other of before\) if \(!above\.has\(other\)\) after\.delete\(other\);/u);
+  assert.match(source, /if \(this\.flyouts\) \{\n      const above = new Set\(pathTo\(this\.treeItems, item\.id\) \|\| \[\]\);\n      for \(const other of before\) if \(!above\.has\(other\)\) after\.delete\(other\);/u);
 });
 
 test('smart menu: a list written in the markup is read as items', () => {
@@ -129,10 +130,11 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
   assert.match(template, /const levelClass = \(level\) => `sf-menu-element--level-\$\{Math\.min\(Math\.max\(level, 1\), LEVEL_LIMIT\)\}`;/u);
   assert.equal(LEVEL_LIMIT, 4);
   // The glyphs the class runtime writes.
-  assert.match(template, /if \(context\.flyouts && level === 1\) return open \? 'keyboard_arrow_up' : 'keyboard_arrow_down';\n  return open \? 'keyboard_arrow_down' : 'chevron_right';/u);
+  // A row's deeper branch opens to the side and points there (C30).
+  assert.match(template, /if \(context\.flyouts && level === 1\) return open \? 'keyboard_arrow_up' : 'keyboard_arrow_down';\n  if \(context\.flyouts\) return 'chevron_right';\n  return open \? 'keyboard_arrow_down' : 'chevron_right';/u);
   // A branch is a native button with aria-expanded and aria-controls; no
   // application menu roles.
-  assert.match(template, /aria-expanded=\$\{open \? 'true' : 'false'\} aria-controls=\$\{submenuId\}/u);
+  assert.match(template, /aria-expanded=\$\{open \? 'true' : 'false'\} aria-controls=\$\{own\(submenuId\)\}/u);
   assert.doesNotMatch(template + source, /role="?menu|menuitem/u);
   // The markup is the element's: the class runtime leaves what is marked.
   assert.match(template, /data-sf-menu-owned>/u);
@@ -156,7 +158,13 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
 
 test('smart menu: a row\'s panels are placed by SF.Position and Escape closes the innermost only', () => {
   assert.match(source, /const positioning = \(\) => globalThis\.SF\?\.Position \|\| BundledPosition;/u);
-  assert.match(source, /side: row\.dataset\.sfMenuLevel === '1' \? 'block-end' : 'inline-end', align: 'start', offset: 0, fitHeight: true,/u);
+  // C30: the first level the gap under the header's edge (R060), a side
+  // panel beside the panel it is in, on the chain's side (no zig-zag), a
+  // region under the header, as wide.
+  assert.match(source, /anchor = positioning\(\)\.anchor\(row, submenu, \{side: 'block-end', align: 'start', offset: 'calc\(var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-space-1\\\\\/4\)\)', fitHeight: true\}\);/u);
+  assert.match(source, /side, align: 'start', fitHeight: true,\n\s*offset: Math\.max\(outer\.right - box\.right, box\.left - outer\.left\) \+ gap,/u);
+  assert.match(source, /if \(inherited === 'inline-start' \|\| inherited === 'inline-end'\) \{\n\s*side = inherited;/u);
+  assert.match(source, /anchor = positioning\(\)\.anchor\(header, submenu, \{side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true\}\);/u);
   // The shared open-surface protocol: the mark is held while a panel is open
   // and Escape is taken only as the innermost layer.
   assert.match(source, /import \{holdOpenSurfaceMark, isTopOpenSurface\} from '\.\.\/\.\.\/core\/js\/open-surface-mark';/u);
@@ -194,7 +202,7 @@ test('smart menu: the manifest is the element', () => {
   const sent = new Set([...source.matchAll(/this\.sfEmit\('([^']+)'/gu)].map((match) => match[1]));
   assert.deepEqual(Object.keys(JSON.parse(read('src/smart/menu/component.json')).events).sort(), [...sent].sort());
   assert.doesNotMatch(source, /new CustomEvent\(/u);
-  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'label', 'href', 'icon', 'badge', 'current', 'disabled', 'open', 'children']);
+  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'label', 'href', 'icon', 'badge', 'current', 'disabled', 'open', 'children', 'region']);
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/u);
   // The Pro admin menu is another component: nothing of it is used here.
   assert.doesNotMatch(source + template, /admin-menu|sf-admin/u);
@@ -267,14 +275,19 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   // type and radius (nothing of them is written here).
   const rest = block.slice(block.indexOf('.sf-menu.sf-menu--navigation .sf-menu-element {'));
   assert.match(rest.slice(0, rest.indexOf('}')), /--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
-  assert.doesNotMatch(block, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
+  // (A pseudo-element's own box -- the row section's line, C30 -- is not the row.)
+  const rows = block.replace(/[^{}]*::(?:before|after)[^{]*\{[^}]*\}/gu, '');
+  assert.doesNotMatch(rows, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
   // (The current page's medium label is the current-plate mixin's, above the block.)
   // The states are the alpha scale's role tokens: state 4 and 12; an open
   // branch is not filled (C23) -- never a number of its own.
   assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
   assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
   assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
-  assert.doesNotMatch(block, /--sf-surface-transparent-select/u);
+  // A column's open branch is not filled; a row's open branch -- first level
+  // and panel row -- has the neutral select plate (C30, R060), and only there.
+  assert.equal((block.match(/--sf-surface-transparent-select/gu) || []).length, 1);
+  assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-transparent-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
   // medium label, written once in the current-plate mixin; the bar only on a
@@ -291,7 +304,17 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(bar, /\.sf-menu-element\.sf-menu-element--holds-current:not\(\[aria-current\]\)::before/u);
   assert.match(bar, /inline-size: var\(--sf-a3\);\s*block-size: var\(--sf-icon-size-1\);/u);
   assert.match(bar, /background-color: var\(--sf-primary\);/u);
+  // A column only: a row's first level has the line or the plate, its
+  // panels the path mark -- medium and a primary › (C30, R057, R060).
   assert.match(rule('.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal)'), /@include holds-current-bar;/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu'), /@include holds-current-path;/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill)'), /@include row-current-line;/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill'), /@include row-current-fill;/u);
+  const path = sheet.slice(sheet.indexOf('@mixin holds-current-path {'), sheet.indexOf('@mixin row-current-line {'));
+  assert.match(path, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);[\s\S]*--sf-icon--color: var\(--sf-primary\);/u);
+  assert.doesNotMatch(path, /::before/u);
+  const line = sheet.slice(sheet.indexOf('@mixin row-current-line {'), sheet.indexOf('@mixin row-current-fill {'));
+  assert.match(line, /inset-block-end: calc\(-1 \* var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\)\);[\s\S]*block-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
   assert.match(read('src/component/menu/scss/_css__menu_compact.scss'), /@include menu\.current-plate;[\s\S]*@include menu\.holds-current-bar;/u);
   assert.match(read('src/smart/menu/js/templates/default.js'), /holds \? 'sf-menu-element--holds-current' : ''/u);
   assert.doesNotMatch(block, /rgba?\(|#[0-9a-f]{3,8}\b|--sf-[a-z0-9-]+--alfa-/iu);

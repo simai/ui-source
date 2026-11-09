@@ -6,11 +6,12 @@
 // in the light and the dark theme and at the bar's sizes 1/2 and 1, a row is
 // the size 1 control height (40 px), space-1 (16 px) at its sides, the ui
 // radius, no border, on-surface words, transparent at rest; the current page
-// (C23, owner 2026-11-09) is the primary plate of the fill family
-// (--sf-primary-container-active: primary 20 % light, 32 % dark) with
-// on-primary-container words and a medium label;
-// a pointer lays the state family's hover step over a row and leaves the
-// current page's plate as it is; the nav stands at the bar's true centre and
+// in the row (C30, R060) has a medium label and, by default (indicator line),
+// a 2 px primary line lying on the bar's bottom border, no plate, the
+// pointer's states as any row; with indicator fill it is the primary plate of
+// the fill family (C23: --sf-primary-container-active, primary 20 % light,
+// 32 % dark) with on-primary-container words, which the pointer leaves as it
+// is; the nav stands at the bar's true centre and
 // clear of the brand and the tools. At 390 px the bar is collapsed: the nav
 // is not in the bar, the menu button opens it as a column of the same rows.
 // The default (navigation-align start, appearance default) is unchanged: the
@@ -23,13 +24,13 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
-const page = ({size, align, appearance}) => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
+const page = ({size, align, appearance, indicator}) => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0">
 <sf-header-site id="h" size="${size}"${align ? ` navigation-align="${align}"` : ''}>
   <a slot="brand" id="brand" href="/gallery/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI Effects</span></a>
-  <sf-menu id="m" orientation="horizontal" collapse="none" current-from-location${appearance ? ` appearance="${appearance}"` : ''}>
+  <sf-menu id="m" orientation="horizontal" collapse="none" current-from-location${appearance ? ` appearance="${appearance}"` : ''}${indicator ? ` indicator="${indicator}"` : ''}>
     <nav aria-label="Разделы"><ul>
       <li><a href="/home/">simai.io</a></li>
       <li><a href="/gallery/">Галерея</a></li>
@@ -99,49 +100,65 @@ const origin = `http://127.0.0.1:${server.address().port}`;
 try {
   for (const theme of ['light', 'dark']) {
     for (const size of ['1/2', '1']) {
-      const key = `${theme}-${size}`;
-      const tab = await browser.newPage({viewport: {width: 1440, height: 600}, colorScheme: theme});
-      await tab.goto(`${origin}/gallery/?size=${encodeURIComponent(size)}&align=center&appearance=navigation`);
-      await tab.waitForFunction(() => document.querySelector('#h > header.sf-site-header') && document.querySelector('#m ul.sf-menu [aria-current="page"]'), null, {timeout: 15000})
-        .catch(() => failures.push(`${key}: the header or the menu's current page never drew`));
-      await tab.evaluate(() => document.fonts.ready);
-      await tab.waitForTimeout(200);
-      const wide = await measure(tab);
-      seen[`${key}-1440`] = wide;
-      const {current, other, tokens} = wide;
-      if (wide.collapsed) failures.push(`${key}: the bar is collapsed at 1440`);
-      if (!current || !other) failures.push(`${key}: no current row or no other row (${wide.rows} rows)`);
-      else {
-        for (const [name, row] of [['current', current], ['other', other]]) {
-          if (Math.abs(row.height - 40) > 0.5) failures.push(`${key}: the ${name} row is ${row.height}px high, expected 40`);
-          if (row.paddingStart !== '16px' || row.paddingEnd !== '16px') failures.push(`${key}: the ${name} row's padding is ${row.paddingStart} ${row.paddingEnd}, expected 16px 16px`);
-          if (row.radius !== tokens.radius || row.radius !== '4px') failures.push(`${key}: the ${name} row's radius is ${row.radius}, expected the ui radius ${tokens.radius} (4px)`);
-          if (row.border !== '0px') failures.push(`${key}: the ${name} row has a ${row.border} border`);
-          const ink = name === 'current' ? INK[theme] : tokens.onSurface;
-          if (row.color !== ink) failures.push(`${key}: the ${name} row's words are ${row.color}, expected ${ink}`);
-          const weight = name === 'current' ? '500' : '400';
-          if (row.size !== '16px' || row.weight !== weight) failures.push(`${key}: the ${name} row's type is ${row.size}/${row.weight}, expected 16px/${weight}`);
+      const key0 = `${theme}-${size}`;
+      for (const indicator of ['line', 'fill']) {
+        const fill = indicator === 'fill';
+        const key = `${key0}-${indicator}`;
+        const tab = await browser.newPage({viewport: {width: 1440, height: 600}, colorScheme: theme});
+        await tab.goto(`${origin}/gallery/?size=${encodeURIComponent(size)}&align=center&appearance=navigation&indicator=${indicator}`);
+        await tab.waitForFunction(() => document.querySelector('#h > header.sf-site-header') && document.querySelector('#m ul.sf-menu [aria-current="page"]'), null, {timeout: 15000})
+          .catch(() => failures.push(`${key}: the header or the menu's current page never drew`));
+        await tab.evaluate(() => document.fonts.ready);
+        await tab.waitForTimeout(200);
+        const wide = await measure(tab);
+        seen[`${key}-1440`] = wide;
+        const {current, other, tokens} = wide;
+        if (wide.collapsed) failures.push(`${key}: the bar is collapsed at 1440`);
+        if (!current || !other) failures.push(`${key}: no current row or no other row (${wide.rows} rows)`);
+        else {
+          for (const [name, row] of [['current', current], ['other', other]]) {
+            if (Math.abs(row.height - 40) > 0.5) failures.push(`${key}: the ${name} row is ${row.height}px high, expected 40`);
+            if (row.paddingStart !== '16px' || row.paddingEnd !== '16px') failures.push(`${key}: the ${name} row's padding is ${row.paddingStart} ${row.paddingEnd}, expected 16px 16px`);
+            if (row.radius !== tokens.radius || row.radius !== '4px') failures.push(`${key}: the ${name} row's radius is ${row.radius}, expected the ui radius ${tokens.radius} (4px)`);
+            if (row.border !== '0px') failures.push(`${key}: the ${name} row has a ${row.border} border`);
+            const ink = name === 'current' && fill ? INK[theme] : tokens.onSurface;
+            if (row.color !== ink) failures.push(`${key}: the ${name} row's words are ${row.color}, expected ${ink}`);
+            const weight = name === 'current' ? '500' : '400';
+            if (row.size !== '16px' || row.weight !== weight) failures.push(`${key}: the ${name} row's type is ${row.size}/${row.weight}, expected 16px/${weight}`);
+          }
+          if (fill && current.background !== PLATE[theme]) failures.push(`${key}: the current page's plate is ${current.background}, expected ${PLATE[theme]}`);
+          if (!fill && !transparent(current.background)) failures.push(`${key}: the current page has a plate (${current.background}); the line is its mark`);
+          if (!transparent(other.background)) failures.push(`${key}: a row at rest is filled: ${other.background}`);
         }
-        if (current.background !== PLATE[theme]) failures.push(`${key}: the current page's plate is ${current.background}, expected ${PLATE[theme]}`);
-        if (!transparent(other.background)) failures.push(`${key}: a row at rest is filled: ${other.background}`);
-      }
-      // The true centre, and clear of both sides.
-      if (Math.abs(wide.listCentre - wide.rowCentre) > 1) failures.push(`${key}: the nav's centre is ${wide.listCentre}, the bar's ${wide.rowCentre}`);
-      if (!(wide.listLeft > wide.brandRight) || !(wide.listRight < wide.toolLeft)) failures.push(`${key}: the nav overlaps the brand or the tools: ${JSON.stringify(wide)}`);
-      // Hover: the state step on a row at rest; the current plate unchanged.
-      const rest = tab.locator('#m ul.sf-menu > li > .sf-menu-element:not([aria-current])').first();
-      await rest.hover();
-      await tab.waitForTimeout(150);
-      const hovered = await rest.evaluate((row) => getComputedStyle(row).backgroundColor);
-      if (hovered !== `rgba(${TONE[theme]}, 0.04)`) failures.push(`${key}: a hovered row is ${hovered}, expected rgba(${TONE[theme]}, 0.04)`);
-      const currentRow = tab.locator('#m ul.sf-menu > li > .sf-menu-element[aria-current="page"]');
-      await currentRow.hover();
-      await tab.waitForTimeout(150);
-      const hoveredCurrent = await currentRow.evaluate((row) => getComputedStyle(row).backgroundColor);
-      if (hoveredCurrent !== PLATE[theme]) failures.push(`${key}: the hovered current page is ${hoveredCurrent}, expected its plate`);
-      seen[`${key}-1440`].hover = {rest: hovered, current: hoveredCurrent};
-      await tab.close();
+        // The true centre, and clear of both sides.
+        if (Math.abs(wide.listCentre - wide.rowCentre) > 1) failures.push(`${key}: the nav's centre is ${wide.listCentre}, the bar's ${wide.rowCentre}`);
+        if (!(wide.listLeft > wide.brandRight) || !(wide.listRight < wide.toolLeft)) failures.push(`${key}: the nav overlaps the brand or the tools: ${JSON.stringify(wide)}`);
+        // Hover: the state step on a row at rest; the current plate unchanged.
+        const rest = tab.locator('#m ul.sf-menu > li > .sf-menu-element:not([aria-current])').first();
+        await rest.hover();
+        await tab.waitForTimeout(150);
+        const hovered = await rest.evaluate((row) => getComputedStyle(row).backgroundColor);
+        if (hovered !== `rgba(${TONE[theme]}, 0.04)`) failures.push(`${key}: a hovered row is ${hovered}, expected rgba(${TONE[theme]}, 0.04)`);
+        const currentRow = tab.locator('#m ul.sf-menu > li > .sf-menu-element[aria-current="page"]');
+        await currentRow.hover();
+        await tab.waitForTimeout(150);
+        const hoveredCurrent = await currentRow.evaluate((row) => getComputedStyle(row).backgroundColor);
+        const expectHover = fill ? PLATE[theme] : `rgba(${TONE[theme]}, 0.04)`;
+        if (hoveredCurrent !== expectHover) failures.push(`${key}: the hovered current page is ${hoveredCurrent}, expected ${expectHover}`);
+        // The line on the bar's bottom border (indicator line) or none (fill).
+        const line = await tab.evaluate(() => {
+          const li = document.querySelector('#m ul.sf-menu > li:has(> .sf-menu-element[aria-current="page"])');
+          const after = getComputedStyle(li, '::after');
+          return {content: after.content, height: after.height, bottom: li.getBoundingClientRect().bottom - parseFloat(after.bottom), edge: document.querySelector('#h > header.sf-site-header').getBoundingClientRect().bottom};
+        });
+        seen[`${key}-1440`].line = line;
+        if (fill && line.content !== 'none') failures.push(`${key}: fill draws a line too`);
+        if (!fill && !(line.height === '2px' && Math.abs(line.bottom - line.edge) <= 0.5)) failures.push(`${key}: the line is not on the bar's border: ${JSON.stringify(line)}`);
+        seen[`${key}-1440`].hover = {rest: hovered, current: hoveredCurrent};
+        await tab.close();
 
+      }
+      const key = key0;
       // 390: collapsed, the same rows as a column in the panel.
       const narrow = await browser.newPage({viewport: {width: 390, height: 800}, colorScheme: theme});
       await narrow.goto(`${origin}/gallery/?size=${encodeURIComponent(size)}&align=center&appearance=navigation`);

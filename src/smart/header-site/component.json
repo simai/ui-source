@@ -2,7 +2,7 @@
   "$comment": "The source of sf-header-site's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.header-site",
   "tag": "sf-header-site",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -45,7 +45,7 @@
     "label": {
       "type": "string",
       "default-from": "runtime.label",
-      "summary": "The side panel's heading and accessible name; «Навигация» / «Navigation» in the page language when not set"
+      "summary": "The side panel's heading and accessible name; «Меню» / «Menu» in the page language when not set (C30: the panel is the phone menu)"
     },
     "menu-label": {
       "type": "string",
@@ -275,7 +275,8 @@
     "version 1.5.0 (one number above the unreleased 1.3.3, on two branches, and 1.4.0 it joins): the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; the examples' theme switch is sf-segmented without appearance (the track is its default since sf-segmented 1.4.0). The bar itself is unchanged.",
     "version 1.5.0 background-color-names: the public variable --sf-site-header-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-site-header-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.6.1: a sticky bar is the flat place at the top of the page and the raised one while content runs under it (C20, the shadow system, owner 2026-11-08): the host state data-scrolled (a passive scroll listener while sticky is on) gives the bar --sf-shadow-raised and, in the dark theme, the raised surface; a colour the page set stays. The side panel is the modal place: --sf-shadow-modal on --sf-surface-popup over the shared scrim, black 64. Settings, values, events and keys unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, close({reason}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
-    "version 1.7.2 (2026-11-09): the menu panel declares a popup place (C16, the background system, owner 2026-11-08). Also: a patch, the collapsed bar fits its width. The brand gives way (flex 0 1 auto) and its slot content may close down (min-inline-size 0 at no weight), so a phone bar whose brand and tools are wider than it shrinks the brand to the page's own ellipsis instead of scrolling the page sideways (ui-doc home at 390: 10 px sideways, the language button the extra tool). The wide bar, settings, values, events and keys unchanged."
+    "version 1.7.2 (2026-11-09): the menu panel declares a popup place (C16, the background system, owner 2026-11-08). Also: a patch, the collapsed bar fits its width. The brand gives way (flex 0 1 auto) and its slot content may close down (min-inline-size 0 at no weight), so a phone bar whose brand and tools are wider than it shrinks the brand to the page's own ellipsis instead of scrolling the page sideways (ui-doc home at 390: 10 px sideways, the language button the extra tool). The wide bar, settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-09, owner decision C30, the site row's line on the bar's edge): a minor, an addition. The nav slot takes the row's whole height (its content stays on the centre line) and publishes the bar's edge as --sf-site-header--edge: how far below the nav's end the bar's bottom border ends (the row's padding, space-1, and the border, px). sf-menu's row lays its current section's 2 px line on that border, as the tabs do; nothing else in the bar moves. The side panel's default heading is «Меню» / «Menu» (was «Навигация» / «Navigation»), as C30's phone menu names it; a label set by the author is kept."
   ],
   "x-registry": {
     "capabilities": [

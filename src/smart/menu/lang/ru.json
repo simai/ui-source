@@ -2,10 +2,12 @@
   "title": "Меню",
   "runtime": {
     "toggle-label": "Меню",
+    "more-label": "Ещё",
     "status-success": "в порядке",
     "status-warning": "внимание",
     "status-error": "ошибка",
     "status-info": "есть новое",
-    "status-neutral": "нет данных"
+    "status-neutral": "нет данных",
+    "subsections": "подразделы"
   }
 }

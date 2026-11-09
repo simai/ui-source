@@ -279,6 +279,7 @@
     "sr-only/default"
   ],
   "cl-menu": [
+    "display/default",
     "position/default"
   ],
   "cl-menu-context": [
