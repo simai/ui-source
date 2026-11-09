@@ -7190,6 +7190,28 @@
       },
       "manual": "Drop icon and write the file's type in file-type (PDF, DOCX, ZIP). A type written into file-size moves to file-type too; file-size keeps the size only.",
       "source": "src/smart/file-download/index.js signIcon; ui-control control/docs-review/decisions.md C25"
+    },
+    {
+      "id": "class-input-choice-mark-to-control",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "sf-input-choice 1.1.0 (decision C28) draws the real class radio or checkbox on a card's name line in place of its own 14 px ring; that control's root is .sf-choice-control. The ring's class .sf-choice-mark is written beside it as a legacy alias until the date, so a page selector that reached the mark still reaches the control.",
+      "items": [
+        {
+          "component": "sf-input-choice",
+          "from": "sf-choice-mark",
+          "to": "sf-choice-control"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": ".sf-choice-card .sf-choice-mark { }",
+        "after": ".sf-choice-card .sf-choice-control { }"
+      },
+      "source": "src/smart/input-choice/js/templates/default.js renderControl; ui-control control/docs-review/decisions.md C28"
     }
   ]
 }

@@ -13,10 +13,10 @@
 // while the page scrolls; under md the menu is a selector button showing the
 // current section, named «<label>: <section>», that opens the column.
 //
-// sf-input-choice 1.0.0: cards in a grid that stacks on a phone; the icon box
-// is the size 1 control height; the title on the size 1 line, centred on the
-// icon box; the mark is the half rung's icon; a chosen card's box does not
-// move; the label row and the message line are sf-input's text 1/2; the
+// sf-input-choice 1.1.0 (C28), the default tile layout: cards in a grid that
+// stacks on a phone; the icon stands on the name line at the line's height;
+// the control is the class radio or checkbox, its box the name line, centred
+// on it; a chosen card's box does not move; the label row and the message line are sf-input's text 1/2; the
 // arrows move and choose in the radio group; the field's label sits on the
 // same left edge as an sf-input above it. No sideways scroll, no page errors.
 // With a screenshot folder, each case is saved there as a PNG.
@@ -217,7 +217,7 @@ for (const theme of ['light', 'dark']) {
       const card = cards[0];
       const icon = card.querySelector('.sf-choice-icon');
       const title = card.querySelector('.sf-choice-title');
-      const mark = card.querySelector('.sf-choice-mark');
+      const mark = card.querySelector('.sf-choice-control .sf-radio-button-box');
       const label = document.querySelector('#kind .sf-choice-label');
       const message = document.querySelector('#kind .sf-choice-message');
       const ref = document.querySelector('#ref .sf-input-field');
@@ -227,6 +227,7 @@ for (const theme of ['light', 'dark']) {
       return {
         tops: cards.map((one) => Math.round(r(one).top)), lefts: cards.map((one) => Math.round(r(one).left)), widths: cards.map((one) => Math.round(r(one).width)),
         icon: [r(icon).width, r(icon).height], title: r(title).height, titleMid: r(title).top + r(title).height / 2, iconMid: r(icon).top + r(icon).height / 2,
+        alias: card.querySelector('.sf-choice-mark') === card.querySelector('.sf-choice-control'),
         mark: [r(mark).width, r(mark).height], markMid: r(mark).top + r(mark).height / 2,
         labelFont: getComputedStyle(label).fontSize, messageFont: getComputedStyle(message).fontSize,
         labelLeft: r(label).left, gridLeft: r(document.querySelector('#kind .sf-choice-grid')).left, refLeft: r(ref).left, refLabelLeft: refLabel ? r(refLabel).left : null,
@@ -238,9 +239,10 @@ for (const theme of ['light', 'dark']) {
       };
     });
     numbers[`choice ${label}`] = c;
-    ok(`choice ${label}: the icon box is the size 1 control height, square`, near(c.icon[0], t.control1) && near(c.icon[1], t.control1), JSON.stringify(c.icon));
-    ok(`choice ${label}: the title is on the size 1 line, centred on the icon box`, near(c.title, t.line1) && near(c.titleMid, c.iconMid, 1), JSON.stringify(c));
-    ok(`choice ${label}: the mark is the half rung's icon, centred on the icon box`, near(c.mark[0], t.iconHalf) && near(c.mark[1], t.iconHalf) && near(c.markMid, c.iconMid, 1), JSON.stringify({mark: c.mark, t: t.iconHalf}));
+    ok(`choice ${label}: the icon is the name line's height, square, on the line`, near(c.icon[0], t.line1) && near(c.icon[1], t.line1) && near(c.iconMid, c.titleMid, 1), JSON.stringify(c.icon));
+    ok(`choice ${label}: the title is on the size 1 line`, near(c.title, t.line1), JSON.stringify(c));
+    ok(`choice ${label}: the control is the class radio, its box the name line, centred on it`, near(c.mark[0], t.line1) && near(c.mark[1], t.line1) && near(c.markMid, c.titleMid, 1), JSON.stringify({mark: c.mark, t: t.line1}));
+    ok(`choice ${label}: .sf-choice-mark is kept on the control as a legacy alias`, c.alias, '');
     ok(`choice ${label}: a badge stands on the title's line without growing it`, c.badge <= t.line1 + 0.5, JSON.stringify({badge: c.badge, line: t.line1}));
     ok(`choice ${label}: the label and the message are sf-input's text 1/2${c.refLabelFont ? ', the label the size of sf-input\'s' : ''}`, c.labelFont === c.messageFont && (!c.refLabelFont || c.refLabelFont === c.labelFont), JSON.stringify(c));
     ok(`choice ${label}: the label and the cards stand on the field's left edge, as sf-input above`, near(c.labelLeft, c.gridLeft) && near(c.gridLeft, c.refLeft, 1), JSON.stringify(c));
