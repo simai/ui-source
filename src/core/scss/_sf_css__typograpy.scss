@@ -27,7 +27,15 @@
 
 @use '../figma_variables/figma_typography_styles';
 @layer sf.base {
-  body .sf-icon:not(.sf-icon-loaded) {
+  /* An icon waits at font-size 0 for the Loader's sf-icon-loaded mark -- on a
+     page the Loader runs on (data-sf-loader, set by core.js). Without it
+     nothing ever marks an icon, and the icons sheet draws each one once its
+     font is in; the hold then must not apply, or the sheet had to answer it
+     with an important size of its own, which beat every size a page, a
+     utility or the density gave the glyph (a late icon in a compact row drew
+     24px in a 16px box). Before core.js runs the sheet's rule already won,
+     so the first paint of every icon is the same. */
+  :root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded) {
     font-size: 0 !important;
   }
 

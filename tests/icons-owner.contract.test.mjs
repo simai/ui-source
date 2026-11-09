@@ -96,3 +96,17 @@ test('Icons documentation covers semantics and every public variation', {
   assert.match(rotation, /sf-icon--rotate-315/);
   assert.doesNotMatch(`${overview}${families}${weights}${fill}${sizes}${color}${rotation}`, /style=/);
 });
+
+// The hold on an unmarked icon is the Loader's, and only where it runs; the
+// icons sheet answers no hold with an important size of its own, so a page's,
+// a utility's and the density's size reach a glyph no Loader marks (a late
+// icon in a compact row drew 24px in a 16px box, 2026-11-09).
+test('only a Loader page holds an unmarked icon at 0; the icons sheet sets no important size', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const core = await readFile(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8');
+  const icons = await readFile(new URL('../src/component/icons/scss/_css__icons.scss', import.meta.url), 'utf8');
+  assert.match(core, /:root\[data-sf-loader\] body \.sf-icon:not\(\.sf-icon-loaded\) \{\s*font-size: 0 !important;/);
+  assert.doesNotMatch(core, /^\s*body \.sf-icon:not\(\.sf-icon-loaded\)/m);
+  const loaderless = icons.slice(icons.indexOf(':root:not([data-sf-loader]) body .sf-icon:not(.sf-icon-loaded)'));
+  assert.doesNotMatch(loaderless.slice(0, loaderless.indexOf('}')), /(^|[\s;{])font-size\s*:|!important/m);
+});
