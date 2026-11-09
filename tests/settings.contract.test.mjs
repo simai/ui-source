@@ -26,7 +26,7 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, size, for, remember, label; change, changed, reset; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.0.3');
+  assert.equal(manifest.version, '1.0.4');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'size', 'for', 'remember', 'label']);
   assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles']);
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);

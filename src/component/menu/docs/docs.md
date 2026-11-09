@@ -70,6 +70,37 @@ sight, and the counter moves onto the icon's top end corner with the anchored
 badge's geometry and ring (step 1). Branches do not open in a compact menu. See
 the Badges documentation, section «Бейдж на якоре» (simai/ui-source#12).
 
+## Groups
+
+A group is styling only: a heading over a list of first-level rows, the markup
+`sf-menu` draws for a group of its data. It is not a branch: its rows keep the
+first level, the heading is not a row, and the runtime draws no disclosure for
+it. Write a group as
+
+```html
+<nav aria-label="Sections">
+  <ul class="sf-menu">
+    <li class="sf-menu-item sf-menu-item--group" data-sf-menu-group>
+      <span class="sf-menu-group-heading" id="site-heading"><span class="sf-menu-group-label">Site</span></span>
+      <ul class="sf-menu" aria-labelledby="site-heading">
+        <li class="sf-menu-item"><a class="sf-menu-element" href="#address"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Address</span></span></a></li>
+        <li class="sf-menu-item"><a class="sf-menu-element" href="#code"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Code</span></span></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+```
+
+The runtime recognises a group by `sf-menu-item--group`, `data-sf-menu-group`
+or a direct `.sf-menu-group-heading`, and keeps it open. A collapsible group
+has a `button.sf-menu-group-heading` (with `aria-expanded`, and a trailing
+`.sf-icon` the runtime turns between `keyboard_arrow_up` and
+`keyboard_arrow_down`); the runtime gives it `aria-controls`, hides the list
+while it is closed, and the button opens and closes it with a pointer, Enter
+or Space. A group writes `open` on the item, or `aria-expanded="true"` on its
+button, to start open. Before 1.2.1 the runtime took a hand-written group for
+a branch and nested it.
+
 ## Smart Menu and public variables
 
 `sf-menu` (src/smart/menu) builds this markup from data or from a nested list

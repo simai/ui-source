@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -286,7 +286,7 @@
     "css-variables: none of its own -- it has no sheet; the parts' public variables (sf-button-group, sf-button-icon, sf-menu-context) reach it.",
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.0 (owner decisions D11b, D11c; one number above the unreleased 1.0.2 and 1.1.0 it joins): the inline switch is sf-segmented on its track (appearance track); its selected plate is the raised neutral one, the segmented control's new default, where it was the primary fill. The sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias. Settings and events unchanged.",
-    "version 1.2.1 (2026-11-09, Docara cc32b087): a patch, the first paint. Until data-look the element holds one control of its size step high, and in the menu and search modes as wide (the icon button it draws), from a rule in core.css (core.styles 1.7.1), since the element has no sheet and core.css is the one sheet a page links before any code; the box is the ladder's control height of the step (--sf-ui-<step>--control-height), so it follows the desktop and the mobile ladder. The switch holds its height only (its width is its labels'). Printed static markup (data-sf-static) is its own box, so nothing is reserved then. A page's own placeholder (Docara's 2.5rem box) becomes unnecessary. Settings, values, events and what it draws unchanged."
+    "version 1.2.2: a patch, the first paint. Until data-look the element holds one control of its size step high, and in the menu and search modes as wide (the icon button it draws), from a rule in core.css (core.styles 1.7.1), since the element has no sheet and core.css is the one sheet a page links before any code; the box is the ladder's control height of the step (--sf-ui-<step>--control-height), so it follows the desktop and the mobile ladder. The switch holds its height only (its width is its labels'). Printed static markup (data-sf-static) is its own box, so nothing is reserved then. A page's own placeholder (Docara's 2.5rem box) becomes unnecessary. Settings, values, events and what it draws unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, select({value}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, select(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -390,6 +390,9 @@
         "Search: the field takes focus when the menu opens; Down moves to the rows"
       ],
       "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
+    },
+    "action-calls": {
+      "select": "object|string"
     }
   }
 }

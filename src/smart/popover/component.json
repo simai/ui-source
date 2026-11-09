@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -309,7 +309,7 @@
     "version 1.2.0 (2026-11-07): a minor. The setting offset, the gap between the trigger and the surface as a token or a CSS length (simai/ui-source#69): the stylesheet reads it as --sf-popover--offset, a margin on the trigger side of whichever placement is set; empty, nothing changes. It declares static rendersNoTemplate, so its first DOM update counts as its render (Smart base, core.runtime 1.32.0): what it holds is read by the Loader then, and an sf-dropdown or sf-button-icon in it is defined (simai/ui-source#70).",
     "version 1.2.1: the folder carries its docs.md (simai/ui-source#30): a kit audit that read the source docs took sf-popover as undocumented while ui-doc had its page. The docs say what the page says -- trigger and content in place, the settings, the open and close requests and facts with their reasons, the keys and the six public variables. Behaviour unchanged.",
     "version 1.2.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-09): the surface stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). --sf-popover-shadow still replaces it. Nothing else changes."
+    "version 1.3.1: the surface stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). --sf-popover-shadow still replaces it. Nothing else changes. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, toggle({force}), close({reason}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, toggle(<boolean>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -424,6 +424,9 @@
       "template": {
         "description": "Template variant name."
       }
+    },
+    "action-calls": {
+      "toggle": "object|boolean"
     }
   }
 }

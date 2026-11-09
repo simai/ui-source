@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -176,31 +176,35 @@
       "summary": "The action show.",
       "arguments": [
         {
-          "name": "text",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "code",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "count",
-          "schema": {
-            "type": "number"
-          }
-        },
-        {
-          "name": "tone",
-          "schema": {
-            "enum": [
-              "info",
-              "success",
-              "warning",
-              "error"
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "count": {
+                "type": "number"
+              },
+              "tone": {
+                "enum": [
+                  "info",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              }
+            },
+            "required": [
+              "text",
+              "code",
+              "count",
+              "tone"
             ]
           }
         }
