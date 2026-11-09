@@ -12,9 +12,9 @@ const levelClass = (level) => `sf-menu-element--level-${Math.min(Math.max(level,
 
 // The glyph the class runtime writes on a branch: a top-level panel of a row
 // opens below it (down, up when open); a deeper panel of a row opens to the
-// side, so its glyph points there, open or not (right; the class sheet turns
-// it when the panel stands on the other side, and in RTL); a column's branch
-// opens in place (right, down when open).
+// side and its glyph is always › (inline end; mirrored in RTL only): the
+// panel's side follows the room, the glyph never turns (C30, R059); a
+// column's branch opens in place (right, down when open).
 function branchGlyph(context, level, open) {
   if (context.flyouts && level === 1) return open ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
   if (context.flyouts) return 'chevron_right';
@@ -94,7 +94,7 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
                   data-sf-menu-link=${own(item.id)}>${renderWrapContent(context, item)}</a>`
         : html`<a class="sf-menu-element-wrap" aria-disabled="true">${renderWrapContent(context, item)}</a>`}
       <button class="sf-icon-button" type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${own(submenuId)}
-              aria-label=${item.label} ?disabled=${item.disabled}
+              aria-label=${context.subsectionsName(item.label)} ?disabled=${item.disabled}
               data-sf-menu-toggle=${own(item.id)}><span class="sf-icon" aria-hidden="true">${glyph}</span></button>
     </div>`;
   }
@@ -131,8 +131,7 @@ function renderRegionColumns(context, item) {
             : nothing}</li>`)}
         </ul>
       </div>`)}</div>` : nothing}
-    ${loose.length || item.href ? html`<ul class="sf-menu-region-list sf-menu-region-foot">
-      ${item.href ? html`<li>${renderRegionLink(context, {...item, children: []}, 'link')}</li>` : nothing}
+    ${loose.length ? html`<ul class="sf-menu-region-list sf-menu-region-foot">
       ${repeat(loose, (child) => child.id, (child) => html`<li>${renderRegionLink(context, child, 'link')}</li>`)}
     </ul>` : nothing}
   `;
@@ -238,6 +237,9 @@ export function renderMenuTemplate(context) {
     'sf-menu',
     context.flyouts ? 'sf-menu--horizontal' : '',
     context.appearance !== 'default' ? `sf-menu--${context.appearance}` : '',
+    // The row's current section: a line on the header's edge (default) or,
+    // with indicator fill, the C23 plate (C30).
+    context.flyouts && context.indicator === 'fill' ? 'sf-menu--indicator-fill' : '',
   );
   return html`
     <nav class=${joinClasses('sf-smart-menu', context.collapsed ? 'sf-smart-menu--collapsed' : '', context.rootClass)}

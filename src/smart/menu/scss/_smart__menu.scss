@@ -27,6 +27,23 @@
     contain: inline-size;
   }
 
+  // A row stands as tall as the place it is given -- a header's nav, which
+  // spans the bar's row -- with its items on the centre line, so the end
+  // of each item is the end of that place: the current section's line lies
+  // on the edge the place publishes (--sf-site-header--edge, C30).
+  .sf-smart-menu[data-orientation='horizontal'] {
+    display: flex;
+    align-self: stretch;
+  }
+
+  .sf-smart-menu[data-orientation='horizontal'] > .sf-menu.sf-menu--horizontal {
+    align-items: stretch;
+  }
+
+  .sf-smart-menu[data-orientation='horizontal'] > .sf-menu.sf-menu--horizontal > .sf-menu-item {
+    justify-content: center;
+  }
+
   // The button and the column it opens stand apart by the class menu's own gap
   // between rows. Collapsed, the <nav> takes the room it is given in a row of
   // the page -- a header beside a logo -- so the width the row needs is seen

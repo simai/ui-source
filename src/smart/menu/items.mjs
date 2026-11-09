@@ -31,7 +31,10 @@ export const MENU_OVERFLOW = Object.freeze(['more', 'collapse', 'none']);
 // pointer resting on it -- the hover delays of NN/g, 300 ms to open and
 // 500 ms outside before it closes -- with the press still working.
 export const MENU_OPEN_ON = Object.freeze(['click', 'hover']);
+export const MENU_INDICATORS = Object.freeze(['line', 'fill']);
 export const HOVER_OPEN_DELAY = 300;
+// A region (a mega menu) is a bigger change of the page: it waits longer.
+export const HOVER_REGION_OPEN_DELAY = 500;
 export const HOVER_CLOSE_DELAY = 500;
 // The id of the trailing «Ещё» branch of a row with overflow more. An item id
 // never starts with @ in a host's data by this rule: one that does is

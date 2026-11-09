@@ -9,8 +9,8 @@ A branch has one native button with `aria-expanded` and `aria-controls`. In a
 column its indicator points right while collapsed and down while expanded,
 mirroring the horizontal direction in RTL. In a horizontal row the first level
 points down (up while open), and a deeper branch, whose panel opens to the
-side, always points toward that side: inline end, or inline start when the
-runtime flipped the panel at the screen edge. When a branch title is also a destination, keep
+side, is always › (mirrored in RTL only): the runtime puts the panel on the
+side that has room, and the indicator does not turn with it (C30, R059). When a branch title is also a destination, keep
 the link and disclosure button as separate siblings inside the row.
 
 `sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-menu-element-wrap` and
@@ -65,10 +65,23 @@ colours the current page is framed instead and the bar takes the system's
 highlight. Submenus keep their panel and take the same row states.
 
 A navigation tree is up to four levels deep (decision C30, which replaces
-the two-level limit of C24). In a horizontal row the first-level section that
-holds the current page has a medium label and a `--sf-a2` primary line at its
-block end (open question 4 of the C30 study); its open panel draws the bar on
-closed branches that hold the current page, as a column does.
+the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
+
+- the first-level section that is the current page or holds it has a medium
+  label and a 2 px `--sf-primary` line under the whole control, lying on the
+  header's bottom border as the tabs' indicator does (the line sits
+  `--sf-site-header--edge` below the item, which `sf-header-site` publishes;
+  0 elsewhere); with `sf-menu--indicator-fill` on the root it takes the C23
+  plate instead, for a header with no bottom border;
+- an open branch, on the first level and in a panel, has the neutral
+  `--sf-surface-transparent-select` plate, never primary;
+- in a panel, a closed row whose list holds the current page has a medium
+  label and a primary ›; panels draw no bar.
+
+A section that is a page and has subsections is a split row: the link and
+a native button beside it (`aria-expanded`, `aria-controls`, named
+«<section>: подразделы»); under a coarse pointer the button is a whole
+control wide.
 
 A row's icon, branch indicator and counter sit inside the row's line height:
 the icon and the split-row disclosure take `--sf-menu-element--line-height`,

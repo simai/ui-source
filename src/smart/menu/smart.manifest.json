@@ -107,11 +107,20 @@
       },
       "open-on": {
         "type": "string",
-        "default": "click",
-        "description": "How a row's branch opens: click, a press (the default); hover, also a pointer resting on it for 300 ms, closing 500 ms after it has left the branch and its panel (NN/g). A press and the keys work in both; a touch is a press.",
+        "default": "hover",
+        "description": "How a row's branch opens with a mouse: hover (the default), a mouse resting on a branch opens it after 300 ms -- a region after 500 ms -- and it closes 500 ms after the mouse has left the branch and its panel (NN/g, WCAG 1.4.13); click, only a press. Touch, a pen and the keyboard always go through the branch's chevron: a section that is a page is a split control, its name a link and the chevron beside it a button «<раздел>: подразделы» (C30, APG disclosure navigation with top-level links).",
         "enum": [
           "click",
           "hover"
+        ]
+      },
+      "indicator": {
+        "type": "string",
+        "default": "line",
+        "description": "How a row marks its first-level section that is the current page or holds it (C30, R060): line (the default), a 2 px primary line under the whole control lying on the header's bottom border, as the tabs do (sf-header-site publishes that edge), and a medium label; fill, the C23 plate, for a header with no bottom border (over a photo, transparent). An open section has the neutral select plate, never primary.",
+        "enum": [
+          "line",
+          "fill"
         ]
       },
       "label": {
@@ -655,19 +664,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "5163fbe213ed3e052e9c29946867afe50b103de9ac636577ee7a28cb0993920c"
+        "sha256": "a485f44cf4609610a69279920133f5b8c3d64ae1b92e34449480cb640a0b92b7"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "b681c197d06369afe76d6687536da90e86bf347ad5d0d367b693887392bdbbc2"
+        "sha256": "923b1dbc8f3e456e99562f582699227b1c2217e37474a15c06c156d78078469f"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "e367a46ee319b1f6bc042955e185c89f8ef38b7325718afd337eba850229ed78"
+        "sha256": "4b732313b5c04b663bfea6d14b47ac16c0d4ea6fc8f35d981f9f7b30cf366bb6"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "7dc7d0850c7bb083b6ebf8171917784015c57fe9204162d2d933c754fd0222df"
+        "sha256": "e6b06169706fabd5c51402cb4806e76ac52a02b4e4339059eb082b4d650ca683"
       },
       {
         "path": "src/smart/menu/rule.js",
@@ -675,7 +684,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "4be5e8c1a0bae562c90f04fcbcfdb501d910af636270e154e5418f736ffd23ef"
+        "sha256": "f9af625935322445d3b719c0c65bd1473131ec5bd7ce2f1eae94aa833a095d3d"
       }
     ],
     "generated_runtime": []

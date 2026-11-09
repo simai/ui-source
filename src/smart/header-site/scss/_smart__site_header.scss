@@ -111,9 +111,15 @@
    element itself: a display on the host is overruled, so the native button
    inside is what is shown and hidden. */
 
+/* The nav takes the row's whole height (its content stays on the centre
+   line) and publishes the bar's edge: how far below its own end the bar's
+   bottom border ends -- the row's padding and the border. A navigation row
+   lays its current section's line on that border, as the tabs do (C30). */
 .sf-site-header-nav {
+  --sf-site-header--edge: calc(var(--sf-space-1) + var(--sf-px));
   display: flex;
   flex: 1 1 auto;
+  align-self: stretch;
   align-items: center;
   min-inline-size: 0;
 }

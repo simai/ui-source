@@ -28,6 +28,7 @@
       "component/menu/css/menu.min.css",
       "core/css/core.css",
       "smart/menu/css/menu.min.css",
+      "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "button": [
@@ -94,6 +95,7 @@
       "component/menu/css/menu.min.css",
       "core/css/core.css",
       "smart/menu/css/menu.min.css",
+      "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "site-column": [
@@ -104,6 +106,7 @@
       "component/menu/css/menu.min.css",
       "core/css/core.css",
       "smart/menu/css/menu.min.css",
+      "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "site-row": [
@@ -114,6 +117,7 @@
       "component/menu/css/menu.min.css",
       "core/css/core.css",
       "smart/menu/css/menu.min.css",
+      "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "visible": [

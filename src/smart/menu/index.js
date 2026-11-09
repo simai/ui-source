@@ -24,6 +24,8 @@ import {renderMenuTemplate} from './js/templates/default';
 import {
   HOVER_CLOSE_DELAY,
   HOVER_OPEN_DELAY,
+  HOVER_REGION_OPEN_DELAY,
+  MENU_INDICATORS,
   MENU_APPEARANCES,
   MENU_COLLAPSE,
   MENU_OPEN_ON,
@@ -78,7 +80,8 @@ class SfSmartMenu extends MenuElement {
       collapse: {default: 'auto', values: MENU_COLLAPSE},
       overflow: {default: 'collapse', values: MENU_OVERFLOW},
       moreLabel: {attribute: 'more-label', default: ''},
-      openOn: {attribute: 'open-on', default: 'click', values: MENU_OPEN_ON},
+      openOn: {attribute: 'open-on', default: 'hover', values: MENU_OPEN_ON},
+      indicator: {default: 'line', values: MENU_INDICATORS},
       label: {default: ''},
       toggleLabel: {attribute: 'toggle-label', default: ''},
       sticky: {type: Boolean, default: false},
@@ -336,6 +339,11 @@ class SfSmartMenu extends MenuElement {
     // as it is.
     if (item.group && (!item.collapsible || !this.groupsDrawn)) return {outcome: 'refused', reason: 'fixed'};
     if (item.disabled && source === 'user') return {outcome: 'refused', reason: 'disabled'};
+    // Any decision on a branch (a press, a key, a method or a rest that ran)
+    // drops the rests still pending on it: a branch Escape closed under a
+    // resting mouse stays closed until the pointer comes back.
+    this.clearHoverTimer(`open\u0000${item.id}`);
+    this.clearHoverTimer(`close\u0000${item.id}`);
     const before = new Set(this.openIds);
     if (before.has(item.id) === Boolean(open)) return {outcome: 'refused', reason: 'already'};
     const after = new Set(before);
@@ -436,11 +444,18 @@ class SfSmartMenu extends MenuElement {
     if (regionLink && this.flyouts && !event.defaultPrevented) this.closeFlyouts('user');
   };
 
-  // open-on hover (C30): a pointer resting on a row's branch opens it after
-  // 300 ms; once it has been outside a branch and its panel for 500 ms the
-  // branch closes. A press still opens and closes; a touch is a press.
+  // open-on hover (C30, the default of a row): a mouse resting on a row's
+  // branch opens it after 300 ms (a region after 500 ms); once it has been
+  // outside a branch and its panel for 500 ms the branch closes. Touch, a pen
+  // and the keyboard go through the branch's chevron, which a press opens
+  // and closes.
   hoverOpens(event) {
-    return this.openOn === 'hover' && this.flyouts && event.pointerType !== 'touch';
+    return this.openOn === 'hover' && this.flyouts && event.pointerType === 'mouse';
+  }
+
+  // A first-level branch of a row that opens a region rather than a panel.
+  flyoutRegion(item) {
+    return Boolean(item?.region) && this.flyouts && this.menuItems.some((top) => top.id === item.id);
   }
 
   // The ids of the items whose rows or panels hold a node, innermost first.
@@ -477,7 +492,8 @@ class SfSmartMenu extends MenuElement {
     const [id] = chain;
     const item = id ? this.item(id) : null;
     if (!item?.children.length || item.disabled || this.isOpen(id)) return;
-    this.hoverTimer(`open\u0000${id}`, HOVER_OPEN_DELAY, () => this.setOpen(id, true, 'user'));
+    const delay = this.flyoutRegion(item) ? HOVER_REGION_OPEN_DELAY : HOVER_OPEN_DELAY;
+    this.hoverTimer(`open\u0000${id}`, delay, () => this.setOpen(id, true, 'user'));
   };
 
   onPointerOut = (event) => {
@@ -862,10 +878,10 @@ class SfSmartMenu extends MenuElement {
     const above = currentId ? [currentId, ...(pathTo(this.menuItems, currentId) || [])] : [];
     const keep = ids.findIndex((id) => above.includes(id));
     const stays = new Set(fitRow(widths, moreWidth, nav.clientWidth, gap, keep));
-    this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)));
+    this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth);
   }
 
-  setOverflowHidden(hidden) {
+  setOverflowHidden(hidden, width) {
     if (hidden.length === this._overflowHidden.length && hidden.every((id, at) => id === this._overflowHidden[at])) return;
     // A row in a box that takes its width from its content (a header not yet
     // drawn, a shrink-to-fit cell) gets wider when items leave it and
@@ -876,7 +892,17 @@ class SfSmartMenu extends MenuElement {
     const now = typeof performance === 'undefined' ? Date.now() : performance.now();
     const flip = this._overflowFlip;
     if (flip && flip.back === key && now - flip.at < 100 && hidden.length < this._overflowHidden.length) return;
-    this._overflowFlip = {back: this._overflowHidden.join('\u0000'), at: now};
+    // The other way round: a set with fewer items under «Ещё» that bounced
+    // straight back (the row narrowed once they were shown) does not hold at
+    // the width it was measured at; a later measure at that same width (a
+    // panel opening re-draws the row) keeps the row as it is, and the open
+    // panel stays.
+    const loop = this._overflowLoop;
+    if (loop && loop.key === key && width !== undefined && loop.width === width) return;
+    if (flip && flip.back === key && now - flip.at < 100 && hidden.length > this._overflowHidden.length) {
+      this._overflowLoop = {key: this._overflowHidden.join('\u0000'), width: flip.width};
+    }
+    this._overflowFlip = {back: this._overflowHidden.join('\u0000'), at: now, width};
     // A panel open over the row was placed for the row as it was.
     if (this.flyouts) this.closeFlyouts('method');
     this._overflowHidden = hidden;
@@ -923,6 +949,9 @@ class SfSmartMenu extends MenuElement {
       selector,
       selectedItem: selector && currentId ? findItem(all, currentId) : null,
       statusWord: (status) => this.sfWord(`status-${status}`),
+      // A split row's chevron is named after its section: «Каталог: подразделы».
+      subsectionsName: (label) => `${label}: ${this.sfWord('subsections')}`,
+      indicator: this.indicator,
       flyouts: this.flyouts,
       collapsed: this.collapsed,
       panelOpen: this.panelOpen,

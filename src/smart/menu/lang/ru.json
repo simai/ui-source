@@ -7,6 +7,7 @@
     "status-warning": "внимание",
     "status-error": "ошибка",
     "status-info": "есть новое",
-    "status-neutral": "нет данных"
+    "status-neutral": "нет данных",
+    "subsections": "подразделы"
   }
 }

@@ -50,27 +50,67 @@
     }
   }
 }
-/* A header row's section that holds the current page (C30, the study's
-   proposal in prototypes/menu-simple.html): a medium label and a line of
-   primary, 2 px, under its words -- the row's own padding apart from its
-   ends -- whether its panel is open or not; the panel says where. sf-menu
-   marks it with sf-menu-element--holds-current also when the page is in a
-   region's template or behind «Ещё». Applied on the row's root. */
-@mixin row-holds-current-line {
-  > .sf-menu-item:has(> :is(.sf-menu, .sf-menu-region) :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
-  > .sf-menu-item > .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
+/* A row panel's path (C30, R057): a closed row whose list holds the current
+   page says so with a medium label and its › in primary -- two cues, no
+   mark of its own. Applied on the panels of a row. */
+@mixin holds-current-path {
+  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
+  .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
     --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+
+    .sf-icon-button .sf-icon {
+      --sf-icon--color: var(--sf-primary);
+    }
+  }
+}
+
+/* The first-level item of a header row that is the current page or holds it
+   (C30, R060). */
+$row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))), :has(> :is(.sf-menu, .sf-menu-region) :is([aria-current='page'], [aria-current='true'])), :has(> .sf-menu-element.sf-menu-element--holds-current))";
+
+/* line (the default): a 2 px primary line under the whole control lying ON
+   the header's bottom border, as the sf-tabs indicator -- it takes that
+   segment of the border's place -- and a medium label. sf-header-site
+   publishes how far its edge is below the row (--sf-site-header--edge); in
+   any other place the line lies at the row's own end. The C23 plate is not
+   drawn at this level: the line is the mark. Applied on the row's root. */
+@mixin row-current-line {
+  > .sf-menu-item {
     position: relative;
+  }
+
+  #{$row-current} {
+    > .sf-menu-element {
+      --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+      --sf-menu-element--color: var(--sf-on-surface);
+    }
+
+    // The pointer's states over a current row, as over any other; the plate
+    // that the navigation look gives the current page is not drawn here.
+    > .sf-menu-element:not(.open) {
+      --sf-menu-element--background-color: var(--sf-transparent);
+    }
+
+    > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+      --sf-menu-element--background-color: var(--sf-surface-transparent-hover);
+    }
+
+    > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+      --sf-menu-element--background-color: var(--sf-surface-transparent-active);
+    }
+
+    > .sf-menu-element .sf-menu-element-icon {
+      --sf-icon--color: var(--sf-on-surface);
+    }
 
     &::after {
       content: '';
       position: absolute;
-      inset-block-end: var(--sf-0);
-      inset-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
-      inset-inline-end: var(--sf-menu-element--padding-inline-end, var(--sf-space-1));
+      inset-block-end: calc(-1 * var(--sf-site-header--edge, var(--sf-0)));
+      inset-inline: var(--sf-space-1\/4);
       block-size: var(--sf-a2);
-      border-start-start-radius: var(--sf-radius--ui);
-      border-start-end-radius: var(--sf-radius--ui);
+      border-start-start-radius: var(--sf-a2);
+      border-start-end-radius: var(--sf-a2);
       border-end-start-radius: var(--sf-0);
       border-end-end-radius: var(--sf-0);
       background-color: var(--sf-primary);
@@ -82,6 +122,19 @@
         forced-color-adjust: none;
         background-color: Highlight;
       }
+    }
+  }
+}
+
+/* fill: the C23 plate on the control, its ink and a medium label, for a
+   header with no bottom border to lie on (over a photo, transparent). */
+@mixin row-current-fill {
+  #{$row-current} > .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+    @include current-plate;
+
+    .sf-menu-element-icon,
+    .sf-icon-button .sf-icon {
+      --sf-icon--color: var(--sf-on-primary-container);
     }
   }
 }
@@ -173,21 +226,26 @@
   --sf-menu-element--padding-inline-start: var(--sf-space-1);
 }
 
-/* A row's deeper branch opens a panel to the side (C30): its chevron points
-   to that side whether the panel is open or not -- right, left in RTL -- and
-   turns when the panel stood on the other side at the window's edge (the
-   placement writes data-sf-side on the panel). */
+/* A row's deeper branch opens a panel to the side (C30): its chevron is ›
+   whether the panel is open or not, mirrored in RTL only. Which side the
+   panel stands on follows the room (SF.Position flips it at the window's
+   edge); the chevron never turns with it (R059). */
 .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element .sf-icon-button .sf-icon {
   transform: none;
 }
 
-.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element:dir(rtl) .sf-icon-button .sf-icon,
-.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu:has(> .sf-menu[data-sf-side='inline-start']) > .sf-menu-element:dir(ltr) .sf-icon-button .sf-icon {
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element:dir(rtl) .sf-icon-button .sf-icon {
   transform: scaleX(-1);
 }
 
-.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu:has(> .sf-menu[data-sf-side='inline-start']) > .sf-menu-element:dir(rtl) .sf-icon-button .sf-icon {
-  transform: none;
+/* A section that is a page and has subsections is a split control (C30,
+   R058; APG disclosure navigation with top-level links): its name is a link,
+   the chevron beside it a button. Under a coarse pointer the chevron is a
+   whole control wide, so a finger finds it. */
+@media (pointer: coarse) {
+  .sf-menu.sf-menu--horizontal .sf-menu-element > button.sf-icon-button {
+    min-inline-size: var(--sf-ui-1--control-height);
+  }
 }
 
 /* A region (a mega menu, C30): the panel a row's first-level branch opens
@@ -336,17 +394,31 @@
 }
 
 /* The bar: a closed branch of a column that holds the current page. A
-   header row's first level opens panels, not a column, and draws no bar;
-   inside the row's panels a closed branch that holds it does (C30). */
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal),
-.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+   header row draws no bar: its first level has the line (or the plate), its
+   panels the path mark (C30). */
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
   @include holds-current-bar;
 }
 
-/* A header row's section that holds the current page (C30): the mixin
-   above the layer. */
-.sf-menu.sf-menu--navigation.sf-menu--horizontal {
-  @include row-holds-current-line;
+/* A row: an open branch -- the first level and a panel's row -- takes the
+   neutral select plate of the alpha scale, never primary, so open and
+   current cannot look alike (C30, R060); its first-level chevron is ⌃. */
+.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+  --sf-menu-element--background-color: var(--sf-surface-transparent-select);
+}
+
+.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+  @include holds-current-path;
+}
+
+/* A header row's current section (C30): the line on the header's edge, or
+   with sf-menu--indicator-fill the C23 plate. The mixins are above the layer. */
+.sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
+  @include row-current-line;
+}
+
+.sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
+  @include row-current-fill;
 }
 
 .sf-menu.sf-menu--navigation .sf-menu-element:disabled,

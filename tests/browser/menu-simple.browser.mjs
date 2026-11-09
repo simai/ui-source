@@ -12,18 +12,28 @@
 //   is left, and sf-menu-overflow says which items left;
 // flip: a row's side panels stand beside their panel (no overlap), level with
 //   the row that opened them, inside the window; at the right edge they open
-//   to the left with a turned chevron; a side branch's chevron is never down;
-// keys: WAI-ARIA disclosure navigation -- Tab, Enter and Space on a branch,
-//   Escape back to the button, and the arrows of the row, its panels and a
-//   region;
+//   to the left and the chevron stays › (R059);
+// keys: WAI-ARIA disclosure navigation with top-level links (C30, R058) -- a
+//   section that is a page is a split control, its name a link and its
+//   chevron a button «<раздел>: подразделы»; Tab goes link, chevron, next;
+//   Enter and Space on the chevron, ↓ on either, Escape back to the chevron,
+//   and the arrows of the row, its panels and a region; touch: a tap on the
+//   chevron toggles, a tap on the name navigates;
+// marks (R057, R060): the row's current section has a 2 px primary line
+//   lying on sf-header-site's bottom border and a medium label (indicator
+//   line), or the C23 plate (indicator fill); an open section has the
+//   neutral select plate and ⌃; a closed panel row that holds the current
+//   page is medium with a primary ›, no bar;
 // geometry: a compact admin row is 32 high with a count, the second level's
 //   words under the first level's; a column indents one step (space-1) per
 //   level; the current page is the C23 plate, an open branch is unfilled, a
 //   closed branch that holds the current page draws the 3 x 16 bar and a
 //   row's section that holds it the 2 px line; the phone panel shows the tree
 //   with the path open;
-// region: a mega region is as wide as the header and under it; hover opens
-//   after 300 ms and closes 500 ms after the pointer left.
+// region and hover: a mega region is as wide as the header and under it and
+//   has no row of the section itself; with a mouse a panel opens after
+//   300 ms, a region after 500 ms, both close 500 ms after the mouse left
+//   (open-on hover, the default); open-on click ignores the mouse resting.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -53,7 +63,11 @@ const SITE = [
   leaf('news', 'Новости'),
   leaf('contacts', 'Контакты'),
 ];
-const MEGA = SITE.map((item) => (item.id === 'catalog' ? {...item, region: 'catalog'} : item.id === 'services' ? {...item, region: 'services'} : item));
+// Every section with subsections is a page of its own, but О компании: the
+// row draws the pages as split controls and О компании as one button.
+const pages = (items) => items.map((item) => ({...item, href: item.href || (item.id === 'about' ? '' : `#${item.id}`), children: item.children ? pages(item.children) : []}));
+const ROW = pages(SITE);
+const MEGA = ROW.map((item) => (item.id === 'catalog' ? {...item, region: 'catalog'} : item.id === 'services' ? {...item, region: 'services'} : item));
 const ADMIN = [
   {id: 'desk', label: 'Рабочий стол', href: '#desk', icon: 'dashboard'},
   {id: 'shop', label: 'Магазин', icon: 'storefront', children: [{id: 'orders', label: 'Заказы', href: '#orders', count: 12}, leaf('goods', 'Товары'), leaf('clients', 'Клиенты')]},
@@ -62,7 +76,7 @@ const ADMIN = [
 const json = (value) => JSON.stringify(value).replace(/'/gu, '&#39;');
 
 const page = (search) => {
-  const hover = search.get('hover') === '1' ? ' open-on="hover"' : '';
+  const hover = (search.get('click') === '1' ? ' open-on="click"' : '') + (search.get('fill') === '1' ? ' indicator="fill"' : '');
   return `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
@@ -71,7 +85,7 @@ const page = (search) => {
 <style>body{margin:0}.side{inline-size:20rem;padding:var(--sf-space-1\\/2)}</style></head><body>
 <sf-header-site id="h" collapse="${search.get('collapse') || 'none'}">
   <a slot="brand" href="#home">Технопром</a>
-  <sf-menu id="row" label="Разделы сайта" orientation="horizontal" appearance="navigation" overflow="more" current="console"${hover} items='${json(search.get('mega') === '1' ? MEGA : SITE)}'>
+  <sf-menu id="row" label="Разделы сайта" orientation="horizontal" appearance="navigation" overflow="more" current="console"${hover} items='${json(search.get('mega') === '1' ? MEGA : ROW)}'>
     <template slot="region-catalog"><div class="probe-region"><a href="#pumps">Насосное оборудование</a> <a href="#valves">Трубопроводная арматура</a> <a href="#parts">Запчасти</a></div></template>
   </sf-menu>
   <button slot="tools" type="button">Заявка</button>
@@ -114,8 +128,8 @@ const PLATE = {light: 'rgba(0, 115, 237, 0.2)', dark: 'rgba(0, 115, 237, 0.32)'}
 const transparent = (colour) => /rgba\(\d+, \d+, \d+, 0\)|transparent/u.test(colour);
 
 const browser = await chromium.launch();
-async function open(theme, width, search = '') {
-  const tab = await browser.newPage({viewport: {width, height: 900}, colorScheme: theme});
+async function open(theme, width, search = '', options = {}) {
+  const tab = await browser.newPage({viewport: {width, height: 900}, colorScheme: theme, ...options});
   const consoleErrors = [];
   tab.on('console', (message) => {
     if (message.type() === 'error' || message.type() === 'warning') consoleErrors.push(`${message.type()}: ${message.text()}`);
@@ -124,7 +138,11 @@ async function open(theme, width, search = '') {
   await tab.addInitScript(() => {
     window.__overflow = [];
     document.addEventListener('sf-menu-overflow', (event) => window.__overflow.push({id: event.target.id, hidden: event.detail.hidden}));
-    document.addEventListener('sf-menu-navigate', (event) => event.preventDefault());
+    window.__navigated = [];
+    document.addEventListener('sf-menu-navigate', (event) => {
+      event.preventDefault();
+      window.__navigated.push(event.detail.id);
+    });
   });
   await tab.goto(`${origin}/menu/${search}`);
   await tab.waitForFunction(() => document.querySelector('#row nav ul.sf-menu') && document.querySelector('#admin nav ul.sf-menu') && document.querySelector('#column nav ul.sf-menu'), null, {timeout: 15000})
@@ -188,42 +206,92 @@ try {
         await tab.close();
       }
 
-      // ---- row: panels, flip, chevrons, keys (1000, «Ещё» at the right edge)
+      // ---- row: the split control, its keys, panels and marks (1280)
       {
         const {tab, consoleErrors} = await open(theme, 1280);
         const k = key('row keys 1280');
+        const active = () => tab.evaluate(() => {
+          const node = document.activeElement;
+          return node?.dataset.sfMenuToggle ? `toggle:${node.dataset.sfMenuToggle}` : node?.dataset.sfMenuLink ? `link:${node.dataset.sfMenuLink}` : node?.tagName;
+        });
+        const link = tab.locator('#row [data-sf-menu-link="catalog"]');
         const toggle = tab.locator('#row [data-sf-menu-toggle="catalog"]');
+        // The split control: a link to the section and a chevron button named after it.
+        const split = await tab.evaluate(() => {
+          const li = document.querySelector('#row [data-sf-menu-item="catalog"]');
+          const a = li.querySelector(':scope > .sf-menu-element > a[href]');
+          const b = li.querySelector(':scope > .sf-menu-element > button');
+          const about = document.querySelector('#row [data-sf-menu-item="about"] > .sf-menu-element');
+          return {href: a?.getAttribute('href'), name: b?.getAttribute('aria-label'), expanded: b?.getAttribute('aria-expanded'), controls: Boolean(b && document.getElementById(b.getAttribute('aria-controls'))),
+            glyph: b?.querySelector('.sf-icon')?.textContent, aboutButton: about?.matches('button') && about.getAttribute('aria-expanded') === 'false'};
+        });
+        check(split.href === '#catalog' && split.name === 'Каталог: подразделы' && split.expanded === 'false' && split.controls, `${k}: a section that is a page is a link plus a chevron button «Каталог: подразделы» (${JSON.stringify(split)})`);
+        check(split.glyph === 'keyboard_arrow_down', `${k}: the row's chevron is ⌄ while closed (${split.glyph})`);
+        check(split.aboutButton, `${k}: a section that is no page stays one button`);
+        await link.focus();
+        await tab.keyboard.press('Tab');
+        check(await active() === 'toggle:catalog', `${k}: Tab goes from the name to its chevron`);
+        await tab.keyboard.press('Tab');
+        check(await active() === 'link:services', `${k}: Tab goes from the chevron to the next section`);
         await toggle.focus();
         await tab.keyboard.press('Enter');
         await tab.waitForTimeout(150);
-        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: Enter opens Каталог`);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'catalog', `${k}: the focus stays on the button after Enter`);
+        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: Enter on the chevron opens Каталог`);
+        check(await active() === 'toggle:catalog', `${k}: the focus stays on the chevron after Enter`);
         const first = await tab.evaluate(() => {
-          const panel = document.querySelector('#row [data-sf-menu-item="catalog"] > ul.sf-menu');
-          const button = document.querySelector('#row [data-sf-menu-toggle="catalog"]').getBoundingClientRect();
+          const li = document.querySelector('#row [data-sf-menu-item="catalog"]');
+          const panel = li.querySelector(':scope > ul.sf-menu');
+          const control = li.getBoundingClientRect();
           const box = panel.getBoundingClientRect();
           const rows = [...panel.querySelectorAll(':scope > li > .sf-menu-element')].map((row) => row.getBoundingClientRect().height);
-          return {gap: box.top - button.bottom, left: box.left - button.left, popover: panel.matches(':popover-open'), rows, shadow: getComputedStyle(panel).boxShadow};
+          const probe = document.createElement('span');
+          probe.style.backgroundColor = 'var(--sf-surface-transparent-select)';
+          document.body.append(probe);
+          const select = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          const element = li.querySelector(':scope > .sf-menu-element');
+          return {gap: box.top - control.bottom, popover: panel.matches(':popover-open'), rows, shadow: getComputedStyle(panel).boxShadow,
+            plate: getComputedStyle(element).backgroundColor, select, glyph: element.querySelector('button .sf-icon').textContent,
+            line: getComputedStyle(li, '::after').content};
         });
-        check(Math.abs(first.gap - 4) <= 0.5, `${k}: the first panel stands space-1/4 (4) under its button (${first.gap})`);
+        check(Math.abs(first.gap - 4) <= 0.5, `${k}: the first panel stands space-1/4 (4) under its section (${first.gap})`);
         check(first.popover, `${k}: the first panel is in the top layer`);
         check(first.rows.every((height) => Math.abs(height - 40) <= 0.5), `${k}: the panel's rows are 40 (${first.rows})`);
         check(first.shadow !== 'none', `${k}: the panel has the overlay shadow`);
+        check(first.plate === first.select && first.glyph === 'keyboard_arrow_up', `${k}: the open section has the neutral select plate and ⌃ (${first.plate} / ${first.select}, ${first.glyph})`);
+        check(first.line !== 'none', `${k}: the open section that holds the current page keeps its line`);
+        // R057: the path in the panel -- Насосное оборудование holds the current page.
+        const path = await tab.evaluate(() => {
+          const row = document.querySelector('#row [data-sf-menu-item="pumps"] > .sf-menu-element');
+          const other = document.querySelector('#row [data-sf-menu-item="valves"] > .sf-menu-element');
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--sf-primary)';
+          document.body.append(probe);
+          const primary = getComputedStyle(probe).color;
+          probe.remove();
+          return {weight: getComputedStyle(row.querySelector('a')).fontWeight, chevron: getComputedStyle(row.querySelector('button .sf-icon')).color, primary,
+            bar: getComputedStyle(row, '::before').content, otherWeight: getComputedStyle(other.querySelector('a')).fontWeight, otherChevron: getComputedStyle(other.querySelector('button .sf-icon')).color,
+            name: row.querySelector('button').getAttribute('aria-label')};
+        });
+        check(path.weight === '500' && path.chevron === path.primary, `${k}: a closed panel row holding the current page is medium with a primary › (${path.weight}, ${path.chevron})`);
+        check(path.bar === 'none' || path.bar === 'normal', `${k}: no bar in the panel (${path.bar})`);
+        check(path.otherWeight === '400' && path.otherChevron !== path.primary, `${k}: a row that does not hold it stays plain (${path.otherWeight}, ${path.otherChevron})`);
+        check(path.name === 'Насосное оборудование: подразделы', `${k}: a panel row's chevron is named after its section (${path.name})`);
         await tab.keyboard.press('ArrowDown');
         await tab.waitForTimeout(80);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'pumps', `${k}: ArrowDown enters the panel at its first row`);
+        check(await active() === 'link:pumps', `${k}: ArrowDown enters the panel at its first row`);
         await tab.keyboard.press('ArrowDown');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'valves', `${k}: ArrowDown walks the panel`);
+        check(await active() === 'link:valves', `${k}: ArrowDown walks the panel`);
         await tab.keyboard.press('End');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuLink) === 'parts', `${k}: End goes to the panel's last row`);
+        check(await active() === 'link:parts', `${k}: End goes to the panel's last row`);
         await tab.keyboard.press('Home');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'pumps', `${k}: Home goes to the panel's first row`);
+        check(await active() === 'link:pumps', `${k}: Home goes to the panel's first row`);
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'centrifugal', `${k}: ArrowRight opens the side panel and enters it`);
+        check(await active() === 'link:centrifugal', `${k}: ArrowRight opens the side level and enters it`);
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuLink) === 'console', `${k}: ArrowRight goes a level deeper (level 4)`);
+        check(await active() === 'link:console', `${k}: ArrowRight goes a level deeper (level 4)`);
         const side = await tab.evaluate(() => {
           const out = [];
           for (const id of ['pumps', 'centrifugal']) {
@@ -243,34 +311,45 @@ try {
           check(Math.abs(one.gap - 4) <= 1 || one.side === 'inline-start', `${k}: ${one.id}'s side panel stands space-1/4 past its panel (${one.gap})`);
           check(Math.abs(one.levelDelta) <= 1, `${k}: ${one.id}'s side panel's first row is level with it (${one.levelDelta})`);
           check(one.inside, `${k}: ${one.id}'s side panel is inside the window`);
-          check(one.glyph === 'chevron_right', `${k}: ${one.id}'s chevron points to the side (${one.glyph})`);
+          check(one.glyph === 'chevron_right' && !/^matrix\(-1/u.test(one.transform), `${k}: ${one.id}'s chevron is › (${one.glyph}, ${one.transform})`);
         }
         seen[`side-${theme}-${run}`] = side;
         await tab.keyboard.press('Escape');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'centrifugal', `${k}: Escape closes the innermost panel and gives the focus to its button`);
+        check(await active() === 'toggle:centrifugal', `${k}: Escape closes the deepest level and gives the focus to its chevron`);
         await tab.keyboard.press('ArrowLeft');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'pumps'
-          && await tab.evaluate(() => !document.querySelector('#row').isOpen('pumps')), `${k}: ArrowLeft closes the side panel and gives the focus to its branch`);
-        await tab.keyboard.press('Escape');
+        check(await active() === 'toggle:pumps' && await tab.evaluate(() => !document.querySelector('#row').isOpen('pumps')), `${k}: ArrowLeft closes the side level and gives the focus to its chevron`);
         await tab.keyboard.press('Escape');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'catalog' && await toggle.getAttribute('aria-expanded') === 'false', `${k}: Escape back to Каталог, closed`);
+        check(await active() === 'toggle:catalog' && await toggle.getAttribute('aria-expanded') === 'false', `${k}: Escape back to Каталог's chevron, closed`);
         await tab.keyboard.press('Space');
         await tab.waitForTimeout(120);
-        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: Space opens the branch`);
+        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: Space on the chevron opens the section`);
         await tab.keyboard.press('Space');
         await tab.waitForTimeout(120);
-        check(await toggle.getAttribute('aria-expanded') === 'false', `${k}: Space closes the branch`);
+        check(await toggle.getAttribute('aria-expanded') === 'false', `${k}: Space closes it`);
+        // ↓ on the name opens the panel too and enters it.
+        await link.focus();
+        await tab.keyboard.press('ArrowDown');
+        await tab.waitForTimeout(150);
+        check(await toggle.getAttribute('aria-expanded') === 'true' && await active() === 'link:pumps', `${k}: ArrowDown on the name opens the panel and enters it`);
+        await tab.keyboard.press('Escape');
+        await tab.waitForTimeout(120);
+        await link.focus();
         await tab.keyboard.press('ArrowRight');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'services', `${k}: ArrowRight walks the row`);
+        check(await active() === 'link:services', `${k}: ArrowRight walks the row`);
         await tab.keyboard.press('End');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuLink) === 'contacts', `${k}: End goes to the row's last item`);
+        check(await active() === 'link:contacts', `${k}: End goes to the row's last section`);
         await tab.keyboard.press('Home');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'catalog', `${k}: Home goes to the row's first item`);
+        check(await active() === 'link:catalog', `${k}: Home goes to the row's first section`);
         await tab.keyboard.press('ArrowLeft');
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuLink) === 'contacts', `${k}: ArrowLeft wraps to the end`);
+        check(await active() === 'link:contacts', `${k}: ArrowLeft wraps to the end`);
+        // Enter on the name goes to the section's page and opens nothing.
+        await link.focus();
+        await tab.keyboard.press('Enter');
+        await tab.waitForTimeout(120);
+        check(await tab.evaluate(() => window.__navigated.includes('catalog')) && await toggle.getAttribute('aria-expanded') === 'false', `${k}: Enter on the name goes to the section's page, nothing opens`);
         // Tab walks out: the panel closes.
         await toggle.focus();
         await tab.keyboard.press('Enter');
@@ -278,13 +357,82 @@ try {
         await tab.locator('#h button[slot="tools"], #h [slot="tools"]').first().focus();
         await tab.waitForTimeout(150);
         check(await toggle.getAttribute('aria-expanded') === 'false', `${k}: focus leaving the row closes its panel`);
-        // The row's mark: the section holding the current page.
+        // R060: the current section's line lies on sf-header-site's bottom border.
         const mark = await tab.evaluate(() => {
-          const row = document.querySelector('#row [data-sf-menu-toggle="catalog"]');
-          const after = getComputedStyle(row, '::after');
-          return {height: after.height, background: after.backgroundColor, weight: getComputedStyle(row).fontWeight, content: after.content};
+          const li = document.querySelector('#row [data-sf-menu-item="catalog"]');
+          const after = getComputedStyle(li, '::after');
+          const header = document.querySelector('#h .sf-site-header').getBoundingClientRect();
+          const box = li.getBoundingClientRect();
+          const lineBottom = box.bottom - parseFloat(after.bottom);
+          const element = li.querySelector(':scope > .sf-menu-element');
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--sf-primary)';
+          document.body.append(probe);
+          const primary = getComputedStyle(probe).color;
+          probe.remove();
+          return {content: after.content, height: after.height, background: after.backgroundColor, primary, lineBottom, headerBottom: header.bottom,
+            border: getComputedStyle(document.querySelector('#h .sf-site-header')).borderBottomWidth,
+            weight: getComputedStyle(element.querySelector('a')).fontWeight, fill: getComputedStyle(element).backgroundColor,
+            left: box.left + parseFloat(after.left), right: box.right - parseFloat(after.right), controlLeft: element.getBoundingClientRect().left, controlRight: element.getBoundingClientRect().right};
         });
-        check(mark.content !== 'none' && mark.height === '2px' && mark.weight === '500', `${k}: Каталог holds the current page: 2 px line, medium (${JSON.stringify(mark)})`);
+        seen[`line-${theme}-${run}`] = mark;
+        check(mark.content !== 'none' && mark.height === '2px' && mark.background === mark.primary, `${k}: the current section has a 2 px primary line (${mark.height}, ${mark.background})`);
+        check(Math.abs(mark.lineBottom - mark.headerBottom) <= 0.5 && mark.border === '1px', `${k}: the line lies on the header's bottom border, covering it (${mark.lineBottom} / ${mark.headerBottom}, border ${mark.border})`);
+        check(mark.left >= mark.controlLeft - 0.5 && mark.right <= mark.controlRight + 0.5 && mark.right - mark.left > 40, `${k}: the line runs under the whole control (${Math.round(mark.left)}..${Math.round(mark.right)})`);
+        check(mark.weight === '500' && transparent(mark.fill), `${k}: the current section is medium and has no plate (${mark.weight}, ${mark.fill})`);
+        // A first-level page that is itself current: the line, not the plate.
+        await tab.evaluate(() => document.querySelector('#row').setAttribute('current', 'news'));
+        await tab.waitForTimeout(150);
+        const news = await tab.evaluate(() => {
+          const li = document.querySelector('#row [data-sf-menu-item="news"]');
+          const row = li.querySelector(':scope > .sf-menu-element');
+          return {line: getComputedStyle(li, '::after').height, fill: getComputedStyle(row).backgroundColor, weight: getComputedStyle(row).fontWeight, current: row.getAttribute('aria-current'),
+            catalogLine: getComputedStyle(document.querySelector('#row [data-sf-menu-item="catalog"]'), '::after').content};
+        });
+        check(news.current === 'page' && news.line === '2px' && transparent(news.fill) && news.weight === '500', `${k}: a current first-level page has the line, no plate (${JSON.stringify(news)})`);
+        check(news.catalogLine === 'none', `${k}: the section that no longer holds it loses its line`);
+        check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
+        await tab.close();
+      }
+
+      // ---- indicator fill: the C23 plate on the current section, no line
+      {
+        const {tab, consoleErrors} = await open(theme, 1280, '?fill=1');
+        const k = key('indicator fill');
+        const fill = await tab.evaluate(() => {
+          const li = document.querySelector('#row [data-sf-menu-item="catalog"]');
+          const element = li.querySelector(':scope > .sf-menu-element');
+          return {plate: getComputedStyle(element).backgroundColor, weight: getComputedStyle(element.querySelector('a')).fontWeight, line: getComputedStyle(li, '::after').content,
+            list: document.querySelector('#row ul.sf-menu').classList.contains('sf-menu--indicator-fill')};
+        });
+        seen[`fill-${theme}-${run}`] = fill;
+        check(fill.list && fill.plate === PLATE[theme] && fill.weight === '500', `${k}: the current section is the C23 plate, medium (${fill.plate})`);
+        check(fill.line === 'none' || fill.line === 'normal', `${k}: no line (${fill.line})`);
+        await tab.evaluate(() => document.querySelector('#row').open('services'));
+        await tab.waitForTimeout(150);
+        const opened = await tab.evaluate(() => {
+          const element = document.querySelector('#row [data-sf-menu-item="services"] > .sf-menu-element');
+          return getComputedStyle(element).backgroundColor;
+        });
+        check(opened !== PLATE[theme] && !transparent(opened), `${k}: an open section is the neutral plate, never the primary one (${opened})`);
+        check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
+        await tab.close();
+      }
+
+      // ---- touch: a tap on the chevron toggles, a tap on the name navigates
+      {
+        const {tab, consoleErrors} = await open(theme, 1280, '', {hasTouch: true});
+        const k = key('touch');
+        const toggle = tab.locator('#row [data-sf-menu-toggle="services"]');
+        await toggle.tap();
+        await tab.waitForTimeout(200);
+        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: a tap on the chevron opens the section`);
+        await toggle.tap();
+        await tab.waitForTimeout(200);
+        check(await toggle.getAttribute('aria-expanded') === 'false', `${k}: a second tap closes it`);
+        await tab.locator('#row [data-sf-menu-link="services"]').tap();
+        await tab.waitForTimeout(600);
+        check(await tab.evaluate(() => window.__navigated.includes('services')) && await toggle.getAttribute('aria-expanded') === 'false', `${k}: a tap on the name goes to the page and opens nothing`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
       }
@@ -319,9 +467,8 @@ try {
           check(one.left >= -0.5 && one.right <= one.inner + 0.5 && one.top >= -0.5 && one.bottom <= 900.5, `${k}: ${one.id}'s panel stays inside the window (${Math.round(one.left)}..${Math.round(one.right)})`);
           check(one.overlap <= 0.5, `${k}: ${one.id}'s panel does not overlap its parent panel (${one.overlap})`);
           if (one.level !== '1') {
-            check(one.glyph === 'chevron_right', `${k}: ${one.id}'s chevron is chevron_right (${one.glyph})`);
-            const turned = /^matrix\(-1/u.test(one.transform);
-            check(turned === (one.side === 'inline-start'), `${k}: ${one.id}'s chevron is turned exactly when its panel flipped (${one.transform}, ${one.side})`);
+            // R059: the side follows the room, the chevron never turns.
+            check(one.glyph === 'chevron_right' && !/^matrix\(-1/u.test(one.transform), `${k}: ${one.id}'s chevron stays › on either side (${one.glyph}, ${one.transform}, ${one.side})`);
           }
         }
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
@@ -398,33 +545,69 @@ try {
         await tab.close();
       }
 
-      // ---- region (mega) and hover at 1280
+      // ---- hover (the default) on a panel, then open-on click
       {
-        const {tab, consoleErrors} = await open(theme, 1280, '?mega=1&hover=1');
-        const k = key('region + hover');
-        const services = tab.locator('#row [data-sf-menu-toggle="services"]');
-        await services.hover();
+        const {tab, consoleErrors} = await open(theme, 1280);
+        const k = key('hover');
+        const name = tab.locator('#row [data-sf-menu-link="partners"]');
+        const partners = tab.locator('#row [data-sf-menu-toggle="partners"]');
+        await name.hover();
         await tab.waitForTimeout(150);
-        check(await services.getAttribute('aria-expanded') === 'false', `${k}: hover: still closed at 150 ms`);
-        await tab.waitForTimeout(300);
-        check(await services.getAttribute('aria-expanded') === 'true', `${k}: hover: open after 300 ms`);
+        check(await partners.getAttribute('aria-expanded') === 'false', `${k}: a panel is still closed 150 ms into the hover`);
+        await tab.waitForTimeout(250);
+        check(await partners.getAttribute('aria-expanded') === 'true', `${k}: a panel opens 300 ms into the hover (on the name)`);
+        // Into the panel and to a side level: it stays open.
+        await tab.locator('#row [data-sf-menu-link="designers"]').hover();
+        await tab.waitForTimeout(450);
+        check(await partners.getAttribute('aria-expanded') === 'true' && await tab.evaluate(() => document.querySelector('#row').isOpen('designers')), `${k}: the panel stays while the mouse is in it, its side level opens on hover`);
+        await tab.mouse.move(640, 880);
+        await tab.waitForTimeout(250);
+        check(await partners.getAttribute('aria-expanded') === 'true', `${k}: still open 250 ms after the mouse left`);
+        await tab.waitForTimeout(450);
+        check(await partners.getAttribute('aria-expanded') === 'false', `${k}: closed 500 ms after the mouse left`);
+        check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
+        await tab.close();
+        const click = await open(theme, 1280, '?click=1');
+        const toggle = click.tab.locator('#row [data-sf-menu-toggle="partners"]');
+        await click.tab.locator('#row [data-sf-menu-link="partners"]').hover();
+        await click.tab.waitForTimeout(700);
+        check(await toggle.getAttribute('aria-expanded') === 'false', `${k}: open-on click: resting the mouse opens nothing`);
+        await toggle.click();
+        await click.tab.waitForTimeout(150);
+        check(await toggle.getAttribute('aria-expanded') === 'true', `${k}: open-on click: a click on the chevron opens`);
+        check(!click.consoleErrors.length, `${k}: click console clean ${click.consoleErrors.join(' | ')}`);
+        await click.tab.close();
+      }
+
+      // ---- region (mega) at 1280: hover after 500 ms, keys, no row of the section itself
+      {
+        const {tab, consoleErrors} = await open(theme, 1280, '?mega=1');
+        const k = key('region');
+        const services = tab.locator('#row [data-sf-menu-toggle="services"]');
+        await tab.locator('#row [data-sf-menu-link="services"]').hover();
+        await tab.waitForTimeout(350);
+        check(await services.getAttribute('aria-expanded') === 'false', `${k}: a region is still closed 350 ms into the hover`);
+        await tab.waitForTimeout(250);
+        check(await services.getAttribute('aria-expanded') === 'true', `${k}: a region opens 500 ms into the hover`);
         const region = await tab.evaluate(() => {
           const panel = document.querySelector('#row [data-sf-menu-item="services"] > .sf-menu-region');
           const header = document.querySelector('#h .sf-site-header, #h header');
           const box = panel.getBoundingClientRect();
           const head = header.getBoundingClientRect();
           return {width: box.width, headerWidth: head.width, top: box.top, headerBottom: head.bottom, left: box.left, headerLeft: head.left,
-            columns: panel.querySelectorAll('.sf-menu-region-column').length, heads: [...panel.querySelectorAll('.sf-menu-region-head')].map((one) => one.getBoundingClientRect().height)};
+            columns: panel.querySelectorAll('.sf-menu-region-column').length, heads: [...panel.querySelectorAll('.sf-menu-region-head')].map((one) => one.getBoundingClientRect().height),
+            self: Boolean(panel.querySelector('[data-sf-menu-link="services"]')), foot: [...panel.querySelectorAll('.sf-menu-region-foot a')].map((one) => one.dataset.sfMenuLink)};
         });
         seen[`region-${theme}-${run}`] = region;
         check(Math.abs(region.width - region.headerWidth) <= 1 && Math.abs(region.left - region.headerLeft) <= 1, `${k}: the region is as wide as the header (${region.width} / ${region.headerWidth})`);
         check(Math.abs(region.top - region.headerBottom) <= 1, `${k}: the region opens under the header (${region.top} / ${region.headerBottom})`);
         check(region.columns === 2 && region.heads.every((height) => height >= 39.5), `${k}: without a template the region draws the children as columns (${region.columns})`);
+        check(!region.self && region.foot.join() === 'rent', `${k}: no row of the section itself in the region (foot: ${region.foot.join()})`);
         await tab.mouse.move(640, 880);
         await tab.waitForTimeout(250);
-        check(await services.getAttribute('aria-expanded') === 'true', `${k}: hover: still open 250 ms after leaving`);
+        check(await services.getAttribute('aria-expanded') === 'true', `${k}: still open 250 ms after leaving`);
         await tab.waitForTimeout(450);
-        check(await services.getAttribute('aria-expanded') === 'false', `${k}: hover: closed 500 ms after leaving`);
+        check(await services.getAttribute('aria-expanded') === 'false', `${k}: closed 500 ms after leaving`);
         // The template region, by the keys.
         const catalog = tab.locator('#row [data-sf-menu-toggle="catalog"]');
         await catalog.focus();
@@ -436,8 +619,8 @@ try {
         check(await tab.evaluate(() => document.activeElement?.getAttribute('href')) === '#valves', `${k}: ArrowDown walks the region's links`);
         await tab.keyboard.press('Escape');
         await tab.waitForTimeout(150);
-        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'catalog' && await catalog.getAttribute('aria-expanded') === 'false', `${k}: Escape closes the region, the focus back on its button`);
-        const regionMark = await tab.evaluate(() => getComputedStyle(document.querySelector('#row [data-sf-menu-toggle="catalog"]'), '::after').height);
+        check(await tab.evaluate(() => document.activeElement?.dataset.sfMenuToggle) === 'catalog' && await catalog.getAttribute('aria-expanded') === 'false', `${k}: Escape closes the region, the focus back on its chevron`);
+        const regionMark = await tab.evaluate(() => getComputedStyle(document.querySelector('#row [data-sf-menu-item="catalog"]'), '::after').height);
         check(regionMark === '2px', `${k}: a region's section holding the current page keeps the line (${regionMark})`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
