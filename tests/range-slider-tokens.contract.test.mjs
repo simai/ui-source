@@ -4,11 +4,14 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 
 const read=name=>readFile(new URL(`../src/component/range-slider/scss/${name}`,import.meta.url),'utf8');
-test('thumb geometry inherits host tokens and shares the semantic control fallback',async()=>{
+// The thumb is not a control (C19 after C27): its fallback is the icon
+// ladder's 24 box, not the 1/3 control height that C27 moved to 28.
+test('thumb geometry inherits host tokens and falls back to the icon ladder',async()=>{
   const visual=await read('_css__thumbs.scss'),layout=await read('_css__range_slider_custom.scss');
   for(const dimension of ['height','width']){
     assert.doesNotMatch(visual,new RegExp(`--sf-thumb-handle--${dimension}:`));
-    const declaration=`${dimension}: var(--sf-thumb-handle--${dimension}, var(--sf-ui-1\\/3--control-height));`;
+    const declaration=`${dimension}: var(--sf-thumb-handle--${dimension}, var(--sf-icon-size-4));`;
+    assert.doesNotMatch(visual+layout,/ui-1\\\/3--control-height/);
     assert.ok(visual.includes(declaration));
     assert.ok(layout.includes(declaration));
   }
