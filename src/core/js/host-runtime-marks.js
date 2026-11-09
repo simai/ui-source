@@ -19,6 +19,11 @@ export const HOST_RUNTIME_MARKS = new Set([
   "data-sf-observer",
   "data-sf-style-pending",
   "data-sf-style-ready",
+  // Density (C22): a size the parent's drawing gave is relative; the CSS reads
+  // the mark on the host itself, so it stays there.
+  "data-sf-size-relative",
+  // A density set on a host stays on it: what it draws inherits the ladder.
+  "data-sf-density",
 ]);
 
 // What the author wrote as data-* on a host, read the way dataset reads

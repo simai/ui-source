@@ -165,8 +165,11 @@ ${block('normal', '      ')}
     }
 
     /* On <html> the variables only, which body reads: a font-size on the
-       root element would move rem, and with it every step of the ladder. */
+       root element would move rem, and with it every step of the ladder.
+       An explicit size takes the normal body text back too, for the text a
+       component inherits rather than sizes. */
     [data-sf-density="compact"]:not(:root),
+    [data-sf-density="compact"] ${EXPLICIT},
     [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);

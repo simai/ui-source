@@ -4,9 +4,10 @@
 // Density (owner decision C22, 2026-11-09), on the built bytes over the
 // Loader, light and dark, desktop and phone widths, three loads each:
 //
-//   - in data-sf-density="compact" an unsized component draws exactly as the
-//     same component given the next size down draws in a normal page: box
-//     height, icon size and text size (buttons, icon buttons, input, dropdown,
+//   - in data-sf-density="compact" an unsized component is one step down:
+//     box height, icon size and text size are each the next size's, or one
+//     step of their ladder below normal (a part that keeps one step at every
+//     size); inherited text is the compact body, 14 (buttons, icon buttons, input, dropdown,
 //     list rows, context-menu rows, tabs, badge, switch, checkbox, segmented,
 //     tag, pagination, navigation menu rows);
 //   - an explicit size wins: compact with size = the default draws as the
@@ -128,6 +129,21 @@ const MEASURE = (subjects) => {
 };
 
 const same = (a, b) => a && b && ['h', 'icon', 'font'].every((key) => a[key] === b[key]);
+// One step below on the metric's own ladder (desktop px); the lowest stays.
+const LADDERS = {h: [24, 32, 40, 48, 56], icon: [12, 14, 16, 20, 24, 28, 32, 36, 40], font: [12, 14, 16, 20, 24]};
+const below = (key, value) => {
+  const ladder = LADDERS[key];
+  const at = ladder.indexOf(value);
+  return at < 0 ? undefined : ladder[Math.max(0, at - 1)];
+};
+// Compact is one step down: the next size's drawing, or one step of the
+// ladder where a part keeps one step at every size (a chevron, a menu row at
+// its lowest size). Text a component does not size (it inherits the body)
+// takes the compact body, 14.
+const stepDown = (compact, normal, lower) => compact && normal && lower && ['h', 'icon', 'font'].every((key) =>
+  compact[key] === lower[key]
+  || (compact[key] !== null && compact[key] === below(key, normal[key]))
+  || (key === 'font' && normal.font === lower.font && compact.font === 14));
 const failures = [];
 const report = {};
 const consoleErrors = [];
@@ -152,7 +168,8 @@ try {
         for (const [name] of SUBJECTS) {
           const row = data[name];
           if (mode === 'desktop') {
-            if (!same(row.compact, row.lower)) failures.push(`${label} ${name}: compact ${JSON.stringify(row.compact)} is not the next size down ${JSON.stringify(row.lower)}`);
+            if (!stepDown(row.compact, row.normal, row.lower)) failures.push(`${label} ${name}: compact ${JSON.stringify(row.compact)} is not one step below ${JSON.stringify(row.normal)} (next size ${JSON.stringify(row.lower)})`);
+            if (row.normal.h > 24 && !(row.compact.h < row.normal.h)) failures.push(`${label} ${name}: compact did not move (${row.compact.h} vs ${row.normal.h})`);
             if (!same(row.explicit, row.normal)) failures.push(`${label} ${name}: explicit size in compact ${JSON.stringify(row.explicit)} is not the normal ${JSON.stringify(row.normal)}`);
             if (!same(row['explicit-lower'], row.lower)) failures.push(`${label} ${name}: explicit lower size in compact ${JSON.stringify(row['explicit-lower'])} is not ${JSON.stringify(row.lower)}`);
           } else if (!same(row.compact, row.normal)) {
