@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.14",
+  "version": "1.1.16",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -138,15 +138,22 @@
       "summary": "Merges data into the current data (a function receives the current data and returns the next) and re-renders. tabs or items become tab items; panels or content become panels. A non-object is ignored.",
       "arguments": [
         {
-          "name": "data",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
-          }
-        },
-        {
-          "name": "reason",
-          "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "data"
+            ]
           }
         }
       ],
@@ -159,15 +166,22 @@
       "summary": "Replaces the panels in the data (a function receives the current panels) and re-renders.",
       "arguments": [
         {
-          "name": "panels",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "array"
-          }
-        },
-        {
-          "name": "reason",
-          "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "panels": {
+                "type": "array"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "panels"
+            ]
           }
         }
       ],
@@ -180,9 +194,19 @@
       "summary": "Activates the tab at index (an index out of range means 0); does nothing for a disabled or the active tab. Sets active-index and emits sf-tabs-change.",
       "arguments": [
         {
-          "name": "index",
+          "name": "args",
+          "type": "object|number",
+          "required": true,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "index"
+            ]
           }
         }
       ],
@@ -487,7 +511,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "325e885e2fc6a4276a6c232bd56a6da3ef9502428d3df5dace468c0c23789266"
+        "sha256": "64a33d0d4a2631ce9bcbbf679ccbdeda09a01d73540cb0b4ec6274ba4c90c7f4"
       }
     ],
     "generated_runtime": [

@@ -3,14 +3,19 @@
 // SIMAI Framework
 // https://simai.io
 
-// DROP SHADOW COLOR HOVER
+// DROP SHADOW COLOR ON HOVER
+//
+// Former utilities (C20, 2026-11-08): a shadow does not carry the meaning of a
+// colour -- a coloured halo reads as focus or as a status -- so the coloured
+// shadows go on 2027-01-01 (src/core/contracts/token-aliases.v1.json,
+// utilities, removed). Until then a class colours the key and the ambient
+// shadow of its own element, which the shadow utilities on that element draw
+// with (shadow-raised, drop-shadow-overlay, and the numbered former names).
+
 @each $drop-shadow-color-name, $drop-shadow-color-value in $drop-shadow-color-array {
   .hover\:drop-shadow-#{$drop-shadow-color-name}:hover {
-    --sf-shadow--color: var(--sf-#{$drop-shadow-color-value}) !important;
-    --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill)) !important;
-    --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-outline)) !important;
-    --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade)) !important;
-    --sf-shadow--color-shade: var(--sf-shadow--color-shading) !important;
+    --sf-shadow-key-color: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill)) !important;
+    --sf-shadow-ambient-color: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade)) !important;
   }
 }
 }

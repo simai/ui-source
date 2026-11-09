@@ -235,7 +235,10 @@ function ensureStructure(block) {
       // head a compositing layer, and sticky page headers blanked for a frame
       // while scrolling past code blocks (Docara, 2026-11-07). A second
       // bg-surface-container would double the translucent fill.
-      head.className = 'sf-highlight__head sf--highlight-head flex content-main-between items-center border-outline-variant';
+      // No layout utilities either: the head's own rule lays it out (the
+      // language at the start, the controls at the end, one axis), so a page
+      // without the utility sheet draws the same head (simai/ui-source#31).
+      head.className = 'sf-highlight__head sf--highlight-head';
       root.prepend(head);
     }
   }

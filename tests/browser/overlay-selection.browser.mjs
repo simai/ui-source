@@ -181,10 +181,11 @@ try {
   await page.waitForTimeout(400);
   const tip = await page.evaluate(() => {
     const surface = document.querySelector('button[data-action="up"]').closest('.sf-tooltip-anchor').querySelector('sf-tooltip');
-    return {hidden: surface.hidden, text: surface.textContent.replace(/\s+/gu, ' ').trim()};
+    const keys = surface.querySelector('.sf-tooltip-shortcut');
+    return {hidden: surface.hidden, label: [...(surface.querySelector('.sf-tooltip-text')?.childNodes ?? [])].filter((node) => node.nodeType === 3).map((node) => node.textContent).join('').trim(), keys: keys?.textContent.trim()};
   });
   report.tip = tip;
-  check(!tip.hidden && tip.text === 'Выше ⌥↑', 'the tooltip holds the label and the shortcut', tip);
+  check(!tip.hidden && tip.label === 'Выше' && tip.keys === '⌥↑', 'the tooltip holds the label and, as its shortcut, the keys', tip);
   // tone danger colours hover only.
   const danger = await page.evaluate(() => { const icon = document.querySelector('button[data-action="del"] .sf-icon'); return getComputedStyle(icon).color; });
   const neutral = await page.evaluate(() => { const icon = document.querySelector('button[data-action="dup"] .sf-icon'); return getComputedStyle(icon).color; });

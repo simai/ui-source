@@ -93,3 +93,28 @@ test('an item written expanded carries the class that opens it', () => {
   const css = readFileSync(new URL('../src/component/menu/scss/_css__menu_custom.scss', import.meta.url), 'utf8');
   assert.match(css, /\.sf-menu-item:not\(\.open\) > \.sf-menu \{\s*display: none;/u);
 });
+
+// A hand-written group (the markup sf-menu draws for a group: a heading over
+// a list of first-level rows) is styling only. The runtime took it for a
+// branch -- a generated row button, a disclosure, the list one level down and
+// hidden -- and nested it. component.menu 1.2.1 recognises it and leaves it flat.
+test('a hand-written group stays a flat group, not a branch', () => {
+  const init = js.slice(js.indexOf('function initMenuItem'));
+  assert.match(js, /function isGroup\(element\) \{[\s\S]*?sf-menu-item--group[\s\S]*?data-sf-menu-group[\s\S]*?GROUP_HEADING_SELECTOR/u);
+  assert.match(js, /const GROUP_HEADING_SELECTOR = ':scope > \.sf-menu-group-heading'/u);
+  assert.match(init.slice(0, 200), /if \(isGroup\(root\)\) \{\s*initGroup\(root\);\s*return;/u);
+  assert.match(js, /function hasSubmenu\(root\) \{\s*if \(isGroup\(root\)\) return false;/u);
+  // The group's rows keep the first level.
+  assert.match(js, /if \(!isGroup\(parentItem\)\) level \+= 1;/u);
+  // A fixed group is always open; only a button heading opens and closes it.
+  assert.match(js, /const open = toggle\s*\? root\.classList\.contains\('open'\) \|\| toggle\.getAttribute\('aria-expanded'\) === 'true'\s*: true;/u);
+  assert.match(js, /list\.hidden = !open;/u);
+  assert.match(js, /toggle\.setAttribute\('aria-controls', ensureSubmenuId\(list\)\)/u);
+  assert.match(js, /if \(!toggle \|\| toggle\.disabled\) return false;/u);
+  assert.match(js, /target\.closest\('\.sf-menu-item > button\.sf-menu-group-heading'\)/u);
+  // A horizontal close never shuts a group.
+  assert.match(js, /if \(!isGroup\(candidate\)\) setMenuItemOpen\(candidate, false\);/u);
+  const docs = readFileSync(new URL('../src/component/menu/docs/docs.md', import.meta.url), 'utf8');
+  assert.match(docs, /## Groups/u);
+  assert.match(docs, /class="sf-menu-item sf-menu-item--group" data-sf-menu-group/u);
+});

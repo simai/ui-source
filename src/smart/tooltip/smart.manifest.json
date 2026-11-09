@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tooltip",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "title": "Tooltip",
   "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
   "kind": "smart",
@@ -23,6 +23,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.kbd",
       "component.tooltip"
     ],
     "public_parts": []
@@ -47,8 +48,8 @@
       },
       "appearance": {
         "type": "string",
-        "default": "light",
-        "description": "How the tooltip looks: light on a dark surface or the reverse.",
+        "default": "dark",
+        "description": "How the tooltip looks: dark is the inverse surface (the plain tooltip, the default), light a raised surface.",
         "enum": [
           "light",
           "dark"
@@ -56,8 +57,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1",
-        "description": "Framework typography and spacing scale.",
+        "default": "1/3",
+        "description": "Framework typography and spacing scale; 1/3, the default, is the plain tooltip: the small text step, regular, 4 x 8.",
         "enum": [
           "1/3",
           "1/2",
@@ -90,9 +91,14 @@
         "default": "",
         "description": "Optional secondary description."
       },
+      "shortcut": {
+        "type": "string",
+        "default": "",
+        "description": "The trigger's key combination (mod+b, shift+/), drawn after the text as quiet keys by the kbd component."
+      },
       "type": {
         "type": "string",
-        "default": "light",
+        "default": "dark",
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "light",
@@ -203,7 +209,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tooltip/index.js",
-        "sha256": "b9b631d06a428a4d029d31f2e6f67b1853bc65284a0de18365fd6fdd283f0f4e"
+        "sha256": "7fcde8b51337965cc0d8f6f14f58d5b4a9a3c035ba385a393b8d281c7c1ab999"
       }
     ],
     "generated_runtime": [

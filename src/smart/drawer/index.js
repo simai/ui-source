@@ -96,6 +96,15 @@ function lengthToPixels(value) {
   return Number(match[1]) * (match[2] === 'px' ? 1 : rem);
 }
 
+// What had focus when a layer came into the page already open: its opener,
+// unless nothing did (the body) or the focus is inside the layer itself.
+function layerOpener(drawer) {
+  const active = document.activeElement;
+  if (!(active instanceof HTMLElement) || active === document.body || active === document.documentElement) return null;
+  if (drawer.contains(active) || drawer.getDrawerRoot()?.contains(active)) return null;
+  return active;
+}
+
 function escapeSelector(value) {
   if (globalThis.CSS?.escape) return globalThis.CSS.escape(value);
   return String(value).replace(/["\\]/g, '\\$&');
@@ -375,6 +384,12 @@ class SfDrawer extends DrawerElement {
     drawerManager.bindGlobalEvents();
     globalThis.addEventListener?.('resize', this.onWindowResize, {passive: true});
     if (this.openState) {
+      // A drawer put into the page already open was opened by whatever had
+      // focus then -- a button that inserted it. It remembers that, as open()
+      // does, so closing gives focus back there and not to the nearest
+      // landmark. A drawer open in the page's own markup has no opener.
+      this._lastActive = layerOpener(this);
+      this._focusReturnAncestors = landmarksAround(this._lastActive);
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
     }
@@ -622,8 +637,10 @@ class SfDrawer extends DrawerElement {
     if (!this._isMounted || token !== this._renderToken) return;
     const portal = this.resolvePortalRoot();
     // The portal stands at the end of the body; it speaks and looks as the
-    // drawer does where it stands (standard 1.3.8 §19.1).
-    carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES});
+    // drawer does where it stands (standard 1.3.8 §19.1), with the variables
+    // of its area but none of its own private --sf-drawer-* names
+    // (simai/ui-source#46 item 1, as sf-modal).
+    carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES, area: true, except: ['--sf-drawer-']});
     // Static markup printed for the first paint goes as the drawer draws
     // (standard 1.3.8 §5.4); the panel itself is rendered in the portal.
     if (!this.__sfFirstPaintEnded) {

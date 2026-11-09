@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.accordion",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Accordion",
   "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "kind": "smart",
@@ -227,8 +227,18 @@
       "summary": "Open the section with this id; in single mode the open one closes. sf-accordion-toggle fires for each section that changed, source method. Returns whether anything changed.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -239,8 +249,18 @@
       "summary": "Close the section with this id. Returns whether anything changed.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -251,8 +271,18 @@
       "summary": "Open the section if it is closed, close it if it is open. Returns whether anything changed.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {

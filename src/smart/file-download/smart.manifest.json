@@ -350,7 +350,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-download/index.js",
-        "sha256": "f9bfe1f1e7c654a875ecc3a22abadbb88c1db3ed60725f776fb14e2ecba70104"
+        "sha256": "e488744f2af156867d0817a110d90b0391f18a543eaebcc0ddc66b6f720b9cc1"
       }
     ],
     "generated_runtime": [

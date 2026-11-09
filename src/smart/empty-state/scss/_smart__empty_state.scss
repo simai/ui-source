@@ -20,8 +20,10 @@ sf-empty-state {
 
 .sf-empty-state-title {
   margin: 0;
-  font-size: var(--sf-heading-5--size);
-  line-height: var(--sf-heading-5--height);
+  /* Rung 2: the heading-4 role since the C21 heading ladder (heading-5 moved
+     to rung 1, which the size-1-2 title holds). */
+  font-size: var(--sf-heading-4--size);
+  line-height: var(--sf-heading-4--height);
   font-weight: var(--sf-font-weight-medium);
 }
 

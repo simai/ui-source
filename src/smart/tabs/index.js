@@ -1,4 +1,4 @@
-import { html, nothing, render } from 'lit';
+import { html, nothing } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
@@ -20,6 +20,9 @@ const TabsElement = elementFromManifest(manifest, {
   lang: { en, ru },
   source: 'ru',
   aliases,
+  // setData(data, reason) and setPanels(panels, reason) take their fields in
+  // order; the runtime gives them the object form of §4.4 as well.
+  positional: ['set-data', 'set-panels'],
 });
 
 // A page's or an assembly's own panels: direct children of the host

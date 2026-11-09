@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "title": "Change confirmation",
   "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -216,9 +216,19 @@
       "summary": "Answer as the person would: accepted true confirms, false declines. Refused closed, disabled or prevented. answer('accept') and answer('decline') are read until 2026-12-01.",
       "arguments": [
         {
-          "name": "accepted",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "boolean"
+            "type": "object",
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "accepted"
+            ]
           }
         }
       ],
@@ -492,7 +502,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "c1837e618e913ba5ebe08981b51fedcc88a224c327d73cb8977993e7b4f15a6c"
+        "sha256": "19e293d5bdd0b7c90ea971da847f56be4d1f3da978e30a510369196c61eb9d68"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

@@ -462,12 +462,40 @@ export function eventsOf(component) {
   return out;
 }
 
+// The arguments of an action's method (standard §4.4: the `with` parameters
+// arrive as one object). One argument, `args`, whose schema is the `with`
+// fields; it is required when a field is. x-registry.action-calls says, per
+// action, what the element's own code takes besides -- each read off the
+// element, never assumed:
+//   "object|<type>"  a single value in place of the object (the element reads
+//                    it: accordion open('a'), progress-run chunk('text'));
+//   "positional"     the element's method takes the fields in declared order
+//                    and not the object (editor-overlay setNodes(nodes, options)):
+//                    the arguments are the fields, as before 2026-11-09.
+// The positional form the generated method also accepts (§4.4 "MAY") is the
+// runtime's (core/js/element-manifest.js) and is not repeated per method.
+export function argumentsOf(component, name, spec) {
+  const fields = Object.entries(spec?.with ?? {});
+  if (!fields.length) return [];
+  const call = component['x-registry']?.['action-calls']?.[name];
+  if (call === 'positional') return fields.map(([field, type]) => ({name: camel(field), schema: fieldSchema(type)}));
+  if (call !== undefined && !/^object\|[a-z]+$/u.test(call)) throw new Error(`${component.tag}: x-registry.action-calls.${name} is "${call}"; "positional" or "object|<type>"`);
+  const optional = (type) => Boolean(type && typeof type === 'object' && type.optional);
+  const required = fields.filter(([, type]) => !optional(type)).map(([field]) => camel(field));
+  const schema = {type: 'object', properties: Object.fromEntries(fields.map(([field, type]) => [camel(field), fieldSchema(type)]))};
+  if (required.length) schema.required = required;
+  return [{name: 'args', type: call ?? 'object', required: required.length > 0, schema}];
+}
+
 export function methodsOf(component) {
   const out = {};
+  for (const name of Object.keys(component['x-registry']?.['action-calls'] ?? {})) {
+    if (!Object.keys(component.actions?.[name]?.with ?? {}).length) throw new Error(`${component.tag}: x-registry.action-calls.${name} names no action with parameters`);
+  }
   for (const [name, spec] of Object.entries(component.actions ?? {})) {
     out[camel(name)] = {
       summary: spec?.summary ?? `The action ${name}.`,
-      arguments: Object.entries(spec?.with ?? {}).map(([field, type]) => ({name: camel(field), schema: fieldSchema(type)})),
+      arguments: argumentsOf(component, name, spec),
       // An action answers with an outcome (an object); x-returns in words is
       // that object's description.
       returns: typeof spec?.['x-returns'] === 'string' ? {type: 'object', description: spec['x-returns']} : spec?.['x-returns'] ?? {type: 'object'},

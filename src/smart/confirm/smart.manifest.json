@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -140,9 +140,19 @@
       "summary": "Answer as the person would: accepted true confirms, false declines. Refused unknown, closed, disabled or prevented.",
       "arguments": [
         {
-          "name": "accepted",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "boolean"
+            "type": "object",
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "accepted"
+            ]
           }
         }
       ],
@@ -332,7 +342,7 @@
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "c7a898b06a8ada71bf84c65045f1499131990cfe681c8e9c46ed95237156cb34"
+        "sha256": "2101c365c0222783dcf1bf14e02a0bffde574d89fe5b27d22b85e142ee3548cb"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

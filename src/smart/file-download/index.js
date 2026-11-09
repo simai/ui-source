@@ -44,6 +44,18 @@ class SfDownloadFile extends DownloadFileElement {
     return STATES.includes(value) ? value : 'ready';
   }
 
+  // What the template draws is what the component answers (template-context):
+  // an absent name is the link's last part, else «Файл»; a file link
+  // downloads in the same tab unless target="_blank" opens it to view
+  // (decision C25), whether or not the download attribute is given.
+  get fileName() {
+    return this.getAttribute('file-name') || nameFromHref(this.getAttribute('href') || '') || this.sfWord('file');
+  }
+
+  get download() {
+    return Boolean(this.getAttribute('href')) && this.getAttribute('target') !== '_blank';
+  }
+
   get templateName() {
     return this.getAttribute('template') || 'default';
   }
@@ -72,13 +84,13 @@ class SfDownloadFile extends DownloadFileElement {
       size: this.size,
       state: this.shownState,
       // No invented file: an absent name is the link's last part, else «Файл».
-      fileName: this.getAttribute('file-name') || nameFromHref(href) || this.sfWord('file'),
+      fileName: this.fileName,
       fileType: this.getAttribute('file-type') || '',
       icon: this.signIcon,
       opensTab,
       // A file link downloads where the person is (decision C25): the
       // download semantics are the default, a tab opened to view has none.
-      download: Boolean(href) && !opensTab,
+      download: this.download,
       errorText: this.getAttribute('error-text') || '',
       words: {
         preparing: this.sfWord('preparing-text'),

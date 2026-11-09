@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.fab",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/fab/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/fab/scss/_css_fab.scss",
     "src/component/fab/scss/index.scss"
   ],
-  "content_sha256": "5c2c6b03888755ccab198a464218040652f5c394817941fc5b8b98cdf59eccfa",
+  "content_sha256": "91a4b02be6f5a601d572953611f18941baeb5d93b497ab23b5e93fcb38138bb6",
   "dependencies": [
     {
       "id": "core.runtime",

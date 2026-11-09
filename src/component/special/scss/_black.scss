@@ -7,9 +7,9 @@
 html {
     &.special {
         .sf-special-black {
-            background-color: #000!important;
-            color: #FFF!important;
-            border-color:#FFF!important;
+            background-color: var(--sf-special-black)!important;
+            color: var(--sf-on-special-black)!important;
+            border-color:var(--sf-on-special-black)!important;
 
             *:not(.special-panel,[data-bg]),
             ::after,::before {
@@ -24,25 +24,25 @@ html {
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #FFF!important;
-                color:#000!important;
-                border-color:#000!important;
+                background-color: var(--sf-on-special-black)!important;
+                color:var(--sf-special-black)!important;
+                border-color:var(--sf-special-black)!important;
             }
 
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #FFF!important;
-                color:#000!important;
-                border-color: #000!important;
+                background-color: var(--sf-on-special-black)!important;
+                color:var(--sf-special-black)!important;
+                border-color: var(--sf-special-black)!important;
             }
 
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::after,
             [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::before {
-                background-color: #FFF!important;
-                color:#000!important;
-                border-color: #000!important;
+                background-color: var(--sf-on-special-black)!important;
+                color:var(--sf-special-black)!important;
+                border-color: var(--sf-special-black)!important;
             }
         }
     }

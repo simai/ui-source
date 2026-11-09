@@ -207,6 +207,7 @@
         "anchor",
         "anchorReference",
         "default",
+        "liftToTopLayer",
         "referenceRect",
         "resolveLength"
       ]

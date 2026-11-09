@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -222,9 +222,16 @@
       "summary": "Move the value up by `count` steps (1 by default), held by the bounds, as a native field's stepUp(). Fires nothing. Returns the element.",
       "arguments": [
         {
-          "name": "count",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "number"
+              }
+            }
           }
         }
       ],
@@ -237,9 +244,16 @@
       "summary": "Move the value down by `count` steps (1 by default), held by the bounds. Fires nothing. Returns the element.",
       "arguments": [
         {
-          "name": "count",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "number"
+              }
+            }
           }
         }
       ],
@@ -252,9 +266,19 @@
       "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
       "arguments": [
         {
-          "name": "message",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
           }
         }
       ],

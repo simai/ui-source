@@ -56,8 +56,15 @@ overlay), `cancelled` (a page control with `data-sf-modal-close`) or `api`
 Slot content is the page's: the window places the page's own nodes in its
 portal and never copies them, so a listener, a property and the node itself
 survive opening and closing (§4.5). The portal carries the element's resolved
-`lang` and `dir` and the theme of its nearest `.theme-dark`/`.theme-light`
-area. `<sf-modal id="x">` no longer gives the window's root the same id.
+`lang` and `dir`, the theme of its nearest `.theme-dark`/`.theme-light`
+area, and the variables of the area it stands in: since 1.5.0 every custom
+property that resolves differently there than at the end of the body (a
+block's `--sf-button-background-color`, a retuned `--sf-primary`, a page's own
+`--brand`) is written on the portal, so the window and its content look as
+they would where the element is declared. The window's own `--sf-modal-*`
+public variables travel by name; its private ones never do, so a window opened
+from another does not take the outer panel's sizes. `<sf-modal id="x">` no
+longer gives the window's root the same id.
 
 Since 1.1.0 every `modal:*` event bubbles and is composed, as in the base modal
 component and `sf-drawer`, so a host can listen on `document`;
@@ -171,7 +178,7 @@ remain on the separate compact-control radius contract.
 
 Use `overlay-preset` for the standard SIMAI Framework modal behavior:
 
-- `default` (the default value) uses a fixed black 60% scrim without blur;
+- `default` (the default value) uses the shared black 64 scrim (C20) without blur;
 - `focus` uses the same scrim and adds `backdrop-blur-small`.
 
 The scrim is theme-independent. If `backdrop-filter` is unavailable, the

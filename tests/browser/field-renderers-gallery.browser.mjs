@@ -11,10 +11,11 @@
 //      the flag RU, the dial code +7 and the digits 900 123-45-67 in order;
 //      a stored +1 and +44 number take US and GB, and +7 7xx Kazakhstan,
 //      drawn in the national format +7 701 123-45-67;
-//   2. date and datetime view (and cell) print the page's reading --
-//      25.10.2026 and 25.10.2026 10:30 on a Russian page, the record's own
-//      day and clock -- not the stored text; a host's formatFieldValue still
-//      wins; a value that is not a date is shown as it came;
+//   2. date and datetime view (and cell) print the page's medium reading --
+//      25 окт. 2026 г. and 25 окт. 2026 г., 10:30 on a Russian page (the
+//      View set's table form, C19), the record's own day and clock -- not the
+//      stored text; a host's formatFieldValue still wins; a value that is not
+//      a date is shown as it came;
 //   3. date and datetime edit stay inside their column, the datetime's whole
 //      text visible in its field;
 //   4. choices edit (no variant and `badges`) shows the chosen options in the
@@ -107,7 +108,15 @@ for (const theme of ['light', 'dark']) {
     hosted.id = 'hosted';
     document.body.append(hosted);
     render(html`${set.renderViewField({key: 'date', propertyType: 'date'}, '2026-10-25', formatting)}`, hosted);
-    return {cells, hostedCell: set.renderCellField({key: 'date', propertyType: 'date'}, '2026-10-25', formatting)};
+    // The page's language is the host's: a node under lang="en" reads in English.
+    const english = document.createElement('div');
+    english.lang = 'en';
+    document.body.append(english);
+    const englishCells = {
+      date: set.renderCellField({key: 'date', propertyType: 'date'}, '2026-11-02', english),
+      datetime: set.renderCellField({key: 'at', propertyType: 'datetime'}, '2026-11-15T10:30:00', english),
+    };
+    return {cells, englishCells, hostedCell: set.renderCellField({key: 'date', propertyType: 'date'}, '2026-10-25', formatting)};
   }, ROWS);
   await tab.waitForFunction(() => ['sf-input-country', 'sf-input-date', 'sf-dropdown', 'sf-checkbox'].every((tag) => customElements.get(tag))
     && document.querySelector('[data-row="phone-ru"] .sf-country-code[data-iso2]')
@@ -132,11 +141,12 @@ for (const theme of ['light', 'dark']) {
   // 2. Date and datetime read.
   const views = await tab.evaluate(() => Object.fromEntries(['date', 'datetime', 'date-odd'].map((key) => [key, document.querySelector(`[data-row="${key}"] [data-view]`)?.textContent.trim()])).valueOf());
   const hostedView = await tab.evaluate(() => document.getElementById('hosted').textContent.trim());
-  ok(`${t} date view: 25.10.2026`, views.date === '25.10.2026', views);
-  ok(`${t} datetime view: 25.10.2026 10:30, the record's own clock`, views.datetime === '25.10.2026 10:30', views);
+  ok(`${t} date view: 25 окт. 2026 г.`, views.date === '25 окт. 2026 г.', views);
+  ok(`${t} datetime view: 25 окт. 2026 г., 10:30, the record's own clock`, views.datetime === '25 окт. 2026 г., 10:30', views);
   ok(`${t} a value that is not a date is shown as it came`, views['date-odd'] === 'когда-нибудь', views);
   ok(`${t} the host's formatFieldValue still wins`, hostedView === '25 октября 2026' && drawn.hostedCell === '25 октября 2026', {hostedView, cell: drawn.hostedCell});
-  ok(`${t} date and datetime cells read as the view does`, drawn.cells.date === '25.10.2026' && drawn.cells.datetime === '25.10.2026 10:30' && drawn.cells['date-odd'] === null, drawn.cells);
+  ok(`${t} under lang="en": Nov 2, 2026 and Nov 15, 2026, 10:30 AM`, drawn.englishCells.date === 'Nov 2, 2026' && /^Nov 15, 2026, 10:30\s?AM$/u.test(drawn.englishCells.datetime ?? ''), drawn.englishCells);
+  ok(`${t} date and datetime cells read as the view does`, drawn.cells.date === '25 окт. 2026 г.' && drawn.cells.datetime === '25 окт. 2026 г., 10:30' && drawn.cells['date-odd'] === null, drawn.cells);
 
   // 3. The date edits stay in their column.
   const boxes = await tab.evaluate(() => Object.fromEntries(['date', 'datetime'].map((key) => {

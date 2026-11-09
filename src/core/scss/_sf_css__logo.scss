@@ -1,25 +1,14 @@
 @layer sf.base {
-  .theme-light {
-    .sf-logo {
-      .sf-logo-1 {
-        color: #221F20;
-      }
-
-      .sf-logo-2 {
-        color: #969696;
-      }
+  /* The logo's two inks are the text roles (C18): the word on-surface, the
+     mark on-surface-variant, so the logo follows the theme like the text
+     beside it instead of a light/dark pair of its own. */
+  .sf-logo {
+    .sf-logo-1 {
+      color: var(--sf-on-surface);
     }
-  }
 
-  .theme-dark {
-    .sf-logo {
-      .sf-logo-1 {
-        color: #F6F6F6;
-      }
-
-      .sf-logo-2 {
-        color: #969696;
-      }
+    .sf-logo-2 {
+      color: var(--sf-on-surface-variant);
     }
   }
 

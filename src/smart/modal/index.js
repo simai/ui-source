@@ -672,8 +672,11 @@ class SfModal extends ModalElement {
     // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
     // theme of its area, and the values of the public variables its manifest
     // declares, by name: a prefix would also carry what an outer window sets
-    // on its own panel (--sf-modal-width) into a window opened from it.
-    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES });
+    // on its own panel (--sf-modal-width) into a window opened from it. And
+    // the variables of the area it stands in (simai/ui-source#46 item 1): a
+    // block's retuned roles and its parts' public variables reach the window
+    // and its content, but none of the window's own --sf-modal-* names.
+    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, area: true, except: ["--sf-modal-"] });
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }
@@ -1053,6 +1056,15 @@ class SfModal extends ModalElement {
     }
 
     if (this.hasAttribute("open") && !this._isOpen && this._modalState !== "closing") {
+      // A window put into the page already open remembers what had focus --
+      // the button that inserted it -- as open() does, so closing gives focus
+      // back there and not to the nearest landmark. A window open in the
+      // page's own markup has no opener.
+      const active = document.activeElement;
+      this._lastActive = active instanceof HTMLElement && active !== document.body &&
+        active !== document.documentElement && !this.contains(active) && !this._root()?.contains(active)
+        ? active : null;
+      this._focusReturnAncestors = captureModalFocusAncestors(this._lastActive);
       this._isOpen = true;
       this._modalState = "open";
       if (this.display !== "inline") {

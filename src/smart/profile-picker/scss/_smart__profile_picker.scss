@@ -89,9 +89,9 @@ sf-profile-picker {
   padding: var(--sf-profile-picker--inset);
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--surface);
-  background-color: var(--sf-profile-picker-panel-background-color, var(--sf-elevation-3--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
-  box-shadow: var(--sf-elevation-3--shadow);
+  background-color: var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup));
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  box-shadow: var(--sf-shadow-overlay);
   color: var(--sf-on-surface);
   overflow: auto;
   overscroll-behavior: contain;

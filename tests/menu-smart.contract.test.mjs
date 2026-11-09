@@ -227,7 +227,7 @@ test('smart menu: the class menu\'s public variables wrap the values it drew bef
     '--sf-menu-element--border-color: var(--sf-menu-item-border-color, var(--sf-surface-container));',
     '--sf-menu-element--color: var(--sf-menu-item-color, var(--sf-on-surface));',
     '--sf-menu-element--radius: var(--sf-menu-item-radius, var(--sf-radius--ui));',
-    'var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-elevation-2--surface)))',
+    'var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)))',
     'var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)))',
     'var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)))',
   ]) assert.ok(classSheet.includes(line), line);

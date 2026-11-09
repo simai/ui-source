@@ -32,7 +32,15 @@ and on it the Loader fetched the Doc styles, whose inverse fill covered the code
 surface (in the dark theme plain identifiers were invisible). The Doc source
 rules do not paint a highlighted block (`.sf-code-surface` or its scroller). The large code surface uses the default surface radius while generated
 controls retain their UI radius. Spacing, typography, borders and syntax colors
-come from semantic Framework tokens. Code direction remains LTR inside an RTL
+come from semantic Framework tokens.
+The head lays itself out in the component's own rule -- the language at the
+start, the wrap toggle and copy at the end, on one axis -- so it needs no
+utility sheet. Its height is the control height of ladder step 1
+(`--sf-ui-1--control-height`), one step above the size-1/2 icon buttons it holds. The code surface offers five public variables:
+`--sf-highlight-radius` (default `--sf-radius--surface`; a host that nests the
+block, such as a chat bubble, sets it to follow its own corner),
+`--sf-highlight-background-color`, `--sf-highlight-color`,
+`--sf-highlight-border-color` and `--sf-highlight-border-width`. Code direction remains LTR inside an RTL
 document and long lines scroll locally.
 
 Existing and inserted blocks initialize once. Applications can call

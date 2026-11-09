@@ -22,10 +22,10 @@
         padding: var(--sf-inline-editor-toolbar-padding, var(--sf-space-1));
         border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius-1));
         /* A toolbar floats over the page: step 2's surface and shadow. */
-        background: var(--sf-inline-editor-toolbar-background-color, var(--sf-elevation-2--surface, Canvas));
-        --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+        background: var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas));
+        --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
         color: var(--sf-on-surface, CanvasText);
-        box-shadow: var(--sf-elevation-2--shadow);
+        box-shadow: var(--sf-shadow-overlay);
     }
 
     .sf-inline-editor-button,
@@ -61,6 +61,6 @@
     }
 
     .sf-inline-editor-error {
-        color: var(--sf-error, #b3261e);
+        color: var(--sf-error);
     }
 }

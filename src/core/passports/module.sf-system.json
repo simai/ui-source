@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.sf-system",
   "kind": "module",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "owner": "simai/ui-source",
   "summary": "The SF4-era system scripts, internal: the ready and event files core imports, SF.Ajax, SF.Param and SF.Search, and the engine the special module imports. No rule loads it; nothing documented leans on it.",
   "includes": [
@@ -37,7 +37,7 @@
     "src/component/sf-system/js/search/_search.js",
     "src/component/sf-system/js/topZIndex/topZIndex.js"
   ],
-  "content_sha256": "0fd27d6dc37c37019e3529606f927aa4020eb5d62eace6aa29e4804691ad9943",
+  "content_sha256": "c618e4ea42edf6c5eb75203194fb443b87bd0e7b4bf2f56fc78aace35b1d6a1a",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -46,6 +46,22 @@
     {
       "id": "module.component-shared",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.5.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.1"
     }
   ],
   "former_ids": [

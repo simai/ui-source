@@ -1315,7 +1315,7 @@ class SfBaseElement extends HTMLElement {
     // drawing adds is relative to this element (density, C22).
     this.markSizeScale();
     if (!this._sfSizedBefore) this._sfSizedBefore = sizedBefore(this);
-    drawing(() => render(templateResult, this));
+    drawing(() => this.renderTemplateResult(templateResult));
     markRelativeSizes(this, this._sfSizedBefore);
     if (printed.length) {
       this.handOverStaticMarkup(printed);
@@ -2904,6 +2904,25 @@ class SfBaseElement extends HTMLElement {
 
   updateDom() {
     return false;
+  }
+
+  // Lit draws into the host and keeps markers in what it drew; code outside
+  // the element that rewrote that DOM (a parent's patch that set the glyph's
+  // textContent, as sf-button-icon's did) took them out, and the next commit
+  // into it threw "Cannot set properties of null (setting 'data')" once the
+  // element was moved and drew again. An element that owns its whole light
+  // DOM (clearLightDomBeforeFirstRender: sf-icon) then starts afresh -- the
+  // host cleared, lit's part on it dropped -- and draws its current values;
+  // a second failure is the element's own and is thrown.
+  renderTemplateResult(templateResult) {
+    try {
+      render(templateResult, this);
+    } catch (error) {
+      if (!this.shouldClearLightDomBeforeFirstRender() || this._$litPart$ === undefined) throw error;
+      this.replaceChildren();
+      this._$litPart$ = undefined;
+      render(templateResult, this);
+    }
   }
 
   shouldClearLightDomBeforeFirstRender() {

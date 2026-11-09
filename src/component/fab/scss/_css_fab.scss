@@ -11,7 +11,7 @@
   padding-inline-end: var(--sf-fab--padding-inline-end);
   padding-bottom: var(--sf-fab--padding-bottom);
   background-color: var(--sf-fab--background-color);
-  box-shadow: var(--sf-fab--focus-inset, 0 0 #0000), var(--sf-fab--box-shadow, 0 0 #0000);
+  box-shadow: var(--sf-fab--focus-inset, 0 0 var(--sf-transparent)), var(--sf-fab--box-shadow, 0 0 var(--sf-transparent));
 }
 
 .sf-fab .sf-icon {

@@ -34,6 +34,59 @@ function isOwned(element) {
   return Boolean(element?.closest?.(OWNED_SELECTOR));
 }
 
+// A group (component.menu 1.2.0; recognised by hand since 1.2.1) is styling
+// only: a heading over a list of first-level rows, the markup sf-menu draws
+// for a group --
+//
+//   li.sf-menu-item.sf-menu-item--group[data-sf-menu-group]
+//     span.sf-menu-group-heading > span.sf-menu-group-label
+//     ul.sf-menu[aria-labelledby the heading] > li.sf-menu-item ...
+//
+// A hand-written group is recognised by its class, its data-sf-menu-group or
+// its heading, and is left flat: no row element, no disclosure, its rows stay
+// on the first level. Only a collapsible group -- a button.sf-menu-group-heading
+// -- opens and closes, by that button.
+const GROUP_HEADING_SELECTOR = ':scope > .sf-menu-group-heading';
+
+function isGroup(element) {
+  return Boolean(
+    element?.matches?.('.sf-menu-item') &&
+      (element.classList.contains('sf-menu-item--group') ||
+        element.hasAttribute('data-sf-menu-group') ||
+        element.querySelector(GROUP_HEADING_SELECTOR)),
+  );
+}
+
+function groupToggle(root) {
+  const heading = root.querySelector(GROUP_HEADING_SELECTOR);
+  return heading instanceof HTMLButtonElement ? heading : null;
+}
+
+function initGroup(root) {
+  const heading = root.querySelector(GROUP_HEADING_SELECTOR);
+  const list = root.querySelector(':scope > .sf-menu');
+  const toggle = groupToggle(root);
+  root.dataset[BOUND_FLAG] = 'true';
+  root.classList.add('sf-menu-item', 'sf-menu-item--group');
+  root.classList.remove('sf-menu-item--has-submenu');
+  if (!list) return;
+
+  // A fixed group is always open; a collapsible one by its class or its
+  // button's aria-expanded, as it was written.
+  const open = toggle
+    ? root.classList.contains('open') || toggle.getAttribute('aria-expanded') === 'true'
+    : true;
+  root.classList.toggle('open', open);
+  list.hidden = !open;
+  if (heading?.id && !list.hasAttribute('aria-labelledby')) list.setAttribute('aria-labelledby', heading.id);
+  if (toggle) {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-controls', ensureSubmenuId(list));
+    const icon = toggle.querySelector(':scope > .sf-icon');
+    if (icon) icon.textContent = open ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+  }
+}
+
 function isNativeInteractive(element) {
   return element.matches('button, a[href], input, select, textarea');
 }
@@ -75,7 +128,7 @@ function getElementLevel(root) {
     const parentItem = currentMenu.parentElement?.closest('.sf-menu-item');
     if (!parentItem) break;
 
-    level += 1;
+    if (!isGroup(parentItem)) level += 1;
     currentMenu = parentItem.parentElement?.closest('.sf-menu');
   }
 
@@ -108,6 +161,7 @@ function clearDirectTextNodes(root) {
 }
 
 function hasSubmenu(root) {
+  if (isGroup(root)) return false;
   const nestedMenu = root.querySelector(':scope > .sf-menu');
   return Boolean(nestedMenu);
 }
@@ -126,7 +180,7 @@ function closeHorizontalSiblings(root) {
   if (!isHorizontalTopLevel(root)) return;
 
   Array.from(root.parentElement.children).forEach((candidate) => {
-    if (candidate === root || !candidate.matches('.sf-menu-item.open')) return;
+    if (candidate === root || !candidate.matches('.sf-menu-item.open') || isGroup(candidate)) return;
     setMenuItemOpen(candidate, false);
   });
 }
@@ -137,7 +191,7 @@ function closeHorizontalDescendants(root) {
   if (!root?.closest('.sf-menu.sf-menu--horizontal')) return;
 
   Array.from(root.querySelectorAll('.sf-menu-item.open')).reverse().forEach((candidate) => {
-    setMenuItemOpen(candidate, false);
+    if (!isGroup(candidate)) setMenuItemOpen(candidate, false);
   });
 }
 
@@ -372,6 +426,15 @@ function setMenuItemOpen(root, nextOpen) {
   const nestedMenu = root.querySelector(':scope > .sf-menu');
   if (!nestedMenu) return false;
 
+  if (isGroup(root)) {
+    const toggle = groupToggle(root);
+    if (!toggle || toggle.disabled) return false;
+    root.classList.toggle('open', Boolean(nextOpen));
+    toggle.setAttribute('aria-expanded', String(Boolean(nextOpen)));
+    initGroup(root);
+    return true;
+  }
+
   if (nextOpen) closeHorizontalSiblings(root);
   const usesLegacyAriaState = root.hasAttribute('aria-expanded');
   if (nextOpen) {
@@ -397,6 +460,10 @@ function toggleMenuItem(root) {
 
 function initMenuItem(root) {
   if (!root || isOwned(root)) return;
+  if (isGroup(root)) {
+    initGroup(root);
+    return;
+  }
 
   if (root.hasAttribute('expanded')) legacyExpandedOwners.add(root);
 
@@ -515,6 +582,13 @@ function bindMenuEvents() {
       if (!isOwned(root) && !root.contains(target)) setMenuItemOpen(root, false);
     });
     if (isOwned(target)) return;
+
+    const groupHeading = target.closest('.sf-menu-item > button.sf-menu-group-heading');
+    if (groupHeading) {
+      const group = groupHeading.parentElement;
+      if (isGroup(group)) toggleMenuItem(group);
+      return;
+    }
 
     const button = target.closest('.sf-menu-item > .sf-menu-element > .sf-icon-button');
     if (button) {

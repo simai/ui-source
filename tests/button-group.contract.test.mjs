@@ -175,7 +175,7 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /\.sf-button-group-icon-only \{\s*padding-inline: var\(--sf-button-group--segment-padding-block\);/);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-12\)/);
-  assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-elevation-1--surface[^}]*--sf-elevation-1--shadow/);
+  assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-surface-raised[^}]*--sf-shadow-raised/);
   assert.match(styles, /font-variant-numeric: tabular-nums/);
   assert.match(styles, /\.sf-button-group-segment:focus-visible \{\s*outline-offset: 0;/);
   assert.match(styles, /forced-colors: active[\s\S]*sf-button-group--segmented[\s\S]*Highlight/);

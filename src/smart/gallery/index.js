@@ -49,7 +49,7 @@ const DELEGATED_MODAL_DEFAULTS = {
   'show-close': 'true',
   'body-class': 'sf-gallery-lightbox-body h-full',
   'content-class': 'sf-gallery-lightbox-modal-content h-full min-h-0',
-  'surface-class': 'p-0 border-0 radius-square bg-transparent shadow-0',
+  'surface-class': 'p-0 border-0 radius-square bg-transparent shadow-flat',
   'surface-padding': '0',
 };
 

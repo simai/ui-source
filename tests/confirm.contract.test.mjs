@@ -47,7 +47,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.5.0');
+  assert.equal(contract.version, '1.5.1');
   assert.deepEqual(Object.keys(contract.settings).sort(),
     ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state']);
   const tags = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'tag');
@@ -73,7 +73,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.1.0');
+  assert.equal(contract.version, '1.1.1');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');

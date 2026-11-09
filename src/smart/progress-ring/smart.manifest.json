@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -115,15 +115,23 @@
       "summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100. Takes chunk({done, total}) or chunk(done, total).",
       "arguments": [
         {
-          "name": "done",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "number"
-          }
-        },
-        {
-          "name": "total",
-          "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "done": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "done",
+              "total"
+            ]
           }
         }
       ],

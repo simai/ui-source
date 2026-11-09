@@ -58,9 +58,26 @@ const given = (value) => Boolean(value) && value !== 'none';
 function containsFixed(element) {
   const css = getComputedStyle(element);
   if (css.display === 'contents') return false;
-  return given(css.transform) || given(css.translate) || given(css.scale) || given(css.rotate) || given(css.perspective)
+  if (given(css.transform) || given(css.translate) || given(css.scale) || given(css.rotate) || given(css.perspective)
     || given(css.filter) || given(css.backdropFilter) || WILL_CONTAIN.test(css.willChange || '')
-    || CONTAINS_FIXED.test(css.contain || '') || (Boolean(css.containerType) && css.containerType !== 'normal');
+    || CONTAINS_FIXED.test(css.contain || '')) return true;
+  // A container query box is asked, not assumed. The containment it once
+  // implied made it the containing block of fixed descendants, and Floating UI
+  // still counts it so; current Chromium no longer does. Counting it placed
+  // every panel in the docs' content column (main.docara-content is
+  // container-type: inline-size) by the column's offset a second time: the
+  // calendar of a field at y 516 opened at y 1336 (docs pre-check DP-01,
+  // 2026-11-09). A fixed probe at 0,0 inside the box says which it is.
+  return Boolean(css.containerType) && css.containerType !== 'normal' && probesFixedOrigin(element);
+}
+
+function probesFixedOrigin(element) {
+  const probe = element.ownerDocument.createElement('span');
+  probe.style.cssText = 'position:fixed;left:0;top:0;inline-size:0;block-size:0;padding:0;border:0;margin:0;visibility:hidden;pointer-events:none';
+  element.append(probe);
+  const at = probe.getBoundingClientRect();
+  probe.remove();
+  return Math.abs(at.left) > 0.5 || Math.abs(at.top) > 0.5;
 }
 
 function inTopLayer(element) {
@@ -69,6 +86,76 @@ function inTopLayer(element) {
   } catch {
     return false;
   }
+}
+
+// A floating surface is lifted into the top layer while it is anchored (a
+// manual popover), so no ancestor can displace or clip it: a transform, a
+// filter, will-change, contain: layout or paint, an overflow box, a stacking
+// context under a sticky header. It stays where it is in the DOM, so it keeps
+// the host's variables, theme, lang, dir and density by plain inheritance --
+// what a body portal has to carry by hand (carryLayerOrigin). A surface the
+// component already lifted (sf-menu-context, sf-help-mark, sf-profile-picker,
+// sf-input-lookup, dropdown lists) or that stands in a modal dialog's top
+// layer is left as it is; a browser without popovers keeps the fixed panel in
+// place, placed against its containing block.
+//
+// The user-agent popover rule (inset 0, margin auto, a border, padding, Canvas
+// and CanvasText, overflow auto) is taken back by a rule of no specificity in
+// the lowest Framework layer, sf.reset, so the component's own sheet still
+// decides each of those: unlayered, the rule outranked every layered component
+// rule and took the calendar's fill, padding and border away.
+const LIFTED = 'data-sf-position-layer';
+const LIFTED_RULE = `@layer sf.reset{:where([${LIFTED}]){inset:auto;margin:0;padding:0;border:0 none;inline-size:auto;block-size:auto;overflow:visible;color:inherit;background-color:transparent}}`;
+const sheets = new WeakMap();
+
+function adoptLiftedRule(floating) {
+  const root = floating.getRootNode();
+  const target = root instanceof ShadowRoot ? root : floating.ownerDocument;
+  if (sheets.has(target)) return;
+  const view = floating.ownerDocument.defaultView;
+  try {
+    const sheet = new view.CSSStyleSheet();
+    sheet.replaceSync(LIFTED_RULE);
+    target.adoptedStyleSheets = [...target.adoptedStyleSheets, sheet];
+    sheets.set(target, sheet);
+  } catch {
+    const style = floating.ownerDocument.createElement('style');
+    style.dataset.sfPositionLayer = '';
+    style.textContent = LIFTED_RULE;
+    (target === floating.ownerDocument ? target.head || target.documentElement : target).append(style);
+    sheets.set(target, style);
+  }
+}
+
+function liftable(floating) {
+  if (typeof floating.showPopover !== 'function' || !floating.isConnected) return false;
+  if (floating.hasAttribute('popover') || inTopLayer(floating)) return false;
+  for (let node = floating.parentElement; node; node = node.parentElement) if (inTopLayer(node)) return false;
+  return true;
+}
+
+/** Lifts a floating surface into the top layer; returns a function that puts it back, or null. */
+export function liftToTopLayer(floating) {
+  if (!liftable(floating)) return null;
+  adoptLiftedRule(floating);
+  floating.setAttribute(LIFTED, '');
+  floating.setAttribute('popover', 'manual');
+  try {
+    floating.showPopover();
+  } catch {
+    floating.removeAttribute('popover');
+    floating.removeAttribute(LIFTED);
+    return null;
+  }
+  return () => {
+    if (floating.hasAttribute(LIFTED)) {
+      try {
+        if (floating.matches(':popover-open')) floating.hidePopover();
+      } catch { /* already gone from the document */ }
+      floating.removeAttribute('popover');
+      floating.removeAttribute(LIFTED);
+    }
+  };
 }
 
 function fixedContainingBlock(element) {
@@ -108,7 +195,9 @@ export function anchorReference(element) {
 /**
  * Keeps `floating` anchored to `reference`.
  * options: {side, align, offset, alignmentOffset, padding, flip, shift,
- *           matchWidth, fitHeight, autoUpdate, onPosition({side, placement, x, y})}
+ *           matchWidth, fitHeight, autoUpdate, topLayer, onPosition({side, placement, x, y})}
+ * topLayer (default true) lifts the floating element into the top layer while
+ * it is anchored (see liftToTopLayer); false keeps it where it stands.
  * Returns {update(): Promise, stop(), side}.
  */
 export function anchor(reference, floating, options = {}) {
@@ -119,7 +208,7 @@ export function anchor(reference, floating, options = {}) {
   const measured = anchorReference(reference);
   const settings = {
     side: 'block-end', align: 'start', offset: 'var(--sf-space-1\\/4)', alignmentOffset: 0, padding: 'var(--sf-space-1\\/2)',
-    flip: true, shift: true, matchWidth: false, fitHeight: true, autoUpdate: true, onPosition: null, ...options,
+    flip: true, shift: true, matchWidth: false, fitHeight: true, autoUpdate: true, topLayer: true, onPosition: null, ...options,
   };
   // Inline styles this helper writes are restored on stop(); the author's caps
   // are kept, so viewport fitting may only tighten them.
@@ -131,6 +220,8 @@ export function anchor(reference, floating, options = {}) {
   // A percentage cap is kept as written by getComputedStyle; read as pixels,
   // max-inline-size: 100% made every tooltip 100px wide. The panel is fixed, so
   // a percentage is of the viewport.
+  // Lifted before its caps are read: the panel is measured where it is drawn.
+  const lower = settings.topLayer ? liftToTopLayer(floating) : null;
   const floatingStyle = getComputedStyle(floating);
   const cap = (value, whole) => {
     const number = parseFloat(value);
@@ -239,6 +330,7 @@ export function anchor(reference, floating, options = {}) {
     controller.stopped = true;
     cleanup?.();
     delete floating.dataset.sfSide;
+    lower?.();
     for (const [name, value, priority] of saved) {
       if (value) floating.style.setProperty(name, value, priority);
       else floating.style.removeProperty(name);
@@ -248,7 +340,7 @@ export function anchor(reference, floating, options = {}) {
   return controller;
 }
 
-const Position = Object.freeze({anchor, anchorReference, referenceRect, logicalSide, physicalPlacement, resolveLength});
+const Position = Object.freeze({anchor, anchorReference, referenceRect, liftToTopLayer, logicalSide, physicalPlacement, resolveLength});
 
 // Core publishes the helper; component bundles that carry their own copy reuse
 // an already published one instead of replacing it.

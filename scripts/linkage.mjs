@@ -575,7 +575,11 @@ export function inventoryOf(collected, {revision, release = null, files = false}
         content_sha256: unit.content_sha256,
       };
       if (files) entry.files = unit.files.length;
-      entry.dependencies = unit.written && unit.passport ? unit.passport.dependencies ?? [] : dependencyList(unit, byId);
+      // Only what the inventory format has a field for: a passport's `manual`
+      // marks a hand-declared dependency for --write, and the pinned
+      // unit-inventory 1.0.0 schema closes the dependency object.
+      const dependencies = unit.written && unit.passport ? unit.passport.dependencies ?? [] : dependencyList(unit, byId);
+      entry.dependencies = dependencies.map(({id, range}) => ({id, range}));
       return entry;
     }),
   };

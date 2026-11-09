@@ -5,8 +5,14 @@
     display: block;
   }
 
+  /* The row wraps: the chip, the value, the product's swatches and the
+     inherited slot (whose marker never breaks) are wider together than a phone
+     column, and a row that cannot wrap stood past its container -- 17px inside
+     sf-theme-generator at a 390px screen. What does not fit goes to the next
+     line, the same gap apart; a row that fits draws as before. */
   .sf-color {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--sf-color-gap, var(--sf-space-1));
     min-block-size: var(--sf-ui-1--control-height);
