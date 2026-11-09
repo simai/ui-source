@@ -30,12 +30,13 @@
 // not what this build renders (stale) or is missing. --fresh writes the
 // sheet lists anew instead of keeping what they held.
 //
-// Playwright: the `playwright` package, else /Users/rim/node_modules. Browsers:
+// Playwright: the repository's own devDependency (scripts/playwright-local.mjs). Browsers:
 // PLAYWRIGHT_BROWSERS_PATH (the release probes keep theirs in
 // <GitHub>/.playwright-browsers).
 import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync} from 'node:fs';
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {ensureLocalPlaywright} from './playwright-local.mjs';
 import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem, freezeClock} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
@@ -47,7 +48,8 @@ const check = args.includes('--check');
 const only = args.filter((one) => !one.startsWith('--') && one !== out);
 const concurrency = Number(process.env.FIRST_PAINT_CONCURRENCY || 6);
 
-const {chromium} = await import('playwright').catch(() => import('/Users/rim/node_modules/playwright/index.mjs'));
+ensureLocalPlaywright(join(here, '..'));
+const {chromium} = await import('playwright');
 const pageScript = readFileSync(join(here, 'first-paint-page.js'), 'utf8');
 
 const pages = new Map([['/first-paint-page.js', pageScript]]);

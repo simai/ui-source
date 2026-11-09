@@ -5,7 +5,7 @@ import { applied, refused, elementFromManifest } from "../../core/js/element-man
 import { noteDeprecated } from "../../core/js/deprecations";
 import { instancePath, partId } from "../../core/js/instance-path";
 import { renderModalTemplate } from "./js/templates/default";
-import { trapModalFocus } from "../../component/modal/js/_focus";
+import { focusModalInitial, trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
@@ -641,7 +641,7 @@ class SfModal extends ModalElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer(changedAttributes);
     }
-    render(templateResult, this.resolveRenderTarget());
+    this.drawInto(templateResult, this.resolveRenderTarget());
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {
       changedAttributes,
@@ -672,8 +672,11 @@ class SfModal extends ModalElement {
     // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
     // theme of its area, and the values of the public variables its manifest
     // declares, by name: a prefix would also carry what an outer window sets
-    // on its own panel (--sf-modal-width) into a window opened from it.
-    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES });
+    // on its own panel (--sf-modal-width) into a window opened from it. And
+    // the variables of the area it stands in (simai/ui-source#46 item 1): a
+    // block's retuned roles and its parts' public variables reach the window
+    // and its content, but none of the window's own --sf-modal-* names.
+    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, area: true, except: ["--sf-modal-"] });
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }
@@ -1053,6 +1056,15 @@ class SfModal extends ModalElement {
     }
 
     if (this.hasAttribute("open") && !this._isOpen && this._modalState !== "closing") {
+      // A window put into the page already open remembers what had focus --
+      // the button that inserted it -- as open() does, so closing gives focus
+      // back there and not to the nearest landmark. A window open in the
+      // page's own markup has no opener.
+      const active = document.activeElement;
+      this._lastActive = active instanceof HTMLElement && active !== document.body &&
+        active !== document.documentElement && !this.contains(active) && !this._root()?.contains(active)
+        ? active : null;
+      this._focusReturnAncestors = captureModalFocusAncestors(this._lastActive);
       this._isOpen = true;
       this._modalState = "open";
       if (this.display !== "inline") {
@@ -1176,9 +1188,11 @@ class SfModal extends ModalElement {
       return;
     }
 
+    // The page's [autofocus] inside the window first -- the safe answer of a
+    // dangerous question (decision C25) -- else the panel, as before.
     const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     if (panel) {
-      panel.focus();
+      focusModalInitial(panel);
     }
   }
 

@@ -30,6 +30,22 @@ test('the generated code head has no fill or backdrop filter of its own (Docara,
   assert.ok(!head[1].split(' ').some((name) => name.startsWith('bg-')), `no background utility on the head: ${head[1]}`);
 });
 
+test('the code head lays itself out without the utility sheet (simai/ui-source#31)', async () => {
+  const [source, defaults] = await Promise.all([
+    read('src/component/highlight/js/index.js'),
+    read('src/component/highlight/scss/_default.scss'),
+  ]);
+  const head = /head\.className = '([^']+)'/u.exec(source);
+  assert.deepEqual(head[1].split(' '), ['sf-highlight__head', 'sf--highlight-head'], 'no layout utilities on the generated head');
+  const rule = /:is\(\.sf-highlight__head, \.sf--highlight-head\) \{([^}]+)\}/u.exec(defaults);
+  assert.ok(rule, 'the head has a layout rule of its own');
+  assert.match(rule[1], /display: flex;/u);
+  assert.match(rule[1], /align-items: center;/u);
+  assert.match(rule[1], /justify-content: space-between;/u);
+  assert.match(defaults, /\.sf-highlight__status \{[^}]*position: absolute;[^}]*clip-path: inset\(50%\);/u, 'the copy status is hidden by the component');
+  assert.match(defaults, /border-radius: var\(--sf-highlight-radius, var\(--sf-radius--surface\)\);/u);
+});
+
 test('Highlight composes native Clipboard and supports dynamic refresh', async () => {
   const [source, rule] = await Promise.all([
     read('src/component/highlight/js/index.js'),

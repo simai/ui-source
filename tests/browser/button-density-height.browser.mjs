@@ -186,7 +186,9 @@ try {
     // ui-b58b5dec35e4): month/year toggles and the size 1 link 32 / 28,
     // the 1/2 link 28 / 24 (desktop / phone); the next size down gives
     // 32 / 28 and 24 / 24.
-    const expected = label === 'desktop' ? {monthToggle: 32, yearToggle: 32, emptyLink1: 32, emptyLink12: 24} : {monthToggle: 28, yearToggle: 28, emptyLink1: 28, emptyLink12: 24};
+    // C27: a size 1/3 button stands 28 on desktop (24 before), so the 1/2
+    // empty-state's 1/3 link is 28 there; the phone keeps 24.
+    const expected = label === 'desktop' ? {monthToggle: 32, yearToggle: 32, emptyLink1: 32, emptyLink12: 28} : {monthToggle: 28, yearToggle: 28, emptyLink1: 28, emptyLink12: 24};
     for (const [name, height] of Object.entries(expected)) {
       const seen = report[label].consumers?.[name];
       if (seen !== height) failures.push(`${label}: ${name} is ${seen}px, expected ${height}px`);

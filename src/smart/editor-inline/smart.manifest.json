@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-inline",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -80,15 +80,23 @@
       "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (session: the bar for the whole edit, over the element, the default; selection: only while text is selected, over the selection)",
       "arguments": [
         {
-          "name": "element",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "object"
-          }
-        },
-        {
-          "name": "options",
-          "schema": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "element": {
+                "type": "object"
+              },
+              "options": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "element",
+              "options"
+            ]
           }
         }
       ],
@@ -373,11 +381,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/editor-inline/index.js",
-        "sha256": "d701c7b601a77270c368075817c2124b258d9c73a0651d3306ec65c9c119cac8"
+        "sha256": "5456d63f8a4b3bd980c2c884df4e30842b757e79abeea4188eb2e93bf393a936"
       },
       {
         "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
-        "sha256": "87801f7a4aecf45179cfa20c6aa798b046682bc4f26438aa46e5e70ea0f71afc"
+        "sha256": "ad605ee51b010f5756aaed6c375582303d794be8d30d2a549941bb41d619042d"
       },
       {
         "path": "src/smart/editor-inline/rule.js",

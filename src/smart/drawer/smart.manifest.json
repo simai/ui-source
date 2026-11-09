@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -268,15 +268,22 @@
       "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches sf-drawer-close (cancelable) and sf-drawer-closed unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
       "arguments": [
         {
-          "name": "reason",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "enum": [
-              "close",
-              "escape",
-              "outside",
-              "cancelled",
-              "api"
-            ]
+            "type": "object",
+            "properties": {
+              "reason": {
+                "enum": [
+                  "close",
+                  "escape",
+                  "outside",
+                  "cancelled",
+                  "api"
+                ]
+              }
+            }
           }
         }
       ],
@@ -882,7 +889,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "5803a13913537a71edcc2ab100b06ce009be0f2c76d916c31956e17753fbe770"
+        "sha256": "2ccc6b60c99affb5ff1aa4fe451bdfb898ba80922387c7d166d53228e6b92699"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
@@ -894,7 +901,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "4cca6a175bb7476bd59afcb51afaf96442b070ff77172280ef9dc70c85bdffe2"
+        "sha256": "760c94f25f85e6f58dcba3c997c7f3cddcec18915dd79442f8eb77811c848327"
       }
     ],
     "generated_runtime": [

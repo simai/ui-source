@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.typography",
   "kind": "tokens",
-  "version": "1.4.0",
+  "version": "1.6.3",
   "owner": "simai/ui-source",
   "summary": "Text sizes, line heights, the typography roles and styles, and links.",
   "includes": [
@@ -26,7 +26,7 @@
     "src/core/scss/_sf_css__typograpy.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "2ebb344eeecbf77feb75e2c56533b440ef64e45821415b5292d653d34e1c4d23",
+  "content_sha256": "b1b45e3f403e18d2414b19c84c71843ac9b97ca41098c0fc333df98291a1832f",
   "dependencies": [
     {
       "id": "font.inter",

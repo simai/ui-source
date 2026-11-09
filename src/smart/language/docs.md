@@ -103,6 +103,20 @@ picker.addEventListener('change', (event) => {
 });
 ```
 
+## Before it draws
+
+The element holds its own box from the first paint, before its code and its
+parts' sheets arrive (core.css, 2026-11-09): one control of its `size` high
+(the ladder's control height, 1 when no size is given), and for `mode="menu"`
+and `mode="search"` as wide as high -- exactly the icon button it then draws.
+So a header's tools do not move when the trigger appears, and a page needs no
+placeholder of its own. The switch (`mode="inline"`, or `auto`, whose look
+depends on how many languages it is given) holds its height only; give a
+header picker `mode="menu"` when its width must be known before the code.
+Static markup printed inside the element (`data-sf-static`) is its own box,
+so nothing is reserved then. The box is released when the element marks its
+look (`data-look`).
+
 ## Remembering the choice
 
 `remember="site"` keeps the chosen code as a preference of the person,

@@ -194,8 +194,22 @@ class SfTree extends TreeElement {
     return one ? [one] : [];
   }
 
+  // The selection as a set, kept while the value it is read from is the same
+  // array (or id): a row asks whether it is selected on every drawing, and a
+  // tree of 10 000 entries all checked scanned a 10 000-id list per row and
+  // per entry -- 73 ms a change (simai/ui-source#43, tests/browser/tree-scale).
+  selectionSet() {
+    const source = this.selection === 'many' ? this.selectedIds : text(this.selected);
+    if (this._selectionSource !== source || !this._selectionSet) {
+      this._selectionSource = source;
+      this._selectionSet = new Set(this.selectionIds());
+    }
+    return this._selectionSet;
+  }
+
   writeSelection(ids, {quiet = true} = {}) {
-    const ordered = [...this._entries.keys()].filter((id) => ids.includes(id));
+    const wanted = new Set(ids);
+    const ordered = [...this._entries.keys()].filter((id) => wanted.has(id));
     this.__sfManifestData = this.__sfManifestData || {};
     this.__sfManifestData['selected-ids'] = ordered;
     const current = ids.at(-1) ?? '';
@@ -217,7 +231,7 @@ class SfTree extends TreeElement {
   }
 
   isSelected(id) {
-    return this.selection !== 'none' && this.selectionIds().includes(id);
+    return this.selection !== 'none' && this.selectionSet().has(id);
   }
 
   selectRow(row) {

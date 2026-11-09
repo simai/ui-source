@@ -9,7 +9,39 @@ With `href` it renders a native anchor; without `href` it renders a button for
 an application-owned action. `disabled` renders a disabled button and no live
 destination.
 
+A file link downloads in the same tab (decision C25): the download semantics
+are on unless `target="_blank"`, which is a file opened to view. Such a link
+shows the `open_in_new` sign after the name and tells a screen reader
+«(откроется в новой вкладке)».
+
+## Preparing and failing (decision C25)
+
+A file the application makes on demand: cancel the request, set
+`state="preparing"` (the spinner stands in the download sign's place, the
+type and size give way to «Готовим файл…», `aria-busy="true"`, a second press
+does nothing), then `state="ready"` with the `href` -- the file the person
+pressed for is fetched once -- or `state="error"`: an error notice
+«Не удалось подготовить файл» (`error-text` adds its words) with «Повторить»
+under the file. «Повторить» sends `sf-file-download-retry {href, fileName}`.
+
+```js
+file.addEventListener('sf-file-download-download', async (event) => {
+  event.preventDefault();
+  file.state = 'preparing';
+  try {
+    file.href = await buildReport();
+    file.state = 'ready';
+  } catch {
+    file.state = 'error';
+  }
+});
+file.addEventListener('sf-file-download-retry', () => { /* prepare again, as above */ });
+```
+
 ## Events
+
+- `sf-file-download-retry` -- «Повторить» was pressed under a file that could
+  not be prepared; `detail` is `{href, fileName}`.
 
 - `sf-file-download-download` — a person pressed the file: the request to
   download it (standard 1.3.8 §8, vocabulary 1.1.5 §5.1). `detail` is
@@ -30,13 +62,18 @@ file.addEventListener('sf-file-download-download', (event) => {
 - `size="1/3|1/2|1|2|3"` — as tall as an `sf-button` of the same size (one
   height per size, rule C01); the file name is one line and ends in an
   ellipsis when it does not fit, never broken inside a word
-- `file-name`
-- `file-size`
-- `icon`
+- `file-name` -- empty: the link's last part, else «Файл»
+- `file-type` -- the type in words (PDF, XLSX), before the size: «PDF · 2,4 МБ»
+- `file-size` -- the size as text in the page's units; empty with `href`, it is
+  asked of the file and written in the page's language («2,4 МБ»)
+- `state` -- `ready` (default), `preparing`, `error`
+- `error-text` -- more words in the error notice
+- `icon` -- former way to name the type by a glyph in the download sign's
+  place; still drawn until 2027-01-01, give `file-type` instead
 - `href`
-- `download`
+- `download` -- kept for compatibility; a file link downloads anyway
 - `disabled`
-- `target`
+- `target` -- empty (default): download in the same tab; `_blank`: open to view
 - `aria-label` — a host attribute, passed to the link or button
 
 ## Example
@@ -45,8 +82,8 @@ file.addEventListener('sf-file-download-download', (event) => {
 <sf-file-download
   size="1"
   file-name="logo.svg"
+  file-type="SVG"
   href="/assets/img/logo.svg"
-  download
 ></sf-file-download>
 ```
 

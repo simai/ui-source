@@ -21,6 +21,11 @@
       "reason": "The template composes the drawer's layer from its token when no z-index is given."
     },
     {
+      "component": "file-download",
+      "prop": "fileName",
+      "reason": "Derived from the page: an absent file-name is the link's last part, else the word for a file in the page's language (decision C25)."
+    },
+    {
       "component": "gallery",
       "prop": "modalId",
       "reason": "Generated per instance when not set."

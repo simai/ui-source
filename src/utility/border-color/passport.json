@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.border-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/border-color/active/index.js",
@@ -28,7 +28,7 @@
     "src/utility/border-color/hover/scss/_sf_css__border_color.scss",
     "src/utility/border-color/hover/scss/index.scss"
   ],
-  "content_sha256": "cf21de74a951f0f212677d4d21e9b669f4b91500b839bb49bc42d95300f3b49a",
+  "content_sha256": "f8604002e998bc3de929a57371bdc22eca4c73c58adfb91be6192bba6d58f2d8",
   "dependencies": [
     {
       "id": "tokens.colour",

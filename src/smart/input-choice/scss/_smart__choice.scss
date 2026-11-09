@@ -1,27 +1,38 @@
 @layer sf.components {
-/* sf-input-choice (standard simai.smart-component 1.3.14 §6): options as
-   cards in a grid. The label row and the message line are sf-input's (text
-   size 1/2, on-surface-variant, the error role while invalid). A card is
-   drawn on the ladder: its icon box is the size 1 control height, the title
-   text size 1, the caption text size 1/2, the mark the half rung's icon;
-   its hairline is drawn inside its box. Every colour is a role token; the
-   public variables are read with the role as their fallback and never set
-   here, and states (hover, focus, checked, disabled, invalid) draw over
-   them. */
+/* sf-input-choice (standard simai.smart-component 1.3.15 §6; owner decision
+   C28, prototype input-choice-world.html): options as cards in one of three
+   layouts. The label row and the message line are sf-input's (text size 1/2,
+   on-surface-variant, the error role while invalid).
+
+   Geometry (C18, C22): the card's padding is one space step on all four
+   sides (space-1), the gap between cards half of it; the radius is the
+   surface radius. The control on the name line is the class radio or
+   checkbox at size 1: its box is the name line (text-height-1), so it steps
+   down with the density and the phone ladder together with the text. The
+   name is text size 1 medium, the description text size 1/2
+   on-surface-variant.
+
+   Selected (C28): a 2 px primary edge (the 1 px border and a 1 px inner ring,
+   so the box does not move) over the lowest step of the fill family,
+   primary-container (12 light, 24 dark); the words stay on the on-surface
+   roles. Every colour is a role token; the public variables are read with
+   the role as their fallback and never set here, and states (hover, focus,
+   checked, disabled, invalid) draw over them. */
 .sf-choice {
-  --sf-choice--gap: var(--sf-choice-gap, var(--sf-space-1\/2));
-  --sf-choice--min-inline-size: var(--sf-choice-min-inline-size, 15rem);
-  --sf-choice--padding: var(--sf-choice-padding, var(--sf-space-1\/2));
-  --sf-choice--radius: var(--sf-choice-radius, var(--sf-radius--ui));
+  --sf-choice--padding: var(--sf-choice-padding, var(--sf-space-1));
+  --sf-choice--gap: var(--sf-choice-gap, calc(var(--sf-choice--padding) / 2));
+  --sf-choice--min-inline-size: var(--sf-choice-min-inline-size, var(--sf-f5));
+  --sf-choice--radius: var(--sf-choice-radius, var(--sf-radius--surface));
   --sf-choice--background-color: var(--sf-choice-background-color, var(--sf-transparent));
   --sf-choice--border-color: var(--sf-choice-border-color, var(--sf-outline-variant));
-  --sf-choice--selected-background-color: var(--sf-choice-selected-background-color, var(--sf-primary-transparent-select));
+  --sf-choice--selected-background-color: var(--sf-choice-selected-background-color, var(--sf-primary-container));
   --sf-choice--selected-border-color: var(--sf-choice-selected-border-color, var(--sf-primary));
   --sf-choice--columns: 1;
   display: flex;
   flex-direction: column;
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
+  container: sf-choice / inline-size;
 }
 
 .sf-choice .sf-choice-label,
@@ -42,9 +53,9 @@
   margin-inline-start: var(--sf-space-1\/4);
 }
 
-/* The grid: auto fills the width with cards no narrower than the minimum; a
-   number of columns is the most, fewer where a card would be narrower than
-   the minimum (a phone stacks them). */
+/* The grid (tile, picture): auto fills the width with cards no narrower than
+   the minimum; a number of columns is the most, fewer where a card would be
+   narrower than the minimum (a phone stacks them). */
 .sf-choice .sf-choice-grid {
   display: grid;
   gap: var(--sf-choice--gap);
@@ -61,12 +72,14 @@
   grid-template-columns: repeat(auto-fill, minmax(max(min(100%, var(--sf-choice--min-inline-size)), calc((100% - (var(--sf-choice--columns) - 1) * var(--sf-choice--gap)) / var(--sf-choice--columns))), 1fr));
 }
 
+/* The card: one surface, the whole of it the native input's label. */
 .sf-choice .sf-choice-card {
   position: relative;
   display: flex;
   box-sizing: border-box;
-  align-items: flex-start;
-  gap: var(--sf-space-1\/2);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sf-space-1\/4);
   min-inline-size: 0;
   padding: var(--sf-choice--padding);
   border: var(--sf-px) solid var(--sf-choice--border-color);
@@ -74,82 +87,31 @@
   background-color: var(--sf-choice--background-color);
   color: var(--sf-on-surface);
   cursor: pointer;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: var(--sf-duration-fast);
+  transition-timing-function: var(--sf-animation);
 }
 
-/* The native input covers the card: a press anywhere is the input's, and the
-   focus is the card's box. */
-.sf-choice .sf-choice-input {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  margin: 0;
-  opacity: 0;
-  appearance: none;
-  cursor: inherit;
+/* The name line: the control, the words, and in a list the price column. The
+   control is the line's height, so it stands on the line without moving it. */
+.sf-choice .sf-choice-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
 }
 
-.sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
-  background-color: var(--sf-surface-transparent-hover);
-}
-
-.sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
-  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-px);
-}
-
-/* Checked: two signs, not only colour -- the mark is filled and the edge is
-   drawn twice as heavy (an inner ring, so the box does not move). */
-.sf-choice .sf-choice-card--checked {
-  border-color: var(--sf-choice--selected-border-color);
-  background-color: var(--sf-choice--selected-background-color);
-  box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
-}
-
-.sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked) {
-  border-color: var(--sf-error);
-}
-
-.sf-choice .sf-choice-card--disabled {
-  border-color: var(--sf-outline-disable);
-  background-color: var(--sf-disable);
-  color: var(--sf-on-disable);
-  cursor: default;
-}
-
-/* The icon box: the size 1 control height, square, the glyph at the size 1
-   icon. */
-.sf-choice .sf-choice-icon {
-  display: inline-flex;
+.sf-choice .sf-choice-control {
+  display: flex;
   flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-ui-1--control-height);
-  block-size: var(--sf-ui-1--control-height);
-  border-radius: var(--sf-radius--ui);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-  background-color: var(--sf-surface-container);
-  color: var(--sf-on-surface-variant);
 }
 
-.sf-choice .sf-choice-icon .sf-icon {
-  --sf-icon--color: currentColor;
-  --sf-icon--size: var(--sf-icon-size-1);
-  font-size: var(--sf-icon-size-1);
+/* Tile and picture: the control at the end of the name line, so the name, the
+   description and the price share one left edge. */
+.sf-choice:not([data-layout='list']) .sf-choice-control {
+  order: 1;
 }
 
-.sf-choice .sf-choice-card--checked .sf-choice-icon {
-  background-color: var(--sf-primary-container);
-  color: var(--sf-on-primary-container);
-}
-
-.sf-choice .sf-choice-card--disabled .sf-choice-icon {
-  background-color: var(--sf-transparent);
-  color: var(--sf-on-disable);
-}
-
-/* The words: the title on the size 1 line, the caption a rung below. With
-   an icon, the title's line is centred on the icon box's first half. */
 .sf-choice .sf-choice-body {
   display: flex;
   flex: 1 1 auto;
@@ -157,15 +119,12 @@
   min-inline-size: 0;
 }
 
-.sf-choice .sf-choice-icon + .sf-choice-body {
-  padding-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
-}
-
 .sf-choice .sf-choice-title {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sf-space-1\/4) var(--sf-space-1\/3);
+  min-block-size: var(--sf-text-height-1);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1);
   font-weight: var(--sf-font-weight-medium);
@@ -177,6 +136,16 @@
   overflow-wrap: anywhere;
 }
 
+/* An option's icon stands on the name line at the line's height, as the class
+   checkbox sizes its icon. */
+.sf-choice .sf-choice-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+  flex: none;
+}
+
 .sf-choice .sf-choice-caption {
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/2);
@@ -186,77 +155,276 @@
   overflow-wrap: anywhere;
 }
 
-.sf-choice .sf-choice-card--disabled .sf-choice-caption {
+/* List: price and term a column at the end of the name line -- the price on
+   the name line, the term under it. */
+.sf-choice .sf-choice-meta {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-inline-start: auto;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.sf-choice .sf-choice-meta .sf-choice-price-value {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-choice .sf-choice-term {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-on-surface-variant);
+}
+
+/* Tile and picture: the price at the foot, after a divider; the term on its
+   line. */
+.sf-choice:not([data-layout='list']) .sf-choice-head {
+  flex-grow: 1;
+}
+
+.sf-choice .sf-choice-rule {
+  display: block;
+  block-size: var(--sf-px);
+  margin-block-start: var(--sf-space-1\/3);
+  background-color: var(--sf-outline-variant);
+}
+
+.sf-choice .sf-choice-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sf-space-1\/4);
+}
+
+.sf-choice .sf-choice-price .sf-choice-price-value {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-2);
+  font-weight: var(--sf-font-weight-bold);
+  line-height: var(--sf-text-height-2);
+}
+
+.sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-px);
+}
+
+.sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
+  border-color: var(--sf-outline);
+  background-color: var(--sf-surface-transparent-hover);
+}
+
+.sf-choice .sf-choice-card--checked,
+.sf-choice .sf-choice-card--checked:hover {
+  border-color: var(--sf-choice--selected-border-color);
+  background-color: var(--sf-choice--selected-background-color);
+  box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
+}
+
+.sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
+  border-color: var(--sf-error);
+}
+
+/* Disabled: the disable roles on the edge and the words, the control and the
+   badge in their own disabled look, no hover; distinct from a card not
+   chosen, which keeps on-surface words and the outline-variant edge. */
+.sf-choice .sf-choice-card--disabled {
+  border-color: var(--sf-outline-disable);
+  color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-choice .sf-choice-card--disabled :is(.sf-choice-caption, .sf-choice-term) {
   color: inherit;
 }
 
-/* The mark: a radio ring or a check box, the half rung's icon, on the
-   title's line. Checked, it is filled with the primary role: a dot inside the
-   ring, a check inside the box. */
-.sf-choice .sf-choice-mark {
-  display: inline-flex;
-  flex: none;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-icon-size-1\/2);
-  block-size: var(--sf-icon-size-1\/2);
-  margin-block-start: calc((var(--sf-text-height-1) - var(--sf-icon-size-1\/2)) / 2);
-  border: calc(var(--sf-px) * 2) solid var(--sf-on-surface-variant);
-  border-radius: var(--sf-radius-circle);
-  color: var(--sf-on-primary);
+.sf-choice .sf-choice-card--disabled .sf-choice-title {
+  font-weight: var(--sf-font-weight-regular);
 }
 
-.sf-choice .sf-choice-icon ~ .sf-choice-mark {
-  margin-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-icon-size-1\/2)) / 2);
+.sf-choice .sf-choice-card--disabled .sf-choice-icon {
+  --sf-icon--color: var(--sf-on-disable);
 }
 
-.sf-choice.sf-choice--multiple .sf-choice-mark {
-  border-radius: calc(var(--sf-px) * 4);
+.sf-choice .sf-choice-card--disabled .sf-choice-rule {
+  background-color: var(--sf-outline-disable);
 }
 
-.sf-choice .sf-choice-card--checked .sf-choice-mark {
-  border-color: var(--sf-primary);
-  background-color: var(--sf-primary);
+/* ---------------------------------------------------------------- list
+   One frame, rows divided by lines (Stripe Checkout, Shopify checkout): each
+   row draws its own edge and the rows overlap by the hairline, so a chosen
+   row's 2 px edge replaces the line instead of doubling it. */
+.sf-choice[data-layout='list'] .sf-choice-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.sf-choice:not(.sf-choice--multiple) .sf-choice-card--checked .sf-choice-mark {
-  /* The radio's dot: half the ring's inner size, the gap around it the card's
-     own fill. */
-  background: radial-gradient(circle closest-side, var(--sf-primary) 50%, var(--sf-transparent) calc(50% + var(--sf-px) / 2));
+.sf-choice[data-layout='list'] .sf-choice-card {
+  border-radius: 0;
 }
 
-.sf-choice .sf-choice-mark .sf-icon {
-  --sf-icon--color: currentColor;
-  --sf-icon--size: var(--sf-icon-size-1\/3);
-  font-size: var(--sf-icon-size-1\/3);
+.sf-choice[data-layout='list'] .sf-choice-card + .sf-choice-card {
+  margin-block-start: calc(var(--sf-px) * -1);
 }
 
-.sf-choice .sf-choice-card--disabled .sf-choice-mark {
-  border-color: var(--sf-outline-disable);
+.sf-choice[data-layout='list'] .sf-choice-card:first-child {
+  border-start-start-radius: var(--sf-choice--radius);
+  border-start-end-radius: var(--sf-choice--radius);
 }
 
-.sf-choice.sf-choice--multiple .sf-choice-card--disabled.sf-choice-card--checked .sf-choice-mark {
-  background-color: var(--sf-on-disable);
+.sf-choice[data-layout='list'] .sf-choice-card:last-child {
+  border-end-start-radius: var(--sf-choice--radius);
+  border-end-end-radius: var(--sf-choice--radius);
 }
 
-.sf-choice:not(.sf-choice--multiple) .sf-choice-card--disabled.sf-choice-card--checked .sf-choice-mark {
-  background: radial-gradient(circle closest-side, var(--sf-on-disable) 50%, var(--sf-transparent) calc(50% + var(--sf-px) / 2));
+.sf-choice[data-layout='list'] .sf-choice-card--checked,
+.sf-choice[data-layout='list'] .sf-choice-card:has(.sf-choice-input:focus-visible) {
+  z-index: 1;
 }
 
-@media (forced-colors: active) {
-  .sf-choice .sf-choice-card--checked {
-    border-color: Highlight;
-    box-shadow: inset 0 0 0 var(--sf-px) Highlight;
+/* Inside the frame a hover or a disabled row keeps the frame's line. */
+.sf-choice[data-layout='list'] .sf-choice-card:not(.sf-choice-card--checked):hover,
+.sf-choice[data-layout='list'] .sf-choice-card--disabled {
+  border-color: var(--sf-choice--border-color);
+}
+
+/* ---------------------------------------------------------------- picture
+   The image runs to the card's edges, the caption under it with the card's
+   padding; the chosen edge is drawn over the image. */
+.sf-choice[data-layout='picture'] .sf-choice-card {
+  overflow: hidden;
+  padding: 0;
+  gap: 0;
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-card > :not(.sf-choice-media) {
+  margin-inline: var(--sf-choice--padding);
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-head {
+  padding-block-start: var(--sf-choice--padding);
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-card > :last-child {
+  margin-block-end: var(--sf-choice--padding);
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-media + .sf-choice-head {
+  padding-block-start: var(--sf-space-1\/2);
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-price {
+  margin-block-start: var(--sf-space-1\/4);
+}
+
+.sf-choice .sf-choice-media {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  background-color: var(--sf-surface-1);
+}
+
+.sf-choice .sf-choice-media img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-card--checked {
+  box-shadow: none;
+}
+
+.sf-choice[data-layout='picture'] .sf-choice-card--checked::after {
+  box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
+}
+
+.sf-choice .sf-choice-card--disabled .sf-choice-media {
+  opacity: var(--sf-opacity-50);
+}
+
+/* A narrow field (a phone): a picture tile turns into a row -- the image at
+   the start, the caption beside it -- so several fit one screen. */
+@container sf-choice (inline-size < 30rem) {
+  .sf-choice[data-layout='picture'] .sf-choice-card {
+    display: grid;
+    grid-template-columns: var(--sf-e6) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto auto 1fr;
   }
 
-  .sf-choice .sf-choice-card--checked .sf-choice-mark {
-    border-color: Highlight;
-    background-color: Highlight;
+  /* The caption stands in the middle of the row, beside the image. */
+  .sf-choice[data-layout='picture'] .sf-choice-head { grid-row: 2; }
+  .sf-choice[data-layout='picture'] .sf-choice-rule { grid-row: 3; }
+  .sf-choice[data-layout='picture'] .sf-choice-price { grid-row: 4; }
+
+  .sf-choice[data-layout='picture'] .sf-choice-card > .sf-choice-price:last-child {
+    margin-block-end: var(--sf-space-1\/2);
   }
 
-  .sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
-    outline: var(--sf-focus-outline-width) solid currentColor;
+  .sf-choice[data-layout='picture'] .sf-choice-card > .sf-choice-head:last-child {
+    margin-block-end: 0;
+  }
+
+  .sf-choice[data-layout='picture'] .sf-choice-media {
+    grid-row: 1 / -1;
+    aspect-ratio: auto;
+    min-block-size: var(--sf-e0);
+    border-block-end: 0;
+    border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-choice[data-layout='picture'] .sf-choice-card > :not(.sf-choice-media) {
+    grid-column: 2;
+  }
+
+  .sf-choice[data-layout='picture'] .sf-choice-media + .sf-choice-head {
+    padding-block: var(--sf-space-1\/2);
   }
 }
+}
+
+/* The card owns the focus ring: the control gives its own up (one component,
+   one ring). The class radio and checkbox draw theirs in sf.components with a
+   :has() of their own, so this is an override. */
+@layer sf.overrides {
+  .sf-choice .sf-choice-control .sf-radio-button-box,
+  .sf-choice .sf-choice-control .sf-checkbox-box {
+    outline: none;
+  }
+}
+
+@layer sf.states {
+  @media (forced-colors: active) {
+    .sf-choice .sf-choice-card--checked,
+    .sf-choice[data-layout='picture'] .sf-choice-card--checked::after {
+      border-color: Highlight;
+      box-shadow: inset 0 0 0 var(--sf-px) Highlight;
+    }
+
+    .sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-choice .sf-choice-card {
+      transition-duration: 0s;
+    }
+  }
 }

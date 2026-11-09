@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "title": "Progress",
   "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
   "kind": "smart",
@@ -134,17 +134,28 @@
   "contracts": {},
   "methods": {
     "chunk": {
-      "summary": "Appends text to the output (vocabulary §5.2 chunk {id, text} of a stream: a rule hands a job's output chunk on). A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
+      "summary": "Appends text to the output: chunk({text}), the object form of vocabulary §5.2 chunk {id, text} of a stream (a rule hands a job's output chunk on); a plain string, chunk(text), is accepted as shorthand. A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
       "arguments": [
         {
-          "name": "text",
+          "name": "args",
+          "type": "object|string",
+          "required": true,
           "schema": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
           }
         }
       ],
       "returns": {
-        "type": "object"
+        "type": "object",
+        "description": "An outcome: {outcome: 'applied'} or {outcome: 'refused', reason: 'invalid'}."
       }
     },
     "clear": {
@@ -158,39 +169,39 @@
       "summary": "Changes one step: the fields given replace that step's (state, text, started, finished, duration). Refused {reason: missing} for an id the run does not have",
       "arguments": [
         {
-          "name": "id",
+          "name": "args",
+          "type": "object",
+          "required": true,
           "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "state",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "text",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "started",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "finished",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "duration",
-          "schema": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "started": {
+                "type": "string"
+              },
+              "finished": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "state",
+              "text",
+              "started",
+              "finished",
+              "duration"
+            ]
           }
         }
       ],
@@ -372,7 +383,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "28bed355a128001f1454f00a09f602b137a4a72b7bd4bb2b709f47b3d5555a92"
+        "sha256": "0406d574803a112b431c1373db5a30ce9208c32b710489cc5dfd8329821869c3"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
@@ -388,7 +399,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "2118927a91790f7bc853963eb60705e97244ce4eb31d09747406ba0c00e02c6a"
+        "sha256": "85acfa5f5d226430ba905abfe93866a06d11de0c4100d637bbf42ed3523308d1"
       }
     ],
     "generated_runtime": []

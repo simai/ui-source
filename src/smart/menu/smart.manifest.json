@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -299,8 +299,18 @@
       "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu-toggle fires for each branch that changed, source method. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -311,8 +321,18 @@
       "summary": "Close the branch with this id; in a row the panels inside it close too. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {
@@ -323,8 +343,18 @@
       "summary": "Open the branch if it is closed, close it if it is open. Answers an outcome: applied, or refused with unknown, compact, disabled, already, or fixed for a group that is not collapsible or that a row does not draw.",
       "arguments": [
         {
-          "name": "id",
-          "schema": {}
+          "name": "args",
+          "type": "object|string",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {}
+            },
+            "required": [
+              "id"
+            ]
+          }
         }
       ],
       "returns": {

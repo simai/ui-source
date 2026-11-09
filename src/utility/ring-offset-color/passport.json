@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.ring-offset-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/ring-offset-color/default/index.js",
@@ -27,7 +27,7 @@
     "src/utility/ring-offset-color/hover/scss/_sf_css__ring_offset_color.scss",
     "src/utility/ring-offset-color/hover/scss/index.scss"
   ],
-  "content_sha256": "671dde660c65e82f046ddddd74f1f227892d8394a8d05f5f8e44f5c8ef0f3cbb",
+  "content_sha256": "7c354be46fbc81c8453cb70fabaa6503fd9cdcfb6bc01e1accc7a16a42e370b7",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

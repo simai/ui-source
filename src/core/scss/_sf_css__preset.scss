@@ -91,6 +91,10 @@
         position: relative;
         white-space: pre-wrap;
         background-color: var(--sf-mark--color);
+        // The browser's own sheet draws a mark's text black, which in the dark
+        // theme left black words on a dark plate. A mark highlights the text
+        // it lies in, so it keeps that text's ink (C17, 2026-11-09).
+        color: inherit;
         font-weight: inherit;
         font-style: inherit;
     }

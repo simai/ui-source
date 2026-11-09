@@ -34,8 +34,9 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
   ]);
 
   // The shared scrim of the core first (reuse audit 2026-11-02), black at 64
-  // since C16 and C20: the strength is in the colour, drawn at full opacity.
-  assert.match(styles, /--sf-modal-overlay-background: var\(--sf-scrim-color, var\(--sf-black--alfa-64\)\)/);
+  // since C16 and C20: the strength is in the colour, drawn at full opacity;
+  // the core token is always defined, so no raw fallback (C18).
+  assert.match(styles, /--sf-modal-overlay-background: var\(--sf-scrim-color\);/);
   assert.match(styles, /--sf-modal-overlay-opacity: var\(--sf-scrim-opacity, 1\)/);
   assert.match(styles, /background-color: var\(--sf-modal-overlay-background\)/);
   assert.match(styles, /opacity: var\(--sf-modal-overlay-opacity\)/);

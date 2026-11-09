@@ -1409,7 +1409,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     // With an icon: sf-icon-button at size 1/2, its label the name, and sf-tooltip
-    // holding the label and the shortcut. In the DOM from setActions on, so both
+    // holding the label and the shortcut (its shortcut setting: the kbd
+    // component's quiet keys). The tooltip is the plain one, its defaults. In the DOM from setActions on, so both
     // load before the first selection needs them.
     createAction(action) {
       const doc = globalThis.document;
@@ -1429,8 +1430,6 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       button.setAttribute('data-action', action.id);
       button.setAttribute('data-tooltip', '');
       const tooltip = doc.createElement('sf-tooltip');
-      tooltip.setAttribute('appearance', 'dark');
-      tooltip.setAttribute('size', '1/2');
       tooltip.setAttribute('arrow', 'bottom-center');
       tooltip.hidden = true;
       root.append(button, tooltip);
@@ -1449,7 +1448,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       button.setAttribute('icon', action.icon);
       button.setAttribute('aria-label', action.label);
-      tooltip.setAttribute('text', action.shortcut ? `${action.label}  ${action.shortcut}` : action.label);
+      tooltip.setAttribute('text', action.label);
+      if (action.shortcut) tooltip.setAttribute('shortcut', action.shortcut);
+      else tooltip.removeAttribute('shortcut');
       root.toggleAttribute('data-sf-overlay-grip', action.icon === GRIP_ICON);
     }
 

@@ -9,7 +9,7 @@
 const ANNOTATIONS = new Set(["$schema", "$id", "title", "description", "x-simai-version", "$defs"]);
 const KEYWORDS = new Set([
   "type", "properties", "required", "additionalProperties", "propertyNames",
-  "items", "minItems", "uniqueItems", "enum", "const", "pattern", "minLength", "$ref",
+  "items", "minItems", "uniqueItems", "enum", "const", "pattern", "minLength", "minimum", "$ref",
 ]);
 
 const kind = (value) => {
@@ -53,6 +53,7 @@ export function validateWithSchema(rootSchema, value) {
     }
     if (schema.const !== undefined && !same(schema.const, data)) errors.push({path, message: `must equal ${JSON.stringify(schema.const)}`});
     if (schema.enum && !schema.enum.some((option) => same(option, data))) errors.push({path, message: `must be one of ${schema.enum.join(", ")}`});
+    if (typeof data === "number" && schema.minimum !== undefined && data < schema.minimum) errors.push({path, message: `must be at least ${schema.minimum}`});
     if (typeof data === "string") {
       if (schema.minLength !== undefined && [...data].length < schema.minLength) errors.push({path, message: `must have at least ${schema.minLength} characters`});
       if (schema.pattern && !new RegExp(schema.pattern, "u").test(data)) errors.push({path, message: `must match ${schema.pattern}`});

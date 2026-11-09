@@ -3,13 +3,13 @@
    only the Framework's public variables, so the quote follows the theme. */
 .sample-quote {
   margin: 0;
-  padding-inline-start: var(--sf-space-4, 1rem);
-  border-inline-start: 0.25rem solid var(--sf-primary, currentColor);
+  padding-inline-start: var(--sf-space-4);
+  border-inline-start: var(--sf-a4) solid var(--sf-primary, currentColor);
   color: var(--sf-on-surface, inherit);
 }
 
 .sample-quote--center {
-  padding-inline: var(--sf-space-4, 1rem);
+  padding-inline: var(--sf-space-4);
   border-inline-start: 0;
   text-align: center;
 }
@@ -19,14 +19,14 @@
 }
 
 .sample-quote--large .sample-quote-text {
-  font-size: var(--sf-text-size-4, 1.25rem);
+  font-size: var(--sf-text-size-4);
 }
 
 .sample-quote-caption {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sf-space-1, 0.25rem) var(--sf-space-2, 0.5rem);
-  margin-block-start: var(--sf-space-2, 0.5rem);
+  gap: var(--sf-space-1) var(--sf-space-2);
+  margin-block-start: var(--sf-space-2);
   color: var(--sf-on-surface-variant, inherit);
 }
 

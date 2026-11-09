@@ -10,7 +10,8 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^17.24.0",
     "eslint-plugin-promise": "^7.2.1",
-    "globals": "^16.1.0"
+    "globals": "^16.1.0",
+    "playwright": "1.63.0"
   },
   "scripts": {
     "responsive-utilities:generate": "node scripts/generate-responsive-utility-variants.mjs",
@@ -47,6 +48,8 @@
     "utility-loader:audit": "node scripts/audit-utility-loader-contract.mjs",
     "utility-rules:generate": "node scripts/generate-exact-utility-rules.mjs",
     "dimensions:audit": "node scripts/audit-dimensions.mjs --summary",
+    "static-palette:generate": "node scripts/generate-static-palette.mjs",
+    "static-palette:check": "node scripts/generate-static-palette.mjs --check",
     "linkage:check": "node scripts/linkage.mjs passports --check",
     "linkage:write": "node scripts/linkage.mjs passports --write",
     "test:linkage": "node --test tests/linkage.contract.test.mjs",

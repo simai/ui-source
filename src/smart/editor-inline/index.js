@@ -17,4 +17,6 @@ import './scss/index.scss';
 
 globalThis.SF = globalThis.SF || {};
 globalThis.SF.InlineEditor = Object.freeze({ INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, readInlineDom, renderInlineDom, startInlineEdit, textOffset });
-defineInlineEditor(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
+// edit(element, options) takes its fields in order; the runtime gives it the
+// object form of §4.4 as well: edit({element, options}).
+defineInlineEditor(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases, positional: ['edit']})});

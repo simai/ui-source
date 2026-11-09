@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -121,9 +121,16 @@
       "summary": "Open or close it; a boolean forces one or the other.",
       "arguments": [
         {
-          "name": "force",
+          "name": "args",
+          "type": "object|boolean",
+          "required": false,
           "schema": {
-            "type": "boolean"
+            "type": "object",
+            "properties": {
+              "force": {
+                "type": "boolean"
+              }
+            }
           }
         }
       ],
@@ -144,15 +151,22 @@
       "summary": "Close it.",
       "arguments": [
         {
-          "name": "reason",
+          "name": "args",
+          "type": "object",
+          "required": false,
           "schema": {
-            "enum": [
-              "close",
-              "escape",
-              "outside",
-              "cancelled",
-              "api"
-            ]
+            "type": "object",
+            "properties": {
+              "reason": {
+                "enum": [
+                  "close",
+                  "escape",
+                  "outside",
+                  "cancelled",
+                  "api"
+                ]
+              }
+            }
           }
         }
       ],

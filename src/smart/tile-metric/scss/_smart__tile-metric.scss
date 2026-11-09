@@ -237,7 +237,7 @@ sf-tile-metric {
    phone; the gap is the size-1 rung's space. */
 .sf-tile-metric-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, 14rem)), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, var(--sf-f4))), 1fr));
   gap: var(--sf-space-1);
   align-items: stretch;
 }

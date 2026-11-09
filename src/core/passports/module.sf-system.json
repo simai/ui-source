@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.sf-system",
   "kind": "module",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "owner": "simai/ui-source",
   "summary": "The SF4-era system scripts, internal: the ready and event files core imports, SF.Ajax, SF.Param and SF.Search, and the engine the special module imports. No rule loads it; nothing documented leans on it.",
   "includes": [

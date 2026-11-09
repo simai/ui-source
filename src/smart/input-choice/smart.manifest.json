@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "title": "Choice",
-  "summary": "A form field that picks one option, or several, from cards: each a title, a caption, an icon and a badge, in a grid that wraps on a phone. One option is a radio group the arrow keys move through; several are checkboxes. Chosen cards have a filled mark and a heavier primary edge; invalid cards an error edge and a message under them.",
+  "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -35,8 +35,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.badges",
-      "component.icons"
+      "component.checkbox",
+      "component.icons",
+      "component.radio",
+      "smart.badge"
     ],
     "public_parts": []
   },
@@ -63,10 +65,20 @@
         "default": false,
         "description": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
       },
+      "layout": {
+        "type": "string",
+        "default": "tile",
+        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start.",
+        "enum": [
+          "tile",
+          "list",
+          "picture"
+        ]
+      },
       "columns": {
         "type": "string",
         "default": "auto",
-        "description": "The grid: auto fills the width with cards no narrower than --sf-choice-min-inline-size (15rem); a number is the most columns, fewer where a card would be narrower than that, so a phone stacks them.",
+        "description": "The grid of tile and picture: auto fills the width with cards no narrower than --sf-choice-min-inline-size (15rem); a number is the most columns, fewer where a card would be narrower than that, so a phone stacks them. A list is one column.",
         "enum": [
           "auto",
           "1",
@@ -122,21 +134,23 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The options, [{value, label, caption?, icon?, badge?, disabled?}]: each a card with its title (label, or title), a caption under it, an icon in a box before it and a short badge beside the title. A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
         "examples": [
           [
             {
-              "value": "site",
-              "label": "Сайт",
-              "caption": "Страницы, разделы и меню",
-              "icon": "language"
+              "value": "courier",
+              "label": "Курьером",
+              "caption": "Привезём в удобный интервал",
+              "price": "350 ₽",
+              "term": "2–3 дня"
             },
             {
-              "value": "shop",
-              "label": "Магазин",
-              "caption": "Каталог, корзина и заказы",
-              "icon": "storefront",
-              "badge": "Pro"
+              "value": "pickup",
+              "label": "Пункт выдачи",
+              "caption": "Больше 2 000 пунктов по стране",
+              "price": "150 ₽",
+              "term": "1–2 дня",
+              "badge": "Выгодно"
             }
           ]
         ]
@@ -308,27 +322,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "f08b418d327de271d9f19cab5579f774fa68f3d263f11f879820896baa924f59"
+        "sha256": "eeb75fdea5fb701a24ce505ec4fb80ce44a99e9330929a96e094e9008886f133"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "4e198b260441be9a5ccfc1cdbd2f6059b087da8b72c2d97e6bc13fe947ba33d8"
+        "sha256": "301014ab34aeed8a30e3cf696703b7e8368584434513358e20d2f0a56955d589"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "e63430c2b70e8fc020aaf961f3d3d5069877647816824d4a6f8adea787c730af"
+        "sha256": "eb72ae4d188ca33ec685d608edbe4d60e5ad8b9f78a9a8ede62d679020d1a219"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "4a1611f5a8de2a423833e2578d5cdeaec5b6de953254fd96ca7f39df09636989"
+        "sha256": "e4912facbd0b0671bc1e3cd4217465cc9cb944751ec99b14ac89190d1046219c"
       },
       {
         "path": "src/smart/input-choice/rule.js",
-        "sha256": "fd9769290bb3f498ebe5ef5cccb4571c608041ea43afd5b5f426925fb1c9e46d"
+        "sha256": "8bef1d6848be2e826d9720f4140e18f218fbcc044d07036d5fa63f19706f5a9a"
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "cc1282e4f37fe8e290226ef0d3f1b499c14d2b6e09fa350166c533c794f579b1"
+        "sha256": "34dada8f2da7fb613083794a7f41d9d8c15c37296a459606a480804b1bb7d6a4"
       }
     ],
     "generated_runtime": []

@@ -905,7 +905,7 @@
         {
           "name": "--sf-tooltip-border-color",
           "role": "border-color",
-          "summary": "The border colour of the light appearance; the dark one has no border.",
+          "summary": "The border colour; every appearance reads it (the dark one draws no border until a width is set).",
           "default": "var(--sf-outline-variant)",
           "since": "2026-10-18",
           "varies_with": [
@@ -915,7 +915,7 @@
         {
           "name": "--sf-tooltip-border-width",
           "role": "border-width",
-          "summary": "The border width of the light appearance on every side; the dark one has no border.",
+          "summary": "The border width on every side: one hairline on the light appearance, none on the dark one unless set.",
           "default": "var(--sf-px)",
           "since": "2026-10-18",
           "varies_with": [
@@ -1701,7 +1701,7 @@
           "name": "--sf-color-swatches-gap",
           "role": "gap",
           "summary": "The space between presets.",
-          "default": "var(--sf-space-1\\/2, 4px)",
+          "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
@@ -4050,7 +4050,7 @@
           "name": "--sf-tile-metric-min-width",
           "role": "min-inline-size",
           "summary": "The narrowest column of sf-tile-metric-grid, the row of tiles that wraps.",
-          "default": "14rem",
+          "default": "var(--sf-f4)",
           "since": "2026-11-07"
         }
       ]
@@ -4193,6 +4193,47 @@
       ]
     },
     {
+      "component": "highlight",
+      "selector": ".sf-code-surface",
+      "variables": [
+        {
+          "name": "--sf-highlight-radius",
+          "role": "radius",
+          "summary": "The code block's corners. A host that nests the block -- a code block in a chat bubble -- sets it to follow its own corner.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-background-color",
+          "role": "background",
+          "summary": "The code block's fill, under the head and the code.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-color",
+          "role": "color",
+          "summary": "The code block's text, where a token has no colour of its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-color",
+          "role": "border-color",
+          "summary": "The block's edge and the line under its head.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-09"
+        },
+        {
+          "name": "--sf-highlight-border-width",
+          "role": "border-width",
+          "summary": "The width of the block's edge and of the line under its head.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-09"
+        }
+      ]
+    },
+    {
       "component": "list-description",
       "selector": "sf-list-description, .sf-list-description",
       "variables": [
@@ -4295,29 +4336,29 @@
         {
           "name": "--sf-choice-gap",
           "role": "gap",
-          "summary": "The space between the cards.",
-          "default": "var(--sf-space-1/2)",
+          "summary": "The space between the cards; half the padding by default (C28).",
+          "default": "calc(var(--sf-choice-padding) / 2)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-choice-min-inline-size",
           "role": "min-inline-size",
           "summary": "The narrowest a card may be in the grid; fewer columns where it would be narrower.",
-          "default": "15rem",
+          "default": "var(--sf-f5)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-choice-padding",
           "role": "padding",
-          "summary": "The room inside a card.",
-          "default": "var(--sf-space-1/2)",
+          "summary": "The room inside a card, the same on all four sides.",
+          "default": "var(--sf-space-1)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-choice-radius",
           "role": "radius",
           "summary": "A card's corner radius.",
-          "default": "var(--sf-radius--ui)",
+          "default": "var(--sf-radius--surface)",
           "since": "2026-11-08"
         },
         {
@@ -4337,8 +4378,8 @@
         {
           "name": "--sf-choice-selected-background-color",
           "role": "background",
-          "summary": "A chosen card's fill.",
-          "default": "var(--sf-primary-transparent-select)",
+          "summary": "A chosen card's fill: the lowest step of the fill family (12 light, 24 dark).",
+          "default": "var(--sf-primary-container)",
           "since": "2026-11-08"
         },
         {

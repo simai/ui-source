@@ -15,6 +15,7 @@
 // rule in the built sheets.
 
 @use 'sass:list';
+@use 'sass:map';
 
 // new name: the former names it answers for.
 $sf-role-aliases: (
@@ -77,7 +78,12 @@ $sf-role-aliases: (
   @each $new, $olds in $sf-role-aliases {
     @if $roles == null or list.index($roles, $new) {
       @each $old in $olds {
-        --sf-#{$old}: var(--sf-#{$new});
+        // A former name C20 gives a place of its own is declared by
+        // sf-shadow-aliases alone (level 4's shadow: modal, not the nested
+        // popup's overlay; dispatcher decision 2026-11-09).
+        @if not map.has-key($sf-shadow-aliases, $old) {
+          --sf-#{$old}: var(--sf-#{$new});
+        }
       }
     }
   }
@@ -90,7 +96,9 @@ $sf-role-aliases: (
 // former name is var() of its place until the alias list's remove_after:
 // level 1 is raised, 2 and 3 are overlay, 4 and 5 are modal; the C16 names of
 // a card's, a popup's and a nested popup's shadow are declared in the theme as
-// var() of raised and overlay. Level 2's and 5's surfaces and dim ink, held by
+// var() of raised and overlay; level 4's shadow, C16's alias of the nested
+// popup's, reads modal here (one rule: 0 flat, 1 raised, 2-3 overlay, 4-5
+// modal; shadow-popup-nested stays overlay). Level 2's and 5's surfaces and dim ink, held by
 // C16 because they differed from the step they join, join it now (popup,
 // popup-nested). src/core/contracts/token-aliases.v1.json (shadows) is the
 // same list; tests/shadow-places.contract.test.mjs holds the two equal.
@@ -98,6 +106,7 @@ $sf-role-aliases: (
 // former name: the name it reads.
 $sf-shadow-aliases: (
   'elevation-2--shadow': 'shadow-overlay',
+  'elevation-4--shadow': 'shadow-modal',
   'elevation-5--shadow': 'shadow-modal',
   'elevation-2--surface': 'surface-popup',
   'elevation-5--surface': 'surface-popup-nested',

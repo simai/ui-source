@@ -29,7 +29,7 @@
   .sf {
     &--highlight {
       &-head {
-        padding: var(--sf-space-1\/3) var(--sf-space-1);
+        padding: 0 var(--sf-space-1);
         margin-bottom: var(--sf-space-1\/2);
       }
 
@@ -52,10 +52,41 @@
     margin-inline-start: auto;
   }
 
+  /* The head lays itself out: the language at the start, the wrap toggle and
+     copy at the end, all on the head's middle. The layout lived only in the
+     utility classes the script wrote onto the head it creates (flex
+     content-main-between items-center), and highlight declares no utility
+     relation, so on a page without that sheet the head was a block box and
+     both ends packed left, off one axis (ui-chat D-08, simai/ui-source#31). */
+  /* Its height is a step of the height ladder (C18): the control height of
+     step 1, one step above the size-1/2 icon buttons it holds, so they stand
+     on its middle with the same room above and below. It was the line box plus
+     2 x --sf-space-1/3, between two steps of the ladder. */
+  :is(.sf-highlight__head, .sf--highlight-head) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: var(--sf-ui-1--control-height);
+  }
+
   .sf-highlight__head {
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    padding: 0 var(--sf-space-1);
     margin: 0;
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+
+  /* The copy status is read aloud and never shown; hidden here for the same
+     reason, not through the optional sr-only utility. */
+  .sf-highlight__status {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    padding: 0;
+    margin: calc(-1 * var(--sf-px));
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* The block is a column: the head, then the code taking the rest. The code
@@ -75,23 +106,26 @@
     padding: 0;
   }
 
-  /* Public code-surface composition used by documentation and developer tools. */
+  /* Public code-surface composition used by documentation and developer tools.
+     Its public variables (--sf-highlight-*, src/core/contracts/public-variables.v1.json)
+     let a host give the block its own corner -- a code block inside a chat
+     bubble follows the bubble's radius -- fill, ink and edge. */
   .sf-code-surface {
     min-width: 0;
     overflow: hidden;
     margin: 0;
-    background: var(--sf-surface-container);
+    background: var(--sf-highlight-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    border: var(--sf-px) solid var(--sf-outline-variant);
-    border-radius: var(--sf-radius--surface);
-    color: var(--sf-on-surface);
+    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
   }
 
   .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
     margin: 0;
-    padding-block: var(--sf-space-1\/3);
+    padding-block: 0;
     padding-inline: var(--sf-space-1);
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
 
   .sf-code-surface__scroll {

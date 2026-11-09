@@ -54,6 +54,12 @@ own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
 and so are anchored counts, which have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
 
+Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-disable`
+fill, `--sf-on-disable` text, `--sf-outline-disable` edge) whatever its look,
+for a badge inside a control that cannot be used now -- a choice card, a menu
+row. It is a state and draws over the public variables; `sf-badge` takes it
+through `root-class` (component.badges 1.4.0, owner decision C28).
+
 ## Бейдж на якоре: счётчик и точка
 
 Счётчик или точка ставится внутрь якоря — аватара, кнопки-иконки или обёртки

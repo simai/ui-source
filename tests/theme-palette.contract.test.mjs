@@ -5,12 +5,17 @@ import test from 'node:test';
 import {themeFromColor, themeToCss, themeVariables, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
 
 const root = new URL('..', import.meta.url).pathname;
-const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8');
+// A status primitive is var() of its static hue (C17): the shipped value of
+// --sf-success-40 is the one --sf-green-40 holds in the generated palette.
+const staticPrimitives = readFileSync(join(root, 'src/core/scss/_sf_static_palette.scss'), 'utf8');
+const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8')
+  .replace(/(--sf-[a-z]+-\d+(?:--alfa-\d+)?): var\((--sf-[a-z]+-\d+(?:--alfa-\d+)?)\);/gu,
+    (line, name, target) => `${name}: ${staticPrimitives.match(new RegExp(`${target}: (#[0-9a-f]+);`, 'u'))?.[1] ?? 'unresolved'};`);
 
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the
 // component would re-theme a page that asked for nothing.
-test('the default colour gives back all 128 shipped primitives and their 104 translucent steps exactly', () => {
+test('the default colour gives back all 128 shipped primitives and their 160 translucent steps exactly', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const variables = themeVariables(theme);
   const declared = [...primitives.matchAll(/(--sf-[a-z]+-\d+--alfa-\d+):/gu)].map(([, name]) => name);
@@ -68,7 +73,7 @@ test('the CSS is one rule of the 128 primitives under the selector', () => {
   const css = themeToCss(themeFromColor('#005bbe'), '.site-main');
   assert.match(css, /^\.site-main \{\n/u);
   assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 128);
-  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 104);
+  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 160);
 });
 
 // The copied HCT files are the package's own bytes: a copy that drifted would

@@ -331,7 +331,7 @@ sf-profile-picker {
 .sf-profile-picker-skeleton-bar {
   display: inline-block;
   vertical-align: middle;
-  inline-size: 8em;
+  inline-size: var(--sf-e6);
   max-inline-size: 100%;
   block-size: var(--sf-profile-picker--text);
   border-radius: var(--sf-radius--ui);

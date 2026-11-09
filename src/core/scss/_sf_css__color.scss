@@ -4,6 +4,9 @@
 // COLOR CSS VARIABLES
 
 @use 'sf_figma_colors_variables';
+// The static palette (C17), generated: scripts/generate-static-palette.mjs.
+@use 'sf_static_palette';
+@use 'sf_css__hue';
 
 body {
     --sf-stripe--color: var(--sf-surface-inverse);

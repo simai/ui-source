@@ -15,9 +15,9 @@
   .sf-logo svg {
     width: 100%;
     height: 100%;
-    max-height: var(--sf-c2, 26px);
+    max-height: var(--sf-c2);
     @media (min-width: 60rem) {
-      max-height: var(--sf-c4, 32px);
+      max-height: var(--sf-c4);
     }
   }
 }

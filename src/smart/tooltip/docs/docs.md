@@ -10,8 +10,10 @@ Smart/runtime wrapper for the base `tooltip` component.
 
 This component renders the Tooltip surface and can be the target of the
 ordinary Framework `data-tooltip` controller. In that opt-in composition the
-native trigger owns focus, while Framework owns hover/focus visibility,
-`aria-describedby` and Escape dismissal. The surface never receives focus.
+native trigger owns focus, while Framework owns hover and keyboard-focus
+(`:focus-visible`) visibility, `aria-describedby` and Escape dismissal. A
+press on the trigger (a pointer, or Enter or Space) hides the tooltip, and the
+focus a mouse press leaves does not show it. The surface never receives focus.
 Do not put actions inside a tooltip; use an appropriate dialog or popover.
 
 Without the `.sf-tooltip-anchor` and `data-tooltip` composition,
@@ -19,7 +21,11 @@ Without the `.sf-tooltip-anchor` and `data-tooltip` composition,
 and other consumers that own their own visibility and positioning.
 
 Long text wraps within the containing block without ellipsis or clipping.
-Sizes remain the existing compact typography scale. Tail placement is logical
+The default is the plain tooltip: `size="1/3"` (the small text step, 12/16
+on desktop), regular weight, padding `--sf-space-1/4` by `--sf-space-1/3`
+(4 x 8), radius `--sf-radius--ui`, and `appearance="dark"`, the inverse
+surface (`--sf-surface-inverse`, light in a dark theme). A rich tooltip -- text
+with `supporting-text` -- keeps its first line bold as its title. Tail placement is logical
 for RTL. Complex collision, portal and auto-flip policies remain with the
 application overlay owner.
 
@@ -41,6 +47,9 @@ Main attributes:
 - `arrow`
 - `text`
 - `supporting-text`
+- `shortcut` -- the trigger's key combination (`mod+b`, `shift+/`), drawn
+  after the text as the kbd component's keys, plain and quiet; the trigger
+  still says it with `aria-keyshortcuts`
 
 Supported arrow values:
 
@@ -59,6 +68,7 @@ Supported light-DOM slot names:
 - `content`
 - `text`
 - `supporting-text`
+- `shortcut`
 - `tail`
 
 Example:

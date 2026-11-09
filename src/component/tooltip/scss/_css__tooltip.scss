@@ -11,15 +11,15 @@
   --sf-tooltip-content--border-end-start-radius: var(--sf-tooltip-radius, var(--sf-radius--ui));
   --sf-tooltip-content--border-start-end-radius: var(--sf-tooltip-radius, var(--sf-radius--ui));
   --sf-tooltip-content--border-start-start-radius: var(--sf-tooltip-radius, var(--sf-radius--ui));
-  background-color: var(--sf-tooltip-content--background-color);
+  background-color: var(--sf-tooltip-content--background-color, var(--sf-tooltip-background-color, var(--sf-surface-inverse)));
   border-end-end-radius: var(--sf-tooltip-content--border-end-end-radius);
   border-end-start-radius: var(--sf-tooltip-content--border-end-start-radius);
   border-start-end-radius: var(--sf-tooltip-content--border-start-end-radius);
   border-start-start-radius: var(--sf-tooltip-content--border-start-start-radius);
-  padding-bottom: var(--sf-tooltip-content--padding-bottom);
-  padding-inline-end: var(--sf-tooltip-content--padding-inline-end);
-  padding-inline-start: var(--sf-tooltip-content--padding-inline-start);
-  padding-top: var(--sf-tooltip-content--padding-top);
+  padding-bottom: var(--sf-tooltip-content--padding-bottom, var(--sf-tooltip-padding-block, var(--sf-space-1\/4)));
+  padding-inline-end: var(--sf-tooltip-content--padding-inline-end, var(--sf-tooltip-padding-inline, var(--sf-space-1\/3)));
+  padding-inline-start: var(--sf-tooltip-content--padding-inline-start, var(--sf-tooltip-padding-inline, var(--sf-space-1\/3)));
+  padding-top: var(--sf-tooltip-content--padding-top, var(--sf-tooltip-padding-block, var(--sf-space-1\/4)));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-tooltip-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -32,12 +32,27 @@
 
 .sf-tooltip .sf-tooltip-text {
   --sf-tooltip-text--font-family: var(--sf-text--family);
-  --sf-tooltip-text--font-weight: var(--sf-font-weight-bold);
-  color: var(--sf-tooltip-text--color);
+  --sf-tooltip-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-tooltip-text--color, var(--sf-tooltip-color, var(--sf-on-surface-inverse)));
   font-family: var(--sf-tooltip-text--font-family);
-  font-size: var(--sf-tooltip-text--font-size);
+  font-size: var(--sf-tooltip-text--font-size, var(--sf-text-size-1\/3));
   font-weight: var(--sf-tooltip-text--font-weight);
-  line-height: var(--sf-tooltip-text--line-height);
+  line-height: var(--sf-tooltip-text--line-height, var(--sf-text-height-1\/3));
+}
+
+/* A rich tooltip -- a line of text with a supporting text under it -- keeps
+   the line as its title; a plain one is regular (docs review, owner
+   2026-11-09: tooltips were heavy). */
+.sf-tooltip .sf-tooltip-text:has(+ .sf-tooltip-supporting-text) {
+  --sf-tooltip-text--font-weight: var(--sf-font-weight-bold);
+}
+
+/* The shortcut after the words: the kbd component draws it, plain and quiet
+   in a tooltip (C04); the tooltip only lays it out. */
+.sf-tooltip .sf-tooltip-text:has(> .sf-tooltip-shortcut) {
+  align-items: baseline;
+  display: flex;
+  gap: var(--sf-space-1\/3);
 }
 
 .sf-tooltip .sf-tooltip-supporting-text {
@@ -60,11 +75,11 @@
 }
 
 .sf-tooltip.sf-tooltip--dark .sf-tooltip-tail {
-  --sf-tooltip-tail--background-color: var(--sf-tooltip-background-color, var(--sf-surface-inverse-fixed));
+  --sf-tooltip-tail--background-color: var(--sf-tooltip-background-color, var(--sf-surface-inverse));
 }
 
 .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-bottom-left.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-bottom-right.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-right.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-top-center.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-left.sf-tooltip--size-1 .sf-tooltip-tail {
-  --sf-tooltip-tail--color: var(--sf-on-surface-inverse-fixed);
+  --sf-tooltip-tail--color: var(--sf-on-surface-inverse);
   --sf-tooltip-tail--font-family: var(--sf-text--family);
   --sf-tooltip-tail--font-size: var(--sf-text-size-1);
   --sf-tooltip-tail--font-weight: var(--sf-font-weight-regular);
@@ -77,7 +92,7 @@
 }
 
 .sf-tooltip.sf-tooltip--dark .sf-tooltip-supporting-text {
-  --sf-tooltip-supporting-text--color: var(--sf-tooltip-color, var(--sf-on-surface-inverse-fixed));
+  --sf-tooltip-supporting-text--color: var(--sf-tooltip-color, var(--sf-on-surface-inverse));
 }
 
 .sf-tooltip.sf-tooltip--light .sf-tooltip-tail {
@@ -147,10 +162,12 @@
 }
 
 .sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-content {
-  --sf-tooltip-content--padding-bottom: var(--sf-tooltip-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
-  --sf-tooltip-content--padding-inline-end: var(--sf-tooltip-padding-inline, var(--sf-ui-1\/3--space-x));
-  --sf-tooltip-content--padding-inline-start: var(--sf-tooltip-padding-inline, var(--sf-ui-1\/3--space-x));
-  --sf-tooltip-content--padding-top: var(--sf-tooltip-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+  /* The plain tooltip (the default size): 4 x 8, --sf-space-1/4 by
+     --sf-space-1/3 (Material 3 plain, Fluent, Primer). */
+  --sf-tooltip-content--padding-bottom: var(--sf-tooltip-padding-block, var(--sf-space-1\/4));
+  --sf-tooltip-content--padding-inline-end: var(--sf-tooltip-padding-inline, var(--sf-space-1\/3));
+  --sf-tooltip-content--padding-inline-start: var(--sf-tooltip-padding-inline, var(--sf-space-1\/3));
+  --sf-tooltip-content--padding-top: var(--sf-tooltip-padding-block, var(--sf-space-1\/4));
 }
 
 .sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-text {
@@ -171,11 +188,11 @@
 }
 
 .sf-tooltip--dark .sf-tooltip-content {
-  --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-surface-inverse-fixed));
+  --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-surface-inverse));
 }
 
 .sf-tooltip--dark .sf-tooltip-text {
-  --sf-tooltip-text--color: var(--sf-tooltip-color, var(--sf-on-surface-inverse-fixed));
+  --sf-tooltip-text--color: var(--sf-tooltip-color, var(--sf-on-surface-inverse));
 }
 
 .sf-tooltip--light .sf-tooltip-content {

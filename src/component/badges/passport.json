@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.badges",
   "kind": "component",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/badges/docs/docs.md",
@@ -20,7 +20,7 @@
     "src/component/badges/scss/_css__badges_anchored.scss",
     "src/component/badges/scss/index.scss"
   ],
-  "content_sha256": "9cf642363cb59c976c98bfcf3bfb2964036ce6f6971f1111bfc5343ebf250e85",
+  "content_sha256": "47fb361ad1415f1c02e10216404e5b5451441769984d78d7165e16bc7de0b4bd",
   "dependencies": [
     {
       "id": "core.runtime",

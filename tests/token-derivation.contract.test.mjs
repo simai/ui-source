@@ -37,6 +37,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PRIMITIVE_SOURCES = [
   /src\/core\/scss\/vars\//,              // the size, space and palette maps
   /_sf_figma_colors_variables\.scss$/,    // the colour primitives
+  /_sf_static_palette\.scss$/,            // the static palette, generated (C17)
 ];
 
 // The two lengths no ladder step can spell, each with its reason.
@@ -81,6 +82,17 @@ const withoutNames = (value) => {
   return out.replace(/(^|[\s(,])-?0(px|rem)?\b/gi, '$1ZERO');
 };
 
+// A colour the colour policy reviewed as a system definition (C18: the
+// low-vision schemes' fixed contrast pairs) is that definition, not an
+// invented token: the policy is the one list of such boundaries.
+const POLICY = JSON.parse(readFileSync(resolve(root, 'src/core/contracts/colour-policy.v1.json'), 'utf8'));
+const SYSTEM_DEFINITIONS = POLICY.rules.filter((rule) => rule.status === 'accepted-system-definition')
+  .map((rule) => ({file: new RegExp(rule.filePattern, 'u'), context: new RegExp(rule.contextPattern, 'u')}));
+const reviewed = (file, line) => {
+  const path = relative(resolve(root, 'src'), file);
+  return SYSTEM_DEFINITIONS.some((rule) => rule.file.test(path) && rule.context.test(line.trim()));
+};
+
 const findings = () => {
   const found = [];
   for (const file of stylesheets(resolve(root, 'src'))) {
@@ -92,6 +104,7 @@ const findings = () => {
       if (EXCEPTIONS.has(name)) continue;
       const bare = withoutNames(value);
       const kind = LITERAL_COLOUR.test(bare) ? 'colour' : LITERAL_LENGTH.test(bare) ? 'length' : null;
+      if (kind === 'colour' && reviewed(file, line)) continue;
       if (kind) found.push({kind, name, where: `${relative(root, file)}: ${name}: ${value.trim()}`});
     }
   }

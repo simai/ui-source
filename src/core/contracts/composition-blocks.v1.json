@@ -640,6 +640,16 @@
             "default": "",
             "type": "string"
           },
+          "height": {
+            "default": "default",
+            "enum": [
+              "low",
+              "default",
+              "high",
+              "highest"
+            ],
+            "type": "string"
+          },
           "href": {
             "default": "",
             "type": "string"
@@ -791,7 +801,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.9.0"
+      "version": "1.10.0"
     },
     "sf-button-icon": {
       "inputs": {
@@ -940,7 +950,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     "sf-checkbox": {
       "inputs": {
@@ -1131,7 +1141,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.7.3"
+      "version": "1.7.4"
     },
     "sf-icon": {
       "inputs": {
@@ -1405,7 +1415,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1558,7 +1568,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.7.3"
+      "version": "1.7.4"
     },
     "sf-switch": {
       "inputs": {
@@ -1622,7 +1632,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.3.3"
+      "version": "1.3.4"
     }
   },
   "parameter_sets": {

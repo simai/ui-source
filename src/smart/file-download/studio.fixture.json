@@ -7,6 +7,7 @@
   "locale": "ru",
   "props": {
     "file-name": "Отчёт за август.pdf",
+    "file-type": "PDF",
     "file-size": "2,4 МБ",
     "href": "#",
     "download": true

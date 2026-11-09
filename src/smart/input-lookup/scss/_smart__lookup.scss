@@ -233,7 +233,7 @@
 .sf-lookup .sf-lookup-panel {
   display: none;
   box-sizing: border-box;
-  max-block-size: 20rem;
+  max-block-size: var(--sf-g0);
   margin: 0;
   padding: var(--sf-lookup--panel-padding);
   border: 0;

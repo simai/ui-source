@@ -7,11 +7,19 @@
 // the most columns, fewer where they do not fit.
 export const CHOICE_COLUMNS = Object.freeze(['auto', '1', '2', '3', '4']);
 
+// The arrangement of the cards (owner decision C28): list -- one frame of
+// rows divided by lines, the control at the start, price and term a column at
+// the end of the name line; tile -- cards in the grid, the control at the end
+// of the name line, the price at the foot; picture -- tiles whose image runs
+// to the edges, the caption under it (rows on a phone).
+export const CHOICE_LAYOUTS = Object.freeze(['tile', 'list', 'picture']);
+
 const text = (value) => (value === null || value === undefined ? '' : String(value));
 
-// One option: {value, label, caption?, icon?, badge?, disabled?} -- the shape
-// of sf-input-lookup's options, with an icon and a badge. `title` is read as
-// the label; a missing label is the value. An option without a value, or repeating an earlier one, is left
+// One option: {value, label, caption?, icon?, badge?, price?, term?, image?,
+// disabled?} -- the shape of sf-input-lookup's options, with an icon, a badge,
+// a price with its term and an image. `title` is read as the label; a missing
+// label is the value. An option without a value, or repeating an earlier one, is left
 // out: one value names one card.
 export function normaliseItems(items) {
   let list = items;
@@ -39,6 +47,9 @@ export function normaliseItems(items) {
       caption: text(source.caption),
       icon: text(source.icon).trim(),
       badge: text(source.badge).trim(),
+      price: text(source.price).trim(),
+      term: text(source.term).trim(),
+      image: text(source.image).trim(),
       disabled: Boolean(source.disabled),
     });
   }

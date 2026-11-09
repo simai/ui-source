@@ -17,7 +17,7 @@ function renderItem(item, index, context) {
       text=${item.label}
       icon=${item.icon || nothing}
       size=${context.size}
-      spacing=${context.spacing && context.spacing !== 'normal' ? context.spacing : nothing}
+      root-class=${context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : nothing}
       appearance=${selected ? 'default' : 'outline'}
       scheme=${selected ? context.scheme : 'on-surface'}
       segment=${segmentFor(index, context.entries.length)}

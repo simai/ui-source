@@ -10,6 +10,7 @@
       "  <sf-tooltip id=\"t-dark\" text=\"Тёмная\" appearance=\"dark\"></sf-tooltip>",
       "  <sf-tooltip id=\"t-old\" text=\"Старое имя\" type=\"dark\"></sf-tooltip>",
       "  <sf-tooltip id=\"t-slot\"><span slot=\"text\" id=\"slot-text\">Из слота</span></sf-tooltip>",
+      "  <sf-tooltip id=\"t-keys\" text=\"Свернуть меню\" shortcut=\"mod+b\"></sf-tooltip>",
       "</main>"
     ]
   },
@@ -73,6 +74,16 @@
           "script": "(document.getElementById('area').style.setProperty('--sf-tooltip-background-color', 'rgb(1, 2, 3)'), true)",
           "wait": 50,
           "check": "getComputedStyle(document.querySelector('#t1 .sf-tooltip-tail')).getPropertyValue('--sf-tooltip-tail--background-color').trim() === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p-shortcut",
+      "title": "a shortcut draws the kbd component's keys after the text",
+      "covers": "settings.shortcut",
+      "steps": [
+        {
+          "check": "(() => { const keys = document.querySelectorAll('#t-keys .sf-tooltip-text > kbd.sf-tooltip-shortcut > kbd'); return keys.length === 2 && document.querySelector('#t-keys .sf-tooltip-text').textContent.startsWith('Свернуть меню'); })()"
         }
       ]
     }

@@ -366,3 +366,15 @@
   --sf-badge--side-room: var(--sf-badge--side-tight);
 }
 }
+
+@layer sf.states {
+/* Disabled: a badge inside a control that cannot be used now -- a choice
+   card, a menu row -- takes the disable roles whatever its look, as the
+   control's own words do. A state, so it draws over the public variables.
+   sf-badge takes it through root-class (sf-input-choice 1.1.0, C28). */
+.sf-badge.sf-badge--disabled {
+  --sf-badge--background-color: var(--sf-disable);
+  --sf-badge--color: var(--sf-on-disable);
+  --sf-badge--border-color: var(--sf-outline-disable);
+}
+}

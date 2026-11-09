@@ -96,4 +96,27 @@ function trapModalFocus(panel, event) {
   }
 }
 
-export { getModalTabStops, trapModalFocus, syncModalFocusGuards };
+// The first focus of an opened window (decision C25): the element the page
+// marked with the standard `autofocus` attribute, as a native <dialog> does --
+// in a dangerous question, the safe answer («Отмена»), so a stray Enter or
+// Space only closes the window. A marked element that is not focusable itself
+// (sf-button, whose host is display: contents) hands the focus to its first
+// tab stop. Without a mark, or with one that cannot take the focus, the panel
+// takes it, as before. Answers the element that took it.
+function focusModalInitial(panel) {
+  if (!panel) return null;
+  const marked = panel.querySelector('[autofocus]');
+  if (marked && !marked.closest('[inert]')) {
+    const target = marked.matches(FOCUSABLE_SELECTOR) && marked.tabIndex >= 0 && !marked.matches(':disabled')
+      ? marked
+      : getModalTabStops(marked)[0];
+    if (target) {
+      target.focus({ preventScroll: true });
+      if (panel.ownerDocument.activeElement === target) return target;
+    }
+  }
+  panel.focus();
+  return panel;
+}
+
+export { getModalTabStops, trapModalFocus, syncModalFocusGuards, focusModalInitial };

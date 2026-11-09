@@ -126,14 +126,15 @@
   }
 
   /* A page with this sheet and no Loader (core.css and the icons sheet linked
-     by hand, 2026-11-04): core.css keeps an icon at font-size 0 until it is
-     marked sf-icon-loaded, and only the Loader marks it, so the icons never
-     drew. Without the Loader (no data-sf-loader on html) the face above,
-     font-display: block, keeps the name unseen while the font loads and then
-     draws the glyph: CSS alone is enough. Important in the base layer, as the
-     rule it answers. */
+     by hand, 2026-11-04): only the Loader marks an icon sf-icon-loaded, and
+     core.css holds an unmarked icon at font-size 0 only where the Loader runs
+     (data-sf-loader on html). Without it the face above, font-display: block,
+     keeps the name unseen while the font loads and then draws the glyph: CSS
+     alone is enough, and the glyph takes its size as every icon does -- from
+     --sf-icon--font-size and the ladder, or from the page's own font-size.
+     This rule set an important size to answer the hold, and that size beat a
+     page's, a utility's and the density's (2026-11-09). */
   :root:not([data-sf-loader]) body .sf-icon:not(.sf-icon-loaded) {
-    font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3))) !important;
     /* One glyph wide while the font loads or when it cannot load: the name's
        letters would otherwise widen rows and scroll pages sideways
        (menu-smart, 2026-11-04). */

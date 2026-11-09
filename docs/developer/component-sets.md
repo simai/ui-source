@@ -1,8 +1,9 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.1.1
-(`contracts/standards/simai.component-set/1.1.1/standard.json`; 1.0.0 and 1.1.0
-are kept under `contracts/standards/history`; 1.1.1 changes no requirement of 1.1.0). The Loader
+Status: draft standard `simai.component-set` 1.2.0
+(`contracts/standards/simai.component-set/1.2.0/standard.json`; 1.0.0, 1.1.0
+and 1.1.1 are kept under `contracts/standards/history`; 1.1.1 changed no
+requirement of 1.1.0; 1.2.0 adds pair ranges). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
@@ -199,6 +200,41 @@ passport and npm do not change. A consumer that pins exact pairs accepts the
 set over a pair named either by its package receipt or by one of its pair
 receipts.
 
+### Pair ranges (since 1.2.0)
+
+A pair receipt rebuilds and gates the set over each pair. A pair range does
+not: it is written once per release, from the released bytes, and lists what
+those bytes take from the free pair at runtime (owner decision 2026-11-09,
+R1):
+
+- `core_runtime`: the passport's minimum;
+- `runtime`: the shared runtime ABI and, per shared module, the names the
+  bundles import through `SF.runtimeModule`;
+- `relations`: every relation of the set's rule file to a rule that is not
+  the set's own, resolved on the pair to a free rule or through a live
+  forward (`smart-rule-forwards.v1.json`);
+- `elements`: the set's own tags, which no free rule may take;
+- `free_elements`: the free tags the set's scripts render;
+- `core_folder`: the set's package core, which the pair must not ship in
+  `distr/smart`;
+- `variables`: the `--sf-*` properties read bare (no fallback), not set by the
+  set, declared by the pair's sheets;
+- `js_api`: the `window.SF` names called that `public-js-api.json` lists as
+  public.
+
+The file, `simai.framework.set-pair-range` v1 with `interface_sha256` (the
+sha256 of the canonical JSON of `requires`) and `not_covered`, is written by
+ui-builder `scripts/set-pair-range.py write`; the release route writes it with
+every release over a free pair, as the asset `pair-range.json`, as
+`contracts/pair-ranges/<release>.json` in the set repository and as `range` on
+the release's index row. `set-pair-range.py check --range <file> --ui <ui>
+--pair <ui-12>` answers from the pair's `distr` alone. A consumer that pins
+exact pairs may accept the set over a pair where every requirement holds,
+after the exact pair and the pair receipts. What a range does not cover --
+behaviour behind an unchanged interface, Framework code a bundle inlined, the
+set's gates -- is left to the consumer's own browser probes at each repin and
+to a full pair receipt once per release train.
+
 ### The compatibility index
 
 - Format: `simai.framework.set-index`, `schema_version: 1`
@@ -215,7 +251,10 @@ receipts.
 - A row's facts never change. Since 1.1.0 a row may carry `pairs`, each
   `{pair, source_revision, receipt_sha256, received_on}`: the further pairs
   its unchanged release was re-receipted over, in the order received, written
-  by `set-index.py pair`.
+  by `set-index.py pair`. Since 1.2.0 a row may carry `range`,
+  `{sha256, interface_sha256}`: the digests of its pair range file and of the
+  interface it names, set once by `set-index.py range`. The Loader reads
+  neither.
 
 ```json
 {

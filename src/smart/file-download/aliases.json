@@ -51,6 +51,17 @@
       "mode": "same-detail",
       "section": "§8",
       "note": "the event name carries the tag"
+    },
+    {
+      "from": "sf-download-file-retry",
+      "to": "sf-file-download-retry",
+      "kind": "event",
+      "component": "sf-file-download",
+      "since": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
     }
   ]
 }

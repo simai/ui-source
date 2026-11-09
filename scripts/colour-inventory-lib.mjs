@@ -55,7 +55,7 @@ function lexicalRanges(source) {
 export function categoryOf(file) {
   if (/^(?:plugin\/|component\/(?:fancybox|swiper|jquery)\/|core\/js\/vendor\/)/.test(file)) return 'vendor-review';
   if (/(?:^|\/)(?:examples|probe|studio\.fixture|studio\.scenario)\.json$|\/static\/.+\.html$/.test(file)) return 'fixture-review';
-  if (/(?:\/scss\/_?sf_var__|^core\/(?:scss\/vars\/|figma_variables\/|contracts\/|scss\/_sf_figma_colors_variables\.scss$))/.test(file)) return 'definition-review';
+  if (/(?:\/scss\/_?sf_var__|^core\/(?:scss\/vars\/|figma_variables\/|contracts\/|scss\/_sf_(?:figma_colors_variables|static_palette)\.scss$))/.test(file)) return 'definition-review';
   if (/\.(?:js|mjs|cjs|json|html)$/.test(file)) return 'script-data-template-review';
   return 'style-review';
 }
