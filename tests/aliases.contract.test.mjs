@@ -10,7 +10,7 @@ import test from 'node:test';
 // sf-accordion and sf-menu, is tests/browser/aliases.browser.mjs.
 
 const moduleUrl = new URL('../src/core/js/aliases.js', import.meta.url);
-const {installAliases, uninstallAliases, dispatchAliased, setAliasClock, readAliasTable, aliasExpired} = await import(moduleUrl);
+const {installAliases, uninstallAliases, dispatchAliased, setAliasClock, readAliasTable, aliasExpired, aliasesOf: aliasesOfElement} = await import(moduleUrl);
 const {clearDeprecations, listDeprecations, noteDeprecated} = await import('../src/core/js/deprecations.js');
 const vocabulary = JSON.parse(readFileSync(new URL('./fixtures/aliases-vocabulary-1.1.5.json', import.meta.url), 'utf8'));
 
@@ -363,6 +363,50 @@ test('installing again replaces the table instead of wrapping twice', () => {
   element.addEventListener('sf-menu:navigate', () => { old += 1; });
   dispatchAliased(element, 'sf-menu-navigate', {detail: {}});
   assert.equal(old, 1);
+});
+
+test('a page install over the component\'s own table: its uninstall puts the component\'s back', () => {
+  // The component installs its aliases.json at connect; a page installs a
+  // table of its own over it, then takes it away (lab aliases, uninstall-restores).
+  const element = new FakeElement('sf-accordion');
+  const own = {component: 'sf-accordion', aliases: [row({kind: 'event', from: 'sf-accordion:toggle', to: 'sf-accordion-toggle', mode: 'same-detail'})]};
+  installAliases(element, own);
+  const heard = [];
+  element.addEventListener('sf-accordion-toggle', () => heard.push('new'));
+  element.addEventListener('sf-accordion:toggle', () => heard.push('old'));
+  element.open = () => 'opened';
+  const page = installAliases(element, [row({kind: 'action', from: 'expand', to: 'open'})]);
+  assert.equal(element.expand(), 'opened');
+  dispatchAliased(element, 'sf-accordion-toggle', {detail: {}});
+  assert.deepEqual(heard, ['new'], 'while the page table stands it replaces the component\'s');
+  page.uninstall();
+  heard.length = 0;
+  dispatchAliased(element, 'sf-accordion-toggle', {detail: {}});
+  assert.deepEqual(heard, ['new', 'old'], 'the component\'s old name is back');
+  assert.equal(Object.hasOwn(element, 'expand'), false, 'the page\'s action left with it');
+  assert.equal(aliasesOfElement(element).map((entry) => entry.from).join(), 'sf-accordion:toggle');
+  // SF.aliases.uninstall(element) takes the standing table away; nothing is under it now.
+  assert.equal(uninstallAliases(element), true);
+  assert.equal(Object.hasOwn(element, 'dispatchEvent'), false);
+});
+
+test('a table under another one whose own handle or signal ended is not put back', () => {
+  const element = new FakeElement('sf-menu');
+  const lower = installAliases(element, vocabulary);
+  const upper = installAliases(element, [row({kind: 'attribute', from: 'a-old', to: 'a-new'})]);
+  lower.uninstall();
+  upper.uninstall();
+  assert.equal(Object.hasOwn(element, 'dispatchEvent'), false);
+  const controller = new AbortController();
+  installAliases(element, vocabulary, {signal: controller.signal});
+  const top = installAliases(element, [row({kind: 'attribute', from: 'a-old', to: 'a-new'})]);
+  controller.abort();
+  top.uninstall();
+  assert.equal(Object.hasOwn(element, 'dispatchEvent'), false);
+  // An install whose signal has already ended leaves the standing table.
+  installAliases(element, vocabulary);
+  installAliases(element, [row({kind: 'attribute', from: 'a-old', to: 'a-new'})], {signal: AbortSignal.abort()});
+  assert.ok(Object.hasOwn(element, 'dispatchEvent'));
 });
 
 // --- the table ------------------------------------------------------------------------

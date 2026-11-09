@@ -28,14 +28,23 @@ async function open({ width = 1280, theme = 'light', dir = 'ltr' } = {}) {
 const lab = () => page.evaluate(() => JSON.parse(JSON.stringify(window.lab)));
 const order = (list) => page.evaluate((list) => [...document.querySelectorAll(`#${list} [data-sf-sortable-item]`)].map((item) => item.dataset.sfSortableItem), list);
 const center = async (selector) => { const box = await page.locator(selector).first().boundingBox(); return { x: box.x + box.width / 2, y: box.y + box.height / 2, box }; };
+// What shows where a dragged item lands: the line (keyboard moves, external
+// targets, a list written preview="line"), the overlay's drop line, or -- for a
+// pointer drag inside a list since 2026-10-13 -- the silhouette, the place the
+// item would take opened in the list at its size (sortable.mjs silhouetteFor).
+const DROP_SHOWN = '.sf-sortable-indicator:not([hidden]), .sf-composition-overlay-drop:not([hidden]), .sf-sortable-placeholder';
 async function mouseDrag(fromSelector, to, { steps = 12, hold = 0 } = {}) {
   const from = await center(fromSelector);
+  // A press outside the viewport reaches nothing and the drag never starts: a
+  // check after it would read a stale event. Said here, not left to the next check.
+  const viewport = page.viewportSize();
+  check(from.y > 0 && from.y < viewport.height && to.y > 0 && to.y < viewport.height, `drag from ${fromSelector} starts and ends on screen`, { from: { x: from.x, y: from.y }, to });
   await page.mouse.move(from.x, from.y);
   await page.mouse.down();
   await page.mouse.move(from.x + 6, from.y + 6, { steps: 2 });
   await page.mouse.move(to.x, to.y, { steps });
   if (hold) await page.waitForTimeout(hold);
-  const indicator = await page.evaluate(() => { const line = document.querySelector('.sf-sortable-indicator, .sf-composition-overlay-drop:not([hidden])'); return line && !line.hidden ? line.getBoundingClientRect().height : 0; });
+  const indicator = await page.evaluate((selector) => Math.max(0, ...[...document.querySelectorAll(selector)].map((shown) => shown.getBoundingClientRect().height)), DROP_SHOWN);
   await page.mouse.up();
   await page.waitForTimeout(80);
   return indicator;
@@ -123,6 +132,14 @@ await page.waitForTimeout(80);
 check((await lab()).overlay.length === beforeSelf, 'dropping a node on itself emits nothing', null);
 
 // A library block reaches an empty slot by pointer, like the keyboard path.
+// The canvas has grown by now, and Playwright's clicks on its nodes have
+// scrolled the (smoothly scrolling) root: bring the library to the top, so the
+// block and the empty footer are on screen together, as a person would.
+await page.evaluate(() => {
+  const top = document.querySelector('[data-sf-sortable-item="content.paragraph"]').getBoundingClientRect().top + scrollY;
+  scrollTo({ top: Math.max(0, top - 64), behavior: 'instant' });
+});
+await page.waitForTimeout(80);
 const footer = await center('#canvas [data-sf-composition-id="shell-footer"]');
 await mouseDrag('[data-sf-sortable-item="content.paragraph"]', { x: footer.x, y: footer.y });
 state = await lab();

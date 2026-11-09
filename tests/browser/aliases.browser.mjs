@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-// Usage: node this-file [distribution-url]
-//   PLAYWRIGHT_MODULE=/abs/playwright/index.mjs picks another Playwright;
-//   the default distribution is the published pair below on jsDelivr.
+// Usage: node this-file /absolute/path/to/build/output
+//        node this-file <distribution-url>
+//   A build output root (the release runner's way: core/, smart/, component/,
+//   utility/ under it) is served on loopback as a distribution; a URL is used as
+//   it is, e.g. https://cdn.jsdelivr.net/npm/@simai-studio/ui@5.20261025.1053/distr/
+//   for a published pair. PLAYWRIGHT_MODULE=/abs/playwright/index.mjs picks
+//   another Playwright.
 //
 // Dated aliases (standard simai.smart-component 1.3.8 §16.20, §8) on real
 // components of a released pair, which still send the old colon names:
@@ -18,14 +22,36 @@
 //   property, method), the markup path through the MutationObserver;
 // - after remove_after: still delivered, `expired`, warned once without an
 //   opt-in; under <html data-sf-aliases="strict"> not delivered;
-// - uninstall leaves the element as the pair made it.
-import {readFileSync} from 'node:fs';
+// - uninstall leaves the element as the pair made it: it hears, and holds, what
+//   an untouched sf-accordion of the same pair does. A pair before 2026-10-27
+//   sends the old name alone and installs nothing; a later one sends the new
+//   name and installs its own aliases.json, which a page's install replaces
+//   only while it stands.
+import {createServer} from 'node:http';
+import {existsSync, readFileSync, statSync} from 'node:fs';
+import {extname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 
-const PAIR = '5.20261025.1053';
-const DISTR = (process.argv[2] || `https://cdn.jsdelivr.net/npm/@simai-studio/ui@${PAIR}/distr/`).replace(/\/?$/u, '/');
+if (!process.argv[2]) throw new Error('Build output root is required (or a distribution URL)');
+let server = null;
+const serveBuild = async (out) => {
+  const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), smart: join(out, 'smart', 'smart'),
+    component: join(out, 'component', 'component'), utility: join(out, 'utility', 'utility')};
+  for (const name of ['core', 'smart', 'component', 'utility']) if (!existsSync(parts[name])) throw new Error(`the output has no ${name}: ${parts[name]}`);
+  const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml'};
+  server = createServer((request, response) => {
+    const match = decodeURIComponent(new URL(request.url, 'http://probe').pathname).match(/^\/distr\/([^/]+)\/(.+)$/u);
+    const file = match && parts[match[1]] ? join(parts[match[1]], match[2]) : '';
+    if (!file || !existsSync(file) || statSync(file).isDirectory()) { response.writeHead(404); return response.end(); }
+    response.writeHead(200, {'content-type': `${types[extname(file)] ?? 'application/octet-stream'}; charset=utf-8`, 'access-control-allow-origin': '*'});
+    return response.end(readFileSync(file));
+  }).listen(0, '127.0.0.1');
+  await new Promise((settle) => server.once('listening', settle));
+  return `http://127.0.0.1:${server.address().port}/distr/`;
+};
+const DISTR = (/^https?:/u.test(process.argv[2]) ? process.argv[2] : await serveBuild(resolve(process.argv[2]))).replace(/\/?$/u, '/');
 const ORIGIN = 'http://aliases.test/';
 const source = (path) => readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8');
 const JS = 'text/javascript; charset=utf-8';
@@ -37,6 +63,7 @@ const files = {
     <script>window.sfPath=${JSON.stringify(DISTR)};window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
     <script src="${DISTR}core/js/core.min.js"></script></head><body>
     <sf-accordion id="acc" items='[{"id":"main","title":"Основное","content":"Текст"},{"id":"seo","title":"SEO","content":"Заголовок"}]'></sf-accordion>
+    <sf-accordion id="twin" items='[{"id":"main","title":"Основное","content":"Текст"},{"id":"seo","title":"SEO","content":"Заголовок"}]'></sf-accordion>
     <sf-menu id="menu" label="Разделы" items='[{"id":"about","label":"О компании","href":"#about"},{"id":"docs","label":"Документы","href":"#docs"}]'></sf-menu>
     <sf-button type="outline" text="Кнопка"></sf-button>
     </body></html>`],
@@ -149,44 +176,64 @@ async function scenario() {
   check('strict-expired-not-delivered', [heard.map(([who]) => who), /expand\(\) was removed after 2026-12-01/u.test(threw)], [['new'], true]);
   delete document.documentElement.dataset.sfAliases;
 
-  // 6. Uninstall leaves the pair's element as it was.
+  // 6. Uninstall leaves the pair's element as it was: what an untouched
+  // accordion of the same pair (#twin, never installed on) hears and holds.
+  // The want is read from the pair, not written for one pair: the 10-25 pair
+  // sends the old name alone, a pair from 10-27 the new one and its own
+  // aliases.json's old name after it.
   accHandle.uninstall();
-  heard.length = 0;
-  acc.toggle('main');
-  check('uninstall-restores', [heard.map(([who]) => who), Object.hasOwn(acc, 'dispatchEvent'), Object.hasOwn(acc, 'expand'), Object.hasOwn(acc, 'oneAtATime')], [['old'], false, false, false]);
+  const state = (element) => {
+    heard.length = 0;
+    element.toggle('main');
+    return [heard.map(([who, detail]) => `${who}:${detail.id}`), Object.hasOwn(element, 'dispatchEvent'), Object.hasOwn(element, 'expand'),
+      Object.hasOwn(element, 'oneAtATime'), (SF.aliases.of?.(element) ?? []).map((one) => `${one.kind}:${one.from}`)];
+  };
+  const restored = state(acc);
+  const pristine = state(document.getElementById('twin'));
+  check('uninstall-restores', restored, pristine);
+  check('uninstall-twin-heard', pristine[0].length > 0 && pristine[0].every((who) => who.endsWith(':main')), true);
   return checks;
 }
 
 const browser = await chromium.launch();
 let failed = 0;
+let total = 0;
 try {
-  const page = await browser.newPage();
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(String(error)));
-  // A local distribution (a candidate served on 127.0.0.1) is fetched by the
-  // driver and handed to the page: Chrome blocks a public origin's request to
-  // the loopback space (Private Network Access), so the page would load no Core
-  // and wait for elements that never come.
-  if (/^https?:\/\/(?:127\.0\.0\.1|localhost|\[::1\])[:/]/u.test(DISTR)) {
-    await page.route(`${DISTR}**`, async (route) => route.fulfill({response: await route.fetch()}));
+  // Once in each colour scheme: the pair's theme follows it, and nothing here
+  // may depend on it.
+  for (const colorScheme of ['light', 'dark']) {
+    const page = await browser.newPage({colorScheme});
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(String(error)));
+    page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+    // A local distribution (a candidate served on 127.0.0.1) is fetched by the
+    // driver and handed to the page: Chrome blocks a public origin's request to
+    // the loopback space (Private Network Access), so the page would load no Core
+    // and wait for elements that never come.
+    if (/^https?:\/\/(?:127\.0\.0\.1|localhost|\[::1\])[:/]/u.test(DISTR)) {
+      await page.route(`${DISTR}**`, async (route) => route.fulfill({response: await route.fetch()}));
+    }
+    await page.route(`${ORIGIN}**`, (route) => {
+      const file = files[new URL(route.request().url()).pathname.slice(1)];
+      return file ? route.fulfill({contentType: file[0], body: file[1]}) : route.fulfill({status: 404, body: ''});
+    });
+    await page.goto(`${ORIGIN}page.html`);
+    await page.waitForFunction(() => customElements.get('sf-accordion') && customElements.get('sf-menu') && customElements.get('sf-button')
+      && document.querySelector('#acc button.sf-accordion-trigger') && document.querySelector('#twin button.sf-accordion-trigger') && document.querySelector('#menu a[data-sf-menu-link]')
+      && typeof window.SF?.deprecations?.list === 'function', null, {timeout: 30000});
+    await page.waitForTimeout(300);
+    const checks = await page.evaluate(`(${scenario.toString()})()`);
+    if (errors.length) checks.push({id: 'no-page-or-console-errors', pass: false, got: errors, want: []});
+    for (const one of checks) {
+      console.log(`${one.pass ? 'PASS' : 'FAIL'} ${colorScheme} ${one.id}${one.pass ? '' : `  got ${JSON.stringify(one.got)} want ${JSON.stringify(one.want)}`}`);
+      if (!one.pass) failed += 1;
+    }
+    total += checks.length;
+    await page.close();
   }
-  await page.route(`${ORIGIN}**`, (route) => {
-    const file = files[new URL(route.request().url()).pathname.slice(1)];
-    return file ? route.fulfill({contentType: file[0], body: file[1]}) : route.fulfill({status: 404, body: ''});
-  });
-  await page.goto(`${ORIGIN}page.html`);
-  await page.waitForFunction(() => customElements.get('sf-accordion') && customElements.get('sf-menu') && customElements.get('sf-button')
-    && document.querySelector('#acc button.sf-accordion-trigger') && document.querySelector('#menu a[data-sf-menu-link]')
-    && typeof window.SF?.deprecations?.list === 'function', null, {timeout: 30000});
-  await page.waitForTimeout(300);
-  const checks = await page.evaluate(`(${scenario.toString()})()`);
-  if (errors.length) checks.push({id: 'no-page-errors', pass: false, got: errors, want: []});
-  for (const one of checks) {
-    console.log(`${one.pass ? 'PASS' : 'FAIL'} ${one.id}${one.pass ? '' : `  got ${JSON.stringify(one.got)} want ${JSON.stringify(one.want)}`}`);
-    if (!one.pass) failed += 1;
-  }
-  console.log(`${checks.length - failed}/${checks.length} on ${DISTR}`);
+  console.log(`${total - failed}/${total} on ${DISTR}`);
 } finally {
   await browser.close();
+  server?.close();
 }
 process.exitCode = failed ? 1 : 0;
