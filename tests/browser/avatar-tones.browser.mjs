@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// The tones of initials (UI Chat, owner decision q-4f91278cc7), on the built
-// bytes in a browser: every tone at every size, in both themes, over the
+// The hues of initials (UI Chat, owner decision q-4f91278cc7; since C17,
+// 2026-11-08, the static palette's hues by .sf-hue-<name>), on the built
+// bytes in a browser: every hue at every size, in both themes, over the
 // surfaces 0 to 3, holds 4.5:1 for the initials against the translucent fill
 // composited over its surface; the geometry is the neutral avatar's; auto gives
 // the same tone across a reload; an image and the placeholder take no tone; the
@@ -14,7 +15,10 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
-const TONES = ['rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'];
+// The eight hues auto picks from; the former tone names are aliases of them
+// (rose is pink) until 2027-01-01.
+const TONES = ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'];
+const HUE_CLASS = 'sf-hue-';
 const SIZES = ['1/4', '1/3', '1/2', '1', '2', '3'];
 const SURFACES = [0, 1, 2, 3];
 const THEMES = ['light', 'dark'];
@@ -76,7 +80,7 @@ const measure = () => {
       const [a, b] = [luminance(ink), luminance(ground)];
       const rect = button.getBoundingClientRect();
       return {
-        tone: host.getAttribute('tone'),
+        tone: host.getAttribute('hue'),
         size: host.getAttribute('size'),
         surface: Number(plate.dataset.surface),
         classes: button.className,
@@ -95,7 +99,7 @@ const measure = () => {
 const table = {};
 const round = (value) => Math.round(value * 100) / 100;
 const plates = SURFACES.map((surface) => `<div data-surface="${surface}" style="background:var(--sf-surface-${surface});padding:8px">${
-  ['', ...TONES].flatMap((tone) => SIZES.map((size) => `<sf-avatar text="AB" size="${size}" ${tone ? `tone="${tone}"` : ''}></sf-avatar>`)).join('')
+  ['', ...TONES].flatMap((tone) => SIZES.map((size) => `<sf-avatar text="AB" size="${size}" ${tone ? `hue="${tone}"` : ''}></sf-avatar>`)).join('')
 }</div>`).join('');
 
 for (const theme of THEMES) {
@@ -111,7 +115,7 @@ for (const theme of THEMES) {
     table[key].measured += 1;
     table[key].sizes[row.size] = round(Math.min(table[key].sizes[row.size] ?? Infinity, row.ratio));
     check('initials hold 4.5:1', row.ratio >= 4.5, {theme, tone: row.tone, size: row.size, surface: row.surface, ratio: round(row.ratio)});
-    check('the tone class is drawn', row.classes.split(/\s+/u).includes(`sf-avatar--tone-${row.tone}`), {tone: row.tone, classes: row.classes});
+    check('the hue class is drawn', row.classes.split(/\s+/u).includes(`${HUE_CLASS}${row.tone}`), {tone: row.tone, classes: row.classes});
 
     const neutral = rows.find((one) => !one.tone && one.size === row.size && one.surface === row.surface);
     for (const property of ['width', 'height', 'fontSize', 'lineHeight', 'padding']) {
@@ -127,14 +131,14 @@ for (const theme of THEMES) {
 
   // Today's look: no class, the neutral fill, and the container's dimmed ink.
   const neutral = await page.evaluate(() => {
-    const host = document.querySelector('sf-avatar:not([tone])');
+    const host = document.querySelector('sf-avatar:not([hue])');
     const button = host.querySelector('.sf-avatar');
     const probe = document.createElement('div');
     probe.style.cssText = 'background:var(--sf-surface-container);color:var(--sf-on-surface-container--variant)';
     document.body.append(probe);
     const look = getComputedStyle(probe);
     const result = {
-      tones: [...button.classList].filter((name) => name.startsWith('sf-avatar--tone-')),
+      tones: [...button.classList].filter((name) => name.startsWith('sf-hue-') || name.startsWith('sf-avatar--tone-')),
       fill: getComputedStyle(button).backgroundColor,
       expectedFill: look.backgroundColor,
       ink: getComputedStyle(button).color,
@@ -143,7 +147,7 @@ for (const theme of THEMES) {
     probe.remove();
     return result;
   });
-  check('the default has no tone class', neutral.tones.length === 0, neutral);
+  check('the default has no hue class', neutral.tones.length === 0, neutral);
   check('the default fill is the neutral one', neutral.fill === neutral.expectedFill, neutral);
   check('the default ink is the neutral one', neutral.ink === neutral.expectedInk, neutral);
   await page.close();
@@ -156,14 +160,16 @@ const NAMES = [
   ['Анна Захарова', 'amber'],
   ['Rosa Moreno', 'green'],
 ];
-const autoBody = `${NAMES.map(([name]) => `<sf-avatar data-name heading="${name}" tone="auto"></sf-avatar>`).join('')}
-  <sf-avatar id="from-label" aria-label="Boris Ilyin" text="XY" tone="auto"></sf-avatar>
-  <sf-avatar id="from-text" text="Boris Ilyin" tone="auto"></sf-avatar>
-  <sf-avatar id="heading-first" heading="Boris Ilyin" aria-label="Rosa Moreno" text="ZZ" tone="auto"></sf-avatar>
-  <sf-avatar id="no-name" tone="auto"></sf-avatar>
-  <sf-avatar id="word-only" tone="auto" heading=""></sf-avatar>`;
+const autoBody = `${NAMES.map(([name]) => `<sf-avatar data-name heading="${name}" hue="auto"></sf-avatar>`).join('')}
+  <sf-avatar id="from-label" aria-label="Boris Ilyin" text="XY" hue="auto"></sf-avatar>
+  <sf-avatar id="from-text" text="Boris Ilyin" hue="auto"></sf-avatar>
+  <sf-avatar id="heading-first" heading="Boris Ilyin" aria-label="Rosa Moreno" text="ZZ" hue="auto"></sf-avatar>
+  <sf-avatar id="no-name" hue="auto"></sf-avatar>
+  <sf-avatar id="word-only" hue="auto" heading=""></sf-avatar>
+  <sf-avatar id="former-auto" heading="Boris Ilyin" tone="auto"></sf-avatar>
+  <sf-avatar id="former-rose" text="AB" tone="rose"></sf-avatar>`;
 const tones = () => [...document.querySelectorAll('sf-avatar')].map((host) =>
-  [...host.querySelector('.sf-avatar').classList].filter((name) => name.startsWith('sf-avatar--tone-')).join(' '));
+  [...host.querySelector('.sf-avatar').classList].filter((name) => name.startsWith('sf-hue-')).join(' '));
 const page = await open({body: autoBody});
 const first = await page.evaluate(tones);
 await page.reload();
@@ -174,11 +180,13 @@ const elsewhere = await open({body: autoBody, theme: 'dark'});
 const third = await elsewhere.evaluate(tones);
 check('auto is the same on another page and in the other theme', JSON.stringify(first) === JSON.stringify(third), {first, third});
 await elsewhere.close();
-NAMES.forEach(([name, tone], index) => check('auto answers the documented vector', first[index] === `sf-avatar--tone-${tone}`, {name, got: first[index]}));
-check('auto reads the aria-label without a heading', first[NAMES.length] === 'sf-avatar--tone-violet', {got: first[NAMES.length]});
-check('auto reads the text without either', first[NAMES.length + 1] === 'sf-avatar--tone-violet', {got: first[NAMES.length + 1]});
-check('auto takes the heading first', first[NAMES.length + 2] === 'sf-avatar--tone-violet', {got: first[NAMES.length + 2]});
-check('auto with no name is neutral', first[NAMES.length + 3] === '' && first[NAMES.length + 4] === '', {got: first.slice(-2)});
+NAMES.forEach(([name, tone], index) => check('auto answers the documented vector', first[index] === `${HUE_CLASS}${tone}`, {name, got: first[index]}));
+check('auto reads the aria-label without a heading', first[NAMES.length] === 'sf-hue-violet', {got: first[NAMES.length]});
+check('auto reads the text without either', first[NAMES.length + 1] === 'sf-hue-violet', {got: first[NAMES.length + 1]});
+check('auto takes the heading first', first[NAMES.length + 2] === 'sf-hue-violet', {got: first[NAMES.length + 2]});
+check('auto with no name is neutral', first[NAMES.length + 3] === '' && first[NAMES.length + 4] === '', {got: first.slice(NAMES.length + 3, NAMES.length + 5)});
+check('the former tone="auto" picks the same hue', first[NAMES.length + 5] === 'sf-hue-violet', {got: first[NAMES.length + 5]});
+check('the former tone="rose" is the pink hue', first[NAMES.length + 6] === 'sf-hue-pink', {got: first[NAMES.length + 6]});
 // A heading set later moves the tone with it.
 const moved = await page.evaluate(async () => {
   const host = document.querySelector('#no-name');
@@ -186,17 +194,17 @@ const moved = await page.evaluate(async () => {
   await new Promise((done) => setTimeout(done, 50));
   return host.querySelector('.sf-avatar').className;
 });
-check('a name set later brings its tone', moved.includes('sf-avatar--tone-green'), {moved});
+check('a name set later brings its tone', moved.includes('sf-hue-green'), {moved});
 await page.close();
 
 // Tones are for initials: an image and the placeholder are untouched, in the
 // element and in the plain classes.
 for (const theme of THEMES) {
   const tonePage = await open({theme, body: `
-    <sf-avatar id="image" image-url="${PIXEL}" heading="Boris Ilyin" text="BI" tone="rose"></sf-avatar>
-    <sf-avatar id="image-auto" image-url="${PIXEL}" heading="Boris Ilyin" tone="auto"></sf-avatar>
+    <sf-avatar id="image" image-url="${PIXEL}" heading="Boris Ilyin" text="BI" hue="pink"></sf-avatar>
+    <sf-avatar id="image-auto" image-url="${PIXEL}" heading="Boris Ilyin" hue="auto"></sf-avatar>
     <sf-avatar id="image-plain" image-url="${PIXEL}" heading="Boris Ilyin"></sf-avatar>
-    <sf-avatar id="placeholder" tone="rose"></sf-avatar>
+    <sf-avatar id="placeholder" hue="pink"></sf-avatar>
     <sf-avatar id="placeholder-plain"></sf-avatar>
     <span id="class-image" class="sf-avatar sf-avatar--size-1 sf-avatar--tone-rose"><img class="sf-avatar-image" alt="" src="${PIXEL}"></span>
     <span id="class-placeholder" class="sf-avatar sf-avatar--size-1 sf-avatar--placeholder sf-avatar--tone-rose"></span>
@@ -219,10 +227,10 @@ for (const theme of THEMES) {
     return out;
   });
   for (const id of ['image', 'image-auto']) {
-    check('an image takes no tone class', !look[id].classes.includes('sf-avatar--tone-'), {theme, id, classes: look[id].classes});
+    check('an image takes no hue class', !look[id].classes.includes(HUE_CLASS), {theme, id, classes: look[id].classes});
     check('an image has no tone fill', look[id].fill === look['image-plain'].fill, {theme, id, fill: look[id].fill, plain: look['image-plain'].fill});
   }
-  check('a placeholder takes no tone class', !look.placeholder.classes.includes('sf-avatar--tone-'), {theme, classes: look.placeholder.classes});
+  check('a placeholder takes no hue class', !look.placeholder.classes.includes(HUE_CLASS), {theme, classes: look.placeholder.classes});
   check('a placeholder stays neutral', look.placeholder.fill === look['placeholder-plain'].fill && look.placeholder.ink === look['placeholder-plain'].ink, {theme, ...look.placeholder});
   check('the plain image class ignores a tone', /, 0\)$|transparent/u.test(look['class-image'].fill), {theme, fill: look['class-image'].fill});
   check('the plain placeholder class ignores a tone', look['class-placeholder'].fill === look['class-placeholder-plain'].fill, {theme, fill: look['class-placeholder'].fill});
@@ -238,10 +246,10 @@ for (const theme of THEMES) {
 // The public variables win over a named tone and over auto.
 const hostPage = await open({body: `
   <div style="--sf-avatar-background-color: rgb(1, 2, 3); --sf-avatar-color: rgb(250, 251, 252)">
-    <sf-avatar id="set-named" text="AB" tone="rose"></sf-avatar>
-    <sf-avatar id="set-auto" heading="Boris Ilyin" tone="auto"></sf-avatar>
+    <sf-avatar id="set-named" text="AB" hue="pink"></sf-avatar>
+    <sf-avatar id="set-auto" heading="Boris Ilyin" hue="auto"></sf-avatar>
   </div>
-  <sf-avatar id="on-host" text="AB" tone="teal" style="--sf-avatar-background-color: rgb(4, 5, 6)"></sf-avatar>
+  <sf-avatar id="on-host" text="AB" hue="teal" style="--sf-avatar-background-color: rgb(4, 5, 6)"></sf-avatar>
   <span id="set-class" class="sf-avatar sf-avatar--size-1 sf-avatar--text sf-avatar--tone-amber" style="--sf-avatar-background-color: rgb(7, 8, 9)">AB</span>`});
 const set = await hostPage.evaluate(() => {
   const read = (element) => ({fill: getComputedStyle(element).backgroundColor, ink: getComputedStyle(element).color});
