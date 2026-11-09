@@ -160,9 +160,12 @@ button reads label … keys and `text-position` places the label.
 Inside a button the keys are soft caps (owner decision 2026-11-07, docs
 review R030): no edge, the text face at medium weight, sized from the label --
 letters at 0.8125em, a cap 1.6em high and at least as wide, 0.4em of room,
-0.25em between caps. Their ink is the label's at 80 % and their fill that ink
-at 12 %, so they read on every appearance and scheme, filled or not, light or
-dark, with nothing of the button's own. A key of one character (P, ⌘, ⇧, ↵) is
+0.25em between caps. Their ink is the label's own and their fill that ink at
+8 %, so they read on every appearance and scheme, filled or not, light or
+dark, with nothing of the button's own: at least 4.5:1 against the fill
+(tests/browser/button-shortcut-contrast.browser.mjs; until 1.10.1 the ink was
+the label's at 80 % on a 12 % fill and fell to 4.03:1 on a filled primary
+button). A key of one character (P, ⌘, ⇧, ↵) is
 a square; a key of several letters (Esc, Ctrl, Shift) hugs its word. Caps
 stand apart, so no `+` is drawn between them.
 

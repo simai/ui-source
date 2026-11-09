@@ -11,7 +11,7 @@
 //   - caps in buttons and in the search trigger (filled, outline, link,
 //     tonal): no edge, the text face at weight 500, letters 0.8125em of the
 //     label, 1.6em high, a key of one character square, 0.25em apart; ink the
-//     label's at 80 %, fill that ink at 12 %; caps stand apart (a + written
+//     label's own, fill that ink at 8 %; caps stand apart (a + written
 //     between Windows words is not drawn);
 //   - plain glyphs in a menu (sf-menu-context entries) and in a tooltip: no
 //     fill, no edge, no room, 0.875em of the row's text; in a menu
@@ -146,8 +146,8 @@ const MEASURE = () => {
     saidPlain: read(document.querySelector('#said-plain kbd')),
     saidCap: read(document.querySelector('#said-cap kbd')),
     expectCap: Object.fromEntries(['filled', 'outline', 'link', 'trigger'].map((id) => {
-      const ink = mixed(getComputedStyle(document.querySelector(`#${id} .sf-button-text-container`)).color, 80);
-      return [id, {ink, fill: mixed(ink, 12)}];
+      const ink = getComputedStyle(document.querySelector(`#${id} .sf-button-text-container`)).color;
+      return [id, {ink, fill: mixed(ink, 8)}];
     })),
   };
 };

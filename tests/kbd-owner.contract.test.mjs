@@ -44,11 +44,13 @@ test('Kbd decides its look by the place, and an appearance said outright wins', 
   assert.match(css, /kbd\[appearance="#\{\$appearance\}"\] kbd/u, 'a group passes its appearance to its keys');
 });
 
-test('Kbd caps mix their ink and fill from the ink they sit in, on the alpha scale', async () => {
+test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha scale', async () => {
   const css = await read('src/component/kbd/scss/_kbd.scss');
   const cap = css.slice(css.indexOf('@mixin cap'), css.indexOf('@mixin plain'));
-  assert.match(cap, /color: var\(--sf-kbd-color, color-mix\(in srgb, currentColor 80%, transparent\)\)/u);
-  assert.match(cap, /background: var\(--sf-kbd-background-color, var\(--sf-kbd-background, color-mix\(in srgb, currentColor 12%, transparent\)\)\)/u);
+  // The ink whole (C04: the button's text), the fill a state step of it: the
+  // 80 % ink of 1.1.0 fell under 4.5:1 (buttons review 2026-11-09).
+  assert.match(cap, /color: var\(--sf-kbd-color, currentColor\);/u);
+  assert.match(cap, /background: var\(--sf-kbd-background-color, var\(--sf-kbd-background, color-mix\(in srgb, currentColor 8%, transparent\)\)\)/u);
   assert.match(cap, /border: none/u);
   const keycap = css.slice(css.indexOf('@mixin keycap'), css.indexOf('@mixin cap'));
   assert.match(keycap, /border: var\(--sf-px\) solid var\(--sf-kbd-border-color, var\(--sf-outline-variant\)\)/u);

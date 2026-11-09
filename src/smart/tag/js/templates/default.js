@@ -15,12 +15,16 @@ function renderCheckboxIcon(context) {
         : html`<span class="sf-tag-check" aria-hidden="true"></span>`;
 }
 
+// The icon is an sf-icon, as in every other component: the element tells the
+// Loader its name, so the name joins the icon font request. A bare
+// <i class="sf-icon"> drawn here after the page's scan never did -- its glyph
+// stayed blank (buttons review 2026-11-09: label missing from icon_names).
 function renderGenericIcon(context) {
     const iconName = context.icon || 'sell';
 
     return context.component?.hasSlotContent?.('leading')
         ? context.component.getSlotContent('leading')
-        : html`<i class="sf-icon sf-tag-icon" aria-hidden="true">${iconName}</i>`;
+        : html`<sf-icon icon=${iconName} root-class="sf-tag-icon" aria-hidden="true"></sf-icon>`;
 }
 
 function renderColorIcon(context) {
@@ -66,7 +70,7 @@ function renderAvatar(context) {
 
     return html`
         <span class="sf-avatar sf-avatar--size-1/4 sf-avatar--placeholder flex justify-center items-center" aria-hidden="true">
-      <i class="sf-icon">person</i>
+      <sf-icon icon="person" aria-hidden="true"></sf-icon>
     </span>
     `;
 }

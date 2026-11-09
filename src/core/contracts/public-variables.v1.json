@@ -4441,14 +4441,14 @@
           "name": "--sf-kbd-background-color",
           "role": "background",
           "summary": "A cap's fill (in a button or a field): the ink it sits in, mixed. The former name --sf-kbd-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "color-mix(in srgb, currentColor 12%, transparent)",
+          "default": "color-mix(in srgb, currentColor 8%, transparent)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-kbd-color",
           "role": "color",
-          "summary": "A cap's letters (in a button or a field): the ink it sits in, mixed.",
-          "default": "color-mix(in srgb, currentColor 80%, transparent)",
+          "summary": "A cap's letters (in a button or a field): the ink it sits in, whole -- at least 4.5:1 against the cap's fill on every look of sf-button.",
+          "default": "currentColor",
           "since": "2026-11-08"
         },
         {
