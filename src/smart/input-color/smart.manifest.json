@@ -384,7 +384,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "20a80358f618ead1a2c5bfe7a5e1905f0da70cdcf3b4be00b290ffe673b06dc6"
+        "sha256": "7b232e0dc96cad9055835a72a39bc41b0bb45fef24f0fe7a42d547d3ee4f0167"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
