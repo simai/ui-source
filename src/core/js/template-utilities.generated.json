@@ -178,6 +178,12 @@
     "text-align/default",
     "transition-property/default"
   ],
+  "cl-input-choice": [
+    "align-items/default",
+    "display/default",
+    "justify-content/default",
+    "transition-property/default"
+  ],
   "cl-input-code": [
     "sr-only/default"
   ],

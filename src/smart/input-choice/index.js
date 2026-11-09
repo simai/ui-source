@@ -3,16 +3,18 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {FormField} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
-import {CHOICE_COLUMNS, applyChoice, formatValue, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
+import {CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
 // sf-input-choice: a form field that picks one option, or several, from
-// cards -- a site's kind, a page type, a template, a backup target, a plan --
-// each with a title, a caption, an icon and a badge. Larena's request
-// msg-993e1e39 item 3 (choice cards).
+// cards -- a site's kind, a page type, a template, a backup target, a plan,
+// delivery or payment -- each with a title, a description, a badge, a price
+// and term, an icon or an image, in one of three layouts (list, tile,
+// picture; owner decision C28). Larena's request msg-993e1e39 item 3 (choice
+// cards).
 //
 // From its component.json (standard simai.smart-component 1.3.14 §3, §4, §8,
 // §17): the settings are made by core/js/element-manifest.js; the host is the
@@ -95,6 +97,11 @@ class SfInputChoice extends FormField(ChoiceElement) {
   get columnsValue() {
     const columns = String(this.columns ?? 'auto');
     return CHOICE_COLUMNS.includes(columns) ? columns : 'auto';
+  }
+
+  get layoutValue() {
+    const layout = String(this.layout ?? 'tile');
+    return CHOICE_LAYOUTS.includes(layout) ? layout : 'tile';
   }
 
   /** The chosen values, in the order of the options: one, or several when multiple. */
@@ -200,6 +207,7 @@ class SfInputChoice extends FormField(ChoiceElement) {
       chosen: new Set(this.selected),
       multiple: Boolean(this.multiple),
       columns: this.columnsValue,
+      layout: this.layoutValue,
       label: this.label || '',
       ariaLabel: this.getAttribute('aria-label') || '',
       hint: this.hint || '',

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -24,27 +24,41 @@
           "type": "string",
           "optional": true
         },
+        "price": {
+          "type": "string",
+          "optional": true
+        },
+        "term": {
+          "type": "string",
+          "optional": true
+        },
+        "image": {
+          "type": "string",
+          "optional": true
+        },
         "disabled": {
           "type": "boolean",
           "optional": true
         }
       },
       "x-markup": "the attribute takes the same list as JSON; a server prints it in the JSON island (script type=application/json data-sf-settings); title is read as label",
-      "summary": "The options, [{value, label, caption?, icon?, badge?, disabled?}]: each a card with its title (label, or title), a caption under it, an icon in a box before it and a short badge beside the title. A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+      "summary": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
       "examples": [
         [
           {
-            "value": "site",
-            "label": "Сайт",
-            "caption": "Страницы, разделы и меню",
-            "icon": "language"
+            "value": "courier",
+            "label": "Курьером",
+            "caption": "Привезём в удобный интервал",
+            "price": "350 ₽",
+            "term": "2–3 дня"
           },
           {
-            "value": "shop",
-            "label": "Магазин",
-            "caption": "Каталог, корзина и заказы",
-            "icon": "storefront",
-            "badge": "Pro"
+            "value": "pickup",
+            "label": "Пункт выдачи",
+            "caption": "Больше 2 000 пунктов по стране",
+            "price": "150 ₽",
+            "term": "1–2 дня",
+            "badge": "Выгодно"
           }
         ]
       ]
@@ -53,6 +67,16 @@
       "type": "boolean",
       "default": false,
       "summary": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
+    },
+    "layout": {
+      "type": "enum",
+      "values": [
+        "tile",
+        "list",
+        "picture"
+      ],
+      "default": "tile",
+      "summary": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start."
     },
     "columns": {
       "type": "enum",
@@ -64,7 +88,7 @@
         "4"
       ],
       "default": "auto",
-      "summary": "The grid: auto fills the width with cards no narrower than --sf-choice-min-inline-size (15rem); a number is the most columns, fewer where a card would be narrower than that, so a phone stacks them."
+      "summary": "The grid of tile and picture: auto fills the width with cards no narrower than --sf-choice-min-inline-size (15rem); a number is the most columns, fewer where a card would be narrower than that, so a phone stacks them. A list is one column."
     },
     "label": {
       "type": "string",
@@ -157,16 +181,31 @@
   },
   "relations": [
     {
-      "name": "icons",
+      "name": "radio",
       "$comment": [
-        "An option's icon and the check of a chosen card in a multiple field."
+        "The single control on a card's name line is the class radio sf-radio draws",
+        "(.sf-radio-button, size 1): its box is the name line."
       ]
     },
     {
-      "name": "badges",
+      "name": "checkbox",
       "$comment": [
-        "An option's badge is the class badge (.sf-badge, tight, its default size) beside",
-        "its title."
+        "The multiple control is the class checkbox sf-checkbox draws (.sf-checkbox,",
+        "size 1), its check the icon font's."
+      ]
+    },
+    {
+      "name": "icons",
+      "$comment": [
+        "An option's icon on the name line and the check of a chosen checkbox."
+      ]
+    },
+    {
+      "name": "cl-badge",
+      "lazy": true,
+      "$comment": [
+        "An option's badge is sf-badge (tonal, primary, on the half line) beside its",
+        "name, only when an option carries one."
       ]
     }
   ],
@@ -180,7 +219,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "Native inputs: single, a radio group (role radiogroup, named by the label or the host's aria-label, described by the hint or error, aria-required and aria-invalid on it) of native radios that the arrow keys move through and choose, Tab reaching the chosen one; multiple, a group of native checkboxes, each reached by Tab and toggled by Space, aria-invalid on each. Each input covers its card, is named by the card's title (with its badge) and described by its description. The focus ring is the card's.",
+    "$comment": "Native inputs: single, a radio group (role radiogroup, named by the label or the host's aria-label, described by the hint or error, aria-required and aria-invalid on it) of native radios that the arrow keys move through and choose, Tab reaching the chosen one; multiple, a group of native checkboxes, each reached by Tab and toggled by Space, aria-invalid on each. Each input stands in the box of the class radio or checkbox on its card's name line; the card is its label, so a press anywhere on the card is the input's. It is named by the card's name (with its badge) and described by its description, price and term. The focus ring is the card's.",
     "role": "radiogroup",
     "name": {
       "from": [
@@ -231,7 +270,7 @@
       "state": "selected"
     }
   },
-  "x-summary": "A form field that picks one option, or several, from cards: each a title, a caption, an icon and a badge, in a grid that wraps on a phone. One option is a radio group the arrow keys move through; several are checkboxes. Chosen cards have a filled mark and a heavier primary edge; invalid cards an error edge and a message under them.",
+  "x-summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "x-source": {
     "package": "framework",
     "folder": "input-choice",
@@ -245,16 +284,20 @@
   "x-decisions": [
     "caption, not description: description is a key every Smart bundle drops from its component.json (scripts/shared-runtime-contract.mjs), and sf-input-lookup's options already name their second line caption; one option shape across the field family.",
     "new, not an extension (D31: one registry, no duplicates). sf-radio and sf-checkbox are one option each (a label and a description line, no icon, no badge, no grid, no group value); sf-button-group is a segmented row of buttons, single choice only, no second line, and its geometry is a button's height on the ladder, which a card with a caption cannot keep; sf-input-select and sf-input-lookup choose from a list in a panel. A card grid that is one form value, single or multiple, is a field none of them is, and stretching any of them to it would give that component two geometries and two value models. So one new field in the family input, the name of the dispatcher's plan.",
-    "control: native inputs, not ARIA on spans. Single is native radios of one name in a role radiogroup, so the arrows, the wrap and the choose-on-move are the browser's and a screen reader hears the group's position; multiple is native checkboxes in a role group. Each input covers its card (opacity 0, inset 0), so a press anywhere is the input's and the focus ring is the card's box.",
+    "control: native inputs, not ARIA on spans. Single is native radios of one name in a role radiogroup, so the arrows, the wrap and the choose-on-move are the browser's and a screen reader hears the group's position; multiple is native checkboxes in a role group. Since 1.1.0 (C28) each input stands in the box of the class radio or checkbox -- the markup sf-radio and sf-checkbox draw -- and the card is its label, so a press anywhere is the input's and the focus ring is the card's.",
     "form: the host is the form control (ElementInternals) and sends the values alone -- one entry, or one entry per chosen value under the name when multiple (FormData), as sf-input-lookup. The inner inputs are taken out of the page's form by a form attribute that names no form, and their name is the host's path id, so the radios of one element are one group and two elements never share one.",
     "value: a string -- one value, or the values joined by commas when multiple, in the order of the options -- so a server prints it as the value attribute; the property takes a string or a list, and selected gives the list. A value with a comma in it cannot be said by the attribute; such an option is chosen by the property.",
     "events: input then change, once per press, detail {value, values, item, checked}; the inner inputs' own events do not leave the host. A value set from code, a reset and a restore say nothing.",
-    "geometry: on the ladder. The icon box is the size 1 control height (square, ui radius, surface-container; primary-container when chosen); the title is text size 1 medium on the size 1 line, the caption text size 1/2 on-surface-variant; the mark is the half rung's icon, on the title's line, or centred on the icon box when there is one; the card's padding space-1/2, its hairline inside its box. The label row and the message line are sf-input's (text size 1/2).",
-    "states: checked is two signs -- the mark filled (a dot in the ring, a check in the box) and the edge drawn twice as heavy in the primary role (an inner ring, so the box does not move) over the select step of the alpha scale; hover the state step; focus the shared ring on the card; disabled the disable roles; invalid the error edge on the cards not chosen and the error line under them; forced colours Highlight.",
+    "geometry (1.1.0, C28, C18, C22): the card's padding is space-1 on all four sides and the gap between cards half of it (calc, so it halves on the phone and compact steps too); the radius is the surface radius. The control is the class radio or checkbox at size 1, its box the name line (text-height-1): 24 on a desktop, 20 compact and on a phone. The name is text size 1 medium, the description text size 1/2 on-surface-variant, an icon the name line's height; the price is text size 1 medium in a list column, text size 2 bold at a tile's foot, the term text size 1/2. The label row and the message line are sf-input's (text size 1/2).",
+    "states (1.1.0, C28): checked is two signs -- the control checked and the edge drawn twice as heavy in the primary role (an inner ring, so the box does not move) over primary-container, the lowest step of the fill family (12 light, 24 dark); the words stay on the on-surface roles. Hover the outline edge and the surface hover step; focus the shared ring on the whole card; disabled the disable roles on the edge, the words, the control and the badge (component.badges sf-badge--disabled), no hover; invalid (C13: error) the error edge on the cards not chosen, the error ring on their controls and the error line under them; forced colours Highlight.",
     "grid: auto-fill with a minimum card width (--sf-choice-min-inline-size, 15rem); columns 1-4 is the most columns, fewer where a card would be narrower than the minimum, so a phone stacks the cards without a breakpoint of its own.",
     "css-variables: eight, read with the role as their fallback and never set here: gap, min-inline-size, padding, radius, background-color, border-color, selected-background-color, selected-border-color.",
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its studio scenario and smoke example back the Pro package reference (sf-chat-threads for chat 1.18). Settings, values, events and keys unchanged.",
-    "version 1.0.2: the size rule C18 (2026-11-09): --sf-choice-min-inline-size defaults to the size step f5 (15rem, 240 px, as before), written as the token."
+    "version 1.0.2: the size rule C18 (2026-11-09): --sf-choice-min-inline-size defaults to the size step f5 (15rem, 240 px, as before), written as the token.",
+    "version 1.1.0 (2026-11-09, owner decision C28, R041): layouts list, tile (the default, the arrangement 1.0 had) and picture; an option's price, term and image; the class radio and checkbox on the name line in place of the drawn 14 px ring; sf-badge in place of the hand-written .sf-badge span; padding space-1 (was space-1/2) and gap half the padding; radius surface (was ui); the chosen fill primary-container (was the select step of the alpha scale); the icon on the name line at the line's height (it was a 40 px box, sized through --sf-icon--size, a variable the icon font does not read). R041 defects fixed: density ignored (the ring and the icon box were fixed sizes), price only in the caption, no image, the hand-written badge class, the wrong icon variable. Added members only: a minor. The 1.0 part .sf-choice-mark is gone (no page used it); the other part classes and the eight public variables keep their names.",
+    "layout names: list, tile, picture (the dispatcher's proposal). layout is the leaf word the Framework already uses for an arrangement (sf-dropdown list|grid, sf-contents, sf-empty-state); the values are plain nouns of what a card is, not looks (§21.2: no compact/large/wide). tile is the default because it is how 1.0 stood.",
+    "control: the class markup, not a nested <sf-radio>/<sf-checkbox> element. Those hosts are form controls of their own (ElementInternals) and make their native group by their name: nested in this field they would either submit beside it or, without a name, lose the arrow-key group. The class radio and checkbox are what those elements draw, at the same size class, so the look, the density and the states are theirs.",
+    "caption stays the item field for the description (see the first decision): description is a key every Smart bundle drops, and the runtime may not read it (tests/shared-runtime.contract.test.mjs), so it is not taken as an alias either."
   ],
   "x-registry": {
     "reuse_mode": "whole",

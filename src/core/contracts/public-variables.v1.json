@@ -4336,8 +4336,8 @@
         {
           "name": "--sf-choice-gap",
           "role": "gap",
-          "summary": "The space between the cards.",
-          "default": "var(--sf-space-1/2)",
+          "summary": "The space between the cards; half the padding by default (C28).",
+          "default": "calc(var(--sf-choice-padding) / 2)",
           "since": "2026-11-08"
         },
         {
@@ -4350,15 +4350,15 @@
         {
           "name": "--sf-choice-padding",
           "role": "padding",
-          "summary": "The room inside a card.",
-          "default": "var(--sf-space-1/2)",
+          "summary": "The room inside a card, the same on all four sides.",
+          "default": "var(--sf-space-1)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-choice-radius",
           "role": "radius",
           "summary": "A card's corner radius.",
-          "default": "var(--sf-radius--ui)",
+          "default": "var(--sf-radius--surface)",
           "since": "2026-11-08"
         },
         {
@@ -4378,8 +4378,8 @@
         {
           "name": "--sf-choice-selected-background-color",
           "role": "background",
-          "summary": "A chosen card's fill.",
-          "default": "var(--sf-primary-transparent-select)",
+          "summary": "A chosen card's fill: the lowest step of the fill family (12 light, 24 dark).",
+          "default": "var(--sf-primary-container)",
           "since": "2026-11-08"
         },
         {
