@@ -55,13 +55,13 @@ With more than one item the bar shows «‹ 1 из N ›» to page through them 
 «Все N», which opens the list of all under the bar, each item with its own
 action, acknowledge and close. Escape closes the list.
 
-Under 600 px of the bar's own width the icon, the text and the close share
+Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the text and the close share
 the first line, the actions go under the text, the arrows are not drawn and
 «Все N» stands at the line's end.
 
 An action is always as wide as its label: it is never shrunk or cut with an
 ellipsis. When the bar is short of room, the message wraps first, down to
-about 10rem, and then the actions wrap onto a line of their own.
+10rem (the size step f0), and then the actions wrap onto a line of their own.
 
 ## Closing
 
@@ -140,4 +140,4 @@ the bar. Motion is off under `prefers-reduced-motion: reduce`.
 - `--sf-alert-bar-gap` — the space between the bar's text, its actions and
   its end button (the rung's space-x).
 - `--sf-alert-bar-list-background-color` — the list of all's surface (it scrolls
-  past 22.5rem).
+  past 352 px, the size step g1).

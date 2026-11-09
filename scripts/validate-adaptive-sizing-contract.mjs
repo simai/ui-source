@@ -38,7 +38,9 @@ const breakpointSource = fs.readFileSync(
 );
 assert.match(
     breakpointSource,
-    new RegExp(`lg:\\s*${contract.modes.desktop.minWidthPx}px`),
+    new RegExp(`lg:\\s*${
+        contract.modes.desktop.minWidthPx / contract.meta.nominalRootPx
+    }rem`),
 );
 assert.match(
     breakpointSource,

@@ -117,15 +117,15 @@
   margin-inline-end: calc(var(--sf-alert-bar--text-space-x) - var(--sf-alert-bar--gap));
 }
 
-/* The text gives way first: it wraps down to its own floor (10rem), and
+/* The text gives way first: it wraps down to its own floor (f0, 10rem), and
    only then do the actions wrap onto a second line. */
 .sf-alert-bar-text {
   display: flex;
-  flex: 1 1 10rem;
+  flex: 1 1 var(--sf-f0);
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 var(--sf-alert-bar--space-x);
-  min-inline-size: min(10rem, 100%);
+  min-inline-size: min(var(--sf-f0), 100%);
 }
 
 .sf-alert-bar-message {
@@ -203,7 +203,7 @@
 }
 
 .sf-alert-bar-strip:focus-visible {
-  outline-offset: calc(var(--sf-focus--width, 2px) * -1);
+  outline-offset: calc(var(--sf-focus--width) * -1);
 }
 
 .sf-alert-bar-strip-text {
@@ -230,11 +230,11 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-content: start;
   box-sizing: border-box;
-  max-block-size: 22.5rem;
+  max-block-size: var(--sf-g1);
   margin: 0;
   padding: 0;
   overflow: auto;
-  border-block-end: var(--sf-px, 1px) solid var(--sf-outline-variant);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
   background-color: var(--sf-alert-bar--list-background);
   color: var(--sf-on-surface);
   list-style: none;
@@ -252,7 +252,7 @@
 }
 
 .sf-alert-bar-item + .sf-alert-bar-item {
-  border-block-start: var(--sf-px, 1px) solid var(--sf-outline-variant);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
 }
 
 .sf-alert-bar-item-text {
@@ -291,14 +291,15 @@
 @keyframes sf-alert-bar-list-in {
   from {
     opacity: 0;
-    transform: translateY(calc(var(--sf-px, 1px) * -4));
+    transform: translateY(calc(var(--sf-a4) * -1));
   }
 }
 
-/* Narrow (the bar's own width under 600 px): the icon, the text and the
+/* Narrow (the bar's own width up to g9, 608 px; a container query cannot
+   read a variable, so the step is written in rem): the icon, the text and the
    close share the first line; the actions go under the text; no arrows,
    «Все N» at the line's end; the list's items stack. */
-@container sf-alert-bar (max-width: 600px) {
+@container sf-alert-bar (max-width: 38rem) {
   .sf-alert-bar-row {
     display: grid;
     grid-template-columns: var(--sf-alert-bar--line) minmax(0, 1fr) auto;

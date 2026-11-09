@@ -52,7 +52,7 @@ rung below's, the status icon the title's line, icon-to-text the rung's
 text-space-x. A one-line row is the rung's control height (40 px at size 1 on
 a desktop), as a list row is; the dividers give up their hairline from the
 row's inset. The action is an `sf-button` of the rung below, centred on the
-row. In a column narrower than 360 px the action goes under the text.
+row. In a column narrower than 480 px (30rem) the action goes under the text.
 
 ## Public variables
 

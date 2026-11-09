@@ -7,8 +7,8 @@
 }
 
 .sample-cards-card {
-  padding: var(--sf-space-4, 1rem);
-  border-radius: var(--sf-radius-2, 0.5rem);
+  padding: var(--sf-space-4);
+  border-radius: var(--sf-radius-2);
   background: var(--sf-surface-1, transparent);
   color: var(--sf-on-surface, inherit);
 }
@@ -18,7 +18,7 @@
 }
 
 .sample-cards-card--loading {
-  min-block-size: 6rem;
+  min-block-size: var(--sf-e2);
   opacity: 0.5;
 }
 

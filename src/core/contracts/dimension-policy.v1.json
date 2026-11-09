@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "owner": "sf5-core",
-  "description": "Reviewed boundaries for direct CSS length syntax. Static product geometry remains token-only; this file does not create design-token exceptions.",
+  "description": "Reviewed boundaries for direct CSS length syntax (C18, owner 2026-11-08: every size from the size system; exceptions listed here). Static product geometry remains token-only; this file does not create design-token exceptions. tests/dimension-inventory.test.mjs fails on any length no rule here reviews; reviewed-deferred names the task that removes it.",
   "rules": [
     {
       "id": "non-executable-comments",
@@ -14,7 +14,7 @@
     {
       "id": "owned-system-definitions",
       "category": "definition-review",
-      "filePattern": "^(?:core/scss/vars/_sf_var__size\\.scss|core/scss/vars/_sf_var__breakpoint\\.scss|core/figma_variables/figma_icon_sizes\\.scss|core/figma_variables/figma_border_radius\\.scss|utility/letter-spacing/default/scss/_sf_var__letter_spacing\\.scss)$",
+      "filePattern": "^(?:core/scss/vars/_sf_var__size\\.scss|core/scss/vars/_sf_var__breakpoint\\.scss|core/figma_variables/figma_icon_sizes\\.scss|core/figma_variables/figma_border_radius\\.scss|core/figma_variables/figma_radius\\.scss|utility/letter-spacing/default/scss/_sf_var__letter_spacing\\.scss)$",
       "contextPattern": ".*",
       "status": "accepted-system-definition",
       "reason": "This is an owned primitive, semantic token, breakpoint, or relative typography definition; consumers must reference it rather than repeat its value."
@@ -71,9 +71,9 @@
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^smart/(?:datepicker|drawer|dropdown|modal)/index\\.js$",
-      "contextPattern": "(?:\\$\\{(?:[xy]|left|top)\\}|Math\\.(?:max|round)|box\\.|size\\.|offset[XY]|startRect|scrollbarWidth|\\$\\{gap\\})",
+      "contextPattern": "(?:\\$\\{(?:[xy]|left|top)\\}|Math\\.(?:max|round)|box\\.|size\\.|offset[XY]|startRect|scrollbarWidth|\\$\\{gap\\}|sides\\[side\\])",
       "status": "accepted-runtime-geometry",
-      "reason": "Overlay, drag, and scroll-lock coordinates are derived from the current viewport or rendered boxes."
+      "reason": "Overlay, drag, scroll-lock and docked-column coordinates are derived from the current viewport or rendered boxes."
     },
     {
       "id": "smart-drag-measured-geometry",
@@ -82,6 +82,225 @@
       "contextPattern": "(?:startRect|\\$\\{left\\}|\\$\\{top\\})",
       "status": "accepted-runtime-geometry",
       "reason": "Drag placeholders and transforms preserve the exact DOMRect and pointer position."
+    },
+    {
+      "id": "policy-self",
+      "category": "definition-review",
+      "filePattern": "^core/contracts/dimension-policy\\.v1\\.json$",
+      "contextPattern": ".*",
+      "status": "accepted-non-executable",
+      "reason": "This policy names the lengths it reviews; nothing reads them as geometry."
+    },
+    {
+      "id": "hairline-utility-definitions",
+      "category": "definition-review",
+      "filePattern": "^utility/(?:flex-basis|flex-basis-ext|max-height)/default/scss/_sf_var__[a-z_]+\\.scss$",
+      "contextPattern": "^\"?px\"?\\s*:",
+      "textPattern": "^1px$",
+      "status": "accepted-system-definition",
+      "reason": "The utilities' px step (basis-px, max-h-px): a one-pixel hairline, the C18 exception."
+    },
+    {
+      "id": "zero-length",
+      "category": "zero-length-review",
+      "filePattern": ".*",
+      "contextPattern": ".*",
+      "status": "accepted-zero-length",
+      "reason": "A zero length is the same in every unit and is no step of any ladder: a calc() base, a registered property's initial value, an offset of nothing."
+    },
+    {
+      "id": "hairlines",
+      "category": [
+        "style-review",
+        "script-data-template-review"
+      ],
+      "filePattern": "^(?!component/sf-system/).*\\.(?:s?css|m?js|html)$",
+      "contextPattern": "^(?!.*radius)",
+      "textPattern": "^-?(?:0?\\.5|1|1\\.75|2)px$",
+      "status": "accepted-hairline",
+      "reason": "C18 lists the 1-2px line as an exception: a border, a focus offset, a visually hidden 1px box, an anti-aliasing half pixel. A hairline marks an edge and keeps its pixel width at any root size (owner, 2026-10-10)."
+    },
+    {
+      "id": "breakpoint-and-container-steps",
+      "category": "condition-review",
+      "filePattern": "\\.(?:s?css)$",
+      "contextPattern": "@(?:media|container)\\b",
+      "textPattern": "^(?:(?:5|5\\.5|6|6\\.5|7|7\\.5|8|8\\.5|9|9\\.5|10|11|12|13|14|15|16|17|18|19|20|22|24|26|28|30|32|34|36|38|40|44|48|52|56|60|64|68|72|76|80|88|96|104|112|120|128|136|144|152)rem|(?:31|39|43|47|59|71|79)\\.9\\d*rem)$",
+      "status": "accepted-size-step",
+      "reason": "A media or container query cannot read a variable, so its threshold is written in rem; it must be a step of the size scale (the breakpoints sm 32, md 44, lg 60, xl 72, xxl 80rem are steps) or one hair below one."
+    },
+    {
+      "id": "script-breakpoint-ladder",
+      "category": [
+        "script-data-template-review",
+        "runtime-review"
+      ],
+      "filePattern": "^core/js/breakpoints\\.js$",
+      "contextPattern": ".*",
+      "status": "accepted-system-definition",
+      "reason": "The breakpoint ladder for scripts (SF.breakpoints), the same rem steps the sheets switch at; queries are built from it."
+    },
+    {
+      "id": "sass-step-maps",
+      "category": "style-review",
+      "filePattern": "^core/scss/_sf_css__composition\\.scss$",
+      "contextPattern": "^\\$sf-workspace-(?:split|wide)-steps:",
+      "textPattern": "^(?:5|5\\.5|6|6\\.5|7|7\\.5|8|8\\.5|9|9\\.5|10|11|12|13|14|15|16|17|18|19|20|22|24|26|28|30|32|34|36|38|40|44|48|52|56|60|64|68|72|76|80|88|96|104|112|120|128|136|144|152)rem$",
+      "status": "accepted-system-definition",
+      "reason": "Sass maps naming size steps by their rem value for container queries, which cannot read a variable (g6, h0, h2, h4, h6, h8, i0, i2)."
+    },
+    {
+      "id": "touch-field-zoom-floor",
+      "category": "style-review",
+      "filePattern": "^core/scss/_sf_css__touch_fields\\.scss$",
+      "contextPattern": "font-size",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "WebKit zooms the page on focus of a field under 16 CSS pixels; the floor is in CSS px by the platform's rule."
+    },
+    {
+      "id": "sass-unit-math",
+      "category": "style-review",
+      "filePattern": "^core/scss/mix/_mix__breakpoint\\.scss$",
+      "contextPattern": "math\\.div\\(size\\.\\$size-pixel, 16px\\)",
+      "status": "accepted-system-definition",
+      "reason": "Unit arithmetic converting one pixel to rem for the one-hair-below breakpoint; no length is emitted from these literals."
+    },
+    {
+      "id": "observer-root-margin",
+      "category": [
+        "script-data-template-review",
+        "runtime-review"
+      ],
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|flag/js/_flag)\\.js|core/js/reading-position\\.js|smart/include/index\\.js|smart/contents/index\\.js)$",
+      "contextPattern": "(?:rootMargin|EDGE_MARGIN|VIEW_MARGIN)",
+      "status": "accepted-platform-boundary",
+      "reason": "IntersectionObserver rootMargin takes px or % only; it is a look-ahead distance, not drawn geometry."
+    },
+    {
+      "id": "font-load-probe",
+      "category": "script-data-template-review",
+      "filePattern": "^core/js/(?:icon-subset-memory|iconSubsetRuntime)\\.js$",
+      "contextPattern": "(?:fonts|family)",
+      "status": "accepted-platform-boundary",
+      "reason": "document.fonts.load needs a font shorthand with a size; the size is irrelevant to which glyphs load and is never drawn."
+    },
+    {
+      "id": "offscreen-copy-buffer",
+      "category": "script-data-template-review",
+      "filePattern": "^core/js/clipboard\\.js$",
+      "contextPattern": "inset-inline-start:-9999px",
+      "status": "accepted-platform-boundary",
+      "reason": "The copy fallback's textarea is moved off-screen; it is never seen."
+    },
+    {
+      "id": "glyph-relative-owner-decisions",
+      "category": [
+        "style-review",
+        "definition-review"
+      ],
+      "filePattern": "^(?:component/kbd/scss/_kbd\\.scss|core/scss/_sf_css__typograpy\\.scss|component/file-upload/scss/_css__upload_progress\\.scss|core/contracts/public-variables\\.v1\\.json)$",
+      "contextPattern": ".*",
+      "textPattern": "^\\d*\\.?\\d+em$",
+      "status": "accepted-owner-decision",
+      "reason": "Sized from the text around them by decision: sf-kbd (C04: letters about 0.8 of the text, the key about 1.6em, in a button, a menu and a paragraph alike), inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
+    },
+    {
+      "id": "documentation-prose",
+      "category": [
+        "script-data-template-review",
+        "definition-review",
+        "condition-review"
+      ],
+      "filePattern": "^(?:smart/[^/]+/(?:component|smart\\.manifest)\\.json|core/contracts/public-js-api\\.json)$",
+      "contextPattern": "^(?!\"(?:default|minimal_example)\":)",
+      "status": "accepted-non-executable",
+      "reason": "Prose in a passport or manifest (summary, description, version notes) that quotes a measurement; no stylesheet or script reads it."
+    },
+    {
+      "id": "documented-examples",
+      "category": "script-data-template-review",
+      "filePattern": "^smart/[^/]+/(?:component|smart\\.manifest)\\.json$",
+      "contextPattern": "^\"minimal_example\":",
+      "status": "accepted-test-fixture",
+      "reason": "The minimal example's host markup (a host column of a given width); the component itself takes none of it."
+    },
+    {
+      "id": "test-fixtures",
+      "category": [
+        "script-data-template-review",
+        "condition-review",
+        "style-review"
+      ],
+      "filePattern": "^smart/[^/]+/(?:examples|probe|studio\\.fixture|studio\\.scenario)\\.json$",
+      "contextPattern": ".*",
+      "status": "accepted-test-fixture",
+      "reason": "Example and probe scaffolding: a host's width or height to test a breakpoint, a sentinel like 17px that proves a public variable is read. Not product geometry."
+    },
+    {
+      "id": "first-paint-snapshots",
+      "category": "style-review",
+      "filePattern": "^smart/[^/]+/static/[^/]+/[^/]+\\.html$",
+      "contextPattern": ".*",
+      "status": "accepted-generated-snapshot",
+      "reason": "First-paint snapshots record what a template rendered (an attribute it was given, an inline transform of a slider track); the value is reviewed at its template or example."
+    },
+    {
+      "id": "content-column-steps",
+      "category": "script-data-template-review",
+      "filePattern": "^smart/(?:input-rich/js/templates/default\\.js|wizard/js/templates/default\\.js|field-renderers/index\\.js|resizer/index\\.js|resizer/component\\.json|resizer/smart\\.manifest\\.json)$",
+      "contextPattern": "(?:width=|minmax\\(min\\(100%|getAttribute\\('(?:min|max)'\\)|\"default\":)",
+      "textPattern": "^(?:5|5\\.5|6|6\\.5|7|7\\.5|8|8\\.5|9|9\\.5|10|11|12|13|14|15|16|17|18|19|20|22|24|26|28|30|32|34|36|38|40|44|48|52|56|60|64|68|72|76|80|88|96|104|112|120|128|136|144|152)rem$",
+      "status": "accepted-size-step",
+      "reason": "A column or panel width passed as an attribute or a documented default (a popover 20rem = g0, a modal 48rem = h2, a field grid column 14rem = f4, a resizer's 12rem and 40rem bounds = f2 and h0): steps of the size scale written in rem where an attribute value is expected."
+    },
+    {
+      "id": "measured-runtime-geometry",
+      "category": "runtime-review",
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
+      "contextPattern": "^(?!.*(?:DOCK_MIN_REM|maxThumbOffset|thumbSize|scrollbarWidth|totalHeight))",
+      "status": "accepted-runtime-geometry",
+      "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
+    },
+    {
+      "id": "drawer-dock-default",
+      "category": [
+        "runtime-review",
+        "script-data-template-review"
+      ],
+      "filePattern": "^smart/drawer/index\\.js$",
+      "contextPattern": "(?:DOCK_MIN_REM|^//)",
+      "status": "accepted-size-step",
+      "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, and the comments that name it."
+    },
+    {
+      "id": "deferred-c20-sortable-shadow",
+      "category": "style-review",
+      "filePattern": "^smart/sortable/scss/_smart__sortable\\.scss$",
+      "contextPattern": "box-shadow: var\\(--sf-ui-shadow-4,",
+      "status": "reviewed-deferred",
+      "task": "C20 shadows (feat/c20-shadows): the ghost takes the elevation helper and loses the raw fallback",
+      "reason": "A raw shadow fallback; the shadow belongs to the C20 elevation helper, which replaces the line."
+    },
+    {
+      "id": "deferred-legacy-sf-system-panel",
+      "category": [
+        "script-data-template-review",
+        "runtime-review"
+      ],
+      "filePattern": "^component/sf-system/js/(?:03-system/_provider|04-blocks/_special)\\.js$",
+      "contextPattern": "^(?!.*(?:panel\\.clientHeight|cookies\\.specialkegl|'font-size', '16px'))",
+      "status": "reviewed-deferred",
+      "task": "C18 audit 2026-11-08 item 5: the legacy sf-system panel's px, em and colours move to space, radius, focus tokens and surface roles in one block with its colours (C18b)",
+      "reason": "The legacy low-vision panel styles itself inline in px and em relative to its own 16px reset; its sizes and its 71 colours are one look and change together."
+    },
+    {
+      "id": "legacy-accessibility-panel-reset",
+      "category": "script-data-template-review",
+      "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",
+      "contextPattern": "'font-size', '16px'",
+      "status": "accepted-compatibility-boundary",
+      "reason": "The low-vision panel resets its own text to 16 CSS px so the page's chosen text size (specialkegl) never scales the panel's controls."
     }
   ]
 }
