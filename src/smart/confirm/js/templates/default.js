@@ -11,8 +11,9 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 // says more when the question alone does not (what stays, what goes).
 //
 // The answers call the actions confirm and cancel, which a page reaches as
-// data-sf-action="<id>.confirm" and "<id>.cancel" (§8, §19.4). A destructive
-// acceptance wears the error status; both stay outlined and of one weight.
+// data-sf-action="<id>.confirm" and "<id>.cancel" (§8, §19.4). A dangerous
+// acceptance (status="danger") is a filled danger answer beside a quiet
+// declining one (decision C25); a plain question has two outlined answers.
 export function renderConfirmTemplate(context) {
     return html`
         <section
@@ -28,7 +29,7 @@ export function renderConfirmTemplate(context) {
             ${context.hasDescription
                 ? html`<div class="sf-confirm__description">${context.descriptionContent}</div>`
                 : nothing}
-            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.destructive ? "error" : ""})}
+            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : ""})}
         </section>
     `;
 }

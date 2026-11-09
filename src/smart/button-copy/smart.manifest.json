@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -70,7 +70,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1/2",
+        "default": "1",
+        "description": "The control ladder's step: 1 by default, the step of a field and a button beside it (decision C22). A compact region (data-sf-density=\"compact\") moves it down a step by itself; never a smaller size by hand.",
         "enum": [
           "1/3",
           "1/2",
@@ -80,9 +81,9 @@
       },
       "appearance": {
         "type": "string",
-        "default": "link",
+        "default": "ghost",
+        "description": "ghost (default): no fill, a fill under the pointer; outline; tonal. link is ghost's former name (decision C15), read as ghost until 2027-01-01.",
         "enum": [
-          "link",
           "ghost",
           "outline",
           "tonal"
@@ -332,6 +333,7 @@
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
     "aliases": [
+      "appearance=link",
       "<sf-copy-button>"
     ],
     "deprecations": [
@@ -354,7 +356,7 @@
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
-        "sha256": "33d0d47795c72858a79e570f672840280a0ebd39b284df075ca8828845c63115"
+        "sha256": "721e611dbbcb741725854454a649a66611dd37a2d056b64e0d2ec8776b67df42"
       },
       {
         "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
@@ -366,7 +368,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "e7eead5e40d792bb7f01f357dd5597e25b6f335ea51f25695814bbc7fae22335"
+        "sha256": "b5913ca7afea36bc138a687a15974e2da741d8bd999587eb78b3fd5056ee4321"
       }
     ],
     "generated_runtime": []
@@ -383,7 +385,7 @@
       "accessibility",
       "provenance"
     ],
-    "minimal_example": "<sf-button-copy value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-button-copy>",
+    "minimal_example": "<sf-button-copy value=\"npm i @simai-studio/ui\" label=\"Скопировать команду\"></sf-button-copy>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

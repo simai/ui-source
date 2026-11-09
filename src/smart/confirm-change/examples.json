@@ -272,7 +272,7 @@
         },
         {
           "id": "p2-space-declines-refused",
-          "title": "Space on the second answer declines; a page that refuses the old name keeps the question open (one cancel for both names) and the first answer takes the focus back",
+          "title": "Space on the second answer declines; a page that refuses the old name keeps the question open (one cancel for both names) and the safe (declining) answer takes the focus back (decision C25)",
           "covers": "keyboard.host Space select, events.answer cancelable, aliases sf-change-confirm-decline",
           "steps": [
             {
@@ -297,7 +297,7 @@
                   }
                 ]
               },
-              "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"accept\"]')"
+              "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"decline\"]')"
             }
           ]
         },

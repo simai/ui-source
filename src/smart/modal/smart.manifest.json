@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -1413,7 +1413,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "86f5ba5e42652ce351dac00cd2d6f21ca1199aab096517a79ac5b601d6301da5"
+        "sha256": "d50aaca550a7bdcdab48a9d50251bc2c0b77b924b685eedbb4e28d30d17b48f9"
       }
     ],
     "generated_runtime": [

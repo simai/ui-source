@@ -68,7 +68,10 @@
     outline-offset: var(--sf-space-1\/4);
   }
 
-  .sf-confirm--accepted .sf-confirm__status { color: var(--sf-on-success-container); }
+  /* The outcome's ink is the success role on the surface the question stands
+     on (C16): on-success-container belongs on a success container and read
+     near-black on the page in the light theme. */
+  .sf-confirm--accepted .sf-confirm__status { color: var(--sf-success); }
 
   .sf-confirm__actions {
     display: flex;

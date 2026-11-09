@@ -15,8 +15,25 @@ test('the confirm surface applies nothing and keeps the question open when the h
   const surface = read('src/smart/helpers/confirm-surface.js');
   assert.match(surface, /const delivered = this\.sfEmit\("answer", \{id: this\.questionKey, accepted\}\);/u);
   assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\.setAttribute\("state", "open"\);/u);
-  // Both answers weigh the same: outlined, one size.
-  assert.equal([...surface.matchAll(/appearance="outline"/gu)].length, 2);
+  // A plain question: two outlined answers of one weight. A dangerous one
+  // (decision C25): a filled danger acceptance and a quiet declining answer.
+  assert.match(surface, /appearance=\$\{danger \? "default" : "outline"\}/u);
+  assert.match(surface, /appearance=\$\{danger \? "ghost" : "outline"\}/u);
+  assert.match(surface, /status=\$\{danger \? "danger" : nothing\}/u);
+  // The answers stand on the element's size (default 1), never a fixed 1/2
+  // (C22): a template's size is relative, so density moves them.
+  assert.doesNotMatch(surface, /size="1\/2"/u);
+  assert.equal([...surface.matchAll(/size=\$\{size\}/gu)].length, 2);
+  // The safe answer takes the focus when the question is put (C25).
+  assert.match(surface, /focusSafeAnswer\(frames = 10\) \{/u);
+  assert.match(surface, /\[data-action="decline"\]/u);
+  assert.match(surface, /this\.whenRendered\(\(\) => this\.focusSafeAnswer\(\), \{next: reopened\}\);/u);
+  // The outcome is the success role on the surface, not a container's ink (C16).
+  for (const folder of ['confirm', 'confirm-change']) {
+    const css = read(`src/smart/${folder}/js/templates/default.css`);
+    assert.match(css, /--accepted [^{]*__status \{ color: var\(--sf-success\); \}/u, folder);
+    assert.doesNotMatch(css, /var\(--sf-on-success-container\)/u, folder);
+  }
   for (const folder of ['confirm', 'confirm-change']) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.events.answer.cancelable, true, folder);
@@ -30,7 +47,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.4.3');
+  assert.equal(contract.version, '1.5.0');
   assert.deepEqual(Object.keys(contract.settings).sort(),
     ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state']);
   const tags = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'tag');
@@ -44,14 +61,21 @@ test('sf-confirm-change keeps its tag, API and former tag after the move from pa
   }
 });
 
-test('sf-confirm: a group named by its question, Escape declines, a destructive acceptance wears the error status', () => {
+test('sf-confirm: a group named by its question, Escape declines, a dangerous acceptance is status danger (destructive its former name)', () => {
   const contract = json('src/smart/confirm/component.json');
   assert.equal(contract.tag, 'sf-confirm');
   assert.equal(contract.accessibility.role, 'group');
   assert.equal(contract.keyboard.host.Escape, 'cancel');
   const template = read('src/smart/confirm/js/templates/default.js');
   assert.match(template, /role="group"/u);
-  assert.match(template, /acceptStatus: context\.destructive \? "error" : ""/u);
+  assert.match(template, /acceptStatus: context\.danger \? "danger" : ""/u);
+  assert.deepEqual(contract.settings.status.values, ['', 'danger']);
+  assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
+  assert.equal(contract.settings.size.default, '1');
+  assert.match(contract.settings.destructive.summary, /2027-01-01/u);
+  assert.equal(contract.version, '1.1.0');
+  assert.ok(contract.slots.description['x-summary']);
+  for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
   assert.match(source, /event\.key !== "Escape"/u);
   assert.match(source, /event\.stopPropagation\(\);\s*this\.cancel\(\);/u);
