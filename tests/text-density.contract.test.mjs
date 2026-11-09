@@ -110,3 +110,28 @@ test('a size that is a width does not take the normal ladder back (manifest x-sc
     assert.equal(manifest.settings.size['x-scale'], undefined, name);
   }
 });
+
+// Owner decision C32 (2026-11-09): a popup's width tied to text follows the
+// text -- compact = normal x 14/16, rounded up to the next step of the size
+// scale; a region of normal density or an explicit size takes the normal
+// width back.
+test('the popup widths follow the text in compact density (C32)', async () => {
+  const {widths} = await import('../scripts/generate-density.mjs');
+  const expected = {
+    '--sf-popup-menu-min-width': ['var(--sf-f0)', 'var(--sf-e8)'],
+    '--sf-popup-menu-max-width': ['var(--sf-f8)', 'var(--sf-f6)'],
+    '--sf-popup-list-max-width': ['var(--sf-g0)', 'var(--sf-f8)'],
+    '--sf-popup-panel-width': ['var(--sf-g0)', 'var(--sf-f8)'],
+    '--sf-popup-form-width': ['var(--sf-g0)', 'var(--sf-f8)'],
+    '--sf-popup-form-wide-width': ['var(--sf-g2)', 'var(--sf-g1)'],
+  };
+  const rows = Object.fromEntries(widths().map((row) => [row.variable, [row.normal, row.compact]]));
+  assert.deepEqual(rows, expected);
+  const compact = block('[data-sf-density="compact"] {');
+  const normal = block('[data-sf-density="normal"] {');
+  for (const [name, [wide, narrow]] of Object.entries(expected)) {
+    assert.equal(compact[name], narrow, name);
+    assert.equal(normal[name], wide, name);
+  }
+  assert.match(read('src/core/scss/_sf_css__size.scss'), /@layer sf\.base \{\s*:root \{[\s\S]*--sf-popup-menu-min-width: var\(--sf-f0\);/u);
+});

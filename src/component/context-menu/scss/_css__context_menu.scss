@@ -78,10 +78,13 @@
   gap: var(--sf-context-menu-gap, var(--sf-px));
   /* As wide as its longest line, from a modest floor: a row menu of three
      short actions stood with a third of its width empty when the floor was the
-     profile menu's (owner, 2026-10-12). A menu that wants more sets the
+     profile menu's (owner, 2026-10-12). The clamps are the menu's steps of
+     the popup widths (owner decision C32, 2026-11-09): 10-18rem, 9-16rem in
+     compact density; the ceiling was 24rem at every size, wider than every
+     design system the study found. A menu that wants more sets the
      variable. */
-  min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-e8));
-  max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-g2)), var(--sf-context-menu-available-inline-size, 100vw));
+  min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-popup-menu-min-width));
+  max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-popup-menu-max-width)), var(--sf-context-menu-available-inline-size, 100vw));
   font-size: var(--sf-context-menu--text-size);
   line-height: var(--sf-context-menu--line);
   --sf-icon--font-size: var(--sf-context-menu--line);
@@ -823,15 +826,95 @@
    width is the panel's own, a step of the ladder or the host's `width`,
    never the width of what a tab holds: ticking a box that changed a button's
    label made the filter grow under the pointer. The scrollbar keeps its room
-   whether or not it is shown, for the same reason. */
+   whether or not it is shown, for the same reason. The step is the panel's
+   of the popup widths (C32): 20rem, 18rem in compact density -- it was eight
+   control heights, 256 in compact, which cut the common row -- or the
+   control that opened it, when that is wider. */
 .sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
-  --sf-context-menu-panel--inline-size: calc(var(--sf-ui-1--control-height) * 8);
+  --sf-context-menu-panel--inline-size: max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-panel-width));
   inline-size: var(--sf-context-menu--min-inline-size, var(--sf-context-menu-panel--inline-size));
   max-inline-size: calc(100vi - var(--sf-space-1));
   min-block-size: 0;
   max-block-size: var(--sf-context-menu-panel--max-block-size, var(--sf-context-menu-available-block-size, calc(100dvh - var(--sf-space-4))));
   overflow: hidden;
   padding-block-start: 0;
+}
+
+/* How wide a popup is by what it holds (owner decision C32, 2026-11-09; the
+   steps are core's --sf-popup-*-width, which data-sf-density="compact" moves
+   with the text). sf-menu-context writes data-sf-width on its content from
+   its width setting; a page that draws the class markup writes it itself.
+   Without it the menu is a menu: as wide as its longest line between the
+   menu's clamps (above). --sf-context-menu-trigger-inline-size is the width
+   of the control that opened the menu, written by sf-menu-context while it is
+   open. Every kind stays inside the screen less its gutters.
+
+   list: a list of choices at a field -- at least the field, and as wide as
+   its longest line up to the list's step or the field, whichever is wider. */
+.sf-context-menu .sf-context-menu-content:is([data-sf-width="list"], [data-sf-width="panel"], [data-sf-width="form"], [data-sf-width="form-wide"]) {
+  --sf-context-menu--screen-inline-size: var(--sf-context-menu-available-inline-size, calc(100vi - var(--sf-space-1)));
+}
+
+.sf-context-menu .sf-context-menu-content[data-sf-width="list"] {
+  min-inline-size: min(var(--sf-context-menu-trigger-inline-size, var(--sf-popup-menu-min-width)), var(--sf-context-menu--screen-inline-size));
+  max-inline-size: min(max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+}
+
+/* panel: a panel with a search and actions (a views picker, a profile
+   picker) -- the panel's step, or its trigger when that is wider. Fixed, never
+   its content's: a search that filtered the rows made it jump. */
+.sf-context-menu .sf-context-menu-content[data-sf-width="panel"] {
+  inline-size: max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-panel-width));
+  min-inline-size: 0;
+  max-inline-size: var(--sf-context-menu--screen-inline-size);
+}
+
+/* form, form-wide: a form in a popup -- the form's step; the wide one for two
+   columns or long hints. On a phone it is a sheet at the bottom of the
+   screen, the whole width (below). */
+.sf-context-menu .sf-context-menu-content:is([data-sf-width="form"], [data-sf-width="form-wide"]) {
+  inline-size: var(--sf-popup-form-width);
+  min-inline-size: 0;
+  max-inline-size: var(--sf-context-menu--screen-inline-size);
+}
+
+.sf-context-menu .sf-context-menu-content[data-sf-width="form-wide"] {
+  inline-size: var(--sf-popup-form-wide-width);
+}
+
+/* A form on a phone (below the desktop ladder, 60rem): a sheet docked to the
+   bottom edge, the screen's whole width, over the scrim -- the sheet's place
+   of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
+   sf-menu-context marks the surface data-sf-sheet and does not anchor it. */
+.sf-context-menu[data-sf-sheet] {
+  --sf-context-menu--box-shadow: var(--sf-shadow-modal);
+  position: fixed;
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: none;
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  border-end-end-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.sf-context-menu[data-sf-sheet]::backdrop {
+  background-color: var(--sf-scrim-color);
+  opacity: var(--sf-scrim-opacity, 1);
+}
+
+.sf-context-menu[data-sf-sheet] > .relative {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
+  inline-size: 100%;
+  max-inline-size: none;
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  border-end-end-radius: 0;
+  border-end-start-radius: 0;
+  border-block-end-width: 0;
+  border-inline-width: 0;
 }
 
 /* The head is a row of its own, as tall as a control and a step of space

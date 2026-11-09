@@ -196,6 +196,9 @@ export function anchorReference(element) {
  * Keeps `floating` anchored to `reference`.
  * options: {side, align, offset, alignmentOffset, padding, flip, shift,
  *           matchWidth, fitHeight, autoUpdate, topLayer, onPosition({side, placement, x, y})}
+ * matchWidth: true makes the panel exactly as wide as the reference; "min"
+ * makes it at least as wide (a list at a field, decision C32: it may grow with
+ * its longest option up to its own cap, never narrower than the field).
  * topLayer (default true) lifts the floating element into the top layer while
  * it is anchored (see liftToTopLayer); false keeps it where it stands.
  * Returns {update(): Promise, stop(), side}.
@@ -212,7 +215,7 @@ export function anchor(reference, floating, options = {}) {
   };
   // Inline styles this helper writes are restored on stop(); the author's caps
   // are kept, so viewport fitting may only tighten them.
-  const written = ['position', 'left', 'top', 'right', 'bottom', 'margin', 'max-height', 'max-width', ...(settings.matchWidth ? ['width'] : [])];
+  const written = ['position', 'left', 'top', 'right', 'bottom', 'margin', 'max-height', 'max-width', ...(settings.matchWidth === 'min' ? ['min-width'] : settings.matchWidth ? ['width'] : [])];
   const saved = written.map((name) => [name, floating.style.getPropertyValue(name), floating.style.getPropertyPriority(name)]);
   const authored = {maxHeight: floating.style.getPropertyValue('max-height')};
   // Stylesheet caps (max-height, max-width) are read before this helper writes
@@ -272,7 +275,9 @@ export function anchor(reference, floating, options = {}) {
       apply({availableWidth, availableHeight, rects, elements}) {
         if (controller.stopped) return;
         const viewportWidth = clientWidth - edges.left - edges.right;
-        if (settings.matchWidth) elements.floating.style.width = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
+        const fieldWidth = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
+        if (settings.matchWidth === 'min') elements.floating.style.minWidth = fieldWidth;
+        else if (settings.matchWidth) elements.floating.style.width = fieldWidth;
         elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`;
         if (settings.fitHeight) {
           // A panel that misses its room by less than the edge's padding takes

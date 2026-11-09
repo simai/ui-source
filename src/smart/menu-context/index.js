@@ -31,6 +31,15 @@ const ContextMenuElement = elementFromManifest(manifest, {
 const position = () => globalThis.SF?.Position || BundledPosition;
 const TYPEAHEAD_MS = 500;
 
+// How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
+// class sheet sizes each from core's --sf-popup-*-width steps, which follow
+// the density. "content" (the default) is the menu's rule.
+const WIDTH_KINDS = new Set(["list", "panel", "form", "form-wide"]);
+const FORM_KINDS = new Set(["form", "form-wide"]);
+// Below the desktop ladder (the lg breakpoint, where core declares
+// --sf-breakpoint-lg) a form is a sheet at the bottom of the screen.
+const onPhone = () => !getComputedStyle(document.documentElement).getPropertyValue("--sf-breakpoint-lg").trim();
+
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
 // A row's path in the tree, the way the template writes it into the markup:
 // "2" is a row of the level and "2/1" a row inside that row -- its submenu, or
@@ -791,9 +800,14 @@ class SfContextMenu extends ContextMenuElement {
   }
 
   // width: "content" (the default) lets the menu be as wide as its longest
-  // line; "trigger" makes it exactly as wide as the control that opened it --
-  // a site switcher, a profile button (owner, 2026-10-14) -- a long line ending
-  // in an ellipsis; a CSS length fixes it. The attribute gives the default.
+  // line, between the menu's clamps; "trigger" makes it exactly as wide as the
+  // control that opened it -- a site switcher, a profile button (owner,
+  // 2026-10-14) -- a long line ending in an ellipsis; a CSS length fixes it.
+  // The kinds of decision C32 size it by what it holds: "list" (at least the
+  // trigger, up to the list's step or the trigger), "panel" (the panel's step
+  // or the trigger, whichever is wider), "form" and "form-wide" (the form's
+  // steps; on a phone a sheet at the bottom, the screen's width). The
+  // attribute gives the default.
   async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width} = {}) {
     if (!(anchor instanceof Element)) return {outcome: "refused", reason: "invalid"};
     if (this._owned) this.close({restoreFocus: false, ask: false});
@@ -840,7 +854,19 @@ class SfContextMenu extends ContextMenuElement {
       surface.style.zIndex = "var(--sf-z-index-9)";
     }
     const content = this.querySelector(".sf-context-menu-content");
-    const sized = width && width !== "content";
+    const kind = WIDTH_KINDS.has(width) ? width : "";
+    // The control's width, for the kinds that read it (C32), public while
+    // the menu is open: a page may size a part of the panel by it.
+    const triggerWidth = () => `${(position().referenceRect?.(anchor) ?? anchor.getBoundingClientRect()).width}px`;
+    surface.style.setProperty("--sf-context-menu-trigger-inline-size", triggerWidth());
+    this._owned.trigger = triggerWidth;
+    if (content) {
+      if (kind) content.setAttribute("data-sf-width", kind);
+      else content.removeAttribute("data-sf-width");
+      this._owned.kindContent = content;
+    }
+    const sheet = FORM_KINDS.has(kind) && onPhone();
+    const sized = width && width !== "content" && !kind;
     if (sized && content) {
       // A display: contents trigger (sf-button-icon, sf-button) is as wide as
       // what it draws (#68).
@@ -853,10 +879,21 @@ class SfContextMenu extends ContextMenuElement {
     }
     // offset: the gap between the trigger and the menu, a token or a length
     // (simai/ui-source#69); left out, the positioning's own --sf-space-1/4.
-    this._owned.position = position().anchor(anchor, surface, {
-      side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
-      ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
-    });
+    // A form on a phone is not anchored: it is a sheet at the bottom of the
+    // screen (the sheet's rules are the class sheet's).
+    if (sheet) {
+      surface.setAttribute("data-sf-sheet", "");
+    } else {
+      this._owned.position = position().anchor(anchor, surface, {
+        side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
+        ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
+        // The trigger may change its width while the menu is open (a field
+        // that grows): the width the kinds read follows it.
+        onPosition: () => {
+          if (this._owned?.anchor === anchor) surface.style.setProperty("--sf-context-menu-trigger-inline-size", triggerWidth());
+        },
+      });
+    }
     // A menu it opens owns Escape, so the root says a surface is open: a record
     // panel listening on the document in capture runs before the menu's own
     // listener and would otherwise close with it. The outside press comes from
@@ -901,6 +938,7 @@ class SfContextMenu extends ContextMenuElement {
     for (const name of ["--sf-context-menu--min-inline-size", "--sf-context-menu--max-inline-size", "inline-size"]) {
       owned.sizedContent?.style.removeProperty(name);
     }
+    owned.kindContent?.removeAttribute("data-sf-width");
     holdOpenSurfaceMark(this, false);
     const surface = this.surface();
     if (surface) {
@@ -908,6 +946,8 @@ class SfContextMenu extends ContextMenuElement {
       surface.removeAttribute("popover");
       surface.classList.remove("sf-context-menu--open");
       surface.style.removeProperty("z-index");
+      surface.style.removeProperty("--sf-context-menu-trigger-inline-size");
+      surface.removeAttribute("data-sf-sheet");
       if (owned.density !== undefined) {
         if (owned.density === null) surface.removeAttribute("data-sf-density");
         else surface.setAttribute("data-sf-density", owned.density);
@@ -1127,7 +1167,8 @@ class SfContextMenu extends ContextMenuElement {
       // The menu's size: "1/2" (32px rows, the default) or "1" (40px rows).
       size: { default: "1/2" },
       // How wide the menu opens: "content" (its longest line, the default),
-      // "trigger" (exactly the control that opened it) or a CSS length.
+      // "trigger" (exactly the control that opened it), a kind of decision
+      // C32 ("list", "panel", "form", "form-wide") or a CSS length.
       width: { default: "content" },
       // A panel with tabs (owner, 2026-10-15): the tabs and the way out on a
       // head that never scrolls, the rows of the chosen tab in a body that

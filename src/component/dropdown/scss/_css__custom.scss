@@ -127,6 +127,31 @@
   z-index: 10;
 }
 
+/* A list at a field (owner decision C32, 2026-11-09): at least the field, and
+   as wide as its longest option up to the list's step or the field, whichever
+   is wider -- 20rem, 18rem in compact density (--sf-popup-list-max-width). It
+   was exactly the field, so a short field cut every longer option. In place
+   the field's box is the list's containing block; anchored (data-sf-portal)
+   the positioning gives the field's width as the list's minimum and keeps the
+   list inside the screen. A list without a field (a trigger of its own) keeps
+   its own width, and a grid is as wide as its columns. */
+.sf-dropdown .sf-list:not([data-sf-portal], .sf-list--free-width) {
+  left: auto;
+  right: auto;
+  inset-inline-start: 0;
+  min-inline-size: 100%;
+  max-inline-size: max(100%, var(--sf-popup-list-max-width));
+}
+
+.sf-list[data-sf-portal]:not(.sf-list--free-width) {
+  max-inline-size: var(--sf-popup-list-max-width);
+}
+
+.sf-dropdown .sf-list:has(.sf-list-container--grid),
+.sf-list[data-sf-portal]:has(.sf-list-container--grid) {
+  max-inline-size: none;
+}
+
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag .sf-list .sf-list-item .sf-tag {
   --sf-tag--background-color: transparent;
 }

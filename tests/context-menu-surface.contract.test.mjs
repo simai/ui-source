@@ -27,6 +27,20 @@ test('Context Menu keeps its surface distinguishable in forced colors',()=>{
   assert.match(base,/\.sf-context-menu \.sf-context-menu-content \{\s*border: var\(--sf-px\) solid CanvasText/);
 });
 
-test('a menu is as wide as its content from a modest floor', () => {
-  assert.match(base,/min-inline-size: var\(--sf-context-menu--min-inline-size, var\(--sf-e8\)\);/);
+test('a menu is as wide as its content between the menu\'s popup widths (C32)', () => {
+  assert.match(base,/min-inline-size: var\(--sf-context-menu--min-inline-size, var\(--sf-popup-menu-min-width\)\);/);
+  assert.match(base,/max-inline-size: min\(var\(--sf-context-menu--max-inline-size, var\(--sf-popup-menu-max-width\)\), /);
+});
+
+// Owner decision C32: the kinds a popup takes by what it holds, from core's
+// --sf-popup-*-width steps, a panel with tabs on the panel's step.
+test('the popup kinds read core\'s popup widths (C32)', () => {
+  assert.match(base,/\[data-sf-width="list"\] \{\s*min-inline-size: min\(var\(--sf-context-menu-trigger-inline-size, var\(--sf-popup-menu-min-width\)\)/);
+  assert.match(base,/max\(var\(--sf-context-menu-trigger-inline-size, var\(--sf-a0\)\), var\(--sf-popup-list-max-width\)\)/);
+  assert.match(base,/\[data-sf-width="panel"\] \{\s*inline-size: max\(var\(--sf-context-menu-trigger-inline-size, var\(--sf-a0\)\), var\(--sf-popup-panel-width\)\);/);
+  assert.match(base,/inline-size: var\(--sf-popup-form-width\);/);
+  assert.match(base,/\[data-sf-width="form-wide"\] \{\s*inline-size: var\(--sf-popup-form-wide-width\);/);
+  assert.match(base,/--sf-context-menu-panel--inline-size: max\(var\(--sf-context-menu-trigger-inline-size, var\(--sf-a0\)\), var\(--sf-popup-panel-width\)\);/);
+  assert.match(base,/\.sf-context-menu\[data-sf-sheet\] \{[^}]*--sf-context-menu--box-shadow: var\(--sf-shadow-modal\);/);
+  assert.match(base,/\.sf-context-menu\[data-sf-sheet\]::backdrop \{\s*background-color: var\(--sf-scrim-color\);/);
 });
