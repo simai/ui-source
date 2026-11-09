@@ -442,6 +442,10 @@
         "to": "--sf-shadow-overlay"
       },
       {
+        "from": "--sf-elevation-4--shadow",
+        "to": "--sf-shadow-modal"
+      },
+      {
         "from": "--sf-elevation-5--shadow",
         "to": "--sf-shadow-modal"
       },

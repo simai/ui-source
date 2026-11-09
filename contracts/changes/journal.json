@@ -6824,6 +6824,11 @@
           "match": "--sf-elevation-2--shadow(?![a-z0-9-])"
         },
         {
+          "from": "--sf-elevation-4--shadow",
+          "to": "--sf-shadow-modal",
+          "match": "--sf-elevation-4--shadow(?![a-z0-9-])"
+        },
+        {
           "from": "--sf-elevation-5--shadow",
           "to": "--sf-shadow-modal",
           "match": "--sf-elevation-5--shadow(?![a-z0-9-])"
