@@ -74,3 +74,31 @@ test('Smart Tree separates disclosure and node identity icons', async () => {
   assert.match(template, /renderIcon\(nodeIcon, 'sf-tree-node-icon'\)/);
   assert.match(template, /sf-tree-toggle-spacer/);
 });
+
+// simai/ui-source#43: a change rewrites the rows it changes, not the tree.
+// The browser half is tests/browser/tree-scale.browser.mjs (2 000 and 10 000
+// entries, first draw under 1 s, a change under 50 ms); this half keeps the
+// shape that makes it so.
+test('Smart Tree stays incremental at size', async () => {
+  const [tree, template, probe] = await Promise.all([
+    read('src/smart/tree/index.js'),
+    read('src/smart/tree/js/templates/default.js'),
+    read('tests/browser/tree-scale.browser.mjs'),
+  ]);
+
+  // Rows keyed by id, and only the window over 300 visible entries.
+  assert.match(template, /repeat\(rows, \(row\) => row\.id,/);
+  assert.match(tree, /const WINDOW_FROM = 300;/);
+  assert.match(tree, /rows\.slice\(first, last \+ 1\)/);
+  // The visible rows are kept until the entries or an open state change.
+  assert.match(tree, /if \(!this\._rowsDirty && this\._rows\) return this\._rows;/);
+  // The selection is a set: no per-row scan of the selected ids.
+  assert.match(tree, /return this\.selection !== 'none' && this\.selectionSet\(\)\.has\(id\);/);
+  assert.match(tree, /const wanted = new Set\(ids\);/);
+  assert.doesNotMatch(tree, /filter\(\(id\) => ids\.includes\(id\)\)/);
+  assert.doesNotMatch(tree, /selectionIds\(\)\.includes\(/);
+  // The probe holds the budgets of the issue.
+  assert.match(probe, /const FIRST_BUDGET = 1000;/);
+  assert.match(probe, /const CHANGE_BUDGET = 50;/);
+  assert.match(probe, /open10000/);
+});
