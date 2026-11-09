@@ -5,7 +5,7 @@ import { applied, refused, elementFromManifest } from "../../core/js/element-man
 import { noteDeprecated } from "../../core/js/deprecations";
 import { instancePath, partId } from "../../core/js/instance-path";
 import { renderModalTemplate } from "./js/templates/default";
-import { trapModalFocus } from "../../component/modal/js/_focus";
+import { focusModalInitial, trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
@@ -1176,9 +1176,11 @@ class SfModal extends ModalElement {
       return;
     }
 
+    // The page's [autofocus] inside the window first -- the safe answer of a
+    // dangerous question (decision C25) -- else the panel, as before.
     const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     if (panel) {
-      panel.focus();
+      focusModalInitial(panel);
     }
   }
 

@@ -1,6 +1,8 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import downloadFileUtility from '../json/download-file.utility.json';
+import { formatFileSize } from '../../../core/js/format-file-size.js';
+import { pageText } from '../../../core/js/page-language';
 
 const DOWNLOAD_FILE_SELECTOR = '.sf-download-file';
 const DOWNLOAD_FILE_BOUND_FLAG = 'sfDownloadFileBound';
@@ -19,41 +21,25 @@ function normalizeSize(value) {
   return supported.includes(normalized) ? normalized : '1';
 }
 
+// A file is fetched where the person is (decision C25, 2026-11-09): in the
+// same tab, as a download. A new tab is for a file opened to view, and the
+// control that does that says so with its sign.
 function buildAnchorDownload(href, filename = '') {
   if (!href) return;
 
   const anchor = document.createElement('a');
   anchor.href = href;
-  if (filename) {
-    anchor.download = filename;
-  }
-  anchor.target = '_blank';
-  anchor.rel = 'noopener noreferrer';
+  anchor.download = filename || '';
+  anchor.rel = 'noopener';
   document.body.append(anchor);
   anchor.click();
   anchor.remove();
 }
 
-function formatFileSize(bytes) {
-  const size = Number(bytes);
-  if (!Number.isFinite(size) || size < 0) return '';
-
-  if (size < 1024) return `${size} B`;
-
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let value = size / 1024;
-  let unitIndex = 0;
-
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  const formatted = value >= 10 ? value.toFixed(0) : value.toFixed(1);
-  return `${formatted}${units[unitIndex]}`;
-}
-
-async function resolveRemoteFileSize(href) {
+// The size in the page's language (decision C25; the core formatter, the one
+// SF.format.fileSize is): «2,4 МБ» on a Russian page, «2.4 MB» on an English
+// one. It printed «2.4MB» in English units on every page.
+async function resolveRemoteFileSize(href, node = null) {
   if (!href) return '';
 
   try {
@@ -71,9 +57,27 @@ async function resolveRemoteFileSize(href) {
       return '';
     }
 
-    return formatFileSize(contentLength);
+    return formatFileSize(Number(contentLength), { node });
   } catch {
     return '';
+  }
+}
+
+// The words a screen reader hears after a link that opens a tab.
+const NEW_TAB_WORDS = {
+  ru: { 'new-tab': '(откроется в новой вкладке)' },
+  en: { 'new-tab': '(opens in a new tab)' },
+};
+
+// A file's name when the markup gives none: the link's last part, decoded.
+function nameFromHref(href) {
+  const path = String(href || '').split(/[?#]/u)[0];
+  const last = path.slice(path.lastIndexOf('/') + 1);
+  if (!last || /^(?:data|blob):/u.test(path)) return '';
+  try {
+    return decodeURIComponent(last);
+  } catch {
+    return last;
   }
 }
 
@@ -114,7 +118,7 @@ async function resolveAndApplyFileSize(root) {
   const href = getRootHref(root);
   if (!href) return;
 
-  const resolvedSize = await resolveRemoteFileSize(href);
+  const resolvedSize = await resolveRemoteFileSize(href, root);
   if (!resolvedSize || !sizeNode.isConnected) return;
 
   sizeNode.textContent = resolvedSize;
@@ -137,6 +141,14 @@ function bindDownloadFile(root, {onActivate} = {}) {
   if (!root || root.dataset[DOWNLOAD_FILE_BOUND_FLAG] === '1') return;
 
   const handleClick = (event) => {
+    // A file being prepared (aria-busy) takes no second press: the first one
+    // is on its way (decision C25).
+    if (root.getAttribute('aria-busy') === 'true') {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     if (isDisabledRoot(root)) {
       event.preventDefault();
       event.stopPropagation();
@@ -200,15 +212,19 @@ class DownloadFile extends ComponentObserver {
   constructor(props) {
     super(props);
 
+    // No invented file: an absent name is the link's own last part, an absent
+    // size is asked of the file (one HEAD request). They were «File.pdf» and
+    // «36MB» on any markup that left them out.
     const {
       size = '1',
-      fileName = 'File.pdf',
-      fileSize = '36MB',
+      fileName = '',
+      fileSize = '',
+      fileType = '',
       icon = 'download',
       href = '',
-      download = false,
+      download = true,
       disabled = false,
-      target = '_blank',
+      target = '',
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -220,12 +236,19 @@ class DownloadFile extends ComponentObserver {
       root.id = this.id;
     }
 
+    const shownName = String(fileName || nameFromHref(href));
+    // A file link downloads in the same tab (decision C25); target="_blank" is
+    // a file opened to view, and the link says so: a sign after the name and
+    // words for a screen reader.
+    const opensTab = canLink && String(target || '') === '_blank';
     if (canLink) {
       root.href = String(href);
-      root.target = String(target || '_blank');
-      root.rel = 'noopener noreferrer';
-      if (toBoolean(download, false)) {
-        root.download = String(fileName || '');
+      if (opensTab) {
+        root.target = '_blank';
+        root.rel = 'noopener noreferrer';
+      } else {
+        if (target) root.target = String(target);
+        if (toBoolean(download, true)) root.download = shownName;
       }
     } else {
       root.type = 'button';
@@ -261,23 +284,43 @@ class DownloadFile extends ComponentObserver {
 
     const fileNameNode = document.createElement('span');
     fileNameNode.classList.add('sf-download-file__name', 'sf-download-file-file-name');
-    fileNameNode.textContent = String(fileName || '');
+    fileNameNode.textContent = shownName;
     // The name is one line cut with an ellipsis (component.download-file
     // 1.1.0): the title shows the whole of it.
-    if (fileName) fileNameNode.title = String(fileName);
+    if (shownName) fileNameNode.title = shownName;
 
     container.append(iconNode, fileNameNode);
+    if (opensTab) {
+      const tabNode = document.createElement('i');
+      tabNode.classList.add('sf-download-file__tab', 'sf-icon');
+      tabNode.setAttribute('aria-hidden', 'true');
+      tabNode.textContent = 'open_in_new';
+      const tabWords = document.createElement('span');
+      tabWords.classList.add('sf-download-file__tab-words');
+      tabWords.textContent = pageText(NEW_TAB_WORDS, 'new-tab', document.documentElement, 'download-file');
+      container.append(tabNode, tabWords);
+    }
 
+    // The type and the size are two facts (decision C25): «PDF · 2,4 МБ».
+    const metaNode = document.createElement('span');
+    metaNode.classList.add('sf-download-file__meta');
+    if (fileType) {
+      const fileTypeNode = document.createElement('span');
+      fileTypeNode.classList.add('sf-download-file__type');
+      fileTypeNode.textContent = String(fileType);
+      metaNode.append(fileTypeNode);
+    }
     const fileSizeNode = document.createElement('span');
     fileSizeNode.classList.add('sf-download-file__size', 'sf-download-file-file-size');
     fileSizeNode.textContent = String(fileSize || '');
+    metaNode.append(fileSizeNode);
 
-    wrap.append(container, fileSizeNode);
+    wrap.append(container, metaNode);
     root.append(wrap);
 
     this.href = String(href || '');
-    this.download = toBoolean(download, false);
-    this.fileName = String(fileName || '');
+    this.download = canLink && !opensTab && toBoolean(download, true);
+    this.fileName = shownName;
     this.fileSize = String(fileSize || '');
     this.disabled = isDisabled;
     this.fileSizeNode = fileSizeNode;
@@ -359,6 +402,6 @@ if (typeof window !== 'undefined') {
   window.SF.DownloadFile.initAll = initExistingDownloadFiles;
 }
 
-export { bindDownloadFile, unbindDownloadFile, initExistingDownloadFiles };
+export { bindDownloadFile, unbindDownloadFile, initExistingDownloadFiles, nameFromHref, buildAnchorDownload, NEW_TAB_WORDS };
 
 registerComponent('DownloadFile', DownloadFile);

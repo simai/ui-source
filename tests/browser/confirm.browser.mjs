@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // sf-confirm on the built bytes (block confirm, 2026-11-03):
-// - a group named by its question; the destructive acceptance in the error
-//   status, both answers outlined;
+// - a group named by its question; a dangerous acceptance (status="danger")
+//   filled in the danger colour, the declining answer quiet (ghost), C25;
 // - Confirm reports the answer and waits (pending: the pressed answer busy with
 //   its spinner, the other disabled, focus on the status); the host's outcome
 //   is then all there is;
-// - a host that cancels keeps the question open, focus on the first answer;
+// - a host that cancels keeps the question open, focus on the safe (declining) answer;
 // - Escape inside the open question declines and goes no further;
 // - an offer runs out at expires-at, said once;
 // - inline has no frame, card has one; at 375 px the answers share the width;
@@ -78,7 +78,7 @@ try {
   });
 
   // 1. What is read.
-  await make({attributes: {question: 'Удалить файл «Отчёт.pdf»?', 'confirm-id': 'f1', 'accept-text': 'Удалить', destructive: ''}});
+  await make({attributes: {question: 'Удалить файл «Отчёт.pdf»?', 'confirm-id': 'f1', 'accept-text': 'Удалить', status: 'danger'}});
   const shape = await page.evaluate(() => {
     const ask = document.getElementById('ask');
     const group = ask.querySelector('section');
@@ -88,12 +88,13 @@ try {
       named: group.getAttribute('aria-labelledby') === ask.querySelector('.sf-confirm__question').id,
       buttons: [...ask.querySelectorAll('.sf-confirm__actions button')].map((node) => node.textContent.trim()),
       error: accept.classList.contains('sf-button--error'),
-      outlined: [...ask.querySelectorAll('.sf-confirm__actions button')].every((node) => node.classList.contains('sf-button--outline')),
+      filled: accept.classList.contains('sf-button--default') && accept.classList.contains('sf-button--danger'),
+      quiet: ask.querySelector('[data-action="decline"]').classList.contains('sf-button--link'),
       live: ask.querySelector('.sf-confirm__status').getAttribute('role'),
       frame: getComputedStyle(group).borderTopWidth,
     };
   });
-  const expected = {role: 'group', named: true, buttons: ['Удалить', 'Отмена'], error: true, outlined: true, live: 'status', frame: '0px'};
+  const expected = {role: 'group', named: true, buttons: ['Удалить', 'Отмена'], error: true, filled: true, quiet: true, live: 'status', frame: '0px'};
   for (const [key, value] of Object.entries(expected)) {
     if (JSON.stringify(shape[key]) !== JSON.stringify(value)) note({case: `what is read: ${key}`, got: shape[key], expected: value});
   }
@@ -119,7 +120,9 @@ try {
   await page.click('#ask [data-action="accept"]');
   await page.waitForTimeout(250);
   now = await read();
-  if (now.state !== 'open' || !now.actions || !String(now.focus).includes('sf-button')) note({case: 'a cancelled answer keeps the question open, focus on the first answer', got: now});
+  // The focus goes back to the safe (declining) answer (decision C25).
+  const backOn = await page.evaluate(() => document.activeElement?.closest?.('[data-action]')?.getAttribute('data-action') ?? null);
+  if (now.state !== 'open' || !now.actions || !String(now.focus).includes('sf-button') || backOn !== 'decline') note({case: 'a cancelled answer keeps the question open, focus on the safe answer', got: {...now, backOn}});
 
   // 4. Escape declines and goes no further; the keyboard confirms as the pointer.
   await make({attributes: {question: 'Вернуть вид?', 'confirm-id': 'v3'}});

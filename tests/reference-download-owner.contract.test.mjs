@@ -52,7 +52,8 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(template, /aria-hidden="true"/);
   assert.match(rule, /name: 'icons'/);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
-  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'smart.icon']);
+  // The error notice and the spinner of a file being prepared (decision C25).
+  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'component.spinner', 'smart.alert', 'smart.icon']);
   assert.ok(manifest.events['sf-download-file:click']);
   assert.doesNotMatch(css, /(?:^|[\s:,])1px(?:[\s;,)])/m);
 });

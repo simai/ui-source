@@ -7,7 +7,10 @@ used by its generated close action. Smart Modal and Gallery inherit them. When
 loading assets manually, include those component styles as well as Modal styles;
 loading just modal.js/modal.css does not supply the close glyph.
 
-Keyboard navigation belongs to the top modal. From the initially focused panel,
+Keyboard navigation belongs to the top modal. The window opens with the focus
+on the element inside it that carries the standard `autofocus` attribute, as a
+native `<dialog>` does (an `sf-button` hands it to its inner button); without
+one, the panel takes it. From the initially focused panel,
 Tab enters its first available control and Shift+Tab enters its last. Hidden,
 disabled, inert and negative-tabindex controls are not tab boundaries. A panel
 with no available controls retains focus on itself. These rules are shared with
@@ -241,11 +244,15 @@ its own layout. The defaults sit under the utilities, so a utility in
 `footer-class` still wins -- `content-main-between` for a footer that also
 holds a checkbox at the start (simai/ui-source#26).
 
+A dangerous question (decision C25): the action is a filled danger button,
+«Отмена» is quiet and takes the focus when the window opens, so a stray Enter
+or Space only closes the window; Escape closes it too.
+
 ```html
 <sf-modal id="delete-letter" title="Удалить письмо?">
   <p slot="content">Письмо нельзя будет восстановить.</p>
-  <sf-button slot="footer" text="Отмена" appearance="outline" data-sf-modal-close="delete-letter"></sf-button>
-  <sf-button slot="footer" text="Удалить" status="error"></sf-button>
+  <sf-button slot="footer" text="Отмена" appearance="ghost" scheme="on-surface" autofocus data-sf-modal-close="delete-letter"></sf-button>
+  <sf-button slot="footer" text="Удалить" status="danger"></sf-button>
 </sf-modal>
 ```
 

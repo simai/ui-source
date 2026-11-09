@@ -136,7 +136,9 @@ try {
   await page.click('#card [data-action="accept"]');
   await page.waitForTimeout(250);
   now = await read();
-  if (now.state !== 'open' || !now.actions || !String(now.focus).includes('sf-button')) note({case: 'a cancelled answer keeps the question open, focus on the first answer', got: now});
+  // The focus goes back to the safe (declining) answer (decision C25).
+  const backOn = await page.evaluate(() => document.activeElement?.closest?.('[data-action]')?.getAttribute('data-action') ?? null);
+  if (now.state !== 'open' || !now.actions || !String(now.focus).includes('sf-button') || backOn !== 'decline') note({case: 'a cancelled answer keeps the question open, focus on the safe answer', got: {...now, backOn}});
   await page.click('#card [data-action="decline"]');
   await page.waitForTimeout(200);
   now = await read();
