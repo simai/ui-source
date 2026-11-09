@@ -124,10 +124,14 @@
 }
 
 .sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-1 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-2 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-2 .sf-button .sf-icon {
-  padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  /* The icon's block padding is the 1/2 tightness (6 on desktop and phone),
+     capped by the 1/3 space (8, and 4 under compact density): compact only
+     tightens (C22), while the 1/2 tightness alone would loosen to 6 there now
+     that compact 1/2 takes the 1/3 default (C27). */
+  padding-bottom: min(var(--sf-ui-1\/2--space-y-tightness-default), var(--sf-space-1\/3));
   padding-inline-end: var(--sf-space-1\/4);
   padding-inline-start: var(--sf-space-1\/4);
-  padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  padding-top: min(var(--sf-ui-1\/2--space-y-tightness-default), var(--sf-space-1\/3));
 }
 
 .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1 .sf-upload-progress-repeat {
