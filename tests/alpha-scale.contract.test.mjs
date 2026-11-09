@@ -55,13 +55,25 @@ test('every alpha primitive is drawn with', () => {
     if (!statSync(path).isFile() || path.endsWith('_sf_figma_colors_variables.scss') || path.endsWith('token-aliases.v1.json')) continue;
     for (const match of readFileSync(path, 'utf8').matchAll(/--sf-[a-z0-9-]+--alfa-\d+/gu)) used.add(match[0]);
   }
+  // A strong coloured place's ink (mix/_mix__places.scss sf-ink) names its
+  // steps by interpolation, --sf-#{$c}-20--alfa-#{$step}: the palettes are
+  // $sf-place-colours and the steps those its sf-ink calls ask for, so those
+  // names are read too (C16 with C17's tone-20 steps).
+  const places = read('src/core/scss/mix/_mix__places.scss');
+  assert.match(places, /var\(--sf-#\{\$c\}-20--alfa-#\{\$step\}\)/u, 'sf-ink reads the tone-20 steps');
+  const placeColours = [...places.match(/\$sf-place-colours:\s*\(([^)]*)\)/u)[1].matchAll(/'([a-z]+)'/gu)].map(([, name]) => name);
+  const inkSteps = new Set([...places.matchAll(/sf-ink\(\$c, (\d+)\)/gu)].map(([, step]) => step));
+  for (const colour of placeColours) for (const step of inkSteps) used.add(`--sf-${colour}-20--alfa-${step}`);
   // The shadow system (C20) left two steps of black unread; they stay, by name
   // and with a reason, until the alias list's remove_after -- a page or a
   // product may have written them (token-aliases.v1.json, shadows).
   // The background system's values (C16 S3) left two more: the dark
   // boundary's former step and the former skeleton's.
   const aliases = JSON.parse(read('src/core/contracts/token-aliases.v1.json'));
-  const kept = new Set([...aliases.shadows.primitives_kept, ...(aliases.primitives_kept ?? [])].map(({name}) => name));
+  // The palette's former tone primitives (C17) are dated aliases of the hues:
+  // a page may have written them, so they stay declared until remove_after.
+  const formerTones = (aliases.palette_tokens ?? []).map(({from}) => from).filter((name) => /--alfa-\d+$/u.test(name));
+  const kept = new Set([...[...aliases.shadows.primitives_kept, ...(aliases.primitives_kept ?? [])].map(({name}) => name), ...formerTones]);
   for (const name of kept) assert.ok(declared.has(name) && !used.has(name), `${name}: kept for consumers, so declared and read by nothing in src`);
   const unused = [...declared].filter((name) => !used.has(name) && !kept.has(name)).sort();
   // A palette is read as the set of answers the system has. One that carries

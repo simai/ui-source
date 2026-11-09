@@ -90,12 +90,10 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 }
 
 // A step of a strong place's ink: on-<c>, white in the light theme and tone 20
-// in the dark, at a step of the alpha scale. Written as a mix of the role with
-// transparent because the palette has no tone-20 steps yet (the C17 palette
-// primitives); the value is the step's, and it becomes
-// light-dark(var(--sf-white--alfa-N), var(--sf-<c>-20--alfa-N)) when they land.
+// in the dark, at a step of the alpha scale -- the palette's own steps (C17's
+// tone-20 primitives), so the value is a declared token, not a mix.
 @function sf-ink($c, $step) {
-  @return color-mix(in srgb, var(--sf-on-#{$c}) #{$step * 1%}, var(--sf-transparent));
+  @return light-dark(var(--sf-white--alfa-#{$step}), var(--sf-#{$c}-20--alfa-#{$step}));
 }
 
 // A strong coloured place, bg-<c>: what stands on it takes the place's ink on
