@@ -9,18 +9,21 @@
 // ink (--sf-on-special-<scheme>) under every theme and theme colour. The
 // scheme rules (_white ... _green) and the panel's scheme swatches
 // (sf-system _provider.js) read only these tokens; colour-policy.v1.json
-// lists this file as their one definition.
+// lists this file as their one definition. Black and white are the palette's
+// own --sf-black and --sf-white (the same values); the yellow, the blue and the
+// green ink have no palette step and stay the reviewed fixed values the policy
+// names (low-vision-scheme-tokens).
 
 :root {
-    --sf-special-white: #FFF;
-    --sf-on-special-white: #000;
-    --sf-special-black: #000;
-    --sf-on-special-black: #FFF;
+    --sf-special-white: var(--sf-white);
+    --sf-on-special-white: var(--sf-black);
+    --sf-special-black: var(--sf-black);
+    --sf-on-special-black: var(--sf-white);
     --sf-special-yellow: #FF0;
-    --sf-on-special-yellow: #000;
+    --sf-on-special-yellow: var(--sf-black);
     --sf-special-blue: #9FD7FF;
-    --sf-on-special-blue: #000;
-    --sf-special-green: #000;
+    --sf-on-special-blue: var(--sf-black);
+    --sf-special-green: var(--sf-black);
     --sf-on-special-green: #A9DD38;
 }
 }
