@@ -55,7 +55,15 @@ test('every alpha primitive is drawn with', () => {
     if (!statSync(path).isFile() || path.endsWith('_sf_figma_colors_variables.scss')) continue;
     for (const match of readFileSync(path, 'utf8').matchAll(/--sf-[a-z0-9-]+--alfa-\d+/gu)) used.add(match[0]);
   }
-  const unused = [...declared].filter((name) => !used.has(name)).sort();
+  // The tone-20 steps of the seven coloured palettes (C17, dispatcher
+  // 2026-11-09) are the dark ink of a coloured place: C16's
+  // mix/_mix__places.scss sf-ink() mixes them by color-mix until they exist and
+  // reads light-dark(var(--sf-white--alfa-N), var(--sf-<c>-20--alfa-N)) when
+  // they land (feat/c16-s3s4). They wait here, by name and with that reason,
+  // until the merge that makes sf-ink() read them; then this list goes.
+  const awaited = new Set(['primary', 'secondary', 'tertiary', 'error', 'warning', 'success', 'info']
+    .flatMap((palette) => [4, 8, 12, 16, 20, 24, 64, 80].map((step) => `--sf-${palette}-20--alfa-${step}`)));
+  const unused = [...declared].filter((name) => !used.has(name) && !awaited.has(name)).sort();
   // A palette is read as the set of answers the system has. One that carries
   // fifty values nothing draws with is a palette that cannot be read at all.
   assert.deepEqual(unused, [], 'an alpha primitive nothing asks for is a step a reader has to rule out by hand');
