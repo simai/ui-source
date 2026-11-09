@@ -801,7 +801,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.10.0"
+      "version": "1.11.0"
     },
     "sf-button-icon": {
       "inputs": {

@@ -73,8 +73,8 @@ px), высота и наименьшая ширина — 1,6 em своих б�
 | `--sf-kbd-font-size` | `0.8125em` | размер букв плашки и клавиши |
 | `--sf-kbd-font-family` | `var(--sf-text--family)` | шрифт плашки и клавиши |
 | `--sf-kbd-radius` | `var(--sf-radius--ui)` | скругление |
-| `--sf-kbd-background-color` | `color-mix(in srgb, currentColor 12%, transparent)` | заливка плашки |
-| `--sf-kbd-color` | `color-mix(in srgb, currentColor 80%, transparent)` | цвет букв плашки |
+| `--sf-kbd-background-color` | `color-mix(in srgb, currentColor 8%, transparent)` | заливка плашки |
+| `--sf-kbd-color` | `currentColor` | цвет букв плашки: цвет текста вокруг, контраст с плашкой не ниже 4,5:1 на каждом виде кнопки |
 | `--sf-kbd-border-color` | `var(--sf-outline-variant)` | рамка и нижний край клавиши |
 | `--sf-kbd-plain-color` | `var(--sf-on-surface-variant)` | цвет значков без плашек |
 

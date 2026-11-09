@@ -9174,6 +9174,31 @@
         "after": ".sf-choice-card .sf-choice-control { }"
       },
       "source": "src/smart/input-choice/js/templates/default.js renderControl; ui-control control/docs-review/decisions.md C28"
+    },
+    {
+      "id": "value-button-surface-quiet-scheme",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-button 1.11.0 retires the pair appearance surface + scheme on-surface-variant, following C15 on the icon buttons (buttons review 2026-11-09, DEV option b): on the surface fill the quiet ink read 4.88:1 in the dark theme and a shortcut key on it 4.38:1, under 4.5:1. The pair draws as surface + on-surface until the date; on-surface-variant stays with every other appearance.",
+      "items": [
+        {
+          "component": "sf-button",
+          "attribute": "scheme",
+          "from": "on-surface-variant",
+          "to": "on-surface",
+          "when": "appearance=\"surface\""
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-button appearance=\"surface\" scheme=\"on-surface-variant\" text=\"Поиск\">",
+        "after": "<sf-button appearance=\"surface\" scheme=\"on-surface\" text=\"Поиск\">"
+      },
+      "manual": "With appearance=\"surface\" write scheme=\"on-surface\"; to keep the quiet scheme take appearance=\"tonal\" or \"outline\" with scheme=\"on-surface-variant\". The component notes the use in SF.deprecations and warns once per page in the console.",
+      "source": "src/smart/button/index.js retiredSurfaceQuiet; ui-control control/research/2026-11-09-buttons-review.md"
     }
   ]
 }

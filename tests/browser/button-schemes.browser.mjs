@@ -6,14 +6,15 @@
 // beside it and sets its label the same way. The destructive scheme listed
 // its sizes for default, outline and link and forgot tonal, so a tonal error
 // button fell back to the browser's 13.3px Arial and stood 23/27/31/35px tall
-// instead of 24/32/40/48 (documentation trial 6, 2026-10-18).
+// instead of 24/32/40/48 (documentation trial 6, 2026-10-18). The surface look
+// is measured too, and its error label must be the error ink (C13).
 import {readFileSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const APPEARANCES = ['default', 'tonal', 'outline', 'link'];
+const APPEARANCES = ['default', 'tonal', 'outline', 'link', 'surface'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const failures = [];
 const browser = await chromium.launch();
@@ -28,8 +29,17 @@ try {
   await page.addStyleTag({content: readFileSync(join(out, 'component/component/buttons/css/buttons.css'), 'utf8')});
   const measured = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-key]')].map((button) => {
     const text = getComputedStyle(button.querySelector('.sf-button-text-container'));
-    return [button.dataset.key, {height: Math.round(button.getBoundingClientRect().height), size: text.fontSize, family: text.fontFamily.split(',')[0].trim()}];
+    return [button.dataset.key, {height: Math.round(button.getBoundingClientRect().height), size: text.fontSize, family: text.fontFamily.split(',')[0].trim(), colour: text.color}];
   })));
+  // Danger reads as danger on every look (C13): an outline, link or surface
+  // error button's label is the error ink. surface had no rule and drew the
+  // plain ink (buttons review 2026-11-09).
+  const errorInk = await page.evaluate(() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-error)'; document.body.append(probe); const value = getComputedStyle(probe).color; probe.remove(); return value; });
+  for (const appearance of ['outline', 'link', 'surface']) for (const size of SIZES) {
+    const colour = measured[`${appearance}|${size}|error`].colour;
+    if (colour !== errorInk) failures.push({case: `${appearance} size-${size}: error label is the error ink`, colour, errorInk});
+  }
+  for (const value of Object.values(measured)) delete value.colour;
   for (const appearance of APPEARANCES) for (const size of SIZES) {
     const primary = measured[`${appearance}|${size}|primary`];
     const error = measured[`${appearance}|${size}|error`];

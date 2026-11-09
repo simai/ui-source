@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -141,7 +141,7 @@
       "scheme": {
         "type": "string",
         "default": "primary",
-        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). What the control is about is the status axis; a status set there wins over this.",
+        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this.",
         "enum": [
           "primary",
           "secondary",
@@ -691,7 +691,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "2a2ed4f209dd7fb8ac6508642d65e596eb0a8b7b558c7afc4549bb69335ed1e7"
+        "sha256": "6fdc494399b83970d75279d6f94ca4394930662c6c8276a6870935b9ce0706e2"
       }
     ],
     "generated_runtime": [

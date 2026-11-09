@@ -11,10 +11,12 @@
 //     (--sf-px), not two; sf-button-group (default) the same;
 //   - keys' ink: a shortcut's keys are the kbd component's soft caps (owner
 //     decision 2026-11-07, docs review R030, rule C04, which supersedes the
-//     inverse caps of R009): the label's ink at 80 % on a fill of that ink at
-//     12 %, no edge, so they follow the button they sit on. The key's text
-//     against its fill is at least 3:1 (the ink family's measure: the keys are
-//     a quieter hint beside the label, which keeps its own contrast), and the
+//     inverse caps of R009): the label's ink on a fill of that ink at 8 %, no
+//     edge, so they follow the button they sit on. The key's text against its
+//     fill is at least 4.5:1 (R009: the keys are text; 3:1 let the 80 % ink of
+//     sf-kbd 1.1.0 pass at 4.03:1 on a filled primary button, buttons review
+//     2026-11-09; button-shortcut-contrast.browser.mjs composes the whole
+//     stack for every look), and the
 //     fill shows on the button (above 1.05:1), for every appearance x scheme
 //     (status error included) x theme;
 //   - keys' widths: a key of one character -- a letter, ⇧, ⌘, ⌥, ↵ -- is a
@@ -239,7 +241,7 @@ try {
     }
     for (const row of keyRows) {
       const key = seen.keys[row.id];
-      if (key.text < 3) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
+      if (key.text < 4.5) failures.push(`${theme} ${row.id}: the key's text is ${key.text}:1 on its fill`);
       if (key.fillAgainstButton <= 1.05) failures.push(`${theme} ${row.id}: the key's fill does not show on the button (${key.fillAgainstButton}:1)`);
     }
     for (const row of widthRows) {

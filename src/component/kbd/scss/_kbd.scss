@@ -8,7 +8,8 @@
 //   cap    in a control -- a button, a field, a combobox or search box -- a
 //          soft cap without an edge, in the text face at medium weight, sized
 //          from the text around it, its fill and ink mixed from the ink it
-//          sits in, so it reads on a filled button with no inverse rule;
+//          sits in (the ink whole, the fill 8 % of it), so it reads on a
+//          filled button with no inverse rule;
 //   plain  in a list of commands -- a menu, a list box, a tooltip -- glyphs
 //          without a cap, a step smaller and in the muted ink (in a tooltip
 //          the tooltip's own ink, quieter).
@@ -62,13 +63,17 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
 }
 
-// The cap's ink is the ink it sits in at 80 % (the ink family), its fill that
-// ink at 12 % (the first fill step: over the 80 % ink it reads as about 10 %
-// of the surrounding ink, the owner's figure).
+// The cap's ink is the ink it sits in, whole (rule C04: the colour of the
+// button's text), its fill that ink at 8 % (the state step nearest the
+// owner's figure of about 10 %). The 80 % ink of 1.1.0 on a 12 % fill of it
+// (9.6 % of the surrounding ink) fell under 4.5:1 on a filled button and on
+// the quiet schemes (buttons review 2026-11-09: 4.03:1 on default primary,
+// 3.71:1 on the outline search trigger); tests/browser/
+// button-shortcut-contrast.browser.mjs holds every look of sf-button at 4.5:1.
 @mixin cap {
   @include sized;
-  color: var(--sf-kbd-color, color-mix(in srgb, currentColor 80%, transparent));
-  background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 12%, transparent)));
+  color: var(--sf-kbd-color, currentColor);
+  background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 8%, transparent)));
   border: none;
   box-shadow: none;
 }

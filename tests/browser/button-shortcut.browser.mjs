@@ -11,8 +11,8 @@
 // starting after the icon and the keys at the end; the label and the icon in
 // the quieter ink; the keys the kbd component's soft caps (owner decision
 // 2026-11-07, docs review R030, rule C04): sized from the label (0.8125em
-// letters, 1.6em high), their ink the label's at 80 % and their fill that ink
-// at 12 %, no edge; the key box the same before and after the kbd sheet
+// letters, 1.6em high), their ink the label's own and their fill that ink
+// at 8 %, no edge; the key box the same before and after the kbd sheet
 // arrives.
 //
 // The snapshot and the live button: the search-trigger snapshot (printed on
@@ -154,12 +154,12 @@ try {
     // A cap is 1.6em of letters at 0.8125em of the label (owner decision C04).
     const labelSize = parseFloat(getComputedStyle(label).fontSize);
     const keyLadder = labelSize * 0.8125 * 1.6;
-    // The ink the caps should wear: the label's at 80 %, the fill that ink at 12 %.
+    // The ink the caps should wear: the label's own, the fill that ink at 8 %.
     const mix = document.createElement('span');
-    mix.style.color = `color-mix(in srgb, ${getComputedStyle(label).color} 80%, transparent)`;
+    mix.style.color = getComputedStyle(label).color;
     button.append(mix);
     const capInk = getComputedStyle(mix).color;
-    mix.style.color = `color-mix(in srgb, ${capInk} 12%, transparent)`;
+    mix.style.color = `color-mix(in srgb, ${capInk} 8%, transparent)`;
     const capFill = getComputedStyle(mix).color;
     mix.remove();
     const stage = box(host.parentElement);
@@ -196,7 +196,7 @@ try {
   if (Math.abs(geometry.height - geometry.ladder) > 0.5) failures.push(`the trigger is ${geometry.height}px tall, the size 1 control height is ${geometry.ladder}px`);
   if (geometry.keyHeights.some((height) => Math.abs(height - geometry.keyLadder) > 0.5)) failures.push(`the keys are ${geometry.keyHeights}px tall, not 1.6em of 0.8125em of the label (${geometry.keyLadder}px)`);
   if (Math.abs(parseFloat(geometry.keyFace[0]) - geometry.labelSize * 0.8125) > 0.05 || geometry.keyFace[1] !== '500') failures.push(`the caps' letters are ${geometry.keyFace}, not 0.8125em of the ${geometry.labelSize}px label at weight 500`);
-  if (geometry.keyColour !== geometry.capInk || geometry.keyFill !== geometry.capFill) failures.push(`the caps wear ${geometry.keyColour} on ${geometry.keyFill}, not the label's ink at 80 % (${geometry.capInk}) on 12 % of it (${geometry.capFill})`);
+  if (geometry.keyColour !== geometry.capInk || geometry.keyFill !== geometry.capFill) failures.push(`the caps wear ${geometry.keyColour} on ${geometry.keyFill}, not the label's ink (${geometry.capInk}) on 8 % of it (${geometry.capFill})`);
   if (geometry.keyEdge !== '0px') failures.push(`a cap has an edge of ${geometry.keyEdge}`);
   if (Math.abs(geometry.width - geometry.stageInner) > 0.5) failures.push(`the stretched trigger is ${geometry.width}px wide in a ${geometry.stageInner}px row`);
   if (geometry.centres.some((offset) => Math.abs(offset) > 0.5)) failures.push(`icon, label and keys are off the button's centre line: ${geometry.centres}`);

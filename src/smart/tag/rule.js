@@ -11,6 +11,9 @@ SF.RuleLoader['cl-tag'] = {
     { name: 'avatars' },
     { name: 'dot' },
     { name: 'cl-button-icon' },
+    // The icon of an icon tag and an avatar's placeholder are sf-icon elements,
+    // so their names reach the icon font request (buttons review 2026-11-09).
+    { name: 'cl-icon' },
   ],
 };
 

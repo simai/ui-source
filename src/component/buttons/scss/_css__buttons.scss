@@ -628,6 +628,19 @@
   .sf-button.sf-button--surface.sf-button--primary .sf-icon {
     --sf-icon--color: var(--sf-primary);
   }
+
+  /* Danger on the surface look reads as danger (C13): the label and the icon
+     in the error ink, as on outline and ghost; the fill and the edge stay the
+     surface's own neutral ramp. Before, no rule named the pair and the label
+     fell back to the plain ink -- black in light, white in dark (buttons
+     review 2026-11-09). */
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-error));
+  }
+
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) .sf-icon {
+    --sf-icon--color: var(--sf-error);
+  }
 }
 
 @layer sf.states {

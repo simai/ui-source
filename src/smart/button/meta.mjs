@@ -65,7 +65,7 @@ const sfButtonMeta = {
         "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
