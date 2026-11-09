@@ -17,7 +17,7 @@
     "src/component/range-slider/scss/_css__thumbs.scss",
     "src/component/range-slider/scss/index.scss"
   ],
-  "content_sha256": "2b8d96877e9f77988f85e2f4b51c50a28b467c44258152a1f258fa2387f1d36f",
+  "content_sha256": "a3d97700e9285924fb686624c744765582ef03943e8a293a2734ddbb6d3e1984",
   "dependencies": [
     {
       "id": "tokens.border",
