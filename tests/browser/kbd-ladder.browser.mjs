@@ -49,7 +49,7 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 <style>body{margin:0;background:var(--sf-surface-1);color:var(--sf-on-surface)}
 main{display:flex;flex-direction:column;gap:var(--sf-space-1);padding:var(--sf-space-1);max-inline-size:100%;box-sizing:border-box}
 .row{display:flex;flex-wrap:wrap;gap:var(--sf-space-1\\/2);align-items:center}
-.field{inline-size:14rem;max-inline-size:100%}
+.field{inline-size:18rem;max-inline-size:100%}
 .prose{margin:0;max-inline-size:22rem}
 .tip{position:static;display:inline-flex;inset:auto;opacity:1;visibility:visible;transform:none}</style></head><body><main>
 <div class="row" id="buttons">${SIZES.map((size) => `<sf-button id="b-${id(size)}" size="${size}" appearance="outline" scheme="on-surface" text="Поиск" shortcut="mod+k"></sf-button>`).join('')}
@@ -181,6 +181,10 @@ try {
         .catch(() => failures.push(`${name}: the page never drew its buttons, fields and menu with the kbd sheet`));
       await tab.waitForFunction(() => document.querySelectorAll('sf-input .sf-input-shortcut kbd kbd').length >= 12, null, {timeout: 5000})
         .catch(() => failures.push(`${name}: sf-input draws no shortcut keys`));
+      // The icons come from the subset service after the page is ready: wait
+      // for them (not a finding when the network is slow), so a picture
+      // shows the page as a reader sees it.
+      await tab.waitForFunction(() => Array.from(document.querySelectorAll('.sf-icon')).every((icon) => icon.classList.contains('sf-icon-loaded')), null, {timeout: 10000}).catch(() => {});
       await tab.evaluate(() => document.fonts.ready);
       await tab.waitForTimeout(300);
       const m = await tab.evaluate(MEASURE);
