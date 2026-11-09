@@ -102,6 +102,22 @@ test('Kbd sizes come from the ladder: the step below the place, never below 1/3'
   assert.match(code, /--sf-kbd--step-size: var\(--sf-text-height-#\{\$step\}\);\s*--sf-kbd--step-font-size: var\(--sf-text-size-#\{\$step\}\);/u);
 });
 
+// A bare control without a size class is the default size 1 and takes its
+// step, 1/2, not its text's (DEV review of C38, 2026-11-09). The rule comes
+// before the map, so a size class on the same element says otherwise.
+test('Kbd in a bare button, combobox or searchbox takes the control step', async () => {
+  const css = await read('src/component/kbd/scss/_kbd.scss');
+  const code = css.replace(/\/\/[^\n]*/gu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
+  const bare = /^\$bare-controls: '([^']+)';/mu.exec(code)?.[1] ?? '';
+  const places = bare.split(',').map((place) => place.trim());
+  for (const place of ['button', '[role="button"]', '[role="combobox"]', '[role="searchbox"]']) assert.ok(places.includes(place), `bare control ${place}`);
+  for (const place of places) assert.doesNotMatch(place, /\./u, `${place} is bare: no class`);
+  const rule = /:where\(#\{\$bare-controls\}\) \{\s*--sf-kbd--step-size: var\(--sf-text-height-1\\\/2\);\s*--sf-kbd--step-font-size: var\(--sf-text-size-1\\\/2\);\s*\}/u.exec(code);
+  assert.ok(rule, 'bare controls set step 1/2');
+  const map = code.indexOf('@each $step, $places in $steps');
+  assert.ok(map > 0 && rule.index < map, 'the bare rule comes before the size map');
+});
+
 test('Hosts render shortcuts through the shared view and never style a key', async () => {
   const [view, button, menu, search, buttonSheet, menuSheet, searchSheet, adminSheet] = await Promise.all([
     read('src/component/kbd/js/shortcut.js'),

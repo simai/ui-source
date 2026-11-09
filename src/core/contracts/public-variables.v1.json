@@ -4399,7 +4399,7 @@
           "name": "--sf-kbd-size",
           "role": "size",
           "summary": "A cap's and a key's height and least width: the line height of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
-          "default": "var(--sf-text-height-1\\/2)",
+          "default": "var(--sf-text-height-1\\/2) (body text)",
           "since": "2026-11-08"
         },
         {
@@ -4420,7 +4420,7 @@
           "name": "--sf-kbd-font-size",
           "role": "font-size",
           "summary": "A cap's and a key's letters: the size of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
-          "default": "var(--sf-text-size-1\\/2)",
+          "default": "var(--sf-text-size-1\\/2) (body text)",
           "since": "2026-11-08"
         },
         {

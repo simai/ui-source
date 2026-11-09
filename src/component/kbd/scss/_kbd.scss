@@ -34,8 +34,8 @@
 //
 // Public variables (src/core/contracts/public-variables.v1.json): the size
 // and the letters, the room, the gap, the corner, the face, the cap's fill and
-// ink, the key's edge, the plain ink and the plain letters. Everything
-// --sf-kbd--* is internal.
+// ink, the key's edge and the plain ink. Everything --sf-kbd--* is internal,
+// the plain glyphs' letters among them.
 
 // A key: a <kbd> without keys inside it, or the class fallback.
 $key: 'kbd:not(.sf-kbd--group):not(:has(> kbd)), .sf-kbd:not(.sf-kbd--group)';
@@ -105,6 +105,8 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   font-family: inherit;
   font-size: var(--sf-kbd--plain-font-size, 1em);
   font-weight: inherit;
+  margin-block: var(--sf-0);
+  vertical-align: baseline;
 }
 
 // The step a place says (owner decision C38): the text step one below its
@@ -127,8 +129,18 @@ $steps: (
   '2': ('.sf-button.sf-button--size-3', '.sf-input.sf-input--size-3', '.sf-text-3', '.text-3'),
   '3': ('.sf-text-4', '.text-4'),
 );
+// Controls that carry no size class of the map.
+$bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]';
 
 @layer sf.components {
+  // A bare control -- a native button, a button, combobox or searchbox role
+  // -- without a size class is a control of the default size 1: step 1/2,
+  // not its text's. Written before the map so a size class says otherwise.
+  :where(#{$bare-controls}) {
+    --sf-kbd--step-size: var(--sf-text-height-1\/2);
+    --sf-kbd--step-font-size: var(--sf-text-size-1\/2);
+  }
+
   @each $step, $places in $steps {
     :where(#{$places}) {
       --sf-kbd--step-size: var(--sf-text-height-#{$step});
@@ -145,11 +157,18 @@ $steps: (
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
-    margin: var(--sf-0);
+    // Centred in its line, whatever the font's ascent and descent: the key
+    // stands at the line's top with half of what the line has over the plate
+    // above and below, so its margin box is the line it inherits (1lh). The
+    // baseline left a smaller key 1 px low (DEV review of C38, 2026-11-09);
+    // middle, 1.6 px. A plate taller than the line overhangs it evenly and
+    // the line does not grow. In a flex row the margins are even, the key
+    // still centred.
+    margin: calc((1lh - var(--sf-kbd--size)) / 2) var(--sf-0);
     padding-block: var(--sf-0);
-    line-height: 1;
+    line-height: inherit;
     unicode-bidi: isolate;
-    vertical-align: baseline;
+    vertical-align: top;
     white-space: nowrap;
     @include keycap;
   }
@@ -180,7 +199,7 @@ $steps: (
     font: inherit;
     line-height: inherit;
     unicode-bidi: isolate;
-    vertical-align: baseline;
+    vertical-align: top;
     white-space: nowrap;
   }
 
@@ -201,6 +220,7 @@ $steps: (
 
   :where(#{$plain-places}) :where(#{$group}) {
     gap: 0.125em;
+    vertical-align: baseline;
   }
 
   :where(#{$plain-places}) :where(.sf-kbd-join) {
@@ -235,6 +255,7 @@ $steps: (
 
   :where(#{said-group(plain)}) {
     gap: 0.125em;
+    vertical-align: baseline;
   }
 
   :where(#{said-group(plain)}) > :where(.sf-kbd-join) {

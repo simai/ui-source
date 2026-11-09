@@ -20,6 +20,10 @@
 //     the room on each side and the gap between keys are --sf-space-1/4;
 //   - keys in running text: body 16/24 -> 20/14, sf-text-1/2 14/20 -> 16/12,
 //     the line does not grow (16/12 everywhere on the phone);
+//   - keys in running text are centred in the line (top and bottom gaps
+//     within 0.5 px);
+//   - a bare control (a native button, the button, combobox and searchbox
+//     roles) without a size class takes size 1's plates;
 //   - plain glyphs in a menu row and a tooltip: the letters of the row's
 //     label, not a step smaller;
 //   - sf-input shortcut: the keys drawn at the end of the field and
@@ -62,6 +66,10 @@ main{display:flex;flex-direction:column;gap:var(--sf-space-1);padding:var(--sf-s
 <p class="prose" id="c-body">Открыть поиск: <kbd>Ctrl</kbd> <kbd class="sf-kbd--square">K</kbd>.</p></div>
 <p class="prose" id="body">Откройте поиск: <kbd>Ctrl</kbd> <kbd class="sf-kbd--square">K</kbd>.</p>
 <p class="prose sf-text-1/2" id="small">Сохранить — <kbd>Ctrl</kbd> <kbd class="sf-kbd--square">S</kbd>.</p>
+<div class="row" id="bare"><button type="button" id="bare-button">Найти <kbd>Ctrl</kbd></button>
+<span role="button" tabindex="0" id="bare-role">Найти <kbd>Ctrl</kbd></span>
+<span role="combobox" aria-expanded="false" tabindex="0" id="bare-combobox">Раздел <kbd>Ctrl</kbd></span>
+<span role="searchbox" tabindex="0" id="bare-searchbox">Поиск <kbd>Ctrl</kbd></span></div>
 <div class="row"><sf-menu-context id="menu" aria-label="Правка"></sf-menu-context>
 <div class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1 tip" role="tooltip" id="tip"><div class="sf-tooltip-content"><div class="sf-tooltip-wrap"><div class="sf-tooltip-text">Жирный <kbd class="sf-kbd--group"><kbd class="sf-kbd--square">⌘</kbd><kbd class="sf-kbd--square">B</kbd></kbd></div></div></div></div></div>
 </main><script>
@@ -132,7 +140,12 @@ const MEASURE = () => {
   const prose = (pid) => {
     const p = document.getElementById(pid);
     const s = getComputedStyle(p);
-    return {keys: keysOf(p), lineHeight: parseFloat(s.lineHeight), fontSize: parseFloat(s.fontSize), height: round(p.getBoundingClientRect().height), space: space(p)};
+    const r = p.getBoundingClientRect();
+    const keys = keysOf(p);
+    return {keys, lineHeight: parseFloat(s.lineHeight), fontSize: parseFloat(s.fontSize), height: round(r.height), space: space(p),
+      // The keys' place in the line: the gap above and below.
+      above: keys.length ? round(Math.min(...keys.map((one) => one.top)) - r.top) : null,
+      below: keys.length ? round(r.bottom - Math.max(...keys.map((one) => one.bottom))) : null};
   };
   const menuRows = Array.from(document.querySelectorAll('#menu .sf-context-menu-item')).map((row) => {
     const label = row.querySelector('.sf-context-menu-item-label, .sf-context-menu-item-text') ?? row;
@@ -146,6 +159,10 @@ const MEASURE = () => {
     compact: {button: control('c-button'), size2: control('c-2'), input: control('c-input'), body: prose('c-body')},
     body: prose('body'),
     small: prose('small'),
+    bare: Object.fromEntries(['button', 'role', 'combobox', 'searchbox'].map((what) => {
+      const host = document.getElementById(`bare-${what}`);
+      return [what, {keys: keysOf(host), space: space(host), gap: null}];
+    })),
     menu: menuRows,
     tip: {label: tipText ? parseFloat(getComputedStyle(tipText).fontSize) : null, keys: keysOf(document.getElementById('tip'))},
   };
@@ -227,6 +244,7 @@ try {
         // there takes it, and its keys 16/12; the line does not grow.
         plates(`compact region, plain paragraph ${m.compact.body.fontSize}/${m.compact.body.lineHeight}`, m.compact.body, [16, 12]);
         if (!near(m.compact.body.height, m.compact.body.lineHeight, 0.5)) fail(`compact paragraph: the line grew to ${m.compact.body.height}, line height ${m.compact.body.lineHeight}`);
+        if (!near(m.compact.body.above, m.compact.body.below, 0.5)) fail(`compact paragraph: keys ${m.compact.body.above} from the top, ${m.compact.body.below} from the bottom, not centred`);
         if (m.compact.input.keys.length && !near(m.compact.input.above, m.compact.input.below, 0.5)) fail(`compact sf-input: keys ${m.compact.input.above} / ${m.compact.input.below}, not centred`);
       }
 
@@ -234,6 +252,14 @@ try {
         plates(`${what} text ${text.fontSize}/${text.lineHeight}`, text, table[what]);
         // One line of text: the paragraph is its line high, the keys inside it.
         if (!near(text.height, text.lineHeight, 0.5)) fail(`${what} text: the line grew to ${text.height}, line height ${text.lineHeight}`);
+        // Centred in the line (DEV review of C38: baseline left them 1 px low).
+        if (!near(text.above, text.below, 0.5)) fail(`${what} text: keys ${text.above} from the top, ${text.below} from the bottom, not centred`);
+      }
+
+      // A bare control without a size class is a control of size 1.
+      for (const [what, drawn] of Object.entries(m.bare)) {
+        if (!drawn.keys.length) fail(`bare ${what}: no keys`);
+        plates(`bare ${what}`, drawn, table['1']);
       }
 
       if (!m.menu.length) fail('the menu drew no rows');
@@ -258,6 +284,7 @@ console.log(JSON.stringify({
     compact: Object.fromEntries(Object.entries(m.compact).map(([what, drawn]) => [what, summary(drawn)])),
     body: `${m.body.fontSize}/${m.body.lineHeight} -> ${summary(m.body)}, p ${m.body.height}`,
     small: `${m.small.fontSize}/${m.small.lineHeight} -> ${summary(m.small)}, p ${m.small.height}`,
+    bare: Object.fromEntries(Object.entries(m.bare).map(([what, drawn]) => [what, summary(drawn)])),
     menu: m.menu.map((row) => `${row.label} -> ${row.keys.map((one) => one.fontSize).join(',')}`),
     tip: `${m.tip.label} -> ${m.tip.keys.map((one) => one.fontSize).join(',')}`,
   }])),
