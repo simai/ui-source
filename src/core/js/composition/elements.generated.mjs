@@ -642,7 +642,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.7.3"
+    "version": "1.7.4"
   },
   "sf-icon": {
     "inputs": {
@@ -916,7 +916,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.6.0"
+    "version": "1.6.1"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1069,7 +1069,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.7.3"
+    "version": "1.7.4"
   },
   "sf-switch": {
     "inputs": {
@@ -1133,6 +1133,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.3.3"
+    "version": "1.3.4"
   }
 });
