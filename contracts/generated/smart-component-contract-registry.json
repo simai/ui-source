@@ -291,6 +291,7 @@
           "props": [
             "template",
             "size",
+            "height",
             "appearance",
             "scheme",
             "status",
@@ -345,13 +346,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "e3ced72c606070a9dddfdaf227821b81ea5e38aafd8908917f95ff39d49afa20",
+      "manifest_sha256": "f6c98ae69f8586c5de19aec641a88c5f4d98f5fcbd2cab474186f8b1402ab1f4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
+      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
       "tags": [
         "buttons"
       ],
