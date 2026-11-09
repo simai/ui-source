@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table",
   "kind": "utility",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table/default/index.js",

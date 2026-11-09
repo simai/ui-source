@@ -821,7 +821,7 @@
           "name": "--sf-modal-background-color",
           "role": "background",
           "summary": "The panel's fill; the backdrop keeps its own.",
-          "default": "var(--sf-surface-1, #fff)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"

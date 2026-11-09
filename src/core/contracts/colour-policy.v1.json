@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "owner": "tokens.colour",
+  "description": "Reviewed boundaries for raw colour syntax (owner decision C18, 2026-11-08: every colour from the dynamic or static palette, C17). scripts/colour-inventory-lib.mjs finds hex literals, colour functions with literal or Sass-computed channels, and named colours in value positions; a finding outside every rule is unreviewed and tests/colour-inventory.test.mjs fails on it. A rule records a reviewed boundary; it does not make a raw colour a palette colour. Rules with status deferred-* name the decision that removes them.",
+  "rules": [
+    {
+      "id": "non-executable-comments",
+      "category": "comment-review",
+      "filePattern": ".*",
+      "contextPattern": ".*",
+      "status": "accepted-non-executable",
+      "reason": "The occurrence is inside a source comment and cannot reach emitted CSS or runtime style."
+    },
+    {
+      "id": "third-party-sources",
+      "category": "vendor-review",
+      "filePattern": "^(?:plugin/|core/js/vendor/)",
+      "contextPattern": ".*",
+      "status": "accepted-vendor-owned",
+      "reason": "Vendored source is inventoried but changed only through an upstream update (the HCT colour utilities name their channels red, green and blue)."
+    },
+    {
+      "id": "documentation-and-probe-fixtures",
+      "category": "fixture-review",
+      "filePattern": ".*",
+      "contextPattern": ".*",
+      "status": "accepted-fixture-data",
+      "reason": "Examples, probes, studio fixtures and generated first-paint snapshots: values a person types into a colour setting (sf-input-color, sf-theme-generator), probe colours that prove an inherited value arrives (rgb(1, 2, 3)), element ids (#acc) and the static markup of a template, regenerated from it."
+    },
+    {
+      "id": "documentation-minimal-examples",
+      "category": "script-data-template-review",
+      "filePattern": "^smart/(?:input-color|theme-generator)/(?:component|smart\\.manifest)\\.json$",
+      "contextPattern": "\"minimal_example\"",
+      "status": "accepted-fixture-data",
+      "reason": "The minimal example of a colour setting shows the value a person types."
+    },
+    {
+      "id": "policy-quotes",
+      "category": "definition-review",
+      "filePattern": "^core/contracts/colour-policy\\.v1\\.json$",
+      "contextPattern": ".*",
+      "status": "accepted-non-executable",
+      "reason": "This policy quotes the values it reviews."
+    },
+    {
+      "id": "palette-primitives-and-generator",
+      "category": "definition-review",
+      "filePattern": "^core/scss/(?:_sf_figma_colors_variables\\.scss|vars/_sf_var__color\\.scss)$",
+      "contextPattern": ".*",
+      "status": "accepted-system-definition",
+      "reason": "The palette primitives (white, black, transparent, the tonal palettes and their alpha steps) and the legacy Sass colour maps are the definitions every role and utility reads."
+    },
+    {
+      "id": "generator-seed",
+      "category": "script-data-template-review",
+      "filePattern": "^core/js/theme-palette\\.js$",
+      "contextPattern": "DEFAULT_THEME_COLOR",
+      "status": "accepted-system-definition",
+      "reason": "The theme generator's default seed colour (#005bbe); every dynamic palette is computed from it."
+    },
+    {
+      "id": "low-vision-scheme-tokens",
+      "category": "style-review",
+      "filePattern": "^component/special/scss/_tokens\\.scss$",
+      "contextPattern": "^--sf-(?:on-)?special-(?:white|black|yellow|blue|green):",
+      "status": "accepted-system-definition",
+      "reason": "The five low-vision schemes are fixed contrast pairs independent of the theme; they are declared once here as --sf-special-<scheme> and --sf-on-special-<scheme> and read by the scheme rules and the panel's swatches."
+    },
+    {
+      "id": "third-party-brand-colours",
+      "category": "definition-review",
+      "filePattern": "^utility/(?:background-color-brand/(?:default|hover)/scss/_sf_var__background_color_brand|fill-brand/default/scss/_sf_var__fill_brand)\\.scss$",
+      "contextPattern": ".*",
+      "status": "accepted-third-party-brand",
+      "reason": "Other companies' marks keep their own brand colours."
+    },
+    {
+      "id": "port-kit-case-data",
+      "category": "definition-review",
+      "filePattern": "^core/contracts/ports/simai\\.dataview-port/[^/]+/kit/cases/columns-name-what-they-hold\\.json$",
+      "contextPattern": "\"accent\"",
+      "status": "accepted-fixture-data",
+      "reason": "A port kit case: a record value a host stores, not a colour the Framework paints."
+    },
+    {
+      "id": "mask-ink",
+      "category": "style-review",
+      "filePattern": "^(?:component/admin-menu/scss/_css__admin_menu\\.scss|component/progress-ring/scss/_css__progress_ring\\.scss|smart/list-feed/js/templates/default\\.css)$",
+      "contextPattern": "(?:mask|^black )",
+      "status": "accepted-mask-alpha",
+      "reason": "A mask gradient reads only the alpha of its colour stops; the colour is never painted."
+    },
+    {
+      "id": "first-paint-fallbacks",
+      "category": "script-data-template-review",
+      "filePattern": "^core/js/(?:index|loader|preloader)\\.js$",
+      "contextPattern": "(?:var\\(--sf-surface-0, #fff\\)|^[?:] '#(?:e3e2e7|1a1b1f|0f1115|ffffff)')",
+      "status": "accepted-first-paint-fallback",
+      "reason": "The Loader and preloader paint before core.css arrives; their fallbacks are the theme's own page and ink values for that moment."
+    },
+    {
+      "id": "native-colour-input-value",
+      "category": "script-data-template-review",
+      "filePattern": "^smart/input-color/js/templates/default\\.js$",
+      "contextPattern": "#000000",
+      "status": "accepted-native-value",
+      "reason": "<input type=color> accepts only a #rrggbb value; #000000 is the browser's own empty value."
+    },
+    {
+      "id": "shadow-colours-c20",
+      "category": "style-review",
+      "filePattern": "^(?:core/scss/_sf_css__shadow\\.scss|smart/sortable/scss/_smart__sortable\\.scss)$",
+      "contextPattern": "(?:--sf-shadow--color|box-shadow)",
+      "status": "deferred-c20-shadows",
+      "reason": "Shadow colours belong to the shadow decision (C20) and its own branch; remove this rule when C20 lands."
+    },
+    {
+      "id": "legacy-panel-shadow-c20",
+      "category": "script-data-template-review",
+      "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",
+      "contextPattern": "boxShadow",
+      "status": "deferred-c20-shadows",
+      "reason": "The special panel's swatch-row shadow belongs to the shadow decision (C20); remove this rule when C20 lands."
+    },
+    {
+      "id": "legacy-palette-utilities-c17",
+      "category": "style-review",
+      "filePattern": "^utility/(?:text-color/default/scss/_sf_css__color_base|border-color/default/scss/_sf_css__border_color|background-color/default/scss/_sf_css__background_color)\\.scss$",
+      "contextPattern": "^(?:background-color|border-color|color): rgb\\($",
+      "status": "deferred-c17-static-palette",
+      "reason": "The legacy $color-array classes (color-, border-, bg- with white, black and gray, red, orange, yellow, green, blue, purple, pink at 0-9) emit a second palette. C17 decided its replacement, the static palette primitives --sf-<hue>-<tone>, which do not exist in source yet; the classes move onto them, with an alias map, when the static palette lands. Remove this rule then."
+    }
+  ]
+}

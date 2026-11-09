@@ -28,7 +28,7 @@ test('an unknown toolbar mode is refused before the element is touched', () => {
   }
 });
 
-test('the option is part of sf-editor-inline 1.4.0 (sf-inline-editor 1.3.0): its edit action, its script API and its sheet', async () => {
+test('the option is part of sf-editor-inline 1.4.1 (sf-inline-editor 1.3.0): its edit action, its script API and its sheet', async () => {
   const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
   const manifest = JSON.parse(await read('src/smart/editor-inline/component.json'));
   assert.equal(manifest.version, '1.4.1');

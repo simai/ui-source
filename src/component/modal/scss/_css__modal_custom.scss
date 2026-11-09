@@ -15,7 +15,7 @@
 
 .sf-modal {
   /* The shared scrim (core --sf-scrim-color, --sf-scrim-opacity). */
-  --sf-modal-overlay-background: var(--sf-scrim-color, var(--sf-black, #000));
+  --sf-modal-overlay-background: var(--sf-scrim-color);
   --sf-modal-overlay-opacity: var(--sf-scrim-opacity, var(--sf-opacity-60, 0.6));
   --sf-modal-iframe-min-height: var(--sf-g2);
 }
@@ -91,7 +91,7 @@
 }
 
 .sf-modal-surface {
-  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-1, #fff));
+  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-area));
   --sf-modal-surface-border-color: var(--sf-modal-border-color, var(--sf-outline-variant, transparent));
   --sf-modal-surface-border-style: solid;
   --sf-modal-surface-border-width: var(--sf-modal-border-width, var(--sf-border-width, var(--sf-px)));

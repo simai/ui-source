@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.modal",
   "kind": "component",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/modal/index.js",

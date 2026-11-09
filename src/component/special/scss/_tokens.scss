@@ -1,0 +1,26 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// LOW-VISION COLOUR SCHEMES
+//
+// The five schemes of the accessibility panel are fixed contrast pairs, not
+// theme colours: each keeps its page colour (--sf-special-<scheme>) and its
+// ink (--sf-on-special-<scheme>) under every theme and theme colour. The
+// scheme rules (_white ... _green) and the panel's scheme swatches
+// (sf-system _provider.js) read only these tokens; colour-policy.v1.json
+// lists this file as their one definition.
+
+:root {
+    --sf-special-white: #FFF;
+    --sf-on-special-white: #000;
+    --sf-special-black: #000;
+    --sf-on-special-black: #FFF;
+    --sf-special-yellow: #FF0;
+    --sf-on-special-yellow: #000;
+    --sf-special-blue: #9FD7FF;
+    --sf-on-special-blue: #000;
+    --sf-special-green: #000;
+    --sf-on-special-green: #A9DD38;
+}
+}
