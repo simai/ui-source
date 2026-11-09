@@ -6795,6 +6795,30 @@
       },
       "owner": "ui-source",
       "source": "src/utility/background-color/default/scss/_sf_var__background_color.scss"
+    },
+    {
+      "id": "attribute-button-spacing-to-height",
+      "recorded_on": "2026-11-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "A Smart button's height is its own setting, height=\"low|default|high|highest\" (owner decision C27): the size's tightness steps, the side padding growing with them. spacing, which moved the side padding only at the same height, is deprecated: it keeps drawing as before with a console warning until remove_after and is not turned into a height.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "spacing",
+          "to": "height"
+        }
+      ],
+      "deprecated_on": "2026-11-09",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing from the sf-button. For a lower or a higher button write height=\"low\", \"high\" or \"highest\" (the side padding comes with it); spacing=\"normal\" is the default and is simply removed. spacing compact/comfortable/spacious changed the sides only, so the equivalent is not automatic: pick the height the design wants. The public --sf-button-padding-inline still sets the sides alone.",
+      "examples": {
+        "before": "<sf-button size=\"1\" spacing=\"spacious\" text=\"Сохранить\">",
+        "after": "<sf-button size=\"1\" height=\"high\" text=\"Сохранить\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/button/index.js"
     }
   ]
 }

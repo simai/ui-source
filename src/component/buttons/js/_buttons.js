@@ -20,6 +20,7 @@ class Buttons extends ComponentObserver {
       iconPosition = 'start',
       tightness,
       spacing,
+      height,
       radius,
       loading = false,
       disabled = false,
@@ -45,6 +46,11 @@ class Buttons extends ComponentObserver {
       this.button.classList.add(`spacing-${spacing}`);
     } else if (!hasSpacing && tightness) {
       this.button.classList.add(`tightness-${tightness}`);
+    }
+    // The control height (1.8.0, decision C27): the size's tightness step;
+    // default needs no class.
+    if (['low', 'high', 'highest'].includes(height)) {
+      this.button.classList.add(`sf-button--height-${height}`);
     }
     if (radius) {
       this.button.classList.add(`radius-${radius}`);

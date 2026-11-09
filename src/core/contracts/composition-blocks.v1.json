@@ -640,6 +640,16 @@
             "default": "",
             "type": "string"
           },
+          "height": {
+            "default": "default",
+            "enum": [
+              "low",
+              "default",
+              "high",
+              "highest"
+            ],
+            "type": "string"
+          },
           "href": {
             "default": "",
             "type": "string"
@@ -791,7 +801,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.9.0"
+      "version": "1.10.0"
     },
     "sf-button-icon": {
       "inputs": {

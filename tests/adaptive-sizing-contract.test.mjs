@@ -179,8 +179,9 @@ test("default control geometry preserves the accepted vertical matrix", () => {
         "2": 44,
         "3": 52,
     });
+    // Owner decision C27 (2026-11-09): desktop 1/3 default is 28 (a6), low 24.
     assert.deepEqual(heights.desktop.default, {
-        "1/3": 24,
+        "1/3": 28,
         "1/2": 32,
         "1": 40,
         "2": 48,

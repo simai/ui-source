@@ -388,6 +388,120 @@
     --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
   }
 
+  /* Height (owner decision C27): a size keeps its text, icons and inner
+     scale; height picks the control height from the size's tightness steps
+     -- low, high, highest beside the default one -- as the block padding, so
+     the control stands at line height + 2 x the step, on the UI height
+     ladder. The side padding grows by the same step less the default one,
+     half of what the height adds, so the gap from the end to the icon stays
+     the same. The public --sf-button-padding-block and
+     --sf-button-padding-inline still win. Declared after spacing: a button
+     that says both takes the sides from its height. */
+  .sf-button--size-1.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+
+  .sf-button--size-2.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-2.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-2.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-3.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+
+  .sf-button--size-3.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+
+  .sf-button--size-3.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/2.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/2.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/2.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/3.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/3.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+
+  .sf-button--size-1\/3.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+
   .sf-button--outline {
     --sf-button--border-bottom-width: var(--sf-button-border-width, var(--sf-px));
     --sf-button--border-inline-end-width: var(--sf-button-border-width, var(--sf-px));

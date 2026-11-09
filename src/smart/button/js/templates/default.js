@@ -93,6 +93,9 @@ export function renderButtonTemplate(context) {
         // The spacing class, not its retired tightness name (journal
         // class-tightness-to-spacing; docs trial 4).
         spacing && spacing !== 'normal' ? `spacing-${spacing}` : '',
+        // The height (decision C27): the class of the size's tightness step;
+        // default draws none, the size's own step.
+        context.height && context.height !== 'default' ? `sf-button--height-${context.height}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',

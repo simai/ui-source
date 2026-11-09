@@ -54,7 +54,30 @@ Main attributes:
 - `icon-start`
 - `icon-end`
 - `icon-position`
-- `spacing="compact|normal|comfortable|spacious"`
+- `height="low|default|high|highest"` — the control height, separate from
+  the size (1.10.0, decision C27). The size sets the text, the icons and the
+  inner scale; the height picks the control height from the size's tightness
+  steps -- its usual step (`default`) and the neighbours on the UI height
+  ladder. The side padding grows by half of what the height adds, so the gap
+  from the end to the icon stays the same. A compact region
+  (`data-sf-density="compact"`) moves the steps one down and the height picks
+  the neighbour there. Another value reads as `default`, with one console
+  warning.
+
+  | size | low | default | high | highest |
+  |------|-----|---------|------|---------|
+  | 1/3  | 24 / 20 | 28 / 24 | 32 / 28 | 40 / 36 |
+  | 1/2  | 28 / 24 | 32 / 28 | 40 / 36 | 48 / 44 |
+  | 1    | 32 / 28 | 40 / 36 | 48 / 44 | 56 / 52 |
+  | 2    | 40 / 36 | 48 / 44 | 56 / 52 | 68 / 64 |
+  | 3    | 48 / 44 | 56 / 52 | 68 / 64 | 80 / 76 |
+
+  (px, desktop / phone.) `--sf-button-padding-block` and
+  `--sf-button-padding-inline` still win over the height.
+- `spacing="compact|normal|comfortable|spacious"` — deprecated (1.10.0,
+  decision C27; journal `attribute-button-spacing-to-height`): the side padding
+  only, at the same height. It keeps drawing as before until 2027-01-01 with a
+  console warning and is not turned into a height; write `height` instead
 - `radius="default|square|rounded"`
 - `root-class`
 - `loading`

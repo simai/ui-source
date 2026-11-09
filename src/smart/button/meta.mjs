@@ -33,6 +33,17 @@ const sfButtonMeta = {
       "default": "1",
       "description": "Button size."
     },
+    "height": {
+      "kind": "enum",
+      "values": [
+        "low",
+        "default",
+        "high",
+        "highest"
+      ],
+      "default": "default",
+      "description": "The control height (owner decision C27), separate from size: size sets the text, the icons and the inner scale, height picks the control height from the size's tightness steps of the adaptive-sizing contract -- low, default, high, highest, the size's usual step and its neighbours on the UI height ladder. Desktop 1/3 24/28/32/40, 1/2 28/32/40/48, 1 32/40/48/56, 2 40/48/56/68, 3 48/56/68/80; phone 1/3 20/24/28/36, 1/2 24/28/36/44, 1 28/36/44/52, 2 36/44/52/64, 3 44/52/64/76. The side padding grows with the height by half of what the height adds, so the gap from the end to the icon stays the same. A compact region (data-sf-density) shifts the steps one down and height picks the neighbour there. A value outside the list reads as default, with one console warning."
+    },
     "appearance": {
       "kind": "enum",
       "values": [
@@ -143,7 +154,7 @@ const sfButtonMeta = {
         "spacious"
       ],
       "default": "normal",
-      "description": "Semantic internal spacing profile."
+      "description": "Deprecated (decision C27, until 2027-01-01): the side padding only -- compact, normal, comfortable or spacious -- at the same height. It keeps working as before with a console warning and is not turned into height; write height for a lower or higher button."
     },
     "radius": {
       "kind": "enum",

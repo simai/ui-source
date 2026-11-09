@@ -21,6 +21,11 @@
       "  <sf-button id=\"b-err\" text=\"Удалить\" status=\"error\"></sf-button>",
       "  <sf-button id=\"b-link\" text=\"Подробнее\" appearance=\"link\"></sf-button>",
       "  <sf-button id=\"b-cyc\" aria-label=\"Скорость\" value=\"1\" cycle='[{\"value\":\"1\",\"label\":\"1×\"},{\"value\":\"1.5\",\"label\":\"1,5×\"},{\"value\":\"2\",\"label\":\"2×\"}]' pressed></sf-button>",
+      "  <sf-button id=\"b-h-low\" height=\"low\" text=\"Ниже\"></sf-button>",
+      "  <sf-button id=\"b-h-default\" height=\"default\" text=\"Обычная\"></sf-button>",
+      "  <sf-button id=\"b-h-high\" height=\"high\" text=\"Выше\"></sf-button>",
+      "  <sf-button id=\"b-h-highest\" height=\"highest\" text=\"Самая высокая\"></sf-button>",
+      "  <sf-button id=\"b-h-bad\" height=\"48\" text=\"Не высота\"></sf-button>",
       "</main>"
     ]
   },
@@ -252,6 +257,22 @@
         },
         {
           "check": "document.querySelector('#b-cyc').getAttribute('value') === '1'"
+        }
+      ]
+    },
+    {
+      "id": "p14-height",
+      "title": "height picks the size's tightness step: low, default, high, highest stand ever taller, default is the size's own height, the sides grow with the height, a value outside the list reads as default",
+      "covers": "settings.height (decision C27)",
+      "steps": [
+        {
+          "check": "(() => { const b = (id) => document.querySelector(`#${id} button`); const h = (id) => b(id).getBoundingClientRect().height; const pad = (id) => parseFloat(getComputedStyle(b(id)).paddingInlineStart); const ids = ['b-h-low', 'b-h-default', 'b-h-high', 'b-h-highest']; const rising = ids.every((id, i) => i === 0 || h(id) > h(ids[i - 1])) && ids.every((id, i) => i === 0 || pad(id) > pad(ids[i - 1])); const halves = ids.every((id) => Math.abs((pad(id) - pad('b-h-default')) * 2 - (h(id) - h('b-h-default'))) < 0.5); return rising && halves && h('b-h-default') === h('b-text') && h('b-h-bad') === h('b-text') && b('b-h-high').classList.contains('sf-button--height-high') && ![...b('b-h-default').classList, ...b('b-h-bad').classList].some((c) => c.startsWith('sf-button--height-')); })()",
+          "expect": {
+            "values": {
+              "#b-h-high.height": "high",
+              "#b-h-bad.height": "default"
+            }
+          }
         }
       ]
     }

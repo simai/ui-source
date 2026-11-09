@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { CONTROL_STEPS, EXPLICIT, FAMILIES, ladder } from '../scripts/generate-density.mjs';
+import { CONTROL_STEPS, EXPLICIT, FAMILIES, TIGHTNESS_BELOW, ladder } from '../scripts/generate-density.mjs';
 
 // Density (owner decision C22, 2026-11-09): data-sf-density="compact" moves
 // every component one ladder step down -- control height, padding, gap, icon
@@ -30,11 +30,16 @@ test('the density projection is current with the ladder files', () => {
   execFileSync(process.execPath, ['scripts/generate-density.mjs', '--check'], {cwd: root, stdio: 'pipe'});
 });
 
-test('compact holds the value of the step below for every family; the lowest step stays', () => {
+test('compact holds the value of the step below for every family; the lowest step stays, a tightness takes the one below it (C27)', () => {
   const compact = block('[data-sf-density="compact"] {');
   for (const [file, name, steps] of FAMILIES) {
     steps.forEach((step, index) => {
-      const below = ladder().find((row) => row.variable === name(steps[Math.max(0, index - 1)]));
+      // Size 1/3 has no size below: a tightness takes the tightness below in
+      // the same size (default low's, high default's, highest high's; low stays).
+      const lower = index === 0 && TIGHTNESS_BELOW[file] ? FAMILIES.find(([other]) => other === TIGHTNESS_BELOW[file]) : null;
+      const below = lower
+        ? ladder().find((row) => row.variable === lower[1](step))
+        : ladder().find((row) => row.variable === name(steps[Math.max(0, index - 1)]));
       assert.equal(compact[name(step)], below.normal, `${file}: ${name(step)}`);
     });
   }
