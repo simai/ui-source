@@ -905,7 +905,7 @@
         {
           "name": "--sf-tooltip-border-color",
           "role": "border-color",
-          "summary": "The border colour of the light appearance; the dark one has no border.",
+          "summary": "The border colour; every appearance reads it (the dark one draws no border until a width is set).",
           "default": "var(--sf-outline-variant)",
           "since": "2026-10-18",
           "varies_with": [
@@ -915,7 +915,7 @@
         {
           "name": "--sf-tooltip-border-width",
           "role": "border-width",
-          "summary": "The border width of the light appearance on every side; the dark one has no border.",
+          "summary": "The border width on every side: one hairline on the light appearance, none on the dark one unless set.",
           "default": "var(--sf-px)",
           "since": "2026-10-18",
           "varies_with": [
