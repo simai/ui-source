@@ -57,3 +57,36 @@ test('a panel may reach the viewport edge its field reaches, and no further in',
   assert.match(source, /shift\(\{padding: edges, crossAxis: false\}\)/);
   assert.match(source, /size\(\{\s*padding: edges,/);
 });
+
+test('an anchored surface is lifted into the top layer, unless it is already there', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // Default on, opt out per call; Core publishes the lift for components that place by hand.
+  assert.match(source, /autoUpdate: true, topLayer: true, onPosition: null, \.\.\.options/);
+  assert.match(source, /const lower = settings\.topLayer \? liftToTopLayer\(floating\) : null;/);
+  assert.match(source, /lower\?\.\(\);/);
+  assert.match(source, /const Position = Object\.freeze\(\{anchor, anchorReference, referenceRect, liftToTopLayer,/);
+  // A surface the component lifted, or one in a lifted or modal layer, is left as it is.
+  assert.match(source, /if \(floating\.hasAttribute\('popover'\) \|\| inTopLayer\(floating\)\) return false;/);
+  assert.match(source, /for \(let node = floating\.parentElement; node; node = node\.parentElement\) if \(inTopLayer\(node\)\) return false;/);
+  assert.match(source, /floating\.setAttribute\('popover', 'manual'\);/);
+  // The lift is measured before the caps are read, so caps come from the lifted box.
+  assert.ok(source.indexOf('liftToTopLayer(floating) : null') < source.indexOf('const floatingStyle = getComputedStyle(floating);'));
+});
+
+test('the user-agent popover look is taken back by a rule of no specificity', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  const rule = source.match(/const LIFTED_RULE = `([^`]+)`;/u)?.[1];
+  assert.ok(rule, 'LIFTED_RULE');
+  // In the lowest Framework layer: unlayered, it outranked every component rule.
+  assert.match(rule, /^@layer sf\.reset\{:where\(\[\$\{LIFTED\}\]\)\{/u);
+  for (const declaration of ['inset:auto', 'margin:0', 'padding:0', 'border:0 none', 'overflow:visible', 'color:inherit', 'background-color:transparent']) {
+    assert.ok(rule.includes(declaration), declaration);
+  }
+});
+
+test('a container query box is asked whether it contains fixed panels, not assumed to', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  assert.match(source, /css\.containerType !== 'normal' && probesFixedOrigin\(element\)/);
+  assert.doesNotMatch(source, /\|\| \(Boolean\(css\.containerType\) && css\.containerType !== 'normal'\);/);
+  assert.match(source, /probe\.style\.cssText = 'position:fixed;left:0;top:0;/);
+});
