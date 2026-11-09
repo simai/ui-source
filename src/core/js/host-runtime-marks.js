@@ -22,6 +22,8 @@ export const HOST_RUNTIME_MARKS = new Set([
   // Density (C22): a size the parent's drawing gave is relative; the CSS reads
   // the mark on the host itself, so it stays there.
   "data-sf-size-relative",
+  // ... and a size that is a width, not a ladder step (manifest x-scale).
+  "data-sf-size-scale",
   // A density set on a host stays on it: what it draws inherits the ladder.
   "data-sf-density",
 ]);

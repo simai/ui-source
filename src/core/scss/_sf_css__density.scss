@@ -104,7 +104,7 @@
       --sf-text--height: var(--sf-text--height-1);
     }
 
-    [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-static] *),
+    [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *),
     [data-sf-density="normal"] {
       --sf-text--size-1\/3: var(--sf-b2);
       --sf-text--size-1\/2: var(--sf-b4);
@@ -201,7 +201,7 @@
        An explicit size takes the normal body text back too, for the text a
        component inherits rather than sizes. */
     [data-sf-density="compact"]:not(:root),
-    [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-static] *),
+    [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *),
     [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);

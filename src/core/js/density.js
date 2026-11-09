@@ -85,7 +85,7 @@ export function followDensity(element, from) {
 export function densityOf(from) {
   for (let node = from; node?.nodeType === 1; node = node.parentElement) {
     if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
-    if (node.hasAttribute('size') && !node.hasAttribute(RELATIVE) && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
+    if (node.hasAttribute('size') && !node.hasAttribute(RELATIVE) && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
   }
   return null;
 }

@@ -15,6 +15,10 @@
 //   - data-sf-density="normal" inside a compact region is the normal page;
 //   - the ladder itself: compact control 32, icon 20, text 14 on desktop
 //     (normal 40, 24, 16); a size 1/3 component stays 1/3 (the floor);
+//   - a size that is a width, not a ladder step (sf-drawer size, manifest
+//     x-scale; sf-modal has no size setting) does not take the normal ladder
+//     back: a compact drawer and window with a size draw their content one
+//     step down, and an explicit size inside them still wins;
 //   - the phone ladder (< 60rem) is not moved: compact = normal there.
 //
 // --report prints the measurements and exits 0 whatever they say.
@@ -67,6 +71,10 @@ const body = () => SUBJECTS.map(([name, size, markup]) => `<section class="row" 
 <section class="row" data-name="menu">
   <div class="cell" id="menu--normal" style="inline-size:240px"><sf-menu aria-label="Разделы" items='${items}'></sf-menu></div>
   <div class="cell" id="menu--compact" data-sf-density="compact" style="inline-size:240px"><sf-menu aria-label="Разделы" items='${items}'></sf-menu></div>
+</section>
+<section class="row" data-name="layers" data-sf-density="compact">
+  <sf-drawer id="layer-drawer" size="1/2" label="Панель"><div class="layer-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-drawer>
+  <sf-modal id="layer-modal" size="1/2" heading="Окно"><div slot="content" class="layer-probe"><sf-button text="Кнопка"></sf-button><sf-button size="1" text="Кнопка"></sf-button></div></sf-modal>
 </section>
 <section class="row" data-name="ladder">
   <div class="cell" id="ladder--normal"><i class="probe" style="block-size:var(--sf-ui-1--control-height)"></i><i class="icon" style="block-size:var(--sf-icon-size-3)"></i><span class="text" style="font-size:var(--sf-text-size-1)">Т</span><p class="body">Текст</p></div>
@@ -161,6 +169,16 @@ try {
         await tab.waitForFunction(() => document.querySelectorAll('sf-pagination .sf-pagination, sf-tabs [role="tab"], sf-menu a').length >= 3, null, {timeout: 20000});
         await tab.evaluate(() => document.fonts.ready);
         await tab.waitForTimeout(400);
+        const layers = {};
+        for (const id of ['layer-drawer', 'layer-modal']) {
+          await tab.evaluate((name) => document.getElementById(name).open(), id);
+          await tab.waitForFunction(() => Array.from(document.querySelectorAll('.layer-probe .sf-button')).some((button) => button.getBoundingClientRect().height > 0), null, {timeout: 10000});
+          await tab.waitForTimeout(300);
+          layers[id] = await tab.evaluate(() => Array.from(document.querySelectorAll('.layer-probe')).filter((probe) => probe.getBoundingClientRect().height > 0)
+            .flatMap((probe) => Array.from(probe.querySelectorAll('.sf-button')).map((button) => Math.round(button.getBoundingClientRect().height))));
+          await tab.evaluate((name) => document.getElementById(name).close?.(), id);
+          await tab.waitForTimeout(300);
+        }
         const data = await tab.evaluate(MEASURE, SUBJECTS.map(([name, size, , box, text]) => [name, size, null, box, text]));
         const label = `${mode}/${theme}/${load}`;
         if (load === 1) report[`${mode}/${theme}`] = data;
@@ -177,6 +195,11 @@ try {
           }
           if (!same(row.back, row.normal)) failures.push(`${label} ${name}: density normal inside compact ${JSON.stringify(row.back)} is not normal ${JSON.stringify(row.normal)}`);
           if (row.normal?.h === null) failures.push(`${label} ${name}: nothing measured`);
+        }
+        if (load === 1) report[`${mode}/${theme}`].layers = layers;
+        const wantLayers = mode === 'desktop' ? [32, 40] : [36, 36];
+        for (const [id, heights] of Object.entries(layers)) {
+          if (JSON.stringify(heights) !== JSON.stringify(wantLayers)) failures.push(`${label} ${id}: buttons ${JSON.stringify(heights)}, want unsized and size 1 ${JSON.stringify(wantLayers)}`);
         }
         const {ladder, menu} = data;
         if (mode === 'desktop') {

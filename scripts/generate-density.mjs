@@ -127,9 +127,10 @@ export function sourceDigest() {
   return hash.digest('hex');
 }
 
-// A page's own size attribute, not a native one (input size, select size)
+// A page's own size attribute, not a native one (input size, select size),
+// not a width (a drawer's size: manifest x-scale, mark data-sf-size-scale)
 // and not part of a printed first-paint picture.
-export const EXPLICIT = ':not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-static] *)';
+export const EXPLICIT = ':not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *)';
 
 export function render() {
   const rows = ladder();

@@ -463,7 +463,7 @@ const THEMES = ['theme-dark', 'theme-light'];
 function densityOf(from) {
   for (let node = from; node?.nodeType === 1; node = node.parentElement) {
     if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
-    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
+    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
   }
   return null;
 }

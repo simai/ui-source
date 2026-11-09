@@ -617,6 +617,7 @@ class SfBaseElement extends HTMLElement {
     this.captureHostStyle();
     this.applyHostDisplayStyle();
     this.captureSlotTemplates();
+    this.markSizeScale();
     this.__sfSourceCaptured = true;
     this._isMounted = true;
     // Dated aliases (standard 1.3.8 §16.20): the component's aliases.json,
@@ -1308,6 +1309,7 @@ class SfBaseElement extends HTMLElement {
     this.markStylePending(this);
     // Sizes the page placed before the first drawing stay explicit; what the
     // drawing adds is relative to this element (density, C22).
+    this.markSizeScale();
     if (!this._sfSizedBefore) this._sfSizedBefore = sizedBefore(this);
     drawing(() => render(templateResult, this));
     markRelativeSizes(this, this._sfSizedBefore);
@@ -2566,6 +2568,20 @@ class SfBaseElement extends HTMLElement {
     }
 
     return slotContent.map((node) => this.authoredCopy(node));
+  }
+
+  // A size that is not a step of the control ladder (density, C22): a
+  // drawer's size is its width. The manifest says so on the setting
+  // (x-scale), or has no size setting at all; such a size does not take the
+  // normal ladder back under the element, so a compact region stays compact
+  // inside it. The CSS reads the mark.
+  markSizeScale() {
+    const manifest = this.constructor.manifest;
+    if (!manifest || !this.hasAttribute("size")) return;
+    const setting = manifest.settings?.size;
+    const scale = setting ? setting["x-scale"] : "none";
+    if (scale && scale !== "control") this.setAttribute("data-sf-size-scale", scale);
+    else this.removeAttribute("data-sf-size-scale");
   }
 
   // Draws a template into a container of the element's own outside it (a

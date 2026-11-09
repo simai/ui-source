@@ -87,3 +87,17 @@ test('Smart drawings mark the sizes they give as relative', () => {
   assert.match(read('src/core/js/layer-stack.js'), /densityOf\(host\)/u);
   assert.match(read('src/smart/menu-context/index.js'), /followDensity\(child, this\)/u);
 });
+
+test('a size that is a width does not take the normal ladder back (manifest x-scale)', () => {
+  assert.match(EXPLICIT, /\[data-sf-size-scale\]/u);
+  const drawer = JSON.parse(read('src/smart/drawer/component.json'));
+  assert.equal(drawer.settings.size['x-scale'], 'width');
+  const base = read('src/core/js/smart-base.js');
+  assert.match(base, /markSizeScale\(\) \{[\s\S]*?setting\["x-scale"\][\s\S]*?"data-sf-size-scale"/u);
+  assert.match(read('src/core/js/host-runtime-marks.js'), /"data-sf-size-scale"/u);
+  // Every other Smart size setting is a step of a ladder.
+  for (const name of ['button', 'input', 'tabs', 'menu-context', 'list-item']) {
+    const manifest = JSON.parse(read(`src/smart/${name}/component.json`));
+    assert.equal(manifest.settings.size['x-scale'], undefined, name);
+  }
+});
