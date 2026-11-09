@@ -59,9 +59,10 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
   const own = (value) => (placeholder ? nothing : value);
   // A row with items under it that holds the current page and shows no list
   // -- a closed branch, a rail row -- takes the class menu's bar (C23).
-  // A row's first level keeps the mark while its panel is open: the panel is
-  // over the page, not the row (C30).
-  const holds = item.children.length > 0 && context.holding.has(item.id) && (!open || (context.flyouts && level === 1));
+  // In a row every level keeps the mark while its panel is open: the panel
+  // is over the page, not the row, and an open path row keeps its medium
+  // label and primary › on the select plate (C30, R057).
+  const holds = item.children.length > 0 && context.holding.has(item.id) && (!open || context.flyouts);
   const classes = joinClasses(
     'sf-menu-element',
     levelClass(level),

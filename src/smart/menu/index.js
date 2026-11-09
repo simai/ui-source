@@ -65,6 +65,9 @@ const MenuElement = elementFromManifest(manifest, {
 });
 
 // open('catalog') and open({id: 'catalog'}) both name an item (§4.4).
+// How many levels of panels an item opens: 0 for a leaf.
+const panelDepth = (item) => (item?.children?.length ? 1 + Math.max(...item.children.map(panelDepth)) : 0);
+
 const itemArgument = (value) => (value && typeof value === 'object' ? value.id : value);
 
 class SfSmartMenu extends MenuElement {
@@ -774,21 +777,42 @@ class SfSmartMenu extends MenuElement {
         } else if (row.dataset.sfMenuLevel === '1') {
           // min-inline-size: 100% would resolve against the viewport once fixed.
           submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
-          anchor = positioning().anchor(row, submenu, {side: 'block-end', align: 'start', offset: 'var(--sf-space-1\\/4)', fitHeight: true});
+          // It stands the gap under the header's edge, not under the row:
+          // sf-header-site says how far its edge is below the row
+          // (--sf-site-header--edge), so the current section's line on that
+          // edge stays in sight while the panel is open (C30, R060).
+          anchor = positioning().anchor(row, submenu, {side: 'block-end', align: 'start', offset: 'calc(var(--sf-site-header--edge, calc(var(--sf-px) * 0)) + var(--sf-space-1\\/4))', fitHeight: true});
         } else {
           // A side panel stands beside the panel its row is in, not over it:
           // past that panel's own edge (its padding and border) by the gap
           // between panels, its first row level with the row that opened it.
-          // At the window's edge it opens to the other side (data-sf-side
-          // inline-start), and the class sheet turns the row's chevron.
+          // Its side is the chain's: the first side level takes the side
+          // with room for every level still under it, and the levels under
+          // it keep that side, so no level opens back over its own chain
+          // (no zig-zag at the window's edge). Only a level that has no room
+          // on that side at all turns over. The chevron stays › (R059).
           const panel = row.parentElement;
           submenu.style.minWidth = `${row.getBoundingClientRect().width}px`;
           const outer = panel.getBoundingClientRect();
           const box = row.getBoundingClientRect();
           const own = getComputedStyle(submenu);
           const gap = positioning().resolveLength('var(--sf-space-1\\/4)', this);
+          const inherited = panel.dataset.sfSide;
+          let side = 'inline-end';
+          if (inherited === 'inline-start' || inherited === 'inline-end') {
+            side = inherited;
+          } else {
+            const width = submenu.getBoundingClientRect().width + gap;
+            const needed = width * panelDepth(this.item(id));
+            const rtl = getComputedStyle(this).direction === 'rtl';
+            const right = document.documentElement.clientWidth - outer.right;
+            const left = outer.left;
+            const [after, before] = rtl ? [left, right] : [right, left];
+            side = after >= needed || after >= before ? 'inline-end' : 'inline-start';
+          }
+          submenu.dataset.sfSide = side;
           anchor = positioning().anchor(row, submenu, {
-            side: 'inline-end', align: 'start', fitHeight: true,
+            side, align: 'start', fitHeight: true,
             offset: Math.max(outer.right - box.right, box.left - outer.left) + gap,
             alignmentOffset: -((parseFloat(own.paddingTop) || 0) + (parseFloat(own.borderTopWidth) || 0)),
           });

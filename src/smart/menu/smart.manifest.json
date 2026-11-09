@@ -664,7 +664,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "a485f44cf4609610a69279920133f5b8c3d64ae1b92e34449480cb640a0b92b7"
+        "sha256": "7fd247f3e77a5b242cae15360ed55aee7303fe4d87cea8ccfed493a184dac528"
       },
       {
         "path": "src/smart/menu/items.mjs",
@@ -672,7 +672,7 @@
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "4b732313b5c04b663bfea6d14b47ac16c0d4ea6fc8f35d981f9f7b30cf366bb6"
+        "sha256": "10e3d6d79af3bd500266cc16b2b6e85f54a200bea12914fea87b4478f02c2785"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
@@ -684,7 +684,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "f9af625935322445d3b719c0c65bd1473131ec5bd7ce2f1eae94aa833a095d3d"
+        "sha256": "1f82b3a9b2486239ac15c3231a6d0f69e8148224fbd7b8b5cd926d4e8db0b5f2"
       }
     ],
     "generated_runtime": []

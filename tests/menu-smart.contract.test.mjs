@@ -158,10 +158,12 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
 
 test('smart menu: a row\'s panels are placed by SF.Position and Escape closes the innermost only', () => {
   assert.match(source, /const positioning = \(\) => globalThis\.SF\?\.Position \|\| BundledPosition;/u);
-  // C30: the first level under its row, a side panel beside the panel it is
-  // in (flipping at the window's edge), a region under the header, as wide.
-  assert.match(source, /anchor = positioning\(\)\.anchor\(row, submenu, \{side: 'block-end', align: 'start', offset: 'var\(--sf-space-1\\\\\/4\)', fitHeight: true\}\);/u);
-  assert.match(source, /side: 'inline-end', align: 'start', fitHeight: true,\n\s*offset: Math\.max\(outer\.right - box\.right, box\.left - outer\.left\) \+ gap,/u);
+  // C30: the first level the gap under the header's edge (R060), a side
+  // panel beside the panel it is in, on the chain's side (no zig-zag), a
+  // region under the header, as wide.
+  assert.match(source, /anchor = positioning\(\)\.anchor\(row, submenu, \{side: 'block-end', align: 'start', offset: 'calc\(var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-space-1\\\\\/4\)\)', fitHeight: true\}\);/u);
+  assert.match(source, /side, align: 'start', fitHeight: true,\n\s*offset: Math\.max\(outer\.right - box\.right, box\.left - outer\.left\) \+ gap,/u);
+  assert.match(source, /if \(inherited === 'inline-start' \|\| inherited === 'inline-end'\) \{\n\s*side = inherited;/u);
   assert.match(source, /anchor = positioning\(\)\.anchor\(header, submenu, \{side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true\}\);/u);
   // The shared open-surface protocol: the mark is held while a panel is open
   // and Escape is taken only as the innermost layer.
@@ -312,7 +314,7 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(path, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);[\s\S]*--sf-icon--color: var\(--sf-primary\);/u);
   assert.doesNotMatch(path, /::before/u);
   const line = sheet.slice(sheet.indexOf('@mixin row-current-line {'), sheet.indexOf('@mixin row-current-fill {'));
-  assert.match(line, /inset-block-end: calc\(-1 \* var\(--sf-site-header--edge, var\(--sf-0\)\)\);[\s\S]*block-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
+  assert.match(line, /inset-block-end: calc\(-1 \* var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\)\);[\s\S]*block-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
   assert.match(read('src/component/menu/scss/_css__menu_compact.scss'), /@include menu\.current-plate;[\s\S]*@include menu\.holds-current-bar;/u);
   assert.match(read('src/smart/menu/js/templates/default.js'), /holds \? 'sf-menu-element--holds-current' : ''/u);
   assert.doesNotMatch(block, /rgba?\(|#[0-9a-f]{3,8}\b|--sf-[a-z0-9-]+--alfa-/iu);

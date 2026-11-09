@@ -1,7 +1,7 @@
 {
   "title": "Site header",
   "runtime": {
-    "label": "Navigation",
+    "label": "Menu",
     "menu-label": "Open menu",
     "close-label": "Close menu"
   }

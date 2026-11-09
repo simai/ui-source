@@ -90,7 +90,7 @@
       },
       "label": {
         "type": "string",
-        "description": "The side panel's heading and accessible name; «Навигация» / «Navigation» in the page language when not set"
+        "description": "The side panel's heading and accessible name; «Меню» / «Menu» in the page language when not set (C30: the panel is the phone menu)"
       },
       "menu-label": {
         "type": "string",
@@ -365,7 +365,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "7ae25a542503f28717d530b6e1c512bd925dba54042163183a74083e7b62df09"
+        "sha256": "b37efa650601bec818fa7fc15851babc375ee3bde19fe479c6a3562dc1d324bf"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -373,7 +373,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "a6c9a61b11bb4b61a88f2ab9a9c4044af0ae33aeaa4c991771fa53ae243cec25"
+        "sha256": "cf81155a8e39a6e4e80c14af232d99ebc059657540be5d26f10d56959bcde439"
       }
     ],
     "generated_runtime": []

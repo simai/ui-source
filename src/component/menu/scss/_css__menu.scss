@@ -50,11 +50,12 @@
     }
   }
 }
-/* A row panel's path (C30, R057): a closed row whose list holds the current
-   page says so with a medium label and its › in primary -- two cues, no
-   mark of its own. Applied on the panels of a row. */
+/* A row panel's path (C30, R057): a row whose list holds the current page
+   says so with a medium label and its › in primary -- two cues, no mark of
+   its own. Open, it keeps both on the neutral select plate. Applied on the
+   panels of a row. */
 @mixin holds-current-path {
-  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
+  .sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
   .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
     --sf-menu-element--font-weight: var(--sf-font-weight-medium);
 
@@ -106,7 +107,9 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
     &::after {
       content: '';
       position: absolute;
-      inset-block-end: calc(-1 * var(--sf-site-header--edge, var(--sf-0)));
+      /* The fallback is a zero length: a bare 0 makes the calc a number,
+         which an inset refuses. */
+      inset-block-end: calc(-1 * var(--sf-site-header--edge, calc(var(--sf-px) * 0)));
       inset-inline: var(--sf-space-1\/4);
       block-size: var(--sf-a2);
       border-start-start-radius: var(--sf-a2);

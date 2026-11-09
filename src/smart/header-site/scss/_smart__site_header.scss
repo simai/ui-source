@@ -265,6 +265,12 @@
     border-block-start: var(--sf-px) solid var(--sf-outline-variant);
   }
 
+  /* The panel is the phone's menu (C30): its rows are touch rows, the size 2
+     control height of the ladder (44 on a phone), the words still size 1. */
+  .sf-site-header-nav .sf-menu .sf-menu-element {
+    --sf-menu-element--padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width, calc(var(--sf-px) * 0)));
+  }
+
   /* A plain list of links in the nav stands as a column in the panel; an
      sf-menu turns vertical through its own setting (index.js). */
   .sf-site-header-nav :where(nav, ul) {

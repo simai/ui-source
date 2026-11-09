@@ -30,6 +30,11 @@
 //   closed branch that holds the current page draws the 3 x 16 bar and a
 //   row's section that holds it the 2 px line; the phone panel shows the tree
 //   with the path open;
+// acceptance (C30, DEV 2026-11-09): the first panel and «Ещё»'s stand 4 under
+//   the header's edge, the line in sight; an open path row keeps its mark;
+//   no panel of an open chain lies over another and the chain keeps one side;
+//   a compact admin on a phone is one ladder height with 20 icons; the phone
+//   panel is «Меню» with 44 rows;
 // region and hover: a mega region is as wide as the header and under it and
 //   has no row of the section itself; with a mouse a panel opens after
 //   300 ms, a region after 500 ms, both close 500 ms after the mouse left
@@ -250,11 +255,14 @@ try {
           const select = getComputedStyle(probe).backgroundColor;
           probe.remove();
           const element = li.querySelector(':scope > .sf-menu-element');
-          return {gap: box.top - control.bottom, popover: panel.matches(':popover-open'), rows, shadow: getComputedStyle(panel).boxShadow,
+          const header = document.querySelector('#h .sf-site-header').getBoundingClientRect();
+          const atLine = document.elementFromPoint((control.left + control.right) / 2, header.bottom - 1);
+          return {gap: box.top - header.bottom, lineCovered: Boolean(atLine && panel.contains(atLine)), popover: panel.matches(':popover-open'), rows, shadow: getComputedStyle(panel).boxShadow,
             plate: getComputedStyle(element).backgroundColor, select, glyph: element.querySelector('button .sf-icon').textContent,
             line: getComputedStyle(li, '::after').content};
         });
-        check(Math.abs(first.gap - 4) <= 0.5, `${k}: the first panel stands space-1/4 (4) under its section (${first.gap})`);
+        check(Math.abs(first.gap - 4) <= 0.5, `${k}: the first panel stands space-1/4 (4) under the header's edge, not the control (${first.gap})`);
+        check(!first.lineCovered, `${k}: the open panel leaves the current section's line and the header's edge in sight`);
         check(first.popover, `${k}: the first panel is in the top layer`);
         check(first.rows.every((height) => Math.abs(height - 40) <= 0.5), `${k}: the panel's rows are 40 (${first.rows})`);
         check(first.shadow !== 'none', `${k}: the panel has the overlay shadow`);
@@ -289,6 +297,21 @@ try {
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
         check(await active() === 'link:centrifugal', `${k}: ArrowRight opens the side level and enters it`);
+        // R057: the open path row keeps its mark on the select plate.
+        const openPath = await tab.evaluate(() => {
+          const row = document.querySelector('#row [data-sf-menu-item="pumps"] > .sf-menu-element');
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--sf-primary)';
+          probe.style.backgroundColor = 'var(--sf-surface-transparent-select)';
+          document.body.append(probe);
+          const primary = getComputedStyle(probe).color;
+          const select = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return {open: row.classList.contains('open'), weight: getComputedStyle(row.querySelector('a')).fontWeight, chevron: getComputedStyle(row.querySelector('button .sf-icon')).color, primary,
+            plate: getComputedStyle(row).backgroundColor, select};
+        });
+        check(openPath.open && openPath.weight === '500' && openPath.chevron === openPath.primary && openPath.plate === openPath.select,
+          `${k}: an open path row keeps medium weight and the primary › on the select plate (${openPath.weight}, ${openPath.chevron}, ${openPath.plate})`);
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
         check(await active() === 'link:console', `${k}: ArrowRight goes a level deeper (level 4)`);
@@ -460,7 +483,27 @@ try {
           return {id, level: li.dataset.sfMenuLevel, side: panel.dataset.sfSide, left: box.left, right: box.right, top: box.top, bottom: box.bottom, inner: innerWidth,
             overlap: li.dataset.sfMenuLevel === '1' ? 0 : Math.min(box.right, parent.right) - Math.max(box.left, parent.left), glyph: glyph?.textContent, transform: getComputedStyle(glyph).transform};
         }));
-        seen[`flip-${theme}-${run}`] = {viaMore, flip};
+        const chain = await tab.evaluate((ids) => ids.map((id) => {
+          const panel = document.querySelector(`#row [data-sf-menu-item="${CSS.escape(id)}"] > ul.sf-menu`);
+          const box = panel?.getBoundingClientRect();
+          return box && box.height > 0 ? {id, left: box.left, right: box.right, top: box.top, bottom: box.bottom} : null;
+        }).filter(Boolean), [...(viaMore ? ['@more'] : []), 'partners', 'designers', 'docs']);
+        const overlaps = [];
+        for (let a = 0; a < chain.length; a += 1) {
+          for (let b = a + 1; b < chain.length; b += 1) {
+            const w = Math.min(chain[a].right, chain[b].right) - Math.max(chain[a].left, chain[b].left);
+            const h = Math.min(chain[a].bottom, chain[b].bottom) - Math.max(chain[a].top, chain[b].top);
+            if (w > 0.5 && h > 0.5) overlaps.push(`${chain[a].id}/${chain[b].id} ${Math.round(w)}x${Math.round(h)}`);
+          }
+        }
+        if (viaMore) {
+          const moreGap = await tab.evaluate(() => document.querySelector('#row [data-sf-menu-item="@more"] > ul.sf-menu').getBoundingClientRect().top - document.querySelector('#h .sf-site-header').getBoundingClientRect().bottom);
+          check(Math.abs(moreGap - 4) <= 0.5, `${k}: «Ещё»'s panel stands space-1/4 under the header's edge (${moreGap})`);
+        }
+        check(chain.length === (viaMore ? 4 : 3) && !overlaps.length, `${k}: no panel of the open chain lies over another (${overlaps.join(', ') || 'none'})`);
+        const sides = flip.filter((one) => one.level !== '1').map((one) => one.side);
+        check(sides.every((one) => one === sides[0]), `${k}: once a level flips, the levels under it keep its side (${sides.join(',')})`);
+        seen[`flip-${theme}-${run}`] = {viaMore, flip, chain};
         const flipped = flip.filter((one) => one.side === 'inline-start');
         check(flipped.length > 0, `${k}: a side panel at the right edge opens to the left (${flip.map((one) => one.side).join(',')})`);
         for (const one of flip) {
@@ -525,12 +568,32 @@ try {
       {
         const {tab, consoleErrors} = await open(theme, 390, '?collapse=md');
         const k = key('phone 390');
+        // The compact admin on a phone: one height (the phone ladder's size 1,
+        // compact has no step below it there), its icons the line's 20.
+        const admin = await tab.evaluate(() => {
+          const rows = [...document.querySelectorAll('#admin .sf-menu-element')].filter((row) => row.getBoundingClientRect().height > 0);
+          const probe = document.createElement('div');
+          probe.style.blockSize = 'var(--sf-ui-1--control-height)';
+          document.querySelector('#admin').append(probe);
+          const control = probe.getBoundingClientRect().height;
+          probe.remove();
+          return {control, heights: [...new Set(rows.map((row) => Math.round(row.getBoundingClientRect().height)))],
+            icons: [...new Set([...document.querySelectorAll('#admin .sf-menu-element-icon')].map((icon) => Math.round(icon.getBoundingClientRect().height)))]};
+        });
+        seen[`admin390-${theme}-${run}`] = admin;
+        check(admin.heights.length === 1 && admin.heights[0] === admin.control, `${k}: compact admin rows are one height on a phone, the ladder's ${admin.control} (${admin.heights.join(',')})`);
+        check(admin.icons.length === 1 && admin.icons[0] === 20, `${k}: the admin's icons are 20, inside the line (${admin.icons.join(',')})`);
         await tab.locator('#h .sf-site-header-menu-button button').click();
         await tab.waitForTimeout(450);
         const phone = await tab.evaluate(() => {
           const menu = document.querySelector('#row');
           const rows = [...menu.querySelectorAll('.sf-menu-element')].filter((row) => row.getBoundingClientRect().height > 0);
-          return {orientation: menu.getAttribute('orientation'), open: menu.openIds, current: menu.querySelector('[aria-current="page"]')?.textContent.trim(),
+          const probe = document.createElement('div');
+          probe.style.blockSize = 'var(--sf-ui-2--control-height)';
+          menu.append(probe);
+          const touch = probe.getBoundingClientRect().height;
+          probe.remove();
+          return {touch, heading: document.querySelector('#h .sf-site-header-panel-heading')?.textContent.trim(), orientation: menu.getAttribute('orientation'), open: menu.openIds, current: menu.querySelector('[aria-current="page"]')?.textContent.trim(),
             currentShown: (menu.querySelector('[aria-current="page"]')?.getBoundingClientRect().height || 0) > 0,
             heights: [...new Set(rows.map((row) => Math.round(row.getBoundingClientRect().height)))], more: Boolean(menu.querySelector('.sf-menu-item--more')),
             back: Boolean(menu.querySelector('[data-sf-menu-back]')), pageScroll: document.documentElement.scrollWidth - innerWidth};
@@ -539,7 +602,8 @@ try {
         check(phone.orientation === 'vertical', `${k}: the menu is a column in the panel`);
         check(['catalog', 'pumps', 'centrifugal'].every((id) => phone.open.includes(id)) && phone.currentShown, `${k}: the path to the current page is open (${phone.open.join(',')})`);
         check(!phone.more && !phone.back, `${k}: no «Ещё» and no drill-in in the panel`);
-        check(phone.heights.length === 1, `${k}: every row of the tree is one height (${phone.heights.join(',')})`);
+        check(phone.heights.length === 1 && phone.heights[0] === 44 && phone.touch === 44, `${k}: every row of the tree is the touch height, ui-2 = 44 (${phone.heights.join(',')} / ${phone.touch})`);
+        check(phone.heading === 'Меню', `${k}: the panel is titled «Меню» (${phone.heading})`);
         check(phone.pageScroll <= 0, `${k}: no horizontal page scroll`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();

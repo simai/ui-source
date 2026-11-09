@@ -122,6 +122,10 @@
   .sf-menu-element .sf-menu-element-icon,
   .sf-menu-element .sf-icon-button .sf-icon {
     --sf-icon--font-size: var(--sf-menu-element--line-height, var(--sf-text-height-1));
+    /* The icon's box too, not only its glyph: the box kept the icon step
+       (24) and stood a phone's icon row 40 among 36s (C30 acceptance). */
+    --sf-icon--height: var(--sf-menu-element--line-height, var(--sf-text-height-1));
+    --sf-icon--width: var(--sf-menu-element--line-height, var(--sf-text-height-1));
   }
 
   .sf-menu-element .sf-icon-button {
