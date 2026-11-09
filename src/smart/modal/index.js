@@ -670,10 +670,12 @@ class SfModal extends ModalElement {
     this.dedupePortalRoots();
     // The portal stands at the end of the body; it speaks and looks as the
     // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
-    // theme of its area, and the values of the public variables its manifest
-    // declares, by name: a prefix would also carry what an outer window sets
-    // on its own panel (--sf-modal-width) into a window opened from it.
-    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES });
+    // theme of its area, the values of the public variables its manifest
+    // declares, and every variable its area sets for the parts inside it (an
+    // assembly's --sf-switch-checked-background-color, simai/ui-source#46).
+    // The window's private names are not carried: what an outer window sets
+    // on its own panel (--sf-modal-width) stays out of a window opened from it.
+    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, inherited: true });
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }

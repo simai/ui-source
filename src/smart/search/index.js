@@ -364,7 +364,7 @@ class SfSearch extends SearchElement {
     portal.className = 'sf-search-portal';
     portal.setAttribute('data-sf-search-portal', this._id);
     home.append(portal);
-    carryLayerOrigin(portal, this, {prefixes: ['--sf-search-']});
+    carryLayerOrigin(portal, this, {prefixes: ['--sf-search-'], inherited: true});
     this._portal = portal;
     this._contained = home !== document.body;
     portal.classList.toggle('sf-search-portal--contained', this._contained);

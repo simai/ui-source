@@ -455,9 +455,11 @@ const THEMES = ['theme-dark', 'theme-light'];
  * the host's resolved lang and dir, the theme of its nearest themed ancestor,
  * and the computed values of the host's variables that differ from those
  * where the portal stands -- `variables` by name, `prefixes` by the start of
- * the name. It looks and speaks as if it stood where its host stands.
+ * the name, and with `inherited` every variable the host inherits, except the
+ * private names of the layer families. It looks and speaks as if it stood
+ * where its host stands.
  */
-export function carryLayerOrigin(portal, host, {variables = [], prefixes = []} = {}) {
+export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], inherited = false} = {}) {
   if (!portal || !host?.isConnected) return;
   const doc = host.ownerDocument;
   const view = doc.defaultView;
@@ -489,25 +491,41 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = []} =
   if (wanted) portal.dataset.sfLayerTheme = wanted;
   else delete portal.dataset.sfLayerTheme;
 
-  if (!variables.length && !prefixes.length) return;
+  if (!variables.length && !prefixes.length && !inherited) return;
   const own = view.getComputedStyle(host);
-  const there = parent ? view.getComputedStyle(parent) : null;
+  const previous = (portal.dataset.sfLayerVariables || '').split(' ').filter(Boolean);
+  // What the portal's place gives it, without what an earlier pass carried:
+  // the same values set again are not a difference.
+  for (const name of previous) portal.style.removeProperty(name);
+  const there = view.getComputedStyle(portal);
   const names = new Set(variables);
-  if (prefixes.length) {
+  const publicNames = new Set(variables);
+  if (prefixes.length || inherited) {
     for (const name of own) {
+      if (!name.startsWith('--')) continue;
       if (prefixes.some((prefix) => name.startsWith(prefix))) names.add(name);
+      // Every variable the host inherits from the area it stands in: the
+      // values an assembly or a page block sets for the parts inside it
+      // (--sf-switch-checked-background-color on an order, the tokens a page
+      // retunes on its dark block). A layer's own private names stay where
+      // they were set: an outer window's --sf-modal-width is not carried
+      // into a window opened from it (simai/ui-source#46).
+      else if (inherited && (publicNames.has(name) || !LAYER_FAMILIES.some((family) => name.startsWith(family)))) names.add(name);
     }
   }
-  const previous = (portal.dataset.sfLayerVariables || '').split(' ').filter(Boolean);
   const kept = [];
   for (const name of names) {
     const value = own.getPropertyValue(name).trim();
-    if (value && value !== there?.getPropertyValue(name).trim()) {
+    if (value && value !== there.getPropertyValue(name).trim()) {
       portal.style.setProperty(name, value);
       kept.push(name);
     }
   }
-  for (const name of previous) if (!kept.includes(name)) portal.style.removeProperty(name);
   if (kept.length) portal.dataset.sfLayerVariables = kept.join(' ');
   else delete portal.dataset.sfLayerVariables;
 }
+
+// The variable families of the layers themselves: what a modal, a drawer or a
+// search window sets on its own panel for its own drawing. Only the names a
+// layer's manifest declares public cross into a portal by inheritance.
+const LAYER_FAMILIES = ['--sf-modal-', '--sf-drawer-', '--sf-search-'];

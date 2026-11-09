@@ -106,7 +106,7 @@ test('sf-drawer: the panel from its manifest; drawer:* names follow with the old
   const source = read('src/smart/drawer/index.js');
   assert.doesNotMatch(source, /Math\.random/, 'no random ids (#41)');
   assert.match(source, /const generated = partId\(instancePath\(this\)\);/);
-  assert.match(source, /carryLayerOrigin\(portal, this, \{variables: DRAWER_VARIABLES\}\)/);
+  assert.match(source, /carryLayerOrigin\(portal, this, \{variables: DRAWER_VARIABLES, inherited: true\}\)/);
   assert.match(source, /this\.emitDrawerEvent\('close', true, \{reason, unsaved: Boolean\(this\.unsaved\)\}\)/);
   assert.match(source, /event\.key === 'Escape' && this\.closeOnEsc && this\.dismissible/);
 });

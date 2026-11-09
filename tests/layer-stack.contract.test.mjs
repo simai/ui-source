@@ -342,7 +342,38 @@ test('sf-modal places the page nodes of its slots and never re-serialises them (
   assert.match(await read('src/smart/modal/js/templates/default.js'), /id=\$\{context\.rootId \|\| nothing\}/);
   // The portal keeps lang, dir and theme of where the element stands (§19.1).
   // ... and the values of the public variables its manifest declares (§19.1).
-  assert.ok(modal.includes('carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES })'));
+  assert.ok(modal.includes('carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, inherited: true })'));
   assert.ok(modal.includes('const MODAL_VARIABLES = Object.keys(manifest["css-variables"] || {});'));
-  assert.ok((await read('src/smart/drawer/index.js')).includes('carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES})'));
+  assert.ok((await read('src/smart/drawer/index.js')).includes('carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES, inherited: true})'));
+});
+
+// A portal carries what the area around its host sets for the parts inside it
+// (simai/ui-source#46: a switch in a modal of an assembly lost the assembly's
+// on-colour), but not a layer's own private names, and not what its place
+// already gives it.
+test('carryLayerOrigin with inherited carries the area\'s variables, not a layer\'s private ones', () => {
+  const {carryLayerOrigin} = modalBundle;
+  const styles = new Map();
+  const computed = (values) => Object.assign([...Object.keys(values)], {
+    direction: 'ltr', getPropertyValue: (name) => values[name] ?? ''});
+  const view = {getComputedStyle: (node) => styles.get(node)};
+  const doc = {documentElement: {getAttribute: () => 'ru'}, defaultView: view};
+  const inline = new Map();
+  const portal = {dataset: {}, classList: {add() {}, remove() {}}, setAttribute() {}, removeAttribute() {},
+    parentElement: {closest: () => null},
+    style: {setProperty: (name, value) => inline.set(name, value), removeProperty: (name) => inline.delete(name)}};
+  const host = {isConnected: true, ownerDocument: doc, closest: () => null};
+  const page = {'--sf-primary': 'blue', '--sf-surface-1': 'white'};
+  styles.set(host, computed({...page, '--sf-switch-checked-background-color': 'green',
+    '--sf-modal-background-color': 'pink', '--sf-modal-width': '40rem', '--order-accent': 'red', color: 'black'}));
+  // The portal resolves what its place gives it plus what is carried inline.
+  styles.set(portal, {get length() { return 0; }, getPropertyValue: (name) => inline.get(name) ?? page[name] ?? ''});
+  carryLayerOrigin(portal, host, {variables: ['--sf-modal-background-color'], inherited: true});
+  assert.deepEqual(Object.fromEntries(inline), {'--sf-switch-checked-background-color': 'green',
+    '--sf-modal-background-color': 'pink', '--order-accent': 'red'});
+  assert.equal(portal.dataset.sfLayerVariables, '--sf-modal-background-color --sf-switch-checked-background-color --order-accent');
+  // The area stops setting one: the next pass takes it back.
+  styles.set(host, computed({...page, '--sf-modal-background-color': 'pink'}));
+  carryLayerOrigin(portal, host, {variables: ['--sf-modal-background-color'], inherited: true});
+  assert.deepEqual(Object.fromEntries(inline), {'--sf-modal-background-color': 'pink'});
 });

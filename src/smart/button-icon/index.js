@@ -214,8 +214,11 @@ class SfIconButton extends IconButtonElement {
 
   resolveUpdateMode(changedAttributes = []) {
     // loading is drawn by the template, not patched: it puts the spinner in
-    // place of the icon (simai/ui-source#10).
-    const directPatchAttributes = ['disabled', 'aria-label', 'icon'];
+    // place of the icon (simai/ui-source#10). So is icon: it is the sf-icon's
+    // setting, and writing the glyph's text by hand left the sf-icon on its
+    // old name (its subset not asked for, its lit text part detached), or
+    // changed nothing when the sf-icon had not drawn yet.
+    const directPatchAttributes = ['disabled', 'aria-label'];
     // A cycle's name and icon come from its item: drawn, not patched.
     if (this.cycleState()) return 'lit';
 
@@ -244,13 +247,6 @@ class SfIconButton extends IconButtonElement {
         button.setAttribute('aria-label', nameWithBadge(label, elementBadge(this).phrase));
       } else {
         button.removeAttribute('aria-label');
-      }
-    }
-
-    if (changedAttributes.includes('icon')) {
-      const iconNode = button.querySelector('.sf-icon');
-      if (iconNode) {
-        iconNode.textContent = this.icon;
       }
     }
 
