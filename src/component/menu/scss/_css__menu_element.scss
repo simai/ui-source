@@ -189,21 +189,22 @@
   /* One indent step per level (C30): each level starts space-1 further in
      than the one above -- the row's own side padding is the first step -- so
      the words of four levels stand on an even ladder. (It was space-1, -3, -4,
-     -5: 16, 48, 64, 80 at the default step.) */
+     -5: 16, 48, 64, 80 at the default step.) A column of navigation sets its
+     own first step, --sf-menu--row-padding (space-1/2, C05, R083). */
   .sf-menu-element--level-1 {
-    --sf-menu-element--padding-inline-start: var(--sf-space-1);
+    --sf-menu-element--padding-inline-start: var(--sf-menu--row-padding, var(--sf-space-1));
   }
 
   .sf-menu-element--level-2 {
-    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) * 2);
+    --sf-menu-element--padding-inline-start: calc(var(--sf-menu--row-padding, var(--sf-space-1)) + var(--sf-space-1));
   }
 
   .sf-menu-element--level-3 {
-    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) * 3);
+    --sf-menu-element--padding-inline-start: calc(var(--sf-menu--row-padding, var(--sf-space-1)) + var(--sf-space-1) * 2);
   }
 
   .sf-menu-element--level-4 {
-    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) * 4);
+    --sf-menu-element--padding-inline-start: calc(var(--sf-menu--row-padding, var(--sf-space-1)) + var(--sf-space-1) * 3);
   }
 
   /* A first level with icons (a simple admin, C30): the second level's words
@@ -213,7 +214,24 @@
      step: on a phone the step stayed 24 while the icon was 20, and the
      second level's words stood 4px right of the first's. */
   .sf-menu-item:has(> .sf-menu-element .sf-menu-element-icon) > .sf-menu > .sf-menu-item > .sf-menu-element--level-2 {
-    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) + var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element-wrap--gap, var(--sf-space-1\/3)));
+    --sf-menu-element--padding-inline-start: calc(var(--sf-menu--row-padding, var(--sf-space-1)) + var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element-wrap--gap, var(--sf-space-1\/3)));
+  }
+
+  /* A link that leaves the site (C30 amended, R071): ↗ at the row's end, the
+     half step's icon in on-surface-variant, after a counter when there is
+     one. */
+  .sf-menu-element .sf-menu-element-external {
+    --sf-icon--font-size: var(--sf-icon-size-1\/2);
+    --sf-icon--height: var(--sf-icon-size-1\/2);
+    --sf-icon--width: var(--sf-icon-size-1\/2);
+    --sf-icon--color: var(--sf-on-surface-variant);
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-menu-element :is(.sf-badge, .sf-dot) ~ .sf-menu-element-external {
+    margin-inline-start: var(--sf-0);
   }
 
   @media (forced-colors: active) {
@@ -223,5 +241,14 @@
       outline-offset: calc(var(--sf-focus-outline-width) * -1);
       box-shadow: none;
     }
+  }
+}
+
+/* The words a search matched (C30 amended, R071 a): sf-menu lays them in the
+   sf-menu-match highlight (CSS Custom Highlight API), drawn with the
+   Framework's mark colour; the markup is not touched. */
+@layer sf.components {
+  ::highlight(sf-menu-match) {
+    background-color: var(--sf-mark--color, var(--sf-mark));
   }
 }

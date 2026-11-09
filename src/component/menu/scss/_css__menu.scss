@@ -12,20 +12,17 @@
   --sf-menu-element--font-weight: var(--sf-font-weight-medium);
 }
 
-// The bar (C23): where a row has no plate but leads to the current page -- a
-// closed branch that holds it, a rail row whose section holds it -- a bar of
-// primary, 3 by 16 (a3 by icon size 1), stands at the row's inline start,
-// flush with it, its free end rounded. Written inside the menu's own rule: a
-// closed branch (its list is in the markup, hidden) found by :has, or a row
-// marked sf-menu-element--holds-current, which sf-menu writes when the list is
-// not drawn at all (a compact rail). A bar is never on a plate.
+// The rail's bar (C23): a compact rail draws no branch and its rows are an
+// icon alone, so a weight would not show -- the row whose section holds the
+// current page keeps a bar of primary, 3 by 16 (a3 by icon size 1), at its
+// inline start, flush with it, its free end rounded. Only the rail: columns
+// and a row's panels take the path mark below (C30 amended, R065, R072,
+// R084). A bar is never on a plate.
 @mixin holds-current-bar {
-  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
   .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
     position: relative;
   }
 
-  .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current])::before,
   .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
     content: '';
     position: absolute;
@@ -43,24 +40,78 @@
   }
 
   @media (forced-colors: active) {
-    .sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current])::before,
     .sf-menu-element.sf-menu-element--holds-current:not([aria-current])::before {
       forced-color-adjust: none;
       background-color: Highlight;
     }
   }
 }
-/* A row panel's path (C30, R057): a row whose list holds the current page
-   says so with a medium label and its › in primary -- two cues, no mark of
-   its own. Open, it keeps both on the neutral select plate. Applied on the
-   panels of a row. */
-@mixin holds-current-path {
-  .sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]),
-  .sf-menu-element.sf-menu-element--holds-current:not([aria-current]) {
-    --sf-menu-element--font-weight: var(--sf-font-weight-medium);
 
-    .sf-icon-button .sf-icon {
-      --sf-icon--color: var(--sf-primary);
+// The path mark (C30 amended 2026-11-09: R084, R072 e, R065 a): a row that
+// leads to the current page without being it -- a closed branch that holds
+// it in a column, every level of the path in a row's panels -- says so with a
+// medium label. Where the box it stands in has a border of its own -- a row's
+// panel, a column drawn with sf-menu--bordered -- a 2px primary line lies on
+// that border at the row as well: it covers the border pixel and goes the
+// rest inside, as tall as the row, its inner corners rounded, the same sign
+// as the header row's line on the header's edge and sf-tabs. The branch's ›
+// stays neutral: it says only that there is a level under the row. A row's
+// closed branch is found by :has (its list is in the markup, hidden), or by
+// sf-menu-element--holds-current, which sf-menu writes when the list is not
+// drawn at all. The 3px bar (C23) is retired.
+//
+// The box says where its border is: --sf-menu--inset (its padding: border to
+// plate, C05) and --sf-menu--border-width; --sf-menu--radius lets the line
+// start below the corner's curve on the box's first and last row.
+$path-closed: ".sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]), .sf-menu-element.sf-menu-element--holds-current:not([aria-current])";
+$path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]), .sf-menu-element.sf-menu-element--holds-current:not([aria-current])";
+
+@mixin path-weight($rows) {
+  :is(#{$rows}) {
+    --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+  }
+}
+
+@mixin path-line($rows) {
+  // A box that scrolls clips its border area: there the line steps one pixel
+  // in. Each box sets it, so a panel inside a scrolling one keeps its own.
+  --sf-menu--line-border: var(--sf-menu--border-width, var(--sf-px));
+
+  &.sf-menu--scroll {
+    --sf-menu--line-border: calc(var(--sf-px) * 0);
+  }
+
+  :is(#{$rows}) {
+    position: relative;
+  }
+
+  :is(#{$rows})::before {
+    content: '';
+    position: absolute;
+    inset-block: var(--sf-menu-path--block-start, calc(var(--sf-px) * 0)) var(--sf-menu-path--block-end, calc(var(--sf-px) * 0));
+    inset-inline-start: calc((var(--sf-menu--inset, calc(var(--sf-px) * 0)) + var(--sf-menu--line-border)) * -1);
+    inline-size: var(--sf-a2);
+    border-start-start-radius: var(--sf-0);
+    border-end-start-radius: var(--sf-0);
+    border-start-end-radius: var(--sf-a2);
+    border-end-end-radius: var(--sf-a2);
+    background-color: var(--sf-primary);
+    pointer-events: none;
+  }
+
+  // The box's first and last row: the line keeps clear of the corner's curve.
+  > .sf-menu-item:first-child > .sf-menu-element {
+    --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+  }
+
+  > .sf-menu-item:last-child > .sf-menu-element {
+    --sf-menu-path--block-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+  }
+
+  @media (forced-colors: active) {
+    :is(#{$rows})::before {
+      forced-color-adjust: none;
+      background-color: Highlight;
     }
   }
 }
@@ -205,9 +256,13 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   inline-size: max-content;
   min-inline-size: 100%;
   max-inline-size: calc(100vw - var(--sf-space-2));
-  padding: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/3));
-  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
-  border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)));
+  /* The panel's geometry, read by the path's line on its border (R084). */
+  --sf-menu--inset: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/3));
+  --sf-menu--border-width: var(--sf-px);
+  --sf-menu--radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)));
+  padding: var(--sf-menu--inset);
+  border: var(--sf-menu--border-width) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+  border-radius: var(--sf-menu--radius);
   background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
   @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-shadow-overlay));
@@ -361,12 +416,11 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    --sf-primary-container-active (primary at 20 in the light theme, 32 in the
    dark one), with on-primary-container words and icon and a medium label --
    the weight is the second cue besides the colour; no bar. The plate does not
-   change under the pointer, so it is never lighter than at rest. Where there
-   is no plate the current page is shown by a bar of primary, 3 by 16 at the
-   row's inline start: on a closed branch that holds the current page, in a
-   column (the menu mixin below). Height, padding, size of type, radius and
-   the focus ring stay the class row's: the size 1 control height, space-1 at
-   the sides, text size 1, the ui radius. */
+   change under the pointer, so it is never lighter than at rest. A row that
+   leads to the current page takes the path mark (the mixin above): a medium
+   label, and a 2px line on the border of a box that has one. Height, size of
+   type, radius and the focus ring stay the class row's: the size 1 control
+   height, text size 1, the ui radius. */
 .sf-menu.sf-menu--navigation {
   --sf-menu--gap: var(--sf-menu-gap, var(--sf-space-1\/4));
 }
@@ -396,11 +450,61 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-icon--color: var(--sf-on-primary-container);
 }
 
-/* The bar: a closed branch of a column that holds the current page. A
-   header row draws no bar: its first level has the line (or the plate), its
-   panels the path mark (C30). */
+/* A column (C30 amended 2026-11-09, R083; C05, C07): the plates stand
+   --sf-menu--inset (space-1/4) in from the column's edge on both sides, the
+   words --sf-menu--row-padding (space-1/2) in from the plate, each deeper
+   level a space-1 step further. Group headings and the column's title stand
+   on the same line as the first level's words. When the column scrolls and
+   its scrollbar takes room (sf-menu writes sf-menu--scrollbar), the end padding
+   gives the scrollbar's own gap back, so the plate stands as far from the
+   thumb as from the start edge. */
 .sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
-  @include holds-current-bar;
+  --sf-menu--row-padding: var(--sf-space-1\/2);
+}
+
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+  --sf-menu--inset: var(--sf-space-1\/4);
+  --sf-menu--border-width: calc(var(--sf-px) * 0);
+  box-sizing: border-box;
+  padding-inline: var(--sf-menu--inset);
+}
+
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu).sf-menu--scrollbar {
+  padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--inset) - var(--sf-scroll-thumb-inset, var(--sf-a4))));
+}
+
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) .sf-menu-element {
+  --sf-menu-element--padding-inline-end: var(--sf-menu--row-padding);
+}
+
+/* A column's path (R065 a): a closed branch that holds the current page has
+   a medium label and no bar -- a column without a border of its own has
+   nothing for a line to lie on. */
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
+  @include path-weight($path-closed);
+}
+
+/* A column with its own border (sf-menu bordered, R072 e): the frame of a
+   panel -- a hairline of outline-variant, the surface radius -- the plates
+   the same inset from it on every side, and the path's 2px line on its
+   start border. */
+.sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+  --sf-menu--border-width: var(--sf-px);
+  --sf-menu--radius: var(--sf-radius--surface);
+  padding-block: var(--sf-menu--inset);
+  border: var(--sf-menu--border-width) solid var(--sf-outline-variant);
+  border-radius: var(--sf-menu--radius);
+  @include path-line($path-closed);
+}
+
+/* A column's group headings (R070): the rows' size and weight of type in
+   on-surface-variant, a row's height, the words on the first level's line. */
+.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) .sf-menu-group-heading {
+  min-block-size: var(--sf-ui-1--control-height);
+  padding-inline: var(--sf-menu--row-padding);
+  font-size: var(--sf-menu-element--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-menu-element--line-height, var(--sf-text-height-1));
 }
 
 /* A row: an open branch -- the first level and a panel's row -- takes the
@@ -410,8 +514,11 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu-element--background-color: var(--sf-surface-transparent-select);
 }
 
+/* A row's panels (R084): every level of the path has a medium label and the
+   2px line on the panel's start border; the › stays neutral. */
 .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
-  @include holds-current-path;
+  @include path-weight($path-any);
+  @include path-line($path-any);
 }
 
 /* A header row's current section (C30): the line on the header's edge, or
@@ -482,8 +589,8 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 
 /* The documentation tree marks its current page as navigation does (C23): the
    primary plate, on-primary-container words, a medium label; an open branch
-   is not filled, and a closed branch that holds the current page takes the
-   bar. */
+   is not filled, and a closed branch that holds the current page has a
+   medium label (C30 amended, R065 a: no bar). */
 .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
   background: var(--sf-primary-container-active);
   color: var(--sf-on-primary-container);
@@ -500,7 +607,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 }
 
 .sf-menu.sf-menu--documentation-tree {
-  @include holds-current-bar;
+  @include path-weight($path-closed);
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap:focus-visible {

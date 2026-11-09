@@ -583,6 +583,134 @@
           "current": "users"
         }
       }
+    },
+    {
+      "name": "bordered",
+      "title": "Колонка в рамке: линия пути на рамке",
+      "settings": {
+        "label": "Каталог",
+        "appearance": "navigation",
+        "bordered": true,
+        "current": "centrifugal",
+        "items": [
+          {
+            "id": "home",
+            "label": "Главная",
+            "href": "#home"
+          },
+          {
+            "id": "pumps",
+            "label": "Насосное оборудование",
+            "href": "#pumps",
+            "children": [
+              {
+                "id": "centrifugal",
+                "label": "Центробежные насосы",
+                "href": "#centrifugal"
+              },
+              {
+                "id": "screw",
+                "label": "Винтовые насосы",
+                "href": "#screw"
+              }
+            ]
+          },
+          {
+            "id": "valves",
+            "label": "Арматура",
+            "href": "#valves"
+          }
+        ]
+      },
+      "parent": "<div style=\"inline-size: 280px\"></div>",
+      "expect": {
+        "name": "Каталог",
+        "values": {
+          "current": "centrifugal"
+        }
+      }
+    },
+    {
+      "name": "search",
+      "title": "Колонка с поиском",
+      "settings": {
+        "label": "Настройки",
+        "appearance": "navigation",
+        "search": true,
+        "current": "password",
+        "items": [
+          {
+            "id": "account",
+            "label": "Аккаунт",
+            "group": true,
+            "items": [
+              {
+                "id": "profile",
+                "label": "Профиль",
+                "href": "#profile",
+                "icon": "person"
+              },
+              {
+                "id": "password",
+                "label": "Пароль",
+                "href": "#password",
+                "icon": "key"
+              }
+            ]
+          },
+          {
+            "id": "shop",
+            "label": "Магазин",
+            "group": true,
+            "items": [
+              {
+                "id": "payment",
+                "label": "Оплата",
+                "icon": "payments",
+                "children": [
+                  {
+                    "id": "methods",
+                    "label": "Способы оплаты",
+                    "href": "#methods"
+                  },
+                  {
+                    "id": "invoices",
+                    "label": "Счета",
+                    "href": "#invoices"
+                  }
+                ]
+              },
+              {
+                "id": "delivery",
+                "label": "Доставка",
+                "href": "#delivery",
+                "icon": "local_shipping"
+              }
+            ]
+          },
+          {
+            "id": "help",
+            "label": "Справка",
+            "group": true,
+            "items": [
+              {
+                "id": "docs",
+                "label": "Документация",
+                "href": "https://ui.simai.io/",
+                "icon": "menu_book",
+                "target": "_blank"
+              }
+            ]
+          }
+        ]
+      },
+      "parent": "<div data-sf-density=\"compact\" style=\"inline-size: 280px; block-size: 360px\"></div>",
+      "expect": {
+        "name": "Настройки",
+        "values": {
+          "current": "password"
+        }
+      }
     }
   ],
   "pages": [

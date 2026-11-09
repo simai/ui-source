@@ -146,9 +146,17 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
   // The own sheet draws nothing the class draws: no row geometry, no colours
   // but the shared focus ring. The one rule past that is the host's place on
   // the page (sticky, sf-menu 1.3.0); the groups are the class sheet's
-  // (component.menu 1.2.0, _css__menu_group.scss).
-  const [parts, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  // (component.menu 1.2.0, _css__menu_group.scss). The search head (C30
+  // amended, R071 a) is the element's own part, which the class has not:
+  // its rules select only the head, the field and the empty text.
+  const [ownParts, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  const [beforeSearch, searchPart] = ownParts.split('  // search (C30 amended, R071 a; C06)');
+  const [searchRules, afterSearch] = searchPart.split('  @media (forced-colors: active)');
+  const parts = beforeSearch + afterSearch;
   assert.doesNotMatch(parts, /padding|block-size|height|background|border-color|font-size/u);
+  for (const selector of searchRules.match(/^  [.a-z][^{\n]*\{/gmu)) {
+    assert.match(selector, /sf-smart-menu-search|sf-smart-menu--search/u, selector);
+  }
   assert.match(sticky, /sf-menu\[sticky\]:not\(\[sticky='false'\]\) \{\n    position: sticky;/u);
   assert.doesNotMatch(sticky, /padding|background|border-color|font-size/u);
   for (const part of ['sf-menu-item--group', 'sf-menu-group-heading', 'sf-menu-group-label', 'sf-menu-element-status']) {
@@ -161,10 +169,10 @@ test('smart menu: a row\'s panels are placed by SF.Position and Escape closes th
   // C30: the first level the gap under the header's edge (R060), a side
   // panel beside the panel it is in, on the chain's side (no zig-zag), a
   // region under the header, as wide.
-  assert.match(source, /anchor = positioning\(\)\.anchor\(row, submenu, \{side: 'block-end', align: 'start', offset: 'calc\(var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-space-1\\\\\/4\)\)', fitHeight: true\}\);/u);
+  assert.match(source, /anchor = positioning\(\)\.anchor\(row, submenu, \{side: 'block-end', align: 'start', offset: 'calc\(var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-space-1\\\\\/4\)\)', fitHeight: true,\n\s*onPosition: \(\) => this\.syncScroll\(submenu, true\)\}\);/u);
   assert.match(source, /side, align: 'start', fitHeight: true,\n\s*offset: Math\.max\(outer\.right - box\.right, box\.left - outer\.left\) \+ gap,/u);
   assert.match(source, /if \(inherited === 'inline-start' \|\| inherited === 'inline-end'\) \{\n\s*side = inherited;/u);
-  assert.match(source, /anchor = positioning\(\)\.anchor\(header, submenu, \{side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true\}\);/u);
+  assert.match(source, /anchor = positioning\(\)\.anchor\(header, submenu, \{side: 'block-end', align: 'start', offset: 0, matchWidth: true, fitHeight: true, onPosition: \(\) => this\.syncScroll\(submenu, true\)\}\);/u);
   // The shared open-surface protocol: the mark is held while a panel is open
   // and Escape is taken only as the innermost layer.
   assert.match(source, /import \{holdOpenSurfaceMark, isTopOpenSurface\} from '\.\.\/\.\.\/core\/js\/open-surface-mark';/u);
@@ -215,7 +223,7 @@ test('smart menu: the loader knows it and asks for what it draws with', () => {
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/menu\/rule\.js';/u);
   // The class dot draws an item's status (sf-menu 1.3.0).
   assert.match(rule, /\{ name: 'badges' \},\n(?: {4}\/\/.*\n)* {4}\{ name: 'dot' \},/u);
-  assert.deepEqual(manifest.composition.uses, ['component.badges', 'component.dot', 'component.icon-buttons', 'component.icons', 'component.menu']);
+  assert.deepEqual(manifest.composition.uses, ['component.badges', 'component.dot', 'component.icon-buttons', 'component.icons', 'component.menu', 'smart.input']);
 });
 
 // The public variables (2026-10-25): nine, read by the class sheet sf-menu
@@ -275,9 +283,21 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   // type and radius (nothing of them is written here).
   const rest = block.slice(block.indexOf('.sf-menu.sf-menu--navigation .sf-menu-element {'));
   assert.match(rest.slice(0, rest.indexOf('}')), /--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);[\s\S]*--sf-menu-element--background-color: var\(--sf-menu-item-background-color, var\(--sf-transparent\)\);/u);
-  // (A pseudo-element's own box -- the row section's line, C30 -- is not the row.)
-  const rows = block.replace(/[^{}]*::(?:before|after)[^{]*\{[^}]*\}/gu, '');
+  // (A pseudo-element's own box -- the row section's line, C30 -- is not the
+  // row; the column's geometry -- its inset, its rows' padding, its group
+  // headings, C30 amended R083, R070 -- is the column's, below.)
+  const columnAt = block.indexOf('/* A column (C30 amended 2026-11-09, R083');
+  const columnEnd = block.indexOf('/* A row: an open branch');
+  const column = block.slice(columnAt, columnEnd);
+  const rows = (block.slice(0, columnAt) + block.slice(columnEnd)).replace(/[^{}]*::(?:before|after)[^{]*\{[^}]*\}/gu, '');
   assert.doesNotMatch(rows, /^\s*(?:padding[a-z-]*|font-[a-z]+|line-height|block-size|height|--sf-menu-element--(?:radius|padding[a-z-]*|font-[a-z]+)):/mu);
+  // R083 (C05): the plates space-1/4 in from the column's edge, the words
+  // space-1/2 in from the plate; C07: the scrollbar's gap given back.
+  assert.match(column, /--sf-menu--row-padding: var\(--sf-space-1\\\/2\);/u);
+  assert.match(column, /--sf-menu--inset: var\(--sf-space-1\\\/4\);[\s\S]*padding-inline: var\(--sf-menu--inset\);/u);
+  assert.match(column, /\.sf-menu--scrollbar \{\n  padding-inline-end: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-menu--inset\) - var\(--sf-scroll-thumb-inset, var\(--sf-a4\)\)\)\);/u);
+  // R070: a column's group headings are a row.
+  assert.match(column, /\.sf-menu-group-heading \{\n  min-block-size: var\(--sf-ui-1--control-height\);\n  padding-inline: var\(--sf-menu--row-padding\);/u);
   // (The current page's medium label is the current-plate mixin's, above the block.)
   // The states are the alpha scale's role tokens: state 4 and 12; an open
   // branch is not filled (C23) -- never a number of its own.
@@ -290,8 +310,8 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-transparent-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
-  // medium label, written once in the current-plate mixin; the bar only on a
-  // closed branch of a column.
+  // medium label, written once in the current-plate mixin; the bar only on
+  // the compact rail (C30 amended: R065, R072, R084).
   const current = `${enabled}:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))`;
   assert.match(rule(current), /@include current-plate;/u);
   const plate = sheet.slice(sheet.indexOf('@mixin current-plate {'), sheet.indexOf('}', sheet.indexOf('@mixin current-plate {')));
@@ -299,20 +319,25 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(plate, /--sf-menu-element--color: var\(--sf-on-primary-container\);/u);
   assert.match(plate, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);/u);
   assert.doesNotMatch(plate, /::before|--sf-primary\)/u);
-  const bar = sheet.slice(sheet.indexOf('@mixin holds-current-bar {'), sheet.indexOf('@layer sf.components'));
-  assert.match(bar, /\.sf-menu-item:not\(\.open\):has\(> \.sf-menu :is\(\[aria-current='page'\], \[aria-current='true'\]\)\) > \.sf-menu-element:not\(\[aria-current\]\)::before/u);
+  const bar = sheet.slice(sheet.indexOf('@mixin holds-current-bar {'), sheet.indexOf('// The path mark (C30 amended'));
+  assert.doesNotMatch(bar, /:has\(/u);
   assert.match(bar, /\.sf-menu-element\.sf-menu-element--holds-current:not\(\[aria-current\]\)::before/u);
   assert.match(bar, /inline-size: var\(--sf-a3\);\s*block-size: var\(--sf-icon-size-1\);/u);
   assert.match(bar, /background-color: var\(--sf-primary\);/u);
-  // A column only: a row's first level has the line or the plate, its
-  // panels the path mark -- medium and a primary › (C30, R057, R060).
-  assert.match(rule('.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal)'), /@include holds-current-bar;/u);
-  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu'), /@include holds-current-path;/u);
+  // The path mark (C30 amended, R065 a, R072 e, R084): a column has the
+  // medium label; a bordered column and a row's panels the line on their
+  // border as well; the › is never primary.
+  assert.doesNotMatch(block, /@include holds-current-bar;/u);
+  assert.match(block, /\.sf-menu\.sf-menu--navigation:not\(\.sf-menu--horizontal\) \{\n  @include path-weight\(\$path-closed\);/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu)'), /@include path-line\(\$path-closed\);/u);
+  assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu'), /@include path-weight\(\$path-any\);\n  @include path-line\(\$path-any\);/u);
   assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill)'), /@include row-current-line;/u);
   assert.match(rule('.sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill'), /@include row-current-fill;/u);
-  const path = sheet.slice(sheet.indexOf('@mixin holds-current-path {'), sheet.indexOf('@mixin row-current-line {'));
-  assert.match(path, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);[\s\S]*--sf-icon--color: var\(--sf-primary\);/u);
-  assert.doesNotMatch(path, /::before/u);
+  const path = sheet.slice(sheet.indexOf('@mixin path-weight('), sheet.indexOf('/* The first-level item of a header row'));
+  assert.match(path, /--sf-menu-element--font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.doesNotMatch(path, /--sf-icon--color/u);
+  assert.match(path, /inset-inline-start: calc\(\(var\(--sf-menu--inset, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-menu--line-border\)\) \* -1\);[\s\S]*inline-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
+  assert.match(path, /&\.sf-menu--scroll \{\n    --sf-menu--line-border: calc\(var\(--sf-px\) \* 0\);/u);
   const line = sheet.slice(sheet.indexOf('@mixin row-current-line {'), sheet.indexOf('@mixin row-current-fill {'));
   assert.match(line, /inset-block-end: calc\(-1 \* var\(--sf-site-header--edge, calc\(var\(--sf-px\) \* 0\)\)\);[\s\S]*block-size: var\(--sf-a2\);[\s\S]*background-color: var\(--sf-primary\);/u);
   assert.match(read('src/component/menu/scss/_css__menu_compact.scss'), /@include menu\.current-plate;[\s\S]*@include menu\.holds-current-bar;/u);

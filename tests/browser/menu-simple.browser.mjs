@@ -22,14 +22,16 @@
 // marks (R057, R060): the row's current section has a 2 px primary line
 //   lying on sf-header-site's bottom border and a medium label (indicator
 //   line), or the C23 plate (indicator fill); an open section has the
-//   neutral select plate and ⌃; a closed panel row that holds the current
-//   page is medium with a primary ›, no bar;
+//   neutral select plate and ⌃; every panel row on the path to the current
+//   page is medium with a 2 px primary line lying on the panel's start
+//   border, the row's height, and a neutral › (R084);
 // geometry: a compact admin row is 32 high with a count, the second level's
 //   words under the first level's; a column indents one step (space-1) per
 //   level; the current page is the C23 plate, an open branch is unfilled, a
-//   closed branch that holds the current page draws the 3 x 16 bar and a
-//   row's section that holds it the 2 px line; the phone panel shows the tree
-//   with the path open;
+//   closed branch of a column without a border that holds the current page
+//   is medium with no bar and no line (R065 a) and a row's section that
+//   holds it has the 2 px line; the phone panel shows the tree with the path
+//   open;
 // acceptance (C30, DEV 2026-11-09): the first panel and «Ещё»'s stand 4 under
 //   the header's edge, the line in sight; an open path row keeps its mark;
 //   no panel of an open chain lies over another and the chain keeps one side;
@@ -43,6 +45,7 @@ import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
 import {chromium} from 'playwright';
+import {PATH_LINE, lineOk} from './menu-path-line.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
@@ -268,23 +271,19 @@ try {
         check(first.shadow !== 'none', `${k}: the panel has the overlay shadow`);
         check(first.plate === first.select && first.glyph === 'keyboard_arrow_up', `${k}: the open section has the neutral select plate and ⌃ (${first.plate} / ${first.select}, ${first.glyph})`);
         check(first.line !== 'none', `${k}: the open section that holds the current page keeps its line`);
-        // R057: the path in the panel -- Насосное оборудование holds the current page.
-        const path = await tab.evaluate(() => {
-          const row = document.querySelector('#row [data-sf-menu-item="pumps"] > .sf-menu-element');
-          const other = document.querySelector('#row [data-sf-menu-item="valves"] > .sf-menu-element');
-          const probe = document.createElement('span');
-          probe.style.color = 'var(--sf-primary)';
-          document.body.append(probe);
-          const primary = getComputedStyle(probe).color;
-          probe.remove();
-          return {weight: getComputedStyle(row.querySelector('a')).fontWeight, chevron: getComputedStyle(row.querySelector('button .sf-icon')).color, primary,
-            bar: getComputedStyle(row, '::before').content, otherWeight: getComputedStyle(other.querySelector('a')).fontWeight, otherChevron: getComputedStyle(other.querySelector('button .sf-icon')).color,
-            name: row.querySelector('button').getAttribute('aria-label')};
+        // R084: the path in the panel -- Насосное оборудование holds the
+        // current page: medium, the 2 px line on the panel's start border,
+        // the › neutral.
+        const path = await tab.evaluate(PATH_LINE, '#row [data-sf-menu-item="pumps"] > .sf-menu-element');
+        const other = await tab.evaluate(() => {
+          const row = document.querySelector('#row [data-sf-menu-item="valves"] > .sf-menu-element');
+          return {weight: getComputedStyle(row.querySelector('a')).fontWeight, line: getComputedStyle(row, '::before').content,
+            chevron: getComputedStyle(row.querySelector('button .sf-icon')).color, name: document.querySelector('#row [data-sf-menu-item="pumps"] > .sf-menu-element button').getAttribute('aria-label')};
         });
-        check(path.weight === '500' && path.chevron === path.primary, `${k}: a closed panel row holding the current page is medium with a primary › (${path.weight}, ${path.chevron})`);
-        check(path.bar === 'none' || path.bar === 'normal', `${k}: no bar in the panel (${path.bar})`);
-        check(path.otherWeight === '400' && path.otherChevron !== path.primary, `${k}: a row that does not hold it stays plain (${path.otherWeight}, ${path.otherChevron})`);
-        check(path.name === 'Насосное оборудование: подразделы', `${k}: a panel row's chevron is named after its section (${path.name})`);
+        seen[`path-${theme}-${run}`] = path;
+        check(lineOk(path), `${k}: a closed panel row holding the current page is medium, has the 2 px primary line on the panel's border (offset ${path.offset}, ${path.width}, height ${path.height} of ${path.rowHeight}, top ${path.top} for clear ${path.clear}) and a neutral › (${path.chevron} / ${path.variant})`);
+        check(other.weight === '400' && (other.line === 'none' || other.line === 'normal') && other.chevron === path.variant, `${k}: a row that does not hold it stays plain (${other.weight}, ${other.line}, ${other.chevron})`);
+        check(other.name === 'Насосное оборудование: подразделы', `${k}: a panel row's chevron is named after its section (${other.name})`);
         await tab.keyboard.press('ArrowDown');
         await tab.waitForTimeout(80);
         check(await active() === 'link:pumps', `${k}: ArrowDown enters the panel at its first row`);
@@ -297,21 +296,22 @@ try {
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
         check(await active() === 'link:centrifugal', `${k}: ArrowRight opens the side level and enters it`);
-        // R057: the open path row keeps its mark on the select plate.
-        const openPath = await tab.evaluate(() => {
+        // R084: the open path row keeps its mark on the select plate, and the
+        // side panel's path row (Центробежные насосы) has its own line.
+        const openPath = await tab.evaluate(PATH_LINE, '#row [data-sf-menu-item="pumps"] > .sf-menu-element');
+        const plates = await tab.evaluate(() => {
           const row = document.querySelector('#row [data-sf-menu-item="pumps"] > .sf-menu-element');
           const probe = document.createElement('span');
-          probe.style.color = 'var(--sf-primary)';
           probe.style.backgroundColor = 'var(--sf-surface-transparent-select)';
           document.body.append(probe);
-          const primary = getComputedStyle(probe).color;
           const select = getComputedStyle(probe).backgroundColor;
           probe.remove();
-          return {open: row.classList.contains('open'), weight: getComputedStyle(row.querySelector('a')).fontWeight, chevron: getComputedStyle(row.querySelector('button .sf-icon')).color, primary,
-            plate: getComputedStyle(row).backgroundColor, select};
+          return {open: row.classList.contains('open'), plate: getComputedStyle(row).backgroundColor, select};
         });
-        check(openPath.open && openPath.weight === '500' && openPath.chevron === openPath.primary && openPath.plate === openPath.select,
-          `${k}: an open path row keeps medium weight and the primary › on the select plate (${openPath.weight}, ${openPath.chevron}, ${openPath.plate})`);
+        check(plates.open && lineOk(openPath) && plates.plate === plates.select,
+          `${k}: an open path row keeps medium weight and the line, the › neutral, on the select plate (${openPath.weight}, ${openPath.offset}, ${openPath.chevron}, ${plates.plate})`);
+        const sidePath = await tab.evaluate(PATH_LINE, '#row [data-sf-menu-item="centrifugal"] > .sf-menu-element');
+        check(lineOk(sidePath), `${k}: the side panel's path row has its own line on its panel's border (offset ${sidePath.offset}, top ${sidePath.top}/${sidePath.clear})`);
         await tab.keyboard.press('ArrowRight');
         await tab.waitForTimeout(150);
         check(await active() === 'link:console', `${k}: ArrowRight goes a level deeper (level 4)`);
@@ -546,20 +546,16 @@ try {
         const firstLevel = geo.admin.find((row) => row.text === 'Магазин');
         const secondLevel = geo.admin.filter((row) => ['Заказы', 'Товары', 'Клиенты'].includes(row.text));
         check(secondLevel.length === 3 && secondLevel.every((row) => Math.abs(row.x - firstLevel.x) <= 0.5), `${k}: the second level's words stand under the first level's (${firstLevel?.x} / ${secondLevel.map((row) => row.x).join(',')})`);
-        // A closed branch that holds the current page: the bar.
+        // A closed branch of a column without a border that holds the current
+        // page: medium, no bar, no line (R065 a).
         await tab.evaluate(() => document.querySelector('#column').close('centrifugal'));
         await tab.waitForTimeout(150);
         const bar = await tab.evaluate(() => {
           const row = document.querySelector('#column [data-sf-menu-toggle="centrifugal"]');
           const before = getComputedStyle(row, '::before');
-          const probe = document.createElement('span');
-          probe.style.color = 'var(--sf-primary)';
-          document.body.append(probe);
-          const primary = getComputedStyle(probe).color;
-          probe.remove();
-          return {width: before.width, height: before.height, background: before.backgroundColor, primary, fill: getComputedStyle(row).backgroundColor, content: before.content};
+          return {weight: getComputedStyle(row).fontWeight, fill: getComputedStyle(row).backgroundColor, content: before.content};
         });
-        check(bar.content !== 'none' && bar.width === '3px' && bar.height === '16px' && bar.background === bar.primary && transparent(bar.fill), `${k}: a closed branch holding the current page draws the 3 x 16 bar, unfilled (${JSON.stringify(bar)})`);
+        check((bar.content === 'none' || bar.content === 'normal') && bar.weight === '500' && transparent(bar.fill), `${k}: a closed branch holding the current page is medium, unfilled, with no bar or line (${JSON.stringify(bar)})`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
       }

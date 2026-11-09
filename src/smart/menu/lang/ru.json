@@ -8,6 +8,10 @@
     "status-error": "ошибка",
     "status-info": "есть новое",
     "status-neutral": "нет данных",
-    "subsections": "подразделы"
+    "subsections": "подразделы",
+    "search-placeholder": "Поиск",
+    "search-found": "Найдено: {n}",
+    "search-empty": "Ничего не найдено",
+    "new-tab": "откроется в новой вкладке"
   }
 }

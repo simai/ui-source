@@ -1962,7 +1962,8 @@
           "component.dot",
           "component.icon-buttons",
           "component.icons",
-          "component.menu"
+          "component.menu",
+          "smart.input"
         ]
       },
       "contract_schema": {
@@ -1974,7 +1975,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "2b5621027b8a4302d2a22bf03c4c3642d15c6cf4068792e46e9fe35d67ebb0ce",
+      "manifest_sha256": "5301bce08bd631b72a50f025aedeb0c28deed26e8213e7ce5126d2914b13dae8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

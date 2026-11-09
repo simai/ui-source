@@ -280,7 +280,8 @@
   ],
   "cl-menu": [
     "display/default",
-    "position/default"
+    "position/default",
+    "visibility/default"
   ],
   "cl-menu-context": [
     "display/default",

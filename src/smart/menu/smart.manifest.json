@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -33,7 +33,8 @@
       "component.dot",
       "component.icon-buttons",
       "component.icons",
-      "component.menu"
+      "component.menu",
+      "smart.input"
     ],
     "public_parts": []
   },
@@ -137,6 +138,20 @@
         "default": false,
         "description": "The menu stays in sight while the page scrolls (position sticky at --sf-menu-sticky-top, 0 by default), and scrolls inside itself when it is taller than the view. For a section navigation beside a long page."
       },
+      "bordered": {
+        "type": "boolean",
+        "default": false,
+        "description": "A column with a border of its own (C30 amended 2026-11-09, R072 e): a hairline of outline-variant at the surface radius, the plates space-1/4 in from it on every side, and the path to the current page marked by a 2 px primary line on its start border at the closed branch that holds it, besides the medium label. Without it a column has no frame and marks the path with the medium label alone (R065 a). A row ignores it: its panels always have the line (R084)."
+      },
+      "search": {
+        "type": "boolean",
+        "default": false,
+        "description": "A search field over a column (C30 amended 2026-11-09, R071 a; off by default, never by the number of items): the rows are filtered as the field is typed in -- without case, ё as е, on the items' words and the group headings; a match keeps its parents, opened, a matching item keeps its children, closed, a matching heading keeps its group -- and the matched words are highlighted (::highlight(sf-menu-match), --sf-mark). Down from the field enters the results, Down and Up walk them, Up from the first goes back; Escape clears the field, or goes back to it from the results. A polite live region says how many matched; «Ничего не найдено» when none. The field stands still and the rows scroll when the host gives the menu a height. A row ignores it."
+      },
+      "search-placeholder": {
+        "type": "string",
+        "description": "The words in the search field, and its name; «Поиск» / «Search» in the page language when not set."
+      },
       "current": {
         "type": "string",
         "default": "",
@@ -149,7 +164,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, region?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
+        "description": "The items, [{id, label, href?, icon?, badge?, count?, status?, current?, disabled?, open?, region?, target?, external?, children?}] and first-level groups {group: true, label, collapsible?, open?, items}: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it (data-group, data-collapsible and data-status on an <li>).",
         "examples": [
           [
             {
@@ -492,6 +507,25 @@
         "additionalProperties": true
       }
     },
+    "sf-menu-search": {
+      "summary": "The search field's words changed: query, the words trimmed (empty when cleared), and count, how many item words and group headings match.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "query",
+          "count"
+        ],
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-menu:navigate": {
       "summary": "A link of the menu is followed, before the browser goes. Cancellable: preventDefault() stops the navigation so a host that routes itself (a SPA) changes the page. A press with a modifier key, the middle button or a link to another window is the browser's and sends none.",
       "payload": {
@@ -664,27 +698,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "7fd247f3e77a5b242cae15360ed55aee7303fe4d87cea8ccfed493a184dac528"
+        "sha256": "70db58fb2b148f2bcc71fc729c8a365c4cab3e7f49202f96c235c39fd7ac39ef"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "923b1dbc8f3e456e99562f582699227b1c2217e37474a15c06c156d78078469f"
+        "sha256": "223ad3e90ed7caaab81ff9c42b5d62a462ef1e5c79ac544fc79b5fea81f274a1"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "10e3d6d79af3bd500266cc16b2b6e85f54a200bea12914fea87b4478f02c2785"
+        "sha256": "1c9f83cec51c7e79e8b3532e3714eafb8b269d120581e41857ad3de57a9efdc5"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "e6b06169706fabd5c51402cb4806e76ac52a02b4e4339059eb082b4d650ca683"
+        "sha256": "f16faee8761d1fd231ddd8858c07d1c6d655c678201fb7f993067312fad708d3"
       },
       {
         "path": "src/smart/menu/rule.js",
-        "sha256": "96ba69705bd2bf74a8c997be5563a906d0e9bcc615b8aef05bfaff07b491efe0"
+        "sha256": "af826cccf11d4689a4d761491e4718b4fd25999f4abf1d21cf3a45ef3c12cd96"
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "1f82b3a9b2486239ac15c3231a6d0f69e8148224fbd7b8b5cd926d4e8db0b5f2"
+        "sha256": "d472b136b9f4d0325769d447fdca05b9ec49b13df7491746c7ce318b1af808ef"
       }
     ],
     "generated_runtime": []
