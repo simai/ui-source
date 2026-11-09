@@ -93,7 +93,7 @@
         "violet"
       ],
       "default": "",
-      "summary": "The former name of hue, until 2027-01-01: read when hue is empty, rose as pink (the tones of initials are the static hues of their names since C17). Write hue."
+      "summary": "The former name of hue, until 2027-01-01: read when hue is empty, rose as pink and violet as purple (the tones of initials are the static hues of their names since C17). Write hue."
     },
     "status": {
       "type": "enum",
@@ -275,7 +275,7 @@
     "version 1.2.0: the tone setting and the classes sf-avatar--tone-<name> (UI Chat, owner decision q-4f91278cc7: people recognise conversations by avatars, and initials were all grey). Eight hues of their own in tokens.colour 1.1.0, because the status ramps speak about the world and primary, secondary and tertiary move with a theme's colour. auto hashes the name, not the two letters (js/tone.mjs, docs/docs.md). The default look is unchanged.",
     "version 1.2.2: initials follow the one rule of helpers/text.js (smart helpers 1.0.4; reuse audit 2026-11-02, finding 10): one hyphenated name reads as its parts («Жан-Поль» → ЖП) and a letter with a combining accent keeps it. An empty name still draws the placeholder.",
     "version 1.2.3: the company and verified badge drawings take their inks from the palette (owner decision C18, 2026-11-08): the plates are classes the class sheet paints (component.avatars 1.2.0) -- company the red palette at tone 50 (--sf-error-50, was a raw red of its own), verified the theme colour at tone 40 (--sf-primary-40, the default theme's seed itself), the glyphs white (the company glyph was a raw near-white). One look in light and dark, as before.",
-    "version 1.3.0 (2026-11-09): the hue setting (owner decision C17, 2026-11-08: avatars and charts have no colours of their own). The initials take a hue of the static palette, the class sf-hue-<name>, and the class sheet draws them on the hue's container in its ink (component.avatars 1.3.0): the plate 50 at 12 light and 24 dark (was the tone's 50 at 20 and 32), the ink tone 10 and 90 (was 30 and 85), chroma 60 (was 48) and each hue's own angle. auto keeps eight hues in the old order, so a name keeps its slot: rose is pink. tone is the former name of hue until 2027-01-01 (journal attribute-c17-avatar-tone-to-hue, value-c17-avatar-rose-to-pink); the former classes sf-avatar--tone-<name> still draw (class-c17-avatar-tone-to-hue)."
+    "version 1.3.0 (2026-11-09): the hue setting (owner decision C17, 2026-11-08: avatars and charts have no colours of their own). The initials take a hue of the static palette, the class sf-hue-<name>, and the class sheet draws them on the hue's container in its ink (component.avatars 1.3.0): the plate 50 at 12 light and 24 dark (was the tone's 50 at 20 and 32), the ink tone 10 and 90 (was 30 and 85), chroma 60 (was 48) and each hue's own angle. auto keeps eight hues in the old order, so a name keeps its slot: rose is pink, and the former violet (HCT hue 325) is purple, since a former tone moves at most 15 degrees (dispatcher 2026-11-09). tone is the former name of hue until 2027-01-01 (journal attribute-c17-avatar-tone-to-hue, value-c17-avatar-rose-to-pink); the former classes sf-avatar--tone-<name> still draw (class-c17-avatar-tone-to-hue)."
   ],
   "x-rule": {
     "$comment-after": [

@@ -229,13 +229,15 @@ test('each fill is the fill family of the alpha scale on tone 50 of its series',
   }
 });
 
-test('every former tone primitive is var() of the static hue of its name; rose is pink', () => {
+test('every former tone primitive is var() of the static hue of its name; rose is pink, violet purple', () => {
   const source = read('src/core/scss/_sf_figma_colors_variables.scss');
   const wrong = [];
   let count = 0;
   for (const [, name, hue, rest, value] of source.matchAll(/(--sf-tone-([a-z]+)-(\d+(?:--alfa-\d+)?)): ([^;]+);/gu)) {
     count += 1;
-    const expected = `var(--sf-${hue === 'rose' ? 'pink' : hue}-${rest})`;
+    // The former violet is HCT hue 325, the static purple; the static violet
+    // (305) is 20 degrees away, and a former tone moves at most 15.
+    const expected = `var(--sf-${({rose: 'pink', violet: 'purple'})[hue] ?? hue}-${rest})`;
     if (value !== expected) wrong.push(`${name}: ${value}, expected ${expected}`);
   }
   assert.ok(count > 0);
@@ -267,7 +269,60 @@ test('the diverging midpoint is one quiet neutral per theme, off the surfaces an
   }
 });
 
+// The warm and the cool series and the diverging ends (C17; dispatcher
+// 2026-11-09): static hues in the research's orders, 3:1 on the surfaces in
+// both themes, and the distances measured when they were picked kept as
+// floors -- six close hues cannot meet the eight series' limits, so the floors
+// say only that a retuned primitive did not make them worse.
+const FAMILY_SETS = {
+  warm: {hues: ['red', 'orange', 'amber', 'pink', 'brown', 'yellow'], floors: {cvd: 6.5, neighbours: 12, all: 10}},
+  cool: {hues: ['blue', 'teal', 'violet', 'cyan', 'indigo', 'green'], floors: {cvd: 7, neighbours: 30, all: 11}},
+};
+const DIVERGING = {bad: 'red', good: 'blue', low: 'purple', high: 'teal'};
+
+test('the warm and the cool series are static hues in order, 3:1 on the surfaces, no closer than when they were picked', (t) => {
+  for (const [set, {hues, floors}] of Object.entries(FAMILY_SETS)) {
+    const names = hues.map((_, index) => `--sf-chart-${set}-${index + 1}`);
+    names.forEach((name, index) => {
+      const {light, dark} = branches(name);
+      assert.match(light, new RegExp(`^--sf-${hues[index]}-\\d+$`, 'u'), name);
+      assert.match(dark, new RegExp(`^--sf-${hues[index]}-\\d+$`, 'u'), name);
+    });
+    for (const scheme of THEMES) {
+      const colours = names.map((name) => resolveRole(name)[scheme]);
+      for (const [index, colour] of colours.entries()) {
+        for (const [level, ground] of surfaces(scheme).entries()) {
+          const ratio = contrast(colour, ground);
+          assert.ok(ratio >= CONTRAST_MIN, `${scheme}: ${names[index]} on surface-${level} is ${ratio.toFixed(2)}:1`);
+        }
+      }
+      const cvd = Math.min(...Object.keys(MACHADO).map((deficiency) => minimumOver(colours.slice(0, 5), deficiency)));
+      let neighbours = Infinity;
+      for (let i = 0; i + 1 < colours.length; i += 1) neighbours = Math.min(neighbours, distance(colours[i], colours[i + 1]));
+      const all = minimumOver(colours, null);
+      assert.ok(cvd >= floors.cvd, `${set} ${scheme}: series 1-5 under CVD ${cvd.toFixed(1)}`);
+      assert.ok(neighbours >= floors.neighbours, `${set} ${scheme}: neighbours ${neighbours.toFixed(1)}`);
+      assert.ok(all >= floors.all, `${set} ${scheme}: any two ${all.toFixed(1)}`);
+      t.diagnostic(`${set} ${scheme}: CVD ${cvd.toFixed(1)}, neighbours ${neighbours.toFixed(1)}, any two ${all.toFixed(1)}`);
+    }
+  }
+});
+
+test('the diverging ends are red and blue, purple and teal, tone 30 light and 80 dark, apart under every deficiency', (t) => {
+  for (const [end, hue] of Object.entries(DIVERGING)) assert.equal(role(`--sf-chart-diverging-${end}`), `light-dark(var(--sf-${hue}-30), var(--sf-${hue}-80))`, end);
+  for (const scheme of THEMES) {
+    for (const [a, b] of [['bad', 'good'], ['low', 'high']]) {
+      const [x, y] = [a, b].map((end) => resolveRole(`--sf-chart-diverging-${end}`)[scheme]);
+      for (const deficiency of [null, ...Object.keys(MACHADO)]) {
+        const value = distance(x, y, deficiency);
+        assert.ok(value >= ALL_MIN, `${scheme}: ${a}-${b} ${deficiency ?? 'normal'} ${value.toFixed(1)}`);
+      }
+      t.diagnostic(`${scheme}: ${a}-${b} ${[null, ...Object.keys(MACHADO)].map((d) => distance(x, y, d).toFixed(1)).join(' / ')}`);
+    }
+  }
+});
+
 test('the roles are documented', () => {
   const docs = read('docs/foundation-chart-colours.md');
-  for (const name of [...SERIES, '--sf-chart-brand', '--sf-chart-N-fill', '--sf-chart-N-fill-hover', '--sf-chart-N-fill-active', '--sf-chart-midpoint']) assert.ok(docs.includes(`\`${name}\``), name);
+  for (const name of [...SERIES, '--sf-chart-warm-1', '--sf-chart-cool-1', ...Object.keys(DIVERGING).map((end) => `--sf-chart-diverging-${end}`), '--sf-chart-brand', '--sf-chart-N-fill', '--sf-chart-N-fill-hover', '--sf-chart-N-fill-active', '--sf-chart-midpoint']) assert.ok(docs.includes(`\`${name}\``), name);
 });

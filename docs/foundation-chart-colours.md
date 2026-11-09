@@ -61,6 +61,44 @@ So `--sf-chart-1-fill` is blue-50 at 12 % in the light theme and 24 % in
 the dark; `--sf-chart-brand-fill` (with `-hover` and `-active`) is the same on
 primary-50. A fill is not held to 3:1: the line of its series draws the edge.
 
+## Warm and cool series
+
+Two series sets of close hues, for a chart whose series belong together (C17,
+dispatcher 2026-11-09). The hue orders are the palette research's; the steps
+were picked by exhaustive search over the pairs 50/60, 30/85, 40/80 and 40/70
+for the best worst case of the limits above, with 3:1 on surfaces 0 to 2 kept.
+
+| Role | Warm | Cool |
+| --- | --- | --- |
+| `--sf-chart-warm-1` / `--sf-chart-cool-1` | red 30/85 | blue 30/85 |
+| `-2` | orange 50/60 | teal 30/85 |
+| `-3` | amber 40/80 | violet 50/60 |
+| `-4` | pink 50/60 | cyan 50/60 |
+| `-5` | brown 50/60 | indigo 40/70 |
+| `-6` | yellow 50/60 | green 50/60 |
+
+Six close hues cannot meet the distances of the eight series: series 1 to 5
+under colour-vision deficiency are 6.9 apart (warm) and 7.2 light / 7.6 dark
+(cool), against 15 for `--sf-chart-1`..`-8`; neighbours 12.5 / 18.2 (warm) and
+31.3 / 30.5 (cool); any two 10.3 (warm) and 11.5 / 12.4 (cool). The test holds
+these as floors. Where the series must be told apart, use `--sf-chart-1`..`-8`
+or add a direct label.
+
+## Diverging ends
+
+| Role | Light | Dark | Use |
+| --- | --- | --- | --- |
+| `--sf-chart-diverging-bad` | red-30 | red-80 | the bad side |
+| `--sf-chart-diverging-good` | blue-30 | blue-80 | the good side |
+| `--sf-chart-diverging-low` | purple-30 | purple-80 | low end, no meaning |
+| `--sf-chart-diverging-high` | teal-30 | teal-80 | high end, no meaning |
+
+Good and bad are blue and red, not success and error: red and green fall
+together under protanopia and deuteranopia (8.8 and 6.9). Distances, normal /
+protan / deutan / tritan: red-blue 42 / 45 / 52 / 55 light, 32 / 28 / 35 / 46
+dark; purple-teal 39 / 31 / 23 / 41 light, 48 / 33 / 22 / 59 dark. A ladder
+from an end to the midpoint reads the hue's own tones, `--sf-<hue>-<tone>`.
+
 ## Diverging midpoint
 
 `--sf-chart-midpoint` is the middle of a diverging scale -- red to blue for

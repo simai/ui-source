@@ -16,8 +16,8 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
 // The eight hues auto picks from; the former tone names are aliases of them
-// (rose is pink) until 2027-01-01.
-const TONES = ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'];
+// (rose is pink, violet is purple) until 2027-01-01.
+const TONES = ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'purple'];
 const HUE_CLASS = 'sf-hue-';
 const SIZES = ['1/4', '1/3', '1/2', '1', '2', '3'];
 const SURFACES = [0, 1, 2, 3];
@@ -156,7 +156,7 @@ for (const theme of THEMES) {
 // Auto: the same name, the same tone, through a reload and on another page; the
 // name is the heading, else the aria-label, else the text; no name, neutral.
 const NAMES = [
-  ['Boris Ilyin', 'violet'],
+  ['Boris Ilyin', 'purple'],
   ['Анна Захарова', 'amber'],
   ['Rosa Moreno', 'green'],
 ];
@@ -181,11 +181,11 @@ const third = await elsewhere.evaluate(tones);
 check('auto is the same on another page and in the other theme', JSON.stringify(first) === JSON.stringify(third), {first, third});
 await elsewhere.close();
 NAMES.forEach(([name, tone], index) => check('auto answers the documented vector', first[index] === `${HUE_CLASS}${tone}`, {name, got: first[index]}));
-check('auto reads the aria-label without a heading', first[NAMES.length] === 'sf-hue-violet', {got: first[NAMES.length]});
-check('auto reads the text without either', first[NAMES.length + 1] === 'sf-hue-violet', {got: first[NAMES.length + 1]});
-check('auto takes the heading first', first[NAMES.length + 2] === 'sf-hue-violet', {got: first[NAMES.length + 2]});
+check('auto reads the aria-label without a heading', first[NAMES.length] === 'sf-hue-purple', {got: first[NAMES.length]});
+check('auto reads the text without either', first[NAMES.length + 1] === 'sf-hue-purple', {got: first[NAMES.length + 1]});
+check('auto takes the heading first', first[NAMES.length + 2] === 'sf-hue-purple', {got: first[NAMES.length + 2]});
 check('auto with no name is neutral', first[NAMES.length + 3] === '' && first[NAMES.length + 4] === '', {got: first.slice(NAMES.length + 3, NAMES.length + 5)});
-check('the former tone="auto" picks the same hue', first[NAMES.length + 5] === 'sf-hue-violet', {got: first[NAMES.length + 5]});
+check('the former tone="auto" picks the same hue', first[NAMES.length + 5] === 'sf-hue-purple', {got: first[NAMES.length + 5]});
 check('the former tone="rose" is the pink hue', first[NAMES.length + 6] === 'sf-hue-pink', {got: first[NAMES.length + 6]});
 // A heading set later moves the tone with it.
 const moved = await page.evaluate(async () => {

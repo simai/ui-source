@@ -7100,42 +7100,42 @@
         },
         {
           "from": "--sf-tone-violet-50--alfa-12",
-          "to": "--sf-violet-50--alfa-12",
+          "to": "--sf-purple-50--alfa-12",
           "match": "--sf-tone-violet-50--alfa-12(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-50--alfa-16",
-          "to": "--sf-violet-50--alfa-16",
+          "to": "--sf-purple-50--alfa-16",
           "match": "--sf-tone-violet-50--alfa-16(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-50--alfa-20",
-          "to": "--sf-violet-50--alfa-20",
+          "to": "--sf-purple-50--alfa-20",
           "match": "--sf-tone-violet-50--alfa-20(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-50--alfa-24",
-          "to": "--sf-violet-50--alfa-24",
+          "to": "--sf-purple-50--alfa-24",
           "match": "--sf-tone-violet-50--alfa-24(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-50--alfa-28",
-          "to": "--sf-violet-50--alfa-28",
+          "to": "--sf-purple-50--alfa-28",
           "match": "--sf-tone-violet-50--alfa-28(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-50--alfa-32",
-          "to": "--sf-violet-50--alfa-32",
+          "to": "--sf-purple-50--alfa-32",
           "match": "--sf-tone-violet-50--alfa-32(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-30",
-          "to": "--sf-violet-30",
+          "to": "--sf-purple-30",
           "match": "--sf-tone-violet-30(?![a-z0-9-])"
         },
         {
           "from": "--sf-tone-violet-85",
-          "to": "--sf-violet-85",
+          "to": "--sf-purple-85",
           "match": "--sf-tone-violet-85(?![a-z0-9-])"
         }
       ],
@@ -7276,7 +7276,7 @@
       "recorded_on": "2026-11-09",
       "stage": "compat",
       "kind": "value",
-      "summary": "The avatar's rose is the static palette's pink (C17): the static palette has no rose, and pink is the hue nearest it. The slot in auto is the same, so a name keeps its place.",
+      "summary": "The avatar's rose is the static palette's pink and its former violet the purple (C17): the static palette has no rose, pink is the hue nearest it, and the former violet (HCT hue 325) is purple, not the static violet (305, 20 degrees away; a former tone moves at most 15, dispatcher 2026-11-09). The slot in auto is the same, so a name keeps its place.",
       "items": [
         {
           "component": "sf-avatar",
@@ -7289,6 +7289,12 @@
           "attribute": "hue",
           "from": "rose",
           "to": "pink"
+        },
+        {
+          "component": "sf-avatar",
+          "attribute": "tone",
+          "from": "violet",
+          "to": "purple"
         }
       ],
       "deprecated_on": "2026-11-09",
@@ -7346,7 +7352,7 @@
         {
           "component": "sf-avatar",
           "from": "sf-avatar--tone-violet",
-          "to": "sf-hue-violet"
+          "to": "sf-hue-purple"
         }
       ],
       "deprecated_on": "2026-11-09",

@@ -709,35 +709,35 @@
     },
     {
       "from": "--sf-tone-violet-50--alfa-12",
-      "to": "--sf-violet-50--alfa-12"
+      "to": "--sf-purple-50--alfa-12"
     },
     {
       "from": "--sf-tone-violet-50--alfa-16",
-      "to": "--sf-violet-50--alfa-16"
+      "to": "--sf-purple-50--alfa-16"
     },
     {
       "from": "--sf-tone-violet-50--alfa-20",
-      "to": "--sf-violet-50--alfa-20"
+      "to": "--sf-purple-50--alfa-20"
     },
     {
       "from": "--sf-tone-violet-50--alfa-24",
-      "to": "--sf-violet-50--alfa-24"
+      "to": "--sf-purple-50--alfa-24"
     },
     {
       "from": "--sf-tone-violet-50--alfa-28",
-      "to": "--sf-violet-50--alfa-28"
+      "to": "--sf-purple-50--alfa-28"
     },
     {
       "from": "--sf-tone-violet-50--alfa-32",
-      "to": "--sf-violet-50--alfa-32"
+      "to": "--sf-purple-50--alfa-32"
     },
     {
       "from": "--sf-tone-violet-30",
-      "to": "--sf-violet-30"
+      "to": "--sf-purple-30"
     },
     {
       "from": "--sf-tone-violet-85",
-      "to": "--sf-violet-85"
+      "to": "--sf-purple-85"
     },
     {
       "from": "--sf-tone-rose-container",
@@ -812,12 +812,12 @@
     {
       "from": "--sf-tone-violet-container",
       "to": "--sf-hue-container",
-      "hue": "violet"
+      "hue": "purple"
     },
     {
       "from": "--sf-on-tone-violet-container",
       "to": "--sf-on-hue-container",
-      "hue": "violet"
+      "hue": "purple"
     }
   ],
   "palette_classes": [
@@ -833,6 +833,13 @@
       "attribute": "tone",
       "from": "rose",
       "to": "pink"
+    },
+    {
+      "component": "sf-avatar",
+      "kind": "value",
+      "attribute": "tone",
+      "from": "violet",
+      "to": "purple"
     },
     {
       "component": "sf-avatar",
@@ -880,7 +887,7 @@
       "component": "sf-avatar",
       "kind": "class",
       "from": "sf-avatar--tone-violet",
-      "to": "sf-hue-violet"
+      "to": "sf-hue-purple"
     }
   ],
   "palette_utilities": [

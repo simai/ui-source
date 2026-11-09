@@ -23,7 +23,8 @@ a real destination or action.
   themes. An image or a placeholder stays as it is, and
   `--sf-avatar-background-color` and `--sf-avatar-color` still win. A server
   picks a hue from a name the way the Smart Avatar's documentation describes.
-  The former classes `.sf-avatar--tone-<name>` (`rose` is `pink`) and the
+  The former classes `.sf-avatar--tone-<name>` (`rose` is `pink`, `violet`
+  is `purple`) and the
   tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
   draw the same until 2027-01-01.
 

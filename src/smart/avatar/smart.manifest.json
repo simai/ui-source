@@ -122,7 +122,7 @@
       "tone": {
         "type": "string",
         "default": "",
-        "description": "The former name of hue, until 2027-01-01: read when hue is empty, rose as pink (the tones of initials are the static hues of their names since C17). Write hue.",
+        "description": "The former name of hue, until 2027-01-01: read when hue is empty, rose as pink and violet as purple (the tones of initials are the static hues of their names since C17). Write hue.",
         "enum": [
           "",
           "auto",

@@ -277,8 +277,8 @@
     --sf-on-tone-sky-container: light-dark(var(--sf-sky-10), var(--sf-sky-90));
     --sf-tone-indigo-container: light-dark(var(--sf-indigo-50--alfa-12), var(--sf-indigo-50--alfa-24));
     --sf-on-tone-indigo-container: light-dark(var(--sf-indigo-10), var(--sf-indigo-90));
-    --sf-tone-violet-container: light-dark(var(--sf-violet-50--alfa-12), var(--sf-violet-50--alfa-24));
-    --sf-on-tone-violet-container: light-dark(var(--sf-violet-10), var(--sf-violet-90));
+    --sf-tone-violet-container: light-dark(var(--sf-purple-50--alfa-12), var(--sf-purple-50--alfa-24));
+    --sf-on-tone-violet-container: light-dark(var(--sf-purple-10), var(--sf-purple-90));
     /* The series of a chart, in order (owner decision C17, 2026-11-08): eight
        hues of the static palette in a fixed order -- blue, amber, teal, violet,
        yellow, pink, green, red -- the same under every theme colour, so a
@@ -335,6 +335,39 @@
     --sf-chart-brand-fill: light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24));
     --sf-chart-brand-fill-hover: light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28));
     --sf-chart-brand-fill-active: light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32));
+    /* The warm and the cool series (C17; dispatcher 2026-11-09): the hue
+       orders of the research (2026-11-08-palette 4), the tones picked by
+       exhaustive search over the pairs 50/60, 30/85, 40/80 and 40/70 for the
+       best worst case of the categorical limits, 3:1 on surfaces 0-2 kept.
+       A family of six close hues cannot meet the eight series' distances:
+       warm series 1-5 under CVD 6.9, neighbours 12.5 light / 18.2 dark, any
+       two 10.3; cool 7.2 / 7.6, 31.3 / 30.5, 11.5 / 12.4
+       (tests/chart-colours.contract.test.mjs holds them as floors). Use
+       --sf-chart-1..8 when the series must be told apart. */
+    --sf-chart-warm-1: light-dark(var(--sf-red-30), var(--sf-red-85));
+    --sf-chart-warm-2: light-dark(var(--sf-orange-50), var(--sf-orange-60));
+    --sf-chart-warm-3: light-dark(var(--sf-amber-40), var(--sf-amber-80));
+    --sf-chart-warm-4: light-dark(var(--sf-pink-50), var(--sf-pink-60));
+    --sf-chart-warm-5: light-dark(var(--sf-brown-50), var(--sf-brown-60));
+    --sf-chart-warm-6: light-dark(var(--sf-yellow-50), var(--sf-yellow-60));
+    --sf-chart-cool-1: light-dark(var(--sf-blue-30), var(--sf-blue-85));
+    --sf-chart-cool-2: light-dark(var(--sf-teal-30), var(--sf-teal-85));
+    --sf-chart-cool-3: light-dark(var(--sf-violet-50), var(--sf-violet-60));
+    --sf-chart-cool-4: light-dark(var(--sf-cyan-50), var(--sf-cyan-60));
+    --sf-chart-cool-5: light-dark(var(--sf-indigo-40), var(--sf-indigo-70));
+    --sf-chart-cool-6: light-dark(var(--sf-green-50), var(--sf-green-60));
+    /* The ends of a diverging scale (C17): good and bad are blue and red,
+       not success and error (red and green fall together under protanopia and
+       deuteranopia, 8.8 and 6.9); a scale with no meaning runs purple to teal,
+       Carbon's pair. Tone 30 light, 80 dark, as the research measured: red-blue
+       42 / 45 / 52 / 55 light and 32 / 28 / 35 / 46 dark (normal, protan,
+       deutan, tritan), purple-teal 39 / 31 / 23 / 41 and 48 / 33 / 22 / 59.
+       A ladder between an end and --sf-chart-midpoint reads the hue's own
+       tones, --sf-<hue>-<tone>. */
+    --sf-chart-diverging-bad: light-dark(var(--sf-red-30), var(--sf-red-80));
+    --sf-chart-diverging-good: light-dark(var(--sf-blue-30), var(--sf-blue-80));
+    --sf-chart-diverging-low: light-dark(var(--sf-purple-30), var(--sf-purple-80));
+    --sf-chart-diverging-high: light-dark(var(--sf-teal-30), var(--sf-teal-80));
     /* The middle of a diverging scale -- red to blue for data with a good
        and a bad side, purple to teal for data without (C17) -- where the
        value is neither: the quietest neutral that still stands off surfaces 0
@@ -384,7 +417,10 @@
        2026-10-08). */
     --sf-outline-disabled: light-dark(var(--sf-neutral-50--alfa-48), var(--sf-neutral-60--alfa-48));
     --sf-link: light-dark(var(--sf-primary-40), var(--sf-primary-80));
-    --sf-mark: light-dark(var(--sf-warning-50--alfa-24), var(--sf-warning-90--alfa-24));
+    // A highlighter is not a warning (owner decision C17, research
+    // 2026-11-08-palette 3.5; dispatcher 2026-11-09): the mark is the static
+    // yellow at the step it had on warning, 50 at 24 light and 90 at 24 dark.
+    --sf-mark: light-dark(var(--sf-yellow-50--alfa-24), var(--sf-yellow-90--alfa-24));
     // The ring is an indicator, not a wash. At 24% alpha it read 1.4:1 against
     // the light surface and 1.9:1 against the dark one, where an indicator needs
     // 3:1. The solid role gives 4.5:1 and 14:1.

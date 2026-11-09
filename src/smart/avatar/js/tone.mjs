@@ -7,7 +7,8 @@
 // initials take a hue of the static palette (the hue setting, the class
 // sf-hue-<name>); the eight tones of initials are gone, and `auto` picks among
 // eight static hues in the old order, so a name keeps its slot: rose is pink,
-// the other seven keep their names.
+// the former violet (HCT hue 325) is purple, the other six keep their names.
+// A former tone moves at most 15 degrees (dispatcher, 2026-11-09).
 //
 // FNV-1a, 32 bits, over the UTF-8 bytes of the string exactly as given (no
 // trimming, no case folding, no normalisation), its high half folded onto the
@@ -16,16 +17,17 @@
 //
 // The list and its order are part of the algorithm: a name keeps its tone only
 // while they stay. A later named tone does not join `auto`.
-export const AVATAR_HUES = Object.freeze(['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet']);
+export const AVATAR_HUES = Object.freeze(['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'purple']);
 
 // Every hue a setting may name: the static palette (theme-palette.js
 // STATIC_HUES, tests/avatar-tones.contract.test.mjs holds the two equal).
 export const STATIC_HUES = Object.freeze(['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray']);
 
 // The former tone setting and its names, until 2027-01-01 (journal
-// attribute-c17-avatar-tone-to-hue, value-c17-avatar-rose-to-pink).
+// attribute-c17-avatar-tone-to-hue, value-c17-avatar-rose-to-pink, which
+// also carries violet to purple).
 export const AVATAR_TONES = Object.freeze(['rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet']);
-export const TONE_HUES = Object.freeze({rose: 'pink'});
+export const TONE_HUES = Object.freeze({rose: 'pink', violet: 'purple'});
 
 const FNV_OFFSET = 0x811c9dc5;
 const FNV_PRIME = 0x01000193;
@@ -46,7 +48,7 @@ export function avatarHue(name) {
 
 // The hue a setting asks for: a named one as it is, auto the one of the name,
 // empty (or a name the palette does not have) the neutral look. The former
-// tone setting is read when hue is empty, its rose as pink.
+// tone setting is read when hue is empty, its rose as pink and its violet as purple.
 export function resolveAvatarHue(hue, name, tone = '') {
   const setting = hue || TONE_HUES[tone] || tone || '';
   if (setting === 'auto') return avatarHue(name);

@@ -118,7 +118,7 @@
       "covers": "settings.hue",
       "steps": [
         {
-          "check": "(() => { const hue = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-hue-') || one.startsWith('sf-avatar--tone-')).join(); return hue('#a-hue') === 'sf-hue-pink' && hue('#a-tone') === 'sf-hue-pink' && hue('#a-auto') === 'sf-hue-violet' && hue('#a-tone-image') === '' && hue('#a-tone-none') === '' && hue('#a') === ''; })()",
+          "check": "(() => { const hue = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-hue-') || one.startsWith('sf-avatar--tone-')).join(); return hue('#a-hue') === 'sf-hue-pink' && hue('#a-tone') === 'sf-hue-pink' && hue('#a-auto') === 'sf-hue-purple' && hue('#a-tone-image') === '' && hue('#a-tone-none') === '' && hue('#a') === ''; })()",
           "expect": {
             "values": {
               "#a-hue.hue": "pink",

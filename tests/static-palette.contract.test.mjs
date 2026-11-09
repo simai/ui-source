@@ -28,9 +28,11 @@ test('sixteen hues with the numbers of the decision; added hues chroma 60, brown
 });
 
 test('the generated sheet is the generator\'s output, and nothing is typed by hand', () => {
+  // Sixteen hues of 16 tones and 20 translucent steps: 576 (research 3.4).
+  assert.equal(Object.keys(staticVariables()).length, 576);
   assert.equal(read(STATIC_PALETTE_FILE), staticPaletteScss(), 'run node scripts/generate-static-palette.mjs');
   const variables = staticVariables();
-  assert.equal(Object.keys(variables).length, STATIC_HUE_NAMES.length * (THEME_TONES.length + STATIC_ALPHA[50].length + STATIC_ALPHA[90].length));
+  assert.equal(Object.keys(variables).length, STATIC_HUE_NAMES.length * (THEME_TONES.length + Object.values(STATIC_ALPHA).reduce((sum, steps) => sum + steps.length, 0)));
   for (const [name, value] of Object.entries(variables)) assert.ok(read(STATIC_PALETTE_FILE).includes(`${name}: ${value};`), name);
 });
 
@@ -46,7 +48,7 @@ test('a status is its hue: the theme makes the same palette, and the status prim
         assert.match(primitives, new RegExp(`--sf-${status}-${tone}--alfa-${step}: var\\(--sf-${hue}-${tone}--alfa-${step}\\);`, 'u'));
       }
     }
-    assert.deepEqual(THEME_ALPHA[status], {50: [...STATIC_ALPHA[50]], 90: [...STATIC_ALPHA[90]]}, `${status}: the hue has every step the status has`);
+    assert.deepEqual(THEME_ALPHA[status], Object.fromEntries(Object.entries(STATIC_ALPHA).map(([tone, steps]) => [tone, [...steps]])), `${status}: the hue has every step the status has`);
   }
   // No theme colour moves a hue.
   for (const color of ['#2e7d32', '#b3261e', '#6a1b9a']) assert.deepEqual(staticPalette(), palettes, color);

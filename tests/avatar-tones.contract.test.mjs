@@ -17,7 +17,7 @@ import {STATIC_HUE_NAMES} from '../src/core/js/theme-palette.js';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-const HUES = ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'];
+const HUES = ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'purple'];
 const TONES = ['rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'];
 
 // Name, FNV-1a 32 over its UTF-8 bytes with the high half folded in, tone. The
@@ -25,7 +25,7 @@ const TONES = ['rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'viole
 // values came out of the Python and PHP forms the documentation gives.
 const VECTORS = [
   ['a', 3826044192, 'pink'],
-  ['Boris Ilyin', 3558918407, 'violet'],
+  ['Boris Ilyin', 3558918407, 'purple'],
   ['Анна Захарова', 3082087281, 'amber'],
   ['Анна Белова', 1238467563, 'green'],
   ['\u{1F600} Emoji', 950777869, 'sky'],
@@ -51,14 +51,14 @@ test('the hash reads the string as given, and no name means no tone', () => {
 test('a setting resolves to itself, to the hue of the name, or to nothing; the former tone is read when hue is empty', () => {
   assert.equal(resolveAvatarHue('teal', 'Boris Ilyin'), 'teal');
   assert.equal(resolveAvatarHue('cyan', 'Boris Ilyin'), 'cyan', 'any static hue, not only the eight of auto');
-  assert.equal(resolveAvatarHue('auto', 'Boris Ilyin'), 'violet');
+  assert.equal(resolveAvatarHue('auto', 'Boris Ilyin'), 'purple');
   assert.equal(resolveAvatarHue('auto', ''), '');
   assert.equal(resolveAvatarHue('', 'Boris Ilyin'), '');
   assert.equal(resolveAvatarHue(undefined, 'Boris Ilyin'), '');
   assert.equal(resolveAvatarHue('mauve', 'Boris Ilyin'), '', 'a name the palette does not have');
   assert.equal(resolveAvatarHue('', 'Boris Ilyin', 'rose'), 'pink');
   assert.equal(resolveAvatarHue('', 'Boris Ilyin', 'teal'), 'teal');
-  assert.equal(resolveAvatarHue('', 'Boris Ilyin', 'auto'), 'violet');
+  assert.equal(resolveAvatarHue('', 'Boris Ilyin', 'auto'), 'purple');
   assert.equal(resolveAvatarHue('green', 'Boris Ilyin', 'rose'), 'green', 'hue wins over the former name');
   assert.equal(resolveAvatarTone('auto', 'Boris Ilyin'), 'violet', 'the former function still answers');
 });
@@ -104,7 +104,7 @@ test('the documentation states the algorithm a server needs', () => {
   for (const word of ['UTF-8', 'FNV-1a', '2166136261', '16777619', 'hash >> 16', 'hash mod 8', 'heading', 'aria-label']) {
     assert.ok(docs.includes(word), word);
   }
-  assert.match(docs, /`Boris Ilyin` is `violet`/u);
+  assert.match(docs, /`Boris Ilyin` is `purple`/u);
 });
 
 test('a hue adds no raw colour to the component sheet; the former tone roles hold their hue\'s container', () => {

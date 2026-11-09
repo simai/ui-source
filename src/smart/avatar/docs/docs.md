@@ -21,7 +21,7 @@ Loading model:
   yellow | lime | green | teal | cyan | sky | blue | indigo | violet | purple |
   pink | brown | gray` -- see "Hues"
 - `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
-  its `rose` is `pink`
+  its `rose` is `pink` and its `violet` is `purple`
 - `status`: `none | online | offline | company | verified`
 - `aria-label` — a host attribute: the button's name, «Аватар» / "Avatar" when unset
 - `heading` — the name the label and card templates print; `title` is its
@@ -68,7 +68,7 @@ size (owner decision C17: an avatar has no colours of its own):
   the element the hue's roles (`--sf-hue-container`, `--sf-on-hue-container`
   and the rest), and the class sheet draws the initials from them.
 - Until 2027-01-01 the former `tone` setting is read when `hue` is empty (`rose`
-  is `pink`), and the former classes `sf-avatar--tone-<name>` still draw.
+  is `pink`, `violet` is `purple`), and the former classes `sf-avatar--tone-<name>` still draw.
 
 `auto` picks the hue from the name: `heading`, else the host's `aria-label`,
 else `text`. It hashes the whole name, not the two letters, so two people with
@@ -83,8 +83,8 @@ can print the class in the first paint. The algorithm (`js/tone.mjs`):
    then multiply by `16777619`, modulo 2^32.
 3. Fold: `hash = hash XOR (hash >> 16)`, an unsigned shift.
 4. The hue is `hues[hash mod 8]`, in this order: `pink`, `amber`, `lime`,
-   `green`, `teal`, `sky`, `indigo`, `violet` -- the slots of the former tones,
-   so a name keeps its place (`rose` was the first).
+   `green`, `teal`, `sky`, `indigo`, `purple` -- the slots of the former tones,
+   so a name keeps its place (`rose` was the first, `violet` the last).
 
 ```php
 function sf_avatar_hue(string $name): string {
@@ -94,7 +94,7 @@ function sf_avatar_hue(string $name): string {
         $hash = (($hash ^ ord($byte)) * 16777619) & 0xFFFFFFFF;
     }
     $hash ^= $hash >> 16;
-    return ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet'][$hash % 8];
+    return ['pink', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'purple'][$hash % 8];
 }
 ```
 
@@ -106,10 +106,10 @@ def sf_avatar_hue(name: str) -> str:
     for byte in name.encode("utf-8"):
         hash = ((hash ^ byte) * 16777619) & 0xFFFFFFFF
     hash ^= hash >> 16
-    return ("pink", "amber", "lime", "green", "teal", "sky", "indigo", "violet")[hash % 8]
+    return ("pink", "amber", "lime", "green", "teal", "sky", "indigo", "purple")[hash % 8]
 ```
 
-For example `Boris Ilyin` is `violet` and an empty name is the neutral look. The
+For example `Boris Ilyin` is `purple` and an empty name is the neutral look. The
 list and its order are part of the algorithm: a later named hue will not join
 `auto`, so a name keeps its hue across releases.
 

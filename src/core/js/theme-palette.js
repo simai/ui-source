@@ -75,8 +75,14 @@ function statusRule(status) {
 }
 
 // The translucent steps of every static hue: the status steps, tone 50 at the
-// state and fill families (4 to 32) and tone 90 at 4, 8, 12 and 24.
-export const STATIC_ALPHA = Object.freeze({50: Object.freeze([4, 8, 12, 16, 20, 24, 28, 32]), 90: Object.freeze([4, 8, 12, 24])});
+// state and fill families (4 to 32), tone 90 at 4, 8, 12 and 24, and tone 20
+// at the state and fill families and the ink steps 64 and 80 -- the dark ink of
+// a coloured place (C16, research 2026-11-08-surfaces 4.3; dispatcher 2026-11-09).
+export const STATIC_ALPHA = Object.freeze({
+  20: Object.freeze([4, 8, 12, 16, 20, 24, 64, 80]),
+  50: Object.freeze([4, 8, 12, 16, 20, 24, 28, 32]),
+  90: Object.freeze([4, 8, 12, 24]),
+});
 
 // The generator's defaults. `hue` and `chroma` are either a number or a
 // function of the primary's; a caller may override any of them.
@@ -108,14 +114,14 @@ export const THEME_PALETTES = Object.freeze(Object.keys(THEME_RULES));
 // its own tones; tests/theme-palette.contract.test.mjs holds this list to the
 // one core declares.
 export const THEME_ALPHA = Object.freeze({
-  primary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  secondary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  tertiary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  primary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  secondary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  tertiary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   neutral: {50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48]},
-  error: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  warning: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  success: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  info: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  error: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  warning: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  success: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  info: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
 });
 
 const alphaHex = (percent) => Math.round((percent * 255) / 100).toString(16).padStart(2, '0');
