@@ -80,12 +80,16 @@ test('density never sets the root font size, which would move rem', () => {
 
 test('Smart drawings mark the sizes they give as relative', () => {
   const base = read('src/core/js/smart-base.js');
-  assert.match(base, /drawing\(\(\) => render\(templateResult, this\)\);\n\s*markRelativeSizes\(this, this\._sfSizedBefore\);/u);
+  assert.match(base, /drawing\(\(\) => this\.renderTemplateResult\(templateResult\)\);\n\s*markRelativeSizes\(this, this\._sfSizedBefore\);/u);
   for (const file of ['src/smart/drawer/index.js', 'src/smart/modal/index.js', 'src/smart/search/index.js']) {
     assert.match(read(file), /this\.drawInto\(/u, file);
   }
   assert.match(read('src/core/js/layer-stack.js'), /densityOf\(host\)/u);
-  assert.match(read('src/smart/menu-context/index.js'), /followDensity\(child, this\)/u);
+  const menu = read('src/smart/menu-context/index.js');
+  assert.match(menu, /followDensity\(child, this\.surface\(\) \?\? this\)/u);
+  // A menu opened for a control is drawn in that control's density, unless
+  // the page gave it a size (C22).
+  assert.match(menu, /if \(!this\.hasAttribute\("size"\) \|\| this\.hasAttribute\(RELATIVE\)\) \{[\s\S]{0,120}?surface\.setAttribute\("data-sf-density", densityOf\(anchor\) \?\? "normal"\);/u);
 });
 
 test('a size that is a width does not take the normal ladder back (manifest x-scale)', () => {

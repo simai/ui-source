@@ -27,8 +27,8 @@ const sfTooltipMeta = {
         "light",
         "dark"
       ],
-      "default": "light",
-      "description": "How the tooltip looks: light on a dark surface or the reverse."
+      "default": "dark",
+      "description": "How the tooltip looks: dark is the inverse surface (the plain tooltip, the default), light a raised surface."
     },
     "size": {
       "kind": "enum",
@@ -39,8 +39,8 @@ const sfTooltipMeta = {
         "2",
         "3"
       ],
-      "default": "1",
-      "description": "Framework typography and spacing scale."
+      "default": "1/3",
+      "description": "Framework typography and spacing scale; 1/3, the default, is the plain tooltip: the small text step, regular, 4 x 8."
     },
     "arrow": {
       "kind": "enum",
@@ -68,13 +68,19 @@ const sfTooltipMeta = {
       "default": "",
       "description": "Optional secondary description."
     },
+    "shortcut": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The trigger's key combination (mod+b, shift+/), drawn after the text as quiet keys by the kbd component."
+    },
     "type": {
       "kind": "enum",
       "values": [
         "light",
         "dark"
       ],
-      "default": "light",
+      "default": "dark",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
     }
   }

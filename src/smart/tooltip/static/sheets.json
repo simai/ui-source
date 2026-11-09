@@ -6,6 +6,7 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/kbd/css/kbd.min.css",
     "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/display/default/css/default.min.css",
@@ -14,6 +15,7 @@
   ],
   "examples": {
     "arrow": [
+      "component/kbd/css/kbd.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",
@@ -21,6 +23,7 @@
       "utility/position/default/css/default.min.css"
     ],
     "dark": [
+      "component/kbd/css/kbd.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",
@@ -28,6 +31,15 @@
       "utility/position/default/css/default.min.css"
     ],
     "reference": [
+      "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "shortcut": [
+      "component/kbd/css/kbd.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",
@@ -35,6 +47,7 @@
       "utility/position/default/css/default.min.css"
     ],
     "supporting": [
+      "component/kbd/css/kbd.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",

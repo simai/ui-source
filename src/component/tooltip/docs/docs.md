@@ -18,7 +18,7 @@ must remain visible outside the tooltip.
     <i class="sf-icon" aria-hidden="true">save</i>
   </button>
   <span id="save-description" class="sf-tooltip sf-tooltip--dark
-    sf-tooltip--size-1 sf-tooltip--arrow-bottom-center" hidden>
+    sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center" hidden>
     <span class="sf-tooltip-content">
       <span class="sf-tooltip-text">Сохранить изменения</span>
       <span class="sf-tooltip-tail" aria-hidden="true"></span>
@@ -29,11 +29,22 @@ must remain visible outside the tooltip.
 
 The trigger remains the action owner. Tooltip does not use `aria-expanded` or
 `aria-haspopup`, never receives focus and remains open while the pointer is
-over the anchor or surface.
+over the anchor or surface. It opens on hover and on keyboard focus
+(`:focus-visible`) only: the focus a mouse press leaves does not open it, and
+a press on the trigger -- a pointer, or Enter or Space -- hides it until the
+pointer leaves and the focus goes.
 
 ## Surface variants
 
-- skins: `light`, `dark`;
+- skins: `dark`, the inverse surface (`--sf-surface-inverse`, light in a dark
+  theme), and `light`, a raised surface;
+- the plain tooltip -- a bare `.sf-tooltip` or `sf-tooltip--size-1/3` -- is
+  regular text at the small step (12/16 on desktop), padding `--sf-space-1/4`
+  by `--sf-space-1/3` (4 x 8), radius `--sf-radius--ui`; a text followed by a
+  supporting text keeps the text bold as its title;
+- a shortcut after the words: a `<kbd class="sf-kbd--group
+  sf-tooltip-shortcut">` with a `<kbd>` per key inside `.sf-tooltip-text`,
+  drawn plain and quiet by the kbd component;
 - sizes: `1/3`, `1/2`, `1`, `2`, `3`;
 - logical tails: `none`, `top-center`, `bottom-center`,
   `inline-start`, `inline-end`, `bottom-inline-start`,
