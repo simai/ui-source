@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-run's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the run progress the Larena admin screens asked for first (Federation bus msg-993e1e39151942c19b23 item 6), planned in the reply msg-05e76ea0bc0746a690b8 as sf-progress-run of block progress.",
   "id": "smart.progress-run",
   "tag": "sf-progress-run",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -293,7 +293,8 @@
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.0 (one number above the unreleased 1.0.2 and 1.1.0 it joins): the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.2.0 background-color-names: the public variables --sf-progress-run-background-color, --sf-progress-run-output-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former names --sf-progress-run-background, --sf-progress-run-output-background are still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
-    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The chunk method is declared in its canonical object form, chunk({text}) (an object, so a stream fact can grow fields), where the generated reference read chunk(text); a plain string stays accepted as shorthand, as the element always did. The step method too: step({id, state, text, started, finished, duration}) (one object; the positional call would write the fields it was not given as empty), generated now that the generator writes every action in its object form (x-registry.action-calls keeps chunk's string). Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The chunk method is declared in its canonical object form, chunk({text}) (an object, so a stream fact can grow fields), where the generated reference read chunk(text); a plain string stays accepted as shorthand, as the element always did. The step method too: step({id, state, text, started, finished, duration}) (one object; the positional call would write the fields it was not given as empty), generated now that the generator writes every action in its object form (x-registry.action-calls keeps chunk's string). Settings, values, events and keys unchanged.",
+    "version 1.2.2 (2026-11-09): a patch, nothing drawn differently. step(id, state) called positionally changes only the fields given (core.runtime 1.43.0 names only the parameters a positional call gives; it wrote text, started, finished and duration as undefined). A change made before the run first read the host's list is kept: the list is taken up when step runs, not at the next read, which cleared it. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

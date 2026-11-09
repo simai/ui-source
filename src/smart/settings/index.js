@@ -244,8 +244,9 @@ class SfSettings extends SettingsElement {
     if (this.popup && !menu.isOpen) {
       const anchor = this.anchor();
       if (!anchor) return {outcome: 'unavailable', reason: 'no-trigger'};
+      // An outcome since sf-menu-context 1.12.2; a boolean before.
       const opened = await menu.openFor(anchor, {focus: 'none'});
-      if (!opened) return {outcome: 'cancelled'};
+      if (opened !== true && opened?.outcome !== 'applied') return {outcome: 'cancelled'};
     }
     if (this.look === 'drill') {
       const result = menu.show(id);

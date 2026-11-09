@@ -39,7 +39,10 @@ test('every action with parameters is one args object in the manifest, unless th
       assert.deepEqual(Object.keys(args.schema.properties), fields.map(camel), `${folder}.${name}`);
     }
   }
-  assert.ok(objects >= 60 && positional >= 15, `${objects} object, ${positional} positional`);
+  // Since core.runtime 1.43.0 the runtime gives a class-written method that
+  // takes its fields in order the object form too (elementFromManifest's
+  // positional): no element is positional only (action-call defects, 2026-11-09).
+  assert.ok(objects >= 80 && positional === 0, `${objects} object, ${positional} positional`);
 });
 
 test('the forms read off the elements', () => {
@@ -51,9 +54,15 @@ test('the forms read off the elements', () => {
   assert.equal(methods('accordion').open.arguments[0].type, 'object|string');
   assert.equal(methods('confirm').answer.arguments[0].type, 'object');
   assert.equal(methods('gallery').open.arguments[0].required, false);
-  assert.deepEqual(methods('tabs').setData.arguments.map((one) => one.name), ['data', 'reason']);
-  assert.deepEqual(methods('menu-context').openFor.arguments.map((one) => one.name), ['anchor', 'options']);
-  assert.equal(methods('editor-overlay').setNodes.arguments.length, 2);
+  assert.deepEqual(Object.keys(methods('tabs').setData.arguments[0].schema.properties), ['data', 'reason']);
+  assert.deepEqual(methods('tabs').setData.arguments[0].schema.required, ['data']);
+  assert.deepEqual(Object.keys(methods('menu-context').openFor.arguments[0].schema.properties), ['anchor', 'options']);
+  assert.equal(methods('menu-context').openFor.returns.type, 'Promise<object>');
+  assert.equal(methods('editor-overlay').setNodes.arguments.length, 1);
+  // The fields the elements read as optional (2026-11-09): close() and show() take no argument.
+  for (const folder of ['drawer', 'modal', 'popover']) assert.equal(methods(folder).close.arguments[0].required, false, folder);
+  assert.equal(methods('toast').show.arguments[0].required, false);
+  assert.equal(methods('toast').show.arguments[0].schema.required, undefined);
 });
 
 test('an action-calls entry is one of the two forms and names an action with parameters', () => {
