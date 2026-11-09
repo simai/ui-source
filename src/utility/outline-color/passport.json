@@ -33,7 +33,7 @@
     "src/utility/outline-color/hover/scss/_sf_css__outline_color.scss",
     "src/utility/outline-color/hover/scss/index.scss"
   ],
-  "content_sha256": "27b58f4bdebfe7e507ad1d1590956ba55d6e72f94e19f5ecab7fdc974c71aca6",
+  "content_sha256": "ba3edaa3b22ca728598e6425d836c6284028a67e4c799fe40104d69bbd6795bc",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

@@ -28,7 +28,7 @@
     "src/utility/text-decoration-color/hover/scss/_sf_css__text_decoration_color.scss",
     "src/utility/text-decoration-color/hover/scss/index.scss"
   ],
-  "content_sha256": "465cefd7a1b57f0243f97fdb72135dca0b225d9b307ab3461a19696136dfd33e",
+  "content_sha256": "8e42417a59285d551831232fb69c82974cca711becaf4cc175679a2a14437acf",
   "dependencies": [
     {
       "id": "utility.text-color",

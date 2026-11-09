@@ -18,7 +18,7 @@
     "src/utility/divider-color/hover/scss/_sf_css__divider_color.scss",
     "src/utility/divider-color/hover/scss/index.scss"
   ],
-  "content_sha256": "31d192d6ff68d56d78ca09cef6c1a8d7b140353368e758f9c56575b56346b0a0",
+  "content_sha256": "ac87766a87813345491ad1f236b5d91faba36e197a2b440b1e96d6a41eb4e758",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

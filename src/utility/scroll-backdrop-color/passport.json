@@ -13,6 +13,6 @@
     "src/utility/scroll-backdrop-color/default/scss/_sf_var__scroll_backdrop_color.scss",
     "src/utility/scroll-backdrop-color/default/scss/index.scss"
   ],
-  "content_sha256": "eff1618e555cee1c3a0b4d79645eef6f1b0db0162a528d695d15dc07fe50e5d4",
+  "content_sha256": "220025c957b2d419a46ba21d8ab79ea958dc9cca1c67c15be6cb0e0edd93507a",
   "dependencies": []
 }
