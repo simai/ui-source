@@ -32,6 +32,34 @@ function clampAxis(value, fallback, minimum, maximum) {
 // family's old name `shape` is a dated value alias of `sharp` (aliases.json).
 // What stays here is behaviour: the exact subset the glyph waits for, the
 // axes' bounds and the badge.
+// One IntersectionObserver for every icon that cannot draw yet: an icon in a
+// copy that is not rendered (a closed panel, a display: none menu or header
+// copy) checks again, and asks the Loader for its glyph, when the copy is
+// shown. Whether it can draw is the font's readiness for its family and style
+// (the Loader's sets), never whether it is rendered; this is the second
+// chance for an icon that missed the ready event while it was hidden. A
+// zero-size target in the viewport intersects, so the glyph held at
+// font-size 0 is seen too. Only the change from not rendered to rendered
+// counts: the first answer for an icon already in view says nothing new, and
+// acting on it asked the Loader again while the page's first request was
+// being put together. Larena read menu and star loaded: false 4 s after
+// load in such a copy (pair ui-b4a77681f0a7, R074).
+let renderedSight = null;
+function sightForRendered() {
+  const Sight = globalThis.IntersectionObserver;
+  if (!renderedSight && typeof Sight === "function") {
+    renderedSight = new Sight((entries) => {
+      for (const entry of entries) {
+        const { target } = entry;
+        const was = target._renderedSeen;
+        target._renderedSeen = entry.isIntersecting;
+        if (entry.isIntersecting && was === false) target.onRendered?.();
+      }
+    });
+  }
+  return renderedSight;
+}
+
 const IconElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -58,6 +86,21 @@ class SfIcon extends IconElement {
       this.requestIconLoad();
       this.syncLoadedState();
     };
+    this.onRendered = () => {
+      this.requestIconLoad();
+      this.syncLoadedState();
+    };
+  }
+
+  watchRendered(watch) {
+    if (watch === Boolean(this._watchingRendered)) return;
+    const sight = sightForRendered();
+    if (!sight) return;
+    if (watch) {
+      this._renderedSeen = undefined;
+      sight.observe(this);
+    } else sight.unobserve(this);
+    this._watchingRendered = watch;
   }
 
   connectedCallback() {
@@ -80,6 +123,7 @@ class SfIcon extends IconElement {
   disconnectedCallback() {
     window.removeEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
     window.removeEventListener("sf-loader-ready", this.onLoaderReady);
+    this.watchRendered(false);
     super.disconnectedCallback();
   }
 
@@ -122,6 +166,7 @@ class SfIcon extends IconElement {
     } else {
       window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
     }
+    this.watchRendered(!loaded && this.isConnected);
     if (this.getProp("loaded") === loaded) return;
 
     this.setState({ loaded });
