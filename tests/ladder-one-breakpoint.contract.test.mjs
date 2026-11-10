@@ -10,7 +10,9 @@ import {DESKTOP} from '../scripts/generate-density.mjs';
 // breakpoint, the desktop ladder -- normal or compact -- at and above it. The
 // ladder files, the density projection and every core rule that follows the
 // ladder switch at the one breakpoint of the adaptive-sizing contract, written
-// as min-width: <bp> or its exact complement width < <bp>. A max-width a
+// as min-width: <bp> or its exact complement not all and (min-width: <bp>).
+// A range query (width < <bp>) is no complement once built: the build's
+// PostCSS rewrites it to max-width: <bp - .001rem>. A max-width a
 // fraction below the breakpoint (59.98rem, 59.99rem) leaves a band of
 // fractional widths -- browser zoom, a fractional device ratio -- where
 // neither side holds.
@@ -32,7 +34,7 @@ test('the density switches at the ladder breakpoint of the contract', () => {
 });
 
 test('every width query of the core ladder is the breakpoint or its exact complement', () => {
-  const allowed = new Set([`(min-width: ${BREAKPOINT})`, `(width < ${BREAKPOINT})`]);
+  const allowed = new Set([`(min-width: ${BREAKPOINT})`]);
   const offenders = [];
   for (const file of [...files('src/core/figma_variables'), ...files('src/core/scss')]) {
     const source = readFileSync(join(root, file), 'utf8').replace(/\/\/.*$/gmu, '');
@@ -51,8 +53,8 @@ test('every width query of the core ladder is the breakpoint or its exact comple
 test('no width query anywhere stops a fraction short of the breakpoint', () => {
   const offenders = [];
   for (const file of [...files('src/core'), ...files('src/component'), ...files('src/smart')]) {
-    const source = readFileSync(join(root, file), 'utf8');
-    if (/max-width:\s*59\.9\d*rem/u.test(source)) offenders.push(file);
+    const source = readFileSync(join(root, file), 'utf8').replace(/\/\/.*$/gmu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
+    if (/max-width:\s*59\.9\d*rem|width\s*<\s*60rem/u.test(source)) offenders.push(file);
   }
   assert.deepEqual(offenders, []);
 });
