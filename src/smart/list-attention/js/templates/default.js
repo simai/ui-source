@@ -81,7 +81,7 @@ function passedRow(context, item) {
   return html`<li class="sf-list-attention-item sf-list-attention-item--passed" data-status="success" data-lines=${item.text ? '2' : '1'}>
     ${icon(context.icons.success, 'sf-list-attention-icon--success')}
     <span class="sf-list-attention-text">
-      <span class="sf-list-attention-title"><span class="sr-only">${context.passed.word}: </span>${item.title}</span>
+      <span class="sf-list-attention-title"><span class="sr-only">${context.passedGroup.word}: </span>${item.title}</span>
       ${item.text ? html`<span class="sf-list-attention-meta">${item.text}</span>` : nothing}
     </span>
   </li>`;
@@ -144,7 +144,7 @@ export function renderListAttentionTemplate(context) {
   const density = context.compact ? 'compact' : nothing;
   if (count === 0) {
     if (empty !== 'line') return nothing;
-    const quiet = html`<p class="sf-list-attention-quiet" role="status">${icon('check_circle', 'sf-list-attention-icon--success')}<span class="sf-list-attention-quiet-text">${context.emptyText}</span>${context.checked
+    const quiet = html`<p class="sf-list-attention-quiet" role="status">${icon('check_circle', 'sf-list-attention-icon--success')}<span class="sf-list-attention-quiet-text">${context.emptyLine}</span>${context.checked
       ? html`<sf-button class="sf-list-attention-recheck-text" size="1/2" appearance="ghost" scheme="on-surface-variant" icon-start="refresh"
         text=${context.recheckLabel} @click=${() => context.component.onRecheck()}></sf-button>` : nothing}</p>`;
     if (frame === 'none') {
@@ -155,8 +155,8 @@ export function renderListAttentionTemplate(context) {
     </section>`;
   }
   const body = context.grouped
-    ? html`<div class="sf-list-attention-groups">${context.groups.map((one) => group(context, one, rows(context, one.items)))}${context.passed
-      ? group(context, context.passed, context.passed.items.map((item) => passedRow(context, item))) : nothing}</div>`
+    ? html`<div class="sf-list-attention-groups">${context.groups.map((one) => group(context, one, rows(context, one.items)))}${context.passedGroup
+      ? group(context, context.passedGroup, context.passedGroup.items.map((item) => passedRow(context, item))) : nothing}</div>`
     : html`<ul class="sf-list-attention-list">${rows(context, context.list)}</ul>`;
   // The root hears the click that chose «Подробнее о проверке» after the
   // menu did (navigate part help, cancelable like the other links).

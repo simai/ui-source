@@ -146,6 +146,12 @@ otherwise: a host that wants a new problem read out announces it itself.
 
 ## Changes
 
+- 1.2.2 (2026-11-10) — the template reads its computed values under keys of
+  their own, not under the settings `passed` and `empty-text`. Nothing
+  draws differently.
+- 1.2.1 (2026-11-10) — every status glyph the list can draw is declared to
+  the Loader when it connects (R074), so the status icons ride the page's
+  first icon request. Nothing draws differently.
 - 1.2.0 (2026-11-10, owner decision C37) — the card: summary badges, item
   fields `object`, `since`, `source`, `affected`, `help`, `dismissible`, the
   quiet action, triage with undo, `checked-at` and recheck, `limit` and

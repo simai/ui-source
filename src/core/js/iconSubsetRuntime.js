@@ -2575,16 +2575,21 @@ export function installIconSubsetRuntime(
   ) {
     const started = Date.now();
     const capLeft = () => Math.max(0, started + capMs - Date.now());
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    // Waits for the promise or what is left of the cap, whichever comes
+    // first, and clears the cap's timer when the promise wins: a pending 8 s
+    // timer left behind by every round showed as a leak in a page's instance
+    // scope (pair-next sweep, progress-run).
+    const withinCap = (promise) => {
+      let timer = 0;
+      const cap = new Promise((resolve) => { timer = setTimeout(resolve, capLeft()); });
+      return Promise.race([promise, cap]).finally(() => clearTimeout(timer));
+    };
     const frame = () =>
-      Promise.race([
-        new Promise((resolve) =>
-          typeof requestAnimationFrame === "function"
-            ? requestAnimationFrame(() => setTimeout(resolve, 0))
-            : setTimeout(resolve, 16),
-        ),
-        sleep(capLeft()),
-      ]);
+      withinCap(new Promise((resolve) =>
+        typeof requestAnimationFrame === "function"
+          ? requestAnimationFrame(() => setTimeout(resolve, 0))
+          : setTimeout(resolve, 16),
+      ));
     const registry = window.customElements;
     // Asked for and not defined yet. A store installed by an older bundle has
     // no asked(); its held() also lists the tags Core held while parsing.
@@ -2623,10 +2628,9 @@ export function installIconSubsetRuntime(
       // Defined or failed: a tag whose module failed to load is let go at
       // once (D2: an aborted sf-tag held the first request for the whole cap).
       const pending = window.SF?.__internal?.pendingTags;
-      await Promise.race([
+      await withinCap(
         Promise.all(waiting.map((tag) => pending?.settled?.(tag) || registry.whenDefined(tag))),
-        sleep(capLeft()),
-      ]);
+      );
     }
   };
 

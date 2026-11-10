@@ -35,6 +35,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {pageLocale} from '../../core/js/page-language';
 import {noteDeprecated} from '../../core/js/deprecations.js';
+import {preloadControlIcons} from '../helpers/cycle';
 import {renderListAttentionTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -75,43 +76,48 @@ function noteSize(host) {
   globalThis.console?.warn?.(`[SIMAI Framework] sf-list-attention: size is deprecated until ${SIZE_REMOVE_AFTER}; the density comes from the page -- write data-sf-density="compact" on the list or on the region or page around it. See contracts/changes/journal.json (attribute-list-attention-size-to-density).`);
 }
 
-// The icons this list draws, asked for when it is drawn (R074; as sf-segmented
-// does since ui-source 2f588136). The status icons are filled glyphs of their
-// own <i>, scanned only after the page's first icon request was put together:
-// they went in a second request and, on icons.simai.io, drew at 0.9-1.1 s
-// against rows at 0.1-0.2 s, while the icon is the row's only visible status
-// sign. Declared here they ride the first request, with the head badges'
-// outlined icons and the «⋯» menu's icons a press shows. Asked once per distinct list; nothing without the Loader.
-// (When the R074 helpers land, smart/helpers/cycle.js preloadControlIcons is
-// the same call.)
+// The icons this list can draw, asked for when it connects and when it draws
+// (R074 F3; preloadControlIcons, as sf-segmented and sf-tag do). The status
+// icons are filled glyphs of their own <i>, scanned only after the page's
+// first icon request: they went in a second one and, on icons.simai.io, drew
+// at 1.05-1.15 s against rows at 0.11 s, while the icon is the row's only
+// visible status sign. Every status the list can draw is declared when it
+// connects -- before the host has set any items, so the list does not wait
+// for its data -- filled for the rows (check_circle for passed and the empty
+// line) and outlined for the head's badges (sf-badge icon-start), which,
+// left out, asked the same list again. The settings known at connect add
+// the controls' glyphs: the «⋯» and its menu with triage, the recheck with
+// checked-at, «Все проблемы» / «Показать все» outside group mode, the
+// chevron in group mode --
+// so a host whose items come late still sends one request. What the data
+// adds (a help link's menu without triage) is added when drawn. One list
+// per host, asked once while it stays the same.
 const MENU_ICONS = ['schedule', 'event', 'notifications_off', 'help'];
 
-export function listIcons(context) {
-  const entries = [];
+export const STATUS_GLYPHS = Object.freeze([
+  ...STATUSES.map((one) => ({icon: ICONS[one], filled: true})),
+  ...STATUSES.map((one) => ({icon: ICONS[one], filled: false})),
+]);
+
+export function listIcons(host, context = null) {
+  const entries = [...STATUS_GLYPHS];
   const add = (icon, filled) => {
     if (icon && !entries.some((one) => one.icon === icon && one.filled === filled)) entries.push({icon, filled});
   };
+  const menu = () => ['more_horiz', ...MENU_ICONS].forEach((icon) => add(icon, false));
+  if (host?.hasAttribute?.('triage')) menu();
+  if (host?.hasAttribute?.('checked-at')) add('refresh', false);
+  // «Все проблемы» with more-href, or «Показать все» past the limit, which
+  // the items decide later: every list but group mode can show it.
+  if (host?.getAttribute?.('group') === 'severity') add('expand_more', false);
+  else if (host) add('arrow_forward', false);
+  if (!context) return entries;
   const rows = context.grouped ? (context.groups ?? []).flatMap((one) => one.items) : context.list ?? [];
-  rows.forEach((item) => add(ICONS[item.status], true));
-  // The head's badges draw the same names outlined (sf-badge icon-start).
-  // Left out, they are tracked a moment after the first request went out and
-  // ask the whole list again (measured on the lab page: a second request of
-  // the same 13 names, 0.6-1 s later).
-  (context.badges ?? []).forEach((one) => add(one.icon, false));
-  if (context.passed || (context.count === 0 && context.empty === 'line')) add(ICONS.success, true);
+  if (rows.some((item) => item.menu)) menu();
+  if (context.checked) add('refresh', false);
+  if (context.more) add('arrow_forward', false);
   if (context.grouped) add('expand_more', false);
-  if (rows.some((item) => item.menu)) MENU_ICONS.forEach((icon) => add(icon, false));
   return entries;
-}
-
-function preloadListIcons(host, entries) {
-  if (!entries.length) return 0;
-  const key = JSON.stringify(entries);
-  if (host.__sfPreloadedIcons === key) return 0;
-  const loader = globalThis.SF?.Loader;
-  if (typeof loader?.preloadIcons !== 'function') return 0;
-  host.__sfPreloadedIcons = key;
-  return loader.preloadIcons(entries) || 0;
 }
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
@@ -207,6 +213,12 @@ class SfListAttention extends ListAttentionElement {
     this._open = {error: true, warning: true, info: true, success: true, passed: false};
     this._menuFor = '';
     this._focusAfter = null;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Before the first draw and before any items: every status glyph.
+    if (this.isConnected) preloadControlIcons(this, listIcons(this));
   }
 
   /** Every item the host gave, ordered, the set-aside ones left out. */
@@ -464,7 +476,9 @@ class SfListAttention extends ListAttentionElement {
         open: this._open[one],
         items: list.filter((item) => item.status === one).map(row),
       })) : [],
-      passed: passed.length ? {
+      // Computed values under keys of their own, not a setting's name (the
+      // template-context probe compares a setting's key with its getter).
+      passedGroup: passed.length ? {
         key: 'passed',
         title: this.sfWord('group-passed'),
         count: passed.length,
@@ -478,7 +492,7 @@ class SfListAttention extends ListAttentionElement {
         text: this.sfWord(`summary-${one}`, {count: counts[one]}),
       })),
       empty: this.empty === 'none' ? 'none' : 'line',
-      emptyText: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
+      emptyLine: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
       checked,
       checkedLine: checked ? this.sfWord('checked-text', {vars: {when: checked}}) : '',
       recheckLabel: this.sfWord('recheck-label'),
@@ -493,7 +507,7 @@ class SfListAttention extends ListAttentionElement {
 
   template() {
     const context = this.templateContext();
-    preloadListIcons(this, listIcons(context));
+    preloadControlIcons(this, listIcons(this, context));
     return renderListAttentionTemplate(context);
   }
 }
