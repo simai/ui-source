@@ -14,7 +14,7 @@
     "src/component/carousel/scss/_var__carousel.scss",
     "src/component/carousel/scss/index.scss"
   ],
-  "content_sha256": "9b0fd81b0b60dff8d45bb02dec4b46273dd95b65dbc610bea7ba4a898cfd6fff",
+  "content_sha256": "73aaaec9fcb2802a148d3e2b08aaab265b4e56b73aa78be42db8b74f865884af",
   "dependencies": [
     {
       "id": "component.swiper",
