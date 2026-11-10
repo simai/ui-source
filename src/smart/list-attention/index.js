@@ -34,6 +34,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {pageLocale} from '../../core/js/page-language';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderListAttentionTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -52,6 +53,24 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 // The snooze lengths of the «⋯» menu, in days.
 export const SNOOZE = {'snooze-day': 1, 'snooze-week': 7};
+
+// size is deprecated (1.2.0; change journal attribute-list-attention-size-to-density):
+// decision C22 gives the density to the page (data-sf-density, a compact
+// context), never to a manual size, and in sf-list-timeline size="1/2" is a
+// smaller rung, not the compact density. Until 2027-01-01 size="1/2" still
+// draws this list compact, as 1.1's own small rung did; it is noted in
+// SF.deprecations and said once per page in the console with its
+// replacement.
+export const SIZE_REMOVE_AFTER = '2027-01-01';
+
+function noteSize(host) {
+  if (!host.hasAttribute('size')) return;
+  noteDeprecated({component: 'sf-list-attention', kind: 'attribute', from: 'size', to: 'data-sf-density', since: '2026-11-10', remove_after: SIZE_REMOVE_AFTER});
+  const root = globalThis.SF = globalThis.SF || {};
+  if (root.__sfListAttentionSizeWarned) return;
+  Object.defineProperty(root, '__sfListAttentionSizeWarned', {value: true, configurable: true});
+  globalThis.console?.warn?.(`[SIMAI Framework] sf-list-attention: size is deprecated until ${SIZE_REMOVE_AFTER}; the density comes from the page -- write data-sf-density="compact" on the list or a container. See contracts/changes/journal.json (attribute-list-attention-size-to-density).`);
+}
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -163,11 +182,13 @@ class SfListAttention extends ListAttentionElement {
 
   // ── what a press does ───────────────────────────────────────────────────
 
-  // A link (an action or an object): the request first; not cancelled, the
-  // browser follows it.
+  // A link (an action, an object or the help of a check): the request
+  // first; not cancelled, the browser follows it.
   onNavigate(event, item, part = 'action') {
     if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const href = part === 'object' ? item.object?.href ?? '' : item.action?.href ?? '';
+    const href = part === 'object' ? item.object?.href ?? ''
+      : part === 'help' ? item.help ?? ''
+        : item.action?.href ?? '';
     const allowed = this.sfEmit('navigate', {id: item.id, status: item.status, href, part}, {cancelable: true});
     if (!allowed) event.preventDefault();
   }
@@ -179,17 +200,17 @@ class SfListAttention extends ListAttentionElement {
 
   // «Все проблемы (N)»: with more-href a link, asked first; without it the
   // rows past the limit open in place.
-  onMore(event) {
+  onAll(event) {
     const href = this.moreHref;
     if (href) {
       if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      const allowed = this.sfEmit('more', {href}, {cancelable: true});
+      const allowed = this.sfEmit('all', {href}, {cancelable: true});
       if (!allowed) event.preventDefault();
       return;
     }
-    if (!this.sfEmit('more', {href: ''}, {cancelable: true})) return;
+    if (!this.sfEmit('all', {href: ''}, {cancelable: true})) return;
     this._all = true;
-    this.requestComponentUpdate('more');
+    this.requestComponentUpdate('all');
   }
 
   onRecheck() {
@@ -207,9 +228,13 @@ class SfListAttention extends ListAttentionElement {
     return this.querySelector(':scope > .sf-list-attention > .sf-list-attention-menu');
   }
 
-  /** May this item be dismissed: its own flag, else the host's dismissible. */
+  /**
+   * May this item be dismissed: the page's permission (the host's
+   * dismissible) gates it; an item's dismissible: false only takes it away,
+   * an item can never grant it to a person without the right.
+   */
   canDismiss(item) {
-    return item.dismissible ?? this.dismissible === true;
+    return this.dismissible === true && item.dismissible !== false;
   }
 
   /** The entries of an item's «⋯»: snooze and dismiss with triage, help with a help link. */
@@ -242,9 +267,25 @@ class SfListAttention extends ListAttentionElement {
     event.stopPropagation();
     const choice = event.detail?.id;
     const item = normalizeItems(this.items).find((one) => one.id === this._menuFor);
-    if (!item || !choice || choice === 'help') return;
+    if (!item || !choice) return;
+    // «Подробнее о проверке» is a link row: the menu raised select inside the
+    // click on it, so the click is still going up. The root's click listener
+    // (onRootClick, after the menu's own) asks navigate with that click and
+    // stops the link when the host cancels it.
+    if (choice === 'help') {
+      this._helpFor = item;
+      return;
+    }
     if (Object.hasOwn(SNOOZE, choice)) this.snooze(item, SNOOZE[choice]);
     else if (choice === 'dismiss' && this.canDismiss(item)) this.dismiss(item);
+  }
+
+  // The click that chose «Подробнее о проверке», on its way up past the menu.
+  onRootClick(event) {
+    const item = this._helpFor;
+    if (!item) return;
+    this._helpFor = null;
+    this.onNavigate(event, item, 'help');
   }
 
   /** Snoozes an item for some days: the request, then set aside with an undo notice. */
@@ -334,6 +375,7 @@ class SfListAttention extends ListAttentionElement {
   }
 
   templateContext() {
+    noteSize(this);
     const list = this.list;
     const count = list.length;
     const status = list[0]?.status ?? '';
@@ -362,8 +404,9 @@ class SfListAttention extends ListAttentionElement {
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
-      // size is the former own rung: 1/2 is the compact density (C22).
-      compact: this.size === '1/2',
+      // size is deprecated (noteSize): until its removal size="1/2" still
+      // draws compact; the density otherwise comes from the page (C22).
+      compact: this.hasAttribute('size') && this.size === '1/2',
       frame: this.frame === 'none' ? 'none' : 'card',
       label: this.label,
       level,

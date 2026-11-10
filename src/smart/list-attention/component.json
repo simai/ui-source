@@ -79,7 +79,7 @@
         }
       },
       "default": [],
-      "summary": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible whether this person may say «Не напоминать» (else the host's dismissible). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
+      "summary": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible: false keeps «Не напоминать» off this item (the permission is the host's dismissible; an item can take it away, never give it). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
     },
     "label": {
       "type": "string",
@@ -111,7 +111,7 @@
     "dismissible": {
       "type": "boolean",
       "default": false,
-      "summary": "This person may dismiss problems («Не напоминать», triage): the host's permission for every item; an item's own dismissible wins"
+      "summary": "This person may dismiss problems («Не напоминать», triage): the page's permission, and the only one that grants it; an item's dismissible: false takes it away from that item, its dismissible: true grants nothing"
     },
     "checked-at": {
       "type": "string",
@@ -128,7 +128,7 @@
     "more-href": {
       "type": "string",
       "default": "",
-      "summary": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request more {href}"
+      "summary": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request all {href}"
     },
     "group": {
       "type": "enum",
@@ -165,7 +165,7 @@
         "1"
       ],
       "default": "1",
-      "summary": "The former own rung, kept as an alias of the density (owner decisions C22, C37): 1/2 is the compact density on this list, 1 the normal one under a compact page; not set, the list follows the page's density"
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-list-attention-size-to-density): the density comes from the page (data-sf-density, decision C22), never from a size. Until then size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once in the console; 1 is the normal density, as without size"
     }
   },
   "values": {},
@@ -178,7 +178,7 @@
         "part": "string"
       },
       "cancelable": true,
-      "summary": "A person pressed a link of an item: its action's (part action) or its object's (part object) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
+      "summary": "A person pressed a link of an item: its action's (part action), its object's (part object) or «Подробнее о проверке» in its «⋯» (part help) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
     },
     "apply": {
       "carries": {
@@ -203,7 +203,7 @@
         "id": "string"
       },
       "cancelable": true,
-      "summary": "A person chose «Не напоминать» (only where dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it"
+      "summary": "A person chose «Не напоминать» (only where the host's dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it"
     },
     "undo": {
       "carries": {
@@ -216,7 +216,7 @@
       "carries": {},
       "summary": "A person pressed «Проверить снова» (shown with checked-at). The host runs the checks and sets items and checked-at again"
     },
-    "more": {
+    "all": {
       "carries": {
         "href": "string"
       },
@@ -324,7 +324,7 @@
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.1.0 background-color-names: the public variable --sf-list-attention-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-list-attention-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.1.1: the size rule C18 (2026-11-09): the text's flex basis is the size step f0 (10rem, 160 px, as before), written as the token.",
-    "version 1.2.0 (2026-11-10, owner decision C37; research ui-control control/research/2026-11-09-list-attention.md, prototype prototypes/list-attention.html scenes А and Б): the summary badges, item fields object/since/source/affected/help/dismissible, the meta line, the quiet action, triage («⋯»: snooze a day / a week, «Не напоминать» only where dismissible, help) with snooze/dismiss requests and undo from an SF.notify notice, checked-at and recheck, limit 5 and more-href «Все проблемы (N)» (event more), frame card by default, empty line by default, group severity with passed, ordering by since inside a status, the rung on the ladder (size kept as the density alias). Changed defaults: frame card and empty line (a list that relied on none sets empty=\"none\" frame=\"none\"). Not taken: tinted banners (scene В), today's view."
+    "version 1.2.0 (2026-11-10, owner decision C37; research ui-control control/research/2026-11-09-list-attention.md, prototype prototypes/list-attention.html scenes А and Б): the summary badges, item fields object/since/source/affected/help/dismissible, the meta line, the quiet action, triage («⋯»: snooze a day / a week, «Не напоминать» only where the host's dismissible allows it and the item's dismissible is not false, help as a link whose press asks navigate part help) with snooze/dismiss requests and undo from an SF.notify notice, checked-at and recheck, limit 5 and more-href «Все проблемы (N)» (event all), frame card by default, empty line by default, group severity with passed, ordering by since inside a status, the rung on the ladder. size is deprecated until 2027-01-01 (journal attribute-list-attention-size-to-density): the density is the page's (C22); size=\"1/2\" still draws compact until then. Changed defaults: frame card and empty line (a list that relied on none sets empty=\"none\" frame=\"none\"). Not taken: tinted banners (scene В), today's view."
   ],
   "x-registry": {
     "capabilities": [

@@ -4,8 +4,9 @@ import {repeat} from 'lit/directives/repeat.js';
 // sf-list-attention's markup (scss/ draws it; owner decision C37).
 //
 // - The root is a section (role region) named by its heading: a card frame
-//   by default (frame="card"), the bare list with frame="none". size="1/2",
-//   the former own rung, is the compact density (C22) on the root.
+//   by default (frame="card"), the bare list with frame="none". The
+//   density is the page's (C22); the deprecated size="1/2" still puts the
+//   compact density on the root until its removal.
 // - The head: the heading at heading-level, then the summary, one sf-badge
 //   per severity («2 ошибки», «3 предупреждения»).
 // - The rows are one grid of five columns (icon, text, affected, action,
@@ -15,7 +16,8 @@ import {repeat} from 'lit/directives/repeat.js';
 //   meta line (object · text · age · source), the affected count (group
 //   mode), one quiet action (sf-button outline on-surface) and the «⋯»
 //   (sf-button-icon ghost) of the triage menu.
-// - The foot: «Проверено …» with a recheck, then «Все проблемы (N)».
+// - The foot: «Проверено …» with a recheck, then «Все проблемы (N)» (the
+//   event all).
 // - group="severity": disclosure groups by severity, «Пройдено» closed.
 // - With no items: nothing (empty none) or the head and one quiet line
 //   «Всё в порядке · проверено …» (empty line, the default).
@@ -126,7 +128,7 @@ function foot(context) {
     <span class="sf-list-attention-spacer"></span>
     ${link ? html`<sf-button class="sf-list-attention-all" size="1/2" appearance="ghost" scheme="primary" icon-end="arrow_forward"
       text-position="start" text=${link.text} href=${link.href || nothing}
-      @click=${(event) => context.component.onMore(event)}></sf-button>` : nothing}
+      @click=${(event) => context.component.onAll(event)}></sf-button>` : nothing}
   </div>`;
 }
 
@@ -156,7 +158,10 @@ export function renderListAttentionTemplate(context) {
     ? html`<div class="sf-list-attention-groups">${context.groups.map((one) => group(context, one, rows(context, one.items)))}${context.passed
       ? group(context, context.passed, context.passed.items.map((item) => passedRow(context, item))) : nothing}</div>`
     : html`<ul class="sf-list-attention-list">${rows(context, context.list)}</ul>`;
-  return html`<section class=${classes} style=${context.rootStyle || nothing} aria-labelledby=${context.headingId} tabindex="-1" data-sf-density=${density}>
+  // The root hears the click that chose «Подробнее о проверке» after the
+  // menu did (navigate part help, cancelable like the other links).
+  return html`<section class=${classes} style=${context.rootStyle || nothing} aria-labelledby=${context.headingId} tabindex="-1" data-sf-density=${density}
+    @click=${(event) => context.component.onRootClick(event)}>
     ${head(context, true)}
     ${body}
     ${foot(context)}

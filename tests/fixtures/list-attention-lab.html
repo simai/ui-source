@@ -79,10 +79,10 @@
   var passed = ['Расписание агентов работает', 'Права на папку загрузок', 'Обмен с платёжной системой', 'Кэш страниц включён', 'Почта DKIM и SPF', 'Лицензия действует до 12.08.2027'];
   var checked = new Date(now - 5 * 60000).toISOString();
   window.__events = [];
-  ['snooze', 'dismiss', 'undo', 'recheck', 'more', 'apply', 'navigate'].forEach(function (verb) {
+  ['snooze', 'dismiss', 'undo', 'recheck', 'all', 'apply', 'navigate'].forEach(function (verb) {
     document.addEventListener('sf-list-attention-' + verb, function (event) {
       window.__events.push({name: verb, from: event.target.id, detail: event.detail});
-      if (verb === 'navigate' || verb === 'more') event.preventDefault();
+      if (verb === 'navigate' || verb === 'all') event.preventDefault();
     });
   });
   customElements.whenDefined('sf-list-attention').then(function () {
