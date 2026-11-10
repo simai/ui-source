@@ -10013,6 +10013,42 @@
       },
       "owner": "ui-source",
       "source": "src/component/fab/scss/_css_fab.scss"
+    },
+    {
+      "id": "class-clipboard-size-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The clipboard button's size classes carry the size names, as every sized component's do (CP-03, docs pre-check 2026-11-10; component.clipboard 1.1.0): sf-clipboard--size-1/3, sf-clipboard--size-1 and sf-clipboard--size-2 are the control ladder's 1/3, 1 and 2 steps. sf-clipboard-1, -2 and -3 are their former names and draw the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-1",
+          "to": "sf-clipboard--size-1/3",
+          "match": "(?<![a-z0-9-])sf-clipboard-1(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-2",
+          "to": "sf-clipboard--size-1",
+          "match": "(?<![a-z0-9-])sf-clipboard-2(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-3",
+          "to": "sf-clipboard--size-2",
+          "match": "(?<![a-z0-9-])sf-clipboard-3(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard-1\">",
+        "after": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard--size-1/3\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/scss/_sf_copy.scss"
     }
   ]
 }

@@ -852,14 +852,14 @@
           "name": "--sf-modal-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the panel before and after its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-modal-padding-block",
           "role": "padding-block",
           "summary": "Space inside the panel above and below its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
