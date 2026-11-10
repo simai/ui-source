@@ -96,7 +96,7 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 | `color-on-hue` | `--sf-on-hue` | white | 20 |
 | `color-on-hue-container` | `--sf-on-hue-container` | 10 | 90 |
 | `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
-| `border-hue-outline` | `--sf-hue-outline` | 50 | 60 |
+| `border-hue` | `--sf-hue-outline` | 50 | 60 |
 | `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
 
 - The pairs are the status roles' pairs: `bg-hue` with `color-on-hue`,
@@ -113,7 +113,7 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 - Only the container has pointer-over and pressed steps, as in the role set.
 - They succeed the legacy palette classes (`utility-c17-legacy-palette-classes`
   in `contracts/changes/journal.json`): `color-<hue>[-N]` →
-  `sf-hue-<hue> color-hue`, `border-<hue>[-N]` → `sf-hue-<hue> border-hue-outline`,
+  `sf-hue-<hue> color-hue`, `border-<hue>[-N]` → `sf-hue-<hue> border-hue`,
   `bg-<hue>[-N]` → `sf-hue-<hue> bg-hue-container` where the class read a tint
   (tone 70 and lighter) and `sf-hue-<hue> bg-hue` where it read a deeper tone.
   The roles follow the theme, so the successor is the same tone as the legacy
