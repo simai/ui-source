@@ -19,7 +19,7 @@ import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const sheets = ['core/core/css/core.css', 'utility/utility/headers/css/headers.css', 'component/component/card/css/card.css'];
+const sheets = ['core/core/css/core.css', 'utility/utility/headers/default/css/default.css', 'component/component/card/css/card.css'];
 for (const sheet of sheets) if (!existsSync(join(out, sheet))) throw new Error(`Missing sheet ${sheet}`);
 const {render} = await import(pathToFileURL(resolve(import.meta.dirname, '../../src/core/js/composition/index.mjs')).href);
 
