@@ -32,6 +32,8 @@ const STATES = {
   done: {role: 'success', icon: 'check_circle'},
   stopped: {role: 'neutral', icon: 'stop_circle'},
   failed: {role: 'error', icon: 'error'},
+  paused: {role: 'warning', icon: 'pause_circle'},
+  queued: {role: 'neutral', icon: 'schedule'},
 };
 const APPEARANCES = ['main', 'tonal', 'outline'];
 const SIZES = ['1/3', '1/2', '1'];

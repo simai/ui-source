@@ -198,9 +198,10 @@ const DRAW = {
   'list-attention': {css: ['buttons', 'badges', 'icons', 'smart/smart/list-attention/css/list-attention.css'], js: ['list-attention', 'badge'],
     html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention>`},
   // sf-progress-run (2026-11-07): two steps and the output open, so the
-  // divider and the pane are drawn.
-  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy'],
-    html: `<sf-progress-run label="Run" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
+  // divider and the pane are drawn; 1.3.0 (C34): a total, so the overall bar
+  // and its figures (the tight gap) are drawn too.
+  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'badges', 'progress-bar', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy', 'badge', 'progress-bar'],
+    html: `<sf-progress-run label="Run" total="10" value="4" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
   // sf-list-description (2026-11-08): two rows with dividers, so the
   // divider is drawn; an empty value takes the label colour too.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],

@@ -31,7 +31,8 @@ export function renderProgressBarTemplate(context) {
     ? textPosition
     : 'none';
 
-  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, 'flex', context.rootClass].filter(Boolean);
+  const indeterminate = Boolean(context.indeterminate);
+  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, indeterminate ? 'sf-progress-bar--indeterminate' : '', 'flex', context.rootClass].filter(Boolean);
   if (normalizedPosition === 'right' || normalizedPosition === 'inline-end') {
     rootClasses.push('flex-row', 'items-cross-center');
   } else if (normalizedPosition === 'bottom') {
@@ -47,17 +48,18 @@ export function renderProgressBarTemplate(context) {
       data-tone=${tone}
       data-label=${context.label || nothing}
       data-value-text=${context.valueText || nothing}
+      data-indeterminate=${indeterminate ? 'true' : nothing}
       role="progressbar"
       aria-label=${context.label || nothing}
       aria-valuemin="0"
       aria-valuemax="100"
-      aria-valuenow=${String(normalizedValue)}
+      aria-valuenow=${indeterminate ? nothing : String(normalizedValue)}
       aria-valuetext=${context.valueText || nothing}
     >
       <div class="sf-progress-bar-main">
         <div class="sf-progress-bar-progress transition"></div>
       </div>
-      ${normalizedPosition !== 'none'
+      ${normalizedPosition !== 'none' && !indeterminate
         ? html`<div class="sf-progress-bar-text">${normalizedValue}%</div>`
         : nothing}
     </div>

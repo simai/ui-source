@@ -25,7 +25,7 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.2.1');
+  assert.equal(manifest.version, '1.3.0');
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);
@@ -77,10 +77,12 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
 test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and the reading position', () => {
   const manifest = json('src/smart/progress-run/component.json');
   assert.equal(manifest.family, 'progress');
-  assert.deepEqual(manifest.settings['run-state'].values, ['auto', 'running', 'done', 'failed', 'cancelled']);
+  assert.deepEqual(manifest.settings['run-state'].values, ['auto', 'running', 'paused', 'done', 'partial', 'failed', 'cancelled']); // 1.3.0 adds paused and partial (C34)
   assert.ok(!('state' in manifest.settings), 'state is the element base\'s own name');
   assert.deepEqual(Object.keys(manifest.actions), ['chunk', 'clear', 'step']);
-  assert.deepEqual(Object.keys(manifest.events), ['cancel', 'retry', 'close', 'download', 'toggle']);
+  assert.deepEqual(Object.keys(manifest.events), ['cancel', 'retry', 'close', 'download', 'toggle', 'pause', 'resume', 'minimize', 'expand', 'report']);
+  // view and started are the element runtime's own names (element-manifest RESERVED)
+  assert.ok(!('view' in manifest.settings) && !('started' in manifest.settings));
   const source = code('src/smart/progress-run/index.js');
   assert.doesNotMatch(source, /fetch\(|XMLHttpRequest|EventSource|WebSocket/u, 'it polls nothing');
   assert.match(source, /readingPosition/u);

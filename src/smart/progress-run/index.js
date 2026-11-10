@@ -1,22 +1,30 @@
 // sf-progress-run: a long job as a person sees it -- creating a site, an
 // update, a backup or a restore, an import, a package install:
 //
-//   <sf-progress-run label="Создание сайта demo.test" cancelable retryable hideable>
+//   <sf-progress-run label="Импорт товаров" total="12000" value="4812"
+//       unit="товар|товара|товаров" pausable cancelable minimizable>
 //     <script type="application/json" data-sf-settings>
-//       {"steps": [{"id": "dns", "title": "Адрес", "state": "done", "duration": 1200},
-//                  {"id": "files", "title": "Файлы", "state": "running", "started": "…"}]}
+//       {"steps": [{"id": "read", "title": "Чтение файла", "state": "done", "duration": 4000},
+//                  {"id": "rows", "title": "Товары", "state": "running", "value": 4812, "total": 12000}],
+//        "counters": [{"id": "added", "label": "Добавлено", "value": 3700},
+//                     {"id": "errors", "label": "{n} ошибка|{n} ошибки|{n} ошибок", "value": 0, "status": "error"}]}
 //     </script>
 //   </sf-progress-run>
 //
-//   run.step({id: 'files', state: 'done', duration: 5300});
-//   run.chunk({text: 'Copying 120 files…\n'});
+//   run.value = 5120;                                  // the bar, the figures, the time left
+//   run.step({id: 'rows', value: 5120});
+//   run.chunk({text: 'Row 218: price is not a number\n', step: 'rows'});
 //
-// The steps with their states and times, a collapsible output pane that
-// follows the newest line only while the reader is at its end (core's reading
-// position), copy and download, the result once the job ended, and Cancel,
-// Retry and Hide as requests to the host. The host drives it: it sets the
-// steps (or changes one with step) and appends the output (chunk); the
-// component polls nothing and does none of the actions itself.
+// One element, three looks (owner decision C34): look full (the card, and
+// once ended its summary), compact (a table row) and notice (a corner
+// panel's row). The steps with their states and times, a log per step and a
+// collapsible output pane that follows the newest line only while the reader
+// is at its end (core's reading position), copy and download, the overall
+// bar with «N из M · %» and the time left, the counts as one line, the first
+// errors, and Pause/Continue, Cancel, Minimize, Retry and Hide as requests to
+// the host. The host drives it: it sets the numbers and the steps (or changes
+// one with step) and appends the output (chunk); the component polls nothing
+// and does none of the actions itself.
 //
 // From its component.json (standard simai.smart-component 1.3.14 §3, §4,
 // §8): the settings, values and actions are made by
@@ -24,6 +32,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {toDate} from '../../core/js/format-intl.js';
+import {pageLocale} from '../../core/js/page-language.js';
 import {readingPosition} from '../../core/js/reading-position';
 import {renderProgressRunTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -36,13 +45,38 @@ import './scss/index.scss';
 let sequence = 0;
 
 export const STEP_STATES = ['waiting', 'running', 'done', 'failed', 'skipped'];
-export const RUN_STATES = ['waiting', 'running', 'done', 'failed', 'cancelled'];
+export const RUN_STATES = ['waiting', 'running', 'paused', 'done', 'partial', 'failed', 'cancelled'];
+export const ENDED = ['done', 'partial', 'failed', 'cancelled'];
+export const VIEWS = ['full', 'compact', 'notice'];
 // sf-steps' state glyphs (sf-steps 1.2.0, sf-wizard); waiting is an empty ring.
-export const ICONS = {waiting: 'radio_button_unchecked', running: 'progress_activity', done: 'check_circle', failed: 'error', skipped: 'do_not_disturb_on', cancelled: 'cancel'};
+export const ICONS = {waiting: 'radio_button_unchecked', running: 'progress_activity', done: 'check_circle', failed: 'error', skipped: 'do_not_disturb_on', cancelled: 'cancel', partial: 'warning', paused: 'pause_circle'};
 // The output a run keeps: the oldest lines leave past this many characters.
 export const OUTPUT_LIMIT = 500000;
+// The errors the summary shows in the card (C34: the first five, then a report).
+export const ERRORS_SHOWN = 5;
+// The time left is shown once the rate has been seen this long, from a window
+// of this length (NN/g, Apple HIG: no estimate before it means something).
+export const RATE_SETTLE_MS = 5000;
+export const RATE_WINDOW_MS = 30000;
+
+// One state, one look in every look (C34, R073): the badge of sf-badge 1.4.0
+// and the status of the overall bar (sf-progress-bar 1.3.0).
+export const STATE_LOOK = {
+  waiting: {activity: 'queued', bar: 'neutral'},
+  running: {activity: 'running', bar: 'neutral'},
+  paused: {activity: 'paused', bar: 'warning'},
+  done: {activity: 'done', bar: 'success'},
+  partial: {status: 'warning', icon: 'warning', bar: 'warning'},
+  failed: {activity: 'failed', bar: 'error'},
+  cancelled: {activity: 'stopped', bar: 'neutral'},
+};
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
+const number = (value) => {
+  if (value === undefined || value === null || value === '') return null;
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+};
 
 /** A step's state: the five words; anything else is waiting. */
 export function stepState(value) {
@@ -67,6 +101,10 @@ export function normalizeSteps(value) {
       title,
       state: stepState(step.state),
       text: text(step.text),
+      value: number(step.value),
+      total: number(step.total),
+      unit: text(step.unit),
+      log: typeof step.log === 'string' ? step.log : '',
       started: text(step.started),
       finished: text(step.finished),
       duration: step.duration !== undefined && step.duration !== null && step.duration !== '' && Number.isFinite(duration) && duration >= 0 ? duration : null,
@@ -112,6 +150,105 @@ export function appendOutput(output, more, limit = OUTPUT_LIMIT) {
   return line >= 0 && line < next.length - 1 ? next.slice(line + 1) : next;
 }
 
+// The plural categories in their canonical order (CLDR).
+const CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
+
+/**
+ * A word of the host's in its plural form for `count`: the forms separated by
+ * | in the order of the locale's plural categories (ru one|few|many|other, en
+ * one|other); a category past the forms given takes the last one.
+ */
+export function pluralForm(forms, count, locale = 'en') {
+  const list = String(forms ?? '').split('|').map((one) => one.trim());
+  if (list.length <= 1) return list[0] ?? '';
+  let rules;
+  try {
+    rules = new Intl.PluralRules(locale);
+  } catch {
+    rules = new Intl.PluralRules('en');
+  }
+  const order = CATEGORIES.filter((one) => rules.resolvedOptions().pluralCategories.includes(one));
+  const index = order.indexOf(rules.select(Number(count) || 0));
+  return list[Math.min(index < 0 ? list.length - 1 : index, list.length - 1)];
+}
+
+/** A number in the page's figures (9 227 in Russian, 9,227 in English). */
+export function formatNumber(value, locale = 'en') {
+  try {
+    return new Intl.NumberFormat(locale, {maximumFractionDigits: 0}).format(value);
+  } catch {
+    return String(Math.round(value));
+  }
+}
+
+/** The percentage of done: floored, so it says 100 only when everything is done. */
+export function percentOf(value, total) {
+  if (!(total > 0) || value === null) return null;
+  return Math.max(0, Math.min(100, Math.floor((value / total) * 100)));
+}
+
+/**
+ * The time left from the samples seen, in ms, or null while the rate has not
+ * settled: (total − value) / rate over the window, once the samples span
+ * RATE_SETTLE_MS and the value moved.
+ */
+export function estimateRemaining(samples, total, now = Date.now()) {
+  if (!(total > 0) || !Array.isArray(samples) || samples.length < 2) return null;
+  const recent = samples.filter((one) => now - one.t <= RATE_WINDOW_MS);
+  const window = recent.length >= 2 ? recent : samples.slice(-2);
+  const first = window[0];
+  const last = window[window.length - 1];
+  const span = last.t - first.t;
+  const done = last.v - first.v;
+  if (span < RATE_SETTLE_MS || done <= 0) return null;
+  const rate = done / span;
+  return Math.max(0, (total - last.v) / rate);
+}
+
+/** Time left in words, always rounded up: «меньше минуты», «≈ 6 мин», «≈ 1 ч 5 мин». */
+export function remainingWords(ms, word, {short = false} = {}) {
+  if (ms === null || ms === undefined || !Number.isFinite(ms)) return '';
+  if (ms < 60000) return word(short ? 'remaining-less-short' : 'remaining-less');
+  const minutes = Math.ceil(ms / 60000);
+  const time = minutes < 60
+    ? word('minutes', {count: minutes})
+    : word('hours', {vars: {h: Math.floor(minutes / 60), m: minutes % 60}});
+  return word(short ? 'remaining-short' : 'remaining', {vars: {time}});
+}
+
+/** The counters as the line draws them: zero ones left out, an error one at zero only once ended (its zero words). */
+export function shownCounters(counters, {ended = false} = {}) {
+  const list = Array.isArray(counters) ? counters : [];
+  const shown = [];
+  for (const counter of list) {
+    if (!counter || typeof counter !== 'object') continue;
+    const label = text(counter.label);
+    if (!label) continue;
+    const value = number(counter.value) ?? 0;
+    const error = text(counter.status) === 'error';
+    if (value === 0 && !(error && ended)) continue;
+    shown.push({id: text(counter.id), label, value, error, zero: value === 0, zeroText: text(counter.zero)});
+  }
+  return shown;
+}
+
+/** A counter in words: «Добавлено 9 227», «18 ошибок» (the label's {n}), the zero words for a zero error counter. */
+export function counterWords(counter, locale, word) {
+  if (counter.zero) return counter.zeroText || word('no-errors');
+  const label = pluralForm(counter.label, counter.value, locale);
+  const figure = formatNumber(counter.value, locale);
+  return label.includes('{n}') ? label.replaceAll('{n}', figure) : `${label} ${figure}`;
+}
+
+/** The errors made safe, at most `limit` of them. */
+export function normalizeErrors(value, limit = ERRORS_SHOWN) {
+  const list = Array.isArray(value) ? value : [];
+  return list
+    .filter((one) => one && typeof one === 'object' && text(one.text))
+    .slice(0, limit)
+    .map((one) => ({where: text(one.where), key: text(one.key), text: text(one.text)}));
+}
+
 const ProgressRunElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
@@ -120,11 +257,18 @@ const ProgressRunElement = elementFromManifest(manifest, {
     chunk(args = {}) {
       const more = typeof args === 'string' ? args : args?.text;
       if (more === undefined || more === null || String(more) === '') return refused('invalid');
+      const step = typeof args === 'string' ? '' : text(args?.step);
+      if (step) {
+        if (!this.list.some((one) => one.id === step)) return refused('missing');
+        this.appendStepText(step, String(more));
+        return applied();
+      }
       this.appendText(String(more));
       return applied();
     },
     clear() {
       this._output = '';
+      this._logs.clear();
       this.requestComponentUpdate('output');
       return applied();
     },
@@ -136,7 +280,7 @@ const ProgressRunElement = elementFromManifest(manifest, {
       // change made before the first render).
       this.syncStepsSource();
       const change = {};
-      for (const key of ['state', 'text', 'started', 'finished', 'duration']) {
+      for (const key of ['state', 'text', 'value', 'total', 'started', 'finished', 'duration']) {
         if (Object.prototype.hasOwnProperty.call(args, key)) change[key] = args[key];
       }
       this._changes.set(id, {...(this._changes.get(id) ?? {}), ...change});
@@ -150,7 +294,12 @@ class SfProgressRun extends ProgressRunElement {
   constructor() {
     super();
     const n = ++sequence;
-    this._ids = {heading: `sf-progress-run-heading-${n}`, output: `sf-progress-run-output-${n}`};
+    this._ids = {
+      heading: `sf-progress-run-heading-${n}`,
+      output: `sf-progress-run-output-${n}`,
+      errors: `sf-progress-run-errors-${n}`,
+      log: `sf-progress-run-log-${n}`,
+    };
     // Changes made with the action step, over the host's list until it sets
     // a new one.
     this._changes = new Map();
@@ -160,6 +309,15 @@ class SfProgressRun extends ProgressRunElement {
     this._follow = true;
     this._reading = readingPosition(null);
     this._timer = 0;
+    // A log per step (chunk {step}) and which step logs a person opened.
+    this._logs = new Map();
+    this._logOpen = new Map();
+    // The rate of value while it runs, and the moments the run saw.
+    this._samples = [];
+    this._seenStart = 0;
+    this._seenEnd = 0;
+    this._lastState = '';
+    this._resumed = false;
   }
 
   onConnected() {
@@ -189,11 +347,41 @@ class SfProgressRun extends ProgressRunElement {
     return normalizeSteps(changed);
   }
 
-  // The job's state: the host's run-state, else worked out from the steps.
+  get locale() {
+    return pageLocale(this);
+  }
+
+  // The numbers of the run, null when not given.
+  get done() {
+    return number(this.value);
+  }
+
+  get whole() {
+    const total = number(this.total);
+    return total && total > 0 ? total : null;
+  }
+
+  get errorsCount() {
+    // A number setting reads 0 when absent, so 0 means «not said»: the error counter speaks.
+    const total = number(this.errorsTotal);
+    if (total) return total;
+    const counter = (Array.isArray(this.counters) ? this.counters : []).find((one) => one && text(one.status) === 'error');
+    return counter ? number(counter.value) ?? 0 : 0;
+  }
+
+  // The job's state: the host's run-state, else worked out from the steps
+  // (finished with errors is partial).
   get drawnState() {
     const given = this.runState;
     if (given && given !== 'auto' && RUN_STATES.includes(given)) return given;
-    return runState(this.list);
+    const worked = runState(this.list);
+    if (worked === 'done' && this.errorsCount > 0) return 'partial';
+    if (worked === 'waiting' && !this.list.length && this.whole !== null) return 'running';
+    return worked;
+  }
+
+  get drawnView() {
+    return VIEWS.includes(this.look) ? this.look : 'full';
   }
 
   // The output: the host's setting, then what chunk appended. A new setting
@@ -214,12 +402,29 @@ class SfProgressRun extends ProgressRunElement {
     this.requestComponentUpdate('output');
   }
 
+  appendStepText(step, more) {
+    this._logs.set(step, appendOutput(this._logs.get(step) ?? '', more));
+    this.requestComponentUpdate('output');
+  }
+
   toggleOutput(force) {
     const open = force === undefined ? !this.outputOpen : Boolean(force);
     if (open === Boolean(this.outputOpen)) return;
     this._follow = true;
     this.outputOpen = open;
     this.sfEmit('toggle', {open});
+  }
+
+  // A step's log is open when a person opened it, else when the step failed.
+  stepLogOpen(step) {
+    return this._logOpen.has(step.id) ? this._logOpen.get(step.id) : step.state === 'failed';
+  }
+
+  toggleStepLog(id) {
+    const step = this.list.find((one) => one.id === id);
+    if (!step) return;
+    this._logOpen.set(id, !this.stepLogOpen(step));
+    this.requestComponentUpdate('log');
   }
 
   // ---------------------------------------------------------------- presses
@@ -229,7 +434,41 @@ class SfProgressRun extends ProgressRunElement {
   }
 
   onRetry() {
-    this.sfEmit('retry', {});
+    const state = this.drawnState;
+    if (state === 'partial') {
+      this.sfEmit('retry', {scope: 'failed'});
+      return;
+    }
+    const failed = this.list.find((step) => step.state === 'failed');
+    this.sfEmit('retry', failed ? {scope: 'all', from: failed.id} : {scope: 'all'});
+  }
+
+  onPause() {
+    this.sfEmit('pause', {});
+  }
+
+  onResume() {
+    this.sfEmit('resume', {});
+  }
+
+  onMinimize() {
+    this.sfEmit('minimize', {});
+  }
+
+  onExpand() {
+    this.sfEmit('expand', {});
+  }
+
+  // The error count link and «Ещё N ошибок»: a request for the report. Not
+  // cancelled, the link moves to the error list the summary shows.
+  onReport(event) {
+    const asked = this.sfEmit('report', {}, {cancelable: true});
+    if (!event) return;
+    const list = this.querySelector(`#${this._ids.errors}`);
+    if (event.currentTarget?.localName === 'a') {
+      event.preventDefault();
+      if (asked && list) list.focus({preventScroll: false});
+    }
   }
 
   onHide() {
@@ -253,9 +492,44 @@ class SfProgressRun extends ProgressRunElement {
 
   // ---------------------------------------------------------------- time
 
-  // One timer per run, only while a step runs with a start: its time counts up.
+  // The moments the run saw and the samples of the rate, kept as it draws.
+  observe(state, now) {
+    const previous = this._lastState;
+    if (state !== previous) {
+      // Going on after a pause: the rate is measured afresh (the pause is not work).
+      this._resumed = previous === 'paused' && state === 'running';
+      if (state === 'paused' || previous === 'paused') this._samples = [];
+      if (state === 'running' && !this._seenStart) this._seenStart = now;
+      if (ENDED.includes(state) && !this._seenEnd) this._seenEnd = now;
+      if (!ENDED.includes(state)) this._seenEnd = 0;
+      this._lastState = state;
+    }
+    const value = this.done;
+    if (state === 'running' && value !== null) {
+      const last = this._samples[this._samples.length - 1];
+      if (!last || last.v !== value) this._samples.push({t: now, v: value});
+      while (this._samples.length > 2 && now - this._samples[1].t > RATE_WINDOW_MS) this._samples.shift();
+    }
+  }
+
+  // The job's elapsed time: the host's started, else the moment the run saw
+  // it run; to finished, the moment it ended, or now.
+  elapsed(state, now) {
+    const start = toDate(this.startedAt)?.getTime() ?? (this._seenStart || null);
+    if (!start) return null;
+    const end = toDate(this.finishedAt)?.getTime() ?? (ENDED.includes(state) ? this._seenEnd || null : null);
+    if (ENDED.includes(state) && !end) return null;
+    return Math.max(0, (end ?? now) - start);
+  }
+
+  // One timer per run, only while a time counts up: a running step with a
+  // start, the elapsed time of an unknown size, or the time left.
   syncTimer() {
-    const counting = this.isConnected && this.list.some((step) => step.state === 'running' && step.started && step.duration === null && !step.finished);
+    const state = this.drawnState;
+    const counting = this.isConnected && (
+      this.list.some((step) => step.state === 'running' && step.started && step.duration === null && !step.finished)
+      || state === 'running'
+    );
     if (counting && !this._timer) this._timer = setInterval(() => this.requestComponentUpdate('time'), 1000);
     else if (!counting) this.stopTimer();
   }
@@ -267,29 +541,129 @@ class SfProgressRun extends ProgressRunElement {
 
   // ---------------------------------------------------------------- drawing
 
+  // «4 812 из 12 000 товаров · 40 %», the count so far, or nothing.
+  figures(value, total, unit, {short = false} = {}) {
+    const locale = this.locale;
+    const word = (key, options) => this.sfWord(key, options);
+    if (value === null && total === null) return '';
+    if (total === null) {
+      const forms = text(unit);
+      return word('figures-count', {vars: {value: formatNumber(value ?? 0, locale), unit: forms ? ` ${pluralForm(forms, value ?? 0, locale)}` : ''}});
+    }
+    const percent = percentOf(value ?? 0, total);
+    if (short === 'plain') return word('figures-plain', {vars: {value: formatNumber(value ?? 0, locale), total: formatNumber(total, locale)}});
+    if (short) return word('percent', {vars: {percent}});
+    const forms = text(unit);
+    return word('figures', {vars: {
+      value: formatNumber(value ?? 0, locale),
+      total: formatNumber(total, locale),
+      unit: forms ? ` ${pluralForm(forms, total, locale)}` : '',
+      percent,
+    }});
+  }
+
   templateContext() {
+    const now = Date.now();
     const list = this.list;
     const state = this.drawnState;
-    const ended = state === 'done' || state === 'failed' || state === 'cancelled';
-    const word = (key) => this.sfWord(key);
+    const view = this.drawnView;
+    const ended = ENDED.includes(state);
+    const locale = this.locale;
+    const word = (key, options) => this.sfWord(key, options);
+    this.observe(state, now);
     this.sfHostState('data-state', state);
-    const now = Date.now();
+
+    const value = this.done;
+    const total = this.whole;
+    const indeterminate = total === null && (state === 'running' || state === 'paused');
+    const showBar = total !== null || !list.length;
+    const percent = percentOf(value ?? 0, total);
+    const barValue = total !== null ? (state === 'done' ? 100 : percentOf(value ?? 0, total)) : (ended ? 100 : 0);
+
+    // The time on the figures line: the time left while it runs, the time it
+    // took once ended, the elapsed time while the size is unknown.
+    const elapsed = this.elapsed(state, now);
+    // An absent number setting reads 0; no running job has 0 left, so 0 means «not given».
+    const given = number(this.remaining);
+    const remainingMs = given ? given : estimateRemaining(this._samples, total, now);
+    let time = '';
+    let timeShort = '';
+    if (ended) {
+      time = elapsed !== null ? word('took', {vars: {time: formatTime(elapsed)}}) : '';
+    } else if (state === 'running' && total !== null) {
+      time = remainingMs !== null ? remainingWords(remainingMs, word) : word('estimating');
+      timeShort = remainingMs !== null ? remainingWords(remainingMs, word, {short: true}) : '';
+    } else if ((state === 'running' || state === 'paused') && elapsed !== null) {
+      time = formatTime(elapsed);
+      timeShort = time;
+    }
+
+    const counters = shownCounters(this.counters, {ended}).map((counter) => ({...counter, words: counterWords(counter, locale, word)}));
+    const errors = ended ? normalizeErrors(this.errors) : [];
+    const errorsTotal = Math.max(this.errorsCount, errors.length);
+    const resultShown = ended ? (this.resultText || word(`result-${state}`)) : '';
+
+    // What a screen reader hears: the result and the state changes only.
+    let announcement = '';
+    if (ended) announcement = resultShown;
+    else if (state === 'paused') announcement = word('announce-paused');
+    else if (state === 'running' && this._resumed) announcement = word('announce-resumed');
+
+    const look = STATE_LOOK[state] ?? STATE_LOOK.waiting;
+    const badgeText = {running: 'state-word-running', paused: 'state-word-paused', partial: 'state-word-partial', cancelled: 'state-word-cancelled', waiting: 'state-word-waiting'}[state];
+    const failed = list.find((step) => step.state === 'failed');
+
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
       ids: this._ids,
+      view,
       size: this.size === '1/2' ? '1/2' : '1',
       label: this.label,
+      caption: text(this.caption),
+      headingLevel: ['1', '2', '3', '4', '5', '6'].includes(String(this.headingLevel)) ? String(this.headingLevel) : '3',
       regionLabel: this.label || word('label'),
-      steps: list.map((step) => ({...step, time: formatTime(stepTime(step, now)), stateWord: word(`state-${step.state}`)})),
+      steps: list.map((step) => {
+        const log = `${step.log}${this._logs.get(step.id) ?? ''}`;
+        return {
+          ...step,
+          time: formatTime(stepTime(step, now)),
+          stateWord: word(`state-${step.state}`),
+          figures: step.value !== null || step.total !== null ? this.figures(step.value, step.total && step.total > 0 ? step.total : null, step.unit) : '',
+          log,
+          logOpen: Boolean(log) && this.stepLogOpen(step),
+        };
+      }),
       state,
       ended,
-      resultShown: ended ? (this.resultText || word(`result-${state}`)) : '',
+      look,
+      badgeText: badgeText ? word(badgeText) : '',
+      showBar,
+      indeterminate,
+      barValue,
+      barStatus: look.bar,
+      percent,
+      figures: this.figures(value, total, this.unit),
+      figuresShort: total !== null ? this.figures(value, total, this.unit, {short: true}) : '',
+      figuresPlain: total !== null ? this.figures(value, total, this.unit, {short: 'plain'}) : '',
+      time,
+      timeShort,
+      counters,
+      errors,
+      errorsTotal,
+      moreErrors: errorsTotal > errors.length && ended ? errorsTotal - errors.length : 0,
+      resultShown,
+      announcement,
       outputShown: this.outputText,
       outputOpen: Boolean(this.outputOpen),
       outputLabel: this.outputLabel,
-      showCancel: Boolean(this.cancelable) && state === 'running',
-      showRetry: Boolean(this.retryable) && (state === 'failed' || state === 'cancelled'),
+      showCancel: Boolean(this.cancelable) && (state === 'running' || state === 'paused'),
+      showPause: Boolean(this.pausable) && state === 'running',
+      showResume: Boolean(this.pausable) && state === 'paused',
+      showMinimize: Boolean(this.minimizable) && view === 'full',
+      showRetry: Boolean(this.retryable) && (state === 'failed' || state === 'cancelled' || state === 'partial'),
+      retryWord: state === 'partial' ? word('retry-failed') : word('retry'),
+      retryFrom: state === 'failed' && failed ? failed.id : '',
       showHide: Boolean(this.hideable) && ended,
       icons: ICONS,
       words: {
@@ -300,6 +674,15 @@ class SfProgressRun extends ProgressRunElement {
         copy: word('copy'),
         download: word('download'),
         emptyOutput: word('empty-output'),
+        pause: word('pause'),
+        resume: word('resume'),
+        minimize: word('minimize'),
+        expand: word('expand'),
+        stepLog: word('step-log'),
+        counts: word('counts'),
+        errorsList: errors.length ? word('errors-shown', {count: errors.length, vars: {total: formatNumber(errorsTotal, locale)}}) : '',
+        moreErrors: errorsTotal > errors.length ? word('more-errors', {count: errorsTotal - errors.length}) : '',
+        errorsCount: word('errors-count', {count: errorsTotal}),
       },
       rootClass: this.getRootClass(),
     });
@@ -317,6 +700,7 @@ class SfProgressRun extends ProgressRunElement {
     // Instant: the page's smooth scrolling would leave a log behind its end
     // while lines arrive faster than the animation.
     if (pane && this._follow) pane.scrollTo({top: pane.scrollHeight, behavior: 'instant'});
+    for (const log of this.querySelectorAll('.sf-progress-run-step-log')) log.scrollTo({top: log.scrollHeight, behavior: 'instant'});
   }
 }
 

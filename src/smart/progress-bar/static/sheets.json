@@ -33,6 +33,22 @@
       "utility/position/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
+    "indeterminate": [
+      "component/progress-bar/css/progress-bar.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "paused": [
+      "component/progress-bar/css/progress-bar.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
     "reference": [
       "component/progress-bar/css/progress-bar.min.css",
       "core/css/core.css",

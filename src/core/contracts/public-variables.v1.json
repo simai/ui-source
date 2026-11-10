@@ -4101,6 +4101,20 @@
       "selector": "sf-progress-run, .sf-progress-run",
       "variables": [
         {
+          "name": "--sf-progress-run-gap",
+          "role": "gap",
+          "summary": "Space between the run's groups (head, progress, results, errors, steps, output, actions; decision C34, R073); 16 on a desktop, 12 on a phone and in compact density.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-progress-run-gap-tight",
+          "role": "gap",
+          "summary": "Space inside the progress group: the overall bar to its figures line; 8, 4 in compact density.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-11-10"
+        },
+        {
           "name": "--sf-progress-run-background-color",
           "role": "background",
           "summary": "The run's fill; none by default (a drawer has its own). The former name --sf-progress-run-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
