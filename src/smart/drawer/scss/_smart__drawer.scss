@@ -179,6 +179,22 @@
     transform: translateX(var(--sf-0));
   }
 
+  /* A closed panel is not drawn once it has slid out. Moved by its own width
+     it still stood beside the box it slides out of, and only a window clips
+     it: in a box that holds its own drawers (data-sf-overlay-container, which
+     clips nothing) its first pixels and its shadow showed past the box -- a
+     3px strip at the edge of every documentation example, whose body has 3px
+     of padding (ui-doc «Рецепты», 2026-11-10) -- and in a window its shadow
+     reached back over the edge. It hides when the slide ends (the delay is the
+     slide's duration) and shows at once when it opens. It is inert and
+     aria-hidden while closed already; nothing reads or reaches it. */
+  .sf-drawer:not(.is-open) .sf-drawer-panel {
+    visibility: hidden;
+    transition-property: transform, visibility;
+    transition-duration: var(--sf-duration-normal), 0s;
+    transition-delay: 0s, var(--sf-duration-normal);
+  }
+
   /* One gutter for the head and the body, so the title and the content share an
      inline start. A composite that wants a wider reading gutter sets the gutter
      attribute (or a theme sets --sf-drawer-gutter) instead of insetting its own

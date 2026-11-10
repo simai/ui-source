@@ -124,6 +124,7 @@
   .sf-list__body { gap: var(--sf-list--group-gap); }
 
   .sf-list__body[hidden],
+  .sf-list__empty[hidden],
   .sf-list__next[hidden] { display: none; }
 
   .sf-list__heading {

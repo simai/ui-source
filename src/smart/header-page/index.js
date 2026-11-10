@@ -18,6 +18,7 @@
 // dated alias (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteAuthored} from '../../core/js/density';
 import {renderPageHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -32,7 +33,46 @@ const PageHeaderElement = elementFromManifest(manifest, {
   aliases,
 });
 
+// The header's slots. A child naming one of them is the page's content for it.
+const HOST_SLOTS = new Set(['path', 'start', 'actions']);
+
 class SfPageHeader extends PageHeaderElement {
+  // The base takes the slot children once, when the element connects. A page
+  // that adds an action later -- «Создать» once the list has loaded, a button
+  // the person's rights allow -- appended it to the host, and it stood after
+  // the drawn header, outside it (ui-doc «Рецепты», 2026-11-10). A child that
+  // names a slot and arrives after the connection joins that slot, after the
+  // ones it already holds, and the header draws again.
+  onConnected() {
+    super.onConnected?.();
+    if (this._lateSlotObserver) return;
+    this._lateSlotObserver = new MutationObserver(() => this.adoptLateSlotChildren());
+    this._lateSlotObserver.observe(this, {childList: true});
+    this.adoptLateSlotChildren();
+  }
+
+  onDisconnected() {
+    this._lateSlotObserver?.disconnect();
+    this._lateSlotObserver = null;
+    super.onDisconnected?.();
+  }
+
+  adoptLateSlotChildren() {
+    if (!this._slotTemplatesCaptured) return;
+    const late = [...this.children].filter((child) => HOST_SLOTS.has(child.getAttribute('slot')) && child.localName !== 'template');
+    if (!late.length) return;
+    for (const child of late) {
+      const name = child.getAttribute('slot');
+      const nodes = this._liveSlotNodes.get(name) || [];
+      nodes.push(child);
+      this._liveSlotNodes.set(name, nodes);
+      // The page's content: a size it gives stays explicit (density, C22).
+      noteAuthored([child]);
+      child.remove();
+    }
+    this.requestComponentUpdate('slot-change');
+  }
+
   // star is optional (§4.2): absent draws no star, so it reads undefined
   // rather than the boolean's false.
   get star() {

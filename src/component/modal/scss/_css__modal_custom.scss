@@ -150,6 +150,16 @@
   opacity: 0;
 }
 
+/* sf-focus-ring: none -- the panel takes the focus programmatically when the
+   window opens (and when a Tab finds nothing else in it), so it draws no ring
+   of its own; the ring belongs to the controls inside it, as on sf-drawer's
+   panel. Opened from the keyboard, the whole window stood in the focus ring
+   (ui-doc «Рецепты», «Удаление», 2026-11-10). The page's [autofocus] inside
+   the window still takes the focus first (decision C25, C39). */
+.sf-modal [data-sf-modal-panel]:focus-visible {
+  outline: none;
+}
+
 .sf-modal.animate [data-sf-modal-panel] {
   transition:
           transform var(--sf-duration-normal) var(--sf-animation),
