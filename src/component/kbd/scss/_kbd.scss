@@ -89,9 +89,8 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   box-shadow: none;
 }
 
-// Plain glyphs are the row's own text (C38): 1em, through an internal
-// variable a place whose glyphs sit in a smaller wrapper than its label would
-// set in this sheet's place list.
+// Plain glyphs are the row's own text (C38): they inherit its size. The gap
+// between them is the hairline step a2 (2px), C18: no em off the ladder.
 @mixin plain {
   inline-size: auto;
   min-inline-size: var(--sf-0);
@@ -103,7 +102,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   border-radius: var(--sf-0);
   box-shadow: none;
   font-family: inherit;
-  font-size: var(--sf-kbd--plain-font-size, 1em);
+  font-size: inherit;
   font-weight: inherit;
   margin-block: var(--sf-0);
   vertical-align: baseline;
@@ -219,7 +218,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   }
 
   :where(#{$plain-places}) :where(#{$group}) {
-    gap: 0.125em;
+    gap: var(--sf-a2);
     vertical-align: baseline;
   }
 
@@ -254,7 +253,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   }
 
   :where(#{said-group(plain)}) {
-    gap: 0.125em;
+    gap: var(--sf-a2);
     vertical-align: baseline;
   }
 
