@@ -57,6 +57,187 @@
       }
     },
     {
+      "name": "record",
+      "title": "Карточка записи: разделы с «Изменить», одна колонка подписей, бейдж, справка, пустое с действием",
+      "settings": {
+        "label": "Заказ № 10482",
+        "dividers": true,
+        "items": [
+          {
+            "type": "section",
+            "id": "order",
+            "label": "Заказ",
+            "action": {
+              "label": "Изменить",
+              "event": "edit"
+            }
+          },
+          {
+            "id": "number",
+            "label": "Номер",
+            "value": "10482",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "id": "state",
+            "label": "Статус",
+            "badge": {
+              "text": "Передан в доставку",
+              "status": "info",
+              "icon": "local_shipping"
+            }
+          },
+          {
+            "id": "placed",
+            "label": "Оформлен",
+            "value": "6 ноября 2026, 14:32"
+          },
+          {
+            "id": "sum",
+            "label": "Сумма",
+            "value": "12 480 ₽",
+            "numeric": true,
+            "hint": "3 товара, скидка 1 200 ₽ по промокоду ОСЕНЬ"
+          },
+          {
+            "type": "section",
+            "id": "customer",
+            "label": "Покупатель",
+            "action": {
+              "label": "Изменить",
+              "event": "edit"
+            }
+          },
+          {
+            "id": "name",
+            "label": "Имя",
+            "value": "Анна Сергеевна Королёва",
+            "href": "#customer"
+          },
+          {
+            "id": "phone",
+            "label": "Телефон",
+            "value": "+7 912 345-67-89",
+            "numeric": true,
+            "copy": true
+          },
+          {
+            "id": "email",
+            "label": "Эл. почта",
+            "value": "a.koroleva@mail.ru",
+            "href": "mailto:a.koroleva@mail.ru",
+            "copy": true
+          },
+          {
+            "id": "comment",
+            "label": "Комментарий",
+            "value": ""
+          },
+          {
+            "type": "section",
+            "id": "delivery",
+            "label": "Доставка",
+            "action": {
+              "label": "Изменить",
+              "event": "edit"
+            }
+          },
+          {
+            "id": "way",
+            "label": "Способ",
+            "value": "Курьер СДЭК",
+            "help": "Срок и цену считает СДЭК по адресу и весу; меняются до передачи заказа в доставку."
+          },
+          {
+            "id": "address",
+            "label": "Адрес",
+            "value": "Екатеринбург, ул. Малышева, 51, кв. 108, подъезд 3, домофон 108К"
+          },
+          {
+            "id": "track",
+            "label": "Трек-номер",
+            "value": "1564 8723 0091",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "id": "date",
+            "label": "Дата доставки",
+            "value": "",
+            "status": "warning",
+            "empty": "Не назначена",
+            "action": {
+              "label": "Назначить",
+              "event": "schedule"
+            }
+          }
+        ]
+      },
+      "first-paint": {
+        "max-bytes": 20480,
+        "why": "a whole record card: three sections with their heads and actions, twelve rows with copy buttons, a badge, a help mark and an empty value's action print as the page reads them, so the card holds its height and the one label column before any code"
+      }
+    },
+    {
+      "name": "summary",
+      "title": "Сводка под заголовком записи: подпись над значением, до четырёх столбцов",
+      "settings": {
+        "label": "Сводка сервера",
+        "layout": "grid",
+        "columns": "4",
+        "items": [
+          {
+            "id": "ip",
+            "label": "IP-адрес",
+            "value": "185.104.248.17",
+            "mono": true,
+            "copy": true
+          },
+          {
+            "id": "plan",
+            "label": "Тариф",
+            "value": "Бизнес M · 4 ядра · 8 ГБ"
+          },
+          {
+            "id": "region",
+            "label": "Регион",
+            "value": "Москва, ЦОД «Медведково»"
+          },
+          {
+            "id": "os",
+            "label": "Система",
+            "value": "Ubuntu 24.04 LTS"
+          },
+          {
+            "id": "created",
+            "label": "Создан",
+            "value": "12 марта 2025"
+          },
+          {
+            "id": "sites",
+            "label": "Сайтов",
+            "value": 14
+          },
+          {
+            "id": "backup",
+            "label": "Резервная копия",
+            "badge": {
+              "text": "Не удалась",
+              "status": "error",
+              "icon": "error"
+            }
+          },
+          {
+            "id": "paid",
+            "label": "Продлён до",
+            "value": "31 декабря 2026",
+            "help": "Продлевается сам с баланса за 3 дня до конца срока."
+          }
+        ]
+      }
+    },
+    {
       "name": "panel",
       "title": "Боковая панель: размер 1/2, подпись над значением",
       "settings": {
@@ -138,17 +319,19 @@
           "  <div style=\"inline-size: 18rem\"><sf-list-description id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Задание\", \"value\": \"Резервная копия\"}]}</script></sf-list-description></div>",
           "  <sf-list-description id=\"cut\" overflow=\"truncate\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"label\": \"Хеш\", \"value\": \"4638e4ffb789fa3f57dbcf765eb230972bd1aec9a8c1d2e3f4a5b6c7d8e9f0a1-4638e4ffb789fa3f57dbcf765eb230972bd1aec9\", \"mono\": true}]}</script></sf-list-description>",
           "  <sf-list-description id=\"none\"></sf-list-description>",
+          "  <sf-list-description id=\"record\"><script type=\"application/json\" data-sf-settings>{\"label\": \"Заказ\", \"dividers\": true, \"items\": [{\"type\": \"section\", \"id\": \"order\", \"label\": \"Заказ\", \"action\": {\"label\": \"Изменить\", \"event\": \"edit\"}}, {\"id\": \"n\", \"label\": \"Номер\", \"value\": \"10482\", \"copy\": true}, {\"id\": \"s\", \"label\": \"Статус\", \"badge\": {\"text\": \"Передан\", \"status\": \"info\"}}, {\"type\": \"section\", \"id\": \"customer\", \"label\": \"Покупатель\", \"action\": {\"label\": \"Изменить\"}}, {\"id\": \"name\", \"label\": \"Имя покупателя полностью\", \"value\": \"Анна Королёва\", \"help\": \"Как в паспорте\"}, {\"id\": \"comment\", \"label\": \"Комментарий\", \"value\": \"\", \"status\": \"warning\", \"action\": {\"label\": \"Указать\", \"event\": \"fill\"}}, {\"id\": \"date\", \"label\": \"Дата\", \"value\": \"\", \"empty\": \"Не назначена\"}, {\"id\": \"sum\", \"label\": \"Сумма\", \"value\": 12480}]}</script></sf-list-description>",
+          "  <div style=\"inline-size: 40rem\"><sf-list-description id=\"grid\" layout=\"grid\" columns=\"3\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"a\", \"label\": \"IP-адрес\", \"value\": \"185.104.248.17\", \"mono\": true}, {\"id\": \"b\", \"label\": \"Тариф\", \"value\": \"Бизнес M\"}, {\"id\": \"c\", \"label\": \"Регион\", \"value\": \"Москва, ЦОД «Медведково», зал 3, ряд 12, стойка 7\"}, {\"id\": \"d\", \"label\": \"Система\", \"value\": \"Ubuntu\"}, {\"id\": \"e\", \"label\": \"Создан\", \"value\": \"12 марта\"}]}</script></sf-list-description></div>",
           "</main>"
         ]
       },
       "checks": [
         {
           "id": "p1-pairs",
-          "title": "a dl of label and value pairs in the host's order; an item without a label is left out; an empty value shows «—» with no link and no copy; a status is said in words",
+          "title": "a dl of label and value pairs in the host's order; an item without a label is left out; an empty value says «Не указан» with no link and no copy; a status is said in words",
           "covers": "settings.items, settings.label, settings.empty-text, accessibility.role group",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#facts'); const root = el.querySelector('.sf-list-description'); const rows = [...el.querySelectorAll('dl > .sf-list-description-row')]; const owner = el.querySelector('[data-id=owner]'); return root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Сведения о сайте' && rows.map((row) => row.dataset.id).join(',') === 'address,root,php,cert,owner' && rows.every((row) => row.querySelector(':scope > dt') && row.querySelector(':scope > dd')) && el.querySelector('[data-id=php] .sf-list-description-text').textContent === '8.3' && owner.querySelector('.sf-list-description-empty').textContent === '—' && !owner.querySelector('a, sf-button-copy') && el.querySelector('[data-id=cert] .sr-only').textContent === 'В порядке: ' && el.querySelector('[data-id=cert] .sf-list-description-hint').textContent === 'Продлевается сам' && el.querySelector('[data-id=root] .sf-list-description-text--mono') !== null; })()"
+              "check": "(() => { const el = document.querySelector('#facts'); const root = el.querySelector('.sf-list-description'); const rows = [...el.querySelectorAll('dl > .sf-list-description-row')]; const owner = el.querySelector('[data-id=owner]'); return root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Сведения о сайте' && rows.map((row) => row.dataset.id).join(',') === 'address,root,php,cert,owner' && rows.every((row) => row.querySelector(':scope > dt') && row.querySelector(':scope > dd')) && el.querySelector('[data-id=php] .sf-list-description-text').textContent === '8.3' && owner.querySelector('.sf-list-description-empty').textContent === 'Не указан' && !owner.querySelector('a, sf-button-copy') && el.querySelector('[data-id=cert] .sr-only').textContent === 'В порядке: ' && el.querySelector('[data-id=cert] .sf-list-description-hint').textContent === 'Продлевается сам' && el.querySelector('[data-id=root] .sf-list-description-text--mono') !== null; })()"
             }
           ]
         },
@@ -229,6 +412,68 @@
               "script": "(document.querySelector('#none').items = [{label: 'Новое', value: 'значение'}], true)",
               "wait": 150,
               "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelectorAll('.sf-list-description-row').length === 1; })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-sections",
+          "title": "section items: a head per section (role heading, its action named «Изменить: <section>»), a dl per section named by it; one label column for the whole record, every value on one axis",
+          "covers": "settings.items type section, settings.heading-level",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.querySelector('#record'); const heads = [...el.querySelectorAll('.sf-list-description-head')]; const parts = [...el.querySelectorAll('dl.sf-list-description-part')]; const left = (q) => [...el.querySelectorAll(q)].map((n) => Math.round(n.getBoundingClientRect().left)); const dd = new Set(left('dd')); const dt = new Set(left('dt')); const title = heads[0].querySelector('[role=heading]'); const button = heads[0].querySelector('sf-button'); return heads.length === 2 && parts.length === 2 && parts[1].getAttribute('aria-label') === 'Покупатель' && title.getAttribute('aria-level') === '3' && title.textContent.trim() === 'Заказ' && button.getAttribute('aria-label') === 'Изменить: Заказ' && dd.size === 1 && dt.size === 1; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-empty-action",
+          "title": "an empty value says «Не указан» (or the item's empty words), draws no status (the defect: the icon before «—»), and carries the item's action «Указать»; a press asks apply {action, scope: entry, ids, id, kind}",
+          "covers": "settings.items empty, action, events.apply, runtime.empty-text",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#record'); const c = el.querySelector('[data-id=comment]'); const d = el.querySelector('[data-id=date]'); return c.querySelector('.sf-list-description-empty').textContent === 'Не указан' && !c.querySelector('.sf-list-description-icon, .sr-only') && !c.hasAttribute('data-status') && c.querySelector('.sf-list-description-action sf-button').getAttribute('aria-label') === 'Указать: Комментарий' && d.querySelector('.sf-list-description-empty').textContent === 'Не назначена'; })()"
+            },
+            {
+              "user": "click:#record [data-id=comment] .sf-list-description-action button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-description-apply",
+                    "count": 1,
+                    "detail": {
+                      "action": "fill",
+                      "scope": "entry",
+                      "ids": [
+                        "comment"
+                      ],
+                      "id": "comment",
+                      "kind": "item"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p9-badge-help-numeric",
+          "title": "a badge value is an sf-badge on the value's line (line = the list's size); help puts an sf-help-mark after the label; a number is in tabular figures",
+          "covers": "settings.items badge, help, numeric",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#record'); const badge = el.querySelector('[data-id=s] sf-badge'); const help = el.querySelector('[data-id=name] dt sf-help-mark'); const sum = el.querySelector('[data-id=sum] .sf-list-description-text'); return badge && badge.getAttribute('line') === '1' && badge.getAttribute('status') === 'info' && help && help.getAttribute('text') === 'Как в паспорте' && help.getAttribute('label') === 'Подробнее: Имя покупателя полностью' && sum.classList.contains('sf-list-description-text--numeric') && getComputedStyle(sum).fontVariantNumeric.includes('tabular-nums'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p10-grid",
+          "title": "layout grid: each label over its value, at most columns per row, a value on one line with an ellipsis and its whole text as title",
+          "covers": "settings.layout grid, settings.columns",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#grid'); const rows = [...el.querySelectorAll('.sf-list-description-row')]; const tops = new Set(rows.map((r) => Math.round(r.getBoundingClientRect().top))); const firstRow = rows.filter((r) => Math.round(r.getBoundingClientRect().top) === Math.round(rows[0].getBoundingClientRect().top)); const dt = rows[0].querySelector('dt').getBoundingClientRect(); const dd = rows[0].querySelector('dd').getBoundingClientRect(); const long = el.querySelector('[data-id=c] .sf-list-description-text'); return firstRow.length === 3 && tops.size === 2 && dd.top >= dt.bottom - 0.5 && long.scrollWidth > long.clientWidth && long.getAttribute('title').startsWith('Москва'); })()"
             }
           ]
         }
