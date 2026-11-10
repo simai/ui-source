@@ -1487,14 +1487,71 @@ export function installIconSubsetRuntime(
     );
   };
 
-  SFLoaderPlugin.prototype.applyIconFontFallback = function (options = {}) {
+  // R074 D-A: the full font is loaded off to the side before its stylesheet
+  // goes in. The fallback rule sets every icon of the family in the full
+  // face; put in while that face was still on its way, it blanked every icon
+  // the subset already drew (font-display: block) until the ~420 KB file
+  // arrived, 2.3 s on a slow network. The face is fetched with the FontFace
+  // API, joins document.fonts once its file is in, and the stylesheet that
+  // follows carries no @font-face of its own. One load per family, shared by
+  // the prefetch (loadIconSubsetFamily) and every fallback; a failed load is
+  // forgotten, so the next fallback tries again (and the CSS face meanwhile).
+  SFLoaderPlugin.prototype.loadIconFallbackFace = function (type = "") {
+    const normalizedType = this.normalizeIconType(
+      type || this.getDefaultIconType(),
+    );
+    if (!this.iconFallbackFaceLoads) this.iconFallbackFaceLoads = new Map();
+    if (this.iconFallbackFaceLoads.has(normalizedType)) {
+      return this.iconFallbackFaceLoads.get(normalizedType);
+    }
+    if (!this.canPreloadIconFontFaces()) return Promise.resolve(null);
+    const cssText = this.buildIconFallbackCss({ type: normalizedType });
+    const parsed = this.parseIconFontFaceBlocks(cssText);
+    if (!parsed.length) return Promise.resolve(null);
+    const faces = parsed.map(
+      ({ family, src, descriptors }) =>
+        new window.FontFace(family, src, descriptors),
+    );
+    const load = Promise.all(faces.map((face) => face.load()))
+      .then(() => ({
+        faces,
+        url: this.getIconFallbackFontUrl(normalizedType),
+        cssText: cssText.replace(/@font-face\s*{[^}]*}\s*/gim, "").trim(),
+      }))
+      .catch((error) => {
+        this.iconFallbackFaceLoads?.delete(normalizedType);
+        console.warn("SFLoader icon fallback font failed to load", error);
+        return null;
+      });
+    this.iconFallbackFaceLoads.set(normalizedType, load);
+    return load;
+  };
+
+  SFLoaderPlugin.prototype.applyIconFontFallback = async function (
+    options = {},
+  ) {
     const icons = Array.isArray(options.icons) ? options.icons : [];
     const type = this.normalizeIconType(
       options.type || this.getDefaultIconType(),
     );
-    const prev = document.querySelector(
-      `style[data-sf-icons-fallback="${type}"]`,
-    );
+    const fallbackStyle = () =>
+      document.querySelector(`style[data-sf-icons-fallback="${type}"]`);
+    let prev = fallbackStyle();
+    let preloaded = null;
+    if (!prev) {
+      preloaded = await this.loadIconFallbackFace(type);
+      prev = fallbackStyle();
+      // The request that timed out answered while the full font was on its
+      // way: its subset draws every name, the full font is not needed.
+      const generation = Number(options.generation) || 0;
+      if (
+        !prev &&
+        generation &&
+        (this.iconSubsetAppliedGenerations?.get(type) || 0) >= generation
+      ) {
+        return true;
+      }
+    }
     if (prev) {
       // The full font already draws this family: it stays as it is. Writing
       // its stylesheet again would make a new face, and every icon it draws
@@ -1515,15 +1572,35 @@ export function installIconSubsetRuntime(
       if (icons.length) {
         style.setAttribute("data-sf-icons-fallback-icons", icons.join(","));
       }
-      style.textContent = this.buildIconFallbackCss({ type });
+      style.setAttribute(
+        "data-sf-icons-fallback-url",
+        this.getIconFallbackFontUrl(type),
+      );
+      const family = iconFallbackFontFiles[type]?.family;
+      if (preloaded) {
+        preloaded.faces.forEach((face) => document.fonts.add(face));
+        // The faces stay in document.fonts when the subset takes over
+        // (the style alone leaves): a later fallback reuses them as they are.
+        style.textContent = preloaded.cssText;
+        // The face the browser matches for the family is the loaded one; a
+        // same-URL CSS face (the icons stylesheet declares one) is loaded too,
+        // from the cache, so no icon waits on it after the rule goes in.
+        if (family && icons.length) {
+          await Promise.resolve(
+            document.fonts?.load?.(`400 16px "${family}"`, icons.join(" ")),
+          ).catch(() => {});
+        }
+        if (fallbackStyle()) return this.applyIconFontFallback(options);
+      } else {
+        style.textContent = this.buildIconFallbackCss({ type });
+      }
       if (!style.textContent) {
         return false;
       }
       document.head.appendChild(style);
-      // The face is asked for at once: an icon at font-size 0 may not make
-      // the browser fetch it.
-      const family = iconFallbackFontFiles[type]?.family;
-      if (family && icons.length) {
+      // No FontFace API, or the face failed: the CSS face is asked for at
+      // once (an icon at font-size 0 may not make the browser fetch it).
+      if (!preloaded && family && icons.length) {
         document.fonts
           ?.load?.(`400 16px "${family}"`, icons.join(" "))
           ?.catch?.(() => {});
@@ -2184,6 +2261,9 @@ export function installIconSubsetRuntime(
   // name the page draws. The background request gives up at the cap.
   SFLoaderPlugin.prototype.iconSubsetDeadlineMs = 3000;
   SFLoaderPlugin.prototype.iconSubsetBackgroundCapMs = 60000;
+  // When a subset request still unanswered starts fetching the full font, so
+  // that it is in by the deadline (R074 F1). 0 fetches it with the request.
+  SFLoaderPlugin.prototype.iconFallbackPrefetchMs = 1000;
 
   SFLoaderPlugin.prototype.isIconFallbackActive = function (type = "") {
     const normalizedType = this.normalizeIconType(
@@ -2245,6 +2325,17 @@ export function installIconSubsetRuntime(
       : Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
     const timedOut = Symbol("timed-out");
     let timer = 0;
+    // R074 F1: the full font is fetched before the deadline, so the fallback
+    // draws at the deadline and not a whole download after it. Not at once:
+    // a healthy service answers well inside the prefetch point, and a page
+    // that never falls back must not pay ~420 KB for the full font.
+    const prefetchMs = Math.min(
+      deadlineMs,
+      Math.max(0, Number(this.iconFallbackPrefetchMs) || 0),
+    );
+    const prefetch = deadlineMs
+      ? setTimeout(() => void this.loadIconFallbackFace(type), prefetchMs)
+      : 0;
     const first = await Promise.race([
       work,
       new Promise((resolve) => {
@@ -2252,6 +2343,7 @@ export function installIconSubsetRuntime(
       }),
     ]);
     clearTimeout(timer);
+    clearTimeout(prefetch);
     if (first !== timedOut) return first;
 
     request.timedOut = true;
@@ -2263,6 +2355,7 @@ export function installIconSubsetRuntime(
     return this.applyIconFontFallback({
       icons,
       type,
+      generation,
       reason: new Error(
         deadlineMs
           ? `icon subset request timed out after ${deadlineMs} ms; the full font draws these icons while the subset grows`
