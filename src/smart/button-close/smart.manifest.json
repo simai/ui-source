@@ -65,7 +65,7 @@
       "height": {
         "type": "string",
         "default": "default",
-        "description": "The button's height (owner decisions C27, C35), as on sf-button and sf-button-icon: size sets the cross and the box's step, height picks the box's height from that step's tightness steps -- low, default, high, highest -- on the UI height ladder; the box stays square and the cross keeps its size. Size 1 on desktop 32/40/48/56, compact 28/32/40/48, phone 28/36/44/52 (a notice's close is size 1, height low: 32 / 28 / 28). Inside a containing button the element is the cross only and height does nothing. A value outside the list reads as default.",
+        "description": "The button's height (owner decisions C27, C35), as on sf-button and sf-button-icon: size sets the cross and the box's step, height picks the box's height from that step's tightness steps -- low, default, high, highest -- on the UI height ladder; the box stays square and the cross keeps its size. Size 1 on desktop 32/40/48/56, phone 28/36/44/52; an explicit size keeps its step in a compact region (C22), as every size does. sf-toast's close is size 1, height low: 32, compact and phone 28. Inside a containing button the element is the cross only and height does nothing. A value outside the list reads as default.",
         "enum": [
           "low",
           "default",

@@ -106,6 +106,7 @@ const MEASURE = () => {
     return r(value);
   };
   const toast = (root) => {
+    if (!root) return null;
     const toastBox = box(root);
     const style = getComputedStyle(root);
     const inner = {left: toastBox.left + parseFloat(style.borderLeftWidth), right: toastBox.right - parseFloat(style.borderRightWidth),
@@ -150,9 +151,12 @@ const MEASURE = () => {
     const id = zone.id;
     const controls = {};
     for (const host of zone.querySelectorAll('[data-k]')) {
-      const control = host.querySelector('button');
+      // A Smart button moves its data-* attributes to the control it draws.
+      const control = host.matches('button') ? host : host.querySelector('button');
       const b = box(control);
-      controls[host.dataset.k] = {h: r(b.height), w: r(b.width)};
+      // A label's width follows the font as it loads: only the square
+      // controls report theirs.
+      controls[host.dataset.k] = b ? (host.dataset.k.startsWith('button-') ? {h: r(b.height)} : {h: r(b.height), w: r(b.width)}) : null;
     }
     zones[id] = {
       tokens: {space1: token(zone, '--sf-space-1'), space12: token(zone, '--sf-space-1\\/2'), space13: token(zone, '--sf-space-1\\/3'),
@@ -190,8 +194,8 @@ try {
         tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
         await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
         await tab.waitForFunction(() => document.querySelectorAll('sf-toast > .sf-toast').length === 6
-          && document.querySelectorAll('[data-k] button').length === 16
-          && document.querySelectorAll('sf-confirm [data-action="decline"] button').length === 2, null, {timeout: 30000})
+          && [...document.querySelectorAll('[data-k]')].filter((node) => node.matches('button') || node.querySelector('button')).length === 16
+          && document.querySelectorAll('sf-confirm button[data-action="decline"]').length === 2, null, {timeout: 30000})
           .catch(() => failures.push(`${key} load ${load}: the page never drew its toasts, controls and questions`));
         await tab.evaluate(() => document.fonts.ready);
         await tab.waitForTimeout(300);
@@ -201,7 +205,7 @@ try {
           const said = [];
           for (const ask of document.querySelectorAll('sf-confirm')) {
             ask.addEventListener('sf-confirm-answer', (event) => { if (!event.detail.accepted) ask.state = 'declined'; }, {once: true});
-            ask.querySelector('[data-action="decline"] button').click();
+            ask.querySelector('button[data-action="decline"]').click();
           }
           await new Promise((settle) => setTimeout(settle, 300));
           for (const ask of document.querySelectorAll('sf-confirm')) said.push({state: ask.state, status: ask.querySelector('.sf-confirm__status')?.textContent.trim() ?? null});
@@ -213,7 +217,13 @@ try {
           report[key] = seen;
           await tab.screenshot({path: join(process.env.SHOTS ?? '/tmp', `toast-notice-${key}.png`), fullPage: true}).catch(() => {});
         } else if (JSON.stringify(seen) !== JSON.stringify(report[key])) {
-          failures.push(`${key} load ${load}: the measurements differ from the first load`);
+          const diff = [];
+          const walk = (a, b, at) => {
+            if (a && b && typeof a === 'object') { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) walk(a[k], b?.[k], `${at}.${k}`); return; }
+            if (JSON.stringify(a) !== JSON.stringify(b)) diff.push(`${at} ${JSON.stringify(a)} -> ${JSON.stringify(b)}`);
+          };
+          walk(report[key], seen, '');
+          failures.push(`${key} load ${load}: the measurements differ from the first load: ${diff.slice(0, 8).join('; ')}`);
         }
         await tab.close();
       }
@@ -225,6 +235,7 @@ try {
         const check = (what, got, expected) => { if (!near(got, expected)) failures.push(`${key} ${zone}: ${what} ${got}, expected ${expected}`); };
         for (const name of ['stack', 'line', 'plain', 'two']) {
           const t = at[name];
+          if (!t) { failures.push(`${key} ${zone}: ${name} not drawn`); continue; }
           check(`${name} inline padding start`, t.padStart, want.padX);
           check(`${name} inline padding end`, t.padEnd, want.padX);
           check(`${name} block padding`, t.padTop, want.padY);
@@ -251,16 +262,19 @@ try {
           }
           if (t.betweenActions !== undefined) check(`${name} between actions`, t.betweenActions, want.between);
         }
-        check('one-line toast without the border', at.line.inner, want.oneLine);
-        check('plain one-line toast without the border', at.plain.inner, want.oneLine);
+        check('one-line toast without the border', at.line?.inner, want.oneLine);
+        check('plain one-line toast without the border', at.plain?.inner, want.oneLine);
         const c = at.controls;
         check('sf-button height=low', c['button-low']?.h, want.action);
         check('sf-button-icon height=low', c['icon-low']?.h, want.close);
         check('sf-button-icon height=low is square', c['icon-low']?.w, want.close);
         check('sf-button-icon kind=close height=low', c['icon-close-low']?.h, want.close);
-        check('sf-button-close size=1 height=low', c['close-low']?.h, want.close);
+        // An explicit size is stronger than the density (C22): size="1"
+        // keeps its desktop step in a compact region.
+        const sized = EXPECT[label === 'phone' ? 'phone' : 'desktop'];
+        check('sf-button-close size=1 height=low', c['close-low']?.h, sized.close);
         check('sf-button-icon default', c['icon-default']?.h, want.iconDefault);
-        check('sf-button-close size=1 default', c['close-default']?.h, want.iconDefault);
+        check('sf-button-close size=1 default', c['close-default']?.h, sized.iconDefault);
         check('sf-button-icon height=high', c['icon-high']?.h, want.iconHigh);
         check('sf-button-icon high = sf-button high', c['icon-high']?.h, c['button-high']?.h);
       }
