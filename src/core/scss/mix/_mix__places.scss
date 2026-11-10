@@ -282,7 +282,10 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
   --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
   --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
-  --sf-on-primary: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80));
+  // The place's own colour (its solid colour, declared on the place, so a
+  // project's --sf-primary brands the label of a white button on its banner
+  // too); the tones only where a child is no solid place.
+  --sf-on-primary: var(--sf-surface-place-solid, light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80)));
   --sf-primary-container: #{sf-ink($c, 12)};
   --sf-primary-container-hover: #{sf-ink($c, 16)};
   --sf-primary-container-active: #{sf-ink($c, 20)};
