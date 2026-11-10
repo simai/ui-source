@@ -38,8 +38,15 @@ test('the public variables are in the contract, read first, and default to the s
   }
 });
 
-test('a name never parts at a hyphen', () => {
-  assert.match(rule, /white-space:\s*nowrap;/u);
+test('a name never parts at a hyphen; a run longer than the line breaks anywhere (C10)', () => {
+  // One box as wide as its text (an inline block): it moves to the next line
+  // whole. Only a run longer than the whole line breaks, inside the box (C10).
+  assert.match(rule, /display:\s*inline-block;/u);
+  assert.match(rule, /max-inline-size:\s*100%;/u);
+  assert.doesNotMatch(rule, /white-space:\s*nowrap;/u);
+  assert.match(rule, /overflow-wrap:\s*anywhere;/u);
+  // The plate keeps the height it had on the text line.
+  assert.match(rule, /line-height:\s*normal;/u);
 });
 
 test('the tones come from existing roles only: no palette of their own', () => {

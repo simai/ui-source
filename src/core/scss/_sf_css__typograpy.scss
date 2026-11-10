@@ -271,8 +271,20 @@
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
     // A name is one word: sf-button-press never parts at its hyphens. The
-    // line breaks before the code instead (owner, 2026-11-07, R024).
-    white-space: nowrap;
+    // line breaks before the code instead (owner, 2026-11-07, R024): the
+    // code is one box as wide as its text, so it moves to the next line
+    // whole. Only a run longer than the whole line -- a URL, a token --
+    // breaks inside its box, anywhere when it has no space to break at
+    // (C10, 2026-11-10), so it never runs out of a narrow column; code with
+    // spaces breaks at them and keeps its words whole.
+    display: inline-block;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+    // The box's lines are the code font's own, so the plate is as tall as
+    // it was on the text line and the text line keeps its height.
+    line-height: normal;
+    // A box takes no underline from a link around it; it draws the link's.
+    text-decoration: inherit;
   }
 
   // Copy on click, only where a container asks for it with
