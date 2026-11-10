@@ -9,6 +9,11 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
+// On a phone -- below the md breakpoint, where core declares
+// --sf-breakpoint-md -- a form in a popup is a sheet at the bottom of the
+// screen (decision C32), as sf-menu-context reads it.
+const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement).getPropertyValue('--sf-breakpoint-md').trim();
+
 // sf-input-rich: a form field whose value is HTML of a small subset -- p, h2,
 // h3, h4, strong, em, a[href], ul, ol, li, blockquote, br -- the text type
 // html@1 of Larena's properties (js/rich-text-html.mjs is the subset's rule).
@@ -173,6 +178,7 @@ class SfRichText extends FormField(RichTextElement) {
     this._committed = '';
     this._link = {value: '', error: '', existing: false, selection: null, pending: null, placement: 'bottom-start'};
     this._dragFromSelf = false;
+    this._sheet = null;
   }
 
   // ---------------------------------------------------------- settings
@@ -279,6 +285,15 @@ class SfRichText extends FormField(RichTextElement) {
     this.addEventListener('sf-popover-open', (event) => this._onLinkOpen(event), {signal});
     this.addEventListener('sf-popover-opened', () => this._onLinkOpened(), {signal});
     this.addEventListener('sf-popover-closed', (event) => this._onLinkClosed(event), {signal});
+    // A link editor open while the window crosses the breakpoint becomes
+    // what the screen makes it: the sheet on a phone, anchored again wider.
+    this.ownerDocument.defaultView?.addEventListener('resize', () => {
+      if (this._popover()?.open) this._placeLinkPanel();
+    }, {signal});
+  }
+
+  onDisconnected() {
+    this._lowerLinkPanel();
   }
 
   afterRender() {
@@ -868,7 +883,9 @@ class SfRichText extends FormField(RichTextElement) {
     const button = popover?.querySelector('[data-sf-tool="link"]');
     const box = button?.getBoundingClientRect();
     const width = this.ownerDocument.documentElement.clientWidth;
-    const room = parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') * 20;
+    const surface = popover?.querySelector(':scope > [slot="content"]');
+    const room = (surface && parseFloat(globalThis.getComputedStyle?.(surface).getPropertyValue('--sf-popup-form-width')))
+      || parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') * 20;
     const placement = box && box.left + room > width && box.right - room >= 0 ? 'bottom-end' : 'bottom-start';
     popover?.setAttribute('placement', placement);
     this._link = {
@@ -882,7 +899,35 @@ class SfRichText extends FormField(RichTextElement) {
     this.requestComponentUpdate('link');
   }
 
+  /**
+   * The link editor on a phone is a sheet at the bottom of the screen (C32,
+   * RT-02): the surface says data-sf-sheet, which the field's sheet draws,
+   * and goes into the top layer through core's positioning, so no box of the
+   * page clips it or becomes its containing block. Wider, it hangs from the
+   * link button again.
+   */
+  _placeLinkPanel() {
+    const surface = this._popover()?.querySelector(':scope > [slot="content"]');
+    if (!surface) return;
+    const sheet = onPhone(this.ownerDocument);
+    if (sheet === Boolean(this._sheet) && this._sheet?.surface === surface) return;
+    this._lowerLinkPanel();
+    if (!sheet) return;
+    surface.setAttribute('data-sf-sheet', '');
+    const lower = globalThis.SF?.Position?.liftToTopLayer?.(surface) ?? null;
+    this._sheet = {surface, lower};
+  }
+
+  _lowerLinkPanel() {
+    const sheet = this._sheet;
+    if (!sheet) return;
+    this._sheet = null;
+    sheet.lower?.();
+    sheet.surface.removeAttribute('data-sf-sheet');
+  }
+
   _onLinkOpened() {
+    this._placeLinkPanel();
     // After the popover shows its content and this element drew the field.
     requestAnimationFrame(() => {
       const input = this.querySelector('.sf-rich-text-link-input');
@@ -937,6 +982,7 @@ class SfRichText extends FormField(RichTextElement) {
   _onLinkClosed(event) {
     if (event.target !== this._popover()) return;
     const reason = event.detail?.reason;
+    this._lowerLinkPanel();
     const {pending, selection} = this._link;
     this._link = {value: '', error: '', existing: false, selection: null, pending: null, placement: this._link.placement};
     this.requestComponentUpdate('link');

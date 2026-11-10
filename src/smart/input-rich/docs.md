@@ -62,7 +62,10 @@ again with the same subset: a request can be written by anyone.
   focusable and not sent; a read-only one is read and selected, its toolbar
   disabled, its value sent.
 - `size="1/2|1|2"` -- the field ladder; the frame, padding and text are
-  sf-textarea's of the same size, the toolbar's buttons a rung below.
+  sf-textarea's of the same size, the toolbar's buttons a rung below
+  (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
+  square). Headings in the text follow the field's text, not the page's:
+  h2 a rung above it, h3 the field's text, h4 a rung below, all bold.
 - `appearance="bordered|filled"` -- sf-textarea's two boxes.
 - `rows` -- the fewest lines shown (6); the field grows with its text.
   `max-rows` -- the most before the text scrolls inside.
@@ -96,7 +99,8 @@ nothing.
 - Ctrl+B / Cmd+B bold, Ctrl+I / Cmd+I italic, Ctrl+K / Cmd+K the link
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
 - In the link editor Enter applies and Escape closes; the caret goes back to
-  the text.
+  the text. The link editor is a popup form of the form's width; on a phone
+  it is a sheet at the bottom of the screen.
 
 ## Accessibility
 
