@@ -55,6 +55,11 @@ const BLOCK = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5
 const NODE_ATTRIBUTE = 'data-sf-inline-node';
 const ATOM_TAGS = new Map(Object.entries(INLINE_COMPONENTS).map(([name, entry]) => [entry.tag.toUpperCase(), name]));
 const isAtomElement = (node) => node?.nodeType === 1 && node.hasAttribute(NODE_ATTRIBUTE);
+// A mark the editor has no element for is drawn as a span carrying its name,
+// never as an element of that name, so it survives the DOM read-back.
+const MARK_ATTRIBUTE = 'data-sf-inline-mark';
+const MARK_NAME = /^[a-z][a-z0-9-]{0,31}$/u;
+const MARK_TAGS = new Set(['strong', 'em', 'code']);
 
 /** The entry an atom element holds: its JSON, or for a drawn atom without it, its tag and declared attributes. */
 function atomEntry(element) {
@@ -101,7 +106,8 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
     if (node.nodeType === 1 && node !== root) {
       const entry = atomEntry(node);
       if (entry) {
-        segments.push({ text: INLINE_OBJECT, marks: [], href, node: entry });
+        // An atom is never inside a link, even when pasted inside an <a>.
+        segments.push({ text: INLINE_OBJECT, marks: [], href: entry.type === 'component' ? null : href, node: entry });
         return;
       }
     }
@@ -112,6 +118,9 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
     if (tag === 'STRONG' || tag === 'B') next.add('strong');
     if (tag === 'EM' || tag === 'I') next.add('em');
     if (tag === 'CODE' || tag === 'KBD' || tag === 'SAMP') next.add('code');
+    // A mark this editor cannot draw rides on its wrapper (renderInlineDom).
+    const carried = node.nodeType === 1 ? node.getAttribute(MARK_ATTRIBUTE) : null;
+    if (carried && MARK_NAME.test(carried)) next.add(carried);
     if (node.nodeType === 1 && node.style) {
       const weight = node.style.fontWeight;
       if (weight === 'bold' || weight === 'bolder' || Number(weight) >= 600) next.add('strong');
@@ -132,8 +141,11 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
     if (BLOCK.has(tag) && node !== root) segments.push({ text: ' ', marks: [], href: null });
   };
   visit(root, new Set(), null);
+  // The field's marks limit the known ones; a mark the model does not know is
+  // kept as it came, so an edit never drops it (validation still reports it).
   const allowed = new Set(marks);
-  let content = fromSegments(segments.map((segment) => ({ ...segment, marks: segment.marks.filter((mark) => allowed.has(mark)), href: links ? segment.href : null })));
+  const keep = (mark) => allowed.has(mark) || !INLINE_MARKS.includes(mark);
+  let content = fromSegments(segments.map((segment) => ({ ...segment, marks: segment.marks.filter(keep), href: links ? segment.href : null })));
   if (collapse) {
     const flat = toSegments(content);
     if (flat.length && !flat[0].node) flat[0] = { ...flat[0], text: flat[0].text.replace(/^ +/u, '') };
@@ -165,7 +177,8 @@ export function renderInlineDom(doc, content) {
     if (entry.type !== 'text') return object(entry);
     let node = doc.createTextNode(entry.value);
     for (const mark of entry.marks || []) {
-      const wrapper = doc.createElement(mark);
+      const wrapper = doc.createElement(MARK_TAGS.has(mark) ? mark : 'span');
+      if (!MARK_TAGS.has(mark)) wrapper.setAttribute(MARK_ATTRIBUTE, mark);
       wrapper.append(node);
       node = wrapper;
     }

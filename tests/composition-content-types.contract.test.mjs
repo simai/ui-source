@@ -55,7 +55,7 @@ const CASES = {
   },
   'content.table': {
     node: { id: 't', type: 'content.table', data: { caption: [text('Sizes')], rows: [[[text('Name')], [text('Size')]], [[text('A')], [text('1')]]] }, props: { header: 'both', align: ['start', 'end'] } },
-    html: '<div class="table-frame" data-sf-composition-id="t"><table class="table"><caption>Sizes</caption><thead><tr><th scope="col">Name</th><th scope="col" style="text-align: end">Size</th></tr></thead><tbody><tr><th scope="row">A</th><td style="text-align: end">1</td></tr></tbody></table></div>',
+    html: '<div class="table-frame" data-sf-composition-id="t"><table class="table"><caption>Sizes</caption><thead><tr><th scope="col">Name</th><th scope="col" class="text-end">Size</th></tr></thead><tbody><tr><th scope="row">A</th><td class="text-end">1</td></tr></tbody></table></div>',
   },
   'content.figure': {
     node: { id: 'f', type: 'content.figure', data: { src: '/a.webp', alt: 'A "scene"', width: 1280, height: 720, caption: [text('Caption')] }, props: { ratio: '21/9', fit: 'contain' } },
@@ -114,7 +114,8 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
   for (const type of FIRST_EDITION) {
     const manifest = types.get(type);
     assert.ok(manifest, type);
-    assert.equal(manifest.version, '1.0.0', type);
+    // content.table 1.0.1 (2026-11-10): column alignment by class.
+    assert.equal(manifest.version, type === 'content.table' ? '1.0.1' : '1.0.0', type);
     assert.equal(manifest.category, 'content', type);
     assert.equal(manifest.renderer.kind, ['content.diagram', 'content.math'].includes(type) ? 'registered' : 'builtin', type);
     assert.ok(manifest.profiles.includes(type === 'content.outlet' ? 'ui-layout' : 'structured-content'), type);

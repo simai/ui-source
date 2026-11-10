@@ -59,6 +59,14 @@ links of text runs and the inline component atoms. Every link and every image
 source follows the Document's URL rule (relative, a fragment, http(s), mailto,
 tel); anything else is `unsafe_url`.
 
+No rendered HTML carries a `style` attribute: a `content.table` column aligned
+`center` or `end` puts the text-align utility class (`text-center`,
+`text-end`) on its cells, which the `table-frame` sheet honours from the first
+paint (`content.table` 1.0.1). `style` is a forbidden key anywhere in a
+Document (`executable_or_secret_field_forbidden`), as `class` is. A Document
+whose `profile` is unknown gets one `profile_unknown`; its nodes are then not
+checked against a profile.
+
 ## Rules beyond a type's schema
 
 - `content.list-item`, `content.tab` and `content.step` stand only in their own

@@ -172,3 +172,87 @@ test('content.heading is type version 1.2.0 and content.paragraph 1.3.0 (G-39 mo
   assert.equal(BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.heading').type_version, '1.2.0');
   assert.deepEqual(Object.keys(INLINE_COMPONENTS), ['badge', 'kbd', 'icon', 'button']);
 });
+
+// F1.2 (2026-11-10 review): a mark this model does not know survives every
+// operation; validation still refuses it.
+test('a run with a mark the model does not know comes out of every operation unchanged', () => {
+  for (const unknown of [['superscript'], ['strong', 'highlight', 'underline'], ['underline', 'em']]) {
+    const marked = text('kept', unknown);
+    const content = [text('Before '), marked, text(' after.')];
+    const expected = normalizeInline(content).find(({ value }) => value === 'kept');
+    // Known marks first in their order, unknown ones after them in theirs.
+    assert.deepEqual(expected.marks, [...unknown.filter((mark) => ['strong', 'em', 'code'].includes(mark)), ...unknown.filter((mark) => !['strong', 'em', 'code'].includes(mark))]);
+    const kept = (result, label) => assert.ok(toSegments(result).some((segment) => segment.text === 'kept' && JSON.stringify(segment.marks) === JSON.stringify(expected.marks)), `${label}: ${JSON.stringify(result)}`);
+    kept(normalizeInline(content), 'normalizeInline');
+    kept(normalizeInline(normalizeInline(content)), 'normalizeInline twice');
+    kept(toggleMark(content, 0, 6, 'strong'), 'toggleMark on a neighbour');
+    kept(toggleMark(content, 12, 17, 'em'), 'toggleMark after it');
+    kept(setLink(content, 0, 6, '/before'), 'setLink on a neighbour');
+    kept(replaceRange(content, 7, 7, [{ text: '+', marks: [], href: null }]), 'replaceRange right before');
+    kept(replaceRange(content, 11, 11, [{ text: '+', marks: [], href: null }]), 'replaceRange right after');
+    kept(replaceRange(content, 0, 7, []), 'replaceRange deleting the neighbour');
+    assert.deepEqual(sliceInline(content, 7, 11), [expected], 'sliceInline');
+    // The mark still holds when the run itself takes a known mark.
+    const both = toggleMark(content, 7, 11, 'code');
+    assert.ok(toSegments(both).some((segment) => segment.text === 'kept' && segment.marks.includes('code') && expected.marks.every((mark) => segment.marks.includes(mark))));
+    assert.ok(codes(content).includes('schema_one_of') || codes(content).includes('schema_enum'), 'validation refuses the unknown mark');
+  }
+});
+
+// F1.3: an atom is never inside a link, whatever the model is given.
+test('a link that holds an atom is split around it, and the result validates', () => {
+  const key = atom('kbd', { text: 'K' });
+  const linked = [{ type: 'link', href: '/a', children: [text('x'), key, text('y')] }];
+  assert.deepEqual(normalizeInline(linked), [{ type: 'link', href: '/a', children: [text('x')] }, key, { type: 'link', href: '/a', children: [text('y')] }]);
+  assert.deepEqual(validate(paragraph(normalizeInline(linked))), { valid: true, diagnostics: [] });
+  assert.deepEqual(toSegments(linked)[1], { text: '￼', marks: [], href: null, node: key });
+  // An opaque entry from a newer producer keeps its place in its link.
+  const future = { type: 'footnote', ref: 'n1' };
+  assert.deepEqual(normalizeInline([{ type: 'link', href: '/a', children: [text('x'), future] }]), [{ type: 'link', href: '/a', children: [text('x'), future] }]);
+});
+
+// A small deterministic generator: valid and invalid-shaped inputs alike.
+function generator(seed) {
+  let state = seed >>> 0;
+  const next = () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 2 ** 32;
+  };
+  const pick = (list) => list[Math.floor(next() * list.length)];
+  const markSets = [[], ['strong'], ['em'], ['code'], ['strong', 'em'], ['em', 'strong', 'code']];
+  const atoms = [atom('kbd', { text: 'Ctrl' }), atom('badge', { text: 'New', status: 'info' }), atom('icon', { icon: 'star' }), atom('button')];
+  const words = ['a', 'bc', ' ', 'Слово', 'x y', '', 'ё'];
+  const run = () => (next() < 0.2 ? pick(atoms) : text(pick(words), pick(markSets).length ? pick(markSets) : undefined));
+  const content = () => Array.from({ length: 1 + Math.floor(next() * 6) }, () => (next() < 0.25
+    ? { type: 'link', href: pick(['/a', '/b', 'https://x.test']), children: Array.from({ length: 1 + Math.floor(next() * 3) }, run) }
+    : run()));
+  return { next, pick, content };
+}
+
+test('every inline operation\'s output validates (property test)', () => {
+  const random = generator(20261110);
+  const operations = [
+    ['normalizeInline', (content) => normalizeInline(content)],
+    ['toggleMark', (content, from, to) => toggleMark(content, from, to, random.pick(['strong', 'em', 'code']))],
+    ['setLink', (content, from, to) => setLink(content, from, to, random.pick(['/x', null, 'mailto:a@b.c']))],
+    ['replaceRange', (content, from, to) => replaceRange(content, from, to, toSegments(random.content()))],
+    ['sliceInline', (content, from, to) => sliceInline(content, from, to)],
+  ];
+  let checked = 0;
+  for (let round = 0; round < 400; round += 1) {
+    let content = random.content();
+    for (let step = 0; step < 4; step += 1) {
+      const [name, operation] = random.pick(operations);
+      const length = inlineLength(content);
+      const from = Math.floor(random.next() * (length + 1));
+      const to = Math.floor(random.next() * (length + 1));
+      const input = content;
+      content = operation(content, from, to);
+      const result = validate(paragraph(content));
+      assert.deepEqual(result.diagnostics, [], `${name}(${from}, ${to}) of ${JSON.stringify(input)} gave ${JSON.stringify(content)}`);
+      assert.deepEqual(normalizeInline(content), content, `${name}: its output is normalized`);
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 1600);
+});

@@ -2617,7 +2617,7 @@
       "schema": "simai.composition.editor-manifest",
       "schema_version": 1,
       "type": "content.table",
-      "type_version": "1.0.0"
+      "type_version": "1.0.1"
     },
     {
       "fields": [

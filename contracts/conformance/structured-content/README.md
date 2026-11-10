@@ -1,4 +1,4 @@
-# Structured content: conformance kit 1.0.0
+# Structured content: conformance kit 2.0.0
 
 Page content in the SIMAI Framework is a Composition Document
 (`simai.composition.document`, schema version 1) with the profile
@@ -165,6 +165,22 @@ The cases pin each of these; the summaries here say where to look.
   media type (the cases list each family).
 - **`content.outlet`** draws the page Document in its place; an invalid page
   draws nothing there and its diagnostics come under `$.content`.
+- **No inline style** (2.0.0): a renderer writes no `style` attribute. A
+  `content.table` column aligned `center` or `end` carries the text-align
+  utility class `text-center` or `text-end` on each of its cells; `start`, the
+  default, carries nothing. A `style` key anywhere in a Document is
+  `executable_or_secret_field_forbidden`, beside any other diagnostic of the
+  same place. The comparison rule still reads a `style` attribute (rule 5),
+  so a renderer that writes one is caught, not excused.
+- **Profiles** (2.0.0): an unknown `profile` is one `profile_unknown` at
+  `$.profile`; no node then reports `type_profile_unsupported`.
+
+## Editions
+
+| Kit | Change |
+|:---|:---|
+| 1.0.0 | first edition |
+| 2.0.0 | 2026-11-10: table alignment by class (`content.table` 1.0.1), `style` a forbidden key, one diagnostic for an unknown profile. Existing expectations changed (`table-align`, `table-align-short`, `invalid-profile`, `invalid-node-field`), hence a major |
 
 ## Keeping the kit current
 

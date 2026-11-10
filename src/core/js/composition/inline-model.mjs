@@ -76,6 +76,7 @@ export function inlineComponentView(node) {
 }
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+const isAtom = (entry) => entry?.type === 'component';
 const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link';
 
 /** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
@@ -90,20 +91,27 @@ export function safeHref(value) {
   }
 }
 
+// Known marks in their canonical order, then any mark this model does not
+// know (a newer producer's), in the order it came: an edit never drops a mark
+// it cannot draw. Validation still refuses an unknown mark; render draws none.
 function sortMarks(marks) {
-  return [...new Set(marks)].filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  const unique = [...new Set(marks)].filter((mark) => typeof mark === 'string' && mark);
+  const known = unique.filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  return [...known, ...unique.filter((mark) => !MARK_ORDER.has(mark))];
 }
 
 /**
  * Flat segments: {text, marks: string[], href: string|null}. An atom or an
  * opaque node is one segment {text: INLINE_OBJECT, marks: [], href, node}
- * that carries the entry unchanged; inside a link it keeps the link's href.
+ * that carries the entry unchanged. An atom ({type: 'component'}) never
+ * carries a link's href: a link holds no atom, so one that held an atom is
+ * split around it. An opaque node from a newer producer keeps its link.
  */
 export function toSegments(content) {
   const segments = [];
   const push = (run, href) => {
     if (isObjectEntry(run)) {
-      segments.push({ text: INLINE_OBJECT, marks: [], href, node: clone(run) });
+      segments.push({ text: INLINE_OBJECT, marks: [], href: isAtom(run) ? null : href, node: clone(run) });
       return;
     }
     if (run?.type !== 'text' || typeof run.value !== 'string' || !run.value) return;
@@ -125,7 +133,8 @@ export function fromSegments(segments) {
   const merged = [];
   for (const segment of segments) {
     if (segment.node) {
-      merged.push({ text: INLINE_OBJECT, marks: [], href: segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
+      // An atom is never inside a link: the link stops before it and starts again after.
+      merged.push({ text: INLINE_OBJECT, marks: [], href: !isAtom(segment.node) && segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
       continue;
     }
     if (!segment.text) continue;

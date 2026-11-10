@@ -3693,7 +3693,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.table",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "assets": [

@@ -28,10 +28,6 @@
       {
         "code": "profile_unknown",
         "path": "$.profile"
-      },
-      {
-        "code": "type_profile_unsupported",
-        "path": "$.root.type"
       }
     ],
     "assets": []

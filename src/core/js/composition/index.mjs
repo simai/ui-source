@@ -122,7 +122,7 @@ const BINDING_FIELDS = new Set(['owner', 'ref', 'target', 'revision']);
 const FORBIDDEN_KEYS = new Set([
   'html', 'innerhtml', 'script', 'javascript', 'php', 'eval', 'function',
   'expression', 'query', 'sql', 'graphql', 'class', 'classname', 'rootclass',
-  'cssclass', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
+  'cssclass', 'style', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
 ]);
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
 const DEFAULT_LIMITS = Object.freeze({
@@ -462,7 +462,8 @@ export function validate(document, registry = undefined, options = {}) {
   pushUnknownFields(document, DOCUMENT_FIELDS, '$', diagnostics);
   if (!isSchema(document, 'simai.composition.document', 1)) diagnostics.push(diagnostic('schema_unknown', '$.schema', `Expected ${DOCUMENT_SCHEMA}, or simai.composition.document with schema_version 1`));
   if (typeof document.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,119}$/u.test(document.id)) diagnostics.push(diagnostic('document_id_invalid', '$.id', 'Document id is invalid'));
-  if (!PROFILES.has(document.profile)) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
+  const knownProfile = PROFILES.has(document.profile);
+  if (!knownProfile) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
   if (document.locale !== undefined && (typeof document.locale !== 'string' || !/^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$/u.test(document.locale))) diagnostics.push(diagnostic('locale_invalid', '$.locale', 'Locale is invalid'));
   if (document.extensions !== undefined) validateExtensions(document.extensions, '$.extensions', diagnostics, supportedExtensions);
   scanForbiddenKeys(document, '$', diagnostics);
@@ -492,7 +493,9 @@ export function validate(document, registry = undefined, options = {}) {
       else diagnostics.push(unknown);
       return;
     }
-    if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
+    // An unknown profile is one diagnostic ($.profile): no type lists it, so a
+    // per-node check would repeat it once for every node of the Document.
+    if (knownProfile && !manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
     validateJsonSchema(node.data || {}, manifest.data_schema, `${path}.data`, diagnostics);
     // A layout parameter may hold a value per breakpoint (utilities.mjs): each
     // value is checked on its own, the rest of the props as before.
@@ -510,7 +513,8 @@ export function validate(document, registry = undefined, options = {}) {
       if (depth > MAX_COMPOSED_DEPTH) diagnostics.push(diagnostic('composed_depth_limit', path, 'Site blocks are nested too deeply'));
       else {
         const expanded = validate({ ...document, root: expandComposed(node, manifest) }, resolvedRegistry, { ...options, composedDepth: depth });
-        diagnostics.push(...expanded.diagnostics.map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
+        // The Document's own profile diagnostic is already reported once.
+        diagnostics.push(...expanded.diagnostics.filter(({ code }) => code !== 'profile_unknown').map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
         notices.push(...(expanded.notices || []));
       }
     }
@@ -616,6 +620,7 @@ function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
+const MARK_ELEMENTS = Object.freeze({ strong: 'strong', em: 'em', code: 'code' });
 function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
@@ -628,7 +633,8 @@ function renderInline(content) {
       return `<${view.tag}${attributes}>${escapeHtml(view.text)}</${view.tag}>`;
     }
     let output = escapeHtml(inline.value);
-    for (const mark of inline.marks || []) output = mark === 'strong' ? `<strong>${output}</strong>` : mark === 'em' ? `<em>${output}</em>` : `<code>${output}</code>`;
+    // A mark outside the closed list (validation refuses it) draws no element.
+    for (const mark of inline.marks || []) output = MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output;
     return output;
   }).join('');
 }
@@ -668,9 +674,10 @@ function renderTable(node) {
   const headColumn = header === 'column' || header === 'both';
   const align = Array.isArray(node.props?.align) ? node.props.align : [];
   // The frame sets every cell to the start; a column set otherwise says so on
-  // its cells, with one of two fixed values.
-  const cellStyle = (index) => (align[index] === 'center' || align[index] === 'end' ? ` style="text-align: ${align[index]}"` : '');
-  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellStyle(index)}>${renderInline(content)}</${tag}>`;
+  // its cells with the text-align utility class, never a style attribute, so
+  // the rendered HTML stays within a strict CSP (2026-11-10 review, P8).
+  const cellClass = (index) => (align[index] === 'center' || align[index] === 'end' ? ` class="text-${align[index]}"` : '');
+  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellClass(index)}>${renderInline(content)}</${tag}>`;
   const row = (cells, inHead) => `<tr>${cells.map((content, index) => (inHead
     ? cell(content, index, 'th', 'col')
     : headColumn && index === 0 ? cell(content, index, 'th', 'row') : cell(content, index, 'td', null))).join('')}</tr>`;

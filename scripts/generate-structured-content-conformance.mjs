@@ -18,7 +18,7 @@ import { canonicalHtml } from '../contracts/conformance/structured-content/norma
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const kit = resolve(root, 'contracts/conformance/structured-content');
-const KIT_VERSION = '1.0.0';
+const KIT_VERSION = '2.0.0';
 
 // ---------------------------------------------------------------------------
 // Building blocks

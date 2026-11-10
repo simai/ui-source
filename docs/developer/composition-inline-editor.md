@@ -41,6 +41,19 @@ it silently. Validation still refuses an unknown entry: the host learns of it
 when it saves, not by losing it. `inlineText` returns the text runs only;
 offsets count one unit for each atom or opaque entry.
 
+A mark the model does not know survives the same way (2026-11-10): marks are
+sorted with the known ones first in their canonical order and the unknown ones
+after them in the order they came; `toggleMark` touches only a known mark, and
+the editor draws an unknown mark as a `span` carrying `data-sf-inline-mark`
+and reads it back from there, never as an element of that name. The field's
+`options.marks` limit the known marks only. Validation still refuses an
+unknown mark, and the renderer draws no element for it.
+
+An atom is never inside a link, whatever the model is given: a link that holds
+one is split around it (`[link a, atom, link b]`), and an atom pasted inside an
+`<a>` stands beside the link. An opaque entry from a newer producer keeps its
+place in its link.
+
 The editor code loads on demand: place `<sf-inline-editor></sf-inline-editor>`
 on the editor page and wait for it; before that `startInlineEdit` throws
 `inline_editor_not_loaded`. `document.querySelector('sf-inline-editor').edit(element,

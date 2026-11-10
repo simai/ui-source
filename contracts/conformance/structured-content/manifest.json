@@ -1,7 +1,7 @@
 {
   "schema": "simai.composition.structured-content-conformance",
   "schema_version": 1,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "summary": "Documents any renderer of structured content must draw, and what it must draw: every content type with its defaults and each parameter value, the inline model, escaping, the html@1 cleaning, the outlet, and invalid Documents with their diagnostics.",
   "document": {
     "schema": "simai.composition.document",
@@ -31,7 +31,7 @@
     "content.step": "1.0.0",
     "content.steps": "1.0.0",
     "content.tab": "1.0.0",
-    "content.table": "1.0.0",
+    "content.table": "1.0.1",
     "content.tabs": "1.0.0"
   },
   "comparison": "README.md#comparing-html",

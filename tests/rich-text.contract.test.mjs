@@ -229,3 +229,35 @@ test('the element makes no server call and puts no string on the page uncleaned'
     'entry.html',
   ]);
 });
+
+// html@1 breaks and edges (2026-11-10 composition review, Q6; F1.4): every
+// row's value and editor output is pinned, and cleaning a value again never
+// changes it. Only the rows that carry value_before_2026_11_10 changed: a
+// white-space-only run beside an edge break hid the break from the first pass.
+test('the html@1 break corpus: pinned outputs, and value cleaning is idempotent', () => {
+  const corpus = json('tests/fixtures/html1-break-corpus.json');
+  assert.equal(corpus.rows.length, 19);
+  for (const row of corpus.rows) {
+    const value = sanitizeRichText(row.input, {mode: 'value', document: null});
+    assert.equal(value, row.value, `value: ${row.input}`);
+    assert.equal(sanitizeRichText(row.input, {mode: 'editor', document: null}), row.editor, `editor: ${row.input}`);
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, `idempotent: ${row.input}`);
+  }
+  assert.deepEqual(corpus.rows.filter((row) => 'value_before_2026_11_10' in row).map(({input}) => input), ['<p>&nbsp;<br>a</p>', '<p>a<br>&nbsp;</p>']);
+});
+
+test('value cleaning is idempotent for generated values with nbsp, spaces and breaks at block edges', () => {
+  let seed = 20261110;
+  const random = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+  const parts = ['&nbsp;', ' ', '  ', ' ', '<br>', 'a', 'b', '<strong>', '</strong>', '<em>', '</em>', '<a href="/x">', '</a>', '<p>', '</p>', '<ul><li>', '</li></ul>', '<h2>', '</h2>', '<blockquote>', '</blockquote>'];
+  let changed = 0;
+  for (let index = 0; index < 5000; index += 1) {
+    let input = '';
+    for (let count = 1 + Math.floor(random() * 8); count > 0; count -= 1) input += parts[Math.floor(random() * parts.length)];
+    if (random() < 0.5) input = `<p>${input}</p>`;
+    const value = sanitizeRichText(input, {mode: 'value', document: null});
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, input);
+    if (value !== input) changed += 1;
+  }
+  assert.ok(changed > 1000, 'the generator reaches values the cleaner changes');
+});

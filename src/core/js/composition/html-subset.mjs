@@ -643,12 +643,21 @@ function tidyLeaves(leaves, mode) {
   }
   let kept = out.filter((item) => item.kind === 'br' || item.value);
   if (mode === 'value') {
-    while (kept[0]?.kind === 'br') kept.shift();
-    while (kept.at(-1)?.kind === 'br') kept.pop();
-    if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
-    const end = kept.at(-1);
-    if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
-    kept = kept.filter((item) => item.kind === 'br' || item.value);
+    // Edge breaks and edge white space go together, until neither is left: a
+    // run of only white space (&nbsp;) at an edge hid the break behind it, so
+    // the first pass kept "<p>&nbsp;<br>a</p>" as "<p><br>a</p>" and only the
+    // next load-and-save gave "<p>a</p>" (2026-11-10 review, Q6). The value is
+    // now what that second pass gave, at once, and cleaning it again keeps it.
+    let length = -1;
+    while (length !== kept.length) {
+      length = kept.length;
+      while (kept[0]?.kind === 'br') kept.shift();
+      while (kept.at(-1)?.kind === 'br') kept.pop();
+      if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
+      const end = kept.at(-1);
+      if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
+      kept = kept.filter((item) => item.kind === 'br' || item.value);
+    }
   }
   // A link of nothing but spaces is not a link.
   const groups = new Map();

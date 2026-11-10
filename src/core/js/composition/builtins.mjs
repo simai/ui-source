@@ -670,7 +670,10 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     mode: 'leaf',
     assets: ['component/contentDivider'],
   }),
+  // 1.0.1 (2026-11-10): a column's alignment is the text-align utility class on
+  // its cells, not a style attribute; it looks the same.
   contentManifest('content.table', {
+    version: '1.0.1',
     mode: 'leaf',
     data_schema: closed({
       caption: inlineContentSchema,
@@ -1177,9 +1180,9 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('content.code', 'title', 'props', 'text', { constraints: { min_length: 1, max_length: 200 } }),
     contentField('content.code', 'numbers', 'props', 'toggle', { ...advanced, default: false }),
   ]),
-  contentEditor('content.table', [
+  { ...contentEditor('content.table', [
     contentField('content.table', 'header', 'props', 'choice', { choices: ['row', 'column', 'both', 'none'], default: 'row' }),
-  ]),
+  ]), type_version: '1.0.1' },
   // src is the one field the type requires besides alt: a host draws a
   // complete form from the manifest alone (simai/ui-source#64). The address
   // is a text field; validate applies the Document's URL rule on top.

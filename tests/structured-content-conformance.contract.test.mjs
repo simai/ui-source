@@ -49,6 +49,29 @@ test('the JS renderer passes every case under the comparison rule', async () => 
   }
 });
 
+test('no case draws a style attribute, and a style key is a forbidden field (kit 2.0.0)', () => {
+  for (const entry of cases) assert.equal(/\sstyle=/u.test(entry.expect.html), false, entry.id);
+  const aligned = cases.find(({ id }) => id === 'table-align');
+  assert.match(aligned.expect.html, /<td class="text-center">1<\/td><td class="text-end">/u);
+  assert.equal(manifest.version, '2.0.0');
+  for (const place of ['node', 'data', 'props']) {
+    const node = { id: 'p', type: 'content.paragraph', data: { content: [{ type: 'text', value: 'x' }] } };
+    if (place === 'node') node.style = 'color: red';
+    else node[place] = { ...(node[place] || {}), style: 'color: red' };
+    const document = { schema: 'simai.composition.document', schema_version: 1, id: 's', profile: 'structured-content', root: { id: 'root', type: 'content.document', slots: { default: [node] } } };
+    assert.ok(validate(document).diagnostics.some(({ code }) => code === 'executable_or_secret_field_forbidden'), place);
+  }
+  for (const manifestEntry of BUILTIN_TYPE_MANIFESTS) {
+    const keys = [];
+    const walk = (value) => {
+      if (Array.isArray(value)) value.forEach(walk);
+      else if (value && typeof value === 'object') for (const [key, inner] of Object.entries(value)) { keys.push(key.toLowerCase()); walk(inner); }
+    };
+    walk([manifestEntry.data_schema?.properties, manifestEntry.props_schema?.properties]);
+    assert.equal(keys.includes('style'), false, `${manifestEntry.type} declares no style`);
+  }
+});
+
 test('the comparison rule decides each of its vectors as the kit says', () => {
   const { vectors } = read('normalization.json');
   assert.ok(vectors.length >= 20);

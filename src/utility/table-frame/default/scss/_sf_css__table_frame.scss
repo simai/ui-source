@@ -59,6 +59,19 @@
                 vertical-align: top;
             }
 
+            // A column aligned otherwise carries the text-align utility on its
+            // cells (Composition content.table, 2026-11-10: a class, not a
+            // style attribute). The frame's start rule is more specific than
+            // the utility, so the frame honours the two values itself, from
+            // its own sheet, and the cell is aligned from the first paint.
+            > :not(caption) > * > .text-center {
+                text-align: center;
+            }
+
+            > :not(caption) > * > .text-end {
+                text-align: end;
+            }
+
             // The frame draws the outer edge, so the last column and the last
             // row leave theirs off; a table with a foot ends on the foot.
             > :not(caption) > * > *:last-child {

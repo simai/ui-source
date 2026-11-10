@@ -250,6 +250,40 @@ const opaque = await page.evaluate(() => {
 observations.opaque = opaque;
 check(same(opaque.before[1], opaque.entry) && same(opaque.after[1], opaque.entry) && opaque.after.at(-1).value === '! Ура' && !opaque.html.includes('<b>'), 'an unknown inline node survives an edit unchanged', opaque);
 
+// A mark the editor does not know (F1.2, 2026-11-10): the run keeps it through
+// typing in the same paragraph, a mark toggled on a neighbour, and commit; it
+// is drawn as a span that carries its name, never as an element of that name.
+const unknownMark = await page.evaluate(() => {
+  const element = document.createElement('p');
+  document.body.append(element);
+  const marked = { type: 'text', value: 'зачёркнуто', marks: ['em', 'superscript'] };
+  const content = [{ type: 'text', value: 'Начало ' }, marked, { type: 'text', value: ' конец' }];
+  const session = window.SF.Composition.startInlineEdit(element, { content, nodeId: 'marks', label: 'Абзац' });
+  const before = session.value();
+  const wrappers = [...element.querySelectorAll('[data-sf-inline-mark]')].map((node) => `${node.tagName.toLowerCase()}:${node.getAttribute('data-sf-inline-mark')}`);
+  const strangers = element.querySelectorAll('superscript').length;
+  // Type at the end, then bold the first word through the toolbar.
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  range.collapse(false);
+  document.getSelection().removeAllRanges();
+  document.getSelection().addRange(range);
+  document.execCommand('insertText', false, '!');
+  const typed = session.value();
+  const first = element.firstChild;
+  document.getSelection().setBaseAndExtent(first, 0, first, 6);
+  document.querySelector('.sf-inline-editor-button--strong').click();
+  const toggled = session.value();
+  const committed = session.commit();
+  element.remove();
+  return { marked, before, typed, toggled, committed, wrappers, strangers };
+});
+observations.unknownMark = unknownMark;
+const holds = (content) => content.some((entry) => same(entry, unknownMark.marked));
+check(holds(unknownMark.before) && holds(unknownMark.typed) && holds(unknownMark.toggled) && holds(unknownMark.committed), 'a run with an unknown mark is deep-equal after typing, a neighbour\'s mark and commit', unknownMark);
+check(same(unknownMark.wrappers, ['span:superscript']) && unknownMark.strangers === 0, 'an unknown mark is drawn as a span carrying its name', unknownMark.wrappers);
+check(unknownMark.toggled[0]?.marks?.includes('strong') && unknownMark.typed.at(-1).value === ' конец!', 'the neighbour edits took effect', unknownMark.toggled);
+
 // Dark, narrow, RTL.
 await open({ theme: 'dark', width: 390, dir: 'rtl' });
 await body().dblclick({ position: { x: 4, y: 4 } });
