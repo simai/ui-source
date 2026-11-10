@@ -2,7 +2,7 @@
    the root a row of one (flex), the content a column that takes the rest
    (flex flex-col flex-1). On a Docara page the Loader linked the utility
    sheets they need after the first frame -- utility/position for the frame's
-   relative -- so the box is this sheet's now (component.context-menu 1.7.1).
+   relative -- so the box is this sheet's now (component.context-menu 1.8.0).
    In sf.base, below the utilities as the utilities were below the
    components: a utility a page adds to the root (hidden) and every
    component rule still win over it, as they did. Class markup keeps writing

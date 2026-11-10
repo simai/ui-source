@@ -105,6 +105,9 @@ function renderCount(context) {
         : context.count ? html`<span class="sf-tag-count pointer-events-none flex">${context.count}</span>` : nothing;
 }
 
+// The close button is ghost, not link, its former name: the dated alias
+// counted every closable tag as the page's own use of link in
+// SF.deprecations (pair ui-a0370c0c99fb acceptance, F3).
 function renderClose(context) {
     if (!context.closable) return nothing;
 
@@ -114,7 +117,7 @@ function renderClose(context) {
                 <sf-button-icon
                         kind="close"
                         size="${closeSize(context.size)}"
-                        appearance="link"
+                        appearance="ghost"
                         scheme="on-surface"
                         ?disabled=${context.disabled}
                         aria-label=${context.closeLabel}

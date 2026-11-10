@@ -953,15 +953,15 @@
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "375d538c0922acb9286a27cd47ba569154115aa5aba4845dba5ccb392dd218db"
+        "sha256": "e18525d4aba0c2f9b6cea177c73737a0f555a43783406a9330b6e3340972c2bc"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "f5d3e24f51f9b5123eb898fdd0edd4f26d43a6536f8cfc7d69bfd6436ff85485"
+        "sha256": "fd7eeecf6bed32b4b0caf563086ffd1e2a3df42df02da42a72810ab1c232f8cf"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "4f6113f1d5e8960c08dfb600b183dbec6640133844c9fcf406508ccd032265e0"
+        "sha256": "2a1fb31060c09bd4f52b41c7fe0211b3ed114d5a9bb039538d961c3f1eba136b"
       }
     ],
     "generated_runtime": [

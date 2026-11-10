@@ -15,7 +15,9 @@ function getButtonOptions(type = 'primary') {
     primary: { type: 'default', scheme: 'primary' },
     secondary: { type: 'tonal', scheme: 'secondary' },
     dark: { type: 'default', scheme: 'on-surface' },
-    light: { type: 'link', scheme: 'on-surface' },
+    // ghost, not its former name link: a link here was counted as the page's
+    // own use in SF.deprecations (pair ui-a0370c0c99fb acceptance, F3).
+    light: { type: 'ghost', scheme: 'on-surface' },
   };
 
   return options[normalizedType] || options.primary;

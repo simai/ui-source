@@ -521,7 +521,7 @@ function renderTooltip() {
 
 // The box is laid out by the menu's own sheet, not by utilities: the root a
 // row of one, .sf-context-menu-frame the positioned frame, the content a
-// column that takes the rest (component.context-menu 1.7.1). The template
+// column that takes the rest (component.context-menu 1.8.0). The template
 // wrote flex, relative, flex-col and flex-1, and on a Docara page the Loader
 // linked utility/position after the first frame (sf-menu-context 1.14.1).
 export function renderContextMenuTemplate(context) {
