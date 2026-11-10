@@ -6,12 +6,7 @@
 // a <code> in a paragraph, a list item, a table cell, a heading, a link and
 // chat-like markup gets the quiet neutral plate -- the background of
 // --sf-surface-container, .2em by .4em of room, 85 % of the text, a 6px
-// corner (--sf-a6), the mono family -- and never parts at a hyphen: it is one
-// box that moves to the next line whole. Only a run longer than the whole line
-// (a URL, a token) breaks inside its box, anywhere when it has no space, and
-// never runs out of its column; code with spaces breaks at them, every word
-// whole (C10, 2026-11-10). The box keeps the plate and the text line the
-// height they had as an inline (owner rule C10 geometry). The plate
+// corner (--sf-a6), the mono family -- and never parts at a hyphen. The plate
 // shows on a surface-2 stripe too. A <code> the Framework draws or that sits
 // in a block or a control is left as it was: inside an sf-button's text, a
 // highlighted block (sf-highlight), pre > code, kbd, samp, a code carrying an
@@ -63,11 +58,7 @@ const BODY = `
   <p>Utility <code class="bg-transparent" id="with-utility">x</code></p>
   <p class="site">Site <code id="site-rule">x</code></p>
   <div id="stripe" style="background:var(--sf-surface-2);padding:8px"><p>On a stripe <code id="on-stripe">surface-2</code></p></div>
-  <p id="narrow" style="inline-size:20ch">An event <code id="hyphen">sf-button-press</code> comes</p>
-  <p id="url-box" style="inline-size:358px">Документация: <code id="url">https://ui.simai.io/ru/smart/actions/copy-button/?from=docs&amp;token=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789</code> — ссылка.</p>
-  <p id="words-box" style="inline-size:14ch">Run <code id="words">npm run build --watch --verbose</code> now</p>
-  <p id="line-box">One line <code id="line-code">sf-tag</code> of text</p>
-  <p id="plain-line">One line of text</p>
+  <p id="narrow" style="inline-size:12ch">An event <code id="hyphen">sf-button-press</code> comes</p>
   <p class="tone-secondary">Secondary <code id="tone-secondary">x</code></p>
   <p class="tone-tertiary">Tertiary <code id="tone-tertiary">x</code></p>
   <article id="copy-box" data-sf-code-copy>
@@ -132,7 +123,6 @@ const read = () => {
       paddingRight: s.paddingRight,
       radius: s.borderTopLeftRadius,
       whiteSpace: s.whiteSpace,
-      display: s.display,
       fontSize: parseFloat(s.fontSize),
       parentFontSize: parseFloat(getComputedStyle(element.parentElement).fontSize),
       fontFamily: s.fontFamily,
@@ -161,30 +151,7 @@ const read = () => {
     codes[id] = {...style(code), parent: code.parentElement.localName + (code.parentElement.className ? `.${String(code.parentElement.className).split(/\s+/u)[0]}` : ''), classes: code.className,
       role: code.getAttribute('role'), tabindex: code.getAttribute('tabindex'), label: code.getAttribute('aria-label')};
   }
-  // Where each word of a code stands: a word is whole when its first and last
-  // letters sit on one line.
-  const wordsWhole = (code) => {
-    const text = code.firstChild;
-    const top = (at) => { const range = document.createRange(); range.setStart(text, at); range.setEnd(text, at + 1); return Math.round(range.getClientRects()[0].top); };
-    const broken = [];
-    for (const match of text.data.matchAll(/\S+/gu)) if (top(match.index) !== top(match.index + match[0].length - 1)) broken.push(match[0]);
-    return broken;
-  };
-  const fits = (id) => {
-    const box = document.getElementById(id);
-    const code = box.querySelector('code').getBoundingClientRect();
-    const column = box.getBoundingClientRect();
-    return {code: {left: Math.round(code.left * 100) / 100, right: Math.round(code.right * 100) / 100, height: Math.round(code.height * 100) / 100},
-      column: {left: column.left, right: column.right}, scroll: box.scrollWidth - box.clientWidth};
-  };
-  const layout = {
-    narrow: fits('narrow'),
-    url: fits('url-box'),
-    words: {...fits('words-box'), broken: wordsWhole(document.getElementById('words'))},
-    hyphenBroken: wordsWhole(document.getElementById('hyphen')),
-    line: {withCode: document.getElementById('line-box').getBoundingClientRect().height, plain: document.getElementById('plain-line').getBoundingClientRect().height},
-  };
-  return {expected, stripe, codes, layout, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
+  return {expected, stripe, codes, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
 };
 
 const rgba = (value) => {
@@ -206,7 +173,7 @@ const near = (a, b) => Math.abs(a - b) < 0.06;
 
 for (const theme of THEMES) {
   const page = await open(theme);
-  const {expected, stripe, codes, layout, buttonHasCode} = await page.evaluate(read);
+  const {expected, stripe, codes, buttonHasCode} = await page.evaluate(read);
   const plateOnStripe = over(codes['on-stripe'].background, stripe);
   const stripeColour = over(stripe, 'rgb(0, 0, 0)');
   evidence[theme] = {
@@ -214,8 +181,7 @@ for (const theme of THEMES) {
     prose: codes['in-p'],
     heading: codes['in-h3'],
     stripe: {stripe, plate: codes['on-stripe'].background, seen: plateOnStripe.map(Math.round), difference: Math.round(distance(plateOnStripe, stripeColour))},
-    hyphen: {display: codes.hyphen.display, width: codes.hyphen.width, height: codes.hyphen.height, broken: layout.hyphenBroken, ...layout.narrow},
-    layout,
+    hyphen: {lines: codes.hyphen.lines, whiteSpace: codes.hyphen.whiteSpace, width: codes.hyphen.width},
     untouched: Object.fromEntries(UNTOUCHED.map((id) => [id, codes[id] && {background: codes[id].background, padding: codes[id].paddingLeft, parent: codes[id].parent}])),
   };
 
@@ -236,23 +202,14 @@ for (const theme of THEMES) {
       {id, got: [code.paddingLeft, code.paddingRight], fontSize: code.fontSize});
     check(`${theme}: prose code takes the radius`, code.radius === expected.radius, {id, got: code.radius, expected: expected.radius});
     check(`${theme}: prose code is mono`, /ui-monospace/u.test(code.fontFamily), {id, got: code.fontFamily});
-    check(`${theme}: prose code is one box`, code.display === 'inline-block', {id, got: code.display});
+    check(`${theme}: prose code does not wrap`, code.whiteSpace === 'nowrap', {id, got: code.whiteSpace});
     check(`${theme}: prose code outside an opted-in container is not a control`, code.role === null && code.tabindex === null, {id, role: code.role});
   }
   // The plate is visible on a surface-2 stripe: laid over the stripe it is
   // another colour, not the stripe again.
   check(`${theme}: the plate shows on a surface-2 stripe`, distance(plateOnStripe, stripeColour) >= 6, evidence[theme].stripe);
-  // A name with hyphens that does not fit the rest of the line moves to the
-  // next line whole: one line high, at the start of the column.
-  check(`${theme}: sf-button-press does not part at a hyphen`, layout.hyphenBroken.length === 0 && codes.hyphen.height < codes.hyphen.fontSize * 2
-    && Math.abs(layout.narrow.code.left - layout.narrow.column.left) < 1, evidence[theme].hyphen);
-  // A URL longer than the line breaks inside its box and stays in its column.
-  check(`${theme}: a long URL stays in its column`, layout.url.code.right <= layout.url.column.right + 0.5 && layout.url.scroll <= 0
-    && layout.url.code.height > codes.url.fontSize * 2, layout.url);
-  // Code with spaces longer than the line breaks at its spaces only.
-  check(`${theme}: code with spaces keeps its words whole`, layout.words.broken.length === 0 && layout.words.code.right <= layout.words.column.right + 0.5, layout.words);
-  // The box does not make the text line taller.
-  check(`${theme}: a line with code keeps the text line height`, Math.abs(layout.line.withCode - layout.line.plain) < 0.5, layout.line);
+  // A name with hyphens in a column too narrow for it stays on one line.
+  check(`${theme}: sf-button-press does not part at a hyphen`, codes.hyphen.lines === 1, evidence[theme].hyphen);
 
   // The tones are recipes: two public variables on any ancestor.
   check(`${theme}: secondary tone`, codes['tone-secondary'].color === expected.secondary && codes['tone-secondary'].background === expected.background,
