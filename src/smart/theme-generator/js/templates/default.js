@@ -5,6 +5,9 @@ import {html, nothing} from 'lit';
 // Framework's colour applies. Hue and chroma, the generator's own inputs, are
 // folded away: most people choose a colour and are done. The <details> is not
 // bound to anything, so a redraw never folds it while somebody is typing.
+//
+// The colour field draws its own label (one field label look, docs pre-check
+// 2026-11-10 FB-10), so the generator no longer prints a copy of it above.
 export function renderThemeGeneratorTemplate(context) {
   const {component, size, text} = context;
   const field = (name, value, hint) => html`
@@ -20,7 +23,6 @@ export function renderThemeGeneratorTemplate(context) {
          style=${context.rootStyle || nothing} role="group" aria-label=${context.label || nothing}>
       <div class="sf-theme-generator-choice">
         <div class="sf-theme-generator-color">
-          <span class="sf-theme-generator-label" aria-hidden="true">${text.color}</span>
           <sf-input-color size=${size} label=${text.color}
                     value=${context.value || nothing}
                     inherited-value=${context.inheritedValue}

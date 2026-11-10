@@ -477,7 +477,7 @@ function renderColorCell(field, value) {
     // general part is for.
     return html`
         <sf-input-color size="1/2" appearance="plain" value=${String(hex)}
-                  label=${field.label || field.key || ''} disabled></sf-input-color>
+                  aria-label=${field.label || field.key || ''} disabled></sf-input-color>
     `;
 }
 
@@ -495,7 +495,7 @@ function renderColorView(field, value) {
                 appearance="plain"
                 value=${hex ? String(hex) : nothing}
                 inherited-value=${inherited ? String(inherited) : nothing}
-                label=${field.label || field.key || ''}
+                aria-label=${field.label || field.key || ''}
                 disabled
         ></sf-input-color>
     `;
@@ -514,7 +514,7 @@ function renderColorEdit(field, value, host) {
                 swatches=${field.swatches ? String(field.swatches) : nothing}
                 ?clearable=${Boolean(inherited) || field.required !== true}
                 ?disabled=${field.readonly === true}
-                label=${field.label || field.key || ''}
+                aria-label=${field.label || field.key || ''}
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? '')}
         ></sf-input-color>
     `;

@@ -11,7 +11,12 @@ export function renderColorTemplate(context) {
     if (context.variant === 'theme') return renderThemeTemplate(context);
     const {painted, isSet, disabled, size, appearance} = context;
 
-    return html`
+    // One field label look for every field (docs pre-check 2026-11-10 FB-10,
+    // CO-04): `label` is drawn above the row as sf-input draws its label. The
+    // colour input keeps the same words as its name, so the visible copy is
+    // hidden from the accessibility tree and nothing is read twice. Without
+    // `label` the host's aria-label names the input and nothing is drawn.
+    const row = html`
         <div class="sf-color sf-color--${appearance} sf-color--size-${size}"
              data-set=${isSet ? 'true' : 'false'}>
             <label class="sf-color-swatch" title=${context.chooseLabel}>
@@ -24,7 +29,7 @@ export function renderColorTemplate(context) {
                         class="sf-color-input"
                         .value=${painted || '#000000'}
                         ?disabled=${disabled}
-                        aria-label=${context.label || context.chooseLabel}
+                        aria-label=${context.label || context.ariaLabel || context.chooseLabel}
                         @input=${(event) => context.component._pickerInput(event)}
                         @change=${(event) => context.component._pickerChange(event)}
                 >
@@ -83,6 +88,14 @@ export function renderColorTemplate(context) {
                                 @click=${() => context.component.clear()}
                         ></sf-button-icon>`
                     : nothing}
+        </div>
+    `;
+
+    if (!context.label) return row;
+    return html`
+        <div class="sf-color-field sf-color-field--size-${size}">
+            <span class="sf-color-label" aria-hidden="true">${context.label}</span>
+            ${row}
         </div>
     `;
 }

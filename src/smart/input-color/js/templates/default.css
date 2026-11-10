@@ -27,6 +27,37 @@
     min-block-size: var(--sf-ui-2--control-height);
   }
 
+  /* The field label of sf-input (FB-10): regular weight, on-surface-variant,
+     one text step below the field's text, a quarter step above the row. */
+  .sf-color-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+    min-inline-size: 0;
+  }
+
+  .sf-color-label {
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/2);
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-color-field--size-1\/2 .sf-color-label {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-color-field--size-2 .sf-color-label {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+
+  .sf-color-field:has(.sf-color-input:disabled) .sf-color-label {
+    color: var(--sf-on-disable);
+  }
+
   .sf-color-swatch {
     position: relative;
     display: inline-flex;
@@ -89,9 +120,12 @@
     margin-inline-start: var(--sf-space-1);
   }
 
+  /* A product colour is a control of the row's size: the row drew the chip and
+     the reset at the control height and the colours one rung down, three
+     heights in one line (C01; docs pre-check 2026-11-10 CO-03). */
   .sf-color-preset {
-    inline-size: var(--sf-ui-1\/2--control-height);
-    block-size: var(--sf-ui-1\/2--control-height);
+    inline-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
+    block-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
     padding: 0;
     border-radius: var(--sf-color-chip-radius, var(--sf-radius-1));
     border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));

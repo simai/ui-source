@@ -2,7 +2,7 @@
   "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.theme-generator",
   "tag": "sf-theme-generator",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "kind": "leaf",
   "family": "theme",
   "settings": {
@@ -263,7 +263,8 @@
     "version 1.1.9 information-steps: a theme carries 232 variables -- 128 tones and 104 translucent steps -- since the core's information palette has its state steps (C16 S1: info-50 at 4/8, info-90 at 4/8/12/24, written by THEME_ALPHA). The documented counts follow; the generator's API is unchanged.",
     "version 1.1.10: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
     "version 1.1.11 static-palette (one above the released 1.1.10): core theme-palette.js also holds the static palette (owner decision C17, 2026-11-08): STATIC_HUES, staticPalette() and staticVariables(), and the four status rules are read from their hues (error red, warning amber, success green, info blue) by the same numbers. A theme this element makes is byte for byte the same; settings, values, events and keys unchanged. A theme carries 288 variables -- 128 tones and 160 translucent steps -- since tone 20 has its steps 4 to 24, 64 and 80 on the seven coloured palettes (C16 coloured places, dispatcher 2026-11-09).",
-    "version 1.1.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.1.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.1.13 (2026-11-11): one reset for one action (docs pre-check 2026-11-10 TG-02): the colour field's own inherited reset is not drawn beside «Сбросить»; the colour field draws its own label (sf-input-color 1.6.0), so the generator's copy of it is gone. Its events were already change and sf-theme-generator-committed, the former names dated aliases (TG-01 is the page's)."
   ],
   "x-rule": {
     "$comment": [
