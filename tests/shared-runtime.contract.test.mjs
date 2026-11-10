@@ -133,6 +133,8 @@ const NOT_A_MANIFEST = [
   // A content.details node's summary line, a field of the node's data in a
   // Composition Document (content types, 2026-11-01), not a component.json.
   {file: 'src/core/js/composition/index.mjs', read: 'data.summary'},
+  // The same field, printed as Markdown (composition F2.4, 2026-11-10).
+  {file: 'src/core/js/composition/markdown.mjs', read: 'data.summary'},
 ];
 
 /** The dropped keys a text reads: `x.<key>`, `x?.<key>`, `x['<key>']`, `x?.['<key>']`. */
