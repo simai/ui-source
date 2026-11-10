@@ -2144,66 +2144,66 @@
       ]
     },
     {
-      "component": "download-file",
+      "component": "file-download",
       "selector": ".sf-download-file",
       "variables": [
         {
-          "name": "--sf-download-file-background-color",
+          "name": "--sf-file-download-background-color",
           "role": "background",
-          "summary": "The card's fill at rest; hover, press and disabled keep their own.",
+          "summary": "The card's fill at rest; hover, press and disabled keep their own. The former name --sf-download-file-background-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "transparent",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-border-color",
+          "name": "--sf-file-download-border-color",
           "role": "border-color",
-          "summary": "The card's border at rest; hover and disabled keep their own.",
+          "summary": "The card's border at rest; hover and disabled keep their own. The former name --sf-download-file-border-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-outline-variant)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-radius",
+          "name": "--sf-file-download-radius",
           "role": "radius",
-          "summary": "The card's corner radius.",
+          "summary": "The card's corner radius. The former name --sf-download-file-radius is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-radius--ui)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-padding",
+          "name": "--sf-file-download-padding",
           "role": "padding",
-          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size.",
+          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size. The former name --sf-download-file-padding is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)) calc(var(--sf-ui-1--space-x) - var(--sf-px))",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-gap",
+          "name": "--sf-file-download-gap",
           "role": "gap",
-          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size.",
+          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size. The former name --sf-download-file-gap is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-ui-1--text-space-x)",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-icon-size",
+          "name": "--sf-file-download-icon-size",
           "role": "size",
-          "summary": "The download icon's size: the button's icon of the size (its text height).",
+          "summary": "The download icon's size: the button's icon of the size (its text height). The former name --sf-download-file-icon-size is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-text-height-1)",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-icon-color",
+          "name": "--sf-file-download-icon-color",
           "role": "color",
-          "summary": "The download icon's colour; disabled keeps its own.",
+          "summary": "The download icon's colour; disabled keeps its own. The former name --sf-download-file-icon-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-primary)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         }
       ]
     },

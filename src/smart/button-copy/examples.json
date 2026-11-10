@@ -90,6 +90,8 @@
           "  <sf-button-copy id=\"c-both\" value=\"x\" target=\"#token\"></sf-button-copy>",
           "  <sf-button-copy id=\"c-dur\" value=\"y\" duration=\"-5\" size=\"9\"></sf-button-copy>",
           "  <sf-button-copy id=\"c-old\" value=\"z\" appearance=\"link\" label=\"Старое имя\"></sf-button-copy>",
+          "  <sf-button-copy id=\"c-3\" value=\"A-1042\" size=\"3\" label=\"Скопировать номер\"></sf-button-copy>",
+          "  <sf-button id=\"b-3\" size=\"3\" appearance=\"ghost\" icon-start=\"content_copy\" aria-label=\"Образец\"></sf-button>",
           "</main>"
         ]
       },
@@ -263,6 +265,16 @@
           "steps": [
             {
               "check": "(() => { const a = document.querySelector('#c sf-button-icon'); const b = document.querySelector('#c-old sf-button-icon'); return a.getAttribute('appearance') === 'ghost' && a.getAttribute('scheme') === 'on-surface-variant' && a.getAttribute('size') === '1' && b.getAttribute('appearance') === 'ghost' && document.querySelector('#c-old').getAttribute('appearance') === 'ghost'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p10-size-3",
+          "title": "size 3 is the button family's top step: the copy button stands as tall as an sf-button of size 3 (CB-13)",
+          "covers": "settings.size enum",
+          "steps": [
+            {
+              "check": "(() => { const c = document.querySelector('#c-3 .sf-icon-button'); const b = document.querySelector('#b-3 > button'); return Boolean(c && b) && c.classList.contains('sf-icon-button--size-3') && Math.abs(c.getBoundingClientRect().height - b.getBoundingClientRect().height) < 0.5; })()"
             }
           ]
         }

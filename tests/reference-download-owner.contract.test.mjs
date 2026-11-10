@@ -40,7 +40,11 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.doesNotMatch(runtime, /^\s*console;\s*$/m);
   assert.match(css, /--sf-download-file--text-size: var\(--sf-text-size-1\)/);
   assert.match(css, /border: var\(--sf-px\)/);
-  assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
+  // The public variable carries the element's name; the former one is read
+  // under it until 2027-01-01 (DF-11, journal token-file-download-variable-names).
+  assert.match(css, /border-radius: var\(--sf-file-download-radius, var\(--sf-download-file-radius, var\(--sf-radius--ui\)\)\)/);
+  // A data: or blob: address is never asked for its size (DF-15).
+  assert.match(runtime, /if \(!href \|\| LOCAL_ADDRESS\.test\(href\)\) return '';/);
   assert.match(css, /\.sf-download-file:focus-visible/);
   // One line, cut with an ellipsis, never broken inside a word (rule C01:
   // the card keeps the button's height of its size).

@@ -9875,6 +9875,59 @@
       },
       "owner": "ui-source",
       "source": "src/smart/segmented/index.js"
+    },
+    {
+      "id": "token-file-download-variable-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "sf-file-download's seven public variables carry the element's name, not its former tag's (docs pre-check 2026-11-10 DF-11): --sf-download-file-background-color is --sf-file-download-background-color, and so on for -border-color, -radius, -padding, -gap, -icon-size and -icon-color. The class sheet reads the new name first and the former one under it, so a page that sets the former name draws as before.",
+      "items": [
+        {
+          "from": "--sf-download-file-background-color",
+          "to": "--sf-file-download-background-color",
+          "match": "--sf-download-file-background-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-border-color",
+          "to": "--sf-file-download-border-color",
+          "match": "--sf-download-file-border-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-radius",
+          "to": "--sf-file-download-radius",
+          "match": "--sf-download-file-radius(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-padding",
+          "to": "--sf-file-download-padding",
+          "match": "--sf-download-file-padding(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-gap",
+          "to": "--sf-file-download-gap",
+          "match": "--sf-download-file-gap(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-icon-size",
+          "to": "--sf-file-download-icon-size",
+          "match": "--sf-download-file-icon-size(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-icon-color",
+          "to": "--sf-file-download-icon-color",
+          "match": "--sf-download-file-icon-color(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": ".attachments { --sf-download-file-radius: var(--sf-radius-1); }",
+        "after": ".attachments { --sf-file-download-radius: var(--sf-radius-1); }"
+      },
+      "owner": "ui-source",
+      "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
     }
   ]
 }

@@ -103,7 +103,9 @@ const DRAW = {
   icon: {css: ['icons'], js: 'icon', html: '<sf-icon icon="home" size="1"></sf-icon>'},
   'reference-link': {css: ['reference-link', 'icons'], js: 'reference-link',
     html: '<sf-reference-link label="Документация" text="/docs/" href="#" size="1"></sf-reference-link>'},
-  'download-file': {css: ['icons', 'download-file'], js: 'file-download',
+  // sf-file-download draws with the download-file class sheet; its variables
+  // carry the element's name since 2026-11-10 (DF-11).
+  'file-download': {css: ['icons', 'download-file'], js: 'file-download',
     html: '<sf-file-download file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-download>'},
   'copy-button': {css: ['icon-buttons', 'icons', 'smart/smart/button-copy/css/button-copy.css'], js: 'button-copy',
     html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="c" label="Копировать" duration="60000"></sf-button-copy>',
