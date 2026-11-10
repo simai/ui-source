@@ -22,6 +22,7 @@ export function renderConfirmTemplate(context) {
                 aria-labelledby=${context.question ? context.headingId : nothing}
                 aria-label=${context.question ? nothing : context.questionLabel}
                 data-state=${context.state}
+                ?hidden=${context.collapsed}
         >
             ${context.question
                 ? html`<p class="sf-confirm__question" id=${context.headingId}>${context.question}</p>`

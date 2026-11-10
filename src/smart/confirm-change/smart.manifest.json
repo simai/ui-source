@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "title": "Change confirmation",
   "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -69,7 +69,7 @@
       "state": {
         "type": "string",
         "default": "open",
-        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown.",
+        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown. Declined by the person here, the surface folds away (hidden) and the focus goes back, with its ring, to the control that put the question, else the nearest focusable place around it or the next control of the page (DEV D2 on C35); a declined state the host sets without that answer stays shown.",
         "enum": [
           "open",
           "pending",
@@ -486,11 +486,11 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.js",
-        "sha256": "bdd92ead2168035661c28ab2a296c8ffd9d8c8b546ddf5924e11b7978023ef39"
+        "sha256": "0cef3adcdb929d8f660124cddc0386276f6f3782b43c42323b0eca2285322536"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "72320aeefb5cbdc65054eeb4c42f950e12fb4961083d478f8e48db4f9641a6dd"
+        "sha256": "8de146d95c9105b1f95e853535e3e24f28b47c2f88bfaa29e97904792e74e23f"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -498,11 +498,11 @@
       },
       {
         "path": "src/smart/confirm-change/docs.md",
-        "sha256": "f54dcd63047123bc3fec2c5a94c7ab8902a23a3c179e4765cbdaa1bb45d993f7"
+        "sha256": "890bc4dcf00f197a79502727091a0c0fcf0cf01b7d1f1dd80b94e4fd2745f299"
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "19e293d5bdd0b7c90ea971da847f56be4d1f3da978e30a510369196c61eb9d68"
+        "sha256": "feb5ea69323f7e5b929f006c8ad9f372d00385a31d9aa237bb9027cdc12a429a"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",
@@ -510,11 +510,11 @@
       },
       {
         "path": "src/smart/confirm-change/lang/en.json",
-        "sha256": "d9a6014908094a9609cef75a22b35911ca3f747fc1409dd289360023afb6a2fc"
+        "sha256": "0b8392f9b04401d9c78e26901289c2d19e5050026f54e751210dde2b82f86075"
       },
       {
         "path": "src/smart/confirm-change/lang/ru.json",
-        "sha256": "622176fb7ce5624eb80b507385d4cd4039ec10da405470d48283edba9be3859d"
+        "sha256": "bea97cd65a0d42b37f0737e2130fd0ff832f7d1e584cd170b3052d5f5c7410b8"
       }
     ],
     "generated_runtime": []

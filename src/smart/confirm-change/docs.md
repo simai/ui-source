@@ -13,7 +13,13 @@
 остаются на месте: нажатый занят (спиннер кнопки и `aria-busy`), другой
 недоступен, так что дважды не нажать и видно, какой ответ применяется, — строка
 состояния говорит, что происходит, и отправляет событие. Итог ставит хост: `accepted`, `declined` или
-снова `open`, если ответ не удалось доставить. Хост, отменивший событие
+снова `open`, если ответ не удалось доставить. После «Отклонить» (`declined`)
+строка состояния пуста: отказ ничего не изменил, сообщать нечего (решение C35,
+R067). Отказ, который человек дал здесь, сворачивает вопрос (решение DEV D2 к C35): карточка
+скрывается (`hidden`), а фокус возвращается с видимой рамкой на элемент, с которого
+вопрос открыли (обычно кнопка «Удалить»), иначе — на ближайший фокусируемый элемент
+вокруг или следующий элемент страницы, как после удаления строки. Отказ, который хост
+рисует сам (решение принято раньше или в другом месте), остаётся на экране. Хост, отменивший событие
 (`preventDefault()`), оставляет вопрос открытым.
 
 Ответ человека — событие `sf-confirm-change-answer` с `{id, accepted}` (глагол
@@ -123,7 +129,7 @@ The 1.0 hooks `--sf-change-confirm--radius`, `--inset`, `--gap`, `--before-fill`
 English by default, the page's language otherwise (`lang/en.json`,
 `lang/ru.json`); corrected through `SF.language.register('sf-confirm-change', 'ru', {…})`.
 Keys: `changes-label`, `before-text`, `after-text`, `accept-text`, `decline-text`,
-`accepting-text`, `declining-text`, `accepted-text`, `declined-text`,
+`accepting-text`, `declining-text`, `accepted-text`,
 `expired-text`, `until-text`, `empty-value-text`.
 
 ## Former tag
