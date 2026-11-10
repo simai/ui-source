@@ -85,8 +85,9 @@
     }
   }
 
+  // A disabled item reads the disabled ink of the place it stands on (C43).
   .sf-tree .sf-tree-item[aria-disabled='true'] {
-    color: var(--sf-on-surface-muted);
+    color: var(--sf-on-surface-disabled);
     cursor: not-allowed;
   }
 

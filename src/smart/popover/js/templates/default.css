@@ -47,6 +47,7 @@
     --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
     --sf-surface-disabled: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
     --sf-on-surface-disabled: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
     --sf-disable: var(--sf-surface-disabled);
     --sf-on-disable: var(--sf-on-surface-disabled);
     --sf-on-surface-container--variant: var(--sf-on-surface-container-variant);

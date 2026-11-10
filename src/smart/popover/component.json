@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -313,7 +313,8 @@
     "version 1.3.2: the surface stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). --sf-popover-shadow still replaces it. Nothing else changes. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, toggle({force}), close({reason}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, toggle(<boolean>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged. Also: a patch, nothing drawn or done differently. The close action's reason is optional, as the element reads it (close() closes with reason api), so the reference no longer calls close's argument required. Settings, values, events and keys unchanged.",
     "version 1.4.1 (2026-11-09): the bubble declares a popup place and its ink is --sf-on-surface rather than inherited (C16, the background system, owner 2026-11-08).",
     "version 1.4.2 (2026-11-10): the bubble takes back --sf-surface-underlay (initial), as every place does (C43, owner 2026-11-10): a popover opened from a selected row does not lay its badges over the row's place. Nothing drawn differently. Settings, values, events and keys unchanged.",
-    "version 1.4.3 (2026-11-10): the bubble carries the dim ink on a fill one step up, dark tone 90 (C43, owner 2026-11-10), as every popup place does: a tonal quiet button's key read 4.25:1 on it. Light unchanged. Settings, values, events and keys unchanged."
+    "version 1.4.3 (2026-11-10): the bubble carries the dim ink on a fill one step up, dark tone 90 (C43, owner 2026-11-10), as every popup place does: a tonal quiet button's key read 4.25:1 on it. Light unchanged. Settings, values, events and keys unchanged.",
+    "version 1.4.4 (2026-11-10): the bubble re-declares the muted ink as its disabled ink (C43, owner 2026-11-10: --sf-on-surface-muted is var(--sf-on-surface-disabled), deprecated), so a reader of the former name inside a popover follows it. Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

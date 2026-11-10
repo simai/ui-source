@@ -9238,6 +9238,29 @@
         "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
       },
       "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
+    },
+    {
+      "id": "token-c43-muted-is-disabled",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The muted ink --sf-on-surface-muted is the disabled ink (C43): it reads var(--sf-on-surface-disabled), re-declared on every place with it, so it moves from neutral-60 / neutral-40 to neutral-50 at 80 / neutral-90 at 48 and follows the place (dark 2.92 -> 4.12 on the page, 1.73 -> 3.30 on a popup, 1.44 -> 2.97 on a nested popup). The name holds that value until remove_after.",
+      "items": [
+        {
+          "from": "--sf-on-surface-muted",
+          "to": "--sf-on-surface-disabled",
+          "match": "--sf-on-surface-muted(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "color: var(--sf-on-surface-muted);",
+        "after": "color: var(--sf-on-surface-disabled);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__theme.scss, src/core/scss/mix/_mix__places.scss"
     }
   ]
 }

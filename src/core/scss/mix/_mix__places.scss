@@ -57,6 +57,7 @@ $sf-place-theme-roles: (
   'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
   'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
+  'on-surface-muted': 'var(--sf-on-surface-disabled)',
   'surface-underlay': 'initial',
 );
 
@@ -84,13 +85,23 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
   @return null;
 }
 
-@mixin sf-place($surface, $variant: null) {
+// The boundary on the light grey steps (C43, owner 2026-11-10): the theme's
+// outline, neutral-50 at 80, holds 3.11:1 on white but 2.84, 2.60 and 2.33
+// on surface-2, 3 and 4 (neutral-95, 90, 85), under WCAG 1.4.11. Opaque
+// neutral-50 holds 3.94, 3.47 and 3.03; the dark half stays the theme's
+// (neutral-90 at 48: 3.86, 3.59 and 3.30 on surfaces 15, 20 and 25). A place
+// that is one of those steps passes it as $outline.
+$sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--alfa-48))';
+
+@mixin sf-place($surface, $variant: null, $outline: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
   $container-variant: sf-place-container-variant($variant);
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
+    } @else if $role == 'outline' and $outline {
+      --sf-outline: #{string.unquote($outline)};
     } @else if $role == 'on-surface-container-variant' and $container-variant {
       --sf-on-surface-container-variant: #{string.unquote($container-variant)};
     } @else {
@@ -161,5 +172,6 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   --sf-outline-variant: #{sf-ink($c, 24)};
   --sf-surface-disabled: #{sf-ink($c, 12)};
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
+  --sf-on-surface-muted: var(--sf-on-surface-disabled);
   @include aliases.sf-role-aliases($sf-place-aliased);
 }
