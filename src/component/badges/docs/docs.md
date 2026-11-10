@@ -45,11 +45,11 @@ On a `line-*` size, which has no block padding, the text line gives up the
 border instead.
 
 Indicator sizes: a badge is a non-interactive indicator, not a control, so its
-heights may stand below the control ladder (C18). Size `1/3` is 20 on a desktop
-and 16 on a phone, one step under the phone's first control step (20); nothing
-in a badge is a target to press. A badge that opens or removes something is a
-button or a tag, and takes the control ladder (DEV, docs precheck BG-01,
-2026-11-10).
+heights may stand below the control ladder (C18): a `line-*` badge is its text
+line, 16 at `line-1/2` on a phone. Size `1/3` is 24 on a desktop and 20 on a
+phone; nothing in a badge is a target to press. A badge that opens or removes
+something is a button or a tag, and takes the control ladder (DEV, docs
+precheck BG-01, 2026-11-10).
 
 Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
 every size (owner decision 2026-11-07). `sf-badge--tight` keeps the size's own text inset
