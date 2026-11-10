@@ -64,8 +64,9 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
   // An empty value has no copy button and no link.
   assert.match(source, /copy: item\.copy === true && shown !== '',/u);
   assert.match(source, /href: shown === '' \? '' : text\(item\.href\),/u);
-  // An empty value draws no status (the C33 defect: the icon before «—»).
-  assert.match(source, /status: !empty && STATUSES\.includes\(status\) \? status : '',/u);
+  // An empty value draws no status (the C33 defect: the icon before «—»), nor
+  // does a value with a badge (one mark, C33 acceptance).
+  assert.match(source, /status: !empty && !badge && STATUSES\.includes\(status\) \? status : '',/u);
   assert.equal(json('src/smart/list-description/lang/ru.json').runtime['empty-text'], 'Не указан');
 });
 

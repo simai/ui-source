@@ -121,7 +121,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The facts in order, each {label, value, id?, hint?, mono?, numeric?, copy?, href?, status?, badge?, help?, empty?, action?}, and section items {type: \"section\", label, id?, action?} that open a section of the record (decision C33). A property, or the JSON island a server prints. value is text (a number is written as it is, in figures of one width); an empty value (no text and no badge) shows empty (the item's words) or empty-text, and then no link, no copy button and no status are drawn. mono writes the value in the monospace face (a path, a hash, a key), numeric in figures of one width (a sum), copy adds a button that copies it (always shown), href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing), badge draws an sf-badge on the value's line ({text, status | scheme, icon?}), hint is a line under it, help puts a help mark (sf-help-mark) after the label, action one ghost button after the value -- an empty value's «Указать» too ({label, event?, href?}; a press asks apply, or navigate with href). A section's label is its title, a heading at heading-level, its action stands at the head's end. Every label of a record with sections shares one column. An item without a label is left out"
+        "description": "The facts in order, each {label, value, id?, hint?, mono?, numeric?, copy?, href?, status?, badge?, help?, empty?, action?}, and section items {type: \"section\", label, id?, action?} that open a section of the record (decision C33). A property, or the JSON island a server prints. value is text (a number is written as it is, in figures of one width); an empty value (no text and no badge) shows empty (the item's words) or empty-text, and then no link, no copy button and no status are drawn. mono writes the value in the monospace face (a path, a hash, a key), numeric in figures of one width (a sum), copy adds a button that copies it (always shown), href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing; none with a badge, the badge is the one mark), badge draws an sf-badge on the value's line ({text, status | scheme, icon?}), hint is a line under it, help puts a help mark (sf-help-mark) after the label, action one ghost button after the value -- an empty value's «Указать» too ({label, event?, href?}; a press asks apply, or navigate with href). A section's label is its title, a heading at heading-level, its action stands at the head's end. Every label of a record with sections shares one column. An item without a label is left out"
       }
     },
     "additionalProperties": false
@@ -283,7 +283,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-description/index.js",
-        "sha256": "e43fd96275e8f00941a88d99f6aa68e7e8899a415f8b6bd2744facb8e8e5732a"
+        "sha256": "dcb4cd355eded80b701f9d2706d8fd828d2bd1d23e6bc5421dc3cb154e26adc4"
       },
       {
         "path": "src/smart/list-description/js/templates/default.js",
@@ -291,7 +291,7 @@
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "4059d719e192345f87c4f9c477ea2850cebb8298f25be5611bb465adea5e9cd1"
+        "sha256": "b612310038093768f64ebf0ae26c2d87ec1bd151c9826c864fb66ff8011dfe9e"
       },
       {
         "path": "src/smart/list-description/rule.js",
@@ -299,7 +299,7 @@
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "cb05679271fc6459da1e3b332c7003138f7ebb20fa805a32cdbb4d1dbe29130b"
+        "sha256": "5a7a378af344f615485c28e5d445c31893d24b8ae511c765b7b9f2aa5f055b41"
       }
     ],
     "generated_runtime": []
