@@ -18,6 +18,23 @@ The surface uses `--sf-radius--surface`, spacing tokens, semantic role colors an
 the normal text tokens. Compact controls inside the surface keep their own
 `--sf-radius--ui` geometry.
 
+## Layout (1.1.0, owner decision C35)
+
+The toast's numbers (DEV acceptance D3: C35 covers every notice). Inline
+padding `--sf-space-1` on both sides, block padding and icon gap
+`--sf-space-1/2`; the status icon is the line's size (`--sf-text-height-1`: 24,
+compact and phone 20) and stands with the first line of text and the close in
+the box of a low size-1 control (32, compact and phone 28). The title and its
+text (`.sf-alert-content`) are one block (no gap); `.sf-alert-buttons` follow
+at `--sf-space-1/2`, `--sf-space-1/3` apart. Actions: `sf-button
+sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low`,
+a second one `sf-button sf-button--link sf-button--on-surface
+sf-button--size-1 sf-button--height-low`. The close is `sf-icon-button
+sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
+`sf-close sf-close--size-1`, the last child of `.sf-alert`; its plate hangs out
+over the inline padding. The public `--sf-alert-padding-block`,
+`--sf-alert-padding-inline` and `--sf-alert-gap` still win.
+
 ## Presentation
 
 Combine one semantic type with `default`, `outlined` or `flat`. Default and flat

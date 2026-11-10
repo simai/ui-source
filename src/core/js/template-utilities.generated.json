@@ -6,6 +6,7 @@
     "position/default"
   ],
   "cl-alert": [
+    "align-items/default",
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",
