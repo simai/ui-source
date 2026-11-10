@@ -476,7 +476,9 @@ class SfListAttention extends ListAttentionElement {
         open: this._open[one],
         items: list.filter((item) => item.status === one).map(row),
       })) : [],
-      passed: passed.length ? {
+      // Computed values under keys of their own, not a setting's name (the
+      // template-context probe compares a setting's key with its getter).
+      passedGroup: passed.length ? {
         key: 'passed',
         title: this.sfWord('group-passed'),
         count: passed.length,
@@ -490,7 +492,7 @@ class SfListAttention extends ListAttentionElement {
         text: this.sfWord(`summary-${one}`, {count: counts[one]}),
       })),
       empty: this.empty === 'none' ? 'none' : 'line',
-      emptyText: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
+      emptyLine: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
       checked,
       checkedLine: checked ? this.sfWord('checked-text', {vars: {when: checked}}) : '',
       recheckLabel: this.sfWord('recheck-label'),
