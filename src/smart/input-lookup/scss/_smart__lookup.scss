@@ -231,7 +231,7 @@
    spot, so the box is its target alone: it stands over the frame's block
    padding by what it passes the text line, and a value never grows the field.
    The host is display: contents; the box is the button. */
-.sf-lookup .sf-lookup-frame > sf-button-close > .sf-lookup-clear {
+.sf-lookup .sf-lookup-frame > :is(sf-button-close, sf-close) > .sf-lookup-clear {
   margin-block: calc((var(--sf-lookup--line-height) - var(--sf-lookup--clear-box)) / 2);
 }
 

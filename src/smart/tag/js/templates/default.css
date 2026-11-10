@@ -61,7 +61,7 @@
     /* sf-button-close, plain (C14, LK-06), draws the same: the ink step 64 of
        its base at rest and the base on hover and press; the base is the tag's
        ink. Disabled, the cross takes the disabled ink, as every plain close. */
-    .sf-tag > sf-button-close > .sf-icon-button.sf-button-close.sf-button-close--plain {
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-button-close.sf-button-close--plain {
         --sf-button-close--base: var(--sf-tag-color, var(--sf-on-surface));
     }
 
@@ -83,21 +83,23 @@
    moves off by what the target reaches past the mark: the target lay over the
    end of the label, and a click on its last letter removed the tag. */
 @layer sf.states {
-    .sf-tag > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button.sf-icon-button--close {
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
         padding: 0;
         min-block-size: 0;
         min-inline-size: 0;
         position: relative;
     }
 
-    .sf-tag > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button.sf-icon-button--close::after {
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close::after,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close::after {
         content: "";
         position: absolute;
         inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
     }
 
     .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close,
-    .sf-tag > sf-button-close > .sf-icon-button.sf-icon-button--close > .sf-close {
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close {
         --sf-close--padding-top: 0;
         --sf-close--padding-bottom: 0;
         --sf-close--padding-inline-start: 0;
@@ -105,16 +107,18 @@
     }
 
     .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon,
-    .sf-tag > sf-button-close > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
         --sf-close-icon--height: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));
         --sf-close-icon--width: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));
     }
 
-    .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button.sf-icon-button--close {
+    .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close,
+    .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
         margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));
     }
 
-    .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button.sf-icon-button--close {
+    .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close,
+    .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
         block-size: var(--sf-tag--line, var(--sf-tag--line-height));
         inline-size: var(--sf-tag--line, var(--sf-tag--line-height));
     }
