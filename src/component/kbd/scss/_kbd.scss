@@ -69,7 +69,7 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
 @mixin keycap {
   @include sized;
   color: var(--sf-on-surface);
-  background: var(--sf-surface-1);
+  background: var(--sf-surface-area);
   border: var(--sf-px) solid var(--sf-kbd-border-color, var(--sf-outline-variant));
   box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
 }
