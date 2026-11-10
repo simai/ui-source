@@ -81,6 +81,7 @@
           "  <sf-change id=\"list\" layout=\"list\" changes='[{\"label\":\"Вес\",\"before\":\"4,2 кг\",\"after\":\"4,6 кг\"},{\"label\":\"Склад\",\"before\":\"Москва-Север\",\"after\":null}]'></sf-change>",
           "  <div id=\"narrow\" style=\"inline-size: 20rem\"><sf-change id=\"stack\" layout=\"list\" changes='[{\"label\":\"Габариты\",\"before\":\"40×30×20\",\"after\":\"45×30×25\"}]'></sf-change></div>",
           "  <p>Сергей Иванов изменил описание <sf-change id=\"long\" label=\"Описание\" before=\"Смартфон 6,1″, 128 ГБ, синий. Доставка за 2 дня, самовывоз из пункта выдачи на Тверской.\" after=\"Смартфон 6,1″, 256 ГБ, тёмно-синий. Доставка курьером на следующий день, оплата при получении.\"></sf-change></p>",
+          "  <div id=\"box\" style=\"inline-size: 180px\"><sf-change id=\"wrap\" before=\"Собран\" after=\"Передан в службу доставки СДЭК\"></sf-change></div>",
           "  <sf-change id=\"none\"></sf-change>",
           "</main>"
         ]
@@ -88,11 +89,14 @@
       "checks": [
         {
           "id": "p1-inline",
-          "title": "inline: the old value, a picture arrow, a hidden «на», the new value in medium weight; the pair does not break; no label without show-label",
+          "title": "inline: the old value, a picture arrow, a hidden «на», the new value in medium weight; the arrow is glued to the new value's first word and the values wrap inside their box; no label without show-label",
           "covers": "settings.before, settings.after, settings.label, settings.layout inline, accessibility",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#inline'); const arrow = el.querySelector('.sf-change__arrow'); const after = el.querySelector('.sf-change__after'); const before = el.querySelector('.sf-change__before'); return el.textContent.replace(/\\s+/gu, ' ').trim() === 'Собран → на Передан в доставку' && arrow.getAttribute('aria-hidden') === 'true' && el.querySelector('.sr-only').textContent.trim() === 'на' && Number(getComputedStyle(after).fontWeight) > Number(getComputedStyle(before).fontWeight) && getComputedStyle(el.querySelector('.sf-change__pair')).whiteSpace === 'nowrap' && getComputedStyle(before).textDecorationLine === 'none' && !el.querySelector('.sf-change__label') && !el.querySelector('sf-badge'); })()"
+              "check": "(() => { const el = document.querySelector('#inline'); const arrow = el.querySelector('.sf-change__arrow'); const after = el.querySelector('.sf-change__after'); const before = el.querySelector('.sf-change__before'); return el.textContent.replace(/\\s+/gu, ' ').trim() === 'Собран → на Передан в доставку' && arrow.getAttribute('aria-hidden') === 'true' && el.querySelector('.sr-only').textContent.trim() === 'на' && Number(getComputedStyle(after).fontWeight) > Number(getComputedStyle(before).fontWeight) && getComputedStyle(el.querySelector('.sf-change__pair')).whiteSpace !== 'nowrap' && /на\\u00a0Передан/u.test(el.querySelector('.sf-change__pair').textContent) && getComputedStyle(before).textDecorationLine === 'none' && !el.querySelector('.sf-change__label') && !el.querySelector('sf-badge'); })()"
+            },
+            {
+              "check": "(() => { const box = document.querySelector('#box').getBoundingClientRect(); const el = document.querySelector('#wrap'); const after = el.querySelector('.sf-change__after'); const arrow = el.querySelector('.sf-change__arrow'); const rects = [...after.getClientRects()]; return rects.length > 1 && Math.max(...rects.map((r) => r.right)) <= box.right + 0.5 && Math.abs(arrow.getClientRects()[0].top - rects[0].top) < 2; })()"
             }
           ]
         },

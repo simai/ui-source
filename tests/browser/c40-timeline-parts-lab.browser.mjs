@@ -19,7 +19,8 @@
 //     Escape hides it;
 //   - sf-change: the old value and the arrow on-surface-variant, the new
 //     value on-surface medium, the arrow a picture, «на» for a screen reader,
-//     no strikethrough; list a dl; an empty value «пусто»; a long value
+//     no strikethrough; the arrow glued to the new value's first word, the
+//     values wrapping inside the line; list a dl; an empty value «пусто»; a long value
 //     folded behind «Показать изменения», revealed in place;
 //   - .sf-group-heading: text 1, medium, on-surface, the date beside it text
 //     1/2 on-surface-variant; --sf-space-3 above (none above the first),
@@ -138,7 +139,9 @@ const MEASURE = () => {
     arrowHidden: inline.querySelector('.sf-change__arrow').getAttribute('aria-hidden'), sr: words(inline.querySelector('.sr-only')),
     strike: [...inline.querySelectorAll('*')].some((one) => style(one).textDecorationLine.includes('line-through')),
     badges: inline.querySelectorAll('sf-badge, .sf-badge').length,
-    pairLines: (() => { const pair = inline.querySelector('.sf-change__pair'); return pair ? new Set([...pair.getClientRects()].map((one) => Math.round(one.bottom))).size : 0; })(),
+    // The arrow is glued to the new value's first word; the values wrap inside the sentence.
+    pairGlued: (() => { const arrow = inline.querySelector('.sf-change__arrow')?.getClientRects()[0]; const first = inline.querySelector('.sf-change__after')?.getClientRects()[0]; return Boolean(arrow && first) && Math.abs(arrow.top - first.top) < 2; })(),
+    pairOverflow: (() => { const line = inline.closest('p'); const after = inline.querySelector('.sf-change__after'); return line && after ? round(Math.max(...[...after.getClientRects()].map((one) => one.right)) - box(line).right) : 99; })(),
     size: style(inline).fontSize, sentenceSize: style(document.getElementById('c-sentence')).fontSize,
   } : null;
   const labelled = words(document.querySelector('#c-label .sf-change'));
@@ -319,7 +322,8 @@ try {
           if (c.before !== 'Собран' || c.after !== 'Передан в доставку') fail(`sf-change values ${c.before} / ${c.after}`);
           if (c.beforeColour !== t.variant || c.arrowColour !== t.variant || c.afterColour !== t.onSurface || c.afterWeight !== '500') fail(`sf-change look ${JSON.stringify(c)} vs ${t.variant} ${t.onSurface}`);
           if (c.arrowHidden !== 'true' || c.sr !== 'на' || c.strike || c.badges) fail(`sf-change a11y/look arrow ${c.arrowHidden} sr «${c.sr}» strike ${c.strike} badges ${c.badges}`);
-          if (c.pairLines !== 1) fail(`sf-change pair breaks: ${c.pairLines} boxes`);
+          if (!c.pairGlued) fail('sf-change: the arrow is not on the new value\'s first line');
+          if (c.pairOverflow > 0.5) fail(`sf-change: the new value passes its line by ${c.pairOverflow}px`);
           if (c.size !== c.sentenceSize) fail(`sf-change size ${c.size}, its sentence ${c.sentenceSize}`);
           if (m.labelled !== 'Получатель: пусто → на Ирина Котова') fail(`sf-change show-label «${m.labelled}»`);
           if (m.list?.rows !== 4 || m.list?.terms.join('|') !== 'Вес|Габариты|Склад|Комментарий' || !/^Позвонить → на пусто$/u.test(m.list?.last ?? '') || m.list?.emptyItalic !== 'italic') fail(`sf-change list ${JSON.stringify(m.list)}`);
