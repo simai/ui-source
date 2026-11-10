@@ -137,7 +137,7 @@
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-container {
-  --sf-switch-container--color: var(--sf-on-disable);
+  --sf-switch-container--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch.sf-switch--size-1\/2 .sf-switch-description {
@@ -290,20 +290,20 @@
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-description {
-  --sf-switch-description--color: var(--sf-on-disable);
+  --sf-switch-description--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-inner {
-  --sf-switch-inner--background-color: var(--sf-on-disable);
+  --sf-switch-inner--background-color: var(--sf-on-surface-disabled);
 }
 
 /* utility-hint: justify-content/flex-start (.justify-start) */
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-toggler {
-  --sf-switch-toggler--border-color: var(--sf-outline-disable);
+  --sf-switch-toggler--border-color: var(--sf-outline-disabled);
 }
 
 .sf-switch:has(input:not(:disabled):not(.disabled):focus-visible) .sf-switch-toggler {

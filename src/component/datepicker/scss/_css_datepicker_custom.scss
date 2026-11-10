@@ -51,11 +51,11 @@
     --sf-datepicker-day-info--color: var(--sf-on-primary-container);
   }
 .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-date {
-    --sf-datepicker-day-date--color: var(--sf-on-disable);
+    --sf-datepicker-day-date--color: var(--sf-on-surface-disabled);
 }
 
 .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
-    --sf-datepicker-day-info--color: var(--sf-on-disable);
+    --sf-datepicker-day-info--color: var(--sf-on-surface-disabled);
 }
   .sf-datepicker-text.sf-datepicker-text-start, .sf-datepicker-text.sf-datepicker-text-end {
     --sf-datepicker-text--background-color: var(--sf-primary);
@@ -78,6 +78,6 @@
     --sf-datepicker-text--color: var(--sf-on-primary-container);
   }
   .sf-datepicker-text:is(:disabled, .disabled) {
-    --sf-datepicker-text--color: var(--sf-on-disable);
+    --sf-datepicker-text--color: var(--sf-on-surface-disabled);
   }
 }

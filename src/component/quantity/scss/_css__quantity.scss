@@ -215,7 +215,7 @@
 }
 
 .sf-quantity:has(input:disabled) input {
-  --sf-quantity-input--color: var(--sf-on-disable);
+  --sf-quantity-input--color: var(--sf-on-surface-disabled);
 }
 
 .sf-quantity.sf-quantity--size-2 .sf-quantity-text {
@@ -318,19 +318,19 @@
 }
 
 .sf-quantity:has(input:disabled) .sf-quantity-wrap {
-  --sf-quantity-wrap--border-color: var(--sf-outline-disable);
+  --sf-quantity-wrap--border-color: var(--sf-outline-disabled);
 }
 
 .sf-quantity:has(input:disabled) .sf-button .sf-icon {
-  background-color: var(--sf-on-disable);
+  background-color: var(--sf-on-surface-disabled);
 }
 
 .sf-quantity:has(input:disabled) .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-quantity:has(input:disabled) .sf-quantity-wrap input::placeholder {
-  --sf-quantity-placeholder--color: var(--sf-on-disable);
+  --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
 }
 
 .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
@@ -417,7 +417,7 @@
     --sf-icon-button--box-shadow: none;
   }
   .sf-quantity .sf-quantity-count:disabled .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
   /* The step buttons sit inside the field, so their own ring turns inwards. */
   .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {

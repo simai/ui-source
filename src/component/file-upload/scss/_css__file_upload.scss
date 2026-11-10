@@ -156,7 +156,7 @@
 }
 
 .sf-file-upload:not([disabled]):not(.disabled):hover {
-  --sf-file-upload--border-color: var(--sf-outline-primary);
+  --sf-file-upload--border-color: var(--sf-primary-outline);
 }
 
 /* A file held over the area: the script set .dragover and nothing drew it, so a
@@ -165,8 +165,8 @@
    component keeps its .dragover. */
 .sf-file-upload.dragover:not([disabled]):not(.disabled),
 sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disabled) {
-  --sf-file-upload--background-color: var(--sf-file-upload-dragged-over-background-color, var(--sf-primary-transparent-select));
-  --sf-file-upload--border-color: var(--sf-file-upload-dragged-over-border-color, var(--sf-outline-primary));
+  --sf-file-upload--background-color: var(--sf-file-upload-dragged-over-background-color, var(--sf-primary-state-select));
+  --sf-file-upload--border-color: var(--sf-file-upload-dragged-over-border-color, var(--sf-primary-outline));
 }
 
 .sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon,
@@ -175,24 +175,24 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
 }
 
 .sf-file-upload:is([disabled], .disabled) {
-  --sf-file-upload--background-color: var(--sf-disable);
-  --sf-file-upload--border-color: var(--sf-outline-disable);
+  --sf-file-upload--background-color: var(--sf-surface-disabled);
+  --sf-file-upload--border-color: var(--sf-outline-disabled);
 }
 
 .sf-file-upload:is([disabled], .disabled) .sf-featured-icon .sf-icon {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
 }
 
 .sf-file-upload:is([disabled], .disabled) .sf-file-upload-link {
-  --sf-file-upload-link--color: var(--sf-on-disable);
+  --sf-file-upload-link--color: var(--sf-on-surface-disabled);
 }
 
 .sf-file-upload:is([disabled], .disabled) .sf-file-upload-block-text {
-  --sf-file-upload-block-text--color: var(--sf-on-disable);
+  --sf-file-upload-block-text--color: var(--sf-on-surface-disabled);
 }
 
 .sf-file-upload:is([disabled], .disabled) .sf-file-upload-text {
-  --sf-file-upload-text--color: var(--sf-on-disable);
+  --sf-file-upload-text--color: var(--sf-on-surface-disabled);
 }
 
 @media (forced-colors: active) {
