@@ -3086,7 +3086,7 @@
           "name": "--sf-site-header-background-color",
           "role": "background",
           "summary": "The bar's fill. The former name --sf-site-header-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-page)",
           "since": "2026-11-08"
         },
         {
@@ -3954,7 +3954,7 @@
           "name": "--sf-alert-bar-list-background-color",
           "role": "background",
           "summary": "The surface of the list of all under the bar. The former name --sf-alert-bar-list-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {
@@ -3988,7 +3988,7 @@
           "name": "--sf-wizard-background-color",
           "role": "background",
           "summary": "The frame's surface in a page. The former name --sf-wizard-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {
@@ -4152,7 +4152,7 @@
           "name": "--sf-progress-run-output-background-color",
           "role": "background",
           "summary": "The output pane's fill. The former name --sf-progress-run-output-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {

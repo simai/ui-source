@@ -111,7 +111,7 @@ under `prefers-reduced-motion`.
 ## Look
 
 Theme roles only: links `--sf-primary`, notes `--sf-on-surface-variant`,
-cards on `--sf-surface-0` with the region edge `--sf-outline-variant`
+cards on `--sf-surface-card` with the region edge `--sf-outline-variant`
 (`--sf-outline-primary` on hover), the track `--sf-surface-container` and
 the fill `--sf-primary`, as on sf-progress-bar. One ladder: at a rung the
 title is the text line, a note the line a step down, a picture the line it
@@ -120,7 +120,7 @@ stands on, the buttons the rung's control height.
 | Variable | Default | What it changes |
 |:---|:---|:---|
 | `--sf-pager-gap` | `var(--sf-ui-1--text-space-x)`, the rung's picture-to-label step | the space between the parts |
-| `--sf-pager-card-background-color` | `var(--sf-surface-0)` | the cards' and the lesson card's fill |
+| `--sf-pager-card-background-color` | `var(--sf-surface-card)` | the cards' and the lesson card's fill |
 | `--sf-pager-card-border-color` | `var(--sf-outline-variant)` | their edge |
 | `--sf-pager-card-radius` | `var(--sf-radius--ui)` | their corners |
 | `--sf-pager-link-color` | `var(--sf-primary)` | the titles of cards and row |

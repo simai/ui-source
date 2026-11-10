@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-code",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Code input",
   "summary": "A one-time code -- from a message, an authenticator, an email -- as a form field with its own value, paste and errors, drawn as the class verification: one native input holds the code (autocomplete one-time-code, so autofill and WebOTP fill it whole) and the cells picture it. Typing fills the next cell, Backspace steps back and clears, a pasted code fills every cell, and each cell is announced by its place.",
   "kind": "smart",
@@ -407,7 +407,7 @@
       },
       {
         "path": "src/smart/input-code/docs.md",
-        "sha256": "008073881fc7068cf4bd5a59f23dc1f31684654ead7401cec45557af4ddf9bfb"
+        "sha256": "203302b02b58c3ed1a72dced37f74efe63950ba57debbdb8120f7a731cdeb85b"
       }
     ],
     "generated_runtime": []

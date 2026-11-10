@@ -177,16 +177,10 @@
   line-height: 1;
 }
 
-/* Above the icon button's own colour rules (scheme, appearance, kind). */
-.sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-pressed='true'] {
-  --sf-icon--color: var(--sf-on-secondary-container);
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-}
-
-.sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-pressed='true']:not(:disabled):hover {
-  background-color: var(--sf-secondary-container-hover);
-}
+/* A pressed tool (bold on, a list on) is the icon button's own pressed look,
+   aria-pressed="true": primary-container with its hover and active steps, no
+   edge (C12, C16: selected and pressed are primary-container everywhere). The
+   toolbar does not paint its own; it drew secondary-container until 1.2.1. */
 
 .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
   --sf-icon--color: var(--sf-on-disable);

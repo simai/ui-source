@@ -15,7 +15,7 @@
     // Экран загрузки закрывает страницу: роль прежней схемы здесь не
     // объявлена, и фон оставался прозрачным. JS-версия того же экрана давно
     // читает surface-0 — теперь и стиль.
-    background-color: var(--sf-surface-0);
+    background-color: var(--sf-surface-page);
     text-align: center;
   }
 

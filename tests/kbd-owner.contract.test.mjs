@@ -82,7 +82,7 @@ test('Kbd sizes come from the ladder: the step below the place, never below 1/3'
   assert.match(code, /font-size: var\(--sf-kbd-font-size, var\(--sf-kbd--step-font-size, var\(--sf-text-size-1\\\/2\)\)\)/u);
   assert.match(code, /--sf-kbd--padding-inline: var\(--sf-kbd-padding-inline, var\(--sf-space-1\\\/4\)\)/u);
   assert.doesNotMatch(code, /gap: var\(--sf-kbd-gap, (?!var\(--sf-space-1\\\/4\)\))/u);
-  for (const token of ['--sf-radius--ui', '--sf-text--family', '--sf-font-weight-medium', '--sf-outline-variant', '--sf-on-surface-variant', '--sf-surface-1', '--sf-on-surface', '--sf-px']) {
+  for (const token of ['--sf-radius--ui', '--sf-text--family', '--sf-font-weight-medium', '--sf-outline-variant', '--sf-on-surface-variant', '--sf-surface-area', '--sf-on-surface', '--sf-px']) {
     assert.ok(css.includes(token), `missing ${token}`);
   }
   // The place list: each host size and text class says the step below its own.

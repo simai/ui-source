@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
   "id": "smart.wizard",
   "tag": "sf-wizard",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -376,7 +376,7 @@
     "continue later (owner): later or later-href draws «Продолжить позже»; close {reason: later, current, steps, value}; with remember the place, the states and the answers are kept in localStorage (sf-pref:sf-wizard/<key>) and the wizard opens there next time; completed clears them. Place pages keeps nothing in the browser: its server knows the place.",
     "closing with unsaved input (owner): input on the current step not yet submitted makes the step dirty (data-dirty); «Продолжить позже» and a window's close then ask in place with sf-confirm («Закрыть мастер? Введённое на этом шаге не сохранится.») before close is sent.",
     "one value (owner): value holds every answer by step and field name, collected from the named controls of each step as they change (FormData order; a name given twice gives a list); change, submit, close and completed carry it.",
-    "colour: the frame is a surface (--sf-surface-1) with an outline-variant edge in place inline, the window's own surface in place modal; icons read only on-surface, on-surface-variant and on-disable; a result's colour is sf-alert's status role. Light and dark from the theme.",
+    "colour: the frame is a surface (--sf-surface-area) with an outline-variant edge in place inline, the window's own surface in place modal; icons read only on-surface, on-surface-variant and on-disable; a result's colour is sf-alert's status role. Light and dark from the theme.",
     "events: submit (vocabulary §5 submit, cancelable), navigate (§5, place pages), open and close (§5, the window; close also for later), change (the person's move), completed (a fact), invalid (own verb, §5.1). Actions open, close, go-to-step and next answer an outcome.",
     "css-variables: six public variables (§6) -- the gap between the head, the body and the footer, the inset, the background, the edge, the corner and the maximum width -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "phase 1.0 (owner): conditional steps, step groups and the drawer place are 1.1.",
@@ -386,7 +386,8 @@
     "version 1.2.0 (one number above the unreleased 1.0.4 and 1.1.0 it joins): the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.2.0 background-color-names: the public variable --sf-wizard-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-wizard-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.2.2: the size rule C18 (2026-11-09): the plan's first column grows from the size step f6 (16rem, 256 px, as before); the steps row's room reads --sf-focus--width with no raw fallback (nothing moves). Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToStep({name}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToStep(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
-    "version 1.2.3 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.2.3 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.2.4 (2026-11-10, C16 leftovers): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. Its docs and the colour line name --sf-surface-area too."
   ],
   "x-registry": {
     "capabilities": [

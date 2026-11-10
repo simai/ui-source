@@ -294,7 +294,8 @@
     "version 1.2.1: the size rule C18 (2026-11-09): the skeleton's name bar is the size step e6 (128 px) instead of 8em; the same at text 16, 16 px wider at text 14 (it was 112). Also: the panel stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup. Nothing else changes.",
     "version 1.3.1 (2026-11-09): the panel declares a popup place; the loading bar is the fill (--sf-surface-container) (C16, the background system, owner 2026-11-08).",
     "version 1.4.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel is a panel of the popup widths: core's --sf-popup-panel-width, 20rem, 18rem in compact density, or the trigger when that is wider, fixed. It was as wide as its longest name between the trigger and 24rem (238 / 214 px with the docs' names). A long name ends in an ellipsis, as before; inside the screen less space-1. Settings, values, events and keys unchanged.",
-    "version 1.4.0 also carries C43 in its built sheet (2026-11-10, pair next integration): as a place (sf-place) it takes back --sf-surface-underlay with one line, --sf-surface-underlay: initial; nothing is drawn differently outside a selected row."
+    "version 1.4.0 also carries C43 in its built sheet (2026-11-10, pair next integration): as a place (sf-place) it takes back --sf-surface-underlay with one line, --sf-surface-underlay: initial; nothing is drawn differently outside a selected row.",
+    "version 1.4.0 also carries the C16 leftovers (2026-11-10, not yet released, so no second number): the chosen profile row and the pressed segment take primary-container and on-primary-container (the row's hover primary-container-hover), as a chosen row of a context menu and a pressed toggle (C12, C16: selected is primary-container everywhere); they were secondary-container. The check mark stays the second sign."
   ],
   "x-registry": {
     "capabilities": [
