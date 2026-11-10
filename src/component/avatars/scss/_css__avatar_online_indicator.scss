@@ -52,9 +52,12 @@
 // the photo or the initials would show through it (a green photo read as
 // online). It stacks over the place's colour instead, as C43 lays every alpha
 // over the solid place: the dot is the disabled ink on the place it is on.
+// Both layers are public (core/contracts/public-variables.v1.json): a page
+// that wants a colour of its own sets the background colour variable and
+// the overlay variable to none, and gets exactly that colour.
 .sf-online-indicator--offline {
-  --sf-online-indicator--background-color: var(--sf-surface-place);
-  background-image: linear-gradient(var(--sf-on-surface-disabled) 0 0);
+  --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-surface-place));
+  background-image: var(--sf-avatar-offline-overlay, linear-gradient(var(--sf-on-surface-disabled) 0 0));
 }
 
 .sf-online-indicator--online {

@@ -1070,6 +1070,20 @@
           "varies_with": [
             "appearance"
           ]
+        },
+        {
+          "name": "--sf-avatar-offline-background-color",
+          "role": "background",
+          "summary": "The colour under the offline dot: the place the avatar stands on, so neither the photo nor the initials show through the dot (C43).",
+          "default": "var(--sf-surface-place)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-avatar-offline-overlay",
+          "role": "overlay",
+          "summary": "The layer over that colour: the disabled ink. Set it to none for an offline dot of exactly --sf-avatar-offline-background-color.",
+          "default": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "since": "2026-11-10"
         }
       ]
     },
