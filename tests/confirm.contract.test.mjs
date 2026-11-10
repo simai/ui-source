@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 test('the confirm surface applies nothing and keeps the question open when the host refuses the answer', () => {
   const surface = read('src/smart/helpers/confirm-surface.js');
   assert.match(surface, /const delivered = this\.sfEmit\("answer", \{id: this\.questionKey, accepted\}\);/u);
-  assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\.setAttribute\("state", "open"\);/u);
+  assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\._declinedHere = false;\s*this\.setAttribute\("state", "open"\);/u);
   // A plain question: two outlined answers of one weight. A dangerous one
   // (decision C25): a filled danger acceptance and a quiet declining answer.
   assert.match(surface, /appearance=\$\{danger \? "default" : "outline"\}/u);
@@ -47,7 +47,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.5.1');
+  assert.equal(contract.version, '1.6.0');
   assert.deepEqual(Object.keys(contract.settings).sort(),
     ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state']);
   const tags = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'tag');
@@ -85,7 +85,10 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(Object.keys(ru).sort(), Object.keys(en).sort());
   assert.equal(ru['decline-text'], 'Отмена');
   // A declined question says nothing (C35, R067): no «Отменено», no word for it.
-  assert.match(source, /statusText\(shown\) \{\s*return shown === "declined" \? "" : super\.statusText\(shown\);/u);
+  // The surface's own rule, so sf-confirm-change says nothing either.
+  assert.match(read('src/smart/helpers/confirm-surface.js'), /if \(shown === "declined"\) return "";/u);
   assert.equal(ru['declined-text'], undefined);
   assert.equal(en['declined-text'], undefined);
+  assert.equal(json('src/smart/confirm-change/lang/ru.json').runtime['declined-text'], undefined);
+  assert.equal(json('src/smart/confirm-change/lang/en.json').runtime['declined-text'], undefined);
 });

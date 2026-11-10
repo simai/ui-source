@@ -37,6 +37,18 @@ class SfClose extends CloseElement {
     return [...new Set([...super.observedAttributes, 'aria-label'])];
   }
 
+  // The size the box is drawn at (1.3.0, DEV D1 on C35). A page's size wins.
+  // Without one, a close asked for a height is a control of its place, as an
+  // unsized sf-button is: the place's step, size 1, which a compact region
+  // moves down because no size attribute holds it (C22) -- so
+  // <sf-button-close height="low"> is 32, compact and phone 28, the notice's
+  // close. Without a size or a height it stays the default 1/3.
+  get placeSize() {
+    if (this.hasAttribute('size')) return this.size;
+    const height = this.height;
+    return height && height !== 'default' ? '1' : this.size;
+  }
+
   get isGlyph() {
     return Boolean(this.parentElement?.closest?.(CONTAINER));
   }
@@ -48,7 +60,7 @@ class SfClose extends CloseElement {
       ...props,
       component: this,
       glyph: this.isGlyph,
-      size: this.size,
+      size: this.placeSize,
       // The box's height (1.3.0, decisions C27 and C35).
       height: this.height,
       appearance: this.appearance,

@@ -58,6 +58,7 @@ const block = (id) => `
     <sf-button-icon height="low" icon="settings" aria-label="Настройки" data-k="icon-low"></sf-button-icon>
     <sf-button-icon height="low" kind="close" appearance="ghost" scheme="on-surface" aria-label="Закрыть" data-k="icon-close-low"></sf-button-icon>
     <sf-button-close size="1" height="low" data-k="close-low"></sf-button-close>
+    <sf-button-close height="low" data-k="close-placed"></sf-button-close>
     <sf-button-icon icon="settings" aria-label="Настройки" data-k="icon-default"></sf-button-icon>
     <sf-button-close size="1" data-k="close-default"></sf-button-close>
     <sf-button-icon height="high" icon="settings" aria-label="Настройки" data-k="icon-high"></sf-button-icon>
@@ -194,7 +195,7 @@ try {
         tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
         await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
         await tab.waitForFunction(() => document.querySelectorAll('sf-toast > .sf-toast').length === 6
-          && [...document.querySelectorAll('[data-k]')].filter((node) => node.matches('button') || node.querySelector('button')).length === 16
+          && [...document.querySelectorAll('[data-k]')].filter((node) => node.matches('button') || node.querySelector('button')).length === 18
           && document.querySelectorAll('sf-confirm button[data-action="decline"]').length === 2, null, {timeout: 30000})
           .catch(() => failures.push(`${key} load ${load}: the page never drew its toasts, controls and questions`));
         await tab.evaluate(() => document.fonts.ready);
@@ -274,6 +275,8 @@ try {
         check('sf-button-icon height=low', c['icon-low']?.h, want.close);
         check('sf-button-icon height=low is square', c['icon-low']?.w, want.close);
         check('sf-button-icon kind=close height=low', c['icon-close-low']?.h, want.close);
+        // Without a size, a height takes the place's step (DEV D1): 32 / 28 / 28.
+        check('sf-button-close height=low (no size)', c['close-placed']?.h, want.close);
         // An explicit size is stronger than the density (C22): size="1"
         // keeps its desktop step in a compact region.
         const sized = EXPECT[label === 'phone' ? 'phone' : 'desktop'];

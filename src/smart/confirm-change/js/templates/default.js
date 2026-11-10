@@ -35,6 +35,7 @@ export function renderChangeConfirmTemplate(context) {
                 aria-labelledby=${context.heading ? context.headingId : nothing}
                 aria-label=${context.heading ? nothing : context.changesLabel}
                 data-state=${context.state}
+                ?hidden=${context.collapsed}
         >
             ${context.heading
                 ? html`<div class="sf-change-confirm__heading" id=${context.headingId} role="heading"

@@ -74,6 +74,11 @@
     outline: none;
   }
 
+  /* Declined by the person here, the question folds away and the focus goes
+     back to the control that put it (DEV D2 on C35); the surface's own
+     display would otherwise keep it drawn. */
+  .sf-confirm[hidden] { display: none; }
+
   /* The outcome's ink is the success role on the surface the question stands
      on (C16): on-success-container belongs on a success container and read
      near-black on the page in the light theme. */

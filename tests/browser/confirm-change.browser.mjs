@@ -149,7 +149,8 @@ try {
   await page.evaluate(() => { document.getElementById('card').state = 'declined'; });
   await page.waitForTimeout(150);
   now = await read();
-  if (now.status !== 'Отклонено') note({case: 'declined', got: now.status});
+  // R067 (C35): a declined change says nothing.
+  if (now.status !== '') note({case: 'declined says nothing', got: now.status});
 
   // 4. The keyboard answers as the pointer does.
   await make({attributes: {'change-id': 'c3'}});
