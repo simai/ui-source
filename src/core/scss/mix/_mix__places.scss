@@ -39,6 +39,8 @@
 
 @use 'sass:list';
 @use 'sass:map';
+@use 'sass:meta';
+@use 'sass:string';
 @use 'mix__role_aliases' as aliases;
 
 $sf-place-theme-roles: (
@@ -66,12 +68,31 @@ $sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surf
 // roles back. $surface and $variant are the place's own values (a component
 // passes its public variable chain as $surface); without $variant the dim ink
 // is the theme's (the page, an area).
+// The dim ink on a fill (--sf-on-surface-container-variant) one step up on
+// the popup places (C43, owner 2026-11-10): over a popup's step the theme's
+// 85 gave a tonal quiet button's key 4.25:1 and 3.71:1 on a nested popup; 90
+// and 95 give 4.79 and 4.68. Light (35) unchanged. Read from the place's own
+// dim ink, which every popup passes as $variant.
+$sf-place-popup-container-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-90))';
+$sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-95))';
+
+@function sf-place-container-variant($variant) {
+  @if not $variant { @return null; }
+  $named: meta.inspect($variant);
+  @if string.index($named, 'popup-nested-variant') { @return $sf-place-popup-nested-container-variant; }
+  @if string.index($named, 'popup-variant') { @return $sf-place-popup-container-variant; }
+  @return null;
+}
+
 @mixin sf-place($surface, $variant: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
+  $container-variant: sf-place-container-variant($variant);
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
+    } @else if $role == 'on-surface-container-variant' and $container-variant {
+      --sf-on-surface-container-variant: #{string.unquote($container-variant)};
     } @else {
       --sf-#{$role}: #{$value};
     }
