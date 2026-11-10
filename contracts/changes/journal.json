@@ -10021,6 +10021,58 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tag/index.js"
+    },
+    {
+      "id": "event-file-preview-value-type-to-kind",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-file-preview's download and detach carry the file's kind as value.kind, the setting's name (docs precheck smart content FP-05). value.type, its former name, carries the same value beside it until remove_after.",
+      "items": [
+        {
+          "component": "sf-file-preview",
+          "from": "detail.value.type",
+          "to": "detail.value.kind"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Read event.detail.value.kind where the handler read event.detail.value.type; the values are the same (auto, icon, image).",
+      "examples": {
+        "before": "preview.addEventListener('download', (e) => show(e.detail.value.type))",
+        "after": "preview.addEventListener('download', (e) => show(e.detail.value.kind))"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/file-preview/index.js"
+    },
+    {
+      "id": "value-tag-appearance-surface-to-outline",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-tag's faint fill with a hairline edge is appearance=\"outline\" (applied decision on docs precheck smart content; C15 retired the word surface). surface draws the same with a console note until remove_after; the class sf-tag--appearance-surface draws as sf-tag--appearance-outline.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "appearance=\"surface\"",
+          "to": "appearance=\"outline\""
+        },
+        {
+          "component": "sf-tag",
+          "from": "sf-tag--appearance-surface",
+          "to": "sf-tag--appearance-outline"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-tag appearance=\"surface\" text=\"Черновик\"></sf-tag>",
+        "after": "<sf-tag appearance=\"outline\" text=\"Черновик\"></sf-tag>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tag/index.js"
     }
   ]
 }

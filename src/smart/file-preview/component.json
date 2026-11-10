@@ -2,13 +2,14 @@
   "$comment": "The source of sf-file-preview's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-preview (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.file-preview",
   "tag": "sf-file-preview",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "file",
   "settings": {
     "file-name": {
       "type": "string",
-      "default": "File"
+      "default": "File",
+      "summary": "The file's name, shown as the title of the row and used as its accessible name and as the download's file name."
     },
     "file-size": {
       "type": "string",
@@ -17,11 +18,13 @@
     },
     "icon": {
       "type": "icon",
-      "default": "description"
+      "default": "description",
+      "summary": "The glyph in the holder when no picture is shown (a Material Symbols name)."
     },
     "href": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The file's address: the name links to it and the download action opens it. Empty: the row is not a link and the download action does nothing."
     },
     "kind": {
       "type": "enum",
@@ -35,39 +38,48 @@
     },
     "mime-type": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The file's MIME type, which helps kind=\"auto\" tell an image from another file."
     },
     "image-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A picture to show in the holder for an image (kind image or auto): the thumbnail's address; empty uses href."
     },
     "surface": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the row on a fill, as a block of its own: the size 3 control height around the holder (56 on a desktop, 52 on a phone)."
     },
     "download": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "true (the default): the download action saves the file under file-name, in the same tab. false: it opens the file instead, in target -- the same tab unless a target is given (C25)."
     },
     "target": {
       "type": "string",
-      "default": "_blank"
+      "default": "",
+      "summary": "Where an opened file goes when download is false and where the name link goes: empty (the default) is the same tab, as C25 asks for a file link; _blank opens a new tab and the action shows the new-tab sign."
     },
     "actions": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the action buttons at the row's end (download and remove, as download-action and remove-action allow)."
     },
     "download-action": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the download action among the actions."
     },
     "remove-action": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the remove action among the actions; it asks the page to detach the file (the detach event)."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
     },
     "download-label": {
       "type": "string",
@@ -293,7 +305,8 @@
     "skeleton: none; the preview draws from its settings; an image that loads late keeps the holder's box (§5.4).",
     "css-variables: seven public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0 (2026-11-10, docs precheck smart content FP-02, FP-03, FP-05): a minor. target's default is empty, the same tab (C25: a file link downloads or opens in the tab it is in; a new tab only for opening to view, with its sign): it was _blank, so download=\"false\" and the name link opened a new tab by default; with target=\"_blank\" and download false the action shows open_in_new. download and detach carry value.kind; value.type, its former name, stays beside it until 2027-01-01 (journal event-file-preview-value-type-to-kind). With component.file-preview 1.0.2 the row on a fill (surface) is 56 on a desktop and 52 on a phone (it was 72 and 60). Every setting has its summary."
   ],
   "x-registry": {
     "capabilities": [

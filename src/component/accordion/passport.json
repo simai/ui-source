@@ -15,7 +15,7 @@
     "src/component/accordion/scss/_var__accordion.scss",
     "src/component/accordion/scss/index.scss"
   ],
-  "content_sha256": "7a68b04cb3aa7210706a2749154b44c21128116a3fbc40b79792b353d51b7773",
+  "content_sha256": "f213eb3b5d77a3ad5df106b1bb7762b50094d50f8b2d9eb011417a8ed35b6315",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -24,7 +24,8 @@ const sfFilePreviewMeta = {
     "file-name": {
       "kind": "custom",
       "valueType": "string",
-      "default": "File"
+      "default": "File",
+      "description": "The file's name, shown as the title of the row and used as its accessible name and as the download's file name."
     },
     "file-size": {
       "kind": "custom",
@@ -35,12 +36,14 @@ const sfFilePreviewMeta = {
     "icon": {
       "kind": "custom",
       "valueType": "string",
-      "default": "description"
+      "default": "description",
+      "description": "The glyph in the holder when no picture is shown (a Material Symbols name)."
     },
     "href": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The file's address: the name links to it and the download action opens it. Empty: the row is not a link and the download action does nothing."
     },
     "kind": {
       "kind": "enum",
@@ -55,12 +58,14 @@ const sfFilePreviewMeta = {
     "mime-type": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The file's MIME type, which helps kind=\"auto\" tell an image from another file."
     },
     "image-url": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "A picture to show in the holder for an image (kind image or auto): the thumbnail's address; empty uses href."
     },
     "surface": {
       "kind": "boolean",
@@ -68,7 +73,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Draws the row on a fill, as a block of its own: the size 3 control height around the holder (56 on a desktop, 52 on a phone)."
     },
     "download": {
       "kind": "boolean",
@@ -76,12 +82,14 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "true (the default): the download action saves the file under file-name, in the same tab. false: it opens the file instead, in target -- the same tab unless a target is given (C25)."
     },
     "target": {
       "kind": "custom",
       "valueType": "string",
-      "default": "_blank"
+      "default": "",
+      "description": "Where an opened file goes when download is false and where the name link goes: empty (the default) is the same tab, as C25 asks for a file link; _blank opens a new tab and the action shows the new-tab sign."
     },
     "actions": {
       "kind": "boolean",
@@ -89,7 +97,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the action buttons at the row's end (download and remove, as download-action and remove-action allow)."
     },
     "download-action": {
       "kind": "boolean",
@@ -97,7 +106,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the download action among the actions."
     },
     "remove-action": {
       "kind": "boolean",
@@ -105,7 +115,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the remove action among the actions; it asks the page to detach the file (the detach event)."
     },
     "disabled": {
       "kind": "boolean",
@@ -113,7 +124,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
     },
     "download-label": {
       "kind": "custom",

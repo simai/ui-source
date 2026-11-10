@@ -79,6 +79,20 @@ function tagHeight(element) {
   return SPACING_HEIGHT[String(element.getAttribute('spacing')).trim().toLowerCase()] || 'default';
 }
 
+// appearance (1.4.0, docs precheck smart content, applied decision d): the
+// faint fill with a hairline edge is outline, a name of C15's vocabulary;
+// surface, the word C15 retired, is its former name until 2027-01-01 (journal
+// value-tag-appearance-surface-to-outline) and draws the same.
+function tagAppearance(element) {
+  const raw = String(element.getAttribute('appearance') ?? '').trim().toLowerCase();
+  if (raw !== 'surface') return ['default', 'outline', 'ghost'].includes(raw) ? raw : 'default';
+  if (!element._sfSurfaceNoted) {
+    element._sfSurfaceNoted = true;
+    noteDeprecated({component: 'sf-tag', tag: 'sf-tag', kind: 'value', attribute: 'appearance', from: 'surface', to: 'outline', since: '2026-11-10', remove_after: '2027-01-01'});
+  }
+  return 'outline';
+}
+
 function resolveTagKind(element, raw, fallback) {
   const requested = normalize(raw);
   if (requested) {
@@ -235,6 +249,7 @@ class SfTag extends TagElement {
       type: this.type,
       size: this.size,
       height: tagHeight(this),
+      appearance: tagAppearance(this),
       inline: this.inline,
       line: this.line,
       component: this,

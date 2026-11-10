@@ -91,7 +91,13 @@
   --sf-accordion--icon-size: var(--sf-text-height-3);
 }
 
+/* The frame stands inside the header's height (docs precheck smart content
+   AC-02): the outline's two edges and the flush divider are taken from the
+   header, so every look's closed section is the size's control height -- the
+   outline was 2 px taller, the flush 1 px. */
 .sf-accordion.sf-accordion--outline {
+  --sf-accordion--frame-block: calc(var(--sf-accordion--border-width) * 2);
+
   border: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
   background-color: transparent;
@@ -99,6 +105,7 @@
 
 .sf-accordion.sf-accordion--flush {
   --sf-accordion--radius: var(--sf-radius-square);
+  --sf-accordion--frame-block: var(--sf-accordion--border-width);
 
   border-block-end: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
@@ -117,8 +124,8 @@
   gap: var(--sf-space-1);
   width: 100%;
   margin: 0;
-  min-block-size: var(--sf-accordion--trigger-min-block-size);
-  padding: var(--sf-accordion--trigger-padding-block)
+  min-block-size: calc(var(--sf-accordion--trigger-min-block-size) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)));
+  padding: max(calc(var(--sf-px) * 0), calc(var(--sf-accordion--trigger-padding-block) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)) / 2))
     var(--sf-accordion--trigger-padding-inline);
   border: 0;
   box-sizing: border-box;

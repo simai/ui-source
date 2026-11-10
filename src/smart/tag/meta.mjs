@@ -49,11 +49,12 @@ const sfTagMeta = {
       "kind": "enum",
       "values": [
         "default",
-        "surface",
-        "ghost"
+        "outline",
+        "ghost",
+        "surface"
       ],
       "default": "default",
-      "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour."
+      "description": "Visual appearance, read from the neutral alpha ramp and separate from kind: outline keeps a faint fill and a hairline edge, ghost keeps nothing until it is hovered. surface is outline's former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline; C15 retired the word) and draws the same. Only the neutral kinds take it, because a status tag carries its meaning in its colour."
     },
     "size": {
       "kind": "enum",

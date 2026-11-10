@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import './default.css';
 import {closeSize} from '../close-size.js';
+import {cssUrl} from '../../../../core/js/css-url';
 
 // Sizes 1, 2 and 3 take the larger dot; 1/2 and 1/3 the smaller.
 const LARGE_SIZES = new Set(['1', '2', '3']);
@@ -55,7 +56,7 @@ function renderAvatar(context) {
             <span
                     class="sf-avatar sf-avatar--size-1/4 bg-cover"
                     aria-hidden="true"
-                    style=${`background-image: url(${context.avatarImageUrl});`}
+                    style=${`background-image: ${cssUrl(context.avatarImageUrl)};`}
             ></span>
         `;
     }

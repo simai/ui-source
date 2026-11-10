@@ -68,7 +68,9 @@ export function renderFilePreviewTemplate(context) {
           <span class="sf-file-preview-actions">
             ${context.downloadAction
               ? renderAction({
-                icon: 'download',
+                // A file opened in a new tab shows the sign of it (C25): the
+                // download glyph promised a download the browser never made.
+                icon: !context.download && context.target === '_blank' ? 'open_in_new' : 'download',
                 label: context.downloadLabel,
                 disabled: context.disabled,
                 action: 'download',

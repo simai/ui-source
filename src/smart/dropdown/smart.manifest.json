@@ -460,7 +460,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "f87a1ae8cd1bcfae01f84102d86454ca5aa660a136a5546b0d33e2c5f1557ae9"
+        "sha256": "022d3b19ab3d22be68abc6aa7633b7c6f8a4ccd3d6aba3a33da23539e633b71e"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

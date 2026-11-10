@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.2.7",
+  "version": "1.3.0",
   "title": "List item",
   "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
@@ -73,6 +73,7 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The row's size on the ladder: its text, its picture and its height (one line the size's control height; two lines the next size's).",
         "enum": [
           "1/3",
           "1/2",
@@ -83,23 +84,28 @@
       },
       "text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The row's title."
       },
       "icon": {
         "type": "string",
-        "default": "person"
+        "default": "person",
+        "description": "The glyph at the start of an icon row (a Material Symbols name)."
       },
       "disabled": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Makes the row unavailable: it takes the disabled ink and does not answer a press."
       },
       "color-class": {
         "type": "string",
-        "default": "bg-tertiary"
+        "default": "bg-tertiary",
+        "description": "The background utility of a colour row's mark, such as bg-success."
       },
       "avatar-image-url": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture of an avatar row; empty draws the placeholder."
       },
       "avatar-title": {
         "type": "string",

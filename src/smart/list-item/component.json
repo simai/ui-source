@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-item's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/list-item (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.list-item",
   "tag": "sf-list-item",
-  "version": "1.2.7",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -32,27 +32,33 @@
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "The row's size on the ladder: its text, its picture and its height (one line the size's control height; two lines the next size's)."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The row's title."
     },
     "icon": {
       "type": "icon",
-      "default": "person"
+      "default": "person",
+      "summary": "The glyph at the start of an icon row (a Material Symbols name)."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Makes the row unavailable: it takes the disabled ink and does not answer a press."
     },
     "color-class": {
       "type": "string",
-      "default": "bg-tertiary"
+      "default": "bg-tertiary",
+      "summary": "The background utility of a colour row's mark, such as bg-success."
     },
     "avatar-image-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The picture of an avatar row; empty draws the placeholder."
     },
     "avatar-title": {
       "type": "string",
@@ -326,7 +332,8 @@
     "css-variables: five public variables read by the class sheet it draws with (component/dropdown, _css__list-item.scss): the row's fill, its divider, the title's ink, the supporting line's ink and the handle's ink, each over the role token it replaced. Listed in src/core/contracts/public-variables.v1.json.",
     "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.2.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.2.7 (2026-11-10): a patch (sf-dropdown 1.8.1). An icon row's picture is an sf-icon element with cl-icon as a relation: the bare <i class=\"sf-icon\"> an option printed after the page's icon scan (every option of an opened sf-dropdown) missed the first icon_names request and its glyph came late. The row's size and colour rules reach the glyph inside the sf-icon and the sf-icon before it is defined, so the geometry is unchanged. Settings and events are unchanged."
+    "version 1.2.7 (2026-11-10): a patch (sf-dropdown 1.8.1). An icon row's picture is an sf-icon element with cl-icon as a relation: the bare <i class=\"sf-icon\"> an option printed after the page's icon scan (every option of an opened sf-dropdown) missed the first icon_names request and its glyph came late. The row's size and colour rules reach the glyph inside the sf-icon and the sf-icon before it is defined, so the geometry is unchanged. Settings and events are unchanged.",
+    "version 1.3.0 (2026-11-10, docs precheck smart content LI-01, LI-02, LI-03; LS-02, the answer of C31): a minor. An avatar or colour row outside a dropdown has no mark at its end (the empty checkbox there is a dropdown option's choice); its picture's address is a quoted url(), so an address with a space draws. With component.dropdown's list-item sheet a row's text starts at one place whatever its picture (avatar and colour rows stood 8 and 20 px short of an icon row), and a two-line row is the next size's control height -- 48 at size 1 on a desktop, 44 on a phone; 40 at 1/2, 56 at 2 (it was 60, 48 and 72). Every setting has its summary. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

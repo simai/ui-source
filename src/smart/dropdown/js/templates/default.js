@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
+import { cssUrl } from "../../../../core/js/css-url";
 import {
   renderListItemHeading,
   renderListItemOption,
@@ -64,7 +65,7 @@ function renderFieldVisual(context) {
     return html`<span class="sf-tag-color-icon sf-dropdown-field-visual ${option.colorClass}" aria-hidden="true"></span>`;
   }
   if (option.type === "avatar" && option.avatarImageUrl) {
-    return html`<span class="sf-avatar sf-avatar--size-1/2 bg-cover sf-dropdown-field-visual" aria-hidden="true" style=${`background-image: url(${option.avatarImageUrl});`}></span>`;
+    return html`<span class="sf-avatar sf-avatar--size-1/2 bg-cover sf-dropdown-field-visual" aria-hidden="true" style=${`background-image: ${cssUrl(option.avatarImageUrl)};`}></span>`;
   }
   return nothing;
 }
@@ -94,7 +95,7 @@ function renderTag(context, option) {
               class="sf-avatar sf-avatar--size-${tagSize} bg-cover"
               aria-hidden="true"
               style=${option.avatarImageUrl
-                ? `background-image: url(${option.avatarImageUrl});`
+                ? `background-image: ${cssUrl(option.avatarImageUrl)};`
                 : nothing}
             ></span>
           `

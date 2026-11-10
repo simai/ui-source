@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { nearestFieldSize } from "../../../../component/field-size";
+import { cssUrl } from "../../../../core/js/css-url";
 
 // The mark in a row's box is bound as a property, not as an attribute. A press
 // anywhere in the row reaches the label that holds this input and flips its live
@@ -116,7 +117,7 @@ export function renderListItemTemplate(context) {
             class=${avatarClasses.join(" ")}
             aria-hidden="true"
             style=${context.avatarImageUrl
-              ? `background-image: url(${context.avatarImageUrl});`
+              ? `background-image: ${cssUrl(context.avatarImageUrl)};`
               : nothing}
           ></span>
           <div class="sf-avatar-label-group-container flex flex-col">
@@ -171,7 +172,10 @@ export function renderListItemTemplate(context) {
   const renderTrailing = () => {
     if (trailingContent !== nothing) return trailingContent;
 
-    if (context.type === "avatar" || context.type === "color") {
+    // The mark at the end of an avatar or colour row is a dropdown option's
+    // choice; a row outside a dropdown has no choice to mark (docs precheck
+    // smart content LI-01: an empty checkbox stood at the end of every such row).
+    if (isOption && (context.type === "avatar" || context.type === "color")) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup

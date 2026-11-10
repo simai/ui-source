@@ -48,17 +48,20 @@ const sfListItemMeta = {
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "description": "The row's size on the ladder: its text, its picture and its height (one line the size's control height; two lines the next size's)."
     },
     "text": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The row's title."
     },
     "icon": {
       "kind": "custom",
       "valueType": "string",
-      "default": "person"
+      "default": "person",
+      "description": "The glyph at the start of an icon row (a Material Symbols name)."
     },
     "disabled": {
       "kind": "boolean",
@@ -66,17 +69,20 @@ const sfListItemMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Makes the row unavailable: it takes the disabled ink and does not answer a press."
     },
     "color-class": {
       "kind": "custom",
       "valueType": "string",
-      "default": "bg-tertiary"
+      "default": "bg-tertiary",
+      "description": "The background utility of a colour row's mark, such as bg-success."
     },
     "avatar-image-url": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The picture of an avatar row; empty draws the placeholder."
     },
     "avatar-title": {
       "kind": "custom",

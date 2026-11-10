@@ -78,11 +78,12 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour.",
+        "description": "Visual appearance, read from the neutral alpha ramp and separate from kind: outline keeps a faint fill and a hairline edge, ghost keeps nothing until it is hovered. surface is outline's former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline; C15 retired the word) and draws the same. Only the neutral kinds take it, because a status tag carries its meaning in its colour.",
         "enum": [
           "default",
-          "surface",
-          "ghost"
+          "outline",
+          "ghost",
+          "surface"
         ]
       },
       "size": {
@@ -398,7 +399,8 @@
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
     "aliases": [
-      "kind=quantity"
+      "kind=quantity",
+      "appearance=surface"
     ],
     "deprecations": [],
     "replacement": null,
@@ -419,7 +421,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "42703ce4b491abbdca1dac5aa69dd79ace3779d57a3f752534b8784556da5499"
+        "sha256": "6b914cb349538e9cf3423e3f9793148b15aabf7b54df9149fd93062a3660d8ab"
       }
     ],
     "generated_runtime": [

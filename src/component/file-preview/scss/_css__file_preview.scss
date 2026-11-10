@@ -3,6 +3,7 @@
     --sf-file-preview--background-color: var(--sf-file-preview-background-color, transparent);
     --sf-file-preview--gap: var(--sf-file-preview-gap, var(--sf-space-1\/2));
     --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-space-0));
+    --sf-file-preview--padding-block: var(--sf-file-preview--padding);
     --sf-file-preview--radius: var(--sf-file-preview-radius, var(--sf-radius--ui));
 
     display: grid;
@@ -13,8 +14,8 @@
     min-inline-size: 0;
     max-inline-size: 100%;
     gap: var(--sf-file-preview--gap);
-    padding-block-start: var(--sf-file-preview--padding);
-    padding-block-end: var(--sf-file-preview--padding);
+    padding-block-start: var(--sf-file-preview--padding-block);
+    padding-block-end: var(--sf-file-preview--padding-block);
     padding-inline-start: var(--sf-file-preview--padding);
     padding-inline-end: var(--sf-file-preview--padding);
     border-start-start-radius: var(--sf-file-preview--radius);
@@ -28,6 +29,11 @@
     --sf-file-preview--background-color: var(--sf-file-preview-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-space-1\/2));
+    /* A row on a fill is a step of the height ladder (docs precheck smart
+       content FP-02): the size 3 control around the size 2 holder -- 56 on a
+       desktop, 52 on a phone; the 12 px padding all round made it 72 and 60.
+       A page's own --sf-file-preview-padding still sets every side. */
+    --sf-file-preview--padding-block: var(--sf-file-preview-padding, calc((var(--sf-ui-3--control-height) - var(--sf-ui-2--control-height)) / 2));
   }
 
   .sf-file-preview .sf-file-preview-holder {

@@ -37,11 +37,12 @@ size's steps, as on `sf-button` (C27). `spacing` is its former name until
 Supported types are `checkbox`, `icon`, `default`, `color`, `avatar`,
 `info`, `success`, `error` and `warning`. Supported sizes are `1/2` and `1`.
 
-`appearance="default|surface|ghost"` is a separate axis from `type`, because a
-tag's type says what it carries or what it reports, not how it looks. Surface and
-ghost read the neutral alpha ramp rather than a colour of their own: surface
-keeps a faint fill and a boundary one step stronger, ghost keeps nothing until it
-is hovered. Both are right in a light and in a dark theme without being
+`appearance="default|outline|ghost"` is a separate axis from `type`, because a
+tag's type says what it carries or what it reports, not how it looks. Outline and
+ghost read the neutral alpha ramp rather than a colour of their own: outline
+keeps a faint fill and a hairline edge one step stronger, ghost keeps nothing until it
+is hovered. `surface` is the former name of `outline` until 2027-01-01 (journal
+`value-tag-appearance-surface-to-outline`) and draws the same. Both are right in a light and in a dark theme without being
 redeclared.
 
 Only the neutral types (`default`, `icon`, `color`, `avatar`, `checkbox`) take an

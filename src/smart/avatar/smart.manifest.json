@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -50,6 +50,7 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The avatar's size on the ladder: 1/4 and 1/3 for a mark beside small text, 1 the default, 2 and 3 for a profile.",
         "enum": [
           "1/4",
           "1/3",
@@ -73,6 +74,7 @@
       "shape": {
         "type": "string",
         "default": "circle",
+        "description": "circle (the default) for a person, square for a company, a group or a project.",
         "enum": [
           "circle",
           "square"
@@ -80,19 +82,23 @@
       },
       "image-url": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture's address. Empty: the initials of text (or of heading), else the person placeholder."
       },
       "image-alt": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture's alternative text, when the picture says something the visible name does not."
       },
       "no-wrap": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Keeps heading and description on one line each in the label and card templates, cut with an ellipsis when the place is narrower."
       },
       "text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The initials drawn when there is no picture; empty takes them from heading."
       },
       "hue": {
         "type": "string",
@@ -139,6 +145,7 @@
       "status": {
         "type": "string",
         "default": "none",
+        "description": "A mark at the corner: online, offline, the company badge or the verified badge; none draws nothing.",
         "enum": [
           "none",
           "online",
@@ -149,23 +156,28 @@
       },
       "heading": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The person's name in the label and card templates; also the source of the initials."
       },
       "description": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The line under the name in the label and card templates: a role, a team."
       },
       "meta": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "A short fact in the card template, such as a city, with meta-icon before it."
       },
       "meta-icon": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The glyph before meta in the card template (a Material Symbols name)."
       },
       "card-variant": {
         "type": "string",
         "default": "square",
+        "description": "The card template's picture: square (the default) or portrait, a tall picture over the text.",
         "enum": [
           "square",
           "portrait"
@@ -173,7 +185,8 @@
       },
       "disabled": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the avatar unavailable and, where it is a button, makes it inert."
       },
       "badge-count": {
         "type": "string",

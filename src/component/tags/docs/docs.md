@@ -13,7 +13,7 @@ Compact labels for categories, filters, selected values and statuses.
   `sf-tag-check`;
 - states: `active`, `disabled`;
 - behavior markers: `sf-tag--interactive`, `sf-tag--removable`;
-- appearance: `sf-tag--appearance-surface`, `sf-tag--appearance-ghost`.
+- appearance: `sf-tag--appearance-outline`, `sf-tag--appearance-ghost`; `sf-tag--appearance-surface` is the former name of outline until 2027-01-01 (journal `value-tag-appearance-surface-to-outline`).
 
 The appearance axis is separate from the type. `surface` and `ghost` take their
 colour from the neutral alpha ramp rather than from a role, so a tag used as a

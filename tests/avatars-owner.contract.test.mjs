@@ -71,7 +71,10 @@ test('Smart Avatar projects image, shape and accessibility contracts', async () 
 
   // shape is made from component.json (core/js/element-manifest.js).
   assert.match(source, /elementFromManifest\(manifest/);
-  assert.deepEqual(JSON.parse(await read('src/smart/avatar/component.json')).settings.shape, {type: 'enum', values: ['circle', 'square'], default: 'circle'});
+  // Every setting has its summary (docs precheck smart content, item 11); the shape's contract is the rest.
+  const {summary, ...shape} = JSON.parse(await read('src/smart/avatar/component.json')).settings.shape;
+  assert.ok(summary);
+  assert.deepEqual(shape, {type: 'enum', values: ['circle', 'square'], default: 'circle'});
   assert.match(shared, /<img class="sf-avatar-image"/);
   assert.match(shared, /alt=""/);
   assert.match(shared, /aria-hidden="true"/);
