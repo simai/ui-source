@@ -15,7 +15,7 @@
     "src/component/breadcrumbs/scss/_var__breadcrumbs.scss",
     "src/component/breadcrumbs/scss/index.scss"
   ],
-  "content_sha256": "9cf598645cea816888bde8ae5d1993a2961d053b7798dfa607e0e76789514fb9",
+  "content_sha256": "11a9229c4dcfb06ebbcd682e4d8f0a46b5ebd6c53b73f9a205840bd70a999dc8",
   "dependencies": [
     {
       "id": "core.runtime",

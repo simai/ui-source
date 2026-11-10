@@ -3308,7 +3308,7 @@
           "name": "--sf-pager-fill-color",
           "role": "background",
           "summary": "The done segments of the track and the done dots.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-30"
         }
       ]

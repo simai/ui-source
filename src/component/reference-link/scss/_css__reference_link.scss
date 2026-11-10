@@ -243,5 +243,11 @@
   .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2)
     :where(.sf-reference-link__meta, .sf-reference-link-text) {
     flex: 0 100 auto;
+    /* The path gives way first, but not to nothing: it keeps one control
+       height, room for its start and the ellipsis, so the reader sees that a
+       path was cut (acceptance 2026-11-11 D7: in a 300 box line-1's path
+       shrank to 0 and vanished without a trace). It is the line's last part,
+       so a short path's spare room shows nothing. */
+    min-inline-size: var(--sf-ui-1--control-height);
   }
 }

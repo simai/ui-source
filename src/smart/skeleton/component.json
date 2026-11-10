@@ -156,7 +156,7 @@
     "examples: examples.json from studio.fixture.json plus the shapes and the animations; probe.json checks the count, the hidden geometry and the alias.",
     "css-variables: five public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
     "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.4 (2026-11-10, docs precheck SK-01): a patch. A circle or a square without a width of its own has equal sides, as the icon placeholder has: a given height is both sides, else the line height (with component.skeleton 1.1.1). It took the row's full width before, a long pill, and in a flex row a narrow upright one. Settings, values, events and keys unchanged."
+    "version 1.1.4 (2026-11-10, docs precheck SK-01): a patch. A circle or a square without a width of its own has equal sides, as the icon placeholder has: a given height is both sides, else the line height (with component.skeleton 1.1.1). It took the row's full width before, a long pill, and in a flex row a narrow upright one. Settings, values, events and keys unchanged. Acceptance 2026-11-11 (D2): the setting's default width, 100 %, no longer counts as a width of its own, so <sf-skeleton kind=\"circle\"> is a size-step circle, not a full-row bar; a width the contract ignores (64px) is none either."
   ],
   "x-registry": {
     "capabilities": [

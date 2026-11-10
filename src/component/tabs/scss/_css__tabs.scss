@@ -91,6 +91,24 @@
     --sf-tabs-top--gap: 0;
     flex: 1;
   }
+
+  /* A tab drawn by a component of the page's own (sf-tabs setData component)
+     is a span[role=tab] around an inert copy of that component. Under
+     type="full" it is the tab's flex item and stretches like the other tabs;
+     its inert wrapper and the component's host step out of the layout, so
+     the button inside fills it (docs precheck TB-04, acceptance 2026-11-11
+     D1: the rule sat in sf-tabs' own sheet, which the Loader never asks for,
+     and the tab stayed 97 wide beside 1310). */
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
+    display: flex;
+    flex: 1 0 0;
+    min-inline-size: max-content;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert],
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > :is(sf-button, sf-button-icon, sf-icon-button) {
+    display: contents;
+  }
 }
 
 @layer sf.overrides {

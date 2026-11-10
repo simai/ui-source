@@ -60,9 +60,13 @@ export function renderSkeletonTemplate(context) {
   const type = rawType === 'icon' ? 'icon' : '';
   // A circle or a square without a width of its own has equal sides, as an
   // icon placeholder does (docs precheck SK-01): given the row's full width,
-  // a circle drew a long pill, and in a flex row a narrow upright one.
+  // a circle drew a long pill, and in a flex row a narrow upright one. The
+  // setting's default is 100 %, so "of its own" is a width that resolves to
+  // something other than the full row (acceptance 2026-11-11 D2: the default
+  // kept every circle a bar); a value the contract ignores (64px) is none.
+  const ownWidths = normalizeList(width).map(resolveSize).filter((value) => value && value !== '100%');
   const equalSides = type === 'icon'
-    || ((variant === 'circle' || variant === 'square') && normalizeList(width).length === 0);
+    || ((variant === 'circle' || variant === 'square') && ownWidths.length === 0);
   const widths = normalizeList(width, ['100%']);
   const heights = normalizeList(height);
   const rootClasses = ['sf-skeleton', 'flex'];
