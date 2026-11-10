@@ -317,15 +317,15 @@
         {
           "name": "--sf-alert-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         },
         {
           "name": "--sf-alert-gap",
           "role": "gap",
-          "summary": "Space between the icon, the text and the buttons.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space between the icon, the text and the buttons (decision C35: the toast's icon gap).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         }
       ]
