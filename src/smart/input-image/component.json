@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-image's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/image-field (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/image-field/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-image",
   "tag": "sf-input-image",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -167,10 +167,10 @@
         "applied",
         "refused"
       ],
-      "summary": "Empty the field from code; the same as setValue(null). Returns the element.",
+      "summary": "Empty the field from code; the same as setValue(null). Refused (unchanged) when it is already empty. Answers the outcome (§4.4).",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "choose": {
@@ -178,9 +178,10 @@
         "applied",
         "refused"
       ],
-      "summary": "Open the file dialog, as «Заменить…» and «Выбрать…» do. Returns false when the field is disabled or read-only.",
+      "summary": "Open the file dialog, as «Заменить…» and «Выбрать…» do. Refused (inactive) when the field is disabled or read-only. Answers the outcome (§4.4).",
       "x-returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "The outcome."
       }
     },
     "remove-image": {
@@ -188,9 +189,10 @@
         "applied",
         "refused"
       ],
-      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field-detach fire, focus goes to «Выбрать…». Returns whether there was an image to remove.",
+      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field-detach fire, focus goes to «Выбрать…». Refused (empty) when there is no image to remove. Answers the outcome (§4.4).",
       "x-returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "The outcome."
       }
     },
     "take-file": {
@@ -205,9 +207,10 @@
         "applied",
         "refused"
       ],
-      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field-attach fire. A file the accept list does not name is rejected instead. Returns whether it was taken.",
+      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field-attach fire. A file the accept list does not name is refused (rejected) instead. Answers the outcome (§4.4).",
       "x-returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "The outcome."
       }
     },
     "set-error": {
@@ -217,10 +220,10 @@
       "x-outcomes": [
         "applied"
       ],
-      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets custom-error, so the form does not submit over it (§17.2). Answers the outcome applied.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     }
   },
@@ -451,7 +454,8 @@
     "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.4: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.2.5 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, takeFile({file, source}), setError({message}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
-    "version 1.3.1 (2026-11-09): the field is transparent at rest, so it stands on any place (C16, the background system, owner 2026-11-08); a file held over it keeps the dashed edge, in the primary outline."
+    "version 1.3.1 (2026-11-09): the field is transparent at rest, so it stands on any place (C16, the background system, owner 2026-11-08); a file held over it keeps the dashed edge, in the primary outline.",
+    "version 1.3.2 (2026-11-10): a patch, nothing drawn or done differently. The actions' reference said clear and set-error returned the element and choose, remove-image and take-file a boolean; the generated method answers the outcome (applied, or refused with its reason: unchanged, inactive, empty, rejected; standard §4.4), so their words now say so (docs pre-review of guide/smart-components, GS-F7)."
   ],
   "x-rule": {
     "$comment": [
