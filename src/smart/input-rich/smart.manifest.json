@@ -138,7 +138,8 @@
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Accessible name for a field drawn without a visible label; it names the editing surface. A visible label wins."
       }
     },
     "additionalProperties": false
@@ -320,11 +321,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "6f45f6b51c2e12c81f12be8e81a5f97cbe502af8ce38bf988e93fe444d72a9ae"
+        "sha256": "6a17c9bfe30318649f0830457994e74928766b203cedf53b119604e8449a1902"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "d11298a1e6bf4f14a2c1c6e23c13cbadb609a04b9d9b450e16276f6e4ffede27"
+        "sha256": "f38ff5a45934eecda496a22a19e11858beb531bcd7b9b11792af5668982b7021"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -336,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "ec7738fa5fbf0380161ed38d3e12e443b3244c5bf69a4a78c9cdbbca9f6487d5"
+        "sha256": "97f2fcb0a688b2a74b47234650ddce0cf1d0b13aa9941ba87c2ebd9e01cbd8b4"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -344,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "727981bdc831515aa04a143beabce2c990e338a3a6175b2d2665e80dfb7bb306"
+        "sha256": "007820c4a44041aead00df94226772e00a7ca060e0445cc7f6cad7633148d4c4"
       }
     ],
     "generated_runtime": []

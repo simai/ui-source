@@ -884,8 +884,12 @@ class SfRichText extends FormField(RichTextElement) {
     const box = button?.getBoundingClientRect();
     const width = this.ownerDocument.documentElement.clientWidth;
     const surface = popover?.querySelector(':scope > [slot="content"]');
-    const room = (surface && parseFloat(globalThis.getComputedStyle?.(surface).getPropertyValue('--sf-popup-form-width')))
-      || parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') * 20;
+    // The wide form's step (C32): the field, its hint and two buttons of the
+    // field's size stand in one row (R121). The token is in rem; it was read
+    // as a bare number, 24 px of room, so the editor never turned to the end.
+    const rem = parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') || 16;
+    const token = (surface && globalThis.getComputedStyle?.(surface).getPropertyValue('--sf-popup-form-wide-width').trim()) || '';
+    const room = (token.endsWith('rem') ? parseFloat(token) * rem : parseFloat(token)) || rem * 24;
     const placement = box && box.left + room > width && box.right - room >= 0 ? 'bottom-end' : 'bottom-start';
     popover?.setAttribute('placement', placement);
     this._link = {
