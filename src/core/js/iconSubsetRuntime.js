@@ -1495,18 +1495,39 @@ export function installIconSubsetRuntime(
     const prev = document.querySelector(
       `style[data-sf-icons-fallback="${type}"]`,
     );
-    const style = document.createElement("style");
-    style.setAttribute("data-sf-icons-fallback", type);
-    if (icons.length) {
-      style.setAttribute("data-sf-icons-fallback-icons", icons.join(","));
-    }
-    style.textContent = this.buildIconFallbackCss({ type });
-    if (!style.textContent) {
-      return false;
-    }
-    document.head.appendChild(style);
     if (prev) {
-      prev.remove();
+      // The full font already draws this family: it stays as it is. Writing
+      // its stylesheet again would make a new face, and every icon it draws
+      // would go blank until that face loaded (R074: each name that turns up
+      // while the service is slow comes here).
+      if (icons.length) {
+        const named = new Set(
+          String(prev.getAttribute("data-sf-icons-fallback-icons") || "")
+            .split(",")
+            .filter(Boolean),
+        );
+        icons.forEach((icon) => named.add(icon));
+        prev.setAttribute("data-sf-icons-fallback-icons", [...named].join(","));
+      }
+    } else {
+      const style = document.createElement("style");
+      style.setAttribute("data-sf-icons-fallback", type);
+      if (icons.length) {
+        style.setAttribute("data-sf-icons-fallback-icons", icons.join(","));
+      }
+      style.textContent = this.buildIconFallbackCss({ type });
+      if (!style.textContent) {
+        return false;
+      }
+      document.head.appendChild(style);
+      // The face is asked for at once: an icon at font-size 0 may not make
+      // the browser fetch it.
+      const family = iconFallbackFontFiles[type]?.family;
+      if (family && icons.length) {
+        document.fonts
+          ?.load?.(`400 16px "${family}"`, icons.join(" "))
+          ?.catch?.(() => {});
+      }
     }
 
     const loadedDescriptorKeys = new Set(this.loadedIcons);
@@ -1751,10 +1772,8 @@ export function installIconSubsetRuntime(
       throw new Error("Icon manifest fonts were not loaded");
     }
 
-    if (document.fonts.ready) {
-      await document.fonts.ready;
-    }
-
+    // The face is loaded (document.fonts.load above); document.fonts.ready
+    // would wait for every other font of the page as well (R074).
     return true;
   };
 
@@ -1904,10 +1923,8 @@ export function installIconSubsetRuntime(
       throw new Error("Icon subset CSS fonts were not loaded");
     }
 
-    if (document.fonts.ready) {
-      await document.fonts.ready;
-    }
-
+    // The face is loaded (document.fonts.load above); document.fonts.ready
+    // would wait for every other font of the page as well (R074).
     return true;
   };
 
@@ -2156,12 +2173,113 @@ export function installIconSubsetRuntime(
       );
   };
 
+  // R074: how long a page waits for the subset service before it draws the
+  // names it asked for from the full font. Every request returns a font built
+  // for its own list, and the service builds the lists it has not seen one
+  // after another: a click that needed a grown subset waited for every list
+  // ahead of it, up to ~30 s, with the icon blank all that time and nothing
+  // giving up (a slow answer is not an error, so the fallback never ran).
+  // After the deadline the full font draws those names and the subset keeps
+  // growing in the background; it takes over when it arrives and holds every
+  // name the page draws. The background request gives up at the cap.
+  SFLoaderPlugin.prototype.iconSubsetDeadlineMs = 3000;
+  SFLoaderPlugin.prototype.iconSubsetBackgroundCapMs = 60000;
+
+  SFLoaderPlugin.prototype.isIconFallbackActive = function (type = "") {
+    const normalizedType = this.normalizeIconType(
+      type || this.getDefaultIconType(),
+    );
+    return Boolean(
+      document.querySelector(
+        `style[data-sf-icons-fallback="${normalizedType}"]`,
+      ),
+    );
+  };
+
+  // Whether a subset answer holds every name the page draws in that family
+  // now (and the filled form when one is drawn): only then may it take over
+  // from the full font, whose rule it overrides for every icon of the family.
+  SFLoaderPlugin.prototype.isIconSubsetAnswerComplete = function (
+    type = "",
+    icons = [],
+    fill = false,
+  ) {
+    const held = new Set(icons);
+    const current = this.getIconSubsetRequestConfigs().find(
+      (config) => config.defaultType === type,
+    );
+    if (!current) return true;
+    if (current.fill && !fill) return false;
+    return current.icons.every((icon) => held.has(icon));
+  };
+
   SFLoaderPlugin.prototype.loadIconSubsetFamily = async function (
     requestConfig,
   ) {
     const { defaultType: type, icons } = requestConfig;
     if (!icons.length) return false;
 
+    if (!this.iconSubsetGenerations) this.iconSubsetGenerations = new Map();
+    if (!this.iconSubsetRequests) this.iconSubsetRequests = new Map();
+    const generation = (this.iconSubsetGenerations.get(type) || 0) + 1;
+    this.iconSubsetGenerations.set(type, generation);
+    const request = {
+      type,
+      generation,
+      timedOut: false,
+      controller:
+        typeof AbortController === "function" ? new AbortController() : null,
+    };
+    if (!this.iconSubsetRequests.has(type)) {
+      this.iconSubsetRequests.set(type, new Set());
+    }
+    this.iconSubsetRequests.get(type).add(request);
+
+    const work = this.requestIconSubsetFamily(requestConfig, request).finally(
+      () => this.iconSubsetRequests.get(type)?.delete(request),
+    );
+    // With the full font already drawing this family, a new name draws from
+    // it at once; the grown subset follows in the background.
+    const deadlineMs = this.isIconFallbackActive(type)
+      ? 0
+      : Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
+    const timedOut = Symbol("timed-out");
+    let timer = 0;
+    const first = await Promise.race([
+      work,
+      new Promise((resolve) => {
+        timer = setTimeout(() => resolve(timedOut), deadlineMs);
+      }),
+    ]);
+    clearTimeout(timer);
+    if (first !== timedOut) return first;
+
+    request.timedOut = true;
+    const cap = setTimeout(
+      () => request.controller?.abort(),
+      Math.max(deadlineMs, Number(this.iconSubsetBackgroundCapMs) || 0),
+    );
+    work.finally(() => clearTimeout(cap));
+    return this.applyIconFontFallback({
+      icons,
+      type,
+      reason: new Error(
+        deadlineMs
+          ? `icon subset request timed out after ${deadlineMs} ms; the full font draws these icons while the subset grows`
+          : "the full font already draws this family; the subset grows in the background",
+      ),
+    });
+  };
+
+  // One subset request: fetch the stylesheet, load its face, swap it in.
+  // Resolves true when the subset draws, false when it was dropped (outrun
+  // by a newer request, or arriving behind the full font without every name
+  // the page draws); an error before the deadline falls back to the full font.
+  SFLoaderPlugin.prototype.requestIconSubsetFamily = async function (
+    requestConfig,
+    request,
+  ) {
+    const { defaultType: type, icons } = requestConfig;
     const host = this.getIconSubsetHost();
     const query = new URLSearchParams({
       icon_names: icons.join(","),
@@ -2177,11 +2295,20 @@ export function installIconSubsetRuntime(
     }
     if (requestConfig.accumulate) query.set("accumulate", "true");
 
+    if (!this.iconSubsetAppliedGenerations) {
+      this.iconSubsetAppliedGenerations = new Map();
+    }
+    const outrun = () =>
+      (this.iconSubsetAppliedGenerations.get(type) || 0) > request.generation;
+
     let manifest = null;
     let appliedStyle = null;
     try {
+      // No cache: "reload": the list is the cache key, and the service marks
+      // the stylesheet max-age=3600, so a list asked for again (the next page
+      // of the origin, a reload) is answered by the browser.
       const response = await fetch(`${host}/ms/css?${query.toString()}`, {
-        cache: "reload",
+        signal: request.controller?.signal,
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       manifest = this.decodeIconManifestHeader(
@@ -2197,21 +2324,47 @@ export function installIconSubsetRuntime(
         );
       }
 
+      const heldIcons =
+        Array.isArray(manifest?.icons) && manifest.icons.length
+          ? manifest.icons
+          : icons;
+      const behindFallback = () => this.isIconFallbackActive(type);
+      const dropped = () =>
+        outrun() ||
+        (behindFallback() &&
+          !this.isIconSubsetAnswerComplete(
+            type,
+            heldIcons,
+            Boolean(requestConfig.fill),
+          ));
+      if (dropped()) return false;
+
       const previous = document.querySelector(
         `style[data-sf-icons-subset-family="${type}"]`,
       );
       const style = document.createElement("style");
       style.setAttribute("data-sf-icons-subset", icons.join(","));
       style.setAttribute("data-sf-icons-subset-family", type);
-      // Growing a subset that already drew: the icons on the page keep their
-      // glyphs while the grown face loads; only the new names wait for it.
-      const preloaded = previous
-        ? await this.preloadIconFontFaces(cssText)
-        : null;
+      // Growing a subset that already drew, or taking over from the full
+      // font: the icons on the page keep their glyphs while the face loads;
+      // only the new names wait for it.
+      const preloaded =
+        previous || behindFallback()
+          ? await this.preloadIconFontFaces(cssText)
+          : null;
+      if (dropped()) {
+        preloaded?.faces?.forEach((face) => document.fonts?.delete?.(face));
+        return false;
+      }
       style.textContent = preloaded ? preloaded.cssText : cssText;
       if (preloaded) style.sfIconFontFaces = preloaded.faces;
       document.head.appendChild(style);
       appliedStyle = style;
+      this.iconSubsetAppliedGenerations.set(type, request.generation);
+      // Older requests still on their way are outrun now.
+      this.iconSubsetRequests?.get(type)?.forEach((other) => {
+        if (other.generation < request.generation) other.controller?.abort();
+      });
 
       if (manifest) {
         if (this.isIconSubsetRemembered()) {
@@ -2230,15 +2383,48 @@ export function installIconSubsetRuntime(
       } else {
         await this.verifyIconCssFonts(cssText, { icons });
       }
-      if (document.fonts?.ready) await document.fonts.ready;
+      // Not document.fonts.ready: it waits for every font of the page, the
+      // text faces too; the face this request loads is awaited above.
       this.liftIconSubsetPending();
       await new Promise((resolve) => requestAnimationFrame(resolve));
       await new Promise((resolve) => requestAnimationFrame(resolve));
       this.retireIconSubsetStyle(previous);
 
+      if (request.timedOut) {
+        // The subset that grew in the background takes over from the full
+        // font: it holds every name drawn, and its face is loaded.
+        const fallback = document.querySelector(
+          `style[data-sf-icons-fallback="${type}"]`,
+        );
+        fallback?.remove();
+        const loadedDescriptorKeys = new Set(this.loadedIcons);
+        heldIcons.forEach((icon) => {
+          const iconAttrs = this.uniqueIcons.get(icon);
+          if (!iconAttrs) return;
+          this.getLoadedDescriptorKeysForIconState(icon, iconAttrs).forEach(
+            (key) => loadedDescriptorKeys.add(key),
+          );
+        });
+        this.loadedIcons = loadedDescriptorKeys;
+        window.dispatchEvent(
+          new CustomEvent("sf-icons-subset:ready", {
+            detail: {
+              icons: new Set(heldIcons),
+              loader: this,
+              types: [type],
+              background: true,
+            },
+          }),
+        );
+        this.syncStaticIconLoadedState();
+      }
+
       return true;
     } catch (error) {
       this.retireIconSubsetStyle(appliedStyle);
+      // After the deadline the full font already draws these names: a
+      // background request that fails or is outrun changes nothing.
+      if (request.timedOut || outrun()) return false;
       this.setIconManifestForType(type, null);
       safeRemoveItem?.(this.getIconManifestStorageKey(type));
       return this.applyIconFontFallback({ icons, reason: error, type });
@@ -2302,8 +2488,11 @@ export function installIconSubsetRuntime(
       await frame();
       const waiting = onTheWay();
       if (!waiting.length) return;
+      // Defined or failed: a tag whose module failed to load is let go at
+      // once (D2: an aborted sf-tag held the first request for the whole cap).
+      const pending = window.SF?.__internal?.pendingTags;
       await Promise.race([
-        Promise.all(waiting.map((tag) => registry.whenDefined(tag))),
+        Promise.all(waiting.map((tag) => pending?.settled?.(tag) || registry.whenDefined(tag))),
         sleep(capLeft()),
       ]);
     }

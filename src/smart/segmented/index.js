@@ -4,6 +4,7 @@ import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
+import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -270,7 +271,12 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   template() {
-    return renderButtonGroupTemplate(this.templateContext());
+    const context = this.templateContext();
+    // Every item's icon, asked for when the group is drawn, as a cycle's are
+    // (R074): a segment drawn later (out of loading, items set afresh) finds
+    // its glyph in the page's font instead of asking for a grown one.
+    preloadControlIcons(this, context.entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
+    return renderButtonGroupTemplate(context);
   }
 
   // Every form value control reports a committed change as `change` on its

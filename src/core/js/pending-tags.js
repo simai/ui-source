@@ -48,7 +48,21 @@ export function installPendingTags(win = typeof window !== 'undefined' ? window 
   const registry = win.customElements;
   // tag -> {timer, asked}
   const held = new Map();
+  // Tags whose module failed to load: not held again.
+  const failed = new Set();
+  // tag -> {promise, resolve}: settled when the tag is defined or its module
+  // failed to load (settled()).
+  const settles = new Map();
   let sheet = null;
+  const settleEntry = (tag) => {
+    if (!settles.has(tag)) {
+      let resolve;
+      const promise = new Promise((done) => { resolve = done; });
+      settles.set(tag, {promise, resolve});
+      registry?.whenDefined?.(tag).then(() => resolve('defined'));
+    }
+    return settles.get(tag);
+  };
 
   const write = () => {
     if (!doc) return;
@@ -89,7 +103,7 @@ export function installPendingTags(win = typeof window !== 'undefined' ? window 
   // for its module, not what was left of it.
   const hold = (name, {asked = false, timeout = PENDING_TAG_TIMEOUT_MS} = {}) => {
     const tag = String(name || '').trim().toLowerCase();
-    if (!TAG_NAME.test(tag) || registry?.get(tag)) return false;
+    if (!TAG_NAME.test(tag) || registry?.get(tag) || failed.has(tag)) return false;
     const entry = held.get(tag);
     if (entry && (!asked || entry.asked)) return true;
     if (entry) clearTimeout(entry.timer);
@@ -111,10 +125,27 @@ export function installPendingTags(win = typeof window !== 'undefined' ? window 
     [...held].filter(([, entry]) => !entry.asked).forEach(([tag]) => release(tag));
   };
 
+  // The Loader could not load the tag's module (the script failed, its other
+  // form too). Its elements are shown as they are at once, not at the
+  // timeout, and whoever waits for the tag stops waiting: the first icon
+  // request waited for the 8 s cap for a tag that was never coming (D2,
+  // acceptance of ui-a0370c0c99fb).
+  const fail = (name) => {
+    const tag = String(name || '').trim().toLowerCase();
+    if (!TAG_NAME.test(tag) || registry?.get(tag)) return false;
+    failed.add(tag);
+    release(tag);
+    settleEntry(tag).resolve('failed');
+    return true;
+  };
   const api = {
     hold,
     release,
     releaseUnasked,
+    fail,
+    // Resolves when the tag is defined or its module failed to load.
+    settled: (name) => settleEntry(String(name || '').trim().toLowerCase()).promise,
+    failed: () => [...failed],
     isHeld: (tag) => held.has(String(tag || '').toLowerCase()),
     held: () => [...held.keys()],
     // The tags whose module the Loader asked for and that are not defined yet
