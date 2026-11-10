@@ -9238,6 +9238,30 @@
         "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
       },
       "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
+    },
+    {
+      "id": "attribute-view-list-roles-to-port-list",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-view 1.6.0 (view set 1.6.0, decision C31, the list of resources) takes a column's place in a list row from the port: simai.dataview-port 1.15.0 sends it as columns[].list. list-roles=\"key:role,…\" on sf-view named the same roles for a host on port 1.14.0 or earlier; it is still read until the date, a column the host gave a role keeps it, and a page that uses it is noted in SF.deprecations once per view.",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "list-roles",
+          "to": "columns[].list",
+          "match": "(?<![\\w-])list-roles(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-view list-roles=\"state:status,name:title,domain:supporting\">",
+        "after": "columns: [{key: 'state', list: 'status'}, {key: 'name', list: 'title'}, {key: 'domain', list: 'supporting'}]"
+      },
+      "manual": "Not a rename: the roles move from the page to the host's data. Speak simai.dataview-port 1.15.0 and send each column's list role as columns[].list (title, supporting, status, …), then remove list-roles from sf-view.",
+      "source": "simai/ui-view package/src/smart/view/component.json aliases and index.js LIST_ATTRIBUTES (feat/c31-resource-list 07d17f8); ui-control control/evidence/2026-11-09-c31-resource-list/README.md"
     }
   ]
 }
