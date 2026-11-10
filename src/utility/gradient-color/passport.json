@@ -13,7 +13,7 @@
     "src/utility/gradient-color/default/scss/_sf_var__gradient.scss",
     "src/utility/gradient-color/default/scss/index.scss"
   ],
-  "content_sha256": "7619ce8ec8bff6f9e195556ba089b6b91c6cf353e25458f1e6082f4440ca8fcc",
+  "content_sha256": "52c770b4ed94c242eb2ec0c457a942250bc5cfd8260b8083e66f13ebc171d210",
   "dependencies": [
     {
       "id": "utility.background-color",

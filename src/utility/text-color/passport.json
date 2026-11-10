@@ -28,7 +28,7 @@
     "src/utility/text-color/hover/scss/_sf_css__color_base.scss",
     "src/utility/text-color/hover/scss/index.scss"
   ],
-  "content_sha256": "d35c20a247da9505434a905f841f47bd9c32bcdf26d02ad2f635f79578f821e0",
+  "content_sha256": "e13686eba3806af2422f386f2a0ab52c162b896c7548c7c739c37d6c0ed7282c",
   "dependencies": [
     {
       "id": "tokens.colour",

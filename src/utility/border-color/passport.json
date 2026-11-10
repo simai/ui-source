@@ -28,7 +28,7 @@
     "src/utility/border-color/hover/scss/_sf_css__border_color.scss",
     "src/utility/border-color/hover/scss/index.scss"
   ],
-  "content_sha256": "74064d7d4ac901906fbc5c435e8f7f1248691aebe0caa0d21f3638e33d65eb7b",
+  "content_sha256": "cb355abb2b44f30c30f2136527328ada5c6cdc46b82706e9a5e592de2dbb3650",
   "dependencies": [
     {
       "id": "tokens.colour",

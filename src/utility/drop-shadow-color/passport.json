@@ -18,7 +18,7 @@
     "src/utility/drop-shadow-color/hover/scss/_sf_css__filter_drop_shadow_color.scss",
     "src/utility/drop-shadow-color/hover/scss/index.scss"
   ],
-  "content_sha256": "38ae1ebc431940bfff24ef264ecbe175b69ffd50fdfb125912b99789cab2dbeb",
+  "content_sha256": "ef1152a5806f1970b41750ad57e87f3d5d5b821562927ee70d68030edc2b6e0c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
