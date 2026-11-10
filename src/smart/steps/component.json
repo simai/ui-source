@@ -2,7 +2,7 @@
   "$comment": "The source of sf-steps's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/steps (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.steps",
   "tag": "sf-steps",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -100,7 +100,7 @@
       "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-steps-change.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     }
   },
@@ -227,7 +227,8 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0 (sf-wizard, owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): an item may carry its own state -- default (not started), completed, skipped, running or error -- which wins over the one derived from its place (before current: completed; error-step: error). skipped and running are new. skipped: a step a person passed over on purpose, the do_not_disturb_on glyph in on-surface-variant. running: the step's action is under way, the progress_activity glyph in on-surface-variant, turning (still under prefers-reduced-motion: reduce). The icon roles are on-surface, on-surface-variant and on-disable; completed and error keep their status colours. Each new state is named in the step's accessible name (skipped-label «Пропущен» / «Skipped», running-label «Выполняется» / «In progress»). A wizard passes a state for every step, so a step before current that was never done reads as not started. The string form takes the states as flags (label::skipped). Additions only: a minor.",
-    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToStep({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToStep(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToStep({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToStep(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
+    "version 1.2.2 (2026-11-10): a patch, nothing drawn or done differently. The reference said the action go-to-step returned the element, for chaining; the generated method answers the outcome (applied or refused with its reason; standard §4.4: chaining is not part of the interface), so the words now say so (docs pre-review of guide/smart-components, GS-F7)."
   ],
   "x-registry": {
     "capabilities": [

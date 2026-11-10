@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -257,15 +257,15 @@
   },
   "methods": {
     "open": {
-      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches sf-drawer-open (cancelable) and later sf-drawer-opened unless options.emit is false. Returns the element.",
+      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches sf-drawer-open (cancelable) and later sf-drawer-opened unless options.emit is false. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "close": {
-      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches sf-drawer-close (cancelable) and sf-drawer-closed unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
+      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches sf-drawer-close (cancelable) and sf-drawer-closed unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -289,15 +289,15 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "toggle": {
-      "summary": "Calls close() when open, open() otherwise. Returns the element.",
+      "summary": "Calls close() when open, open() otherwise. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "setState": {

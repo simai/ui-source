@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -159,7 +159,7 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "setPanels": {
@@ -187,7 +187,7 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "goTo": {
@@ -212,7 +212,7 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "getData": {

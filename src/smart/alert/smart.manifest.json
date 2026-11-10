@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Alert",
   "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
   "kind": "smart",
@@ -184,11 +184,11 @@
   },
   "methods": {
     "close": {
-      "summary": "Alias of dismiss(): dispatches sf-alert-close and removes the alert after its exit transition. Returns the element.",
+      "summary": "Alias of dismiss(): dispatches sf-alert-close and removes the alert after its exit transition. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "onAction": {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -246,7 +246,7 @@
   "contracts": {},
   "methods": {
     "open": {
-      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
+      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -264,19 +264,19 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "close": {
-      "summary": "Removes open and closes the lightbox modal. Returns the element.",
+      "summary": "Removes open and closes the lightbox modal. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "toggle": {
-      "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
+      "summary": "Calls close() when open, open(index) otherwise. Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -294,11 +294,11 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "goTo": {
-      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches the native change event when it moved. Returns the element.",
+      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches the native change event when it moved. Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -319,23 +319,23 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "next": {
-      "summary": "goTo(current + 1); stops at the last slide. Returns the element.",
+      "summary": "goTo(current + 1); stops at the last slide. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "prev": {
-      "summary": "goTo(current - 1); stops at the first slide. Returns the element.",
+      "summary": "goTo(current - 1); stops at the first slide. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "getModal": {

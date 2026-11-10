@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -169,7 +169,7 @@
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "show": {

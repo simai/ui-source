@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -286,7 +286,7 @@
   "contracts": {},
   "methods": {
     "open": {
-      "summary": "Opens the window, or brings it to the front when already open. Dispatches sf-modal-open (cancelable), then sf-modal-opened once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
+      "summary": "Opens the window, or brings it to the front when already open. Dispatches sf-modal-open (cancelable), then sf-modal-opened once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -304,11 +304,11 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "close": {
-      "summary": "Closes the window after sf-modal-close (cancelable), runs the close transition, restores focus and dispatches sf-modal-closed. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
+      "summary": "Closes the window after sf-modal-close (cancelable), runs the close transition, restores focus and dispatches sf-modal-closed. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Answers the outcome (§4.4).",
       "arguments": [
         {
           "name": "args",
@@ -332,7 +332,7 @@
       ],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "minimize": {
@@ -350,19 +350,19 @@
       }
     },
     "toggle": {
-      "summary": "Calls close() when open, open() otherwise. Returns the element.",
+      "summary": "Calls close() when open, open() otherwise. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "reloadContent": {
-      "summary": "Resets the remote content and loads src again, even when the window is closed and preload is off. Returns the element.",
+      "summary": "Resets the remote content and loads src again, even when the window is closed and preload is off. Answers the outcome (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome."
       }
     },
     "confirm": {
