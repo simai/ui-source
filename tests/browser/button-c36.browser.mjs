@@ -125,7 +125,8 @@ const near = (a, b, tolerance = 0.5) => Math.abs(a - b) <= tolerance;
 try {
   for (const theme of ['light', 'dark']) {
     for (const [view, width] of [['desktop', 1440], ['phone', 390]]) {
-      const page = await browser.newPage({viewport: {width, height: 900}});
+      // The Loader follows the system scheme, so the page asks for the theme's.
+      const page = await browser.newPage({viewport: {width, height: 900}, colorScheme: theme});
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -137,6 +138,8 @@ try {
       await page.evaluate(() => { document.querySelector('[data-role="full-prop"]').closest('sf-button').fullWidth = true; });
       await page.waitForTimeout(200);
       const where = `${theme} ${view}`;
+      const dark = await page.evaluate(() => document.documentElement.classList.contains('theme-dark'));
+      if (dark !== (theme === 'dark')) failures.push({where, check: 'the page draws the asked theme', dark});
       const data = await page.evaluate(() => {
         const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, width: r.width, height: r.height, right: r.right}; };
         // A host moves its data-* to the native button (sf-button docs), so a
