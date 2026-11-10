@@ -97,8 +97,14 @@ const WATCH = `(() => {
         // with its subset): a face that comes in later sets text again, and
         // the gate measures the element taking over, not the fonts arriving.
         const faces = [...document.fonts].filter((face) => !/Material Symbols/u.test(face.family)).map((face) => face.load());
+        // Not document.fonts.ready: it waits for every font load on the way,
+        // the icon font's too, and since the Loader scans the page at
+        // DOMContentLoaded rather than at the window's load (R078) the icon
+        // request goes while the page is still coming in -- held until the
+        // held code had defined the icon elements, it kept "the first paint
+        // is in" until after the code, and phase 1 had no frame
+        // (admin-head, tile-metric: "no frame before the code").
         Promise.allSettled([...faces, ...[...fonts].map((font) => document.fonts.load(font, text))])
-          .then(() => document.fonts.ready)
           .then(() => requestAnimationFrame(() => { fp.sheetsAt = performance.now(); }));
       }
       if (fp.definedAt === null && host.matches(':defined')) fp.definedAt = performance.now();
