@@ -22,13 +22,20 @@ const steps = [4, 8, 12, 16];
 // that marks an appearance rule, and how that family draws its boundary: the
 // button and the icon button have a border, the tag is built with `border: 0` and
 // draws an inset shadow instead so a tag never grows taller than its neighbour.
+// The appearances read the surface roles of the same steps (C16; DEV surfaces
+// audit 2026-11-10 defect 8 for the tag fill, DEV acceptance 2026-11-10 Q3 for
+// the rest), so they follow the place they stand on: --sf-alpha-* is black or
+// white on every place and stayed grey on a coloured one.
+const ROLE_STEPS = {4: '--sf-surface-state-hover', 8: '--sf-surface-state-select', 12: '--sf-surface-state-active', 16: '--sf-surface-container-active'};
+const fillStep = (family, step) => ROLE_STEPS[step];
+
 const families = [
   {
     name: 'button',
     css: 'src/component/buttons/scss/_css__buttons.scss',
     mark: /--(?:surface|ghost)\b/u,
     fill: '--sf-button--background-color',
-    boundary: (step) => new RegExp(`--sf-button--border-color: var\\(--sf-alpha-${step}\\)`, 'u'),
+    boundary: (step) => new RegExp(`--sf-button--border-color: var\\(${ROLE_STEPS[step]}\\)`, 'u'),
     interactive: true,
   },
   {
@@ -36,7 +43,7 @@ const families = [
     css: 'src/component/icon-buttons/scss/_css_icon_buttons.scss',
     mark: /--(?:surface|ghost)\b/u,
     fill: '--sf-icon-button--background-color',
-    boundary: (step) => new RegExp(`--sf-icon-button--border-color: var\\(--sf-alpha-${step}\\)`, 'u'),
+    boundary: (step) => new RegExp(`--sf-icon-button--border-color: var\\(${ROLE_STEPS[step]}\\)`, 'u'),
     interactive: true,
   },
   {
@@ -44,7 +51,7 @@ const families = [
     css: 'src/component/tags/scss/_css__tags.scss',
     mark: /--appearance-(?:surface|ghost)\b/u,
     fill: '--sf-tag--background-color',
-    boundary: (step) => new RegExp(`--sf-tag--box-shadow: inset 0 0 0 var\\(--sf-px\\) var\\(--sf-alpha-${step}\\)`, 'u'),
+    boundary: (step) => new RegExp(`--sf-tag--box-shadow: inset 0 0 0 var\\(--sf-px\\) var\\(${ROLE_STEPS[step]}\\)`, 'u'),
     interactive: false,
   },
 ];
@@ -154,11 +161,6 @@ test('every appearance rule reads the ramp and nothing else', () => {
   }
 });
 
-// The tag's fill reads the surface roles of the same steps (C16; DEV surfaces
-// audit 2026-11-10 defect 8), so it follows the place it stands on; the
-// buttons still read the neutral steps.
-const ROLE_STEPS = {4: '--sf-surface-state-hover', 8: '--sf-surface-state-select', 12: '--sf-surface-state-active'};
-const fillStep = (family, step) => (family.name === 'tag' ? ROLE_STEPS[step] : `--sf-alpha-${step}`);
 
 test('ghost carries nothing at rest and surface carries a fill and a boundary', () => {
   for (const family of families) {
@@ -198,7 +200,7 @@ test('the states rise through the ramp', () => {
     if (family.interactive) {
       assert.match(
         at(/:active|\.active/u),
-        new RegExp(`${family.fill}: var\\(--sf-alpha-12\\)`, 'u'),
+        new RegExp(`${family.fill}: var\\(${fillStep(family, 12)}\\)`, 'u'),
         `${family.name}: pressed is another step up`,
       );
       assert.match(at(/:active|\.active/u), family.boundary(16), `${family.name}: and so is the boundary`);

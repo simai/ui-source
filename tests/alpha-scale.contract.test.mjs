@@ -106,8 +106,12 @@ test('the neutral half of the scale shares its steps', () => {
     if (!statSync(path).isFile() || path.endsWith('_sf_css__theme.scss')) continue;
     for (const match of readFileSync(path, 'utf8').matchAll(/var\(--sf-alpha-(\d+)\)/gu)) used.add(Number(match[1]));
   }
-  assert.deepEqual(neutral.filter((step) => !used.has(step)), [],
-    'a neutral step nothing asks for is one more thing to rule out');
+  // Since DEV acceptance 2026-11-10 Q3 the components read the surface roles
+  // of these steps, so no Framework source asks for the neutral ramp. It stays
+  // declared: it is a public token (ui-doc guide/colour/transparency and
+  // design-tokens) a project may read. No component may go back to it.
+  assert.deepEqual([...used], [], 'the components read the surface roles, not --sf-alpha-*');
+  assert.deepEqual(neutral, [4, 8, 12, 16], 'the public neutral ramp keeps its four steps');
 });
 
 test('every translucent surface is mixed from the theme neutral, and the veil from the pure base', () => {
