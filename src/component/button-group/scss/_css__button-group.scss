@@ -312,8 +312,42 @@
     color: inherit;
   }
 
+  /* Width by content (owner decision C47 A): in a full-width track each
+     segment starts at its own width and the rest is shared equally, so a
+     long label is not squeezed to the share of a short one. A label stays on
+     one line -- a wrapped one made the track taller than a button of its
+     size -- and is cut with «…» only as the last step. */
   .sf-button-group--segmented.sf-button-group--full-width > .sf-button-group-segment {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment .sf-button-text-container {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The labels do not fit on one line (C47 C): sf-segmented draws an
+     sf-dropdown of the same size in the track's place and keeps the track,
+     out of sight and out of reach, only to measure what it needs: its
+     one-line width. The same box measures a shown track for a moment
+     (data-sf-measure). Fixed, so the measured width never widens the page. */
+  .sf-button-group--segmented.sf-button-group--folded,
+  .sf-button-group--segmented[data-sf-measure] {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: max-content;
+    max-inline-size: none;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .sf-button-group-narrow {
+    display: block;
+    inline-size: 100%;
     min-inline-size: 0;
   }
 
