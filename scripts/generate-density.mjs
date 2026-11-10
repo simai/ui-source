@@ -20,7 +20,8 @@
 // the region with their parent.
 //
 // Desktop only (>= 60rem): below it the phone ladder already is the dense one
-// (control 36, text 14) and its touch targets stay; the rule that set compact
+// (control 36, text 14) and its touch targets stay (owner decision C36: compact
+// on a phone does not make the buttons smaller); the rule that set compact
 // body text was desktop-only before as well.
 //
 // The values are read from the ladder files as they are built (desktop
@@ -43,7 +44,12 @@ import {fileURLToPath} from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const VARIABLES = 'src/core/figma_variables';
 const OUTPUT = 'src/core/scss/_sf_css__density.scss';
-const DESKTOP = '60rem';
+// The desktop breakpoint is the ladder's own (adaptive-sizing contract,
+// modes.desktop.minWidthPx over the nominal root): the density switches where
+// the ladder does, never at a width of its own, so every width has exactly one
+// defined ladder (S-03, 2026-11-10).
+const SIZING = JSON.parse(readFileSync(join(root, 'src/core/contracts/adaptive-sizing.v1.json'), 'utf8'));
+export const DESKTOP = `${SIZING.modes.desktop.minWidthPx / SIZING.meta.nominalRootPx}rem`;
 
 // The control ladder. A step below the lowest stays at the lowest: 1/3 is a
 // 24px control, the smallest target (WCAG 2.5.8), and text under 12 is a
