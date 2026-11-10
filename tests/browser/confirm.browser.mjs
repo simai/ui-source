@@ -248,7 +248,7 @@ try {
           return node;
         };
         window.put = put;
-        document.getElementById('opener').addEventListener('click', () => { window.asked = put('sf-confirm', 'slot'); });
+        document.getElementById('opener').addEventListener('click', () => { window.asked = put('sf-confirm', 'slot'); window.asked.open(); });
         window.still = put('sf-confirm-change', 'static');
         const told = put('sf-confirm-change', 'history');
         told.state = 'declined';
@@ -259,7 +259,9 @@ try {
         if (name === 'opener') { await tab.focus('#opener'); await tab.keyboard.press('Enter'); }
         await tab.waitForTimeout(400);
         // The question puts the focus on its safe answer (C25); Enter declines.
-        if (name === 'static') await tab.evaluate(() => window.still.open());
+        // No control holds the focus when the static question is put: it has
+        // no opener, and the focus goes on to the next control.
+        if (name === 'static') await tab.evaluate(() => { document.activeElement?.blur(); window.still.open(); });
         await tab.waitForTimeout(200);
         const onDecline = await tab.evaluate((k) => window[k]?.contains(document.activeElement) && document.activeElement.closest('[data-action]')?.getAttribute('data-action'), key);
         await tab.keyboard.press('Enter');
