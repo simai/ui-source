@@ -17,7 +17,47 @@
     "hide": "Hide",
     "copy": "Copy the output",
     "download": "Download the output",
-    "empty-output": "No output yet"
+    "empty-output": "No output yet",
+    "result-partial": "Done with errors",
+    "state-word-running": "Running",
+    "state-word-paused": "Paused",
+    "state-word-partial": "With errors",
+    "state-word-cancelled": "Cancelled",
+    "state-word-waiting": "Queued",
+    "announce-paused": "Paused",
+    "announce-resumed": "Going on",
+    "figures": "{value} of {total}{unit} · {percent}%",
+    "figures-count": "{value}{unit}",
+    "percent": "{percent}%",
+    "estimating": "estimating time…",
+    "remaining": "about {time} left",
+    "remaining-short": "{time}",
+    "remaining-less": "less than a minute left",
+    "remaining-less-short": "< 1 min",
+    "minutes": "{n} min",
+    "hours": "{h} h {m} min",
+    "took": "took {time}",
+    "errors-shown": {
+      "one": "Errors: the first {n} of {total}",
+      "other": "Errors: the first {n} of {total}"
+    },
+    "more-errors": {
+      "one": "{n} more error",
+      "other": "{n} more errors"
+    },
+    "errors-count": {
+      "one": "{n} error",
+      "other": "{n} errors"
+    },
+    "no-errors": "no errors",
+    "retry-failed": "Retry failed",
+    "pause": "Pause",
+    "resume": "Continue",
+    "minimize": "Minimize",
+    "expand": "Expand",
+    "step-log": "Step log",
+    "counts": "Result",
+    "figures-plain": "{value} of {total}"
   },
   "events": {
     "cancel": {
@@ -31,6 +71,21 @@
     },
     "download": {
       "label": "Download the output"
+    },
+    "pause": {
+      "label": "Pause"
+    },
+    "resume": {
+      "label": "Continue"
+    },
+    "minimize": {
+      "label": "Minimize"
+    },
+    "expand": {
+      "label": "Expand"
+    },
+    "report": {
+      "label": "Errors"
     }
   }
 }

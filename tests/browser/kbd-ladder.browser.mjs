@@ -28,7 +28,12 @@
 //     label, not a step smaller;
 //   - sf-input shortcut: the keys drawn at the end of the field and
 //     vertically centred in it (top and bottom gaps within 0.5 px), the
-//     native input saying aria-keyshortcuts.
+//     native input saying aria-keyshortcuts;
+//   - the line box: in sf-button and sf-input the keys' group has the
+//     plate's line and is as high as the plate; plain glyphs in a menu and a
+//     tooltip have the glyphs' line, their letters' size (pair
+//     ui-a0370c0c99fb acceptance, F2: the group had the label's line, normal,
+//     and plain glyphs the row's 20 / 16).
 //
 // Console clean on every page.
 import {createServer} from 'node:http';
@@ -114,7 +119,7 @@ const MEASURE = () => {
     const s = getComputedStyle(element);
     const r = element.getBoundingClientRect();
     return {text: element.textContent, square: element.classList.contains('sf-kbd--square'), width: round(r.width), height: round(r.height),
-      fontSize: parseFloat(s.fontSize), padding: parseFloat(s.paddingLeft), top: r.top, bottom: r.bottom};
+      fontSize: parseFloat(s.fontSize), padding: parseFloat(s.paddingLeft), top: r.top, bottom: r.bottom, lineHeight: parseFloat(s.lineHeight)};
   };
   const keysOf = (root) => (root ? Array.from(root.querySelectorAll('kbd:not(.sf-kbd--group)')).map(key) : []);
   const groupGap = (root) => {
@@ -130,6 +135,10 @@ const MEASURE = () => {
       height: r ? round(r.height) : null,
       keys,
       gap: groupGap(host),
+      group: (() => {
+        const group = host?.querySelector('.sf-button-shortcut > .sf-kbd--group, .sf-input-shortcut > .sf-kbd--group');
+        return group ? {lineHeight: parseFloat(getComputedStyle(group).lineHeight), height: round(group.getBoundingClientRect().height)} : null;
+      })(),
       space: host ? space(box ?? host) : null,
       // The keys' place in the control: the gap above and below.
       above: keys.length && r ? round(Math.min(...keys.map((one) => one.top)) - r.top) : null,
@@ -222,6 +231,18 @@ try {
         }
         if (drawn.keys.length > 1 && typeof drawn.gap === 'number' && !near(drawn.gap, drawn.space, 0.05)) fail(`${what}: keys ${drawn.gap} apart, not --sf-space-1/4 ${drawn.space}`);
       };
+
+      const lineBox = (what, drawn, plate) => {
+        if (!drawn.group) return fail(`${what}: no key group`);
+        if (!near(drawn.group.lineHeight, plate) || !near(drawn.group.height, plate)) fail(`${what}: the key group's line ${drawn.group.lineHeight} and height ${drawn.group.height}, not the plate ${plate}`);
+        for (const one of drawn.keys) if (!near(one.lineHeight, plate)) fail(`${what} ${one.text}: line ${one.lineHeight}, not the plate ${plate}`);
+      };
+      for (const size of ['1-3', '1-2', '1', '2', '3']) {
+        lineBox(`sf-button ${size}`, m.buttons[size], table[size][0]);
+        lineBox(`sf-input ${size}`, m.inputs[size], table[size][0]);
+      }
+      for (const [at, row] of m.menu.entries()) for (const one of row.keys) if (!near(one.lineHeight, one.fontSize)) fail(`menu row ${at + 1} ${one.text}: plain glyphs' line ${one.lineHeight}, not their size ${one.fontSize}`);
+      for (const one of m.tip.keys) if (!near(one.lineHeight, one.fontSize)) fail(`tooltip ${one.text}: plain glyphs' line ${one.lineHeight}, not their size ${one.fontSize}`);
 
       for (const size of ['1-3', '1-2', '1', '2', '3']) {
         plates(`sf-button ${size}`, m.buttons[size], table[size]);

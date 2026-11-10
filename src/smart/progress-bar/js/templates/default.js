@@ -25,13 +25,15 @@ function normalizeStatus(value) {
 export function renderProgressBarTemplate(context) {
   const { value, textPosition } = context;
   const size = normalizeSize(context.size);
-  const tone = normalizeStatus(context.status ?? context.tone);
+  const tone = normalizeStatus(context.drawnStatus ?? context.status ?? context.tone);
   const normalizedValue = normalizeValue(value);
   const normalizedPosition = ['none', 'right', 'inline-end', 'bottom'].includes(textPosition)
     ? textPosition
     : 'none';
 
-  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, 'flex', context.rootClass].filter(Boolean);
+  const indeterminate = Boolean(context.indeterminate);
+  const paused = Boolean(context.paused);
+  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, indeterminate ? 'sf-progress-bar--indeterminate' : '', paused ? 'sf-progress-bar--paused' : '', 'flex', context.rootClass].filter(Boolean);
   if (normalizedPosition === 'right' || normalizedPosition === 'inline-end') {
     rootClasses.push('flex-row', 'items-cross-center');
   } else if (normalizedPosition === 'bottom') {
@@ -46,18 +48,20 @@ export function renderProgressBarTemplate(context) {
       data-position=${normalizedPosition}
       data-tone=${tone}
       data-label=${context.label || nothing}
-      data-value-text=${context.valueText || nothing}
+      data-value-text=${(context.spokenValueText ?? context.valueText) || nothing}
+      data-indeterminate=${indeterminate ? 'true' : nothing}
+      data-paused=${paused ? 'true' : nothing}
       role="progressbar"
       aria-label=${context.label || nothing}
       aria-valuemin="0"
       aria-valuemax="100"
-      aria-valuenow=${String(normalizedValue)}
-      aria-valuetext=${context.valueText || nothing}
+      aria-valuenow=${indeterminate ? nothing : String(normalizedValue)}
+      aria-valuetext=${(context.spokenValueText ?? context.valueText) || nothing}
     >
       <div class="sf-progress-bar-main">
         <div class="sf-progress-bar-progress transition"></div>
       </div>
-      ${normalizedPosition !== 'none'
+      ${normalizedPosition !== 'none' && !indeterminate
         ? html`<div class="sf-progress-bar-text">${normalizedValue}%</div>`
         : nothing}
     </div>

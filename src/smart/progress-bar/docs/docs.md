@@ -1,8 +1,8 @@
 # Progress Bar Smart Component
 
-`sf-progress-bar` shows continuous determinate progress from 0 to 100. Use
-Spinner when the current value is unknown and Progress Scale only when the
-segmented presentation has product meaning.
+`sf-progress-bar` shows continuous progress from 0 to 100, or work of a size
+not known yet (`indeterminate`). Progress Scale is only for a segmented
+presentation with product meaning.
 
 The component owns normalized value, `progressbar` semantics and optional
 visible percentage. The author must provide a localized `label`. The application
@@ -26,6 +26,17 @@ cancellation.
   is a warning. The bar draws the more serious of `status` and the threshold
   reached, and says which on the host as `data-status`. Without thresholds the
   bar never infers a tone from the percentage.
+- `indeterminate` (1.3.0) — the work runs and its size is not known yet: a
+  segment of the fill crosses the track, and the bar leaves out
+  `aria-valuenow` and the percentage text. Take it off once the size is known:
+  the same bar then fills from `value`, once, never back. Reduced motion stands
+  the segment still. Class markup: `sf-progress-bar--indeterminate`.
+- `paused` (1.3.0) — the work stopped and will go on. The bar is a warning
+  (an error from `status` or a threshold stays an error) and a screen reader
+  hears it: the value text reads «35 %, на паузе» / «35%, paused» unless the
+  page gives `value-text`. Set it only where the work really stopped. An
+  indeterminate bar that is paused stands still (1.3.1): its segment stops at
+  the start of the track. Class markup: `sf-progress-bar--paused`.
 
 The component is not interactive, does not receive focus and does not create an
 assertive live region. Shared `root-class` and `root-style` settings apply only

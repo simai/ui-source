@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 /* A row's divider is inside its control height: the bottom padding gives the
    border back, so a standalone row and the same row in a list without
    dividers stand equally tall. The width is registered as a length, so a
@@ -112,7 +113,7 @@
   --sf-list-item-container--color: var(--sf-list-item-color, var(--sf-on-surface));
 }
 
-.sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--font-size: var(--sf-text-height-1);
   --sf-icon--height: var(--sf-text-height-1);
   --sf-icon--width: var(--sf-text-height-1);
@@ -140,7 +141,7 @@
   --sf-avatar-label-group-title--color: var(--sf-on-disable);
 }
 
-.sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > .sf-icon, .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--color: var(--sf-on-disable);
 }
 
@@ -157,7 +158,7 @@
   --sf-tag-container--line-height: var(--sf-text-height-2);
 }
 
-.sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--font-size: var(--sf-text-height-2);
   --sf-icon--height: var(--sf-text-height-2);
   --sf-icon--width: var(--sf-text-height-2);
@@ -186,7 +187,7 @@
   --sf-tag-container--line-height: var(--sf-text-height-3);
 }
 
-.sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--font-size: var(--sf-text-height-3);
   --sf-icon--height: var(--sf-text-height-3);
   --sf-icon--width: var(--sf-text-height-3);
@@ -215,7 +216,7 @@
   --sf-list-item-container--line-height: var(--sf-text-height-1\/2);
 }
 
-.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--font-size: var(--sf-text-height-1\/2);
   --sf-icon--height: var(--sf-text-height-1\/2);
   --sf-icon--width: var(--sf-text-height-1\/2);
@@ -255,7 +256,7 @@
   --sf-tag-container--line-height: var(--sf-text-height-1\/3);
 }
 
-.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > .sf-icon {
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > sf-icon:not(:defined) {
   --sf-icon--font-size: var(--sf-text-height-1\/3);
   --sf-icon--height: var(--sf-text-height-1\/3);
   --sf-icon--width: var(--sf-text-height-1\/3);
@@ -313,6 +314,8 @@
      with its ink. */
 .sf-list-item.selected {
   --sf-list-item--background-color: var(--sf-primary-container);
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
+  @include places.sf-place-fill;
 }
 
 /* An option sits flush against the options above and below it. */

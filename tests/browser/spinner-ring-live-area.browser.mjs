@@ -100,17 +100,34 @@ const inkBox = (png) => decoder.evaluate(async ({data, scale}) => {
   context.drawImage(image, 0, 0);
   const {data: pixels, width, height} = context.getImageData(0, 0, image.width, image.height);
   const at = (x, y) => pixels.slice((y * width + x) * 4, (y * width + x) * 4 + 3);
-  const ground = at(0, 0);
+  // Only the disc inscribed in the clip is read. The ring and the glyph are
+  // circles centred in the clip, so any ring up to the whole clip wide is read
+  // in full; the clip's corners are not, because there a small button's
+  // rounded corner shows the page beside its fill (a loading sf-button-icon of
+  // step 1/3 below 60rem is 24px with a 4px radius, and the clip is its
+  // 16px icon box + 3px on each side).
+  const radius = Math.min(width, height) / 2;
+  const inside = (x, y) => Math.hypot(x + 0.5 - width / 2, y + 0.5 - height / 2) <= radius;
+  // The ground is what lies behind the ring: the most common colour of the
+  // disc (the ring and the glyph are thin strokes over it), so a button's fill
+  // is ground and not ink.
+  const counts = new Map();
+  for (let y = 0; y < height; y += 1) for (let x = 0; x < width; x += 1) {
+    if (!inside(x, y)) continue;
+    const colour = at(x, y).join(',');
+    counts.set(colour, (counts.get(colour) ?? 0) + 1);
+  }
+  const ground = [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0].split(',').map(Number);
   const distance = (x, y) => { const [r, g, b] = at(x, y); return Math.hypot(r - ground[0], g - ground[1], b - ground[2]); };
   let most = 0;
-  for (let y = 0; y < height; y += 1) for (let x = 0; x < width; x += 1) most = Math.max(most, distance(x, y));
+  for (let y = 0; y < height; y += 1) for (let x = 0; x < width; x += 1) if (inside(x, y)) most = Math.max(most, distance(x, y));
   // An edge pixel counts when it is at least half ink: the glyph and the ring
   // are antialiased alike, so the same threshold finds the same edge.
   const threshold = most / 2;
   let left = width, right = -1, top = height, bottom = -1;
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
-      if (distance(x, y) < threshold) continue;
+      if (!inside(x, y) || distance(x, y) < threshold) continue;
       left = Math.min(left, x); right = Math.max(right, x); top = Math.min(top, y); bottom = Math.max(bottom, y);
     }
   }

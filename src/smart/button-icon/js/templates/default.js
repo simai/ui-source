@@ -62,9 +62,15 @@ export function renderIconButtonTemplate(context) {
         // class is the danger one and the error one the sheets also select.
         ...statusClasses(status, scheme),
         tightness ? `tightness-${tightness}` : '',
+        // The height (decisions C27, C35): the class of the size's tightness
+        // step, declared after the density classes; default draws none.
+        ['low', 'high', 'highest'].includes(context.height) ? `sf-icon-button--height-${context.height}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-icon-button-state-loading' : '',
+        // A loading icon button keeps its scheme colour (C36 follow-up); one
+        // that is disabled as well wears the disabled look, so it says so.
+        loading && disabled ? 'disabled' : '',
         // A toggle that is on wears the pressed look (component.icon-buttons
         // 1.3.0, rule C12): the class carries it whether or not aria-pressed is said.
         context.pressed || context.cycleView?.pressedLook ? 'sf-icon-button--pressed' : '',

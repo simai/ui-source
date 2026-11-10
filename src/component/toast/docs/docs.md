@@ -16,6 +16,36 @@ task. It is distinct from persistent inline Alert content.
   while pointer or keyboard focus is inside the toast. Zero or no attribute is
   persistent.
 
+## Layout (1.2.0, owner decision C35)
+
+Inline padding `--sf-space-1` on both sides, block padding `--sf-space-1/2`;
+the status icon is the line's size (`--sf-text-height-1`: 24, compact and
+phone 20) and stands with the first line of text and the close in the box of a
+low size-1 control (32, compact and phone 28). The title and its text are one
+block (no gap); the actions follow at `--sf-space-1/2`, `--sf-space-1/3`
+apart: `sf-button sf-button--tonal sf-button--primary sf-button--size-1
+sf-button--height-low`. The close is `sf-icon-button sf-icon-button--close
+sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
+sf-close--size-1`; its plate hangs out over the inline padding. The public
+`--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
+still win.
+
+## Ink (1.2.1, C35 acceptance F1)
+
+The status icon is the status's role `--sf-<status>` (neutral: the quiet
+`--sf-on-surface-variant`, read from the container), as on the alert: the container's graphic tone
+(`--sf-on-<status>-container-graphic`) it read before was 2.86-3.04:1 on a dark
+toast. The close's cross is the toast's text ink, `--sf-on-<status>-container`.
+
+The neutral icon is the theme's dim ink on a fill, the alert's (1.2.3): `#515257`
+in light, `#d4d4d9` in dark. The toast is a popup place, and the popup's own
+`--sf-on-surface-container-variant` is one step up in dark (C43, for the
+controls' keys); the icon does not take it, so it stays quieter than the text.
+
+The status colour is the toast's own icon only (1.2.2, C35 acceptance A-F1):
+`.sf-toast > .sf-icon` and `.sf-toast > sf-icon > .sf-icon`. An icon-only
+action button keeps its own icon role.
+
 ## Accessibility and ownership
 
 Use `role="status"` only when non-urgent feedback is inserted dynamically and

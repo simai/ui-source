@@ -519,6 +519,11 @@ function renderTooltip() {
     return nothing;
 }
 
+// The box is laid out by the menu's own sheet, not by utilities: the root a
+// row of one, .sf-context-menu-frame the positioned frame, the content a
+// column that takes the rest (component.context-menu 1.8.0). The template
+// wrote flex, relative, flex-col and flex-1, and on a Docara page the Loader
+// linked utility/position after the first frame (sf-menu-context 1.14.1).
 export function renderContextMenuTemplate(context) {
     const rootClasses = joinClasses(
         "sf-context-menu",
@@ -527,15 +532,11 @@ export function renderContextMenuTemplate(context) {
         context.size === "1" ? "sf-context-menu--size-1" : "",
         context.panel ? "sf-context-menu--panel" : "",
         context.drill ? "sf-context-menu--drill" : "",
-        "flex",
         context.rootClass,
     );
 
     const contentClasses = joinClasses(
         "sf-context-menu-content",
-        "flex",
-        "flex-col",
-        "flex-1",
         // On the content, not the root: the root's class list is the one
         // openFor() adds sf-context-menu--open to, and a level that draws a
         // search changes the list while the menu is open.
@@ -550,7 +551,7 @@ export function renderContextMenuTemplate(context) {
                 role=${context.role || "menu"}
                 aria-label=${context.ariaLabel || nothing}
         >
-            <div class="relative">
+            <div class="sf-context-menu-frame">
                 ${renderTooltip(context)}
                 ${context.panel
                     ? html`<div class=${contentClasses}>

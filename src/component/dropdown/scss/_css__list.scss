@@ -169,7 +169,11 @@
   }
 
   .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-icon,
-  .sf-list--menu > .sf-list-search > .sf-list-search-icon {
+  .sf-list--menu > .sf-list-search > .sf-list-search-icon,
+  .sf-dropdown .sf-list > .sf-list-search > sf-icon > .sf-list-search-icon,
+  .sf-dropdown .sf-list > .sf-list-search > sf-icon:not(:defined),
+  .sf-list--menu > .sf-list-search > sf-icon > .sf-list-search-icon,
+  .sf-list--menu > .sf-list-search > sf-icon:not(:defined) {
     @include panel.search-icon(var(--sf-list--line));
     --sf-icon--font-size: var(--sf-list--line);
     --sf-icon--height: var(--sf-list--line);
@@ -183,7 +187,11 @@
      :is() list inside :has() into one rule per kind, which inverts the
      meaning under :not(). */
   .sf-dropdown .sf-list:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > .sf-list-search-icon,
-  .sf-list--menu:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > .sf-list-search-icon {
+  .sf-list--menu:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > .sf-list-search-icon,
+  .sf-dropdown .sf-list:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > sf-icon > .sf-list-search-icon,
+  .sf-dropdown .sf-list:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > sf-icon:not(:defined),
+  .sf-list--menu:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > sf-icon > .sf-list-search-icon,
+  .sf-list--menu:not(:has(.sf-list-item--icon)):not(:has(.sf-list-item--avatar)):not(:has(.sf-list-item--color)):not(:has(.sf-list-item--checkbox)) > .sf-list-search > sf-icon:not(:defined) {
     @include panel.search-icon-trailing;
   }
 
@@ -210,6 +218,7 @@
   .sf-dropdown .sf-list .sf-list-item.selected,
   .sf-list--menu .sf-list-item.selected {
     --sf-list-item--background-color: var(--sf-primary-container);
+    @include places.sf-place-fill;
   }
 }
 

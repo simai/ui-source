@@ -56,7 +56,7 @@
       "state": {
         "type": "string",
         "default": "open",
-        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown.",
+        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown. Declined by the person here, the surface folds away (hidden) and the focus goes back, with its ring, to the control that put the question, else the nearest focusable place around it or the next control of the page (DEV D2 on C35); a declined state the host sets without that answer stays shown.",
         "enum": [
           "open",
           "pending",
@@ -338,11 +338,11 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "2fbe0dfef1c5153b3eb3e85d2c42a96fc2a226738c3a340e78504371e3dd84b7"
+        "sha256": "4a4d36db81b9cdacf0581d0f65fbd5a3f784743eff023d4888cbdf7c19c992d3"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "a11e4651daf8609ad12b501626d7aef3c2b43e425c390a0efca0f3742f739538"
+        "sha256": "94ea4cf158c7a620a934911d0285be7fabc0e13dd87648974241a75b4d17fabf"
       },
       {
         "path": "src/smart/confirm/rule.js",
@@ -350,19 +350,19 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "c95e5b95be407891d99da6a5773ad5c3384f7c192c5b404dac0b3f05de384ad6"
+        "sha256": "8d8df8107923e2d86ff90f93bbac584283690464420fdeaf7f762c1bc3283c50"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "2234ac78dd387c0c6d8a95fb70935149c3fc5f6c86cd28fc0c4fcbec54205b6d"
+        "sha256": "4fca76648ec50a8f9357aa2ac6af42f3380a95bd5368e8ec784e546b39c771ad"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
-        "sha256": "9292e3cd4a1fbd12d3d2533e90dd371d166918888d1c85b80ad71a08b7f87f79"
+        "sha256": "f18fa4ac4deeb5cc52ad9d19f371955c3f58d3c71ea1efad6c4a7f40610b44a7"
       },
       {
         "path": "src/smart/confirm/lang/ru.json",
-        "sha256": "84761dc087a7c0ca3be1f90fc6134e129ddfcc97b7e99b72c6bd573a9849f699"
+        "sha256": "e19d3fe148bc5c32d395841ad1ac58986222480519254cd8d21276e3bd07cc8d"
       }
     ],
     "generated_runtime": []

@@ -13,7 +13,10 @@
 //   - sf-button-group, default and segmented, with text, icon and icon-only
 //     items: the same, and no item changes width;
 //   - aria-busy="true" and native disabled on every loading button;
-//   - the spinner takes the disabled ink, or --sf-loader--color;
+//   - sf-button's spinner takes its label's ink (it keeps its scheme colour
+//     while loading, owner decision C36); sf-button-icon's its icon colour
+//     (the C36 follow-up);
+//     --sf-loader--color wins over both;
 //   - the arc moves without end, and under reduced motion it is a still arc;
 //   - the slot is right without the spinner sheet (the button sheets draw it);
 //   - toggling loading on sf-button and sf-button-icon brings the icon back;
@@ -177,12 +180,14 @@ try {
     const page = await open({body: `<sf-button id="text" text="Отправить" loading></sf-button>
       <sf-button id="tinted" text="Отправить" icon="send" loading style="--sf-loader--color: rgb(200, 0, 0)"></sf-button>
       <sf-button-icon id="iconbutton" icon="save" aria-label="Сохранить" loading></sf-button-icon>
-      <span id="disable" style="color: var(--sf-on-disable)">x</span>`});
+      <span id="disable" style="color: var(--sf-on-disable)">x</span>
+      <span id="label-ink" style="color: var(--sf-on-primary)">x</span>`});
     const named = await page.getByRole('button', {name: 'Отправить', exact: true}).count();
     const busyNamed = await page.locator('#text').getByRole('button', {name: 'Отправить', exact: true}).count();
     const iconNamed = await page.getByRole('button', {name: 'Сохранить', exact: true}).count();
     const colours = await page.evaluate(() => ({
       disable: getComputedStyle(document.getElementById('disable')).color,
+      label: getComputedStyle(document.getElementById('label-ink')).color,
       text: getComputedStyle(document.querySelector('#text .sf-loader-ring-accent')).stroke,
       iconbutton: getComputedStyle(document.querySelector('#iconbutton .sf-loader-ring-accent')).stroke,
       tinted: getComputedStyle(document.querySelector('#tinted .sf-loader-ring-accent')).stroke,
@@ -191,7 +196,9 @@ try {
     evidence.colours = colours;
     check('a loading button without an icon keeps its label as its name', busyNamed === 1 && named === 2, evidence.names);
     check('a loading icon button keeps its name', iconNamed === 1, evidence.names);
-    check('the spinner takes the disabled ink of the loading button', colours.text === colours.disable && colours.iconbutton === colours.disable, colours);
+    check('the spinner of a loading sf-button takes its label ink (C36)', colours.text === colours.label && colours.text !== colours.disable, colours);
+    // A default primary icon button draws its icon in on-primary.
+    check('the spinner of a loading sf-button-icon takes its icon colour (C36 follow-up)', colours.iconbutton === colours.label && colours.iconbutton !== colours.disable, colours);
     check('--sf-loader--color colours the spinner in a button', colours.tinted === 'rgb(200, 0, 0)', colours);
     await page.close();
   }

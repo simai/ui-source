@@ -317,15 +317,15 @@
         {
           "name": "--sf-alert-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         },
         {
           "name": "--sf-alert-gap",
           "role": "gap",
-          "summary": "Space between the icon, the text and the buttons.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space between the icon, the text and the buttons (decision C35: the toast's icon gap).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         }
       ]
@@ -800,8 +800,8 @@
         {
           "name": "--sf-toast-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-18"
         },
         {
@@ -1070,6 +1070,20 @@
           "varies_with": [
             "appearance"
           ]
+        },
+        {
+          "name": "--sf-avatar-offline-background-color",
+          "role": "background",
+          "summary": "The colour under the offline dot: the place the avatar stands on, so neither the photo nor the initials show through the dot (C43).",
+          "default": "var(--sf-surface-place)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-avatar-offline-overlay",
+          "role": "overlay",
+          "summary": "The layer over that colour: the disabled ink. Set it to none for an offline dot of exactly --sf-avatar-offline-background-color.",
+          "default": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "since": "2026-11-10"
         }
       ]
     },
@@ -1143,8 +1157,8 @@
         {
           "name": "--sf-context-menu-inline-size",
           "role": "inline-size",
-          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value.",
-          "default": "calc(var(--sf-f7) + var(--sf-a8))",
+          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value. By default --sf-popup-menu-max-width, the menu's ceiling of the popup widths, which follows density (C32).",
+          "default": "var(--sf-popup-menu-max-width)",
           "since": "2026-10-30"
         }
       ]
@@ -4062,14 +4076,17 @@
         {
           "name": "--sf-list-attention-background-color",
           "role": "background",
-          "summary": "The list's fill; none by default, so it is no card. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "transparent",
-          "since": "2026-11-08"
+          "summary": "The list's fill: the card surface (frame card, the default since 1.2.0, owner decision C37), none with frame none. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
+          "default": "var(--sf-surface-card)",
+          "since": "2026-11-08",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-divider-color",
           "role": "border-color",
-          "summary": "The hairline between items.",
+          "summary": "The card's edge and the hairlines between the head, the items and the foot.",
           "default": "var(--sf-outline-variant)",
           "since": "2026-11-07"
         },
@@ -4083,15 +4100,18 @@
         {
           "name": "--sf-list-attention-padding-inline",
           "role": "padding-inline",
-          "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
-          "default": "calc(var(--sf-px) * 0)",
-          "since": "2026-11-07"
+          "summary": "The text edge: the inline inset of the head, the rows and the foot from the card's edge; --sf-space-1 in a card, 0 with frame none, so the rows line up with the page's text.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-07",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-gap",
           "role": "margin-block-end",
-          "summary": "The space under the heading.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space under the heading with frame none (a card's head is a bar of its own).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-11-07"
         }
       ]
@@ -4100,6 +4120,20 @@
       "component": "progress-run",
       "selector": "sf-progress-run, .sf-progress-run",
       "variables": [
+        {
+          "name": "--sf-progress-run-gap",
+          "role": "gap",
+          "summary": "Space between the run's groups (head, progress, results, errors, steps, output, actions; decision C34, R073); 16 on a desktop, 12 on a phone and in compact density.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-progress-run-gap-tight",
+          "role": "gap",
+          "summary": "Space inside the progress group: the overall bar to its figures line; 8, 4 in compact density.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-11-10"
+        },
         {
           "name": "--sf-progress-run-background-color",
           "role": "background",

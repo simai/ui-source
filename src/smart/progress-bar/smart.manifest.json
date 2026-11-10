@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-bar",
-  "version": "1.2.1",
+  "version": "1.3.2",
   "title": "Progress Bar",
   "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
   "kind": "smart",
@@ -15,7 +15,8 @@
     "theme",
     "responsive",
     "determinate-progress",
-    "accessible-range"
+    "accessible-range",
+    "indeterminate-progress"
   ],
   "custom_element": "sf-progress-bar",
   "templates": [
@@ -97,6 +98,16 @@
         "description": "A threshold in per cent: from this value on, the bar is an error by itself. Above warning-at when both are set. Unset, no threshold.",
         "minimum": 0,
         "maximum": 100
+      },
+      "indeterminate": {
+        "type": "boolean",
+        "default": false,
+        "description": "The work runs and its size is not known yet: a segment of the fill crosses the track and the value is not read (aria-valuenow is left out). The page takes it off once the size is known and the same bar fills from the value, once (C34). Reduced motion: the segment stands still."
+      },
+      "paused": {
+        "type": "boolean",
+        "default": false,
+        "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
       },
       "label": {
         "type": "string",
@@ -297,11 +308,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",
-        "sha256": "cae9d68319060fb13bdd3f8e6c12f0ab703ceb497a415392313fea3378998e16"
+        "sha256": "9bf63e4d0823230aecdb3c3d000be4bb91789f0e9c3aa4dbbebcf6f68305a38e"
       },
       {
         "path": "src/smart/progress-bar/js/templates/default.js",
-        "sha256": "d8a9975178a4e776698aa2664b770930554ac6b40f283b9a6407d7cf46bf6b3f"
+        "sha256": "3f9afcf12f6f9292dc7c0432f6dd7f5c5e2243427ac553c54c7b25f20617a70d"
       },
       {
         "path": "src/smart/progress-bar/rule.js",
@@ -309,7 +320,7 @@
       },
       {
         "path": "src/smart/progress-bar/docs/docs.md",
-        "sha256": "67f1d8d8410886140e3fdfd0d252664111dc959e47b6e69038722fc42ecac0f3"
+        "sha256": "5a7de9534df8c74bcb3c78bffdde0f94e07cd849420519d0d1e6469f6329104d"
       }
     ],
     "generated_runtime": [
@@ -322,11 +333,11 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-progress-bar for continuous determinate progress with a known value from 0 to 100.",
+    "use_when": "Use sf-progress-bar for continuous progress with a value from 0 to 100, or indeterminate while the size of the work is not known.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",
-      "Do not use Progress Bar for an unknown value; use Spinner",
+      "Do not use Progress Bar for an unknown value without indeterminate; set indeterminate until the size is known, or use Spinner",
       "Do not omit a localized accessible label",
       "Do not infer semantic tone from the percentage in the page; give the bar warning-at and error-at and let it compare",
       "Do not make the progress indicator focusable"

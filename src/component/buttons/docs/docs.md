@@ -73,7 +73,10 @@ the Smart `sf-button` projection.
   Declared after the density classes: a button that carries both takes its
   sides from the height. The Smart `spacing` is deprecated in favour of it;
 - radius: the normal control radius `--sf-radius--ui`, or the explicit
-  `radius-square` and `radius-rounded` overrides.
+  `radius-square` and `radius-rounded` overrides;
+- full width (1.9.0, owner decision C36): `sf-button--full-width` -- the
+  control fills its container and its content stays in the middle, as
+  sf-segmented's `full-width`; the constructor's option is `fullWidth`.
 
 `radius-default` is the control radius `--sf-radius--ui`, the same as no
 radius class; it stays for the Smart `radius="default"` value. The utility
@@ -109,7 +112,13 @@ stays only as a compatibility name; it goes with the next major version.
 
 Native `disabled` is the source of truth for an unavailable action. Loading
 uses `loading sf-button-state-loading`, `aria-busy="true"` and native
-`disabled`, so the same action cannot be triggered twice.
+`disabled`, so the same action cannot be triggered twice. A loading button
+keeps its scheme colour (1.9.0, owner decision C36): the disabled look's rules
+skip `sf-button-state-loading`, so the fill, the edge and the label are the
+resting button's. One that is disabled as well adds the `disabled` class and
+wears the disabled look; the constructor does that for `loading` with
+`disabled`. Markup with the bare `loading` class and no state class keeps the
+disabled look.
 
 A loading button shows the spinner, the Framework's one loading indicator, at
 the size of its icon (simai/ui-source#10):
@@ -123,7 +132,10 @@ the size of its icon (simai/ui-source#10):
   the icon and its gap;
 - an icon-only button shows the spinner in place of its icon.
 
-The spinner takes the button's disabled ink unless `--sf-loader--color` is set,
+The spinner takes the label's ink (the disabled ink on a disabled button)
+unless `--sf-loader--color` is set; its background ring is that ink at 16 %
+(1.9.1, the fill family of the alpha scale, drawn whole, so it shows on a light
+filled button in dark; `--sf-spinner-track-color` wins),
 and under `prefers-reduced-motion` it is a still arc. The constructor draws it;
 in hand-written markup put it where the icon was, or before the label with the
 `--overlay` class:

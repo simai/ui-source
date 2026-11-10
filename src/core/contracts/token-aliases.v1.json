@@ -423,7 +423,7 @@
     "decision": "C20, owner 2026-11-08 (ui-control control/docs-review/decisions.md; prototypes/shadows.html)",
     "since": "2026-11-09",
     "remove_after": "2027-01-01",
-    "summary": "Four shadows by place replace the numbered levels, the Figma layer styles and the three shadow colours: --sf-shadow-flat (none, the edge is --sf-outline-variant), --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, drawn from --sf-shadow-key-color and --sf-shadow-ambient-color. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names of a card's, a popup's and a nested popup's shadow are raised, overlay and overlay. A former name is var() of its successor on the theme root (src/core/scss/mix/_mix__role_aliases.scss, sf-shadow-aliases); a value changes where the place's shadow differs from the level's (it is a visible change, approved by the owner as C20). Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested.",
+    "summary": "Four shadows by place replace the numbered levels, the Figma layer styles and the three shadow colours: --sf-shadow-flat (none, the edge is --sf-outline-variant), --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, drawn from --sf-shadow-key-color and --sf-shadow-ambient-color. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names of a card's, a popup's and a nested popup's shadow are raised, overlay and overlay. A former name is var() of its successor on the theme root (src/core/scss/mix/_mix__role_aliases.scss, sf-shadow-aliases); a value changes where the place's shadow differs from the level's (it is a visible change, approved by the owner as C20). Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested. The elevation-N classes are former names too (journal utility-c20-elevation-former, dispatcher 2026-11-10): each becomes the surface class and the shadow class of its place, two names in `to`.",
     "tokens": [
       {
         "from": "--sf-shadow-card",
@@ -609,6 +609,30 @@
       {
         "from": "hover:drop-shadow-5",
         "to": "hover:drop-shadow-modal"
+      },
+      {
+        "from": "elevation-0",
+        "to": "bg-surface-page shadow-flat"
+      },
+      {
+        "from": "elevation-1",
+        "to": "bg-surface-card shadow-raised"
+      },
+      {
+        "from": "elevation-2",
+        "to": "bg-surface-popup shadow-overlay"
+      },
+      {
+        "from": "elevation-3",
+        "to": "bg-surface-popup shadow-overlay"
+      },
+      {
+        "from": "elevation-4",
+        "to": "bg-surface-popup-nested shadow-modal"
+      },
+      {
+        "from": "elevation-5",
+        "to": "bg-surface-popup-nested shadow-modal"
       }
     ],
     "removed": [

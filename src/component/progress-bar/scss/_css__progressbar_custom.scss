@@ -18,9 +18,52 @@
   width: 100%;
 }
 
+/* Indeterminate (C34): the work runs and its size is not known yet. A
+   segment of the fill -- 30 % of the track, the arc of sf-progress-ring's
+   indeterminate ring -- crosses the track again and again; the value is not
+   read, so the bar says nothing it does not know. Once the size is known the
+   page takes indeterminate off and the same bar fills, once (no way back). */
+.sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-main {
+  position: relative;
+  overflow: hidden;
+}
+
+.sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 30%;
+  margin: 0;
+  transition: none;
+  animation: sf-progress-bar-run calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
+}
+
+/* Paused (C34): time stands still, so the segment stops. It stands at the
+   start of the track, as under reduced motion, not at the frame the pause
+   caught (a new drawing would restart it off the track). */
+.sf-progress-bar.sf-progress-bar--indeterminate.sf-progress-bar--paused .sf-progress-bar-progress {
+  animation: none;
+}
+
+@keyframes sf-progress-bar-run {
+  from {
+    inset-inline-start: -30%;
+  }
+
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sf-progress-bar .sf-progress-bar-progress {
     transition-duration: 0s;
+  }
+
+  /* Reduced motion: the segment stands still at the start, as the ring's arc
+     does. */
+  .sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
+    animation: none;
   }
 }
 }

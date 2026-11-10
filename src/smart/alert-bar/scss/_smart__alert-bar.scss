@@ -83,6 +83,7 @@
   .sf-alert-bar#{$level} :is(.sf-alert-bar-row, .sf-alert-bar-strip) {
     @include places.sf-place-strong($c);
     --sf-surface-place: var(--sf-alert-bar--fill);
+    --sf-surface-place-solid: var(--sf-alert-bar--fill);
   }
 }
 

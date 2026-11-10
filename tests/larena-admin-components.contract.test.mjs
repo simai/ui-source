@@ -25,7 +25,7 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.2.1');
+  assert.equal(manifest.version, '1.3.2');
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);
@@ -61,11 +61,36 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.equal(manifest.family, 'list');
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'status', 'title']);
   assert.deepEqual(manifest.settings.empty.values, ['none', 'line']);
-  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply']);
+  // Owner decision C37 (1.2.0): the quiet line and the card by default,
+  // triage requests with undo, recheck and all («Все проблемы»; «more» is
+  // the «⋯» button's own name).
+  assert.equal(manifest.settings.empty.default, 'line');
+  assert.equal(manifest.settings.frame.default, 'card');
+  assert.equal(manifest.settings.limit.default, 5);
+  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply', 'snooze', 'dismiss', 'undo', 'recheck', 'all']);
   assert.equal(manifest.events.navigate.cancelable, true);
+  for (const verb of ['snooze', 'dismiss', 'all']) assert.equal(manifest.events[verb].cancelable, true, verb);
+  for (const name of ['view', 'started']) assert.ok(!(name in manifest.settings), `${name} is the core's own name`);
   const source = code('src/smart/list-attention/index.js');
   assert.match(source, /const RANK = \{error: 0, warning: 1, info: 2, success: 3\};/u);
-  assert.match(source, /\(RANK\[a\.status\] - RANK\[b\.status\]\) \|\| \(a\.order - b\.order\)/u);
+  assert.match(source, /\(RANK\[a\.status\] - RANK\[b\.status\]\) \|\| age\(a, b\) \|\| \(a\.order - b\.order\)/u);
+  // «Не напоминать» only where the page gives the permission (the host's
+  // dismissible); an item's flag may take it away, never grant it.
+  const body = source.match(/canDismiss\(item\) \{\n\s*(return [^\n]+)\n\s*\}/u);
+  assert.ok(body, 'canDismiss is one return');
+  const canDismiss = (host, item) => new Function('item', body[1]).call(host, item);
+  for (const [host, flag, may] of [
+    [false, null, false], [false, true, false], [false, false, false],
+    [true, null, true], [true, true, true], [true, false, false],
+  ]) {
+    assert.equal(canDismiss({dismissible: host}, {dismissible: flag}), may, `host ${host}, item ${flag}`);
+  }
+  // size is deprecated (C22: the density is the page's), noted with a date.
+  assert.match(source, /noteDeprecated\(\{component: 'sf-list-attention', kind: 'attribute', from: 'size', to: 'data-sf-density'/u);
+  assert.match(manifest.settings.size.summary, /^Deprecated until 2027-01-01/u);
+  // «Подробнее о проверке» asks navigate like the other links.
+  assert.match(source, /part === 'help' \? item\.help/u);
+  assert.match(code('src/smart/list-attention/js/templates/default.js'), /appearance="outline" scheme="on-surface"/u);
   const sheet = read('src/smart/list-attention/scss/_smart__list-attention.scss');
   // The host is display: contents; with no items the template draws nothing.
   assert.doesNotMatch(sheet, /sf-list-attention\[data-empty\]/u);
@@ -77,10 +102,12 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
 test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and the reading position', () => {
   const manifest = json('src/smart/progress-run/component.json');
   assert.equal(manifest.family, 'progress');
-  assert.deepEqual(manifest.settings['run-state'].values, ['auto', 'running', 'done', 'failed', 'cancelled']);
+  assert.deepEqual(manifest.settings['run-state'].values, ['auto', 'running', 'paused', 'done', 'partial', 'failed', 'cancelled']); // 1.3.0 adds paused and partial (C34)
   assert.ok(!('state' in manifest.settings), 'state is the element base\'s own name');
   assert.deepEqual(Object.keys(manifest.actions), ['chunk', 'clear', 'step']);
-  assert.deepEqual(Object.keys(manifest.events), ['cancel', 'retry', 'close', 'download', 'toggle']);
+  assert.deepEqual(Object.keys(manifest.events), ['cancel', 'retry', 'close', 'download', 'toggle', 'pause', 'resume', 'minimize', 'expand', 'report']);
+  // view and started are the element runtime's own names (element-manifest RESERVED)
+  assert.ok(!('view' in manifest.settings) && !('started' in manifest.settings));
   const source = code('src/smart/progress-run/index.js');
   assert.doesNotMatch(source, /fetch\(|XMLHttpRequest|EventSource|WebSocket/u, 'it polls nothing');
   assert.match(source, /readingPosition/u);

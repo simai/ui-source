@@ -34,22 +34,29 @@ test('the two names are registered to the Framework, family list, and loaded by 
 test('sf-list-description: a dl of label and value, the columns a subgrid, stacked when narrow', () => {
   const manifest = json('src/smart/list-description/component.json');
   assert.deepEqual(manifest.settings.items.schema.items.required, ['label']);
-  for (const field of ['label', 'value', 'hint', 'mono', 'copy', 'href', 'status']) {
+  for (const field of ['label', 'value', 'hint', 'mono', 'copy', 'href', 'status', 'type', 'badge', 'help', 'numeric', 'empty', 'action']) {
     assert.ok(manifest.settings.items.schema.items.properties[field], field);
   }
-  assert.deepEqual(manifest.settings.layout.values, ['auto', 'columns', 'stacked']);
+  assert.deepEqual(manifest.settings.layout.values, ['auto', 'columns', 'stacked', 'grid']);
+  assert.deepEqual(manifest.settings.columns.values, ['1', '2', '3', '4']);
   assert.deepEqual(manifest.settings.overflow.values, ['wrap', 'truncate']);
   assert.equal(manifest.settings.dividers.type, 'boolean');
-  assert.deepEqual(Object.keys(manifest.events), ['navigate']);
+  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply']);
   assert.equal(manifest.events.navigate.cancelable, true);
+  assert.deepEqual(manifest.events.apply.carries, {action: 'string', scope: 'string', ids: 'list', id: 'string', kind: 'string'});
   const template = code('src/smart/list-description/js/templates/default.js');
   assert.match(template, /<dl class="sf-list-description-list">/u);
   assert.match(template, /<dt class="sf-list-description-label">/u);
   assert.match(template, /<dd class="sf-list-description-value">/u);
   assert.match(template, /<sf-button-copy class="sf-list-description-copy"/u);
+  // Sections (C33): one grid of heads and dls, each dl a subgrid of it.
+  assert.match(template, /<div class="sf-list-description-list">\$\{sections\(context\)\}<\/div>/u);
+  assert.match(template, /<dl class="sf-list-description-part"/u);
   const sheet = read('src/smart/list-description/scss/_smart__list-description.scss');
   assert.match(sheet, /grid-template-columns: fit-content\(var\(--sf-list-description-label-width, 40%\)\) minmax\(0, 1fr\);/u);
   assert.match(sheet, /grid-template-columns: subgrid;/u);
+  assert.match(sheet, /\.sf-list-description-part \{\s*display: grid;\s*grid-column: 1 \/ -1;\s*grid-template-columns: subgrid;/u);
+  assert.match(sheet, /font-variant-numeric: tabular-nums;/u);
   assert.match(sheet, /@container \(max-width: 24rem\)/u);
   // A one-line row is the rung's control height: the block inset is (H - L) / 2.
   assert.match(sheet, /--sf-list-description--padding-block: calc\(\(var\(--sf-list-description--control\) - var\(--sf-list-description--line\)\) \/ 2\);/u);
@@ -57,6 +64,10 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
   // An empty value has no copy button and no link.
   assert.match(source, /copy: item\.copy === true && shown !== '',/u);
   assert.match(source, /href: shown === '' \? '' : text\(item\.href\),/u);
+  // An empty value draws no status (the C33 defect: the icon before «—»), nor
+  // does a value with a badge (one mark, C33 acceptance).
+  assert.match(source, /status: !empty && !badge && STATUSES\.includes\(status\) \? status : '',/u);
+  assert.equal(json('src/smart/list-description/lang/ru.json').runtime['empty-text'], 'Не указан');
 });
 
 test('sf-list-timeline: the host\'s order, runs of one day, core\'s relative words, the connector, load-more after', () => {

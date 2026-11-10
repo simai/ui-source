@@ -14,6 +14,17 @@
       }
     },
     {
+      "name": "low",
+      "title": "Низкая, размер места (в уведомлении)",
+      "settings": {
+        "height": "low",
+        "aria-label": "Закрыть уведомление"
+      },
+      "expect": {
+        "height": "low"
+      }
+    },
+    {
       "name": "default",
       "title": "По умолчанию (1/3)",
       "settings": {},

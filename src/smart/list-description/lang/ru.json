@@ -1,8 +1,10 @@
 {
   "title": "Список сведений",
   "runtime": {
-    "empty-text": "—",
+    "empty-text": "Не указан",
     "copy": "Скопировать: {label}",
+    "action": "{action}: {label}",
+    "help": "Подробнее: {label}",
     "status-success": "В порядке",
     "status-warning": "Предупреждение",
     "status-error": "Ошибка",
@@ -11,6 +13,9 @@
   "events": {
     "navigate": {
       "label": "Перейти"
+    },
+    "apply": {
+      "label": "Применить"
     }
   }
 }

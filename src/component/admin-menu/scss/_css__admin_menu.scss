@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../badges/scss/anchored-geometry' as anchored;
+@use '../../../core/scss/mix/mix__places' as places;
 
 @include anchored.properties;
 
@@ -221,6 +222,8 @@
      the arrows can tell the two apart. */
   .sf-admin-menu-search-row.selected {
     background-color: var(--sf-primary-container);
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
+    @include places.sf-place-fill;
   }
 
   .sf-admin-menu-search-mark {

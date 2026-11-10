@@ -42,11 +42,16 @@ Two causes, both fixed:
 - At boot, before any component renders, the core runtime writes the
   remembered subset's stylesheet into the head (the same `<style
   data-sf-icons-subset-family>` the Loader writes, marked
-  `data-sf-icons-remembered`), a `<link rel="preload" as="font" crossorigin>`
-  for each of its font files, and lifts `data-sf-icons="subset-pending"` as
-  soon as that face is loaded. On a warm HTTP cache the face is in before the
-  first icon button draws. The Loader adopts that stylesheet when it restores
-  the same manifest, so its icons count as loaded from their first render.
+  `data-sf-icons-remembered`) with no `@font-face` of its own, fetches each of
+  its font files with `fetch()` and builds the faces from their bytes
+  (FontFace), and lifts `data-sf-icons="subset-pending"` as soon as they are
+  loaded. A `fetch()` does not hold the window's `load` event, where a
+  preload or an `@font-face` request made during parse does (R078: with the
+  icon host held 25 s, `load` came at 25.9 s). On a warm HTTP cache the face is
+  in before the first icon button draws. The Loader adopts that stylesheet when
+  it restores the same manifest, waiting for its faces for no longer than the
+  subset deadline (3 s; then the full font draws), so its icons count as
+  loaded from their first render.
 
 Then the Loader asks the service as before. A page that needs a name the
 remembered subset does not hold grows it the way any subset grows (above): the
@@ -109,7 +114,10 @@ For the cold first visit, two hints in the page's own `<head>`, before
       href="https://icons.simai.io/ms/font/<hash>.woff2">
 ```
 
-The font preload only warms the file; the face is declared by the runtime.
+The font preload only warms the file; the face is declared by the runtime. A
+preload is a request of the document: while the icon host is slow it holds the
+window's `load` event (not the page scan or the splash, which do not wait for
+`load`).
 Sites keep using the Framework's icons as they are -- no `@font-face` of their
 own.
 

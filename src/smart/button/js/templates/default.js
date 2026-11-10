@@ -97,8 +97,13 @@ export function renderButtonTemplate(context) {
         // default draws none, the size's own step.
         context.height && context.height !== 'default' ? `sf-button--height-${context.height}` : '',
         radius ? `radius-${radius}` : '',
+        // full-width (1.12.0, owner decision C36): sf-segmented's setting.
+        context.fullWidth ? 'sf-button--full-width' : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',
+        // A loading button keeps its scheme colour (owner decision C36); one
+        // that is disabled as well wears the disabled look, so it says so.
+        loading && disabled ? 'disabled' : '',
         // A toggle that is on wears the pressed look (component.buttons 1.5.0,
         // rule C12): the class carries it whether or not aria-pressed is said.
         context.pressed || context.cycleView?.pressedLook ? 'sf-button--pressed' : '',

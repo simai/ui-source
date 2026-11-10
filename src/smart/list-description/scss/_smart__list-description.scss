@@ -15,6 +15,13 @@
    on one axis however long the labels are. layout stacked, or layout auto
    in a column narrower than 24rem, puts each label over its value.
 
+   Sections (decision C33, the record card): the list is one grid holding,
+   per section, a head (title and action, a row of the rung's control
+   height) and a dl of its rows; each dl and each row are subgrids of that
+   grid, so one label column serves the whole record. layout grid is the
+   summary: label over value, as many columns as fit at --sf-f1 (11rem) each,
+   at most columns (4), every value on one line with an ellipsis.
+
    The public variables are read with the role token as their fallback and
    never set here. */
 sf-list-description {
@@ -108,7 +115,64 @@ sf-list-description {
   margin: 0;
 }
 
-/* The value's line: the status icon, the value, the copy button. */
+/* With sections the list is a div holding heads and dls; each dl is a
+   subgrid of the list, its rows subgrids of the dl. */
+.sf-list-description-part {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  margin: 0;
+  padding: 0;
+}
+
+/* A section's head: its title and its one action, a row of the rung's
+   control height; a section after another stands --sf-space-1 below it. */
+.sf-list-description-head {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: var(--sf-list-description--text-space-x);
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-description--control);
+  min-inline-size: 0;
+  padding-inline: var(--sf-list-description--padding-inline);
+}
+
+.sf-list-description-part + .sf-list-description-head {
+  margin-block-start: var(--sf-space-1);
+}
+
+.sf-list-description-title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  color: var(--sf-list-description-value-color, var(--sf-on-surface));
+  font-weight: var(--sf-font-weight-medium);
+  overflow-wrap: anywhere;
+}
+
+/* With dividers a section's first row has its hairline too, under the head. */
+.sf-list-description--dividers .sf-list-description-head + .sf-list-description-part > .sf-list-description-row:first-child {
+  padding-block-start: calc(var(--sf-list-description--padding-block) - var(--sf-px));
+  border-block-start: var(--sf-px) solid var(--sf-list-description--divider);
+}
+
+/* The help mark after a label, --sf-space-1/4 from it (the prototype's 4,
+   10 to the glyph): it takes no height of its own (sf-help-mark
+   1.3.0), so the label's line stays L. (The host is display: contents once
+   upgraded; its box is the sf-help-mark span.) */
+.sf-list-description-label:has(> sf-help-mark) {
+  /* A flex row, so the white space sf-help-mark's markup starts with adds
+     nothing between the label and the mark. */
+  display: flex;
+  align-items: center;
+}
+
+.sf-list-description-label .sf-help-mark {
+  margin-inline-start: var(--sf-space-1\/4);
+}
+
+/* The value's line: the status icon, the value (or its badge), the copy
+   button, the item's action. */
 .sf-list-description-line {
   display: flex;
   align-items: flex-start;
@@ -126,6 +190,18 @@ sf-list-description {
 .sf-list-description-text--mono {
   font-family: var(--sf-mono);
   font-size: var(--sf-list-description--below-font-size);
+}
+
+/* Numbers and sums in figures of one width, so a column of them lines up. */
+.sf-list-description-text--numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A badge value stands on the value's line: sf-badge line="<size>" takes the
+   line L, so the row stays H tall. */
+.sf-list-description-line .sf-badge {
+  flex: none;
+  max-inline-size: 100%;
 }
 
 .sf-list-description-link {
@@ -179,6 +255,19 @@ sf-list-description {
   margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--copy)) / 2);
 }
 
+/* An action (an item's, a section's): an sf-button of the rung below, ghost;
+   on the value's line its overhang is taken back as the copy button's, so a
+   one-line row stays H tall. (sf-button's host is display: contents; the
+   drawn box is its button or link.) */
+.sf-list-description-action {
+  display: inline-flex;
+  flex: none;
+}
+
+.sf-list-description-line .sf-list-description-action :is(button, a) {
+  margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--copy)) / 2);
+}
+
 /* overflow truncate: one line with an ellipsis; the whole value, wrapped in
    place, while it (or its link) has focus. */
 .sf-list-description--truncate .sf-list-description-text {
@@ -208,6 +297,58 @@ sf-list-description {
 .sf-list-description--layout-stacked .sf-list-description-label {
   font-size: var(--sf-list-description--below-font-size);
   line-height: var(--sf-list-description--below-line);
+}
+
+/* layout grid, the summary: label over value in columns of at least --sf-f1
+   (11rem), as many as fit and at most columns; every value on one line with
+   an ellipsis, its whole text in the title. */
+.sf-list-description--layout-grid {
+  --sf-list-description--columns: 4;
+  --sf-list-description--column-gap: var(--sf-list-description-gap, var(--sf-space-1));
+}
+
+.sf-list-description--columns-1 {
+  --sf-list-description--columns: 1;
+}
+
+.sf-list-description--columns-2 {
+  --sf-list-description--columns: 2;
+}
+
+.sf-list-description--columns-3 {
+  --sf-list-description--columns: 3;
+}
+
+.sf-list-description--layout-grid .sf-list-description-list {
+  grid-template-columns: repeat(auto-fit, minmax(max(min(100%, var(--sf-f1)), calc((100% - (var(--sf-list-description--columns) - 1) * var(--sf-list-description--column-gap)) / var(--sf-list-description--columns))), 1fr));
+  gap: var(--sf-space-1\/2) var(--sf-list-description--column-gap);
+}
+
+.sf-list-description--layout-grid .sf-list-description-row {
+  display: flex;
+  grid-column: auto;
+  flex-direction: column;
+  align-items: stretch;
+  min-block-size: 0;
+  min-inline-size: 0;
+  padding-block: 0;
+}
+
+.sf-list-description--layout-grid.sf-list-description--dividers .sf-list-description-row {
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+
+.sf-list-description--layout-grid .sf-list-description-label {
+  font-size: var(--sf-list-description--below-font-size);
+  line-height: var(--sf-list-description--below-line);
+}
+
+.sf-list-description--layout-grid .sf-list-description-text,
+.sf-list-description--layout-grid .sf-list-description-hint {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @container (max-width: 24rem) {

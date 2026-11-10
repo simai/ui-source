@@ -22,6 +22,13 @@ cycle, a 6 pixel spread and a 90 degree rotation. Projects may still override
 the existing preloader settings. When the operating system requests reduced
 motion, the same compact mark remains visible without animation.
 
+The boot splash shows after `preloader.delay` (300 ms) and hides on
+`sf-loader-ready`. The page scan runs once the document is parsed
+(DOMContentLoaded), not at the window's `load`, so a slow font or image no
+longer holds `sf-loader-ready` (R078). There is no time limit on the splash: one
+lifted before the page is ready shows an empty page whose controls then come in
+with a jump.
+
 ## Field contract
 
 Ordinary and Smart Input and Textarea implementations now share stable control

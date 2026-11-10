@@ -82,11 +82,24 @@ function syncRootLayout(root, textPosition = 'none') {
   }
 }
 
+// Indeterminate (C34): the size of the work is not known, so the bar has no
+// value to say: aria-valuenow is left out (WAI-ARIA progressbar), and the
+// value text, when the page gives one, says what is going on.
+function isIndeterminate(root) {
+  return root.classList.contains('sf-progress-bar--indeterminate') || root.dataset.indeterminate === 'true';
+}
+
+// Paused (C34): the work stands still, so an indeterminate segment stops.
+function isPaused(root) {
+  return root.classList.contains('sf-progress-bar--paused') || root.dataset.paused === 'true';
+}
+
 function syncProgressAccessibility(root, value) {
   root.setAttribute('role', 'progressbar');
   root.setAttribute('aria-valuemin', '0');
   root.setAttribute('aria-valuemax', '100');
-  root.setAttribute('aria-valuenow', String(value));
+  if (isIndeterminate(root)) root.removeAttribute('aria-valuenow');
+  else root.setAttribute('aria-valuenow', String(value));
 
   const label = root.dataset.label;
   if (label) {
@@ -101,10 +114,14 @@ function syncProgressAccessibility(root, value) {
   }
 }
 
+// The template writes sf-progress-bar--neutral for no status (it draws
+// nothing of its own); a status it changes to takes it away, so no
+// --neutral stays beside the new status class.
 function syncTone(root, tone) {
   ['primary', ...TONES].forEach((name) => {
     root.classList.toggle(`sf-progress-bar--${name}`, name === tone);
   });
+  if (tone) root.classList.remove('sf-progress-bar--neutral');
   if (tone) root.dataset.tone = tone;
   else delete root.dataset.tone;
 }
@@ -125,12 +142,16 @@ function renderProgressBar(root) {
 
   syncRootLayout(root, textPosition);
   syncTone(root, tone);
+  const indeterminate = isIndeterminate(root);
+  root.classList.toggle('sf-progress-bar--indeterminate', indeterminate);
+  root.classList.toggle('sf-progress-bar--paused', isPaused(root));
   syncProgressAccessibility(root, value);
-  progress.style.width = `${value}%`;
+  if (indeterminate) progress.style.removeProperty('width');
+  else progress.style.width = `${value}%`;
   root.dataset.value = String(value);
   root.dataset.position = textPosition;
 
-  if (textPosition === 'none') {
+  if (textPosition === 'none' || indeterminate) {
     const textNode = getTextNode(root);
     if (textNode) {
       textNode.remove();
@@ -201,6 +222,18 @@ function setProgressBarState(target, state = {}) {
     else delete root.dataset.valueText;
   }
 
+  if (Object.prototype.hasOwnProperty.call(state, 'indeterminate')) {
+    if (state.indeterminate) root.dataset.indeterminate = 'true';
+    else delete root.dataset.indeterminate;
+    root.classList.toggle('sf-progress-bar--indeterminate', Boolean(state.indeterminate));
+  }
+
+  if (Object.prototype.hasOwnProperty.call(state, 'paused')) {
+    if (state.paused) root.dataset.paused = 'true';
+    else delete root.dataset.paused;
+    root.classList.toggle('sf-progress-bar--paused', Boolean(state.paused));
+  }
+
   if (Object.prototype.hasOwnProperty.call(state, 'size')) {
     const currentSizeClass = Array.from(root.classList).find((cls) =>
       cls.startsWith('sf-progress-bar--size-'),
@@ -229,6 +262,8 @@ function getProgressBarState(target) {
     tone: normalizeTone(root.dataset.tone),
     label: root.getAttribute('aria-label') || '',
     valueText: root.getAttribute('aria-valuetext') || '',
+    indeterminate: isIndeterminate(root),
+    paused: isPaused(root),
   };
 }
 
@@ -247,6 +282,8 @@ class ProgressBar extends ComponentObserver {
       tone = 'primary',
       label = '',
       valueText = '',
+      indeterminate = false,
+      paused = false,
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -269,6 +306,8 @@ class ProgressBar extends ComponentObserver {
     root.dataset.tone = normalizeTone(status ?? tone);
     if (String(label).trim()) root.dataset.label = String(label).trim();
     if (String(valueText).trim()) root.dataset.valueText = String(valueText).trim();
+    if (indeterminate) root.dataset.indeterminate = 'true';
+    if (paused) root.dataset.paused = 'true';
 
     const main = document.createElement('div');
     main.className = 'sf-progress-bar-main';

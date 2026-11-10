@@ -1,4 +1,12 @@
 @layer sf.components {
+/* full-width (owner decision C36): the control fills its container, as
+   sf-segmented's full-width does, and its content stays in the middle;
+   without it a button is as wide as its content. The height is unchanged. */
+.sf-button.sf-button--full-width {
+  inline-size: 100%;
+  justify-content: center;
+}
+
 .sf-button,
 .sf-icon-button {
   transition-duration: var(--sf-duration-fast);
@@ -13,11 +21,13 @@
   }
 
   /* A loading button shows the Framework's one loading indicator, the spinner,
-     at the size of its icon (simai/ui-source#10). It is also a disabled one --
-     native disabled is what stops a second click -- so every emphasis wears
-     the disabled look while it works. sf-button-state-loading is the
+     at the size of its icon (simai/ui-source#10). It is natively disabled --
+     that is what stops a second click -- but keeps its scheme colour while it
+     works (owner decision C36): the disabled look's rules skip
+     sf-button-state-loading, unless the button is also disabled, which the
+     element then marks with .disabled. sf-button-state-loading is the
      documented state class; the generic `loading` beside it is kept for
-     existing markup. */
+     existing markup (and greys, as before, without the state class). */
   &.loading,
   &.sf-button-state-loading {
     pointer-events: none;
@@ -85,7 +95,19 @@
   flex: none;
   inline-size: var(--sf-button-spinner--size);
   block-size: var(--sf-button-spinner--size);
-  color: var(--sf-loader--color, currentColor);
+  /* The label's ink (owner decision C36): the label colour rules reach the
+     spinner too, so a loading button's spinner is the colour of its label on
+     every appearance and scheme. */
+  color: var(--sf-loader--color, var(--sf-button-text-container--color, currentColor));
+  /* The background ring is the label's ink at 16 % (the fill family of the
+     alpha scale), drawn whole, so it shows on a light filled button in dark as
+     on every other fill; a page's --sf-spinner-track-color still wins (DEV
+     look call on C36). */
+  --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+}
+
+.sf-button .sf-button-spinner .sf-loader-ring-filled {
+  opacity: 1;
 }
 
 .sf-button .sf-button-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
@@ -177,9 +199,9 @@
 }
 
 @layer sf.states {
-  /* A loading button is disabled, so its spinner takes the disabled ink, the
-     ink of its label -- unless --sf-loader--color is set. */
-  .sf-button:is(:disabled, .disabled) .sf-button-spinner {
+  /* A disabled button's spinner (disabled and loading) takes the disabled
+     ink, the ink of its label -- unless --sf-loader--color is set. */
+  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
     color: var(--sf-loader--color, var(--sf-on-disable));
   }
 
@@ -210,7 +232,7 @@
      its container's variant). A filled (default) button keeps on-surface's
      inverse ink: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
-  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-variant));
   }
 
@@ -226,7 +248,7 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
   }
 

@@ -76,7 +76,7 @@ test("an opaque place takes back exactly the theme's values", () => {
   // Every role a coloured place re-declares is one an opaque place takes back.
   const strong = mix.slice(mix.indexOf('@mixin sf-place-strong'));
   const set = new Set(entries.map(([, role]) => role));
-  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && !set.has(role));
+  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && !set.has(role));
   assert.deepEqual(missed, []);
 });
 
@@ -103,6 +103,11 @@ test('the popover, a sheet that is not Sass, writes the place out as the mixin d
   const map = mix.slice(mix.indexOf('$sf-place-theme-roles: ('), mix.indexOf(');', mix.indexOf('$sf-place-theme-roles: (')));
   for (const [, role, value] of map.matchAll(/'([a-z0-9-]+)': '([^']+)'/gu)) {
     if (role === 'on-surface-variant') continue;
+    // A popup carries the dim ink on a fill one step up (C43, 2026-11-10).
+    if (role === 'on-surface-container-variant') {
+      assert.ok(popover.includes('--sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-90));'), 'popover container variant 90');
+      continue;
+    }
     assert.ok(popover.includes(`--sf-${role}: ${value};`), `popover --sf-${role}`);
   }
   assert.match(popover, /--sf-surface-place: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/u);

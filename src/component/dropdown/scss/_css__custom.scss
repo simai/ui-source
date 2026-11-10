@@ -6,6 +6,24 @@
   min-inline-size: 0;
 }
 
+/* The field's own layout is this sheet's, not only the template's utility
+   classes (flex flex-col on the host; flex items-cross-center relative on the
+   field). The utility sheets come in their own round: with sheets held, the
+   field drew inline before them -- the label, the input and the chevron
+   stacked, 80 px tall -- and dropped to its height when they came (pair next,
+   dropdown-glyphs-first-paint). This sheet is in before the element draws, so
+   the field has its frame from the first frame; the classes say the same. */
+.sf-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-dropdown > .sf-dropdown-field {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
 .sf-dropdown > .sf-dropdown-field,
 .sf-dropdown > .sf-dropdown-field > input:not([type="hidden"]),
 .sf-dropdown .sf-dropdown-tag-container {

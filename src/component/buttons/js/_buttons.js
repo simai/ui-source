@@ -22,6 +22,7 @@ class Buttons extends ComponentObserver {
       spacing,
       height,
       radius,
+      fullWidth = false,
       loading = false,
       disabled = false,
       utilities = {},
@@ -55,6 +56,10 @@ class Buttons extends ComponentObserver {
     if (radius) {
       this.button.classList.add(`radius-${radius}`);
     }
+    // full-width (owner decision C36): the control fills its container.
+    if (fullWidth) {
+      this.button.classList.add('sf-button--full-width');
+    }
     if (loading) {
       this.button.classList.add('loading', 'sf-button-state-loading');
       this.button.setAttribute('aria-busy', 'true');
@@ -62,6 +67,9 @@ class Buttons extends ComponentObserver {
     }
     if (disabled) {
       this.button.disabled = true;
+      // Loading keeps the scheme colour (owner decision C36); disabled and
+      // loading wears the disabled look.
+      if (loading) this.button.classList.add('disabled');
     }
     if (className) {
       this.button.classList.add(...`${className}`.split(' ').filter(Boolean));

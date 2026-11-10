@@ -2,33 +2,63 @@
 <sf-progress-run label="Создание сайта demo.test" result-text="Не хватает места на диске: освободите 2 ГБ и повторите." output="$ create-site demo.test
 DNS: ok
 Copying files... error: ENOSPC
-" output-open retryable hideable style="display: contents;" data-state="failed"><script type="application/json" data-sf-settings>{"steps":[{"id":"dns","title":"Адрес demo.test","state":"done","duration":1200},{"id":"files","title":"Файлы сайта","state":"failed","duration":64000,"text":"Не хватает места на диске"},{"id":"db","title":"База данных","state":"skipped"}]}</script><section class="sf-progress-run sf-progress-run--size-1 sf-progress-run--failed" aria-labelledby="sf-progress-run-failed-1" data-sf-static>
-<div class="sf-progress-run-heading" id="sf-progress-run-failed-1">Создание сайта demo.test</div>
-<ol class="sf-progress-run-steps" aria-label="Шаги"><li class="sf-progress-run-step sf-progress-run-step--done" data-id="dns" data-state="done">
-<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--done">check_circle</i>
-<div class="sf-progress-run-step-text">
-<span class="sf-progress-run-step-title">Адрес demo.test<span class="sr-only">, готово</span></span>
+" output-open retryable hideable style="display: contents;" data-state="failed"><script type="application/json" data-sf-settings>{"steps":[{"id":"dns","title":"Адрес demo.test","state":"done","duration":1200},{"id":"files","title":"Файлы сайта","state":"failed","duration":64000,"text":"Не хватает места на диске"},{"id":"db","title":"База данных","state":"skipped"}]}</script><section class="sf-progress-run sf-progress-run--size-1 sf-progress-run--failed sf-progress-run--view-full" aria-labelledby="sf-progress-run-failed-1" data-sf-static>
+<div class="sf-progress-run-head">
+<h3 class="sf-progress-run-heading" id="sf-progress-run-failed-1">Создание сайта demo.test</h3>
+<span class="sf-progress-run-state"><sf-badge class="sf-progress-run-badge" appearance="tonal" size="1/2" activity="failed" style="display: contents;" data-sf-size-relative>
+<span class="sf-badge sf-badge--tonal sf-badge--error sf-badge--size-1/2 inline-flex flex-row flex-nowrap content-main-center items-center" data-sf-static>
+
+
+<span class="sf-badge-icon-container flex content-main-center items-center">
+<i class="sf-icon flex content-main-center items-center" aria-hidden="true">error</i>
+</span>
+
+
+<span class="sf-badge-text-container flex items-center">
+<span class="sf-badge-text">Не удалось</span>
+</span>
+
+
+</span>
+</sf-badge></span>
 
 </div>
-<span class="sf-progress-run-time">0:01</span>
-</li><li class="sf-progress-run-step sf-progress-run-step--failed" data-id="files" data-state="failed">
-<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--failed">error</i>
-<div class="sf-progress-run-step-text">
-<span class="sf-progress-run-step-title">Файлы сайта<span class="sr-only">, не удалось</span></span>
-<span class="sf-progress-run-step-supporting">Не хватает места на диске</span>
-</div>
-<span class="sf-progress-run-time">1:04</span>
-</li><li class="sf-progress-run-step sf-progress-run-step--skipped" data-id="db" data-state="skipped">
-<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--skipped">do_not_disturb_on</i>
-<div class="sf-progress-run-step-text">
-<span class="sf-progress-run-step-title">База данных<span class="sr-only">, пропущен</span></span>
 
-</div>
-
-</li></ol>
+<div class="sf-progress-run-results">
 <div role="status" class="sf-progress-run-result sf-progress-run-result--failed">
 <i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--failed">error</i><span class="sf-progress-run-result-text">Не хватает места на диске: освободите 2 ГБ и повторите.</span>
 </div>
+
+</div>
+
+<ol class="sf-progress-run-steps" aria-label="Шаги"><li class="sf-progress-run-step sf-progress-run-step--done" data-id="dns" data-state="done">
+<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--done">check_circle</i>
+<span class="sf-progress-run-step-text">
+<span class="sf-progress-run-step-title">Адрес demo.test<span class="sr-only">, готово</span></span>
+
+
+</span>
+<span class="sf-progress-run-time">0:01</span>
+
+</li><li class="sf-progress-run-step sf-progress-run-step--failed" data-id="files" data-state="failed">
+<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--failed">error</i>
+<span class="sf-progress-run-step-text">
+<span class="sf-progress-run-step-title">Файлы сайта<span class="sr-only">, не удалось</span></span>
+
+<span class="sf-progress-run-step-supporting">Не хватает места на диске</span>
+</span>
+<span class="sf-progress-run-time">1:04</span>
+
+</li><li class="sf-progress-run-step sf-progress-run-step--skipped" data-id="db" data-state="skipped">
+<i aria-hidden="true" class="sf-icon sf-progress-run-icon sf-progress-run-icon--skipped">do_not_disturb_on</i>
+<span class="sf-progress-run-step-text">
+<span class="sf-progress-run-step-title">База данных<span class="sr-only">, пропущен</span></span>
+
+
+</span>
+
+
+</li></ol>
 <div class="sf-progress-run-output-block">
 <div class="sf-progress-run-output-bar">
 <sf-button class="sf-progress-run-toggle" appearance="ghost" size="1/2" text="Вывод" icon-end="expand_less" expanded="true" aria-controls="sf-progress-run-failed-2" style="display: contents;" data-sf-size-relative>
@@ -71,11 +101,15 @@ Copying files... error: ENOSPC
 </div>
 <div class="sf-progress-run-actions">
 
-<sf-button class="sf-progress-run-retry" appearance="outline" size="1/2" text="Повторить" style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1/2 sf-button--outline sf-button--primary flex items-cross-center" data-sf-static>
 
 
-<span class="sf-button-text-container text-center pointer-event-none flex-1">
+
+
+<sf-button class="sf-progress-run-retry" icon-start="replay" size="1/2" appearance="default" text="Повторить" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1/2 sf-button--default sf-button--primary flex items-cross-center" data-scope="all" data-from="files" data-sf-static>
+
+<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="replay" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>replay</i></sf-icon>
+<span class="sf-button-text-container text-center pointer-event-none">
 Повторить
 </span>
 

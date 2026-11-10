@@ -43,6 +43,10 @@
             "no-network"
           ]
         }
+      },
+      "first-paint": {
+        "max-bytes": 10240,
+        "why": "an open run: the title with its badge, the steps with their states and times, and the actions print as the page reads them, so the card holds its height and nothing moves when the code arrives"
       }
     },
     {
@@ -105,6 +109,355 @@
         "hideable": true,
         "size": "1/2"
       }
+    },
+    {
+      "name": "import-running",
+      "title": "Полный вид: числа, процент, время, счётчики",
+      "settings": {
+        "label": "Импорт товаров из «Прайс_ноябрь.xlsx»",
+        "caption": "Каталог «Электроника» · запущено в 11:52",
+        "value": 4812,
+        "total": 12000,
+        "unit": "товар|товара|товаров",
+        "remaining": 360000,
+        "counters": [
+          {
+            "id": "added",
+            "label": "Добавлено",
+            "value": 3700
+          },
+          {
+            "id": "updated",
+            "label": "Обновлено",
+            "value": 1100
+          },
+          {
+            "id": "skipped",
+            "label": "Пропущено",
+            "value": 0
+          },
+          {
+            "id": "errors",
+            "label": "{n} ошибка|{n} ошибки|{n} ошибок",
+            "value": 12,
+            "status": "error"
+          }
+        ],
+        "steps": [
+          {
+            "id": "read",
+            "title": "Чтение файла",
+            "state": "done",
+            "duration": 4000,
+            "text": "Прайс_ноябрь.xlsx · 18,4 МБ"
+          },
+          {
+            "id": "rows",
+            "title": "Товары",
+            "state": "running",
+            "value": 4812,
+            "total": 12000,
+            "unit": "товар|товара|товаров"
+          },
+          {
+            "id": "images",
+            "title": "Картинки",
+            "state": "waiting"
+          }
+        ],
+        "pausable": true,
+        "cancelable": true,
+        "minimizable": true
+      },
+      "first-paint": {
+        "max-bytes": 13312,
+        "why": "a running import: the title and badge, the overall bar with its figures and time, the counts line, the steps with their own figures and the actions all print before any code, so the card keeps its height while the job is followed"
+      }
+    },
+    {
+      "name": "import-paused",
+      "title": "Пауза: жёлтые бейдж и полоса, «Продолжить»",
+      "settings": {
+        "label": "Импорт товаров из «Прайс_ноябрь.xlsx»",
+        "caption": "Каталог «Электроника» · запущено в 11:52",
+        "run-state": "paused",
+        "value": 4812,
+        "total": 12000,
+        "unit": "товар|товара|товаров",
+        "steps": [
+          {
+            "id": "read",
+            "title": "Чтение файла",
+            "state": "done",
+            "duration": 4000
+          },
+          {
+            "id": "rows",
+            "title": "Товары",
+            "state": "running",
+            "value": 4812,
+            "total": 12000,
+            "unit": "товар|товара|товаров"
+          }
+        ],
+        "pausable": true,
+        "cancelable": true
+      }
+    },
+    {
+      "name": "summary-partial",
+      "title": "Итог с ошибками: первые пять, «Ещё», повторить неудачные",
+      "settings": {
+        "label": "Импорт товаров из «Прайс_ноябрь.xlsx»",
+        "caption": "11:43–12:00",
+        "value": 12000,
+        "total": 12000,
+        "unit": "товар|товара|товаров",
+        "result-text": "Загружено 11 960 из 12 000 товаров. 40 строк не загружены — исправьте их в файле и повторите только их.",
+        "counters": [
+          {
+            "id": "added",
+            "label": "Добавлено",
+            "value": 9214
+          },
+          {
+            "id": "updated",
+            "label": "Обновлено",
+            "value": 2746
+          },
+          {
+            "id": "errors",
+            "label": "{n} ошибка|{n} ошибки|{n} ошибок",
+            "value": 40,
+            "status": "error"
+          }
+        ],
+        "errors": [
+          {
+            "where": "218",
+            "key": "TV-55-QL",
+            "text": "Цена «12 990,00 ₽» — не число: уберите знак рубля"
+          },
+          {
+            "where": "1 042",
+            "key": "SM-A55-BL",
+            "text": "Раздел «Смартфоны/Samsung» не найден"
+          },
+          {
+            "where": "3 377",
+            "key": "—",
+            "text": "Пустой артикул"
+          },
+          {
+            "where": "5 610",
+            "key": "HD-2TB-WD",
+            "text": "Картинка по ссылке не открылась (404)"
+          },
+          {
+            "where": "8 905",
+            "key": "KB-MX-K",
+            "text": "Артикул повторяется в строке 8 902"
+          },
+          {
+            "where": "9 120",
+            "key": "PH-X1",
+            "text": "Шестая ошибка — в отчёте"
+          }
+        ],
+        "errors-total": 40,
+        "steps": [
+          {
+            "id": "read",
+            "title": "Чтение файла",
+            "state": "done",
+            "duration": 4000
+          },
+          {
+            "id": "rows",
+            "title": "Товары",
+            "state": "done",
+            "duration": 1010000,
+            "value": 12000,
+            "total": 12000,
+            "unit": "товар|товара|товаров"
+          }
+        ],
+        "retryable": true,
+        "hideable": true,
+        "started-at": "2026-10-27T11:43:00+03:00",
+        "finished-at": "2026-10-27T12:00:00+03:00"
+      },
+      "first-paint": {
+        "max-bytes": 11264,
+        "why": "a summary with errors: the result, the counts line, the first five errors, the steps and Retry failed print as the page reads them, so the report stands complete without script"
+      }
+    },
+    {
+      "name": "summary-done",
+      "title": "Готово без ошибок: ноль ошибок серым",
+      "settings": {
+        "label": "Импорт товаров из «Склад.csv»",
+        "value": 800,
+        "total": 800,
+        "unit": "товар|товара|товаров",
+        "counters": [
+          {
+            "id": "added",
+            "label": "Добавлено",
+            "value": 800
+          },
+          {
+            "id": "updated",
+            "label": "Обновлено",
+            "value": 0
+          },
+          {
+            "id": "errors",
+            "label": "{n} ошибка|{n} ошибки|{n} ошибок",
+            "value": 0,
+            "status": "error"
+          }
+        ],
+        "run-state": "done",
+        "hideable": true,
+        "started-at": "2026-10-27T11:52:00+03:00",
+        "finished-at": "2026-10-27T12:00:00+03:00"
+      }
+    },
+    {
+      "name": "indeterminate",
+      "title": "Объём неизвестен: бегущая полоса и прошедшее время",
+      "settings": {
+        "label": "Резервная копия сайта shop.simai.ru",
+        "caption": "Подсчёт файлов",
+        "run-state": "running",
+        "cancelable": true
+      }
+    },
+    {
+      "name": "cancelled",
+      "title": "Отменено: нейтрально",
+      "settings": {
+        "label": "Экспорт заказов за октябрь",
+        "run-state": "cancelled",
+        "value": 1200,
+        "total": 4000,
+        "unit": "заказ|заказа|заказов",
+        "retryable": true,
+        "hideable": true,
+        "started-at": "2026-10-27T11:58:00+03:00",
+        "finished-at": "2026-10-27T11:59:30+03:00"
+      }
+    },
+    {
+      "name": "step-log",
+      "title": "Журнал по шагам: ошибочный шаг открыт сам",
+      "settings": {
+        "label": "Резервная копия сайта docs.simai.ru",
+        "caption": "Сегодня в 03:00 · по расписанию",
+        "result-text": "Не хватает места в облаке: свободно 1,2 ГБ, нужно 2,4 ГБ.",
+        "steps": [
+          {
+            "id": "db",
+            "title": "База данных",
+            "state": "done",
+            "duration": 42000,
+            "text": "412 МБ",
+            "log": "03:00:01 Дамп базы\n03:00:42 412 МБ — готово\n"
+          },
+          {
+            "id": "upload",
+            "title": "Выгрузка в облако",
+            "state": "failed",
+            "duration": 160000,
+            "text": "Остановлено на 1,2 из 2,4 ГБ",
+            "log": "03:04:01 Отправка docs-2026-11-09.tar.zst (2,4 ГБ)\n03:06:40 1,2 ГБ из 2,4 ГБ\n03:06:41 Ошибка: QuotaExceeded — закончилось место в хранилище\n"
+          },
+          {
+            "id": "check",
+            "title": "Проверка архива",
+            "state": "skipped"
+          }
+        ],
+        "retryable": true
+      }
+    },
+    {
+      "name": "compact-running",
+      "title": "Строка таблицы: полоса и «62 % · 3 мин»",
+      "settings": {
+        "label": "Резервная копия shop.simai.ru",
+        "value": 62,
+        "total": 100,
+        "remaining": 180000,
+        "pausable": true,
+        "cancelable": true,
+        "look": "compact"
+      }
+    },
+    {
+      "name": "compact-paused",
+      "title": "Строка таблицы: пауза",
+      "settings": {
+        "label": "Резервная копия crm.simai.ru",
+        "run-state": "paused",
+        "value": 35,
+        "total": 100,
+        "pausable": true,
+        "look": "compact"
+      }
+    },
+    {
+      "name": "compact-partial",
+      "title": "Строка таблицы: с ошибками",
+      "settings": {
+        "label": "Резервная копия media.simai.ru",
+        "run-state": "partial",
+        "errors-total": 12,
+        "retryable": true,
+        "look": "compact"
+      }
+    },
+    {
+      "name": "compact-queued",
+      "title": "Строка таблицы: в очереди",
+      "settings": {
+        "label": "Резервная копия blog.simai.ru",
+        "look": "compact"
+      }
+    },
+    {
+      "name": "notice-running",
+      "title": "Уведомление: кольцо в поле значка",
+      "settings": {
+        "label": "Резервная копия shop.simai.ru",
+        "value": 62,
+        "total": 100,
+        "remaining": 180000,
+        "look": "notice"
+      }
+    },
+    {
+      "name": "notice-indeterminate",
+      "title": "Уведомление: объём неизвестен",
+      "settings": {
+        "label": "Экспорт заказов за октябрь",
+        "caption": "Подготовка…",
+        "run-state": "running",
+        "look": "notice"
+      }
+    },
+    {
+      "name": "notice-partial",
+      "title": "Уведомление: с ошибками, число ошибок — ссылка",
+      "settings": {
+        "label": "Импорт товаров",
+        "run-state": "partial",
+        "value": 11960,
+        "total": 12000,
+        "errors-total": 40,
+        "look": "notice"
+      }
     }
   ],
   "pages": [
@@ -117,6 +470,13 @@
           "<main>",
           "  <sf-progress-run id=\"run\" label=\"Создание сайта demo.test\" cancelable retryable hideable output-open><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес demo.test\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы сайта\", \"state\": \"done\", \"duration\": 5300, \"text\": \"120 файлов\"}, {\"id\": \"db\", \"title\": \"База данных\", \"state\": \"running\", \"text\": \"Создаём таблицы\"}, {\"id\": \"ssl\", \"title\": \"Сертификат\", \"state\": \"waiting\"}], \"output\": \"$ create-site demo.test\\nDNS: ok\\nCopying 120 files... ok\\nCreating tables...\\n\"}</script></sf-progress-run>",
           "  <sf-progress-run id=\"failed\" label=\"Импорт\" retryable hideable run-state=\"failed\" result-text=\"Файл повреждён\"><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес demo.test\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы сайта\", \"state\": \"failed\", \"duration\": 64000, \"text\": \"Не хватает места на диске\"}, {\"id\": \"db\", \"title\": \"База данных\", \"state\": \"skipped\"}]}</script></sf-progress-run>",
+          "  <sf-progress-run id=\"imp\" label=\"Импорт товаров\" caption=\"Каталог «Электроника»\" value=\"4812\" total=\"12000\" unit=\"товар|товара|товаров\" remaining=\"360000\" pausable cancelable minimizable><script type=\"application/json\" data-sf-settings>{\"counters\": [{\"id\": \"added\", \"label\": \"Добавлено\", \"value\": 3700}, {\"id\": \"updated\", \"label\": \"Обновлено\", \"value\": 1100}, {\"id\": \"skipped\", \"label\": \"Пропущено\", \"value\": 0}, {\"id\": \"errors\", \"label\": \"{n} ошибка|{n} ошибки|{n} ошибок\", \"value\": 12, \"status\": \"error\"}], \"steps\": [{\"id\": \"read\", \"title\": \"Чтение файла\", \"state\": \"done\", \"duration\": 4000}, {\"id\": \"rows\", \"title\": \"Товары\", \"state\": \"running\", \"value\": 4812, \"total\": 12000, \"unit\": \"товар|товара|товаров\"}]}</script></sf-progress-run>",
+          "  <sf-progress-run id=\"sum\" label=\"Импорт\" heading-level=\"2\" value=\"12000\" total=\"12000\" errors-total=\"40\" retryable hideable><script type=\"application/json\" data-sf-settings>{\"counters\": [{\"id\": \"added\", \"label\": \"Добавлено\", \"value\": 9214}, {\"id\": \"errors\", \"label\": \"{n} ошибка|{n} ошибки|{n} ошибок\", \"value\": 40, \"status\": \"error\"}], \"errors\": [{\"where\": \"218\", \"key\": \"TV-55-QL\", \"text\": \"Цена — не число\"}, {\"where\": \"1 042\", \"key\": \"SM-A55\", \"text\": \"Раздел не найден\"}, {\"where\": \"3 377\", \"key\": \"—\", \"text\": \"Пустой артикул\"}, {\"where\": \"5 610\", \"key\": \"HD-2TB\", \"text\": \"Картинка 404\"}, {\"where\": \"8 905\", \"key\": \"KB-MX\", \"text\": \"Артикул повторяется\"}, {\"where\": \"9 120\", \"key\": \"PH-X1\", \"text\": \"Шестая\"}], \"steps\": [{\"id\": \"read\", \"title\": \"Чтение\", \"state\": \"done\", \"duration\": 4000}, {\"id\": \"rows\", \"title\": \"Товары\", \"state\": \"done\", \"duration\": 9000}]}</script></sf-progress-run>",
+          "  <sf-progress-run id=\"cnl\" label=\"Экспорт\" run-state=\"cancelled\" value=\"1200\" total=\"4000\" retryable></sf-progress-run>",
+          "  <sf-progress-run id=\"ind\" label=\"Резервная копия\" run-state=\"running\" cancelable></sf-progress-run>",
+          "  <sf-progress-run id=\"lg\" label=\"Резервная копия docs\" retryable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"db\", \"title\": \"База данных\", \"state\": \"done\", \"duration\": 42000, \"log\": \"db ok\\n\"}, {\"id\": \"up\", \"title\": \"Выгрузка\", \"state\": \"failed\", \"duration\": 160000, \"log\": \"QuotaExceeded\\n\"}]}</script></sf-progress-run>",
+          "  <sf-progress-run id=\"cmp\" look=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
+          "  <sf-progress-run id=\"ntc\" look=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
           "</main>"
         ]
       },
@@ -256,6 +616,211 @@
                     "detail": {
                       "file-name": "output.txt"
                     }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-figures-and-counts",
+          "title": "the overall bar is determinate at the percentage; the figures read «N из M товаров · %» in tabular figures; the counts are one line, zero ones left out, only the non-zero error count a link (C34)",
+          "covers": "settings.value, settings.total, settings.unit, settings.counters",
+          "steps": [
+            {
+              "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const fig = el.querySelector('.sf-progress-run-done'); const counts = [...el.querySelectorAll('.sf-progress-run-count')].map((c) => n(c.textContent)); const link = el.querySelector('.sf-progress-run-count--error a.sf-progress-run-count-link'); return bar.getAttribute('value') === '40' && !bar.hasAttribute('indeterminate') && n(fig.textContent) === '4 812 из 12 000 товаров · 40 %' && getComputedStyle(fig.parentElement).fontVariantNumeric === 'tabular-nums' && counts.join('|') === 'Добавлено 3 700|Обновлено 1 100|12 ошибок' && link && n(link.textContent) === '12 ошибок' && el.querySelectorAll('.sf-progress-run-counts a').length === 1; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-time-left",
+          "title": "the host's remaining is rounded up in words: 360000 ms reads «осталось ≈ 6 мин»; the figures are not live (C34)",
+          "covers": "settings.remaining",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#imp'); const eta = el.querySelector('.sf-progress-run-eta'); return eta && eta.textContent.trim() === 'осталось ≈ 6 мин' && !eta.closest('[aria-live=\"polite\"],[role=\"status\"]'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p9-pause-and-resume",
+          "title": "Pause asks pause; paused (warning badge and bar, the bar says paused) shows Continue, which asks resume; the status region says the state change only",
+          "covers": "settings.pausable, events.pause, events.resume, settings.run-state paused",
+          "steps": [
+            {
+              "user": "click:#imp .sf-progress-run-pause button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-pause",
+                    "count": 1
+                  }
+                ]
+              },
+              "check": "document.querySelector('#imp').getAttribute('data-state') === 'running'"
+            },
+            {
+              "script": "(() => { document.querySelector('#imp').runState = 'paused'; return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const badge = el.querySelector('.sf-progress-run-head sf-badge'); return el.getAttribute('data-state') === 'paused' && badge.getAttribute('activity') === 'paused' && bar.hasAttribute('paused') && bar.getAttribute('status') === 'warning' && el.querySelector('.sf-progress-run-result[role=\"status\"]').textContent.trim() === 'Пауза' && el.querySelector('.sf-progress-run-resume') && !el.querySelector('.sf-progress-run-pause'); })()"
+            },
+            {
+              "user": "click:#imp .sf-progress-run-resume button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-resume",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "script": "(() => { document.querySelector('#imp').runState = 'running'; return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.querySelector('#imp'); return el.getAttribute('data-state') === 'running' && el.querySelector('.sf-progress-run-result[role=\"status\"]').textContent.trim() === 'Продолжается' && el.querySelector('.sf-progress-run-pause'); })()"
+            },
+            {
+              "user": "click:#imp .sf-progress-run-minimize button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-minimize",
+                    "count": 1
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p10-partial-summary",
+          "title": "finished with errors is partial: a warning badge «С ошибками» and a warning bar, never success; the first 5 errors, «Ещё 35 ошибок» and the error link ask report; Retry asks only what failed; the title is an h2 at heading-level 2",
+          "covers": "settings.run-state auto→partial, settings.errors, settings.errors-total, events.report, events.retry scope failed, settings.heading-level",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#sum'); const badge = el.querySelector('.sf-progress-run-head sf-badge'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); return el.getAttribute('data-state') === 'partial' && badge.getAttribute('status') === 'warning' && badge.getAttribute('icon-start') === 'warning' && badge.getAttribute('text') === 'С ошибками' && !badge.hasAttribute('activity') && bar.getAttribute('status') === 'warning' && el.querySelectorAll('.sf-progress-run-error').length === 5 && el.querySelector('.sf-progress-run-more').getAttribute('text') === 'Ещё 35 ошибок' && el.querySelector('h2.sf-progress-run-heading') && el.querySelector('.sf-progress-run-result-text').textContent.trim() === 'Готово с ошибками'; })()"
+            },
+            {
+              "user": "click:#sum .sf-progress-run-count-link",
+              "wait": 150,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-report",
+                    "count": 1
+                  }
+                ]
+              },
+              "check": "document.activeElement === document.querySelector('#sum .sf-progress-run-errors')"
+            },
+            {
+              "user": "click:#sum .sf-progress-run-retry button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-retry",
+                    "count": 1,
+                    "detail": {
+                      "scope": "failed"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p11-cancelled-neutral",
+          "title": "cancelled is neutral: the bar's neutral status (no grey status exists) and the stopped badge «Отменено»; Retry asks all",
+          "covers": "settings.run-state cancelled",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#cnl'); const badge = el.querySelector('sf-badge'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); return el.getAttribute('data-state') === 'cancelled' && badge.getAttribute('activity') === 'stopped' && badge.getAttribute('text') === 'Отменено' && bar.getAttribute('status') === 'neutral'; })()"
+            },
+            {
+              "user": "click:#cnl .sf-progress-run-retry button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-retry",
+                    "count": 1,
+                    "detail": {
+                      "scope": "all"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p12-indeterminate",
+          "title": "without total the bar runs (indeterminate, no value said) and the run counts its elapsed time",
+          "covers": "settings.total unset, sf-progress-bar indeterminate",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#ind'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const inner = bar.querySelector('.sf-progress-bar'); return bar.hasAttribute('indeterminate') && inner && !inner.hasAttribute('aria-valuenow') && /^\\d+:\\d\\d$/u.test(el.querySelector('.sf-progress-run-eta').textContent.trim()); })()"
+            }
+          ]
+        },
+        {
+          "id": "p13-step-log",
+          "title": "a step with a log is a toggle over it; a failed step's log is open by itself; chunk({text, step}) appends to that step's log, an unknown step is refused; Retry asks from the failed step",
+          "covers": "actions.chunk step, settings.steps log, events.retry from",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#lg'); const [db, up] = [...el.querySelectorAll('.sf-progress-run-step-toggle')]; return db.getAttribute('aria-expanded') === 'false' && up.getAttribute('aria-expanded') === 'true' && document.getElementById(up.getAttribute('aria-controls')).textContent.includes('QuotaExceeded') && el.getAttribute('data-state') === 'failed'; })()"
+            },
+            {
+              "script": "(() => { const el = document.querySelector('#lg'); return el.chunk({text: 'retrying later\\n', step: 'up'}).outcome === 'applied' && el.chunk({text: 'x', step: 'nope'}).reason === 'missing'; })()",
+              "wait": 150,
+              "check": "document.querySelector('#lg .sf-progress-run-step-log').textContent.endsWith('retrying later\\n')"
+            },
+            {
+              "user": "click:#lg .sf-progress-run-step-toggle",
+              "wait": 150,
+              "check": "document.querySelector('#lg .sf-progress-run-step-toggle').getAttribute('aria-expanded') === 'true'"
+            },
+            {
+              "user": "click:#lg .sf-progress-run-retry button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-retry",
+                    "count": 1,
+                    "detail": {
+                      "scope": "all",
+                      "from": "up"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p14-compact-and-notice",
+          "title": "view compact is one line: the bar with «62 % · 3 мин» and icon actions; view notice: the ring in the icon field, the name, the figures and Expand, which asks expand",
+          "covers": "settings.view, events.expand",
+          "steps": [
+            {
+              "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
+            },
+            {
+              "user": "click:#ntc .sf-progress-run-expand button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-progress-run-expand",
+                    "count": 1
                   }
                 ]
               }

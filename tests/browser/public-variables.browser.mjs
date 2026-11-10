@@ -43,7 +43,8 @@ const DRAW = {
     open: 'document.getElementById("modal").open()'},
   tooltip: {css: ['tooltip'], js: 'tooltip', html: '<sf-tooltip text="Подсказка" supporting-text="Пояснение" size="1"></sf-tooltip>'},
   tabs: {css: ['tabs', 'buttons'], js: 'tabs', html: '<sf-tabs type="underline" size="1" items="Обзор|Настройки|История"></sf-tabs>'},
-  avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
+  // The offline avatar draws the dot its two variables paint (C43 R3).
+  avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar><sf-avatar text="ВГ" size="1" status="offline"></sf-avatar>'},
   // A drilling panel beside the flyout menu: the fixed width is a drilling
   // panel's (submenu="drill"), so one has to be on the stage to measure it.
   'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'menu-context', html: '<button id="anchor" type="button">Меню</button><sf-menu-context id="menu" popup aria-label="Меню"></sf-menu-context>'
@@ -198,9 +199,10 @@ const DRAW = {
   'list-attention': {css: ['buttons', 'badges', 'icons', 'smart/smart/list-attention/css/list-attention.css'], js: ['list-attention', 'badge'],
     html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention>`},
   // sf-progress-run (2026-11-07): two steps and the output open, so the
-  // divider and the pane are drawn.
-  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy'],
-    html: `<sf-progress-run label="Run" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
+  // divider and the pane are drawn; 1.3.0 (C34): a total, so the overall bar
+  // and its figures (the tight gap) are drawn too.
+  'progress-run': {css: ['buttons', 'icon-buttons', 'icons', 'badges', 'progress-bar', 'smart/smart/progress-run/css/progress-run.css'], js: ['progress-run', 'button-copy', 'badge', 'progress-bar'],
+    html: `<sf-progress-run label="Run" total="10" value="4" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
   // sf-list-description (2026-11-08): two rows with dividers, so the
   // divider is drawn; an empty value takes the label colour too.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
@@ -278,6 +280,8 @@ const DRAW = {
 const ROLES = {
   // A toast lays its tint over the raised surface as an image layer.
   background: {properties: ['background-color', 'background-image'], value: 'rgb(1, 2, 3)'},
+  // A layer drawn over a colour: the offline dot's disabled ink (sf-avatar).
+  overlay: {properties: ['background-image'], value: 'linear-gradient(rgb(1, 2, 3), rgb(1, 2, 3))'},
   color: {properties: ['color'], value: 'rgb(4, 5, 6)'},
   // A divider between columns is a border at the inline edge (sf-workspace).
   'border-color': {properties: ['border-top-color', 'border-bottom-color', 'border-inline-start-color', 'border-inline-end-color'], value: 'rgb(7, 8, 9)'},
@@ -373,5 +377,7 @@ try {
 const unmeasured = Object.entries(results).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
 const measuredCount = Object.values(results).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
 console.log(JSON.stringify({measured: measuredCount, unmeasured}));
+// PV_SHOW=<component,...> prints those components' answers (evidence runs).
+for (const name of (process.env.PV_SHOW ?? '').split(',').filter(Boolean)) console.log(JSON.stringify({[name]: results[name]}));
 if (failures.length) { console.error(JSON.stringify({failures}, null, 1)); process.exit(1); }
 console.log('PUBLIC_VARIABLES_OK');

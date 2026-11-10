@@ -148,6 +148,19 @@
        that is not the page declares its own (the bg-surface-* place
        utilities, and later the cards and the popups). */
     --sf-surface-place: var(--sf-surface-page);
+    /* The place's colour when the place is solid (C43, owner 2026-11-10):
+       the page and every opaque or strong place declare it, a translucent
+       place (a soft coloured place, glass) sets it initial. */
+    --sf-surface-place-solid: var(--sf-surface-page);
+    /* What a translucent layer that must keep its own tone stacks over (C43,
+       owner 2026-11-10). It equals the place colour, set only under a
+       translucent fill: a selected, open or current row (mix sf-place-fill)
+       declares --sf-surface-place-solid as it, so a tonal badge on the row
+       lays its tone over the solid place, not over the row's alpha. Everywhere
+       else it is initial, the guaranteed-invalid value: the stacking rule does
+       not apply and nothing changes. On a translucent place the solid colour
+       is initial too, so a row there leaves the role off (base behaviour). */
+    --sf-surface-underlay: initial;
     /* Glass over a photo or a video (C16, C14): controls on media stand on
        black at 48 with a blur, ink white, the same in both themes because the
        picture does not change with the theme. Hover and press take the next
@@ -252,7 +265,10 @@
     --sf-on-surface-fixed: var(--sf-neutral-10);
     --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
     --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
-    --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    /* Dark tone 70 since C43 (owner 2026-11-10, palette steps research): tone
+       60 gave Lc 42 on the page against Lc 82 for the light pair, and a quiet
+       key (its fill an 8 % of this ink) 4.25:1 on a card. Light unchanged. */
+    --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     /* Dimmed text on a container fill (--sf-surface-container over any of the
        surfaces 0 to 3). The fill is translucent, so the text lies on the fill
        and the surface together: neutral-60 measured 4.0:1 in the dark theme,
@@ -384,7 +400,14 @@
        a cell and the two ends grow out of it (4.99:1 and 7.72:1 to their 40
        and 80 steps). The same pair as surface-3, which a chart does not sit on. */
     --sf-chart-midpoint: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
-    --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
+    /* The muted ink is the disabled ink (C43, owner 2026-11-10): neutral-60 /
+       neutral-40 measured 3.18:1 light and 2.92:1 dark on the page and fell to
+       1.44:1 on a dark nested popup, a step the places could not take back.
+       It reads --sf-on-surface-disabled, so every place that re-declares
+       the disabled ink re-declares this one with it (mix/_mix__places.scss).
+       Deprecated: read --sf-on-surface-disabled (journal
+       token-c43-muted-is-disabled, remove_after 2027-01-01). */
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);
     /* The boundary of anything a person has to find: a control at rest, a
@@ -498,9 +521,12 @@
        вместе с ней светлеет текст: иначе одна и та же роль даёт 4.14 на второй
        ступени и 2.93 на четвёртой при требуемых WCAG 1.4.3 четырёх с половиной.
        Значений три, а не пять: роль меняется там, где перестаёт проходить. */
-    --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    /* C43 (owner 2026-11-10): dark tone 70 on the page, the area, the card and
+       the raised surface, 80 on the popup and the nested popup -- a quiet key
+       on a card 4.25 -> 5.72, on a popup 4.25 -> 5.52. Light unchanged. */
+    --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     --sf-on-surface-raised-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
-    --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+    --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     --sf-on-surface-popup-nested-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     /* The neutral half of the alpha scale. The base branches per scheme — ink on
        a light surface, light on a dark one — so a component asks for a degree of

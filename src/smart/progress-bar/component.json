@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-bar's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/progress-bar (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.progress-bar",
   "tag": "sf-progress-bar",
-  "version": "1.2.1",
+  "version": "1.3.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -58,6 +58,16 @@
       "min": 0,
       "max": 100,
       "summary": "A threshold in per cent: from this value on, the bar is an error by itself. Above warning-at when both are set. Unset, no threshold."
+    },
+    "indeterminate": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The work runs and its size is not known yet: a segment of the fill crosses the track and the value is not read (aria-valuenow is left out). The page takes it off once the size is known and the same bar fills from the value, once (C34). Reduced motion: the segment stands still."
+    },
+    "paused": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
     },
     "label": {
       "type": "string",
@@ -207,7 +217,10 @@
     "settings: tone leaves for its dated alias row (status answers), and progress, an object the conversion read off setProgress, is no setting: value is the setting and chunk the action.",
     "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0 (Larena msg-993e1e39 item 9, 2026-11-07): thresholds warning-at and error-at, numbers in per cent like value. From warning-at on the bar is a warning, from error-at an error, by itself (a disk 83 % full of a warning-at 80). The bar draws the more serious of status and the threshold reached (neutral, info and success rank below warning, warning below error), so a page that says error keeps it below the thresholds. The thresholds are the page's: the bar compares and never picks one. The status drawn is the host state data-status. Without thresholds nothing changes.",
-    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
+    "version 1.3.0 (owner decision C34, 2026-11-10): a minor, two settings added, nothing drawn differently without them. indeterminate: the size of the work is unknown, so a 30 % segment of the fill (the arc of sf-progress-ring's indeterminate ring) crosses the track at four slow durations a pass on the move curve, and the root leaves out aria-valuenow (WAI-ARIA: an indeterminate progressbar has no value); reduced motion stands the segment still at the start, as the ring's arc. The class markup takes the modifier sf-progress-bar--indeterminate (component.progress-bar 1.1.0). paused: the work stopped and will go on; the status drawn is at least warning (error from the status or a threshold stays error: a paused bar keeps what went wrong), and the value text a screen reader hears is the value with the word paused (lang runtime paused-value) unless the page gives value-text. Colour alone never says paused. The host state data-status reads the drawn status, and data-paused / data-indeterminate are not host states: the root's classes and ARIA say them.",
+    "version 1.3.1 (2026-11-10, C34 acceptance D2, I2; component.progress-bar 1.1.1): a patch. A paused indeterminate bar stands still: paused is written on the bar (sf-progress-bar--paused, data-paused) and its segment stops at the start of the track, as under reduced motion. A status change takes the neutral class away like any other status class, so no --neutral stays beside the new one.",
+    "version 1.3.2 (2026-11-10, pair-next candidate sweep): a patch, nothing drawn or done differently. The template context carried the drawn status and the spoken value text under status and valueText, the names of the settings, so a paused bar's context said warning and «0%, paused» where the settings said nothing (template-context probe). They are drawnStatus and spokenValueText now; the settings keep their getters and manifest defaults."
   ],
   "x-registry": {
     "capabilities": [
@@ -215,7 +228,8 @@
       "theme",
       "responsive",
       "determinate-progress",
-      "accessible-range"
+      "accessible-range",
+      "indeterminate-progress"
     ],
     "state": {
       "machines": {
@@ -268,11 +282,11 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-progress-bar for continuous determinate progress with a known value from 0 to 100.",
+      "use_when": "Use sf-progress-bar for continuous progress with a value from 0 to 100, or indeterminate while the size of the work is not known.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component",
-        "Do not use Progress Bar for an unknown value; use Spinner",
+        "Do not use Progress Bar for an unknown value without indeterminate; set indeterminate until the size is known, or use Spinner",
         "Do not omit a localized accessible label",
         "Do not infer semantic tone from the percentage in the page; give the bar warning-at and error-at and let it compare",
         "Do not make the progress indicator focusable"

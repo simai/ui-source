@@ -32,6 +32,13 @@ Main attributes:
 - `template`
 - `kind="icon|close"`
 - `size`
+- `height="low|default|high|highest"` (1.8.0, decisions C27 and C35) — the
+  control height separate from the size, as on `sf-button`: the size's
+  tightness steps on the UI height ladder, the icon keeping the size. The
+  button stays square (the step is the padding on all four sides). Size `1`:
+  32 / 40 / 48 / 56 on desktop, 28 / 32 / 40 / 48 compact, 28 / 36 / 44 / 52
+  on a phone. `kind="close"` takes the same heights; a new close is
+  `sf-button-close height="…"`.
 - `appearance="default|tonal|outline|ghost"` — four looks (1.6.0, decision
   C15): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
   pointer or the keyboard reaches it. `link` is ghost's former name, a dated
@@ -58,7 +65,11 @@ Main attributes:
 - `radius="default|square|rounded"`
 - `root-class`
 - `loading` — the spinner in place of the icon, at its size; `aria-busy` and
-  native `disabled`
+  native `disabled`. The button keeps its scheme colour -- the fill, the edge
+  and the icon colour of the resting one -- and the spinner takes the icon
+  colour, its background ring that colour at 16 % (1.8.1, the C36 follow-up;
+  before, it wore the grey disabled look). `disabled` and `loading` at once
+  wear the disabled look
 - `disabled`
 - `native-type`
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native

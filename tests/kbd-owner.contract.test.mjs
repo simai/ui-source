@@ -57,8 +57,8 @@ test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha
   assert.match(keycap, /box-shadow: inset 0 calc\(-1 \* var\(--sf-px\)\) 0/u);
   const plain = css.slice(css.indexOf('@mixin plain'), css.indexOf('@layer'));
   assert.match(plain, /color: var\(--sf-kbd-plain-color, var\(--sf-on-surface-variant\)\)/u);
-  // The row's own label step (C38): a variable, 1em by default.
-  assert.match(plain, /font-size: var\(--sf-kbd--plain-font-size, 1em\)/u);
+  // The row's own text (C38): inherited, no em (C18).
+  assert.match(plain, /font-size: inherit;/u);
   // Every mixed step is one of the alpha scale's eleven.
   for (const [, step] of css.matchAll(/currentColor (\d+)%/gu)) {
     assert.ok([4, 8, 12, 16, 20, 24, 28, 32, 48, 64, 80].includes(Number(step)), `${step}% is off the alpha scale`);
@@ -75,10 +75,9 @@ test('Kbd sizes come from the ladder: the step below the place, never below 1/3'
   const css = await read('src/component/kbd/scss/_kbd.scss');
   const code = css.replace(/\/\/[^\n]*/gu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
   assert.doesNotMatch(code, /(?:^|[\s:(,])-?\d*\.?\d+(?:px|rem)\b/mu, 'no pixel or rem literal');
-  // em is left only where a plain glyph is the row's own text.
-  for (const [declaration] of code.matchAll(/[^;{}\n]*\d\.?\d*em\b[^;{}\n]*/gu)) {
-    assert.match(declaration.trim(), /^(?:font-size: var\(--sf-kbd--plain-font-size, 1em\)|gap: 0\.125em)$/u, declaration.trim());
-  }
+  // No em either (C18): plain glyphs inherit the row's text, their gap is a2.
+  assert.doesNotMatch(code, /(?:^|[\s:(,])-?\d*\.?\d+em\b/mu, 'no em literal');
+  assert.equal(code.match(/gap: var\(--sf-a2\);/gu)?.length, 2, 'plain glyph gaps on a2');
   assert.match(code, /--sf-kbd--size: var\(--sf-kbd-size, var\(--sf-kbd--step-size, var\(--sf-text-height-1\\\/2\)\)\)/u);
   assert.match(code, /font-size: var\(--sf-kbd-font-size, var\(--sf-kbd--step-font-size, var\(--sf-text-size-1\\\/2\)\)\)/u);
   assert.match(code, /--sf-kbd--padding-inline: var\(--sf-kbd-padding-inline, var\(--sf-space-1\\\/4\)\)/u);

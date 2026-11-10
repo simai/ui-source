@@ -9238,6 +9238,126 @@
         "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
       },
       "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
+    },
+    {
+      "id": "attribute-view-list-roles-to-port-list",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-view 1.6.0 (view set 1.6.0, decision C31, the list of resources) takes a column's place in a list row from the port: simai.dataview-port 1.15.0 sends it as columns[].list. list-roles=\"key:role,…\" on sf-view named the same roles for a host on port 1.14.0 or earlier; it is still read until the date, a column the host gave a role keeps it, and a page that uses it is noted in SF.deprecations once per view.",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "list-roles",
+          "to": "columns[].list",
+          "match": "(?<![\\w-])list-roles(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-view list-roles=\"state:status,name:title,domain:supporting\">",
+        "after": "columns: [{key: 'state', list: 'status'}, {key: 'name', list: 'title'}, {key: 'domain', list: 'supporting'}]"
+      },
+      "manual": "Not a rename: the roles move from the page to the host's data. Speak simai.dataview-port 1.15.0 and send each column's list role as columns[].list (title, supporting, status, …), then remove list-roles from sf-view.",
+      "source": "simai/ui-view package/src/smart/view/component.json aliases and index.js LIST_ATTRIBUTES (feat/c31-resource-list 07d17f8); ui-control control/evidence/2026-11-09-c31-resource-list/README.md"
+    },
+    {
+      "id": "utility-c20-elevation-former",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The elevation classes are former names (C20 follow-up, dispatcher 2026-11-10): elevation-0..5 set a surface, a shadow and the dim ink at once, and the shadow system names the place instead. Each class is two classes now, the surface of its place and the shadow of its place: 0 is bg-surface-page shadow-flat, 1 bg-surface-card shadow-raised, 2 and 3 bg-surface-popup shadow-overlay, 4 and 5 bg-surface-popup-nested shadow-modal. The pair draws the same background and the same shadow and sets the same dim ink (--sf-on-surface-variant; bg-surface-page sets the theme's, where elevation-0 set none); a bg-surface-* class is also a place (C16), so it takes the theme's roles back inside a coloured block where elevation-N did not. Until remove_after each elevation-N class keeps drawing as it does.",
+      "items": [
+        {
+          "from": "elevation-0",
+          "to": "bg-surface-page shadow-flat",
+          "match": "(?<![a-z0-9:-])elevation-0(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-1",
+          "to": "bg-surface-card shadow-raised",
+          "match": "(?<![a-z0-9:-])elevation-1(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-2",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-2(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-3",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-3(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-4",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-4(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-5",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-5(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the class with the two classes of its place: elevation-0 with bg-surface-page shadow-flat, elevation-1 with bg-surface-card shadow-raised, elevation-2 and elevation-3 with bg-surface-popup shadow-overlay, elevation-4 and elevation-5 with bg-surface-popup-nested shadow-modal. In a class attribute this is a plain replacement; where code adds the class (classList.add('elevation-3')) add both names. A component's own stylesheet reads the roles instead: background-color: var(--sf-surface-popup); box-shadow: var(--sf-shadow-overlay).",
+      "examples": {
+        "before": "<div class=\"p-4 radius-3 elevation-3\">",
+        "after": "<div class=\"p-4 radius-3 bg-surface-popup shadow-overlay\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/elevation, src/utility/background-color, src/utility/box-shadow"
+    },
+    {
+      "id": "attribute-list-attention-size-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-attention takes its density from the page (data-sf-density, a compact context; decision C22), never from a size of its own. size, whose 1/2 was 1.1's small rung and in 1.2.0 the compact density, is deprecated: until remove_after size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once per page in the console. In sf-list-timeline size=\"1/2\" is a smaller rung, so the same word cannot mean the density here.",
+      "items": [
+        {
+          "component": "sf-list-attention",
+          "from": "size",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove size from the sf-list-attention. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; size=\"1\" is the normal density and is removed too; inside a compact region the list then becomes compact (size=1 kept it at the normal rung there); data-sf-density=\"normal\" on it keeps it normal.",
+      "examples": {
+        "before": "<sf-list-attention size=\"1/2\" triage>",
+        "after": "<sf-list-attention data-sf-density=\"compact\" triage>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-attention/index.js"
+    },
+    {
+      "id": "token-c43-muted-is-disabled",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The muted ink --sf-on-surface-muted is the disabled ink (C43): it reads var(--sf-on-surface-disabled), re-declared on every place with it, so it moves from neutral-60 / neutral-40 to neutral-50 at 80 / neutral-90 at 48 and follows the place (dark 2.92 -> 4.12 on the page, 1.73 -> 3.30 on a popup, 1.44 -> 2.97 on a nested popup). The name holds that value until remove_after.",
+      "items": [
+        {
+          "from": "--sf-on-surface-muted",
+          "to": "--sf-on-surface-disabled",
+          "match": "--sf-on-surface-muted(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "color: var(--sf-on-surface-muted);",
+        "after": "color: var(--sf-on-surface-disabled);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__theme.scss, src/core/scss/mix/_mix__places.scss"
     }
   ]
 }

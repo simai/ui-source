@@ -6,6 +6,7 @@
     "position/default"
   ],
   "cl-alert": [
+    "align-items/default",
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",
@@ -253,6 +254,7 @@
     "sr-only/default"
   ],
   "cl-list-description": [
+    "display/default",
     "font-family/default",
     "sr-only/default",
     "text-overflow/default"
@@ -285,9 +287,6 @@
   ],
   "cl-menu-context": [
     "display/default",
-    "flex-direction/default",
-    "flex/default",
-    "position/default",
     "text-decoration/default"
   ],
   "cl-modal": [

@@ -7,9 +7,9 @@
 // load, a warm HTTP cache included (pair ui-2d39b617a719, language switch
 // en -> ru). The answer the last page got is kept in localStorage (the
 // manifest the service sends with its stylesheet); the core runtime reads it at
-// boot, before any component renders, writes its face and a font preload into
-// the head, and the font comes out of the HTTP cache by the time the first
-// button draws. The Loader then asks the service as before, and a grown subset
+// boot, before any component renders, writes its stylesheet into the head and
+// fetches its font off the document's load (R078), and the font comes out of
+// the HTTP cache by the time the first button draws. The Loader then asks the service as before, and a grown subset
 // replaces the remembered one only once its own face is loaded.
 //
 // What is reused is checked first: a remembered subset is only used when every
@@ -190,11 +190,23 @@ export function readRememberedIconSubset(storage, {hostOrigin, type}) {
 }
 
 // At boot, before any component renders: the remembered subset's stylesheet
-// and a preload for each of its font files, and the pending mark lifted as
-// soon as its face is loaded. The style is the one the Loader would write for
-// the same manifest (same attributes), marked data-sf-icons-remembered; the
-// Loader adopts it when it restores that manifest, and keeps it as the face
-// the page draws with until a grown subset's own face is loaded.
+// and its faces, and the pending mark lifted as soon as they are loaded. The
+// style is the one the Loader would write for the same manifest (same
+// attributes), marked data-sf-icons-remembered; the Loader adopts it when it
+// restores that manifest, and keeps it as the face the page draws with until a
+// grown subset's own face is loaded.
+//
+// R078: the font files are fetched with fetch() and the faces built from their
+// bytes (FontFace from an ArrayBuffer), not asked for by a <link rel=preload>
+// or an @font-face url during parse. Either of those is a request of the
+// document, and the window's load waited for it: with the icon host held 25 s
+// on a warm profile, load came at 25.9 s, and everything waiting for it waited
+// too (the splash stayed up). A fetch() does not hold load, and it reads the
+// same HTTP cache, so a remembered face still comes from the cache by the time
+// the first button draws. The faces join document.fonts once loaded, ride on
+// the style (sfIconFontFaces, retired with it), and the promise of them on
+// sfIconFacesReady, which the Loader awaits before it adopts the style. A
+// browser without FontFace or fetch keeps the stylesheet's own @font-face.
 export function applyRememberedIconSubset({win = globalThis.window, doc = globalThis.document, storage} = {}) {
   if (!win || !doc?.head) return null;
   const config = win.SF_BOOT_CONFIG;
@@ -207,33 +219,53 @@ export function applyRememberedIconSubset({win = globalThis.window, doc = global
   const {cssText, family} = iconSubsetCssFromManifest(manifest);
   if (!cssText) return null;
 
-  for (const font of manifest.fonts) {
-    const href = new URL(font.url).href;
-    if ([...doc.querySelectorAll('link[rel="preload"][as="font"]')].some((link) => link.href === href)) continue;
-    const link = doc.createElement('link');
-    link.rel = 'preload';
-    link.as = 'font';
-    link.type = 'font/woff2';
-    link.crossOrigin = 'anonymous';
-    link.href = href;
-    link.setAttribute('data-sf-icons-remembered', '');
-    doc.head.appendChild(link);
-  }
   const style = doc.createElement('style');
   style.setAttribute('data-sf-icons-subset', manifest.icons.join(','));
   style.setAttribute('data-sf-icons-subset-family', type);
   if (manifest.hash) style.setAttribute('data-sf-icons-subset-hash', String(manifest.hash));
   style.setAttribute('data-sf-icons-remembered', '');
-  style.textContent = cssText;
-  doc.head.appendChild(style);
 
   const root = doc.documentElement;
+  const lift = () => {
+    if (root?.getAttribute('data-sf-icons') === 'subset-pending' && style.isConnected) {
+      root.removeAttribute('data-sf-icons');
+    }
+  };
+  const FontFaceApi = win.FontFace;
+  const fetchApi = win.fetch;
+  if (typeof FontFaceApi === 'function' && typeof fetchApi === 'function' && typeof doc.fonts?.add === 'function') {
+    const faces = [];
+    style.sfIconFontFaces = faces;
+    style.textContent = cssText.replace(/@font-face\s*\{[^}]*\}\s*/gu, '').trim();
+    style.sfIconFacesReady = Promise.all(manifest.fonts.map((font) => {
+      const weight = String(font.weight || manifest.axes?.wght?.value || 400);
+      return Promise.resolve(fetchApi.call(win, new URL(font.url).href, {mode: 'cors', credentials: 'omit'}))
+        .then((response) => {
+          if (!response?.ok) throw new Error(`HTTP ${response?.status}`);
+          return response.arrayBuffer();
+        })
+        .then((bytes) => new FontFaceApi(family, bytes, {style: 'normal', weight, display: 'block'}).load())
+        .then((face) => {
+          // Retired meanwhile (a grown subset or the fallback took over).
+          if (style.sfIconFontFaces !== faces) return face;
+          faces.push(face);
+          doc.fonts.add(face);
+          return face;
+        });
+    }));
+    style.sfIconFacesReady.then(lift).catch(() => {
+      /* The Loader's own request and fallback take over. */
+    });
+    doc.head.appendChild(style);
+    return {manifest, style, type};
+  }
+
+  style.textContent = cssText;
+  doc.head.appendChild(style);
   const weight = normalizeIconFontLoadWeight(String(manifest.fonts[0]?.weight || manifest.axes?.wght?.value || 400));
   doc.fonts?.load?.(`${weight} 24px "${family}"`, manifest.icons.join(' '))
     .then((faces) => {
-      if (faces?.length && root?.getAttribute('data-sf-icons') === 'subset-pending' && style.isConnected) {
-        root.removeAttribute('data-sf-icons');
-      }
+      if (faces?.length) lift();
     })
     .catch(() => {
       /* The Loader's own request and fallback take over. */

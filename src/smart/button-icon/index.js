@@ -3,7 +3,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderIconButtonTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
-import { cycleState, hasCycle, parseCycle, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
+import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
 import { noteDeprecated } from '../../core/js/deprecations';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -15,6 +15,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   'kind',
   'variant',
   'size',
+  'height',
   'appearance',
   'type',
   'scheme',
@@ -168,6 +169,8 @@ class SfIconButton extends IconButtonElement {
     if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
+    // The icons a press can show, asked for before the press (R074).
+    preloadSwitchIcons(this, {icons: [this.getAttribute('icon')], filled: Boolean(this.filled)});
 
     return this.createTemplateContext({
       ...props,
@@ -198,6 +201,9 @@ class SfIconButton extends IconButtonElement {
         announcement: announce ? cycle.name : '',
       } : null,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
+      // The control height (1.8.0, decisions C27 and C35): the size's
+      // tightness step; a value outside the list reads as default.
+      height: this.height,
       badge: this.badgeState?.(),
       component: this,
     });
@@ -235,6 +241,9 @@ class SfIconButton extends IconButtonElement {
 
     if (changedAttributes.includes('disabled')) {
       button.disabled = this.disabled || this.loading;
+      // A loading one that is disabled as well wears the disabled look (C36
+      // follow-up); the template writes the same class.
+      if (this.loading) button.classList.toggle('disabled', Boolean(this.disabled));
     }
 
     if (changedAttributes.includes('aria-label')) {
@@ -310,6 +319,7 @@ class SfIconButton extends IconButtonElement {
       filled: this.filled,
       tightness: resolveControlSpacing({spacing: this.getAttribute('spacing')}).tightness,
       spacing: this.spacing,
+      height: this.height,
       radius: this.radius,
       rootClass: this.rootClass,
       loading: this.loading,

@@ -42,6 +42,36 @@ Each colour has the same family: `--sf-<colour>-state-*`,
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
 
+### What changed with C43 (2026-11-10)
+
+- **Rows with a fill.** A selected, open or current row is not a place: its
+  fill is an alpha over the place under it. `--sf-surface-place-solid` is the
+  place's colour where the place is solid (initial on a soft coloured place
+  and on glass); `--sf-surface-underlay` equals the place colour and is set
+  only under a translucent fill. A tonal badge on such a row stacks its tone
+  over the underlay, so it keeps its colour. Badges on solid places are
+  unchanged.
+- **The grey steps are places.** `bg-surface-2`, `bg-surface-3` and
+  `bg-surface-4` are the card, raised and popup places in both themes, with
+  that place's dim ink. `bg-surface-5` paints nothing and is not a place.
+- **Dim ink, dark theme, visibly lighter.** `--sf-on-surface-variant` is
+  neutral-70 on the page, an area, a card and a raised block, and neutral-80
+  on a popup and a nested popup (was 60 on the page and a card, 70 on a
+  raised block and a popup, 80 on a nested popup). Everything that reads it in
+  the dark theme is lighter: the main neutral badge, the switch thumb, the
+  neutral dot and the close icons among them. On a fill
+  (`--sf-on-surface-container-variant`) a popup place reads neutral-90 and a
+  nested popup neutral-95 (was 85). Light theme unchanged.
+- **Muted is disabled.** `--sf-on-surface-muted` is
+  `var(--sf-on-surface-disabled)` and is deprecated
+  (`token-c43-muted-is-disabled`, remove after 2027-01-01): it follows the
+  place it stands on. A disabled tree item and the offline dot of an avatar
+  read the disabled ink.
+- **Boundary on the light grey steps.** On `bg-surface-2/3/4` the resting
+  boundary `--sf-outline` is opaque neutral-50 in the light theme (3.94, 3.47
+  and 3.03 : 1 against the block), so a checkbox, a switch or a field keeps
+  3:1. The inside of a control stays the block's colour. Dark unchanged.
+
 ## Glass over media
 
 `--sf-surface-media` is black at 48 (hover 64, pressed 80:
@@ -94,12 +124,22 @@ the change journal records it (`token-c16-theme-role-names`,
 | `surface-overlay` | `surface-veil` |
 | `outline-<c>` | `<c>-outline` |
 | `disable`, `on-disable`, `outline-disable` | `surface-disabled`, `on-surface-disabled`, `outline-disabled` |
+| `on-surface-muted` (C43, value changes) | `on-surface-disabled` |
 | component `--sf-<name>-background` | `--sf-<name>-background-color` |
 
 Held, with their own values: `elevation-2--*` and `elevation-5--*` (their
 values differ from the step they join; the collapse is a visible change of a
 later stage) and the four `shadow--*` theme names (the shadow family is
 renamed whole in its own pass).
+
+One former name changes its value: `on-surface-muted` is `var(--sf-on-surface-disabled)`
+since C43 (2026-11-10; journal `token-c43-muted-is-disabled`, remove after
+2027-01-01). It was neutral-60 / neutral-40, which no place could take back;
+it now follows the disabled ink of the place it stands on. It is not in the
+C16 list, which holds renames with the same value: every rule that declares
+the disabled ink declares it beside it, and
+`tests/muted-alias.contract.test.mjs` holds that in the built sheets. Read
+`--sf-on-surface-disabled`.
 
 **How the aliases work.** A former name is `var()` of its new name:
 `--sf-surface-0: var(--sf-surface-page)`. An alias resolves where it is

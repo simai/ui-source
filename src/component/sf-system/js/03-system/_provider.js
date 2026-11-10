@@ -647,7 +647,9 @@ SF.Provider = function() {
             panel.color.status = document.createElement('div');
 
             panel.color.content.classList.add('color-content','flex');
-            panel.color.content.style.boxShadow = '0 1px 2px 1px rgb(0,0,0,0.1)';
+            // The scheme buttons stand on a plate: the raised place of the shadow
+            // system (C20), not a shadow of its own.
+            panel.color.content.style.boxShadow = 'var(--sf-shadow-raised)';
             panel.color.content.style.borderRadius = 'var(--sf-radius--ui)';
 
             // panel.color.status.classList.add('status-text');

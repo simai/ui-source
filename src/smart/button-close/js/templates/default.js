@@ -28,13 +28,19 @@ function renderCross(size, rootClass, rootStyle) {
 // The close button (owner decision C14): a native button in the icon button's
 // box, the cross inside it. Inside a containing button (context.glyph) the
 // element draws only the decorative cross, as it did before 1.2.0.
+// The box and the cross are drawn at context.placeSize, the size the place
+// resolves (1.3.0, DEV D1 on C35); context.size is the declared size.
 export function renderCloseTemplate(context) {
-  if (context.glyph) return renderCross(context.size, context.rootClass, context.rootStyle);
+  const drawn = context.placeSize || context.size;
+  if (context.glyph) return renderCross(drawn, context.rootClass, context.rootStyle);
 
-  const size = buttonSize(context.size || '1/3');
+  const size = buttonSize(drawn || '1/3');
   const classes = [
     'sf-icon-button',
     `sf-icon-button--size-${size}`,
+    // The height (decisions C27, C35): the icon button's class of the size's
+    // tightness step; default draws none.
+    ['low', 'high', 'highest'].includes(context.height) ? `sf-icon-button--height-${context.height}` : '',
     'sf-icon-button--close',
     'sf-button-close',
     `sf-button-close--${context.appearance || 'ghost'}`,

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.2.2",
+  "version": "1.3.2",
   "title": "Progress",
-  "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
+  "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; compact -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -15,7 +15,12 @@
     "log",
     "output",
     "steps",
-    "admin"
+    "admin",
+    "import",
+    "backup",
+    "pause",
+    "summary",
+    "notice"
   ],
   "capabilities": [
     "render",
@@ -32,10 +37,13 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "smart.badge",
       "smart.button",
       "smart.button-copy",
       "smart.button-icon",
-      "smart.icon"
+      "smart.icon",
+      "smart.progress-bar",
+      "smart.progress-ring"
     ],
     "public_parts": []
   },
@@ -57,19 +65,79 @@
         "default": "",
         "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
+      "look": {
+        "type": "string",
+        "default": "full",
+        "description": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself",
+        "enum": [
+          "full",
+          "compact",
+          "notice"
+        ]
+      },
       "label": {
         "type": "string",
         "default": "",
-        "description": "The job's name as a person says it («Создание сайта demo.test»): the heading and the region's name. Without it the region is named «Ход выполнения» / «Progress»"
+        "description": "The job's name as a person says it («Импорт товаров из «Прайс_ноябрь.xlsx»»): the title (a heading of heading-level) and the region's name. Without it the region is named «Ход выполнения» / «Progress» and the full look has no title line"
+      },
+      "heading-level": {
+        "type": "string",
+        "default": "3",
+        "description": "The title's heading level in the page outline (h1-h6), 3 by default. Semantics only: the title is drawn at the run's rung text line, semibold, whatever the level (C34, R082), so it follows density and the phone ladder",
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ]
+      },
+      "caption": {
+        "type": "string",
+        "default": "",
+        "description": "A line under the title: where and when («Каталог «Электроника» · запущено в 14:02»). Plain text"
+      },
+      "value": {
+        "type": "number",
+        "description": "How much is done, in units of total (4812). With total the overall bar is determinate and the figures read «4 812 из 12 000 товаров · 40 %»; without total the bar runs (indeterminate) and the figure reads the count so far",
+        "minimum": 0
+      },
+      "total": {
+        "type": "number",
+        "description": "How much there is (12000). Unset or 0: the size is not known yet and the bar runs; once set the same bar fills, once (C34)",
+        "minimum": 0
+      },
+      "unit": {
+        "type": "string",
+        "default": "",
+        "description": "The word of the figures, its plural forms separated by | in the order of the page language's plural categories (ru: «товар|товара|товаров», en: «item|items»); one form is used for all"
+      },
+      "remaining": {
+        "type": "number",
+        "description": "The time left in milliseconds, when the host knows it. Without it the run works it out from the rate of value, hidden until the rate settles (5 s of change) and always rounded up («осталось ≈ 6 мин», «меньше минуты»)",
+        "minimum": 0
+      },
+      "started-at": {
+        "type": "string",
+        "default": "",
+        "description": "When the job started (ISO 8601): the elapsed time while the size is unknown, and «заняло 8:08» once it ended. Without it the run counts from the moment it first saw the job run"
+      },
+      "finished-at": {
+        "type": "string",
+        "default": "",
+        "description": "When the job ended (ISO 8601), for a summary a server prints: «заняло» is finished-at − started-at"
       },
       "run-state": {
         "type": "string",
         "default": "auto",
-        "description": "The job's state (the name state is the element base's own). auto works it out from the steps: failed when one failed, running while one runs, done when every step is done or skipped, else waiting. cancelled only comes from the host, after it stopped the job",
+        "description": "The job's state (the name state is the element base's own). auto works it out from the steps: failed when one failed, running while one runs, done when every step is done or skipped (partial when errors-total or an error counter is above 0), else waiting (drawn as queued). paused: the host stopped the job and will go on -- a warning badge and bar. partial: it finished with errors -- a warning badge and bar, never success. cancelled: the host stopped it for good -- neutral",
         "enum": [
           "auto",
           "running",
+          "paused",
           "done",
+          "partial",
           "failed",
           "cancelled"
         ]
@@ -77,7 +145,12 @@
       "result-text": {
         "type": "string",
         "default": "",
-        "description": "The result in words once the job ended: «Сайт создан» on success, the reason on a failure («Не хватает места на диске»). Without it the result says «Готово», «Не удалось» or «Отменено»"
+        "description": "The result in words once the job ended: «Сайт создан» on success, the reason on a failure («Не хватает места на диске»), what to do on partial. Without it the result says «Готово», «Готово с ошибками», «Не удалось» or «Отменено»"
+      },
+      "errors-total": {
+        "type": "number",
+        "description": "How many errors the job had in all (40). Above the errors shown, «Ещё 35 ошибок» sends report; above 0 an auto run that finished is partial",
+        "minimum": 0
       },
       "output": {
         "type": "string",
@@ -98,15 +171,25 @@
         "default": false,
         "description": "Shows Cancel while the job runs; its press asks cancel"
       },
+      "pausable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows Pause while the job runs and Continue while it is paused; their presses send pause and resume. Only where the host can really pause the job (C34)"
+      },
       "retryable": {
         "type": "boolean",
         "default": false,
-        "description": "Shows Retry after a failure (or a cancel); its press sends retry"
+        "description": "Shows Retry after a failure, a cancel or a partial result; its press sends retry {scope, from?}: «Повторить неудачные» (scope failed) on partial, «Повторить» (scope all, from the failed step) on a failure"
       },
       "hideable": {
         "type": "boolean",
         "default": false,
         "description": "Shows Hide once the job ended; its press asks close"
+      },
+      "minimizable": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows Minimize in the full look; its press sends minimize, and the host shows the notice look (a corner panel is the page's composition)"
       },
       "size": {
         "type": "string",
@@ -125,7 +208,17 @@
       "steps": {
         "type": "array",
         "default": [],
-        "description": "The job's steps in order, each {id, title, state waiting|running|done|failed|skipped, text?, started?, finished?, duration?}. A property, or the JSON island a server prints; the host sets the whole list again or changes one step with the action step. Time per step: duration in milliseconds, else finished − started (ISO 8601), and a running step with started counts up each second. An unknown state reads as waiting"
+        "description": "The job's steps in order, each {id, title, state waiting|running|done|failed|skipped, text?, value?, total?, unit?, log?, started?, finished?, duration?}. A property, or the JSON island a server prints; the host sets the whole list again or changes one step with the action step. Time per step: duration in milliseconds, else finished − started (ISO 8601), and a running step with started counts up each second. An unknown state reads as waiting. value and total give a step its own figures («18 240 из 42 600 файлов»), written before its text; log is the step's own log so far as plain text (a server prints it), and chunk({text, step}) appends to it"
+      },
+      "counters": {
+        "type": "array",
+        "default": [],
+        "description": "The result counts as one line of text in tabular figures: «Добавлено 9 227 · Обновлено 2 755 · 18 ошибок». Each {id, label, value, status?, zero?}: the label followed by the value, or with {n} where the number stands; plural forms separated by | («{n} ошибка|{n} ошибки|{n} ошибок»). A counter at 0 is left out; a status error counter at 0 shows its zero words (zero, «ошибок нет») in the quiet colour once the job ended. Only a non-zero error count is coloured, and it is a link that sends report"
+      },
+      "errors": {
+        "type": "array",
+        "default": [],
+        "description": "The first errors of the job, each {where?, key?, text}: where it happened (a row «218»), what (an article «TV-55-QL»), and why. The first 5 are shown in the summary; errors-total says how many there are"
       }
     },
     "additionalProperties": false
@@ -134,7 +227,7 @@
   "contracts": {},
   "methods": {
     "chunk": {
-      "summary": "Appends text to the output: chunk({text}), the object form of vocabulary §5.2 chunk {id, text} of a stream (a rule hands a job's output chunk on); a plain string, chunk(text), is accepted as shorthand. A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text",
+      "summary": "Appends text to the output: chunk({text, step?}), the object form of vocabulary §5.2 chunk {id, text} of a stream (a rule hands a job's output chunk on); a plain string, chunk(text), is accepted as shorthand. With step the text goes to that step's own log (its row opens it; a failed step's log is open by itself); without step to the run's output. A line break ends a line; the pane follows the new text only while the reader is at its end. Refused {reason: invalid} for no text, {reason: missing} for a step the run does not have",
       "arguments": [
         {
           "name": "args",
@@ -144,6 +237,9 @@
             "type": "object",
             "properties": {
               "text": {
+                "type": "string"
+              },
+              "step": {
                 "type": "string"
               }
             },
@@ -166,7 +262,7 @@
       }
     },
     "step": {
-      "summary": "Changes one step: the fields given replace that step's (state, text, started, finished, duration). Refused {reason: missing} for an id the run does not have",
+      "summary": "Changes one step: the fields given replace that step's (state, text, value, total, started, finished, duration). Refused {reason: missing} for an id the run does not have",
       "arguments": [
         {
           "name": "args",
@@ -184,6 +280,12 @@
               "text": {
                 "type": "string"
               },
+              "value": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
               "started": {
                 "type": "string"
               },
@@ -198,6 +300,8 @@
               "id",
               "state",
               "text",
+              "value",
+              "total",
               "started",
               "finished",
               "duration"
@@ -221,11 +325,23 @@
       }
     },
     "sf-progress-run-retry": {
-      "summary": "A person pressed Retry after a failure or a cancel (vocabulary §5 retry): the host starts the job again and sets the steps anew",
+      "summary": "A person pressed Retry (vocabulary §5 retry): {scope: failed} after a partial result -- only what failed; {scope: all, from?} after a failure (from: the failed step's id) or a cancel. The host starts the job again and sets the steps anew",
       "payload": {
         "type": "object",
-        "required": [],
-        "properties": {},
+        "required": [
+          "scope"
+        ],
+        "properties": {
+          "scope": {
+            "enum": [
+              "all",
+              "failed"
+            ]
+          },
+          "from": {
+            "type": "string"
+          }
+        },
         "additionalProperties": true
       }
     },
@@ -273,6 +389,51 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-progress-run-pause": {
+      "summary": "A person pressed Pause while the job ran (pausable). A request: the host pauses the job and sets run-state paused; the component changes nothing by itself",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-resume": {
+      "summary": "A person pressed Continue while the job was paused (pausable). A request: the host goes on and sets run-state running",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-minimize": {
+      "summary": "A person pressed Minimize in the full look (minimizable). A request: the host shows the notice look, in its own corner panel",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-expand": {
+      "summary": "A person pressed Expand in the notice look. A request: the host shows the full look (in a drawer or in place)",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-progress-run-report": {
+      "summary": "A person asked for the errors: the error count link or «Ещё N ошибок». Not cancelled, the count link moves to the error list shown in the summary; the host serves the full report (a file, a page)",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -280,7 +441,9 @@
       "run": [
         "waiting",
         "running",
+        "paused",
         "done",
+        "partial",
         "failed",
         "cancelled"
       ]
@@ -318,8 +481,8 @@
     "role": "region",
     "accessible_name": "internal",
     "keyboard": [
-      "Tab reaches the output toggle, the output, copy, download and the actions in order",
-      "Enter or Space presses a button"
+      "Tab reaches the error link, the step logs, the output toggle, the output, copy, download and the actions in order",
+      "Enter or Space presses a button; Enter follows the error link"
     ],
     "focus": "The run never takes focus by itself."
   },
@@ -383,23 +546,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "0406d574803a112b431c1373db5a30ce9208c32b710489cc5dfd8329821869c3"
+        "sha256": "7ca5862fc00408a01045223ecef199bbdb49fdbd1ef22da4dbd1344935f6d121"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
-        "sha256": "259b6bef056d91e2ff23d3ae63a7e2570e056c058f977cc538c989f0123ead4d"
+        "sha256": "53485504bddd498c4f7f625afb25e896b0379c91745e6e442c0552355b07f956"
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "a55ec366052fe4ec1aadcc7a2105d9cb1b2ea2ea17820e29c85ef7adcbfe27ef"
+        "sha256": "1b1cf103161c02053aebf0d7e70c4d124eb9cd3f00375203b06398851292dbce"
       },
       {
         "path": "src/smart/progress-run/rule.js",
-        "sha256": "f87f7025a93127489f512fd41712faf895c00c70ad1fd6dab9e104c5c94cbe3e"
+        "sha256": "df9deff7f802f2e9fa8a26bb5813148869b9df266e84bbd6561698ebc24c0002"
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "85acfa5f5d226430ba905abfe93866a06d11de0c4100d637bbf42ed3523308d1"
+        "sha256": "2d5a9c2e41a07b12666208d688f7f9ac0e84d0d0b425c9f1dfbe0146d1a2c3ea"
       }
     ],
     "generated_runtime": []
@@ -417,7 +580,7 @@
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-progress-run label=\"Создание сайта\" cancelable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы\", \"state\": \"running\"}]}</script></sf-progress-run>",
+    "minimal_example": "<sf-progress-run label=\"Импорт товаров\" total=\"12000\" value=\"4812\" unit=\"товар|товара|товаров\" pausable cancelable></sf-progress-run>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

@@ -16,6 +16,7 @@ class IconButtons extends ComponentObserver {
       icon,
       tightness,
       spacing,
+      height,
       radius,
       loading = false,
       disabled = false,
@@ -44,6 +45,11 @@ class IconButtons extends ComponentObserver {
     } else if (!hasSpacing && tightness) {
       this.button.classList.add(`tightness-${tightness}`);
     }
+    // The control height (1.5.0, decisions C27 and C35): the size's
+    // tightness step on all four sides; default needs no class.
+    if (['low', 'high', 'highest'].includes(height)) {
+      this.button.classList.add(`sf-icon-button--height-${height}`);
+    }
     if (radius) {
       this.button.classList.add(`radius-${radius}`);
     }
@@ -54,6 +60,9 @@ class IconButtons extends ComponentObserver {
     }
     if (disabled) {
       this.button.disabled = true;
+      // Loading keeps the scheme colour (C36 follow-up); disabled and loading
+      // wears the disabled look.
+      if (loading) this.button.classList.add('disabled');
     }
     if (className) {
       this.button.classList.add(...`${className}`.split(' ').filter(Boolean));

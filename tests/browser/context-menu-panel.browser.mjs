@@ -43,7 +43,7 @@ try {
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => document.querySelector('#m .sf-context-menu-head sf-tabs [role="tab"]') && document.querySelector('#m .sf-context-menu-close button'), null, {timeout: 8000});
   await page.evaluate(() => {
-    const surface = document.querySelector('#m .sf-context-menu > .relative');
+    const surface = document.querySelector('#m .sf-context-menu > .sf-context-menu-frame');
     surface.style.maxBlockSize = '400px';
   });
   await page.waitForTimeout(300);

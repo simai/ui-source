@@ -6,42 +6,138 @@
   "summary": "Deterministic reference fixture for sf-list-attention.",
   "locale": "ru",
   "props": {
-    "label": "Здоровье сервера",
+    "label": "Требует внимания",
+    "triage": true,
+    "checked-at": "2026-10-27T11:55:00+03:00",
+    "more-href": "#checks",
     "items": [
       {
         "id": "backup",
-        "status": "warning",
-        "title": "Последняя копия demo-owned.test не удалась",
-        "text": "27 октября, 03:30 · нет места на диске",
+        "status": "error",
+        "title": "Резервная копия не создана",
+        "object": {
+          "label": "shop.simai.ru",
+          "href": "#site-shop"
+        },
+        "since": "2026-10-25T10:00:00+03:00",
+        "text": "нет места на диске",
+        "source": "Резервные копии",
+        "affected": "1 сайт",
         "action": {
-          "label": "Открыть копии",
-          "href": "#backups"
-        }
+          "label": "Освободить место",
+          "event": "free-space"
+        },
+        "help": "#help-backup"
       },
       {
         "id": "down",
         "status": "error",
-        "title": "demo-php.test не отвечает",
-        "text": "12 минут, код 502",
+        "title": "Сайт не отвечает, код 502",
+        "object": {
+          "label": "zdorovie-clinic.ru",
+          "href": "#site-clinic"
+        },
+        "since": "2026-10-27T11:48:00+03:00",
+        "source": "Мониторинг",
+        "affected": "1 сайт",
         "action": {
           "label": "Перезапустить",
           "event": "restart"
         }
       },
       {
-        "id": "cert",
+        "id": "ssl",
         "status": "warning",
-        "title": "Сертификат demo-static.test истекает через 6 дней",
+        "title": "Сертификат истекает через 6 дней",
+        "object": {
+          "label": "crm.dealer-auto.ru",
+          "href": "#site-crm"
+        },
+        "source": "Сертификаты",
+        "affected": "1 сайт",
         "action": {
           "label": "Продлить",
-          "href": "#cert"
+          "href": "#ssl"
         }
       },
       {
-        "id": "update",
+        "id": "exch",
+        "status": "warning",
+        "title": "14 заказов не выгружены в 1С",
+        "object": {
+          "label": "Обмен с 1С"
+        },
+        "since": "2026-10-27T09:00:00+03:00",
+        "source": "Интеграции",
+        "affected": "14 заказов",
+        "action": {
+          "label": "Открыть журнал",
+          "href": "#exchange"
+        }
+      },
+      {
+        "id": "mail",
+        "status": "warning",
+        "title": "Письма уходят с задержкой до 40 минут",
+        "object": {
+          "label": "Почтовая очередь"
+        },
+        "since": "2026-10-27T07:00:00+03:00",
+        "source": "Почта",
+        "affected": "312 писем",
+        "action": {
+          "label": "Открыть очередь",
+          "href": "#mail"
+        }
+      },
+      {
+        "id": "php",
         "status": "info",
-        "title": "Доступна панель 0.3.1",
-        "text": "Изменения: журнал, резервные копии"
+        "title": "PHP 8.1: поддержка закончится 31 декабря",
+        "object": {
+          "label": "Сервер web-2"
+        },
+        "since": "2026-10-17T12:00:00+03:00",
+        "source": "Сервер",
+        "affected": "4 сайта",
+        "action": {
+          "label": "Как обновить",
+          "href": "#php"
+        },
+        "dismissible": true
+      },
+      {
+        "id": "core",
+        "status": "info",
+        "title": "Доступно обновление Larena 3.4.1",
+        "object": {
+          "label": "Ядро"
+        },
+        "since": "2026-10-26T10:00:00+03:00",
+        "source": "Обновления",
+        "affected": "Все сайты",
+        "action": {
+          "label": "Обновить",
+          "event": "update"
+        },
+        "dismissible": true
+      },
+      {
+        "id": "seo",
+        "status": "info",
+        "title": "38 страниц без описания",
+        "object": {
+          "label": "kodshkola.ru",
+          "href": "#site-kod"
+        },
+        "since": "2026-10-24T12:00:00+03:00",
+        "source": "SEO",
+        "affected": "38 страниц",
+        "action": {
+          "label": "Показать страницы",
+          "href": "#seo"
+        },
+        "dismissible": true
       }
     ]
   },
