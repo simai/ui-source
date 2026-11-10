@@ -297,7 +297,13 @@ class SfModal extends ModalElement {
     if (!loose.length) return;
     if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
     this._liveSlotNodes.get("content").push(...loose);
-    loose.forEach((node) => node.remove());
+    // Through the base's hold, as the slotted children go (smart-base.js
+    // holdSlotNode): out of the element now while sf-modal does not hold its
+    // children until it draws (static holdsSlotNodesUntilDrawn, off), so
+    // nothing changes today; a hold turned on later takes the loose content
+    // too instead of leaving it out of the document between connect and the
+    // first drawing (ui-control evidence 2026-11-11-modal-followups, item 3).
+    loose.forEach((node) => this.holdSlotNode(node));
   }
 
   disconnectedCallback() {
