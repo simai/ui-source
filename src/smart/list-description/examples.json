@@ -173,6 +173,10 @@
             }
           }
         ]
+      },
+      "first-paint": {
+        "max-bytes": 20480,
+        "why": "a whole record card: three sections with their heads and actions, twelve rows with copy buttons, a badge, a help mark and an empty value's action print as the page reads them, so the card holds its height and the one label column before any code"
       }
     },
     {
