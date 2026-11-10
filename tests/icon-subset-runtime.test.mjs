@@ -218,6 +218,8 @@ test('v1 generator manifests keep their exact content-addressed font family', ()
 
 test('simultaneous discoveries coalesce and reload one cumulative packet', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   let releaseFirst;
   const calls = [];
   const first = new Promise((resolve) => { releaseFirst = resolve; });
@@ -247,6 +249,8 @@ test('simultaneous discoveries coalesce and reload one cumulative packet', async
 
 test('dynamic ready event is emitted only after descriptor state becomes loaded', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   const originalCustomEvent = globalThis.CustomEvent;
   const originalDispatchEvent = globalThis.window.dispatchEvent;
   const observations = [];
@@ -483,6 +487,26 @@ test('a page slow to become ready holds the first request past the budget while 
   });
 });
 
+test('R074 F3: a first request asked for only after ready still waits for the tags on the way', async () => {
+  await withHeldTags(async ({asked, define}) => {
+    const loader = new TestLoader();
+    loader.eventSend = true;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    loader.holdFirstIconRequest = ((hold) => function () { return hold.call(this, 30, 400); })(loader.holdFirstIconRequest);
+    asked.add('sf-tag');
+    loader.uniqueIcons.set('search', iconState());
+    const first = loader.loadFonts();
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 60));
+    assert.deepEqual(calls, [], 'ready already sent, sf-tag on the way: held');
+    loader.uniqueIcons.set('sell', iconState());
+    define('sf-tag');
+    await first;
+    assert.deepEqual(calls, [['search', 'sell']], 'one request carries the tag');
+  });
+});
+
 test('a page slow to become ready with nothing on the way sends the first request at the budget', async () => {
   await withHeldTags(async () => {
     const loader = new TestLoader();
@@ -501,6 +525,8 @@ test('a page slow to become ready with nothing on the way sends the first reques
 
 test('icons the page declares in icons.preload go in the first request, tracked as scanned ones', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   const calls = [];
   globalThis.window.SF_BOOT_CONFIG = {icons: {preload: ['article', {icon: 'library_books'}]}};
   loader.syncStaticIconLoadedState = () => {};

@@ -2594,7 +2594,10 @@ export function installIconSubsetRuntime(
       return registry ? tags.filter((tag) => !registry.get(tag)) : [];
     };
 
-    await new Promise((resolve) => {
+    // Asked for only after ready (the page's icons met on the frame that
+    // dispatched it), there is no ready to wait for: the frame and the tags on
+    // the way are still waited for below.
+    if (!this.eventSend) await new Promise((resolve) => {
       let timer = 0;
       const release = () => {
         window.removeEventListener("sf-loader-ready", release);
@@ -2649,7 +2652,11 @@ export function installIconSubsetRuntime(
     // pair 1110). So the hold also waits for the Smart tags the Loader still
     // holds -- asked for, not yet defined -- and a frame after they are
     // (holdFirstIconRequest).
-    if (this.eventSend === false && !this.iconFirstRequestReleased) {
+    // Held whether it is first asked for before ready or after it: the scan
+    // runs at DOMContentLoaded (R078), and a page whose icons are first
+    // flushed on the frame that dispatched ready sent its first request with
+    // sf-tag still on the way, the tag's glyph in a second font (F3).
+    if (!this.iconFirstRequestReleased) {
       if (!this.iconFirstRequestHeld) {
         this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
