@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -315,7 +315,8 @@
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.0.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.0.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
-    "version 1.0.5 (2026-11-09): a patch, nothing drawn or done differently. show reads sf-menu-context's openFor answer as an outcome (sf-menu-context 1.12.2) and still as the boolean an earlier menu gave. Settings, values, events and keys unchanged."
+    "version 1.0.5 (2026-11-09): a patch, nothing drawn or done differently. show reads sf-menu-context's openFor answer as an outcome (sf-menu-context 1.12.2) and still as the boolean an earlier menu gave. Settings, values, events and keys unchanged.",
+    "version 1.0.6 (2026-11-10): a patch; nothing in the component changed. Its panels are sf-menu-context, which since 1.14.1 draws the context-menu frame without the late utility classes, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
