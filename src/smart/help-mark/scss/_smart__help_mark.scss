@@ -5,6 +5,19 @@
 sf-help-mark {
   display: inline-flex;
   vertical-align: middle;
+  /* The host is display: contents once upgraded (and in the first-paint
+     markup), so the white space its markup starts and ends with lay in the
+     label's own line: a space the font drew (4-5px, never a step of the
+     space scale) between the label and the mark, wherever a label had no
+     space of its own (C33 R1). The white space draws nothing (no width, and
+     no line of its own height) and is no place to break a line, so the mark
+     stands right after the label's last word, the way a footnote mark does;
+     the label's spacing is the consumer's. In a flex row it changes nothing:
+     white space there is no item. The panel and the live words set their own
+     text. */
+  font-size: 0;
+  line-height: 0;
+  white-space: nowrap;
 }
 
 /* The mark adds nothing to the height of the line or the label row it stands
@@ -63,6 +76,8 @@ sf-help-mark {
   block-size: var(--sf-px);
   overflow: hidden;
   clip-path: inset(50%);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
   white-space: nowrap;
 }
 }

@@ -255,6 +255,36 @@ try {
             const applied = await tab.evaluate(() => window.__applied ?? []);
             const want = [{action: 'schedule', scope: 'entry', ids: ['date'], id: 'date', kind: 'item'}, {action: 'edit', scope: 'entry', ids: ['customer'], id: 'customer', kind: 'section'}];
             if (JSON.stringify(applied) !== JSON.stringify(want)) fail(`apply ${JSON.stringify(applied)}`);
+
+            // C33 R1 (1.1.1): on a wrapped label the help mark stands right
+            // after the last word, --sf-space-1/4 from it and centred on the
+            // last line, never alone on a line and never past the column, at
+            // every card width from 640 down to 300.
+            const wrap = await tab.evaluate(async () => {
+              const card = document.createElement('div');
+              card.style.maxInlineSize = '640px';
+              card.innerHTML = '<sf-list-description id="wrap-probe"><script type="application/json" data-sf-settings>{"items": [{"id": "lh", "label": "Очень длинная подпись поля, которой нужен знак справки и перенос строки", "value": "Значение", "help": "Пояснение"}]}<\/script></sf-list-description>';
+              document.body.append(card);
+              for (let wait = 0; wait < 100 && !card.querySelector('dt .sf-help-mark button'); wait += 1) await new Promise((done) => setTimeout(done, 50));
+              const dt = card.querySelector('dt'); if (!dt) return {missing: true};
+              const probe = document.createElement('i'); probe.style.cssText = 'position:absolute;inline-size:var(--sf-space-1\\/4)'; dt.append(probe); const space = probe.getBoundingClientRect().width; probe.remove();
+              const result = {space, widths: 0, alone: [], gap: [], outside: [], lines: 0};
+              for (let width = 640; width >= 300; width -= 1) {
+                card.style.maxInlineSize = `${width}px`; result.widths += 1;
+                const words = [...dt.childNodes].find((node) => node.nodeType === 3 && node.textContent.trim());
+                const range = document.createRange(); range.selectNodeContents(words);
+                const rects = [...range.getClientRects()].filter((rect) => rect.width > 0.5); const lastTop = Math.max(...rects.map((rect) => rect.top)); const last = rects.filter((rect) => rect.top === lastTop);
+                result.lines = Math.max(result.lines, new Set(rects.map((rect) => Math.round(rect.top))).size);
+                const mark = dt.querySelector('span.sf-help-mark').getBoundingClientRect(); const button = dt.querySelector('.sf-help-mark button').getBoundingClientRect();
+                if (Math.abs((button.top + button.bottom) / 2 - (last[0].top + last[0].bottom) / 2) > 1) result.alone.push(width);
+                else if (Math.abs(mark.left - Math.max(...last.map((rect) => rect.right)) - space) > 0.5) result.gap.push(width);
+                if (button.right > dt.getBoundingClientRect().right + 0.5) result.outside.push(width);
+              }
+              card.remove();
+              return result;
+            });
+            if (wrap.missing || wrap.alone.length || wrap.gap.length || wrap.outside.length || wrap.lines < 2) fail(`a wrapped label's help mark does not follow its last word ${JSON.stringify(wrap)}`);
+            seen[name].wrap = {widths: wrap.widths, lines: wrap.lines, alone: wrap.alone.length, gap: wrap.gap.length, outside: wrap.outside.length};
           }
           if (errors.length) fail(`console ${JSON.stringify(errors)}`);
           await context.close();
@@ -279,6 +309,7 @@ console.log(JSON.stringify({
     badges: m.order.rows.concat(m.server.rows).filter((one) => one.badge).map((one) => `${one.id} ${one.badge.height}`),
     tab: m.tab,
     helpGap: m.helpGap,
+    wrap: m.wrap,
   }])),
   failures,
 }, null, 1));
