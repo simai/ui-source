@@ -40,6 +40,7 @@
     --sf-outline-variant: var(--sf-white--alfa-24);
     --sf-surface-disabled: var(--sf-white--alfa-12);
     --sf-on-surface-disabled: var(--sf-white--alfa-64);
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
     @include aliases.sf-role-aliases(('on-surface-container-variant', 'surface-state-hover', 'surface-state-select', 'surface-state-active', 'surface-disabled', 'on-surface-disabled'));
   }
 }

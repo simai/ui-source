@@ -400,7 +400,14 @@
        a cell and the two ends grow out of it (4.99:1 and 7.72:1 to their 40
        and 80 steps). The same pair as surface-3, which a chart does not sit on. */
     --sf-chart-midpoint: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
-    --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
+    /* The muted ink is the disabled ink (C43, owner 2026-11-10): neutral-60 /
+       neutral-40 measured 3.18:1 light and 2.92:1 dark on the page and fell to
+       1.44:1 on a dark nested popup, a step the places could not take back.
+       It reads --sf-on-surface-disabled, so every place that re-declares
+       the disabled ink re-declares this one with it (mix/_mix__places.scss).
+       Deprecated: read --sf-on-surface-disabled (journal
+       token-c43-muted-is-disabled, remove_after 2027-01-01). */
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);
     /* The boundary of anything a person has to find: a control at rest, a

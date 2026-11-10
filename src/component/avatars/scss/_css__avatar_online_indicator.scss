@@ -47,8 +47,9 @@
   --sf-online-indicator--width: var(--sf-b0);
 }
 
+// Offline is the disabled ink (C43: the muted role is the disabled one).
 .sf-online-indicator--offline {
-  --sf-online-indicator--background-color: var(--sf-on-surface-muted);
+  --sf-online-indicator--background-color: var(--sf-on-surface-disabled);
 }
 
 .sf-online-indicator--online {

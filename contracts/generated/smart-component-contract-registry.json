@@ -2183,7 +2183,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "47d56bf8b8011d4037a2faca5f7c24c282d6346b63a39eb5cd7f00f849e598c2",
+      "manifest_sha256": "2f4986917e8c33bdd4760695f3564465e7f4d0ee32ba5c53ea0b792378758998",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
