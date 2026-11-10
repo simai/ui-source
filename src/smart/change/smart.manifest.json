@@ -204,7 +204,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/change/index.js",
-        "sha256": "6bec34a66c11c3bd4c31b3e50c6aee220e35389048976110cd89e99c4174bc52"
+        "sha256": "6538e38d7fc4e3a2b77c3e6fccf92788103bf71599e55b8fecdb7d6ba62f394d"
       },
       {
         "path": "src/smart/change/js/templates/default.js",
@@ -212,7 +212,7 @@
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",
-        "sha256": "1b42d8445a08a1ff5fe5d157063404b23172b5b6c2e74993b22f6dd351450c6e"
+        "sha256": "4978a690e921dc832bd05d1a61c28090dc3a6d3345ca4a26fcfbb9f1cf5b5619"
       },
       {
         "path": "src/smart/change/rule.js",
