@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.5.6",
+  "version": "1.6.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -104,6 +104,17 @@
         "type": "boolean",
         "default": true,
         "description": "A press on the scrim closes the top window, while it is dismissible."
+      },
+      "initial-focus": {
+        "type": "string",
+        "default": "auto",
+        "description": "Where the focus goes when the window opens (decisions C25, C39): auto -- the page's [autofocus], else in a question window (one holding a dangerous answer or an sf-confirm) its safe answer «Отмена», else the panel; safe -- the safe answer whenever there is one; first -- the first control of its content (the header's × excluded); panel -- the panel.",
+        "enum": [
+          "auto",
+          "safe",
+          "first",
+          "panel"
+        ]
       },
       "preserve-scroll-gap": {
         "type": "boolean",
@@ -1362,7 +1373,7 @@
       "Shift+Tab",
       "Escape"
     ],
-    "focus": "Opening focuses the panel of the top window; Tab and Shift+Tab are trapped inside it and Escape closes it when close-on-esc allows. Closing returns focus to the opener. The default title names the dialog through aria-labelledby; supply aria-label for a custom or headerless header. display=inline keeps normal document navigation. With display=inline the window is a region in the page rather than a dialog."
+    "focus": "Opening focuses, by initial-focus, the page's [autofocus], else the safe answer of a question window («Отмена»), else the panel of the top window; Tab and Shift+Tab are trapped inside it and Escape closes it when close-on-esc allows. Closing returns focus to the opener. The default title names the dialog through aria-labelledby; supply aria-label for a custom or headerless header. display=inline keeps normal document navigation. With display=inline the window is a region in the page rather than a dialog."
   },
   "presentation": {
     "themes": [
@@ -1434,7 +1445,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "0780ea950163ac4d9b07f6efa0624761d349c8c4acda2cfc3b85f3063e0cabbb"
+        "sha256": "df6d2d4df2d49d9589e048277af306756b2223e3a73a55c61ee0f5062a0510c6"
       }
     ],
     "generated_runtime": [

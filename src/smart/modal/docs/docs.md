@@ -7,10 +7,23 @@ used by its generated close action. Smart Modal and Gallery inherit them. When
 loading assets manually, include those component styles as well as Modal styles;
 loading just modal.js/modal.css does not supply the close glyph.
 
-Keyboard navigation belongs to the top modal. The window opens with the focus
-on the element inside it that carries the standard `autofocus` attribute, as a
-native `<dialog>` does (an `sf-button` hands it to its inner button); without
-one, the panel takes it. From the initially focused panel,
+Keyboard navigation belongs to the top modal. Where the focus goes when the
+window opens is `initial-focus` (decisions C25, C39):
+
+- `auto` (the default): the element inside the window that carries the
+  standard `autofocus` attribute, as a native `<dialog>` does (an `sf-button`
+  hands it to its inner button); without one, in a question window -- one that
+  holds a dangerous answer (`status="danger"`) or an `sf-confirm` -- its safe
+  answer: the declining answer of the `sf-confirm`, or the page's own answer
+  that closes the window (`data-sf-modal-close`, the header's × excluded),
+  «Отмена». A stray Enter or Space then only closes the question. Otherwise
+  the panel takes it;
+- `safe`: the safe answer whenever the window has one;
+- `first`: the first control of the content (the header's × excluded);
+- `panel`: the panel.
+
+The panel draws no focus ring of its own; the ring belongs to the controls in
+it. From the initially focused panel,
 Tab enters its first available control and Shift+Tab enters its last. Hidden,
 disabled, inert and negative-tabindex controls are not tab boundaries. A panel
 with no available controls retains focus on itself. These rules are shared with

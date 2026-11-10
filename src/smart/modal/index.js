@@ -1188,11 +1188,12 @@ class SfModal extends ModalElement {
       return;
     }
 
-    // The page's [autofocus] inside the window first -- the safe answer of a
-    // dangerous question (decision C25) -- else the panel, as before.
+    // By initial-focus (decisions C25, C39): the page's [autofocus], else in
+    // a question window its safe answer («Отмена»), else the panel; or the
+    // safe answer, the first control or the panel when the page names one.
     const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     if (panel) {
-      focusModalInitial(panel);
+      focusModalInitial(panel, this.initialFocus);
     }
   }
 
