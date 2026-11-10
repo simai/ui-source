@@ -29,9 +29,9 @@
     overflow: hidden;
     background-color: var(
                     --sf-admin-menu-panel--background-color,
-                    var(--sf-surface-0)
+                    var(--sf-surface-page)
     );
-    --sf-badge--surface: var(--sf-admin-menu-panel--background-color, var(--sf-surface-0));
+    --sf-badge--surface: var(--sf-admin-menu-panel--background-color, var(--sf-surface-page));
     border-color: var(
                     --sf-admin-menu-panel--border-color,
                     var(--sf-outline-variant)

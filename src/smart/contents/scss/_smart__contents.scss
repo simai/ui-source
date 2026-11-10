@@ -170,7 +170,7 @@
     inset-block-start: var(--sf-contents--top);
     padding-block: var(--sf-space-1\/4);
     margin-block: calc(var(--sf-space-1\/4) * -1);
-    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-0)));
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-page)));
   }
 
   .sf-contents-head {
@@ -328,7 +328,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     border-block-end: var(--sf-px) solid var(--sf-contents--line);
-    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-0)));
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-page)));
   }
 
   .sf-contents-item {

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.gradient-stops",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/gradient-stops/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/gradient-stops/default/scss/_sf_css__gradient_stops.scss",
     "src/utility/gradient-stops/default/scss/index.scss"
   ],
-  "content_sha256": "bdfbd9eafd3948687f2080946640a728026bf159e9be2d10b882d890ea0ac78c",
+  "content_sha256": "b52a3b63c4215938473a1519ddd8c77b1ca79405cb6cfb1d352dca0551565968",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

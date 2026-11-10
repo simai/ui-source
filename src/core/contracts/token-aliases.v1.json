@@ -416,6 +416,314 @@
     {
       "from": "active:bg-success-transparent",
       "to": "active:bg-success-state"
+    },
+    {
+      "from": "border-surface-0",
+      "to": "border-surface-page"
+    },
+    {
+      "from": "ring-surface-0",
+      "to": "ring-surface-page"
+    },
+    {
+      "from": "ring-offset-surface-0",
+      "to": "ring-offset-surface-page"
+    },
+    {
+      "from": "border-surface-1",
+      "to": "border-surface-area"
+    },
+    {
+      "from": "ring-surface-1",
+      "to": "ring-surface-area"
+    },
+    {
+      "from": "ring-offset-surface-1",
+      "to": "ring-offset-surface-area"
+    },
+    {
+      "from": "border-surface-overlay",
+      "to": "border-surface-veil"
+    },
+    {
+      "from": "ring-surface-overlay",
+      "to": "ring-surface-veil"
+    },
+    {
+      "from": "ring-offset-surface-overlay",
+      "to": "ring-offset-surface-veil"
+    },
+    {
+      "from": "border-surface-transparent-overlay",
+      "to": "border-surface-container-strong"
+    },
+    {
+      "from": "ring-surface-transparent-overlay",
+      "to": "ring-surface-container-strong"
+    },
+    {
+      "from": "ring-offset-surface-transparent-overlay",
+      "to": "ring-offset-surface-container-strong"
+    },
+    {
+      "from": "border-primary-transparent-overlay",
+      "to": "border-primary-container-strong"
+    },
+    {
+      "from": "ring-primary-transparent-overlay",
+      "to": "ring-primary-container-strong"
+    },
+    {
+      "from": "ring-offset-primary-transparent-overlay",
+      "to": "ring-offset-primary-container-strong"
+    },
+    {
+      "from": "border-secondary-transparent-overlay",
+      "to": "border-secondary-container-strong"
+    },
+    {
+      "from": "ring-secondary-transparent-overlay",
+      "to": "ring-secondary-container-strong"
+    },
+    {
+      "from": "ring-offset-secondary-transparent-overlay",
+      "to": "ring-offset-secondary-container-strong"
+    },
+    {
+      "from": "border-tertiary-transparent-overlay",
+      "to": "border-tertiary-container-strong"
+    },
+    {
+      "from": "ring-tertiary-transparent-overlay",
+      "to": "ring-tertiary-container-strong"
+    },
+    {
+      "from": "ring-offset-tertiary-transparent-overlay",
+      "to": "ring-offset-tertiary-container-strong"
+    },
+    {
+      "from": "border-error-transparent-overlay",
+      "to": "border-error-container-strong"
+    },
+    {
+      "from": "ring-error-transparent-overlay",
+      "to": "ring-error-container-strong"
+    },
+    {
+      "from": "ring-offset-error-transparent-overlay",
+      "to": "ring-offset-error-container-strong"
+    },
+    {
+      "from": "border-warning-transparent-overlay",
+      "to": "border-warning-container-strong"
+    },
+    {
+      "from": "ring-warning-transparent-overlay",
+      "to": "ring-warning-container-strong"
+    },
+    {
+      "from": "ring-offset-warning-transparent-overlay",
+      "to": "ring-offset-warning-container-strong"
+    },
+    {
+      "from": "border-success-transparent-overlay",
+      "to": "border-success-container-strong"
+    },
+    {
+      "from": "ring-success-transparent-overlay",
+      "to": "ring-success-container-strong"
+    },
+    {
+      "from": "ring-offset-success-transparent-overlay",
+      "to": "ring-offset-success-container-strong"
+    },
+    {
+      "from": "drop-shadow-surface-0",
+      "to": "drop-shadow-surface-page"
+    },
+    {
+      "from": "drop-shadow-surface-1",
+      "to": "drop-shadow-surface-area"
+    },
+    {
+      "from": "drop-shadow-primary-transparent-select",
+      "to": "drop-shadow-primary-state-select"
+    },
+    {
+      "from": "drop-shadow-primary-transparent-overlay",
+      "to": "drop-shadow-primary-container-strong"
+    },
+    {
+      "from": "drop-shadow-secondary-transparent-select",
+      "to": "drop-shadow-secondary-state-select"
+    },
+    {
+      "from": "drop-shadow-secondary-transparent-overlay",
+      "to": "drop-shadow-secondary-container-strong"
+    },
+    {
+      "from": "drop-shadow-tertiary-transparent-select",
+      "to": "drop-shadow-tertiary-state-select"
+    },
+    {
+      "from": "drop-shadow-tertiary-transparent-overlay",
+      "to": "drop-shadow-tertiary-container-strong"
+    },
+    {
+      "from": "drop-shadow-error-transparent-select",
+      "to": "drop-shadow-error-state-select"
+    },
+    {
+      "from": "drop-shadow-error-transparent-overlay",
+      "to": "drop-shadow-error-container-strong"
+    },
+    {
+      "from": "drop-shadow-warning-transparent-select",
+      "to": "drop-shadow-warning-state-select"
+    },
+    {
+      "from": "drop-shadow-warning-transparent-overlay",
+      "to": "drop-shadow-warning-container-strong"
+    },
+    {
+      "from": "drop-shadow-success-transparent-select",
+      "to": "drop-shadow-success-state-select"
+    },
+    {
+      "from": "drop-shadow-success-transparent-overlay",
+      "to": "drop-shadow-success-container-strong"
+    },
+    {
+      "from": "fill-surface-0",
+      "to": "fill-surface-page"
+    },
+    {
+      "from": "fill-surface-1",
+      "to": "fill-surface-area"
+    },
+    {
+      "from": "fill-surface-transparent-select",
+      "to": "fill-surface-state-select"
+    },
+    {
+      "from": "fill-surface-transparent-overlay",
+      "to": "fill-surface-container-strong"
+    },
+    {
+      "from": "fill-disable",
+      "to": "fill-surface-disabled"
+    },
+    {
+      "from": "fill-primary-transparent-select",
+      "to": "fill-primary-state-select"
+    },
+    {
+      "from": "fill-primary-transparent-overlay",
+      "to": "fill-primary-container-strong"
+    },
+    {
+      "from": "fill-secondary-transparent-select",
+      "to": "fill-secondary-state-select"
+    },
+    {
+      "from": "fill-secondary-transparent-overlay",
+      "to": "fill-secondary-container-strong"
+    },
+    {
+      "from": "fill-tertiary-transparent-select",
+      "to": "fill-tertiary-state-select"
+    },
+    {
+      "from": "fill-tertiary-transparent-overlay",
+      "to": "fill-tertiary-container-strong"
+    },
+    {
+      "from": "fill-error-transparent-select",
+      "to": "fill-error-state-select"
+    },
+    {
+      "from": "fill-error-transparent-overlay",
+      "to": "fill-error-container-strong"
+    },
+    {
+      "from": "fill-warning-transparent-select",
+      "to": "fill-warning-state-select"
+    },
+    {
+      "from": "fill-warning-transparent-overlay",
+      "to": "fill-warning-container-strong"
+    },
+    {
+      "from": "fill-success-transparent-select",
+      "to": "fill-success-state-select"
+    },
+    {
+      "from": "fill-success-transparent-overlay",
+      "to": "fill-success-container-strong"
+    },
+    {
+      "from": "hover:fill-surface-transparent",
+      "to": "hover:fill-surface-state"
+    },
+    {
+      "from": "hover:fill-primary-transparent",
+      "to": "hover:fill-primary-state"
+    },
+    {
+      "from": "hover:fill-secondary-transparent",
+      "to": "hover:fill-secondary-state"
+    },
+    {
+      "from": "hover:fill-tertiary-transparent",
+      "to": "hover:fill-tertiary-state"
+    },
+    {
+      "from": "hover:fill-error-transparent",
+      "to": "hover:fill-error-state"
+    },
+    {
+      "from": "hover:fill-warning-transparent",
+      "to": "hover:fill-warning-state"
+    },
+    {
+      "from": "hover:fill-success-transparent",
+      "to": "hover:fill-success-state"
+    },
+    {
+      "from": "gr1-surface-0",
+      "to": "gr1-surface-page"
+    },
+    {
+      "from": "gr2-surface-0",
+      "to": "gr2-surface-page"
+    },
+    {
+      "from": "gr3-surface-0",
+      "to": "gr3-surface-page"
+    },
+    {
+      "from": "gr1-surface-1",
+      "to": "gr1-surface-area"
+    },
+    {
+      "from": "gr2-surface-1",
+      "to": "gr2-surface-area"
+    },
+    {
+      "from": "gr3-surface-1",
+      "to": "gr3-surface-area"
+    },
+    {
+      "from": "stripe-surface-transparent-overlay",
+      "to": "stripe-surface-container-strong"
+    },
+    {
+      "from": "color-on-disable",
+      "to": "color-on-surface-disabled"
+    },
+    {
+      "from": "placeholder-on-disable",
+      "to": "placeholder-on-surface-disabled"
     }
   ],
   "held": [],
