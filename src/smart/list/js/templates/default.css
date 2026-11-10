@@ -114,6 +114,46 @@
 
   .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
 
+  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
+     data-sf-list-narrow on its frame below 20rem of its own width): a row
+     with a badge or a count lays out as «picture | text», and the meta goes
+     under the second line, at the text's start, so the title keeps the
+     row's width and the badge stays whole. The row grows by whole bands
+     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
+     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
+     size 1. Rows without a meta keep their layout and their height; the
+     picture place is one width in every row, so all titles start on one
+     line. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sf-space-1\/4);
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container) {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+    grid-column: -2;
+    grid-row: 1;
+    min-inline-size: 0;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+    grid-column: -2;
+    grid-row: 2;
+    justify-self: start;
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+  }
+
   .sf-list__body,
   .sf-list__group {
     display: flex;

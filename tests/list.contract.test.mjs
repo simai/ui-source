@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.3.5'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.4.0'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -139,4 +139,25 @@ test('sf-list-feed: sf-message-log\'s behaviour under the list family\'s names, 
   const api = JSON.stringify(json('src/core/contracts/public-js-api.json'));
   assert.ok(api.includes('SF.readingPosition'));
   assert.match(read('src/core/js/index.js'), /import '\.\/reading-position\.js';/u);
+});
+
+test('sf-list 1.4.0: a narrow list puts a row\'s badge and count under its text, measured by the list itself (C47)', () => {
+  const source = read('src/smart/list/index.js');
+  // The list measures its own frame: no page breakpoint and no setting.
+  assert.match(source, /const NARROW_REM = 20;/u);
+  assert.match(source, /new ResizeObserver\(/u);
+  assert.match(source, /frame\.toggleAttribute\("data-sf-list-narrow", width > 0 && width < NARROW_REM \* rem\)/u);
+  assert.match(source, /this\._widthObserver\?\.disconnect\(\);/u);
+  const contract = json('src/smart/list/component.json');
+  assert.equal(Object.keys(contract.settings).some((name) => /narrow|breakpoint/u.test(name)), false);
+  // The template never binds the mark, so a redraw keeps it.
+  assert.doesNotMatch(read('src/smart/list/js/templates/default.js'), /data-sf-list-narrow/u);
+  const css = read('src/smart/list/js/templates/default.css');
+  // The row grows by whole bands: the step --sf-space-1/4 and the badge's height.
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap:has\(> \.sf-list__meta:not\(:empty\)\) \{\s*display: grid;\s*grid-template-columns: auto minmax\(0, 1fr\);\s*row-gap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*margin-inline-start: 0;\s*padding-inline-start: 0;/u);
+  // No raw length in the rule: every value is a token.
+  const narrow = css.slice(css.indexOf('[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
+  assert.ok(narrow.length > 0);
+  assert.doesNotMatch(narrow, /\d+px|\d+rem/u);
 });
