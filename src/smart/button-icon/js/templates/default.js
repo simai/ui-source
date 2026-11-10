@@ -62,6 +62,9 @@ export function renderIconButtonTemplate(context) {
         // class is the danger one and the error one the sheets also select.
         ...statusClasses(status, scheme),
         tightness ? `tightness-${tightness}` : '',
+        // The height (decisions C27, C35): the class of the size's tightness
+        // step, declared after the density classes; default draws none.
+        ['low', 'high', 'highest'].includes(context.height) ? `sf-icon-button--height-${context.height}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-icon-button-state-loading' : '',

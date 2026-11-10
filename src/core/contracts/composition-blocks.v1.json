@@ -846,6 +846,16 @@
             "default": false,
             "type": "boolean"
           },
+          "height": {
+            "default": "default",
+            "enum": [
+              "low",
+              "default",
+              "high",
+              "highest"
+            ],
+            "type": "string"
+          },
           "icon": {
             "default": "add",
             "type": "string"
@@ -950,7 +960,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.7.2"
+      "version": "1.8.0"
     },
     "sf-checkbox": {
       "inputs": {

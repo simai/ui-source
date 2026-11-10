@@ -800,8 +800,8 @@
         {
           "name": "--sf-toast-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-18"
         },
         {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -322,7 +322,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "ed426c4351ebea080c0d0f15602110b09147323a1372a92fca97097be355caf9"
+        "sha256": "9ecea42e11c534f091bc32fba8c05adc5e7b604e6593fe19521a8a13fbc2faaf"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
@@ -330,7 +330,7 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "03ae22df0c3cd402973149ed082a4ae52310fda4552562b4e905bfb68494483c"
+        "sha256": "f0ac3b707ef005ec3fb59f23de9a9434eb105660f683c71903efa7f7c7c24074"
       },
       {
         "path": "src/smart/confirm/rule.js",
@@ -338,19 +338,19 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "0649cc2d10bd8d7788636f735b78532371d4e590f32ad7706e3d98d6131bb7de"
+        "sha256": "a1f788634c62212f1cedea5540c17bd489a429f995dbfdaaedb65c31e30aa282"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "2101c365c0222783dcf1bf14e02a0bffde574d89fe5b27d22b85e142ee3548cb"
+        "sha256": "782fc4dbc6ba235d2fa68126e0d6742b4a22aab8e8fa3ea4ea10fed838703553"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
-        "sha256": "632be05065f2fa97122bd51390cf0403b5e33b3d43b57e9242387a261ebf0c04"
+        "sha256": "94820c0d33d9f9e36abf53a611803cf8c46d6e56c225e57ccc2b3e74caf3c6de"
       },
       {
         "path": "src/smart/confirm/lang/ru.json",
-        "sha256": "3929949b8b81017dd280b5a5718df535c7cf459ddf45d6aaf361f459c25e46c3"
+        "sha256": "2f7bce95d321738a3e8a6a152479561280367b22525b0f39d9ddff77e1d39f34"
       }
     ],
     "generated_runtime": []

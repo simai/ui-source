@@ -22,6 +22,13 @@ decorative and uses `aria-hidden="true"`.
   the side padding only (1.2.0): an icon button of a size is as tall at every
   density, so a compact one is narrower than it is tall and a spacious one
   wider;
+- height (1.5.0, decisions C27 and C35): the default,
+  `sf-icon-button--height-low`, `sf-icon-button--height-high` or
+  `sf-icon-button--height-highest` -- the size's tightness step on all four
+  sides, so the button stays square and stands at the size's line + 2 x the
+  step (size 1 on desktop 32 / 40 / 48 / 56; compact 28 / 32 / 40 / 48; phone
+  28 / 36 / 44 / 52); the icon keeps the size. A close takes the same heights.
+  The constructor's option is `height`. Declared after the density classes;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 

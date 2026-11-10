@@ -73,7 +73,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.1.1');
+  assert.equal(contract.version, '1.2.0');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -84,4 +84,8 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   const en = json('src/smart/confirm/lang/en.json').runtime;
   assert.deepEqual(Object.keys(ru).sort(), Object.keys(en).sort());
   assert.equal(ru['decline-text'], 'Отмена');
+  // A declined question says nothing (C35, R067): no «Отменено», no word for it.
+  assert.match(source, /statusText\(shown\) \{\s*return shown === "declined" \? "" : super\.statusText\(shown\);/u);
+  assert.equal(ru['declined-text'], undefined);
+  assert.equal(en['declined-text'], undefined);
 });

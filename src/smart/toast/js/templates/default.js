@@ -4,13 +4,13 @@ function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
 }
 
-function buttonClasses(type) {
-  if (type === 'primary') {
-    return 'sf-button sf-button--default sf-button--primary sf-button--size-1/2';
-  }
-
-  return 'sf-button sf-button--default sf-button--on-surface sf-button--size-1/2';
-}
+// The notice's action and close (owner decision C35): the action is an
+// unsized (size 1) low button -- 32, compact and phone 28 -- whose label is
+// the notice's text size, tonal primary, its plate starting at the text edge;
+// the close a size-1 low icon button, 32 / 28 / 28, centred on the first line.
+// The same classes as the class toast (component/toast/js/_toast.js).
+const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
 
 export function renderToastTemplate(context) {
   const rootClasses = joinClasses(
@@ -51,7 +51,7 @@ export function renderToastTemplate(context) {
               <div class="sf-toast-bottom flex items-center">
                 <button
                   type="button"
-                  class=${buttonClasses(context.type)}
+                  class=${TOAST_ACTION_CLASSES}
                   data-action=${context.action || 'action'}
                   data-toast-action=${context.action || 'action'}
                 >
@@ -66,13 +66,13 @@ export function renderToastTemplate(context) {
         ? html`
             <button
               type="button"
-              class="sf-icon-button sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1/3"
+              class=${TOAST_CLOSE_CLASSES}
               aria-label=${context.closeLabel || 'Close message'}
               data-close
               data-toast-close
             >
               <span
-                class="sf-close sf-close--size-1/3 flex justify-center items-center"
+                class="sf-close sf-close--size-1 flex justify-center items-center"
                 aria-hidden="true"
               >
                 <span class="sf-close-icon"></span>
