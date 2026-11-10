@@ -320,6 +320,7 @@ sf-list-description {
   display: flex;
   grid-column: auto;
   flex-direction: column;
+  align-items: stretch;
   min-block-size: 0;
   min-inline-size: 0;
   padding-block: 0;
