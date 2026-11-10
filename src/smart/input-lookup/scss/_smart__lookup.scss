@@ -294,14 +294,14 @@
   color: var(--sf-on-surface);
 }
 
-/* One list, one row height (LK-05, owner decision C49, the whole-lines rule):
-   where a row carries a caption, every row is the one-line row plus the
-   caption's line, and its text stands as far inside it as a one-line row's,
-   (row - line) / 2: 60 = 8 + 24 + 20 + 8 at size 1 on a desktop, 48 = 6 + 20
-   + 16 + 6 at size 1/2, 52 = 8 + 20 + 16 + 8 on a phone. A row without a
-   caption centres its label on the same height. Before, a caption row was 52
-   and a one-line row 40 in one list (phone 44 and 36). */
-.sf-lookup .sf-lookup-list.sf-lookup-list--captions .sf-lookup-option {
+/* A row with a caption (LK-05, owner decision C49 read literally, the
+   whole-lines rule): the one-line row plus the caption's line, its text as
+   far inside it as a one-line row's, (row - line) / 2: 60 = 8 + 24 + 20 + 8
+   at size 1 on a desktop, 48 = 6 + 20 + 16 + 6 at size 1/2, 72 at size 2, 52
+   on a phone. A one-line row keeps the row step (40 at size 1); the height is
+   the row's own, so no row changes height while the answers change. Before,
+   a caption row was 52 at size 1 (44 on a phone): 4 + 24 + 20 + 4. */
+.sf-lookup .sf-lookup-option.sf-lookup-option--caption {
   min-block-size: calc(var(--sf-lookup--row-height) + var(--sf-lookup--caption-height));
 }
 

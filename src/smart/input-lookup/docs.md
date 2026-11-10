@@ -129,9 +129,9 @@ max-items refusal -- is `role="status"`, polite. Chips are sf-tag with a remove 
 The list is a dropping panel with the context menu's geometry (owner C05-C07,
 docs review R029): its rows stand `--sf-space-1/4` from the panel's edge, are
 as tall as a control of the lookup's size and rounded `--sf-radius--ui`, and
-their avatar or text stands `--sf-space-1/2` inside the highlight. Where a row
-carries a caption, every row of the list is the one-line row plus the
-caption's line (owner decision C49), so one list keeps one row height. A row's
+their avatar or text stands `--sf-space-1/2` inside the highlight. A row with
+a caption is the one-line row plus the caption's line (owner decision C49);
+a row without one keeps the one-line height. A row's
 avatar is the field's text line, the same step as a chip's avatar. A chosen
 row is its fill alone, without a check (owner decision C08). The state
 line and the actions under them start on the same line. The scrollbar shows
