@@ -242,8 +242,8 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   const tool = sheet.match(/\.sf-rich-text-tool \.sf-rich-text-tool-text \{([^}]*)\}/u)[1];
   assert.match(tool, /inline-size: var\(--sf-rich-text--tool-height\);/u);
   assert.match(tool, /block-size: var\(--sf-rich-text--tool-height\);/u);
-  // RT-04: headings on the field's text ladder at every size, never a page heading size.
-  for (const [size, [h2, h3, h4]] of Object.entries({'': ['2', '1', '1\\/2'], '--size-2': ['3', '2', '1'], '--size-1\\/2': ['1', '1\\/2', '1\\/3']})) {
+  // RT-04: headings climb the text ladder from the field's text (C21): h4 the text, h3 a rung above, h2 two.
+  for (const [size, [h2, h3, h4]] of Object.entries({'': ['3', '2', '1'], '--size-2': ['4', '3', '2'], '--size-1\\/2': ['2', '1', '1\\/2']})) {
     const selector = size ? `.sf-rich-text.sf-rich-text${size} {` : '.sf-rich-text {';
     const block = sheet.slice(sheet.indexOf(selector), sheet.indexOf('}', sheet.indexOf(selector)));
     assert.ok(block.includes(`--sf-rich-text--h2-size: var(--sf-text-size-${h2});`), `${selector} h2`);
@@ -258,4 +258,11 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   }
   assert.match(source, /--sf-breakpoint-md/u);
   assert.match(source, /SF\?\.Position\?\.liftToTopLayer\?\.\(surface\)/u);
+  // R121: the link form is one rung (field, its hint and the buttons) and one spacing step.
+  for (const part of ['sf-rich-text-link-input', 'sf-rich-text-link-apply', 'sf-rich-text-link-remove']) {
+    assert.match(template, new RegExp(`class="${part}" size=\\$\\{linkSize\\}`, 'u'), part);
+  }
+  const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
+  assert.match(panel, /gap: var\(--sf-space-1\);/u);
+  assert.match(panel, /padding: var\(--sf-space-1\);/u);
 });

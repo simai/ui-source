@@ -138,7 +138,8 @@
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Accessible name for a field drawn without a visible label; it names the editing surface. A visible label wins."
       }
     },
     "additionalProperties": false
@@ -324,7 +325,7 @@
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "d11298a1e6bf4f14a2c1c6e23c13cbadb609a04b9d9b450e16276f6e4ffede27"
+        "sha256": "d0152e8e96ce80e87725c100ca4059eead2b6265ab052abaa82e1cc4f8ee6bc0"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -336,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "ec7738fa5fbf0380161ed38d3e12e443b3244c5bf69a4a78c9cdbbca9f6487d5"
+        "sha256": "31e662dfd28841fd7bb3f5b234c31718d9653da238f70838aed0e2986f31ea8f"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -344,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "727981bdc831515aa04a143beabce2c990e338a3a6175b2d2665e80dfb7bb306"
+        "sha256": "007820c4a44041aead00df94226772e00a7ca060e0445cc7f6cad7633148d4c4"
       }
     ],
     "generated_runtime": []

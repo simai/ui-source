@@ -12,7 +12,7 @@ import {createFieldContract} from '../../../../component/field-contract';
 // the four block levels -- holds its short text instead, in the same square.
 // The link editor is an sf-popover whose
 // trigger is the link button and whose content holds an sf-input and two
-// sf-button.
+// sf-button, all of one size.
 //
 // The editing surface carries no binding inside: lit draws the element and
 // never its children, which are the person's text and are written only by
@@ -80,6 +80,10 @@ export function renderRichTextTemplate(context) {
   const linkId = `${field.base}--link`;
   const message = field.invalid && errorMessage ? errorMessage : hint;
   const buttonSize = BUTTON_SIZE[size] || '1/2';
+  // The link editor is one small form on one rung (R121): its address field,
+  // the field's own label and hint, and Apply / Remove are all the field's
+  // size, capped at 1 because a popup form is at most the form step.
+  const linkSize = size === '2' ? '1' : size;
   const rootClasses = [
     'sf-rich-text',
     `sf-rich-text--size-${size}`,
@@ -101,13 +105,13 @@ export function renderRichTextTemplate(context) {
           @input=${(event) => component.onLinkPanelEvent(event)}
           @change=${(event) => component.onLinkPanelEvent(event)}
           @keydown=${(event) => component.onLinkPanelKeydown(event)}>
-          <sf-input class="sf-rich-text-link-input" size=${size === '2' ? '1' : size} label=${component.sfWord('link-address')}
+          <sf-input class="sf-rich-text-link-input" size=${linkSize} label=${component.sfWord('link-address')}
             hint=${component.sfWord('link-hint')} .value=${linkValue} ?invalid=${Boolean(linkError)}
             error-message=${linkError || nothing} autocomplete="url" inputmode="url"></sf-input>
           <div class="sf-rich-text-link-actions flex flex-wrap items-cross-center">
-            <sf-button class="sf-rich-text-link-apply" size=${buttonSize} @click=${() => component.applyLinkFromPanel()}>${component.sfWord('link-apply')}</sf-button>
+            <sf-button class="sf-rich-text-link-apply" size=${linkSize} @click=${() => component.applyLinkFromPanel()}>${component.sfWord('link-apply')}</sf-button>
             ${linkExisting
-              ? html`<sf-button class="sf-rich-text-link-remove" size=${buttonSize} appearance="outline" @click=${() => component.removeLinkFromPanel()}>${component.sfWord('link-remove')}</sf-button>`
+              ? html`<sf-button class="sf-rich-text-link-remove" size=${linkSize} appearance="outline" @click=${() => component.removeLinkFromPanel()}>${component.sfWord('link-remove')}</sf-button>`
               : nothing}
           </div>
         </div>
