@@ -23,10 +23,11 @@ the existing preloader settings. When the operating system requests reduced
 motion, the same compact mark remains visible without animation.
 
 The boot splash shows after `preloader.delay` (300 ms) and hides on
-`sf-loader-ready`, and in any case at `preloader.ceiling` (1500 ms after the
-core runtime starts; 0 turns the ceiling off). The page scan runs once the
-document is parsed (DOMContentLoaded), not at the window's `load`, so a slow
-font or image no longer holds `sf-loader-ready` (R078).
+`sf-loader-ready`. The page scan runs once the document is parsed
+(DOMContentLoaded), not at the window's `load`, so a slow font or image no
+longer holds `sf-loader-ready` (R078). There is no time limit on the splash: one
+lifted before the page is ready shows an empty page whose controls then come in
+with a jump.
 
 ## Field contract
 
