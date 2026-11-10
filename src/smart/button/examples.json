@@ -245,6 +245,18 @@
         "size": "3",
         "height": "high"
       }
+    },
+    {
+      "name": "full-width",
+      "title": "Во всю ширину",
+      "settings": {
+        "text": "Войти",
+        "icon-start": "login",
+        "full-width": true
+      },
+      "expect": {
+        "full-width": true
+      }
     }
   ],
   "pages": [
@@ -275,6 +287,7 @@
           "  <sf-button id=\"b-h-high\" height=\"high\" text=\"Выше\"></sf-button>",
           "  <sf-button id=\"b-h-highest\" height=\"highest\" text=\"Самая высокая\"></sf-button>",
           "  <sf-button id=\"b-h-bad\" height=\"48\" text=\"Не высота\"></sf-button>",
+          "  <sf-button id=\"b-full\" full-width text=\"Во всю ширину\"></sf-button>",
           "</main>"
         ]
       },
@@ -520,6 +533,21 @@
                 "values": {
                   "#b-h-high.height": "high",
                   "#b-h-bad.height": "default"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p15-full-width-and-loading-colour",
+          "title": "full-width fills the container (sf-segmented's setting, owner decision C36); a loading button keeps its scheme colour and only a disabled one is grey",
+          "covers": "settings.full-width, settings.loading (decision C36)",
+          "steps": [
+            {
+              "check": "(() => { const b = (id) => document.querySelector(`#${id} button`); const main = document.querySelector('main').getBoundingClientRect().width; const css = (id) => getComputedStyle(b(id)).backgroundColor; return Math.abs(b('b-full').getBoundingClientRect().width - main) < 1 && b('b-text').getBoundingClientRect().width < main - 50 && b('b-full').classList.contains('sf-button--full-width') && css('b-load') === css('b-text') && css('b-off') !== css('b-text') && b('b-load').disabled; })()",
+              "expect": {
+                "values": {
+                  "#b-full.fullWidth": true
                 }
               }
             }

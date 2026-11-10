@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -51,6 +51,7 @@
         "icon-position",
         "spacing",
         "radius",
+        "full-width",
         "loading",
         "disabled",
         "native-type",
@@ -255,10 +256,15 @@
           "rounded"
         ]
       },
+      "full-width": {
+        "type": "boolean",
+        "default": false,
+        "description": "The control fills its container, as sf-segmented's full-width does, and its content stays in the middle; without it the button is as wide as its content (owner decision C36). The height does not change."
+      },
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). The inner button is unavailable while it loads."
+        "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner) and the label's ink. The inner button is unavailable while it loads but keeps its scheme colour (owner decision C36); a button that is also disabled wears the disabled look."
       },
       "disabled": {
         "type": "boolean",
@@ -691,7 +697,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "6fdc494399b83970d75279d6f94ca4394930662c6c8276a6870935b9ce0706e2"
+        "sha256": "8ae39fe20ff9626ff330d986815c79f9bddb24f7374470e781f4d1d3739d86e2"
       }
     ],
     "generated_runtime": [
