@@ -12,5 +12,12 @@ for(const [component,file,roles] of [
     assert.ok(!source.includes(`--sf-${role}--color: var(--sf-on-surface-muted);`));
   }
   assert.ok(source.includes('var(--sf-on-disable)'),'Explicit disabled styling remains separate');
-  if(component!=='quantity')assert.ok(source.includes(`--sf-${component==='inputs'?'input':'textarea'}-placeholder--color: var(--sf-on-surface);`),'Tonal placeholder has a stronger foreground role');
+  // FA-08: a filled field's placeholder keeps the quiet ink (the fill remaps
+  // on-surface-variant to on-surface-container--variant); only the value is
+  // on-surface, so a hint never reads as typed text.
+  if(component!=='quantity'){
+    const name=component==='inputs'?'input':'textarea';
+    assert.ok(!source.includes(`--sf-${name}-placeholder--color: var(--sf-on-surface);`),'A filled placeholder is not the value ink');
+    assert.ok(source.includes('--sf-on-surface-variant: var(--sf-on-surface-container--variant);'),'The fill remaps the quiet ink');
+  }
 });

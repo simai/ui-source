@@ -206,9 +206,8 @@
   opacity: 1;
 }
 
-.sf-lookup.sf-lookup--filled .sf-lookup-input::placeholder {
-  color: var(--sf-on-surface);
-}
+/* A filled lookup keeps the placeholder on on-surface-variant, which the fill
+   remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
 
 .sf-lookup .sf-lookup-input:disabled {
   color: inherit;

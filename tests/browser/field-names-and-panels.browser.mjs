@@ -56,7 +56,7 @@ const classSwitch = `
   </label>`;
 
 const classQuantity = `
-  <div id="class-quantity-root"><label class="sf-quantity sf-quantity--size-1"><span class="sf-quantity-label"><span class="sf-quantity-text">Классовое количество</span></span><span class="sf-quantity-wrap"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Меньше"><i class="sf-icon">remove</i></button><input type="text" value="1" step="1" min="0" max="9"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3" aria-label="Больше"><i class="sf-icon">add</i></button></span></label></div>`;
+  <div id="class-quantity-root"><label class="sf-quantity sf-quantity--size-1"><span class="sf-quantity-label"><span class="sf-quantity-text">Классовое количество</span></span><span class="sf-quantity-wrap"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3" aria-label="Меньше"><i class="sf-icon">remove</i></button><input type="text" value="1" step="1" min="0" max="9"><button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3" aria-label="Больше"><i class="sf-icon">add</i></button></span></label></div>`;
 
 const section = (id, title, closedBy) => `
   <article class="sf-accordion sf-accordion--size-1" id="${id}">

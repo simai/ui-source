@@ -72,11 +72,10 @@
     line-height: var(--sf-input-placeholder--line-height);
   }
 
-  // Interactive tonal backgrounds need the stronger foreground pair, including
-  // placeholder text. The variant role is too dim on dark filled hover states.
-  .sf-input.sf-input--filled .sf-input-field input::placeholder {
-    --sf-input-placeholder--color: var(--sf-on-surface);
-  }
+  // A filled field keeps the placeholder on on-surface-variant: the fill remaps
+  // that role to on-surface-container--variant, the pair made for the
+  // container background. The value alone is on-surface, so a hint never reads
+  // as typed text (FA-08).
 
   .sf-input .sf-input-left {
     --sf-input-left--background-color: transparent;
