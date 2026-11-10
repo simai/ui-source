@@ -68,10 +68,15 @@
     --sf-icon--font-size: var(--sf-text-height-1);
     --sf-icon--height: var(--sf-text-height-1);
     --sf-icon--width: var(--sf-text-height-1);
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size);
     height: var(--sf-icon--height);
     width: var(--sf-icon--width);
+  }
+
+  /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
+     icon inside an action button keeps the button's own icon role. */
+  .sf-toast > :is(.sf-icon, sf-icon > .sf-icon) {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 
   /* Centred on the first line: the line's lead in the low control's box. */
@@ -148,7 +153,7 @@
 
   /* The quiet icon role, as on the alert (C35 acceptance F1): a neutral
      toast reads it from its container (--sf-on-surface-container--variant). */
-  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-icon {
+  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > :is(.sf-icon, sf-icon > .sf-icon) {
     --sf-icon--color: var(--sf-on-surface-variant);
   }
 
@@ -160,7 +165,7 @@
     --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-surface));
   }
 
-  .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-icon {
+  .sf-toast:is(.sf-toast--info, .sf-toast--primary) > :is(.sf-icon, sf-icon > .sf-icon) {
     --sf-icon--color: var(--sf-info);
   }
 
@@ -176,7 +181,7 @@
     --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-info-container));
   }
 
-  .sf-toast.sf-toast--error .sf-icon {
+  .sf-toast.sf-toast--error > :is(.sf-icon, sf-icon > .sf-icon) {
     --sf-icon--color: var(--sf-error);
   }
 
@@ -192,7 +197,7 @@
     --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-error-container));
   }
 
-  .sf-toast.sf-toast--warning .sf-icon {
+  .sf-toast.sf-toast--warning > :is(.sf-icon, sf-icon > .sf-icon) {
     --sf-icon--color: var(--sf-warning);
   }
 
@@ -208,7 +213,7 @@
     --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
 
-  .sf-toast.sf-toast--success .sf-icon {
+  .sf-toast.sf-toast--success > :is(.sf-icon, sf-icon > .sf-icon) {
     --sf-icon--color: var(--sf-success);
   }
 
