@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 /* A row's divider is inside its control height: the bottom padding gives the
    border back, so a standalone row and the same row in a list without
    dividers stand equally tall. The width is registered as a length, so a
@@ -313,6 +314,8 @@
      with its ink. */
 .sf-list-item.selected {
   --sf-list-item--background-color: var(--sf-primary-container);
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
+  @include places.sf-place-fill;
 }
 
 /* An option sits flush against the options above and below it. */

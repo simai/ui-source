@@ -218,6 +218,7 @@
   .sf-dropdown .sf-list .sf-list-item.selected,
   .sf-list--menu .sf-list-item.selected {
     --sf-list-item--background-color: var(--sf-primary-container);
+    @include places.sf-place-fill;
   }
 }
 

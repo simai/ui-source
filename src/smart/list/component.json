@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -615,7 +615,9 @@
     "version 1.2.1: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.2.2 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, setItems({items, options}), appendItems({items, options}), upsert({item}), detach({id}), rename({id}), openMenu({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, detach(<string>), rename(<string>), openMenu(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.3.2 (2026-11-09): the rename field is transparent at rest (C16, the background system, owner 2026-11-08). Also: the leading sf-avatar takes hue auto, its former tone auto (sf-avatar 1.3.0, owner decision C17): the same slot for every title, drawn on the static hue's container -- lighter plate (50 at 12/24, was 20/32) and ink 10/90 (was 30/85); rose is pink. Settings, values, events and keys unchanged.",
-    "version 1.3.3 (2026-11-10): a patch; nothing in the component changed. Since sf-menu-context 1.14.1 and sf-list-item 1.2.7 the row menus draw without late utility classes and the rows' leading pictures are sf-icon, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.3.3 (2026-11-10): a patch; nothing in the component changed. Since sf-menu-context 1.14.1 and sf-list-item 1.2.7 the row menus draw without late utility classes and the rows' leading pictures are sf-icon, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.3.3 (2026-11-10): the open row (current) declares the solid place under its translucent fill, --sf-surface-underlay (C43, owner 2026-11-10; core mix sf-place-fill), so a tonal badge on it keeps its own tone: a warning or an error badge on the open row read as a grey fact. Settings, values, events and keys unchanged.",
+    "version 1.3.4 (2026-11-10, pair next integration): one number for the 1.3.3 notes above, which separate branches each claimed: the menus snapshot patch and the C43 underlay on the open row. They ship together in this release; 1.3.3 is never released alone. Settings, values, events and keys as the notes above say."
   ],
   "x-rule": {
     "$comment": [

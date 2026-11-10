@@ -158,7 +158,8 @@ test('Badge draws its border inside its size and offers tight side room', async 
     read('src/core/contracts/public-variables.v1.json').then(JSON.parse),
   ]);
 
-  assert.equal(passport.version, '1.4.0');
+  // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
+  assert.equal(passport.version, '1.5.0');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }
@@ -173,4 +174,39 @@ test('Badge draws its border inside its size and offers tight side room', async 
   const padding = variables.components.find((entry) => entry.component === 'badge').variables.find((entry) => entry.name === '--sf-badge-padding-inline');
   assert.equal(padding.default, 'var(--sf-space-1/2)');
   assert.ok(padding.varies_with.includes('tight'));
+});
+
+test('a tonal badge on a translucent fill lays its tone over the solid place (C43)', async () => {
+  const [css, theme, mix, popover] = await Promise.all([
+    read('src/component/badges/scss/_css__badges.scss'),
+    read('src/core/scss/_sf_css__theme.scss'),
+    read('src/core/scss/mix/_mix__places.scss'),
+    read('src/smart/popover/js/templates/default.css'),
+  ]);
+  // The badge: its tone over the role, as a background image only; the
+  // background-color stays its tone, so off a fill nothing changes.
+  assert.match(css, /\.sf-badge\.sf-badge--tonal \{\s*background-image: linear-gradient\(var\(--sf-badge--background-color\), var\(--sf-badge--background-color\)\), linear-gradient\(var\(--sf-surface-underlay\), var\(--sf-surface-underlay\)\);\s*\}/u);
+  assert.match(css, /\.sf-badge \{[^}]*background-color: var\(--sf-badge--background-color\);/u);
+  // The role is guaranteed invalid on the page and on every place.
+  assert.match(theme, /\s--sf-surface-underlay: initial;/u);
+  assert.match(mix, /'surface-underlay': 'initial'/u);
+  for (const name of ['sf-place-soft', 'sf-place-strong']) {
+    const body = mix.slice(mix.indexOf(`@mixin ${name}`), mix.indexOf('\n}\n', mix.indexOf(`@mixin ${name}`)));
+    assert.match(body, /--sf-surface-underlay: initial;/u, name);
+  }
+  assert.match(popover, /--sf-surface-underlay: initial;/u);
+  // A translucent fill declares the place it stands on.
+  assert.match(mix, /@mixin sf-place-fill \{\s*--sf-surface-underlay: var\(--sf-surface-place\);\s*\}/u);
+  // The Framework's selected, current and open rows include it.
+  const rows = [
+    ['src/component/dropdown/scss/_css__list-item.scss', /\.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/dropdown/scss/_css__list.scss', /\.sf-list--menu \.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--current \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--chosen \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place\);/u],
+  ];
+  for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
 });

@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
   .sf-tree {
     padding-inline-start: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-start, var(--sf-space-1)));
@@ -65,6 +66,8 @@
     background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
+    @include places.sf-place-fill;
   }
 
   // A row is flush against the rows above and below it, so the ring turns

@@ -162,7 +162,9 @@
     --sf-list-item--border-bottom-width: 0;
   }
 
-  .sf-list__row--current { background-color: var(--sf-list--current); }
+  /* A translucent fill: a tonal badge on the open row keeps its own tone
+     (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
+  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place); }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 

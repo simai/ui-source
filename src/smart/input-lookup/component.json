@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -309,7 +309,8 @@
     "version 1.2.4 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.3.1: the size rule C18 (2026-11-09): the list's height cap is the size step g0 (20rem, 320 px, as before), written as the token. Also: the list stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup (a step lighter in the dark theme than the level-2 surface). Nothing else changes.",
     "version 1.4.1 (2026-11-09): the field is transparent at rest (C16, the background system, owner 2026-11-08); the list declares a popup place.",
-    "version 1.5.0 (2026-11-09): a minor (owner decision C32, the popup widths; core.runtime position). The list is at least the frame and as wide as its longest option up to the list's step or the frame, whichever is wider: --sf-popup-list-max-width, 20rem, 18rem in compact density. It was exactly the frame. Settings, events and keys unchanged."
+    "version 1.5.0 (2026-11-09): a minor (owner decision C32, the popup widths; core.runtime position). The list is at least the frame and as wide as its longest option up to the list's step or the frame, whichever is wider: --sf-popup-list-max-width, 20rem, 18rem in compact density. It was exactly the frame. Settings, events and keys unchanged.",
+    "version 1.5.1 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "reuse_mode": "whole",

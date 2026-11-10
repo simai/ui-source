@@ -21,6 +21,13 @@
 // Both say which colour a cut-out takes (--sf-surface-place: a badge's ring,
 // a table head) and which dim ink stands on them (--sf-on-surface-variant).
 //
+// A translucent fill is not a place: a selected, open or current row draws
+// its alpha over the place it stands on. What stands on that row and must keep
+// its own tone (a tonal badge) stacks over the place's solid colour instead of
+// over the row (C43, owner 2026-11-10): sf-place-fill declares that colour as
+// --sf-surface-underlay. Every place above takes it back (initial), so a popup
+// opened from such a row is not painted over the row's place.
+//
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
 // place can take them back (an ancestor's value cannot be read in CSS).
@@ -45,6 +52,7 @@ $sf-place-theme-roles: (
   'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
   'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
+  'surface-underlay': 'initial',
 );
 
 // The renamed roles among them: their former names are re-declared with them
@@ -67,6 +75,14 @@ $sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surf
   @include aliases.sf-role-aliases($sf-place-aliased);
 }
 
+// A translucent fill on a place (C43): a selected, open or current row. What
+// stands on it and keeps its own tone stacks over the solid place under the
+// row, --sf-surface-place, read where the fill is declared. Include it with
+// the fill, in the same rule.
+@mixin sf-place-fill {
+  --sf-surface-underlay: var(--sf-surface-place);
+}
+
 // The seven colours that are places.
 $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
 
@@ -78,6 +94,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // (surfaces research 6.3: text 12.32 light / 8.60 dark at least).
 @mixin sf-place-soft($c) {
   --sf-surface-place: var(--sf-#{$c}-container);
+  --sf-surface-underlay: initial;
   --sf-surface-container: var(--sf-#{$c}-container);
   --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
   --sf-surface-container-active: var(--sf-#{$c}-container-active);
@@ -103,6 +120,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // own ink is on-<c>, or a field's text would be dark on the colour.
 @mixin sf-place-strong($c) {
   --sf-surface-place: var(--sf-#{$c});
+  --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
