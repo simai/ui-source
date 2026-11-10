@@ -15,6 +15,7 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 // acceptance (status="danger") is a filled danger answer beside a quiet
 // declining one (decision C25); a plain question has two outlined answers.
 export function renderConfirmTemplate(context) {
+    if (context.appearance === "window") return renderConfirmWindow(context);
     return html`
         <section
                 class="sf-confirm sf-confirm--${context.appearance} sf-confirm--${context.state}"
@@ -31,6 +32,56 @@ export function renderConfirmTemplate(context) {
                 ? html`<div class="sf-confirm__description">${context.descriptionContent}</div>`
                 : nothing}
             ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : ""})}
+        </section>
+    `;
+}
+
+// The window form (appearance="window", decision C39): the question is the
+// window's title (sf-modal size="question"), so here it only names the group.
+// Under it the consequences on a quiet plate -- the description, then the
+// decisive sentence (consequence) on its own line in medium weight; the
+// page's options (a checkbox); the name to type (require) with its label
+// «Чтобы подтвердить, введите <code>name</code>» and a field; then the two
+// answers, the filled danger answer first, at the start. The steps grow
+// towards the answers (default.css). Declined here, it folds away as the
+// inline and card forms do (C35); its window closes on the decline anyway.
+function renderConfirmWindow(context) {
+    const plate = context.hasDescription || context.consequence;
+    return html`
+        <section
+                class="sf-confirm sf-confirm--window sf-confirm--${context.state}"
+                role="group"
+                aria-label=${context.question || context.questionLabel}
+                data-state=${context.state}
+                ?hidden=${context.collapsed}
+        >
+            ${plate
+                ? html`<div class="sf-confirm__consequences">
+                    ${context.hasDescription
+                        ? html`<div class="sf-confirm__description">${context.descriptionContent}</div>`
+                        : nothing}
+                    ${context.consequence
+                        ? html`<p class="sf-confirm__consequence">${context.consequence}</p>`
+                        : nothing}
+                </div>`
+                : nothing}
+            ${context.hasOptions
+                ? html`<div class="sf-confirm__options">${context.optionsContent}</div>`
+                : nothing}
+            ${context.require
+                ? html`<div class="sf-confirm__require">
+                    <p class="sf-confirm__require-label" aria-hidden="true">${context.requireText} <code class="sf-confirm__name">${context.require}</code></p>
+                    <sf-input
+                            class="sf-confirm__field"
+                            autocomplete="off"
+                            aria-label=${`${context.requireText} ${context.require}`}
+                            ?invalid=${context.requireInvalid}
+                            error-message=${context.requireInvalid ? context.requireError : nothing}
+                            ?disabled=${context.answersLocked}
+                    ></sf-input>
+                </div>`
+                : nothing}
+            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : "", window: true})}
         </section>
     `;
 }

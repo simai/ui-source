@@ -18,7 +18,9 @@ test('the confirm surface applies nothing and keeps the question open when the h
   // A plain question: two outlined answers of one weight. A dangerous one
   // (decision C25): a filled danger acceptance and a quiet declining answer.
   assert.match(surface, /appearance=\$\{danger \? "default" : "outline"\}/u);
-  assert.match(surface, /appearance=\$\{danger \? "ghost" : "outline"\}/u);
+  // In the question window (C39) the declining answer is tonal beside it.
+  assert.match(surface, /const quiet = window \? "tonal" : "ghost";/u);
+  assert.match(surface, /appearance=\$\{danger \? quiet : "outline"\}/u);
   assert.match(surface, /status=\$\{danger \? "danger" : nothing\}/u);
   // The answers stand on the element's size (default 1), never a fixed 1/2
   // (C22): a template's size is relative, so density moves them.
@@ -73,12 +75,13 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.2.0');
+  assert.equal(contract.version, '1.3.0');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
   assert.match(source, /event\.key !== "Escape"/u);
-  assert.match(source, /event\.stopPropagation\(\);\s*this\.cancel\(\);/u);
+  // In a page the key goes no further; in a window it goes on to the window (D4).
+  assert.match(source, /const result = this\.cancel\(\);\s*if \(result\?\.outcome === "applied" && inWindow\(this\)\) return;\s*event\.preventDefault\(\);\s*event\.stopPropagation\(\);/u);
   // Words in both languages, the same keys.
   const ru = json('src/smart/confirm/lang/ru.json').runtime;
   const en = json('src/smart/confirm/lang/en.json').runtime;

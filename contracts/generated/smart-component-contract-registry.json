@@ -516,7 +516,8 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.icon"
+          "smart.icon",
+          "smart.input"
         ]
       },
       "contract_schema": {
@@ -528,7 +529,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm/smart.manifest.json",
-      "manifest_sha256": "d2db35146e605bb86985c20ae30273f5b2bd315b294cfb72721b7dfa9714031c",
+      "manifest_sha256": "f30e914588f57d3f6613cb6c48f8cb666be4ba285601b0e9617125ed3b8214b7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -981,7 +982,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-page/smart.manifest.json",
-      "manifest_sha256": "7b90aeac8e3dd31ee5b5a78927af6ff6965d37f489048118081cfac4137a0e95",
+      "manifest_sha256": "335c846319b107bef0ebfaa5c5c427510cbf6fe912e2bc3477e3e2732fd25583",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1720,7 +1721,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "fb7f44bb883943fe3be6a3c52e1aaaf7d968ec70c306be188ce984002abe7eb1",
+      "manifest_sha256": "58e81019d3a57350b417be8b6daa25b835ddf4fe534e6cbaaba6fb784020bc4b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2062,7 +2063,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "6463fc2041d94198824aae835714e23a47a0c58f0d10a36de2ada3b1dfc074fc",
+      "manifest_sha256": "a425bf60c860017ef7c9f608e98b860644b8d0edd825825c248daaba392d250e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2183,7 +2184,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "2f4986917e8c33bdd4760695f3564465e7f4d0ee32ba5c53ea0b792378758998",
+      "manifest_sha256": "8969763e9ccf12cfdce2082f4f33b0f82d92d7d50ca0a034ab40f7de1dc93304",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

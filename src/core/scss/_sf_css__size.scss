@@ -66,5 +66,9 @@
 		--sf-popup-panel-width: var(--sf-g0);
 		--sf-popup-form-width: var(--sf-g0);
 		--sf-popup-form-wide-width: var(--sf-g2);
+		// A question window (sf-modal size="question", decision C39): a title,
+		// the consequences, a field or a checkbox and two answers, 28rem;
+		// compact 26rem by the same rule.
+		--sf-popup-question-width: var(--sf-g4);
 	}
 }

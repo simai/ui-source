@@ -8,6 +8,8 @@
     "declining-text": "Отменяется…",
     "expired-text": "Время ответа истекло",
     "question-label": "Подтверждение",
+    "require-error": "Введите «{name}» — так же, как выше",
+    "require-text": "Чтобы подтвердить, введите",
     "until-text": "Ответить можно до {time}"
   },
   "events": {

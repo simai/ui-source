@@ -2,7 +2,7 @@
   "$comment": "The source of sf-confirm's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The plain question of block confirm; sf-confirm-change is the same surface over values (src/smart/helpers/confirm-surface.js).",
   "id": "smart.confirm",
   "tag": "sf-confirm",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "confirm",
   "settings": {
@@ -56,10 +56,21 @@
       "type": "enum",
       "values": [
         "inline",
-        "card"
+        "card",
+        "window"
       ],
       "default": "inline",
-      "summary": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset."
+      "summary": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- the window's title is the question, so it only names the group here; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first."
+    },
+    "consequence": {
+      "type": "string",
+      "default": "",
+      "summary": "Window form: the sentence that decides («Вернуть сайт будет нельзя.», «30 дней меню лежит в корзине.»), on its own line in medium weight at the end of the consequences' plate. Danger is told by this sentence and the filled answer; the plate keeps its colour."
+    },
+    "require": {
+      "type": "string",
+      "default": "",
+      "summary": "Window form: the name the person types before the acceptance works (R069) -- «Чтобы подтвердить, введите <name>» with the name as code (C10, taken whole by one press; paste allowed) and a field. The accepting answer stays filled and pressable: pressed early, or Enter in the field, it puts the focus in the field and says under it what to type (R064)."
     },
     "size": {
       "type": "enum",
@@ -161,7 +172,10 @@
   },
   "slots": {
     "description": {
-      "x-summary": "More words under the question when the question alone is not enough: what stays, what goes."
+      "x-summary": "More words under the question when the question alone is not enough: what stays, what goes. In the window form, the consequences on the quiet plate."
+    },
+    "options": {
+      "x-summary": "Window form: the page's choices made with the answer (a checkbox «Удалить сразу, без корзины»), --sf-space-2 below the consequences."
     }
   },
   "layer": {
@@ -184,6 +198,9 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-input"
     }
   ],
   "templates": {
@@ -210,7 +227,7 @@
       "Space": "select",
       "Escape": "close"
     },
-    "x-keys": "Enter and Space press the focused answer (two native buttons). Whenever the question is put -- open(), the host reopening it, or the question standing in place of the control the person pressed -- the focus waits on the declining answer, so a stray Enter or Space only takes the question back (decision C25). Escape inside an open question declines, as the declining answer does."
+    "x-keys": "Enter and Space press the focused answer (two native buttons). Whenever the question is put -- open(), the host reopening it, or the question standing in place of the control the person pressed -- the focus waits on the declining answer, so a stray Enter or Space only takes the question back (decision C25). Escape inside an open question declines, as the declining answer does; in a window (sf-modal) the key then goes on to the window, which closes. In the window form with require, Enter in the name's field accepts once the name matches and otherwise puts the explanation under the field."
   },
   "host-states": {},
   "css-variables": {
@@ -222,17 +239,17 @@
     "--sf-confirm-inset": {
       "type": "length",
       "state": "default",
-      "x-summary": "The card's inner padding (appearance=\"card\")."
+      "x-summary": "The card's inner padding (appearance=\"card\"); the consequences' plate's in the window form."
     },
     "--sf-confirm-radius": {
       "type": "length",
       "state": "default",
-      "x-summary": "The card's corner."
+      "x-summary": "The card's corner; the plate's in the window form."
     },
     "--sf-confirm-background-color": {
       "type": "color",
       "state": "default",
-      "x-summary": "The card's fill."
+      "x-summary": "The card's fill; the plate's in the window form (surface-container by default)."
     },
     "--sf-confirm-border-color": {
       "type": "color",
@@ -255,13 +272,15 @@
   "x-decisions": [
     "block confirm (owner decision 2026-11-03, component sets, point 13; duplication audit 2026-11-03 A-5): sf-confirm is the block's main member, the plain question; sf-confirm-change is its variant over values. Both are one confirm surface, src/smart/helpers/confirm-surface.js (state, expiry, pending, the two answers, the ask of an assembly) with one footer template; sf-modal's confirm() stays the modal case.",
     "a11y-role: group named by the question (aria-labelledby on its paragraph), else by runtime.question-label. An in-place question is not a heading: it sits in a row of a list or a panel, where a heading would break the outline.",
-    "Escape: an open question answered from inside by Escape declines, as the chat's in-place delete did (chat-message 1.2.0); the key goes no further (a surrounding drawer or modal does not close on the same press).",
+    "Escape: an open question answered from inside by Escape declines, as the chat's in-place delete did (chat-message 1.2.0); the key goes no further in a page (a surrounding drawer does not close on the same press). In a window (sf-modal) the question is the window's: the decline is reported and the window closes on the same press (dispatcher decision D4, 2026-11-10), unless the host refuses the answer.",
     "destructive: the accepting answer wears status error (sf-button), the delete case; both answers stay outlined and of equal weight otherwise.",
     "appearance: inline (default) has no frame -- a row's question in the row's own surface; card frames it with --sf-confirm-inset, --sf-confirm-radius and --sf-confirm-background-color.",
     "words: lang/ru.json and lang/en.json; the answers default to Подтвердить and Отмена.",
     "version 1.0.1: Escape is the effect close of the closed list (standard simai.smart-component 1.3.15 §4.8): the open question closes with the declining answer. The word cancel stays the keyboard action and the answer's id. Nothing behaves differently.",
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
-    "version 1.1.1: the size rule C18 (2026-11-09): the two answers share the width below the Framework's sm breakpoint, 32rem (512 px), not below a raw 479 px; on a screen 480-511 px wide they now stand as two equal halves, as on any narrower phone. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, answer({accepted}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged. Also: a minor (decisions C13, C22, C25; docs review pre-check 2026-11-09 CF-03..CF-06, CF-10). status=\"danger\" names a dangerous acceptance; destructive, its former name, reads as danger and is noted once until 2027-01-01 (change journal setting-confirm-destructive-to-status-danger). A dangerous question draws a filled danger accepting answer and a quiet (ghost) declining one; a plain question keeps two outlined answers. Whenever the question is put -- open(), the host reopening it after a refused answer, or the element arriving in place of the control the person pressed (the focus had fallen to the page after the person acted) -- the declining answer takes the focus; a question printed with the page takes none. The answers stand on the new setting size (default 1, the ladder of a field and a button) instead of a fixed 1/2, so a compact region (data-sf-density, C22) brings them to 32 px with the rest of the row. The accepted outcome is written in the success role (--sf-success), not on-success-container, which read near-black on the page in the light theme (C16). The description slot and the five public variables carry an x-summary for the reference. Events, values and actions unchanged."
+    "version 1.1.1: the size rule C18 (2026-11-09): the two answers share the width below the Framework's sm breakpoint, 32rem (512 px), not below a raw 479 px; on a screen 480-511 px wide they now stand as two equal halves, as on any narrower phone. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, answer({accepted}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged. Also: a minor (decisions C13, C22, C25; docs review pre-check 2026-11-09 CF-03..CF-06, CF-10). status=\"danger\" names a dangerous acceptance; destructive, its former name, reads as danger and is noted once until 2027-01-01 (change journal setting-confirm-destructive-to-status-danger). A dangerous question draws a filled danger accepting answer and a quiet (ghost) declining one; a plain question keeps two outlined answers. Whenever the question is put -- open(), the host reopening it after a refused answer, or the element arriving in place of the control the person pressed (the focus had fallen to the page after the person acted) -- the declining answer takes the focus; a question printed with the page takes none. The answers stand on the new setting size (default 1, the ladder of a field and a button) instead of a fixed 1/2, so a compact region (data-sf-density, C22) brings them to 32 px with the rest of the row. The accepted outcome is written in the success role (--sf-success), not on-success-container, which read near-black on the page in the light theme (C16). The description slot and the five public variables carry an x-summary for the reference. Events, values and actions unchanged.",
+    "version 1.1.2 (2026-11-10, from 1.1.1): a patch (dispatcher decision D4, recipes gaps acceptance). Escape on an open question inside a window (sf-modal, not an inline one) reports the decline and lets the key go on to the window, which closes: with its first focus on the declining answer (sf-modal 1.6.0, C39) Escape reached the question first, and a host that never set an outcome was left with an open window and both answers greyed (pending). A host that refuses the answer (cancels the answer event) keeps the question and the window. In a page, a drawer or a popover inside a window, Escape still goes no further. Settings, values, events and actions unchanged; tests/browser/confirm-escape-in-window.browser.mjs.",
+    "version 1.3.0 (2026-11-10, from 1.1.2; numbered above 1.2.0, which the next pair holds, so the merge keeps one line of versions): a minor (decision C39, the owner's yes 2026-11-09; R064, R068, R069, R081). appearance=\"window\": the content of a question window (sf-modal size=\"question\"). No icon and no bar: the description and the decisive sentence (the new setting consequence, medium weight, its own line) stand on a quiet plate -- the place's surface-container, --sf-radius--surface, --sf-space-1 inside; its colour never changes with the danger. The page's options slot (a checkbox), --sf-space-2 below; the new setting require: «Чтобы подтвердить, введите <code>name</code>» (C10: the code face and plate, user-select all, paste allowed) and an sf-input, --sf-space-2 below; the answers --sf-space-3 below, at the start, on step 1 (C27) with --sf-space-1/2 between them: the filled danger answer first, then «Отмена», tonal in the window (ghost in a row). The acceptance waits for the name: pressed early, or Enter in the field, or the action called, it refuses (reason required), puts the focus in the field and says «Введите «name» — так же, как выше» under it; typing the name takes the words away; Enter in the field accepts once it matches. On a phone the two answers share the row in halves and stand one under the other when a label does not fit its half (measured, data-stacked). answeredNo: the question declined, or its decline is on its way with no outcome -- a window opened again puts it again (sf-modal 1.7.0). Put again (open()), the name's field is emptied. Events, values and the other appearances unchanged; it fetches sf-input (relation cl-input). tests/browser/confirm-window.browser.mjs. Also (C39 acceptance D1, L3, before release): clearRequire() empties the typed name and the explanation, and its window calls it whenever it opens or closes, so a window left by ×, the backdrop or close() never keeps a name that would delete on one press; a window-form question declined here folds away (hidden) as the inline and card forms do since 1.2.0 (C35). tests/browser/confirm-window-close.browser.mjs."
   ],
   "x-rule": {
     "$comment": [
@@ -372,7 +391,7 @@
     },
     "accessibility": {
       "accessible_name": "internal",
-      "focus": "A group named by its question. The status line is a polite live region, present before it speaks; when a press takes the answers away, focus moves to it instead of falling to the page, and back to the first answer when the host cancels. Escape inside an open question declines."
+      "focus": "A group named by its question. The status line is a polite live region, present before it speaks; when a press takes the answers away, focus moves to it instead of falling to the page, and back to the first answer when the host cancels. Escape inside an open question declines; in a window (sf-modal) the window then closes on the same press."
     },
     "compatibility": {
       "migrations": []

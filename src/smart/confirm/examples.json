@@ -45,6 +45,25 @@
       }
     },
     {
+      "name": "window",
+      "title": "В окне вопроса",
+      "settings": {
+        "question": "Удалить меню «Главное»?",
+        "confirm-id": "menu-1",
+        "accept-text": "Удалить меню",
+        "status": "danger",
+        "appearance": "window",
+        "consequence": "30 дней меню лежит в корзине — оттуда его можно вернуть."
+      },
+      "slots": {
+        "description": "<p>Меню пропадёт с трёх сайтов: shop, b2b и blog. Два представления, которые на него ссылаются, станут стандартными.</p>",
+        "options": "<sf-checkbox label=\"Удалить сразу, без корзины\"></sf-checkbox>"
+      },
+      "expect": {
+        "name": "Удалить меню «Главное»?"
+      }
+    },
+    {
       "name": "untitled",
       "title": "Без вопроса",
       "settings": {

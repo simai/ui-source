@@ -19,6 +19,9 @@ function overlayClasses(context) {
 
 export function renderModalTemplate(context) {
     const isInline = context.display === 'inline';
+    // A question window (size="question", decision C39): its own width, frame
+    // and title; see component/modal/scss/_css__modal_custom.scss.
+    const isQuestion = context.size === 'question';
     const hasRemoteContent =
         Boolean(context.src) &&
         (context.mode === 'ajax' || context.mode === 'iframe');
@@ -59,6 +62,7 @@ export function renderModalTemplate(context) {
                         // Legacy alias: the misspelt class the modal wrote before;
                         // kept until contracts/changes/journal.json removes it.
                         `sf-modal--positon-${context.position}`,
+                        isQuestion && 'sf-modal--size-question',
                         isInline
                                 ? 'sf-modal--inline inline-block w-full'
                                 : 'fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center',
@@ -75,6 +79,7 @@ export function renderModalTemplate(context) {
                 aria-labelledby=${accessibleLabel ? nothing : titleId}
                 data-sf-modal-id=${context.modalId}
                 data-sf-modal-position=${context.position}
+                data-sf-modal-size=${context.size || 'auto'}
                 data-sf-modal-fullscreen=${String(context.fullscreen)}
                 data-sf-modal-display=${context.display}
                 data-sf-modal-state=${isInline ? 'inline' : context.modalState}
@@ -107,6 +112,7 @@ export function renderModalTemplate(context) {
                                 context.surfaceClass,
                         )}
                         style=${surfaceStyle}
+                        ?data-sf-modal-own-padding=${Boolean(context.surfacePadding)}
                         data-sf-modal-surface
                 >
                     ${showHeader
@@ -119,7 +125,7 @@ export function renderModalTemplate(context) {
                                 >
                                     <div class="sf-modal-header-content">${hasHeaderSlot
                                             ? context.headerContent
-                                            : html`<h2 id=${titleId} class="title-3 m-0">${context.title}</h2>`}</div>
+                                            : html`<h2 id=${titleId} class=${isQuestion ? 'sf-modal-title m-0' : 'title-3 m-0'}>${context.title}</h2>`}</div>
                                     ${context.hide && !isInline
                                             ? html`
                                                 <button

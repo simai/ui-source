@@ -197,10 +197,15 @@ export function renderListTemplate(context) {
                         </section>`
                     : rows(context, group.items, null))}
             </div>
-            ${context.empty
-                ? html`<div class="sf-list__empty">${context.emptyContent
-                    ?? html`<sf-empty-state kind="no-data" size="1/2" heading=${context.emptyHeading}></sf-empty-state>`}</div>`
-                : nothing}
+            ${context.emptyContent
+                // The page's own empty state stays in the document while the
+                // list has rows, hidden: a page that looks it up by id to give
+                // it its actions finds it whatever the list shows (ui-doc
+                // «Рецепты», 2026-11-10). The list's own is drawn only when empty.
+                ? html`<div class="sf-list__empty" ?hidden=${!context.empty}>${context.emptyContent}</div>`
+                : context.empty
+                    ? html`<div class="sf-list__empty"><sf-empty-state kind="no-data" size="1/2" heading=${context.emptyHeading}></sf-empty-state></div>`
+                    : nothing}
             <div class="sf-list__next" ?hidden=${!context.showMore}>
                 <sf-button
                         appearance="ghost"
