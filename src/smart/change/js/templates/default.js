@@ -2,8 +2,8 @@ import {html, nothing} from 'lit';
 
 // sf-change's markup (scss/ draws it).
 //
-// - inline: [label: ] old value, then the arrow and the new value as one
-//   piece that does not break. The arrow is a picture; a visually hidden
+// - inline: [label: ] old value, then the arrow glued to the start of the new
+//   value; the values wrap. The arrow is a picture; a visually hidden
 //   word between the values says the change to a screen reader.
 // - list: a dl, a term (the label) and a description (the pair) per change.
 // - folded (a long value in a sentence): the button «Показать изменения»
@@ -15,8 +15,11 @@ const value = (context, text, part) => (text === null
   ? html`<span class=${`sf-change__${part} sf-change__empty`}>${context.words.empty}</span>`
   : html`<span class=${`sf-change__${part}`}>${text}</span>`);
 
+// The arrow and the new value are joined by a no-break space (the hidden word
+// is out of flow and makes no break), so the arrow never ends a line alone;
+// both values wrap like any text.
 const pair = (context, change) => html`${value(context, change.before, 'before')}<span class="sf-change__pair"> <span
-  class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> ${context.words.to}</span> ${value(context, change.after, 'after')}</span>`;
+  class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> ${context.words.to}</span>\u00a0${value(context, change.after, 'after')}</span>`;
 
 const label = (context, change) => (context.showLabel && change.label
   ? html`<span class="sf-change__label">${change.label}${context.words.separator} </span>`

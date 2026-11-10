@@ -4,8 +4,8 @@
    value quiet, the arrow the same, the new value in the text colour and
    medium weight. No badges, no strikethrough.
 
-   inline: the arrow and the new value are one piece that never breaks, so a
-   line breaks only before the arrow. list: a description list on one grid,
+   inline: the arrow is glued to the new value's first word, so it never
+   ends a line; the values themselves wrap. list: a description list on one grid,
    the labels' column as wide as the longest label; under a 24rem container
    the label stands over its pair. folded: a long value is revealed in place
    as two outlined blocks.
@@ -60,9 +60,11 @@ sf-change[data-block] {
   font-weight: var(--sf-font-weight-regular);
 }
 
+/* inline: the values wrap like the sentence around them (a long word too);
+   the template glues the arrow to the new value's first word. */
 .sf-change--inline .sf-change__before,
-.sf-change--inline .sf-change__pair {
-  white-space: nowrap;
+.sf-change--inline .sf-change__after {
+  overflow-wrap: anywhere;
 }
 
 /* list: one grid, the labels' column max-content. */

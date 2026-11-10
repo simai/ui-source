@@ -208,11 +208,11 @@
       },
       {
         "path": "src/smart/change/js/templates/default.js",
-        "sha256": "c92d333cfe6b6784cd01b09767792e09a5bad127279badd6c1e59759802ba995"
+        "sha256": "9dc5cdcf1369b07d137fedf4499f37ce20ab79faa9b69691ea510f4a5bfeb1be"
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",
-        "sha256": "4978a690e921dc832bd05d1a61c28090dc3a6d3345ca4a26fcfbb9f1cf5b5619"
+        "sha256": "9f6427d964a29d50bd70313ede5e4a22c8a614cabc6583f81e6ce8ccf6ac47d0"
       },
       {
         "path": "src/smart/change/rule.js",
@@ -220,7 +220,7 @@
       },
       {
         "path": "src/smart/change/docs.md",
-        "sha256": "35f019b51ff093c35f87eb966750c998cd962dc93eee097bc75e2db5934d04d6"
+        "sha256": "34ece361737df571770f3405fb748c88b98d7c7aa5cdc8a2e89e76ae2350596d"
       }
     ],
     "generated_runtime": []
