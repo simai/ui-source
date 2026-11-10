@@ -19,7 +19,8 @@ import {createFieldContract} from '../../../../component/field-contract';
 // the component, always through the subset's cleaner.
 
 // Icon button size one step below the field's, so the toolbar sits inside the
-// frame on the same ladder.
+// frame on the same ladder. The look is the editor toolbar's of decision C15:
+// ghost on-surface (RT-06; link is ghost's old name).
 const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
 
 function toolButton(context, tool) {
@@ -31,7 +32,7 @@ function toolButton(context, tool) {
   const unavailable = Boolean(tool.unavailable?.(state));
   return html`<button
       type="button"
-      class="sf-rich-text-tool sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-${buttonSize} flex items-cross-center"
+      class="sf-rich-text-tool sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${buttonSize} flex items-cross-center"
       data-sf-tool=${tool.id}
       tabindex=${roving === tool.id ? '0' : '-1'}
       aria-label=${component.sfWord(tool.word)}
@@ -94,7 +95,7 @@ export function renderRichTextTemplate(context) {
   const group = (ids) => tools.filter((tool) => ids.includes(tool.id)).map((tool) => {
     if (tool.id !== 'link') return toolButton(toolContext, tool);
     // The link button opens the link editor: the popover's trigger.
-    return html`<sf-popover class="sf-rich-text-link" placement=${context.linkPlacement || 'bottom-start'} width="20rem" label=${component.sfWord('link-dialog')}>
+    return html`<sf-popover class="sf-rich-text-link" placement=${context.linkPlacement || 'bottom-start'} width="var(--sf-popup-form-width, 20rem)" label=${component.sfWord('link-dialog')}>
         <span slot="trigger" class="sf-rich-text-link-trigger">${toolButton(toolContext, tool)}</span>
         <div slot="content" class="sf-rich-text-link-panel flex flex-col" id=${linkId}
           @input=${(event) => component.onLinkPanelEvent(event)}

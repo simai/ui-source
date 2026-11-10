@@ -229,3 +229,33 @@ test('the element makes no server call and puts no string on the page uncleaned'
     'entry.html',
   ]);
 });
+
+test('1.3.0: the toolbar, the headings and the link editor are drawn by the systems (RT-01, RT-02, RT-04, RT-06)', () => {
+  const sheet = readFileSync(new URL('src/smart/input-rich/scss/_smart__rich_text.scss', root), 'utf8');
+  const template = readFileSync(new URL('src/smart/input-rich/js/templates/default.js', root), 'utf8');
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8');
+  // RT-06: ghost on-surface, the editor toolbar of C15; the pressed look is the icon button's (C12).
+  assert.match(template, /sf-icon-button--ghost sf-icon-button--on-surface/u);
+  assert.doesNotMatch(template, /sf-icon-button--link/u);
+  assert.doesNotMatch(sheet, /secondary-container/u);
+  // RT-01: a block level's text stands in the glyph's square, the button rung's line.
+  const tool = sheet.match(/\.sf-rich-text-tool \.sf-rich-text-tool-text \{([^}]*)\}/u)[1];
+  assert.match(tool, /inline-size: var\(--sf-rich-text--tool-height\);/u);
+  assert.match(tool, /block-size: var\(--sf-rich-text--tool-height\);/u);
+  // RT-04: headings on the field's text ladder at every size, never a page heading size.
+  for (const [size, [h2, h3, h4]] of Object.entries({'': ['2', '1', '1\\/2'], '--size-2': ['3', '2', '1'], '--size-1\\/2': ['1', '1\\/2', '1\\/3']})) {
+    const selector = size ? `.sf-rich-text.sf-rich-text${size} {` : '.sf-rich-text {';
+    const block = sheet.slice(sheet.indexOf(selector), sheet.indexOf('}', sheet.indexOf(selector)));
+    assert.ok(block.includes(`--sf-rich-text--h2-size: var(--sf-text-size-${h2});`), `${selector} h2`);
+    assert.ok(block.includes(`--sf-rich-text--h3-size: var(--sf-text-size-${h3});`), `${selector} h3`);
+    assert.ok(block.includes(`--sf-rich-text--h4-size: var(--sf-text-size-${h4});`), `${selector} h4`);
+  }
+  // RT-02: the form's width step, and a sheet at the bottom of a phone screen in the top layer (C32).
+  assert.match(template, /width="var\(--sf-popup-form-width, 20rem\)"/u);
+  const sheetRule = sheet.match(/\[slot='content'\]\[data-sf-sheet\] \{([^}]*)\}/u)[1];
+  for (const declaration of ['position: fixed;', 'inset: auto 0 0;', 'max-inline-size: var(--sf-h1);', 'var(--sf-shadow-modal)']) {
+    assert.ok(sheetRule.includes(declaration), declaration);
+  }
+  assert.match(source, /--sf-breakpoint-md/u);
+  assert.match(source, /SF\?\.Position\?\.liftToTopLayer\?\.\(surface\)/u);
+});
