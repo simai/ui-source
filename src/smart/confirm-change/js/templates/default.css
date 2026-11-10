@@ -128,6 +128,11 @@
     outline: none;
   }
 
+  /* Declined by the person here, the question folds away and the focus goes
+     back to the control that put it (DEV D2 on C35); the surface's own
+     display would otherwise keep it drawn. */
+  .sf-change-confirm[hidden] { display: none; }
+
   /* The outcome's ink is the success role on the card's surface (C16), not
      the ink of a success container. */
   .sf-change-confirm--accepted .sf-change-confirm__status { color: var(--sf-success); }

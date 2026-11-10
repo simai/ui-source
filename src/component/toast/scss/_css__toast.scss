@@ -111,6 +111,16 @@
     gap: var(--sf-space-1\/3);
   }
 
+  /* The tonal action's plate is its toast's own tone, a step stronger (DEV
+     look note on C35): the primary container is translucent, and over a
+     toast of the same hue -- info in the dark theme -- the plate merged with
+     it (plate to toast 1.09-1.16 : 1 on every tone, both themes). The step
+     is each tone's container-strong. A page's --sf-button-background-color
+     still wins, as on any button. */
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-toast--action-background-color, var(--sf-primary-container)));
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-toast .sf-toast-wrap {
     --sf-toast-wrap--background-color: transparent;
@@ -225,6 +235,7 @@
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--neutral, .sf-toast--default) {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
+    --sf-toast--action-background-color: var(--sf-surface-container-strong);
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
     --sf-close-icon--background-color: var(--sf-on-surface);
@@ -237,6 +248,7 @@
      toast took that colour. */
   :is(.sf-toast--info, .sf-toast--primary) {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-info-container));
+    --sf-toast--action-background-color: var(--sf-info-container-strong);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-info-container));
     --sf-close-icon--background-color: var(--sf-on-info-container);
   }
@@ -244,18 +256,21 @@
   /* utility-hint: flex/1 (.flex-1) */
   .sf-toast--error {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-error-container));
+    --sf-toast--action-background-color: var(--sf-error-container-strong);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-error-container));
     --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast--warning {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-warning-container));
+    --sf-toast--action-background-color: var(--sf-warning-container-strong);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-warning-container));
     --sf-close-icon--background-color: var(--sf-on-warning-container);
   }
 
   .sf-toast--success {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
+    --sf-toast--action-background-color: var(--sf-success-container-strong);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
     --sf-close-icon--background-color: var(--sf-on-success-container);
   }

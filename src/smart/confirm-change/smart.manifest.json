@@ -69,7 +69,7 @@
       "state": {
         "type": "string",
         "default": "open",
-        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown.",
+        "description": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown. Declined by the person here, the surface folds away (hidden) and the focus goes back, with its ring, to the control that put the question, else the nearest focusable place around it or the next control of the page (DEV D2 on C35); a declined state the host sets without that answer stays shown.",
         "enum": [
           "open",
           "pending",
@@ -486,11 +486,11 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.js",
-        "sha256": "bdd92ead2168035661c28ab2a296c8ffd9d8c8b546ddf5924e11b7978023ef39"
+        "sha256": "0cef3adcdb929d8f660124cddc0386276f6f3782b43c42323b0eca2285322536"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "f7493d0673edbbc928054721cd812f645821493d26d2ef2029924944f9caaefd"
+        "sha256": "8de146d95c9105b1f95e853535e3e24f28b47c2f88bfaa29e97904792e74e23f"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -498,11 +498,11 @@
       },
       {
         "path": "src/smart/confirm-change/docs.md",
-        "sha256": "72ecf54156aba4ae19d2c3bb68c09f00aaf5ebd0f5fd15960d4a5db9fc8b5d46"
+        "sha256": "890bc4dcf00f197a79502727091a0c0fcf0cf01b7d1f1dd80b94e4fd2745f299"
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "948a569f03a17cbc057aa3b68a76220fd8578a56d07b29a15d80bf5fc045f673"
+        "sha256": "feb5ea69323f7e5b929f006c8ad9f372d00385a31d9aa237bb9027cdc12a429a"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

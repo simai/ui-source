@@ -33,7 +33,7 @@
         "expired"
       ],
       "default": "open",
-      "summary": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown."
+      "summary": "open: the answers are offered. pending: an answer is on its way (set by a press). accepted, declined, expired: only the outcome is shown. Declined by the person here, the surface folds away (hidden) and the focus goes back, with its ring, to the control that put the question, else the nearest focusable place around it or the next control of the page (DEV D2 on C35); a declined state the host sets without that answer stays shown."
     },
     "expires-at": {
       "type": "date",
