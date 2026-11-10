@@ -465,7 +465,11 @@
     --sf-link-hover: light-dark(var(--sf-primary-35), var(--sf-primary-85));
     --sf-link-active: light-dark(var(--sf-primary-30), var(--sf-primary-90));
     --sf-link-visited: light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80));
-    --sf-code: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
+    // Code in running text is neutral by default (owner decision C10): the
+    // surface container plate, the one the code rule draws
+    // (--sf-code--background in _sf_css__typograpy.scss). Tones of a role are
+    // a site's choice (--sf-code-background-color), not this role's.
+    --sf-code: var(--sf-surface-container);
     /* Shadows (C20, owner 2026-11-08; ui-control prototypes/shadows.html).
        Two colours, both steps of the alpha scale: the key shadow, short and
        sharp at the edge, black at 16 in the light theme and 28 in the dark (a
