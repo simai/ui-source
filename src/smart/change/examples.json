@@ -1,0 +1,152 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "В строке: «Собран → Передан в доставку»",
+      "settings": {
+        "label": "Статус",
+        "before": "Собран",
+        "after": "Передан в доставку"
+      },
+      "studio": {
+        "title": "change reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "labelled",
+      "title": "С названием поля (таблица, уведомление); пустое значение",
+      "settings": {
+        "label": "Ответственный",
+        "show-label": true,
+        "before": "",
+        "after": "Анна Котова"
+      }
+    },
+    {
+      "name": "list",
+      "title": "Списком: несколько полей одного обновления",
+      "settings": {
+        "layout": "list",
+        "changes": [
+          {
+            "label": "Вес",
+            "before": "4,2 кг",
+            "after": "4,6 кг"
+          },
+          {
+            "label": "Габариты",
+            "before": "40×30×20",
+            "after": "45×30×25"
+          },
+          {
+            "label": "Склад",
+            "before": "Москва-Север",
+            "after": "Москва-Юг"
+          },
+          {
+            "label": "Комментарий",
+            "before": "Позвонить",
+            "after": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "long",
+      "title": "Длинный текст — раскрывается «Показать изменения»",
+      "settings": {
+        "label": "Описание",
+        "before": "Смартфон 6,1″, 128 ГБ, синий. Доставка за 2 дня, самовывоз из пункта выдачи на Тверской.",
+        "after": "Смартфон 6,1″, 256 ГБ, тёмно-синий. Доставка курьером на следующий день, оплата при получении."
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-change against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main style=\"inline-size: 40rem\">",
+          "  <p id=\"sentence\">Анна Котова изменила статус <sf-change id=\"inline\" label=\"Статус\" before=\"Собран\" after=\"Передан в доставку\"></sf-change></p>",
+          "  <p><sf-change id=\"labelled\" label=\"Ответственный\" show-label before=\"\" after=\"Анна Котова\"></sf-change></p>",
+          "  <sf-change id=\"list\" layout=\"list\" changes='[{\"label\":\"Вес\",\"before\":\"4,2 кг\",\"after\":\"4,6 кг\"},{\"label\":\"Склад\",\"before\":\"Москва-Север\",\"after\":null}]'></sf-change>",
+          "  <div id=\"narrow\" style=\"inline-size: 20rem\"><sf-change id=\"stack\" layout=\"list\" changes='[{\"label\":\"Габариты\",\"before\":\"40×30×20\",\"after\":\"45×30×25\"}]'></sf-change></div>",
+          "  <p>Сергей Иванов изменил описание <sf-change id=\"long\" label=\"Описание\" before=\"Смартфон 6,1″, 128 ГБ, синий. Доставка за 2 дня, самовывоз из пункта выдачи на Тверской.\" after=\"Смартфон 6,1″, 256 ГБ, тёмно-синий. Доставка курьером на следующий день, оплата при получении.\"></sf-change></p>",
+          "  <sf-change id=\"none\"></sf-change>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-inline",
+          "title": "inline: the old value, a picture arrow, a hidden «на», the new value in medium weight; the pair does not break; no label without show-label",
+          "covers": "settings.before, settings.after, settings.label, settings.layout inline, accessibility",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#inline'); const arrow = el.querySelector('.sf-change__arrow'); const after = el.querySelector('.sf-change__after'); const before = el.querySelector('.sf-change__before'); return el.textContent.replace(/\\s+/gu, ' ').trim() === 'Собран → на Передан в доставку' && arrow.getAttribute('aria-hidden') === 'true' && el.querySelector('.sr-only').textContent.trim() === 'на' && Number(getComputedStyle(after).fontWeight) > Number(getComputedStyle(before).fontWeight) && getComputedStyle(el.querySelector('.sf-change__pair')).whiteSpace === 'nowrap' && getComputedStyle(before).textDecorationLine === 'none' && !el.querySelector('.sf-change__label') && !el.querySelector('sf-badge'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-label-empty",
+          "title": "show-label prints «Ответственный: »; an empty value reads «пусто»",
+          "covers": "settings.show-label, empty value",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#labelled'); return el.querySelector('.sf-change__label').textContent === 'Ответственный: ' && el.querySelector('.sf-change__before').textContent === 'пусто' && el.querySelector('.sf-change__before').classList.contains('sf-change__empty'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-list",
+          "title": "list: a dl from the changes attribute, the label the term and the pair its description; null reads «пусто»; under 24rem the label stands over its pair",
+          "covers": "settings.changes, settings.layout list",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#list'); const dl = el.querySelector('dl.sf-change--list'); const terms = [...dl.querySelectorAll('dt')].map((dt) => dt.textContent); const stack = document.querySelector('#stack'); const t = stack.querySelector('dt').getBoundingClientRect(); const d = stack.querySelector('dd').getBoundingClientRect(); const wt = dl.querySelector('dt').getBoundingClientRect(); const wd = dl.querySelector('dd').getBoundingClientRect(); return terms.join('|') === 'Вес|Склад' && dl.querySelectorAll('dd')[1].querySelector('.sf-change__after').textContent === 'пусто' && el.hasAttribute('data-block') && d.top >= t.bottom - 0.5 && Math.abs(wt.top - wd.top) < 0.5 && wd.left > wt.right; })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-reveal",
+          "title": "a long value is folded behind «Показать изменения»; its press reveals «Было» and «Стало» in place and the button says «Скрыть изменения»",
+          "covers": "settings.reveal, keyboard.host",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const blocks = el.querySelector('.sf-change__blocks'); return b.textContent.trim() === 'Показать изменения' && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === blocks.id && blocks.hidden && !el.querySelector('.sf-change__pair'); })()"
+            },
+            {
+              "user": "click:#long .sf-change__toggle",
+              "wait": 120,
+              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const labels = [...el.querySelectorAll('.sf-change__block-label')].map((one) => one.textContent).join('|'); return b.getAttribute('aria-expanded') === 'true' && !el.querySelector('.sf-change__blocks').hidden && labels === 'Было|Стало' && b.textContent.trim() === 'Скрыть изменения' && el.hasAttribute('data-revealed') && document.activeElement === b; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-empty",
+          "title": "nothing to say draws nothing and sets data-empty; a new after draws again",
+          "covers": "host-states data-empty, settings.after",
+          "steps": [
+            {
+              "check": "document.querySelector('#none').hasAttribute('data-empty') && !document.querySelector('#none .sf-change')"
+            },
+            {
+              "script": "(document.querySelector('#inline').setAttribute('after', 'Доставлен'), true)",
+              "wait": 120,
+              "check": "document.querySelector('#inline .sf-change__after').textContent === 'Доставлен'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

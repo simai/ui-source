@@ -214,11 +214,16 @@ const DRAW = {
   // tooltip's anchor are drawn.
   time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
     html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>'},
+  // sf-change (2026-11-10, C40): a list of two changes, so the terms, the
+  // arrow and both values are drawn.
+  change: {css: ['smart/smart/change/css/change.css'], js: 'change',
+    html: '<sf-change layout="list" changes=\'[{"label":"Вес","before":"4,2 кг","after":"4,6 кг"},{"label":"Склад","before":"А","after":"Б"}]\'></sf-change>'},
   // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
   // card's fill and edge are drawn beside a card at rest.
   choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
     html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
-  'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
+  // sf-confirm-change 1.7.0 (C40) draws its values with sf-change.
+  'change-confirm': {css: ['buttons', 'smart/smart/change/css/change.css', 'smart/smart/confirm-change/css/confirm-change.css'], js: ['confirm-change', 'change'],
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
   // and the open tint have parts to reach; a feed with a run of one author and

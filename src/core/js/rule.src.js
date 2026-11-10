@@ -757,6 +757,7 @@ import '../../smart/list-description/rule.js';
 import '../../smart/list-feed/rule.js';
 import '../../smart/list-timeline/rule.js';
 import '../../smart/time/rule.js';
+import '../../smart/change/rule.js';
 import '../../smart/menu-context/rule.js';
 import '../../smart/button-copy/rule.js';
 import '../../smart/input-country/rule.js';

@@ -70,6 +70,10 @@
     "pointer-events/default",
     "sr-only/default"
   ],
+  "cl-change": [
+    "display/default",
+    "sr-only/default"
+  ],
   "cl-checkbox": [
     "cursor/default",
     "display/default",

@@ -16,6 +16,7 @@
         "badge",
         "breadcrumbs",
         "button",
+        "change",
         "checkbox",
         "confirm",
         "contents",
@@ -103,6 +104,10 @@
         },
         {
           "element": "sf-button-icon",
+          "status": "released"
+        },
+        {
+          "element": "sf-change",
           "status": "released"
         },
         {

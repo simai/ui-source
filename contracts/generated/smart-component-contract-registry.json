@@ -474,6 +474,48 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-change",
+      "id": "smart.change",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/change/smart.manifest.json",
+      "manifest_sha256": "b4722a061f297ff9a0504d8bec08e7fef5e7e190f96e63a370eda15c05b48654",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
+      "tags": [
+        "change",
+        "diff",
+        "before",
+        "after",
+        "audit",
+        "history",
+        "text"
+      ],
+      "title": "Change"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
@@ -553,6 +595,7 @@
         "public_parts": [],
         "uses": [
           "smart.button",
+          "smart.change",
           "smart.icon"
         ]
       },
@@ -565,7 +608,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "27af5aed7c237f08df5734c9329d800d970a183c10edec87a7d26a1c51b6f705",
+      "manifest_sha256": "871edaa886d81a5af1cbb68bec1d95b947fd1037f9a80ec77440f37129b0d446",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

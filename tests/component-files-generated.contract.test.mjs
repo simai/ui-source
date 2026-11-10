@@ -79,6 +79,7 @@ const PHASE_A = [
   'list-timeline',
   // The timeline's shared parts (owner decision C40, 2026-11-10).
   'time',
+  'change',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4
