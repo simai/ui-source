@@ -67,7 +67,7 @@ const block = (id) => `
 </section>`;
 
 const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
-<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
+<script>window.SF_BOOT_CONFIG={theme:false};window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <style>.zone{display:flex;flex-direction:column;gap:16px;margin:16px;max-inline-size:28rem}.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}</style>
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface">
@@ -208,7 +208,12 @@ try {
             ask.querySelector('button[data-action="decline"]').click();
           }
           await new Promise((settle) => setTimeout(settle, 300));
-          for (const ask of document.querySelectorAll('sf-confirm')) said.push({state: ask.state, status: ask.querySelector('.sf-confirm__status')?.textContent.trim() ?? null});
+          for (const ask of document.querySelectorAll('sf-confirm')) {
+            const line = ask.querySelector('.sf-confirm__status');
+            const style = line && getComputedStyle(line);
+            said.push({state: ask.state, status: line?.textContent.trim() ?? null,
+              ring: line && line === document.activeElement && style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0});
+          }
           return {said, page: document.body.innerText.includes('Отменено')};
         });
         seen.declined = declined;
@@ -279,7 +284,7 @@ try {
         check('sf-button-icon high = sf-button high', c['icon-high']?.h, c['button-high']?.h);
       }
       const said = report[key]?.declined;
-      if (!said || said.page || said.said.some((one) => one.state !== 'declined' || one.status !== '')) failures.push(`${key}: a declined question still says something ${JSON.stringify(said)}`);
+      if (!said || said.page || said.said.some((one) => one.state !== 'declined' || one.status !== '' || one.ring)) failures.push(`${key}: a declined question still says something ${JSON.stringify(said)}`);
     }
   }
 } finally {

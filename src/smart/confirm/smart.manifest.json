@@ -330,7 +330,7 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "03ae22df0c3cd402973149ed082a4ae52310fda4552562b4e905bfb68494483c"
+        "sha256": "f0ac3b707ef005ec3fb59f23de9a9434eb105660f683c71903efa7f7c7c24074"
       },
       {
         "path": "src/smart/confirm/rule.js",
