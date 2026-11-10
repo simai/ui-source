@@ -92,6 +92,14 @@
   gap: var(--sf-modal-header-gap);
 }
 
+/* The title takes the third step of the heading ladder (C21), which density
+   does not move (owner decision C44, 2026-11-11): a compact region, on <html>
+   or a container, keeps the title at its size. */
+.sf-modal-title {
+  font-size: var(--sf-heading-3--size);
+  line-height: var(--sf-heading-3--height);
+}
+
 .sf-modal-surface {
   --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-area));
   --sf-modal-surface-border-color: var(--sf-modal-border-color, var(--sf-outline-variant, transparent));

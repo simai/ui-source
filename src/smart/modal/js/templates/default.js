@@ -119,7 +119,7 @@ export function renderModalTemplate(context) {
                                 >
                                     <div class="sf-modal-header-content">${hasHeaderSlot
                                             ? context.headerContent
-                                            : html`<h2 id=${titleId} class="title-3 m-0">${context.title}</h2>`}</div>
+                                            : html`<h2 id=${titleId} class="sf-modal-title m-0">${context.title}</h2>`}</div>
                                     ${context.hide && !isInline
                                             ? html`
                                                 <button

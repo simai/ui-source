@@ -73,7 +73,7 @@ const MEASURE = () => {
     'empty-2': text(at('[data-k="empty-2"] .sf-empty-state-title')),
     card: text(at('[data-k="card"] > h3')),
     drawer: text(at('.sf-drawer-title')),
-    modal: text(at('sf-modal h2, .sf-modal-header-content')),
+    modal: text(at('.sf-modal-title, sf-modal h2, .sf-modal-header-content > h2, h2.sf-modal-header-content')),
     body: text(at('[data-k="text"]')),
   };
 };
@@ -96,7 +96,7 @@ try {
           tab.on('requestfailed', (request) => consoleErrors.push(`${tag}: failed ${request.url()}`));
           await tab.goto(`http://127.0.0.1:${server.address().port}/page?placement=${placement}&theme=${theme}`);
           await tab.waitForFunction(() => document.querySelector('sf-header-page .sf-page-header-heading') && document.querySelector('.sf-drawer-title')
-            && document.querySelector('[data-k="empty-2"] .sf-empty-state-title') && document.querySelector('sf-modal h2, .sf-modal-header-content'), null, {timeout: 20000});
+            && document.querySelector('[data-k="empty-2"] .sf-empty-state-title') && document.querySelector('.sf-modal-title, sf-modal h2, .sf-modal-header-content > h2, h2.sf-modal-header-content'), null, {timeout: 20000});
           await tab.evaluate(() => document.fonts.ready);
           await tab.waitForTimeout(300);
           (report[`${width}/${theme}/${placement}`] ||= []).push(await tab.evaluate(MEASURE));

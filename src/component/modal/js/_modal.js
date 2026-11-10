@@ -462,7 +462,7 @@ class Modal extends ComponentObserver {
       const title = document.createElement('h2');
       title.id = `${this.modalId}-title`;
       root.setAttribute('aria-labelledby', title.id);
-      title.className = 'sf-modal-header-content title-3 m-0';
+      title.className = 'sf-modal-header-content sf-modal-title m-0';
       title.textContent = params.title || untitled(root);
 
       header.append(title);
