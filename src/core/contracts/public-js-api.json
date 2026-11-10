@@ -367,7 +367,7 @@
       "status": "public",
       "kind": "function",
       "loaded_by": "core-loader",
-      "summary": "A promise of a Smart element's definition, loading it when the page has not."
+      "summary": "A promise of a Smart element's definition: it settles when the tag is defined, and loads nothing. A tag in the page's markup is loaded by the Loader as the page is read; for an element the page does not have yet, SF.createAsync(name) creates it and loads its code, and SF.Loader.ensure(tags) loads tags without creating them."
     },
     {
       "name": "SF.whenDefine",
@@ -402,7 +402,12 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "Old names still accepted and what replaced them, as the change journal declares them."
+      "summary": "Old names still accepted and what replaced them, as the change journal declares them. list() gives the old names this page used, each once with its count, kind, replacement and dates; clear() forgets them; note(record) is how a component reports the use of an old name. Nothing is printed unless the page sets SF.deprecations.warn = true or <html data-sf-deprecations=\"warn\">.",
+      "members": [
+        "list",
+        "clear",
+        "note"
+      ]
     },
     {
       "name": "SF.tags",
@@ -492,13 +497,15 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "smart/field-renderers",
-      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter.",
+      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter. registry lists the universal property types, each with the modes the set draws it in; FILTER_RENDERERS maps a property type to the filter control that draws it.",
       "members": [
         "renderCellField",
         "renderEditField",
         "renderViewField",
         "renderFilterField",
-        "dateTime"
+        "dateTime",
+        "registry",
+        "FILTER_RENDERERS"
       ]
     },
     {

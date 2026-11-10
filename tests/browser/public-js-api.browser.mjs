@@ -48,6 +48,7 @@ try {
     // dated getter (SF.Effects) themselves.
     const oldNames = (window.SF.deprecations?.list?.() ?? []).filter((note) => note.kind === 'global').map((note) => note.from);
     const missing = [];
+    const unlistedMembers = [];
     for (const entry of globals) {
       const name = entry.name.slice(3);
       // What this page loads has to be there; a component's script API comes
@@ -58,6 +59,19 @@ try {
       for (const member of entry.members ?? []) {
         const value = window.SF[name];
         if (value === null || value === undefined || !(member in Object(value))) missing.push(`${entry.name}.${member}`);
+      }
+      // The other way round for a plain object the contract lists members
+      // of: every key it holds is listed, so a member added to the runtime
+      // without a line here fails (SF.fieldRenderers.registry and
+      // FILTER_RENDERERS, SF.deprecations.list/clear/note were missing, docs
+      // pre-review 2026-11-10 GS-F2). An instance (SF.Loader) keeps state of
+      // its own on itself and is held one way only.
+      const value = window.SF[name];
+      if (entry.status === 'public' && value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
+        const listedMembers = new Set(entry.members ?? []);
+        for (const key of Object.keys(value)) {
+          if (!listedMembers.has(key)) unlistedMembers.push(`${entry.name}.${key}`);
+        }
       }
     }
     // When each name exists, as loaded_by says: core right after core.js ran,
@@ -70,7 +84,7 @@ try {
       if (entry.loaded_by === 'core-loader' && !(window.__sfAt.loader ?? []).includes(name)) early.push(`${entry.name}: not there at sf-loader-init`);
       if (entry.loaded_by === 'core-loader' && (window.__sfAt.core ?? []).includes(name)) early.push(`${entry.name}: there right after core.js -- it is core`);
     }
-    return {keys, missing, oldNames, early};
+    return {keys, missing, unlistedMembers, oldNames, early};
   }, contract.globals);
   if (runtime.early.length) note({case: 'each name exists when loaded_by says', got: runtime.early});
   if (runtime.oldNames.length) note({case: 'the Framework reads none of its old global names itself', got: runtime.oldNames});
@@ -78,6 +92,7 @@ try {
   const unlisted = runtime.keys.filter((key) => !listed.has(key));
   if (unlisted.length) note({case: 'every name on window.SF is in the contract', unlisted});
   if (runtime.missing.length) note({case: 'every public name and member the contract lists is on window.SF', missing: runtime.missing});
+  if (runtime.unlistedMembers.length) note({case: 'every key of a listed plain object is a member the contract lists', unlisted: runtime.unlistedMembers});
   console.log(JSON.stringify({names: runtime.keys.length, listed: listed.size}));
 } finally {
   await browser.close();
