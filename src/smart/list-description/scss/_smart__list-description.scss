@@ -102,6 +102,9 @@ sf-list-description {
 }
 
 .sf-list-description-label {
+  /* The label's line: the rung's, or the rung below's when the label stands
+     over its value (stacked, grid, a narrow auto). The help mark is as tall. */
+  --sf-list-description--label-line: var(--sf-list-description--line);
   min-inline-size: 0;
   margin: 0;
   color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
@@ -157,18 +160,19 @@ sf-list-description {
 }
 
 /* The help mark after a label, --sf-space-1/4 from it (the prototype's 4,
-   10 to the glyph): it takes no height of its own (sf-help-mark
-   1.3.0), so the label's line stays L. (The host is display: contents once
-   upgraded; its box is the sf-help-mark span.) */
-.sf-list-description-label:has(> sf-help-mark) {
-  /* A flex row, so the white space sf-help-mark's markup starts with adds
-     nothing between the label and the mark. */
-  display: flex;
-  align-items: center;
-}
-
+   10 to the glyph): it adds no height to the label's line, which stays L
+   (sf-help-mark 1.3.0). The label is running text, so on a
+   wrapped label the mark stands right after the last word, on the last line
+   (C33 R1); the white space of the mark's markup draws nothing and no line
+   breaks before the mark (sf-help-mark 1.3.2). (The host is display:
+   contents once upgraded; its box is the sf-help-mark span.) */
 .sf-list-description-label .sf-help-mark {
+  /* As tall as the label's line and at its top, so the button is centred on
+     the line it stands on: on a one-line label exactly where the flex row
+     put it (sf-list-description 1.1.0), on a wrapped label on the last line. */
+  block-size: var(--sf-list-description--label-line);
   margin-inline-start: var(--sf-space-1\/4);
+  vertical-align: top;
 }
 
 /* The value's line: the status icon, the value (or its badge), the copy
@@ -295,8 +299,9 @@ sf-list-description {
 }
 
 .sf-list-description--layout-stacked .sf-list-description-label {
+  --sf-list-description--label-line: var(--sf-list-description--below-line);
   font-size: var(--sf-list-description--below-font-size);
-  line-height: var(--sf-list-description--below-line);
+  line-height: var(--sf-list-description--label-line);
 }
 
 /* layout grid, the summary: label over value in columns of at least --sf-f1
@@ -340,8 +345,9 @@ sf-list-description {
 }
 
 .sf-list-description--layout-grid .sf-list-description-label {
+  --sf-list-description--label-line: var(--sf-list-description--below-line);
   font-size: var(--sf-list-description--below-font-size);
-  line-height: var(--sf-list-description--below-line);
+  line-height: var(--sf-list-description--label-line);
 }
 
 .sf-list-description--layout-grid .sf-list-description-text,
@@ -357,8 +363,9 @@ sf-list-description {
   }
 
   .sf-list-description--layout-auto .sf-list-description-label {
+    --sf-list-description--label-line: var(--sf-list-description--below-line);
     font-size: var(--sf-list-description--below-font-size);
-    line-height: var(--sf-list-description--below-line);
+    line-height: var(--sf-list-description--label-line);
   }
 }
 

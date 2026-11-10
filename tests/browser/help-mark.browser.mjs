@@ -43,6 +43,7 @@ try {
     <div style="font-size:var(--sf-text-size-1\\/2);line-height:var(--sf-text-height-1\\/2)">
       <span id="bare" style="display:block">Подпись</span>
       <span id="marked" style="display:block">Подпись <sf-help-mark label="Подробнее" text="Пояснение"></sf-help-mark></span>
+      <span id="wrapped" style="display:block;inline-size:15rem">Очень длинная подпись поля, которой нужен знак справки и перенос строки<sf-help-mark label="Подробнее" text="Пояснение"></sf-help-mark></span>
     </div>
     <div class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
       <span class="sf-input-label flex items-center gap-1" id="field-bare"><label class="sf-input-text" for="f1">Название</label></span>
@@ -88,6 +89,17 @@ try {
   if (Math.abs(lines.marked - lines.bare) > 0.5 || lines.button < 24) note({case: 'a mark does not make its line taller, and keeps its target', got: lines});
   if (Math.abs(lines.fieldMarked - lines.fieldBare) > 0.5 || lines.fieldButton < 24 || lines.centred === null || lines.centred > 1) note({case: 'a mark does not make a field label row taller, centred on the label (docs trial 5)', got: lines});
   if (lines.title) note({case: 'the button does not repeat its name as a title', got: lines.title});
+  // C33 R1 (1.3.2): the white space of the element's markup has font-size 0
+  // and line-height 0, so on a wrapped label it adds no line of its own
+  // height (font-size 0 alone made a 24px line 29px). The gap it no longer
+  // adds is measured where the mark follows a label in a list (the record
+  // probe of sf-list-description).
+  const flow = await page.evaluate(() => {
+    const wrapped = document.getElementById('wrapped'); const line = parseFloat(getComputedStyle(wrapped).lineHeight);
+    const range = document.createRange(); range.selectNodeContents(wrapped.firstChild); const lines = new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size;
+    return {wrappedHeight: wrapped.getBoundingClientRect().height, line, lines};
+  });
+  if (flow.lines < 2 || Math.abs(flow.wrappedHeight - flow.lines * flow.line) > 0.5 && Math.abs(flow.wrappedHeight - (flow.lines + 1) * flow.line) > 0.5) note({case: 'a wrapped label with a mark is a whole number of its lines tall (C33 R1)', got: flow});
   await page.hover('#plain .sf-help-mark-button button');
   await page.waitForTimeout(200);
   const hovered = await state('plain');
