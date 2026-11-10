@@ -28,7 +28,7 @@ test('success notice icon uses its semantic color role', async () => {
   const css = await readFile(new URL('../src/component/alerts/scss/_css__alerts.scss', import.meta.url), 'utf8');
   // Only the alert's own icon (C35 acceptance A-F1): an icon inside an action
   // button keeps the button's role.
-  assert.match(css, /\.sf-alert\.sf-alert--success > :is\(\.sf-icon, sf-icon > \.sf-icon\)\s*\{\s*--sf-icon--color: var\(--sf-success\)/);
-  assert.doesNotMatch(css, /\.sf-alert[^{,]* \.sf-icon\s*\{[^}]*--sf-icon--color/);
+  assert.match(css, /\.sf-alert\.sf-alert--success > \.sf-icon,\s*\.sf-alert\.sf-alert--success > sf-icon > \.sf-icon\s*\{\s*--sf-icon--color: var\(--sf-success\)/);
+  assert.doesNotMatch(css, /\.sf-alert[^{,>]* \.sf-icon\s*\{[^}]*--sf-icon--color/);
   assert.doesNotMatch(css, /\.sf-alert \.sf-icon\s*\{[^}]*\bcolor:/);
 });

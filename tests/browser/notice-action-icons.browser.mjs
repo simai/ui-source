@@ -9,9 +9,10 @@
 // button. In light and dark, at 1440 and 390, three loads each:
 //
 //   - every action button's icon is the colour the same button draws outside
-//     the notice, in a place with the notice's own role remaps (a neutral
-//     filled notice moves --sf-on-surface-variant to its container's
-//     variant): the button's own icon role, never the status tone;
+//     the notice, in a twin place that carries every role the notice's root
+//     resolves (its custom properties and its colour: a toast is a popup
+//     place, a neutral filled notice moves --sf-on-surface-variant to its
+//     container's): the button's own icon role, never the status tone;
 //   - the notice's own icon still takes its status role and its cross stays
 //     the notice's text ink (the notice-ink probe holds the full table);
 //   - the console is clean and the three loads agree.
@@ -64,15 +65,11 @@ const classToast = (level) => `
     ${close.replace('sf-icon-button--close', 'sf-icon-button--close sf-icon-button--variant-close')}
   </div>`;
 
-// The references: the same buttons outside any notice, on the page, and in a
-// place with a neutral filled notice's remap of the quiet role.
 const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
 <script>window.SF_BOOT_CONFIG={theme:false};window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <style>.zone{display:flex;flex-direction:column;gap:12px;margin:16px;max-inline-size:40rem}</style>
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface"><section class="zone">
-  <div data-ref="page" class="flex flex-wrap items-center">${BUTTONS}</div>
-  <div data-ref="container" class="flex flex-wrap items-center" style="--sf-on-surface-variant: var(--sf-on-surface-container--variant)">${BUTTONS}</div>
 ${LEVELS.map((level) => [...APPEARANCES.map((appearance) => classAlert(level, appearance)), classToast(level)].join('\n')).join('\n')}
 </section></body></html>`;
 
@@ -95,6 +92,27 @@ const server = createServer((request, response) => {
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
 
+// For each notice, a twin outside it: a plain box that carries every custom
+// property and the colour the notice's root resolves, holding the same buttons.
+const TWINS = (buttons) => {
+  let copied = 0;
+  for (const root of document.querySelectorAll('[data-k]')) {
+    const twin = document.createElement('div');
+    twin.dataset.twin = root.dataset.k;
+    twin.className = 'flex flex-wrap items-center';
+    const style = getComputedStyle(root);
+    for (const name of style) {
+      if (!name.startsWith('--')) continue;
+      twin.style.setProperty(name, style.getPropertyValue(name));
+      copied += 1;
+    }
+    twin.style.color = style.color;
+    twin.innerHTML = buttons;
+    root.after(twin);
+  }
+  return copied;
+};
+
 const MEASURE = (levels) => {
   const canvas = new OffscreenCanvas(1, 1).getContext('2d', {willReadFrequently: true});
   const rgba = (css) => {
@@ -106,10 +124,11 @@ const MEASURE = (levels) => {
   };
   const hex = ([r, g, b, a]) => `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}${a === 255 ? '' : a.toString(16).padStart(2, '0')}`;
   const colour = (node) => (node ? hex(rgba(getComputedStyle(node).color)) : null);
-  const token = (name) => {
+  // A token as the notice resolves it: a probe element inside the notice.
+  const token = (name, place) => {
     const probe = document.createElement('i');
     probe.style.color = `var(${name})`;
-    document.body.append(probe);
+    place.append(probe);
     const value = colour(probe);
     probe.remove();
     return value;
@@ -133,20 +152,19 @@ const MEASURE = (levels) => {
     }
     return found;
   };
-  const tone = {};
-  for (const level of levels) tone[level] = token(level === 'neutral' ? '--sf-on-surface-variant' : `--sf-${level}`);
-  const ref = {page: buttons(document.querySelector('[data-ref="page"]')), container: buttons(document.querySelector('[data-ref="container"]'))};
   const seen = {};
   for (const root of document.querySelectorAll('[data-k]')) {
     seen[root.dataset.k] = {
       level: root.dataset.level,
+      tone: token(root.dataset.level === 'neutral' ? '--sf-on-surface-variant' : `--sf-${root.dataset.level}`, root),
       own: colour(root.querySelector(':scope > .sf-icon')),
       cross: root.querySelector(':scope > .sf-icon-button .sf-close-icon') ? hex(rgba(getComputedStyle(root.querySelector(':scope > .sf-icon-button .sf-close-icon')).backgroundColor)) : null,
       text: colour(root.querySelector('.sf-alert-text, .sf-toast-text')),
       buttons: buttons(root),
+      twin: buttons(document.querySelector(`[data-twin="${root.dataset.k}"]`)),
     };
   }
-  return {tone, ref, seen};
+  return {seen};
 };
 
 const luminance = (value) => {
@@ -172,28 +190,33 @@ try {
         tab.on('pageerror', (error) => errors.push(error.message));
         tab.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
         await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
-        await tab.waitForFunction(() => [...document.querySelectorAll('[data-b]:not(button)')].every((node) => node.querySelector('button .sf-icon')), null, {timeout: 30000})
+        const ready = () => tab.waitForFunction(() => [...document.querySelectorAll('[data-b]:not(button)')].every((node) => node.querySelector('button .sf-icon')), null, {timeout: 30000})
           .catch(() => failures.push(`${label}-${theme} load ${load}: the Smart buttons never drew their icons`));
+        await ready();
+        await tab.waitForTimeout(300);
+        if (!(await tab.evaluate(TWINS, BUTTONS))) failures.push(`${label}-${theme} load ${load}: no custom property reached the twins`);
+        await ready();
         await tab.waitForTimeout(300);
         loads.push(await tab.evaluate(MEASURE, LEVELS));
         if (errors.length) failures.push(`${label}-${theme} load ${load}: console ${JSON.stringify(errors)}`);
         await tab.close();
       }
       if (new Set(loads.map((one) => JSON.stringify(one))).size !== 1) failures.push(`${label}-${theme}: the three loads disagree`);
-      const {tone, ref, seen} = loads[0];
+      const {seen} = loads[0];
       for (const [key, notice] of Object.entries(seen)) {
         const level = notice.level;
-        // A neutral filled notice remaps the quiet role to its container's.
-        const place = level === 'neutral' && !key.endsWith('-outlined') ? ref.container : ref.page;
+        const place = notice.twin;
+        if (!notice.own || notice.own === notice.text) failures.push(`${label}-${theme} ${key}: own icon ${notice.own} is not the status tone`);
+        if (notice.own && notice.own !== notice.tone) failures.push(`${label}-${theme} ${key}: own icon ${notice.own}, want ${notice.tone}`);
         if (notice.cross !== notice.text) failures.push(`${label}-${theme} ${key}: cross ${notice.cross} is not the text's ink ${notice.text}`);
         for (const kind of KINDS) {
           const got = notice.buttons[kind];
           const want = place[kind];
           if (!got || !got.icon) { failures.push(`${label}-${theme} ${key} ${kind}: no icon drawn`); continue; }
-          const row = {view: label, theme, key, kind, icon: got.icon, want: want.icon, label: got.label, tone: tone[level], plate: got.plate, iconOnPlate: contrast(got.icon.slice(0, 7), got.plate)};
+          const row = {view: label, theme, key, kind, icon: got.icon, want: want.icon, label: got.label, tone: notice.tone, plate: got.plate, iconOnPlate: contrast(got.icon.slice(0, 7), got.plate)};
           report.push(row);
-          if (got.icon !== want.icon) failures.push(`${label}-${theme} ${key} ${kind}: icon ${got.icon}, the button's own ${want.icon}${got.icon === tone[level] ? ' (the status tone)' : ''}`);
-          if (got.icon === tone[level] && want.icon !== tone[level]) failures.push(`${label}-${theme} ${key} ${kind}: icon takes the status tone ${tone[level]}`);
+          if (got.icon !== want.icon) failures.push(`${label}-${theme} ${key} ${kind}: icon ${got.icon}, the button's own ${want.icon}${got.icon === notice.tone ? ' (the status tone)' : ''}`);
+          if (got.icon === notice.tone && want.icon !== notice.tone) failures.push(`${label}-${theme} ${key} ${kind}: icon takes the status tone ${notice.tone}`);
         }
       }
     }

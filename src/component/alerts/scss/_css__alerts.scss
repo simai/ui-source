@@ -127,7 +127,8 @@
 
 /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
    icon inside an action button keeps the button's own icon role. */
-.sf-alert > :is(.sf-icon, sf-icon > .sf-icon) {
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
 }
 
@@ -162,7 +163,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-info-container));
 }
 
-.sf-alert.sf-alert--info > :is(.sf-icon, sf-icon > .sf-icon) {
+.sf-alert.sf-alert--info > .sf-icon,
+.sf-alert.sf-alert--info > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-info);
 }
 
@@ -173,7 +175,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
 }
 
-.sf-alert:is(.sf-alert--error, .sf-alert--danger) > :is(.sf-icon, sf-icon > .sf-icon) {
+.sf-alert:is(.sf-alert--error, .sf-alert--danger) > .sf-icon,
+.sf-alert:is(.sf-alert--error, .sf-alert--danger) > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-error);
 }
 
@@ -183,7 +186,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-warning-container));
 }
 
-.sf-alert.sf-alert--warning > :is(.sf-icon, sf-icon > .sf-icon) {
+.sf-alert.sf-alert--warning > .sf-icon,
+.sf-alert.sf-alert--warning > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-warning);
 }
 
@@ -193,7 +197,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-success-container));
 }
 
-.sf-alert.sf-alert--success > :is(.sf-icon, sf-icon > .sf-icon) {
+.sf-alert.sf-alert--success > .sf-icon,
+.sf-alert.sf-alert--success > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-success);
 }
 

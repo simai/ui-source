@@ -26,9 +26,9 @@ test('every status has its styles', () => {
 test('the status colour reaches the toast own icon only (C35 acceptance A-F1)', () => {
   const css = readFileSync(new URL('../src/component/toast/scss/_css__toast.scss', import.meta.url), 'utf8');
   for (const status of ['success', 'warning', 'error']) {
-    assert.match(css, new RegExp(`\\.sf-toast\\.sf-toast--${status} > :is\\(\\.sf-icon, sf-icon > \\.sf-icon\\)\\s*\\{\\s*--sf-icon--color: var\\(--sf-${status}\\)`));
+    assert.match(css, new RegExp(`\\.sf-toast\\.sf-toast--${status} > \\.sf-icon,\\s*\\.sf-toast\\.sf-toast--${status} > sf-icon > \\.sf-icon\\s*\\{\\s*--sf-icon--color: var\\(--sf-${status}\\)`));
   }
   // No descendant rule colours an icon inside an action button.
-  assert.doesNotMatch(css, /\.sf-toast[^{,]* \.sf-icon\s*\{[^}]*--sf-icon--color/);
+  assert.doesNotMatch(css, /\.sf-toast[^{,>]* \.sf-icon\s*\{[^}]*--sf-icon--color/);
   assert.doesNotMatch(css, /\.sf-toast \.sf-icon\s*\{[^}]*\bcolor:/);
 });
