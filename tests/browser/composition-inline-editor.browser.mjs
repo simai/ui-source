@@ -256,6 +256,8 @@ check(same(opaque.before[1], opaque.entry) && same(opaque.after[1], opaque.entry
 const unknownMark = await page.evaluate(() => {
   const element = document.createElement('p');
   document.body.append(element);
+  // This paragraph is not the lab's: its commit stays here.
+  for (const name of ['sf-editor-inline-change', 'sf-inline-editor-change', 'sf-inline-edit-commit']) element.addEventListener(name, (event) => event.stopPropagation());
   const marked = { type: 'text', value: 'зачёркнуто', marks: ['em', 'superscript'] };
   const content = [{ type: 'text', value: 'Начало ' }, marked, { type: 'text', value: ' конец' }];
   const session = window.SF.Composition.startInlineEdit(element, { content, nodeId: 'marks', label: 'Абзац' });
