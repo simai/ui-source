@@ -6,11 +6,15 @@ their accessible name. Text slots remain the accessible label of text tabs.
 Give each tablist an `aria-label`, or reference a visible heading through
 `aria-labelledby`.
 
-The historical `scheme` attribute selects built-in button appearance:
-`default`, `outline` or `link`, with the primary semantic color pair. It is not
-a selector for arbitrary semantic colors. `type` separately selects the Tabs
-skin (`underline`, `pills`, `full`, `vertical`, or the default). Existing attribute
-values and custom-template forwarding are preserved.
+`appearance` selects how the built-in tab buttons look: `default`, `outline` or
+`ghost`, with the primary semantic color pair. It is not a selector for
+arbitrary semantic colors. `type` separately selects the Tabs skin
+(`underline`, `pills`, `full`, `vertical`, or the default).
+
+`scheme` is the former name of `appearance` and `link` the former name of
+`ghost`: both keep working with a console note until 2027-01-01 (journal
+`attribute-tabs-scheme-to-appearance`); `appearance` wins when both are given.
+A custom template still finds the value as `context.scheme` too.
 
 A nested `sf-tabs` in a panel slot keeps its own skin; parent skin selectors do
 not reach into the nested header. Horizontal lists scroll locally instead of
@@ -74,13 +78,14 @@ Reference pattern: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
 
 `type="pills"` draws rounded tabs where the selected one is the only filled
 tab: it keeps the selected fill (primary, with on-primary ink), and the others
-are text on the surface with no fill and no border, whatever `scheme` says,
+are text on the surface with no fill and no border, whatever `appearance` says,
 painted only by the surface state layer of what the pointer does (4 % on
 hover, 8 % with keyboard focus, 12 % pressed), in the light and dark themes and
-with any theme colour. Until 2026-11-01 the unselected pills took the `scheme`
-fill, and with the default scheme a row of filled pills told the selected one
-apart by a step of the same colour; `scheme="outline"`, once the advice for
-this, is no longer needed and gives the same pills.
+with any theme colour. Until 2026-11-01 the unselected pills took the
+appearance fill, and with the default appearance a row of filled pills told the
+selected one apart by a step of the same colour; `appearance="outline"` (then
+`scheme="outline"`), once the advice for this, is no longer needed and gives
+the same pills.
 
 ```html
 <sf-tabs type="pills" aria-label="Разделы"></sf-tabs>

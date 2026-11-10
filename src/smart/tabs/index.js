@@ -150,7 +150,9 @@ class SfTabs extends TabsElement {
       // The sheet's sizes (component.json): an unknown one draws as 1.
       size: { default: '1', values: ['1/2', '1', '2'] },
       variant: { default: 'buttons' },
-      scheme: { default: 'default' },
+      // The look of the tab buttons (docs precheck TB-06): scheme is its dated
+      // alias until 2027-01-01 (aliases.json), link the alias of ghost.
+      appearance: { default: 'default' },
       topPosition: {default: 'start'},
       // scroll (the default), wrap, or more: what does not fit goes into
       // «Ещё» (owner, 2026-10-14).
@@ -834,6 +836,8 @@ class SfTabs extends TabsElement {
 
     return this.createTemplateContext({
       ...props,
+      // A custom template written for the former name still finds it.
+      scheme: props.appearance,
       component: this,
       tabsId: this.tabsId,
       pagePanel: (item, index) => this.pagePanelFor(item, index),

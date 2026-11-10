@@ -15,7 +15,7 @@ async page => {
         const main = document.querySelector('main'); main.innerHTML = '<button id="contrast-start">Начало</button>';
         if (smart) {
           const host = document.createElement('sf-tabs'); host.id = 'contrast-tabs';
-          host.setAttribute('type', type); host.setAttribute('scheme', scheme);
+          host.setAttribute('type', type); host.setAttribute('appearance', scheme === 'link' ? 'ghost' : scheme);
           host.setAttribute('variant', icons ? 'icons' : 'buttons');
           host.setAttribute('items', 'Обзор::icon=home|История::icon=history'); main.append(host);
         } else {

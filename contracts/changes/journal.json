@@ -10073,6 +10073,35 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tag/index.js"
+    },
+    {
+      "id": "attribute-tabs-scheme-to-appearance",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-tabs names the look of its tab buttons appearance=\"default|outline|ghost\", as every other component does (docs precheck TB-06, sf-tabs 1.2.0). scheme, its former name, and link, ghost's former name, keep working with a console note until remove_after; appearance wins when both are given. Nothing draws differently.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "from": "scheme",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-tabs",
+          "from": "appearance=\"link\"",
+          "to": "appearance=\"ghost\""
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write appearance in place of scheme on sf-tabs, and ghost in place of link; default and outline keep their names. A custom template may keep reading context.scheme until remove_after; context.appearance is the current name.",
+      "examples": {
+        "before": "<sf-tabs scheme=\"link\" aria-label=\"Разделы\"></sf-tabs>",
+        "after": "<sf-tabs appearance=\"ghost\" aria-label=\"Разделы\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
     }
   ]
 }

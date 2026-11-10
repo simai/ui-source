@@ -16,6 +16,13 @@ function renderComponent(component, owner) {
 
 // The page's own panel of an entry (§7.2.1, §7.2.3): the same live node, its
 // ids and `hidden` written on it, never copied or wrapped.
+// The tab buttons take the tabs' appearance under its current name (TB-06):
+// link is ghost's former name, so the button is never asked for an alias.
+function buttonAppearance(context) {
+  const look = context.appearance || 'default';
+  return look === 'link' ? 'ghost' : look;
+}
+
 function placePagePanel(panel, item, context) {
   panel.id ||= `${context.tabsId}--panel-${item.index}`;
   panel.setAttribute('aria-labelledby', `${context.tabsId}--tab-${item.index}`);
@@ -98,9 +105,9 @@ function renderTab(item, context) {
   if(context.variant !== 'icons') {
       return html`
           <sf-button
-                  appearance="primary"
+                  appearance=${buttonAppearance(context)}
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   text=${item.label}
                   icon=${item.icon || nothing}
                   icon-start=${item.iconLeft || nothing}
@@ -119,9 +126,9 @@ function renderTab(item, context) {
       // icon was read, so icon-start items all fell back to the same glyph).
       return html`
           <sf-button-icon
-                  appearance="primary"
+                  appearance=${buttonAppearance(context)}
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   icon=${item.icon || item.iconLeft || item.iconRight || nothing}
                   data-tab-label=${item.label}
                   root-class=${joinClasses(item.selected ? 'selected' : '')}

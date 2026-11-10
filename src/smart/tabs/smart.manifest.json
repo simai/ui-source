@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.17",
+  "version": "1.2.0",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -74,10 +74,10 @@
         "type": "string",
         "default": "buttons"
       },
-      "scheme": {
+      "appearance": {
         "type": "string",
         "default": "default",
-        "description": "Built-in button appearance: default, outline or link. Historical name retained; this is not a semantic color selector. Custom templates may interpret it separately."
+        "description": "How the built-in tab buttons look: default, outline or ghost (link is ghost's former name), in the primary colour pair; this is not a semantic color selector. Former name scheme, a dated alias until 2027-01-01. Custom templates may interpret it separately."
       },
       "top-position": {
         "type": "string",
@@ -119,6 +119,11 @@
       "aria-label": {
         "type": "string",
         "default": ""
+      },
+      "scheme": {
+        "type": "string",
+        "default": "default",
+        "description": "Compatibility alias for appearance."
       },
       "items": {
         "type": "array",
@@ -500,7 +505,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "appearance=link"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -511,7 +518,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "64a33d0d4a2631ce9bcbbf679ccbdeda09a01d73540cb0b4ec6274ba4c90c7f4"
+        "sha256": "fd698b9a2731798088c3556cebad302a8f1d31bcdf55e2953c9e6dcb3ebf11f4"
       }
     ],
     "generated_runtime": [

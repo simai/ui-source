@@ -15,6 +15,27 @@
       "cancelable": false,
       "section": "§8, §16 item 42",
       "note": "the old detail adds component, tagName and template, which §8 takes out of the new one: the element's detail adapter makes it"
+    },
+    {
+      "from": "scheme",
+      "to": "appearance",
+      "kind": "setting",
+      "component": "sf-tabs",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20, contracts/public-api-axes.json",
+      "note": "journal attribute-tabs-scheme-to-appearance (docs precheck TB-06): scheme chose the look of the tab buttons, which every other component calls appearance; appearance wins when both are given"
+    },
+    {
+      "from": "link",
+      "to": "ghost",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-tabs",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal attribute-tabs-scheme-to-appearance: the tab buttons take ghost, sf-button's name since rule C15"
     }
   ]
 }
