@@ -18,12 +18,17 @@ root preserves the ordinary BEM classes and applies `root-class`, author
 
 - content: `text`, `count`, `icon`, `color-class`, `avatar-image-url`,
   `avatar-text`, `avatar-status`;
-- presentation: `kind`, `status`, `appearance`, `size`, `line`, `spacing`,
+- presentation: `kind`, `status`, `appearance`, `size`, `height`, `line`,
   `inline`, `root-class`;
 - state: `active` (a value: the tag holds it and reports it), `disabled`,
   `closable` (absent: the kind decides), `interactive`;
 - accessible names: `aria-label` (a host attribute), `close-label` («Удалить»,
   "Remove" in the page's language when unset).
+
+`height` (`low`, `default`, `high`, `highest`) picks the tag's height from the
+size's steps, as on `sf-button` (C27). `spacing` is its former name until
+2027-01-01 (journal `attribute-tag-spacing-to-height`): `compact`,
+`comfortable` and `spacious` draw as `low`, `high` and `highest`.
 
 `type` is the old name of both `kind` and `status`: a content word written as
 `type` still reaches `kind`, a status word `status`, and each use is noted in

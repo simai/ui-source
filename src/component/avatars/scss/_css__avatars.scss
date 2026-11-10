@@ -30,6 +30,10 @@ $sf-avatar-hue-classes: ();
     border-inline-start-width: var(--sf-avatar--border-inline-start-width, 0);
     border-style: var(--sf-avatar--border-style, solid);
     box-shadow: var(--sf-avatar--box-shadow);
+    /* A picture of a fixed size: in a row of wrapping text it keeps its
+       circle (docs precheck AV-03: line avatars became 12.7x16 ovals on a
+       phone, squeezed by the text beside them). */
+    flex-shrink: 0;
     --sf-avatar--background-color: var(--sf-avatar-background-color, transparent);
     --sf-avatar--border-top-width: var(--sf-avatar-border-width, var(--sf-px));
     --sf-avatar--border-bottom-width: var(--sf-avatar-border-width, var(--sf-px));
@@ -149,18 +153,22 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--width: var(--sf-ui-1\/2--control-height);
   }
 
+  /* The two smallest steps (C18, docs precheck AV-05). 1/3 is the low height
+     of size 1/3, 24 on a desktop and 20 on a phone; 1/4 is 20 on both, the
+     first step of the phone ladder. On a phone they were 24 and 16: 24 stayed
+     the desktop's and 16 is below the ladder. */
   .sf-avatar--size-1\/3 {
     --sf-avatar--font-size: var(--sf-text-size-1\/3);
-    --sf-avatar--height: var(--sf-icon-size-3);
+    --sf-avatar--height: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
     --sf-avatar--line-height: var(--sf-text-height-1\/3);
-    --sf-avatar--width: var(--sf-icon-size-3);
+    --sf-avatar--width: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
   }
 
   .sf-avatar--size-1\/4 {
     --sf-avatar--font-size: var(--sf-text-size-1\/4);
-    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--height: var(--sf-icon-size-2);
     --sf-avatar--line-height: var(--sf-text-height-1\/4);
-    --sf-avatar--width: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-icon-size-2);
   }
 
   .sf-avatar--placeholder, .sf-avatar--text {

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.featured-icon",
   "kind": "component",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/featured-icon/index.js",
@@ -12,7 +12,7 @@
     "src/component/featured-icon/scss/_css_featured-icon.scss",
     "src/component/featured-icon/scss/index.scss"
   ],
-  "content_sha256": "7bc140b4a6c00b348bec6fa984b4e1dc1eda1ad3d778642c624fbcff3b99708d",
+  "content_sha256": "9ccee86f7a688217ea27a7ddd51c8b24980eb9659ddadfe4946091b8ffd65d03",
   "dependencies": [
     {
       "id": "tokens.colour",
@@ -25,10 +25,6 @@
     {
       "id": "tokens.size",
       "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.space",
-      "range": "^1.0.4"
     },
     {
       "id": "tokens.typography",

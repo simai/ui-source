@@ -142,7 +142,8 @@ export function renderTagTemplate(context) {
         // from the type: the default appearance adds nothing.
         context.appearance && context.appearance !== 'default' ? `sf-tag--appearance-${context.appearance}` : '',
         `sf-tag--size-${context.size}`,
-        context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : '',
+        // The height class (1.4.0, C27); spacing is read into it by the element.
+        context.height && context.height !== 'default' ? `sf-tag--height-${context.height}` : '',
         context.inline ? 'sf-tag--inline' : '',
         context.line ? `sf-tag--line-${context.line}` : '',
         'inline-flex',

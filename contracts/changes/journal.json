@@ -9928,6 +9928,99 @@
       },
       "owner": "ui-source",
       "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
+    },
+    {
+      "id": "class-avatar-group-overlap-size-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The avatar group's overlaps take the Framework's size names (dispatcher, applied decision on docs precheck AV-06): sf-avatar-group--size-1/4, -1/3 and -1/2 overlap the avatars by --sf-space-1/4, -1/3 and -1/2. The former names xs, sm and md draw the same until remove_after; sf-avatar-group prints the new ones.",
+      "items": [
+        {
+          "component": "sf-avatar-group",
+          "from": "sf-avatar-group--size-xs",
+          "to": "sf-avatar-group--size-1/4"
+        },
+        {
+          "component": "sf-avatar-group",
+          "from": "sf-avatar-group--size-sm",
+          "to": "sf-avatar-group--size-1/3"
+        },
+        {
+          "component": "sf-avatar-group",
+          "from": "sf-avatar-group--size-md",
+          "to": "sf-avatar-group--size-1/2"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<div class=\"sf-avatar-group sf-avatar-group--size-sm\">",
+        "after": "<div class=\"sf-avatar-group sf-avatar-group--size-1/3\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatars_group.scss"
+    },
+    {
+      "id": "class-tag-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class tag's density classes spacing-compact, spacing-comfortable and spacing-spacious set the tag's height; decision C27 names that axis height, as on the button (docs precheck TG-02): sf-tag--height-low, -high and -highest (component.tags 1.3.0). On sf-tag the former classes draw as low, high and highest until remove_after.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "spacing-compact",
+          "to": "sf-tag--height-low",
+          "match": "(?:(?<![a-z0-9-])sf-tag(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])|(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-tag(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-tag",
+          "from": "spacing-comfortable",
+          "to": "sf-tag--height-high",
+          "match": "(?:(?<![a-z0-9-])sf-tag(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])|(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-tag(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-tag",
+          "from": "spacing-spacious",
+          "to": "sf-tag--height-highest",
+          "match": "(?:(?<![a-z0-9-])sf-tag(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])|(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-tag(?![a-z0-9-]))"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<span class=\"sf-tag sf-tag--default sf-tag--size-1 spacing-compact\">",
+        "after": "<span class=\"sf-tag sf-tag--default sf-tag--size-1 sf-tag--height-low\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/tags/scss/_css__tags.scss"
+    },
+    {
+      "id": "attribute-tag-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-tag has height=\"low|default|high|highest\" (decision C27, as sf-button; docs precheck TG-02). spacing set the same block padding under the buttons' former density names; it is deprecated, draws compact, comfortable and spacious as low, high and highest with a console note until remove_after, and height wins when both are given.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "spacing",
+          "to": "height"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write height in place of spacing on the sf-tag: compact is low, comfortable is high, spacious is highest; spacing=\"normal\" is the default and is simply removed.",
+      "examples": {
+        "before": "<sf-tag size=\"1\" spacing=\"compact\" text=\"Новый\"></sf-tag>",
+        "after": "<sf-tag size=\"1\" height=\"low\" text=\"Новый\"></sf-tag>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tag/index.js"
     }
   ]
 }

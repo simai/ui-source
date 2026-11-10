@@ -110,6 +110,8 @@ const FOLDERS = {
   card: 'card',
   figure: 'figure',
   procedure: 'procedure',
+  // The flag (2026-11-10, docs precheck FL-02): its size, corner, hairline and placeholder.
+  flag: 'flag',
 };
 
 const scss = async (folder) => {

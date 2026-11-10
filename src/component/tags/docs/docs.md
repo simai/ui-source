@@ -21,6 +21,12 @@ filter or a quiet label reads the same on any background and in both themes.
 Because a tag is built without a border, both draw their boundary as an inset
 line, which keeps a tag exactly as tall as its neighbours.
 
+Height: `sf-tag--height-low`, `sf-tag--height-high` and
+`sf-tag--height-highest` move a tag of any size to its neighbouring steps of
+the height ladder (C27, as `sf-button--height-*`); the default needs no class.
+`spacing-compact`, `spacing-comfortable` and `spacing-spacious` are their former
+names until 2027-01-01 (journal `class-tag-spacing-to-height`).
+
 A picture before the label is the label's line high. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.

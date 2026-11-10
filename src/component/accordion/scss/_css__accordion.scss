@@ -9,7 +9,6 @@
   --sf-accordion--border-color: var(--sf-accordion-border-color, var(--sf-outline-variant));
   --sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-  --sf-accordion--trigger-padding-block: var(--sf-space-2);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
   --sf-accordion--content-padding: var(--sf-space-3);
   /* Text, icon and the trigger's least height. Declared on every accordion, so
@@ -17,7 +16,13 @@
   --sf-accordion--text-size: var(--sf-text--size);
   --sf-accordion--text-height: var(--sf-text--height);
   --sf-accordion--icon-size: var(--sf-text-height-1);
-  --sf-accordion--trigger-min-block-size: auto;
+  /* The roomy default header is the top step of the height ladder, the
+     control height of size 3: 56 on a desktop, 52 on a phone. It was the
+     line plus --sf-space-2 above and below, 64 and 52: 64 is no desktop step
+     (C18, docs precheck AC-01). The block padding centres the line in it, so
+     a title that wraps grows the header by whole lines. */
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
+  --sf-accordion--trigger-padding-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-accordion--text-height)) / 2));
 
   border-end-end-radius: var(--sf-accordion--radius);
   border-end-start-radius: var(--sf-accordion--radius);

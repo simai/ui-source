@@ -40,10 +40,12 @@ function renderOptions(options = [], multiple = false) {
 // field's own text. Size 1/2 does not (one pixel would be left), so its tag
 // goes one size down onto the field line, rendered inline: its label is one
 // text step down and it takes no block padding.
+// The tag's height is its low step (C27; the tag's spacing-compact before,
+// journal class-tag-spacing-to-height).
 const FIELD_TAG = Object.freeze({
-  "1/2": {size: "1/3", spacing: ""},
-  "1": {size: "1", spacing: "compact"},
-  "2": {size: "2", spacing: "compact"},
+  "1/2": {size: "1/3", height: ""},
+  "1": {size: "1", height: "low"},
+  "2": {size: "2", height: "low"},
 });
 
 // A single choice shows its picture in the field as well as its label. The
@@ -71,7 +73,7 @@ function renderTag(context, option) {
   const label = getOptionLabel(option);
   const fieldTag = FIELD_TAG[context.size] || FIELD_TAG["1"];
   const tagSize = fieldTag.size;
-  const tagSpacing = fieldTag.spacing ? ` spacing-${fieldTag.spacing}` : "";
+  const tagSpacing = fieldTag.height ? ` sf-tag--height-${fieldTag.height}` : "";
   const tagType =
     option.type === "color" ? "color" : option.type === "avatar" ? "avatar" : "icon";
 

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-scale",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-scale/index.js",
@@ -13,7 +13,7 @@
     "src/component/progress-scale/scss/_css__progress_scale.scss",
     "src/component/progress-scale/scss/index.scss"
   ],
-  "content_sha256": "78a3b9c2488cefe9f840b3195324bc46fac7ebb9a284e19355c1ed117f665896",
+  "content_sha256": "4a1f868ea3d39cb34d9b52bc1098a66da2a8ff8ee552458f5a69e5e703d8e29d",
   "dependencies": [
     {
       "id": "core.runtime",

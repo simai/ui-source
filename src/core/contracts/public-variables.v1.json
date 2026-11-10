@@ -2075,6 +2075,47 @@
       ]
     },
     {
+      "component": "flag",
+      "selector": ".sf-flag",
+      "variables": [
+        {
+          "name": "--sf-flag-size",
+          "role": "size",
+          "summary": "The flag's height, a length from the ladder (var(--sf-icon-size-3)); the width follows the shape's proportion. By default the drawing's own size: 20 for the rectangle (28x20), 24 for the circle.",
+          "default": "var(--sf-icon-size-2)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-flag-radius",
+          "role": "radius",
+          "summary": "The corner radius of the rectangle; the circle stays round unless this is set.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-flag-outline-color",
+          "role": "outline-color",
+          "summary": "The hairline that keeps a white flag off a white page.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-flag-outline-width",
+          "role": "outline-width",
+          "summary": "That hairline's width, drawn inside the picture's edge.",
+          "default": "var(--sf-px)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-flag-placeholder-color",
+          "role": "background",
+          "summary": "The fill that holds the flag's place while its file is still coming.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-11-10"
+        }
+      ]
+    },
+    {
       "component": "reference-link",
       "selector": ".sf-reference-link",
       "variables": [
@@ -2324,7 +2365,7 @@
           "name": "--sf-progress-bar-fill-color",
           "role": "background",
           "summary": "The filled part; a status gives its own colour unless this is set.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-on-surface-variant)",
           "varies_with": [
             "status"
           ],
@@ -2405,7 +2446,7 @@
           "name": "--sf-progress-ring-fill-color",
           "role": "background",
           "summary": "The filled part; a status gives its own colour unless this is set.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-on-surface-variant)",
           "varies_with": [
             "status"
           ],
@@ -2435,7 +2476,7 @@
           "name": "--sf-progress-scale-fill-color",
           "role": "background",
           "summary": "The filled segments; a status gives its own colour unless this is set.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-on-surface-variant)",
           "varies_with": [
             "status"
           ],

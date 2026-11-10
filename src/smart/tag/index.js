@@ -53,6 +53,32 @@ function legacyType(element, axis) {
   return fits ? kind : '';
 }
 
+// height (1.4.0, decision C27; docs precheck TG-02): the size's tightness
+// steps, as on sf-button. spacing is its former name until 2027-01-01
+// (journal attribute-tag-spacing-to-height): compact, comfortable and spacious
+// draw as low, high and highest, and height wins when both are given.
+const TAG_HEIGHTS = ['low', 'default', 'high', 'highest'];
+const SPACING_HEIGHT = Object.freeze({compact: 'low', comfortable: 'high', spacious: 'highest'});
+
+function tagHeight(element) {
+  const raw = String(element.getAttribute('height') ?? '').trim().toLowerCase();
+  if (raw && raw !== 'default') {
+    if (TAG_HEIGHTS.includes(raw)) return raw;
+    if (!element._sfHeightWarned) {
+      element._sfHeightWarned = true;
+      globalThis.console?.warn?.(`[SIMAI Framework] sf-tag: height="${raw}" is not a height; write low, default, high or highest (the size's steps). Read as default.`);
+    }
+    return 'default';
+  }
+  if (raw === 'default') return 'default';
+  if (!element.hasAttribute('spacing')) return 'default';
+  if (!element._sfSpacingNoted) {
+    element._sfSpacingNoted = true;
+    noteDeprecated({component: 'sf-tag', tag: 'sf-tag', kind: 'attribute', from: 'spacing', to: 'height', since: '2026-11-10', remove_after: '2027-01-01'});
+  }
+  return SPACING_HEIGHT[String(element.getAttribute('spacing')).trim().toLowerCase()] || 'default';
+}
+
 function resolveTagKind(element, raw, fallback) {
   const requested = normalize(raw);
   if (requested) {
@@ -208,6 +234,7 @@ class SfTag extends TagElement {
       kind: this.kind,
       type: this.type,
       size: this.size,
+      height: tagHeight(this),
       inline: this.inline,
       line: this.line,
       component: this,

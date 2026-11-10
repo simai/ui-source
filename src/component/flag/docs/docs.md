@@ -26,10 +26,13 @@
 
 ## Размер и вид
 
-Высота задаётся одной переменной, ширина считается сама:
+Высота задаётся одной публичной переменной `--sf-flag-size`, ширина считается
+сама. По умолчанию флаг стоит в размере своего рисунка: прямоугольник 28×20
+(`--sf-icon-size-2`), круг 24×24 (`--sf-icon-size-3`). Значение берите из
+линейки иконок:
 
 ```html
-<span class="sf-flag sf-flag--rect" data-country="de" style="--sf-flag--size: var(--sf-c0)"></span>
+<span class="sf-flag sf-flag--rect" data-country="de" style="--sf-flag-size: var(--sf-icon-size-3)"></span>
 ```
 
 Скругление и тонкая рамка живут в CSS, а не в файлах: `--sf-flag--radius`

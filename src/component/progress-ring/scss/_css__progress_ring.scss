@@ -45,7 +45,10 @@
     --sf-progress-ring--size: var(--sf-progress-ring-size, var(--sf-progress-ring--step-size));
     --sf-progress-ring--line-width: var(--sf-progress-ring-line-width, var(--sf-progress-ring--step-line-width));
     --sf-progress-ring--gap: var(--sf-progress-ring-gap, var(--sf-a2));
-    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-primary));
+    /* Neutral is grey, not the theme's primary (dispatcher, applied decision
+       on docs precheck PB-01): the quiet ink of the place. A status names a
+       colour; the default reports nothing but the amount. */
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-on-surface-variant));
     --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-outline-variant));
     --sf-progress-ring--step-size: var(--sf-ui-1--control-height);
     --sf-progress-ring--step-line-width: var(--sf-a2);

@@ -99,11 +99,14 @@
     padding-top: var(--sf-tag--block, var(--sf-icon-button--padding-top));
   }
 
+  /* The colour mark keeps its circle in a long tag that wraps (docs precheck
+     TG-03: an 8x20 pill at 390): it never shrinks. */
   .sf-tag .sf-tag-color-icon {
     border-radius: var(--sf-tag-color-icon--border-radius);
     height: var(--sf-tag-color-icon--height);
     opacity: var(--sf-tag-color-icon--opacity);
     width: var(--sf-tag-color-icon--width);
+    flex-shrink: 0;
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
@@ -609,23 +612,28 @@
     --sf-tag-color-icon--width: var(--sf-text-height-3);
   }
 
-  /* Density, with the names the buttons use: compact, comfortable and spacious
-     move the block padding of each size one step each way. */
-  .sf-tag.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1\/3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1\/3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-highest)); }
+  /* The height (C27, as sf-button; docs precheck TG-02): sf-tag--height-low,
+     -high and -highest move the block padding of each size to the size's
+     tightness step, the size's usual step and its neighbours on the height
+     ladder; default needs no class. spacing-compact, -comfortable and
+     -spacious, which did the same under the buttons' former density names,
+     draw as low, high and highest until 2027-01-01 (journal
+     class-tag-spacing-to-height). */
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-highest)); }
 
   /* Inline: a tag that sits on the text line of another control -- a selected
      value in a dropdown, an input or a table cell. No block padding, one small
@@ -661,11 +669,11 @@
 
   /* Inline and compact together: a chip that fills a control of its own size,
      with the compact block padding of its size and its own text line. */
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
 
   /* The remove mark is the tag size's step of the cross ladder. The button
      keeps the whole line, so the target does not shrink with the mark. */

@@ -223,4 +223,25 @@
     border-width: 0;
     block-size: var(--sf-text-height-2);
   }
+
+  /* A line reference is one line, whatever the width (docs precheck RL-02):
+     on a phone the link wrapped to two lines inside the line's box, the path
+     broke mid-word and both ran over the next line. The link and the path
+     stay on the line and end in an ellipsis; the link gives way last. */
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2) {
+    overflow: hidden;
+  }
+
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2)
+    :where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link__meta, .sf-reference-link-text) {
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2)
+    :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    flex: 0 100 auto;
+  }
 }

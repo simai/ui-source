@@ -20,11 +20,12 @@ test('tags: five sizes publish their text on the root', async () => {
   assert.ok(css.includes(':is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3)'));
 });
 
-test('tags: density uses the button names and the ladder of each size', async () => {
+test('tags: height uses the button names and the ladder of each size; spacing-* stays its dated alias', async () => {
   const css = await read('component/tags/scss/_css__tags.scss');
   for (const size of SIZES) {
     for (const [name, step] of [['compact', 'low'], ['comfortable', 'high'], ['spacious', 'highest']]) {
-      assert.ok(css.includes(`.sf-tag.sf-tag--size-${size}.spacing-${name} { --sf-tag--block: var(--sf-ui-${size}--space-y-tightness-${step}); }`), `${size} ${name}`);
+      // C27: sf-tag--height-<step>; spacing-<name> until 2027-01-01 (journal class-tag-spacing-to-height).
+      assert.ok(css.includes(`.sf-tag.sf-tag--size-${size}:is(.sf-tag--height-${step}, .spacing-${name}) { --sf-tag--block: var(--sf-ui-${size}--space-y-tightness-${step}); }`), `${size} ${name}`);
     }
   }
   assert.match(css, /padding-top: var\(--sf-tag--block, var\(--sf-tag--padding-top\)\);/);
@@ -43,14 +44,15 @@ test('tags: inline drops the block padding and sizes the remove button to the li
   assert.match(mark, /--sf-close-icon--height: var\(--sf-tag--close-size, var\(--sf-text-size-1\\\/4\)\);/);
 });
 
-test('tags: the Smart tag exposes the sizes, spacing and inline', async () => {
+test('tags: the Smart tag exposes the sizes, height (spacing its former name) and inline', async () => {
   // meta.mjs is generated from component.json (standard 1.4): read it as data.
   const {attributes} = (await import('../src/smart/tag/meta.mjs')).default;
   assert.deepEqual(attributes.size.values, ['1/3', '1/2', '1', '2', '3']);
+  assert.deepEqual(attributes.height.values, ['low', 'default', 'high', 'highest']);
   assert.equal(attributes.spacing.kind, 'enum');
   assert.deepEqual(attributes.spacing.values, ['compact', 'normal', 'comfortable', 'spacious']);
   assert.equal(attributes.inline.kind, 'boolean');
   const template = await read('smart/tag/js/templates/default.js');
-  assert.match(template, /context\.spacing && context\.spacing !== 'normal' \? `spacing-\$\{context\.spacing\}` : ''/);
+  assert.match(template, /context\.height && context\.height !== 'default' \? `sf-tag--height-\$\{context\.height\}` : ''/);
   assert.match(template, /context\.inline \? 'sf-tag--inline' : ''/);
 });
