@@ -49,7 +49,7 @@
   "keyboard": {
     "host": {
       "Tab": "reach",
-      "Escape": "dismiss"
+      "Escape": "close"
     }
   },
   "relations": [
@@ -76,7 +76,7 @@
     },
     "keys": {
       "Tab": "reach",
-      "Escape": "dismiss"
+      "Escape": "close"
     }
   },
   "host-states": {

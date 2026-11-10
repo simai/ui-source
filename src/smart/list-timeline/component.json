@@ -256,7 +256,7 @@
       "Tab": "reach",
       "Enter": "activate",
       "Space": "activate",
-      "Escape": "dismiss"
+      "Escape": "close"
     }
   },
   "relations": [
@@ -306,7 +306,7 @@
       "Tab": "reach",
       "Enter": "activate",
       "Space": "activate",
-      "Escape": "dismiss"
+      "Escape": "close"
     }
   },
   "host-states": {

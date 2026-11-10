@@ -75,8 +75,8 @@
   "keyboard": {
     "host": {
       "Tab": "reach",
-      "Enter": "toggle",
-      "Space": "toggle"
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "relations": [
@@ -106,8 +106,8 @@
     },
     "keys": {
       "Tab": "reach",
-      "Enter": "toggle",
-      "Space": "toggle"
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "host-states": {

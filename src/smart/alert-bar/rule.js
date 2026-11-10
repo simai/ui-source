@@ -6,6 +6,7 @@ SF.RuleLoader['cl-alert-bar'] = {
   js: true,
   css: true,
   relation: [
+    { name: 'cl-time' },
     { name: 'cl-button' },
     { name: 'cl-button-icon' },
     { name: 'cl-badge' },
