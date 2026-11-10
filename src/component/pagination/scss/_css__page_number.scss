@@ -38,7 +38,7 @@
   transition-duration: var(--sf-duration-fast);
   transition-timing-function: var(--sf-animation);
   /* sf-pagination's public variables (standard 1.3.8 §6) over the role tokens. */
-  --sf-page-number--background-color: var(--sf-pagination-page-background-color, var(--sf-surface-0));
+  --sf-page-number--background-color: var(--sf-pagination-page-background-color, var(--sf-surface-page));
   --sf-page-number--color: var(--sf-pagination-page-color, var(--sf-on-surface-variant));
   --sf-page-number--border-top-width: var(--sf-px);
   --sf-page-number--border-bottom-width: var(--sf-px);

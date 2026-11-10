@@ -518,7 +518,7 @@
   padding: calc(var(--sf-context-menu-switch--seat) - var(--sf-px));
   border: var(--sf-px) solid var(--sf-outline);
   border-radius: var(--sf-radius-circle);
-  background-color: var(--sf-surface-0);
+  background-color: var(--sf-surface-page);
   transition: background-color var(--sf-duration-normal) var(--sf-animation),
               border-color var(--sf-duration-normal) var(--sf-animation);
 }

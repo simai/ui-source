@@ -4,7 +4,7 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
 .sf-list {
-  background-color: var(--sf-list--background-color, var(--sf-surface-0));
+  background-color: var(--sf-list--background-color, var(--sf-surface-page));
   border-width: var(--sf-list--border-width, var(--sf-px));
   border-bottom-width: var(--sf-list--border-bottom-width, var(--sf-list--border-width, var(--sf-px)));
   border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
@@ -259,7 +259,7 @@
     /* The surface's own colour, read from the list that sets it: `inherit`
        would take a wrapper's transparent background and the rows would scroll
        through the heading. */
-    background-color: var(--sf-list--background-color, var(--sf-surface-0));
+    background-color: var(--sf-list--background-color, var(--sf-surface-page));
     padding-block: var(--sf-space-1\/4);
     padding-inline: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
     color: var(--sf-on-surface-variant);
