@@ -26,6 +26,7 @@
     "test:scroll-subtle": "node --test tests/scroll-subtle.contract.test.mjs",
     "test:scrollbar": "node --test tests/scrollbar-presets.contract.test.mjs tests/scroll-subtle.contract.test.mjs",
     "test:highlight": "node scripts/validate-highlight-contract.mjs",
+    "test:smart-modal-contract": "node scripts/validate-smart-modal-contract.mjs",
     "test:highlight:runtime": "node scripts/smoke-highlight-runtime.cjs",
     "test:unit": "node --test tests/*.test.mjs",
     "contract:build": "node scripts/sf-contract.mjs build",
