@@ -12,14 +12,18 @@
 // - the close box is no taller than the label's line;
 // - a removable tag is as tall as the same tag without the button;
 // - an inline tag is the line high;
-// - the target (the button's ::after) is at least 24px square (WCAG 2.2, 2.5.8);
-// - the button asks for a size sf-button-icon has;
+// - the target is at least 24px square (WCAG 2.2, 2.5.8);
+// - the button asks for a size sf-button-close has;
 // - beside a label that is a button (interactive, checkbox) the target stays off
 //   it: a click on the end of the label reaches the label, not the remove.
 // All of it at three viewport widths, because the text ladder moves with the
 // width: a size's line at 1280 is not its line at 900.
 // And in sf-lookup 1.0.1, without its old height cap: the chip is the field's
-// line high and its close box no taller than that line.
+// line high.
+// And in sf-tag 1.3.5 (component.tags 1.2.2): the remove button's own box is
+// the target -- a 24 square, the larger of the line and 24 in an inline tag or
+// a chip, no invisible ::after -- overhanging through a negative margin, so the
+// tag stays as tall as without it.
 // And in sf-lookup 1.0.2, chips wrapped in a narrow box at sizes 1/2, 1 and 2:
 // the targets on neighbouring rows do not intersect (a click in an overlap could
 // remove a chip on the other row), while an empty field and one row of chips
@@ -57,7 +61,7 @@ await new Promise((settle) => server.once('listening', settle));
 const base = `http://127.0.0.1:${server.address().port}`;
 
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
-const BUTTON_SIZES = JSON.parse(readFileSync(new URL('../../src/smart/button-icon/component.json', import.meta.url), 'utf8')).settings.size.values;
+const BUTTON_SIZES = JSON.parse(readFileSync(new URL('../../src/smart/button-close/component.json', import.meta.url), 'utf8')).settings.size.values;
 const island = (data) => `<script type="application/json" data-sf-settings>${JSON.stringify(data)}</script>`;
 const row = (size) => `<div data-size="${size}" style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
   <sf-tag data-case="plain" kind="default" text="Billing" size="${size}"></sf-tag>
@@ -96,7 +100,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
   await page.waitForFunction((n) => customElements.get('sf-tag') && customElements.get('sf-input-lookup')
-    && document.querySelectorAll('sf-tag sf-button-icon > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
+    && document.querySelectorAll('sf-tag sf-button-close > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
   for (const width of [1280, 900, 375]) {
     await page.setViewportSize({width, height: 2400});
     await page.waitForTimeout(400);
@@ -105,7 +109,7 @@ try {
       const measure = (host) => {
         const tag = host.querySelector('.sf-tag');
         const label = tag.querySelector('.sf-tag-container');
-        const iconButton = tag.querySelector(':scope > sf-button-icon');
+        const iconButton = tag.querySelector(':scope > sf-button-close');
         const button = iconButton?.querySelector(':scope > .sf-icon-button');
         const after = button ? getComputedStyle(button, '::after') : null;
         const box = button?.getBoundingClientRect();
@@ -114,16 +118,17 @@ try {
           line: parseFloat(getComputedStyle(label).lineHeight),
           asks: iconButton?.getAttribute('size') ?? null,
           close: box ? {height: box.height, width: box.width} : null,
-          // The target is the button's box, or its ::after where that reaches further.
-          target: box ? {height: Math.max(box.height, after?.content !== 'none' && after?.position === 'absolute' ? parseFloat(after.height) : 0), width: Math.max(box.width, after?.content !== 'none' && after?.position === 'absolute' ? parseFloat(after.width) : 0)} : null,
+          // The target is the button's own box: no ::after reaches past it.
+          extension: Boolean(after && after.content !== 'none' && after.position === 'absolute'),
+          target: box ? {height: box.height, width: box.width} : null,
         };
       };
       // What a click reaches at the last pixel of a label that is a button.
       const labelEnd = (host) => {
         const action = host.querySelector('.sf-tag-action').getBoundingClientRect();
-        const button = host.querySelector('sf-button-icon > .sf-icon-button');
+        const button = host.querySelector('sf-button-close > .sf-icon-button');
         const box = button.getBoundingClientRect();
-        const reach = parseFloat(getComputedStyle(button, '::after').width);
+        const reach = box.width;
         // Two pixels in: boxes snap to whole pixels when hit, so the pixel on
         // either side of the shared edge can go to the target with no overlap in
         // the layout (measured: 1px in is the close at some sizes, 1.25px the
@@ -158,8 +163,10 @@ try {
         }
         check(`${name} at ${where}: a close button`, Boolean(got.close), {got});
         if (!got.close) continue;
-        check(`${name} at ${where}: asks for a size sf-button-icon has`, BUTTON_SIZES.includes(got.asks), {asks: got.asks});
-        check(`${name} at ${where}: the close box is no taller than the line`, got.close.height <= got.line + EPS, {close: got.close, line: got.line});
+        check(`${name} at ${where}: asks for a size sf-button-close has`, BUTTON_SIZES.includes(got.asks), {asks: got.asks});
+        const square = ['inline', 'chip'].includes(name) ? Math.max(24, got.line) : 24;
+        check(`${name} at ${where}: the close box is the ${square} square`, Math.abs(got.close.height - square) <= EPS && Math.abs(got.close.width - square) <= EPS, {close: got.close, line: got.line});
+        check(`${name} at ${where}: no invisible extension`, !got.extension, {extension: got.extension});
         check(`${name} at ${where}: a target of at least 24px`, got.target && got.target.height >= 24 - EPS && got.target.width >= 24 - EPS, {target: got.target});
       }
       check(`removable at ${where}: as tall as the tag without the button`, Math.abs(row.removable.tag - row.plain.tag) <= EPS, {removable: row.removable.tag, plain: row.plain.tag});
@@ -175,8 +182,7 @@ try {
       const height = (element) => element.getBoundingClientRect().height;
       const targets = [...at('wrapped').querySelectorAll('.sf-lookup-chip .sf-icon-button--close')].map((button) => {
         const rect = button.getBoundingClientRect();
-        const after = getComputedStyle(button, '::after');
-        const [w, h] = [parseFloat(after.width), parseFloat(after.height)];
+        const [w, h] = [rect.width, rect.height];
         const [x, y] = [rect.left + rect.width / 2, rect.top + rect.height / 2];
         return {top: y - h / 2, bottom: y + h / 2, left: x - w / 2, right: x + w / 2, centre: y};
       });
