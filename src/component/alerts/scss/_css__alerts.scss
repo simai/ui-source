@@ -150,9 +150,6 @@
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
 }
 
-.sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-surface-variant);
-}
 
 .sf-alert.sf-alert--info.sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-info-container));
@@ -164,9 +161,6 @@
   --sf-icon--color: var(--sf-info);
 }
 
-.sf-alert.sf-alert--info.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--info.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--info.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-surface-variant);
-}
 
 .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
@@ -249,6 +243,33 @@
 
 .sf-alert--flat {
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
+}
+
+/* One notice, one ink (C35 acceptance F1): the cross is the notice's text ink
+   and the status icon the status's own role (--sf-<status>; neutral the quiet
+   --sf-on-surface-variant), as on sf-toast, so the Smart alert, the class alert and the toast draw one
+   notice alike. The Smart alert's close stands inside an sf-button-icon host
+   (display: contents), so the cross is reached through any close host, not
+   only a class .sf-icon-button child. Neutral, and an outlined alert whose
+   text stands on the page: --sf-on-surface. */
+.sf-alert > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-surface);
+}
+
+.sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-info-container);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger):is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-error-container);
+}
+
+.sf-alert.sf-alert--warning:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-warning-container);
+}
+
+.sf-alert.sf-alert--success:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-success-container);
 }
 
 @media (prefers-reduced-motion: reduce) {
