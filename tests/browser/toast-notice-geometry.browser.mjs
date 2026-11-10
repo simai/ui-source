@@ -195,7 +195,7 @@ try {
         tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
         await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
         await tab.waitForFunction(() => document.querySelectorAll('sf-toast > .sf-toast').length === 6
-          && [...document.querySelectorAll('[data-k]')].filter((node) => node.matches('button') || node.querySelector('button')).length === 16
+          && [...document.querySelectorAll('[data-k]')].filter((node) => node.matches('button') || node.querySelector('button')).length === 18
           && document.querySelectorAll('sf-confirm button[data-action="decline"]').length === 2, null, {timeout: 30000})
           .catch(() => failures.push(`${key} load ${load}: the page never drew its toasts, controls and questions`));
         await tab.evaluate(() => document.fonts.ready);
