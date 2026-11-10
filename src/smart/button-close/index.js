@@ -49,6 +49,8 @@ class SfClose extends CloseElement {
       component: this,
       glyph: this.isGlyph,
       size: this.size,
+      // The box's height (1.3.0, decisions C27 and C35).
+      height: this.height,
       appearance: this.appearance,
       scheme: this.scheme,
       radius: this.radius,

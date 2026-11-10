@@ -35,6 +35,9 @@ export function renderCloseTemplate(context) {
   const classes = [
     'sf-icon-button',
     `sf-icon-button--size-${size}`,
+    // The height (decisions C27, C35): the icon button's class of the size's
+    // tightness step; default draws none.
+    ['low', 'high', 'highest'].includes(context.height) ? `sf-icon-button--height-${context.height}` : '',
     'sf-icon-button--close',
     'sf-button-close',
     `sf-button-close--${context.appearance || 'ghost'}`,

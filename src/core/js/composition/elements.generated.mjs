@@ -347,6 +347,16 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "height": {
+          "default": "default",
+          "enum": [
+            "low",
+            "default",
+            "high",
+            "highest"
+          ],
+          "type": "string"
+        },
         "icon": {
           "default": "add",
           "type": "string"
@@ -451,7 +461,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.7.1"
+    "version": "1.8.0"
   },
   "sf-checkbox": {
     "inputs": {

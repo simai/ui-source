@@ -15,6 +15,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   'kind',
   'variant',
   'size',
+  'height',
   'appearance',
   'type',
   'scheme',
@@ -198,6 +199,9 @@ class SfIconButton extends IconButtonElement {
         announcement: announce ? cycle.name : '',
       } : null,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
+      // The control height (1.8.0, decisions C27 and C35): the size's
+      // tightness step; a value outside the list reads as default.
+      height: this.height,
       badge: this.badgeState?.(),
       component: this,
     });
@@ -310,6 +314,7 @@ class SfIconButton extends IconButtonElement {
       filled: this.filled,
       tightness: resolveControlSpacing({spacing: this.getAttribute('spacing')}).tightness,
       spacing: this.spacing,
+      height: this.height,
       radius: this.radius,
       rootClass: this.rootClass,
       loading: this.loading,

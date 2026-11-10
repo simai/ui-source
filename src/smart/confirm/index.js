@@ -66,6 +66,14 @@ class SfConfirm extends ConfirmSurface {
         return true;
     }
 
+    // A declined question says nothing (owner decision C35, remark R067):
+    // «Отмена» changed nothing, so there is nothing to report -- no
+    // «Отменено» under the row, in a window or anywhere. The host puts the
+    // row back and the focus on what was pressed.
+    statusText(shown) {
+        return shown === "declined" ? "" : super.statusText(shown);
+    }
+
     templateContext() {
         const question = this.getProp("question") || "";
         return {
