@@ -65,7 +65,11 @@ Main attributes:
 - `radius="default|square|rounded"`
 - `root-class`
 - `loading` — the spinner in place of the icon, at its size; `aria-busy` and
-  native `disabled`
+  native `disabled`. The button keeps its scheme colour -- the fill, the edge
+  and the icon colour of the resting one -- and the spinner takes the icon
+  colour, its background ring that colour at 16 % (1.8.1, the C36 follow-up;
+  before, it wore the grey disabled look). `disabled` and `loading` at once
+  wear the disabled look
 - `disabled`
 - `native-type`
 - `pressed` — a toggle button: present, it writes `aria-pressed` on the native

@@ -467,7 +467,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.8.1"
+    "version": "1.8.2"
   },
   "sf-checkbox": {
     "inputs": {

@@ -14,7 +14,8 @@
 //     items: the same, and no item changes width;
 //   - aria-busy="true" and native disabled on every loading button;
 //   - sf-button's spinner takes its label's ink (it keeps its scheme colour
-//     while loading, owner decision C36); sf-button-icon's the disabled ink;
+//     while loading, owner decision C36); sf-button-icon's its icon colour
+//     (the C36 follow-up);
 //     --sf-loader--color wins over both;
 //   - the arc moves without end, and under reduced motion it is a still arc;
 //   - the slot is right without the spinner sheet (the button sheets draw it);
@@ -196,7 +197,8 @@ try {
     check('a loading button without an icon keeps its label as its name', busyNamed === 1 && named === 2, evidence.names);
     check('a loading icon button keeps its name', iconNamed === 1, evidence.names);
     check('the spinner of a loading sf-button takes its label ink (C36)', colours.text === colours.label && colours.text !== colours.disable, colours);
-    check('the spinner of a loading sf-button-icon takes the disabled ink', colours.iconbutton === colours.disable, colours);
+    // A default primary icon button draws its icon in on-primary.
+    check('the spinner of a loading sf-button-icon takes its icon colour (C36 follow-up)', colours.iconbutton === colours.label && colours.iconbutton !== colours.disable, colours);
     check('--sf-loader--color colours the spinner in a button', colours.tinted === 'rgb(200, 0, 0)', colours);
     await page.close();
   }
