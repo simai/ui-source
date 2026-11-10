@@ -84,7 +84,7 @@
       "dismissible": {
         "type": "boolean",
         "default": false,
-        "description": "This person may dismiss problems («Не напоминать», triage): the host's permission for every item; an item's own dismissible wins"
+        "description": "This person may dismiss problems («Не напоминать», triage): the page's permission, and the only one that grants it; an item's dismissible: false takes it away from that item, its dismissible: true grants nothing"
       },
       "checked-at": {
         "type": "string",
@@ -100,7 +100,7 @@
       "more-href": {
         "type": "string",
         "default": "",
-        "description": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request more {href}"
+        "description": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request all {href}"
       },
       "group": {
         "type": "string",
@@ -127,7 +127,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The former own rung, kept as an alias of the density (owner decisions C22, C37): 1/2 is the compact density on this list, 1 the normal one under a compact page; not set, the list follows the page's density",
+        "description": "Deprecated until 2027-01-01 (change journal attribute-list-attention-size-to-density): the density comes from the page (data-sf-density, decision C22), never from a size. Until then size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once in the console; 1 is the normal density, as without size",
         "enum": [
           "1/2",
           "1"
@@ -136,7 +136,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible whether this person may say «Не напоминать» (else the host's dismissible). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
+        "description": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible: false keeps «Не напоминать» off this item (the permission is the host's dismissible; an item can take it away, never give it). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
       },
       "passed": {
         "type": "array",
@@ -151,7 +151,7 @@
   "methods": {},
   "events": {
     "sf-list-attention-navigate": {
-      "summary": "A person pressed a link of an item: its action's (part action) or its object's (part object) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "summary": "A person pressed a link of an item: its action's (part action), its object's (part object) or «Подробнее о проверке» in its «⋯» (part help) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
       "payload": {
         "type": "object",
         "required": [
@@ -228,7 +228,7 @@
       }
     },
     "sf-list-attention-dismiss": {
-      "summary": "A person chose «Не напоминать» (only where dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it",
+      "summary": "A person chose «Не напоминать» (only where the host's dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it",
       "payload": {
         "type": "object",
         "required": [
@@ -270,7 +270,7 @@
         "additionalProperties": true
       }
     },
-    "sf-list-attention-more": {
+    "sf-list-attention-all": {
       "summary": "A person pressed «Все проблемы (N)»: with more-href a link, the request first (a router cancels it); without it «Показать все (N)», and not cancelled, every row is shown in place",
       "payload": {
         "type": "object",
@@ -391,11 +391,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-attention/index.js",
-        "sha256": "1e9e3d9d3b570e0c60809cf34e4c876d12fe904447a8ef855cbe37c22654d70e"
+        "sha256": "5b92a9ff6a80224411c971ca3c3c31e9c089036600e7e8456da7ab515370052e"
       },
       {
         "path": "src/smart/list-attention/js/templates/default.js",
-        "sha256": "ff1041396e04c6b36eb0a60899f46e4afb08da36d25b810d93b2d56af6e79547"
+        "sha256": "3a18a87ebeaeebc33606900f3c056dea42cd4c6ad14f5f455e68726fa008ff47"
       },
       {
         "path": "src/smart/list-attention/scss/_smart__list-attention.scss",
@@ -407,7 +407,7 @@
       },
       {
         "path": "src/smart/list-attention/docs.md",
-        "sha256": "55bec08e3ae84b29a558d2af4d26ac0123cdbd0c82f544fcf5304b61d085cb93"
+        "sha256": "a92e4a3c51500a75b5b8b82e8488e231e13988dd72816e148c3718183decc51c"
       }
     ],
     "generated_runtime": []

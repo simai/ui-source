@@ -62,19 +62,34 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'status', 'title']);
   assert.deepEqual(manifest.settings.empty.values, ['none', 'line']);
   // Owner decision C37 (1.2.0): the quiet line and the card by default,
-  // triage requests with undo, recheck and more.
+  // triage requests with undo, recheck and all («Все проблемы»; «more» is
+  // the «⋯» button's own name).
   assert.equal(manifest.settings.empty.default, 'line');
   assert.equal(manifest.settings.frame.default, 'card');
   assert.equal(manifest.settings.limit.default, 5);
-  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply', 'snooze', 'dismiss', 'undo', 'recheck', 'more']);
+  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply', 'snooze', 'dismiss', 'undo', 'recheck', 'all']);
   assert.equal(manifest.events.navigate.cancelable, true);
-  for (const verb of ['snooze', 'dismiss', 'more']) assert.equal(manifest.events[verb].cancelable, true, verb);
+  for (const verb of ['snooze', 'dismiss', 'all']) assert.equal(manifest.events[verb].cancelable, true, verb);
   for (const name of ['view', 'started']) assert.ok(!(name in manifest.settings), `${name} is the core's own name`);
   const source = code('src/smart/list-attention/index.js');
   assert.match(source, /const RANK = \{error: 0, warning: 1, info: 2, success: 3\};/u);
   assert.match(source, /\(RANK\[a\.status\] - RANK\[b\.status\]\) \|\| age\(a, b\) \|\| \(a\.order - b\.order\)/u);
-  // «Не напоминать» only where the person may: the item's flag, else the host's.
-  assert.match(source, /return item\.dismissible \?\? this\.dismissible === true;/u);
+  // «Не напоминать» only where the page gives the permission (the host's
+  // dismissible); an item's flag may take it away, never grant it.
+  const body = source.match(/canDismiss\(item\) \{\n\s*(return [^\n]+)\n\s*\}/u);
+  assert.ok(body, 'canDismiss is one return');
+  const canDismiss = (host, item) => new Function('item', body[1]).call(host, item);
+  for (const [host, flag, may] of [
+    [false, null, false], [false, true, false], [false, false, false],
+    [true, null, true], [true, true, true], [true, false, false],
+  ]) {
+    assert.equal(canDismiss({dismissible: host}, {dismissible: flag}), may, `host ${host}, item ${flag}`);
+  }
+  // size is deprecated (C22: the density is the page's), noted with a date.
+  assert.match(source, /noteDeprecated\(\{component: 'sf-list-attention', kind: 'attribute', from: 'size', to: 'data-sf-density'/u);
+  assert.match(manifest.settings.size.summary, /^Deprecated until 2027-01-01/u);
+  // «Подробнее о проверке» asks navigate like the other links.
+  assert.match(source, /part === 'help' \? item\.help/u);
   assert.match(code('src/smart/list-attention/js/templates/default.js'), /appearance="outline" scheme="on-surface"/u);
   const sheet = read('src/smart/list-attention/scss/_smart__list-attention.scss');
   // The host is display: contents; with no items the template draws nothing.

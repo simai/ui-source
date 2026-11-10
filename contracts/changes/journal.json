@@ -9311,6 +9311,30 @@
       },
       "owner": "ui-source",
       "source": "src/utility/elevation, src/utility/background-color, src/utility/box-shadow"
+    },
+    {
+      "id": "attribute-list-attention-size-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-attention takes its density from the page (data-sf-density, a compact context; decision C22), never from a size of its own. size, whose 1/2 was 1.1's small rung and in 1.2.0 the compact density, is deprecated: until remove_after size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once per page in the console. In sf-list-timeline size=\"1/2\" is a smaller rung, so the same word cannot mean the density here.",
+      "items": [
+        {
+          "component": "sf-list-attention",
+          "from": "size",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove size from the sf-list-attention. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; size=\"1\" is the normal density and is simply removed.",
+      "examples": {
+        "before": "<sf-list-attention size=\"1/2\" triage>",
+        "after": "<sf-list-attention data-sf-density=\"compact\" triage>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-attention/index.js"
     }
   ]
 }

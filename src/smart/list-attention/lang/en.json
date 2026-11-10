@@ -75,7 +75,7 @@
     "recheck": {
       "label": "Check again"
     },
-    "more": {
+    "all": {
       "label": "All problems"
     }
   }
