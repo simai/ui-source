@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.list-description",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "title": "Description list",
-  "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's header, a job's parameters, licence details). The labels stand in a column of their own and go over their values on a phone; a value can be monospace, a link, copied with a button, carry a status and a hint; a long value wraps or is cut with the whole of it on demand; an empty one shows «—».",
+  "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's card with sections, a record's header, a job's parameters, licence details). The labels stand in one column for the whole record and go over their values on a phone; a value can be monospace, figures, a link, copied with a button, a badge, carry a status, a hint and an action; a label a help mark; a section a title and an action; a long value wraps or is cut with the whole of it on demand; an empty one says «Не указан». layout grid is a summary in up to four columns.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -30,7 +30,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "smart.badge",
+      "smart.button",
       "smart.button-copy",
+      "smart.help-mark",
       "smart.icon"
     ],
     "public_parts": []
@@ -71,11 +74,23 @@
       "layout": {
         "type": "string",
         "default": "auto",
-        "description": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column narrower than 24rem (a phone)",
+        "description": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column narrower than 24rem (a phone); grid: the summary under a record's heading -- each label over its value, as many columns as fit at 11rem each and at most columns, every value on one line with an ellipsis and its whole text as title",
         "enum": [
           "auto",
           "columns",
-          "stacked"
+          "stacked",
+          "grid"
+        ]
+      },
+      "columns": {
+        "type": "string",
+        "default": "4",
+        "description": "layout grid: at most this many columns (as many as fit at 11rem each)",
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4"
         ]
       },
       "dividers": {
@@ -94,12 +109,19 @@
       },
       "empty-text": {
         "type": "string",
-        "description": "What an item with no value shows; «—» when not set"
+        "description": "What an item with no value shows when the item has no empty words of its own; «Не указан» (Not set) when not set"
+      },
+      "heading-level": {
+        "type": "integer",
+        "default": 3,
+        "description": "The level of the section titles in the page's outline",
+        "minimum": 2,
+        "maximum": 6
       },
       "items": {
         "type": "array",
         "default": [],
-        "description": "The facts in order, each {label, value, id?, hint?, mono?, copy?, href?, status?}. A property, or the JSON island a server prints. value is text (a number is written as it is); an empty value shows empty-text. mono writes the value in the monospace face (a path, a hash, a key), copy adds a button that copies it, href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing), hint is a line under it. An item without a label is left out"
+        "description": "The facts in order, each {label, value, id?, hint?, mono?, numeric?, copy?, href?, status?, badge?, help?, empty?, action?}, and section items {type: \"section\", label, id?, action?} that open a section of the record (decision C33). A property, or the JSON island a server prints. value is text (a number is written as it is, in figures of one width); an empty value (no text and no badge) shows empty (the item's words) or empty-text, and then no link, no copy button and no status are drawn. mono writes the value in the monospace face (a path, a hash, a key), numeric in figures of one width (a sum), copy adds a button that copies it (always shown), href makes it a link, status puts a status icon before it (success, warning, error, info; neutral or none draws nothing), badge draws an sf-badge on the value's line ({text, status | scheme, icon?}), hint is a line under it, help puts a help mark (sf-help-mark) after the label, action one ghost button after the value -- an empty value's «Указать» too ({label, event?, href?}; a press asks apply, or navigate with href). A section's label is its title, a heading at heading-level, its action stands at the head's end. Every label of a record with sections shares one column. An item without a label is left out"
       }
     },
     "additionalProperties": false
@@ -109,7 +131,7 @@
   "methods": {},
   "events": {
     "sf-list-description-navigate": {
-      "summary": "A person pressed a value link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "summary": "A person pressed a value link or an action link (an action with href) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
       "payload": {
         "type": "object",
         "required": [
@@ -121,6 +143,37 @@
             "type": "string"
           },
           "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-description-apply": {
+      "summary": "A person pressed an item's or a section's action button, one without href (vocabulary §5 apply {action, scope: entry, ids}): action is the action's event («edit» when it names none), ids and id the item's or the section's id, kind item or section. The page does it (opens a form, a dialog) and sets the list again",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action",
+          "scope",
+          "ids",
+          "id",
+          "kind"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
             "type": "string"
           }
         },
@@ -166,7 +219,7 @@
     "role": "group",
     "accessible_name": "recommended",
     "keyboard": [
-      "Tab reaches each value link, each copy button and, with overflow truncate, each cut value in order; Enter follows a link or copies"
+      "Tab reaches, in reading order, each section's action, each help mark, each value link, each copy button, each item's action and, with overflow truncate, each cut value; Enter follows a link, copies or presses the action"
     ],
     "focus": "The list never takes focus itself."
   },
@@ -230,23 +283,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-description/index.js",
-        "sha256": "a2389f5b8837a8b81cdf4351cddf37e11e27ded99939494192d83bd90a74e9dc"
+        "sha256": "e43fd96275e8f00941a88d99f6aa68e7e8899a415f8b6bd2744facb8e8e5732a"
       },
       {
         "path": "src/smart/list-description/js/templates/default.js",
-        "sha256": "1620aa73e48eeff219d11d6a2aa1345ae692b92b40cbdbcfa29fc0116513b428"
+        "sha256": "68b032c97ec1bc7ddb69aea2c55ec36cc1f49f8f148b451b682ba30cae49f30a"
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "1f46787ecc85b0e8a03b223d380234af74523cce60ba909d70dae66232a8907c"
+        "sha256": "9590bc6fac51c1925a25c34277f6eb11da5edbba34b60e292d996d0c3e491397"
       },
       {
         "path": "src/smart/list-description/rule.js",
-        "sha256": "36cab71b80236c7616e86fb8fd82eb78c6b8d480e0eafdb0a2a5b9d83e8d3b5f"
+        "sha256": "bcad66361f4d24c2b7f429ab07fd8e800c33fe26cd7ea07ea3f12fa0b40e4a8b"
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "fe84db712415d32c76482f82ddbf01bd3363200eaf0d1e96d1ed25e85f01c37d"
+        "sha256": "cb05679271fc6459da1e3b332c7003138f7ebb20fa805a32cdbb4d1dbe29130b"
       }
     ],
     "generated_runtime": []

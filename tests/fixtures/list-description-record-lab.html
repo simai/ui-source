@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Карточка записи — sf-list-description</title>
+<!--
+  The record card (owner decision C33; ui-control control/research/
+  2026-11-09-list-description.md, prototypes/list-description.html scenes A
+  and B) drawn by the real sf-list-description 1.1.0 over the Loader.
+  ?theme=dark, ?density=compact. Served by
+  tests/browser/list-description-record.browser.mjs with the build at /distr/.
+-->
+<script>
+(function () {
+  var query = new URLSearchParams(location.search);
+  var root = document.documentElement;
+  if (query.get('theme') === 'dark') { root.classList.remove('theme-light'); root.classList.add('theme-dark'); }
+  if (query.get('density') === 'compact') root.setAttribute('data-sf-density', 'compact');
+  window.sfPath = '/distr/';
+  window.sfSmartPath = '/distr/';
+})();
+</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--sf-surface-1); color: var(--sf-on-surface); font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1); line-height: var(--sf-text-height-1); }
+  main { max-inline-size: var(--sf-i0); margin: 0 auto; padding: var(--sf-space-2); }
+  h1 { margin: 0 0 var(--sf-space-1); font-size: var(--sf-text-size-3); line-height: var(--sf-text-height-3); font-weight: var(--sf-font-weight-medium); }
+  h2 { margin: 0 0 var(--sf-space-1\/2); font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); font-weight: var(--sf-font-weight-medium); }
+  section { margin: 0 0 var(--sf-space-3); }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--sf-g5)), 1fr)); gap: var(--sf-space-1); align-items: start; }
+  .card { min-inline-size: 0; padding: var(--sf-space-1\/2) var(--sf-space-1); border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius--surface); background: var(--sf-surface-0); }
+  .card-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sf-space-1\/3); margin: 0 0 var(--sf-space-1\/2);
+    font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); font-weight: var(--sf-font-weight-medium); }
+  .card-title .sub { color: var(--sf-on-surface-variant); font-weight: var(--sf-font-weight-regular); font-size: var(--sf-text-size-1\/2); line-height: var(--sf-text-height-1\/2); }
+  .log { min-block-size: var(--sf-text-height-1\/2); margin: var(--sf-space-1\/2) 0 0; color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/2); line-height: var(--sf-text-height-1\/2); }
+  @media (max-width: 30rem) { main { padding: var(--sf-space-1); } .card { padding: var(--sf-space-1\/2); } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Карточка записи</h1>
+
+  <section id="scene-a" aria-labelledby="h-a">
+    <h2 id="h-a">А. Разделы, одна колонка подписей</h2>
+    <div class="pair">
+      <div class="card">
+        <p class="card-title">Заказ № 10482 <span class="sub">от 6 ноября 2026</span></p>
+        <sf-list-description id="order" label="Заказ № 10482" dividers>
+          <script type="application/json" data-sf-settings>
+            {"items": [
+              {"type": "section", "id": "order", "label": "Заказ", "action": {"label": "Изменить", "event": "edit"}},
+              {"id": "number", "label": "Номер", "value": "10482", "mono": true, "copy": true},
+              {"id": "state", "label": "Статус", "badge": {"text": "Передан в доставку", "status": "info", "icon": "local_shipping"}},
+              {"id": "placed", "label": "Оформлен", "value": "6 ноября 2026, 14:32"},
+              {"id": "sum", "label": "Сумма", "value": "12 480 ₽", "numeric": true, "hint": "3 товара, скидка 1 200 ₽ по промокоду ОСЕНЬ"},
+              {"type": "section", "id": "customer", "label": "Покупатель", "action": {"label": "Изменить", "event": "edit"}},
+              {"id": "name", "label": "Имя", "value": "Анна Сергеевна Королёва", "href": "#customer"},
+              {"id": "phone", "label": "Телефон", "value": "+7 912 345-67-89", "numeric": true, "copy": true},
+              {"id": "email", "label": "Эл. почта", "value": "a.koroleva@mail.ru", "href": "mailto:a.koroleva@mail.ru", "copy": true},
+              {"id": "comment", "label": "Комментарий", "value": ""},
+              {"type": "section", "id": "delivery", "label": "Доставка", "action": {"label": "Изменить", "event": "edit"}},
+              {"id": "way", "label": "Способ", "value": "Курьер СДЭК", "help": "Срок и цену считает СДЭК по адресу и весу; меняются до передачи заказа в доставку."},
+              {"id": "address", "label": "Адрес", "value": "Екатеринбург, ул. Малышева, 51, кв. 108, подъезд 3, домофон 108К"},
+              {"id": "track", "label": "Трек-номер", "value": "1564 8723 0091", "mono": true, "copy": true},
+              {"id": "date", "label": "Дата доставки", "value": "", "status": "warning", "empty": "Не назначена", "action": {"label": "Назначить", "event": "schedule"}}
+            ]}
+          </script>
+        </sf-list-description>
+        <p class="log" id="log" role="status" aria-live="polite"></p>
+      </div>
+      <div class="card">
+        <p class="card-title">Сервер web-03</p>
+        <sf-list-description id="server" label="Сервер web-03" dividers>
+          <script type="application/json" data-sf-settings>
+            {"items": [
+              {"id": "status", "label": "Состояние", "badge": {"text": "Работает", "status": "success", "icon": "check_circle"}},
+              {"id": "ip", "label": "IP-адрес", "value": "185.104.248.17", "mono": true, "copy": true},
+              {"id": "ipv6", "label": "IPv6", "value": "2a03:6f00:a::1:3c7", "mono": true, "copy": true},
+              {"id": "plan", "label": "Тариф", "value": "Бизнес M", "hint": "4 ядра · 8 ГБ · 120 ГБ NVMe"},
+              {"id": "region", "label": "Регион", "value": "Москва, ЦОД «Медведково»"},
+              {"id": "os", "label": "Система", "value": "Ubuntu 24.04 LTS"},
+              {"id": "root", "label": "Корень сайтов", "value": "/var/www/simai/data/www", "mono": true, "copy": true},
+              {"id": "backup", "label": "Резервная копия", "badge": {"text": "Не удалась", "status": "error", "icon": "error"}, "hint": "9 ноября, 03:30 — нет места на диске"},
+              {"id": "owner", "label": "Владелец", "value": "", "action": {"label": "Указать", "event": "owner"}}
+            ]}
+          </script>
+        </sf-list-description>
+      </div>
+    </div>
+  </section>
+
+  <section id="scene-b" aria-labelledby="h-b">
+    <h2 id="h-b">Б. Сводка под заголовком записи</h2>
+    <div class="card">
+      <p class="card-title">web-03.simai.host <sf-badge size="1/3" appearance="tonal" status="success" icon="check_circle" text="Работает"></sf-badge></p>
+      <sf-list-description id="summary" label="Сводка сервера" layout="grid" columns="4">
+        <script type="application/json" data-sf-settings>
+          {"items": [
+            {"id": "ip", "label": "IP-адрес", "value": "185.104.248.17", "mono": true, "copy": true},
+            {"id": "plan", "label": "Тариф", "value": "Бизнес M · 4 ядра · 8 ГБ"},
+            {"id": "region", "label": "Регион", "value": "Москва, ЦОД «Медведково»"},
+            {"id": "os", "label": "Система", "value": "Ubuntu 24.04 LTS"},
+            {"id": "created", "label": "Создан", "value": "12 марта 2025"},
+            {"id": "sites", "label": "Сайтов", "value": 14},
+            {"id": "backup", "label": "Резервная копия", "badge": {"text": "Не удалась", "status": "error", "icon": "error"}},
+            {"id": "paid", "label": "Продлён до", "value": "31 декабря 2026", "help": "Продлевается сам с баланса за 3 дня до конца срока."}
+          ]}
+        </script>
+      </sf-list-description>
+    </div>
+  </section>
+</main>
+<script>
+  document.addEventListener('sf-list-description-apply', function (event) {
+    var detail = event.detail || {};
+    window.__applied = (window.__applied || []).concat([detail]);
+    document.getElementById('log').textContent = 'Нажато: ' + detail.action + ' — ' + detail.id;
+  });
+  document.addEventListener('sf-list-description-navigate', function (event) { event.preventDefault(); });
+</script>
+</body>
+</html>

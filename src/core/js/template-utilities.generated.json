@@ -253,6 +253,7 @@
     "sr-only/default"
   ],
   "cl-list-description": [
+    "display/default",
     "font-family/default",
     "sr-only/default",
     "text-overflow/default"
