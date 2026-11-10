@@ -197,6 +197,10 @@
             "no-network"
           ]
         }
+      },
+      "first-paint": {
+        "max-bytes": 24576,
+        "why": "The order history at its size: two days with their headings, twelve events with markers, avatars, field changes, a comment, a folded run of six and «Показать ещё»."
       }
     },
     {
@@ -295,6 +299,10 @@
             "actor": "Рим Забаров"
           }
         ]
+      },
+      "first-paint": {
+        "max-bytes": 16384,
+        "why": "The server log: a day of events with toned markers, avatars and quiet time lines, as a server prints it."
       }
     },
     {
@@ -432,7 +440,7 @@
           "covers": "settings.collapse, events.expand",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#order'); const run = el.querySelector('.sf-list-timeline-run'); return run && run.textContent.trim() === 'Ещё 6 изменений' && run.getAttribute('aria-expanded') === 'false' && !el.querySelector('[data-id=edit-1]'); })()"
+              "check": "(() => { const el = document.querySelector('#order'); const run = el.querySelector('.sf-list-timeline-run'); return run && run.querySelector('.sf-list-timeline-run-text').textContent.trim() === 'Ещё 6 изменений' && run.getAttribute('aria-expanded') === 'false' && !el.querySelector('[data-id=edit-1]'); })()"
             },
             {
               "user": "click:#order .sf-list-timeline-run",

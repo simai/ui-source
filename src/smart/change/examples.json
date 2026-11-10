@@ -122,12 +122,12 @@
           "covers": "settings.reveal, keyboard.host",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const blocks = el.querySelector('.sf-change__blocks'); return b.textContent.trim() === 'Показать изменения' && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === blocks.id && blocks.hidden && !el.querySelector('.sf-change__pair'); })()"
+              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const blocks = el.querySelector('.sf-change__blocks'); return b.querySelector(':scope > span').textContent.trim() === 'Показать изменения' && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === blocks.id && blocks.hidden && !el.querySelector('.sf-change__pair'); })()"
             },
             {
               "user": "click:#long .sf-change__toggle",
               "wait": 120,
-              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const labels = [...el.querySelectorAll('.sf-change__block-label')].map((one) => one.textContent).join('|'); return b.getAttribute('aria-expanded') === 'true' && !el.querySelector('.sf-change__blocks').hidden && labels === 'Было|Стало' && b.textContent.trim() === 'Скрыть изменения' && el.hasAttribute('data-revealed') && document.activeElement === b; })()"
+              "check": "(() => { const el = document.querySelector('#long'); const b = el.querySelector('.sf-change__toggle'); const labels = [...el.querySelectorAll('.sf-change__block-label')].map((one) => one.textContent).join('|'); return b.getAttribute('aria-expanded') === 'true' && !el.querySelector('.sf-change__blocks').hidden && labels === 'Было|Стало' && b.querySelector(':scope > span').textContent.trim() === 'Скрыть изменения' && el.hasAttribute('data-revealed') && document.activeElement === b; })()"
             }
           ]
         },

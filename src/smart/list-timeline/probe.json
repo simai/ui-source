@@ -72,7 +72,7 @@
       "covers": "settings.collapse, events.expand",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#order'); const run = el.querySelector('.sf-list-timeline-run'); return run && run.textContent.trim() === 'Ещё 6 изменений' && run.getAttribute('aria-expanded') === 'false' && !el.querySelector('[data-id=edit-1]'); })()"
+          "check": "(() => { const el = document.querySelector('#order'); const run = el.querySelector('.sf-list-timeline-run'); return run && run.querySelector('.sf-list-timeline-run-text').textContent.trim() === 'Ещё 6 изменений' && run.getAttribute('aria-expanded') === 'false' && !el.querySelector('[data-id=edit-1]'); })()"
         },
         {
           "user": "click:#order .sf-list-timeline-run",
