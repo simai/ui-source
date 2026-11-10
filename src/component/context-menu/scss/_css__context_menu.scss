@@ -134,6 +134,8 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
+  @include places.sf-place-fill;
 }
 
 /* The chosen row of a pick-one list -- a language, a drilled choice's option:
@@ -146,6 +148,7 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
+  @include places.sf-place-fill;
 }
 
 .sf-context-menu-item--chosen:not(:disabled):hover {
@@ -455,6 +458,7 @@
 
 .sf-context-menu-choice-option[aria-checked="true"] {
   background-color: var(--sf-primary-container);
+  @include places.sf-place-fill;
   color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
   --sf-icon--color: var(--sf-on-primary-container);
@@ -651,6 +655,7 @@
 
 .sf-context-menu-tile--on.sf-context-menu-item {
   background-color: var(--sf-primary-container);
+  @include places.sf-place-fill;
   color: var(--sf-on-primary-container);
 }
 

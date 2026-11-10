@@ -60,6 +60,19 @@ for a badge inside a control that cannot be used now -- a choice card, a menu
 row. It is a state and draws over the public variables; `sf-badge` takes it
 through `root-class` (component.badges 1.4.0, owner decision C28).
 
+On a translucent fill: a selected, open or current row draws an alpha of
+primary over its place, and a tonal badge is an alpha of its own colour, so on
+such a row it used to come out as the one alpha over the other -- a warning or
+an error badge on the open record read as a grey fact. A row like that declares
+the solid place under it, `--sf-surface-underlay` (core mix `sf-place-fill`;
+the selected rows of lists, menus, the tree and the admin menu's search do), and
+a tonal badge lays its own tone over that colour, so it reads as it does on the
+place itself (component.badges 1.5.0, owner decision C43). Off such a row the
+role is `initial` and the badge is drawn as before, its `background-color`
+untouched. A row of your own with a translucent fill declares
+`--sf-surface-underlay: var(--sf-surface-place)` with the fill. Probe:
+`tests/browser/badge-on-fill.browser.mjs`.
+
 ## Бейдж на якоре: счётчик и точка
 
 Счётчик или точка ставится внутрь якоря — аватара, кнопки-иконки или обёртки

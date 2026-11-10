@@ -148,6 +148,14 @@
        that is not the page declares its own (the bg-surface-* place
        utilities, and later the cards and the popups). */
     --sf-surface-place: var(--sf-surface-page);
+    /* What a translucent layer that must keep its own tone stacks over (C43,
+       owner 2026-11-10): a tonal badge on a selected, open or current row
+       would otherwise be its alpha over the row's alpha and lose its colour.
+       Nothing on a place: initial is the guaranteed-invalid value, so the
+       stacking rule does not apply and nothing changes. A translucent fill
+       (mix sf-place-fill: a selected list or menu row, an open record)
+       declares the solid place under it, and every place takes it back. */
+    --sf-surface-underlay: initial;
     /* Glass over a photo or a video (C16, C14): controls on media stand on
        black at 48 with a blur, ink white, the same in both themes because the
        picture does not change with the theme. Hover and press take the next

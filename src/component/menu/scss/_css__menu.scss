@@ -10,6 +10,8 @@
   --sf-menu-element--border-color: var(--sf-transparent);
   --sf-menu-element--color: var(--sf-on-primary-container);
   --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+  // A translucent fill: a tonal badge (a counter) on it keeps its own tone (C43).
+  @include places.sf-place-fill;
 }
 
 // The path mark (C30 amended 2026-11-09: R084, R072 e, R065 a): a row that
@@ -565,6 +567,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
   --sf-icon--color: var(--sf-on-primary-container);
+  @include places.sf-place-fill;
 }
 
 .sf-menu.sf-menu--documentation-tree [aria-current="page"] .sf-menu-element-icon {
