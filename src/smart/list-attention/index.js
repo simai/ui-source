@@ -60,16 +60,58 @@ export const SNOOZE = {'snooze-day': 1, 'snooze-week': 7};
 // smaller rung, not the compact density. Until 2027-01-01 size="1/2" still
 // draws this list compact, as 1.1's own small rung did; it is noted in
 // SF.deprecations and said once per page in the console with its
-// replacement.
+// replacement -- by the component only when the page has not opted in to
+// deprecation warnings (data-sf-deprecations="warn"), where SF.deprecations
+// already prints it, so a page sees one warning, not two.
 export const SIZE_REMOVE_AFTER = '2027-01-01';
 
 function noteSize(host) {
   if (!host.hasAttribute('size')) return;
   noteDeprecated({component: 'sf-list-attention', kind: 'attribute', from: 'size', to: 'data-sf-density', since: '2026-11-10', remove_after: SIZE_REMOVE_AFTER});
   const root = globalThis.SF = globalThis.SF || {};
-  if (root.__sfListAttentionSizeWarned) return;
+  const optedIn = globalThis.document?.documentElement?.dataset?.sfDeprecations === 'warn' || root.deprecations?.warn === true;
+  if (optedIn || root.__sfListAttentionSizeWarned) return;
   Object.defineProperty(root, '__sfListAttentionSizeWarned', {value: true, configurable: true});
   globalThis.console?.warn?.(`[SIMAI Framework] sf-list-attention: size is deprecated until ${SIZE_REMOVE_AFTER}; the density comes from the page -- write data-sf-density="compact" on the list or on the region or page around it. See contracts/changes/journal.json (attribute-list-attention-size-to-density).`);
+}
+
+// The icons this list draws, asked for when it is drawn (R074; as sf-segmented
+// does since ui-source 2f588136). The status icons are filled glyphs of their
+// own <i>, scanned only after the page's first icon request was put together:
+// they went in a second request and, on icons.simai.io, drew at 0.9-1.1 s
+// against rows at 0.1-0.2 s, while the icon is the row's only visible status
+// sign. Declared here they ride the first request, with the head badges'
+// outlined icons and the «⋯» menu's icons a press shows. Asked once per distinct list; nothing without the Loader.
+// (When the R074 helpers land, smart/helpers/cycle.js preloadControlIcons is
+// the same call.)
+const MENU_ICONS = ['schedule', 'event', 'notifications_off', 'help'];
+
+export function listIcons(context) {
+  const entries = [];
+  const add = (icon, filled) => {
+    if (icon && !entries.some((one) => one.icon === icon && one.filled === filled)) entries.push({icon, filled});
+  };
+  const rows = context.grouped ? (context.groups ?? []).flatMap((one) => one.items) : context.list ?? [];
+  rows.forEach((item) => add(ICONS[item.status], true));
+  // The head's badges draw the same names outlined (sf-badge icon-start).
+  // Left out, they are tracked a moment after the first request went out and
+  // ask the whole list again (measured on the lab page: a second request of
+  // the same 13 names, 0.6-1 s later).
+  (context.badges ?? []).forEach((one) => add(one.icon, false));
+  if (context.passed || (context.count === 0 && context.empty === 'line')) add(ICONS.success, true);
+  if (context.grouped) add('expand_more', false);
+  if (rows.some((item) => item.menu)) MENU_ICONS.forEach((icon) => add(icon, false));
+  return entries;
+}
+
+function preloadListIcons(host, entries) {
+  if (!entries.length) return 0;
+  const key = JSON.stringify(entries);
+  if (host.__sfPreloadedIcons === key) return 0;
+  const loader = globalThis.SF?.Loader;
+  if (typeof loader?.preloadIcons !== 'function') return 0;
+  host.__sfPreloadedIcons = key;
+  return loader.preloadIcons(entries) || 0;
 }
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
@@ -450,7 +492,9 @@ class SfListAttention extends ListAttentionElement {
   }
 
   template() {
-    return renderListAttentionTemplate(this.templateContext());
+    const context = this.templateContext();
+    preloadListIcons(this, listIcons(context));
+    return renderListAttentionTemplate(context);
   }
 }
 

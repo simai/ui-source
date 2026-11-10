@@ -9255,7 +9255,7 @@
       "deprecated_on": "2026-11-10",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Remove size from the sf-list-attention. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; size=\"1\" is the normal density and is simply removed.",
+      "manual": "Remove size from the sf-list-attention. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; size=\"1\" is the normal density and is removed too; inside a compact region the list then becomes compact (size=1 kept it at the normal rung there); data-sf-density=\"normal\" on it keeps it normal.",
       "examples": {
         "before": "<sf-list-attention size=\"1/2\" triage>",
         "after": "<sf-list-attention data-sf-density=\"compact\" triage>"

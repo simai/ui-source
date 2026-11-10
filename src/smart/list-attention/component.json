@@ -165,7 +165,7 @@
         "1"
       ],
       "default": "1",
-      "summary": "Deprecated until 2027-01-01 (change journal attribute-list-attention-size-to-density): the density comes from the page (data-sf-density, decision C22), never from a size. Until then size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once in the console; 1 is the normal density, as without size"
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-list-attention-size-to-density): the density comes from the page (data-sf-density, decision C22), never from a size. Until then size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once in the console (by SF.deprecations alone where the page opted in to its warnings); 1 is the normal density. Removing size=\"1\": inside a compact region the list becomes compact; data-sf-density=\"normal\" keeps it normal"
     }
   },
   "values": {},
