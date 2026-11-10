@@ -72,6 +72,55 @@ none.
   and 3.03 : 1 against the block), so a checkbox, a switch or a field keeps
   3:1. The inside of a control stays the block's colour. Dark unchanged.
 
+## Hue roles: a colour that is not a place
+
+A tag, a label or a coloured note that needs a colour of its own takes a hue
+(owner decision C17, 2026-11-08): `.sf-hue-<name>` gives the element one role
+set, the same for every hue (`src/core/scss/_sf_css__hue.scss`). `<name>` is
+one of the sixteen static hues (red, orange, amber, yellow, lime, green, teal,
+cyan, sky, blue, indigo, violet, purple, pink, brown, gray) or the theme's
+primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
+2026-11-10) read that set, so a page writes two classes and no inline style:
+
+```html
+<span class="sf-hue-teal bg-hue-container color-on-hue-container">Teal note</span>
+```
+
+| Class | Reads | Light | Dark |
+| --- | --- | --- | --- |
+| `bg-hue` | `--sf-hue` | 40 | 80 |
+| `bg-hue-container` | `--sf-hue-container` | 50 at 12 % | 50 at 24 % |
+| `hover:bg-hue-container` | `--sf-hue-container-hover` | 50 at 16 % | 50 at 28 % |
+| `active:bg-hue-container` | `--sf-hue-container-active` | 50 at 20 % | 50 at 32 % |
+| `color-hue` | `--sf-hue` | 40 | 80 |
+| `color-on-hue` | `--sf-on-hue` | white | 20 |
+| `color-on-hue-container` | `--sf-on-hue-container` | 10 | 90 |
+| `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+| `border-hue-outline` | `--sf-hue-outline` | 50 | 60 |
+| `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+
+- The pairs are the status roles' pairs: `bg-hue` with `color-on-hue`,
+  `bg-hue-container` with `color-on-hue-container`. `color-hue` is coloured
+  text on the page or a card, as `color-primary` is; the graphic role is for a
+  dot or a glyph.
+- The `.sf-hue-<name>` may sit on the element or an ancestor. Without one the
+  role is not declared: a background is transparent, a border takes the text
+  colour, a text or fill colour is the parent's.
+- A hue only paints. It is not a place: what stands on `bg-hue-container`
+  keeps the place under it (controls, state layers and lines are not
+  re-coloured, as they are on `bg-primary-container`). Places stay the theme's
+  seven colours (C16).
+- Only the container has pointer-over and pressed steps, as in the role set.
+- They succeed the legacy palette classes (`utility-c17-legacy-palette-classes`
+  in `contracts/changes/journal.json`): `color-<hue>[-N]` →
+  `sf-hue-<hue> color-hue`, `border-<hue>[-N]` → `sf-hue-<hue> border-hue-outline`,
+  `bg-<hue>[-N]` → `sf-hue-<hue> bg-hue-container` where the class read a tint
+  (tone 70 and lighter) and `sf-hue-<hue> bg-hue` where it read a deeper tone.
+  The roles follow the theme, so the successor is the same tone as the legacy
+  class only where the numbers happen to meet (light: 34 of 264 items); where
+  the exact tone matters, write the static primitive (`var(--sf-red-50)`).
+  White and black are not hues and have no successor class.
+
 ## Glass over media
 
 `--sf-surface-media` is black at 48 (hover 64, pressed 80:
