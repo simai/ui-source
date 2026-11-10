@@ -97,6 +97,7 @@ const MEASURE = () => {
         // The label's own width: its text and help mark on one line.
         labelNatural: round((() => { const range = document.createRange(); range.selectNodeContents(dt); return [...range.getClientRects()].reduce((a, r) => Math.max(a, r.right), 0) - box(dt).left; })()),
         ddLeft: round(box(dd).left), ddTop: round(box(dd).top),
+        ddRight: round(box(dd).right), cellRight: round(box(row).right), textRight: text ? round(box(text).right) : 0,
         lines: text ? Math.round(box(text).height / parseFloat(getComputedStyle(text).lineHeight)) : 1,
         hint: Boolean(row.querySelector('.sf-list-description-hint')),
         empty: row.querySelector('.sf-list-description-empty')?.textContent ?? null,
@@ -219,6 +220,8 @@ try {
             if (!(one.ddTop >= one.dtBottom - 0.5) || !near(one.ddLeft, one.dtLeft)) fail(`summary ${one.id}: the label is not over its value`);
             if (one.lines > 1) fail(`summary ${one.id}: ${one.lines} lines`);
           }
+          // A value longer than its column is cut, not let out of the cell.
+          for (const one of m.summary.rows) if (one.ddRight > one.cellRight + 0.5 || one.textRight > one.cellRight + 0.5) fail(`summary ${one.id}: the value overflows its column (${one.textRight} > ${one.cellRight})`);
 
           if (load === 1) {
             // Keyboard: Tab through the order card in reading order.
