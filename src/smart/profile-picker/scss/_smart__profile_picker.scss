@@ -320,6 +320,18 @@ sf-profile-picker {
 }
 }
 
+/* A row is a touch target under a coarse pointer, as a dropping panel's row
+   is (context menu, simai/ui-source#25; G1-a follow-up, 2026-11-10): at 390
+   it was 36px, under a finger. The row grows to the touch step and keeps its
+   one line on its centre; a mouse keeps the ladder's row. */
+@media (pointer: coarse) {
+  @layer sf.states {
+    .sf-profile-picker-row {
+      min-block-size: max(var(--sf-profile-picker--row-height), var(--sf-d1));
+    }
+  }
+}
+
 @layer sf.states {
   .sf-profile-picker-trigger:focus-visible,
   .sf-profile-picker-row:focus-visible,

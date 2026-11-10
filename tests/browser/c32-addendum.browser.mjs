@@ -16,7 +16,9 @@
 //   3. a form's phone sheet is the screen's width up to 44rem (390 at 390);
 //   4. a long choice in a select list -- sf-menu-context width list and
 //      sf-dropdown's list -- wraps onto a second line and is not cut; a long
-//      command in a menu keeps one line and ends in an ellipsis;
+//      command in a menu keeps one line and ends in an ellipsis; the wrapped
+//      choice keeps the one-line row's space above and below its text,
+//      (row - line) / 2, so it is the one-line row plus a whole line (G1-a);
 //   5. nothing scrolls sideways, and the console is clean.
 import {createServer} from 'node:http';
 import {existsSync, mkdirSync, readFileSync, statSync} from 'node:fs';
@@ -102,7 +104,8 @@ try {
       for (let load = 1; load <= LOADS; load++) {
         const name = `${scene}-${theme}-${load}`;
         page = shell(theme, density);
-        const context = await browser.newContext({viewport: {width, height: 900}, locale: 'ru-RU', colorScheme: theme, reducedMotion: 'reduce'});
+        // The phone is a phone: a coarse pointer, whose rows are the touch target.
+        const context = await browser.newContext({viewport: {width, height: 900}, isMobile: width < 500, hasTouch: width < 500, locale: 'ru-RU', colorScheme: theme, reducedMotion: 'reduce'});
         const tab = await context.newPage();
         const errors = [];
         tab.on('pageerror', (error) => errors.push(error.message));
@@ -153,9 +156,17 @@ try {
             const label = host.querySelector('.sf-context-menu-item-label');
             const item = label.closest('.sf-context-menu-item');
             const line = parseFloat(getComputedStyle(label).lineHeight);
+            // The space above and below the text of each row (G1-a).
+            const inset = (row) => {
+              const box = row.getBoundingClientRect();
+              const text = row.querySelector('.sf-context-menu-item-label').getBoundingClientRect();
+              return {top: Math.round((text.top - box.top) * 100) / 100, bottom: Math.round((box.bottom - text.bottom) * 100) / 100, height: Math.round(box.height * 100) / 100};
+            };
+            const rows = Array.from(host.querySelectorAll('.sf-context-menu-item'));
             return {height: Math.round(label.getBoundingClientRect().height), line, cut: label.scrollWidth > label.clientWidth + 1,
               ellipsis: getComputedStyle(label).textOverflow, rowHeight: Math.round(item.getBoundingClientRect().height),
-              width: Math.round(host.querySelector('.sf-context-menu-content').getBoundingClientRect().width)};
+              width: Math.round(host.querySelector('.sf-context-menu-content').getBoundingClientRect().width),
+              first: inset(rows[0]), one: rows[1] ? inset(rows[1]) : null};
           }, menu);
           if (shots && load === 1) await tab.screenshot({path: join(shots, `${scene}-${theme}-${menu}.png`)});
           await tab.evaluate((id) => document.getElementById(id).close({restoreFocus: false, ask: false}), menu);
@@ -187,6 +198,13 @@ try {
         ok(`${name} sf-dropdown: a long option wraps (${m.dropdown?.height}/${m.dropdown?.line}, cut ${m.dropdown?.cut})`, m.dropdown && m.dropdown.height >= 2 * m.dropdown.line - 1 && !m.dropdown.cut);
         ok(`${name} menu: a long command keeps one line with an ellipsis (${m.menu.height}/${m.menu.line}, cut ${m.menu.cut})`, m.menu.height <= m.menu.line + 1 && m.menu.cut && m.menu.ellipsis === 'ellipsis');
         ok(`${name} list: a long choice wraps, not cut (${m.list.height}/${m.list.line}, cut ${m.list.cut})`, m.list.height >= 2 * m.list.line - 1 && !m.list.cut);
+        {
+          const wrapped = m.list.first;
+          const one = m.list.one;
+          const lines = Math.round(m.list.height / m.list.line);
+          ok(`${name} list: the wrapped choice keeps the one-line row's space (${wrapped.top}/${wrapped.bottom} = ${one.top}/${one.bottom}), row ${wrapped.height} = ${one.height} + ${lines - 1} x ${m.list.line}`,
+            near(wrapped.top, one.top, 0.5) && near(wrapped.bottom, one.bottom, 0.5) && near(wrapped.height, one.height + (lines - 1) * m.list.line, 0.5));
+        }
         if (width < 704) ok(`${name} form sheet ${m.form.width} at ${width}, max ${m.form.maxWidth}`, m.form.sheet && near(m.form.width, Math.min(width, 704)) && ['44rem', '704px'].includes(m.form.maxWidth));
         else ok(`${name} form anchored`, !m.form.sheet);
         ok(`${name} nothing scrolls sideways`, !m.sideways);
