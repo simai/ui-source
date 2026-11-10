@@ -12,11 +12,11 @@ $divider-color-array:(
     // сама область. Её здесь не было, и разделитель приходилось рисовать
     // либо сплошной ролью контрола, либо сырым цветом палитры.
     'outline-variant': 'outline-variant',
-    'primary': 'outline-primary',
-    'secondary': 'outline-secondary',
-    'tertiary': 'outline-tertiary',
-    'error': 'outline-error',
-    'warning': 'outline-warning',
-    'success': 'outline-success',
+    'primary': 'primary-outline',
+    'secondary': 'secondary-outline',
+    'tertiary': 'tertiary-outline',
+    'error': 'error-outline',
+    'warning': 'warning-outline',
+    'success': 'success-outline',
     'info': 'info-outline',
 );

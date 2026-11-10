@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.stroke-color",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/stroke-color/default/index.js",
@@ -18,6 +18,6 @@
     "src/utility/stroke-color/hover/scss/_sf_css__stroke.scss",
     "src/utility/stroke-color/hover/scss/index.scss"
   ],
-  "content_sha256": "c4eeff73cad4d0cae55e75ba9801a3fa439fee5e18876f1905454051223ce241",
+  "content_sha256": "0ae2a7a6f8ff3119a6135ef55cb4ba3a396b7f443040db930aab49d5b18acd68",
   "dependencies": []
 }

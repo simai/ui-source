@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.scroll-backdrop-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/scroll-backdrop-color/default/index.js",
@@ -13,6 +13,6 @@
     "src/utility/scroll-backdrop-color/default/scss/_sf_var__scroll_backdrop_color.scss",
     "src/utility/scroll-backdrop-color/default/scss/index.scss"
   ],
-  "content_sha256": "220025c957b2d419a46ba21d8ab79ea958dc9cca1c67c15be6cb0e0edd93507a",
+  "content_sha256": "f20ff1cb1809312eaa1ded1cfae96ab388e9fbcb4b139a799e2f6d0d6795ca3e",
   "dependencies": []
 }

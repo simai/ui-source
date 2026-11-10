@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.ring-offset-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/ring-offset-color/default/index.js",
