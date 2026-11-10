@@ -60,7 +60,10 @@ class SfClose extends CloseElement {
       ...props,
       component: this,
       glyph: this.isGlyph,
-      size: this.placeSize,
+      // The declared size, as the template-context contract asks (1.3.1); the
+      // box is drawn at placeSize, which a height without a size moves to 1.
+      size: this.size,
+      placeSize: this.placeSize,
       // The box's height (1.3.0, decisions C27 and C35).
       height: this.height,
       appearance: this.appearance,

@@ -45,6 +45,11 @@ the page -- and the status icon is the status's role `--sf-<status>`
 the light theme and 7.7:1 or more in the dark one. The cross is reached inside any close host,
 so the Smart alert's close (an `sf-button-icon`) takes it too.
 
+The status colour is the alert's own icon only (1.1.2, C35 acceptance A-F1):
+`.sf-alert > .sf-icon` and `.sf-alert > sf-icon > .sf-icon`. An icon inside an
+action button keeps the button's own icon role, so a filled button's icon stays
+on its plate.
+
 ## Presentation
 
 Combine one semantic type with `default`, `outlined` or `flat`. Default and flat

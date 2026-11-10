@@ -37,6 +37,10 @@ The status icon is the status's role `--sf-<status>` (neutral: the quiet
 (`--sf-on-<status>-container-graphic`) it read before was 2.86-3.04:1 on a dark
 toast. The close's cross is the toast's text ink, `--sf-on-<status>-container`.
 
+The status colour is the toast's own icon only (1.2.2, C35 acceptance A-F1):
+`.sf-toast > .sf-icon` and `.sf-toast > sf-icon > .sf-icon`. An icon-only
+action button keeps its own icon role.
+
 ## Accessibility and ownership
 
 Use `role="status"` only when non-urgent feedback is inserted dynamically and

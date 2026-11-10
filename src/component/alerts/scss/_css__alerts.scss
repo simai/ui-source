@@ -120,10 +120,16 @@
   --sf-icon--font-size: var(--sf-text-height-1);
   --sf-icon--height: var(--sf-text-height-1);
   --sf-icon--width: var(--sf-text-height-1);
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size);
   height: var(--sf-icon--height);
   width: var(--sf-icon--width);
+}
+
+/* The status colour is the notice's own icon only (C35 acceptance A-F1): an
+   icon inside an action button keeps the button's own icon role. */
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
 }
 
 /* Centred on the first line: the line's lead in the low control's box. The
@@ -157,7 +163,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-info-container));
 }
 
-.sf-alert.sf-alert--info .sf-icon {
+.sf-alert.sf-alert--info > .sf-icon,
+.sf-alert.sf-alert--info > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-info);
 }
 
@@ -168,7 +175,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
 }
 
-.sf-alert:is(.sf-alert--error, .sf-alert--danger) .sf-icon {
+.sf-alert:is(.sf-alert--error, .sf-alert--danger) > .sf-icon,
+.sf-alert:is(.sf-alert--error, .sf-alert--danger) > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-error);
 }
 
@@ -178,7 +186,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-warning-container));
 }
 
-.sf-alert.sf-alert--warning .sf-icon {
+.sf-alert.sf-alert--warning > .sf-icon,
+.sf-alert.sf-alert--warning > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-warning);
 }
 
@@ -188,7 +197,8 @@
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-success-container));
 }
 
-.sf-alert.sf-alert--success .sf-icon {
+.sf-alert.sf-alert--success > .sf-icon,
+.sf-alert.sf-alert--success > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-success);
 }
 
