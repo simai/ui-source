@@ -107,6 +107,9 @@ const MEASURE = () => {
         copies: [...row.querySelectorAll('sf-button-copy button')].map((button) => ({shown: shown(button), name: button.getAttribute('aria-label')})),
         numeric: text ? getComputedStyle(text).fontVariantNumeric : '',
         help: Boolean(row.querySelector('dt sf-help-mark')),
+        // From the label's text to the help mark's box (--sf-space-1/4) and to its glyph.
+        helpGap: (() => { const mark = row.querySelector('dt .sf-help-mark'); if (!mark) return null; const range = document.createRange(); const words = [...dt.childNodes].find((node) => node.nodeType === 3 && node.textContent.trim()); if (!words) return null; range.selectNodeContents(words); const textRight = [...range.getClientRects()].reduce((a, r) => Math.max(a, r.right), 0); const glyph = mark.querySelector('.sf-icon') ?? mark; return {box: round(box(mark).left - textRight), glyph: round(box(glyph).left - textRight)}; })(),
+        space: length(row, 'var(--sf-space-1\\/4)'),
       };
     });
     const heads = [...host.querySelectorAll('.sf-list-description-head')].map((head) => ({
@@ -211,6 +214,9 @@ try {
           if (owner.empty !== 'Не указан' || owner.action?.name !== 'Указать: Владелец') fail(`owner ${owner.empty} ${JSON.stringify(owner.action)}`);
           if (!row(m.order, 'state').badge) fail('state: no badge');
           if (!row(m.order, 'way').help) fail('way: no help mark');
+          const way = row(m.order, 'way');
+          if (!way.helpGap || !near(way.helpGap.box, way.space)) fail(`way: help mark ${JSON.stringify(way.helpGap)} from the label, expected --sf-space-1/4 = ${way.space}`);
+          if (load === 1) seen[name].helpGap = way.helpGap;
           for (const id of ['sum', 'phone']) if (!row(m.order, id).numeric.includes('tabular-nums')) fail(`${id}: not tabular figures (${row(m.order, id).numeric})`);
 
           // The summary (scene B): four columns at 1440, label over value, one line.
@@ -272,6 +278,7 @@ console.log(JSON.stringify({
     summaryColumns: m.summary.columns,
     badges: m.order.rows.concat(m.server.rows).filter((one) => one.badge).map((one) => `${one.id} ${one.badge.height}`),
     tab: m.tab,
+    helpGap: m.helpGap,
   }])),
   failures,
 }, null, 1));

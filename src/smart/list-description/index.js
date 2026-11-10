@@ -72,7 +72,8 @@ export function valueText(value) {
  * The items as given, made safe: an item without a label is left out (a
  * section's label is its title); the id is the item's, else its place. A
  * status outside the four words is none. An empty value (no text and no
- * badge) has no link, no copy button and no status: it says empty-text.
+ * badge) has no link, no copy button and no status: it says empty-text. A
+ * value with a badge draws no status icon: the badge is its one mark.
  */
 export function normalizeItems(value) {
   const list = Array.isArray(value) ? value : [];
@@ -103,7 +104,8 @@ export function normalizeItems(value) {
       numeric: item.numeric === true || typeof item.value === 'number',
       copy: item.copy === true && shown !== '',
       href: shown === '' ? '' : text(item.href),
-      status: !empty && STATUSES.includes(status) ? status : '',
+      // One mark per value: a badge is the mark, so its row draws no status icon.
+      status: !empty && !badge && STATUSES.includes(status) ? status : '',
       badge,
       action: normalizeAction(item.action),
     });

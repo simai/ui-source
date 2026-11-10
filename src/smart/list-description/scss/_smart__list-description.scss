@@ -156,11 +156,19 @@ sf-list-description {
   border-block-start: var(--sf-px) solid var(--sf-list-description--divider);
 }
 
-/* The help mark after a label: it takes no height of its own (sf-help-mark
+/* The help mark after a label, --sf-space-1/4 from it (the prototype's 4,
+   10 to the glyph): it takes no height of its own (sf-help-mark
    1.3.0), so the label's line stays L. (The host is display: contents once
    upgraded; its box is the sf-help-mark span.) */
+.sf-list-description-label:has(> sf-help-mark) {
+  /* A flex row, so the white space sf-help-mark's markup starts with adds
+     nothing between the label and the mark. */
+  display: flex;
+  align-items: center;
+}
+
 .sf-list-description-label .sf-help-mark {
-  margin-inline-start: var(--sf-list-description--text-space-x);
+  margin-inline-start: var(--sf-space-1\/4);
 }
 
 /* The value's line: the status icon, the value (or its badge), the copy
