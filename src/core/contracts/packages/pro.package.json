@@ -338,7 +338,9 @@
       "rule_name": "cl-view-table",
       "folder": "view-table",
       "requires": [
+        "component.dot",
         "component.icons",
+        "component.tooltip",
         "smart.avatar",
         "smart.badge",
         "smart.button",
@@ -358,6 +360,7 @@
         "smart.radio",
         "smart.reference-link",
         "smart.resizer",
+        "smart.segmented",
         "smart.slider-range",
         "smart.sortable",
         "smart.spinner",
