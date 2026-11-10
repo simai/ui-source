@@ -3,11 +3,68 @@
   "runtime": {
     "label": "Требует внимания",
     "empty-text": "Всё в порядке",
-    "count": "{count}",
+    "empty-checked-text": "{text} · проверено {when}",
     "status-error": "Ошибка",
     "status-warning": "Предупреждение",
     "status-info": "Сведения",
-    "status-success": "Готово"
+    "status-success": "Готово",
+    "status-passed": "Пройдено",
+    "summary-error": {
+      "one": "{n} ошибка",
+      "few": "{n} ошибки",
+      "many": "{n} ошибок",
+      "other": "{n} ошибки"
+    },
+    "summary-warning": {
+      "one": "{n} предупреждение",
+      "few": "{n} предупреждения",
+      "many": "{n} предупреждений",
+      "other": "{n} предупреждения"
+    },
+    "summary-info": {
+      "one": "{n} рекомендация",
+      "few": "{n} рекомендации",
+      "many": "{n} рекомендаций",
+      "other": "{n} рекомендации"
+    },
+    "summary-success": {
+      "one": "{n} решена",
+      "few": "{n} решены",
+      "many": "{n} решено",
+      "other": "{n} решено"
+    },
+    "group-error": "Ошибки",
+    "group-warning": "Предупреждения",
+    "group-info": "Рекомендации",
+    "group-success": "Решено",
+    "group-passed": "Пройдено",
+    "affected-text": "затронуто: {text}",
+    "age-now": "только что",
+    "age-minutes": "{n} мин",
+    "age-hours": "{n} ч",
+    "age-days": {
+      "one": "{n} день",
+      "few": "{n} дня",
+      "many": "{n} дней",
+      "other": "{n} дня"
+    },
+    "checked-text": "Проверено {when}",
+    "checked-now": "только что",
+    "checked-minutes": "{n} мин назад",
+    "checked-time": "в {time}",
+    "checked-date": "{date} в {time}",
+    "recheck-label": "Проверить снова",
+    "more-text": "Все проблемы ({n})",
+    "show-all-text": "Показать все ({n})",
+    "more-label": "Ещё: {title}",
+    "snooze-day-text": "Отложить на день",
+    "snooze-week-text": "Отложить на неделю",
+    "dismiss-text": "Не напоминать",
+    "help-text": "Подробнее о проверке",
+    "snoozed-day-notice": "Отложено на день: {title}",
+    "snoozed-week-notice": "Отложено на неделю: {title}",
+    "dismissed-notice": "Больше не напомним: {title}",
+    "undo-text": "Вернуть"
   },
   "events": {
     "navigate": {
@@ -15,6 +72,21 @@
     },
     "apply": {
       "label": "Выполнить"
+    },
+    "snooze": {
+      "label": "Отложить"
+    },
+    "dismiss": {
+      "label": "Не напоминать"
+    },
+    "undo": {
+      "label": "Вернуть"
+    },
+    "recheck": {
+      "label": "Проверить снова"
+    },
+    "more": {
+      "label": "Все проблемы"
     }
   }
 }

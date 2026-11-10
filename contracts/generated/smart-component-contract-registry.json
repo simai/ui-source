@@ -1749,7 +1749,9 @@
         "uses": [
           "smart.badge",
           "smart.button",
-          "smart.icon"
+          "smart.button-icon",
+          "smart.icon",
+          "smart.menu-context"
         ]
       },
       "contract_schema": {
@@ -1761,13 +1763,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-attention/smart.manifest.json",
-      "manifest_sha256": "b0771574f1e491590daa4a74a33215527520b13b8567045e6d8e949667287f2a",
+      "manifest_sha256": "5c66bae8721459624ba636f003fbad8954b7d448fdfc67bef2e90d06ef973d85",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+      "summary": "The problems that need a person, in a card: a heading with a badge per severity, then each problem with a filled status icon, its title, what · how long · where, one quiet action and a «⋯» to snooze or dismiss it (undone from the notice), at most five and «Все проблемы (N)», when the checks ran and a recheck. With none, one quiet line «Всё в порядке · проверено …». group=\"severity\" is the full checks page with a closed «Пройдено».",
       "tags": [
         "list",
         "attention",

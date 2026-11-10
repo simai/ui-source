@@ -61,11 +61,21 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.equal(manifest.family, 'list');
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'status', 'title']);
   assert.deepEqual(manifest.settings.empty.values, ['none', 'line']);
-  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply']);
+  // Owner decision C37 (1.2.0): the quiet line and the card by default,
+  // triage requests with undo, recheck and more.
+  assert.equal(manifest.settings.empty.default, 'line');
+  assert.equal(manifest.settings.frame.default, 'card');
+  assert.equal(manifest.settings.limit.default, 5);
+  assert.deepEqual(Object.keys(manifest.events), ['navigate', 'apply', 'snooze', 'dismiss', 'undo', 'recheck', 'more']);
   assert.equal(manifest.events.navigate.cancelable, true);
+  for (const verb of ['snooze', 'dismiss', 'more']) assert.equal(manifest.events[verb].cancelable, true, verb);
+  for (const name of ['view', 'started']) assert.ok(!(name in manifest.settings), `${name} is the core's own name`);
   const source = code('src/smart/list-attention/index.js');
   assert.match(source, /const RANK = \{error: 0, warning: 1, info: 2, success: 3\};/u);
-  assert.match(source, /\(RANK\[a\.status\] - RANK\[b\.status\]\) \|\| \(a\.order - b\.order\)/u);
+  assert.match(source, /\(RANK\[a\.status\] - RANK\[b\.status\]\) \|\| age\(a, b\) \|\| \(a\.order - b\.order\)/u);
+  // «Не напоминать» only where the person may: the item's flag, else the host's.
+  assert.match(source, /return item\.dismissible \?\? this\.dismissible === true;/u);
+  assert.match(code('src/smart/list-attention/js/templates/default.js'), /appearance="outline" scheme="on-surface"/u);
   const sheet = read('src/smart/list-attention/scss/_smart__list-attention.scss');
   // The host is display: contents; with no items the template draws nothing.
   assert.doesNotMatch(sheet, /sf-list-attention\[data-empty\]/u);

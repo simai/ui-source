@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-attention's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the attention list the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 2), planned in the reply msg-05e76ea0bc0746a690b8 as sf-list-attention of block list.",
   "id": "smart.list-attention",
   "tag": "sf-list-attention",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -43,6 +43,32 @@
                   "type": "string"
                 }
               }
+            },
+            "object": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "href": {
+                  "type": "string"
+                }
+              }
+            },
+            "since": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "affected": {
+              "type": "string"
+            },
+            "help": {
+              "type": "string"
+            },
+            "dismissible": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -53,12 +79,12 @@
         }
       },
       "default": [],
-      "summary": "The problems that need a person, each {id, status error|warning|info|success, title, text?, action?: {label, href} or {label, event}}. A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), the host's order inside a status. An item without an id or a title is left out; another status reads as info"
+      "summary": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible whether this person may say «Не напоминать» (else the host's dismissible). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
     },
     "label": {
       "type": "string",
       "default-from": "runtime.label",
-      "summary": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The count of items stands beside it"
+      "summary": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The summary badges, one per severity, stand beside it"
     },
     "heading-level": {
       "type": "number",
@@ -68,14 +94,64 @@
       "default": 3,
       "summary": "The level of the heading in the page's outline"
     },
+    "frame": {
+      "type": "enum",
+      "values": [
+        "card",
+        "none"
+      ],
+      "default": "card",
+      "summary": "card (the default) draws the list as a surface card: a hairline edge, the surface radius, the head and the foot as bars of it; none is the bare list of 1.1, its rows on the page's text edge"
+    },
+    "triage": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Each problem gets a «⋯» menu: «Отложить на день», «Отложить на неделю» and, where the person may, «Не напоминать». A choice asks snooze {id, until} or dismiss {id}, then sets the problem aside with a notice whose «Вернуть» sends undo. A problem with help has the menu without triage too (only «Подробнее о проверке»)"
+    },
+    "dismissible": {
+      "type": "boolean",
+      "default": false,
+      "summary": "This person may dismiss problems («Не напоминать», triage): the host's permission for every item; an item's own dismissible wins"
+    },
+    "checked-at": {
+      "type": "string",
+      "default": "",
+      "summary": "When the checks last ran (an ISO date-time or milliseconds): the foot says «Проверено 5 мин назад» / «в 14:05» / «9 ноября в 14:05» with a recheck button that sends recheck; the empty line says «Всё в порядке · проверено …»"
+    },
+    "limit": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 5,
+      "summary": "At most this many rows; the rest are behind «Все проблемы (N)» (more-href) or «Показать все (N)» in place. 0 shows every row. Group mode shows every row"
+    },
+    "more-href": {
+      "type": "string",
+      "default": "",
+      "summary": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request more {href}"
+    },
+    "group": {
+      "type": "enum",
+      "values": [
+        "none",
+        "severity"
+      ],
+      "default": "none",
+      "summary": "severity is the full checks page: a disclosure group per severity («Ошибки», «Предупреждения», «Рекомендации») open, «Пройдено» (passed) closed, an aligned column of affected counts; the time of the checks in the head"
+    },
+    "passed": {
+      "type": "list",
+      "default": [],
+      "summary": "Group mode's «Пройдено»: the checks that passed, strings or {id?, title, text?}, a closed group after the problems"
+    },
     "empty": {
       "type": "enum",
       "values": [
         "none",
         "line"
       ],
-      "default": "none",
-      "summary": "With no items: none draws nothing at all (the host takes no room); line draws one quiet line, empty-text with a check"
+      "default": "line",
+      "summary": "With no items: line (the default, owner decision C37) draws the head and one quiet line, empty-text with a check, «· проверено …» after it with checked-at, and a recheck button; none draws nothing at all (the host takes no room)"
     },
     "empty-text": {
       "type": "string",
@@ -89,7 +165,7 @@
         "1"
       ],
       "default": "1",
-      "summary": "The ladder rung: the heading and titles are the rung's line, the texts the rung below's, a one-line row the rung's control height. 1/2 for a side panel"
+      "summary": "The former own rung, kept as an alias of the density (owner decisions C22, C37): 1/2 is the compact density on this list, 1 the normal one under a compact page; not set, the list follows the page's density"
     }
   },
   "values": {},
@@ -98,10 +174,11 @@
       "carries": {
         "id": "string",
         "status": "string",
-        "href": "string"
+        "href": "string",
+        "part": "string"
       },
       "cancelable": true,
-      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
+      "summary": "A person pressed a link of an item: its action's (part action) or its object's (part object) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing"
     },
     "apply": {
       "carries": {
@@ -112,6 +189,39 @@
         "status": "string"
       },
       "summary": "A person pressed an item's action button, one without href (vocabulary §5 apply {action, scope: entry, ids}): action is the item's action.event, ids the item's id. The host does it (restarts a job, opens a dialog) and sets the list again"
+    },
+    "snooze": {
+      "carries": {
+        "id": "string",
+        "until": "string"
+      },
+      "cancelable": true,
+      "summary": "A person chose «Отложить на день» or «на неделю» in an item's «⋯»: until is the ISO instant one or seven days on. A request: cancelled, nothing changes; not cancelled, the item is set aside here at once and a notice says so with «Вернуть». The host stores the snooze and leaves the item out of the list until then"
+    },
+    "dismiss": {
+      "carries": {
+        "id": "string"
+      },
+      "cancelable": true,
+      "summary": "A person chose «Не напоминать» (only where dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it"
+    },
+    "undo": {
+      "carries": {
+        "id": "string",
+        "action": "string"
+      },
+      "summary": "A person pressed «Вернуть» on the notice of a snooze or a dismiss (action snooze | dismiss): the item is back in the list; the host forgets what it stored"
+    },
+    "recheck": {
+      "carries": {},
+      "summary": "A person pressed «Проверить снова» (shown with checked-at). The host runs the checks and sets items and checked-at again"
+    },
+    "more": {
+      "carries": {
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "A person pressed «Все проблемы (N)»: with more-href a link, the request first (a router cancels it); without it «Показать все (N)», and not cancelled, every row is shown in place"
     }
   },
   "actions": {},
@@ -127,10 +237,17 @@
       "name": "cl-button"
     },
     {
+      "name": "cl-button-icon"
+    },
+    {
       "name": "cl-badge"
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true
     },
     {
       "name": "sr-only/default"
@@ -146,7 +263,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "A section named by its heading; the items are a list, each with its status said in words before its title (the icon is a picture), and its action a native link or button. The list is no live region: a host that wants a new problem read out says so with its own announcement. Nothing takes focus.",
+    "$comment": "A section named by its heading; the problems are a list, each with its status said in words before its title (the filled icon is a picture), its action a native link or button and its «⋯» a button with aria-haspopup menu named «Ещё: <title>», opening sf-menu-context (arrows, Enter, Escape). A snooze or a dismiss moves the focus to the next row's «⋯» (else the previous one's, else the list) and the notice, a status message, holds «Вернуть»; undo brings the focus back to the row. Group mode's headers are buttons with aria-expanded and aria-controls. The empty line is a status. The list is no live region otherwise: a host that wants a new problem read out says so with its own announcement.",
     "role": "region",
     "name": {
       "from": [
@@ -185,7 +302,7 @@
       "state": "default"
     }
   },
-  "x-summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+  "x-summary": "The problems that need a person, in a card: a heading with a badge per severity, then each problem with a filled status icon, its title, what · how long · where, one quiet action and a «⋯» to snooze or dismiss it (undone from the notice), at most five and «Все проблемы (N)», when the checks ran and a recheck. With none, one quiet line «Всё в порядке · проверено …». group=\"severity\" is the full checks page with a closed «Пройдено».",
   "x-source": {
     "package": "framework",
     "folder": "list-attention",
@@ -198,15 +315,16 @@
   "x-decisions": [
     "name: sf-list-attention, a variant of block list (ui-control control/decisions/2026-11-02-smart-component-naming.md: sf-<block>-<variant>; the reply msg-05e76ea0). sf-list is the list a person acts on (selection, row menu, rename, paging) and its rows are entries to open; the attention list is a short summary of notices, each with one action of its own and no selection, so it is a variant with its own rows, not a setting of sf-list. It draws its parts with sf-icon, sf-badge and sf-button.",
     "order: error, warning, info, success; the host's order inside a status (the list never sorts by anything else). An item without an id or a title is left out, a repeated id too; an unknown status reads as info.",
-    "count: the heading shows how many there are as an sf-badge of the most serious status (tonal); the status drawn is the host state data-status.",
-    "empty: empty none (the default) draws nothing and the host is display none while data-empty is on, so the list takes no room at all; empty line draws one quiet line, a check of the success role and empty-text, at the rung's control height. Never a card.",
-    "action: {label, href} is a link (sf-button href) and its press the cancelable request navigate {id, status, href} (vocabulary §5 navigate); {label, event} is a button and its press the fact apply {action: event, scope: entry, ids: [id], id, status} (§5 apply). An action without either is not drawn.",
+    "count: the head shows a summary, one tonal sf-badge 1/3 per severity with its icon and plural words («2 ошибки», «3 предупреждения», «3 рекомендации»; info is neutral) -- not one number (owner decision C37); the most serious status is the host state data-status.",
+    "empty: empty line (the default since 1.2.0, owner decision C37) draws the head and one quiet line at the row's height H, a check of the success role, empty-text and «· проверено …» with checked-at, and a recheck; empty none draws nothing and the host takes no room.",
+    "action: {label, href} is a link (sf-button href, outline, scheme on-surface since 1.2.0: one quiet action, not the primary blue) and its press the cancelable request navigate {id, status, href} (vocabulary §5 navigate); {label, event} is a button and its press the fact apply {action: event, scope: entry, ids: [id], id, status} (§5 apply). An action without either is not drawn.",
     "a11y: a section named by its heading (role region through aria-labelledby); the items a list; each item says its status in words before its title, visually hidden, so the icon is never the only sign. No live region: a host that wants a new problem read out announces it itself.",
-    "geometry: one rung S (size 1/2 or 1): the heading and the titles are the rung's line and type, the texts the rung below's, the status icon the title's line, icon-to-text the rung's text-space-x, the row's block inset (H − L) / 2 and its inline inset the rung's space-x, so a one-line row is the rung's control height H, as a list row is. The action is an sf-button of the rung below, centred on the row, whose height takes no room beyond the title's line.",
+    "geometry (1.2.0, C18/C22/C37): one rung for the block, which the density moves a step: a row is --sf-ui-3--control-height H (56, 48 compact, 52 phone), its block inset what the title's line (text 1) and the meta line (text 1/2) leave of H, so a two-line row is H and a one-line row centres in H; the filled status icon is --sf-icon-size-3 (24/20) on the title's line; the action (sf-button 1/2 outline on-surface) and the «⋯» (sf-button-icon 1/2 ghost) are centred, their overhang taken back; gaps --sf-space-1/2; the card's inline inset --sf-space-1 at the text edge and --sf-space-1/4 at the end. The rows are one grid of five columns (icon, text, affected, action, «⋯»), each a subgrid, so the actions and the affected counts align. Below 30rem (40rem in group mode) the action goes under the text at its start, the «⋯» stays on the title's line, the foot stacks on the text edge.",
     "css-variables: five public variables (§6) -- the fill (none by default), the dividers, the heading's colour, the inline inset and the gap under the heading -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.1.0 background-color-names: the public variable --sf-list-attention-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-list-attention-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
-    "version 1.1.1: the size rule C18 (2026-11-09): the text's flex basis is the size step f0 (10rem, 160 px, as before), written as the token."
+    "version 1.1.1: the size rule C18 (2026-11-09): the text's flex basis is the size step f0 (10rem, 160 px, as before), written as the token.",
+    "version 1.2.0 (2026-11-10, owner decision C37; research ui-control control/research/2026-11-09-list-attention.md, prototype prototypes/list-attention.html scenes А and Б): the summary badges, item fields object/since/source/affected/help/dismissible, the meta line, the quiet action, triage («⋯»: snooze a day / a week, «Не напоминать» only where dismissible, help) with snooze/dismiss requests and undo from an SF.notify notice, checked-at and recheck, limit 5 and more-href «Все проблемы (N)» (event more), frame card by default, empty line by default, group severity with passed, ordering by since inside a status, the rung on the ladder (size kept as the density alias). Changed defaults: frame card and empty line (a list that relied on none sets empty=\"none\" frame=\"none\"). Not taken: tinted banners (scene В), today's view."
   ],
   "x-registry": {
     "capabilities": [
@@ -250,7 +368,8 @@
       "forbidden_client_responsibilities": [
         "finding the problems (the host checks and sets the list)",
         "deciding when a problem ends (the host sets the list again)",
-        "doing an action (the host answers apply or navigate)"
+        "doing an action (the host answers apply or navigate)",
+        "storing a snooze or a dismiss (the host answers snooze, dismiss and undo)"
       ]
     },
     "security": {
@@ -281,16 +400,17 @@
     "ai_guidance": {
       "use_when": "Use sf-list-attention on an overview screen for the problems that need a person now: server health, site checks, import errors, update readiness, a form's validation summary.",
       "do_not": [
-        "Do not wrap it in a card that stays when the list is empty; with empty none it takes no room",
+        "Do not wrap it in a card of your own: frame card is its own frame; frame none for a list inside a card",
         "Do not use it for news or a history; sf-list-feed or a timeline does that",
-        "Do not use it for a page-wide condition above the header; sf-alert-bar does that"
+        "Do not use it for a page-wide condition above the header; sf-alert-bar does that",
+        "Do not store snoozes in the page: the host stores what snooze and dismiss ask and leaves those items out"
       ],
       "required_reads": [
         "inputs",
         "events",
         "ownership"
       ],
-      "minimal_example": "<sf-list-attention><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"text\": \"demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
+      "minimal_example": "<sf-list-attention triage checked-at=\"2026-11-09T14:05:00+03:00\" more-href=\"/checks/\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"object\": {\"label\": \"demo-static.test\", \"href\": \"/sites/demo-static/\"}, \"source\": \"Сертификаты\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
@@ -299,9 +419,10 @@
     "accessibility": {
       "accessible_name": "internal",
       "keyboard": [
-        "Tab reaches each item's action in order; Enter follows a link, Enter or Space presses a button"
+        "Tab reaches each item's object link, action and «⋯» in order, then the foot's recheck and «Все проблемы»; Enter follows a link, Enter or Space presses a button",
+        "In the «⋯» menu the arrows move, Enter chooses, Escape closes and gives the focus back"
       ],
-      "focus": "The list never takes focus."
+      "focus": "The list takes the focus only when the row that had it is set aside and no other row is left (tabindex -1 on the section)."
     }
   }
 }

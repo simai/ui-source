@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Требует внимания — sf-list-attention</title>
+<!--
+  «Требует внимания» (owner decision C37; ui-control control/research/
+  2026-11-09-list-attention.md, prototypes/list-attention.html scenes А and
+  Б) drawn by the real sf-list-attention 1.2.0 over the Loader, the
+  prototype's data (a Larena admin with several sites).
+  ?theme=dark, ?density=compact. Served by
+  tests/browser/list-attention-lab.browser.mjs with the build at /distr/.
+-->
+<script>
+(function () {
+  var query = new URLSearchParams(location.search);
+  var root = document.documentElement;
+  if (query.get('theme') === 'dark') { root.classList.remove('theme-light'); root.classList.add('theme-dark'); }
+  if (query.get('density') === 'compact') root.setAttribute('data-sf-density', 'compact');
+  window.sfPath = '/distr/';
+  window.sfSmartPath = '/distr/';
+})();
+</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--sf-surface-1); color: var(--sf-on-surface); font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1); line-height: var(--sf-text-height-1); }
+  main { max-inline-size: var(--sf-i0); margin: 0 auto; padding: var(--sf-space-2); }
+  h1 { margin: 0 0 var(--sf-space-1); font-size: var(--sf-text-size-3); line-height: var(--sf-text-height-3); font-weight: var(--sf-font-weight-medium); }
+  h2 { margin: 0 0 var(--sf-space-1\/2); font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); font-weight: var(--sf-font-weight-medium); }
+  section { margin: 0 0 var(--sf-space-3); }
+  .stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sf-space-1); align-items: start; }
+  .stage > * { min-inline-size: 0; }
+  .narrow { max-inline-size: var(--sf-g4); }
+  .cap { margin: 0 0 var(--sf-space-1\/3); color: var(--sf-on-surface-variant); font-size: var(--sf-text-size-1\/3); line-height: var(--sf-text-height-1\/3); }
+  @media (max-width: 60rem) { .stage { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 30rem) { main { padding: var(--sf-space-1); } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Требует внимания</h1>
+
+  <section id="scene-a" aria-labelledby="h-a">
+    <h2 id="h-a">А. Сводка на главной админки</h2>
+    <div class="stage">
+      <div><p class="cap">Основная колонка</p><sf-list-attention id="overview" triage more-href="#scene-b"></sf-list-attention></div>
+      <div class="narrow"><p class="cap">Узкая колонка: действие под текстом</p><sf-list-attention id="side" triage more-href="#scene-b"></sf-list-attention></div>
+    </div>
+  </section>
+
+  <section id="scene-b" aria-labelledby="h-b">
+    <h2 id="h-b">Б. Страница «Проверка системы»</h2>
+    <sf-list-attention id="checks" label="Проверка системы" group="severity" triage dismissible></sf-list-attention>
+  </section>
+
+  <section id="scene-empty" aria-labelledby="h-e">
+    <h2 id="h-e">Проблем нет</h2>
+    <div class="stage"><sf-list-attention id="empty"></sf-list-attention></div>
+  </section>
+</main>
+<script>
+(function () {
+  var now = Date.now();
+  var hours = function (h) { return new Date(now - h * 3600000).toISOString(); };
+  var items = [
+    {id: 'backup', status: 'error', title: 'Резервная копия не создана', object: {label: 'shop.simai.ru', href: '#site-shop'}, since: hours(50), source: 'Резервные копии', affected: '1 сайт', action: {label: 'Освободить место', event: 'free-space'}, help: '#help-backup'},
+    {id: 'down', status: 'error', title: 'Сайт не отвечает, код 502', object: {label: 'zdorovie-clinic.ru', href: '#site-clinic'}, since: hours(0.2), source: 'Мониторинг', affected: '1 сайт', action: {label: 'Перезапустить', event: 'restart'}},
+    {id: 'ssl', status: 'warning', title: 'Сертификат истекает через 6 дней', object: {label: 'crm.dealer-auto.ru', href: '#site-crm'}, source: 'Сертификаты', affected: '1 сайт', action: {label: 'Продлить', href: '#ssl'}},
+    {id: 'exch', status: 'warning', title: '14 заказов не выгружены в 1С', object: {label: 'Обмен с 1С'}, since: hours(3), source: 'Интеграции', affected: '14 заказов', action: {label: 'Открыть журнал', href: '#exchange'}},
+    {id: 'mail', status: 'warning', title: 'Письма уходят с задержкой до 40 минут', object: {label: 'Почтовая очередь'}, since: hours(5), source: 'Почта', affected: '312 писем', action: {label: 'Открыть очередь', href: '#mail'}},
+    {id: 'php', status: 'info', title: 'PHP 8.1: поддержка закончится 31 декабря', object: {label: 'Сервер web-2'}, since: hours(240), source: 'Сервер', affected: '4 сайта', action: {label: 'Как обновить', href: '#php'}, dismissible: true},
+    {id: 'core', status: 'info', title: 'Доступно обновление Larena 3.4.1', object: {label: 'Ядро'}, since: hours(26), source: 'Обновления', affected: 'Все сайты', action: {label: 'Обновить', event: 'update'}, dismissible: true},
+    {id: 'seo', status: 'info', title: '38 страниц без описания', object: {label: 'kodshkola.ru', href: '#site-kod'}, since: hours(72), source: 'SEO', affected: '38 страниц', action: {label: 'Показать страницы', href: '#seo'}, dismissible: true}
+  ];
+  var passed = ['Расписание агентов работает', 'Права на папку загрузок', 'Обмен с платёжной системой', 'Кэш страниц включён', 'Почта DKIM и SPF', 'Лицензия действует до 12.08.2027'];
+  var checked = new Date(now - 5 * 60000).toISOString();
+  window.__events = [];
+  ['snooze', 'dismiss', 'undo', 'recheck', 'more', 'apply', 'navigate'].forEach(function (verb) {
+    document.addEventListener('sf-list-attention-' + verb, function (event) {
+      window.__events.push({name: verb, from: event.target.id, detail: event.detail});
+      if (verb === 'navigate' || verb === 'more') event.preventDefault();
+    });
+  });
+  customElements.whenDefined('sf-list-attention').then(function () {
+    ['overview', 'side', 'checks'].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.setAttribute('checked-at', checked);
+      el.items = items;
+    });
+    document.getElementById('checks').passed = passed;
+    var empty = document.getElementById('empty');
+    empty.setAttribute('checked-at', checked);
+    empty.items = [];
+  });
+})();
+</script>
+</body>
+</html>
