@@ -46,8 +46,25 @@ function buildAnchorDownload(href, filename = '') {
 // file-name (nameFromHref skips these addresses too).
 const LOCAL_ADDRESS = /^\s*(?:data|blob):/iu;
 
+// An address that leads back to this very page -- «#», «#part» or the
+// page's own URL -- is no file either: a HEAD to it asks the page for its own
+// length (docs acceptance 2026-11-10, L2). It is compared without the
+// fragment, against the document's base, as the browser resolves the link.
+function isSameDocument(href) {
+  if (typeof document === 'undefined' || typeof URL !== 'function') return false;
+  try {
+    const target = new URL(href, document.baseURI);
+    const page = new URL(document.URL);
+    target.hash = '';
+    page.hash = '';
+    return target.href === page.href;
+  } catch {
+    return false;
+  }
+}
+
 async function resolveRemoteFileSize(href, node = null) {
-  if (!href || LOCAL_ADDRESS.test(href)) return '';
+  if (!href || LOCAL_ADDRESS.test(href) || isSameDocument(href)) return '';
 
   try {
     const response = await fetch(href, {

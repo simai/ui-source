@@ -112,6 +112,18 @@
     white-space: nowrap;
   }
 
+  /* Preparing: the status is words, not two short facts, and it never takes
+     the name's whole room. In a narrow cell it shrinks with the name and wraps
+     onto whole lines of the size's text line (docs acceptance 2026-11-10, L3):
+     before, the name fell to 0-6 px at 160-200 px and the status stood past the
+     box. A wide cell is unchanged, one line. */
+  .sf-download-file.sf-download-file--preparing :where(.sf-download-file__meta) {
+    flex: 0 1 auto;
+    min-inline-size: var(--sf-0);
+    white-space: normal;
+    text-align: end;
+  }
+
   .sf-download-file :where(.sf-download-file__type) {
     color: var(--sf-on-surface-variant);
   }
