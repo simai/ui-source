@@ -33,7 +33,12 @@ export function renderToastTemplate(context) {
       data-duration=${context.duration > 0 ? context.duration : nothing}
     >
       ${context.icon
-        ? html`<i class="sf-icon" aria-hidden="true">${context.icon}</i>`
+        // The status icon is an sf-icon, as the alert's is (1.2.1): it asks
+        // the Loader for its own glyph. A bare <i class="sf-icon"> was found
+        // only by the Loader's page scan, so a toast drawn where the scan
+        // does not look (a data-sf-observer="ignore" region, a shadow root)
+        // kept an empty box for a glyph the page had not asked for yet.
+        ? html`<sf-icon icon=${context.icon} aria-hidden="true"></sf-icon>`
         : nothing}
 
       <div class="sf-toast-container flex flex-col flex-1">

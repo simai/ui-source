@@ -163,7 +163,7 @@ const MEASURE = (levels) => {
       tone: root.dataset.level !== 'neutral'
         ? token(`--sf-${root.dataset.level}`, root)
         : token(root.classList.contains('sf-alert--outlined') ? '--sf-on-surface-variant' : '--sf-on-surface-container--variant', document.body),
-      own: colour(root.querySelector(':scope > .sf-icon')),
+      own: colour(root.querySelector(':scope > .sf-icon, :scope > sf-icon > .sf-icon')),
       cross: root.querySelector(':scope > .sf-icon-button .sf-close-icon') ? hex(rgba(getComputedStyle(root.querySelector(':scope > .sf-icon-button .sf-close-icon')).backgroundColor)) : null,
       text: colour(root.querySelector('.sf-alert-text, .sf-toast-text')),
       buttons: buttons(root),
