@@ -3,15 +3,34 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--sf-space-1\/3);
+  /* The field's quarter step between its label, its box and its hint, as
+     sf-input (FB-10). */
+  gap: var(--sf-space-1\/4);
 }
 
+/* One field label look for every field (docs pre-check 2026-11-10 FB-10, CI-04):
+   the label of sf-input -- regular weight, on-surface-variant, one text step
+   below the field's text (14 at size 1). It was 16/500 on-surface. */
 .sf-verification-form-label {
-  color: var(--sf-on-surface);
+  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-verification-form--size-1\/2 .sf-verification-form-label {
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-verification-form--size-2 .sf-verification-form-label {
   font-size: var(--sf-text-size-1);
-  font-weight: var(--sf-font-weight-medium);
   line-height: var(--sf-text-height-1);
+}
+
+.sf-verification-form:has(input:disabled) .sf-verification-form-label {
+  color: var(--sf-on-disable);
 }
 
 .sf-verification-form-hint {
