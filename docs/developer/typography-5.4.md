@@ -94,8 +94,14 @@ the radius ladder has no 6 (`--sf-radius-1/2` is 4px, `--sf-radius-1` 8px).
 The room and the size stay relative on purpose: one word of code sits in body
 text, a heading, a caption and a table cell, and has to scale with each; no
 fixed step is .2em, .4em or 85 % of all of them (at 16px text the code is
-13.6px, its room 2.72px by 5.44px). The name never parts at a hyphen
-(`white-space: nowrap`): the line breaks before `sf-button-press`, not inside.
+13.6px, its room 2.72px by 5.44px). Code stays inline and wraps as text does,
+at its spaces and hyphens, so a name at the end of a line may part at a hyphen
+(`sf-button-` / `press`) but never between two letters. A run that cannot fit
+a line of its own -- a URL, a token -- breaks where it must
+(`overflow-wrap: break-word`; C10, 2026-11-10), so it never runs out of a
+narrow column. `break-word`, not `anywhere`: a table still sizes its columns
+to whole words, and inline code keeps the no-break with the punctuation around
+it and the height of its line.
 
 The public variables have one dash and are never set by the Framework; set
 them on `:root` or any container. The `--sf-code--*` names with two dashes

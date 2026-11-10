@@ -38,8 +38,12 @@ test('the public variables are in the contract, read first, and default to the s
   }
 });
 
-test('a name never parts at a hyphen', () => {
-  assert.match(rule, /white-space:\s*nowrap;/u);
+test('code wraps as text: inline, no nowrap, a run longer than the line breaks (C10)', () => {
+  // Inline keeps the no-break with the punctuation around it and the line's
+  // height; break-word (not anywhere) keeps a table's columns at whole words.
+  assert.doesNotMatch(rule, /display:/u);
+  assert.doesNotMatch(rule, /white-space:\s*nowrap;/u);
+  assert.match(rule, /overflow-wrap:\s*break-word;/u);
 });
 
 test('the tones come from existing roles only: no palette of their own', () => {

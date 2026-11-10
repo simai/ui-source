@@ -270,9 +270,13 @@
     color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
-    // A name is one word: sf-button-press never parts at its hyphens. The
-    // line breaks before the code instead (owner, 2026-11-07, R024).
-    white-space: nowrap;
+    // Code stays inline (a box of its own would take the line's no-break
+    // with the punctuation around it and grow the line) and wraps as text
+    // does: at its spaces and hyphens. A run that cannot fit a line of its
+    // own -- a URL, a token -- breaks where it must (C10, 2026-11-10), so it
+    // never runs out of a narrow column. break-word, not anywhere: a table
+    // still sizes its columns to whole words.
+    overflow-wrap: break-word;
   }
 
   // Copy on click, only where a container asks for it with
