@@ -1475,9 +1475,9 @@
         "public_parts": [],
         "uses": [
           "component.avatars",
-          "component.icon-buttons",
           "component.icons",
           "smart.button",
+          "smart.button-close",
           "smart.spinner",
           "smart.tag"
         ]
@@ -2952,7 +2952,7 @@
           "component.dot",
           "component.icon-buttons",
           "component.tags",
-          "smart.button-icon",
+          "smart.button-close",
           "smart.icon"
         ]
       },
@@ -2965,7 +2965,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "fceead59a4846cd5aefabcad6cf6dd79e7e21a52d1459c8dc63d1c83b5ac194a",
+      "manifest_sha256": "a63187ec1e7e479a8d111d5c6a574c242bdf69bff50984b3142bed8e5cf3c8b0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

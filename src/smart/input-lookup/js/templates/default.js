@@ -9,11 +9,17 @@ import {createFieldContract} from '../../../../component/field-contract';
 // The search box is the combobox; the focus never leaves it while the arrows
 // move the active row (aria-activedescendant). Rows are drawn here, not as
 // elements: the class markup of an avatar (a photo or initials) beside the
-// label and the caption, and a check on a chosen row.
+// label and the caption. A chosen row is its fill alone, no check (owner
+// decision C08).
 
-// A row's picture a rung below the field; the chips stand on the field's line.
-const AVATAR_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
-const CLEAR_SIZE = {'1/2': '1/4', '1': '1/3', '2': '1/2'};
+// A row's picture is the field's text line, as a chip's is (the geometry
+// standard: every picture of a size is its line; LK-06). The stylesheet sizes
+// it; the class is the avatar ladder's smallest step, for its initials.
+const AVATAR_CLASS_SIZE = '1/4';
+// The clear is sf-button-close, plain (owner decision C14: a field's clear),
+// the icon button's square box a rung below the field: 28 on a desktop and 24
+// on a phone at size 1, steps of the height ladder (LK-08).
+const CLEAR_SIZE = {'1/2': '1/3', '1': '1/3', '2': '1/2'};
 const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
 
 function avatar(item, size, extraClass = '') {
@@ -46,7 +52,7 @@ function chip(context, item) {
 }
 
 function row(context, item, index) {
-  const {component, ids, activeIndex, size} = context;
+  const {component, ids, activeIndex} = context;
   const chosen = component.isItemChosen(item);
   const active = index === activeIndex;
   return html`<div
@@ -55,10 +61,10 @@ function row(context, item, index) {
       role="option"
       aria-selected=${chosen ? 'true' : 'false'}
       data-sf-index=${String(index)}
-    >${avatar(item, AVATAR_SIZE[size] || '1/2', 'sf-lookup-option-avatar')}<span class="sf-lookup-option-text flex flex-col">
+    >${avatar(item, AVATAR_CLASS_SIZE, 'sf-lookup-option-avatar')}<span class="sf-lookup-option-text flex flex-col">
         <span class="sf-lookup-option-label">${item.label}</span>
         ${item.caption ? html`<span class="sf-lookup-option-caption">${item.caption}</span>` : nothing}
-      </span><i class="sf-icon sf-lookup-option-check" aria-hidden="true">${chosen ? 'check' : ''}</i></div>`;
+      </span></div>`;
 }
 
 const SPINNER_SIZE = {'1/2': '1/3', '1': '1/3', '2': '1/2'};
@@ -129,6 +135,8 @@ export function renderLookupTemplate(context) {
   const message = field.invalid && errorMessage ? errorMessage : hint;
   const rowContext = {...context, ids};
   const showList = listOpen && items.length > 0;
+  // A list where a row carries a caption sets every row at the caption row's
+  // height, so one list keeps one row height (LK-05, owner decision C49).
   const rootClasses = [
     'sf-lookup',
     `sf-lookup--size-${size}`,
@@ -187,12 +195,14 @@ export function renderLookupTemplate(context) {
           @focus=${(event) => component.onQueryFocus(event)}
         >
         ${single && editable
-          ? html`<button type="button"
-              class="sf-lookup-clear sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-${CLEAR_SIZE[size] || '1/3'} flex items-cross-center flex-none"
+          ? html`<sf-button-close
+              size=${CLEAR_SIZE[size] || '1/3'}
+              appearance="plain"
+              root-class="sf-lookup-clear flex-none"
               aria-label=${component.sfWord('clear')}
               title=${component.sfWord('clear')}
               @click=${(event) => component.onClearClick(event)}
-            ><i class="sf-icon" aria-hidden="true">close</i></button>`
+            ></sf-button-close>`
           : nothing}
       </div>
       ${message
@@ -202,7 +212,7 @@ export function renderLookupTemplate(context) {
       <div class="sf-lookup-panel" id=${ids.panel} popover="manual"
         @mousedown=${(event) => component.onPanelMouseDown(event)}
         @click=${(event) => component.onPanelClick(event)}>
-        <div class="sf-lookup-list" id=${ids.list} role="listbox"
+        <div class=${showList && items.some((item) => item.caption) ? 'sf-lookup-list sf-lookup-list--captions' : 'sf-lookup-list'} id=${ids.list} role="listbox"
           aria-labelledby=${label ? ids.label : nothing}
           aria-label=${!label && ariaLabel ? ariaLabel : nothing}
           aria-multiselectable=${multiple ? 'true' : nothing}
