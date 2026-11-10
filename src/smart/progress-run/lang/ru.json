@@ -17,7 +17,53 @@
     "hide": "Скрыть",
     "copy": "Скопировать вывод",
     "download": "Скачать вывод",
-    "empty-output": "Вывода пока нет"
+    "empty-output": "Вывода пока нет",
+    "result-partial": "Готово с ошибками",
+    "state-word-running": "Идёт",
+    "state-word-paused": "Пауза",
+    "state-word-partial": "С ошибками",
+    "state-word-cancelled": "Отменено",
+    "state-word-waiting": "В очереди",
+    "announce-paused": "Пауза",
+    "announce-resumed": "Продолжается",
+    "figures": "{value} из {total}{unit} · {percent} %",
+    "figures-count": "{value}{unit}",
+    "percent": "{percent} %",
+    "estimating": "оцениваем время…",
+    "remaining": "осталось ≈ {time}",
+    "remaining-short": "{time}",
+    "remaining-less": "осталось меньше минуты",
+    "remaining-less-short": "< 1 мин",
+    "minutes": "{n} мин",
+    "hours": "{h} ч {m} мин",
+    "took": "заняло {time}",
+    "errors-shown": {
+      "one": "Ошибки: первая {n} из {total}",
+      "few": "Ошибки: первые {n} из {total}",
+      "many": "Ошибки: первые {n} из {total}",
+      "other": "Ошибки: первые {n} из {total}"
+    },
+    "more-errors": {
+      "one": "Ещё {n} ошибка",
+      "few": "Ещё {n} ошибки",
+      "many": "Ещё {n} ошибок",
+      "other": "Ещё {n} ошибки"
+    },
+    "errors-count": {
+      "one": "{n} ошибка",
+      "few": "{n} ошибки",
+      "many": "{n} ошибок",
+      "other": "{n} ошибки"
+    },
+    "no-errors": "ошибок нет",
+    "retry-failed": "Повторить неудачные",
+    "pause": "Пауза",
+    "resume": "Продолжить",
+    "minimize": "Свернуть",
+    "expand": "Развернуть",
+    "step-log": "Журнал шага",
+    "counts": "Итог",
+    "figures-plain": "{value} из {total}"
   },
   "events": {
     "cancel": {
@@ -31,6 +77,21 @@
     },
     "download": {
       "label": "Скачать вывод"
+    },
+    "pause": {
+      "label": "Пауза"
+    },
+    "resume": {
+      "label": "Продолжить"
+    },
+    "minimize": {
+      "label": "Свернуть"
+    },
+    "expand": {
+      "label": "Развернуть"
+    },
+    "report": {
+      "label": "Ошибки"
     }
   }
 }

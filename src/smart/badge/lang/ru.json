@@ -5,6 +5,8 @@
     "activity-waiting": "Нужен ваш ответ",
     "activity-done": "Готово",
     "activity-stopped": "Остановлено",
-    "activity-failed": "Не удалось"
+    "activity-failed": "Не удалось",
+    "activity-paused": "Пауза",
+    "activity-queued": "В очереди"
   }
 }

@@ -217,7 +217,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "49c9d03c3f64f42354d70006e2af42dcfd6eb4b6a042d8d6d3f1a270deab74af",
+      "manifest_sha256": "9172f3f55a4c89297be5e9a0d48cdae6b7d9ec903d3d26d421420a5b7d10e063",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2235,7 +2235,8 @@
         "theme",
         "responsive",
         "determinate-progress",
-        "accessible-range"
+        "accessible-range",
+        "indeterminate-progress"
       ],
       "composition": {
         "public_parts": [],
@@ -2252,7 +2253,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "96147421daea0e6dd2bcb5b32524c28c2cc61fe01c644171e0ec0baee63827b1",
+      "manifest_sha256": "9e29290c9165bfc62936b35c78bd746c4935da16a15651bcecbf3a8bc365cfbf",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2313,10 +2314,13 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "smart.badge",
           "smart.button",
           "smart.button-copy",
           "smart.button-icon",
-          "smart.icon"
+          "smart.icon",
+          "smart.progress-bar",
+          "smart.progress-ring"
         ]
       },
       "contract_schema": {
@@ -2328,13 +2332,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "30eebfe5234283ae46f62ad1b9bc43df6aa558afad9a0f367cc4a8027890c898",
+      "manifest_sha256": "c76ca0ce9be4fac366afddc15ea6878d22be476c05ab08ea617baad38e33e235",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A long job as a person sees it: its steps with states (waiting, running, done, failed, skipped) and the time of each, a collapsible output pane (monospace, an append action, following the newest line only while the reader is at the end, copy and download), the result (success, or failure with its reason) and the actions Cancel, Retry and Hide. The host drives it; it polls nothing.",
+      "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; compact -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
       "tags": [
         "progress",
         "run",
@@ -2343,7 +2347,12 @@
         "log",
         "output",
         "steps",
-        "admin"
+        "admin",
+        "import",
+        "backup",
+        "pause",
+        "summary",
+        "notice"
       ],
       "title": "Progress"
     },

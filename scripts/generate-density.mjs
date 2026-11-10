@@ -77,6 +77,48 @@ const DERIVED = [
   ['figma_typography_roles.scss', ['--sf-text-small--size', '--sf-text-small--height', '--sf-text-medium--size', '--sf-text-medium--height', '--sf-text-large--size', '--sf-text-large--height']],
 ];
 
+// The headings (owner decisions C21 and C34, R073): --sf-heading-N--size and
+// --sf-heading-N--height are declared on :root from a text-size step and a
+// title-height step (figma_typography_roles.scss), so a compact region never
+// reached them: an h3 stood 24/28 in a compact card. Inside a region each
+// heading takes the step below its own, as every component does: the text
+// size of the step below and the title line of the step below (h3 24/28 ->
+// 20/24, h4 20/24 -> 16/18). The title lines start at step 1, so a heading on
+// step 1 (h5, h6) keeps that line and its text goes to step 1/2 (16/18 ->
+// 14/18). The values are the ladder files' desktop steps, written as they are.
+export const HEADING_LEVELS = [1, 2, 3, 4, 5, 6];
+const TEXT_SIZE_ORDER = ['1/7', '1/6', '1/5', '1/4', '1/3', '1/2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+const TITLE_HEIGHT_ORDER = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+const HEADING_FILES = {
+  roles: 'figma_typography_roles.scss',
+  size: 'figma_text_text_size.scss',
+  height: 'figma_text_title_height.scss',
+};
+
+export function headings() {
+  const roles = rootDeclarations(HEADING_FILES.roles);
+  const sizes = desktopDeclarations(HEADING_FILES.size);
+  const heights = desktopDeclarations(HEADING_FILES.height);
+  const below = (order, step) => order[Math.max(0, order.indexOf(step) - 1)];
+  const rows = [];
+  for (const level of HEADING_LEVELS) {
+    for (const [part, family, order, values, prefix] of [
+      ['size', '--sf-text--size-', TEXT_SIZE_ORDER, sizes, 'text--size'],
+      ['height', '--sf-title--height-', TITLE_HEIGHT_ORDER, heights, 'title--height'],
+    ]) {
+      const variable = `--sf-heading-${level}--${part}`;
+      const declared = roles.get(variable);
+      const match = declared && new RegExp(`^var\\(${family}([0-9/]+)\\)$`, 'u').exec(declared);
+      if (!match || !order.includes(match[1])) throw new Error(`${HEADING_FILES.roles}: ${variable} is not a ${prefix} step (${declared})`);
+      const normal = values.get(`${family}${match[1]}`);
+      const compact = values.get(`${family}${below(order, match[1])}`);
+      if (!normal || !compact) throw new Error(`no desktop value for ${variable} (${family}${match[1]})`);
+      rows.push({variable, step: match[1], normal, compact});
+    }
+  }
+  return rows;
+}
+
 // The popup widths, declared on :root in the size tokens.
 const WIDTHS_FILE = 'src/core/scss/_sf_css__size.scss';
 export const WIDTHS = [
@@ -197,7 +239,7 @@ export function widths() {
 
 export function sourceDigest() {
   const hash = createHash('sha256');
-  for (const file of [...new Set([...FAMILIES.map(([file]) => file), ...DERIVED.map(([file]) => file)])].sort()) hash.update(`${file}\n${read(file)}\n`);
+  for (const file of [...new Set([...FAMILIES.map(([file]) => file), ...DERIVED.map(([file]) => file), ...Object.values(HEADING_FILES)])].sort()) hash.update(`${file}\n${read(file)}\n`);
   hash.update(`${WIDTHS_FILE}\n${widths().map((row) => `${row.variable}:${row.normal}`).join('\n')}\n`);
   return hash.digest('hex');
 }
@@ -211,9 +253,11 @@ export function render() {
   const rows = ladder();
   const aliases = derived();
   const popup = widths();
+  const heads = headings();
   const block = (pick, indent) => [
     ...rows.map((row) => `${indent}${esc(row.variable)}: ${row[pick]};`),
     ...popup.map((row) => `${indent}${row.variable}: ${row[pick]};`),
+    ...heads.map((row) => `${indent}${row.variable}: ${row[pick]};`),
     ...aliases.map(([name, value]) => `${indent}${esc(name)}: ${value};`),
     `${indent}--sf-text--size: var(--sf-text--size-1);`,
     `${indent}--sf-text--height: var(--sf-text--height-1);`,
@@ -232,7 +276,8 @@ export function render() {
  * 60rem the phone ladder already is the dense one.
  *
  * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
- * next step of the size scale.
+ * next step of the size scale. The headings (C21, C34) take the text size and
+ * the title line of the step below theirs.
  */
 @layer sf.base {
   @media (min-width: ${DESKTOP}) {
@@ -271,7 +316,7 @@ const px = (value) => {
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const args = new Set(process.argv.slice(2));
   if (args.has('--print-table')) {
-    for (const row of [...ladder(), ...widths()]) process.stdout.write(`${row.variable}\t${px(row.normal)}\t${px(row.compact)}\n`);
+    for (const row of [...ladder(), ...widths(), ...headings()]) process.stdout.write(`${row.variable}\t${px(row.normal)}\t${px(row.compact)}\n`);
   } else {
     const expected = render();
     const target = join(root, OUTPUT);

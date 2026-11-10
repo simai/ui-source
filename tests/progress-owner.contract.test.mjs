@@ -13,7 +13,9 @@ test('Progress Bar normalizes value, size, position and semantic tone', async ()
   // The shared status words; primary is the old word for no status (2026-10-13).
   assert.match(ordinary, /const TONES = \['info', 'success', 'warning', 'error'\]/);
   assert.match(template, /data-position=\$\{normalizedPosition\}/);
-  assert.match(template, /aria-valuenow=\$\{String\(normalizedValue\)\}/);
+  // Indeterminate (1.3.0, C34) leaves the value unsaid; otherwise the value is said.
+  assert.match(template, /aria-valuenow=\$\{indeterminate \? nothing : String\(normalizedValue\)\}/);
+  assert.match(ordinary, /if \(isIndeterminate\(root\)\) root\.removeAttribute\('aria-valuenow'\)/);
   assert.doesNotMatch(template, /tabindex=/);
 });
 

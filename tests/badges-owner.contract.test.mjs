@@ -68,10 +68,12 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     done: {role: 'success', icon: 'check_circle', word: 'Ready'},
     stopped: {role: 'neutral', icon: 'stop_circle', word: 'Stopped'},
     failed: {role: 'error', icon: 'error', word: 'Failed'},
+    paused: {role: 'warning', icon: 'pause_circle', word: 'Paused'},
+    queued: {role: 'neutral', icon: 'schedule', word: 'Queued'},
   };
 
-  assert.equal(component.version, '1.3.1');
-  assert.equal(manifest.version, '1.3.1');
+  assert.equal(component.version, '1.4.0');
+  assert.equal(manifest.version, '1.4.0');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings.compact.type, 'boolean');

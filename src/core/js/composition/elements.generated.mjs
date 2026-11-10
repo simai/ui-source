@@ -13,7 +13,9 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "waiting",
             "done",
             "stopped",
-            "failed"
+            "failed",
+            "paused",
+            "queued"
           ],
           "type": "string"
         },
@@ -108,7 +110,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.3.1"
+    "version": "1.4.0"
   },
   "sf-button": {
     "inputs": {
