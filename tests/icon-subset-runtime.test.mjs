@@ -764,7 +764,8 @@ test('R074: a slow subset answer draws from the full font at the deadline, and t
     assert.ok(Date.now() - started < 500, 'the deadline, not the answer, ends the wait');
     const fallback = page.head.find((node) => node.hasAttribute('data-sf-icons-fallback'));
     assert.ok(fallback, 'the full font draws the names');
-    assert.match(fallback.textContent, /MaterialSymbols-Outlined\.woff2/);
+    assert.match(fallback.getAttribute('data-sf-icons-fallback-url'), /MaterialSymbols-Outlined\.woff2/);
+    assert.doesNotMatch(fallback.textContent, /@font-face/, 'the full face was loaded before the rule went in');
     assert.ok(loader.isTrackedIconLoaded({icon: 'grid_view', attrs: {}}), 'the icon is drawn, not held');
     assert.match(String(page.warnings[0]?.[1]?.reason?.message || ''), /timed out after 30 ms/);
 
@@ -789,6 +790,70 @@ test('R074: a slow subset answer draws from the full font at the deadline, and t
     assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 1);
     assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
     assert.ok(page.events.some((event) => event.type === 'sf-icons-subset:ready' && event.detail.background && event.detail.icons.has('view_list')));
+  } finally {
+    page.restore();
+  }
+});
+
+test('R074 D-A: the full font is fetched before the deadline and its rule goes in only once the face is loaded', async () => {
+  const page = subsetPage();
+  try {
+    const loads = [];
+    globalThis.window.FontFace = class FontFace {
+      constructor(family, src) { this.family = family; this.src = src; }
+      load() { return new Promise((resolve) => loads.push({face: this, resolve: () => resolve(this)})); }
+    };
+    const added = [];
+    globalThis.document.fonts.add = (face) => { added.push(face); };
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 40;
+    loader.iconFallbackPrefetchMs = 10;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('grid_view', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['grid_view']));
+    await sleep(25);
+    assert.equal(loads.length, 1, 'the full face is asked for at the prefetch point, before the deadline');
+    assert.match(loads[0].face.src, /MaterialSymbols-Outlined\.woff2/);
+    await sleep(40);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0,
+      'past the deadline, the rule waits for the face: icons the subset draws stay drawn');
+    loads[0].resolve();
+    assert.equal(await done, true);
+    assert.equal(added.length, 1, 'the loaded face joins document.fonts');
+    const fallback = page.head.find((node) => node.hasAttribute('data-sf-icons-fallback'));
+    assert.ok(fallback);
+    assert.doesNotMatch(fallback.textContent, /@font-face/);
+    assert.equal(loads.length, 1, 'one load of the full face');
+  } finally {
+    page.restore();
+  }
+});
+
+test('R074 D-A: a request that answers while the full font is on its way keeps its subset and puts in no fallback', async () => {
+  const page = subsetPage();
+  try {
+    const loads = [];
+    globalThis.window.FontFace = class FontFace {
+      constructor(family) { this.family = family; }
+      load() { return new Promise((resolve) => loads.push(() => resolve(this))); }
+    };
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 20;
+    loader.iconFallbackPrefetchMs = 0;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('grid_view', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['grid_view']));
+    await sleep(40);
+    page.answer(page.requests[0]);
+    // The subset's own face (a FontFace too) and the full one are both pending.
+    await sleep(10);
+    loads.forEach((resolve) => resolve());
+    await sleep(10);
+    loads.forEach((resolve) => resolve());
+    assert.equal(await done, true);
+    await sleep(30);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 1);
   } finally {
     page.restore();
   }
