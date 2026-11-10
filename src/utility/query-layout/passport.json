@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.query-layout",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/query-layout/default/index.js",
@@ -11,7 +11,7 @@
     "src/utility/query-layout/default/rule.js",
     "src/utility/query-layout/default/scss/index.scss"
   ],
-  "content_sha256": "5ede51ab6a57208985439c5abe4a221354b3bfcaefc6a037dbe06b91e2db4dbe",
+  "content_sha256": "1a5db62e08626a13c86909b8d441d279360391ff8731438aaf0aaf0f55fb018c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

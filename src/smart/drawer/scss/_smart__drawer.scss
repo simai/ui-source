@@ -446,5 +446,11 @@
     [data-sf-drawer-dock-host] {
       transition: none;
     }
+
+    /* The closed rule above outranks the plain panel rule; without motion the
+       panel hides at once instead of after the slide's duration. */
+    .sf-drawer:not(.is-open) .sf-drawer-panel {
+      transition: none;
+    }
   }
 }

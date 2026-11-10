@@ -73,12 +73,13 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.1.1');
+  assert.equal(contract.version, '1.1.2');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
   assert.match(source, /event\.key !== "Escape"/u);
-  assert.match(source, /event\.stopPropagation\(\);\s*this\.cancel\(\);/u);
+  // In a page the key goes no further; in a window it goes on to the window (D4).
+  assert.match(source, /const result = this\.cancel\(\);\s*if \(result\?\.outcome === "applied" && inWindow\(this\)\) return;\s*event\.preventDefault\(\);\s*event\.stopPropagation\(\);/u);
   // Words in both languages, the same keys.
   const ru = json('src/smart/confirm/lang/ru.json').runtime;
   const en = json('src/smart/confirm/lang/en.json').runtime;

@@ -9,7 +9,10 @@
 // conditions hold in every case, so only the container decides): a 12-column
 // grid whose cells ask for 6, full and auto at that breakpoint. Below the
 // threshold each cell is one column; at it, six, twelve and one (col-auto
-// keeps the auto placement).
+// keeps the auto placement). A container span on a cell that also carries a
+// plain span wins at its width whichever sheet the Loader inserted first: the
+// page meets a plain col-* class first, or a cq-* class first (recipes gaps
+// acceptance D2, utility.query-layout 1.1.1); hidden + cq-md:flex likewise.
 import {readFileSync, existsSync, statSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -75,6 +78,29 @@ try {
     if (page.errors.length) note({load, case: 'console clean', errors: page.errors});
     console.log(JSON.stringify({load, cells}));
     await page.close();
+  }
+  // Load order: the first class the page shows decides which sheet arrives
+  // first; a 800px container is past md (704px) in both.
+  const mixed = (first) => `<div class="${first}">first</div><div class="query-container" style="inline-size:800px"><div class="grid grid-col-12 gap-0" data-order>
+      <div data-ask="full6" class="col-span-full cq-md:col-span-6">a</div><div data-ask="four-auto" class="col-span-4 cq-md:col-auto">b</div></div>
+      <div data-ask="hidden-flex" class="hidden cq-md:flex">c</div></div>`;
+  for (const [order, first] of [['plain first', 'col-span-3'], ['cq first', 'cq-md:col-span-2']]) {
+    for (let load = 1; load <= 3; load++) {
+      const page = await open(browser, mixed(first), {width: 1400, height: 900});
+      await page.waitForFunction(() => [...document.styleSheets].filter((sheet) => /grid-column|query-layout|\/display\//u.test(sheet.href || '')).length >= 3, null, {timeout: 15000}).catch(() => {});
+      await page.waitForTimeout(500);
+      const got = await page.evaluate(() => {
+        const grid = document.querySelector('[data-order]');
+        const column = grid.getBoundingClientRect().width / 12;
+        const span = (ask) => Math.round(grid.querySelector(`[data-ask="${ask}"]`).getBoundingClientRect().width / column);
+        return {full6: span('full6'), fourAuto: span('four-auto'), hiddenFlex: getComputedStyle(document.querySelector('[data-ask="hidden-flex"]')).display,
+          sheets: [...document.styleSheets].map((sheet) => sheet.href || '').filter((href) => /grid-column|query-layout|\/display\//u.test(href)).map((href) => href.replace(/^.*\/utility\//u, '').replace(/\/css.*$/u, ''))};
+      });
+      if (got.full6 !== 6 || got.fourAuto !== 1 || got.hiddenFlex !== 'flex') note({load, order, case: 'a container condition beats the plain class whatever the load order', got});
+      if (page.errors.length) note({load, order, case: 'console clean', errors: page.errors});
+      console.log(JSON.stringify({load, order, ...got}));
+      await page.close();
+    }
   }
 } finally {
   await browser.close();

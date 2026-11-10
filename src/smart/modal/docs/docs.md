@@ -13,7 +13,8 @@ window opens is `initial-focus` (decisions C25, C39):
 - `auto` (the default): the element inside the window that carries the
   standard `autofocus` attribute, as a native `<dialog>` does (an `sf-button`
   hands it to its inner button); without one, in a question window -- one that
-  holds a dangerous answer (`status="danger"`) or an `sf-confirm` -- its safe
+  holds a dangerous answer (an `sf-button` with `status="danger"`) or an
+  `sf-confirm` -- only answers count, a red badge in the body does not -- its safe
   answer: the declining answer of the `sf-confirm`, or the page's own answer
   that closes the window (`data-sf-modal-close`, the header's × excluded),
   «Отмена». A stray Enter or Space then only closes the question. Otherwise

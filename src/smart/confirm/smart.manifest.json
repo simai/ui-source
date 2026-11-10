@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -262,7 +262,7 @@
       "Space",
       "Escape"
     ],
-    "focus": "A group named by its question. The status line is a polite live region, present before it speaks; when a press takes the answers away, focus moves to it instead of falling to the page, and back to the first answer when the host cancels. Escape inside an open question declines."
+    "focus": "A group named by its question. The status line is a polite live region, present before it speaks; when a press takes the answers away, focus moves to it instead of falling to the page, and back to the first answer when the host cancels. Escape inside an open question declines; in a window (sf-modal) the window then closes on the same press."
   },
   "presentation": {
     "themes": [
@@ -322,7 +322,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "ed426c4351ebea080c0d0f15602110b09147323a1372a92fca97097be355caf9"
+        "sha256": "fdb14e20c978aef79f596d9adb1348343bebca9465c37f231f7ab7441137126b"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
@@ -338,11 +338,11 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "0649cc2d10bd8d7788636f735b78532371d4e590f32ad7706e3d98d6131bb7de"
+        "sha256": "e900cdd13a7f3340068bd75fe4ffaa32d4edd3a1fcc7828c22a141fa8582627a"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "2101c365c0222783dcf1bf14e02a0bffde574d89fe5b27d22b85e142ee3548cb"
+        "sha256": "6320edf0c5e6e20c230144b3813fee9f97b7a56b1c5b0649fe45c90fb69cbfb8"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

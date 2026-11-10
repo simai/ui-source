@@ -101,9 +101,10 @@ function trapModalFocus(panel, event) {
 //
 // - auto (the default): the element the page marked with the standard
 //   `autofocus` attribute, as a native <dialog> does; else, in a question
-//   window -- one that holds a dangerous answer (an sf-button or sf-confirm
-//   with status="danger", or an sf-confirm) -- its safe answer, «Отмена»; else
-//   the panel, as before;
+//   window -- one whose answers hold a dangerous one (an sf-button with
+//   status="danger", its drawn .sf-button--danger, or an sf-confirm) -- its
+//   safe answer, «Отмена»; else the panel, as before. Only answers count: a red
+//   sf-badge or an error message in the body does not make a window a question;
 // - safe: the safe answer whenever there is one;
 // - first: the first control of the window's content (the header's buttons,
 //   the × among them, excluded);
@@ -120,7 +121,8 @@ function trapModalFocus(panel, event) {
 // to two seconds, while the focus is still on the panel; anything the person
 // does in between wins. Answers the element that took the focus.
 const INITIAL_FOCUS = ['auto', 'safe', 'first', 'panel'];
-const DANGER_SELECTOR = '[status="danger"], .sf-button--danger, sf-confirm';
+// status="error" on an sf-button is danger's dated alias (C13).
+const DANGER_SELECTOR = 'sf-button[status="danger"], sf-button[status="error"], .sf-button--danger, sf-confirm';
 const SAFE_SELECTOR = '[data-action="decline"], [data-sf-modal-close]:not(.sf-modal-close-button)';
 
 function takesFocus(node) {
@@ -130,7 +132,7 @@ function takesFocus(node) {
 }
 
 function isDanger(node) {
-  return node.matches('[status="danger"], [status="error"], .sf-button--danger') || Boolean(node.querySelector('.sf-button--danger'));
+  return node.matches('sf-button[status="danger"], sf-button[status="error"], .sf-button--danger') || Boolean(node.querySelector('.sf-button--danger'));
 }
 
 // The element that takes the safe answer's focus, or null while there is none

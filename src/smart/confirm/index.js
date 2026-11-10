@@ -101,15 +101,31 @@ class SfConfirm extends ConfirmSurface {
         super.onDisconnected?.();
     }
 
-    // Escape takes the question back, as the declining answer does; the key
-    // goes no further, so a drawer or a window around the row stays open.
+    // Escape takes the question back, as the declining answer does. In a page
+    // the key goes no further, so a drawer around the row stays open. In a
+    // window (sf-modal) the question is the window's: the decline is reported
+    // and the key goes on to the window, which closes -- a host that never sets
+    // an outcome no longer leaves the window standing with its answers greyed
+    // (recipes gaps acceptance D4, 2026-11-10). A host that refuses the answer
+    // (cancels the answer event) keeps both: the question stands.
     onKeydown(event) {
         if (event.key !== "Escape" || event.defaultPrevented) return;
         if (this.shownState !== "open" || this.getProp("disabled")) return;
+        const result = this.cancel();
+        if (result?.outcome === "applied" && inWindow(this)) return;
         event.preventDefault();
         event.stopPropagation();
-        this.cancel();
     }
+}
+
+// The nearest surface around the question is a window's panel (sf-modal draws
+// it in a portal at the end of the body; the Modal class in place), not a
+// drawer, a popover or a list inside the window, whose Escape is their own,
+// and not an inline window, which takes no Escape.
+const SURFACES = "[data-sf-modal-panel], .sf-drawer-panel, sf-drawer, sf-popover, sf-dropdown";
+function inWindow(node) {
+    const surface = node.parentElement?.closest(SURFACES);
+    return Boolean(surface?.matches("[data-sf-modal-panel]") && !surface.closest('[data-sf-modal-display="inline"]'));
 }
 
 // The focus is nowhere -- on the page itself -- after the person has acted on

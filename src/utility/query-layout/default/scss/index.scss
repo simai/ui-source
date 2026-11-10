@@ -11,6 +11,16 @@
 @use '../../../justify-content/default/scss/sf_var__justify_content' as justify;
 @use '../../../align-items/default/scss/sf_var__align_items' as items;
 
+// A container condition outranks the plain utility of its family on the same
+// element whatever order the sheets arrived in: the plain family is a sheet of
+// its own (grid-column, display, ...) in the same sf.utilities layer, and the
+// Loader inserts whichever the page meets first, so equal specificity let load
+// order decide (`col-span-full cq-md:col-span-6` stayed full when the cq sheet
+// came first; recipes gaps acceptance D2, 2026-11-10). The class is written
+// twice (0,2,0): between cq classes source order still holds, sm before md
+// before lg before xl, as it is one sheet.
+@function strong($class) { @return '.#{$class}.#{$class}'; }
+
 @mixin family($condition, $family, $prefix, $property, $values) {
   @each $role in map.get(profile.$query-families, $family) {
     $key: $role;
@@ -19,7 +29,7 @@
       @for $number from 1 through 12 { @if '#{$number}' == $role { $key: $number; } }
     }
     @if not map.has-key($values, $key) { @error 'Unknown #{$family} role: #{$role}'; }
-    .#{$condition}#{$prefix}#{$role} { #{$property}: #{map.get($values, $key)}; }
+    #{strong('#{$condition}#{$prefix}#{$role}')} { #{$property}: #{map.get($values, $key)}; }
   }
 }
 
@@ -46,11 +56,11 @@
         @include family($condition, 'align-items', 'items-cross-', align-items, items.$flex-align-items-array);
         @each $role in map.get(profile.$query-families, 'gap') {
           @if not map.has-key(map.get(space.$space-size-device-array, mobile), $role) { @error 'Unknown gap role: #{$role}'; }
-          .#{$condition}gap-#{$role} { gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}gap-#{$role}')} { gap: var(--sf-space-#{$role}); }
         }
         @each $role in map.get(profile.$query-families, 'gap') {
-          .#{$condition}row-gap-#{$role} { row-gap: var(--sf-space-#{$role}); }
-          .#{$condition}col-gap-#{$role} { column-gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}row-gap-#{$role}')} { row-gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}col-gap-#{$role}')} { column-gap: var(--sf-space-#{$role}); }
         }
       }
     }

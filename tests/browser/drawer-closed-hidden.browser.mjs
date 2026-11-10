@@ -9,6 +9,9 @@
 // Closed: hidden (an inert panel is not hit-tested either way, so the probe
 // reads its visibility). Opening: shown at once,
 // focusable. Closing: still drawn while it slides, hidden when the slide ends.
+// Under prefers-reduced-motion (recipes gaps acceptance D1) a drawer, a modal
+// one too, closes in one step: hidden at the first frame after close(), as it
+// was before the closed rule, which outranked the reduced-motion transition.
 import {readFileSync, existsSync, statSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -21,8 +24,8 @@ const types = {js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf
 const page404 = new Set();
 
 // One page of the probe over the built bytes: <body> markup, the core, nothing else.
-async function open(browser, body, viewport = {width: 1200, height: 800}) {
-  const page = await browser.newPage({viewport});
+async function open(browser, body, viewport = {width: 1200, height: 800}, reducedMotion = 'no-preference') {
+  const page = await browser.newPage({viewport, reducedMotion});
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -82,6 +85,35 @@ try {
     if (closedAgain.visibility !== 'hidden') note({load, case: 'a closed panel is hidden once the slide ends', got: closedAgain});
     if (page.errors.length) note({load, case: 'console clean', errors: page.errors});
     console.log(JSON.stringify({load, closed, opening, open: open1, closing, closedAgain}));
+    await page.close();
+  }
+  for (let load = 1; load <= 3; load++) {
+    const page = await open(browser, `<div id="box" data-sf-overlay-container style="min-block-size:400px"><p>Страница</p>
+        <sf-drawer drawer-id="filters" modal="false" placement="inline-end" size="1/2" heading="Фильтры"><p>Тело</p></sf-drawer></div>
+      <sf-drawer drawer-id="sheet" modal="true" placement="inline-start" heading="Окно"><p>Тело</p></sf-drawer>`, {width: 900, height: 600}, 'reduce');
+    await defined(page, ['sf-drawer']);
+    await page.waitForFunction(() => document.querySelectorAll('[data-sf-drawer-panel]').length === 2, null, {timeout: 10000});
+    await page.waitForTimeout(600);
+    for (const id of ['filters', 'sheet']) {
+      await page.evaluate((name) => document.querySelector(`sf-drawer[drawer-id="${name}"]`).open(), id);
+      await page.waitForTimeout(500);
+      // Frame by frame from close(): the visibility of the panel in each of the
+      // next ten frames.
+      const frames = await page.evaluate(async (name) => {
+        const panel = document.querySelector(`[data-sf-drawer-portal="${name}"] [data-sf-drawer-panel]`);
+        const seen = [];
+        document.querySelector(`sf-drawer[drawer-id="${name}"]`).close();
+        for (let n = 0; n < 10; n++) {
+          await new Promise((done) => requestAnimationFrame(done));
+          seen.push(getComputedStyle(panel).visibility);
+        }
+        return {seen, transition: getComputedStyle(panel).transitionDuration};
+      }, id);
+      const shown = frames.seen.filter((value) => value !== 'hidden').length;
+      if (shown > 2) note({load, case: `reduced motion: ${id} closes in one step`, got: frames});
+      console.log(JSON.stringify({load, reduced: id, frames}));
+    }
+    if (page.errors.length) note({load, case: 'reduced motion: console clean', errors: page.errors});
     await page.close();
   }
 } finally {

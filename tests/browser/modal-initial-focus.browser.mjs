@@ -7,7 +7,9 @@
 // around the panel. Also: an sf-confirm in a window gives its declining answer
 // the focus; a window that asks nothing still focuses its panel (auto, as
 // before); initial-focus="first" and "panel" name the target; the page's
-// [autofocus] still wins under auto.
+// [autofocus] still wins under auto. Only answers make a question window: a
+// red sf-badge in the body of a plain window leaves the focus on the panel, on
+// the first open and on the next (recipes gaps acceptance D3).
 import {readFileSync, existsSync, statSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -63,6 +65,17 @@ const plainWindow = (extra = '') => `<div data-sf-overlay-container style="min-b
       <div class="m-top-3 flex gap-2"><sf-button text="Сохранить"></sf-button><sf-button appearance="ghost" text="Отмена" data-sf-modal-close="m"></sf-button></div></form>
   </sf-modal></div>`;
 
+const badgeWindow = `<div data-sf-overlay-container style="min-block-size:520px">
+  <button id="open" type="button" data-sf-modal-open="m">Статус</button>
+  <!-- sf-button is loaded before the window opens, so its answers are drawn at
+       once while the badge, fetched when the window draws it, still carries
+       status="danger" (on the first open only; it then reads error). -->
+  <sf-button text="Обновить"></sf-button>
+  <sf-modal modal-id="m" heading="Обычное окно с красным бейджем" show-footer="false">
+    <div slot="content" class="flex flex-col"><p class="m-0">Статус: <sf-badge status="danger" text="Ошибка"></sf-badge></p>
+      <div class="m-top-3 flex gap-2"><sf-button text="Повторить"></sf-button><sf-button appearance="ghost" text="Закрыть" data-sf-modal-close="m"></sf-button></div></div>
+  </sf-modal></div>`;
+
 async function opened(page, how) {
   if (how === 'keyboard') { await page.focus('#open'); await page.keyboard.press('Enter'); } else await page.click('#open');
   await page.waitForTimeout(900);
@@ -84,6 +97,7 @@ const cases = [
   {name: 'initial-focus="first": the first control', body: plainWindow(' initial-focus="first"'), want: 'first'},
   {name: 'initial-focus="panel" in a delete window: the panel', body: deleteWindow(' initial-focus="panel"'), want: 'panel'},
   {name: 'initial-focus="safe" in a window that asks nothing: its closing answer', body: plainWindow(' initial-focus="safe"'), want: 'Отмена'},
+  {name: 'a red badge in a plain window: the panel, first open', body: badgeWindow, want: 'panel', again: true},
   {name: '[autofocus] still wins under auto', body: deleteWindow('', '').replace('data-probe="danger"', 'data-probe="danger" autofocus'), want: 'danger'},
 ];
 
@@ -96,7 +110,7 @@ try {
           // The main case runs in every combination; the others once per load.
           if (item !== cases[0] && (theme !== 'light' || how !== 'keyboard')) continue;
           const page = await open(browser, item.body, {width: 1200, height: 800}, theme);
-          await defined(page, ['sf-modal']);
+          await defined(page, item.again ? ['sf-modal', 'sf-button'] : ['sf-modal']);
           await page.waitForTimeout(500);
           const got = await opened(page, how);
           const hit = item.want === 'Отмена' ? got.text === 'Отмена' : got.active === item.want;
@@ -105,6 +119,13 @@ try {
           if (item === cases[0] && how === 'keyboard' && !got.activeRing) note({load, theme, how, case: 'from the keyboard «Отмена» shows its ring', got});
           if (page.errors.length) note({load, theme, how, case: `${item.name}: console clean`, errors: page.errors});
           console.log(JSON.stringify({load, theme, how, case: item.name, ...got}));
+          if (item.again) {
+            await page.keyboard.press('Escape');
+            await page.waitForTimeout(700);
+            const second = await opened(page, how);
+            if (second.active !== item.want) note({load, theme, how, case: `${item.name}: the second open too`, got: second});
+            console.log(JSON.stringify({load, theme, how, case: `${item.name} (again)`, ...second}));
+          }
           await page.close();
         }
       }
