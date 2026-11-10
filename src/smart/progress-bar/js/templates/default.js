@@ -25,7 +25,7 @@ function normalizeStatus(value) {
 export function renderProgressBarTemplate(context) {
   const { value, textPosition } = context;
   const size = normalizeSize(context.size);
-  const tone = normalizeStatus(context.status ?? context.tone);
+  const tone = normalizeStatus(context.drawnStatus ?? context.status ?? context.tone);
   const normalizedValue = normalizeValue(value);
   const normalizedPosition = ['none', 'right', 'inline-end', 'bottom'].includes(textPosition)
     ? textPosition
@@ -48,7 +48,7 @@ export function renderProgressBarTemplate(context) {
       data-position=${normalizedPosition}
       data-tone=${tone}
       data-label=${context.label || nothing}
-      data-value-text=${context.valueText || nothing}
+      data-value-text=${(context.spokenValueText ?? context.valueText) || nothing}
       data-indeterminate=${indeterminate ? 'true' : nothing}
       data-paused=${paused ? 'true' : nothing}
       role="progressbar"
@@ -56,7 +56,7 @@ export function renderProgressBarTemplate(context) {
       aria-valuemin="0"
       aria-valuemax="100"
       aria-valuenow=${indeterminate ? nothing : String(normalizedValue)}
-      aria-valuetext=${context.valueText || nothing}
+      aria-valuetext=${(context.spokenValueText ?? context.valueText) || nothing}
     >
       <div class="sf-progress-bar-main">
         <div class="sf-progress-bar-progress transition"></div>

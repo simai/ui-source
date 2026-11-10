@@ -128,11 +128,14 @@ class SfProgressBar extends ProgressBarElement {
     const status = this.drawnStatus;
     this.sfHostState('data-status', status);
 
+    // The drawn status and the spoken value text go under their own names:
+    // status and valueText are the page's settings as given (their getters),
+    // and the template reads what the bar resolved (template-context rule).
     return this.createTemplateContext({
       ...props,
-      status,
+      drawnStatus: status,
       label: this.accessibleLabel,
-      valueText: this.spokenValueText,
+      spokenValueText: this.spokenValueText,
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       component: this,

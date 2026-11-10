@@ -630,7 +630,8 @@ class SfProgressRun extends ProgressRunElement {
     else if (state === 'paused') announcement = word('announce-paused');
     else if (state === 'running' && this._resumed) announcement = word('announce-resumed');
 
-    const look = STATE_LOOK[state] ?? STATE_LOOK.waiting;
+    // The badge and bar of the state (not the look setting, which is view).
+    const stateLook = STATE_LOOK[state] ?? STATE_LOOK.waiting;
     const badgeText = {running: 'state-word-running', paused: 'state-word-paused', partial: 'state-word-partial', cancelled: 'state-word-cancelled', waiting: 'state-word-waiting'}[state];
     const failed = list.find((step) => step.state === 'failed');
 
@@ -657,12 +658,12 @@ class SfProgressRun extends ProgressRunElement {
       }),
       state,
       ended,
-      look,
+      stateLook,
       badgeText: badgeText ? word(badgeText) : '',
       showBar,
       indeterminate,
       barValue,
-      barStatus: look.bar,
+      barStatus: stateLook.bar,
       percent,
       figures: this.figures(value, total, this.unit),
       figuresShort: total !== null ? this.figures(value, total, this.unit, {short: true}) : '',
