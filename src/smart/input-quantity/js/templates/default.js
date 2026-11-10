@@ -5,7 +5,8 @@ import {renderInheritedSlot} from '../../../helpers/inherited-value';
 // field: the root, the label row, the wrap with «−», the box and «+». The
 // layout utilities are the ones the class constructor puts on each part from
 // quantity.utility.json. The steppers stay size 1/3 icon buttons at every
-// field size, as the class draws them; the sheet sizes their glyph to the field.
+// field size, as the class draws them; the sheet sizes them one rung below the
+// field and their glyph to the field's own icon (QT-03).
 const LAYOUT = {
   root: 'flex flex-col flex-nowrap justify-start',
   label: 'flex flex-row flex-nowrap justify-start items-start',
@@ -14,7 +15,10 @@ const LAYOUT = {
   input: 'flex',
 };
 
-const STEPPER = 'sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3';
+// The quiet neutral ghost (C15): no plate at rest, the surface hover fill and
+// on-surface ink under a pointer, as a field's own clear button. secondary was
+// retired (QT-04).
+const STEPPER = 'sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3';
 
 function renderStepper(context, direction) {
   const {component, field} = context;

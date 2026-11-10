@@ -80,7 +80,18 @@ tall, exactly as an Input of the same size, with the same block padding, and
 the value shares the Input's text line. The steppers are icon buttons one rung
 down (a size `1` field carries size `1/2` steppers) whatever size class the
 markup gives them, and stand as far from the field's side as from its top and
-bottom.
+bottom. Their glyph is the field's own icon, the size an Input draws its icon
+at the same size: 24 in a size `1` field on a desktop (1.1.2, QT-03).
+
+The steppers are quiet neutral ghost icon buttons (`sf-icon-button--icon
+sf-icon-button--ghost sf-icon-button--on-surface
+sf-icon-button--on-surface-variant`, decision C15): no plate at rest, the
+surface hover fill and the on-surface ink under a pointer, the disabled ink at a
+bound. The retired `secondary` scheme drew no plate and no hover (1.1.2, QT-04);
+old markup that still carries it keeps working without the hover.
+
+A read-only field draws its edge with the region line `--sf-outline-variant`,
+as an Input's read-only field does, and takes no hover border (1.1.2, QT-08).
 
 The composite control uses the UI radius token `--sf-radius--ui`, the hairline
 token `--sf-px`, semantic typography and spacing tokens. Pointer activation
@@ -110,7 +121,7 @@ the selected size geometry.
   </span>
 
   <span class="sf-quantity-wrap">
-    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3">
+    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3">
       <i class="sf-icon">remove</i>
     </button>
     <input
@@ -122,7 +133,7 @@ the selected size geometry.
       data-grouping="true"
       data-locale="ru-RU"
     />
-    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3">
+    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3">
       <i class="sf-icon">add</i>
     </button>
   </span>
