@@ -36,6 +36,7 @@ class SfDownloadFile extends DownloadFileElement {
     // (state back to ready with an href) it is fetched once, as the person
     // asked (decision C25). A file prepared before anyone pressed is not.
     this._awaiting = false;
+    this._refocus = false;
     this._onAlertAction = (event) => this.onAlertAction(event);
   }
 
@@ -136,6 +137,10 @@ class SfDownloadFile extends DownloadFileElement {
     if (event.detail?.action !== 'retry' || !event.target?.closest?.('.sf-download-file__error')) return;
     event.stopPropagation();
     this._awaiting = true;
+    // The notice and its button go away when the host starts preparing the
+    // file again; focus would fall to the page's body (docs acceptance
+    // 2026-11-10, L1). It is kept on the file the person asked for.
+    this._refocus = true;
     this.sfEmit('retry', { href: this.getAttribute('href') || '', fileName: this.getAttribute('file-name') || '' });
   }
 
@@ -156,6 +161,17 @@ class SfDownloadFile extends DownloadFileElement {
       // root it reached first is bound again with the element's request.
       unbindDownloadFile(this._boundRoot);
       bindDownloadFile(this._boundRoot, { onActivate: this.requestDownload });
+    }
+
+    // After «Повторить»: once the notice is gone, the file takes the focus the
+    // button held -- only if the focus was lost with it, never taken from
+    // where the person has moved since.
+    if (this._refocus && !this.querySelector('.sf-download-file__error')) {
+      this._refocus = false;
+      const active = document.activeElement;
+      if (this._boundRoot && (!active || active === document.body)) {
+        this._boundRoot.focus({ preventScroll: true });
+      }
     }
   }
 

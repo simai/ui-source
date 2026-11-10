@@ -44,7 +44,11 @@ test('Download File owns native/button semantics, canonical structure and tokens
   // under it until 2027-01-01 (DF-11, journal token-file-download-variable-names).
   assert.match(css, /border-radius: var\(--sf-file-download-radius, var\(--sf-download-file-radius, var\(--sf-radius--ui\)\)\)/);
   // A data: or blob: address is never asked for its size (DF-15).
-  assert.match(runtime, /if \(!href \|\| LOCAL_ADDRESS\.test\(href\)\) return '';/);
+  assert.match(runtime, /if \(!href \|\| LOCAL_ADDRESS\.test\(href\) \|\| isSameDocument\(href\)\) return '';/);
+  // L2: an address that leads back to the page itself (#, #part) is no file either.
+  assert.match(runtime, /function isSameDocument\(href\)/);
+  // L3: while preparing, the status shrinks beside the name and wraps on whole lines.
+  assert.match(css, /\.sf-download-file\.sf-download-file--preparing :where\(\.sf-download-file__meta\) \{[^}]*white-space: normal;/);
   assert.match(css, /\.sf-download-file:focus-visible/);
   // One line, cut with an ellipsis, never broken inside a word (rule C01:
   // the card keeps the button's height of its size).
