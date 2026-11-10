@@ -504,7 +504,8 @@ a.sf-list-attention-object:focus-visible {
     display: contents;
   }
 
-  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck {
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck,
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck > button {
     grid-column: 2;
     grid-row: 1 / span 3;
     align-self: center;
@@ -518,7 +519,8 @@ a.sf-list-attention-object:focus-visible {
   }
 
   .sf-list-attention-quiet-line,
-  .sf-list-attention-recheck-text {
+  .sf-list-attention-recheck-text,
+  .sf-list-attention-recheck-text > * {
     display: none;
   }
 

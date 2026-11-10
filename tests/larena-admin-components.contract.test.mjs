@@ -108,7 +108,7 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   const narrow = sheet.slice(sheet.indexOf('@container (max-width: 30rem)'), sheet.indexOf('@container (max-width: 40rem)'));
   assert.match(narrow, /\.sf-list-attention-head \.sf-list-attention-summary,\s*\.sf-list-attention-head \.sf-list-attention-spacer \{\s*display: none;/u);
   assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
-  assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text \{\s*display: none;/u);
+  assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text,\s*\.sf-list-attention-recheck-text > \* \{\s*display: none;/u);
   assert.doesNotMatch(narrow, /sf-list-attention-action[^{]*\{[^}]*display: none/u);
 });
 
