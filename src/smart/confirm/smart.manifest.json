@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.1.2",
+  "version": "1.3.0",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -25,7 +25,8 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon"
+      "smart.icon",
+      "smart.input"
     ],
     "public_parts": []
   },
@@ -96,11 +97,22 @@
       "appearance": {
         "type": "string",
         "default": "inline",
-        "description": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset.",
+        "description": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- the window's title is the question, so it only names the group here; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first.",
         "enum": [
           "inline",
-          "card"
+          "card",
+          "window"
         ]
+      },
+      "consequence": {
+        "type": "string",
+        "default": "",
+        "description": "Window form: the sentence that decides («Вернуть сайт будет нельзя.», «30 дней меню лежит в корзине.»), on its own line in medium weight at the end of the consequences' plate. Danger is told by this sentence and the filled answer; the plate keeps its colour."
+      },
+      "require": {
+        "type": "string",
+        "default": "",
+        "description": "Window form: the name the person types before the acceptance works (R069) -- «Чтобы подтвердить, введите <name>» with the name as code (C10, taken whole by one press; paste allowed) and a field. The accepting answer stays filled and pressable: pressed early, or Enter in the field, it puts the focus in the field and says under it what to type (R064)."
       },
       "size": {
         "type": "string",
@@ -322,35 +334,35 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "fdb14e20c978aef79f596d9adb1348343bebca9465c37f231f7ab7441137126b"
+        "sha256": "100a4277df7e83f70924d476f769deb55c207d4cc39fd3a722f6fa4ba677d25f"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "7f3d63333340e203694a54a93cfae8a4bba2c881e362554441cd8ff761e4875a"
+        "sha256": "2fbe0dfef1c5153b3eb3e85d2c42a96fc2a226738c3a340e78504371e3dd84b7"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "03ae22df0c3cd402973149ed082a4ae52310fda4552562b4e905bfb68494483c"
+        "sha256": "a11e4651daf8609ad12b501626d7aef3c2b43e425c390a0efca0f3742f739538"
       },
       {
         "path": "src/smart/confirm/rule.js",
-        "sha256": "cb11aae85d13442cb01e35a0e5e7918634b2b9d2f4b421c9867c5cf3e4cd3c6e"
+        "sha256": "d796eecc6debadaa97d6260e973ace43d65d3923b5713dfc461fdb10c5f1fa3b"
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "e900cdd13a7f3340068bd75fe4ffaa32d4edd3a1fcc7828c22a141fa8582627a"
+        "sha256": "c95e5b95be407891d99da6a5773ad5c3384f7c192c5b404dac0b3f05de384ad6"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "6320edf0c5e6e20c230144b3813fee9f97b7a56b1c5b0649fe45c90fb69cbfb8"
+        "sha256": "2234ac78dd387c0c6d8a95fb70935149c3fc5f6c86cd28fc0c4fcbec54205b6d"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
-        "sha256": "632be05065f2fa97122bd51390cf0403b5e33b3d43b57e9242387a261ebf0c04"
+        "sha256": "9292e3cd4a1fbd12d3d2533e90dd371d166918888d1c85b80ad71a08b7f87f79"
       },
       {
         "path": "src/smart/confirm/lang/ru.json",
-        "sha256": "3929949b8b81017dd280b5a5718df535c7cf459ddf45d6aaf361f459c25e46c3"
+        "sha256": "84761dc087a7c0ca3be1f90fc6134e129ddfcc97b7e99b72c6bd573a9849f699"
       }
     ],
     "generated_runtime": []

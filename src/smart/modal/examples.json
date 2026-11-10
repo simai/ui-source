@@ -141,6 +141,22 @@
       }
     },
     {
+      "name": "question",
+      "title": "Окно опасного вопроса",
+      "settings": {
+        "open": true,
+        "heading": "Удалить сайт shop-example?",
+        "size": "question"
+      },
+      "slots": {
+        "content": "<sf-confirm appearance=\"window\" status=\"danger\" question=\"Удалить сайт shop-example?\" accept-text=\"Удалить сайт\" consequence=\"Вернуть сайт будет нельзя.\" require=\"shop-example\"><p slot=\"description\">Вместе с сайтом удалятся 1&nbsp;240 страниц, 3&nbsp;200 файлов и заказы, адрес shop.example.ru перестанет открываться.</p></sf-confirm>"
+      },
+      "expect": {
+        "open": true,
+        "name": "Удалить сайт shop-example?"
+      }
+    },
+    {
       "name": "inline",
       "title": "В потоке страницы",
       "settings": {

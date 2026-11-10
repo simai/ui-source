@@ -17,10 +17,19 @@ import ru from "./lang/ru.json";
 // A box that holds its own overlays (sf-modal, sf-drawer); the drawer's own
 // name came first and is read until the change journal retires it.
 const OVERLAY_CONTAINER = "[data-sf-overlay-container], [data-sf-drawer-container]";
+// Below the Framework's sm breakpoint (32rem) a question window is a bottom
+// sheet (decision C39): the answers stand under the thumb and the keyboard
+// does not cover them.
+// The step itself comes from core/js/breakpoints.js, the ladder the sheet
+// switches at.
+// The questions a window holds that a reopening puts again (sf-confirm's
+// answeredNo: it declined, or its decline is on its way and no outcome came).
+const QUESTIONS = "sf-confirm, sf-confirm-change";
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
 import { carryLayerOrigin, layerZIndexAt, lockPageScroll } from "../../core/js/layer-stack";
+import { breakpointMedia } from "../../core/js/breakpoints.js";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §8, §19): the settings are attributes and properties made by
@@ -209,9 +218,43 @@ class SfModal extends ModalElement {
         this.getAttribute("modal-id") || this.id || partId(instancePath(this));
     }
 
+    this.watchPhone();
     super.connectedCallback();
     SfModal.registry.set(this.modalId, this);
     SfModal.bindGlobalEvents();
+  }
+
+  // A question window follows the screen: a centred window on a wide one, a
+  // bottom sheet below sm. One listener per window, while it is in the page.
+  watchPhone() {
+    const query = breakpointMedia("sm", {below: true});
+    if (!query || this._phoneQuery) return;
+    this._phoneQuery = query;
+    this._onPhoneChange = () => {
+      if (this.size === "question") this.requestComponentUpdate("phone");
+    };
+    query.addEventListener?.("change", this._onPhoneChange);
+  }
+
+  // The position the window stands in: the page's, except that a question
+  // window left at the centre opens as a bottom sheet on a phone.
+  get shownPosition() {
+    const position = this.position;
+    if (this.size === "question" && position === "center" && this.display !== "inline" && this._phoneQuery?.matches) {
+      return "bottom";
+    }
+    return position;
+  }
+
+  // A reopened window puts its question again: an sf-confirm in it that took
+  // the decline (Escape, «Отмена») with no outcome from the host would show
+  // its answers greyed (recipes gaps D4 follow-up, DEV 2026-11-10).
+  reopenQuestions() {
+    const target = this._renderTarget;
+    if (!target?.querySelectorAll) return;
+    for (const question of target.querySelectorAll(QUESTIONS)) {
+      if (question.answeredNo) question.open?.();
+    }
   }
 
   // The old modal:* names keep their old detail (§16.20 split rows): the new
@@ -241,6 +284,8 @@ class SfModal extends ModalElement {
   }
 
   disconnectedCallback() {
+    this._phoneQuery?.removeEventListener?.("change", this._onPhoneChange);
+    this._phoneQuery = null;
     this.teardownModal();
     SfModal.registry.delete(this.modalId);
     super.disconnectedCallback();
@@ -357,7 +402,8 @@ class SfModal extends ModalElement {
       closeOnEsc: this.closeOnEsc,
       closeOnOverlay: this.closeOnOverlay,
       preserveScrollGap: this.preserveScrollGap,
-      position: this.position,
+      position: this.shownPosition,
+      size: this.size,
       mode: this.mode,
       display: this.display,
       src: this.src,
@@ -502,6 +548,9 @@ class SfModal extends ModalElement {
       rootId: this.id === this.modalId ? "" : this.modalId,
       open: this.renderOpenState,
       modalState: this.renderModalState,
+      // A question window opens as a bottom sheet on a phone (C39).
+      position: this.shownPosition,
+      size: this.size === "question" ? "question" : "auto",
       animate: this._animatePanel && this.display !== "inline",
       modalZIndex: this.modalZIndex,
       hide: this.minimizable,
@@ -678,7 +727,26 @@ class SfModal extends ModalElement {
     // and its content, but none of the window's own --sf-modal-* names.
     carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, area: true, except: ["--sf-modal-"] });
     this._renderTarget = this._portalRoot;
+    this.listenForAnswers(this._portalRoot);
     return this._portalRoot;
+  }
+
+  // «Отмена» of the window's own question (sf-confirm appearance="window",
+  // decision C39) closes the window, as the window's × does: the question is
+  // the window. Read once the answer has gone through the page, so a host
+  // that refused it (cancelled the event) keeps the window and the question.
+  listenForAnswers(target) {
+    if (!target || this._answersTarget === target) return;
+    this._answersTarget?.removeEventListener("sf-confirm-answer", this._onAnswer);
+    this._onAnswer ??= (event) => {
+      const question = event.target;
+      if (event.detail?.accepted !== false || question?.getAttribute?.("appearance") !== "window") return;
+      queueMicrotask(() => {
+        if (!event.defaultPrevented && this._isOpen && this._modalState !== "closing") this.close({ reason: "cancelled" });
+      });
+    };
+    target.addEventListener("sf-confirm-answer", this._onAnswer);
+    this._answersTarget = target;
   }
 
   // The box the modal is rendered into: the end of the body, above the page --
@@ -782,6 +850,7 @@ class SfModal extends ModalElement {
     }
 
     this._isOpen = true;
+    this.reopenQuestions();
     this._closeReason = "";
     this._answer = null;
     this._inlineClosed = false;

@@ -173,6 +173,7 @@ remain on the separate compact-control radius contract.
 - `src` — URL для загрузки или DOM-селектор (`#id`)
 - `preload` — предзагрузка контента (по умолчанию `true` для `mode="ajax"`)
 - `fullscreen`
+- `size` — `auto` (default) or `question` (see «Question window»)
 - `width`
 - `height`
 - `blur`
@@ -246,6 +247,38 @@ own. The same attribute frames `sf-drawer`.
   <sf-modal open title="Example">…</sf-modal>
 </div>
 ```
+
+## Question window (`size="question"`)
+
+Decision C39: the window of a dangerous question. `size="question"` gives it
+the core's question width, `--sf-popup-question-width` (28rem, 26rem in a
+compact region; `--sf-modal-question-width` retunes it, `width` still wins),
+a `--sf-space-3` frame and a title at text step 2 in bold. The body's small
+scroll inset is taken out of the frame, so the title, the content and the
+footer start on one line and the × stands on the frame's corner. The title is
+`--sf-space-1` above the content; a footer's answers stand at the start,
+`--sf-space-3` below it. Below sm (32rem) a question window left at the centre
+opens as a bottom sheet: top corners only, no bottom edge, the home-indicator
+area kept clear. Its content is `sf-confirm appearance="window"` (the quiet
+consequences plate, the name to type, the answers -- see sf-confirm); its
+«Отмена» closes the window unless the host cancels `sf-confirm-answer`. Opened
+again, the window puts its question again: an `sf-confirm` that took «no» with
+no outcome from the host has live answers.
+
+```html
+<sf-modal modal-id="menu" heading="Удалить меню «Главное»?" size="question">
+  <sf-confirm slot="content" appearance="window" status="danger"
+      question="Удалить меню «Главное»?" accept-text="Удалить меню"
+      consequence="30 дней меню лежит в корзине — оттуда его можно вернуть.">
+    <p slot="description">Меню пропадёт с трёх сайтов: shop, b2b и blog.</p>
+    <sf-checkbox slot="options" label="Удалить сразу, без корзины"></sf-checkbox>
+  </sf-confirm>
+</sf-modal>
+```
+
+Every window at the bottom edge (`position="bottom"`) now rounds only its top
+corners and draws no bottom edge; one whose frame is its own (no
+`surface-padding`) keeps the home-indicator area clear.
 
 ## Slots
 

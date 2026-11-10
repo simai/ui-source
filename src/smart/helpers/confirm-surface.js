@@ -255,6 +255,13 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
             for (const ask of asks) ask.resolve({outcome: "applied", value: {accepted, reason, value: null}});
         }
 
+        // The question took «no» and nothing came after: declined, or the
+        // decline on its way with no outcome from the host. A window that is
+        // opened again puts such a question again (sf-modal, decision C39).
+        get answeredNo() {
+            return this.state === "declined" || (this.state === "pending" && this._pressed === false);
+        }
+
         focusStatus() {
             const target = this.querySelector(`.${block}__status`);
             if (!target) return;
@@ -300,9 +307,14 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // told apart by more than the red of a word. Both stand on the element's size
 // (context.size, 1 unless the page gives one); a size a template gives is
 // relative, so a compact region (data-sf-density, C22) moves them down a step.
-export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
+//
+// In a window (sf-confirm appearance="window", decision C39) the declining
+// answer of a dangerous question is tonal, the window's quiet answer beside
+// the filled one, and the answers come before the status line, at the start.
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false} = {}) {
     const {component} = context;
     const danger = acceptStatus === "danger" || acceptStatus === "error";
+    const quiet = window ? "tonal" : "ghost";
     const size = context.size || "1";
     return html`
             <footer class="${block}__footer">
@@ -331,7 +343,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = ""} = {}) {
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
-                            appearance=${danger ? "ghost" : "outline"}
+                            appearance=${danger ? quiet : "outline"}
                             scheme="on-surface"
                             size=${size}
                             text=${context.declineText}

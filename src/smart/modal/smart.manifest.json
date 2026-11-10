@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -133,6 +133,15 @@
           "inline-end",
           "top",
           "bottom"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "auto",
+        "description": "The window's kind of size (decision C39). auto: as wide as its content or width says. question: a question window -- --sf-popup-question-width (28rem, compact 26rem), the frame --sf-space-3, the title at text step 2 in bold, the title, the content and the footer on one start line, the × on the padding's corner, the footer's answers at the start and --sf-space-3 after the content; on a phone (below sm, 32rem) a window left at the centre opens as a bottom sheet. width, when given, still wins.",
+        "enum": [
+          "auto",
+          "question"
         ]
       },
       "mode": {
@@ -1445,7 +1454,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "df6d2d4df2d49d9589e048277af306756b2223e3a73a55c61ee0f5062a0510c6"
+        "sha256": "3016c063fb4fffa9d70d18bef20aa4b0a5c342239176c055afa23953c42fcee8"
       }
     ],
     "generated_runtime": [

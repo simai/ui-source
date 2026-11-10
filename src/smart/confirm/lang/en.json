@@ -9,6 +9,8 @@
     "declining-text": "Cancelling…",
     "expired-text": "The time to answer has passed",
     "question-label": "Confirmation",
+    "require-error": "Type “{name}” exactly as above",
+    "require-text": "To confirm, type",
     "until-text": "Answer by {time}"
   },
   "events": {

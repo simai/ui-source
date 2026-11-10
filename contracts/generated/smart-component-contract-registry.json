@@ -515,7 +515,8 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.icon"
+          "smart.icon",
+          "smart.input"
         ]
       },
       "contract_schema": {
@@ -527,7 +528,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm/smart.manifest.json",
-      "manifest_sha256": "b6185b6ddc6b2c2222d8e7a192b9ff0034caf8bb657179ff995bded2f5807868",
+      "manifest_sha256": "4bfd42452f4aa9291b22558d161d5348b8d1aba32642c88451f448f33ef8b706",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2055,7 +2056,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "45dbb78d17b01a1fbffad4ac7c70f5a56268b99e08f394a1fe633e789ae4b663",
+      "manifest_sha256": "9c897f8188cdaa58f747b277a2dfdab6f418ecfb564fd9ef26f5ca2cfffd4fbf",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
