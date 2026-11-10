@@ -9928,6 +9928,35 @@
       },
       "owner": "ui-source",
       "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
+    },
+    {
+      "id": "event-view-save-kind-view",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-view (simai/ui-view, sf-view 1.12.0, set view 1.7.0) hears a page's request to save a shared saved view as the vocabulary's save with kind view (vocabulary 1.1.5 §9): sf-view-save {kind: \"view\", key, label, revision?, roles?} on the view itself, which raises view.save_shared as before; a save of another kind is not the view's. The former name sf-view-saved-view-intent is a dated same-detail alias until remove_after: still heard, its detail (which has no kind) read as a view, and each use noted in SF.deprecations. The older sf-data-view-saved-view-intent (tag-sf-data-view-to-sf-view) now leads to sf-view-save too. sf-view-save sent without kind is a view and is not noted.",
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "view.dispatchEvent(new CustomEvent('sf-view-saved-view-intent', {detail: {key: 'team', label: 'Team'}}))",
+        "after": "view.dispatchEvent(new CustomEvent('sf-view-save', {detail: {kind: 'view', key: 'team', label: 'Team'}}))"
+      },
+      "manual": "Dispatch sf-view-save on the view for sf-view-saved-view-intent (or sf-data-view-saved-view-intent) and add kind: \"view\" to the detail; key, label, revision and roles stay as they were.",
+      "owner": "ui-view",
+      "source": "simai/ui-view package/src/smart/view/aliases.json and component.json (events.save, aliases), kind event",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "sf-view-saved-view-intent",
+          "to": "sf-view-save"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-saved-view-intent",
+          "to": "sf-view-save"
+        }
+      ]
     }
   ]
 }
