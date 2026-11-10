@@ -2360,9 +2360,16 @@ export function installIconSubsetRuntime(
       deadlineMs,
       Math.max(0, Number(this.iconFallbackPrefetchMs) || 0),
     );
+    // R-1 (re-acceptance of 0c2898a5): the timer stops when the service
+    // answers, not when the answer's own font is in -- a healthy service on
+    // a slow line answers in milliseconds, and its small font then took more
+    // than a second, which fetched the full font for nothing.
     const prefetch = deadlineMs
-      ? setTimeout(() => void this.loadIconFallbackFace(type), prefetchMs)
+      ? setTimeout(() => {
+          if (!request.answered) void this.loadIconFallbackFace(type);
+        }, prefetchMs)
       : 0;
+    request.onAnswered = () => clearTimeout(prefetch);
     const first = await Promise.race([
       work,
       new Promise((resolve) => {
@@ -2431,6 +2438,8 @@ export function installIconSubsetRuntime(
         signal: request.controller?.signal,
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      request.answered = true;
+      request.onAnswered?.();
       manifest = this.decodeIconManifestHeader(
         response.headers.get("X-SIMAI-Font-Manifest"),
       );

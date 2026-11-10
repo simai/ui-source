@@ -859,6 +859,33 @@ test('R074 D-A: a request that answers while the full font is on its way keeps i
   }
 });
 
+test('R074 R-1: a service that answers before the prefetch point fetches no full font, however long its own font takes', async () => {
+  const page = subsetPage();
+  try {
+    const full = [];
+    globalThis.window.FontFace = class FontFace {
+      constructor(family, src) { this.family = family; if (/MaterialSymbols-Outlined/u.test(String(src))) full.push(src); }
+      load() { return Promise.resolve(this); }
+    };
+    // The answer's own font arrives well after the prefetch point.
+    globalThis.document.fonts.load = () => new Promise((resolve) => setTimeout(() => resolve([{}]), 80));
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 400;
+    loader.iconFallbackPrefetchMs = 20;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    await sleep(5);
+    page.answer(page.requests[0]);
+    assert.equal(await done, true);
+    await sleep(30);
+    assert.equal(full.length, 0, 'the full font is not fetched once the service has answered');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+  } finally {
+    page.restore();
+  }
+});
+
 test('R074: a background request outrun by a newer answer is aborted and changes nothing', async () => {
   const page = subsetPage();
   try {

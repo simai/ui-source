@@ -3,12 +3,34 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { fieldSize } from '../../component/field-size';
 import { renderTagTemplate } from './js/templates/default';
+import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 
 const TAG_KINDS = ['checkbox', 'icon', 'default', 'color', 'avatar'];
+
+// The glyphs the template draws in sf-icon: an icon tag's icon (sell when
+// none is named) and an avatar tag's placeholder; a slot drawn instead asks
+// for nothing. Read from the element, so it can be asked before it draws.
+function drawnIcons(host) {
+  const slotted = (name) => host.hasSlotContent?.(name);
+  if (host.type === 'icon' && !slotted('leading')) return [host.icon || 'sell'];
+  if (host.type === 'avatar' && !slotted('avatar') && !host.avatarImageUrl && !host.avatarText) return ['person'];
+  return [];
+}
+
+// Asked for when the tag connects, before it draws (R074 F3, the remedy
+// sf-segmented got in 2f588136): the inner sf-icon told the Loader its name
+// only once the tag had drawn, a task or more after the tag was defined, and
+// the page's first icon request, which waits a frame after the definitions,
+// went without it; a second request followed 50-140 ms later, and on a slow
+// service the tag's icon was blank until the full font arrived. Asked again
+// when it draws (a name set later); one request per distinct list.
+const preloadTagIcons = (host) =>
+  preloadControlIcons(host, drawnIcons(host).map((icon) => ({icon, filled: false})));
+
 const TAG_STATUSES = ['', 'info', 'success', 'warning', 'error'];
 
 const normalize = (value) => String(value ?? '').trim().toLowerCase();
@@ -214,7 +236,15 @@ class SfTag extends TagElement {
     this.sfEmit('close', {});
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    // After the base has read the slots and the settings, before the update
+    // it requested draws the tag.
+    if (this.isConnected) preloadTagIcons(this);
+  }
+
   template() {
+    preloadTagIcons(this);
     return renderTagTemplate(this.templateContext());
   }
 
