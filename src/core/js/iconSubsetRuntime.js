@@ -1704,7 +1704,34 @@ export function installIconSubsetRuntime(
         : this.verifyIconCssFonts(cssText, { icons });
     let fontVerification;
     if (adopted) {
-      fontVerification = verify();
+      // R078: the core runtime fetches a remembered face off the document's
+      // load (icon-subset-memory.js) and hands its promise over on the
+      // style. It is awaited before the check, and, like a subset request,
+      // for no longer than the deadline: a held icon host then draws from the
+      // full font instead of leaving every icon blank until it answers.
+      const ready = adopted.sfIconFacesReady;
+      if (ready && typeof ready.then === "function") {
+        const deadlineMs = Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
+        let timer = 0;
+        fontVerification = Promise.race([
+          ready,
+          new Promise((resolve, reject) => {
+            timer = setTimeout(
+              () =>
+                reject(
+                  new Error(
+                    `remembered icon subset font not loaded after ${deadlineMs} ms`,
+                  ),
+                ),
+              deadlineMs,
+            );
+          }),
+        ])
+          .finally(() => clearTimeout(timer))
+          .then(verify);
+      } else {
+        fontVerification = verify();
+      }
     } else if (prev && this.canPreloadIconFontFaces()) {
       // A subset that already drew: load the grown face first, then swap.
       fontVerification = this.preloadIconFontFaces(cssText).then(
