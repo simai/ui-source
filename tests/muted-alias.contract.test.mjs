@@ -11,12 +11,17 @@ import {fileURLToPath} from 'node:url';
 // --sf-on-surface-disabled declares --sf-on-surface-muted: var(--sf-on-surface-disabled)
 // beside it -- the theme, every place, the popover's own sheet -- and nothing
 // in the Framework paints with the deprecated name. Read from the built
-// sheets (UI_CORE_ROOT / UI_SMART_ROOT, as tests/token-aliases.contract.test.mjs);
-// a distribution from before the change is skipped, not passed.
+// sheets (UI_CORE_ROOT / UI_SMART_ROOT, as tests/token-aliases.contract.test.mjs).
+// Skipped only on a distribution whose tokens predate C43: its
+// core/passports/tokens.colour.json says a version before 1.11.0, the
+// version that brought the alias. Any later distribution must carry it, so
+// an alias missing from core.css -- or from the whole build -- fails.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const journal = JSON.parse(readFileSync(resolve(root, 'contracts/changes/journal.json'), 'utf8')).records;
+const record = journal.find((entry) => entry.id === 'token-c43-muted-is-disabled');
 const ALIAS = '--sf-on-surface-muted: var(--sf-on-surface-disabled)';
+const C43_TOKENS = [1, 11, 0];
 
 const files = (directory) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {
   const path = resolve(directory, entry.name);
@@ -30,14 +35,23 @@ const built = [resolve(distribution, 'distr'), resolve(smartDistribution, 'smart
   .filter((directory) => existsSync(directory))
   .flatMap((directory) => files(directory));
 const core = built.find((path) => path.endsWith('/core/css/core.css'));
-const changed = core && readFileSync(core, 'utf8').includes(ALIAS);
+const tokensPassport = resolve(distribution, 'distr/core/passports/tokens.colour.json');
+const tokens = existsSync(tokensPassport) ? JSON.parse(readFileSync(tokensPassport, 'utf8')).version : null;
+const atLeast = (version, floor) => {
+  const parts = version.split('.').map(Number);
+  for (let i = 0; i < floor.length; i += 1) if ((parts[i] ?? 0) !== floor[i]) return (parts[i] ?? 0) > floor[i];
+  return true;
+};
+const skip = !core ? 'no built core sheet'
+  : !tokens ? 'the built tokens carry no version'
+  : !atLeast(tokens, C43_TOKENS) ? `the built tokens.colour ${tokens} predate C43 (${C43_TOKENS.join('.')})`
+  : false;
 
 const declares = (name) => new RegExp(`(?:^|[;{\\s])${name}\\s*:\\s*([^;}]*)`, 'u');
 const DISABLED = declares('--sf-on-surface-disabled');
 const MUTED = declares('--sf-on-surface-muted');
 
 test('the journal records muted as the disabled ink, deprecated', () => {
-  const record = journal.find((entry) => entry.id === 'token-c43-muted-is-disabled');
   assert.ok(record, 'token-c43-muted-is-disabled');
   assert.equal(record.stage, 'compat');
   assert.equal(record.rewrite, 'rename-token');
@@ -45,7 +59,9 @@ test('the journal records muted as the disabled ink, deprecated', () => {
   assert.equal(record.remove_after, '2027-01-01');
 });
 
-test('in the built sheets every rule with the disabled ink declares muted beside it, and nothing reads muted', {skip: !changed && 'the built sheets predate C43 muted'}, () => {
+test('in the built sheets every rule with the disabled ink declares muted beside it, and nothing reads muted', {skip}, () => {
+  assert.ok(record, 'the journal records the alias');
+  assert.ok(readFileSync(core, 'utf8').replace(/\/\*[\s\S]*?\*\//gu, '').includes(ALIAS), `core.css (tokens.colour ${tokens}) declares ${ALIAS}`);
   const missing = [];
   const readers = [];
   let rules = 0;
