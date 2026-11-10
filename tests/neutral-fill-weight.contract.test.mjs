@@ -20,7 +20,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const FILL_ROLES = ['--sf-surface-container', '--sf-surface-container-hover', '--sf-surface-container-active'];
 const STEPS = {'--sf-surface-container': 8, '--sf-surface-container-hover': 12, '--sf-surface-container-active': 16};
 // A neutral or white step at the former weight, as a fill role's value.
-const FORMER = /--sf-(?:neutral-(?:50|90)|white)--alfa-(?:20|24|32)\b|--sf-(?:neutral-(?:50|90)|white)--alfa-16\b/u;
+const FORMER = /--sf-(?:neutral-(?:50|90)|white)--alfa-(?:16|20|24|32)\b/u;
 
 const files = (directory, extensions) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {
   const path = resolve(directory, entry.name);
@@ -77,6 +77,9 @@ test('in the built sheets no neutral fill copy is left at the former steps', {sk
   for (const path of built) {
     for (const {selector, name, value} of declarations(readFileSync(path, 'utf8'))) {
       if (!FILL_ROLES.includes(name)) continue;
+      // A strong coloured place fills with its own ink at 12/16/20 (white in
+      // the light theme, tone 20 in the dark): a named exception, not neutral.
+      if (/--sf-[a-z]+-20--alfa-/u.test(value)) continue;
       const tones = [...value.matchAll(/--sf-(neutral-(?:50|90)|white)--alfa-(\d+)/gu)];
       if (!tones.length) continue;
       fills += 1;

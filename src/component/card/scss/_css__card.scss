@@ -27,10 +27,10 @@
 }
 
 // The places above a card (C42, owner 2026-11-10): a window, a drawer over
-// the page and a popover. A card in one of them adds no plate, as a card in a
+// the page, a popover and the popup places of the background utilities. A card in one of them adds no plate, as a card in a
 // card does not -- above card level a card adds no fill, only its
 // outline-variant edge, and keeps the place it stands in.
-$sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawer-column="true"]) .sf-drawer-panel, sf-popover > [slot="content"]';
+$sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawer-column="true"]) .sf-drawer-panel, sf-popover > [slot="content"], .bg-surface-popup, .bg-surface-popup-nested';
 
 // A card is a place (C16): its colour for a cut-out, its dim ink and the
 // theme's roles back, so a card on a coloured block is an ordinary card. In
