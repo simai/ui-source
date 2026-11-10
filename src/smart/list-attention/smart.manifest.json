@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.list-attention",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "title": "Needs attention",
-  "summary": "The problems that need a person: a heading with their count, then each problem with its status, title, a line of text and one action (a link or a button), the most serious first. With no problems it draws nothing, or one quiet line; it never takes an empty card.",
+  "summary": "The problems that need a person, in a card: a heading with a badge per severity, then each problem with a filled status icon, its title, what · how long · where, one quiet action and a «⋯» to snooze or dismiss it (undone from the notice), at most five and «Все проблемы (N)», when the checks ran and a recheck. With none, one quiet line «Всё в порядке · проверено …». group=\"severity\" is the full checks page with a closed «Пройдено».",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -32,7 +32,9 @@
     "uses": [
       "smart.badge",
       "smart.button",
-      "smart.icon"
+      "smart.button-icon",
+      "smart.icon",
+      "smart.menu-context"
     ],
     "public_parts": []
   },
@@ -56,7 +58,7 @@
       },
       "label": {
         "type": "string",
-        "description": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The count of items stands beside it"
+        "description": "The heading; «Требует внимания» / «Needs attention» in the page language when not set. The summary badges, one per severity, stand beside it"
       },
       "heading-level": {
         "type": "integer",
@@ -65,10 +67,54 @@
         "minimum": 2,
         "maximum": 6
       },
-      "empty": {
+      "frame": {
+        "type": "string",
+        "default": "card",
+        "description": "card (the default) draws the list as a surface card: a hairline edge, the surface radius, the head and the foot as bars of it; none is the bare list of 1.1, its rows on the page's text edge",
+        "enum": [
+          "card",
+          "none"
+        ]
+      },
+      "triage": {
+        "type": "boolean",
+        "default": false,
+        "description": "Each problem gets a «⋯» menu: «Отложить на день», «Отложить на неделю» and, where the person may, «Не напоминать». A choice asks snooze {id, until} or dismiss {id}, then sets the problem aside with a notice whose «Вернуть» sends undo. A problem with help has the menu without triage too (only «Подробнее о проверке»)"
+      },
+      "dismissible": {
+        "type": "boolean",
+        "default": false,
+        "description": "This person may dismiss problems («Не напоминать», triage): the host's permission for every item; an item's own dismissible wins"
+      },
+      "checked-at": {
+        "type": "string",
+        "default": "",
+        "description": "When the checks last ran (an ISO date-time or milliseconds): the foot says «Проверено 5 мин назад» / «в 14:05» / «9 ноября в 14:05» with a recheck button that sends recheck; the empty line says «Всё в порядке · проверено …»"
+      },
+      "limit": {
+        "type": "integer",
+        "default": 5,
+        "description": "At most this many rows; the rest are behind «Все проблемы (N)» (more-href) or «Показать все (N)» in place. 0 shows every row. Group mode shows every row",
+        "minimum": 0
+      },
+      "more-href": {
+        "type": "string",
+        "default": "",
+        "description": "The page of every problem: the foot's «Все проблемы (N)» is a link there, its press the cancelable request more {href}"
+      },
+      "group": {
         "type": "string",
         "default": "none",
-        "description": "With no items: none draws nothing at all (the host takes no room); line draws one quiet line, empty-text with a check",
+        "description": "severity is the full checks page: a disclosure group per severity («Ошибки», «Предупреждения», «Рекомендации») open, «Пройдено» (passed) closed, an aligned column of affected counts; the time of the checks in the head",
+        "enum": [
+          "none",
+          "severity"
+        ]
+      },
+      "empty": {
+        "type": "string",
+        "default": "line",
+        "description": "With no items: line (the default, owner decision C37) draws the head and one quiet line, empty-text with a check, «· проверено …» after it with checked-at, and a recheck button; none draws nothing at all (the host takes no room)",
         "enum": [
           "none",
           "line"
@@ -81,7 +127,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The ladder rung: the heading and titles are the rung's line, the texts the rung below's, a one-line row the rung's control height. 1/2 for a side panel",
+        "description": "The former own rung, kept as an alias of the density (owner decisions C22, C37): 1/2 is the compact density on this list, 1 the normal one under a compact page; not set, the list follows the page's density",
         "enum": [
           "1/2",
           "1"
@@ -90,7 +136,12 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The problems that need a person, each {id, status error|warning|info|success, title, text?, action?: {label, href} or {label, event}}. A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), the host's order inside a status. An item without an id or a title is left out; another status reads as info"
+        "description": "The problems that need a person, each {id, status error|warning|info|success, title, text?, object?: {label, href?}, since?, source?, affected?, help?, dismissible?, action?: {label, href} or {label, event}}. object is what the problem is about (a link with href), since when it began (an ISO date-time or milliseconds; the row says how long it lasts), source the section or check it comes from, affected how many objects it touches (group mode's column), help a link about the check (the «⋯» menu), dismissible whether this person may say «Не напоминать» (else the host's dismissible). A property, or the JSON island a server prints; the host sets the whole list again when a problem appears or ends. The list orders them by severity (error, warning, info, success), inside a status the longest-lasting first where since is given, then the host's order. An item without an id or a title is left out; another status reads as info"
+      },
+      "passed": {
+        "type": "array",
+        "default": [],
+        "description": "Group mode's «Пройдено»: the checks that passed, strings or {id?, title, text?}, a closed group after the problems"
       }
     },
     "additionalProperties": false
@@ -100,13 +151,14 @@
   "methods": {},
   "events": {
     "sf-list-attention-navigate": {
-      "summary": "A person pressed an item's action link (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
+      "summary": "A person pressed a link of an item: its action's (part action) or its object's (part object) (vocabulary §5 navigate {id, href}). A request: a page cancels it to go there itself (a router); not cancelled, the browser follows href. A press with a modifier key or a middle button opens the link elsewhere and asks nothing",
       "payload": {
         "type": "object",
         "required": [
           "id",
           "status",
-          "href"
+          "href",
+          "part"
         ],
         "properties": {
           "id": {
@@ -116,6 +168,9 @@
             "type": "string"
           },
           "href": {
+            "type": "string"
+          },
+          "part": {
             "type": "string"
           }
         },
@@ -152,6 +207,83 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-list-attention-snooze": {
+      "summary": "A person chose «Отложить на день» or «на неделю» in an item's «⋯»: until is the ISO instant one or seven days on. A request: cancelled, nothing changes; not cancelled, the item is set aside here at once and a notice says so with «Вернуть». The host stores the snooze and leaves the item out of the list until then",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "until"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "until": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-attention-dismiss": {
+      "summary": "A person chose «Не напоминать» (only where dismissible allows it). A request: cancelled, nothing changes; not cancelled, the item is set aside with a notice and «Вернуть»; the host stores it",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-attention-undo": {
+      "summary": "A person pressed «Вернуть» on the notice of a snooze or a dismiss (action snooze | dismiss): the item is back in the list; the host forgets what it stored",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "action"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-attention-recheck": {
+      "summary": "A person pressed «Проверить снова» (shown with checked-at). The host runs the checks and sets items and checked-at again",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-list-attention-more": {
+      "summary": "A person pressed «Все проблемы (N)»: with more-href a link, the request first (a router cancels it); without it «Показать все (N)», and not cancelled, every row is shown in place",
+      "payload": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -179,7 +311,8 @@
     "forbidden_client_responsibilities": [
       "finding the problems (the host checks and sets the list)",
       "deciding when a problem ends (the host sets the list again)",
-      "doing an action (the host answers apply or navigate)"
+      "doing an action (the host answers apply or navigate)",
+      "storing a snooze or a dismiss (the host answers snooze, dismiss and undo)"
     ]
   },
   "security": {
@@ -193,9 +326,10 @@
     "role": "region",
     "accessible_name": "internal",
     "keyboard": [
-      "Tab reaches each item's action in order; Enter follows a link, Enter or Space presses a button"
+      "Tab reaches each item's object link, action and «⋯» in order, then the foot's recheck and «Все проблемы»; Enter follows a link, Enter or Space presses a button",
+      "In the «⋯» menu the arrows move, Enter chooses, Escape closes and gives the focus back"
     ],
-    "focus": "The list never takes focus."
+    "focus": "The list takes the focus only when the row that had it is set aside and no other row is left (tabindex -1 on the section)."
   },
   "presentation": {
     "themes": [
@@ -257,23 +391,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-attention/index.js",
-        "sha256": "e2c1301d90a2cc1622c500f75d0f3b23a36655fd82e5373f6ca61142deb7b9c0"
+        "sha256": "1e9e3d9d3b570e0c60809cf34e4c876d12fe904447a8ef855cbe37c22654d70e"
       },
       {
         "path": "src/smart/list-attention/js/templates/default.js",
-        "sha256": "63357da4fcb5bb5378f4d0b11ae07e545c155b810dfa69484063973e5fb6c7ab"
+        "sha256": "ff1041396e04c6b36eb0a60899f46e4afb08da36d25b810d93b2d56af6e79547"
       },
       {
         "path": "src/smart/list-attention/scss/_smart__list-attention.scss",
-        "sha256": "fece26827af78a5446368862a168b72919e1c648bfff3ad5046ccdf0ed93667f"
+        "sha256": "e3041fdaad7ff9a3c7f2004b4af5dd54fc766894f9c91c7dc3f2655812ea6749"
       },
       {
         "path": "src/smart/list-attention/rule.js",
-        "sha256": "d9e43358d8db6bca3dffe0171dae176d1dd3244738b607c43d31085396cf057e"
+        "sha256": "b920ca6431970cb00f9fb180da1ea739c090d01841b1d3f1655cf52b843160a1"
       },
       {
         "path": "src/smart/list-attention/docs.md",
-        "sha256": "43fcdc6b66f40bb358d4a46f59df72d99c2aca10983f085b9edfe48c8c67307f"
+        "sha256": "55bec08e3ae84b29a558d2af4d26ac0123cdbd0c82f544fcf5304b61d085cb93"
       }
     ],
     "generated_runtime": []
@@ -281,16 +415,17 @@
   "ai_guidance": {
     "use_when": "Use sf-list-attention on an overview screen for the problems that need a person now: server health, site checks, import errors, update readiness, a form's validation summary.",
     "do_not": [
-      "Do not wrap it in a card that stays when the list is empty; with empty none it takes no room",
+      "Do not wrap it in a card of your own: frame card is its own frame; frame none for a list inside a card",
       "Do not use it for news or a history; sf-list-feed or a timeline does that",
-      "Do not use it for a page-wide condition above the header; sf-alert-bar does that"
+      "Do not use it for a page-wide condition above the header; sf-alert-bar does that",
+      "Do not store snoozes in the page: the host stores what snooze and dismiss ask and leaves those items out"
     ],
     "required_reads": [
       "inputs",
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-list-attention><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"text\": \"demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
+    "minimal_example": "<sf-list-attention triage checked-at=\"2026-11-09T14:05:00+03:00\" more-href=\"/checks/\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат истекает через 6 дней\", \"object\": {\"label\": \"demo-static.test\", \"href\": \"/sites/demo-static/\"}, \"source\": \"Сертификаты\", \"action\": {\"label\": \"Продлить\", \"href\": \"/sites/demo-static/ssl/\"}}]}</script></sf-list-attention>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

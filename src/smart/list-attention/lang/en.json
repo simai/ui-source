@@ -3,11 +3,58 @@
   "runtime": {
     "label": "Needs attention",
     "empty-text": "All is well",
-    "count": "{count}",
+    "empty-checked-text": "{text} · checked {when}",
     "status-error": "Error",
     "status-warning": "Warning",
     "status-info": "Info",
-    "status-success": "Done"
+    "status-success": "Done",
+    "status-passed": "Passed",
+    "summary-error": {
+      "one": "{n} error",
+      "other": "{n} errors"
+    },
+    "summary-warning": {
+      "one": "{n} warning",
+      "other": "{n} warnings"
+    },
+    "summary-info": {
+      "one": "{n} recommendation",
+      "other": "{n} recommendations"
+    },
+    "summary-success": {
+      "one": "{n} solved",
+      "other": "{n} solved"
+    },
+    "group-error": "Errors",
+    "group-warning": "Warnings",
+    "group-info": "Recommendations",
+    "group-success": "Solved",
+    "group-passed": "Passed",
+    "affected-text": "affected: {text}",
+    "age-now": "just now",
+    "age-minutes": "{n} min",
+    "age-hours": "{n} h",
+    "age-days": {
+      "one": "{n} day",
+      "other": "{n} days"
+    },
+    "checked-text": "Checked {when}",
+    "checked-now": "just now",
+    "checked-minutes": "{n} min ago",
+    "checked-time": "at {time}",
+    "checked-date": "{date} at {time}",
+    "recheck-label": "Check again",
+    "more-text": "All problems ({n})",
+    "show-all-text": "Show all ({n})",
+    "more-label": "More: {title}",
+    "snooze-day-text": "Snooze for a day",
+    "snooze-week-text": "Snooze for a week",
+    "dismiss-text": "Don't remind me",
+    "help-text": "About this check",
+    "snoozed-day-notice": "Snoozed for a day: {title}",
+    "snoozed-week-notice": "Snoozed for a week: {title}",
+    "dismissed-notice": "We won't remind you again: {title}",
+    "undo-text": "Undo"
   },
   "events": {
     "navigate": {
@@ -15,6 +62,21 @@
     },
     "apply": {
       "label": "Run"
+    },
+    "snooze": {
+      "label": "Snooze"
+    },
+    "dismiss": {
+      "label": "Don't remind"
+    },
+    "undo": {
+      "label": "Undo"
+    },
+    "recheck": {
+      "label": "Check again"
+    },
+    "more": {
+      "label": "All problems"
     }
   }
 }

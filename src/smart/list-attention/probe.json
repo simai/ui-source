@@ -1,35 +1,36 @@
 {
   "component": "sf-list-attention",
-  "probe": "sf-list-attention against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "probe": "sf-list-attention against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-list-attention id=\"health\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"27 октября, 03:30 · нет места на диске\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"text\": \"12 минут, код 502\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"update\", \"status\": \"info\", \"title\": \"Доступна панель 0.3.1\", \"text\": \"Изменения: журнал, резервные копии\"}]}</script></sf-list-attention>",
-      "  <sf-list-attention id=\"none\"></sf-list-attention>",
-      "  <sf-list-attention id=\"quiet\" empty=\"line\" empty-text=\"Проверки пройдены\"></sf-list-attention>",
+      "  <sf-list-attention id=\"health\" triage more-href=\"#all\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"нет места на диске\", \"since\": \"2026-01-05T03:30:00+03:00\", \"source\": \"Резервные копии\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"help\": \"#help-backups\"}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"object\": {\"label\": \"demo-php.test\", \"href\": \"#site-php\"}, \"since\": \"2026-01-10T12:00:00+03:00\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"old\", \"status\": \"warning\", \"title\": \"Обмен с 1С стоит\", \"since\": \"2026-01-01T09:00:00+03:00\", \"source\": \"Интеграции\", \"dismissible\": true}, {\"id\": \"update\", \"status\": \"info\", \"title\": \"Доступна панель 0.3.1\", \"text\": \"Изменения: журнал, резервные копии\"}, {\"id\": \"seo\", \"status\": \"info\", \"title\": \"38 страниц без описания\", \"affected\": \"38 страниц\"}, {\"id\": \"php\", \"status\": \"info\", \"title\": \"PHP 8.1: поддержка заканчивается\", \"affected\": \"4 сайта\"}]}</script></sf-list-attention>",
+      "  <sf-list-attention id=\"none\" empty=\"none\"></sf-list-attention>",
+      "  <sf-list-attention id=\"quiet\" empty-text=\"Проверки пройдены\" checked-at=\"2026-01-01T00:00:00Z\"></sf-list-attention>",
+      "  <sf-list-attention id=\"page\" group=\"severity\" triage><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"нет места на диске\", \"since\": \"2026-01-05T03:30:00+03:00\", \"source\": \"Резервные копии\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"help\": \"#help-backups\"}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"object\": {\"label\": \"demo-php.test\", \"href\": \"#site-php\"}, \"since\": \"2026-01-10T12:00:00+03:00\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"old\", \"status\": \"warning\", \"title\": \"Обмен с 1С стоит\", \"since\": \"2026-01-01T09:00:00+03:00\", \"source\": \"Интеграции\", \"dismissible\": true}], \"passed\": [\"Кэш включён\", {\"id\": \"lic\", \"title\": \"Лицензия действует\", \"text\": \"до 12.08.2027\"}]}</script></sf-list-attention>",
       "</main>"
     ]
   },
   "probes": [
     {
-      "id": "p1-order-and-count",
-      "title": "the items are ordered error, warning, info in the host's order inside a status; the heading counts them and the section is named by it",
-      "covers": "settings.items, settings.label, settings.heading-level, accessibility.role region, host-states data-status",
+      "id": "p1-order-and-summary",
+      "title": "the items are ordered error, warning, info, inside a status the longest-lasting first (since), then the host's order; the head shows a badge per severity in words; the section is named by its heading; frame card by default",
+      "covers": "settings.items, settings.label, settings.heading-level, settings.frame, accessibility.role region, host-states data-status",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#health'); const root = el.querySelector('section.sf-list-attention'); const heading = document.getElementById(root.getAttribute('aria-labelledby')); const ids = [...el.querySelectorAll('.sf-list-attention-item')].map((li) => li.dataset.id).join(','); return ids === 'down,backup,cert,update' && heading.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '3' && heading.querySelector('.sf-list-attention-heading-text').textContent === 'Требует внимания' && heading.querySelector('.sf-list-attention-count').textContent.trim() === '4' && el.getAttribute('data-status') === 'error' && el.querySelector('.sf-list-attention-item .sr-only').textContent === 'Ошибка: '; })()"
+          "check": "(() => { const el = document.querySelector('#health'); const root = el.querySelector('section.sf-list-attention'); const heading = document.getElementById(root.getAttribute('aria-labelledby')); const ids = [...el.querySelectorAll('.sf-list-attention-item')].map((li) => li.dataset.id).join(','); const badges = [...el.querySelectorAll('.sf-list-attention-summary sf-badge')].map((b) => b.getAttribute('text')).join('|'); return ids === 'down,old,backup,cert,update' && badges === '1 ошибка|3 предупреждения|3 рекомендации' && heading.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '3' && heading.textContent.trim() === 'Требует внимания' && el.getAttribute('data-status') === 'error' && root.classList.contains('sf-list-attention--frame-card') && el.querySelector('.sf-list-attention-item .sr-only').textContent === 'Ошибка: ' && el.querySelector('.sf-list-attention-item .sf-list-attention-icon').classList.contains('sf-icon--filled'); })()"
         }
       ]
     },
     {
       "id": "p2-navigate",
-      "title": "an action with href is a link; its press asks sf-list-attention-navigate, cancelable",
-      "covers": "events.navigate",
+      "title": "an action with href is a link; its press asks sf-list-attention-navigate {id, status, href, part}, cancelable; the object link asks it too",
+      "covers": "events.navigate, settings.items.object",
       "steps": [
         {
-          "script": "(document.querySelector('#health').addEventListener('sf-list-attention-navigate', (event) => event.preventDefault(), {once: true}), true)"
+          "script": "(document.querySelector('#health').addEventListener('sf-list-attention-navigate', (event) => event.preventDefault()), true)"
         },
         {
           "user": "click:#health [data-id=backup] .sf-list-attention-action a",
@@ -42,22 +43,44 @@
                 "detail": {
                   "id": "backup",
                   "status": "warning",
-                  "href": "#backups"
+                  "href": "#backups",
+                  "part": "action"
                 }
               }
             ]
           }
         },
         {
-          "check": "location.hash !== '#backups'"
+          "user": "click:#health [data-id=down] a.sf-list-attention-object",
+          "wait": 100,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-navigate",
+                "count": 1,
+                "detail": {
+                  "id": "down",
+                  "status": "error",
+                  "href": "#site-php",
+                  "part": "object"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "location.hash !== '#backups' && location.hash !== '#site-php'"
         }
       ]
     },
     {
       "id": "p3-apply",
-      "title": "an action with event is a button; its press sends sf-list-attention-apply {action, scope entry, ids}",
+      "title": "an action with event is a quiet button (outline, on-surface); its press sends sf-list-attention-apply {action, scope entry, ids}",
       "covers": "events.apply",
       "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#health [data-id=down] sf-button.sf-list-attention-action'); return b.getAttribute('appearance') === 'outline' && b.getAttribute('scheme') === 'on-surface'; })()"
+        },
         {
           "user": "click:#health [data-id=down] .sf-list-attention-action button",
           "wait": 100,
@@ -83,16 +106,194 @@
     },
     {
       "id": "p4-empty",
-      "title": "with no items it takes no room (empty none) or draws one quiet line (empty line); a new list draws again",
-      "covers": "settings.empty, settings.empty-text, host-states data-empty",
+      "title": "with no items empty line (the default) draws the head and one quiet line with the time of the checks; empty none takes no room; a new list draws again",
+      "covers": "settings.empty, settings.empty-text, settings.checked-at, host-states data-empty",
       "steps": [
         {
-          "check": "(() => { const none = document.querySelector('#none'); const quiet = document.querySelector('#quiet'); return none.getAttribute('data-empty') === 'true' && !none.querySelector('.sf-list-attention') && quiet.querySelector('.sf-list-attention-quiet').textContent.includes('Проверки пройдены') && quiet.querySelector('.sf-list-attention').getBoundingClientRect().height > 0; })()"
+          "check": "(() => { const none = document.querySelector('#none'); const quiet = document.querySelector('#quiet'); const line = quiet.querySelector('.sf-list-attention-quiet'); return none.getAttribute('data-empty') === 'true' && !none.querySelector('.sf-list-attention') && line.getAttribute('role') === 'status' && /^Проверки пройдены · проверено /u.test(line.querySelector('.sf-list-attention-quiet-text').textContent.trim()) && Boolean(quiet.querySelector('.sf-list-attention-head [role=heading]')) && quiet.querySelector('.sf-list-attention').getBoundingClientRect().height > 0; })()"
         },
         {
           "script": "(document.querySelector('#none').items = [{id: 'x', status: 'warning', title: 'Новая проблема'}], true)",
           "wait": 150,
           "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelector('.sf-list-attention').getBoundingClientRect().height > 0 && none.querySelectorAll('.sf-list-attention-item').length === 1; })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-limit-and-more",
+      "title": "limit 5 by default: the rest are behind «Все проблемы (7)», a link to more-href whose press asks sf-list-attention-more {href}, cancelable; without more-href «Показать все (7)» shows them in place",
+      "covers": "settings.limit, settings.more-href, events.more",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#health'); const all = el.querySelector('.sf-list-attention-all'); return el.querySelectorAll('.sf-list-attention-item').length === 5 && all.getAttribute('text') === 'Все проблемы (7)' && all.getAttribute('href') === '#all'; })()"
+        },
+        {
+          "script": "(document.querySelector('#health').addEventListener('sf-list-attention-more', (event) => event.preventDefault(), {once: true}), true)"
+        },
+        {
+          "user": "click:#health .sf-list-attention-all a",
+          "wait": 100,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-more",
+                "count": 1,
+                "detail": {
+                  "href": "#all"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "location.hash !== '#all'"
+        },
+        {
+          "script": "(document.querySelector('#health').removeAttribute('more-href'), true)",
+          "wait": 150,
+          "check": "document.querySelector('#health .sf-list-attention-all').getAttribute('text') === 'Показать все (7)'"
+        },
+        {
+          "user": "click:#health .sf-list-attention-all button",
+          "wait": 200,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-more",
+                "count": 1,
+                "detail": {
+                  "href": ""
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "document.querySelectorAll('#health .sf-list-attention-item').length === 7 && !document.querySelector('#health .sf-list-attention-all')"
+        }
+      ]
+    },
+    {
+      "id": "p6-triage-snooze-undo",
+      "title": "triage: the «⋯» opens a menu of snooze a day / a week; a choice asks sf-list-attention-snooze {id, until}, sets the item aside with a notice, and «Вернуть» brings it back with sf-list-attention-undo",
+      "covers": "settings.triage, events.snooze, events.undo",
+      "steps": [
+        {
+          "check": "(() => { const more = document.querySelector('#health [data-id=cert] .sf-list-attention-more button'); return more.getAttribute('aria-label') === 'Ещё: Сертификат demo-static.test истекает через 6 дней' && more.getAttribute('aria-haspopup') === 'menu'; })()"
+        },
+        {
+          "user": "click:#health [data-id=cert] .sf-list-attention-more button",
+          "wait": 300,
+          "check": "(() => { const menu = document.querySelector('#health .sf-list-attention-menu'); const texts = (menu.entries || []).map((one) => one.text || one.type).join('|'); return texts === 'Отложить на день|Отложить на неделю'; })()"
+        },
+        {
+          "script": "(document.querySelector('#health .sf-list-attention-menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {detail: {id: 'snooze-week'}, bubbles: true})), true)",
+          "wait": 300,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-snooze",
+                "count": 1,
+                "detail": {
+                  "id": "cert"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "(() => { const ids = [...document.querySelectorAll('#health .sf-list-attention-item')].map((li) => li.dataset.id); const toast = [...document.querySelectorAll('.sf-notifications .sf-toast')].find((one) => one.textContent.includes('Отложено на неделю: Сертификат demo-static.test')); return !ids.includes('cert') && Boolean(toast); })()"
+        },
+        {
+          "script": "(() => { const toast = [...document.querySelectorAll('.sf-notifications .sf-toast')].find((one) => one.textContent.includes('Отложено на неделю')); [...toast.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Вернуть').click(); return true; })()",
+          "wait": 300,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-undo",
+                "count": 1,
+                "detail": {
+                  "id": "cert",
+                  "action": "snooze"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "[...document.querySelectorAll('#health .sf-list-attention-item')].some((li) => li.dataset.id === 'cert')"
+        }
+      ]
+    },
+    {
+      "id": "p7-dismiss-permission",
+      "title": "«Не напоминать» only where the person may: the item's dismissible, else the host's; a choice asks sf-list-attention-dismiss {id}; a cancelled request changes nothing",
+      "covers": "settings.dismissible, settings.items.dismissible, events.dismiss",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#health'); const entries = (id) => el.menuEntries(el.list.find((one) => one.id === id)).map((one) => one.id).filter(Boolean).join(','); return entries('cert') === 'snooze-day,snooze-week' && entries('old') === 'snooze-day,snooze-week,dismiss' && entries('backup') === 'snooze-day,snooze-week,help'; })()"
+        },
+        {
+          "script": "(document.querySelector('#health').addEventListener('sf-list-attention-dismiss', (event) => event.preventDefault(), {once: true}), true)"
+        },
+        {
+          "user": "click:#health [data-id=old] .sf-list-attention-more button",
+          "wait": 300
+        },
+        {
+          "script": "(document.querySelector('#health .sf-list-attention-menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {detail: {id: 'dismiss'}, bubbles: true})), true)",
+          "wait": 200,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-dismiss",
+                "count": 1,
+                "detail": {
+                  "id": "old"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "[...document.querySelectorAll('#health .sf-list-attention-item')].some((li) => li.dataset.id === 'old')"
+        },
+        {
+          "script": "(document.querySelector('#health').setAttribute('dismissible', ''), true)",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#health'); return el.menuEntries(el.list.find((one) => one.id === 'cert')).some((one) => one.id === 'dismiss'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-group-and-recheck",
+      "title": "group severity: a disclosure group per severity, open, and «Пройдено» closed; a header press opens it; checked-at draws the time and a recheck that sends sf-list-attention-recheck",
+      "covers": "settings.group, settings.passed, events.recheck",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#page'); const toggles = [...el.querySelectorAll('.sf-list-attention-group-toggle')].map((b) => `${b.querySelector('.sf-list-attention-group-title').textContent}:${b.getAttribute('aria-expanded')}`).join('|'); const passed = el.querySelector('[data-group=passed] .sf-list-attention-list'); return toggles === 'Ошибки:true|Предупреждения:true|Пройдено:false' && passed.hidden && el.querySelectorAll('[data-group=warning] .sf-list-attention-item').length === 3; })()"
+        },
+        {
+          "user": "click:#page [data-group=passed] .sf-list-attention-group-toggle",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#page'); const passed = el.querySelector('[data-group=passed] .sf-list-attention-list'); return !passed.hidden && passed.querySelectorAll('.sf-list-attention-item').length === 2 && el.querySelector('[data-group=passed] .sf-list-attention-group-toggle').getAttribute('aria-expanded') === 'true'; })()"
+        },
+        {
+          "script": "(document.querySelector('#page').setAttribute('checked-at', new Date(Date.now() - 5 * 60000).toISOString()), true)",
+          "wait": 150,
+          "check": "document.querySelector('#page .sf-list-attention-checked').textContent.trim().startsWith('Проверено 5 мин назад')"
+        },
+        {
+          "user": "click:#page .sf-list-attention-recheck button",
+          "wait": 100,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-attention-recheck",
+                "count": 1
+              }
+            ]
+          }
         }
       ]
     }

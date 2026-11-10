@@ -7,8 +7,10 @@ SF.RuleLoader['cl-list-attention'] = {
   css: true,
   relation: [
     { name: 'cl-button' },
+    { name: 'cl-button-icon' },
     { name: 'cl-badge' },
     { name: 'cl-icon' },
+    { name: 'cl-menu-context', lazy: true },
     { name: 'sr-only/default' },
   ],
 };

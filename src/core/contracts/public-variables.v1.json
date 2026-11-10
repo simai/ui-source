@@ -4062,14 +4062,17 @@
         {
           "name": "--sf-list-attention-background-color",
           "role": "background",
-          "summary": "The list's fill; none by default, so it is no card. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "transparent",
-          "since": "2026-11-08"
+          "summary": "The list's fill: the card surface (frame card, the default since 1.2.0, owner decision C37), none with frame none. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
+          "default": "var(--sf-surface-card)",
+          "since": "2026-11-08",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-divider-color",
           "role": "border-color",
-          "summary": "The hairline between items.",
+          "summary": "The card's edge and the hairlines between the head, the items and the foot.",
           "default": "var(--sf-outline-variant)",
           "since": "2026-11-07"
         },
@@ -4083,15 +4086,18 @@
         {
           "name": "--sf-list-attention-padding-inline",
           "role": "padding-inline",
-          "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
-          "default": "calc(var(--sf-px) * 0)",
-          "since": "2026-11-07"
+          "summary": "The text edge: the inline inset of the head, the rows and the foot from the card's edge; --sf-space-1 in a card, 0 with frame none, so the rows line up with the page's text.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-07",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-gap",
           "role": "margin-block-end",
-          "summary": "The space under the heading.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space under the heading with frame none (a card's head is a bar of its own).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-11-07"
         }
       ]
