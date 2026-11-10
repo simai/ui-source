@@ -43,6 +43,10 @@
             "no-network"
           ]
         }
+      },
+      "first-paint": {
+        "max-bytes": 10240,
+        "why": "an open run: the title with its badge, the steps with their states and times, and the actions print as the page reads them, so the card holds its height and nothing moves when the code arrives"
       }
     },
     {
@@ -164,6 +168,10 @@
         "pausable": true,
         "cancelable": true,
         "minimizable": true
+      },
+      "first-paint": {
+        "max-bytes": 13312,
+        "why": "a running import: the title and badge, the overall bar with its figures and time, the counts line, the steps with their own figures and the actions all print before any code, so the card keeps its height while the job is followed"
       }
     },
     {
@@ -202,8 +210,6 @@
       "settings": {
         "label": "Импорт товаров из «Прайс_ноябрь.xlsx»",
         "caption": "11:43–12:00",
-        "started": "2026-10-27T11:43:00+03:00",
-        "finished": "2026-10-27T12:00:00+03:00",
         "value": 12000,
         "total": 12000,
         "unit": "товар|товара|товаров",
@@ -277,7 +283,13 @@
           }
         ],
         "retryable": true,
-        "hideable": true
+        "hideable": true,
+        "started-at": "2026-10-27T11:43:00+03:00",
+        "finished-at": "2026-10-27T12:00:00+03:00"
+      },
+      "first-paint": {
+        "max-bytes": 11264,
+        "why": "a summary with errors: the result, the counts line, the first five errors, the steps and Retry failed print as the page reads them, so the report stands complete without script"
       }
     },
     {
@@ -285,8 +297,6 @@
       "title": "Готово без ошибок: ноль ошибок серым",
       "settings": {
         "label": "Импорт товаров из «Склад.csv»",
-        "started": "2026-10-27T11:52:00+03:00",
-        "finished": "2026-10-27T12:00:00+03:00",
         "value": 800,
         "total": 800,
         "unit": "товар|товара|товаров",
@@ -309,7 +319,9 @@
           }
         ],
         "run-state": "done",
-        "hideable": true
+        "hideable": true,
+        "started-at": "2026-10-27T11:52:00+03:00",
+        "finished-at": "2026-10-27T12:00:00+03:00"
       }
     },
     {
@@ -319,8 +331,8 @@
         "label": "Резервная копия сайта shop.simai.ru",
         "caption": "Подсчёт файлов",
         "run-state": "running",
-        "started": "2026-10-27T11:59:19+03:00",
-        "cancelable": true
+        "cancelable": true,
+        "started-at": "2026-10-27T11:59:19+03:00"
       }
     },
     {
@@ -332,10 +344,10 @@
         "value": 1200,
         "total": 4000,
         "unit": "заказ|заказа|заказов",
-        "started": "2026-10-27T11:58:00+03:00",
-        "finished": "2026-10-27T11:59:30+03:00",
         "retryable": true,
-        "hideable": true
+        "hideable": true,
+        "started-at": "2026-10-27T11:58:00+03:00",
+        "finished-at": "2026-10-27T11:59:30+03:00"
       }
     },
     {
@@ -375,78 +387,78 @@
       "name": "compact-running",
       "title": "Строка таблицы: полоса и «62 % · 3 мин»",
       "settings": {
-        "view": "compact",
         "label": "Резервная копия shop.simai.ru",
         "value": 62,
         "total": 100,
         "remaining": 180000,
         "pausable": true,
-        "cancelable": true
+        "cancelable": true,
+        "look": "compact"
       }
     },
     {
       "name": "compact-paused",
       "title": "Строка таблицы: пауза",
       "settings": {
-        "view": "compact",
         "label": "Резервная копия crm.simai.ru",
         "run-state": "paused",
         "value": 35,
         "total": 100,
-        "pausable": true
+        "pausable": true,
+        "look": "compact"
       }
     },
     {
       "name": "compact-partial",
       "title": "Строка таблицы: с ошибками",
       "settings": {
-        "view": "compact",
         "label": "Резервная копия media.simai.ru",
         "run-state": "partial",
         "errors-total": 12,
-        "retryable": true
+        "retryable": true,
+        "look": "compact"
       }
     },
     {
       "name": "compact-queued",
       "title": "Строка таблицы: в очереди",
       "settings": {
-        "view": "compact",
-        "label": "Резервная копия blog.simai.ru"
+        "label": "Резервная копия blog.simai.ru",
+        "look": "compact"
       }
     },
     {
       "name": "notice-running",
       "title": "Уведомление: кольцо в поле значка",
       "settings": {
-        "view": "notice",
         "label": "Резервная копия shop.simai.ru",
         "value": 62,
         "total": 100,
-        "remaining": 180000
+        "remaining": 180000,
+        "look": "notice"
       }
     },
     {
       "name": "notice-indeterminate",
       "title": "Уведомление: объём неизвестен",
       "settings": {
-        "view": "notice",
         "label": "Экспорт заказов за октябрь",
         "caption": "Подготовка…",
         "run-state": "running",
-        "started": "2026-10-27T11:59:19+03:00"
+        "look": "notice",
+        "started-at": "2026-10-27T11:59:19+03:00"
       }
     },
     {
       "name": "notice-partial",
       "title": "Уведомление: с ошибками, число ошибок — ссылка",
       "settings": {
-        "view": "notice",
         "label": "Импорт товаров",
         "run-state": "partial",
         "value": 11960,
         "total": 12000,
-        "errors-total": 40
+        "errors-total": 40,
+        "look": "notice"
       }
     }
   ],
@@ -465,8 +477,8 @@
           "  <sf-progress-run id=\"cnl\" label=\"Экспорт\" run-state=\"cancelled\" value=\"1200\" total=\"4000\" retryable></sf-progress-run>",
           "  <sf-progress-run id=\"ind\" label=\"Резервная копия\" run-state=\"running\" cancelable></sf-progress-run>",
           "  <sf-progress-run id=\"lg\" label=\"Резервная копия docs\" retryable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"db\", \"title\": \"База данных\", \"state\": \"done\", \"duration\": 42000, \"log\": \"db ok\\n\"}, {\"id\": \"up\", \"title\": \"Выгрузка\", \"state\": \"failed\", \"duration\": 160000, \"log\": \"QuotaExceeded\\n\"}]}</script></sf-progress-run>",
-          "  <sf-progress-run id=\"cmp\" view=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
-          "  <sf-progress-run id=\"ntc\" view=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
+          "  <sf-progress-run id=\"cmp\" look=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
+          "  <sf-progress-run id=\"ntc\" look=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
           "</main>"
         ]
       },
@@ -618,7 +630,7 @@
           "covers": "settings.value, settings.total, settings.unit, settings.counters",
           "steps": [
             {
-              "check": "(() => { const n = (s) => s.replace(/\\\\s+/gu, ' ').trim(); const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const fig = el.querySelector('.sf-progress-run-done'); const counts = [...el.querySelectorAll('.sf-progress-run-count')].map((c) => n(c.textContent)); const link = el.querySelector('.sf-progress-run-count--error a.sf-progress-run-count-link'); return bar.getAttribute('value') === '40' && !bar.hasAttribute('indeterminate') && n(fig.textContent) === '4 812 из 12 000 товаров · 40 %' && getComputedStyle(fig.parentElement).fontVariantNumeric === 'tabular-nums' && counts.join('|') === 'Добавлено 3 700|Обновлено 1 100|12 ошибок' && link && n(link.textContent) === '12 ошибок' && el.querySelectorAll('.sf-progress-run-counts a').length === 1; })()"
+              "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const fig = el.querySelector('.sf-progress-run-done'); const counts = [...el.querySelectorAll('.sf-progress-run-count')].map((c) => n(c.textContent)); const link = el.querySelector('.sf-progress-run-count--error a.sf-progress-run-count-link'); return bar.getAttribute('value') === '40' && !bar.hasAttribute('indeterminate') && n(fig.textContent) === '4 812 из 12 000 товаров · 40 %' && getComputedStyle(fig.parentElement).fontVariantNumeric === 'tabular-nums' && counts.join('|') === 'Добавлено 3 700|Обновлено 1 100|12 ошибок' && link && n(link.textContent) === '12 ошибок' && el.querySelectorAll('.sf-progress-run-counts a').length === 1; })()"
             }
           ]
         },
@@ -801,7 +813,7 @@
           "covers": "settings.view, events.expand",
           "steps": [
             {
-              "check": "(() => { const n = (s) => s.replace(/\\\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
+              "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
             },
             {
               "user": "click:#ntc .sf-progress-run-expand button",

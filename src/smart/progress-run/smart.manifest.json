@@ -65,10 +65,10 @@
         "default": "",
         "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
-      "view": {
+      "look": {
         "type": "string",
         "default": "full",
-        "description": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes view (minimize, expand)",
+        "description": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself",
         "enum": [
           "full",
           "compact",
@@ -118,15 +118,15 @@
         "description": "The time left in milliseconds, when the host knows it. Without it the run works it out from the rate of value, hidden until the rate settles (5 s of change) and always rounded up («осталось ≈ 6 мин», «меньше минуты»)",
         "minimum": 0
       },
-      "started": {
+      "started-at": {
         "type": "string",
         "default": "",
         "description": "When the job started (ISO 8601): the elapsed time while the size is unknown, and «заняло 8:08» once it ended. Without it the run counts from the moment it first saw the job run"
       },
-      "finished": {
+      "finished-at": {
         "type": "string",
         "default": "",
-        "description": "When the job ended (ISO 8601), for a summary a server prints: «заняло» is finished − started"
+        "description": "When the job ended (ISO 8601), for a summary a server prints: «заняло» is finished-at − started-at"
       },
       "run-state": {
         "type": "string",
@@ -244,8 +244,7 @@
               }
             },
             "required": [
-              "text",
-              "step"
+              "text"
             ]
           }
         }
@@ -547,15 +546,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "327de6818ce7be4048df0707de9948c7d6a250d3e77ab21d78eb218d58f48d72"
+        "sha256": "599e9e7bd9a043796f411b4586e6fcbb48022b256fd07f6a52eec97eb54b443b"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
-        "sha256": "af3300f1837b97814a3b9d718c836c4c3f134c585a100a343d3924a27b962581"
+        "sha256": "042bc136a95ad87e58c796d38e3471f816e48a8d2adf7e33643001dbdc32660b"
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "9874ed5ff7f7c9a340262779f2d928cbf219c04412f49b4f50ca5883b514cec0"
+        "sha256": "c38a5db43e42b6b76edf141fa165313583ba6c5bf36384c38225d9f6c80fe8bc"
       },
       {
         "path": "src/smart/progress-run/rule.js",
@@ -563,7 +562,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "01200052f5811df8a5a537ab5304bc0b4ea827d382ba2dcaa974aa460dbd3772"
+        "sha256": "d050d9a4a2279efa22221aa2461703b51914801f763167e350bd5eb299e80646"
       }
     ],
     "generated_runtime": []

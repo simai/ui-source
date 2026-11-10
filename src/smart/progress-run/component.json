@@ -6,7 +6,7 @@
   "kind": "leaf",
   "family": "progress",
   "settings": {
-    "view": {
+    "look": {
       "type": "enum",
       "values": [
         "full",
@@ -14,7 +14,7 @@
         "notice"
       ],
       "default": "full",
-      "summary": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes view (minimize, expand)"
+      "summary": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself"
     },
     "label": {
       "type": "string",
@@ -62,15 +62,15 @@
       "min": 0,
       "summary": "The time left in milliseconds, when the host knows it. Without it the run works it out from the rate of value, hidden until the rate settles (5 s of change) and always rounded up («осталось ≈ 6 мин», «меньше минуты»)"
     },
-    "started": {
+    "started-at": {
       "type": "string",
       "default": "",
       "summary": "When the job started (ISO 8601): the elapsed time while the size is unknown, and «заняло 8:08» once it ended. Without it the run counts from the moment it first saw the job run"
     },
-    "finished": {
+    "finished-at": {
       "type": "string",
       "default": "",
-      "summary": "When the job ended (ISO 8601), for a summary a server prints: «заняло» is finished − started"
+      "summary": "When the job ended (ISO 8601), for a summary a server prints: «заняло» is finished-at − started-at"
     },
     "steps": {
       "type": "list",
@@ -342,7 +342,10 @@
     "chunk": {
       "with": {
         "text": "string",
-        "step": "string"
+        "step": {
+          "type": "string",
+          "optional": true
+        }
       },
       "x-outcomes": [
         "applied",
@@ -499,7 +502,7 @@
     "version 1.2.0 background-color-names: the public variables --sf-progress-run-background-color, --sf-progress-run-output-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former names --sf-progress-run-background, --sf-progress-run-output-background are still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The chunk method is declared in its canonical object form, chunk({text}) (an object, so a stream fact can grow fields), where the generated reference read chunk(text); a plain string stays accepted as shorthand, as the element always did. The step method too: step({id, state, text, started, finished, duration}) (one object; the positional call would write the fields it was not given as empty), generated now that the generator writes every action in its object form (x-registry.action-calls keeps chunk's string). Settings, values, events and keys unchanged.",
     "version 1.2.2 (2026-11-09): a patch, nothing drawn differently. step(id, state) called positionally changes only the fields given (core.runtime 1.43.0 names only the parameters a positional call gives; it wrote text, started, finished and duration as undefined). A change made before the run first read the host's list is kept: the list is taken up when step runs, not at the next read, which cleared it. Settings, values, events and keys unchanged.",
-    "version 1.3.0 (owner decision C34, 2026-11-10; research ui-control control/research/2026-11-09-progress-run.md, prototype prototypes/progress-run.html, remarks R045, R073, R082, R086): a minor -- settings, events and an action field added, every 1.2 setting, event, action and class name kept. view full|compact|notice (the summary is full once ended). value/total/unit on the run and on each step: the overall bar (sf-progress-bar 1.3.0: indeterminate without total, once determinate never back) and «N из M unit · P %» (the percentage floored, so 100 % only at the end; the unit's plural form by Intl.PluralRules of the page language). The time left: the host's remaining, else (total − value) / rate over the last 30 s, shown once the rate settled (5 s of change) and always rounded up (minutes up, «меньше минуты» under 60 s); paused freezes nothing it does not know -- the estimate starts afresh after resume. The elapsed time while the size is unknown, «заняло» once ended (started/finished, else the moments the run saw). run-state adds paused (warning badge sf-badge activity paused, warning bar) and partial (finished with errors: warning badge «С ошибками» with the warning icon and a warning bar, never success); cancelled is neutral (badge activity stopped with «Отменено», the bar's neutral status: sf-progress-bar has no grey status, and none is added -- open question of C34 answered with neutral); a waiting run shows the queued badge. counters as one text line in tabular figures, zero counters left out, only a non-zero error count coloured and a link that sends report; errors: the first 5 with where/key/text, errors-total, «Ещё N ошибок» sends report. retry {scope: all|failed, from?}. chunk({text, step}) writes a step's own log (its row a toggle, a failed step's log open by itself). pausable (pause/resume requests), minimizable (minimize request), expand from the notice look. Layout by groups with system spacing (R073): head (title and caption touching, the badge on the first title line), progress (bar to figures --sf-progress-run-gap-tight = --sf-space-1/3), results (result to counts --sf-space-1/4), errors, steps (a divider opens them when a group stands above), output, actions; between groups --sf-progress-run-gap = --sf-space-1 (16 desktop, 12 phone and compact). The title: heading-level (default 3) for the outline, drawn at the rung's text line semibold (--sf-text-size-1 / --sf-text-height-1 at size 1: 16/24 desktop, 14/20 phone and compact; R082, decision row C34 -- not the page heading step of C21); file names wrap whole (overflow-wrap normal). Inner buttons and badges take the rung below the run's own size, marked relative, so density (C22) reaches them. The notice ring stands in the icon field of the rung (line − 2 × 2 px: 20 desktop, 16 phone; R086) through the ring's internal step size: sf-progress-ring has no icon-field step yet (named follow-up). Screen readers hear the result and the state changes only, from one visually hidden status region; the old visible status line is the visible result only."
+    "version 1.3.0 (owner decision C34, 2026-11-10; research ui-control control/research/2026-11-09-progress-run.md, prototype prototypes/progress-run.html, remarks R045, R073, R082, R086): a minor -- settings, events and an action field added, every 1.2 setting, event, action and class name kept. look full|compact|notice (named look and started-at/finished-at: view and started are names the element runtime reserves, and a reserved setting is refused without a word) (the summary is full once ended). value/total/unit on the run and on each step: the overall bar (sf-progress-bar 1.3.0: indeterminate without total, once determinate never back) and «N из M unit · P %» (the percentage floored, so 100 % only at the end; the unit's plural form by Intl.PluralRules of the page language). The time left: the host's remaining, else (total − value) / rate over the last 30 s, shown once the rate settled (5 s of change) and always rounded up (minutes up, «меньше минуты» under 60 s); paused freezes nothing it does not know -- the estimate starts afresh after resume. The elapsed time while the size is unknown, «заняло» once ended (started-at/finished-at, else the moments the run saw). run-state adds paused (warning badge sf-badge activity paused, warning bar) and partial (finished with errors: warning badge «С ошибками» with the warning icon and a warning bar, never success); cancelled is neutral (badge activity stopped with «Отменено», the bar's neutral status: sf-progress-bar has no grey status, and none is added -- open question of C34 answered with neutral); a waiting run shows the queued badge. counters as one text line in tabular figures, zero counters left out, only a non-zero error count coloured and a link that sends report; errors: the first 5 with where/key/text, errors-total, «Ещё N ошибок» sends report. retry {scope: all|failed, from?}. chunk({text, step}) writes a step's own log (its row a toggle, a failed step's log open by itself). pausable (pause/resume requests), minimizable (minimize request), expand from the notice look. Layout by groups with system spacing (R073): head (title and caption touching, the badge on the first title line), progress (bar to figures --sf-progress-run-gap-tight = --sf-space-1/3), results (result to counts --sf-space-1/4), errors, steps (a divider opens them when a group stands above), output, actions; between groups --sf-progress-run-gap = --sf-space-1 (16 desktop, 12 phone and compact). The title: heading-level (default 3) for the outline, drawn at the rung's text line semibold (--sf-text-size-1 / --sf-text-height-1 at size 1: 16/24 desktop, 14/20 phone and compact; R082, decision row C34 -- not the page heading step of C21); file names wrap whole (overflow-wrap normal). Inner buttons and badges take the rung below the run's own size, marked relative, so density (C22) reaches them. The notice ring stands in the icon field of the rung (line − 2 × 2 px: 20 desktop, 16 phone; R086) through the ring's internal step size: sf-progress-ring has no icon-field step yet (named follow-up). Screen readers hear the result and the state changes only, from one visually hidden status region; the old visible status line is the visible result only."
   ],
   "x-registry": {
     "capabilities": [

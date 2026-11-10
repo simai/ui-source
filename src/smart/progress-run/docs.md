@@ -2,7 +2,7 @@
 
 `sf-progress-run` shows a long job as a person sees it: creating a site, an
 update, a backup or a restore, an import, a publish, a package install. One
-tag in three looks (`view`, owner decision C34):
+tag in three looks (`look`, owner decision C34):
 
 - `full` (the default) — the card: the title with the state badge, the
   overall bar with «4 812 из 12 000 товаров · 40 %» and the time left, the
@@ -42,8 +42,8 @@ run.addEventListener('sf-progress-run-pause', () => job.pause().then(() => { run
 run.addEventListener('sf-progress-run-resume', () => job.resume().then(() => { run.runState = 'running'; }));
 run.addEventListener('sf-progress-run-cancel', () => job.cancel());
 run.addEventListener('sf-progress-run-retry', ({detail}) => job.start(detail)); // {scope: 'all'|'failed', from?}
-run.addEventListener('sf-progress-run-minimize', () => { run.view = 'notice'; });
-run.addEventListener('sf-progress-run-expand', () => { run.view = 'full'; });
+run.addEventListener('sf-progress-run-minimize', () => { run.look = 'notice'; });
+run.addEventListener('sf-progress-run-expand', () => { run.look = 'full'; });
 run.addEventListener('sf-progress-run-report', () => openReport());
 ```
 
@@ -55,7 +55,9 @@ confirmation around it (a change sheet) are the page's composition.
 
 ## Settings
 
-- `view` `full|compact|notice` — the look; the data are the same in all.
+- `look` `full|compact|notice` — the look; the data are the same in all.
+  (`view` and `started` are names the element runtime keeps for itself, so the
+  settings are `look` and `started-at`.)
 - `label` — the job's name: the title and the region's name.
 - `heading-level` `1–6` (3) — the title's level in the page outline. The
   title is drawn at the run's text line, semibold, whatever the level (16/24
@@ -74,7 +76,7 @@ confirmation around it (a change sheet) are the page's composition.
   («оцениваем время…») until the rate settles (5 s of change) and always
   rounded up: «осталось ≈ 6 мин», «осталось меньше минуты». After a pause the
   estimate starts afresh.
-- `started`, `finished` — ISO 8601: the elapsed time and «заняло 8:08». Without
+- `started-at`, `finished-at` — ISO 8601: the elapsed time and «заняло 8:08». Without
   them the run uses the moments it saw.
 - `steps` — `[{id, title, state, text?, value?, total?, unit?, log?, started?,
   finished?, duration?}]`, a property or the JSON island a server prints.
@@ -113,7 +115,7 @@ confirmation around it (a change sheet) are the page's composition.
 
 ## States
 
-One look per state in every view (decision C34):
+One look per state in every `look` (decision C34):
 
 | State | Badge (sf-badge) | Bar (sf-progress-bar) |
 | --- | --- | --- |
@@ -149,7 +151,7 @@ One look per state in every view (decision C34):
   `failed` after a partial result, `all` (from the failed step's id) after a
   failure or a cancel.
 - `sf-progress-run-minimize`, `sf-progress-run-expand` — Minimize in the full
-  look, Expand in the notice look; the host changes `view`.
+  look, Expand in the notice look; the host changes `look`.
 - `sf-progress-run-report` — the error link or «Ещё N ошибок»; cancelable:
   not cancelled, the link moves to the error list.
 - `sf-progress-run-close` `{reason: 'close'}` — Hide pressed; cancelable; the
@@ -205,11 +207,11 @@ log (not live) a keyboard can scroll. Nothing takes focus by itself.
 
 ## Changes
 
-- 1.3.0 (2026-11-10) — decision C34: `view` full|compact|notice, `value` /
+- 1.3.0 (2026-11-10) — decision C34: `look` full|compact|notice, `value` /
   `total` / `unit` on the run and on each step, the time left, `run-state`
   paused and partial, `counters`, `errors` and `errors-total`, `retry`
   `{scope, from?}`, `chunk({text, step})` and a step's `log`, `pausable`,
-  `minimizable`, `heading-level`, `caption`, `started`/`finished`, grouped
+  `minimizable`, `heading-level`, `caption`, `started-at`/`finished-at`, grouped
   spacing with `--sf-progress-run-gap` and `--sf-progress-run-gap-tight`.
 - 1.0.0 (2026-11-07) — the first version, for the Larena admin screens
   (Federation bus msg-993e1e39 item 6).

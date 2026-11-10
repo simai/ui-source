@@ -15,7 +15,7 @@
 //   run.step({id: 'rows', value: 5120});
 //   run.chunk({text: 'Row 218: price is not a number\n', step: 'rows'});
 //
-// One element, three looks (owner decision C34): view full (the card, and
+// One element, three looks (owner decision C34): look full (the card, and
 // once ended its summary), compact (a table row) and notice (a corner
 // panel's row). The steps with their states and times, a log per step and a
 // collapsible output pane that follows the newest line only while the reader
@@ -59,7 +59,7 @@ export const ERRORS_SHOWN = 5;
 export const RATE_SETTLE_MS = 5000;
 export const RATE_WINDOW_MS = 30000;
 
-// One state, one look in every view (C34, R073): the badge of sf-badge 1.4.0
+// One state, one look in every look (C34, R073): the badge of sf-badge 1.4.0
 // and the status of the overall bar (sf-progress-bar 1.3.0).
 export const STATE_LOOK = {
   waiting: {activity: 'queued', bar: 'neutral'},
@@ -362,8 +362,9 @@ class SfProgressRun extends ProgressRunElement {
   }
 
   get errorsCount() {
+    // A number setting reads 0 when absent, so 0 means «not said»: the error counter speaks.
     const total = number(this.errorsTotal);
-    if (total !== null) return total;
+    if (total) return total;
     const counter = (Array.isArray(this.counters) ? this.counters : []).find((one) => one && text(one.status) === 'error');
     return counter ? number(counter.value) ?? 0 : 0;
   }
@@ -380,7 +381,7 @@ class SfProgressRun extends ProgressRunElement {
   }
 
   get drawnView() {
-    return VIEWS.includes(this.view) ? this.view : 'full';
+    return VIEWS.includes(this.look) ? this.look : 'full';
   }
 
   // The output: the host's setting, then what chunk appended. A new setting
@@ -514,9 +515,9 @@ class SfProgressRun extends ProgressRunElement {
   // The job's elapsed time: the host's started, else the moment the run saw
   // it run; to finished, the moment it ended, or now.
   elapsed(state, now) {
-    const start = toDate(this.started)?.getTime() ?? (this._seenStart || null);
+    const start = toDate(this.startedAt)?.getTime() ?? (this._seenStart || null);
     if (!start) return null;
-    const end = toDate(this.finished)?.getTime() ?? (ENDED.includes(state) ? this._seenEnd || null : null);
+    const end = toDate(this.finishedAt)?.getTime() ?? (ENDED.includes(state) ? this._seenEnd || null : null);
     if (ENDED.includes(state) && !end) return null;
     return Math.max(0, (end ?? now) - start);
   }
@@ -582,8 +583,9 @@ class SfProgressRun extends ProgressRunElement {
     // The time on the figures line: the time left while it runs, the time it
     // took once ended, the elapsed time while the size is unknown.
     const elapsed = this.elapsed(state, now);
+    // An absent number setting reads 0; no running job has 0 left, so 0 means «not given».
     const given = number(this.remaining);
-    const remainingMs = given !== null ? given : estimateRemaining(this._samples, total, now);
+    const remainingMs = given ? given : estimateRemaining(this._samples, total, now);
     let time = '';
     let timeShort = '';
     if (ended) {

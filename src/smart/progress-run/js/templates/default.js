@@ -3,7 +3,7 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 
 // sf-progress-run's markup (scss/ draws it on one rung of the ladder).
 //
-// view full (C34): a region named by label, in groups the sheet spaces by
+// look full (C34): a region named by label, in groups the sheet spaces by
 // meaning (R073):
 // - head: the title, a heading of heading-level, with the state badge on its
 //   first line and the caption under it;
@@ -25,8 +25,8 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 // The result line is the one status live region: it says the result and the
 // state changes; nothing else is live.
 //
-// view compact: one line -- the bar and «62 % · 3 мин» while it runs, the
-// badge once it stopped -- and icon actions. view notice: the mark in the
+// look compact: one line -- the bar and «62 % · 3 мин» while it runs, the
+// badge once it stopped -- and icon actions. look notice: the mark in the
 // icon field (the ring, or the state's icon), the name and a line of
 // figures, and Expand.
 

@@ -13,8 +13,8 @@
       "  <sf-progress-run id=\"cnl\" label=\"Экспорт\" run-state=\"cancelled\" value=\"1200\" total=\"4000\" retryable></sf-progress-run>",
       "  <sf-progress-run id=\"ind\" label=\"Резервная копия\" run-state=\"running\" cancelable></sf-progress-run>",
       "  <sf-progress-run id=\"lg\" label=\"Резервная копия docs\" retryable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"db\", \"title\": \"База данных\", \"state\": \"done\", \"duration\": 42000, \"log\": \"db ok\\n\"}, {\"id\": \"up\", \"title\": \"Выгрузка\", \"state\": \"failed\", \"duration\": 160000, \"log\": \"QuotaExceeded\\n\"}]}</script></sf-progress-run>",
-      "  <sf-progress-run id=\"cmp\" view=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
-      "  <sf-progress-run id=\"ntc\" view=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
+      "  <sf-progress-run id=\"cmp\" look=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
+      "  <sf-progress-run id=\"ntc\" look=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
       "</main>"
     ]
   },
@@ -166,7 +166,7 @@
       "covers": "settings.value, settings.total, settings.unit, settings.counters",
       "steps": [
         {
-          "check": "(() => { const n = (s) => s.replace(/\\\\s+/gu, ' ').trim(); const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const fig = el.querySelector('.sf-progress-run-done'); const counts = [...el.querySelectorAll('.sf-progress-run-count')].map((c) => n(c.textContent)); const link = el.querySelector('.sf-progress-run-count--error a.sf-progress-run-count-link'); return bar.getAttribute('value') === '40' && !bar.hasAttribute('indeterminate') && n(fig.textContent) === '4 812 из 12 000 товаров · 40 %' && getComputedStyle(fig.parentElement).fontVariantNumeric === 'tabular-nums' && counts.join('|') === 'Добавлено 3 700|Обновлено 1 100|12 ошибок' && link && n(link.textContent) === '12 ошибок' && el.querySelectorAll('.sf-progress-run-counts a').length === 1; })()"
+          "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const el = document.querySelector('#imp'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); const fig = el.querySelector('.sf-progress-run-done'); const counts = [...el.querySelectorAll('.sf-progress-run-count')].map((c) => n(c.textContent)); const link = el.querySelector('.sf-progress-run-count--error a.sf-progress-run-count-link'); return bar.getAttribute('value') === '40' && !bar.hasAttribute('indeterminate') && n(fig.textContent) === '4 812 из 12 000 товаров · 40 %' && getComputedStyle(fig.parentElement).fontVariantNumeric === 'tabular-nums' && counts.join('|') === 'Добавлено 3 700|Обновлено 1 100|12 ошибок' && link && n(link.textContent) === '12 ошибок' && el.querySelectorAll('.sf-progress-run-counts a').length === 1; })()"
         }
       ]
     },
@@ -349,7 +349,7 @@
       "covers": "settings.view, events.expand",
       "steps": [
         {
-          "check": "(() => { const n = (s) => s.replace(/\\\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
+          "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
         },
         {
           "user": "click:#ntc .sf-progress-run-expand button",
