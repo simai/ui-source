@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 test('the confirm surface applies nothing and keeps the question open when the host refuses the answer', () => {
   const surface = read('src/smart/helpers/confirm-surface.js');
   assert.match(surface, /const delivered = this\.sfEmit\("answer", \{id: this\.questionKey, accepted\}\);/u);
-  assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\.setAttribute\("state", "open"\);/u);
+  assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\._declinedHere = false;\s*this\.setAttribute\("state", "open"\);/u);
   // A plain question: two outlined answers of one weight. A dangerous one
   // (decision C25): a filled danger acceptance and a quiet declining answer.
   assert.match(surface, /appearance=\$\{danger \? "default" : "outline"\}/u);

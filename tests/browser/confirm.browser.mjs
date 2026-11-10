@@ -263,6 +263,10 @@ try {
         // no opener, and the focus goes on to the next control.
         if (name === 'static') await tab.evaluate(() => { document.activeElement?.blur(); window.still.open(); });
         await tab.waitForTimeout(200);
+        // A question put from a button leaves the focus on it (the safe answer
+        // takes it only from the page or from inside, C25): the person moves to
+        // «Отмена» as by Tab.
+        await tab.evaluate((k) => { const node = window[k]; if (!node.contains(document.activeElement)) node.querySelector('button[data-action="decline"]')?.focus(); }, key);
         const onDecline = await tab.evaluate((k) => window[k]?.contains(document.activeElement) && document.activeElement.closest('[data-action]')?.getAttribute('data-action'), key);
         await tab.keyboard.press('Enter');
         await tab.waitForTimeout(400);

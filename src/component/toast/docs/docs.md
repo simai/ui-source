@@ -28,10 +28,7 @@ sf-button--height-low`. The close is `sf-icon-button sf-icon-button--close
 sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
 sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
-still win. The action's plate is the toast's own tone a step stronger
-(`--sf-<tone>-container-strong`; neutral `--sf-surface-container-strong`; DEV
-look note on C35): the primary container is translucent and over a toast of
-the same hue merged with it. `--sf-button-background-color` still wins.
+still win.
 
 ## Accessibility and ownership
 

@@ -37,10 +37,7 @@ line of text and the close share one centre; the action's plate starts at the
 text edge; the close's plate hangs out over the inline padding, so its cross
 stands where the status icon stands on the other side. Without an icon the text
 starts at the padding. Between several actions of a class toast,
-`--sf-space-1/3`. The action's plate is the toast's own tone a step stronger
-(`--sf-<tone>-container-strong`; neutral `--sf-surface-container-strong`; DEV
-look note on C35): the primary container is translucent and over a toast of
-the same hue merged with it. `--sf-button-background-color` still wins.
+`--sf-space-1/3`.
 
 `duration` is milliseconds. Its default `0` keeps the toast until explicit
 dismissal; a positive value pauses while pointer or focus is inside the toast.
