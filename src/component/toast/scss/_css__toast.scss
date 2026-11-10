@@ -1,3 +1,5 @@
+@use 'sass:map';
+@use 'sass:string';
 @use '../../../core/scss/mix/mix__places' as places;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
@@ -152,11 +154,14 @@
     overflow-wrap: anywhere;
   }
 
-  /* The quiet icon role, as on the alert (C35 acceptance F1): a neutral
-     toast reads it from its container (--sf-on-surface-container--variant). */
+  /* The quiet icon role, as on the alert (C35 acceptance F1): the theme's
+     dim ink on a fill, the alert's #515257 / #d4d4d9. Not the place's
+     --sf-on-surface-container--variant: a toast is a popup place, where C43
+     raised that role for the controls' keys (dark 90, the text's own ink), so
+     the icon read it would lose its quiet tone (1.2.3). */
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > .sf-icon,
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > sf-icon > .sf-icon {
-    --sf-icon--color: var(--sf-on-surface-variant);
+    --sf-icon--color: #{string.unquote(map.get(places.$sf-place-theme-roles, 'on-surface-container-variant'))};
   }
 
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-supporting-text {

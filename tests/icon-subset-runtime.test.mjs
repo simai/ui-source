@@ -507,6 +507,35 @@ test('R074 F3: a first request asked for only after ready still waits for the ta
   });
 });
 
+test('R074: the first request\'s hold leaves no cap timer behind (instance-scope leak, pair-next sweep)', async () => {
+  await withHeldTags(async ({asked, define}) => {
+    const live = new Map();
+    const original = {setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout};
+    globalThis.setTimeout = (fn, ms, ...rest) => {
+      const id = original.setTimeout(() => { live.delete(id); fn(...rest); }, ms);
+      live.set(id, ms);
+      return id;
+    };
+    globalThis.clearTimeout = (id) => { live.delete(id); original.clearTimeout(id); };
+    try {
+      const loader = new TestLoader();
+      loader.eventSend = true;
+      // Nothing on the way: one frame.
+      await loader.holdFirstIconRequest(30, 8000);
+      assert.deepEqual([...live.values()].filter((ms) => ms >= 1000), [], 'no cap timer after a frame');
+      // A tag on the way, defined a moment later.
+      asked.add('sf-tag');
+      const held = loader.holdFirstIconRequest(30, 8000);
+      original.setTimeout(() => define('sf-tag'), 20);
+      await held;
+      assert.deepEqual([...live.values()].filter((ms) => ms >= 1000), [], 'no cap timer after the tag is defined');
+    } finally {
+      globalThis.setTimeout = original.setTimeout;
+      globalThis.clearTimeout = original.clearTimeout;
+    }
+  });
+});
+
 test('a page slow to become ready with nothing on the way sends the first request at the budget', async () => {
   await withHeldTags(async () => {
     const loader = new TestLoader();
