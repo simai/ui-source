@@ -162,12 +162,15 @@ const read = () => {
       role: code.getAttribute('role'), tabindex: code.getAttribute('tabindex'), label: code.getAttribute('aria-label')};
   }
   // Where each word of a code stands: a word is whole when its first and last
-  // letters sit on one line.
+  // letters sit on one line. Inside a box longer than the line a hyphen is a
+  // break like a space (CSS has no way to forbid it there), so a word here is
+  // a run of letters between spaces and hyphens: no word parts between two
+  // letters.
   const wordsWhole = (code) => {
     const text = code.firstChild;
     const top = (at) => { const range = document.createRange(); range.setStart(text, at); range.setEnd(text, at + 1); return Math.round(range.getClientRects()[0].top); };
     const broken = [];
-    for (const match of text.data.matchAll(/\S+/gu)) if (top(match.index) !== top(match.index + match[0].length - 1)) broken.push(match[0]);
+    for (const match of text.data.matchAll(/[^\s-]+/gu)) if (top(match.index) !== top(match.index + match[0].length - 1)) broken.push(match[0]);
     return broken;
   };
   const fits = (id) => {
@@ -249,7 +252,8 @@ for (const theme of THEMES) {
   // A URL longer than the line breaks inside its box and stays in its column.
   check(`${theme}: a long URL stays in its column`, layout.url.code.right <= layout.url.column.right + 0.5 && layout.url.scroll <= 0
     && layout.url.code.height > codes.url.fontSize * 2, layout.url);
-  // Code with spaces longer than the line breaks at its spaces only.
+  // Code with spaces longer than the line breaks at its spaces (and hyphens),
+  // never between two letters.
   check(`${theme}: code with spaces keeps its words whole`, layout.words.broken.length === 0 && layout.words.code.right <= layout.words.column.right + 0.5, layout.words);
   // The box does not make the text line taller.
   check(`${theme}: a line with code keeps the text line height`, Math.abs(layout.line.withCode - layout.line.plain) < 0.5, layout.line);
