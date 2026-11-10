@@ -43,7 +43,8 @@ export function renderConfirmTemplate(context) {
 // page's options (a checkbox); the name to type (require) with its label
 // «Чтобы подтвердить, введите <code>name</code>» and a field; then the two
 // answers, the filled danger answer first, at the start. The steps grow
-// towards the answers (default.css).
+// towards the answers (default.css). Declined here, it folds away as the
+// inline and card forms do (C35); its window closes on the decline anyway.
 function renderConfirmWindow(context) {
     const plate = context.hasDescription || context.consequence;
     return html`
@@ -52,6 +53,7 @@ function renderConfirmWindow(context) {
                 role="group"
                 aria-label=${context.question || context.questionLabel}
                 data-state=${context.state}
+                ?hidden=${context.collapsed}
         >
             ${plate
                 ? html`<div class="sf-confirm__consequences">

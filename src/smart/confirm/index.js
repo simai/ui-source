@@ -144,14 +144,22 @@ class SfConfirm extends ConfirmSurface {
 
     // Put again, the question starts afresh: no name typed, nothing said.
     open(...args) {
-        if (this.requiredName) {
-            this._requireShown = false;
-            const field = this.requireField;
-            if (field && "value" in field) field.value = "";
-            const input = field?.querySelector("input");
-            if (input) input.value = "";
-        }
+        this.clearRequire();
         return super.open(...args);
+    }
+
+    // The name typed so far and the explanation go: a window opened or
+    // closed without an answer must not keep a typed name, or the next
+    // opening would delete on one press (R069; C39 acceptance D1).
+    clearRequire() {
+        if (!this.requiredName) return;
+        const shown = this._requireShown;
+        this._requireShown = false;
+        const field = this.requireField;
+        if (field && "value" in field) field.value = "";
+        const input = field?.querySelector("input");
+        if (input) input.value = "";
+        if (shown) this.requestComponentUpdate("require");
     }
 
     afterRender(changed) {

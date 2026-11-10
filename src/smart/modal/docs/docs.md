@@ -263,7 +263,12 @@ area kept clear. Its content is `sf-confirm appearance="window"` (the quiet
 consequences plate, the name to type, the answers -- see sf-confirm); its
 «Отмена» closes the window unless the host cancels `sf-confirm-answer`. Opened
 again, the window puts its question again: an `sf-confirm` that took «no» with
-no outcome from the host has live answers.
+no outcome from the host has live answers. Closed without an answer -- by the
+×, the backdrop, Escape or the host's `close()` -- the window reports the
+decline (`sf-confirm-answer {accepted: false}`) and clears the typed name. An
+accepted question is not put again by itself: a host that accepted, closed and
+opens the window again sets the question's `state="open"` first (or calls its
+`open()`), or the window shows the old answer.
 
 ```html
 <sf-modal modal-id="menu" heading="Удалить меню «Главное»?" size="question">

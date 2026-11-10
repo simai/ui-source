@@ -334,11 +334,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "100a4277df7e83f70924d476f769deb55c207d4cc39fd3a722f6fa4ba677d25f"
+        "sha256": "aab7cc8a771f8e9d9898dea8226a366e64a98eedcdacaffc3cff3d7777028866"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "4a4d36db81b9cdacf0581d0f65fbd5a3f784743eff023d4888cbdf7c19c992d3"
+        "sha256": "0368a179494b7a629e785b922fab7afaca84ab1cb6e391bf4304230a225b7a59"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
@@ -350,11 +350,11 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "8d8df8107923e2d86ff90f93bbac584283690464420fdeaf7f762c1bc3283c50"
+        "sha256": "57adfc5639f2661092f68c96187a43e400af19b9ca7751a271a1a23f47aec6e5"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "4fca76648ec50a8f9357aa2ac6af42f3380a95bd5368e8ec784e546b39c771ad"
+        "sha256": "c14d68bbc136c9ad1823def38a030714aba436cc84d7078f5924b8488fc792a1"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

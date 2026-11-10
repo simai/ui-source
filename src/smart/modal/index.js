@@ -249,11 +249,28 @@ class SfModal extends ModalElement {
   // A reopened window puts its question again: an sf-confirm in it that took
   // the decline (Escape, «Отмена») with no outcome from the host would show
   // its answers greyed (recipes gaps D4 follow-up, DEV 2026-11-10).
+  // A question still put starts afresh too: no name typed, nothing said
+  // (C39 acceptance D1).
   reopenQuestions() {
     const target = this._renderTarget;
     if (!target?.querySelectorAll) return;
     for (const question of target.querySelectorAll(QUESTIONS)) {
       if (question.answeredNo) question.open?.();
+      else question.clearRequire?.();
+    }
+  }
+
+  // The window closes by its ×, the backdrop, Escape on the window or the
+  // host's close() while its own question (sf-confirm appearance="window")
+  // is still put: that is the decline, reported as «Отмена» is, so a host
+  // sees one outcome for every way out; and the typed name goes, so the next
+  // opening does not delete on one press (C39 acceptance D1, R069).
+  declineQuestions() {
+    const target = this._renderTarget;
+    if (!target?.querySelectorAll) return;
+    for (const question of target.querySelectorAll('sf-confirm[appearance="window"]')) {
+      if (question.shownState === "open" && !question.getProp?.("disabled")) question.cancel?.();
+      question.clearRequire?.();
     }
   }
 
@@ -946,6 +963,9 @@ class SfModal extends ModalElement {
 
     this._modalState = "closing";
     this._isOpen = false;
+    // After the state: a host that closes the window from the answer's
+    // handler finds it closing already.
+    this.declineQuestions();
     this.requestComponentUpdate("close");
 
     const panel = this._root()?.querySelector("[data-sf-modal-panel]");
