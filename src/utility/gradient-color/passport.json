@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.gradient-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/gradient-color/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/gradient-color/default/scss/_sf_var__gradient.scss",
     "src/utility/gradient-color/default/scss/index.scss"
   ],
-  "content_sha256": "52c7fec0e42530b60e1c1b3b36731b85d88e6692fade4442aca29e0589c9158b",
+  "content_sha256": "52c770b4ed94c242eb2ec0c457a942250bc5cfd8260b8083e66f13ebc171d210",
   "dependencies": [
     {
       "id": "utility.background-color",

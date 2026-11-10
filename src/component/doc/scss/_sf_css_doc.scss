@@ -83,7 +83,7 @@
   }
 
   .bg-stripes-white {
-    --sf-doc-pattern-color: var(--sf-surface-0);
+    --sf-doc-pattern-color: var(--sf-surface-page);
   }
 
   .bg-stripes-blue {
@@ -92,7 +92,7 @@
 
   .sf-doc-checkerboard,
   .bg-checkered {
-    background-color: var(--sf-surface-0);
+    background-color: var(--sf-surface-page);
     background-image: conic-gradient(
       var(--sf-surface-1) 25%,
       var(--sf-transparent) 0 50%,

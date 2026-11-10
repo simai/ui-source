@@ -17,6 +17,7 @@ function renderItem(item, index, context) {
       text=${item.label}
       icon=${item.icon || nothing}
       size=${context.size}
+      height=${context.height && context.height !== 'default' ? context.height : nothing}
       root-class=${context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : nothing}
       appearance=${selected ? 'default' : 'outline'}
       scheme=${selected ? context.scheme : 'on-surface'}
@@ -49,6 +50,9 @@ function renderSegment(item, context) {
     'sf-button-group-segment',
     item.iconOnly ? 'sf-button-group-icon-only' : '',
     context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : '',
+    // height (decision C27): the button sheet's height class sets the block
+    // padding; the track takes its own padding off it, as at the default.
+    context.height && context.height !== 'default' ? `sf-button--height-${context.height}` : '',
     selected ? 'active' : '',
     item.loading ? 'loading sf-button-state-loading' : '',
   ].filter(Boolean).join(' ');

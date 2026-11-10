@@ -2,7 +2,7 @@
   "$comment": "The source of sf-segmented's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.segmented",
   "tag": "sf-segmented",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -95,6 +95,17 @@
       "default": "1",
       "summary": "Shared button size token."
     },
+    "height": {
+      "type": "enum",
+      "values": [
+        "low",
+        "default",
+        "high",
+        "highest"
+      ],
+      "default": "default",
+      "summary": "The control height (owner decision C27), as on sf-button: size sets the text, the icons and the inner scale, height picks the height from the size's tightness steps -- low, default, high, highest. The track stands as tall as an sf-button of the same size and height, and the buttons look draws sf-button with that height. A value outside the list reads as default, with one console warning."
+    },
     "spacing": {
       "type": "enum",
       "values": [
@@ -104,7 +115,7 @@
         "spacious"
       ],
       "default": "normal",
-      "summary": "Shared semantic internal spacing profile."
+      "summary": "Deprecated (decision C27, until 2027-01-01): the side padding of the segments only -- compact, normal, comfortable or spacious -- at the same height. It keeps working as before with a console warning and is not turned into height; write height for a lower or higher control."
     },
     "tightness": {
       "type": "enum",
@@ -407,7 +418,8 @@
     "version 1.4.0 (owner decisions D11b, D11c; docs review R035, R037): the default look is the track with a raised neutral plate (appearance track, plate raised); the joined buttons are appearance buttons, for forms on a plain surface. The old appearance values segmented and default are dated value aliases of track and buttons (until 2027-01-01). New setting backdrop: surface (the surface container track, as before), color (track and labels from the place's ink, currentColor at the fill step 12) and media (dark glass: black 48 with a blur, white labels and plate). The plate slides to the chosen option in 0.2 s, and stands still under prefers-reduced-motion. The theme switch's system item draws desktop_windows (a monitor) instead of brightness_auto. The track colour stays the surface container role until the background system (C16) renames the roles.",
     "version 1.4.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, select({value}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.4.2 (2026-11-09, one above the released 1.4.1): the group's spacing reaches its sf-button segments as root-class=\"spacing-<value>\" (the class sheet's spacing class, same drawing) instead of sf-button's spacing, which decision C27 deprecates (journal attribute-button-spacing-to-height): a page that sets spacing on the group gets no sf-button deprecation warning from the Framework's own template. Settings, values and look unchanged.",
-    "version 1.4.3 (2026-11-10): a patch (R074). The group asks the Loader for every item's icon when it is drawn, as a cycle does, so a segment drawn later (out of loading, items set afresh) finds its glyph in the page's font. Nothing drawn differently; settings, values and events unchanged."
+    "version 1.4.3 (2026-11-10): a patch (R074). The group asks the Loader for every item's icon when it is drawn, as a cycle does, so a segment drawn later (out of loading, items set afresh) finds its glyph in the page's font. Nothing drawn differently; settings, values and events unchanged.",
+    "version 1.5.0 (2026-11-10): a minor (§4.10; owner decision C27, as sf-button 1.10.0). The setting height (low, default, high, highest; default default) picks the control height from the size's tightness steps: a track segment carries the class sf-button--height-<height> of component.buttons (none for default), so its block padding is the step less the track's padding and the track stands as tall as an sf-button of that size and height; the buttons look writes height on its sf-button. spacing is deprecated (journal attribute-segmented-spacing-to-height, until 2027-01-01): it keeps drawing the side padding as before, says so once in the console and in SF.deprecations, and is not turned into a height. The group never writes spacing on its sf-button (1.4.2). Narrow widths are unchanged."
   ],
   "x-registry": {
     "capabilities": [

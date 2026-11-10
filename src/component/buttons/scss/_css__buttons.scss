@@ -771,7 +771,7 @@
   }
 
   .sf-button.sf-button--default.sf-button--on-surface {
-    --sf-button--focus-ink: var(--sf-on-surface-inverse, var(--sf-surface-0));
+    --sf-button--focus-ink: var(--sf-on-surface-inverse, var(--sf-surface-page));
   }
 
   @media (forced-colors: active) {

@@ -133,6 +133,23 @@ for (const record of journal.records) {
   }
 }
 
+// A value renamed everywhere (no component) and renamed back on one element:
+// status danger -> error for every message (2026-10-09), error -> danger on a
+// control (C13, 2026-11-08). The general item must not reach the elements a
+// later item names in reverse, or it rewrites their canonical value into the
+// former one (<sf-button status="danger"> into error). attribute|from|to of
+// the general item -> the tags that reverse it.
+const reversedOn = new Map();
+for (const record of journal.records) {
+  if (record.kind !== 'value') continue;
+  for (const item of record.items) {
+    if (!item.component || !item.component.startsWith('sf-') || !item.to) continue;
+    const key = `${item.attribute || ''}\u0000${item.to}\u0000${item.from}`;
+    if (!reversedOn.has(key)) reversedOn.set(key, new Set());
+    reversedOn.get(key).add(item.component);
+  }
+}
+
 const STYLE_FILES = /\.(?:css|scss|sass|less)$/u;
 const SCRIPT_FILES = /\.(?:m?js|cjs|ts|tsx|jsx|vue|php)$/u;
 
@@ -174,7 +191,9 @@ function rulesFor(record) {
       rules.push({item, mechanical, pattern: new RegExp(`(\\s)${escape(item.from)}(=)`, 'gu'), replace: (match, space, eq) => `${space}${item.to}${eq}`});
     } else if (record.kind === 'value') {
       const attribute = escape(item.attribute || '[a-z-]+');
-      const scope = tag ? `<${escape(tag)}\\b[^>]*?\\s` : '<sf-[a-z-]+\\b[^>]*?\\s';
+      const reversed = [...(reversedOn.get(`${item.attribute || ''}\u0000${item.from}\u0000${item.to}`) || [])];
+      const except = reversed.length ? `(?!(?:${reversed.map(escape).join('|')})(?![\\w-]))` : '';
+      const scope = tag ? `<${escape(tag)}\\b[^>]*?\\s` : `<${except}sf-[a-z-]+\\b[^>]*?\\s`;
       rules.push({item, mechanical, pattern: new RegExp(`(${scope}${attribute}=["'])${escape(item.from)}(["'])`, 'gu'), replace: (match, head, tail) => `${head}${item.to}${tail}`});
     } else if (record.kind === 'event') {
       rules.push({item, mechanical, pattern: new RegExp(`(['"\`])${escape(item.from)}(['"\`])`, 'gu'), replace: (match, open, close) => `${open}${item.to}${close}`});

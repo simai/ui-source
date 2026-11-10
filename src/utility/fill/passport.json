@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.fill",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/fill/default/index.js",
@@ -13,6 +13,6 @@
     "src/utility/fill/default/scss/_sf_var__fill.scss",
     "src/utility/fill/default/scss/index.scss"
   ],
-  "content_sha256": "2f79507c29c03ebc4071ef9630cbe7587978381e598111eb2245cf8d46ba55b2",
+  "content_sha256": "3666334b9e0aae6d2b9bfbd4ec2e3466daa9de4053a3f844298c867902b9a73a",
   "dependencies": []
 }

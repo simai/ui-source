@@ -22,7 +22,7 @@
     // A container fill switches the dimmed text over it, as elevation-N does
     // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
     .#{$infix}bg-surface-container {
-        --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+        --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     }
 
     // A place class is a place (C16): what stands on it reads its colour as

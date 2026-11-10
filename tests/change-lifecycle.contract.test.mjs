@@ -141,6 +141,21 @@ test('sf-upgrade: a class shared by two components is reported once per use', ()
   }
 });
 
+/* status danger -> error is general (2026-10-09) and error -> danger is the
+   control's (C13, 2026-11-08): the general rename must not turn a control's
+   canonical danger into its former error. */
+test('sf-upgrade: a general value rename skips the elements that rename it back', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  try {
+    writeFileSync(join(project, 'page.html'), '<sf-button status="danger"></sf-button>\n<sf-button-icon status="danger"></sf-button-icon>\n<sf-alert status="danger"></sf-alert>\n<sf-button status="error"></sf-button>\n');
+    const result = spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json'], {encoding: 'utf8'});
+    const findings = JSON.parse(result.stdout).findings.filter((row) => row.from === 'danger' || row.from === 'error');
+    assert.deepEqual([...new Set(findings.map((row) => `${row.line} ${row.from}->${row.to}`))].sort(), ['3 danger->error', '4 error->danger']);
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});
+
 /* Format names without versions, step 3: sf-upgrade moves a project's
    declarations of a format to two fields -- a JSON file in the standard
    layout, a literal in a script -- and reports what it must not touch: a

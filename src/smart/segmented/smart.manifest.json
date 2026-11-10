@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.segmented",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "title": "Segmented control",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -73,10 +73,21 @@
           "3"
         ]
       },
+      "height": {
+        "type": "string",
+        "default": "default",
+        "description": "The control height (owner decision C27), as on sf-button: size sets the text, the icons and the inner scale, height picks the height from the size's tightness steps -- low, default, high, highest. The track stands as tall as an sf-button of the same size and height, and the buttons look draws sf-button with that height. A value outside the list reads as default, with one console warning.",
+        "enum": [
+          "low",
+          "default",
+          "high",
+          "highest"
+        ]
+      },
       "spacing": {
         "type": "string",
         "default": "normal",
-        "description": "Shared semantic internal spacing profile.",
+        "description": "Deprecated (decision C27, until 2027-01-01): the side padding of the segments only -- compact, normal, comfortable or spacious -- at the same height. It keeps working as before with a console warning and is not turned into height; write height for a lower or higher control.",
         "enum": [
           "compact",
           "normal",
@@ -484,7 +495,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/segmented/index.js",
-        "sha256": "b8bb548c7611305b5313b31daa1aab22ab38947b096c8ad2b931db40080df693"
+        "sha256": "d00b7515ae03d6a638eee738096fc214451f261cfa0e2dd6f99da2103132a480"
       }
     ],
     "generated_runtime": []
