@@ -160,6 +160,13 @@ sf-list-description {
    10 to the glyph): it takes no height of its own (sf-help-mark
    1.3.0), so the label's line stays L. (The host is display: contents once
    upgraded; its box is the sf-help-mark span.) */
+.sf-list-description-label:has(> sf-help-mark) {
+  /* A flex row, so the white space sf-help-mark's markup starts with adds
+     nothing between the label and the mark. */
+  display: flex;
+  align-items: center;
+}
+
 .sf-list-description-label .sf-help-mark {
   margin-inline-start: var(--sf-space-1\/4);
 }

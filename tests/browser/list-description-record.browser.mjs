@@ -108,7 +108,7 @@ const MEASURE = () => {
         numeric: text ? getComputedStyle(text).fontVariantNumeric : '',
         help: Boolean(row.querySelector('dt sf-help-mark')),
         // From the label's text to the help mark's box (--sf-space-1/4) and to its glyph.
-        helpGap: (() => { const mark = row.querySelector('dt .sf-help-mark'); if (!mark) return null; const range = document.createRange(); range.selectNodeContents(dt.firstChild ?? dt); const textRight = [...range.getClientRects()].reduce((a, r) => Math.max(a, r.right), 0); const glyph = mark.querySelector('.sf-icon') ?? mark; return {box: round(box(mark).left - textRight), glyph: round(box(glyph).left - textRight)}; })(),
+        helpGap: (() => { const mark = row.querySelector('dt .sf-help-mark'); if (!mark) return null; const range = document.createRange(); const words = [...dt.childNodes].find((node) => node.nodeType === 3 && node.textContent.trim()); if (!words) return null; range.selectNodeContents(words); const textRight = [...range.getClientRects()].reduce((a, r) => Math.max(a, r.right), 0); const glyph = mark.querySelector('.sf-icon') ?? mark; return {box: round(box(mark).left - textRight), glyph: round(box(glyph).left - textRight)}; })(),
         space: length(row, 'var(--sf-space-1\\/4)'),
       };
     });
