@@ -684,7 +684,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "6ee757ee24393d742df944e4b10ce671208b2fa76c54c5c98bbe0cfc4bc86cc6",
+      "manifest_sha256": "eec90bf00d41fbbe577d8b8d6f69dce21011084c3a55f496af3e221cd6aad9ef",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1880,7 +1880,8 @@
           "component.checkbox",
           "component.dropdown",
           "component.icons",
-          "component.tags"
+          "component.tags",
+          "smart.icon"
         ]
       },
       "contract_schema": {
@@ -1892,7 +1893,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-item/smart.manifest.json",
-      "manifest_sha256": "0845173ffa904241743a594d1633e1745b7425b1cc967147e1a0391bd6c44460",
+      "manifest_sha256": "e4e5edc308b4a9a351f4f3b9a22d68610d51c7920034b2a6abe52927ef658e0e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2019,7 +2020,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "d6bf7b530b562735afe898880c01be75f93e42121bda052609de929474fad6dd",
+      "manifest_sha256": "8f094d50d2a33dd69d01c4c0e519a09a243ba1b1c359a121f5f8dab038b06f75",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

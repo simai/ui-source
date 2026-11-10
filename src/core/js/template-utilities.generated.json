@@ -285,9 +285,6 @@
   ],
   "cl-menu-context": [
     "display/default",
-    "flex-direction/default",
-    "flex/default",
-    "position/default",
     "text-decoration/default"
   ],
   "cl-modal": [

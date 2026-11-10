@@ -70,8 +70,13 @@ export function renderListItemTemplate(context) {
   const renderLeading = () => {
     if (leadingContent !== nothing) return leadingContent;
 
+    // An icon row's picture is an sf-icon element (1.2.7): its name joins the
+    // first icon font request. A bare <i class="sf-icon"> printed after the
+    // page's icon scan -- every option of an opened sf-dropdown -- was found a
+    // round later and its glyph came late. The row's size and colour reach
+    // the glyph inside it (display: contents).
     if (context.type === "icon") {
-      return html`<i class="sf-icon" aria-hidden="true">${context.icon}</i>`;
+      return html`<sf-icon icon=${context.icon} aria-hidden="true"></sf-icon>`;
     }
 
     if (context.type === "checkbox") {

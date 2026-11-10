@@ -152,6 +152,11 @@ export function renderDropdownTemplate(context) {
 
   const iconButtonSize =
     context.size === "1" || context.size === "1/2" ? "1/2" : context.size;
+  // The chevron and the search glyph are sf-icon elements, as the pictures
+  // of a choice are (1.8.0): the element tells the Loader its name, so it
+  // joins the first icon font request instead of a later round (1.8.1).
+  // Their size and colour stay the field's and the list's, which reach the
+  // glyph inside the sf-icon (display: contents).
   const dropdownIcon = context.open ? "keyboard_arrow_up" : "keyboard_arrow_down";
 
   const renderTrigger = () => {
@@ -210,7 +215,7 @@ export function renderDropdownTemplate(context) {
             class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${iconButtonSize}"
             ?disabled=${context.disabled}
           >
-            <i class="sf-icon" aria-hidden="true">${dropdownIcon}</i>
+            <sf-icon icon=${dropdownIcon} aria-hidden="true"></sf-icon>
           </button>
         </div>
       `;
@@ -238,7 +243,7 @@ export function renderDropdownTemplate(context) {
           class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${iconButtonSize} absolute"
           ?disabled=${context.disabled}
         >
-          <i class="sf-icon" aria-hidden="true">${dropdownIcon}</i>
+          <sf-icon icon=${dropdownIcon} aria-hidden="true"></sf-icon>
         </button>
       </label>
     `;
@@ -277,7 +282,7 @@ export function renderDropdownTemplate(context) {
           // its icon over the rows' icons, its text over their text, no frame.
           ? html`
               <label class="sf-list-search">
-                <i class="sf-icon sf-list-search-icon" aria-hidden="true">search</i>
+                <sf-icon icon="search" root-class="sf-list-search-icon" aria-hidden="true"></sf-icon>
                 <input
                   class="sf-list-search-input"
                   placeholder=${context.searchPlaceholder}
