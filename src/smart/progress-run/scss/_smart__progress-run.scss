@@ -399,6 +399,20 @@ sf-progress-run {
   font-weight: var(--sf-text--font-weight-5, 500);
 }
 
+/* Compact density (owner's C34 amendment, R082): the title and the result
+   stand at the same text size, so the result line («Загружено N из M…») is
+   regular and only the title is bold. Density is desktop-only (C22); a normal
+   region inside a compact one keeps the medium line. */
+@media (min-width: 60rem) {
+  [data-sf-density="compact"] .sf-progress-run-result {
+    font-weight: var(--sf-font-weight-regular);
+  }
+
+  [data-sf-density="compact"] [data-sf-density="normal"] .sf-progress-run-result {
+    font-weight: var(--sf-text--font-weight-5, 500);
+  }
+}
+
 .sf-progress-run .sf-progress-run-icon--cancelled {
   --sf-icon--color: var(--sf-on-surface-variant);
 }

@@ -34,6 +34,7 @@ import {applied, refused, elementFromManifest} from '../../core/js/element-manif
 import {toDate} from '../../core/js/format-intl.js';
 import {pageLocale} from '../../core/js/page-language.js';
 import {readingPosition} from '../../core/js/reading-position';
+import {tagSelector} from '../../core/js/tag-aliases.js';
 import {renderProgressRunTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -70,6 +71,23 @@ export const STATE_LOOK = {
   failed: {activity: 'failed', bar: 'error'},
   cancelled: {activity: 'stopped', bar: 'neutral'},
 };
+
+// Where focus goes when the run's own button that had it is replaced: its
+// counterpart first, then the buttons a run in the new state shows.
+export const FOCUS_NEXT = {
+  pause: ['resume'],
+  resume: ['pause'],
+  minimize: ['expand'],
+  expand: ['minimize'],
+  cancel: ['retry', 'hide'],
+  retry: ['pause', 'cancel'],
+  hide: ['retry'],
+  more: ['retry', 'hide'],
+};
+// The run's button hosts, under their names and the names they replaced
+// (asked when needed: the alias table is filled as the bundles load).
+const buttonHosts = () => ['sf-button', 'sf-button-icon', 'sf-button-copy'].map((tag) => tagSelector(tag)).join(', ');
+export const FOCUS_FALLBACK = ['pause', 'resume', 'cancel', 'retry', 'expand', 'minimize', 'hide'];
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 const number = (value) => {
@@ -547,6 +565,9 @@ class SfProgressRun extends ProgressRunElement {
     const word = (key, options) => this.sfWord(key, options);
     if (value === null && total === null) return '';
     if (total === null) {
+      // An absent number setting reads 0: with no size, a count of 0 says
+      // nothing, so the line shows nothing (not a bare «0»).
+      if (!value) return '';
       const forms = text(unit);
       return word('figures-count', {vars: {value: formatNumber(value ?? 0, locale), unit: forms ? ` ${pluralForm(forms, value ?? 0, locale)}` : ''}});
     }
@@ -692,8 +713,51 @@ class SfProgressRun extends ProgressRunElement {
     return renderProgressRunTemplate(this.templateContext());
   }
 
+  // ---------------------------------------------------------------- focus
+
+  // The run's own button that holds focus, by its part name (pause, resume,
+  // minimize, expand, cancel, retry, hide...), or ''.
+  focusedAction() {
+    const active = this.ownerDocument?.activeElement;
+    if (!active || !this.contains(active)) return '';
+    const host = active.closest(buttonHosts());
+    if (!host || !this.contains(host)) return '';
+    const part = [...host.classList].map((name) => /^sf-progress-run-([a-z]+)$/u.exec(name)?.[1]).find(Boolean);
+    return part || '';
+  }
+
+  beforeRender(changedAttributes) {
+    super.beforeRender?.(changedAttributes);
+    // A render overtaken by the next one never reaches afterRender: the
+    // button it removed stays noted until a render that did lands.
+    const focused = this.focusedAction();
+    if (focused) this._focusAction = focused;
+  }
+
+  // A press the host answers swaps the run's own button: Pause becomes
+  // Continue, Minimize turns the card into the notice with its Expand. The
+  // button that had focus is gone, and focus fell to the page (WCAG 2.4.3):
+  // a second Space did nothing. Focus moves to the button that took its
+  // place, else to the next one the run still shows. Only a focus the run
+  // lost itself is moved; it never takes focus from elsewhere.
+  restoreFocus() {
+    const lost = this._focusAction;
+    this._focusAction = '';
+    if (!lost) return;
+    const active = this.ownerDocument?.activeElement;
+    if (active && active !== this.ownerDocument.body && active.isConnected) return;
+    for (const part of [...(FOCUS_NEXT[lost] ?? []), lost, ...FOCUS_FALLBACK]) {
+      const target = this.querySelector(`.sf-progress-run-${part}`);
+      if (target && typeof target.focus === 'function') {
+        target.focus({preventScroll: true});
+        return;
+      }
+    }
+  }
+
   afterRender() {
     super.afterRender?.();
+    this.restoreFocus();
     this.syncTimer();
     const pane = this.querySelector('.sf-progress-run-output');
     this._reading.element = pane;

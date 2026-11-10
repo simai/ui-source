@@ -12,7 +12,9 @@
 //     the first title line; the title at the run's text line (16/24 → 14/20);
 //   - density reaches the inner buttons;
 //   - keyboard: the error link (Enter) sends report and moves focus to the
-//     list; Pause and Continue by Space; a step's log by Enter;
+//     list; Pause then Continue by two presses of Space, focus kept on the
+//     button that replaced the pressed one; Minimize by Space and Expand by
+//     Enter, focus on Expand and back on Minimize; a step's log by Enter;
 //   - the one status region says the state change, never a percentage;
 //   - live: pause, resume, minimize to notice, expand, cancel, retry;
 //   - the console stays clean, over three loads of each configuration.
@@ -275,17 +277,32 @@ try {
     const heldAt = paused.value;
     await tab.waitForTimeout(600);
     check((await state('imp')).value === heldAt, `${label}: the value moved while paused`);
-    const resumeFocused = await tab.evaluate(() => Boolean(document.querySelector('#imp .sf-progress-run-resume')));
-    check(resumeFocused, `${label}: Continue is not shown while paused`);
-    await tab.focus('#imp .sf-progress-run-resume button');
+    // The run swapped Pause for Continue: focus is on Continue (WCAG 2.4.3),
+    // so the second Space goes on without the probe touching focus.
+    const focusOn = () => tab.evaluate(() => {
+      const host = document.activeElement?.closest('sf-button, sf-button-icon');
+      return host ? [...host.classList].find((name) => name.startsWith('sf-progress-run-')) || host.localName : document.activeElement?.localName;
+    });
+    const afterPause = await focusOn();
+    check(afterPause === 'sf-progress-run-resume', `${label}: after Pause by Space focus is on ${afterPause}, wanted Continue`);
     await tab.keyboard.press('Space');
-    await tab.waitForFunction(() => document.getElementById('imp').getAttribute('data-state') === 'running', null, {timeout: 5000}).catch(() => failures.push(`${label}: Continue did not resume`));
+    await tab.waitForFunction(() => document.getElementById('imp').getAttribute('data-state') === 'running', null, {timeout: 5000}).catch(() => failures.push(`${label}: the second Space did not resume`));
+    await tab.waitForTimeout(150);
+    const afterResume = await focusOn();
+    check(afterResume === 'sf-progress-run-pause', `${label}: after Continue by Space focus is on ${afterResume}, wanted Pause`);
 
-    // minimize → notice → expand
-    await tab.click('#imp .sf-progress-run-minimize');
+    // minimize by Space → notice, focus on Expand → Enter → full, focus on Minimize
+    await tab.focus('#imp .sf-progress-run-minimize button');
+    await tab.keyboard.press('Space');
     await tab.waitForFunction(() => document.querySelector('#imp .sf-progress-run--view-notice'), null, {timeout: 5000}).catch(() => failures.push(`${label}: minimize did not reach notice`));
-    await tab.click('#imp .sf-progress-run-expand');
-    await tab.waitForFunction(() => document.querySelector('#imp .sf-progress-run--view-full'), null, {timeout: 5000}).catch(() => failures.push(`${label}: expand did not reach full`));
+    await tab.waitForTimeout(150);
+    const afterMinimize = await focusOn();
+    check(afterMinimize === 'sf-progress-run-expand', `${label}: after Minimize focus is on ${afterMinimize}, wanted Expand`);
+    await tab.keyboard.press('Enter');
+    await tab.waitForFunction(() => document.querySelector('#imp .sf-progress-run--view-full'), null, {timeout: 5000}).catch(() => failures.push(`${label}: Enter on Expand did not reach full`));
+    await tab.waitForTimeout(150);
+    const afterExpand = await focusOn();
+    check(afterExpand === 'sf-progress-run-minimize', `${label}: after Expand focus is on ${afterExpand}, wanted Minimize`);
 
     // cancel → neutral, retry starts again
     await tab.click('#imp .sf-progress-run-cancel');

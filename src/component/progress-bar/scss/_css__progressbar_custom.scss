@@ -38,6 +38,13 @@
   animation: sf-progress-bar-run calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
 }
 
+/* Paused (C34): time stands still, so the segment stops. It stands at the
+   start of the track, as under reduced motion, not at the frame the pause
+   caught (a new drawing would restart it off the track). */
+.sf-progress-bar.sf-progress-bar--indeterminate.sf-progress-bar--paused .sf-progress-bar-progress {
+  animation: none;
+}
+
 @keyframes sf-progress-bar-run {
   from {
     inset-inline-start: -30%;

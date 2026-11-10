@@ -32,7 +32,8 @@ export function renderProgressBarTemplate(context) {
     : 'none';
 
   const indeterminate = Boolean(context.indeterminate);
-  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, indeterminate ? 'sf-progress-bar--indeterminate' : '', 'flex', context.rootClass].filter(Boolean);
+  const paused = Boolean(context.paused);
+  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, `sf-progress-bar--${tone}`, indeterminate ? 'sf-progress-bar--indeterminate' : '', paused ? 'sf-progress-bar--paused' : '', 'flex', context.rootClass].filter(Boolean);
   if (normalizedPosition === 'right' || normalizedPosition === 'inline-end') {
     rootClasses.push('flex-row', 'items-cross-center');
   } else if (normalizedPosition === 'bottom') {
@@ -49,6 +50,7 @@ export function renderProgressBarTemplate(context) {
       data-label=${context.label || nothing}
       data-value-text=${context.valueText || nothing}
       data-indeterminate=${indeterminate ? 'true' : nothing}
+      data-paused=${paused ? 'true' : nothing}
       role="progressbar"
       aria-label=${context.label || nothing}
       aria-valuemin="0"

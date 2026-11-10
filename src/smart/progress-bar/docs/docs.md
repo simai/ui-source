@@ -34,7 +34,9 @@ cancellation.
 - `paused` (1.3.0) — the work stopped and will go on. The bar is a warning
   (an error from `status` or a threshold stays an error) and a screen reader
   hears it: the value text reads «35 %, на паузе» / «35%, paused» unless the
-  page gives `value-text`. Set it only where the work really stopped.
+  page gives `value-text`. Set it only where the work really stopped. An
+  indeterminate bar that is paused stands still (1.3.1): its segment stops at
+  the start of the track. Class markup: `sf-progress-bar--paused`.
 
 The component is not interactive, does not receive focus and does not create an
 assertive live region. Shared `root-class` and `root-style` settings apply only

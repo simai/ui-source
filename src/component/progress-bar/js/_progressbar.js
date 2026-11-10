@@ -89,6 +89,11 @@ function isIndeterminate(root) {
   return root.classList.contains('sf-progress-bar--indeterminate') || root.dataset.indeterminate === 'true';
 }
 
+// Paused (C34): the work stands still, so an indeterminate segment stops.
+function isPaused(root) {
+  return root.classList.contains('sf-progress-bar--paused') || root.dataset.paused === 'true';
+}
+
 function syncProgressAccessibility(root, value) {
   root.setAttribute('role', 'progressbar');
   root.setAttribute('aria-valuemin', '0');
@@ -109,10 +114,14 @@ function syncProgressAccessibility(root, value) {
   }
 }
 
+// The template writes sf-progress-bar--neutral for no status (it draws
+// nothing of its own); a status it changes to takes it away, so no
+// --neutral stays beside the new status class.
 function syncTone(root, tone) {
   ['primary', ...TONES].forEach((name) => {
     root.classList.toggle(`sf-progress-bar--${name}`, name === tone);
   });
+  if (tone) root.classList.remove('sf-progress-bar--neutral');
   if (tone) root.dataset.tone = tone;
   else delete root.dataset.tone;
 }
@@ -135,6 +144,7 @@ function renderProgressBar(root) {
   syncTone(root, tone);
   const indeterminate = isIndeterminate(root);
   root.classList.toggle('sf-progress-bar--indeterminate', indeterminate);
+  root.classList.toggle('sf-progress-bar--paused', isPaused(root));
   syncProgressAccessibility(root, value);
   if (indeterminate) progress.style.removeProperty('width');
   else progress.style.width = `${value}%`;
@@ -218,6 +228,12 @@ function setProgressBarState(target, state = {}) {
     root.classList.toggle('sf-progress-bar--indeterminate', Boolean(state.indeterminate));
   }
 
+  if (Object.prototype.hasOwnProperty.call(state, 'paused')) {
+    if (state.paused) root.dataset.paused = 'true';
+    else delete root.dataset.paused;
+    root.classList.toggle('sf-progress-bar--paused', Boolean(state.paused));
+  }
+
   if (Object.prototype.hasOwnProperty.call(state, 'size')) {
     const currentSizeClass = Array.from(root.classList).find((cls) =>
       cls.startsWith('sf-progress-bar--size-'),
@@ -247,6 +263,7 @@ function getProgressBarState(target) {
     label: root.getAttribute('aria-label') || '',
     valueText: root.getAttribute('aria-valuetext') || '',
     indeterminate: isIndeterminate(root),
+    paused: isPaused(root),
   };
 }
 
@@ -266,6 +283,7 @@ class ProgressBar extends ComponentObserver {
       label = '',
       valueText = '',
       indeterminate = false,
+      paused = false,
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -289,6 +307,7 @@ class ProgressBar extends ComponentObserver {
     if (String(label).trim()) root.dataset.label = String(label).trim();
     if (String(valueText).trim()) root.dataset.valueText = String(valueText).trim();
     if (indeterminate) root.dataset.indeterminate = 'true';
+    if (paused) root.dataset.paused = 'true';
 
     const main = document.createElement('div');
     main.className = 'sf-progress-bar-main';
