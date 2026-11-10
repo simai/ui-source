@@ -169,7 +169,9 @@ try {
           const control = host.dataset.role === 'segmented' ? (host.closest('sf-segmented') || host).querySelector('.sf-button-group') || host.closest('.sf-button-group') : button(host);
           const icon = control.querySelector('.sf-icon');
           const label = control.querySelector('.sf-button-text-container');
-          return [host.dataset.role, {box: box(control), icon: icon ? box(icon) : null, label: label ? box(label) : null}];
+          // The text itself: a label that takes the free room is wider than its words.
+          const words = label ? (() => { const range = document.createRange(); range.selectNodeContents(label); return box(range); })() : null;
+          return [host.dataset.role, {box: box(control), icon: icon ? box(icon) : null, label: label ? box(label) : null, words}];
         }));
         const close = Object.fromEntries([...document.querySelectorAll('[data-close] [data-role]')].map((host) => [host.dataset.role, box(button(host))]));
         const ink = (name) => { const probe = document.createElement('span'); probe.style.color = `var(${name})`; document.body.append(probe); const value = getComputedStyle(probe).color; probe.remove(); return value; };
@@ -214,8 +216,9 @@ try {
         const start = full.full.icon.x - full.full.box.x;
         const end = full.full.box.right - full.full.label.right;
         if (!near(start, end, 1)) failures.push({where, check: 'full-width content is centred', start, end});
-        const textStart = full['full-text'].label.x - full['full-text'].box.x;
-        if (textStart < 20) failures.push({where, check: 'full-width text is not pinned to the start', textStart});
+        const textStart = full['full-text'].words.x - full['full-text'].box.x;
+        const textEnd = full['full-text'].box.right - full['full-text'].words.right;
+        if (!near(textStart, textEnd, 1)) failures.push({where, check: 'full-width text is centred', textStart, textEnd});
       }
 
       // Icon-only sf-button is not square; sf-button-icon is.
