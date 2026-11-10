@@ -38,7 +38,10 @@ test('Smart Close closes the complete released size axis and rejects unknown inp
   assert.equal(typeof summary, 'string');
   assert.deepEqual(size, {type: 'enum', values: sizes, default: '1/3'});
   assert.match(runtime, /elementFromManifest\(manifest/);
-  assert.match(runtime, /size: this\.placeSize/);
+  // The template context carries the declared size and the drawn one apart
+  // (1.3.1, template-context contract).
+  assert.match(runtime, /size: this\.size,/);
+  assert.match(runtime, /placeSize: this\.placeSize/);
   // Without a size, a height takes the place's step (DEV D1 on C35).
   assert.match(runtime, /if \(this\.hasAttribute\('size'\)\) return this\.size;/);
 });
