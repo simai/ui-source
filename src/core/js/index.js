@@ -324,6 +324,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       height: DEFAULT_PRELOADER.height,
       content: '',
       delay: 300,
+      // R078: the splash never stays longer than this, ready or not.
+      ceiling: 1500,
       ...(window.SF_BOOT_CONFIG?.preloader || {}),
     };
 
@@ -414,6 +416,22 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       delayTimer = setTimeout(buildPreloader, cfg.delay);
     } else {
       buildPreloader();
+    }
+
+    // R078: a hard ceiling. The splash hid only on sf-loader-ready, and with
+    // the icon host held on a warm profile that event came 25 s late (the
+    // remembered icon font held the window's load, and the page scan waited
+    // for load): an opaque splash covered a page that was already drawn. Now
+    // it goes at the ceiling whatever the Loader is doing; the page shows
+    // what it has, and what is still on its way fills in.
+    const ceiling = Number(cfg.ceiling);
+    if (ceiling > 0) {
+      setTimeout(() => {
+        cancelBuild();
+        preloaderRun = false;
+        stopAnimation();
+        hide();
+      }, ceiling);
     }
 
     // A preloader asked for at once, before the body was parsed, gives way

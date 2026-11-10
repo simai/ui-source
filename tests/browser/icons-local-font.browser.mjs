@@ -110,7 +110,10 @@ try {
   const subsetRequests = [];
   tab.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });
   tab.on('request', (request) => { if (/icons\.simai\.io/u.test(request.url())) subsetRequests.push(request.url()); });
-  await tab.goto(`${base}/page.html`);
+  // Not until load: since the Loader scans at DOMContentLoaded (R078) the
+  // local font is asked for while the page loads, and a font on its way holds
+  // the window's load -- here for as long as the probe holds it.
+  await tab.goto(`${base}/page.html`, {waitUntil: 'domcontentloaded'});
   await tab.waitForFunction(() => customElements.get('sf-icon') && customElements.get('sf-button-icon')
     && document.querySelectorAll('sf-icon .sf-icon, sf-button-icon .sf-icon').length >= 2, null, {timeout: 15000});
 

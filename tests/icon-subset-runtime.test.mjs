@@ -218,6 +218,8 @@ test('v1 generator manifests keep their exact content-addressed font family', ()
 
 test('simultaneous discoveries coalesce and reload one cumulative packet', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   let releaseFirst;
   const calls = [];
   const first = new Promise((resolve) => { releaseFirst = resolve; });
@@ -247,6 +249,8 @@ test('simultaneous discoveries coalesce and reload one cumulative packet', async
 
 test('dynamic ready event is emitted only after descriptor state becomes loaded', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   const originalCustomEvent = globalThis.CustomEvent;
   const originalDispatchEvent = globalThis.window.dispatchEvent;
   const observations = [];
@@ -483,6 +487,26 @@ test('a page slow to become ready holds the first request past the budget while 
   });
 });
 
+test('R074 F3: a first request asked for only after ready still waits for the tags on the way', async () => {
+  await withHeldTags(async ({asked, define}) => {
+    const loader = new TestLoader();
+    loader.eventSend = true;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    loader.holdFirstIconRequest = ((hold) => function () { return hold.call(this, 30, 400); })(loader.holdFirstIconRequest);
+    asked.add('sf-tag');
+    loader.uniqueIcons.set('search', iconState());
+    const first = loader.loadFonts();
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 60));
+    assert.deepEqual(calls, [], 'ready already sent, sf-tag on the way: held');
+    loader.uniqueIcons.set('sell', iconState());
+    define('sf-tag');
+    await first;
+    assert.deepEqual(calls, [['search', 'sell']], 'one request carries the tag');
+  });
+});
+
 test('a page slow to become ready with nothing on the way sends the first request at the budget', async () => {
   await withHeldTags(async () => {
     const loader = new TestLoader();
@@ -501,6 +525,8 @@ test('a page slow to become ready with nothing on the way sends the first reques
 
 test('icons the page declares in icons.preload go in the first request, tracked as scanned ones', async () => {
   const loader = new TestLoader();
+  // Past the first request's hold (holdFirstIconRequest has its own tests).
+  loader.iconFirstRequestReleased = true;
   const calls = [];
   globalThis.window.SF_BOOT_CONFIG = {icons: {preload: ['article', {icon: 'library_books'}]}};
   loader.syncStaticIconLoadedState = () => {};
@@ -854,6 +880,33 @@ test('R074 D-A: a request that answers while the full font is on its way keeps i
     await sleep(30);
     assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
     assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 1);
+  } finally {
+    page.restore();
+  }
+});
+
+test('R074 R-1: a service that answers before the prefetch point fetches no full font, however long its own font takes', async () => {
+  const page = subsetPage();
+  try {
+    const full = [];
+    globalThis.window.FontFace = class FontFace {
+      constructor(family, src) { this.family = family; if (/MaterialSymbols-Outlined/u.test(String(src))) full.push(src); }
+      load() { return Promise.resolve(this); }
+    };
+    // The answer's own font arrives well after the prefetch point.
+    globalThis.document.fonts.load = () => new Promise((resolve) => setTimeout(() => resolve([{}]), 80));
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 400;
+    loader.iconFallbackPrefetchMs = 20;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    await sleep(5);
+    page.answer(page.requests[0]);
+    assert.equal(await done, true);
+    await sleep(30);
+    assert.equal(full.length, 0, 'the full font is not fetched once the service has answered');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
   } finally {
     page.restore();
   }

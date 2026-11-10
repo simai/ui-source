@@ -1704,7 +1704,34 @@ export function installIconSubsetRuntime(
         : this.verifyIconCssFonts(cssText, { icons });
     let fontVerification;
     if (adopted) {
-      fontVerification = verify();
+      // R078: the core runtime fetches a remembered face off the document's
+      // load (icon-subset-memory.js) and hands its promise over on the
+      // style. It is awaited before the check, and, like a subset request,
+      // for no longer than the deadline: a held icon host then draws from the
+      // full font instead of leaving every icon blank until it answers.
+      const ready = adopted.sfIconFacesReady;
+      if (ready && typeof ready.then === "function") {
+        const deadlineMs = Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
+        let timer = 0;
+        fontVerification = Promise.race([
+          ready,
+          new Promise((resolve, reject) => {
+            timer = setTimeout(
+              () =>
+                reject(
+                  new Error(
+                    `remembered icon subset font not loaded after ${deadlineMs} ms`,
+                  ),
+                ),
+              deadlineMs,
+            );
+          }),
+        ])
+          .finally(() => clearTimeout(timer))
+          .then(verify);
+      } else {
+        fontVerification = verify();
+      }
     } else if (prev && this.canPreloadIconFontFaces()) {
       // A subset that already drew: load the grown face first, then swap.
       fontVerification = this.preloadIconFontFaces(cssText).then(
@@ -2333,9 +2360,16 @@ export function installIconSubsetRuntime(
       deadlineMs,
       Math.max(0, Number(this.iconFallbackPrefetchMs) || 0),
     );
+    // R-1 (re-acceptance of 0c2898a5): the timer stops when the service
+    // answers, not when the answer's own font is in -- a healthy service on
+    // a slow line answers in milliseconds, and its small font then took more
+    // than a second, which fetched the full font for nothing.
     const prefetch = deadlineMs
-      ? setTimeout(() => void this.loadIconFallbackFace(type), prefetchMs)
+      ? setTimeout(() => {
+          if (!request.answered) void this.loadIconFallbackFace(type);
+        }, prefetchMs)
       : 0;
+    request.onAnswered = () => clearTimeout(prefetch);
     const first = await Promise.race([
       work,
       new Promise((resolve) => {
@@ -2404,6 +2438,8 @@ export function installIconSubsetRuntime(
         signal: request.controller?.signal,
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      request.answered = true;
+      request.onAnswered?.();
       manifest = this.decodeIconManifestHeader(
         response.headers.get("X-SIMAI-Font-Manifest"),
       );
@@ -2558,7 +2594,10 @@ export function installIconSubsetRuntime(
       return registry ? tags.filter((tag) => !registry.get(tag)) : [];
     };
 
-    await new Promise((resolve) => {
+    // Asked for only after ready (the page's icons met on the frame that
+    // dispatched it), there is no ready to wait for: the frame and the tags on
+    // the way are still waited for below.
+    if (!this.eventSend) await new Promise((resolve) => {
       let timer = 0;
       const release = () => {
         window.removeEventListener("sf-loader-ready", release);
@@ -2613,7 +2652,11 @@ export function installIconSubsetRuntime(
     // pair 1110). So the hold also waits for the Smart tags the Loader still
     // holds -- asked for, not yet defined -- and a frame after they are
     // (holdFirstIconRequest).
-    if (this.eventSend === false && !this.iconFirstRequestReleased) {
+    // Held whether it is first asked for before ready or after it: the scan
+    // runs at DOMContentLoaded (R078), and a page whose icons are first
+    // flushed on the frame that dispatched ready sent its first request with
+    // sf-tag still on the way, the tag's glyph in a second font (F3).
+    if (!this.iconFirstRequestReleased) {
       if (!this.iconFirstRequestHeld) {
         this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
