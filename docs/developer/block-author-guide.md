@@ -315,10 +315,10 @@ on it, and a primary button inverts (the on-primary plate with primary ink;
 an outlined or link primary takes the on-primary ink and edge), so it does
 not melt into the fill. `primary` stays the primary container's light fill.
 
-A heading inside a `content.card` is the card's title at every width (the
-`.sf-card` sheet, card 1.1.0): 16 px on a 22 px line, semibold, as the
-prototype's cards and features draw it (the card's title variables change
-it); in a narrow card the words wrap and
+A heading inside a `content.card` is the card's title (the `.sf-card`
+sheet, card 1.5.0): the title step of the text ladder, semibold -- 16 px on
+a 24 px line on a desktop, 14 on 20 on a phone and in a compact region (the
+card's title variables change it); in a narrow card the words wrap and
 a long word breaks at a hyphen where the page's language allows it.
 
 Forms (2026-11-04), the group `forms`:

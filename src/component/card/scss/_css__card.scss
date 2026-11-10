@@ -12,16 +12,19 @@
 // and drops the surface, for a card inside a grid that needs no frame.
 // content.card renders with it.
 
-// A heading inside a card is the card's title at every width: 16 on 22,
-// semibold -- the prototype's card title, the same on the desktop and at 380.
-// The fixed steps of the size ladder (b6, c1), not the text ramp, which steps
-// down to 14 on a phone. In the utilities layer, where the headers sheet
-// sets the bare h1..h6 sizes it replaces, and a class above them whatever
-// order the sheets load in; the card's own variables are the way to change it.
+// A heading inside a card is the card's title, whatever its level: the
+// title step of the text ladder (R082, C19), semibold -- 16 on 24 on a
+// desktop, 14 on 20 on a phone and in a compact region (C22), as every
+// component title (sf-list-attention, sf-progress-run). It was the fixed
+// b6 on c1 (16 on 22 at every width): a line off the text-height ladder that
+// followed neither the phone nor density. In the utilities layer, where the
+// headers sheet sets the bare h1..h6 sizes it replaces, and a class above
+// them whatever order the sheets load in; the card's own variables are the
+// way to change it.
 @layer sf.utilities {
   .sf-card > :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--sf-card-title-size, var(--sf-b6));
-    line-height: var(--sf-c1);
+    font-size: var(--sf-card-title-size, var(--sf-text-size-1));
+    line-height: var(--sf-text-height-1);
     font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
   }
 }

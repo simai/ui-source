@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.card",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/card/docs/docs.md",
@@ -12,7 +12,7 @@
     "src/component/card/scss/_css__card.scss",
     "src/component/card/scss/index.scss"
   ],
-  "content_sha256": "00583b7fcdfa8fa98b52b76c81971220e67807c740acfc3b2f1424cf3a90f0ac",
+  "content_sha256": "3eba6b624e83bad58f2ca8ef48250955dd5b4a390e20e8ca5a6006f8e8e391ad",
   "dependencies": [
     {
       "id": "tokens.border",
