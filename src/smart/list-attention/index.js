@@ -69,7 +69,7 @@ function noteSize(host) {
   const root = globalThis.SF = globalThis.SF || {};
   if (root.__sfListAttentionSizeWarned) return;
   Object.defineProperty(root, '__sfListAttentionSizeWarned', {value: true, configurable: true});
-  globalThis.console?.warn?.(`[SIMAI Framework] sf-list-attention: size is deprecated until ${SIZE_REMOVE_AFTER}; the density comes from the page -- write data-sf-density="compact" on the list or a container. See contracts/changes/journal.json (attribute-list-attention-size-to-density).`);
+  globalThis.console?.warn?.(`[SIMAI Framework] sf-list-attention: size is deprecated until ${SIZE_REMOVE_AFTER}; the density comes from the page -- write data-sf-density="compact" on the list or on the region or page around it. See contracts/changes/journal.json (attribute-list-attention-size-to-density).`);
 }
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
