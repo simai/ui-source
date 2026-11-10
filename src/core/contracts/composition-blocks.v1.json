@@ -642,6 +642,10 @@
             "default": "",
             "type": "string"
           },
+          "full-width": {
+            "default": false,
+            "type": "boolean"
+          },
           "height": {
             "default": "default",
             "enum": [
@@ -803,7 +807,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.11.2"
+      "version": "1.12.0"
     },
     "sf-button-icon": {
       "inputs": {

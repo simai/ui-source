@@ -77,6 +77,19 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
     ],
+    "full-width": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
     "ghost": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
