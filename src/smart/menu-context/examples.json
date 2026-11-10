@@ -839,18 +839,18 @@
         },
         {
           "id": "p17-fixed-panel-width",
-          "title": "a drilling panel keeps its 280px whatever its text, and the long label wraps",
+          "title": "a drilling panel keeps its 288px (the menu's ceiling, 18rem) whatever its text, and the long label wraps",
           "covers": "css-variables --sf-context-menu-inline-size, geometry",
           "steps": [
             {
-              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 280"
+              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 288"
             },
             {
               "script": "(document.getElementById('settings').setValue('nothing', 1), document.getElementById('settings').entries = [{id: 'long', type: 'switch', text: 'Очень длинное название настройки, которое не должно расширять панель', value: false}], true)",
               "wait": 200
             },
             {
-              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 280"
+              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 288"
             },
             {
               "check": "document.querySelector(\"#settings [data-sf-entry='0'] .sf-context-menu-item-label\").getBoundingClientRect().height > 20"

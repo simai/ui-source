@@ -87,13 +87,9 @@ test('no first-party source asks a component for a value it does not declare', (
 // they want anyway. Changing it would change how tabs draw, so it is recorded
 // here rather than fixed in a round about the property view (owner, 2026-10-09).
 const KNOWN_ATTRIBUTES = [];
-// sf-tag's cross is moving to sf-button-close on its own branch (actions
-// block, 2026-11-08); its sf-button-icon keeps appearance="link", a dated alias
-// of ghost until 2027-01-01, until that branch lands.
 const KNOWN = [
   'src/smart/tabs/js/templates/default.js: <sf-button appearance="primary"> — default, ghost, outline, surface, tonal',
   'src/smart/tabs/js/templates/default.js: <sf-button-icon appearance="primary"> — default, ghost, outline, tonal',
-  'src/smart/tag/js/templates/default.js: <sf-button-icon appearance="link"> — default, ghost, outline, tonal',
 ];
 
 // And an attribute a component does not declare is the same mistake wearing a

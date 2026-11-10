@@ -291,13 +291,15 @@
   color: inherit;
 }
 
-/* A drilling panel's width is fixed and public: 280px by default (the
-   ladder's f7 + a8), the width the owner reviewed in the prototype
-   (2026-10-30). A fixed width is the point of drilling -- the panel grows
-   neither with a level's longest word nor with a value -- and openFor(anchor,
-   {width}) still overrides it, as it does for a panel with tabs. */
+/* A drilling panel's width is fixed and public. By default it is the menu's
+   ceiling of the popup widths, 18rem, 16rem in compact density (owner
+   decision C32, addendum 2026-11-09: it follows density); it was 280px at
+   every density (f7 + a8, reviewed in the prototype 2026-10-30). A fixed
+   width is the point of drilling -- the panel grows neither with a level's
+   longest word nor with a value -- and openFor(anchor, {width}) still
+   overrides it, as it does for a panel with tabs. */
 .sf-context-menu.sf-context-menu--drill .sf-context-menu-content {
-  --sf-context-menu-drill--inline-size: var(--sf-context-menu-inline-size, calc(var(--sf-f7) + var(--sf-a8)));
+  --sf-context-menu-drill--inline-size: var(--sf-context-menu-inline-size, var(--sf-popup-menu-max-width));
   inline-size: var(--sf-context-menu--min-inline-size, var(--sf-context-menu-drill--inline-size));
   max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-context-menu-drill--inline-size)), var(--sf-context-menu-available-inline-size, 100vw));
 }
@@ -860,6 +862,22 @@
   max-inline-size: min(max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
 }
 
+/* A long choice in a list at a field wraps, as sf-dropdown's options do; a
+   command in a menu keeps its one line and ends in an ellipsis (owner
+   decision C32, addendum 2026-11-09). A choice is read whole before it is
+   taken; a command is known by its start. */
+.sf-context-menu .sf-context-menu-content[data-sf-width="list"] .sf-context-menu-item {
+  white-space: normal;
+}
+
+.sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-label, .sf-context-menu-item-caption) {
+  overflow-wrap: anywhere;
+}
+
+.sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-lead, .sf-context-menu-item-check) {
+  align-self: center;
+}
+
 /* panel: a panel with a search and actions (a views picker, a profile
    picker) -- the panel's step, or its trigger when that is wider. Fixed, never
    its content's: a search that filtered the rows made it jump. */
@@ -883,7 +901,8 @@
 }
 
 /* A form on a phone (below the md breakpoint, 44rem): a sheet docked to the
-   bottom edge, the screen's whole width, over the scrim -- the sheet's place
+   bottom edge, the screen's whole width up to 44rem (--sf-h1, owner decision
+   C32, addendum 2026-11-09), centred, over the scrim -- the sheet's place
    of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
    sf-menu-context marks the surface data-sf-sheet and does not anchor it.
    The content keeps clear of a phone's home indicator (safe area). */
@@ -892,7 +911,8 @@
   position: fixed;
   inset: auto 0 0;
   inline-size: 100%;
-  max-inline-size: none;
+  max-inline-size: var(--sf-h1);
+  margin-inline: auto;
   max-block-size: calc(100dvh - var(--sf-space-4));
   border-end-end-radius: 0;
   border-end-start-radius: 0;

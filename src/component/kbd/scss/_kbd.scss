@@ -105,6 +105,10 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   font-family: inherit;
   font-size: var(--sf-kbd--plain-font-size, 1em);
   font-weight: inherit;
+  // The glyphs' own line (1em), as before C38's centring: the row's line is
+  // the label's, and a key's line box of the row's height reported a line
+  // the glyphs do not draw (pair ui-a0370c0c99fb acceptance, F2).
+  line-height: 1;
   margin-block: var(--sf-0);
   vertical-align: baseline;
 }
@@ -212,6 +216,19 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   // row is a button inside a menu, so the list comes last and wins).
   :where(#{$cap-places}) :where(#{$key}) {
     @include cap;
+  }
+
+  // In the Framework's controls the keys stand in a row of their own that the
+  // control centres (sf-button's and sf-input's shortcut wrappers are flex
+  // rows): there the group's line is the plate, so its line box is the
+  // plate's and the keys' centring margins are zero. Inherited from the
+  // control, it was the label's line (normal: 15-24 px in a button, 20-36 in
+  // a field) around a 16-28 px plate; the plates did not move, the line box
+  // did (pair ui-a0370c0c99fb acceptance, F2). Anywhere else -- running
+  // text, a native button's line -- the group keeps the line it stands in,
+  // and the margins centre each key in it.
+  :where(.sf-button-shortcut, .sf-input-shortcut) > :where(#{$group}) {
+    line-height: var(--sf-kbd-size, var(--sf-kbd--step-size, var(--sf-text-height-1\/2)));
   }
 
   :where(#{$plain-places}) :where(#{$key}) {
