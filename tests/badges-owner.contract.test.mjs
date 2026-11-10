@@ -196,7 +196,12 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
   }
   assert.match(popover, /--sf-surface-underlay: initial;/u);
   // A translucent fill declares the place it stands on.
-  assert.match(mix, /@mixin sf-place-fill \{\s*--sf-surface-underlay: var\(--sf-surface-place\);\s*\}/u);
+  assert.match(mix, /@mixin sf-place-fill \{\s*--sf-surface-underlay: var\(--sf-surface-place-solid\);\s*\}/u);
+  // The solid colour: the page's, an opaque or strong place's; initial on a
+  // translucent (soft) place, so a row there leaves the role off (DEV D1).
+  assert.match(theme, /\s--sf-surface-place-solid: var\(--sf-surface-page\);/u);
+  assert.match(mix.slice(mix.indexOf('@mixin sf-place-soft'), mix.indexOf('\n}\n', mix.indexOf('@mixin sf-place-soft'))), /--sf-surface-place-solid: initial;/u);
+  assert.match(mix.slice(mix.indexOf('@mixin sf-place('), mix.indexOf('\n}\n', mix.indexOf('@mixin sf-place('))), /--sf-surface-place-solid: #\{\$surface\};/u);
   // The Framework's selected, current and open rows include it.
   const rows = [
     ['src/component/dropdown/scss/_css__list-item.scss', /\.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill;/u],
@@ -206,7 +211,8 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill;/u],
     ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill;/u],
     ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place\);/u],
+    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\);/u],
+    ['src/smart/input-choice/scss/_smart__choice.scss', /\.sf-choice \.sf-choice-card--checked:hover \{[^}]*@include places\.sf-place-fill;/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
 });
