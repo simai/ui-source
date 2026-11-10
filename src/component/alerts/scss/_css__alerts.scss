@@ -246,17 +246,14 @@
 }
 
 /* One notice, one ink (C35 acceptance F1): the cross is the notice's text ink
-   and the status icon the status's own role (--sf-<status>), as on sf-toast, so the Smart alert, the class alert and the toast draw one
+   and the status icon the status's own role (--sf-<status>; neutral the quiet
+   --sf-on-surface-variant), as on sf-toast, so the Smart alert, the class alert and the toast draw one
    notice alike. The Smart alert's close stands inside an sf-button-icon host
    (display: contents), so the cross is reached through any close host, not
    only a class .sf-icon-button child. Neutral, and an outlined alert whose
    text stands on the page: --sf-on-surface. */
 .sf-alert > :is(.sf-icon-button, sf-button-icon, sf-icon-button, sf-button-close) .sf-close-icon {
   --sf-close-icon--background-color: var(--sf-on-surface);
-}
-
-.sf-alert:is(.sf-alert--neutral, .sf-alert--clear) > :is(.sf-icon, sf-icon > .sf-icon) {
-  --sf-icon--color: var(--sf-on-surface);
 }
 
 .sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, sf-button-icon, sf-icon-button, sf-button-close) .sf-close-icon {

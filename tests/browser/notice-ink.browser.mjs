@@ -11,8 +11,8 @@
 //   - the cross is the notice's text ink: the status container's ink
 //     (--sf-on-<status>-container) on a filled or flat notice, --sf-on-surface
 //     on a neutral one and on an outlined one, whose text stands on the page;
-//   - the status icon is the status's role (--sf-<status>), --sf-on-surface
-//     when neutral, on every appearance of the alert (the container's graphic
+//   - the status icon is the status's role (--sf-<status>), the quiet
+//     --sf-on-surface-variant of its place when neutral (alert-role-colors), on every appearance of the alert (the container's graphic
 //     tone the toast had read 2.86-3.04:1 in the dark theme);
 //   - the cross reads 3:1 against the notice's fill, and so does the icon.
 //
@@ -108,7 +108,8 @@ const MEASURE = (levels) => {
     const container = level === 'neutral' ? null : level;
     want[level] = {
       cross: token(container ? `--sf-on-${container}-container` : '--sf-on-surface'),
-      icon: token(container ? `--sf-${container}` : '--sf-on-surface'),
+      icon: token(container ? `--sf-${container}` : '--sf-on-surface-container--variant'),
+      pageIcon: token(container ? `--sf-${container}` : '--sf-on-surface-variant'),
       page: token('--sf-on-surface'),
     };
   }
@@ -184,11 +185,14 @@ try {
           if (!got || got.missing) { failures.push(`${label}-${theme} ${key}: not drawn`); continue; }
           const onPage = key.endsWith('-outlined');
           const cross = onPage ? want[level].page : want[level].cross;
-          const row = {view: label, theme, key, cross: got.cross, wantCross: cross, icon: got.icon, wantIcon: want[level].icon, text: got.text, fill: got.fill,
+          // Neutral: the quiet icon role of the notice's place -- its container's
+          // variant on a filled notice, the page's on an outlined alert.
+          const icon = onPage ? want[level].pageIcon : want[level].icon;
+          const row = {view: label, theme, key, cross: got.cross, wantCross: cross, icon: got.icon, wantIcon: icon, text: got.text, fill: got.fill,
             crossContrast: got.cross ? contrast(got.cross.slice(0, 7), got.fill) : null, iconContrast: got.icon ? contrast(got.icon.slice(0, 7), got.fill) : null};
           report.push(row);
           if (got.cross !== cross) failures.push(`${label}-${theme} ${key}: cross ${got.cross}, want ${cross}`);
-          if (got.icon !== want[level].icon) failures.push(`${label}-${theme} ${key}: icon ${got.icon}, want ${want[level].icon}`);
+          if (got.icon !== icon) failures.push(`${label}-${theme} ${key}: icon ${got.icon}, want ${icon}`);
           if (got.cross !== got.text) failures.push(`${label}-${theme} ${key}: cross ${got.cross} is not the text's ink ${got.text}`);
           if (row.crossContrast < 3) failures.push(`${label}-${theme} ${key}: cross ${row.crossContrast}:1 on its fill`);
           if (row.iconContrast < 3) failures.push(`${label}-${theme} ${key}: icon ${row.iconContrast}:1 on its fill`);

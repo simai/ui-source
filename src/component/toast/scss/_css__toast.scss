@@ -146,8 +146,10 @@
     overflow-wrap: anywhere;
   }
 
+  /* The quiet icon role, as on the alert (C35 acceptance F1): a neutral
+     toast reads it from its container (--sf-on-surface-container--variant). */
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-variant);
   }
 
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-supporting-text {

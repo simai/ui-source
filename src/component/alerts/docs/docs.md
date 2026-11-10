@@ -41,7 +41,7 @@ One notice draws one ink, as sf-toast does: the close's cross is the notice's
 text ink -- `--sf-on-<status>-container` on a default or flat alert,
 `--sf-on-surface` when neutral and on an outlined alert, whose text stands on
 the page -- and the status icon is the status's role `--sf-<status>`
-(`--sf-on-surface` when neutral), which reads 5.2:1 or more on its container in
+(neutral: the quiet `--sf-on-surface-variant` of its place), which reads 5.2:1 or more on its container in
 the light theme and 7.7:1 or more in the dark one. The cross is reached inside any close host,
 so the Smart alert's close (an `sf-button-icon`) takes it too.
 
