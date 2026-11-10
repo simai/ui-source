@@ -124,12 +124,22 @@ the change journal records it (`token-c16-theme-role-names`,
 | `surface-overlay` | `surface-veil` |
 | `outline-<c>` | `<c>-outline` |
 | `disable`, `on-disable`, `outline-disable` | `surface-disabled`, `on-surface-disabled`, `outline-disabled` |
+| `on-surface-muted` (C43, value changes) | `on-surface-disabled` |
 | component `--sf-<name>-background` | `--sf-<name>-background-color` |
 
 Held, with their own values: `elevation-2--*` and `elevation-5--*` (their
 values differ from the step they join; the collapse is a visible change of a
 later stage) and the four `shadow--*` theme names (the shadow family is
 renamed whole in its own pass).
+
+One former name changes its value: `on-surface-muted` is `var(--sf-on-surface-disabled)`
+since C43 (2026-11-10; journal `token-c43-muted-is-disabled`, remove after
+2027-01-01). It was neutral-60 / neutral-40, which no place could take back;
+it now follows the disabled ink of the place it stands on. It is not in the
+C16 list, which holds renames with the same value: every rule that declares
+the disabled ink declares it beside it, and
+`tests/muted-alias.contract.test.mjs` holds that in the built sheets. Read
+`--sf-on-surface-disabled`.
 
 **How the aliases work.** A former name is `var()` of its new name:
 `--sf-surface-0: var(--sf-surface-page)`. An alias resolves where it is

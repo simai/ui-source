@@ -48,8 +48,13 @@
 }
 
 // Offline is the disabled ink (C43: the muted role is the disabled one).
+// That ink is an alpha and the dot stands on the avatar, not on the place, so
+// the photo or the initials would show through it (a green photo read as
+// online). It stacks over the place's colour instead, as C43 lays every alpha
+// over the solid place: the dot is the disabled ink on the place it is on.
 .sf-online-indicator--offline {
-  --sf-online-indicator--background-color: var(--sf-on-surface-disabled);
+  --sf-online-indicator--background-color: var(--sf-surface-place);
+  background-image: linear-gradient(var(--sf-on-surface-disabled) 0 0);
 }
 
 .sf-online-indicator--online {
