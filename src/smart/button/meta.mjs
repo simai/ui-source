@@ -167,6 +167,15 @@ const sfButtonMeta = {
       "default": "",
       "description": "Border radius modifier."
     },
+    "full-width": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The control fills its container, as sf-segmented's full-width does, and its content stays in the middle; without it the button is as wide as its content (owner decision C36). The height does not change."
+    },
     "loading": {
       "kind": "boolean",
       "values": [
@@ -174,7 +183,7 @@ const sfButtonMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). The inner button is unavailable while it loads."
+      "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner) and the label's ink. The inner button is unavailable while it loads but keeps its scheme colour (owner decision C36); a button that is also disabled wears the disabled look."
     },
     "disabled": {
       "kind": "boolean",

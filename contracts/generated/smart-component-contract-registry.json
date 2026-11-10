@@ -304,6 +304,7 @@
             "icon-position",
             "spacing",
             "radius",
+            "full-width",
             "loading",
             "disabled",
             "native-type",
@@ -346,7 +347,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "2c8c5c3739b20bcb6c5b928247031f0e893f85d6975c04d64ef93b45b1aa520d",
+      "manifest_sha256": "3abed930b507a12dff47dedfdfbc0b4b87f53965de4392d4c703520f4e272085",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -381,7 +382,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-close/smart.manifest.json",
-      "manifest_sha256": "bc0de8d12b6600b464222e51924765840b5e6eb6e8dfe63c1de8b9883a940675",
+      "manifest_sha256": "a1bc80aa10b01250e6b3bf871f2d1a50414354bbadd7606a122133ea34eafdca",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
