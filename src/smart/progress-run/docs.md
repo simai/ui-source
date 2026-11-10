@@ -210,6 +210,8 @@ pressed one's place, so the next key goes on from there.
 
 ## Changes
 
+- 1.3.2 (2026-11-10) — internal: the template context no longer reuses the
+  name `look` for the state's badge and bar; nothing drawn differently.
 - 1.3.1 (2026-11-10) — focus stays on the run's buttons when it swaps them
   (Pause ↔ Continue, Minimize ↔ Expand); a run of unknown size with no count
   shows no bare «0»; the running examples start when the page loads; in

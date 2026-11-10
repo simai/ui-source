@@ -37,9 +37,9 @@ const BELOW = {'1/2': '1/3', 1: '1/2'};
 const icon = (name, extra = '') => html`<i class=${['sf-icon', 'sf-progress-run-icon', extra].filter(Boolean).join(' ')} aria-hidden="true">${name}</i>`;
 
 function badge(context, size) {
-  const {look, badgeText} = context;
+  const {stateLook, badgeText} = context;
   return html`<sf-badge class="sf-progress-run-badge" size=${size} appearance="tonal"
-    activity=${look.activity || nothing} status=${look.status || nothing} icon-start=${look.icon || nothing}
+    activity=${stateLook.activity || nothing} status=${stateLook.status || nothing} icon-start=${stateLook.icon || nothing}
     text=${badgeText || nothing}></sf-badge>`;
 }
 

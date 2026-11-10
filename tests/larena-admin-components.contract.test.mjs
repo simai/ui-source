@@ -25,7 +25,7 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.3.1');
+  assert.equal(manifest.version, '1.3.2');
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);
