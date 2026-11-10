@@ -1,0 +1,375 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-grid",
+  "input": "docara-examples-grid.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.grid",
+              "props": {
+                "columns": 3,
+                "gap": 2
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m2",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m3",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Markdown"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m4",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Понятный исходный формат."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m5",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m6",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "JSON"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m7",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Проверяемые настройки."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m8",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m9",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "HTML"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m10",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Готовый статический результат."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m11",
+              "type": "content.grid",
+              "props": {
+                "columns": 3
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m12",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m13",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Первый блок"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m14",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Содержимое."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m15",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m16",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Второй блок"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m17",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Содержимое."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.grid",
+              "props": {
+                "columns": 2,
+                "gap": 2
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m19",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m20",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Содержание"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m21",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Первый самостоятельный блок."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m22",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m23",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Композиция"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m24",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Второй самостоятельный блок."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.grid",
+              "props": {
+                "columns": 2,
+                "gap": 4
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m26",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m27",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Шире"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m28",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Расстояние между карточками больше."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m29",
+                    "type": "content.card",
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m30",
+                          "type": "content.heading",
+                          "data": {
+                            "level": 4,
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Воздух"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "m31",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Удобно для крупных блоков."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

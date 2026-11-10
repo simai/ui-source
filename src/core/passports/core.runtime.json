@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.51.1",
+  "version": "1.52.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -97,16 +97,20 @@
     "src/core/js/composition/data.mjs",
     "src/core/js/composition/editor-words.mjs",
     "src/core/js/composition/editor.mjs",
+    "src/core/js/composition/editorjs.mjs",
     "src/core/js/composition/elements.generated.mjs",
     "src/core/js/composition/elements.mjs",
     "src/core/js/composition/fields.mjs",
     "src/core/js/composition/file-size.mjs",
+    "src/core/js/composition/foreign.mjs",
     "src/core/js/composition/fragments.mjs",
     "src/core/js/composition/html-subset.mjs",
+    "src/core/js/composition/html-value.mjs",
     "src/core/js/composition/index.mjs",
     "src/core/js/composition/inline-editor.mjs",
     "src/core/js/composition/inline-model.mjs",
     "src/core/js/composition/manifest-host.mjs",
+    "src/core/js/composition/markdown.mjs",
     "src/core/js/composition/overlay.mjs",
     "src/core/js/composition/parameter-sets.mjs",
     "src/core/js/composition/recipe.mjs",
@@ -209,7 +213,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "c86e89eee2bf4458eef2aa24d1ba8fc79f62722a3c9165fd76c5a62c61f9f122",
+  "content_sha256": "2f6a9085de5e7de08c0ae7999d01e3cdf158910a1338be50decabc35e779c770",
   "dependencies": [
     {
       "id": "core.styles",

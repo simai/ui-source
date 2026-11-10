@@ -286,6 +286,35 @@ check(holds(unknownMark.before) && holds(unknownMark.typed) && holds(unknownMark
 check(same(unknownMark.wrappers, ['span:superscript']) && unknownMark.strangers === 0, 'an unknown mark is drawn as a span carrying its name', unknownMark.wrappers);
 check(unknownMark.toggled[0]?.marks?.includes('strong') && unknownMark.typed.at(-1).value === ' конец!', 'the neighbour edits took effect', unknownMark.toggled);
 
+// Shift+Enter (inline model 1.2.0, F2.1): a soft line break in the same
+// block, with the marks of the text before it; Enter still commits. A break
+// at the end shows its empty line and is read back once.
+await page.evaluate(() => {
+  const element = document.createElement('p');
+  element.id = 'breaks';
+  document.body.append(element);
+  for (const name of ['sf-editor-inline-change', 'sf-inline-editor-change', 'sf-inline-edit-commit']) element.addEventListener(name, (event) => event.stopPropagation());
+  window.lab.breaks = window.SF.Composition.startInlineEdit(element, { content: [{ type: 'text', value: 'Первая' }, { type: 'text', value: 'вторая', marks: ['strong'] }], nodeId: 'breaks', label: 'Абзац' });
+});
+await page.keyboard.press('Home');
+for (let index = 0; index < 6; index += 1) await page.keyboard.press('ArrowRight');
+await page.keyboard.press('Shift+Enter');
+const afterBreak = await page.evaluate(() => window.lab.breaks.value());
+await page.keyboard.press('End');
+await page.keyboard.press('Shift+Enter');
+const endBreak = await page.evaluate(() => ({ value: window.lab.breaks.value(), brs: document.querySelectorAll('#breaks br').length, marked: document.querySelectorAll('#breaks br[data-sf-inline-break]').length }));
+await page.keyboard.type('третья');
+const typedAfter = await page.evaluate(() => window.lab.breaks.value());
+await page.keyboard.press('ControlOrMeta+z');
+const undone = await page.evaluate(() => window.lab.breaks.value());
+await page.keyboard.press('Enter');
+const breaksCommitted = await page.evaluate(() => { const element = document.getElementById('breaks'); const left = element.hasAttribute('data-sf-inline-editing'); element.remove(); return { left }; });
+observations.breaks = { afterBreak, endBreak, typedAfter, undone, breaksCommitted };
+check(same(afterBreak, [{ type: 'text', value: 'Первая' }, { type: 'break' }, { type: 'text', value: 'вторая', marks: ['strong'] }]), 'Shift+Enter inserts a break, not a new block and not a space', afterBreak);
+check(same(endBreak.value.at(-1), { type: 'break', marks: ['strong'] }) && endBreak.brs === 3 && endBreak.marked === 2, 'a break at the end takes the marks before it and shows its empty line with one placeholder', endBreak);
+check(same(typedAfter.slice(-2), [{ type: 'break', marks: ['strong'] }, { type: 'text', value: 'третья', marks: ['strong'] }]), 'text typed after a final break stands on the new line', typedAfter);
+check(!breaksCommitted.left, 'Enter still commits', breaksCommitted);
+
 // Dark, narrow, RTL.
 await open({ theme: 'dark', width: 390, dir: 'rtl' });
 await body().dblclick({ position: { x: 4, y: 4 } });

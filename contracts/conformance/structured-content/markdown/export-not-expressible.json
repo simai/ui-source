@@ -1,0 +1,206 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown-export",
+  "schema_version": 1,
+  "id": "export-not-expressible",
+  "summary": "What Markdown has no place for: presentation, a figure size, a table header column, a caption, a media block, an unknown inline entry.",
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "a",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "x"
+                  },
+                  {
+                    "type": "footnote",
+                    "ref": "1"
+                  }
+                ]
+              },
+              "presentation": {
+                "preset": "lead"
+              }
+            },
+            {
+              "id": "f",
+              "type": "content.figure",
+              "data": {
+                "src": "/images/a.webp",
+                "alt": "A scene",
+                "width": 640,
+                "height": 480
+              }
+            },
+            {
+              "id": "t",
+              "type": "content.table",
+              "props": {
+                "header": "column"
+              },
+              "data": {
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "cap"
+                  }
+                ],
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Name"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Size"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Note"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "A"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "1"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "first",
+                        "marks": [
+                          "em"
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "B"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "2"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "link",
+                        "href": "/b",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "second"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m",
+              "type": "content.media",
+              "data": {
+                "src": "/images/a.webp",
+                "alt": "A scene"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "mp",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Side."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "markdown": "x\n\n![A scene](/images/a.webp)\n\n| Name | Size | Note |\n| --- | --- | --- |\n| A | 1 | *first* |\n| B | 2 | [second](/b) |\n",
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0].presentation",
+        "what": "presentation"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0].data.content[1]",
+        "what": "inline footnote"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[1].data.width",
+        "what": "figure width"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[1].data.height",
+        "what": "figure height"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2].props.header",
+        "what": "table header column"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2].data.caption",
+        "what": "table caption"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[3]",
+        "what": "type content.media"
+      }
+    ]
+  }
+}

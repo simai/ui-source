@@ -1,0 +1,44 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "invalid-foreign-source",
+  "summary": "source is markdown, editorjs or html.",
+  "covers": [
+    "content.foreign"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "fx",
+              "type": "content.foreign",
+              "data": {
+                "source": "notion",
+                "raw": "x"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": false,
+    "html": "",
+    "diagnostics": [
+      {
+        "code": "schema_enum",
+        "path": "$.root.slots.default[0].data.source"
+      }
+    ],
+    "assets": []
+  }
+}

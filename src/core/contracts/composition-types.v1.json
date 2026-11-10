@@ -252,7 +252,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -275,34 +276,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -529,7 +583,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.heading",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "assets": [],
@@ -552,7 +606,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -575,34 +630,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -836,7 +944,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.paragraph",
-      "version": "1.3.0"
+      "version": "1.4.0"
     },
     {
       "assets": [],
@@ -2697,7 +2805,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -2720,34 +2829,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -2974,7 +3136,7 @@
         }
       },
       "type": "content.list-item",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],
@@ -3147,7 +3309,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -3170,34 +3333,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -3397,7 +3613,8 @@
                             "enum": [
                               "strong",
                               "em",
-                              "code"
+                              "code",
+                              "strike"
                             ]
                           },
                           "type": "array",
@@ -3420,34 +3637,87 @@
                     {
                       "additionalProperties": false,
                       "properties": {
+                        "marks": {
+                          "items": {
+                            "enum": [
+                              "strong",
+                              "em",
+                              "code",
+                              "strike"
+                            ]
+                          },
+                          "type": "array",
+                          "uniqueItems": true
+                        },
+                        "type": {
+                          "const": "break"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
                         "children": {
                           "items": {
-                            "additionalProperties": false,
-                            "properties": {
-                              "marks": {
-                                "items": {
-                                  "enum": [
-                                    "strong",
-                                    "em",
-                                    "code"
-                                  ]
+                            "oneOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "marks": {
+                                    "items": {
+                                      "enum": [
+                                        "strong",
+                                        "em",
+                                        "code",
+                                        "strike"
+                                      ]
+                                    },
+                                    "type": "array",
+                                    "uniqueItems": true
+                                  },
+                                  "type": {
+                                    "const": "text"
+                                  },
+                                  "value": {
+                                    "maxLength": 100000,
+                                    "type": "string"
+                                  }
                                 },
-                                "type": "array",
-                                "uniqueItems": true
+                                "required": [
+                                  "type",
+                                  "value"
+                                ],
+                                "type": "object"
                               },
-                              "type": {
-                                "const": "text"
-                              },
-                              "value": {
-                                "maxLength": 100000,
-                                "type": "string"
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "marks": {
+                                    "items": {
+                                      "enum": [
+                                        "strong",
+                                        "em",
+                                        "code",
+                                        "strike"
+                                      ]
+                                    },
+                                    "type": "array",
+                                    "uniqueItems": true
+                                  },
+                                  "type": {
+                                    "const": "break"
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ],
+                                "type": "object"
                               }
-                            },
-                            "required": [
-                              "type",
-                              "value"
-                            ],
-                            "type": "object"
+                            ]
                           },
                           "minItems": 1,
                           "type": "array"
@@ -3693,7 +3963,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.table",
-      "version": "1.0.1"
+      "version": "1.1.0"
     },
     {
       "assets": [
@@ -3722,7 +3992,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -3745,34 +4016,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -4023,7 +4347,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.figure",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [
@@ -4048,7 +4372,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -4071,34 +4396,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -4339,7 +4717,7 @@
         }
       },
       "type": "content.alert",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],
@@ -4362,7 +4740,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -4385,34 +4764,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -4649,7 +5081,7 @@
         }
       },
       "type": "content.details",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [
@@ -4842,7 +5274,8 @@
                         "enum": [
                           "strong",
                           "em",
-                          "code"
+                          "code",
+                          "strike"
                         ]
                       },
                       "type": "array",
@@ -4865,34 +5298,87 @@
                 {
                   "additionalProperties": false,
                   "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
                     "children": {
                       "items": {
-                        "additionalProperties": false,
-                        "properties": {
-                          "marks": {
-                            "items": {
-                              "enum": [
-                                "strong",
-                                "em",
-                                "code"
-                              ]
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
                             },
-                            "type": "array",
-                            "uniqueItems": true
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
                           },
-                          "type": {
-                            "const": "text"
-                          },
-                          "value": {
-                            "maxLength": 100000,
-                            "type": "string"
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
                           }
-                        },
-                        "required": [
-                          "type",
-                          "value"
-                        ],
-                        "type": "object"
+                        ]
                       },
                       "minItems": 1,
                       "type": "array"
@@ -5116,7 +5602,7 @@
         }
       },
       "type": "content.step",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [],
@@ -5434,6 +5920,64 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.html",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "category": "content",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "hash": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "raw": {
+            "maxLength": 200000,
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "markdown",
+              "editorjs",
+              "html"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "raw"
+        ],
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout",
+        "structured-content"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "content.foreign"
+      },
+      "schema": "simai.composition.type-manifest",
+      "schema_version": 1,
+      "slots": {},
+      "type": "content.foreign",
       "version": "1.0.0"
     },
     {

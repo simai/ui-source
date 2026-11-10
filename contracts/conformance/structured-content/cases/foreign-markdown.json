@@ -1,0 +1,39 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "foreign-markdown",
+  "summary": "A Markdown block with CRLF, tabs, trailing spaces and text beyond ASCII: nothing drawn.",
+  "covers": [
+    "content.foreign"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "fx",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Пример\"}\r\n\tкод  \r\n:::\r\n"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"></article>",
+    "diagnostics": [],
+    "assets": []
+  }
+}

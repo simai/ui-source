@@ -604,8 +604,9 @@ export async function normalize(document, registry = undefined, options = {}) {
     Object.values(node.slots || {}).flat().forEach((child) => visit(child, depth));
   };
   visit(normalized.root);
+  const notices = [...(result.notices || []), ...await settleForeignHashes(normalized.root)];
   return {
-    ...(result.notices ? { notices: result.notices } : {}),
+    ...(notices.length ? { notices } : {}),
     document: normalized,
     digest: await sha256(stableStringify(normalized)),
     dependencies: {
@@ -616,14 +617,53 @@ export async function normalize(document, registry = undefined, options = {}) {
   };
 }
 
+// content.foreign (F2.2): the hash of raw is written where it is missing and
+// checked where it is present. A mismatch keeps the block as it is, is
+// reported, and the block is not drawn.
+async function settleForeignHashes(root) {
+  const notices = [];
+  const visit = async (node, path) => {
+    if (!isPlainObject(node)) return;
+    if (node.type === 'content.foreign' && isPlainObject(node.data) && typeof node.data.raw === 'string') {
+      const hash = `sha256:${await sha256(node.data.raw)}`;
+      if (node.data.hash === undefined) node.data.hash = hash;
+      else if (node.data.hash !== hash) notices.push(diagnostic('foreign_hash_mismatch', `${path}.data.hash`, 'The hash does not match raw; the block is kept and not drawn', { id: node.id }));
+    }
+    for (const [name, children] of Object.entries(isPlainObject(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) for (const [index, child] of children.entries()) await visit(child, `${path}.slots.${name}[${index}]`);
+    }
+  };
+  await visit(root, '$.root');
+  return notices;
+}
+
+const FOREIGN_SOURCE_NAMES = Object.freeze({ markdown: 'Markdown', editorjs: 'Editor.js', html: 'HTML' });
+// The editor's view of a foreign block: inert, its source and, for an
+// Editor.js block, the tool's name, as escaped text. raw is never markup.
+function foreignPlaceholder(node) {
+  let tool = '';
+  if (node.data.source === 'editorjs') {
+    try {
+      const parsed = JSON.parse(node.data.raw);
+      if (typeof parsed?.type === 'string' && /^[A-Za-z0-9_-]{1,64}$/u.test(parsed.type)) tool = parsed.type;
+    } catch { /* not a block: the source alone */ }
+  }
+  const label = `${FOREIGN_SOURCE_NAMES[node.data.source] || node.data.source}${tool ? ` · ${tool}` : ''}`;
+  return `<div class="sf-composition-unknown" role="note" data-sf-composition-type="content.foreign" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(label)}</div>`;
+}
+
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
-const MARK_ELEMENTS = Object.freeze({ strong: 'strong', em: 'em', code: 'code' });
+const MARK_ELEMENTS = Object.freeze({ strong: 'strong', em: 'em', code: 'code', strike: 's' });
 function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
+    // A soft line break (inline model 1.2.0) inside the marks it carries.
+    if (inline.type === 'break' && Object.keys(inline).every((key) => key === 'type' || key === 'marks')) {
+      return (inline.marks || []).reduce((output, mark) => (MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output), '<br>');
+    }
     if (inline.type !== 'text') {
       // An atom draws its own element, its props escaped as text; anything
       // else (validation refuses it) draws nothing rather than "undefined".
@@ -970,6 +1010,9 @@ const BUILTIN_RENDERERS = {
   // attribute but a safe href survives.
   'content.html': ({ node }) => `<div${id(node)}>${sanitizeRichText(node.data.markup)}</div>`,
   'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
+  // Nothing on a public page; an editor (unknown: 'placeholder') draws the
+  // inert placeholder.
+  'content.foreign': ({ node, context }) => (context?.options?.unknown === 'placeholder' ? foreignPlaceholder(node) : ''),
 };
 
 // context.resolveSource(src, {node}) → address: a host that keeps pictures
@@ -986,7 +1029,11 @@ export async function render(document, context = {}) {
   const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
-  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier'));
+  // A foreign block whose hash does not match is kept and not drawn: what
+  // drawing found, so a diagnostic of the render (F2.2).
+  const mismatched = new Set((normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map((entry) => entry.id));
+  diagnostics.push(...(normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map(({ id: _id, ...entry }) => entry));
+  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier') && entry.code !== 'foreign_hash_mismatch');
   const hydration = [];
   const routes = resolveRoutes(normalized.document.root, registry, normalizePorts(context.options?.ports), []);
   // The data of the blocks that declare it, resolved before drawing (data.mjs).
@@ -1027,6 +1074,7 @@ export async function render(document, context = {}) {
     // Only reached under unknown: 'placeholder' (validate's notice says
     // which node); normalize refused the Document otherwise.
     if (!manifest) return unknownPlaceholder(node);
+    if (node.type === 'content.foreign' && mismatched.has(node.id)) return '';
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {

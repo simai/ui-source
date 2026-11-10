@@ -1,0 +1,80 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-math",
+  "input": "docara-examples-math.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.math",
+              "props": {
+                "label": "Теорема Пифагора"
+              },
+              "data": {
+                "source": "a^2 + b^2 = c^2"
+              }
+            },
+            {
+              "id": "m2",
+              "type": "content.math",
+              "props": {
+                "label": "Площадь круга"
+              },
+              "data": {
+                "source": "S = \\pi r^2"
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::math {display=inline label=\"Теорема Пифагора\"}\na^2 + b^2 = c^2\n:::",
+                "hash": "sha256:767214d4c62890efa6e7e0b49147a59639077147b5d81bc329699df6b4720b4b"
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::math {display=block label=\"Интеграл от нуля до бесконечности\"}\n\\int_0^\\infty e^{-x}\\,dx = 1\n:::",
+                "hash": "sha256:b020e1282070c3ecb25c99e98c4678fd364458a924d110963a64f1e2b1f8294e"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2]",
+        "what": "kept as content.foreign: attribute display"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[3]",
+        "what": "kept as content.foreign: attribute display"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

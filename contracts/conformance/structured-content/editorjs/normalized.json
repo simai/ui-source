@@ -1,0 +1,147 @@
+{
+  "schema": "simai.composition.structured-content-conformance-editorjs",
+  "schema_version": 1,
+  "id": "normalized",
+  "summary": "Another spelling of the same content: strong for b, List 1.x items, a list without meta; reported as form_normalized and written in the adapter's form.",
+  "input": {
+    "blocks": [
+      {
+        "id": "n1",
+        "type": "paragraph",
+        "data": {
+          "text": "<strong>a</strong> <em>b</em>"
+        }
+      },
+      {
+        "id": "n2",
+        "type": "list",
+        "data": {
+          "style": "unordered",
+          "items": [
+            "one",
+            "two"
+          ]
+        }
+      }
+    ]
+  },
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "n1",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "a",
+                    "marks": [
+                      "strong"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " "
+                  },
+                  {
+                    "type": "text",
+                    "value": "b",
+                    "marks": [
+                      "em"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "n2",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "n2-2",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "one"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "n2-3",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "two"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[0]",
+        "what": "Editor.js form"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[1]",
+        "what": "Editor.js form"
+      }
+    ],
+    "back": {
+      "blocks": [
+        {
+          "id": "n1",
+          "type": "paragraph",
+          "data": {
+            "text": "<b>a</b> <i>b</i>"
+          }
+        },
+        {
+          "id": "n2",
+          "type": "list",
+          "data": {
+            "style": "unordered",
+            "meta": {},
+            "items": [
+              {
+                "content": "one",
+                "meta": {},
+                "items": []
+              },
+              {
+                "content": "two",
+                "meta": {},
+                "items": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "back_losses": [],
+    "value_equal": false
+  }
+}

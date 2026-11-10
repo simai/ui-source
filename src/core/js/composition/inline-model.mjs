@@ -1,14 +1,20 @@
 // Pure operations on the Composition inline content model used by
-// content.heading and content.paragraph: text runs with strong, em and code
-// marks, links whose children are text runs, and inline component atoms
+// content.heading and content.paragraph: text runs with strong, em, code and
+// strike marks, soft line breaks ({type: 'break', marks?}), links whose
+// children are text runs and breaks, and inline component atoms
 // ({type: 'component', name, props}). No DOM access here.
+//
+// Inline model 1.2.0 (2026-11-10): the break and the mark strike. A break is
+// one unit of offset, like a character: it takes marks and stands inside a
+// link, and no operation removes one except a deletion of its own range.
 //
 // Every other entry -- a node from a newer producer, or an atom this model
 // does not know -- is opaque: it holds one caret stop, takes no marks, and
 // comes back out of every operation exactly as it went in. toSegments used
 // to drop such entries, so an edit next to them lost them silently.
 
-export const INLINE_MARKS = Object.freeze(['strong', 'em', 'code']);
+export const INLINE_MARKS = Object.freeze(['strong', 'em', 'code', 'strike']);
+export const INLINE_MODEL_VERSION = '1.2.0';
 const MARK_ORDER = new Map(INLINE_MARKS.map((mark, index) => [mark, index]));
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
 export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048, maxPropLength: 1000 });
@@ -77,7 +83,15 @@ export function inlineComponentView(node) {
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const isAtom = (entry) => entry?.type === 'component';
-const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link';
+const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link' && !isBreak(entry);
+// A break as the model knows it: type break and at most marks. Anything else
+// of type break (a newer producer's) is opaque.
+const isBreak = (entry) => entry?.type === 'break' && Object.keys(entry).every((key) => key === 'type' || key === 'marks') && (entry.marks === undefined || Array.isArray(entry.marks));
+
+/** The segment of one soft line break: one unit, with the marks and link of its place. */
+export function breakSegment(marks = [], href = null) {
+  return { text: INLINE_OBJECT, marks: [...marks], href, break: true };
+}
 
 /** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
 export function safeHref(value) {
@@ -110,6 +124,10 @@ function sortMarks(marks) {
 export function toSegments(content) {
   const segments = [];
   const push = (run, href) => {
+    if (isBreak(run)) {
+      segments.push(breakSegment(sortMarks(run.marks || []), href));
+      return;
+    }
     if (isObjectEntry(run)) {
       segments.push({ text: INLINE_OBJECT, marks: [], href: isAtom(run) ? null : href, node: clone(run) });
       return;
@@ -126,7 +144,7 @@ export function toSegments(content) {
   return segments;
 }
 
-const sameStyle = (left, right) => !left.node && !right.node && left.href === right.href && left.marks.join() === right.marks.join();
+const sameStyle = (left, right) => !left.node && !right.node && !left.break && !right.break && left.href === right.href && left.marks.join() === right.marks.join();
 
 /** Builds normalized content: merged runs, canonical marks, no empty parts. */
 export function fromSegments(segments) {
@@ -137,6 +155,10 @@ export function fromSegments(segments) {
       merged.push({ text: INLINE_OBJECT, marks: [], href: !isAtom(segment.node) && segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
       continue;
     }
+    if (segment.break) {
+      merged.push(breakSegment(sortMarks(segment.marks || []), segment.href && safeHref(segment.href) ? segment.href : null));
+      continue;
+    }
     if (!segment.text) continue;
     const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: segment.href && safeHref(segment.href) ? segment.href : null };
     const previous = merged.at(-1);
@@ -145,7 +167,9 @@ export function fromSegments(segments) {
   }
   const content = [];
   for (const segment of merged) {
-    const run = segment.node ? clone(segment.node) : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
+    const run = segment.node ? clone(segment.node)
+      : segment.break ? { type: 'break', ...(segment.marks.length ? { marks: segment.marks } : {}) }
+        : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
     const previous = content.at(-1);
     if (segment.href) {
       if (previous?.type === 'link' && previous.href === segment.href) previous.children.push(run);
@@ -159,9 +183,9 @@ export function normalizeInline(content) {
   return fromSegments(toSegments(content));
 }
 
-/** The text of the text runs; atoms and opaque nodes add nothing. */
+/** The text of the text runs, a line feed for each break; atoms and opaque nodes add nothing. */
 export function inlineText(content) {
-  return toSegments(content).filter(({ node }) => !node).map(({ text }) => text).join('');
+  return toSegments(content).filter(({ node }) => !node).map((segment) => (segment.break ? '\n' : segment.text)).join('');
 }
 
 /** Length in segment offsets: characters, plus one for each atom or opaque node. */
@@ -253,4 +277,4 @@ export function replaceRange(content, start, end, inserted) {
   return fromSegments([...before, ...inserted, ...after]);
 }
 
-export default { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark };
+export default { INLINE_COMPONENTS, INLINE_MARKS, INLINE_MODEL_VERSION, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark };

@@ -719,7 +719,7 @@ test('G-39: a paragraph\'s lead and muted modifiers print the SIMAI Framework te
   assert.ok(known('color-on-surface-variant'));
   assert.match(readFileSync(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8'), /\.text-large\b/u, 'text-large is the core sheet\'s large body text role');
   const paragraph = extendRegistry().types.get('content.paragraph');
-  assert.equal(paragraph.version, '1.3.0');
+  assert.equal(paragraph.version, '1.4.0');
   const broken = { ...paragraph, presentation: { ...paragraph.presentation, modifier_utilities: { loud: ['text-5'], lead: ['Bad Class'] } } };
   assert.deepEqual(codes(validateTypeManifest(broken)).filter((code) => code.startsWith('modifier_utilities')).sort(), ['modifier_utilities_invalid', 'modifier_utilities_unknown']);
 });

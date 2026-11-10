@@ -1,0 +1,267 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "inline-forms",
+  "input": "inline-forms.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Строчные формы"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m2",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Текст с "
+                  },
+                  {
+                    "type": "text",
+                    "value": "зачёркнутым",
+                    "marks": [
+                      "strike"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", "
+                  },
+                  {
+                    "type": "text",
+                    "value": "жирным",
+                    "marks": [
+                      "strong"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", "
+                  },
+                  {
+                    "type": "text",
+                    "value": "курсивом",
+                    "marks": [
+                      "em"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", "
+                  },
+                  {
+                    "type": "text",
+                    "value": "кодом",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " и "
+                  },
+                  {
+                    "type": "link",
+                    "href": "https://simai.io/a",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "ссылкой"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "После мягкого разрыва. Клавиша "
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "Esc"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": " и метка "
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Новое",
+                      "appearance": "tonal",
+                      "scheme": "primary",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Заголовок"
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "в две строки"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.table",
+              "props": {
+                "align": [
+                  "start",
+                  "end"
+                ]
+              },
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Колонка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Ещё"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "a"
+                      },
+                      {
+                        "type": "break"
+                      },
+                      {
+                        "type": "text",
+                        "value": "b"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "c",
+                        "marks": [
+                          "strike"
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m9",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m6",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "[x] задача списка читается как текст"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m8",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "пункт со ссылкой на "
+                        },
+                        {
+                          "type": "link",
+                          "href": "../page/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "страницу"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[4]",
+        "what": "Markdown form"
+      }
+    ],
+    "bytes_equal": false,
+    "printed": "# Строчные формы\n\nТекст с ~~зачёркнутым~~, **жирным**, *курсивом*, `кодом` и [ссылкой](https://simai.io/a).\\\nПосле мягкого разрыва. Клавиша :kbd[Esc] и метка :badge[Новое]{variant=tonal scheme=primary size=1}.\n\n## Заголовок<br>в две строки\n\n| Колонка | Ещё |\n| --- | ---: |\n| a<br>b | ~~c~~ |\n\n- \\[x\\] задача списка читается как текст\n- пункт со ссылкой на [страницу](../page/)\n",
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

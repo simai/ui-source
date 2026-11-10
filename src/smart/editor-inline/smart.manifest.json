@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-inline",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -397,11 +397,11 @@
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "c6dc19d1553409a543efb1529e5f379791333d878855db132f15aaec954ebd01"
+        "sha256": "6070b167f0aef0cb95c5bea0081c8cd8a40667706d5cc4b8cfbb5d0fd0a08251"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
-        "sha256": "0ed19e932147370f6ee7881d2b0e61986a166bd98fc724146af13e87155829ef"
+        "sha256": "2568548d86e2f913dedf6c94a1efba10c8aa091d1692ddfef5d8b3dcc8452342"
       }
     ],
     "generated_runtime": []

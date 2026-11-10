@@ -18,6 +18,7 @@
       "content.document": null,
       "content.figure": "media",
       "content.file": "media",
+      "content.foreign": null,
       "content.grid": "layout",
       "content.heading": "text",
       "content.html": "media",

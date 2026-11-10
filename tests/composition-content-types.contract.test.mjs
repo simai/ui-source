@@ -114,16 +114,19 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
   for (const type of FIRST_EDITION) {
     const manifest = types.get(type);
     assert.ok(manifest, type);
-    // content.table 1.0.1 (2026-11-10): column alignment by class.
-    assert.equal(manifest.version, type === 'content.table' ? '1.0.1' : '1.0.0', type);
+    // content.table 1.0.1 (2026-11-10): column alignment by class; 1.1.0 and
+    // every other type with an inline field at 1.1.0: inline model 1.2.0.
+    const inlineFields = ['content.table', 'content.list-item', 'content.figure', 'content.alert', 'content.details', 'content.step'];
+    assert.equal(manifest.version, inlineFields.includes(type) ? '1.1.0' : '1.0.0', type);
     assert.equal(manifest.category, 'content', type);
     assert.equal(manifest.renderer.kind, ['content.diagram', 'content.math'].includes(type) ? 'registered' : 'builtin', type);
     assert.ok(manifest.profiles.includes(type === 'content.outlet' ? 'ui-layout' : 'structured-content'), type);
   }
   assert.deepEqual(types.get('content.outlet').profiles, ['ui-layout'], 'the outlet stands in a layout only');
   assert.deepEqual(types.get('content.document').profiles, ['structured-content'], 'the content root is no layout node');
-  assert.equal(types.get('content.heading').version, '1.2.0', 'content.heading 1.2.0 takes alignment and visibility');
-  assert.equal(types.get('content.paragraph').version, '1.3.0', 'content.paragraph 1.2.0 prints its modifiers (G-39), 1.3.0 takes alignment and visibility');
+  assert.equal(types.get('content.heading').version, '1.3.0', 'content.heading 1.2.0 takes alignment and visibility, 1.3.0 inline model 1.2.0');
+  assert.equal(types.get('content.paragraph').version, '1.4.0', 'content.paragraph 1.2.0 prints its modifiers (G-39), 1.3.0 takes alignment and visibility, 1.4.0 inline model 1.2.0');
+  assert.equal(types.get('content.foreign').version, '1.0.0', 'content.foreign 1.0.0 (2026-11-10)');
 });
 
 test('the generated registry file is the builtins', async () => {
