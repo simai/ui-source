@@ -106,14 +106,6 @@
       "contextPattern": "#000000",
       "status": "accepted-native-value",
       "reason": "<input type=color> accepts only a #rrggbb value; #000000 is the browser's own empty value."
-    },
-    {
-      "id": "legacy-panel-shadow-c20",
-      "category": "script-data-template-review",
-      "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",
-      "contextPattern": "boxShadow",
-      "status": "deferred-c20-shadows",
-      "reason": "The special panel's swatch-row shadow belongs to the shadow decision (C20); remove this rule when C20 lands."
     }
   ]
 }
