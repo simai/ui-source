@@ -57,6 +57,8 @@ try {
       const element = document.querySelector(tag);
       await element.whenRendered?.();
       const set = await element.setError({message: 'Taken'});
+      // The attributes redraw the field on its next update.
+      await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
       const afterSet = {
         outcome: set?.outcome,
         isElement: set === element,
