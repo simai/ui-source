@@ -126,13 +126,19 @@
   .sf-list__body[hidden],
   .sf-list__next[hidden] { display: none; }
 
-  .sf-list__heading {
-    padding-block: var(--sf-space-1\/4);
+  /* A group's heading is block list's shared heading (.sf-list-heading,
+     component list-heading, C40): its type, weight and spaces are the class's;
+     the list keeps the words on the rows' text edge and their colour. The
+     space above a group after the first is the heading's --sf-space-3 in all,
+     the gap between groups included. */
+  .sf-list__group > .sf-list__heading {
+    margin-block-start: 0;
     padding-inline: var(--sf-list--text-inset);
-    color: var(--sf-list-heading-color, var(--sf-on-surface-variant));
-    font-size: var(--sf-label-medium--size);
-    line-height: var(--sf-label-medium--height);
-    font-weight: var(--sf-font-weight-medium);
+    color: var(--sf-list-heading-color, var(--sf-on-surface));
+  }
+
+  .sf-list__group + .sf-list__group {
+    margin-block-start: calc(var(--sf-space-3) - var(--sf-list--group-gap));
   }
 
   .sf-list__rows {

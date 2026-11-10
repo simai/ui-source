@@ -100,6 +100,8 @@ const FOLDERS = {
   time: 'smart/time',
   // «before → after» as text (2026-11-10, C40): a sheet of its own.
   change: 'smart/change',
+  // The group heading of block list (2026-11-10, C40): a class, CSS only.
+  'list-heading': 'list-heading',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.

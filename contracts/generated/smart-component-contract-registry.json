@@ -1745,13 +1745,15 @@
         "uses": [
           "component.dropdown",
           "component.icon-buttons",
+          "component.list-heading",
           "smart.avatar",
           "smart.badge",
           "smart.button",
           "smart.empty-state",
           "smart.icon",
           "smart.list-item",
-          "smart.menu-context"
+          "smart.menu-context",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -1763,7 +1765,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "fb7f44bb883943fe3be6a3c52e1aaaf7d968ec70c306be188ce984002abe7eb1",
+      "manifest_sha256": "09cd133972bfc68e8e981f0f5bcdfdbac973bb11828f1eec38ddbc21e23b2cd3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

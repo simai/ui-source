@@ -65,6 +65,15 @@ list.items = [
 Счётчик и значок стоят по центру строки — и однострочной, и двустрочной.
 Счётчик, который появился или исчез, не пересоздаёт строку: фокус остаётся на ней.
 
+## Заголовки групп
+
+Заголовок группы — общий заголовок блока `list` (класс `.sf-list-heading`,
+решение владельца C40): тот же, что у дней `sf-list-timeline` и в панели
+уведомлений. Слова — размером текста строк, полужирным, цветом текста; у
+«Сегодня» и «Вчера» рядом тихая дата (`sf-time format="date"`). Над каждой
+группой, кроме первой, — `--sf-space-3`. `sticky-headings` — заголовки
+остаются на виду при прокрутке списка.
+
 ## Узкая колонка
 
 ```html
@@ -130,6 +139,7 @@ list.addEventListener('sf-list-load-more', async (event) => {
 | `no-wrap` | `false` | Название и вторая строка — в одну строку с многоточием; полный текст — в подсказке и для экранного диктора. |
 | `label` | «Список» / «List» | Доступное имя списка. |
 | `heading-level` | `3` | Уровень заголовков групп. |
+| `sticky-headings` | `false` | Заголовки групп остаются на виду при прокрутке (общий заголовок блока `list`, C40). |
 | `empty-text` | «Здесь пока пусто» | Заголовок пустого состояния; слот `empty` заменяет состояние целиком. |
 
 ## Действия
@@ -176,7 +186,7 @@ Escape отменяет, фокус возвращается на строку),
 | `--sf-list-radius` | `var(--sf-radius--ui)` — угол строки |
 | `--sf-list-hover-background-color` | `var(--sf-surface-container-hover)` |
 | `--sf-list-current-background-color` | `var(--sf-primary-container-active)` |
-| `--sf-list-heading-color` | `var(--sf-on-surface-variant)` |
+| `--sf-list-heading-color` | `var(--sf-on-surface)` (1.4.0; before it `var(--sf-on-surface-variant)`) |
 
 Поверхность — переменные простого списка `.sf-list` (`--sf-list--background-color`
 и другие).

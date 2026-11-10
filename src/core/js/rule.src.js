@@ -838,6 +838,7 @@ import '../../component/dropdown/rule.js';
 import '../../component/emoji/rule.js';
 import '../../component/fab/rule.js';
 import '../../component/featured-icon/rule.js';
+import '../../component/list-heading/rule.js';
 import '../../component/figure/rule.js';
 import '../../component/file-preview/rule.js';
 import '../../component/file-upload/rule.js';

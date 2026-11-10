@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.3.4'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.4.0'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -65,7 +65,7 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
   // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
