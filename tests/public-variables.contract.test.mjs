@@ -96,6 +96,8 @@ const FOLDERS = {
   // The Larena admin screens' description list and timeline (2026-11-08): sheets of their own.
   'list-description': 'smart/list-description',
   'list-timeline': 'smart/list-timeline',
+  // The moment with its tooltip (2026-11-10, C40): a sheet of its own.
+  time: 'smart/time',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.

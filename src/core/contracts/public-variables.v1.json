@@ -4500,6 +4500,47 @@
           "since": "2026-11-08"
         }
       ]
+    },
+    {
+      "component": "time",
+      "selector": "sf-time, .sf-time",
+      "variables": [
+        {
+          "name": "--sf-time-color",
+          "role": "color",
+          "summary": "The text colour; inherited from the place by default.",
+          "default": "inherit",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-focus-ring-color",
+          "role": "ring-color",
+          "summary": "The keyboard focus ring of a time with a tooltip.",
+          "default": "var(--sf-primary)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-radius",
+          "role": "radius",
+          "summary": "The focus ring's corner.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-font-variant-numeric",
+          "role": "font-variant-numeric",
+          "summary": "The numerals; tabular, so a column of times lines up.",
+          "default": "tabular-nums",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-white-space",
+          "role": "white-space",
+          "summary": "The wrap; nowrap, so «14:32» never breaks.",
+          "default": "nowrap",
+          "since": "2026-11-10"
+        }
+      ]
     }
   ]
 }

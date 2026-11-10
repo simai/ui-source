@@ -210,6 +210,10 @@ const DRAW = {
   // a status (the neutral marker) and with the connector under it.
   'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
     html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // sf-time (2026-11-10, C40): a time with its tooltip, so the ring and the
+  // tooltip's anchor are drawn.
+  time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
+    html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>'},
   // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
   // card's fill and edge are drawn beside a card at rest.
   choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],

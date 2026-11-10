@@ -1,0 +1,54 @@
+@layer sf.components {
+/* sf-time (standard simai.smart-component 1.3.15 §6; owner decision C40).
+   Inline text in the place's own type and line: the element takes the font,
+   the size and the colour it stands in, so the same sf-time is right in a
+   heading, a list's quiet meta line and a table cell. Tabular numerals and
+   no wrap by default, so a column of times lines up and «14:32» never
+   breaks.
+
+   The public variables are read with the inherited value or a role token as
+   their fallback and never set here:
+     --sf-time-color                  the text colour (inherited)
+     --sf-time-focus-ring-color       the keyboard focus ring
+     --sf-time-radius                 the ring's corner
+     --sf-time-font-variant-numeric   tabular-nums
+     --sf-time-white-space            nowrap */
+sf-time {
+  display: inline;
+}
+
+.sf-time-anchor {
+  display: inline;
+}
+
+.sf-time {
+  border-radius: var(--sf-time-radius, var(--sf-radius--ui));
+  color: var(--sf-time-color, inherit);
+  font-variant-numeric: var(--sf-time-font-variant-numeric, tabular-nums);
+  white-space: var(--sf-time-white-space, nowrap);
+}
+
+.sf-time[data-tooltip] {
+  cursor: default;
+}
+
+.sf-time:focus {
+  outline: none;
+}
+
+.sf-time:focus-visible {
+  outline: calc(var(--sf-px) * 2) solid var(--sf-time-focus-ring-color, var(--sf-primary));
+  outline-offset: var(--sf-px);
+}
+
+/* The full moment stays on one line; the tooltip's own sheet draws the rest. */
+.sf-time-tooltip {
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .sf-time:focus-visible {
+    outline-color: Highlight;
+  }
+}
+}

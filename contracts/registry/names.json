@@ -54,6 +54,7 @@
         "tag",
         "theme",
         "tile",
+        "time",
         "toast",
         "tooltip",
         "tree",
@@ -358,6 +359,10 @@
         },
         {
           "element": "sf-tile-metric",
+          "status": "released"
+        },
+        {
+          "element": "sf-time",
           "status": "released"
         },
         {
