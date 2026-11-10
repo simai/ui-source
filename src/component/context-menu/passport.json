@@ -14,7 +14,7 @@
     "src/component/context-menu/scss/_panel.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "400454827ed0e045168d741d3032fda59e68c01034c2db5c45848e02e582d92b",
+  "content_sha256": "3cbbf1505504392894f7f24f847fac52a6b681a3ff74b44c27b9e07ffc97571e",
   "dependencies": [
     {
       "id": "tokens.border",
