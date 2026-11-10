@@ -16,7 +16,7 @@
     "src/component/inputs/scss/_css__inputs.scss",
     "src/component/inputs/scss/index.scss"
   ],
-  "content_sha256": "52eff3f81eee0c87c43cb4023d43f2b28ab7be5b8c0c316b1a1940a4d6b6722d",
+  "content_sha256": "32402dafa73c4dc96400d5308054cecca856085377f0d5bcf1180ada0b4cb7c6",
   "dependencies": [
     {
       "id": "core.runtime",

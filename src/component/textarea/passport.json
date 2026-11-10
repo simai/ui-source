@@ -15,7 +15,7 @@
     "src/component/textarea/scss/_css__textarea.scss",
     "src/component/textarea/scss/index.scss"
   ],
-  "content_sha256": "5b1bffd239e661cea17d824bf6f446844395bc441f6b34354605273f61918ab1",
+  "content_sha256": "1f9b1307ba87719b16b6a41d7fb1ef7702ec417a1ad69c21b62e2decc70af163",
   "dependencies": [
     {
       "id": "core.runtime",

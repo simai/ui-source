@@ -20,7 +20,7 @@
     "src/component/badges/scss/_css__badges_anchored.scss",
     "src/component/badges/scss/index.scss"
   ],
-  "content_sha256": "346db2f679c9349126488df5a054abdd3ecc4e8709211e3aec131a71d6624633",
+  "content_sha256": "791709c497a62aa6d775b136a078ea9329b30a48bf70981771355b714b76df4e",
   "dependencies": [
     {
       "id": "core.runtime",
