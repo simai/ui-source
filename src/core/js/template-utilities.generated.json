@@ -281,6 +281,7 @@
     "place-items/default"
   ],
   "cl-list-timeline": [
+    "display/default",
     "position/default",
     "sr-only/default"
   ],

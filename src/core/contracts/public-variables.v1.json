@@ -4329,14 +4329,14 @@
         {
           "name": "--sf-list-timeline-marker-color",
           "role": "color",
-          "summary": "The marker of an event with no status (neutral).",
+          "summary": "The glyph of a neutral marker and the dot of an event with no status.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-time-color",
           "role": "color",
-          "summary": "The time's and the actor's colour.",
+          "summary": "The quiet meta line: the time and the text.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
@@ -4344,14 +4344,14 @@
           "name": "--sf-list-timeline-day-color",
           "role": "color",
           "summary": "The day headings' colour.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-gap",
           "role": "gap",
-          "summary": "The space after each event in normal density; the rung's text-space-x by default.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space between events (C40, R092); 0 inside one event.",
+          "default": "var(--sf-space-3)",
           "since": "2026-11-08"
         },
         {

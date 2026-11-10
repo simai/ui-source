@@ -1,20 +1,22 @@
 {
   "schema_version": 2,
   "id": "smart.list-timeline",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "title": "Timeline",
-  "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+  "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
   "tags": [
-    "list",
-    "timeline",
     "activity",
-    "history",
+    "admin",
     "audit",
+    "comments",
     "events",
-    "admin"
+    "history",
+    "list",
+    "steps",
+    "timeline"
   ],
   "capabilities": [
     "render",
@@ -30,8 +32,13 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.featured-icon",
+      "component.list-heading",
+      "smart.avatar",
       "smart.button",
-      "smart.icon"
+      "smart.change",
+      "smart.icon",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -69,9 +76,10 @@
       },
       "time-format": {
         "type": "string",
-        "default": "relative",
-        "description": "relative: «5 минут назад», «вчера»; exact: the time («14:32»), with the date when the events are not grouped by day. The exact date and time are always the element's title (under the pointer) and its datetime",
+        "default": "auto",
+        "description": "auto (1.1): sf-time auto -- under a day heading the time («14:32»), within its threshold relative («5 минут назад»); ungrouped, auto in full («вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment",
         "enum": [
+          "auto",
           "relative",
           "exact"
         ]
@@ -79,12 +87,23 @@
       "now": {
         "type": "string",
         "default": "",
-        "description": "The moment relative times and the day headings count from, ISO 8601; empty: the reader's clock (the list then draws them again each minute and at midnight)"
+        "description": "The moment relative times and the day headings count from, ISO 8601, passed to every sf-time; empty: the reader's clock (sf-time redraws itself while relative, the list its day headings at midnight)"
+      },
+      "collapse": {
+        "type": "integer",
+        "default": 5,
+        "description": "Consecutive events of one actor and one kind within a day longer than this fold whole into one «Ещё N» row, revealed in place on a press (the focus goes to the first revealed event, expand is said). 0 folds nothing",
+        "minimum": 0
+      },
+      "sticky-headings": {
+        "type": "boolean",
+        "default": false,
+        "description": "The day headings stay in sight while the list scrolls (block list's sticky heading, C40), the place's solid surface behind them"
       },
       "density": {
         "type": "string",
         "default": "normal",
-        "description": "normal: the text wraps in full and the events stand apart by the gap; compact: a one-line event is the rung's control height and the text keeps to one line",
+        "description": "Deprecated until 2027-01-01 (change journal attribute-list-timeline-density-to-density): the density comes from the page (data-sf-density, decision C22). Until then compact writes data-sf-density=\"compact\" on the list's root, noted in SF.deprecations; normal is the default and is removed too",
         "enum": [
           "normal",
           "compact"
@@ -93,7 +112,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The ladder rung: the title is the rung's line and type, the time, the actor, the text and the day headings the rung below's, the marker the title's line. 1/2 for a side panel",
+        "description": "The ladder rung: the sentence is the rung's line and type, the meta line and the comment label the rung below's, the marker (.sf-featured-icon) and the avatar line the rung below's. 1/2 for a side panel",
         "enum": [
           "1/2",
           "1",
@@ -124,7 +143,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?}. time is an ISO 8601 date-time (with its offset) or milliseconds. status (success, warning, error, info; neutral by default) colours the marker, icon puts that glyph on it in place of the dot, href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
+        "description": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?, kind?, state?, change?, changes?}. time is an ISO 8601 date-time (with its offset) or milliseconds, drawn by sf-time. actor is a name or {name, avatar?, hue?, system?}: sf-avatar line and the name in bold at the start of the sentence (a system actor: the name only). status (success, warning, error, info; neutral by default) tones the marker: error, warning and success colour it, info is said in words. icon is the glyph on the marker (.sf-featured-icon), else the kind's (comment chat_bubble, sms phone_iphone), else a dot. kind comment puts text in an outline under the meta line. state (done, current, upcoming) draws the events as steps, current is aria-current=step. change {label, before, after} (or changes, a list) is drawn by sf-change. href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
       }
     },
     "additionalProperties": false
@@ -166,6 +185,29 @@
           },
           "after": {
             "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-timeline-expand": {
+      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the run's first event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it",
+      "payload": {
+        "type": "object",
+        "required": [
+          "run",
+          "ids",
+          "count"
+        ],
+        "properties": {
+          "run": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
           }
         },
         "additionalProperties": true
@@ -212,9 +254,9 @@
     "role": "list",
     "accessible_name": "recommended",
     "keyboard": [
-      "Tab reaches each title link and the «Показать ещё» button in order; Enter follows a link, Enter or Space presses the button"
+      "Tab reaches each title link, each sf-time with its tooltip, each «Ещё N» row and the «Показать ещё» button in order; Enter follows a link, Enter or Space presses a button; Escape hides a time's tooltip"
     ],
-    "focus": "The list never takes focus."
+    "focus": "The list takes focus once: on the first event a «Ещё N» press revealed."
   },
   "presentation": {
     "themes": [
@@ -276,23 +318,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "2337fc636f5c5fda588ecd5f30d860d553d57c0ee48a8f24bce8839eb96c9cc8"
+        "sha256": "3911707e697977c9c4bf6f6d033ec05b42c5d4bf0b92c21956bbd1b66b10906d"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "64369e67543ede1b0ff2efe918d0387b6f75b0aad68410a4a61f4b615f5730d8"
+        "sha256": "fa3c02e6c0f565f9cf98b63fdd3697a354c4e25448f08b08be15f4fc630de6ee"
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
-        "sha256": "e9c39bdcba44b810af26d917f1f4d65ebc10d728ae43a63f7024e2d1775b0b17"
+        "sha256": "57f6e4038333fea25cba60fae8551f7dcf244b475e08acdb0b387abb20d50bf1"
       },
       {
         "path": "src/smart/list-timeline/rule.js",
-        "sha256": "54ca5d699b844b92689039a12f5971c5e220d5616c3f53fc5cfd7a26156b54e3"
+        "sha256": "29f8f22b58c1c10ebb08cdbf96b48138adaec7dc2509cbdd1cf814d1ba02cac3"
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "ff96ed5da2d9447064b29b923c2579c77c975e62ace89d6489ea46723694e9e5"
+        "sha256": "672464a157bb2ff0ada0ee6a8dc64ed9723714139de1823c02791eae8886dfc5"
       }
     ],
     "generated_runtime": []

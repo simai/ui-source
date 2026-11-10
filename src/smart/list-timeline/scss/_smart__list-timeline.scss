@@ -1,19 +1,24 @@
 @layer sf.components {
-/* sf-list-timeline (standard simai.smart-component 1.3.14 §6). One rung S
-   of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
-   or 2 with size: the title is the rung's line L and type; the actor, the
-   time, the text and the day headings the rung below's (the actor and the
-   time on the title's line L); the marker a box L wide on the title's line,
-   the step to the text the rung's text-space-x.
+/* sf-list-timeline 1.1 (standard simai.smart-component 1.3.15 §6; owner
+   decision C40, R092 option 1). One rung S of the ladder
+   (docs/foundation-composition-geometry.md), 1 by default, 1/2 or 2 with
+   size: the sentence is the rung's line L and type; the quiet meta line and
+   the comment's label the rung below's; the rail as wide as the control
+   height of the rung below (the marker, .sf-featured-icon of that rung, sits
+   on the sentence's first line, centred on it); the step to the text
+   --sf-space-1/2.
 
-   An event's block inset is (H - L) / 2, so in compact density a one-line
-   event is the rung's control height H, as a list row is; normal density
-   adds the gap after each event. A day heading and the «Показать ещё» row
-   are H tall too.
+   Between events --sf-space-3, inside one event 0 (R092): a reader sees
+   where one ends. The density is the page's (data-sf-density, C22): every
+   step variable comes down a rung in a compact region, nothing here.
 
-   The connector is a hairline on the marker's axis, from the bottom of one
-   marker's box to the top of the next one's; the last event of a day has
-   none.
+   The list never paints the place: no fill of its own. The marker stands on
+   the place's solid surface (--sf-surface-place-solid), so the line does not
+   show through the featured icon's translucent container.
+
+   The connector is a hairline on the rail's axis from the middle of one
+   event's first line to the middle of the next one's; the last event of a
+   day has none. Steps (state): solid up to the current one, dashed after.
 
    The public variables are read with the role token as their fallback and
    never set here. */
@@ -28,24 +33,24 @@ sf-list-timeline {
   --sf-list-timeline--font-size: var(--sf-text-size-1);
   --sf-list-timeline--below-line: var(--sf-text-height-1\/2);
   --sf-list-timeline--below-font-size: var(--sf-text-size-1\/2);
+  --sf-list-timeline--rail: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--control: var(--sf-ui-1--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/2--control-height);
-  --sf-list-timeline--text-space-x: var(--sf-ui-1--text-space-x);
-  --sf-list-timeline--padding-block: calc((var(--sf-list-timeline--control) - var(--sf-list-timeline--line)) / 2);
-  --sf-list-timeline--row-gap: var(--sf-list-timeline-gap, var(--sf-list-timeline--text-space-x));
+  --sf-list-timeline--column-gap: var(--sf-space-1\/2);
+  --sf-list-timeline--row-gap: var(--sf-list-timeline-gap, var(--sf-space-3));
   --sf-list-timeline--padding-inline: var(--sf-list-timeline-padding-inline, calc(var(--sf-px) * 0));
+  --sf-list-timeline--line-color: var(--sf-list-timeline-line-color, var(--sf-outline-variant));
+  --sf-list-timeline--quiet: var(--sf-list-timeline-time-color, var(--sf-on-surface-variant));
+  --sf-list-timeline--ground: var(--sf-surface-place-solid, var(--sf-surface-page));
   display: block;
   box-sizing: border-box;
   min-inline-size: 0;
   margin: 0;
+  padding-inline: var(--sf-list-timeline--padding-inline);
   container-type: inline-size;
   color: var(--sf-on-surface);
   font-size: var(--sf-list-timeline--font-size);
   line-height: var(--sf-list-timeline--line);
-}
-
-.sf-list-timeline.sf-list-timeline--density-compact {
-  --sf-list-timeline--row-gap: calc(var(--sf-px) * 0);
 }
 
 .sf-list-timeline.sf-list-timeline--size-half {
@@ -53,9 +58,9 @@ sf-list-timeline {
   --sf-list-timeline--font-size: var(--sf-text-size-1\/2);
   --sf-list-timeline--below-line: var(--sf-text-height-1\/3);
   --sf-list-timeline--below-font-size: var(--sf-text-size-1\/3);
+  --sf-list-timeline--rail: var(--sf-ui-1\/3--control-height);
   --sf-list-timeline--control: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/3--control-height);
-  --sf-list-timeline--text-space-x: var(--sf-ui-1\/2--text-space-x);
 }
 
 .sf-list-timeline.sf-list-timeline--size-2 {
@@ -63,122 +68,179 @@ sf-list-timeline {
   --sf-list-timeline--font-size: var(--sf-text-size-2);
   --sf-list-timeline--below-line: var(--sf-text-height-1);
   --sf-list-timeline--below-font-size: var(--sf-text-size-1);
+  --sf-list-timeline--rail: var(--sf-ui-1--control-height);
   --sf-list-timeline--control: var(--sf-ui-2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1--control-height);
-  --sf-list-timeline--text-space-x: var(--sf-ui-2--text-space-x);
 }
 
-/* A day: its heading, the rung below's type in a row H tall. */
-.sf-list-timeline-day {
-  box-sizing: border-box;
-  min-block-size: var(--sf-list-timeline--control);
-  padding-block: calc((var(--sf-list-timeline--control) - var(--sf-list-timeline--below-line)) / 2);
-  padding-inline: var(--sf-list-timeline--padding-inline);
-  color: var(--sf-list-timeline-day-color, var(--sf-on-surface-variant));
-  font-size: var(--sf-list-timeline--below-font-size);
-  font-weight: var(--sf-text--font-weight-5, 500);
-  line-height: var(--sf-list-timeline--below-line);
+/* A day: block list's heading (.sf-list-heading) carries the type and the
+   spaces; the timeline keeps its words' colour. */
+.sf-list-timeline-group > .sf-list-timeline-day {
+  color: var(--sf-list-timeline-day-color, var(--sf-on-surface));
 }
 
-/* The events stand apart by the gap in normal density, none in compact. */
+.sf-list-timeline-group + .sf-list-timeline-group > .sf-list-timeline-day {
+  margin-block-start: var(--sf-list-timeline--row-gap);
+}
+
 .sf-list-timeline-list {
-  display: flex;
-  flex-direction: column;
-  row-gap: var(--sf-list-timeline--row-gap);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* An event: the marker's column, then the body. */
 .sf-list-timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: var(--sf-list-timeline--line) minmax(0, 1fr);
-  column-gap: var(--sf-list-timeline--text-space-x);
+  grid-template-columns: var(--sf-list-timeline--rail) minmax(0, 1fr);
+  column-gap: var(--sf-list-timeline--column-gap);
   align-items: start;
-  box-sizing: border-box;
-  min-block-size: var(--sf-list-timeline--control);
-  margin: 0;
-  padding-block: var(--sf-list-timeline--padding-block);
-  padding-inline: var(--sf-list-timeline--padding-inline);
+  min-inline-size: 0;
 }
 
-/* The connector: from under this marker's box to the top of the next one's,
-   across the gap and the next event's block-start inset. */
+.sf-list-timeline-item:not(:last-child) {
+  padding-block-end: var(--sf-list-timeline--row-gap);
+}
+
+.sf-list-timeline-item:focus {
+  outline: none;
+}
+
+.sf-list-timeline-item:focus-visible {
+  outline: calc(var(--sf-px) * 2) solid var(--sf-primary);
+  outline-offset: calc(var(--sf-px) * 2);
+  border-radius: var(--sf-radius--ui);
+}
+
+/* The connector: from the middle of this event's first line to the middle
+   of the next one's. */
 .sf-list-timeline-item:not(:last-child)::before {
+  content: "";
   position: absolute;
-  inset-block: calc(var(--sf-list-timeline--padding-block) + var(--sf-list-timeline--line)) calc((var(--sf-list-timeline--padding-block) + var(--sf-list-timeline--row-gap)) * -1);
-  inset-inline-start: calc(var(--sf-list-timeline--padding-inline) + (var(--sf-list-timeline--line) - var(--sf-px)) / 2);
+  inset-block: calc(var(--sf-list-timeline--line) / 2) calc(var(--sf-list-timeline--line) / -2);
+  inset-inline-start: calc((var(--sf-list-timeline--rail) - var(--sf-px)) / 2);
   inline-size: var(--sf-px);
-  background: var(--sf-list-timeline-line-color, var(--sf-outline-variant));
-  content: '';
+  background: var(--sf-list-timeline--line-color);
 }
 
-/* The marker: a box L wide on the title's line; a dot of a third of L, or
-   the item's icon at L, in the status colour. */
-.sf-list-timeline-marker {
+.sf-list-timeline-list--steps .sf-list-timeline-item[data-state="current"]::before,
+.sf-list-timeline-list--steps .sf-list-timeline-item[data-state="upcoming"]::before {
+  background: none;
+  border-inline-start: calc(var(--sf-px) * 2) dashed var(--sf-list-timeline--line-color);
+  inset-inline-start: calc((var(--sf-list-timeline--rail) - var(--sf-px) * 2) / 2);
+  inline-size: 0;
+}
+
+/* The rail: one line tall, the marker centred on it (it may be taller than
+   the line and overhang it). */
+.sf-list-timeline-rail {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  inline-size: var(--sf-list-timeline--rail);
+  block-size: var(--sf-list-timeline--line);
+}
+
+.sf-list-timeline-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-list-timeline--ground);
+}
+
+/* A neutral marker's glyph is quiet (the prototype's, C40); a tone keeps the
+   featured icon's own ink. */
+.sf-list-timeline-marker--neutral .sf-featured-icon,
+.sf-list-timeline-marker--run .sf-featured-icon {
+  --sf-featured-icon--foreground-color: var(--sf-list-timeline-marker-color, var(--sf-on-surface-variant));
+}
+
+.sf-list-timeline-marker--run .sf-featured-icon {
+  --sf-featured-icon--foreground-color: var(--sf-link);
+}
+
+/* Steps (list-timeline.html scene B): the current one ringed, an upcoming
+   one empty with a quiet ring. */
+.sf-list-timeline-marker--current .sf-featured-icon {
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-primary);
+}
+
+.sf-list-timeline-marker--upcoming .sf-featured-icon {
+  --sf-featured-icon--background-color: var(--sf-list-timeline--ground);
+  --sf-featured-icon--foreground-color: var(--sf-on-surface-variant);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-outline-variant);
+}
+
+.sf-list-timeline-item[data-state="current"] .sf-list-timeline-title {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-title {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-list-timeline .sf-list-timeline-icon {
+  --sf-icon--font-size: var(--sf-featured-icon--icon-size);
+  --sf-icon--width: var(--sf-featured-icon--icon-size);
+  --sf-icon--height: var(--sf-featured-icon--icon-size);
+}
+
+/* An event with no icon: a dot of a third of L in the status colour. */
+.sf-list-timeline-marker--dot {
   inline-size: var(--sf-list-timeline--line);
   block-size: var(--sf-list-timeline--line);
   color: var(--sf-list-timeline-marker-color, var(--sf-on-surface-variant));
 }
 
-.sf-list-timeline-marker--success {
-  color: var(--sf-success);
-}
-
-.sf-list-timeline-marker--warning {
-  color: var(--sf-warning);
-}
-
-.sf-list-timeline-marker--error {
-  color: var(--sf-error);
-}
-
-.sf-list-timeline-marker--info {
-  color: var(--sf-info);
-}
+.sf-list-timeline-marker--dot.sf-list-timeline-marker--success { color: var(--sf-success); }
+.sf-list-timeline-marker--dot.sf-list-timeline-marker--warning { color: var(--sf-warning); }
+.sf-list-timeline-marker--dot.sf-list-timeline-marker--error { color: var(--sf-error); }
 
 .sf-list-timeline-dot {
   inline-size: calc(var(--sf-list-timeline--line) / 3);
   block-size: calc(var(--sf-list-timeline--line) / 3);
-  border-radius: 50%;
+  border-radius: var(--sf-radius-circle);
   background: currentColor;
 }
 
-.sf-list-timeline .sf-list-timeline-icon {
-  --sf-icon--font-size: var(--sf-list-timeline--line);
-  --sf-icon--width: var(--sf-list-timeline--line);
-  --sf-icon--height: var(--sf-list-timeline--line);
-  --sf-icon--color: currentColor;
-}
-
 .sf-list-timeline-body {
+  grid-column: 2;
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
 }
 
-/* The title, then the actor and the time at the line's end; the title
-   wraps before they do. In a column narrower than 24rem they go under the
-   title, at its start. */
+/* The sentence: who, what, the change. The verb is quiet, the name and the
+   new value carry it. */
 .sf-list-timeline-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  /* Start, not baseline: the title and the meta share the line L, so the
-     head is a whole number of lines and a one-line event stays H tall. */
-  align-items: start;
-  column-gap: var(--sf-list-timeline--text-space-x);
+  margin: 0;
   min-inline-size: 0;
+  color: var(--sf-on-surface-variant);
+  overflow-wrap: anywhere;
 }
 
-.sf-list-timeline-title {
-  min-inline-size: 0;
-  font-weight: var(--sf-text--font-weight-5, 500);
-  overflow-wrap: anywhere;
+.sf-list-timeline-avatar {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+  block-size: var(--sf-list-timeline--line);
+  margin-inline-end: var(--sf-space-1\/4);
+}
+
+.sf-list-timeline-actor {
+  color: var(--sf-on-surface);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* No actor: the title is the sentence and reads in the text colour. */
+.sf-list-timeline-head > .sf-list-timeline-title:first-child,
+.sf-list-timeline-head > .sr-only + .sf-list-timeline-title {
+  color: var(--sf-on-surface);
 }
 
 .sf-list-timeline-link {
@@ -192,32 +254,64 @@ sf-list-timeline {
   text-underline-offset: var(--sf-a3);
 }
 
+.sf-list-timeline-changes {
+  margin-block-start: var(--sf-space-1\/4);
+}
+
+/* One quiet line: the time · the text. */
 .sf-list-timeline-meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  column-gap: var(--sf-list-timeline--text-space-x);
-  color: var(--sf-list-timeline-time-color, var(--sf-on-surface-variant));
-  font-size: var(--sf-list-timeline--below-font-size);
-  line-height: var(--sf-list-timeline--line);
-}
-
-.sf-list-timeline-time {
-  white-space: nowrap;
-}
-
-.sf-list-timeline-text {
   margin: 0;
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-list-timeline--quiet);
   font-size: var(--sf-list-timeline--below-font-size);
   line-height: var(--sf-list-timeline--below-line);
   overflow-wrap: anywhere;
 }
 
-.sf-list-timeline--density-compact .sf-list-timeline-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* A comment: its text in an outline, no fill (R092: the place is not painted
+   inside a card). */
+.sf-list-timeline-comment {
+  margin: var(--sf-space-1\/3) 0 0;
+  padding: var(--sf-space-1\/2) var(--sf-space-1);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+  color: var(--sf-on-surface);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+/* «Ещё N»: a button across the row, the glyph on the rail, the words in the
+   link colour. */
+.sf-list-timeline-run {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: var(--sf-list-timeline--rail) auto;
+  column-gap: var(--sf-list-timeline--column-gap);
+  align-items: center;
+  justify-content: start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  background: none;
+  color: var(--sf-link);
+  font: inherit;
+  line-height: var(--sf-list-timeline--line);
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-list-timeline-run:hover .sf-list-timeline-run-text {
+  text-decoration: underline;
+  text-underline-offset: var(--sf-a3);
+}
+
+.sf-list-timeline-run:focus {
+  outline: none;
+}
+
+.sf-list-timeline-run:focus-visible {
+  outline: calc(var(--sf-px) * 2) solid var(--sf-primary);
+  outline-offset: calc(var(--sf-px) * 2);
 }
 
 /* No events: one quiet line, H tall. */
@@ -225,33 +319,26 @@ sf-list-timeline {
   box-sizing: border-box;
   min-block-size: var(--sf-list-timeline--control);
   margin: 0;
-  padding-block: var(--sf-list-timeline--padding-block);
-  padding-inline: var(--sf-list-timeline--padding-inline);
+  padding-block: calc((var(--sf-list-timeline--control) - var(--sf-list-timeline--line)) / 2);
   color: var(--sf-on-surface-variant);
 }
 
-/* «Показать ещё»: the rung below's button on the text's axis, in a row H
-   tall. (sf-button's host is display: contents.) */
+/* «Показать ещё»: the rung below's button on the text's axis.
+   (sf-button's host is display: contents.) */
 .sf-list-timeline-more {
   display: flex;
-  box-sizing: border-box;
-  min-block-size: var(--sf-list-timeline--control);
-  padding-block: calc((var(--sf-list-timeline--control) - var(--sf-list-timeline--button)) / 2);
-  padding-inline: calc(var(--sf-list-timeline--padding-inline) + var(--sf-list-timeline--line) + var(--sf-list-timeline--text-space-x)) var(--sf-list-timeline--padding-inline);
-}
-
-@container (max-width: 24rem) {
-  .sf-list-timeline-head {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .sf-list-timeline-meta {
-    justify-content: flex-start;
-  }
+  margin-block-start: var(--sf-list-timeline--row-gap);
+  padding-inline-start: calc(var(--sf-list-timeline--rail) + var(--sf-list-timeline--column-gap));
 }
 
 .sf-list-timeline--empty .sf-list-timeline-more {
-  padding-inline-start: var(--sf-list-timeline--padding-inline);
+  margin-block-start: 0;
+  padding-inline-start: 0;
 }
 
+@media (forced-colors: active) {
+  .sf-list-timeline-item:not(:last-child)::before {
+    background: CanvasText;
+  }
+}
 }

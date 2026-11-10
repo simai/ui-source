@@ -3,24 +3,29 @@
 // history:
 //
 //   <sf-list-timeline><script type="application/json" data-sf-settings>
-//     {"items": [{"id": "e1", "time": "2026-10-27T11:50:00+03:00",
-//       "status": "success", "title": "Копия создана", "actor": "Планировщик"}]}
+//     {"items": [{"id": "e1", "time": "2026-11-09T14:30:00+03:00", "icon": "swap_horiz",
+//       "actor": {"name": "Анна Котова", "hue": "teal"}, "title": "изменила статус",
+//       "change": {"label": "Статус", "before": "Собран", "after": "Передан в доставку"}}]}
 //   </script></sf-list-timeline>
 //
-// Events on a vertical line, each with a status marker (a dot, or the item's
-// icon), its title, time, actor and text; grouped by calendar day under
-// «Сегодня», «Вчера» or the date; the time relative («5 минут назад») with
-// the exact moment under the pointer. has-more draws «Показать ещё», which
-// asks load-more; with no events one quiet line. The list keeps the host's
-// order, and stores and loads nothing.
+// 1.1 (owner decision C40, R092 option 1) builds the event from the
+// Framework's shared parts: the marker on the line is .sf-featured-icon (its
+// tone the status; a dot when the event has no icon), the actor sf-avatar
+// line and a bold name at the start of the sentence, a field change
+// sf-change, the time sf-time in one quiet line «time · text», a comment the
+// text in an outline, and the day headings block list's .sf-list-heading.
+// Runs of one actor and kind longer than collapse fold into «Ещё N», revealed
+// in place; state done|current|upcoming draws steps. The list keeps the
+// host's order, and stores and loads nothing.
 //
-// From its component.json (standard simai.smart-component 1.3.14 §3, §4,
+// From its component.json (standard simai.smart-component 1.3.15 §3, §4,
 // §8): the settings are made by core/js/element-manifest.js, the words are
 // the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {formatDate, calendarDayOffset, msUntilNextDay, toDate} from '../../core/js/format-date.js';
-import {formatRelativeDay, formatRelativeTime} from '../../core/js/format-relative.js';
+import {calendarDayOffset, msUntilNextDay, toDate} from '../../core/js/format-date.js';
+import {formatRelativeDay} from '../../core/js/format-relative.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderListTimelineTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -31,7 +36,14 @@ import './scss/index.scss';
 let sequence = 0;
 
 export const STATUSES = ['neutral', 'success', 'warning', 'error', 'info'];
-const MINUTE = 60000;
+export const KINDS = ['event', 'comment', 'sms'];
+export const STATES = ['done', 'current', 'upcoming'];
+// The glyph a kind puts on the marker when the event names none.
+export const KIND_ICONS = {comment: 'chat_bubble', sms: 'phone_iphone'};
+// The marker's tone: only error, warning and success colour it (C40); info
+// is said in words and drawn neutral.
+export const TONES = {error: 'error', warning: 'warning', success: 'success'};
+const DENSITY_REMOVE_AFTER = '2027-01-01';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -40,6 +52,24 @@ export function statusOf(value) {
   const word = text(value).toLowerCase();
   if (word === 'danger') return 'error';
   return STATUSES.includes(word) ? word : 'neutral';
+}
+
+/** Who did it: {name, avatar, hue, system}, from a string (1.0) or an object (1.1); null when nobody. */
+export function actorOf(value) {
+  if (value && typeof value === 'object') {
+    const name = text(value.name);
+    if (!name) return null;
+    return {name, avatar: text(value.avatar), hue: text(value.hue), system: value.system === true};
+  }
+  const name = text(value);
+  return name ? {name, avatar: '', hue: '', system: false} : null;
+}
+
+/** A field change: [{label, before, after}] from one object or a list; [] when none. */
+export function changesOf(value) {
+  const list = Array.isArray(value) ? value : value && typeof value === 'object' ? [value] : [];
+  return list.filter((one) => one && typeof one === 'object')
+    .map((one) => ({label: text(one.label), before: one.before ?? null, after: one.after ?? null}));
 }
 
 /**
@@ -57,18 +87,49 @@ export function normalizeItems(value) {
     const title = text(item.title);
     if (!id || !title || seen.has(id)) continue;
     seen.add(id);
+    const kind = KINDS.includes(text(item.kind)) ? text(item.kind) : 'event';
+    const state = STATES.includes(text(item.state)) ? text(item.state) : '';
     items.push({
       id,
       title,
+      kind,
+      state,
       at: toDate(typeof item.time === 'number' ? item.time : text(item.time)),
       text: text(item.text),
-      actor: text(item.actor),
+      actor: actorOf(item.actor),
       status: statusOf(item.status),
-      icon: text(item.icon),
+      icon: text(item.icon) || KIND_ICONS[kind] || '',
       href: text(item.href),
+      changes: changesOf(item.changes ?? item.change),
     });
   }
   return items;
+}
+
+/**
+ * Runs inside one day: consecutive events of one actor and one kind longer
+ * than `collapse` fold whole into one «Ещё N» row (list-timeline.html R092),
+ * unless the run was opened. [{fold: null, item}] for an event, [{fold: {key,
+ * items}}] for a folded run, in order; the key is the run's first id.
+ * collapse 0 folds nothing.
+ */
+export function foldRuns(items, {collapse = 5, opened = new Set()} = {}) {
+  const out = [];
+  let at = 0;
+  while (at < items.length) {
+    const first = items[at];
+    const who = first.actor?.name ?? '';
+    let end = at + 1;
+    while (end < items.length && (items[end].actor?.name ?? '') === who && items[end].kind === first.kind) end += 1;
+    const run = items.slice(at, end);
+    if (collapse > 0 && run.length > collapse && !opened.has(first.id)) {
+      out.push({fold: {key: first.id, items: run}, item: null});
+    } else {
+      for (const item of run) out.push({fold: null, item});
+    }
+    at = end;
+  }
+  return out;
 }
 
 /**
@@ -99,6 +160,8 @@ class SfListTimeline extends ListTimelineElement {
     super();
     this._uid = `sf-list-timeline-${++sequence}`;
     this._timer = 0;
+    this._opened = new Set();
+    this._focusRun = null;
   }
 
   onConnected() {
@@ -111,7 +174,7 @@ class SfListTimeline extends ListTimelineElement {
     this.stopTimer();
   }
 
-  // The moment the times count from: the page's now, else the clock.
+  // The moment the day headings count from: the page's now, else the clock.
   get moment() {
     return toDate(text(this.now)) ?? new Date();
   }
@@ -120,25 +183,32 @@ class SfListTimeline extends ListTimelineElement {
     return normalizeItems(this.items);
   }
 
-  // With the reader's clock and something that moves (a relative time or a
-  // day heading), one timer: to the next minute, or to midnight when only the
-  // days move. None with a fixed now, no events, or off the page.
+  // The days move at the reader's midnight: one timer to it, with the
+  // reader's clock and day headings. The times are sf-time's, which keeps its
+  // own clock.
   syncTimer() {
     this.stopTimer();
-    if (!this.isConnected || toDate(text(this.now)) || !this.list.some((item) => item.at)) return;
-    const relative = this.timeFormat !== 'exact';
-    if (!relative && this.group !== 'day') return;
-    const now = new Date();
-    const wait = relative ? MINUTE - (now.getTime() % MINUTE) : msUntilNextDay(now) + 1000;
+    if (!this.isConnected || toDate(text(this.now)) || this.group !== 'day' || !this.list.some((item) => item.at)) return;
     this._timer = setTimeout(() => {
       this._timer = 0;
-      this.requestComponentUpdate('time');
-    }, wait);
+      this.requestComponentUpdate('day');
+    }, msUntilNextDay(new Date()) + 1000);
   }
 
   stopTimer() {
     if (this._timer) clearTimeout(this._timer);
     this._timer = 0;
+  }
+
+  // density is the page's since 1.1.0 (C22): compact still draws compact
+  // until 2027-01-01, noted once in SF.deprecations.
+  get compact() {
+    if (this.density !== 'compact') return false;
+    if (!this._densityNoted) {
+      this._densityNoted = true;
+      noteDeprecated({component: 'sf-list-timeline', kind: 'attribute', from: 'density', to: 'data-sf-density', since: '2026-11-10', remove_after: DENSITY_REMOVE_AFTER});
+    }
+    return true;
   }
 
   // A title link: the request first; not cancelled, the browser follows it.
@@ -155,15 +225,21 @@ class SfListTimeline extends ListTimelineElement {
     this.sfEmit('load-more', {direction: 'after', after: list[list.length - 1]?.id ?? ''});
   }
 
-  // An event's time as the list says it, and the exact moment in words.
-  timeOf(at, {grouped, now}) {
-    if (!at) return null;
-    const node = this;
-    const exact = formatDate(at, {date: 'long', time: 'short', node});
-    let shown;
-    if (this.timeFormat === 'exact') shown = grouped ? formatDate(at, {date: null, time: 'short', node}) : formatDate(at, {date: 'medium', time: 'short', node});
-    else shown = formatRelativeTime(at, {now, node});
-    return {iso: at.toISOString(), shown, exact};
+  // «Ещё N»: the folded events shown in place, the focus on the first of them;
+  // expand tells a host that loads a run lazily which run was opened.
+  expand(fold) {
+    this._opened.add(fold.key);
+    this._focusRun = fold.key;
+    this.sfEmit('expand', {run: fold.key, ids: fold.items.map((item) => item.id), count: fold.items.length});
+    this.requestComponentUpdate('expand');
+  }
+
+  // What sf-time is asked for: the time under a day heading, auto without.
+  timeFormatFor(grouped) {
+    const asked = this.timeFormat;
+    if (asked === 'relative') return 'relative';
+    if (asked === 'exact') return grouped ? 'time' : 'datetime';
+    return grouped ? 'time' : 'auto';
   }
 
   templateContext() {
@@ -172,27 +248,37 @@ class SfListTimeline extends ListTimelineElement {
     const group = this.group === 'none' ? 'none' : 'day';
     const loading = Boolean(this.loading);
     const level = Math.min(6, Math.max(2, Math.trunc(Number(this.headingLevel)) || 3));
+    const collapse = Math.max(0, Math.trunc(Number(this.collapse)));
     this.sfHostState('data-empty', list.length === 0);
     this.sfHostState('data-loading', loading);
+    const decorate = (item) => ({
+      ...item,
+      iso: item.at ? item.at.toISOString() : '',
+      tone: TONES[item.status] ?? 'neutral',
+      statusWord: item.state ? this.sfWord(`state-${item.state}`) : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
+    });
     const runs = groupByDay(list, {group, now}).map((run, at) => ({
       id: `${this._uid}-day-${at}`,
       day: run.day === null || !run.at ? '' : formatRelativeDay(run.at, {now, capital: true, node: this,
         today: this.sfWord('today'), yesterday: this.sfWord('yesterday'), tomorrow: this.sfWord('tomorrow')}),
-      items: run.items.map((item) => ({
-        ...item,
-        time: this.timeOf(item.at, {grouped: group === 'day', now}),
-        statusWord: item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
-      })),
+      date: run.day === 0 || run.day === -1 ? run.at.toISOString() : '',
+      entries: foldRuns(run.items, {collapse, opened: this._opened}).map((entry) => (entry.fold
+        ? {fold: {...entry.fold, text: this.sfWord(entry.fold.items.every((item) => item.changes.length) ? 'run-changes' : 'run-events', {count: entry.fold.items.length, vars: {n: entry.fold.items.length}})}}
+        : {item: decorate(entry.item)})),
     }));
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
       size: ['1/2', '1', '2'].includes(this.size) ? this.size : '1',
-      density: this.density === 'compact' ? 'compact' : 'normal',
+      compact: this.compact,
       group,
       level,
       label: this.label,
       runs,
+      now: text(this.now),
+      timeFormat: this.timeFormatFor(group === 'day'),
+      sticky: Boolean(this.stickyHeadings),
+      steps: list.some((item) => item.state),
       count: list.length,
       hasMore: Boolean(this.hasMore),
       loading,
@@ -209,6 +295,15 @@ class SfListTimeline extends ListTimelineElement {
   afterRender() {
     super.afterRender?.();
     this.syncTimer();
+    if (this._focusRun) {
+      const key = this._focusRun;
+      this._focusRun = null;
+      const first = [...this.querySelectorAll('.sf-list-timeline-item')].find((li) => li.dataset.id === key);
+      if (first) {
+        first.setAttribute('tabindex', '-1');
+        first.focus({preventScroll: false});
+      }
+    }
   }
 }
 

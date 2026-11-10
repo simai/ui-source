@@ -1,13 +1,16 @@
 {
   "component": "sf-list-timeline",
-  "probe": "sf-list-timeline against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+  "probe": "sf-list-timeline against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
     "body": [
       "<main style=\"inline-size: 40rem\">",
-      "  <sf-list-timeline id=\"log\" now=\"2026-10-27T12:00:00+03:00\" has-more><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"time\": \"2026-10-27T11:58:00+03:00\", \"status\": \"success\", \"title\": \"Копия создана\", \"actor\": \"Планировщик\", \"text\": \"1,2 ГБ\"}, {\"id\": \"update\", \"time\": \"2026-10-27T09:05:00+03:00\", \"icon\": \"system_update_alt\", \"title\": \"Панель обновлена\", \"href\": \"#update\"}, {\"id\": \"cert\", \"time\": \"2026-10-26T18:40:00+03:00\", \"status\": \"warning\", \"title\": \"Сертификат истекает\"}, {\"id\": \"cert\", \"title\": \"повтор\"}, {\"id\": \"x\"}]}</script></sf-list-timeline>",
+      "  <sf-list-timeline id=\"order\" now=\"2026-11-09T15:00:00+03:00\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"comment\", \"kind\": \"comment\", \"icon\": \"chat_bubble\", \"actor\": {\"name\": \"Анна Котова\", \"hue\": \"teal\"}, \"time\": \"2026-11-09T14:32:00+03:00\", \"title\": \"оставила комментарий\", \"text\": \"Клиент просит доставку после 18:00, договорились на пятницу. Курьеру позвонить за час.\"}, {\"id\": \"status\", \"icon\": \"swap_horiz\", \"actor\": {\"name\": \"Анна Котова\", \"hue\": \"teal\"}, \"time\": \"2026-11-09T14:30:00+03:00\", \"title\": \"изменила статус\", \"change\": {\"label\": \"Статус\", \"before\": \"Собран\", \"after\": \"Передан в доставку\"}}, {\"id\": \"sms\", \"kind\": \"sms\", \"actor\": {\"name\": \"Робот\", \"system\": true}, \"time\": \"2026-11-09T14:30:00+03:00\", \"title\": \"отправил SMS покупателю\", \"text\": \"«Заказ 48 215 передан в СДЭК, трек 1 234 567 890»\"}, {\"id\": \"edit-1\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:10:00+03:00\", \"title\": \"изменил вес\", \"change\": {\"label\": \"Вес\", \"before\": \"4,2 кг\", \"after\": \"4,6 кг\"}}, {\"id\": \"edit-2\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:09:00+03:00\", \"title\": \"изменил габариты\", \"change\": {\"label\": \"Габариты\", \"before\": \"40×30×20\", \"after\": \"45×30×25\"}}, {\"id\": \"edit-3\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:08:00+03:00\", \"title\": \"изменил склад\", \"change\": {\"label\": \"Склад\", \"before\": \"Москва-Север\", \"after\": \"Москва-Юг\"}}, {\"id\": \"edit-4\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:07:00+03:00\", \"title\": \"изменил получателя\", \"change\": {\"label\": \"Получатель\", \"before\": null, \"after\": \"Ирина Котова\"}}, {\"id\": \"edit-5\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:06:00+03:00\", \"title\": \"изменил телефон\", \"change\": {\"label\": \"Телефон\", \"before\": \"+7 900 000-00-00\", \"after\": \"+7 900 111-22-33\"}}, {\"id\": \"edit-6\", \"icon\": \"edit\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-09T12:05:00+03:00\", \"title\": \"изменил комментарий курьеру\", \"change\": {\"label\": \"Комментарий курьеру\", \"before\": null, \"after\": \"Позвонить за час\"}}, {\"id\": \"charge\", \"icon\": \"error\", \"status\": \"error\", \"actor\": {\"name\": \"Робот\", \"system\": true}, \"time\": \"2026-11-09T09:12:00+03:00\", \"title\": \"не смог списать доплату\", \"text\": \"Карта •• 4417: недостаточно средств. Покупателю отправлена ссылка на оплату.\"}, {\"id\": \"sum\", \"icon\": \"payments\", \"actor\": {\"name\": \"Сергей Иванов\", \"hue\": \"indigo\"}, \"time\": \"2026-11-08T19:40:00+03:00\", \"title\": \"изменил сумму\", \"change\": {\"label\": \"Сумма\", \"before\": \"24 900 ₽\", \"after\": \"23 400 ₽\"}, \"text\": \"Скидка по промокоду НОЯБРЬ\"}, {\"id\": \"paid\", \"icon\": \"credit_card\", \"status\": \"success\", \"actor\": {\"name\": \"Мария Лебедева\", \"hue\": \"pink\"}, \"time\": \"2026-11-08T18:07:00+03:00\", \"title\": \"оплатила картой\", \"text\": \"23 400 ₽, Мир •• 4417\"}, {\"id\": \"created\", \"icon\": \"add_circle\", \"actor\": {\"name\": \"Мария Лебедева\", \"hue\": \"pink\"}, \"time\": \"2026-11-08T18:05:00+03:00\", \"title\": \"оформила заказ на сайте\", \"text\": \"3 товара, доставка курьером\"}]}</script></sf-list-timeline>",
+      "  <sf-list-timeline id=\"steps\" group=\"none\" label=\"Этапы\" now=\"2026-11-09T15:00:00+03:00\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"s1\", \"state\": \"done\", \"icon\": \"check\", \"title\": \"Оформлен\", \"time\": \"2026-11-08T18:05:00+03:00\"}, {\"id\": \"s2\", \"state\": \"done\", \"icon\": \"check\", \"title\": \"Оплачен\", \"text\": \"23 400 ₽ картой\", \"time\": \"2026-11-08T18:07:00+03:00\"}, {\"id\": \"s3\", \"state\": \"done\", \"icon\": \"check\", \"title\": \"Собран на складе\", \"time\": \"2026-11-09T11:20:00+03:00\"}, {\"id\": \"s4\", \"state\": \"current\", \"icon\": \"local_shipping\", \"title\": \"В пути\", \"text\": \"Сортировочный центр СДЭК, Подольск\", \"time\": \"2026-11-09T14:30:00+03:00\"}, {\"id\": \"s5\", \"state\": \"upcoming\", \"icon\": \"home\", \"title\": \"Доставлен\", \"text\": \"Курьер, 13 ноября после 18:00\"}]}</script></sf-list-timeline>",
+      "  <sf-list-timeline id=\"log\" time-format=\"relative\" now=\"2026-10-27T12:00:00+03:00\" has-more><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"time\": \"2026-10-27T11:58:00+03:00\", \"status\": \"success\", \"title\": \"Копия создана\", \"actor\": \"Планировщик\", \"text\": \"1,2 ГБ\"}, {\"id\": \"update\", \"time\": \"2026-10-27T09:05:00+03:00\", \"icon\": \"system_update_alt\", \"title\": \"Панель обновлена\", \"href\": \"#update\"}, {\"id\": \"cert\", \"time\": \"2026-10-26T18:40:00+03:00\", \"status\": \"warning\", \"title\": \"Сертификат истекает\"}, {\"id\": \"cert\", \"title\": \"повтор\"}, {\"id\": \"x\"}]}</script></sf-list-timeline>",
       "  <sf-list-timeline id=\"flat\" group=\"none\" time-format=\"exact\" label=\"История\" now=\"2026-10-27T12:00:00+03:00\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"a\", \"time\": \"2026-10-27T10:15:00+03:00\", \"title\": \"Опубликована\"}]}</script></sf-list-timeline>",
+      "  <sf-list-timeline id=\"dense\" density=\"compact\" group=\"none\" label=\"Плотно\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"d\", \"title\": \"Плотная строка\"}]}</script></sf-list-timeline>",
       "  <sf-list-timeline id=\"none\"></sf-list-timeline>",
       "</main>"
     ]
@@ -15,36 +18,105 @@
   "probes": [
     {
       "id": "p1-days",
-      "title": "events in the host's order under a heading per day («Сегодня», «Вчера»), each day an ordered list named by its heading; an event without an id or a title, or a repeated id, is left out",
-      "covers": "settings.items, settings.group, settings.heading-level, accessibility.role list",
+      "title": "events in the host's order under block list's heading per day («Сегодня» with the date beside it in sf-time), each day an ordered list named by its heading; an event without an id or a title, or a repeated id, is left out",
+      "covers": "settings.items, settings.group, settings.heading-level, accessibility.role list, relations list-heading cl-time",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#log'); const groups = [...el.querySelectorAll('.sf-list-timeline-group')]; const heads = groups.map((g) => g.querySelector('.sf-list-timeline-day')); const ids = [...el.querySelectorAll('.sf-list-timeline-item')].map((li) => li.dataset.id).join(','); return groups.length === 2 && heads[0].textContent === 'Сегодня' && heads[1].textContent === 'Вчера' && heads[0].getAttribute('role') === 'heading' && heads[0].getAttribute('aria-level') === '3' && groups[0].querySelector('ol').getAttribute('aria-labelledby') === heads[0].id && ids === 'backup,update,cert'; })()"
+          "check": "(() => { const el = document.querySelector('#order'); const groups = [...el.querySelectorAll('.sf-list-timeline-group')]; const heads = groups.map((g) => g.querySelector('.sf-list-timeline-day')); const date = heads[0].querySelector('sf-time.sf-list-heading-date time'); const log = [...document.querySelectorAll('#log .sf-list-timeline-item')].map((li) => li.dataset.id).join(','); return groups.length === 2 && heads.every((h) => h.classList.contains('sf-list-heading')) && heads[0].textContent.trim().startsWith('Сегодня') && heads[1].textContent.trim().startsWith('Вчера') && date && date.textContent === '9 ноября' && heads[0].getAttribute('role') === 'heading' && heads[0].getAttribute('aria-level') === '3' && groups[0].querySelector('ol').getAttribute('aria-labelledby') === heads[0].id && log === 'backup,update,cert'; })()"
         }
       ]
     },
     {
-      "id": "p2-time",
-      "title": "relative time, the exact moment as datetime and title; exact time when asked; the status said in words; an icon in place of the dot",
-      "covers": "settings.time-format, settings.now, settings.items status icon",
+      "id": "p2-marker",
+      "title": "the marker is .sf-featured-icon toned by status (error the error tone), the kind's glyph when the event names none (comment chat_bubble, sms phone_iphone), a dot with no icon; the status said in words",
+      "covers": "settings.items status icon kind, relations featured-icon",
       "steps": [
         {
-          "check": "(() => { const time = document.querySelector('#log [data-id=backup] time'); const flat = document.querySelector('#flat time'); return time.textContent === '2 минуты назад' && time.getAttribute('datetime') === '2026-10-27T08:58:00.000Z' && time.getAttribute('title').includes('2026') && /\\d{1,2}:\\d{2}/u.test(flat.textContent) && !flat.textContent.includes('назад') && document.querySelector('#log [data-id=backup] .sr-only').textContent === 'Готово: ' && !document.querySelector('#log [data-id=update] .sr-only') && document.querySelector('#log [data-id=update] .sf-list-timeline-icon').textContent === 'system_update_alt' && document.querySelector('#log [data-id=cert] .sf-list-timeline-dot') !== null && document.querySelector('#flat ol').getAttribute('aria-label') === 'История' && !document.querySelector('#flat .sf-list-timeline-day'); })()"
+          "check": "(() => { const m = (id) => document.querySelector(`#order [data-id=${id}] .sf-list-timeline-rail .sf-featured-icon`); return m('comment').classList.contains('sf-featured-icon--neutral') && m('comment').textContent.trim() === 'chat_bubble' && m('sms').textContent.trim() === 'phone_iphone' && m('charge').classList.contains('sf-featured-icon--error') && m('paid').classList.contains('sf-featured-icon--success') && document.querySelector('#order [data-id=charge] .sr-only').textContent === 'Ошибка: ' && document.querySelector('#log [data-id=cert] .sf-list-timeline-dot') !== null && document.querySelector('#order [data-id=status] .sf-list-timeline-rail').getAttribute('aria-hidden') === 'true'; })()"
         }
       ]
     },
     {
-      "id": "p3-line",
-      "title": "the connector runs from under one marker to the next; the last event of a day has none",
-      "covers": "geometry connector",
+      "id": "p3-actor",
+      "title": "the actor is sf-avatar line (a picture) and a bold name at the start of the sentence; a system actor is the name only; a string actor still reads as a name",
+      "covers": "settings.items actor, relations cl-avatar",
       "steps": [
         {
-          "check": "(() => { const items = [...document.querySelectorAll('#log .sf-list-timeline-group:first-child .sf-list-timeline-item')]; const line = getComputedStyle(items[0], '::before'); const last = getComputedStyle(items[1], '::before'); const first = items[0].querySelector('.sf-list-timeline-marker').getBoundingClientRect(); const next = items[1].querySelector('.sf-list-timeline-marker').getBoundingClientRect(); const top = items[0].getBoundingClientRect().top + parseFloat(line.top); const bottom = items[0].getBoundingClientRect().bottom - parseFloat(line.bottom); return line.content !== 'none' && last.content === 'none' && Math.abs(top - first.bottom) < 0.5 && Math.abs(bottom - next.top) < 0.5; })()"
+          "check": "(() => { const head = (id) => document.querySelector(`#order [data-id=${id}] .sf-list-timeline-head`); const avatar = head('status').querySelector('sf-avatar'); return avatar && avatar.getAttribute('aria-hidden') === 'true' && avatar.getAttribute('line') === '1' && avatar.getAttribute('hue') === 'teal' && head('status').querySelector('b.sf-list-timeline-actor').textContent === 'Анна Котова' && !head('sms').querySelector('sf-avatar') && head('sms').querySelector('b').textContent === 'Робот' && document.querySelector('#log [data-id=backup] b.sf-list-timeline-actor').textContent === 'Планировщик'; })()"
         }
       ]
     },
     {
-      "id": "p4-navigate",
+      "id": "p4-change",
+      "title": "a field change is sf-change inline in the sentence: the old value quiet, the new one in the text colour, no badge",
+      "covers": "settings.items change, relations cl-change",
+      "steps": [
+        {
+          "check": "(() => { const change = document.querySelector('#order [data-id=status] .sf-list-timeline-head sf-change'); const after = change && change.querySelector('.sf-change__after'); return Boolean(after) && after.textContent === 'Передан в доставку' && change.querySelector('.sf-change__before').textContent === 'Собран' && !change.querySelector('.sf-badge, s, del'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-meta",
+      "title": "one quiet meta line «sf-time · text» (the time under a day heading), the comment's text in an outline with no fill",
+      "covers": "settings.time-format, settings.now, settings.items kind comment, relations cl-time",
+      "steps": [
+        {
+          "check": "(() => { const meta = document.querySelector('#order [data-id=sms] .sf-list-timeline-meta'); const time = meta.querySelector('sf-time time'); const com = document.querySelector('#order [data-id=comment] .sf-list-timeline-comment'); const cs = getComputedStyle(com); const rel = document.querySelector('#log [data-id=backup] sf-time time'); return time.textContent === '14:30' && time.getAttribute('datetime') === '2026-11-09T11:30:00.000Z' && meta.textContent.includes(' · ') && meta.textContent.includes('Заказ 48 215') && com.textContent.startsWith('Клиент просит') && cs.borderTopStyle === 'solid' && (cs.backgroundColor === 'rgba(0, 0, 0, 0)' || cs.backgroundColor === 'transparent') && !document.querySelector('#order [data-id=comment] .sf-list-timeline-meta').textContent.includes('Клиент') && rel.textContent === '2 минуты назад'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p6-collapse",
+      "title": "a run of one actor and kind longer than collapse folds into «Ещё N изменений»; its press reveals it in place, moves the focus to the first revealed event and says expand",
+      "covers": "settings.collapse, events.expand",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#order'); const run = el.querySelector('.sf-list-timeline-run'); return run && run.textContent.trim() === 'Ещё 6 изменений' && run.getAttribute('aria-expanded') === 'false' && !el.querySelector('[data-id=edit-1]'); })()"
+        },
+        {
+          "user": "click:#order .sf-list-timeline-run",
+          "wait": 150,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-list-timeline-expand",
+                "count": 1,
+                "detail": {
+                  "run": "edit-1",
+                  "count": 6
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "(() => { const el = document.querySelector('#order'); return !el.querySelector('.sf-list-timeline-run') && el.querySelectorAll('[data-id^=edit-]').length === 6 && document.activeElement === el.querySelector('[data-id=edit-1]'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p7-steps",
+      "title": "state draws steps: the current one aria-current=step, each step said in words, the line after the current one dashed",
+      "covers": "settings.items state",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#steps'); const cur = el.querySelector('[aria-current=step]'); return cur && cur.dataset.id === 's4' && cur.querySelector('.sr-only').textContent === 'Сейчас: ' && el.querySelector('[data-id=s1] .sr-only').textContent === 'Пройдено: ' && el.querySelector('[data-id=s5] .sr-only').textContent === 'Впереди: ' && getComputedStyle(cur, '::before').borderInlineStartStyle === 'dashed' && el.querySelector('[data-id=s1] .sf-featured-icon').classList.contains('sf-featured-icon--solid'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-geometry",
+      "title": "--sf-space-3 between events and 0 inside one; the connector from one event's first line to the next one's; the last event of a day has none; the list paints no surface",
+      "covers": "geometry, css-variables --sf-list-timeline-gap",
+      "steps": [
+        {
+          "check": "(() => { const items = [...document.querySelectorAll('#log .sf-list-timeline-group:first-child .sf-list-timeline-item')]; const line = getComputedStyle(items[0], '::before'); const last = getComputedStyle(items[1], '::before'); const space = ((value) => { const probe = document.createElement('div'); probe.style.paddingBlockEnd = value; document.body.append(probe); const px = getComputedStyle(probe).paddingBlockEnd; probe.remove(); return px; })('var(--sf-space-3)'); const a = items[0].querySelector('.sf-list-timeline-rail').getBoundingClientRect(); const b = items[1].querySelector('.sf-list-timeline-rail').getBoundingClientRect(); const top = items[0].getBoundingClientRect().top + parseFloat(line.top); const bottom = items[0].getBoundingClientRect().bottom - parseFloat(line.bottom); const root = getComputedStyle(document.querySelector('#order .sf-list-timeline')); return getComputedStyle(items[0]).paddingBottom === space && line.content !== 'none' && last.content === 'none' && Math.abs(top - (a.top + a.height / 2)) < 0.5 && Math.abs(bottom - (b.top + b.height / 2)) < 0.5 && root.backgroundColor === 'rgba(0, 0, 0, 0)'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-navigate",
       "title": "a title with href is a link; its press asks sf-list-timeline-navigate, cancelable",
       "covers": "events.navigate",
       "steps": [
@@ -73,7 +145,7 @@
       ]
     },
     {
-      "id": "p5-more",
+      "id": "p10-more",
       "title": "has-more draws «Показать ещё»; its press asks load-more {direction after, after: the last id}; loading makes it busy",
       "covers": "settings.has-more, settings.loading, events.load-more, host-states data-loading",
       "steps": [
@@ -101,7 +173,17 @@
       ]
     },
     {
-      "id": "p6-empty",
+      "id": "p11-density",
+      "title": "density is the page's: the deprecated density=compact writes data-sf-density on the root and is noted in SF.deprecations",
+      "covers": "settings.density",
+      "steps": [
+        {
+          "check": "(() => { const root = document.querySelector('#dense .sf-list-timeline'); return root.getAttribute('data-sf-density') === 'compact' && SF.deprecations.list().some((note) => note.component === 'sf-list-timeline' && note.from === 'density') && !document.querySelector('#order .sf-list-timeline').hasAttribute('data-sf-density'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p12-empty",
       "title": "with no events one quiet line; new events draw the list",
       "covers": "settings.empty-text, host-states data-empty",
       "steps": [
@@ -111,7 +193,7 @@
         {
           "script": "(document.querySelector('#none').items = [{id: 'n', title: 'Новое событие', time: Date.now()}], true)",
           "wait": 150,
-          "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelectorAll('.sf-list-timeline-item').length === 1 && none.querySelector('.sf-list-timeline-day').textContent === 'Сегодня'; })()"
+          "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelectorAll('.sf-list-timeline-item').length === 1 && none.querySelector('.sf-list-timeline-day').textContent.trim().startsWith('Сегодня'); })()"
         }
       ]
     }

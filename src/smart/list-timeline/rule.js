@@ -6,6 +6,11 @@ SF.RuleLoader['cl-list-timeline'] = {
   js: true,
   css: true,
   relation: [
+    { name: 'featured-icon' },
+    { name: 'list-heading' },
+    { name: 'cl-time' },
+    { name: 'cl-change' },
+    { name: 'cl-avatar' },
     { name: 'cl-button' },
     { name: 'cl-icon' },
     { name: 'sr-only/default' },

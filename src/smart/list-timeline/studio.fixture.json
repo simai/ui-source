@@ -6,45 +6,187 @@
   "summary": "Deterministic reference fixture for sf-list-timeline.",
   "locale": "ru",
   "props": {
+    "now": "2026-11-09T15:00:00+03:00",
     "has-more": true,
     "items": [
       {
-        "id": "backup",
-        "time": "2026-10-27T11:58:00+03:00",
-        "status": "success",
-        "title": "Копия demo-owned.test создана",
-        "actor": "Планировщик",
-        "text": "1,2 ГБ, хранится 30 дней"
+        "id": "comment",
+        "kind": "comment",
+        "icon": "chat_bubble",
+        "actor": {
+          "name": "Анна Котова",
+          "hue": "teal"
+        },
+        "time": "2026-11-09T14:32:00+03:00",
+        "title": "оставила комментарий",
+        "text": "Клиент просит доставку после 18:00, договорились на пятницу. Курьеру позвонить за час."
       },
       {
-        "id": "down",
-        "time": "2026-10-27T11:20:00+03:00",
+        "id": "status",
+        "icon": "swap_horiz",
+        "actor": {
+          "name": "Анна Котова",
+          "hue": "teal"
+        },
+        "time": "2026-11-09T14:30:00+03:00",
+        "title": "изменила статус",
+        "change": {
+          "label": "Статус",
+          "before": "Собран",
+          "after": "Передан в доставку"
+        }
+      },
+      {
+        "id": "sms",
+        "kind": "sms",
+        "actor": {
+          "name": "Робот",
+          "system": true
+        },
+        "time": "2026-11-09T14:30:00+03:00",
+        "title": "отправил SMS покупателю",
+        "text": "«Заказ 48 215 передан в СДЭК, трек 1 234 567 890»"
+      },
+      {
+        "id": "edit-1",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:10:00+03:00",
+        "title": "изменил вес",
+        "change": {
+          "label": "Вес",
+          "before": "4,2 кг",
+          "after": "4,6 кг"
+        }
+      },
+      {
+        "id": "edit-2",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:09:00+03:00",
+        "title": "изменил габариты",
+        "change": {
+          "label": "Габариты",
+          "before": "40×30×20",
+          "after": "45×30×25"
+        }
+      },
+      {
+        "id": "edit-3",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:08:00+03:00",
+        "title": "изменил склад",
+        "change": {
+          "label": "Склад",
+          "before": "Москва-Север",
+          "after": "Москва-Юг"
+        }
+      },
+      {
+        "id": "edit-4",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:07:00+03:00",
+        "title": "изменил получателя",
+        "change": {
+          "label": "Получатель",
+          "before": null,
+          "after": "Ирина Котова"
+        }
+      },
+      {
+        "id": "edit-5",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:06:00+03:00",
+        "title": "изменил телефон",
+        "change": {
+          "label": "Телефон",
+          "before": "+7 900 000-00-00",
+          "after": "+7 900 111-22-33"
+        }
+      },
+      {
+        "id": "edit-6",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:05:00+03:00",
+        "title": "изменил комментарий курьеру",
+        "change": {
+          "label": "Комментарий курьеру",
+          "before": null,
+          "after": "Позвонить за час"
+        }
+      },
+      {
+        "id": "charge",
+        "icon": "error",
         "status": "error",
-        "title": "demo-php.test не отвечал 12 минут",
-        "text": "Код 502; сайт перезапущен автоматически"
+        "actor": {
+          "name": "Робот",
+          "system": true
+        },
+        "time": "2026-11-09T09:12:00+03:00",
+        "title": "не смог списать доплату",
+        "text": "Карта •• 4417: недостаточно средств. Покупателю отправлена ссылка на оплату."
       },
       {
-        "id": "update",
-        "time": "2026-10-27T09:05:00+03:00",
-        "status": "info",
-        "icon": "system_update_alt",
-        "title": "Панель обновлена до 0.3.1",
-        "actor": "Рим Забаров",
-        "href": "#update"
+        "id": "sum",
+        "icon": "payments",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-08T19:40:00+03:00",
+        "title": "изменил сумму",
+        "change": {
+          "label": "Сумма",
+          "before": "24 900 ₽",
+          "after": "23 400 ₽"
+        },
+        "text": "Скидка по промокоду НОЯБРЬ"
       },
       {
-        "id": "cert",
-        "time": "2026-10-26T18:40:00+03:00",
-        "status": "warning",
-        "title": "Сертификат demo-static.test истекает через 6 дней",
-        "actor": "Проверка сайтов"
+        "id": "paid",
+        "icon": "credit_card",
+        "status": "success",
+        "actor": {
+          "name": "Мария Лебедева",
+          "hue": "pink"
+        },
+        "time": "2026-11-08T18:07:00+03:00",
+        "title": "оплатила картой",
+        "text": "23 400 ₽, Мир •• 4417"
       },
       {
-        "id": "site",
-        "time": "2026-10-24T10:00:00+03:00",
+        "id": "created",
         "icon": "add_circle",
-        "title": "Создан сайт demo-static.test",
-        "actor": "Рим Забаров"
+        "actor": {
+          "name": "Мария Лебедева",
+          "hue": "pink"
+        },
+        "time": "2026-11-08T18:05:00+03:00",
+        "title": "оформила заказ на сайте",
+        "text": "3 товара, доставка курьером"
       }
     ]
   },
