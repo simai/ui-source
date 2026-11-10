@@ -86,9 +86,12 @@ class SfChange extends ChangeElement {
   }
 
   // The one pair of layout inline: before and after, else the first change.
+  // before and after are the browser's own ChildNode methods (§3.1: the
+  // manifest leaves them the browser's), so the settings are read from the
+  // attributes through the base, never as this.before / this.after.
   get pair() {
-    const before = valueText(this.before);
-    const after = valueText(this.after);
+    const before = valueText(this.getProp('before'));
+    const after = valueText(this.getProp('after'));
     if (before !== null || after !== null || !this.list.length) return {label: valueText(this.label) ?? '', before, after};
     const first = this.list[0];
     return {...first, label: valueText(this.label) ?? first.label};
