@@ -17,8 +17,13 @@
   font-weight: var(--sf-step--font-weight, var(--sf-font-weight-regular));
   gap: var(--sf-step--gap, var(--sf-space-1\/4));
   min-width: var(--sf-step--min-width, var(--sf-c2));
-  padding-inline-end: var(--sf-step--padding-right, var(--sf-space-1\/4));
-  padding-inline-start: var(--sf-step--padding-left, var(--sf-space-1\/4));
+  /* A step is a control of its size (C01, C18; docs precheck ST-02, ST-03):
+     as tall as an sf-button of the size, 40 / 32 on a desktop and 36 / 28 on
+     a phone, its sides the size's space-x, the border inside the height. It
+     was the line plus a raw 4 px around (34 and 26), and the label touched
+     the rounded edge. */
+  padding-inline-end: var(--sf-step--padding-right, calc(var(--sf-step--space-x, var(--sf-ui-1--space-x)) - var(--sf-px)));
+  padding-inline-start: var(--sf-step--padding-left, calc(var(--sf-step--space-x, var(--sf-ui-1--space-x)) - var(--sf-px)));
   padding-top: var(--sf-step--padding-top);
   padding-bottom: var(--sf-step--padding-bottom);
   border-color: var(--sf-step--border-color, transparent);
@@ -47,7 +52,10 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-step .sf-step-container {
   min-inline-size: 0;
-  overflow-wrap: anywhere;
+  /* A label wraps between words; a word breaks only when it alone is wider
+     than the row (docs precheck ST-01: anywhere let a narrow row squeeze each
+     step to a letter a line). */
+  overflow-wrap: break-word;
   --sf-step-container--background-color: transparent;
   background-color: var(--sf-step-container--background-color);
   color: var(--sf-step-container--color);
@@ -88,23 +96,32 @@
 }
 
 .sf-step.sf-step--size-1\/2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-2);
-  --sf-icon--height: var(--sf-text-size-2);
-  --sf-icon--width: var(--sf-text-size-2);
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+/* The stage icon is the size's line, as in an sf-button of the size. */
+.sf-step.sf-step--size-1 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
 }
 
 .sf-step--size-1 {
   --sf-step--font-size: var(--sf-text-size-1);
   --sf-step--line-height: var(--sf-text-height-1);
-  --sf-step--padding-bottom: var(--sf-space-1\/4);
-  --sf-step--padding-top: var(--sf-space-1\/4);
+  --sf-step--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  --sf-step--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  --sf-step--space-x: var(--sf-ui-1--space-x);
 }
 
 .sf-step--size-1\/2 {
   --sf-step--font-size: var(--sf-text-size-1\/2);
   --sf-step--line-height: var(--sf-text-height-1\/2);
-  --sf-step--padding-bottom: calc(var(--sf-space-1\/4) / 2);
-  --sf-step--padding-top: calc(var(--sf-space-1\/4) / 2);
+  --sf-step--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  --sf-step--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  --sf-step--space-x: var(--sf-ui-1\/2--space-x);
 }
 
 .sf-step:is(button, a, [role="button"]):not(:disabled):not(.disabled):hover {

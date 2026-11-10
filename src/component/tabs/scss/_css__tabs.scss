@@ -28,10 +28,19 @@
     }
   }
 
+  /* A tab name wraps between words; a word breaks only when it alone is
+     wider than the tab (docs precheck TB-02: anywhere let the vertical list
+     shrink to «Безопасност / ь» on a phone). */
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button-text-container {
     min-inline-size: 0;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+  }
+
+  /* The vertical list is at least as wide as its longest word; the panel
+     beside it gives way. */
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container {
+    min-inline-size: min-content;
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon {

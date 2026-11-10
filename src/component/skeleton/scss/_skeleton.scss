@@ -127,7 +127,8 @@
   --sf-skeleton-text--height: var(--sf-text-size-1\/7);
 }
 
-.sf-skeleton-icon {
+.sf-skeleton-icon,
+.sf-skeleton-text:is(.sf-skeleton-circle, .sf-skeleton-square):not([style*="inline-size"]) {
   inline-size: var(--sf-skeleton-text--height);
 }
 

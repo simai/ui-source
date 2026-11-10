@@ -16,7 +16,9 @@ for (const [owner, file] of [['step', '_css__step.scss'], ['breadcrumbs', '_css_
     assert.match(css, /@media \(forced-colors: active\)/);
     assert.match(css, /outline: var\(--sf-focus-outline-width\) solid currentColor/);
     assert.match(css, /not\(\[aria-disabled="true"\]\)/);
-    assert.match(css, /overflow-wrap: anywhere/);
+    // A word breaks only when it alone is wider than its box (docs precheck
+    // ST-01, TB-02): break-word; anywhere also squeezed rows letter by letter.
+    assert.match(css, /overflow-wrap: (?:anywhere|break-word)/);
   });
 }
 

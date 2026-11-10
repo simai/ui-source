@@ -13,6 +13,21 @@
     flex: 0 0 auto;
   }
 
+  /* The «…» that shows the hidden path is a square of the line, centred, and
+     its target reaches 24 px around the mark without growing the row (WCAG
+     2.2 2.5.8; docs precheck BC-02: it was 12x20). */
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--ellipsis {
+    position: relative;
+    justify-content: center;
+    min-inline-size: var(--sf-text-height-1\/2);
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--ellipsis::after {
+    content: "";
+    position: absolute;
+    inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-breadcrumbs-item-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
     min-inline-size: 0;
@@ -82,6 +97,14 @@
     --sf-breadcrumbs-item--background-color: var(--sf-transparent-for-focus);
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--offset);
+  }
+
+  /* A disabled item takes the disabled ink, its icon too (C16; docs precheck
+     BC-01): it was drawn in the link colour and read as a link. */
+  .sf-breadcrumbs-item.sf-breadcrumbs-item:is(:disabled, .disabled, [aria-disabled="true"]) .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-disable);
+    cursor: default;
   }
 
   @media (forced-colors: active) {

@@ -9,6 +9,17 @@
   sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] {
     display: flex;
   }
+
+  /* A tab drawn by a component of the page's own (setData component): the
+     inert wrapper and the component's host step out of the layout, so its
+     button is the tab's flex item as every other tab's is, and type="full"
+     stretches it like the rest (docs precheck TB-04: it stayed as narrow as
+     its label beside a stretched neighbour). */
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] > [inert],
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] > [inert] > sf-button,
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] > [inert] > :is(sf-button-icon, sf-icon-button) {
+    display: contents;
+  }
 }
 
 @layer sf.overrides {

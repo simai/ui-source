@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.step",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/step/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/step/scss/_css__steps.scss",
     "src/component/step/scss/index.scss"
   ],
-  "content_sha256": "dc11b9c7904924c7a78cd7046bf190ef3ca718c018eb5be96ffae1c339b11671",
+  "content_sha256": "4c7b9f08b67c294677b42a79aafe83322695e2445897a7d7a7284f319148ef14",
   "dependencies": [
     {
       "id": "tokens.border",

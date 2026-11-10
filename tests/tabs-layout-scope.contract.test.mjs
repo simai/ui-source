@@ -17,7 +17,9 @@ test('Tabs labels can shrink and wrap without clipping text or shrinking glyphs'
   assert.match(css, /min-inline-size: 0/);
   assert.match(css, /max-inline-size: 100%/);
   assert.match(css, /white-space: normal/);
-  assert.match(css, /overflow-wrap: anywhere/);
+  // A word breaks only when it alone is wider than the tab (docs precheck
+  // TB-02): break-word; anywhere let the vertical list shrink mid-word.
+  assert.match(css, /overflow-wrap: break-word/);
   assert.match(css, /overflow-x: auto/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /scroll-behavior: auto/);

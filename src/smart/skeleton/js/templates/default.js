@@ -58,10 +58,15 @@ export function renderSkeletonTemplate(context) {
     ? `${requestedShape}`
     : 'text';
   const type = rawType === 'icon' ? 'icon' : '';
+  // A circle or a square without a width of its own has equal sides, as an
+  // icon placeholder does (docs precheck SK-01): given the row's full width,
+  // a circle drew a long pill, and in a flex row a narrow upright one.
+  const equalSides = type === 'icon'
+    || ((variant === 'circle' || variant === 'square') && normalizeList(width).length === 0);
   const widths = normalizeList(width, ['100%']);
   const heights = normalizeList(height);
   const rootClasses = ['sf-skeleton', 'flex'];
-  if (type !== 'icon') {
+  if (!equalSides) {
     rootClasses.push('flex-1');
   }
   if (animation) {
@@ -72,7 +77,7 @@ export function renderSkeletonTemplate(context) {
   }
 
   const rootStyle =
-    type !== 'icon' && widths.length
+    !equalSides && widths.length
       ? styleMap({
           'inline-size': resolveSize(widths[0]),
         })
@@ -99,13 +104,15 @@ export function renderSkeletonTemplate(context) {
 
         const resolvedWidth = widths[index % widths.length] || '';
         const resolvedHeight = heights[index % heights.length] || '';
+        // Equal sides take a given height on both sides.
+        const sideHeight = equalSides && resolvedHeight ? resolveSize(resolvedHeight) : '';
         const itemStyle =
-          type !== 'icon'
+          !equalSides
             ? styleMap({
                 'inline-size': resolveSize(resolvedWidth || '100%'),
                 'block-size': resolvedHeight ? resolveSize(resolvedHeight) : '',
               })
-            : '';
+            : styleMap({'inline-size': sideHeight, 'block-size': sideHeight});
 
         return html`
           <div

@@ -10,6 +10,10 @@
 .sf-steps .sf-steps-container {
   min-inline-size: 0;
   max-inline-size: 100%;
+  /* Steps that do not fit one row go on to the next (docs precheck ST-01):
+     each keeps its words instead of the row squeezing them letter by letter. */
+  flex-wrap: wrap;
+  row-gap: var(--sf-steps-gap, var(--sf-steps-container--gap));
   --sf-steps-container--background-color: transparent;
   background-color: var(--sf-steps-container--background-color);
   gap: var(--sf-steps-gap, var(--sf-steps-container--gap));
