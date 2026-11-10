@@ -198,7 +198,8 @@ function renderTime(context) {
 // choice covers both: above the box it labelled columns that were not there,
 // and the choice had a row less of height than the panel gives it.
 function renderDatepickerPanel(context) {
-    const rootClasses = joinClasses('sf-datepicker inline-flex', context.presetItems.length ? 'sf-datepicker--presets' : '',
+    const rootClasses = joinClasses('sf-datepicker inline-flex', context.input ? '' : 'sf-datepicker--inline',
+        context.presetItems.length ? 'sf-datepicker--presets' : '',
         context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '', context.rootClass);
 
     if (context.mode === 'time') {

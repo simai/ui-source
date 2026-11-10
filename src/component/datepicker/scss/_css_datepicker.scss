@@ -18,6 +18,14 @@
     padding-inline-start: var(--sf-datepicker--padding-left, var(--sf-space-1\/3));
     padding-top: var(--sf-datepicker--padding-top, var(--sf-space-1\/3));
   }
+  /* A calendar drawn in the page (no field: sf-input-date without an input, or
+     the class markup with sf-datepicker--inline) is the flat place of C20: no
+     shadow, its edge the outline-variant hairline, drawn inside so the grid
+     keeps its width. It kept the popup's overlay shadow (docs pre-check
+     2026-11-10 DP-06). */
+  .sf-datepicker.sf-datepicker--inline {
+    box-shadow: inset 0 0 0 var(--sf-px) var(--sf-outline-variant);
+  }
   /* Quick ranges beside the grid, at its inline start; where the panel has no
      room for both, a wrapping row above it. The panel is the container, so the
      list follows the room the panel has, not the window. */
