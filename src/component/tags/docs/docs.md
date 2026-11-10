@@ -21,6 +21,10 @@ filter or a quiet label reads the same on any background and in both themes.
 Because a tag is built without a border, both draw their boundary as an inset
 line, which keeps a tag exactly as tall as its neighbours.
 
+A picture before the label is the label's line high. On another control's text
+line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
+button is, so a chip in a field and the field's list rows show one avatar step.
+
 ## Semantic ownership
 
 - static labels and statuses use a neutral container without an action role or

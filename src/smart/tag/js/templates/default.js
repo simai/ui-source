@@ -105,27 +105,26 @@ function renderCount(context) {
         : context.count ? html`<span class="sf-tag-count pointer-events-none flex">${context.count}</span>` : nothing;
 }
 
-// The close button is ghost, not link, its former name: the dated alias
-// counted every closable tag as the page's own use of link in
-// SF.deprecations (pair ui-a0370c0c99fb acceptance, F3).
+// The remove button is sf-button-close, plain (owner decision C14: a tag's
+// remove has no spot, the cross darkens and the ring stands around it). It was
+// sf-button-icon kind="close", the name C14 retired (LK-06); before that link,
+// the alias F3 of pair ui-a0370c0c99fb counted on every closable tag.
 function renderClose(context) {
     if (!context.closable) return nothing;
 
     return context.component?.hasSlotContent?.('close')
         ? context.component.getSlotContent('close')
         : html`
-                <sf-button-icon
-                        kind="close"
+                <sf-button-close
                         size="${closeSize(context.size)}"
-                        appearance="ghost"
-                        scheme="on-surface"
+                        appearance="plain"
                         ?disabled=${context.disabled}
                         aria-label=${context.closeLabel}
                         @click="${(e) => {
                             e.stopPropagation();
                             context.component.onClose();
                         }}"
-                ></sf-button-icon>
+                ></sf-button-close>
         `;
 }
 
