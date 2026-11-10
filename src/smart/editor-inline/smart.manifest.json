@@ -397,7 +397,7 @@
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "6070b167f0aef0cb95c5bea0081c8cd8a40667706d5cc4b8cfbb5d0fd0a08251"
+        "sha256": "f3493b3a9d600cf9ca79cbbfc13c86d1cb8823650558b4af1d02d4cc239e7275"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",

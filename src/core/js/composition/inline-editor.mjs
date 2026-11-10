@@ -144,7 +144,7 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
       // placeholder <br> a browser leaves as the last child of the edited
       // element (an emptied editor, or the empty line after a final break)
       // is not content; a break the editor drew says so itself.
-      if (!node.hasAttribute(BREAK_ATTRIBUTE) && node.parentNode === root && !node.nextSibling) return;
+      if (!node.hasAttribute(BREAK_ATTRIBUTE) && isLastLeaf(node, root)) return;
       segments.push(breakSegment([...active], href));
       return;
     }
@@ -212,8 +212,20 @@ export function renderInlineDom(doc, content) {
   // A line that ends on a break needs one more <br> to show its empty last
   // line; that one is the placeholder and is not read back.
   const last = normalized.at(-1);
-  if (last?.type === 'break' || (last?.type === 'link' && last.children.at(-1)?.type === 'break')) fragment.append(doc.createElement('br'));
+  // It goes inside the marks of that break, so text typed on the new line
+  // keeps them, as it would after a break inside a line.
+  if (last?.type === 'break' || (last?.type === 'link' && last.children.at(-1)?.type === 'break')) {
+    let host = fragment;
+    while (host.lastChild?.nodeType === 1 && host.lastChild.tagName !== 'BR') host = host.lastChild;
+    host.append(doc.createElement('br'));
+  }
   return fragment;
+}
+
+// True when node is the last thing inside root: nothing follows it at any level.
+function isLastLeaf(node, root) {
+  for (let current = node; current && current !== root; current = current.parentNode) if (current.nextSibling) return false;
+  return true;
 }
 
 // The units of offset inside root, in document order: text nodes outside
