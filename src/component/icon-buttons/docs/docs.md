@@ -13,8 +13,9 @@ decorative and uses `aria-hidden="true"`.
   the destructive status;
 - scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
   `on-surface`); `secondary` is kept for older markup;
-- status: `sf-icon-button--danger` (or `--error`, the same rules) for a
-  destructive control, in every emphasis (decision C13);
+- status: `sf-icon-button--danger` for a destructive control, in every
+  emphasis (decision C13); `sf-icon-button--error` is its former name, the
+  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger);
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`

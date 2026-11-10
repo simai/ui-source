@@ -9761,6 +9761,96 @@
       },
       "owner": "ui-source",
       "source": "src/utility/fill, src/utility/border-color (ring-color, ring-offset-color), src/utility/drop-shadow-color, src/utility/gradient-color, src/utility/stripe-color, src/utility/text-color (placeholder-color)"
+    },
+    {
+      "id": "class-c13-control-error-to-danger",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "A control's destructive status is danger (decision C13; the value record value-control-status-error-to-danger): on the class components the modifier is sf-button--danger and sf-icon-button--danger, and the --error modifiers are their former names on a control, drawn by the same rules until remove_after. The Smart sf-button and sf-button-icon write both. A message (alert, badge, field, toast) keeps --error: there it is the status, not a former name.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--error",
+          "to": "sf-button--danger"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--error",
+          "to": "sf-icon-button--danger"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--error\">",
+        "after": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--danger\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss, src/component/icon-buttons"
+    },
+    {
+      "id": "class-c27-button-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class button's density classes spacing-compact, spacing-comfortable and spacing-spacious move the side padding only at one height; decision C27 gives the button a height of its own (sf-button--height-low|high|highest, component.buttons 1.8.0), as the Smart sf-button's spacing gave way to height (attribute-button-spacing-to-height). On sf-button they are deprecated and keep drawing as before until remove_after. They are not turned into a height: the equivalent is not automatic. sf-icon-button's spacing classes are not part of this record.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "spacing-compact",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])|(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-button",
+          "from": "spacing-comfortable",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])|(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-button",
+          "from": "spacing-spacious",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])|(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing-* from the sf-button. For a lower or a higher button add sf-button--height-low, sf-button--height-high or sf-button--height-highest (the side padding comes with it); the default height needs no class. spacing-* changed the sides only, so pick the height the design wants. The public --sf-button-padding-inline still sets the sides alone.",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary spacing-spacious\">",
+        "after": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--height-high\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss"
+    },
+    {
+      "id": "option-c27-button-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "The class button's constructor option spacing (compact, comfortable, spacious) writes the deprecated density classes (class-c27-button-spacing-to-height); its option height writes the height class (decision C27). spacing keeps working until remove_after and is not turned into a height. The constructors of other class components keep their spacing.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "spacing",
+          "to": "height",
+          "match": "(?<![a-z0-9-])spacing\\s*:\\s*['\"](?:compact|comfortable|spacious)['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "In the options of the class button (component.buttons) write height: 'low', 'high' or 'highest' instead of spacing; spacing: 'normal' is the default and is simply removed. The finding names every spacing option of the constructors it sees: leave the one of an icon button (sf-icon-button), whose spacing is not deprecated.",
+      "examples": {
+        "before": "new Button({params: {size: '1', spacing: 'spacious', text: 'Сохранить'}})",
+        "after": "new Button({params: {size: '1', height: 'high', text: 'Сохранить'}})"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/js/_buttons.js"
     }
   ]
 }
