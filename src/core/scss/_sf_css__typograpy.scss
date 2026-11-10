@@ -279,6 +279,27 @@
     overflow-wrap: break-word;
   }
 
+  // In a table cell a long value -- a JSON default, a rule address -- may
+  // break anywhere, so it lowers the cell's min-content and never widens the
+  // table; the table's auto layout gives the room to the column that needs
+  // it, and a label column keeps its words (owner decision C10, variant A,
+  // 2026-11-11). Text the Framework draws in a cell (a class of its own, a
+  // block of code) is left alone, as in running text.
+  :where(td, th) code:where(:not([class*='sf-'], [class*='sf-'] > code, pre code, .sf-highlight code, .sf-code-surface code)) {
+    overflow-wrap: anywhere;
+  }
+
+  // The words of a cell are whole: the table's `word-break: break-word`
+  // (above) lowered every cell's min-content to a letter, so the auto layout
+  // squeezed a label column below its longest word. A cell keeps its words
+  // and breaks a word only when it cannot fit the column it was given
+  // (break-word, which does not lower min-content); room for a long value
+  // comes from the code rule above (C10 variant A, 2026-11-11).
+  :where(td, th) {
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
   // Copy on click, only where a container asks for it with
   // data-sf-code-copy (core/js/code-copy.js marks each code inside as a
   // button). Never the default: a word of code in running text is text.

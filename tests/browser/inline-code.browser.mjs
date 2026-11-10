@@ -65,6 +65,11 @@ const BODY = `
   <p id="narrow" style="inline-size:20ch">An event <code id="hyphen">sf-button-press</code> comes</p>
   <p id="url-box" style="inline-size:358px">Документация: <code id="url">https://ui.simai.io/ru/smart/actions/copy-button/?from=docs&amp;token=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789</code> — ссылка.</p>
   <p id="words-box" style="inline-size:14ch">Run <code id="words">npm run build --watch --verbose</code> now</p>
+  <div id="tbl-box" style="inline-size:358px"><table id="tbl" style="border-collapse:collapse;inline-size:100%"><tbody>
+    <tr><td>Тег</td><td><code>&lt;sf-radio&gt;</code>, контракт <code>smart.radio</code> версии <code>1.1.4</code></td></tr>
+    <tr><td>Значение по умолчанию</td><td><code id="tbl-json">{"items":[{"value":"day","label":"День"},{"value":"week","label":"Неделя"}],"name":"period"}</code></td></tr>
+    <tr><td>Правило классов</td><td><code id="tbl-rule">simai/ui@2bd5a3ab478a46fcee24d2460e7792135b0bb864:distr/rule/rule.json#name=cl-radio</code></td></tr>
+  </tbody></table></div>
   <p id="line-box">One line <code id="line-code">sf-tag</code> of text</p>
   <p id="plain-line">One line of text</p>
   <p class="tone-secondary">Secondary <code id="tone-secondary">x</code></p>
@@ -183,6 +188,15 @@ const read = () => {
     url: fits('url-box'),
     words: {...fits('words-box'), broken: wordsWhole(document.getElementById('words'))},
     hyphenBroken: wordsWhole(document.getElementById('hyphen')),
+    table: (() => {
+      const box = document.getElementById('tbl-box');
+      const table = document.getElementById('tbl');
+      const labels = [...table.querySelectorAll('td:first-child')];
+      return {box: box.getBoundingClientRect().width, table: table.getBoundingClientRect().width, scroll: box.scrollWidth - box.clientWidth,
+        labelBroken: labels.flatMap((td) => wordsWhole(td)), labelWidths: labels.map((td) => Math.round(td.getBoundingClientRect().width)),
+        rule: {...fits('tbl-box'), wrap: getComputedStyle(document.getElementById('tbl-rule')).overflowWrap},
+        prose: getComputedStyle(document.getElementById('url')).overflowWrap};
+    })(),
     line: {withCode: document.getElementById('line-box').getBoundingClientRect().height, plain: document.getElementById('plain-line').getBoundingClientRect().height},
   };
   return {expected, stripe, codes, layout, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
@@ -252,6 +266,11 @@ for (const theme of THEMES) {
   // Code with spaces longer than the line breaks at its spaces (and hyphens),
   // never between two letters.
   check(`${theme}: code with spaces keeps its words whole`, layout.words.broken.length === 0 && layout.words.code.right <= layout.words.column.right + 0.5, layout.words);
+  // A long value in a table cell breaks anywhere: the table stays in its
+  // box and the label column keeps its words (C10 variant A, 2026-11-11).
+  check(`${theme}: a long value in a table cell never widens the table`, layout.table.table <= layout.table.box + 0.5 && layout.table.scroll <= 0
+    && layout.table.rule.wrap === 'anywhere' && layout.table.prose === 'break-word', layout.table);
+  check(`${theme}: the label column keeps its words`, layout.table.labelBroken.length === 0, layout.table);
   // Code does not make the text line taller.
   check(`${theme}: a line with code keeps the text line height`, Math.abs(layout.line.withCode - layout.line.plain) < 0.5, layout.line);
 

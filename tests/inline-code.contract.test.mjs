@@ -44,6 +44,12 @@ test('code wraps as text: inline, no nowrap, a run longer than the line breaks (
   assert.doesNotMatch(rule, /display:/u);
   assert.doesNotMatch(rule, /white-space:\s*nowrap;/u);
   assert.match(rule, /overflow-wrap:\s*break-word;/u);
+  // In a table cell a long value breaks anywhere, so it never widens the
+  // table (C10 variant A, owner 2026-11-11); no nowrap in a cell either.
+  assert.match(sheet, /:where\(td, th\) code:where\(:not\([^{]+\{\s*overflow-wrap:\s*anywhere;\s*\}/u);
+  assert.doesNotMatch(sheet, /:where\(td, th\)[^{]*\{[^}]*white-space:\s*nowrap/u);
+  // The words of a cell stay whole: the cell resets the table's break-word.
+  assert.match(sheet, /:where\(td, th\) \{\s*word-break:\s*normal;\s*overflow-wrap:\s*break-word;\s*\}/u);
 });
 
 test('the tones come from existing roles only: no palette of their own', () => {

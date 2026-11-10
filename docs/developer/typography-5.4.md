@@ -99,9 +99,15 @@ at its spaces and hyphens, so a name at the end of a line may part at a hyphen
 (`sf-button-` / `press`) but never between two letters. A run that cannot fit
 a line of its own -- a URL, a token -- breaks where it must
 (`overflow-wrap: break-word`; C10, 2026-11-10), so it never runs out of a
-narrow column. `break-word`, not `anywhere`: a table still sizes its columns
-to whole words, and inline code keeps the no-break with the punctuation around
-it and the height of its line.
+narrow column. In running text `break-word`, not `anywhere`: inline code
+keeps the no-break with the punctuation around it and the height of its line.
+In a table cell (`td`, `th`) code takes `overflow-wrap: anywhere` (owner
+decision C10, variant A, 2026-11-11): a long value -- a JSON default, a rule
+address -- lowers the cell's min-content and never widens the table, so a
+label column beside it keeps its words. For that the cell's own text resets
+the table's `word-break: break-word` (which lowered every cell to a letter) to
+`overflow-wrap: break-word`: a cell keeps its words and breaks one only when
+it cannot fit the column. Cells never get `nowrap`.
 
 The public variables have one dash and are never set by the Framework; set
 them on `:root` or any container. The `--sf-code--*` names with two dashes
