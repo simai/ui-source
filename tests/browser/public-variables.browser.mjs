@@ -43,7 +43,8 @@ const DRAW = {
     open: 'document.getElementById("modal").open()'},
   tooltip: {css: ['tooltip'], js: 'tooltip', html: '<sf-tooltip text="Подсказка" supporting-text="Пояснение" size="1"></sf-tooltip>'},
   tabs: {css: ['tabs', 'buttons'], js: 'tabs', html: '<sf-tabs type="underline" size="1" items="Обзор|Настройки|История"></sf-tabs>'},
-  avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
+  // The offline avatar draws the dot its two variables paint (C43 R3).
+  avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar><sf-avatar text="ВГ" size="1" status="offline"></sf-avatar>'},
   // A drilling panel beside the flyout menu: the fixed width is a drilling
   // panel's (submenu="drill"), so one has to be on the stage to measure it.
   'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'menu-context', html: '<button id="anchor" type="button">Меню</button><sf-menu-context id="menu" popup aria-label="Меню"></sf-menu-context>'
@@ -279,6 +280,8 @@ const DRAW = {
 const ROLES = {
   // A toast lays its tint over the raised surface as an image layer.
   background: {properties: ['background-color', 'background-image'], value: 'rgb(1, 2, 3)'},
+  // A layer drawn over a colour: the offline dot's disabled ink (sf-avatar).
+  overlay: {properties: ['background-image'], value: 'linear-gradient(rgb(1, 2, 3), rgb(1, 2, 3))'},
   color: {properties: ['color'], value: 'rgb(4, 5, 6)'},
   // A divider between columns is a border at the inline edge (sf-workspace).
   'border-color': {properties: ['border-top-color', 'border-bottom-color', 'border-inline-start-color', 'border-inline-end-color'], value: 'rgb(7, 8, 9)'},
@@ -374,5 +377,7 @@ try {
 const unmeasured = Object.entries(results).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
 const measuredCount = Object.values(results).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
 console.log(JSON.stringify({measured: measuredCount, unmeasured}));
+// PV_SHOW=<component,...> prints those components' answers (evidence runs).
+for (const name of (process.env.PV_SHOW ?? '').split(',').filter(Boolean)) console.log(JSON.stringify({[name]: results[name]}));
 if (failures.length) { console.error(JSON.stringify({failures}, null, 1)); process.exit(1); }
 console.log('PUBLIC_VARIABLES_OK');
