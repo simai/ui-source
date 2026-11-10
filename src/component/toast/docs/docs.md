@@ -30,6 +30,13 @@ sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
 still win.
 
+## Ink (1.2.1, C35 acceptance F1)
+
+The status icon is the status's role `--sf-<status>` (`--sf-on-surface` when
+neutral), as on the alert: the container's graphic tone
+(`--sf-on-<status>-container-graphic`) it read before was 2.86-3.04:1 on a dark
+toast. The close's cross is the toast's text ink, `--sf-on-<status>-container`.
+
 ## Accessibility and ownership
 
 Use `role="status"` only when non-urgent feedback is inserted dynamically and
