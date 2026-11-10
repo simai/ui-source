@@ -20,11 +20,30 @@ import ru from './lang/ru.json';
 // and so is the trait's old event sf-field:reset (sf-field-reset). The host is
 // the form control through ElementInternals: it submits the text, reports the
 // native input's validity, and the native input carries no name (§17.1).
+// The error message shown in place of the hint, and a custom error the form
+// will not submit over (§17.2), as sf-input-quantity and sf-input-image take
+// it. An empty message clears both.
+const actions = {
+  'set-error'({ message } = {}) {
+    const text = String(message ?? '');
+    if (text) {
+      this.setAttribute('error-message', text);
+      this.setAttribute('invalid', '');
+    } else {
+      this.removeAttribute('error-message');
+      this.removeAttribute('invalid');
+    }
+    this.setCustomValidity(text);
+    return 'applied';
+  },
+};
+
 const InputElement = elementFromManifest(manifest, {
   base: InheritedValueField(SfBaseElement),
   lang: { en, ru },
   source: 'ru',
   aliases,
+  actions,
 });
 
 class SfInput extends FormField(InputElement) {

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
   "id": "smart.input",
   "tag": "sf-input",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -218,7 +218,23 @@
       }
     }
   },
-  "actions": {},
+  "actions": {
+    "set-error": {
+      "with": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets custom-error, so the form does not submit over it (§17.2). Answers the outcome applied.",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
   "form": {
     "value": "value",
     "name": "name",
@@ -407,7 +423,8 @@
     "version 1.5.1: with a hint or an error and an inherited value, the inherited sentence is also a hidden note that aria-describedby names after the message, because a browser reads aria-describedby instead of aria-description and the sentence went unsaid (helpers/inherited-value.js, syncInheritedNote). Nothing is drawn differently.",
     "version 1.6.1 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.6.0: size takes 1/3 and 3 again for sf-input alone, on the control ladder (--sf-ui-<size>--control-height): .sf-input drew no height at those steps and fell to its 20px line; radius (\"\", default, square, rounded) draws the field as sf-button's radius does, rounded a pill. Actions block, item 4 (docs review 2026-11-08).",
-    "version 1.7.0 (2026-11-09): a minor (§4.10): the setting shortcut (owner decision C38; C04 names the field beside the button). It draws the combination at the end of the field, after text-end, as the kbd component's keys -- <span class=\"sf-input-right sf-input-shortcut\" aria-hidden=\"true\"> holding <kbd class=\"sf-kbd--group\"> with a <kbd> per key (sf-kbd--square on a one-character key; off an Apple platform a <span class=\"sf-kbd-join\">+</span> between words) -- in the muted ink, and as aria-keyshortcuts on the native input. The keys take the text step one below the value's, read by the kbd sheet from the field's size class (component.kbd 1.3.0: 1/3 and 1/2 a plate of 16, 1 20, 2 24, 3 28), and the field's end is a centred flex row (component.inputs 1.3.0), so a key sits on the field's middle (it sat 1-2 px low). The field does not listen to the combination. kbd is a relation."
+    "version 1.7.0 (2026-11-09): a minor (§4.10): the setting shortcut (owner decision C38; C04 names the field beside the button). It draws the combination at the end of the field, after text-end, as the kbd component's keys -- <span class=\"sf-input-right sf-input-shortcut\" aria-hidden=\"true\"> holding <kbd class=\"sf-kbd--group\"> with a <kbd> per key (sf-kbd--square on a one-character key; off an Apple platform a <span class=\"sf-kbd-join\">+</span> between words) -- in the muted ink, and as aria-keyshortcuts on the native input. The keys take the text step one below the value's, read by the kbd sheet from the field's size class (component.kbd 1.3.0: 1/3 and 1/2 a plate of 16, 1 20, 2 24, 3 28), and the field's end is a centred flex row (component.inputs 1.3.0), so a key sits on the field's middle (it sat 1-2 px low). The field does not listen to the combination. kbd is a relation.",
+    "version 1.8.0 (2026-11-10): a minor (§4.10): the action set-error {message} is added, as sf-input-quantity and sf-input-image have it (standard §17.2; docs pre-review of guide/smart-components, GS-F6). It writes error-message and invalid and sets custom-error, so the form does not submit until an empty message clears all three; it answers the outcome applied. Nothing drawn changes: it draws the error the two attributes always drew."
   ],
   "x-rule": {
     "$comment-after": [

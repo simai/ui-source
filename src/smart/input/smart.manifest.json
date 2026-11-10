@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -306,6 +306,31 @@
     }
   },
   "methods": {
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets custom-error, so the form does not submit over it (§17.2). Answers the outcome applied.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
     "getInputElement": {
       "summary": "Returns the inner native input, or null before render.",
       "arguments": [],
@@ -629,7 +654,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input/index.js",
-        "sha256": "6b3fcf8c030412a56c78e1b25aea53bb8198515731707c086941cfb13c77cf26"
+        "sha256": "dcfaf0323cbf146c878b7144d76518e0d3b118baf844b5f23a08f8877b98ffff"
       },
       {
         "path": "src/smart/input/rule.js",

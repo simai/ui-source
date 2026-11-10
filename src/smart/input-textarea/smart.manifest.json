@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-textarea",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -261,6 +261,31 @@
     }
   },
   "methods": {
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets custom-error, so the form does not submit over it (§17.2). Answers the outcome applied.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
     "setState": {
       "summary": "Applies disabled, error or invalid, errorMessage and value to the inner textarea and resyncs its field semantics; setting value dispatches input. Returns false when the textarea is not rendered.",
       "arguments": [
@@ -462,7 +487,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-textarea/index.js",
-        "sha256": "8aee6f68994d29a60fef929c814146d8febffc7c582b7b3f18a90d4e81de7753"
+        "sha256": "47c559170d145d582b6f44c792b564365c501a15f212a4ddfaaa3b2ee8abfc14"
       },
       {
         "path": "src/smart/input-textarea/rule.js",
