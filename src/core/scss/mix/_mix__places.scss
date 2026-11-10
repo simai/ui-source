@@ -26,7 +26,10 @@
 // its own tone (a tonal badge) stacks over the place's solid colour instead of
 // over the row (C43, owner 2026-11-10): sf-place-fill declares that colour as
 // --sf-surface-underlay. Every place above takes it back (initial), so a popup
-// opened from such a row is not painted over the row's place.
+// opened from such a row is not painted over the row's place. The colour is
+// --sf-surface-place-solid: the place's colour where the place is solid, and
+// initial on a translucent place (a soft coloured place, glass), whose colour
+// is an alpha a badge cannot stand on -- there a row leaves the role off.
 //
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
@@ -65,6 +68,7 @@ $sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surf
 // is the theme's (the page, an area).
 @mixin sf-place($surface, $variant: null) {
   --sf-surface-place: #{$surface};
+  --sf-surface-place-solid: #{$surface};
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
@@ -80,7 +84,7 @@ $sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surf
 // row, --sf-surface-place, read where the fill is declared. Include it with
 // the fill, in the same rule.
 @mixin sf-place-fill {
-  --sf-surface-underlay: var(--sf-surface-place);
+  --sf-surface-underlay: var(--sf-surface-place-solid);
 }
 
 // The seven colours that are places.
@@ -94,6 +98,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // (surfaces research 6.3: text 12.32 light / 8.60 dark at least).
 @mixin sf-place-soft($c) {
   --sf-surface-place: var(--sf-#{$c}-container);
+  --sf-surface-place-solid: initial;
   --sf-surface-underlay: initial;
   --sf-surface-container: var(--sf-#{$c}-container);
   --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
@@ -120,6 +125,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // own ink is on-<c>, or a field's text would be dark on the colour.
 @mixin sf-place-strong($c) {
   --sf-surface-place: var(--sf-#{$c});
+  --sf-surface-place-solid: var(--sf-#{$c});
   --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};

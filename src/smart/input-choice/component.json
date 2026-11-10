@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -295,6 +295,7 @@
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its studio scenario and smoke example back the Pro package reference (sf-chat-threads for chat 1.18). Settings, values, events and keys unchanged.",
     "version 1.0.2: the size rule C18 (2026-11-09): --sf-choice-min-inline-size defaults to the size step f5 (15rem, 240 px, as before), written as the token.",
     "version 1.1.0 (2026-11-09, owner decision C28, R041): layouts list, tile (the default, the arrangement 1.0 had) and picture; an option's price, term and image; the class radio and checkbox on the name line in place of the drawn 14 px ring; sf-badge in place of the hand-written .sf-badge span; padding space-1 (was space-1/2) and gap half the padding; radius surface (was ui); the chosen fill primary-container (was the select step of the alpha scale); the icon on the name line at the line's height (it was a 40 px box, sized through --sf-icon--size, a variable the icon font does not read). R041 defects fixed: density ignored (the ring and the icon box were fixed sizes), price only in the caption, no image, the hand-written badge class, the wrong icon variable. Added members only: a minor. The 1.0 part .sf-choice-mark is gone (no page used it); the other part classes and the eight public variables keep their names.",
+    "version 1.1.1 (2026-11-10): a patch. The checked card, a translucent primary fill, declares the solid place under it (core mix sf-place-fill, owner decision C43), so the tonal «Популярный» badge on it keeps its own tone: it read 196,223,251 against 224,238,253 on the page. Settings, values, events and keys unchanged.",
     "layout names: list, tile, picture (the dispatcher's proposal). layout is the leaf word the Framework already uses for an arrangement (sf-dropdown list|grid, sf-contents, sf-empty-state); the values are plain nouns of what a card is, not looks (§21.2: no compact/large/wide). tile is the default because it is how 1.0 stood.",
     "control: the class markup, not a nested <sf-radio>/<sf-checkbox> element. Those hosts are form controls of their own (ElementInternals) and make their native group by their name: nested in this field they would either submit beside it or, without a name, lose the arrow-key group. The class radio and checkbox are what those elements draw, at the same size class, so the look, the density and the states are theirs.",
     "caption stays the item field for the description (see the first decision): description is a key every Smart bundle drops, and the runtime may not read it (tests/shared-runtime.contract.test.mjs), so it is not taken as an alias either."

@@ -17,13 +17,16 @@
 //   coloured place -- nothing changes: no badge has a background image, its
 //   background-color is its tone, as before.
 // - On the Framework's translucent rows -- a selected list option, a current
-//   context-menu item, the navigation menu's current page, a selected tree
-//   item -- and on a row that declares the role with its own fill (a table
+//   context-menu item in its panel, the navigation menu's and the
+//   documentation tree's current page, a selected tree item, the admin menu's
+//   selected search row, a checked choice card, a selected row on a strong
+//   coloured place -- and on a row that declares the role with its own fill (a table
 //   row, an open record, as a set writes it), a tonal badge's fill is the
 //   same pixel as on the place the row stands on (each channel within 1), and
 //   its text keeps 4.5:1. A main or an outline badge is untouched.
 // - A place inside such a row (a popup) takes the role back: no image there.
-// - A row that does not declare the role is drawn as before (no image).
+// - A row that does not declare the role is drawn as before (no image), and so
+//   is a selected row on a soft coloured place, which has no solid colour.
 // Each pixel is the mean of a 4 x 4 block (Chrome dithers gradients by one
 // step).
 // - The page has no errors and a clean console.
@@ -70,16 +73,27 @@ const CONTEXTS = [
   {id: 'strong', kind: 'solid', html: (b) => `<div class="bg-primary color-on-primary ctx" id="strong">${b}</div>`},
   {id: 'soft', kind: 'solid', html: (b) => `<div class="bg-warning-container ctx" id="soft">${b}</div>`},
   {id: 'list', kind: 'fill', on: 'page', html: (b) => `<div class="sf-list" role="listbox"><div class="sf-list-item selected ctx" role="option" aria-selected="true" id="list">${b}</div></div>`},
-  {id: 'context', kind: 'fill', on: 'page', html: (b) => `<div class="sf-context-menu-item sf-context-menu-item--current ctx" id="context">${b}</div>`},
+  {id: 'context', kind: 'fill', on: 'cm-panel', html: (b) => `<div class="sf-context-menu"><div class="sf-context-menu-content ctx-wrap" id="cm-host"><div class="sf-context-menu-item sf-context-menu-item--current ctx" id="context">${b}</div></div></div>`},
+  {id: 'cm-panel', kind: 'solid', html: (b) => `<div class="sf-context-menu"><div class="sf-context-menu-content ctx" id="cm-panel">${b}</div></div>`},
   {id: 'nav', kind: 'fill', on: 'page', html: (b) => `<nav class="sf-menu sf-menu--navigation"><div class="sf-menu-element ctx" aria-current="page" id="nav">${b}</div></nav>`},
   {id: 'tree', kind: 'fill', on: 'page', html: (b) => `<div class="sf-tree"><div class="sf-tree-item" aria-selected="true"><div class="sf-tree-item-container ctx" id="tree">${b}</div></div></div>`},
+  {id: 'docs-tree', kind: 'fill', on: 'page', html: (b) => `<nav class="sf-menu sf-menu--documentation-tree"><a class="sf-menu-element ctx" aria-current="page" href="#" id="docs-tree">${b}</a></nav>`},
+  {id: 'admin-search', kind: 'fill', on: 'page', html: (b) => `<div class="sf-admin-menu"><div class="sf-admin-menu-search-row selected ctx" id="admin-search">${b}</div></div>`},
+  {id: 'choice', kind: 'fill', on: 'page', html: (b) => `<div class="sf-choice"><div class="sf-choice-card sf-choice-card--checked ctx" id="choice">${b}</div></div>`},
+  {id: 'strong-row', kind: 'fill', on: 'strong', html: (b) => `<div class="bg-primary color-on-primary ctx-wrap"><div class="sf-list" role="listbox"><div class="sf-list-item selected ctx" role="option" aria-selected="true" id="strong-row">${b}</div></div></div>`},
+  // A soft coloured place is translucent: it has no solid colour, so a row on
+  // it leaves the role off and its badges are drawn as on the base (DEV D1).
+  {id: 'soft-list', kind: 'softrow', html: (b) => `<div class="bg-warning-container ctx-wrap"><div class="sf-list" role="listbox"><div class="sf-list-item selected ctx" role="option" aria-selected="true" id="soft-list">${b}</div></div></div>`},
+  {id: 'soft-tree', kind: 'softrow', html: (b) => `<div class="bg-warning-container ctx-wrap"><div class="sf-tree"><div class="sf-tree-item" aria-selected="true"><div class="sf-tree-item-container ctx" id="soft-tree">${b}</div></div></div></div>`},
+  {id: 'soft-docs-tree', kind: 'softrow', html: (b) => `<div class="bg-warning-container ctx-wrap"><nav class="sf-menu sf-menu--documentation-tree"><a class="sf-menu-element ctx" aria-current="page" href="#" id="soft-docs-tree">${b}</a></nav></div>`},
   {id: 'table', kind: 'fill', on: 'page', html: (b) => `<table><tbody><tr class="open-row" aria-current="true"><td class="ctx" id="table">${b}</td></tr></tbody></table>`},
   {id: 'popup-row', kind: 'fill', on: 'popup', html: (b) => `<div class="bg-surface-popup ctx-wrap" id="popup-host"><div class="sf-list" role="listbox"><div class="sf-list-item selected ctx" role="option" aria-selected="true" id="popup-row">${b}</div></div></div>`},
   {id: 'nested', kind: 'reset', html: (b) => `<div class="sf-list" role="listbox"><div class="sf-list-item selected" role="option" aria-selected="true"><div class="bg-surface-popup ctx" id="nested">${b}</div></div></div>`},
   {id: 'undeclared', kind: 'undeclared', html: (b) => `<div class="own-row ctx" id="undeclared">${b}</div>`},
 ];
 
-const sheets = ['badges', 'card', 'dropdown', 'context-menu', 'menu', 'tree'].map((name) => `<link rel="stylesheet" href="/distr/component/${name}/css/${name}.css">`).join('');
+const sheets = ['badges', 'card', 'dropdown', 'context-menu', 'menu', 'tree', 'admin-menu'].map((name) => `<link rel="stylesheet" href="/distr/component/${name}/css/${name}.css">`).join('')
+  + '<link rel="stylesheet" href="/distr/smart/input-choice/css/input-choice.css">';
 const shell = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">${sheets}<script src="/distr/core/js/core.js"></script>
@@ -91,7 +105,7 @@ body{margin:0;padding:var(--sf-space-1);background:var(--sf-surface-page);color:
 table{border-collapse:collapse;inline-size:100%}
 /* A set's open record, as sf-view-table draws it: an alpha fill on the row,
    and the role declared with it (C43). */
-tr.open-row{background-image:linear-gradient(var(--sf-primary-container),var(--sf-primary-container));--sf-surface-underlay:var(--sf-surface-place)}
+tr.open-row{background-image:linear-gradient(var(--sf-primary-container),var(--sf-primary-container));--sf-surface-underlay:var(--sf-surface-place-solid)}
 /* A row of a page's own that has the fill and does not declare the role. */
 .own-row{background-image:linear-gradient(var(--sf-primary-container),var(--sf-primary-container))}
 </style></head>
@@ -117,7 +131,7 @@ async function run(theme, round) {
   await tab.waitForFunction(() => {
     const opaque = (id) => getComputedStyle(document.getElementById(id)).backgroundColor !== 'rgba(0, 0, 0, 0)';
     const badge = document.querySelector('[data-badge="page:tonal:warning"]');
-    return ['strong', 'soft', 'popup', 'card', 'list', 'context', 'tree'].every(opaque)
+    return ['strong', 'soft', 'popup', 'card', 'list', 'context', 'tree', 'choice', 'admin-search', 'docs-tree', 'cm-panel'].every(opaque)
       && getComputedStyle(document.getElementById('nav')).backgroundColor !== 'rgba(0, 0, 0, 0)'
       && badge && getComputedStyle(badge).backgroundColor !== 'rgba(0, 0, 0, 0)';
   }, null, {timeout: 20000});
@@ -174,7 +188,7 @@ async function run(theme, round) {
     for (const look of LOOKS) for (const colour of COLOURS) {
       const b = fill[`${c.id}:${look}:${colour}`];
       const name = `${where} ${c.id} ${look} ${colour}`;
-      if (c.kind === 'solid' || c.kind === 'reset' || c.kind === 'undeclared' || look !== 'tonal') {
+      if (c.kind === 'solid' || c.kind === 'reset' || c.kind === 'undeclared' || c.kind === 'softrow' || look !== 'tonal') {
         ok(`${name}: no background image (drawn as before)`, b.image === 'none', b.image);
         continue;
       }
