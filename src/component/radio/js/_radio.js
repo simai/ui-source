@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
+import { RADIO_TEXT_PARTS, linkCheckableText } from '../../checkable-text-helper';
 import radioUtility from '../json/radio.utility.json';
 
 const RADIO_SELECTOR = 'label.sf-radio-button';
@@ -151,6 +152,7 @@ function bindRadio(root) {
 
   root.dataset[RADIO_BOUND_FLAG] = '1';
   syncRadioState(root);
+  linkCheckableText(root, RADIO_TEXT_PARTS);
 }
 
 function unbindRadio(root) {

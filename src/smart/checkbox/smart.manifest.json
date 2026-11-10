@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.checkbox",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Checkbox",
   "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
   "kind": "smart",
@@ -413,7 +413,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "b2e8f4894263653339c983250628192e741356acaeabe60a63b4ae5407216924"
+        "sha256": "2c7124755a19544c131fdfec31eddc173317706888f782e9322f5941d00f68f9"
       }
     ],
     "generated_runtime": [

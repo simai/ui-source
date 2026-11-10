@@ -28,3 +28,5 @@ follows direction, and system colors preserve selected and disabled states.
 
 Use Framework typography, spacing and role-color tokens for adaptation. The
 indicator remains circular; it is not a surface or a configurable card radius.
+
+A radio is named by its label row and described by its description, as the checkbox (1.1.1, docs pre-check 2026-11-10 RA-02; src/component/checkable-text-helper.js).

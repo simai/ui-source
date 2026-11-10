@@ -38,7 +38,10 @@ export function renderCheckboxTemplate(context) {
 
     const descriptionContent =
         context.component?.hasSlotContent?.('description')
-            ? context.component.getSlotContent('description')
+            // A slotted description is held in a plain span so the input can
+            // name it as its description (aria-describedby): a bare text node
+            // has no id. The span draws nothing of its own.
+            ? html`<span data-sf-checkbox-description>${context.component.getSlotContent('description')}</span>`
             : description
                 ? html`<span class="sf-checkbox-description">${description}</span>`
                 : '';
