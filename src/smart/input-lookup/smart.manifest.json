@@ -421,7 +421,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "800055ca9ebda1d632f43f8404c52aad977485a0b3b94d49ec314d519836a6d8"
+        "sha256": "1ffde50913c6b41b2f41ebd3f84fa5d2145ff71ef496ab752bb250496b8b1944"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
