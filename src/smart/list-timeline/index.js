@@ -13,7 +13,7 @@
 // tone the status; a dot when the event has no icon), the actor sf-avatar
 // line and a bold name at the start of the sentence, a field change
 // sf-change, the time sf-time in one quiet line «time · text», a comment the
-// text in an outline, and the day headings block list's .sf-list-heading.
+// text in an outline, and the day headings block list's .sf-group-heading.
 // Runs of one actor and kind longer than collapse fold into «Ещё N», revealed
 // in place; state done|current|upcoming draws steps. The list keeps the
 // host's order, and stores and loads nothing.

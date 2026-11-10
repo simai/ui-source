@@ -33,7 +33,7 @@
   "composition": {
     "uses": [
       "component.featured-icon",
-      "component.list-heading",
+      "component.group-heading",
       "smart.avatar",
       "smart.button",
       "smart.change",
@@ -318,23 +318,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "3911707e697977c9c4bf6f6d033ec05b42c5d4bf0b92c21956bbd1b66b10906d"
+        "sha256": "17d0f0477c1a2268e59733def2c07068e4453281e80929e6c962ddad1f5b2dc7"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "fa3c02e6c0f565f9cf98b63fdd3697a354c4e25448f08b08be15f4fc630de6ee"
+        "sha256": "91c290603381774026071d5fdb348c6465ce80c19af911dc97657204b27c93cb"
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
-        "sha256": "57f6e4038333fea25cba60fae8551f7dcf244b475e08acdb0b387abb20d50bf1"
+        "sha256": "2fbe1b5516f0aec44a865b0d08e302fb3bb59f3897dcf4d5c718780970cd15e1"
       },
       {
         "path": "src/smart/list-timeline/rule.js",
-        "sha256": "29f8f22b58c1c10ebb08cdbf96b48138adaec7dc2509cbdd1cf814d1ba02cac3"
+        "sha256": "32bbfc0951ed2fbb661e4e50d8d4c5040a6ab2f3f5d0bd00e3778dca5865cc53"
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "672464a157bb2ff0ada0ee6a8dc64ed9723714139de1823c02791eae8886dfc5"
+        "sha256": "d0977a9c584a40d722ae0604fa6c406b4ec5e3b54919b2f64fa34d38d2f3731e"
       }
     ],
     "generated_runtime": []

@@ -4591,39 +4591,39 @@
       ]
     },
     {
-      "component": "list-heading",
-      "selector": ".sf-list-heading",
+      "component": "group-heading",
+      "selector": ".sf-group-heading",
       "variables": [
         {
-          "name": "--sf-list-heading-date-color",
+          "name": "--sf-group-heading-date-color",
           "role": "color",
           "summary": "The quiet date beside a group's words, and a divider's words.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-10"
         },
         {
-          "name": "--sf-list-heading-margin-block-start",
+          "name": "--sf-group-heading-margin-block-start",
           "role": "margin-block-start",
           "summary": "The space above a heading; none above the first.",
           "default": "var(--sf-space-3)",
           "since": "2026-11-10"
         },
         {
-          "name": "--sf-list-heading-margin-block-end",
+          "name": "--sf-group-heading-margin-block-end",
           "role": "margin-block-end",
           "summary": "The space below a heading.",
           "default": "var(--sf-space-1\\/2)",
           "since": "2026-11-10"
         },
         {
-          "name": "--sf-list-heading-background-color",
+          "name": "--sf-group-heading-background-color",
           "role": "background",
           "summary": "Behind a sticky heading; the place's solid surface.",
           "default": "var(--sf-surface-place-solid, var(--sf-surface-page))",
           "since": "2026-11-10"
         },
         {
-          "name": "--sf-list-heading-line-color",
+          "name": "--sf-group-heading-line-color",
           "role": "background",
           "summary": "A divider's two hairlines.",
           "default": "var(--sf-outline-variant)",

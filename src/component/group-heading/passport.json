@@ -1,16 +1,16 @@
 {
   "schema": "simai.framework.unit-passport",
   "schema_version": 1,
-  "id": "component.list-heading",
+  "id": "component.group-heading",
   "kind": "component",
   "version": "1.0.0",
   "owner": "simai/ui-source",
   "files": [
-    "src/component/list-heading/docs/docs.md",
-    "src/component/list-heading/index.js",
-    "src/component/list-heading/rule.js",
-    "src/component/list-heading/scss/_list-heading.scss",
-    "src/component/list-heading/scss/index.scss"
+    "src/component/group-heading/docs/docs.md",
+    "src/component/group-heading/index.js",
+    "src/component/group-heading/rule.js",
+    "src/component/group-heading/scss/_group-heading.scss",
+    "src/component/group-heading/scss/index.scss"
   ],
   "content_sha256": "a4411f936ab6259c900a2a04e0c3bc373adb6fdffaa27e512461f84424a7042e",
   "dependencies": [

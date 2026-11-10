@@ -10,7 +10,7 @@
 Событие собрано из общих частей SIMAI Framework: значок на линии —
 `.sf-featured-icon`, автор — `sf-avatar` и имя полужирным, изменение поля —
 `sf-change`, время — `sf-time`, заголовок дня — общий заголовок группы
-`.sf-list-heading`.
+`.sf-group-heading`.
 
 ```html
 <sf-list-timeline has-more>

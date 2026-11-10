@@ -16,7 +16,7 @@ import "./default.css";
 //
 // Grouped, the frame is a group named by the list's label and each group's
 // rows a list named by its heading; ungrouped, the one list takes the label.
-// A group's heading is block list's shared heading (.sf-list-heading, C40):
+// A group's heading is block list's shared heading (.sf-group-heading, C40):
 // the words at the list's text size, medium; for today and yesterday the date
 // beside them in sf-time; sticky with sticky-headings.
 //
@@ -194,10 +194,10 @@ export function renderListTemplate(context) {
                 ${repeat(context.sections, (group) => group.key, (group) => context.grouped
                     ? html`
                         <section class="sf-list__group" data-group=${group.key}>
-                            <div class=${`sf-list-heading sf-list__heading${context.stickyHeadings ? " sf-list-heading--sticky" : ""}`}
+                            <div class=${`sf-group-heading sf-list__heading${context.stickyHeadings ? " sf-group-heading--sticky" : ""}`}
                                  role="heading" aria-level=${context.headingLevel}
                                  id=${`${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`}>${group.heading}${group.date
-                                ? html` <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime=${group.date}></sf-time>`
+                                ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${group.date}></sf-time>`
                                 : nothing}</div>
                             ${rows(context, group.items, `${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`)}
                         </section>`

@@ -36,6 +36,8 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--control: var(--sf-ui-1--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/2--control-height);
+  /* The status dot: the dot component's size of the rung (.sf-dot size 1). */
+  --sf-list-timeline--dot: var(--sf-a8);
   --sf-list-timeline--column-gap: var(--sf-space-1\/2);
   --sf-list-timeline--row-gap: var(--sf-list-timeline-gap, var(--sf-space-3));
   --sf-list-timeline--padding-inline: var(--sf-list-timeline-padding-inline, calc(var(--sf-px) * 0));
@@ -61,6 +63,7 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/3--control-height);
   --sf-list-timeline--control: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/3--control-height);
+  --sf-list-timeline--dot: var(--sf-a6);
 }
 
 .sf-list-timeline.sf-list-timeline--size-2 {
@@ -71,9 +74,10 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1--control-height);
   --sf-list-timeline--control: var(--sf-ui-2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1--control-height);
+  --sf-list-timeline--dot: var(--sf-b0);
 }
 
-/* A day: block list's heading (.sf-list-heading) carries the type and the
+/* A day: block list's heading (.sf-group-heading) carries the type and the
    spaces; the timeline keeps its words' colour. */
 .sf-list-timeline-group > .sf-list-timeline-day {
   color: var(--sf-list-timeline-day-color, var(--sf-on-surface));
@@ -190,7 +194,8 @@ sf-list-timeline {
   --sf-icon--height: var(--sf-featured-icon--icon-size);
 }
 
-/* An event with no icon: a dot of a third of L in the status colour. */
+/* An event with no icon: a dot in the status colour, the size the dot
+   component (.sf-dot) gives the rung: a8 for 1, a6 for 1/2, b0 for 2. */
 .sf-list-timeline-marker--dot {
   inline-size: var(--sf-list-timeline--line);
   block-size: var(--sf-list-timeline--line);
@@ -202,8 +207,8 @@ sf-list-timeline {
 .sf-list-timeline-marker--dot.sf-list-timeline-marker--error { color: var(--sf-error); }
 
 .sf-list-timeline-dot {
-  inline-size: calc(var(--sf-list-timeline--line) / 3);
-  block-size: calc(var(--sf-list-timeline--line) / 3);
+  inline-size: var(--sf-list-timeline--dot);
+  block-size: var(--sf-list-timeline--dot);
   border-radius: var(--sf-radius-circle);
   background: currentColor;
 }

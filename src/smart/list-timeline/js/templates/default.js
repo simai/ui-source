@@ -6,7 +6,7 @@ import {html, nothing} from 'lit';
 // Framework's shared parts.
 //
 // - The root holds one run per calendar day: block list's heading
-//   (.sf-list-heading, role heading at heading-level; the date beside today
+//   (.sf-group-heading, role heading at heading-level; the date beside today
 //   and yesterday in sf-time) and an ordered list named by it; ungrouped, one
 //   list named by label.
 // - An event: the rail with its marker (a picture) -- .sf-featured-icon
@@ -102,9 +102,9 @@ function run(context, day) {
     return html`<ol class=${classes} aria-label=${context.label || nothing}>${entries(context, day.entries)}</ol>`;
   }
   return html`<div class="sf-list-timeline-group">
-    <div class=${`sf-list-heading sf-list-timeline-day${context.sticky ? ' sf-list-heading--sticky' : ''}`}
+    <div class=${`sf-group-heading sf-list-timeline-day${context.sticky ? ' sf-group-heading--sticky' : ''}`}
       role="heading" aria-level=${String(context.level)} id=${day.id}>${day.day}${day.date
-        ? html` <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime=${day.date}
+        ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${day.date}
             now=${context.now || nothing}></sf-time>` : nothing}</div>
     <ol class=${classes} aria-labelledby=${day.id}>${entries(context, day.entries)}</ol>
   </div>`;

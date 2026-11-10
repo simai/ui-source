@@ -126,8 +126,8 @@
   .sf-list__body[hidden],
   .sf-list__next[hidden] { display: none; }
 
-  /* A group's heading is block list's shared heading (.sf-list-heading,
-     component list-heading, C40): its type, weight and spaces are the class's;
+  /* A group's heading is block list's shared heading (.sf-group-heading,
+     component group-heading, C40): its type, weight and spaces are the class's;
      the list keeps the words on the rows' text edge and their colour. The
      space above a group after the first is the heading's --sf-space-3 in all,
      the gap between groups included. */

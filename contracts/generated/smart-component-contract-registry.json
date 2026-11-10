@@ -1745,8 +1745,8 @@
         "public_parts": [],
         "uses": [
           "component.dropdown",
+          "component.group-heading",
           "component.icon-buttons",
-          "component.list-heading",
           "smart.avatar",
           "smart.badge",
           "smart.button",
@@ -1766,7 +1766,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "09cd133972bfc68e8e981f0f5bcdfdbac973bb11828f1eec38ddbc21e23b2cd3",
+      "manifest_sha256": "3ca9b30d270069ea05fa76da6f34eec1ebfa2342a1e476176bf50bf0c7d0c2f2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1970,7 +1970,7 @@
         "public_parts": [],
         "uses": [
           "component.featured-icon",
-          "component.list-heading",
+          "component.group-heading",
           "smart.avatar",
           "smart.button",
           "smart.change",
@@ -1987,7 +1987,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-timeline/smart.manifest.json",
-      "manifest_sha256": "83165dffe3c075f683c7f6fb620bdff7adefe3058d18752095d879706b887914",
+      "manifest_sha256": "e99863a266420e5c844295bc143bea4956d6c81601e43208ff94946f7cc9a30a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

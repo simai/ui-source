@@ -209,11 +209,11 @@ const DRAW = {
   // sf-list-timeline 1.1 (C40): one day under the shared heading, two
   // events, the first without a status (the neutral marker) and with the
   // connector under it.
-  'list-timeline': {css: ['buttons', 'icons', 'featured-icon', 'list-heading', 'avatars', 'tooltip', 'smart/smart/time/css/time.css', 'smart/smart/change/css/change.css', 'smart/smart/list-timeline/css/list-timeline.css'], js: ['list-timeline', 'time', 'change', 'avatar'],
+  'list-timeline': {css: ['buttons', 'icons', 'featured-icon', 'group-heading', 'avatars', 'tooltip', 'smart/smart/time/css/time.css', 'smart/smart/change/css/change.css', 'smart/smart/list-timeline/css/list-timeline.css'], js: ['list-timeline', 'time', 'change', 'avatar'],
     html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', icon: 'edit', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
-  // .sf-list-heading (C40): a sticky heading with its date, then a divider.
-  'list-heading': {css: ['list-heading'], js: [],
-    html: '<div class="sf-list-heading sf-list-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-list-heading-date">9 ноября</span></div><div class="sf-list-heading sf-list-heading--divider" role="separator">Вчера</div>'},
+  // .sf-group-heading (C40): a sticky heading with its date, then a divider.
+  'group-heading': {css: ['group-heading'], js: [],
+    html: '<div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-group-heading-date">9 ноября</span></div><div class="sf-group-heading sf-group-heading--divider" role="separator">Вчера</div>'},
   // sf-time (2026-11-10, C40): a time with its tooltip, so the ring and the
   // tooltip's anchor are drawn.
   time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',

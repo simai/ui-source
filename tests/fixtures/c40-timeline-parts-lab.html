@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>C40 — sf-time, sf-change, .sf-list-heading, sf-list-timeline 1.1</title>
+<title>C40 — sf-time, sf-change, .sf-group-heading, sf-list-timeline 1.1</title>
 <!--
   Owner decision C40 (2026-11-09; ui-control control/research/
   2026-11-09-timeline-parts.md, prototypes/timeline-parts.html and
@@ -68,18 +68,18 @@
   </section>
 
   <section id="s-heading" aria-labelledby="h-heading">
-    <h2 id="h-heading">.sf-list-heading</h2>
+    <h2 id="h-heading">.sf-group-heading</h2>
     <div class="stage">
       <div id="hd-plain">
-        <div class="sf-list-heading" role="heading" aria-level="3" id="hd-first">Сегодня <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime="2026-11-09T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
+        <div class="sf-group-heading" role="heading" aria-level="3" id="hd-first">Сегодня <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime="2026-11-09T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
         <p class="lab-p" id="hd-row-1">Первая строка группы</p>
-        <div class="sf-list-heading" role="heading" aria-level="3" id="hd-second">Вчера <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime="2026-11-08T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
+        <div class="sf-group-heading" role="heading" aria-level="3" id="hd-second">Вчера <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime="2026-11-08T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
         <p class="lab-p" id="hd-row-2">Строка второй группы</p>
-        <div class="sf-list-heading sf-list-heading--divider" role="separator" aria-label="Вчера" id="hd-divider">Вчера</div>
+        <div class="sf-group-heading sf-group-heading--divider" role="separator" aria-label="Вчера" id="hd-divider">Вчера</div>
         <p class="lab-p">Сообщение после разделителя</p>
       </div>
       <div class="card scroller" id="hd-scroller">
-        <div class="sf-list-heading sf-list-heading--sticky" role="heading" aria-level="3" id="hd-sticky">Пятница</div>
+        <div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3" id="hd-sticky">Пятница</div>
         <p class="lab-p">Строка 1</p>
         <p class="lab-p">Строка 2</p>
         <p class="lab-p">Строка 3</p>

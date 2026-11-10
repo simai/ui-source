@@ -7,7 +7,7 @@ SF.RuleLoader['cl-list-timeline'] = {
   css: true,
   relation: [
     { name: 'featured-icon' },
-    { name: 'list-heading' },
+    { name: 'group-heading' },
     { name: 'cl-time' },
     { name: 'cl-change' },
     { name: 'cl-avatar' },

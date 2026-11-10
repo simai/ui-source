@@ -32,8 +32,8 @@
   "composition": {
     "uses": [
       "component.dropdown",
+      "component.group-heading",
       "component.icon-buttons",
-      "component.list-heading",
       "smart.avatar",
       "smart.badge",
       "smart.button",
@@ -758,23 +758,23 @@
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "dce17fc58c13524c2d959550e1856773c2dfd2cbcba7bc632d0470a46ef1747f"
+        "sha256": "39787ea76b0f14e42c989ac92a75781ec479210314df0005c130f527e87b59ca"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "10d9fdb00261038b9c0867c8a8210874daf88ccae6f37466e4da098fbe69fdb5"
+        "sha256": "244dce57b3417639de793b26364d6640e322f857e486c769a5e95d9fcb8ae495"
       },
       {
         "path": "src/smart/list/rule.js",
-        "sha256": "68da446b8275f22d2104525f522e21cb05fd467a70c5cd5c9d37cc389a69b4b7"
+        "sha256": "8dba9aeffcd2097288cc4b0285143cc9f1461e539b603b875f92836ab6194727"
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "01da1501c11e559aca7e6eb478b3503bc04f069b0193b87bbe382bd5299629c2"
+        "sha256": "aabf5935207e61f5a588fa71954c3737e94b7941cc264ea07d4196a0d1734f07"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "4c74628975b3efdf7969d37db177aec299dbb191789665a489c31e9f2bd239f9"
+        "sha256": "375c1c4e85fffa450751cb8efcb3e68f3f138890ad0d93d3166e8591ce450864"
       },
       {
         "path": "src/smart/list/lang/en.json",

@@ -82,7 +82,7 @@ test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C4
   assert.equal(manifest.settings.collapse.default, 5);
   assert.deepEqual(Object.keys(manifest.events), ['navigate', 'load-more', 'expand']);
   assert.deepEqual(manifest.events['load-more'].carries, {direction: 'string', after: 'string'});
-  for (const name of ['featured-icon', 'list-heading', 'cl-time', 'cl-change', 'cl-avatar']) {
+  for (const name of ['featured-icon', 'group-heading', 'cl-time', 'cl-change', 'cl-avatar']) {
     assert.ok(manifest.relations.some((relation) => relation.name === name), name);
   }
   const source = code('src/smart/list-timeline/index.js');
@@ -103,7 +103,7 @@ test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C4
   assert.match(template, /<sf-avatar inert aria-hidden="true"/u);
   assert.match(template, /<sf-change class="sf-list-timeline-change"/u);
   assert.match(template, /aria-current=\$\{item\.state === 'current' \? 'step' : nothing\}/u);
-  assert.match(template, /sf-list-heading sf-list-timeline-day/u);
+  assert.match(template, /sf-group-heading sf-list-timeline-day/u);
   assert.match(template, /role="heading" aria-level=\$\{String\(context\.level\)\}/u);
   assert.match(template, /<ol class=\$\{classes\} aria-labelledby=\$\{day\.id\}>/u);
   const sheet = read('src/smart/list-timeline/scss/_smart__list-timeline.scss');

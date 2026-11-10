@@ -5,17 +5,20 @@
    sf-list's groups, sf-list-timeline's days, the notifications panel and the
    day divider of a conversation. Two looks:
 
-   .sf-list-heading            a heading: the group's words at the size of
+   .sf-group-heading            a heading: the group's words at the size of
                                the list's text (text 1), medium, on-surface,
                                an optional quiet date beside it
-                               (.sf-list-heading-date, text 1/2); --sf-space-3
+                               (.sf-group-heading-date, text 1/2); --sf-space-3
                                above, --sf-space-1/2 below, none above the
                                first one.
-   .sf-list-heading--sticky    the same, kept in sight while the list
+   .sf-group-heading--sticky    the same, kept in sight while the list
                                scrolls, the place's solid surface behind it.
-   .sf-list-heading--divider   a conversation's divider: the words centred and
+   .sf-group-heading--divider   a conversation's divider: the words centred and
                                quiet between two hairlines; the markup is
                                role="separator" with the words as its name.
+
+   Not .sf-list-heading: that is the dropdown list's group label (component
+   dropdown), a look of its own; both sheets load on a page with sf-list.
 
    The words are core's SF.format.relativeDay with a capital («Сегодня»,
    «Вчера», «Пятница», «27 октября»); the date beside today and yesterday is
@@ -25,65 +28,65 @@
    sf-list-timeline --sf-list-timeline-day-color), set on its heading there.
    The public variables are read with the role token as their fallback and
    never set here:
-     --sf-list-heading-date-color          the date beside them, the divider
-     --sf-list-heading-margin-block-start  the space above (--sf-space-3)
-     --sf-list-heading-margin-block-end    the space below (--sf-space-1/2)
-     --sf-list-heading-background-color   behind a sticky heading
-     --sf-list-heading-line-color          the divider's hairlines */
-.sf-list-heading {
+     --sf-group-heading-date-color          the date beside them, the divider
+     --sf-group-heading-margin-block-start  the space above (--sf-space-3)
+     --sf-group-heading-margin-block-end    the space below (--sf-space-1/2)
+     --sf-group-heading-background-color   behind a sticky heading
+     --sf-group-heading-line-color          the divider's hairlines */
+.sf-group-heading {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 var(--sf-space-1\/3);
   box-sizing: border-box;
-  margin: var(--sf-list-heading-margin-block-start, var(--sf-space-3)) 0 var(--sf-list-heading-margin-block-end, var(--sf-space-1\/2));
+  margin: var(--sf-group-heading-margin-block-start, var(--sf-space-3)) 0 var(--sf-group-heading-margin-block-end, var(--sf-space-1\/2));
   color: var(--sf-on-surface);
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
   font-weight: var(--sf-font-weight-medium);
 }
 
-.sf-list-heading:first-child {
+.sf-group-heading:first-child {
   margin-block-start: 0;
 }
 
-.sf-list-heading-date {
-  color: var(--sf-list-heading-date-color, var(--sf-on-surface-variant));
+.sf-group-heading-date {
+  color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   font-weight: var(--sf-font-weight-regular);
 }
 
-.sf-list-heading--sticky {
+.sf-group-heading--sticky {
   position: sticky;
   inset-block-start: 0;
   z-index: 2;
   padding-block: var(--sf-space-1\/4);
-  background-color: var(--sf-list-heading-background-color, var(--sf-surface-place-solid, var(--sf-surface-page)));
+  background-color: var(--sf-group-heading-background-color, var(--sf-surface-place-solid, var(--sf-surface-page)));
 }
 
-.sf-list-heading--divider {
+.sf-group-heading--divider {
   flex-wrap: nowrap;
   align-items: center;
   gap: var(--sf-space-1\/2);
   margin-block: var(--sf-space-1);
-  color: var(--sf-list-heading-date-color, var(--sf-on-surface-variant));
+  color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   font-weight: var(--sf-font-weight-regular);
 }
 
-.sf-list-heading--divider::before,
-.sf-list-heading--divider::after {
+.sf-group-heading--divider::before,
+.sf-group-heading--divider::after {
   content: "";
   flex: 1;
   block-size: var(--sf-px);
-  background-color: var(--sf-list-heading-line-color, var(--sf-outline-variant));
+  background-color: var(--sf-group-heading-line-color, var(--sf-outline-variant));
 }
 
 @media (forced-colors: active) {
-  .sf-list-heading--divider::before,
-  .sf-list-heading--divider::after {
+  .sf-group-heading--divider::before,
+  .sf-group-heading--divider::after {
     background-color: CanvasText;
   }
 }

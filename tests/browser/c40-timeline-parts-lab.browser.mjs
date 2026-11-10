@@ -7,7 +7,7 @@
 // Owner decision C40 (2026-11-09; ui-control control/research/
 // 2026-11-09-timeline-parts.md §5 and §6, prototypes/timeline-parts.html and
 // list-timeline.html#r092 option 1): sf-time 1.0, sf-change 1.0, block list's
-// group heading .sf-list-heading 1.0 and sf-list-timeline 1.1, drawn over the
+// group heading .sf-group-heading 1.0 and sf-list-timeline 1.1, drawn over the
 // Loader from the built bytes on tests/fixtures/c40-timeline-parts-lab.html,
 // at 1440 and 390, light and dark, normal and compact density (C22), each
 // page loaded SF_RELOADS times; then, per theme and width, one load with the
@@ -21,7 +21,7 @@
 //     value on-surface medium, the arrow a picture, «на» for a screen reader,
 //     no strikethrough; list a dl; an empty value «пусто»; a long value
 //     folded behind «Показать изменения», revealed in place;
-//   - .sf-list-heading: text 1, medium, on-surface, the date beside it text
+//   - .sf-group-heading: text 1, medium, on-surface, the date beside it text
 //     1/2 on-surface-variant; --sf-space-3 above (none above the first),
 //     --sf-space-1/2 below; sticky stays at the scroller's top; the divider a
 //     separator between two hairlines; sf-list's day groups use it;
@@ -53,7 +53,7 @@ const reloads = Math.max(1, Number(process.env.SF_RELOADS || 3));
 const sheetDelay = Math.max(0, Number(process.env.SF_SHEET_DELAY || 1500));
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 // The new and changed parts' sheets: what the first-paint pass holds back.
-const HELD = /^\/distr\/(?:smart\/(?:time|change|list-timeline|list|confirm-change)|component\/(?:list-heading|featured-icon))\/.*\.css$/u;
+const HELD = /^\/distr\/(?:smart\/(?:time|change|list-timeline|list|confirm-change)|component\/(?:group-heading|featured-icon))\/.*\.css$/u;
 
 const types = {'.js': 'text/javascript', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml'};
 let holdSheets = false;
@@ -116,6 +116,7 @@ const MEASURE = () => {
     size1: length('var(--sf-text-size-1)'), size12: length('var(--sf-text-size-1\\/2)'),
     line1: length('var(--sf-text-height-1)'), line12: length('var(--sf-text-height-1\\/2)'),
     ui1: length('var(--sf-ui-1--control-height)'), ui12: length('var(--sf-ui-1\\/2--control-height)'), ui13: length('var(--sf-ui-1\\/3--control-height)'),
+    a6: length('var(--sf-a6)'), a8: length('var(--sf-a8)'),
     icon12: length('var(--sf-icon-size-1\\/2, var(--sf-text-height-1\\/2))'),
     onSurface: colour('var(--sf-on-surface)'), variant: colour('var(--sf-on-surface-variant)'), link: colour('var(--sf-link)'),
     outlineVariant: colour('var(--sf-outline-variant)'),
@@ -148,12 +149,12 @@ const MEASURE = () => {
   const long = toggle ? {text: words(toggle.querySelector(':scope > span')), expanded: toggle.getAttribute('aria-expanded'), blocksHidden: document.getElementById(toggle.getAttribute('aria-controls'))?.hidden ?? null,
     icon: round(box(toggle.querySelector('sf-icon .sf-icon') ?? toggle.querySelector('sf-icon')).height), toggleHeight: round(box(toggle).height), colour: style(toggle).color} : null;
 
-  // .sf-list-heading
+  // .sf-group-heading
   const heading = (id) => {
     const element = document.getElementById(id);
     if (!element) return null;
     const s = style(element);
-    const date = element.querySelector('.sf-list-heading-date');
+    const date = element.querySelector('.sf-group-heading-date');
     return {text: words(element), size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight), weight: s.fontWeight, colour: s.color,
       top: round(box(element).top), bottom: round(box(element).bottom), height: round(box(element).height), marginTop: parseFloat(s.marginTop), marginBottom: parseFloat(s.marginBottom),
       date: date ? {text: words(date), size: parseFloat(style(date).fontSize), colour: style(date).color, weight: style(date).fontWeight} : null,
@@ -168,7 +169,7 @@ const MEASURE = () => {
     gapBelowFirst: row1 ? round(box(row1).top - box(document.getElementById('hd-first')).bottom) : null,
     gapAboveSecond: row1 ? round(box(document.getElementById('hd-second')).top - box(row1).bottom) : null,
     gapBelowSecond: row2 ? round(box(row2).top - box(document.getElementById('hd-second')).bottom) : null,
-    sfList: [...document.querySelectorAll('#l-day .sf-list-heading')].map((one) => ({text: words(one), size: parseFloat(style(one).fontSize), weight: style(one).fontWeight, colour: style(one).color}))};
+    sfList: [...document.querySelectorAll('#l-day .sf-group-heading')].map((one) => ({text: words(one), size: parseFloat(style(one).fontSize), weight: style(one).fontWeight, colour: style(one).color}))};
 
   // sf-list-timeline
   const timeline = (id) => {
@@ -279,7 +280,7 @@ const drawn = (tab, fail) => tab.waitForFunction(() => document.querySelectorAll
   && document.querySelectorAll('#tl-ref sf-time time').length > 5
   && document.querySelector('#c-list dl') && document.querySelector('#c-long .sf-change__toggle')
   && document.querySelector('#t-old time') && document.querySelector('#cc sf-change .sf-change__row')
-  && document.querySelectorAll('#l-day .sf-list-heading').length > 1
+  && document.querySelectorAll('#l-day .sf-group-heading').length > 1
   && [...document.querySelectorAll('[data-sf-style-pending]')].length === 0,
 null, {timeout: 30000}).catch(() => fail('the page never drew every part'));
 
@@ -327,7 +328,7 @@ try {
           if (m.long && !near(m.long.icon, t.line12)) fail(`sf-change toggle icon ${m.long.icon}, rung 1/2 line ${t.line12}`);
           if (m.long && m.long.colour !== t.link) fail(`sf-change toggle colour ${m.long.colour}, link ${t.link}`);
 
-          // .sf-list-heading.
+          // .sf-group-heading.
           const h = m.headings;
           for (const one of [h.first, h.second, h.sticky]) {
             if (!one || !near(one.size, t.size1) || one.weight !== '500' || one.colour !== t.onSurface) fail(`heading ${one?.text}: ${one?.size}/${one?.weight}/${one?.colour}, expected ${t.size1}/500/${t.onSurface}`);
@@ -390,6 +391,8 @@ try {
           if (dashed.join(',') !== 'current') fail(`steps dashed after ${dashed}`);
           const side = m.timelines.side;
           if (side && !(side.L <= (ref?.L ?? 0))) fail(`side panel line ${side.L} above ${ref?.L}`);
+          // A status without an icon: the dot component's size of the rung (1/2: a6), no new value.
+          for (const one of side?.items ?? []) if (one.marker?.classes === 'dot' && (!near(one.marker.width, t.a6) || !near(one.marker.height, t.a6))) fail(`side ${one.id}: dot ${one.marker.width}, expected a6 ${t.a6}`);
           if (!m.timelines.empty?.quiet || m.timelines.empty.quiet.text !== 'Событий пока нет' || !near(m.timelines.empty.quiet.height, t.ui1)) fail(`empty ${JSON.stringify(m.timelines.empty?.quiet)}, expected ${t.ui1}`);
           if (!m.confirm.change || m.confirm.rows !== 2 || m.confirm.badges) fail(`confirm-change ${JSON.stringify(m.confirm)}`);
           if (m.scroll > 0) fail(`horizontal scroll ${m.scroll}`);
@@ -488,7 +491,7 @@ const pick = (m) => {
   const icon = events.find((one) => one.marker && one.marker.classes !== 'dot');
   const gaps = events.filter((one) => one.nextTop !== null).map((one) => Math.round((one.bottom - one.bodyBottom) * 100) / 100);
   return {
-    tokens: {space3: m.t.space3, space12: m.t.space12, line1: m.t.line1, line12: m.t.line12, ui12: m.t.ui12, ui1: m.t.ui1},
+    tokens: {a6: m.t.a6, a8: m.t.a8, space3: m.t.space3, space12: m.t.space12, line1: m.t.line1, line12: m.t.line12, ui12: m.t.ui12, ui1: m.t.ui1},
     time: Object.values(m.times).map((one) => one.text).join(' | '),
     change: {inline: `${m.change?.before} → ${m.change?.after} (${m.change?.afterWeight})`, list: m.list?.rows, toggleIcon: m.long?.icon, toggle: m.long?.toggleHeight},
     heading: {size: m.headings.first?.size, line: m.headings.first?.line, height: m.headings.first?.height, above: m.headings.second?.marginTop, below: m.headings.gapBelowFirst, date: m.headings.first?.date?.size, divider: m.headings.divider?.before},

@@ -19,10 +19,10 @@
     {
       "id": "p1-days",
       "title": "events in the host's order under block list's heading per day («Сегодня» with the date beside it in sf-time), each day an ordered list named by its heading; an event without an id or a title, or a repeated id, is left out",
-      "covers": "settings.items, settings.group, settings.heading-level, accessibility.role list, relations list-heading cl-time",
+      "covers": "settings.items, settings.group, settings.heading-level, accessibility.role list, relations group-heading cl-time",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#order'); const groups = [...el.querySelectorAll('.sf-list-timeline-group')]; const heads = groups.map((g) => g.querySelector('.sf-list-timeline-day')); const date = heads[0].querySelector('sf-time.sf-list-heading-date time'); const log = [...document.querySelectorAll('#log .sf-list-timeline-item')].map((li) => li.dataset.id).join(','); return groups.length === 2 && heads.every((h) => h.classList.contains('sf-list-heading')) && heads[0].textContent.trim().startsWith('Сегодня') && heads[1].textContent.trim().startsWith('Вчера') && date && date.textContent === '9 ноября' && heads[0].getAttribute('role') === 'heading' && heads[0].getAttribute('aria-level') === '3' && groups[0].querySelector('ol').getAttribute('aria-labelledby') === heads[0].id && log === 'backup,update,cert'; })()"
+          "check": "(() => { const el = document.querySelector('#order'); const groups = [...el.querySelectorAll('.sf-list-timeline-group')]; const heads = groups.map((g) => g.querySelector('.sf-list-timeline-day')); const date = heads[0].querySelector('sf-time.sf-group-heading-date time'); const log = [...document.querySelectorAll('#log .sf-list-timeline-item')].map((li) => li.dataset.id).join(','); return groups.length === 2 && heads.every((h) => h.classList.contains('sf-group-heading')) && heads[0].textContent.trim().startsWith('Сегодня') && heads[1].textContent.trim().startsWith('Вчера') && date && date.textContent === '9 ноября' && heads[0].getAttribute('role') === 'heading' && heads[0].getAttribute('aria-level') === '3' && groups[0].querySelector('ol').getAttribute('aria-labelledby') === heads[0].id && log === 'backup,update,cert'; })()"
         }
       ]
     },
