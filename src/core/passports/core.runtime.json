@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.51.0",
+  "version": "1.52.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -209,7 +209,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "1d7c86789af72844dc937440e88b4a8c98a98d67f9d45aad09f10823d59a542a",
+  "content_sha256": "eccd08abb88bb3c24b28f3113feedbee8ca0fbc65d133b088ea810ad779cba38",
   "dependencies": [
     {
       "id": "core.styles",
