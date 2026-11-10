@@ -54,6 +54,12 @@ test('Smart Toast declares exact roles, composition and concise behavior inputs'
   assert.match(runtime, /dismissToast\(this\._boundRoot, this\)/);
   assert.match(rule, /name: 'cl-button-icon'/);
   assert.match(rule, /name: 'cl-icon'/);
+  // The status icon is an sf-icon, as the alert's is (sf-toast 1.2.1): it asks
+  // the Loader for its glyph, wherever the toast stands; the toast asks too
+  // when it draws. A bare <i class="sf-icon"> was found only by the page scan.
+  assert.match(template, /<sf-icon icon=\$\{context\.icon\} aria-hidden="true"><\/sf-icon>/);
+  assert.doesNotMatch(template, /<i class="sf-icon[^"]*" aria-hidden/);
+  assert.match(runtime, /preloadControlIcons\(this, \[\{icon: context\.icon, filled: false\}\]\)/);
   // The axis is named status and speaks the shared vocabulary; type still answers.
   assert.deepEqual(manifest.inputs.properties.status.enum, ['neutral', 'info', 'success', 'warning', 'error']);
   assert.deepEqual(manifest.inputs.properties.type.enum, manifest.inputs.properties.status.enum);

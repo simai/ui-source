@@ -64,7 +64,8 @@
   /* The status icon is the line's size (C22: an icon follows its text), as
      in a button: 24, compact and phone 20. --sf-icon-size-3 stays 24 on the
      phone, where the line is 20, so it is not the step here. */
-  .sf-toast .sf-icon {
+  .sf-toast .sf-icon,
+  .sf-toast > sf-icon:not(:defined) {
     --sf-icon--font-size: var(--sf-text-height-1);
     --sf-icon--height: var(--sf-text-height-1);
     --sf-icon--width: var(--sf-text-height-1);
@@ -80,8 +81,13 @@
     color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 
-  /* Centred on the first line: the line's lead in the low control's box. */
-  .sf-toast > .sf-icon {
+  /* Centred on the first line: the line's lead in the low control's box. The
+     Smart toast draws its icon through sf-icon, whose host is display:
+     contents, so the drawn glyph is the flex item; before sf-icon is defined
+     its empty host holds the same box (icons sheet, sf-icon:not(:defined)). */
+  .sf-toast > .sf-icon,
+  .sf-toast > sf-icon > .sf-icon,
+  .sf-toast > sf-icon:not(:defined) {
     flex: none;
     margin-block-start: var(--sf-toast--lead);
   }

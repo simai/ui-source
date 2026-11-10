@@ -1,4 +1,5 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
+import { preloadControlIcons } from '../helpers/cycle';
 import { applied, refused, elementFromManifest } from '../../core/js/element-manifest';
 import { bindToast, dismissToast, unbindToast } from '../../component/toast/js/_toast';
 import { renderToastTemplate } from './js/templates/default';
@@ -105,7 +106,12 @@ class SfToast extends ToastElement {
   }
 
   template() {
-    return renderToastTemplate(this.templateContext());
+    const context = this.templateContext();
+    // The status glyph, asked for when the toast draws (R074, as sf-segmented
+    // and sf-tag ask for theirs): the page's first icon request carries it,
+    // wherever the toast stands. One request per distinct name.
+    if (context.icon) preloadControlIcons(this, [{icon: context.icon, filled: false}]);
+    return renderToastTemplate(context);
   }
 
   afterRender() {

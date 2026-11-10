@@ -41,6 +41,12 @@ The status colour is the toast's own icon only (1.2.2, C35 acceptance A-F1):
 `.sf-toast > .sf-icon` and `.sf-toast > sf-icon > .sf-icon`. An icon-only
 action button keeps its own icon role.
 
+The Smart toast draws its status icon through `sf-icon` (sf-toast 1.2.1,
+component.toast 1.2.3), as the Smart alert does: `.sf-toast > sf-icon > .sf-icon`
+takes the place, size and colour of `.sf-toast > .sf-icon`, and
+`.sf-toast > sf-icon:not(:defined)` holds the same box before the element is
+defined. Class markup keeps `<i class="sf-icon">`.
+
 ## Accessibility and ownership
 
 Use `role="status"` only when non-urgent feedback is inserted dynamically and

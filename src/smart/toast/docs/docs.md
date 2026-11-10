@@ -43,6 +43,11 @@ starts at the padding. Between several actions of a class toast,
 dismissal; a positive value pauses while pointer or focus is inside the toast.
 Keep messages with essential content or actions persistent.
 
+The status icon is an `sf-icon` (1.2.1), as on `sf-alert`: the toast asks the
+Loader for its glyph when it draws, so the glyph comes wherever the toast
+stands, a region the Loader does not observe (`data-sf-observer="ignore"`)
+included. Size, colour and position are those of 1.2.0.
+
 The default template transfers shared `root-class`, `style` and `root-style`
 settings to the visual root. Methods: `close()`, `dismiss()`,
 `setState(nextState)`, `onAction(handler)` and `onClose(handler)`. Events:
