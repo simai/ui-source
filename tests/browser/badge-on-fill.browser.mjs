@@ -24,6 +24,8 @@
 //   its text keeps 4.5:1. A main or an outline badge is untouched.
 // - A place inside such a row (a popup) takes the role back: no image there.
 // - A row that does not declare the role is drawn as before (no image).
+// Each pixel is the mean of a 4 x 4 block (Chrome dithers gradients by one
+// step).
 // - The page has no errors and a clean console.
 // With a result folder, the measured pixels go to <folder>/badge-on-fill.json
 // and each theme's screenshot beside it.
@@ -152,7 +154,14 @@ async function run(theme, round) {
     canvas.width = image.width; canvas.height = image.height;
     const ctx = canvas.getContext('2d', {colorSpace: 'srgb', willReadFrequently: true});
     ctx.drawImage(image, 0, 0);
-    return points.map(([x, y]) => [...ctx.getImageData(x, y, 1, 1).data.slice(0, 3)]);
+    // The mean of a 4 x 4 block: Chrome dithers a gradient by one step from
+    // pixel to pixel, so a single pixel of a badge drawn as an image is +-1.
+    return points.map(([x, y]) => {
+      const d = ctx.getImageData(x - 2, y - 2, 4, 4).data;
+      const sum = [0, 0, 0];
+      for (let i = 0; i < d.length; i += 4) for (let c = 0; c < 3; c += 1) sum[c] += d[i + c];
+      return sum.map((v) => Math.round(v / 16));
+    });
   }, {data: png.toString('base64'), points});
   const fill = {};
   boxes.list.forEach((b, i) => { fill[b.key] = {...b, pixel: pixels[i]}; });
@@ -176,7 +185,7 @@ async function run(theme, round) {
     if (c.kind === 'fill') ok(`${where} ${c.id}: the row is a translucent fill, not the place`, !near(ground[c.id], ground[c.on], 2), `${ground[c.id]} vs ${ground[c.on]}`);
   }
   if (round === 1) {
-    measured[theme] = Object.fromEntries(Object.entries(fill).map(([key, b]) => [key, {pixel: b.pixel, ink: b.ink, image: b.image === 'none' ? 'none' : 'set', color: b.color,
+    measured[theme] = Object.fromEntries(Object.entries(fill).map(([key, b]) => [key, {pixel: b.pixel, at: [b.x, b.y], ink: b.ink, image: b.image === 'none' ? 'none' : 'set', color: b.color,
       contrast: Number(contrast(b.ink.match(/[\d.]+/gu).slice(0, 3).map(Number), b.pixel).toFixed(2))}]));
     measured[`${theme}-rows`] = ground;
   }
