@@ -123,6 +123,7 @@
           "  <sf-file-download id=\"d-prep\" file-name=\"Отчёт.xlsx\" file-type=\"XLSX\"></sf-file-download>",
           "  <sf-file-download id=\"d-tab\" file-name=\"Договор.pdf\" file-type=\"PDF\" file-size=\"84 КБ\" href=\"/fixture/report\" target=\"_blank\"></sf-file-download>",
           "  <sf-file-download id=\"d-plain\" file-size=\"3 КБ\" href=\"/fixture/files/%D0%A1%D0%BE%D1%81%D1%82%D0%B0%D0%B2.csv\"></sf-file-download>",
+          "  <div id=\"row\" style=\"display: flex\"><sf-file-download id=\"d-err\" state=\"error\" file-name=\"Архив.zip\"></sf-file-download></div>",
           "</main>"
         ]
       },
@@ -226,14 +227,27 @@
         },
         {
           "id": "p6-public-variable",
-          "title": "--sf-download-file-border-color draws the border at rest",
-          "covers": "css-variables --sf-download-file-border-color",
+          "title": "--sf-file-download-border-color draws the border at rest",
+          "covers": "css-variables --sf-file-download-border-color",
           "steps": [
             {
-              "script": "(() => { document.querySelector('#d-btn').style.setProperty('--sf-download-file-border-color', 'rgb(1, 2, 3)'); return true; })()"
+              "script": "(() => { document.querySelector('#d-btn').style.setProperty('--sf-file-download-border-color', 'rgb(1, 2, 3)'); return true; })()"
             },
             {
               "check": "getComputedStyle(document.querySelector('#d-btn .sf-download-file')).borderTopColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p6b-former-variable-name",
+          "title": "the former name --sf-download-file-radius is still read under --sf-file-download-radius until 2027-01-01 (DF-11)",
+          "covers": "css-variables --sf-file-download-radius",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#d-off').style.setProperty('--sf-download-file-radius', '3px'); return true; })()"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#d-off .sf-download-file')).borderTopLeftRadius === '3px'"
             }
           ]
         },
@@ -293,6 +307,16 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "id": "p10-error-notice-under-file",
+          "title": "in a flex row of the page the error notice stands under the file, in the component's own column (DF-13)",
+          "covers": "settings.state error",
+          "steps": [
+            {
+              "check": "(() => { const stack = document.querySelector('#d-err .sf-download-file__stack'); const file = stack && stack.querySelector(':scope > .sf-download-file').getBoundingClientRect(); const alert = stack && stack.querySelector(':scope > sf-alert .sf-alert').getBoundingClientRect(); return Boolean(stack) && alert.top >= file.bottom && Math.abs(alert.left - file.left) < 1 && Math.abs(alert.width - file.width) < 1; })()"
             }
           ]
         }

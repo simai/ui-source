@@ -71,8 +71,16 @@ export function renderDownloadFileTemplate(context) {
       ></sf-alert>`
     : nothing;
 
+  // The host is display: contents, so whatever it draws is laid out by the
+  // page's container. The file and its notice are one column of their own: as
+  // two siblings, a flex row put the notice beside the file (docs pre-check
+  // 2026-11-10 DF-13). Ready and preparing draw the file alone, as before.
+  const withNotice = (file) => (notice === nothing
+    ? file
+    : html`<div class="sf-download-file__stack">${file}${notice}</div>`);
+
   if (tagName === 'a') {
-    return html`
+    return withNotice(html`
       <a
         class=${rootClasses.join(' ')}
         style=${context.rootStyle || nothing}
@@ -85,11 +93,10 @@ export function renderDownloadFileTemplate(context) {
       >
         ${content}
       </a>
-      ${notice}
-    `;
+    `);
   }
 
-  return html`
+  return withNotice(html`
     <button
       type="button"
       class=${rootClasses.join(' ')}
@@ -101,6 +108,5 @@ export function renderDownloadFileTemplate(context) {
     >
       ${content}
     </button>
-    ${notice}
-  `;
+  `);
 }

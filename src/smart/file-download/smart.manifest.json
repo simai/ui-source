@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-download",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -144,7 +144,8 @@
         "sf-download-file__spinner",
         "sf-download-file__status",
         "sf-download-file__tab",
-        "sf-download-file__error"
+        "sf-download-file__error",
+        "sf-download-file__stack"
       ]
     },
     "interaction_states": {
