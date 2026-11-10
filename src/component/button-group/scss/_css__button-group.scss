@@ -386,9 +386,12 @@
      with its shadow in the light theme. In the dark it is the pressed plate
      (C42, owner 2026-11-10): the raised surface measured 1.03:1 against the
      track on the page and vanished, while the fill's top step over the track
-     is lighter than the track on every place. */
+     is lighter than the track on every neutral place. On a strong coloured
+     place the place says which plate is lighter (--sf-place--plate, mix
+     sf-place-strong-accent; DEV acceptance 2026-11-10, D4): the fill's top
+     step there is the place's ink, dark in the dark theme. */
   .sf-button-group--segmented.sf-button-group--plate-raised {
-    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, light-dark(var(--sf-surface-raised), var(--sf-surface-container-active)));
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-place--plate, light-dark(var(--sf-surface-raised), var(--sf-surface-container-active))));
     --sf-button-group--plate-variant: var(--sf-on-surface-raised-variant);
     --sf-button-group--plate-shadow: var(--sf-shadow-raised);
   }
@@ -398,7 +401,7 @@
     --sf-on-surface-variant: var(--sf-button-group--plate-variant);
     --sf-button--box-shadow: var(--sf-button-group--plate-shadow);
     --sf-button--focus-ink: transparent;
-    color: var(--sf-button-group-plate-color, var(--sf-on-surface));
+    color: var(--sf-button-group-plate-color, var(--sf-place--on-plate, var(--sf-on-surface)));
   }
 
   /* The plate element. Hidden until the element has measured the selected
@@ -502,16 +505,18 @@
     color: currentColor;
   }
 
-  /* States, from the neutral alpha ramp: a segment that is not selected darkens
-     one step on hover and another when pressed, and its ink comes up to the
-     primary text role. The selected plate does not react to a hover. */
+  /* States, from the surface state roles (select 8, active 12; DEV acceptance
+     2026-11-10 Q3, so they follow a coloured place): a segment that is not
+     selected darkens one step on hover and another when pressed, and its ink
+     comes up to the primary text role. The selected plate does not react to a
+     hover. */
   .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):hover {
-    --sf-button--background-color: var(--sf-alpha-8);
+    --sf-button--background-color: var(--sf-surface-state-select);
     color: var(--sf-on-surface);
   }
 
   .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):active {
-    --sf-button--background-color: var(--sf-alpha-12);
+    --sf-button--background-color: var(--sf-surface-state-active);
     color: var(--sf-on-surface);
   }
 

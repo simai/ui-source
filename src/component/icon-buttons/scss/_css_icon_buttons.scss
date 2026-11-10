@@ -526,8 +526,8 @@
   }
 
   .sf-icon-button.sf-icon-button--surface {
-    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-alpha-4));
-    --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-alpha-8));
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-surface-state-hover));
+    --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-surface-state-select));
     --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, var(--sf-px));
     --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, var(--sf-px));
     --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, var(--sf-px));
@@ -652,27 +652,29 @@
   }
 
   /* The states of the two ramp appearances: one step up on hover, another when
-     pressed, and surface raises its border alongside. */
+     pressed, and surface raises its border alongside. The steps are the
+     surface roles (as on the button, DEV acceptance 2026-11-10 Q3), so they
+     follow a coloured place. */
   .sf-icon-button.sf-icon-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-icon-button--background-color: var(--sf-alpha-8);
+    --sf-icon-button--background-color: var(--sf-surface-state-select);
   }
 
   .sf-icon-button.sf-icon-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-icon-button--border-color: var(--sf-alpha-12);
+    --sf-icon-button--border-color: var(--sf-surface-state-active);
   }
 
   .sf-icon-button.sf-icon-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-icon-button--background-color: var(--sf-alpha-12);
+    --sf-icon-button--background-color: var(--sf-surface-state-active);
   }
 
   .sf-icon-button.sf-icon-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-icon-button--border-color: var(--sf-alpha-16);
+    --sf-icon-button--border-color: var(--sf-surface-container-active);
   }
 
   .sf-icon-button.sf-icon-button--surface:disabled:not(.sf-icon-button-state-loading:not(.disabled)),
   .sf-icon-button.sf-icon-button--surface.disabled {
     --sf-icon-button--background-color: transparent;
-    --sf-icon-button--border-color: var(--sf-alpha-4);
+    --sf-icon-button--border-color: var(--sf-surface-state-hover);
   }
 
   .sf-icon-button.sf-icon-button--surface:disabled:not(.sf-icon-button-state-loading:not(.disabled)),

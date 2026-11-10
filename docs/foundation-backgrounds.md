@@ -63,14 +63,33 @@ none.
 - **The segmented thumb (C42.3)** is
   `light-dark(var(--sf-surface-raised), var(--sf-surface-container-active))`
   through `--sf-button-group-plate-background-color`: white with its shadow
-  in the light theme, and in the dark always lighter than the track.
+  in the light theme, and in the dark lighter than the track. On a strong
+  coloured place the place gives the plate: white under the place's colour
+  in the light theme, the colour's tone 90 under its ink in the dark, so it
+  stays lighter than the track there too.
 - **The accent on a strong coloured place (C42.4).** On the children of
   `bg-<colour>` (all seven), `--sf-primary` is the place's ink and
   `--sf-on-primary` the place's colour; hover and press are one and two
   five-tone steps towards the place (95/90 light, 25/30 dark). A filled
   button, a checked checkbox and a switch that is on are white on a blue
-  header. An opaque place among the children (a card, a popup) takes the
-  theme's accent back.
+  header. A tonal button there is the place's own-ink fill (12/16/20) under
+  the place's ink, as `--sf-primary-container` and
+  `--sf-on-primary-container`.
+- **Places own the accent only on a strong place.** A card, a window, a
+  drawer or a popup on a neutral place declares no `--sf-primary` and no
+  `--sf-outline-variant`, so a project that re-brands through the roles (on
+  `:root` or on `.theme-light, .theme-dark`) keeps its brand inside them. On
+  a strong place an opaque place takes back the accent the page had there,
+  the project's brand included; on any coloured place (strong, soft, glass)
+  it takes back the theme's boundary line, because a coloured place
+  re-declares that line on itself and its former value cannot be read below
+  it.
+- **The surface look of buttons, icon buttons, segments and tags** reads the
+  surface roles, not `--sf-alpha-*`: rest 4 is `--sf-surface-state-hover`, 8
+  `--sf-surface-state-select`, 12 `--sf-surface-state-active`, 16
+  `--sf-surface-container-active`. They follow a coloured place.
+- **The filled placeholder** (`sf-input`, `sf-textarea`) is the place's dim
+  ink, as the bordered one: dark 70 on the page.
 - **One row hover (C42.5):** `--sf-surface-state-select` (8) for the
   navigation menu, a dropdown option, a context-menu item, an interactive
   `sf-list-item` and an `sf-list` row (was 4 in some and 20 in others).
