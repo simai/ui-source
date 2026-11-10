@@ -1622,7 +1622,7 @@
           "name": "--sf-verification-cell-size",
           "role": "size",
           "summary": "A cell's width and height, the same at every size when set.",
-          "default": "var(--sf-title-height-6)",
+          "default": "var(--sf-ui-1--control-height)",
           "since": "2026-10-25",
           "varies_with": [
             "size"
