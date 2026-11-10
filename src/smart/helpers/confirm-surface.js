@@ -94,7 +94,10 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
         statusText(shown) {
             if (shown === "pending") return this.sfWord(this._pressed === false ? "declining-text" : "accepting-text");
             if (shown === "accepted") return this.sfWord("accepted-text");
-            if (shown === "declined") return this.sfWord("declined-text");
+            // Declined says nothing (owner decision C35, remark R067): the
+            // answer changed nothing -- no «Отменено», no «Отклонено»; the host
+            // puts the row back and the focus on what was pressed.
+            if (shown === "declined") return "";
             if (shown === "expired") return this.sfWord("expired-text");
             const until = this.getAttribute("expires-at");
             const time = until ? this.formatTime(until) : "";

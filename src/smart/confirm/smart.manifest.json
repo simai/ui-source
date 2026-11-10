@@ -322,7 +322,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "9ecea42e11c534f091bc32fba8c05adc5e7b604e6593fe19521a8a13fbc2faaf"
+        "sha256": "ed426c4351ebea080c0d0f15602110b09147323a1372a92fca97097be355caf9"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
@@ -338,7 +338,7 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "a1f788634c62212f1cedea5540c17bd489a429f995dbfdaaedb65c31e30aa282"
+        "sha256": "99a9fd734471df87a5c2907cc57207015b2224a972e418a142425b78dc4a6064"
       },
       {
         "path": "src/smart/confirm/component.json",

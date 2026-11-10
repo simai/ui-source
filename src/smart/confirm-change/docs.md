@@ -13,7 +13,9 @@
 остаются на месте: нажатый занят (спиннер кнопки и `aria-busy`), другой
 недоступен, так что дважды не нажать и видно, какой ответ применяется, — строка
 состояния говорит, что происходит, и отправляет событие. Итог ставит хост: `accepted`, `declined` или
-снова `open`, если ответ не удалось доставить. Хост, отменивший событие
+снова `open`, если ответ не удалось доставить. После «Отклонить» (`declined`)
+строка состояния пуста: отказ ничего не изменил, сообщать нечего (решение C35,
+R067). Хост, отменивший событие
 (`preventDefault()`), оставляет вопрос открытым.
 
 Ответ человека — событие `sf-confirm-change-answer` с `{id, accepted}` (глагол
@@ -123,7 +125,7 @@ The 1.0 hooks `--sf-change-confirm--radius`, `--inset`, `--gap`, `--before-fill`
 English by default, the page's language otherwise (`lang/en.json`,
 `lang/ru.json`); corrected through `SF.language.register('sf-confirm-change', 'ru', {…})`.
 Keys: `changes-label`, `before-text`, `after-text`, `accept-text`, `decline-text`,
-`accepting-text`, `declining-text`, `accepted-text`, `declined-text`,
+`accepting-text`, `declining-text`, `accepted-text`,
 `expired-text`, `until-text`, `empty-value-text`.
 
 ## Former tag

@@ -10,7 +10,10 @@
 // - Escape inside the open question declines and goes no further;
 // - an offer runs out at expires-at, said once;
 // - inline has no frame, card has one; at 375 px the answers share the width;
-// - the words in both languages.
+// - the words in both languages;
+// - declined says nothing (C35, R067): sf-confirm and sf-confirm-change leave
+//   the status line empty -- no «Отменено», no «Отклонено» -- and draw no ring
+//   around it, three loads, light and dark.
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -176,8 +179,52 @@ try {
   }));
   if (JSON.stringify(english) !== JSON.stringify({label: 'Confirmation', buttons: ['Confirm', 'Cancel']})) note({case: 'an English page speaks English', got: english});
 
+  // 8. Declined says nothing (C35, R067), both members of the block, three
+  // fresh loads in each theme.
+  const changeFiles = ['smart/smart/confirm-change/css/confirm-change.css', 'smart/smart/confirm-change/js/confirm-change.js'].map((p) => join(out, p));
+  for (const path of changeFiles) if (!existsSync(path)) note({case: 'built file present', got: path});
+  for (const theme of ['light', 'dark']) {
+    for (let load = 1; load <= 3; load += 1) {
+      const tab = await browser.newPage({viewport: {width: 900, height: 700}});
+      tab.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
+      await tab.setContent(`<!doctype html><html class="theme-${theme}" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><div id="box" style="width:420px;padding:16px"></div></body></html>`);
+      for (const style of [...styles, changeFiles[0]]) await tab.addStyleTag({path: style}).catch(() => {});
+      for (const module of [...modules, changeFiles[1]]) await tab.addScriptTag({path: module, type: 'module'}).catch(() => {});
+      await tab.waitForFunction(() => Boolean(customElements.get('sf-confirm') && customElements.get('sf-confirm-change')));
+      const said = await tab.evaluate(async () => {
+        const box = document.getElementById('box');
+        const ask = document.createElement('sf-confirm');
+        ask.setAttribute('question', 'Удалить «Мои новые»?');
+        ask.setAttribute('status', 'danger');
+        const change = document.createElement('sf-confirm-change');
+        change.setAttribute('heading', 'Сменить владельца');
+        change.changes = [{label: 'Владелец', before: 'Анна', after: 'Борис'}];
+        box.append(ask, change);
+        await new Promise((done) => setTimeout(done, 300));
+        for (const node of [ask, change]) node.querySelector('button[data-action="decline"]')?.focus();
+        // The person declines; the host then sets the outcome, as a host does.
+        for (const node of [ask, change]) node.cancel();
+        await new Promise((done) => setTimeout(done, 100));
+        for (const node of [ask, change]) node.state = 'declined';
+        await new Promise((done) => setTimeout(done, 300));
+        return [ask, change].map((node) => {
+          const line = node.querySelector('[class$="__status"]');
+          const style = line && getComputedStyle(line);
+          return {tag: node.localName, state: node.state, status: line?.textContent.trim() ?? null,
+            ring: Boolean(line && line === document.activeElement && style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0)};
+        }).concat([{page: /Отменено|Отклонено/u.test(document.body.innerText)}]);
+      });
+      const [one, two, page] = said;
+      for (const node of [one, two]) {
+        if (node.state !== 'declined' || node.status !== '' || node.ring) note({case: `${theme} load ${load}: declined ${node.tag} says nothing`, got: node});
+      }
+      if (page.page) note({case: `${theme} load ${load}: no «Отменено» or «Отклонено» on the page`, got: page});
+      await tab.close();
+    }
+  }
+
   if (errors.length) note({case: 'no page errors', got: errors});
-  console.log(JSON.stringify({checked: 7}));
+  console.log(JSON.stringify({checked: 8}));
 } finally {
   await browser.close();
 }

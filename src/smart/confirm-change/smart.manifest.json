@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "title": "Change confirmation",
   "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -490,7 +490,7 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "72320aeefb5cbdc65054eeb4c42f950e12fb4961083d478f8e48db4f9641a6dd"
+        "sha256": "f7493d0673edbbc928054721cd812f645821493d26d2ef2029924944f9caaefd"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -498,11 +498,11 @@
       },
       {
         "path": "src/smart/confirm-change/docs.md",
-        "sha256": "f54dcd63047123bc3fec2c5a94c7ab8902a23a3c179e4765cbdaa1bb45d993f7"
+        "sha256": "72ecf54156aba4ae19d2c3bb68c09f00aaf5ebd0f5fd15960d4a5db9fc8b5d46"
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "19e293d5bdd0b7c90ea971da847f56be4d1f3da978e30a510369196c61eb9d68"
+        "sha256": "948a569f03a17cbc057aa3b68a76220fd8578a56d07b29a15d80bf5fc045f673"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",
@@ -510,11 +510,11 @@
       },
       {
         "path": "src/smart/confirm-change/lang/en.json",
-        "sha256": "d9a6014908094a9609cef75a22b35911ca3f747fc1409dd289360023afb6a2fc"
+        "sha256": "0b8392f9b04401d9c78e26901289c2d19e5050026f54e751210dde2b82f86075"
       },
       {
         "path": "src/smart/confirm-change/lang/ru.json",
-        "sha256": "622176fb7ce5624eb80b507385d4cd4039ec10da405470d48283edba9be3859d"
+        "sha256": "bea97cd65a0d42b37f0737e2130fd0ff832f7d1e584cd170b3052d5f5c7410b8"
       }
     ],
     "generated_runtime": []
