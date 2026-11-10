@@ -9851,6 +9851,30 @@
       },
       "owner": "ui-source",
       "source": "src/component/buttons/js/_buttons.js"
+    },
+    {
+      "id": "attribute-segmented-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-segmented has a height of its own, height=\"low|default|high|highest\" (decision C27, as sf-button): the track stands as tall as an sf-button of the same size and height. spacing, which moved the segments' side padding only, is deprecated: it keeps drawing as before with a console warning until remove_after and is not turned into a height.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "spacing",
+          "to": "height"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing from the sf-segmented. For a lower or a higher control write height=\"low\", \"high\" or \"highest\"; spacing=\"normal\" is the default and is simply removed. spacing changed the sides only, so pick the height the design wants.",
+      "examples": {
+        "before": "<sf-segmented size=\"1\" spacing=\"spacious\">",
+        "after": "<sf-segmented size=\"1\" height=\"high\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/segmented/index.js"
     }
   ]
 }

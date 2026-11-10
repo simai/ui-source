@@ -48,6 +48,17 @@ const sfSegmentedMeta = {
       "default": "1",
       "description": "Shared button size token."
     },
+    "height": {
+      "kind": "enum",
+      "values": [
+        "low",
+        "default",
+        "high",
+        "highest"
+      ],
+      "default": "default",
+      "description": "The control height (owner decision C27), as on sf-button: size sets the text, the icons and the inner scale, height picks the height from the size's tightness steps -- low, default, high, highest. The track stands as tall as an sf-button of the same size and height, and the buttons look draws sf-button with that height. A value outside the list reads as default, with one console warning."
+    },
     "spacing": {
       "kind": "enum",
       "values": [
@@ -57,7 +68,7 @@ const sfSegmentedMeta = {
         "spacious"
       ],
       "default": "normal",
-      "description": "Shared semantic internal spacing profile."
+      "description": "Deprecated (decision C27, until 2027-01-01): the side padding of the segments only -- compact, normal, comfortable or spacious -- at the same height. It keeps working as before with a console warning and is not turned into height; write height for a lower or higher control."
     },
     "tightness": {
       "kind": "enum",

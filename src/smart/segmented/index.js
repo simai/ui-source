@@ -2,6 +2,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import { noteDeprecated } from '../../core/js/deprecations.js';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
 import { preloadControlIcons } from '../helpers/cycle';
@@ -22,6 +23,34 @@ const THEME_ICONS = { system: 'desktop_windows', light: 'light_mode', dark: 'dar
 function themePreference() {
   const preference = globalThis.SF?.Loader?.themePreference;
   return THEME_PREFERENCES.includes(preference) ? preference : 'system';
+}
+
+// height (1.5.0, decision C27): the size's tightness steps, as on sf-button.
+// A value outside the list reads as default and is said once per group.
+const HEIGHTS = new Set(['low', 'default', 'high', 'highest']);
+function groupHeight(host) {
+  const raw = host.getAttribute('height');
+  if (raw === null || raw === '') return 'default';
+  const value = raw.trim().toLowerCase();
+  if (HEIGHTS.has(value)) return value;
+  if (!host.__sfHeightWarned) {
+    host.__sfHeightWarned = true;
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-segmented: height="${raw}" is not a height; write low, default, high or highest (the size's steps). Read as default.`);
+  }
+  return 'default';
+}
+
+// spacing is deprecated (1.5.0, decision C27; journal
+// attribute-segmented-spacing-to-height), as on sf-button: it keeps drawing
+// the side padding until 2027-01-01 and is not turned into a height. Noted in
+// SF.deprecations and said once per page in the console.
+function noteSpacing(host) {
+  if (!host.hasAttribute('spacing')) return;
+  noteDeprecated({component: 'sf-segmented', kind: 'attribute', from: 'spacing', to: 'height', since: '2026-11-10', remove_after: '2027-01-01'});
+  const root = globalThis.SF = globalThis.SF || {};
+  if (root.__sfSegmentedSpacingWarned) return;
+  Object.defineProperty(root, '__sfSegmentedSpacingWarned', {value: true, configurable: true});
+  globalThis.console?.warn?.('[SIMAI Framework] sf-segmented: spacing is deprecated until 2027-01-01 and draws the side padding only; write height="low|default|high|highest" for the control height. See contracts/changes/journal.json (attribute-segmented-spacing-to-height).');
 }
 
 function parseItems(value = []) {
@@ -258,6 +287,7 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
       ...this.getPropsContext(),
       ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? this.sfWord('group') : ''),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
+      height: groupHeight(this),
       component: this,
       // The entries drawn: normalised, numbered and flagged; items stays the
       // setting as given (the template-context probe compares the two).
@@ -271,6 +301,7 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   template() {
+    noteSpacing(this);
     const context = this.templateContext();
     // Every item's icon, asked for when the group is drawn, as a cycle's are
     // (R074): a segment drawn later (out of loading, items set afresh) finds
