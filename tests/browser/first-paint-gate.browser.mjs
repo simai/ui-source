@@ -89,10 +89,12 @@ const WATCH = `(() => {
       if (fp.sheetsAt === null && !fp.waiting && sheetsIn()) {
         fp.waiting = true;
         const text = document.body.innerText;
-        const fonts = new Set([...document.querySelectorAll('#stage *, #after')].map((el) => {
-          const style = getComputedStyle(el);
-          return style.fontStyle + ' ' + style.fontWeight + ' 16px ' + style.fontFamily;
-        }));
+        // Not the icon font's family either: its subset is asked for while
+        // the page comes in (R078) and arrives after the held code.
+        const fonts = new Set([...document.querySelectorAll('#stage *, #after')]
+          .map((el) => getComputedStyle(el))
+          .filter((style) => !/Material Symbols/u.test(style.fontFamily))
+          .map((style) => style.fontStyle + ' ' + style.fontWeight + ' 16px ' + style.fontFamily));
         // Every face the sheets declare, too (but the icon font Core replaces
         // with its subset): a face that comes in later sets text again, and
         // the gate measures the element taking over, not the fonts arriving.
