@@ -32,7 +32,7 @@ test('the option is part of sf-editor-inline 1.4.1 (sf-inline-editor 1.3.0): its
   const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
   const manifest = JSON.parse(await read('src/smart/editor-inline/component.json'));
   // 1.5.0: the toolbar is the overlay place (C20); 1.6.0 it declares a popup place (C16); 1.6.1 one above the released 1.5.3; 1.6.2 its sheet takes back --sf-surface-underlay (C43).
-  assert.equal(manifest.version, '1.6.2');
+  assert.equal(manifest.version, '1.6.3');
   assert.match(manifest.actions.edit.summary, /toolbar \(session: [^)]+; selection: [^)]+\)/u);
   assert.match(await read('src/smart/editor-inline/index.js'), /SF\.InlineEditor = Object\.freeze\(\{[^}]*INLINE_TOOLBAR_MODES/u);
   // A hidden bar is not drawn: the sheet's display: flex would otherwise win over [hidden].

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.tags",
   "kind": "component",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tags/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/tags/scss/_var__tags.scss",
     "src/component/tags/scss/index.scss"
   ],
-  "content_sha256": "4eb592510344a5ae31c183b7fd46bd558c09d30a70e5cfda9daf7a29795f7c7d",
+  "content_sha256": "19ff824331ae7607786f2b5ec09f64791031e7c97bf630bfcf675fbc6240c5a5",
   "dependencies": [
     {
       "id": "tokens.border",

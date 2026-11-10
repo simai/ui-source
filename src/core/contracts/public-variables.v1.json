@@ -2912,7 +2912,7 @@
           "name": "--sf-list-item-background-color",
           "role": "background",
           "summary": "The row's fill.",
-          "default": "var(--sf-elevation-1--surface)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -3810,7 +3810,7 @@
           "name": "--sf-list-hover-background-color",
           "role": "hover-background",
           "summary": "A row under the pointer.",
-          "default": "var(--sf-surface-container-hover)",
+          "default": "var(--sf-surface-state-select)",
           "since": "2026-11-05"
         },
         {

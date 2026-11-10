@@ -344,9 +344,10 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   // R070: a column's group headings are a row.
   assert.match(column, /\.sf-menu-group-heading \{\n  min-block-size: var\(--sf-ui-1--control-height\);\n  padding-inline: var\(--sf-menu--row-padding\);/u);
   // (The current page's medium label is the current-plate mixin's, above the block.)
-  // The states are the alpha scale's role tokens: state 4 and 12; an open
-  // branch is not filled (C23) -- never a number of its own.
-  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
+  // The states are the alpha scale's role tokens: the one row hover, select 8
+  // (C42 item 5), and press 12; an open branch is not filled (C23) -- never a
+  // number of its own.
+  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-state-select\)/u);
   assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
   assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
   // A column's open branch is not filled; a row's open branch -- first level

@@ -353,7 +353,10 @@
      built with `border: 0` and a real border would make every tag two pixels
      taller than the one beside it. */
   .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
-    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-alpha-4));
+    /* The rest fill is the surface role of the same step (C16; DEV audit
+       2026-11-10 defect 8), so it follows the place: --sf-alpha-4 is black or
+       white, outside the surface roles, and stayed grey on a coloured place. */
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-surface-state-hover));
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-8);
   }
 
@@ -532,7 +535,8 @@
      raising its boundary alongside. */
   .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
   .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
-    --sf-tag--background-color: var(--sf-alpha-8);
+    /* The surface role of the step (C16; DEV audit 2026-11-10 defect 8). */
+    --sf-tag--background-color: var(--sf-surface-state-select);
   }
 
   .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {

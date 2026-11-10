@@ -125,7 +125,9 @@
 
 .sf-context-menu-item:not(:disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
-  background-color: var(--sf-surface-container-hover);
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+     select state, 8. It was the plate's hover, 20 before C41. */
+  background-color: var(--sf-surface-state-select);
 }
 
 /* Selected or current is one role in every component (C16): primary-container
@@ -455,7 +457,7 @@
 
 .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
   color: var(--sf-on-surface);
-  background-color: var(--sf-surface-container-hover);
+  background-color: var(--sf-surface-state-select);
 }
 
 .sf-context-menu-choice-option[aria-checked="true"] {

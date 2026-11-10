@@ -50,15 +50,22 @@ $sf-place-theme-roles: (
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
   'surface-state-select': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
   'surface-state-active': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
-  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
-  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20))',
-  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
+  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
   'outline': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
   'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
   'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
   'on-surface-muted': 'var(--sf-on-surface-disabled)',
   'surface-underlay': 'initial',
+  // The accent back, C42 item 4: a strong coloured place re-declares it for
+  // what stands on it, by sf-place-strong-accent, and an opaque place among
+  // them is an ordinary place again, its filled button the theme's.
+  'primary': 'light-dark(var(--sf-primary-40), var(--sf-primary-80))',
+  'primary-hover': 'light-dark(var(--sf-primary-35), var(--sf-primary-85))',
+  'primary-active': 'light-dark(var(--sf-primary-30), var(--sf-primary-90))',
+  'on-primary': 'light-dark(var(--sf-white), var(--sf-primary-20))',
 );
 
 // The renamed roles among them: their former names are re-declared with them
@@ -81,8 +88,24 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
   @if not $variant { @return null; }
   $named: meta.inspect($variant);
   @if string.index($named, 'popup-nested-variant') { @return $sf-place-popup-nested-container-variant; }
-  @if string.index($named, 'popup-variant') { @return $sf-place-popup-container-variant; }
+  @if string.index($named, 'popup-variant') { @return 'var(--sf-place--popup-container-variant, #{$sf-place-popup-container-variant})'; }
   @return null;
+}
+
+// A popup opened from a popup (C16 defect 3, DEV audit 2026-11-10): a list in
+// a window, a submenu, a menu in a drawer. The popup roles are re-declared
+// on the children of every popup place as the nested popup's, so a popup
+// among them paints --sf-surface-popup-nested and its dim ink with no rule
+// of its own (both popups cast the overlay shadow, C20); deeper popups stay nested. On the children, not on
+// the popup itself, which still paints the ordinary popup. A popup portalled
+// out of its parent (to the body) is not nested, and paints the popup.
+@mixin sf-place-popup-children {
+  & > * {
+    --sf-surface-popup: var(--sf-surface-popup-nested);
+    --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
+    --sf-place--popup-container-variant: #{$sf-place-popup-nested-container-variant};
+    @include aliases.sf-role-aliases(('surface-popup', 'on-surface-popup-variant'));
+  }
 }
 
 // The boundary on the light grey steps (C43, owner 2026-11-10): the theme's
@@ -109,6 +132,9 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
     }
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
+  @if $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested') {
+    @include sf-place-popup-children;
+  }
 }
 
 // A translucent fill on a place (C43): a selected, open or current row. What
@@ -174,4 +200,24 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
   --sf-on-surface-muted: var(--sf-on-surface-disabled);
   @include aliases.sf-role-aliases($sf-place-aliased);
+}
+
+// The accent on a strong coloured place (C42 (4), owner 2026-11-10): what
+// stands on bg-<c> takes the place's ink as its accent, --sf-primary the
+// place's on-colour and --sf-on-primary the place's colour, so a filled
+// button, a checked checkbox and a switch that is on are white on a blue
+// header (and tone 20 in the dark) with no rule from the author. Hover and
+// press move one and two five-tone steps towards the place, as the theme's
+// own hover and press move one and two from rest: 95 and 90 in the light
+// theme, 25 and 30 in the dark.
+// Declared on the children, because the place paints itself with --sf-<c>
+// (for primary, the role being re-declared), and from the tones, so a child
+// never reads the role it re-declares. In sf.base, so an opaque place among
+// the children (a card, a popup) takes the theme's accent back by its own
+// rule (sf-place, $sf-place-theme-roles).
+@mixin sf-place-strong-accent($c) {
+  --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+  --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
+  --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
+  --sf-on-primary: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80));
 }

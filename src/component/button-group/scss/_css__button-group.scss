@@ -383,9 +383,12 @@
   }
 
   /* The raised plate, the default since 1.4.0: the raised place (C20), white
-     in the light theme, a surface step lighter in the dark. */
+     with its shadow in the light theme. In the dark it is the pressed plate
+     (C42, owner 2026-11-10): the raised surface measured 1.03:1 against the
+     track on the page and vanished, while the fill's top step over the track
+     is lighter than the track on every place. */
   .sf-button-group--segmented.sf-button-group--plate-raised {
-    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-surface-raised));
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, light-dark(var(--sf-surface-raised), var(--sf-surface-container-active)));
     --sf-button-group--plate-variant: var(--sf-on-surface-raised-variant);
     --sf-button-group--plate-shadow: var(--sf-shadow-raised);
   }

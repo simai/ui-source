@@ -154,6 +154,12 @@ test('every appearance rule reads the ramp and nothing else', () => {
   }
 });
 
+// The tag's fill reads the surface roles of the same steps (C16; DEV surfaces
+// audit 2026-11-10 defect 8), so it follows the place it stands on; the
+// buttons still read the neutral steps.
+const ROLE_STEPS = {4: '--sf-surface-state-hover', 8: '--sf-surface-state-select', 12: '--sf-surface-state-active'};
+const fillStep = (family, step) => (family.name === 'tag' ? ROLE_STEPS[step] : `--sf-alpha-${step}`);
+
 test('ghost carries nothing at rest and surface carries a fill and a boundary', () => {
   for (const family of families) {
     const rules = appearanceRules(family);
@@ -167,7 +173,7 @@ test('ghost carries nothing at rest and surface carries a fill and a boundary', 
     );
     assert.match(
       restText,
-      new RegExp(`${family.fill}: var\\(--sf-alpha-4\\)`, 'u'),
+      new RegExp(`${family.fill}: var\\(${fillStep(family, 4)}\\)`, 'u'),
       `${family.name}: surface has a faint fill`,
     );
     assert.match(restText, family.boundary(8), `${family.name}: and a boundary one step stronger`);
@@ -184,7 +190,7 @@ test('the states rise through the ramp', () => {
 
     assert.match(
       at(/:hover/u),
-      new RegExp(`${family.fill}: var\\(--sf-alpha-8\\)`, 'u'),
+      new RegExp(`${family.fill}: var\\(${fillStep(family, 8)}\\)`, 'u'),
       `${family.name}: hover is one step up from rest`,
     );
     assert.match(at(/:hover/u), family.boundary(12), `${family.name}: and the boundary rises with it`);

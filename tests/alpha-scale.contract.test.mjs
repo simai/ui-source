@@ -9,7 +9,10 @@ import {fileURLToPath} from 'node:url';
 //   state   4, 8, 12          what a pointer does to a surface: hover, select,
 //                             press. The same step in both themes, because the
 //                             gesture is the same gesture.
-//   fill    12, 16, 20        a tinted plate on a light surface, and the two
+//   fill    8, 12, 16, 24     the neutral plate (surface-container), its hover
+//                             and press, and the strong step -- the same in
+//                             both themes (C41, owner 2026-11-10).
+//           12, 16, 20        a tinted plate on a light surface, and the two
 //           24, 28, 32        steps its own hover and press take; the dark
 //                             theme sits twelve higher, where the same tint
 //                             over a dark surface reads as the same plate.
@@ -117,13 +120,16 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // up with a tone that was too dark for the job -- so the same interface was
   // lightened by two different greys, and the steps could not match across
   // themes (owner, 2026-10-08).
+  // The neutral fill family is 8/12/16 and 24 strong (C41, owner
+  // 2026-11-10): one step darker than the place, in both themes.
   const surfaces = {
     'surface-state-hover': 4,
     'surface-state-select': 8,
-    'surface-container-strong': 32,
-    'surface-container': 16,
-    'surface-container-hover': 20,
-    'surface-container-active': 24,
+    'surface-state-active': 12,
+    'surface-container-strong': 24,
+    'surface-container': 8,
+    'surface-container-hover': 12,
+    'surface-container-active': 16,
   };
   const wrong = [];
   for (const [role, step] of Object.entries(surfaces)) {
@@ -132,16 +138,20 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   }
   assert.deepEqual(wrong, [], 'a translucent surface takes one step of one tone per theme');
 
-  // The plate starts at 16 because at 12 it was the colour of a pressed
-  // surface, and a plate that cannot be told from a press is not a plate.
-  assert.notEqual(surfaces['surface-container'], surfaces['surface-state-select']);
-  assert.ok(surfaces['surface-container'] > surfaces['surface-state-select']);
+  // The plate is the select state's step, 8, and its hover the pressed
+  // state's, 12. C41 accepts the overlap: a state is drawn over a plate, not
+  // instead of it, and a chosen row is primary-container, not grey (C23).
+  // What stays apart: the plate is above the hover state, the pressed plate is
+  // above every state, and the strong step is above every plate.
+  assert.equal(surfaces['surface-container'], surfaces['surface-state-select']);
+  assert.ok(surfaces['surface-container'] > surfaces['surface-state-hover']);
+  assert.ok(surfaces['surface-container-active'] > surfaces['surface-state-active']);
   // And the veil is above every plate: a plate sits on the page, a veil covers
   // it. At 24 the backdrop of a modal was the colour of a pressed card.
   assert.ok(surfaces['surface-container-strong'] > surfaces['surface-container-active']);
-  // No two surface roles share a value: each is a different thing to see.
-  const steps = Object.values(surfaces);
-  assert.equal(new Set(steps).size, steps.length, `two surface roles share a step: ${steps}`);
+  // The plate family has four different steps: each is a different thing to see.
+  const plates = ['surface-container', 'surface-container-hover', 'surface-container-active', 'surface-container-strong'].map((role) => surfaces[role]);
+  assert.equal(new Set(plates).size, plates.length, `two plate roles share a step: ${plates}`);
 
   // The veil is the exception, and it is one on purpose: it darkens a scene
   // rather than tinting a surface. On the neutral tone it came out 7.4 points
@@ -171,7 +181,7 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
 
 // A fill on a coloured place (C16, owner 2026-11-08): on a strong colour the
 // control fill is the place's ink at 12, 16 and 20 -- a named exception to the
-// neutral plate's 16/20/24, because white at 16 already gave 4.40 on a
+// neutral plate's 8/12/16 (C41; a coloured fill keeps its steps), because white at 16 already gave 4.40 on a
 // near-grey header (surfaces research 4.1). 12 there equals the pressed state;
 // the two are never next to each other. The states stay 4/8/12, the line 24,
 // the boundary 64 and the dim ink 80.

@@ -105,7 +105,9 @@ test('the popover, a sheet that is not Sass, writes the place out as the mixin d
     if (role === 'on-surface-variant') continue;
     // A popup carries the dim ink on a fill one step up (C43, 2026-11-10).
     if (role === 'on-surface-container-variant') {
-      assert.ok(popover.includes('--sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-90));'), 'popover container variant 90');
+      assert.ok(popover.includes('--sf-on-surface-container-variant: var(--sf-place--popup-container-variant, light-dark(var(--sf-neutral-35), var(--sf-neutral-90)));'), 'popover container variant 90');
+      // A popup opened from it is a nested popup, as sf-place-popup-children writes.
+      assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-surface-popup: var\(--sf-surface-popup-nested\);[^}]*--sf-place--popup-container-variant: light-dark\(var\(--sf-neutral-35\), var\(--sf-neutral-95\)\);/u);
       continue;
     }
     assert.ok(popover.includes(`--sf-${role}: ${value};`), `popover --sf-${role}`);
