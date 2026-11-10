@@ -139,7 +139,7 @@
    it and the cross (the lead and the room around the cross in its line). The
    Smart alert's close is an sf-button-icon, whose host is display: contents. */
 .sf-alert > .sf-icon-button,
-.sf-alert > sf-button-icon > .sf-icon-button {
+.sf-alert > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
   flex: none;
   margin-inline-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
 }
