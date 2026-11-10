@@ -33,6 +33,7 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -42,6 +43,7 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -51,6 +53,7 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -134,7 +137,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container) {
+  /* The picture: the leading place, or sf-icon's own glyph (its host is
+     display: contents). */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
     grid-column: 1;
     grid-row: 1;
     align-self: center;
@@ -143,14 +149,18 @@
   .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
     grid-column: -2;
     grid-row: 1;
+    justify-self: stretch;
     min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
   }
 
   .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
     grid-column: -2;
     grid-row: 2;
     justify-self: start;
-    margin-inline-start: 0;
+    /* The text's start: the row's text step, the title's own inset. */
+    margin-inline-start: var(--sf-list--text-step);
     padding-inline-start: 0;
   }
 
