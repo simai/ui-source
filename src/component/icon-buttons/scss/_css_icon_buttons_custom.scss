@@ -154,11 +154,11 @@
      resting colour. A close control draws its cross through sf-button-close, whose
      own element stands between the control and the mark, so that colour is
      handed down too. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 }
@@ -168,18 +168,18 @@
      docs review R033): a glyph without a fill in --sf-on-surface-variant
      darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
      do, so the state layer and the ink say the same thing. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
   /* A disabled icon button's spinner (disabled and loading) takes the disabled
      ink -- unless --sf-loader--color is set. */
   .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 }
 

@@ -67,7 +67,7 @@
 
 .sf-page-number:not(:disabled):not(.disabled):hover {
   --sf-page-number--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-page-number--color: var(--sf-on-surface);
 }
 
@@ -99,8 +99,8 @@
 
 .sf-page-number:disabled,
 .sf-page-number.disabled {
-  --sf-page-number--background-color: var(--sf-disable);
-  --sf-page-number--color: var(--sf-on-disable);
+  --sf-page-number--background-color: var(--sf-surface-disabled);
+  --sf-page-number--color: var(--sf-on-surface-disabled);
   cursor: not-allowed;
 }
 

@@ -212,7 +212,7 @@
 
   .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
   .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
-    --sf-list-item--background-color: var(--sf-surface-transparent-hover);
+    --sf-list-item--background-color: var(--sf-surface-state-hover);
   }
 
   .sf-dropdown .sf-list .sf-list-item.selected,

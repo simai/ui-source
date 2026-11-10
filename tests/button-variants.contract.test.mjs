@@ -33,7 +33,9 @@ test('button variants: tonal primary tints with the primary container roles', as
   for (const [name, file] of SHEETS) {
     const css = strip(await readFile(new URL(file, SRC), 'utf8'));
     const blocks = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
-      .filter(([, selector]) => selector.includes(`.sf-${name}--tonal.sf-${name}--primary`))
+      // The icon button reads its retired surface class as tonal (C15), so its
+      // tonal selector is :is(.sf-icon-button--tonal, .sf-icon-button--surface).
+      .filter(([, selector]) => selector.replace(new RegExp(`:is\\(\\.sf-${name}--tonal, \\.sf-${name}--surface\\)`, 'g'), `.sf-${name}--tonal`).includes(`.sf-${name}--tonal.sf-${name}--primary`))
       .map(([, , body]) => body);
     assert.ok(blocks.length >= 4, `${file}: rest, label/icon, hover and active rules`);
     for (const body of blocks) {

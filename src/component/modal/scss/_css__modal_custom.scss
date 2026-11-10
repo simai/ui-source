@@ -397,6 +397,15 @@
   padding-block-end: var(--sf-space-1\/4);
 }
 
+/* The class window's own title (component.modal, decision C39 by dispatcher
+   decision d, docs pre-check 2026-11-10) is the header's content: it stands
+   on the close button's line, centred on it, as a question window's does. */
+.sf-modal-header > .sf-modal-header-content.sf-modal-title {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--sf-ui-1\/3--control-height);
+}
+
 /* The default title of a question window: text step 2 in bold (C21's h4
    size), not the page-level title-3. */
 .sf-modal-title {

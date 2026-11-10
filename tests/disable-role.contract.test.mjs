@@ -50,8 +50,10 @@ const styleFiles = () => {
 
 // A whole declaration is read, not its first token: the role is as likely to sit
 // in a var() fallback as in the value itself.
-const PAINTS_CONTENT = /(?:^|[;{\s])color:[^;]*--sf-disable\b|--sf-[a-z0-9-]*--color:[^;]*--sf-disable\b/u;
-const PAINTS_FILL = /(?:background(?:-color)?|border-color|box-shadow|outline-color):[^;]*--sf-on-disable\b|--sf-[a-z0-9-]*--(?:background-color|border-color|outline-color):[^;]*--sf-on-disable\b/u;
+// The retired names (--sf-disable, --sf-on-disable) and the current ones
+// (--sf-surface-disabled, --sf-on-surface-disabled, token-aliases.v1) are one role each.
+const PAINTS_CONTENT = /(?:^|[;{\s])color:[^;]*--sf-(?:surface-)?disabled?\b|--sf-[a-z0-9-]*--color:[^;]*--sf-(?:surface-)?disabled?\b/u;
+const PAINTS_FILL = /(?:background(?:-color)?|border-color|box-shadow|outline-color):[^;]*--sf-on-(?:disable|surface-disabled)\b|--sf-[a-z0-9-]*--(?:background-color|border-color|outline-color):[^;]*--sf-on-(?:disable|surface-disabled)\b/u;
 
 test('the disabled fill role never paints content', () => {
   const offenders = [];
@@ -75,13 +77,13 @@ test('the disabled content role paints a fill only where the fill is the content
     }
   }
   assert.deepEqual(found.sort(), [
-    'src/component/context-menu/scss/_css__context_menu.scss: background-color: var(--sf-on-disable);',
-    'src/component/dropdown/scss/_css__list-item.scss: --sf-checkbox-box--border-color: var(--sf-on-disable);',
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
-    // The third is the destructive status: a disabled close goes grey whatever
-    // colour it carries when it is live.
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
+    'src/component/context-menu/scss/_css__context_menu.scss: background-color: var(--sf-on-surface-disabled);',
+    'src/component/dropdown/scss/_css__list-item.scss: --sf-checkbox-box--border-color: var(--sf-on-surface-disabled);',
+    // The icon button's disabled close: the second is the destructive status, a
+    // disabled close goes grey whatever colour it carries when it is live. (A
+    // third, the tonal secondary close, left with component.icon-buttons 1.6.0, C15.)
+    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
+    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
     'src/component/quantity/scss/_css__quantity.scss: background-color: var(--sf-on-disable);',
     'src/component/radio/scss/_css_radio.scss: --sf-radio-button-mark--background-color: var(--sf-on-disable);',
     // The slider's handle is the content of its rail, laid over the surface

@@ -208,7 +208,7 @@
 @layer sf.states {
   .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):hover {
     --sf-download-file--background-color: var(--sf-surface-container-hover);
-    --sf-download-file--border-color: var(--sf-outline-primary);
+    --sf-download-file--border-color: var(--sf-primary-outline);
   }
 
   .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):active {
@@ -233,15 +233,15 @@
   }
 
   .sf-download-file:is(:disabled, .disabled, [aria-disabled='true']) {
-    --sf-download-file--border-color: var(--sf-outline-disable);
+    --sf-download-file--border-color: var(--sf-outline-disabled);
 
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
     cursor: default;
   }
 
   .sf-download-file:is(:disabled, .disabled, [aria-disabled='true'])
     :where(.sf-download-file__main, .sf-download-file-container, .sf-download-file__size, .sf-download-file-file-size, .sf-icon) {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   @media (forced-colors: active) {

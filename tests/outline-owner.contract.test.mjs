@@ -25,7 +25,9 @@ test('Outline uses Framework roles and reserves stable current geometry', async 
     '--sf-text--height',
     '--sf-radius--ui',
     '--sf-surface-container-hover',
-    '--sf-surface-container-active',
+    // The current link is the C23 plate (component.outline 1.1.0).
+    '--sf-primary-container-active',
+    '--sf-on-primary-container',
     '--sf-focus--width',
     '--sf-focus--color',
     '--sf-focus-outline-width',
