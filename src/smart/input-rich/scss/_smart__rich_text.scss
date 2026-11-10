@@ -234,8 +234,9 @@
 
 /* The link editor's surface: closed until the popover says it is open, also
    before the popover's code has arrived. It is a form in a popup, so its
-   width is the form's step (C32, --sf-popup-form-width), never wider than
-   the screen. */
+   width is the wide form's step (C32, --sf-popup-form-wide-width: the field,
+   its hint and Apply / Remove of the field's size fit one row, R121), never
+   wider than the screen. */
 .sf-rich-text sf-popover.sf-rich-text-link:not([data-open='true']) > [slot='content'] {
   display: none;
 }

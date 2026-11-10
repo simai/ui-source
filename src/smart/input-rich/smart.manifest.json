@@ -321,11 +321,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "6f45f6b51c2e12c81f12be8e81a5f97cbe502af8ce38bf988e93fe444d72a9ae"
+        "sha256": "6a17c9bfe30318649f0830457994e74928766b203cedf53b119604e8449a1902"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "d0152e8e96ce80e87725c100ca4059eead2b6265ab052abaa82e1cc4f8ee6bc0"
+        "sha256": "f38ff5a45934eecda496a22a19e11858beb531bcd7b9b11792af5668982b7021"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -337,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "31e662dfd28841fd7bb3f5b234c31718d9653da238f70838aed0e2986f31ea8f"
+        "sha256": "97f2fcb0a688b2a74b47234650ddce0cf1d0b13aa9941ba87c2ebd9e01cbd8b4"
       },
       {
         "path": "src/smart/input-rich/rule.js",

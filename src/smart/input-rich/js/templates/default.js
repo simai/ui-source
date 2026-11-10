@@ -99,7 +99,7 @@ export function renderRichTextTemplate(context) {
   const group = (ids) => tools.filter((tool) => ids.includes(tool.id)).map((tool) => {
     if (tool.id !== 'link') return toolButton(toolContext, tool);
     // The link button opens the link editor: the popover's trigger.
-    return html`<sf-popover class="sf-rich-text-link" placement=${context.linkPlacement || 'bottom-start'} width="var(--sf-popup-form-width, 20rem)" label=${component.sfWord('link-dialog')}>
+    return html`<sf-popover class="sf-rich-text-link" placement=${context.linkPlacement || 'bottom-start'} width="var(--sf-popup-form-wide-width, 24rem)" label=${component.sfWord('link-dialog')}>
         <span slot="trigger" class="sf-rich-text-link-trigger">${toolButton(toolContext, tool)}</span>
         <div slot="content" class="sf-rich-text-link-panel flex flex-col" id=${linkId}
           @input=${(event) => component.onLinkPanelEvent(event)}
