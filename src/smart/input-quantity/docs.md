@@ -118,7 +118,7 @@
 
 | Переменная | Что задаёт | По умолчанию |
 |:---|:---|:---|
-| `--sf-quantity-background-color` | Заливка поля в покое; у ошибки — своя. | `var(--sf-surface-0)` |
+| `--sf-quantity-background-color` | Заливка поля в покое; у ошибки — своя. | `var(--sf-transparent)` |
 | `--sf-quantity-border-color` | Цвет рамки в покое; у наведения, нажатия, ошибки и недоступного поля — свой. | `var(--sf-outline)` |
 | `--sf-quantity-border-width` | Толщина рамки со всех сторон. | `var(--sf-px)` |
 | `--sf-quantity-radius` | Скругление углов поля. | `var(--sf-radius--ui)` |

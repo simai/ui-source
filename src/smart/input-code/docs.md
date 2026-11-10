@@ -97,7 +97,7 @@ document.addEventListener('sf-code-input:complete', async (event) => {
 
 | Переменная | Что меняет | По умолчанию |
 | --- | --- | --- |
-| `--sf-verification-background-color` | Заливка ячейки в покое: поверхность у `bordered`, тональная заливка у `filled` | `var(--sf-surface-0)` |
+| `--sf-verification-background-color` | Заливка ячейки в покое: у `bordered` прозрачная, у `filled` тональная | `var(--sf-transparent)`; у `filled` — `var(--sf-surface-container)` |
 | `--sf-verification-border-color` | Граница ячейки в покое | `var(--sf-outline)` |
 | `--sf-verification-border-width` | Толщина границы ячейки | `var(--sf-px)` |
 | `--sf-verification-radius` | Скругление ячейки и кольца фокуса | `var(--sf-radius--ui)` |

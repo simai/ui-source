@@ -104,7 +104,7 @@ field.addEventListener('sf-image-field:select', async (event) => {
 
 | Переменная | Что задаёт | По умолчанию |
 |:---|:---|:---|
-| `--sf-image-field-background-color` | Заливка поля в покое; у перетаскивания и недоступного поля — своя. | `var(--sf-surface-0)` |
+| `--sf-image-field-background-color` | Заливка поля в покое; у перетаскивания и недоступного поля — своя. | `var(--sf-transparent)` |
 | `--sf-image-field-border-color` | Цвет рамки в покое (у пустого поля она пунктирная); у перетаскивания, ошибки и недоступного поля — свой. | `var(--sf-outline)` |
 | `--sf-image-field-border-width` | Толщина рамки со всех сторон. | `var(--sf-px)` |
 | `--sf-image-field-radius` | Скругление углов поля. | `var(--sf-radius--ui)` |
