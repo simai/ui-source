@@ -77,9 +77,11 @@
   // re-declares --sf-on-surface-variant as the ink on a fill, so the place's
   // value is kept on the field's host, above it. On the 8 % fill (C41) the
   // dark 70 holds 4.65:1 on surface-3 and stands 1.77 from the value; the full
-  // ink (on-surface) gave the value's own tone.
+  // ink (on-surface) gave the value's own tone. A strong coloured place keeps
+  // its full ink there (--sf-place--fill-placeholder): its dim ink over the
+  // fill stays under 4.5:1.
   .sf-input.sf-input--filled {
-    --sf-input--place-variant: var(--sf-on-surface-variant);
+    --sf-input--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
   }
 
   .sf-input.sf-input--filled .sf-input-field input::placeholder {

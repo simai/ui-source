@@ -75,6 +75,7 @@
     --sf-on-primary-container: var(--sf-place--outer-on-primary-container, light-dark(var(--sf-primary-10), var(--sf-primary-90)));
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
+    --sf-place--fill-placeholder: initial;
   }
 
   /* A popup opened from this one is a nested popup (mix sf-place-popup-children):

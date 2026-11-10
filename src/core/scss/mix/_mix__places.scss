@@ -120,6 +120,7 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
     }
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
+    --sf-place--fill-placeholder: initial;
   }
 }
 
@@ -294,4 +295,8 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // place's colour in the light theme and the place's ink in the dark.
   --sf-place--plate: light-dark(var(--sf-white), var(--sf-#{$c}-90));
   --sf-place--on-plate: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-20));
+  // A filled field's placeholder on the place (forms batch round 2, item C):
+  // the place's full ink, as before. Its dim ink (80) over the field's fill
+  // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
+  --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
 }
