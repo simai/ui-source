@@ -873,6 +873,12 @@
    taken; a command is known by its start. */
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] .sf-context-menu-item {
   white-space: normal;
+  /* A choice that wraps keeps the space a one-line row has above and below
+     its text, (row - line) / 2, so the row grows by whole lines. The row's
+     minimum alone held one line on its centre; a second line grew the row
+     from the 2px padding and the text touched the chosen plate's edge
+     (G1-a, 2026-11-10). One line: the same height, the same place. */
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
 }
 
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-label, .sf-context-menu-item-caption) {
@@ -1109,6 +1115,12 @@
     .sf-context-menu .sf-context-menu-content > .sf-button,
     .sf-context-menu .sf-context-menu-content > sf-button > .sf-button {
       min-block-size: var(--sf-d1);
+    }
+
+    /* A list's row is the touch target's height here, so a wrapped choice
+       keeps the space that row has around its one line (G1-a). */
+    .sf-context-menu .sf-context-menu-content[data-sf-width="list"] {
+      --sf-context-menu--row-step: max(var(--sf-context-menu--row-height), var(--sf-d1));
     }
   }
 }
