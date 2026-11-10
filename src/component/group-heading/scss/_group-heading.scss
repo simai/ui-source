@@ -11,6 +11,10 @@
                                (.sf-group-heading-date, text 1/2); --sf-space-3
                                above, --sf-space-1/2 below, none above the
                                first one.
+   .sf-group-heading--size-1/2, --size-2
+                               the heading of a list on another rung: the
+                               words at that rung's text, the date the rung
+                               below (text 1/3, text 1).
    .sf-group-heading--sticky    the same, kept in sight while the list
                                scrolls, the place's solid surface behind it.
    .sf-group-heading--divider   a conversation's divider: the words centred and
@@ -44,6 +48,28 @@
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
   font-weight: var(--sf-font-weight-medium);
+}
+
+/* The list's rung: the heading takes the size of the events under it
+   (C40 «заголовок дня размером события»), the date the rung below. */
+.sf-group-heading.sf-group-heading--size-1\/2 {
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-group-heading--size-1\/2 .sf-group-heading-date {
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-group-heading.sf-group-heading--size-2 {
+  font-size: var(--sf-text-size-2);
+  line-height: var(--sf-text-height-2);
+}
+
+.sf-group-heading--size-2 .sf-group-heading-date {
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
 }
 
 .sf-group-heading:first-child {

@@ -194,7 +194,7 @@ export function renderListTemplate(context) {
                 ${repeat(context.sections, (group) => group.key, (group) => context.grouped
                     ? html`
                         <section class="sf-list__group" data-group=${group.key}>
-                            <div class=${`sf-group-heading sf-list__heading${context.stickyHeadings ? " sf-group-heading--sticky" : ""}`}
+                            <div class=${`sf-group-heading sf-list__heading${context.size === "1" ? "" : ` sf-group-heading--size-${context.size}`}${context.stickyHeadings ? " sf-group-heading--sticky" : ""}`}
                                  role="heading" aria-level=${context.headingLevel}
                                  id=${`${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`}>${group.heading}${group.date
                                 ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${group.date}></sf-time>`
