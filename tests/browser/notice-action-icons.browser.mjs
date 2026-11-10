@@ -156,7 +156,13 @@ const MEASURE = (levels) => {
   for (const root of document.querySelectorAll('[data-k]')) {
     seen[root.dataset.k] = {
       level: root.dataset.level,
-      tone: token(root.dataset.level === 'neutral' ? '--sf-on-surface-variant' : `--sf-${root.dataset.level}`, root),
+      // One status tone per notice, the notice-ink probe's: neutral is the
+      // theme's quiet role, read on the page -- the dim ink on a fill for a
+      // filled notice, the page's for an outlined alert -- not the role a
+      // popup place (the toast) re-declares for its controls (C43).
+      tone: root.dataset.level !== 'neutral'
+        ? token(`--sf-${root.dataset.level}`, root)
+        : token(root.classList.contains('sf-alert--outlined') ? '--sf-on-surface-variant' : '--sf-on-surface-container--variant', document.body),
       own: colour(root.querySelector(':scope > .sf-icon')),
       cross: root.querySelector(':scope > .sf-icon-button .sf-close-icon') ? hex(rgba(getComputedStyle(root.querySelector(':scope > .sf-icon-button .sf-close-icon')).backgroundColor)) : null,
       text: colour(root.querySelector('.sf-alert-text, .sf-toast-text')),
