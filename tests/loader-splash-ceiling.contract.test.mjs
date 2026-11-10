@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 // The remembered icon font held the window's load, the page scan waited for
 // load, so sf-loader-ready never came, and the splash hid only on that event.
 // Probe: tests/browser/loader-warm-held-icons.browser.mjs.
+// The splash's time limit is gone again (re-acceptance): see the second test.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -29,12 +30,14 @@ test('the page scan runs once the document is parsed, not at the window load', (
     'changes met during the scan are read when it ends');
 });
 
-test('the boot splash has a hard ceiling besides sf-loader-ready', () => {
+test('the boot splash lifts on sf-loader-ready only, with no time limit', () => {
+  // A ceiling (1500 ms, an earlier R078 fix) lifted the splash on a slow page
+  // at 5.5 s while its controls came in at 9-11 s: an empty page, then a jump.
+  // The scan at DOMContentLoaded and the remembered font off the load are
+  // what R078 needs.
   const index = read('src/core/js/index.js');
   const mount = index.slice(index.indexOf('const mountPreloader = () => {'), index.indexOf('mountPreloader();'));
-  assert.match(mount, /ceiling: 1500,\n\s*\.\.\.\(window\.SF_BOOT_CONFIG\?\.preloader \|\| \{\}\)/u,
-    'the default, overridable by preloader.ceiling');
-  assert.match(mount, /if \(ceiling > 0\) \{\s*setTimeout\(\(\) => \{\s*cancelBuild\(\);\s*preloaderRun = false;\s*stopAnimation\(\);\s*hide\(\);\s*\}, ceiling\);/u);
+  assert.doesNotMatch(mount, /ceiling/u);
 });
 
 test('the remembered icon font is fetched off the document load and adopted within the deadline', () => {

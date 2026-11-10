@@ -85,20 +85,35 @@ const WATCH = `(() => {
     if (host && document.body) {
       // The sheets, then the fonts the page's text is set in -- every face its
       // characters need (a Cyrillic range of Inter is fetched only once text
-      // asks for it), as a page preloads them -- then every font in use.
+      // asks for it), as a page preloads them.
       if (fp.sheetsAt === null && !fp.waiting && sheetsIn()) {
         fp.waiting = true;
         const text = document.body.innerText;
         // Not the icon font's family either: its subset is asked for while
         // the page comes in (R078) and arrives after the held code.
-        const fonts = new Set([...document.querySelectorAll('#stage *, #after')]
+        const styles = [...document.querySelectorAll('#stage *, #after')]
           .map((el) => getComputedStyle(el))
-          .filter((style) => !/Material Symbols/u.test(style.fontFamily))
-          .map((style) => style.fontStyle + ' ' + style.fontWeight + ' 16px ' + style.fontFamily));
-        // Every face the sheets declare, too (but the icon font Core replaces
-        // with its subset): a face that comes in later sets text again, and
-        // the gate measures the element taking over, not the fonts arriving.
-        const faces = [...document.fonts].filter((face) => !/Material Symbols/u.test(face.family)).map((face) => face.load());
+          .filter((style) => !/Material Symbols/u.test(style.fontFamily));
+        const fonts = new Set(styles.map((style) => style.fontStyle + ' ' + style.fontWeight + ' 16px ' + style.fontFamily));
+        // The faces the text uses that are already on their way or in -- of a
+        // family and weight in use -- as well: a face that comes in later sets
+        // text again, and the gate measures the element taking over, not the
+        // fonts arriving. Not every face the sheets declare: Inter declares
+        // ten subsets, the text needs one or two, and loading the other eight
+        // queued them behind the components' code, which since the scan at
+        // DOMContentLoaded (R078) is asked for at about 100 ms; the fonts were
+        // "in" on the frame the code ran, and admin-head had no frame before it.
+        const unquote = (name) => name.trim().replace(/^["']|["']$/gu, '').toLowerCase();
+        const families = new Set(styles.flatMap((style) => style.fontFamily.split(',').map(unquote)));
+        const weights = new Set(styles.map((style) => Number(style.fontWeight)));
+        const weightInUse = (weight) => {
+          const [low, high = low] = String(weight).split(/\\s+/u).map(Number);
+          if (!Number.isFinite(low)) return true;
+          return [...weights].some((one) => one >= low && one <= high);
+        };
+        const faces = [...document.fonts]
+          .filter((face) => face.status !== 'unloaded' && families.has(unquote(face.family)) && weightInUse(face.weight))
+          .map((face) => face.loaded);
         // Not document.fonts.ready: it waits for every font load on the way,
         // the icon font's too, and since the Loader scans the page at
         // DOMContentLoaded rather than at the window's load (R078) the icon
@@ -106,6 +121,8 @@ const WATCH = `(() => {
         // held code had defined the icon elements, it kept "the first paint
         // is in" until after the code, and phase 1 had no frame
         // (admin-head, tile-metric: "no frame before the code").
+        // document.fonts.load(font, text) loads only the faces whose ranges
+        // the text has.
         Promise.allSettled([...faces, ...[...fonts].map((font) => document.fonts.load(font, text))])
           .then(() => requestAnimationFrame(() => { fp.sheetsAt = performance.now(); }));
       }
