@@ -4,6 +4,7 @@ import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
+import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -253,6 +254,11 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   handleThemeChange = () => this.syncThemePreference();
 
   templateContext() {
+    const entries = this.normalizedItems;
+    // Every item's icon, asked for when the group is drawn, as a cycle's are
+    // (R074): a segment drawn later (out of loading, items set afresh) finds
+    // its glyph in the page's font instead of asking for a grown one.
+    preloadControlIcons(this, entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
     return this.createTemplateContext({
       ...this.getPropsContext(),
       ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? this.sfWord('group') : ''),
@@ -260,7 +266,7 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
       component: this,
       // The entries drawn: normalised, numbered and flagged; items stays the
       // setting as given (the template-context probe compares the two).
-      entries: this.normalizedItems,
+      entries,
       value: this.value,
       disabled: this.disabled,
       // The host is the form control where the browser has ElementInternals;

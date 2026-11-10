@@ -648,3 +648,197 @@ test('a disclosure glyph brings the glyph it swaps to into the same request', ()
   // A name with no partner tracks itself alone.
   assert.equal(loader.trackIconDescriptor('menu', attrs), 1);
 });
+
+// R074: a fake page for the subset request path -- styles in the head found
+// by their data attributes, FontFace and document.fonts that load at once,
+// frames on a timer, and a fetch the test answers when it chooses.
+function subsetPage() {
+  const saved = {
+    fetch: globalThis.fetch,
+    document: globalThis.document,
+    CustomEvent: globalThis.CustomEvent,
+    Node: globalThis.Node,
+    FontFace: globalThis.window.FontFace,
+    raf: globalThis.requestAnimationFrame,
+    warn: globalThis.console.warn,
+    dispatch: globalThis.window.dispatchEvent,
+  };
+  const head = [];
+  const events = [];
+  const warnings = [];
+  const requests = [];
+  const element = () => ({
+    attributes: new Map(),
+    textContent: '',
+    getAttribute(name) { return this.attributes.has(name) ? this.attributes.get(name) : null; },
+    hasAttribute(name) { return this.attributes.has(name); },
+    setAttribute(name, value) { this.attributes.set(name, String(value)); },
+    remove() { const at = head.indexOf(this); if (at >= 0) head.splice(at, 1); },
+  });
+  globalThis.CustomEvent = class CustomEvent {
+    constructor(type, options) { this.type = type; this.detail = options?.detail; }
+  };
+  globalThis.Node = {ELEMENT_NODE: 1};
+  globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 1);
+  globalThis.window.FontFace = class FontFace {
+    constructor(family) { this.family = family; }
+    load() { return Promise.resolve(this); }
+  };
+  globalThis.document = {
+    body: {classList: {add() {}, contains() { return false; }, remove() {}}, nodeType: 1, querySelectorAll() { return []; }},
+    documentElement: {getAttribute() { return null; }, removeAttribute() {}},
+    createElement: element,
+    head: {appendChild(node) { node.remove(); head.push(node); }},
+    querySelector(selector) {
+      const match = /^style\[([\w-]+)="([^"]+)"\]$/.exec(selector);
+      return match ? head.find((node) => node.getAttribute(match[1]) === match[2]) || null : null;
+    },
+    querySelectorAll() { return []; },
+    fonts: {add() {}, delete() {}, load: async () => [{}]},
+  };
+  globalThis.window.dispatchEvent = (event) => { events.push(event); return true; };
+  globalThis.console.warn = (...args) => warnings.push(args);
+  globalThis.fetch = (url, options = {}) => new Promise((resolve, reject) => {
+    const names = new URL(url, 'https://icons.test').searchParams.get('icon_names').split(',');
+    requests.push({url, options, names, resolve, reject});
+    options.signal?.addEventListener?.('abort', () => reject(Object.assign(new Error('aborted'), {name: 'AbortError'})));
+  });
+  const answer = (request) => request.resolve({
+    ok: true,
+    status: 200,
+    headers: {get() { return null; }},
+    text: async () => `@font-face { font-family: 'Material Symbols Outlined Subset'; src: url('https://icons.test/ms/font/${request.names.join('-')}.woff2') format('woff2'); font-weight: 400; }\n.sf-icon { font-family: 'Material Symbols Outlined Subset'; }`,
+  });
+  const restore = () => {
+    globalThis.fetch = saved.fetch;
+    globalThis.document = saved.document;
+    globalThis.CustomEvent = saved.CustomEvent;
+    globalThis.Node = saved.Node;
+    globalThis.window.FontFace = saved.FontFace;
+    globalThis.requestAnimationFrame = saved.raf;
+    globalThis.console.warn = saved.warn;
+    globalThis.window.dispatchEvent = saved.dispatch;
+  };
+  return {head, events, warnings, requests, answer, restore};
+}
+
+const outlinedRequest = (icons) => ({
+  accumulate: false,
+  defaultType: 'outlined',
+  fill: false,
+  grade: '',
+  opticalSize: '',
+  icons,
+  weights: new Set(['400']),
+});
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+test('R074: a subset request is not asked to bypass the HTTP cache and carries an abort signal', async () => {
+  const page = subsetPage();
+  try {
+    const loader = new TestLoader();
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    await sleep(0);
+    assert.equal(page.requests.length, 1);
+    assert.equal(page.requests[0].options.cache, undefined);
+    assert.ok(page.requests[0].options.signal);
+    page.answer(page.requests[0]);
+    assert.equal(await done, true);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+  } finally {
+    page.restore();
+  }
+});
+
+test('R074: a slow subset answer draws from the full font at the deadline, and the grown subset takes over when it holds every name', async () => {
+  const page = subsetPage();
+  try {
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 30;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('grid_view', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const started = Date.now();
+    assert.equal(await loader.loadIconSubsetFamily(outlinedRequest(['grid_view'])), true);
+    assert.ok(Date.now() - started < 500, 'the deadline, not the answer, ends the wait');
+    const fallback = page.head.find((node) => node.hasAttribute('data-sf-icons-fallback'));
+    assert.ok(fallback, 'the full font draws the names');
+    assert.match(fallback.textContent, /MaterialSymbols-Outlined\.woff2/);
+    assert.ok(loader.isTrackedIconLoaded({icon: 'grid_view', attrs: {}}), 'the icon is drawn, not held');
+    assert.match(String(page.warnings[0]?.[1]?.reason?.message || ''), /timed out after 30 ms/);
+
+    // A name that turns up while the full font draws: drawn at once, no
+    // second fallback stylesheet, and the subset grows in the background.
+    loader.uniqueIcons.set('view_list', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const second = Date.now();
+    assert.equal(await loader.loadIconSubsetFamily(outlinedRequest(['grid_view', 'view_list'])), true);
+    assert.ok(Date.now() - second < 25, 'no deadline wait once the full font draws');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 1);
+    assert.ok(loader.isTrackedIconLoaded({icon: 'view_list', attrs: {}}));
+
+    // The first answer arrives without view_list: dropped, the full font stays.
+    page.answer(page.requests[0]);
+    await sleep(20);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 0);
+    assert.ok(page.head.find((node) => node.hasAttribute('data-sf-icons-fallback')));
+
+    // The grown answer holds both: it takes over and the full font leaves.
+    page.answer(page.requests[1]);
+    await sleep(30);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 1);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+    assert.ok(page.events.some((event) => event.type === 'sf-icons-subset:ready' && event.detail.background && event.detail.icons.has('view_list')));
+  } finally {
+    page.restore();
+  }
+});
+
+test('R074: a background request outrun by a newer answer is aborted and changes nothing', async () => {
+  const page = subsetPage();
+  try {
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 20;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    await loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    loader.uniqueIcons.set('search', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    await loader.loadIconSubsetFamily(outlinedRequest(['menu', 'search']));
+    page.answer(page.requests[1]);
+    await sleep(30);
+    assert.equal(page.requests[0].options.signal.aborted, true);
+    const subsets = page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family'));
+    assert.equal(subsets.length, 1);
+    assert.equal(subsets[0].getAttribute('data-sf-icons-subset'), 'menu,search');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+  } finally {
+    page.restore();
+  }
+});
+
+test('D2: a Smart tag whose module failed to load lets the first request go at once, not at the cap', async () => {
+  const {installPendingTags} = await import('../src/core/js/pending-tags.js');
+  await withHeldTags(async ({listeners}) => {
+    const store = installPendingTags({customElements: globalThis.window.customElements});
+    globalThis.window.SF.__internal.pendingTags = store;
+    const loader = new TestLoader();
+    loader.eventSend = false;
+    const calls = [];
+    loader.syncStaticIconLoadedState = () => {};
+    loader.loadIconSubsetFamily = async (config) => { calls.push([...config.icons]); return true; };
+    store.hold('sf-tag', {asked: true});
+    loader.uniqueIcons.set('search', iconState());
+    const started = Date.now();
+    const first = loader.loadFonts();
+    loader.eventSend = true;
+    listeners.get('sf-loader-ready')();
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 30));
+    assert.deepEqual(calls, [], 'sf-tag still on the way holds the request');
+    assert.equal(store.fail('sf-tag'), true);
+    await first;
+    assert.deepEqual(calls, [['search']]);
+    assert.ok(Date.now() - started < 1000, `the request went ${Date.now() - started} ms after the start, not at the 8 s cap`);
+    assert.equal(store.hold('sf-tag', {asked: true}), false, 'a failed tag is not held again');
+    assert.deepEqual(store.asked(), []);
+  });
+});

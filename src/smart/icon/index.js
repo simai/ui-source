@@ -45,17 +45,17 @@ class SfIcon extends IconElement {
   constructor() {
     super();
 
-    this.onIconSubsetReady = (event) => {
-      const icon = this.getProp("icon");
-      const icons = event.detail?.icons || [];
-
-      const hasIcon =
-        icons instanceof Set
-          ? icons.has(icon)
-          : Array.isArray(icons) && icons.includes(icon);
-      // The local full font (icons.enabled = false) draws every icon at once.
-      if (icon && !hasIcon && !event.detail?.all) return;
-
+    // Every subset answer, not only one that names this icon: an icon can
+    // become drawable under an answer that does not name it -- a manifest
+    // that already held it, its filled or weighted form loaded in a batch
+    // named before the form was added, the full font taking over -- and it
+    // then stayed at font-size 0 until something touched it (R074). The
+    // check is a lookup in the Loader's sets.
+    this.onIconSubsetReady = () => this.syncLoadedState();
+    // An icon connected before the Loader existed asked it for nothing; it
+    // asks, and checks again, once the Loader is ready.
+    this.onLoaderReady = () => {
+      this.requestIconLoad();
       this.syncLoadedState();
     };
   }
@@ -72,12 +72,14 @@ class SfIcon extends IconElement {
     }
     super.connectedCallback();
     window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
+    window.addEventListener("sf-loader-ready", this.onLoaderReady);
     this.requestIconLoad();
     this.syncLoadedState();
   }
 
   disconnectedCallback() {
     window.removeEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
+    window.removeEventListener("sf-loader-ready", this.onLoaderReady);
     super.disconnectedCallback();
   }
 

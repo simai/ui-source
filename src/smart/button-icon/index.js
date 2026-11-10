@@ -3,7 +3,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderIconButtonTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
-import { cycleState, hasCycle, parseCycle, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
+import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
 import { noteDeprecated } from '../../core/js/deprecations';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -168,6 +168,8 @@ class SfIconButton extends IconButtonElement {
     if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
+    // The icons a press can show, asked for before the press (R074).
+    preloadSwitchIcons(this, {icons: [this.getAttribute('icon')], filled: Boolean(this.filled)});
 
     return this.createTemplateContext({
       ...props,
