@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.space",
   "kind": "tokens",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "summary": "The space ladder and the controls' inline and block spacing.",
   "includes": [
