@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C40 — sf-time, sf-change, .sf-list-heading, sf-list-timeline 1.1</title>
+<!--
+  Owner decision C40 (2026-11-09; ui-control control/research/
+  2026-11-09-timeline-parts.md, prototypes/timeline-parts.html and
+  list-timeline.html#r092): the new parts drawn by the real Framework over
+  the Loader, with the examples' data. ?theme=dark, ?density=compact.
+  Served by tests/browser/c40-timeline-parts-lab.browser.mjs with the build
+  at /distr/. Generated from the components' examples.json.
+-->
+<script>
+(function () {
+  var query = new URLSearchParams(location.search);
+  var root = document.documentElement;
+  if (query.get('theme') === 'dark') { root.classList.remove('theme-light'); root.classList.add('theme-dark'); }
+  if (query.get('density') === 'compact') root.setAttribute('data-sf-density', 'compact');
+  window.sfPath = '/distr/';
+  window.sfSmartPath = '/distr/';
+  window.__events = [];
+  ['sf-list-timeline-expand', 'sf-list-timeline-load-more', 'sf-list-timeline-navigate'].forEach(function (name) {
+    document.addEventListener(name, function (event) { window.__events.push({name: name, from: event.target.id, detail: event.detail}); });
+  });
+})();
+</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--sf-surface-1); color: var(--sf-on-surface); font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1); line-height: var(--sf-text-height-1); }
+  main { max-inline-size: var(--sf-i0); margin: 0 auto; padding: var(--sf-space-2); }
+  h1 { margin: 0 0 var(--sf-space-1); font-size: var(--sf-text-size-3); line-height: var(--sf-text-height-3); font-weight: var(--sf-font-weight-medium); }
+  h2 { margin: 0 0 var(--sf-space-1\/2); font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); font-weight: var(--sf-font-weight-medium); }
+  section { margin: 0 0 var(--sf-space-3); }
+  .lab-p { margin: 0 0 var(--sf-space-1\/2); }
+  .stage { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--sf-space-2); align-items: start; }
+  .stage > * { min-inline-size: 0; }
+  .card { padding: var(--sf-space-1); border-radius: var(--sf-radius--surface); background: var(--sf-surface-card, var(--sf-surface-2)); }
+  .scroller { max-block-size: var(--sf-g4); overflow: auto; }
+  @media (max-width: 60rem) { .stage { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 30rem) { main { padding: var(--sf-space-1); } }
+</style>
+</head>
+<body>
+<main>
+  <h1>C40: время, изменение, заголовок группы, хронология</h1>
+
+  <section id="s-time" aria-labelledby="h-time">
+    <h2 id="h-time">sf-time</h2>
+    <p class="lab-p" id="time-auto">Сейчас 15:00. Auto: <sf-time id="t-rel" datetime="2026-11-09T14:32:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time>,
+      <sf-time id="t-today" datetime="2026-11-09T09:12:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time>,
+      <sf-time id="t-yday" datetime="2026-11-08T19:40:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time>,
+      <sf-time id="t-year" datetime="2026-11-05T10:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time>,
+      <sf-time id="t-old" datetime="2025-12-30T10:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time>.</p>
+    <p class="lab-p"><button id="t-before" type="button">До</button> Изменено в <sf-time id="t-tip" format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>.</p>
+  </section>
+
+  <section id="s-change" aria-labelledby="h-change">
+    <h2 id="h-change">sf-change</h2>
+    <p class="lab-p" id="c-sentence">Анна Котова изменила статус <sf-change id="c-inline" label="Статус" before="Собран" after="Передан в доставку"></sf-change>.</p>
+    <p class="lab-p"><sf-change id="c-label" show-label label="Получатель" after="Ирина Котова"></sf-change></p>
+    <sf-change id="c-list" layout="list" changes='[{"label":"Вес","before":"4,2 кг","after":"4,6 кг"},{"label":"Габариты","before":"40×30×20","after":"45×30×25"},{"label":"Склад","before":"Москва-Север","after":"Москва-Юг"},{"label":"Комментарий","before":"Позвонить","after":""}]'></sf-change>
+    <p class="lab-p" id="c-long-line">Сергей Иванов изменил описание <sf-change id="c-long" label="Описание" before="Смартфон 6,1″, 128 ГБ, синий. Доставка за 2 дня, самовывоз из пункта выдачи на Тверской." after="Смартфон 6,1″, 256 ГБ, тёмно-синий. Доставка курьером на следующий день, оплата при получении."></sf-change></p>
+  </section>
+
+  <section id="s-heading" aria-labelledby="h-heading">
+    <h2 id="h-heading">.sf-list-heading</h2>
+    <div class="stage">
+      <div id="hd-plain">
+        <div class="sf-list-heading" role="heading" aria-level="3" id="hd-first">Сегодня <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime="2026-11-09T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
+        <p class="lab-p" id="hd-row-1">Первая строка группы</p>
+        <div class="sf-list-heading" role="heading" aria-level="3" id="hd-second">Вчера <sf-time class="sf-list-heading-date" format="date" tooltip="none" datetime="2026-11-08T00:00:00+03:00" now="2026-11-09T15:00:00+03:00"></sf-time></div>
+        <p class="lab-p" id="hd-row-2">Строка второй группы</p>
+        <div class="sf-list-heading sf-list-heading--divider" role="separator" aria-label="Вчера" id="hd-divider">Вчера</div>
+        <p class="lab-p">Сообщение после разделителя</p>
+      </div>
+      <div class="card scroller" id="hd-scroller">
+        <div class="sf-list-heading sf-list-heading--sticky" role="heading" aria-level="3" id="hd-sticky">Пятница</div>
+        <p class="lab-p">Строка 1</p>
+        <p class="lab-p">Строка 2</p>
+        <p class="lab-p">Строка 3</p>
+        <p class="lab-p">Строка 4</p>
+        <p class="lab-p">Строка 5</p>
+        <p class="lab-p">Строка 6</p>
+        <p class="lab-p">Строка 7</p>
+        <p class="lab-p">Строка 8</p>
+        <p class="lab-p">Строка 9</p>
+        <p class="lab-p">Строка 10</p>
+        <p class="lab-p">Строка 11</p>
+        <p class="lab-p">Строка 12</p>
+      </div>
+    </div>
+    <sf-list id="l-day"><script type="application/json" data-sf-settings>{"label":"Беседы","items":[{"id":"t1","text":"Возврат товара","supporting":"Ассистент: оформите заявку…","date":"2026-10-27T11:20:00+03:00"},{"id":"t2","text":"План на квартал","supporting":"Вы: пришлю завтра","date":"2026-10-27T09:05:00+03:00"},{"id":"t3","text":"Доступ к отчётам","date":"2026-10-26T18:40:00+03:00"},{"id":"t4","text":"Тарифы","date":"2026-10-23T10:00:00+03:00"}],"group-by":"day","actions":[{"id":"archive","text":"В архив","icon":"archive"}],"renamable":true}</script></sf-list>
+  </section>
+
+  <section id="s-timeline" aria-labelledby="h-timeline">
+    <h2 id="h-timeline">sf-list-timeline 1.1</h2>
+    <div class="stage">
+      <div class="card"><sf-list-timeline id="tl-ref"><script type="application/json" data-sf-settings>{"now":"2026-11-09T15:00:00+03:00","has-more":true,"items":[{"id":"comment","kind":"comment","icon":"chat_bubble","actor":{"name":"Анна Котова","hue":"teal"},"time":"2026-11-09T14:32:00+03:00","title":"оставила комментарий","text":"Клиент просит доставку после 18:00, договорились на пятницу. Курьеру позвонить за час."},{"id":"status","icon":"swap_horiz","actor":{"name":"Анна Котова","hue":"teal"},"time":"2026-11-09T14:30:00+03:00","title":"изменила статус","change":{"label":"Статус","before":"Собран","after":"Передан в доставку"}},{"id":"sms","kind":"sms","actor":{"name":"Робот","system":true},"time":"2026-11-09T14:30:00+03:00","title":"отправил SMS покупателю","text":"«Заказ 48 215 передан в СДЭК, трек 1 234 567 890»"},{"id":"edit-1","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:10:00+03:00","title":"изменил вес","change":{"label":"Вес","before":"4,2 кг","after":"4,6 кг"}},{"id":"edit-2","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:09:00+03:00","title":"изменил габариты","change":{"label":"Габариты","before":"40×30×20","after":"45×30×25"}},{"id":"edit-3","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:08:00+03:00","title":"изменил склад","change":{"label":"Склад","before":"Москва-Север","after":"Москва-Юг"}},{"id":"edit-4","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:07:00+03:00","title":"изменил получателя","change":{"label":"Получатель","before":null,"after":"Ирина Котова"}},{"id":"edit-5","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:06:00+03:00","title":"изменил телефон","change":{"label":"Телефон","before":"+7 900 000-00-00","after":"+7 900 111-22-33"}},{"id":"edit-6","icon":"edit","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-09T12:05:00+03:00","title":"изменил комментарий курьеру","change":{"label":"Комментарий курьеру","before":null,"after":"Позвонить за час"}},{"id":"charge","icon":"error","status":"error","actor":{"name":"Робот","system":true},"time":"2026-11-09T09:12:00+03:00","title":"не смог списать доплату","text":"Карта •• 4417: недостаточно средств. Покупателю отправлена ссылка на оплату."},{"id":"sum","icon":"payments","actor":{"name":"Сергей Иванов","hue":"indigo"},"time":"2026-11-08T19:40:00+03:00","title":"изменил сумму","change":{"label":"Сумма","before":"24 900 ₽","after":"23 400 ₽"},"text":"Скидка по промокоду НОЯБРЬ"},{"id":"paid","icon":"credit_card","status":"success","actor":{"name":"Мария Лебедева","hue":"pink"},"time":"2026-11-08T18:07:00+03:00","title":"оплатила картой","text":"23 400 ₽, Мир •• 4417"},{"id":"created","icon":"add_circle","actor":{"name":"Мария Лебедева","hue":"pink"},"time":"2026-11-08T18:05:00+03:00","title":"оформила заказ на сайте","text":"3 товара, доставка курьером"}]}</script></sf-list-timeline></div>
+      <div>
+        <div class="card"><sf-list-timeline id="tl-steps"><script type="application/json" data-sf-settings>{"now":"2026-11-09T15:00:00+03:00","group":"none","time-format":"exact","label":"Этапы заказа","items":[{"id":"s1","state":"done","icon":"check","title":"Оформлен","time":"2026-11-08T18:05:00+03:00"},{"id":"s2","state":"done","icon":"check","title":"Оплачен","text":"23 400 ₽ картой","time":"2026-11-08T18:07:00+03:00"},{"id":"s3","state":"done","icon":"check","title":"Собран на складе","time":"2026-11-09T11:20:00+03:00"},{"id":"s4","state":"current","icon":"local_shipping","title":"В пути","text":"Сортировочный центр СДЭК, Подольск","time":"2026-11-09T14:30:00+03:00"},{"id":"s5","state":"upcoming","icon":"home","title":"Доставлен","text":"Курьер, 13 ноября после 18:00"}]}</script></sf-list-timeline></div>
+        <div class="card"><sf-list-timeline id="tl-side"><script type="application/json" data-sf-settings>{"size":"1/2","time-format":"exact","now":"2026-10-27T12:00:00+03:00","items":[{"id":"a","time":"2026-10-27T11:58:00+03:00","status":"success","title":"Копия создана","text":"1,2 ГБ, хранится 30 дней — полный текст в одну строку"},{"id":"b","time":"2026-10-27T11:20:00+03:00","status":"error","title":"Сайт не отвечал"},{"id":"c","time":"2026-10-26T18:40:00+03:00","title":"Задание поставлено в очередь"}]}</script></sf-list-timeline></div>
+        <div class="card"><sf-list-timeline id="tl-empty"><script type="application/json" data-sf-settings>{"items":[]}</script></sf-list-timeline></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-confirm" aria-labelledby="h-confirm">
+    <h2 id="h-confirm">sf-confirm-change на sf-change</h2>
+    <sf-confirm-change id="cc"><script type="application/json" data-sf-settings>{"heading":"Переименовать раздел","change-id":"c1","changes":[{"label":"Название","before":"Новости","after":"События"},{"label":"Адрес","before":"/news/","after":"/events/"}]}</script></sf-confirm-change>
+  </section>
+</main>
+</body>
+</html>
