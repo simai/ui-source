@@ -80,7 +80,10 @@ stores what a person snoozed or dismissed.
 - `size` — deprecated until 2027-01-01 (change journal
   `attribute-list-attention-size-to-density`). Until then `size="1/2"` still
   draws the list compact, is noted in `SF.deprecations` and said once in the
-  console; write `data-sf-density="compact"` instead.
+  console (one warning: `SF.deprecations` prints it where the page asked for
+  its warnings, the list otherwise); write `data-sf-density="compact"`
+  instead. Removing `size="1"`: inside a compact region the list becomes
+  compact; `data-sf-density="normal"` keeps it normal.
 
 Host states: `data-status` (the most serious status shown) and `data-empty`.
 
