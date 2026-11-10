@@ -254,11 +254,6 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   handleThemeChange = () => this.syncThemePreference();
 
   templateContext() {
-    const entries = this.normalizedItems;
-    // Every item's icon, asked for when the group is drawn, as a cycle's are
-    // (R074): a segment drawn later (out of loading, items set afresh) finds
-    // its glyph in the page's font instead of asking for a grown one.
-    preloadControlIcons(this, entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
     return this.createTemplateContext({
       ...this.getPropsContext(),
       ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? this.sfWord('group') : ''),
@@ -266,7 +261,7 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
       component: this,
       // The entries drawn: normalised, numbered and flagged; items stays the
       // setting as given (the template-context probe compares the two).
-      entries,
+      entries: this.normalizedItems,
       value: this.value,
       disabled: this.disabled,
       // The host is the form control where the browser has ElementInternals;
@@ -276,7 +271,12 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   template() {
-    return renderButtonGroupTemplate(this.templateContext());
+    const context = this.templateContext();
+    // Every item's icon, asked for when the group is drawn, as a cycle's are
+    // (R074): a segment drawn later (out of loading, items set afresh) finds
+    // its glyph in the page's font instead of asking for a grown one.
+    preloadControlIcons(this, context.entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
+    return renderButtonGroupTemplate(context);
   }
 
   // Every form value control reports a committed change as `change` on its

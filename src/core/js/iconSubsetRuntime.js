@@ -1522,10 +1522,10 @@ export function installIconSubsetRuntime(
       document.head.appendChild(style);
       // The face is asked for at once: an icon at font-size 0 may not make
       // the browser fetch it.
-      const fallbackFamily = iconFallbackFontFiles[type]?.family;
-      if (fallbackFamily && icons.length) {
+      const family = iconFallbackFontFiles[type]?.family;
+      if (family && icons.length) {
         document.fonts
-          ?.load?.(`400 16px "${fallbackFamily}"`, icons.join(" "))
+          ?.load?.(`400 16px "${family}"`, icons.join(" "))
           ?.catch?.(() => {});
       }
     }

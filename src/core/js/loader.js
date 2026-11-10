@@ -4633,7 +4633,7 @@ SFLoaderPlugin.prototype.addToMissingFiles = function (
   }
   if (type === 'js') {
     // The rule's tags will not be defined: nothing waits for them (D2).
-    const pending = window.SF?.__internal?.pendingTags;
+    const pending = globalThis.window?.SF?.__internal?.pendingTags;
     const tags = this.findPlugins?.[pluginName]?.tags;
     if (pending?.fail && Array.isArray(tags)) tags.forEach((tag) => pending.fail(tag));
   }
