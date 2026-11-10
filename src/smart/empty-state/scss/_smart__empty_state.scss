@@ -65,9 +65,11 @@ sf-empty-state {
 .sf-empty-state--size-2 .sf-empty-state-title {
   /* Rung 3, the step the heading-4 role held before the content heading
      ladder moved it to the body size (R022); a state's title is not a
-     content sub-heading. */
-  font-size: var(--sf-text--size-3);
-  line-height: var(--sf-title--height-3);
+     content sub-heading. Read through the heading-3 step, whose size is
+     that rung: a heading does not follow density (C44), and the text step
+     itself moves in a compact region. */
+  font-size: var(--sf-heading-3--size);
+  line-height: var(--sf-heading-3--height);
 }
 
 .sf-empty-state--size-2 .sf-empty-state-text {
