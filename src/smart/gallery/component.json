@@ -2,7 +2,7 @@
   "$comment": "The source of sf-gallery's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/gallery (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.gallery",
   "tag": "sf-gallery",
-  "version": "1.1.12",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "gallery",
   "settings": {
@@ -73,8 +73,8 @@
     },
     "dots-type": {
       "type": "string",
-      "default": "primary-dark",
-      "summary": "Passed to the gallery's sliders (sf-slider): the dots' colours: primary-dark (the default), primary-light, light, dark."
+      "default": "primary-container",
+      "summary": "Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
     },
     "dots-size": {
       "type": "string",
@@ -490,6 +490,56 @@
         "mode": "retired",
         "section": "§4.4",
         "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "primary-dark",
+        "to": "primary-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "primary-light",
+        "to": "primary",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "light",
+        "to": "surface-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "clear",
+        "to": "surface-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "dark",
+        "to": "surface-inverse",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
       }
     ]
   },
@@ -535,7 +585,7 @@
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.1.8: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; the slider and the window it draws are asked for through SF.Loader.ensure (A-18) instead of a bare whenDefined wait, with no timeout as before.",
     "version 1.1.11: its frameless surface asks for shadow-flat, the place name of shadow-0 (C20, the shadow system, owner 2026-11-08); it draws the same. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, open({index}), toggle({index}), goTo({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, open(<number>), toggle(<number>), goTo(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
-    "version 1.1.12 (2026-11-10, docs precheck smart content GA-04): a patch. Every setting has its summary. space-between has no default of its own: unset, the sliders keep their --sf-space-1 gap (the manifest said 12, a raw pixel number the gallery never sent). dots-type's words are sf-slider's; their rename is a proposal for that axis. Settings, values, events and keys unchanged."
+    "version 1.2.0 (2026-11-10, docs precheck smart content GA-04, Q4): a minor. dots-type takes sf-slider 1.2.0's role words (primary-container, the default, primary, surface-container, surface-inverse); the former words are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles). Also: Every setting has its summary. space-between has no default of its own: unset, the sliders keep their --sf-space-1 gap (the manifest said 12, a raw pixel number the gallery never sent). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "regex": "/data-sf-gallery(?:\\s|=|>|$)/"

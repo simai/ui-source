@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.12",
+  "version": "1.2.0",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -110,8 +110,8 @@
       },
       "dots-type": {
         "type": "string",
-        "default": "primary-dark",
-        "description": "Passed to the gallery's sliders (sf-slider): the dots' colours: primary-dark (the default), primary-light, light, dark."
+        "default": "primary-container",
+        "description": "Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
       },
       "dots-size": {
         "type": "string",
@@ -660,7 +660,13 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "dots-type=primary-dark",
+      "dots-type=primary-light",
+      "dots-type=light",
+      "dots-type=clear",
+      "dots-type=dark"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []

@@ -10102,6 +10102,74 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-slider-dots-type-to-roles",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-slider 1.2.0 and sf-gallery 1.2.0 name the dots' plate by its colour role (docs precheck Q4): dots-type=\"primary-container|primary|surface-container|surface-inverse\", default primary-container. The former words draw as before with a console note until remove_after. The word primary, which drew as primary-dark, now names the primary plate (the look of primary-light); no page in ui-doc, larena-ui, ui-pro or ui-admin wrote it.",
+      "items": [
+        {
+          "component": "sf-slider",
+          "from": "dots-type=\"primary-dark\"",
+          "to": "dots-type=\"primary-container\""
+        },
+        {
+          "component": "sf-slider",
+          "from": "dots-type=\"primary-light\"",
+          "to": "dots-type=\"primary\""
+        },
+        {
+          "component": "sf-slider",
+          "from": "dots-type=\"light\"",
+          "to": "dots-type=\"surface-container\""
+        },
+        {
+          "component": "sf-slider",
+          "from": "dots-type=\"clear\"",
+          "to": "dots-type=\"surface-container\""
+        },
+        {
+          "component": "sf-slider",
+          "from": "dots-type=\"dark\"",
+          "to": "dots-type=\"surface-inverse\""
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type=\"primary-dark\"",
+          "to": "dots-type=\"primary-container\""
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type=\"primary-light\"",
+          "to": "dots-type=\"primary\""
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type=\"light\"",
+          "to": "dots-type=\"surface-container\""
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type=\"clear\"",
+          "to": "dots-type=\"surface-container\""
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type=\"dark\"",
+          "to": "dots-type=\"surface-inverse\""
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-slider dots dots-type=\"primary-light\"></sf-slider>",
+        "after": "<sf-slider dots dots-type=\"primary\"></sf-slider>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/slider/js/templates/default.js"
     }
   ]
 }
