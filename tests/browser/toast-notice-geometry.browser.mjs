@@ -114,7 +114,7 @@ const MEASURE = () => {
       top: toastBox.top + parseFloat(style.borderTopWidth), bottom: toastBox.bottom - parseFloat(style.borderBottomWidth)};
     const title = root.querySelector('.sf-toast-text');
     const text = root.querySelector('.sf-toast-supporting-text');
-    const icon = root.querySelector(':scope > .sf-icon');
+    const icon = root.querySelector(':scope > .sf-icon, :scope > sf-icon > .sf-icon');
     const close = root.querySelector(':scope > .sf-icon-button');
     const cross = close?.querySelector('.sf-close-icon');
     const actions = [...root.querySelectorAll('.sf-toast-bottom .sf-button')];

@@ -157,7 +157,7 @@ const MEASURE = (levels) => {
     seen[root.dataset.k] = {
       level: root.dataset.level,
       tone: token(root.dataset.level === 'neutral' ? '--sf-on-surface-variant' : `--sf-${root.dataset.level}`, root),
-      own: colour(root.querySelector(':scope > .sf-icon')),
+      own: colour(root.querySelector(':scope > .sf-icon, :scope > sf-icon > .sf-icon')),
       cross: root.querySelector(':scope > .sf-icon-button .sf-close-icon') ? hex(rgba(getComputedStyle(root.querySelector(':scope > .sf-icon-button .sf-close-icon')).backgroundColor)) : null,
       text: colour(root.querySelector('.sf-alert-text, .sf-toast-text')),
       buttons: buttons(root),
