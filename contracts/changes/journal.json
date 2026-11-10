@@ -9238,6 +9238,55 @@
         "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
       },
       "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
+    },
+    {
+      "id": "utility-c20-elevation-former",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The elevation classes are former names (C20 follow-up, dispatcher 2026-11-10): elevation-0..5 set a surface, a shadow and the dim ink at once, and the shadow system names the place instead. Each class is two classes now, the surface of its place and the shadow of its place: 0 is bg-surface-page shadow-flat, 1 bg-surface-card shadow-raised, 2 and 3 bg-surface-popup shadow-overlay, 4 and 5 bg-surface-popup-nested shadow-modal. The pair draws the same background and the same shadow and sets the same dim ink (--sf-on-surface-variant; bg-surface-page sets the theme's, where elevation-0 set none); a bg-surface-* class is also a place (C16), so it takes the theme's roles back inside a coloured block where elevation-N did not. Until remove_after each elevation-N class keeps drawing as it does.",
+      "items": [
+        {
+          "from": "elevation-0",
+          "to": "bg-surface-page shadow-flat",
+          "match": "(?<![a-z0-9:-])elevation-0(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-1",
+          "to": "bg-surface-card shadow-raised",
+          "match": "(?<![a-z0-9:-])elevation-1(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-2",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-2(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-3",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-3(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-4",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-4(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-5",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-5(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the class with the two classes of its place: elevation-0 with bg-surface-page shadow-flat, elevation-1 with bg-surface-card shadow-raised, elevation-2 and elevation-3 with bg-surface-popup shadow-overlay, elevation-4 and elevation-5 with bg-surface-popup-nested shadow-modal. In a class attribute this is a plain replacement; where code adds the class (classList.add('elevation-3')) add both names. A component's own stylesheet reads the roles instead: background-color: var(--sf-surface-popup); box-shadow: var(--sf-shadow-overlay).",
+      "examples": {
+        "before": "<div class=\"p-4 radius-3 elevation-3\">",
+        "after": "<div class=\"p-4 radius-3 bg-surface-popup shadow-overlay\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/elevation, src/utility/background-color, src/utility/box-shadow"
     }
   ]
 }

@@ -23,6 +23,12 @@
 // 2027-01-01. Each class keeps the surface of its level and takes the shadow
 // of its place: 1 is raised (a card's surface), 2 and 3 overlay (a popup's),
 // 4 and 5 modal (a nested popup's, the lightest step).
+//
+// The classes themselves are former names until 2027-01-01 (journal
+// utility-c20-elevation-former, 2026-11-10): write the place's two classes,
+// bg-surface-page shadow-flat (0), bg-surface-card shadow-raised (1),
+// bg-surface-popup shadow-overlay (2, 3), bg-surface-popup-nested
+// shadow-modal (4, 5). They draw the same until the class is removed.
 $elevation-places: (
     1: ('surface-card', 'shadow-raised', 'on-surface-card-variant'),
     2: ('surface-popup', 'shadow-overlay', 'on-surface-popup-variant'),
