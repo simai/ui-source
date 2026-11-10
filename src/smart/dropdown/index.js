@@ -19,11 +19,36 @@ import ru from './lang/ru.json';
 // names -- type, sf-dropdown:change -- are dated aliases. It still submits
 // through its hidden input (§16 item 11); the manifest keeps the form contract
 // as x-form until the field family's ElementInternals mixin takes it.
+// The actions (§4.4) answer an outcome: the list opens or closes, or the
+// call is refused with its reason. They returned the element until 1.9.0,
+// which shadowed the generated methods (docs pre-review 2026-11-10, GS-F7).
+const actions = {
+  'open-dropdown'() {
+    if (this.disabled) return 'inactive';
+    if (this._open) return 'unchanged';
+    this._open = true;
+    this.requestComponentUpdate('open');
+    return 'applied';
+  },
+  'close-dropdown'() {
+    if (!this._open) return 'unchanged';
+    this._interaction?.beforeClose();
+    this._open = false;
+    this._searchValue = '';
+    this.requestComponentUpdate('close');
+    return 'applied';
+  },
+  'toggle-dropdown'() {
+    return this._open ? this.closeDropdown() : this.openDropdown();
+  },
+};
+
 const DropdownElement = elementFromManifest(manifest, {
   base: InheritedValueField(SfBaseElement),
   lang: { en, ru },
   source: 'ru',
   aliases,
+  actions,
 });
 
 function normalizeSize(value) {
@@ -533,30 +558,6 @@ class SfDropdown extends DropdownElement {
     this.removeDocumentListeners();
     this.removePortalListeners();
     super.onDisconnected();
-  }
-
-  openDropdown() {
-    if (this.disabled || this._open) return this;
-    this._open = true;
-    this.requestComponentUpdate('open');
-    return this;
-  }
-
-  closeDropdown() {
-    if (!this._open) return this;
-    this._interaction?.beforeClose();
-    this._open = false;
-    this._searchValue = '';
-    this.requestComponentUpdate('close');
-    return this;
-  }
-
-  toggleDropdown() {
-    if (this._open) {
-      return this.closeDropdown();
-    }
-
-    return this.openDropdown();
   }
 
   handleTriggerClick(event) {

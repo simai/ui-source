@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -210,7 +210,7 @@
   },
   "methods": {
     "openDropdown": {
-      "summary": "Opens the option list unless the control is disabled or already open. Answers the outcome (§4.4).",
+      "summary": "Opens the option list. Answers the outcome (§4.4): applied, or refused (inactive) when the control is disabled and (unchanged) when the list is already open.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -218,7 +218,7 @@
       }
     },
     "closeDropdown": {
-      "summary": "Closes the option list and clears the search text. Answers the outcome (§4.4).",
+      "summary": "Closes the option list and clears the search text. Answers the outcome (§4.4): applied, or refused (unchanged) when the list is already closed.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -226,7 +226,7 @@
       }
     },
     "toggleDropdown": {
-      "summary": "Closes the list when open, opens it otherwise. Answers the outcome (§4.4).",
+      "summary": "Closes the list when open, opens it otherwise. Answers the outcome of the close or the open (§4.4).",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -452,7 +452,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "b94c84190aa7f8e774603a526c8e8d0a76286010ad3a67b86d0a0127239ca445"
+        "sha256": "36641aa9cf1206335a2b8fa5572e96baf801642a00ffe332afc6d7bee84030bb"
       },
       {
         "path": "src/smart/dropdown/rule.js",
