@@ -60,6 +60,9 @@ class IconButtons extends ComponentObserver {
     }
     if (disabled) {
       this.button.disabled = true;
+      // Loading keeps the scheme colour (C36 follow-up); disabled and loading
+      // wears the disabled look.
+      if (loading) this.button.classList.add('disabled');
     }
     if (className) {
       this.button.classList.add(...`${className}`.split(' ').filter(Boolean));

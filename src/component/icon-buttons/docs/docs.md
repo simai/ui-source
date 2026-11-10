@@ -53,8 +53,16 @@ uses `loading sf-icon-button-state-loading`, `aria-busy="true"`, and native
 `disabled`, preventing duplicate activation. A loading icon button shows the
 spinner in place of its icon, at the icon's size (an element with
 `sf-loader-container sf-loader--infinite sf-icon-button-spinner`; the
-constructor draws it), in the disabled ink unless `--sf-loader--color` is set,
-and a still arc under reduced motion. The stripes are gone;
+constructor draws it), and a still arc under reduced motion. A loading icon
+button keeps its scheme colour (1.5.1, the C36 follow-up): the disabled look's
+rules skip `sf-icon-button-state-loading`, so the fill, the edge and the icon
+colour are the resting button's, and the spinner takes the icon colour unless
+`--sf-loader--color` is set; its background ring is that colour at 16 % (the
+fill family of the alpha scale; `--sf-spinner-track-color` wins). A button that
+is disabled and loading at once adds `.disabled` and wears the disabled look,
+the spinner in the disabled ink; the constructor does that for `loading` with
+`disabled`. Markup with the bare `loading` class and no state class keeps the
+disabled look. Tonal danger greys when disabled, as every other look does. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with

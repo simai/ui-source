@@ -239,6 +239,9 @@ class SfIconButton extends IconButtonElement {
 
     if (changedAttributes.includes('disabled')) {
       button.disabled = this.disabled || this.loading;
+      // A loading one that is disabled as well wears the disabled look (C36
+      // follow-up); the template writes the same class.
+      if (this.loading) button.classList.toggle('disabled', Boolean(this.disabled));
     }
 
     if (changedAttributes.includes('aria-label')) {
