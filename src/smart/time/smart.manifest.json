@@ -203,7 +203,7 @@
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",
-        "sha256": "533f42bbd7484a9961663c9a1235edb76ce045559296c3772596ef642549cf37"
+        "sha256": "c9f0daea6c5d6b6205db04bcf818036a6302e25df7499c143d15ac4add6d5db4"
       },
       {
         "path": "src/smart/time/rule.js",
@@ -211,7 +211,7 @@
       },
       {
         "path": "src/smart/time/docs.md",
-        "sha256": "cbe3c0ac30987f12b6d2e7da38ca8d9b289e73e119ab1a3e37ccf91d1b87a06c"
+        "sha256": "66d9335d1d35e5b348e2735ea57aae22904569381db4064e50e096b5afbf7f91"
       }
     ],
     "generated_runtime": []

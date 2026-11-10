@@ -124,8 +124,8 @@ sf-change[data-block] {
 }
 
 .sf-change__toggle:focus-visible {
-  outline: calc(var(--sf-px) * 2) solid var(--sf-primary);
-  outline-offset: calc(var(--sf-px) * 2);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
 }
 
 .sf-change__toggle-icon {

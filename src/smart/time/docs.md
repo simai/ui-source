@@ -70,7 +70,7 @@
 | Переменная | По умолчанию | Что задаёт |
 | --- | --- | --- |
 | `--sf-time-color` | наследуется | цвет текста |
-| `--sf-time-focus-ring-color` | `--sf-primary` | кольцо фокуса |
+| `--sf-time-focus-ring-color` | `--sf-focus` | кольцо фокуса (толщина, стиль и отступ — общие токены фокуса) |
 | `--sf-time-radius` | `--sf-radius--ui` | скругление кольца |
 | `--sf-time-font-variant-numeric` | `tabular-nums` | цифры |
 | `--sf-time-white-space` | `nowrap` | перенос |

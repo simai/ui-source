@@ -37,8 +37,9 @@ sf-time {
 }
 
 .sf-time:focus-visible {
-  outline: calc(var(--sf-px) * 2) solid var(--sf-time-focus-ring-color, var(--sf-primary));
-  outline-offset: var(--sf-px);
+  --sf-focus--color: var(--sf-time-focus-ring-color, var(--sf-focus));
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
 }
 
 /* The full moment stays on one line; the tooltip's own sheet draws the rest. */

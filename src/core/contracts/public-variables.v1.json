@@ -4516,7 +4516,7 @@
           "name": "--sf-time-focus-ring-color",
           "role": "ring-color",
           "summary": "The keyboard focus ring of a time with a tooltip.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-focus)",
           "since": "2026-11-10"
         },
         {
