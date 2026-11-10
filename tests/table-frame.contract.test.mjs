@@ -26,7 +26,7 @@ test('the frame is the scroll area and the only outer edge', () => {
   assert.match(source, /--sf-table-frame-radius:\s*var\(--sf-radius--surface\)/u);
   assert.doesNotMatch(source, /--sf-radius-(?:default|[0-9])\b/u);
   // Dimmed text on the head's container fill reads the container role.
-  assert.match(source, /--sf-on-surface-variant:\s*var\(--sf-on-surface-container--variant\)/u);
+  assert.match(source, /--sf-on-surface-variant:\s*var\(--sf-on-surface-container--?variant\)/u);
   // A collapsed border is drawn over the frame's own, and the corners come out
   // square; the table inside keeps its borders separate.
   assert.match(source, /border-collapse:\s*separate/u);

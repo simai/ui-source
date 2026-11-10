@@ -19,7 +19,7 @@ for (const name of ['button', 'button-icon']) {
 for (const name of ['segmented']) {
   const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
   const body = source.match(/  templateContext\(\) \{([\s\S]*?)\n  \}/)[1];
-  const context = new Function('resolveControlSpacing', body);
+  const context = new Function('resolveControlSpacing', 'groupHeight = () => "default"', body);
   test(`${name}: actual template context follows canonical priority through updates and removal`, () => {
     const attributes = new Map([['tightness', 'low']]);
     const element = {

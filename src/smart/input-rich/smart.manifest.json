@@ -336,7 +336,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "6df62217a43d0affa58f62436708f2d036a1dc9da503726c20abfa889b3cf6d0"
+        "sha256": "ec7738fa5fbf0380161ed38d3e12e443b3244c5bf69a4a78c9cdbbca9f6487d5"
       },
       {
         "path": "src/smart/input-rich/rule.js",
