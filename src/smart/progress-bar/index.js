@@ -194,6 +194,7 @@ class SfProgressBar extends ProgressBarElement {
       label: this.accessibleLabel,
       valueText: this.spokenValueText,
       indeterminate: Boolean(this.indeterminate),
+      paused: Boolean(this.paused),
     });
   }
 

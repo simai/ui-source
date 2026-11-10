@@ -19,6 +19,20 @@ test('Progress Bar normalizes value, size, position and semantic tone', async ()
   assert.doesNotMatch(template, /tabindex=/);
 });
 
+test('Progress Bar 1.3.1: a paused indeterminate bar stands still; a status change leaves no neutral class', async () => {
+  const ordinary = await read('src/component/progress-bar/js/_progressbar.js');
+  const template = await read('src/smart/progress-bar/js/templates/default.js');
+  const styles = await read('src/component/progress-bar/scss/_css__progressbar_custom.scss');
+
+  // C34 acceptance D2: pause means time stands still.
+  assert.match(template, /paused \? 'sf-progress-bar--paused' : ''/);
+  assert.match(template, /data-paused=\$\{paused \? 'true' : nothing\}/);
+  assert.match(ordinary, /root\.classList\.toggle\('sf-progress-bar--paused', Boolean\(state\.paused\)\)/);
+  assert.match(styles, /\.sf-progress-bar--indeterminate\.sf-progress-bar--paused \.sf-progress-bar-progress \{\s*animation: none;/);
+  // I2: the template's neutral class goes with any status change.
+  assert.match(ordinary, /if \(tone\) root\.classList\.remove\('sf-progress-bar--neutral'\)/);
+});
+
 test('Progress Scale preserves exact value while rounding visual segments only', async () => {
   const ordinary = await read('src/component/progress-scale/js/_progress_scale.js');
   const template = await read('src/smart/progress-scale/js/templates/default.js');

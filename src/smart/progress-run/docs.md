@@ -203,10 +203,17 @@ never each percent; the figures and the time are not live. The overall bar
 is `sf-progress-bar` named by the label; indeterminate, it says no value;
 paused, its value text says so. The error count is a link to the error list.
 The output toggle has `aria-expanded` and `aria-controls`; the output is a
-log (not live) a keyboard can scroll. Nothing takes focus by itself.
+log (not live) a keyboard can scroll. Nothing takes focus by itself; when
+the host answers a press by swapping the run's buttons (Pause for Continue,
+Minimize for the notice's Expand), focus moves to the button that took the
+pressed one's place, so the next key goes on from there.
 
 ## Changes
 
+- 1.3.1 (2026-11-10) — focus stays on the run's buttons when it swaps them
+  (Pause ↔ Continue, Minimize ↔ Expand); a run of unknown size with no count
+  shows no bare «0»; the running examples start when the page loads; in
+  compact density the result line is regular weight, only the title bold.
 - 1.3.0 (2026-11-10) — decision C34: `look` full|compact|notice, `value` /
   `total` / `unit` on the run and on each step, the time left, `run-state`
   paused and partial, `counters`, `errors` and `errors-total`, `retry`
