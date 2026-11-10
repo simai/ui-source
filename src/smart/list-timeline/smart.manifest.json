@@ -77,7 +77,7 @@
       "time-format": {
         "type": "string",
         "default": "auto",
-        "description": "auto (1.1): sf-time auto -- under a day heading the time («14:32»), within its threshold relative («5 минут назад»); ungrouped, auto in full («вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment",
+        "description": "auto (1.1): sf-time auto -- under a day heading always the clock time («14:32»), the first hour too, since the heading names the day; ungrouped, auto in full («5 минут назад» within its threshold, «вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment",
         "enum": [
           "auto",
           "relative",
@@ -92,7 +92,7 @@
       "collapse": {
         "type": "integer",
         "default": 5,
-        "description": "Consecutive events of one actor and one kind within a day longer than this fold whole into one «Ещё N» row, revealed in place on a press (the focus goes to the first revealed event, expand is said). 0 folds nothing",
+        "description": "Consecutive events of one actor and one kind within a day: a run longer than this keeps its first this-many events and folds the rest into one «Ещё N» row (a rest of one event is drawn), revealed in place on a press; events without an actor and steps make no run (the focus goes to the first revealed event, expand is said). 0 folds nothing",
         "minimum": 0
       },
       "sticky-headings": {
@@ -191,7 +191,7 @@
       }
     },
     "sf-list-timeline-expand": {
-      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the run's first event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it",
+      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the first folded event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it",
       "payload": {
         "type": "object",
         "required": [
@@ -318,11 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "17d0f0477c1a2268e59733def2c07068e4453281e80929e6c962ddad1f5b2dc7"
+        "sha256": "d8a248df6b9d8a5187e6aae10430d61aa69e3ade71507446bdd06543375aa198"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "91c290603381774026071d5fdb348c6465ce80c19af911dc97657204b27c93cb"
+        "sha256": "43c5389a69797ccb7921e34df9e5df8c285d8b6489869c47e0314fb0d633a0eb"
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
@@ -334,7 +334,7 @@
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "d0977a9c584a40d722ae0604fa6c406b4ec5e3b54919b2f64fa34d38d2f3731e"
+        "sha256": "0bb83589b39b7286dafac62e03b1bd1cd04a63906c3d26282bbeb0780b036dd0"
       }
     ],
     "generated_runtime": []

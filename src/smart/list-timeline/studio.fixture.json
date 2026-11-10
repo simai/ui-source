@@ -138,6 +138,36 @@
         }
       },
       {
+        "id": "edit-7",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:04:00+03:00",
+        "title": "изменил подъезд",
+        "change": {
+          "label": "Подъезд",
+          "before": "2",
+          "after": "3"
+        }
+      },
+      {
+        "id": "edit-8",
+        "icon": "edit",
+        "actor": {
+          "name": "Сергей Иванов",
+          "hue": "indigo"
+        },
+        "time": "2026-11-09T12:03:00+03:00",
+        "title": "изменил этаж",
+        "change": {
+          "label": "Этаж",
+          "before": "5",
+          "after": "7"
+        }
+      },
+      {
         "id": "charge",
         "icon": "error",
         "status": "error",

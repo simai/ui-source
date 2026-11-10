@@ -102,7 +102,7 @@ function run(context, day) {
     return html`<ol class=${classes} aria-label=${context.label || nothing}>${entries(context, day.entries)}</ol>`;
   }
   return html`<div class="sf-list-timeline-group">
-    <div class=${`sf-group-heading sf-list-timeline-day${context.sticky ? ' sf-group-heading--sticky' : ''}`}
+    <div class=${`sf-group-heading sf-list-timeline-day${context.size === '1' ? '' : ` sf-group-heading--size-${context.size}`}${context.sticky ? ' sf-group-heading--sticky' : ''}`}
       role="heading" aria-level=${String(context.level)} id=${day.id}>${day.day}${day.date
         ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${day.date}
             now=${context.now || nothing}></sf-time>` : nothing}</div>

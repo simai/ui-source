@@ -162,7 +162,7 @@
         "exact"
       ],
       "default": "auto",
-      "summary": "auto (1.1): sf-time auto -- under a day heading the time («14:32»), within its threshold relative («5 минут назад»); ungrouped, auto in full («вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment"
+      "summary": "auto (1.1): sf-time auto -- under a day heading always the clock time («14:32»), the first hour too, since the heading names the day; ungrouped, auto in full («5 минут назад» within its threshold, «вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment"
     },
     "now": {
       "type": "string",
@@ -174,7 +174,7 @@
       "integer": true,
       "min": 0,
       "default": 5,
-      "summary": "Consecutive events of one actor and one kind within a day longer than this fold whole into one «Ещё N» row, revealed in place on a press (the focus goes to the first revealed event, expand is said). 0 folds nothing"
+      "summary": "Consecutive events of one actor and one kind within a day: a run longer than this keeps its first this-many events and folds the rest into one «Ещё N» row (a rest of one event is drawn), revealed in place on a press; events without an actor and steps make no run (the focus goes to the first revealed event, expand is said). 0 folds nothing"
     },
     "sticky-headings": {
       "type": "boolean",
@@ -247,7 +247,7 @@
         "ids": "array",
         "count": "number"
       },
-      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the run's first event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it"
+      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the first folded event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it"
     }
   },
   "actions": {},
