@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output [--shots /absolute/dir]
 // sf-progress-run 1.3 (owner decision C34) on the built bytes, over the
-// docs-ready demo tests/browser/progress-run-looks.page.html, at 1440 and 390,
+// docs-ready demo tests/fixtures/progress-run-looks.page.html, at 1440 and 390,
 // light and dark, normal and compact density:
 //   - states and colours: each state's badge (activity or status) and bar status;
 //     partial is warning (never success), paused warning, cancelled neutral;
@@ -31,7 +31,7 @@ const shots = shotsAt > 0 ? resolve(process.argv[shotsAt + 1]) : '';
 if (shots) mkdirSync(shots, {recursive: true});
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 const here = dirname(fileURLToPath(import.meta.url));
-const demo = readFileSync(join(here, 'progress-run-looks.page.html'), 'utf8');
+const demo = readFileSync(join(here, '..', 'fixtures', 'progress-run-looks.page.html'), 'utf8');
 
 const types = {'.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.svg': 'image/svg+xml'};
 const server = createServer((request, response) => {
