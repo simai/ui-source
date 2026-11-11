@@ -208,11 +208,11 @@
       },
       {
         "path": "src/smart/change/js/templates/default.js",
-        "sha256": "8af687a441798db57567aa13b70268be9290565c7a5ca769007daa6cb3e063e0"
+        "sha256": "f00c6ea0fe851902d66172453bd612ff10acbcdd21c38e97fd2c251b5c3be38c"
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",
-        "sha256": "239cd974d4ceb09ca9e675898b697c53400385509560e3e42d357636d08ccbb3"
+        "sha256": "92fe03319a606b4abcea6428fdbd85e528a90ad217592adac519aee1477cbaef"
       },
       {
         "path": "src/smart/change/rule.js",
