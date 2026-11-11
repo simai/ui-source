@@ -20,7 +20,7 @@ import {
   stopPreloaderMotion,
 } from './preloader';
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
-import {installPendingTags} from './pending-tags.js';
+import {installPendingTags, PENDING_TAG_TIMEOUT_MS} from './pending-tags.js';
 import {noteDeprecated} from './deprecations.js';
 import {
   checkSetIndex,
@@ -2353,8 +2353,16 @@ SFLoaderPlugin.prototype.watchClosedContainer = function (container) {
 
 // The tag's elements stay invisible while its module is on the way, unless
 // they carry static markup or a skeleton shape (pending-tags.js).
+// The hold outlasts the script's own time limit: a script that never answers
+// is failed by the Loader (scriptFailed), which shows its elements and says
+// so once; the hold's own timeout is the backstop behind it, not a second
+// message ten seconds in.
 SFLoaderPlugin.prototype.holdSmartTag = function (tagName) {
-  installPendingTags(window).hold(tagName, {asked: true});
+  const limit = Number(this.scriptLoadTimeoutMs);
+  installPendingTags(window).hold(tagName, {
+    asked: true,
+    timeout: (limit > 0 && Number.isFinite(limit) ? limit : 0) + PENDING_TAG_TIMEOUT_MS,
+  });
 };
 
 SFLoaderPlugin.prototype.prepareSmartChildScanEvents = function () {
@@ -3338,13 +3346,16 @@ SFLoaderPlugin.prototype.loadRelationPlugins = function (
       skipJs,
       completed: {},
     };
-    // An element waits for its relations before its script runs, and it used
-    // to wait for them before its script was even asked for: the admin's
-    // table was fetched after its relations had run, and the data view after
-    // the table (2026-10-13). The browser is told about the script now; it
-    // still runs after the relations, from the cache.
-    if (!skipJs && jsFile) this.preloadScript(jsFile);
   }
+  // An element waits for its relations before its script runs, and it used
+  // to wait for them before its script was even asked for: the admin's
+  // table was fetched after its relations had run, and the data view after
+  // the table (2026-10-13). The browser is told about the script while the
+  // last relation loads (relationWaitNearlyDone; checkToFullRelationLoad
+  // when the others are in); it still runs after the relations, from the
+  // cache. Here, and not only when the wait was first recorded: a relation
+  // read before the element records the wait too (isRelationPlugin).
+  if (!skipJs && jsFile && this.relationWaitNearlyDone(name)) this.preloadScript(jsFile);
   if (this.totalRelationsPlugins[name].canLoad) {
     if (this.totalRelationsPlugins[name].skipJs || !jsFile) {
       if (!this.loadedPlugins[name]) {
@@ -3367,10 +3378,7 @@ SFLoaderPlugin.prototype.loadRelationPlugins = function (
               module,
           );
         })
-        .catch((e) => {
-          console.warn(e);
-          this.addToMissingFiles(name, 'js');
-        });
+        .catch((e) => this.scriptFailed(name, e));
   } else {
     this.relationPlugins[name].forEach((relationPlugin) => {
       if (!this.loadedPlugins[relationPlugin]) {
@@ -3630,6 +3638,11 @@ SFLoaderPlugin.prototype.checkToFullRelationLoad = function (
 
   this.totalRelationsPlugins[pluginName].completed[relationName] = true;
   this.totalRelationsPlugins[pluginName].load++;
+  const waiting = this.totalRelationsPlugins[pluginName];
+  if (!waiting.skipJs && waiting.jsFile && this.pendingLoadPlugins.has(pluginName)
+      && this.relationWaitNearlyDone(pluginName)) {
+    this.preloadScript(waiting.jsFile);
+  }
   if (
       this.totalRelationsPlugins[pluginName].load ===
       this.totalRelationsPlugins[pluginName].total
@@ -3655,10 +3668,7 @@ SFLoaderPlugin.prototype.checkToFullRelationLoad = function (
                 }
                 this.loadedPlugins[pluginName].js = true;
               })
-              .catch((e) => {
-                console.warn(e);
-                this.addToMissingFiles(pluginName, 'js');
-              });
+              .catch((e) => this.scriptFailed(pluginName, e));
     }
   }
 };
@@ -3693,10 +3703,7 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
           }
           this.loadedPlugins[pluginName].js = true;
         })
-        .catch((e) => {
-          console.warn(e);
-          this.addToMissingFiles(pluginName, 'js');
-        });
+        .catch((e) => this.scriptFailed(pluginName, e));
   } else {
     relationsMain.forEach((relationMainPlugin) => {
       if (!this.totalRelationsPlugins[relationMainPlugin]) {
@@ -3726,9 +3733,15 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
         };
         // The element that waits on this relation is fetched now too (the
         // same reason as in loadRelationPlugins: a data view waiting on its
-        // table was asked for only once the table had run).
+        // table was asked for only once the table had run) -- when the page
+        // has asked for it. Every rule that names the relation lands here,
+        // and those the page does not use were preloaded for nothing, each
+        // one a Chrome warning "preloaded but not used".
         const waiting = this.totalRelationsPlugins[relationMainPlugin];
-        if (!waiting.skipJs && waiting.jsFile) this.preloadScript(waiting.jsFile);
+        if (!waiting.skipJs && waiting.jsFile && this.pendingLoadPlugins.has(relationMainPlugin)
+            && this.relationWaitNearlyDone(relationMainPlugin)) {
+          this.preloadScript(waiting.jsFile);
+        }
       }
       if (skipJs || !jsFile) {
         if (!this.loadedPlugins[pluginName]) {
@@ -3767,9 +3780,8 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
             });
           })
           .catch((e) => {
-            console.warn(e);
             this.checkToFullRelationLoad(pluginName, relationMainPlugin);
-            this.addToMissingFiles(pluginName, 'js');
+            this.scriptFailed(pluginName, e);
           });
     });
   }
@@ -4643,6 +4655,40 @@ SFLoaderPlugin.prototype.addToMissingFiles = function (
   );
 };
 
+// A rule's script did not load. Refused (a 404, a network error; a module
+// that throws is not this, it loads): the file is missing, for this page and
+// the next (addToMissingFiles). Past its time limit (insertScript): the rule
+// fails for this page only, once, and its tags are released (D2) so ready
+// may come; when the script does arrive, it has run and defined its
+// elements, and the rule reads as loaded again.
+SFLoaderPlugin.prototype.scriptFailed = function (name, error) {
+  if (!error?.timedOut) {
+    console.warn(error);
+    this.addToMissingFiles(name, 'js');
+    return;
+  }
+  this.timedOutScripts = this.timedOutScripts || new Set();
+  if (this.timedOutScripts.has(name)) return;
+  this.timedOutScripts.add(name);
+  const pending = globalThis.window?.SF?.__internal?.pendingTags;
+  const tags = Array.isArray(this.findPlugins?.[name]?.tags) ? this.findPlugins[name].tags : [];
+  console.warn(`SFLoader: ${error.message}; ${tags.length ? `<${tags.join('>, <')}>` : name}`
+      + ' counted as failed for this page, and drawn if the script still arrives');
+  tags.forEach((tag) => pending?.fail?.(tag));
+  error.arrival.then(() => {
+    this.timedOutScripts.delete(name);
+    if (!this.loadedPlugins[name]) this.loadedPlugins[name] = {};
+    this.loadedPlugins[name].js = true;
+    this.loadedPlugins[name].ready = true;
+    tags.forEach((tag) => pending?.recover?.(tag));
+  }, () => {
+    // Refused after all: missing for this page, not stored for the next --
+    // an answer that long in coming says more about the line than the file.
+    const key = this.getMissingFileKey(name);
+    this.notFoundFiles[key] = {...(this.notFoundFiles[key] || {}), js: true};
+  });
+};
+
 SFLoaderPlugin.prototype.getAssetVersion = function () {
   return this.cacheVersion || this.pluginListVersion || '';
 };
@@ -4763,10 +4809,44 @@ function onceByUrl(kind, src, insert) {
   if (known) return known;
   const load = insert();
   loads.set(key, load);
-  load.catch(() => {
+  load.catch((error) => {
+    // A script past its time limit is still on its way: a second insertion
+    // would run it twice when both arrive. The entry stays until it is
+    // answered -- then it reads as loaded, or is forgotten as failed.
+    if (error?.timedOut && error.arrival) {
+      error.arrival.then(
+          () => { if (loads.get(key) === load) loads.set(key, Promise.resolve()); },
+          () => { if (loads.get(key) === load) loads.delete(key); },
+      );
+      return;
+    }
     if (loads.get(key) === load) loads.delete(key);
   });
   return load;
+}
+
+// How long a component script may take before the page stops waiting for it
+// (R074 F-1). A request that is accepted and never answered -- a stalled CDN
+// edge, a proxy holding the connection, a link that drops silently -- kept
+// sf-loader-ready, and with it the splash, away for as long as the browser
+// kept the socket. Past the limit the script counts as failed for this page:
+// its tags are released (D2) and ready may come. The request is not
+// cancelled, and a script that does arrive later still runs and defines its
+// elements. Not stored as missing: a slow answer is not a missing file.
+// 15 s, not 10: a cold page on a throttled line reaches ready at ~12 s.
+const SCRIPT_LOAD_TIMEOUT_MS = 15000;
+
+function scriptTimeoutError(pluginURL, timeout) {
+  const error = new Error(`Script not loaded within ${timeout} ms: ${pluginURL}`);
+  error.timedOut = true;
+  error.arrival = new Promise((resolve, reject) => {
+    error.arrived = resolve;
+    error.refused = reject;
+  });
+  // Whoever reads the late answer attaches its own handlers; an unanswered
+  // refusal must not surface as an unhandled rejection.
+  error.arrival.catch(() => {});
+  return error;
 }
 
 SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
@@ -4775,12 +4855,30 @@ SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   this.preloadedScripts = this.preloadedScripts || new Set();
   if (this.preloadedScripts.has(href)) return;
   this.preloadedScripts.add(href);
+  // The script itself is on its way or in: nothing left to announce.
+  if (assetRegistry().scripts.has(assetKey(href))) return;
   const link = document.createElement('link');
   link.rel = 'preload';
   link.as = 'script';
   link.href = href;
   document.head.append(link);
 };
+
+// Whether an element waiting on its relations is close enough to running for
+// its script to be preloaded: one relation left, or none. Chrome reports a
+// preload not used within about 3 s ("preloaded using link preload but not
+// used within a few seconds"), and a script preloaded when the wait began was
+// used only once every relation had loaded -- on a busy CPU more than 3 s
+// later (the record window's sf-button-icon: five relations, one of them
+// sf-button-close with relations of its own; portal-origin-hostile, 1 load in
+// 32 at load average 30). Preloaded with one relation left, it still loads
+// beside the slowest one, and is used as soon as that one is in.
+SFLoaderPlugin.prototype.relationWaitNearlyDone = function (name) {
+  const wait = this.totalRelationsPlugins?.[name];
+  return Boolean(wait) && !wait.canLoad && (wait.total || 0) - (wait.load || 0) <= 1;
+};
+
+SFLoaderPlugin.prototype.scriptLoadTimeoutMs = SCRIPT_LOAD_TIMEOUT_MS;
 
 SFLoaderPlugin.prototype.addScript = function (pluginURL, param = {}) {
   const src = this.versionAssetUrl(pluginURL);
@@ -4795,10 +4893,29 @@ SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {
     script.src = src;
     script.async = true;
 
+    const timeout = Number(this.scriptLoadTimeoutMs);
+    let late = null;
+    const timer = timeout > 0 && Number.isFinite(timeout)
+        ? setTimeout(() => {
+          late = scriptTimeoutError(pluginURL, timeout);
+          reject(late);
+        }, timeout)
+        : 0;
+
     script.addEventListener('load', () => {
+      clearTimeout(timer);
+      if (late) {
+        late.arrived();
+        return;
+      }
       resolve();
     });
     script.addEventListener('error', () => {
+      clearTimeout(timer);
+      if (late) {
+        late.refused(new Error(`Failed to load script: ${pluginURL}`));
+        return;
+      }
       // The other form of the file, once: the readable one when the minified
       // was asked for and is missing, the minified one when debug asked for
       // the readable one and the distribution ships only the minified (the

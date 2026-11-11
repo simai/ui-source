@@ -311,6 +311,7 @@ test('a closed container is watched and read again once, when it opens', () => {
     window: {},
     WeakSet,
     installPendingTags: () => ({hold: (tag, options) => holds.push([tag, options ?? null])}),
+    PENDING_TAG_TIMEOUT_MS: 10000,
     MutationObserver: class {
       constructor(callback) { this.callback = callback; this.targets = []; observers.push(this); }
       observe(target, options) { this.targets.push([target, options]); }
@@ -339,8 +340,11 @@ test('a closed container is watched and read again once, when it opens', () => {
   observers[0].callback([{target: panel}]);
   assert.deepEqual(plugin.scanned, [panel], 'and not again');
 
+  // Asked: held past the script's own time limit, which fails a script that
+  // never answers and says so (R074 F-1); the hold is the backstop behind it.
+  plugin.scriptLoadTimeoutMs = 15000;
   plugin.holdSmartTag('sf-modal');
-  assert.equal(JSON.stringify(holds.at(-1)), JSON.stringify(['sf-modal', {asked: true}]));
+  assert.equal(JSON.stringify(holds.at(-1)), JSON.stringify(['sf-modal', {asked: true, timeout: 25000}]));
 });
 
 // ---------- #47 (2): lazy relations ----------

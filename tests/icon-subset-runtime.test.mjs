@@ -941,6 +941,34 @@ test('R074 R-1: a service that answers before the prefetch point fetches no full
   }
 });
 
+test('R074 F-2: a subset in place before the deadline, its face still loading, fetches no full font at the deadline', async () => {
+  const page = subsetPage();
+  try {
+    const full = [];
+    globalThis.window.FontFace = class FontFace {
+      constructor(family, src) { this.family = family; if (/MaterialSymbols-Outlined/u.test(String(src))) full.push(src); }
+      load() { return Promise.resolve(this); }
+    };
+    // The answer comes inside the deadline; its own face only well past it
+    // (a busy main thread asks for it late).
+    globalThis.document.fonts.load = () => new Promise((resolve) => setTimeout(() => resolve([{}]), 40));
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 60;
+    loader.iconFallbackPrefetchMs = 50;
+    loader.syncStaticIconLoadedState = () => {};
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const done = loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    await sleep(35);
+    page.answer(page.requests[0]);
+    assert.equal(await done, true);
+    await sleep(30);
+    assert.equal(full.length, 0, 'the deadline passed with the subset in place: the full font is neither put in nor fetched');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+  } finally {
+    page.restore();
+  }
+});
+
 test('R074: a background request outrun by a newer answer is aborted and changes nothing', async () => {
   const page = subsetPage();
   try {

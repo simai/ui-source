@@ -138,11 +138,19 @@ export function installPendingTags(win = typeof window !== 'undefined' ? window 
     settleEntry(tag).resolve('failed');
     return true;
   };
+  // The module the Loader counted as failed arrived after all (a script past
+  // its time limit, loader.js scriptFailed): the tag is no longer failed, so
+  // it is held again when asked for. Its elements are defined by now.
+  const recover = (name) => {
+    const tag = String(name || '').trim().toLowerCase();
+    return failed.delete(tag);
+  };
   const api = {
     hold,
     release,
     releaseUnasked,
     fail,
+    recover,
     // Resolves when the tag is defined or its module failed to load.
     settled: (name) => settleEntry(String(name || '').trim().toLowerCase()).promise,
     failed: () => [...failed],

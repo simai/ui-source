@@ -1538,19 +1538,22 @@ export function installIconSubsetRuntime(
       document.querySelector(`style[data-sf-icons-fallback="${type}"]`);
     let prev = fallbackStyle();
     let preloaded = null;
+    const generation = Number(options.generation) || 0;
+    const subsetInPlace = () =>
+      generation &&
+      (this.iconSubsetAppliedGenerations?.get(type) || 0) >= generation;
+    // R074 F-2: the request answered before the deadline and its subset is
+    // in place, only its own small face is still loading -- on a busy main
+    // thread the page asks for it seconds after the CSS came (seen: CSS at
+    // 0.9 s, face asked for at 3.4 s). The full font would not be put in
+    // (below), so it is not fetched either: 419 KB for nothing.
+    if (!prev && subsetInPlace()) return true;
     if (!prev) {
       preloaded = await this.loadIconFallbackFace(type);
       prev = fallbackStyle();
       // The request that timed out answered while the full font was on its
       // way: its subset draws every name, the full font is not needed.
-      const generation = Number(options.generation) || 0;
-      if (
-        !prev &&
-        generation &&
-        (this.iconSubsetAppliedGenerations?.get(type) || 0) >= generation
-      ) {
-        return true;
-      }
+      if (!prev && subsetInPlace()) return true;
     }
     if (prev) {
       // The full font already draws this family: it stays as it is. Writing
