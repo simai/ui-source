@@ -74,6 +74,30 @@ test('a refusal gives the focus back to the pressed control (acceptance M2)', as
   feedback.cancel();
 });
 
+test('the pressed control\'s tooltip is held shut while its result shows (review L1)', async () => {
+  const {phases, feedback} = recorder(40);
+  const denied = Object.assign(new Error('denied'), {name: 'NotAllowedError'});
+  const holds = [];
+  const body = {};
+  const trigger = {isConnected: true, ownerDocument: {defaultView: globalThis}, dispatchEvent: (event) => { holds.push([event.type, event.detail.hold, phases.at(-1)?.[0] ?? null]); return true; }};
+  const button = {isConnected: true, closest: (selector) => (selector === '[data-tooltip]' ? trigger : null), focus: () => { doc.activeElement = button; }};
+  const doc = {...page(async () => { throw denied; }), body, activeElement: button};
+  await feedback.run({read: () => 'sk_test', element: () => { doc.activeElement = body; return null; }, document: doc, words: (key) => key});
+  // Held before the pending phase, so the focus given back does not open the name.
+  assert.deepEqual(holds, [['sf:tooltip-hold', true, null]]);
+  assert.equal(phases.at(-1)[0], 'error');
+  await new Promise((resolve) => setTimeout(resolve, 80));
+  assert.deepEqual(phases.at(-1), ['idle', '']);
+  assert.deepEqual(holds.at(-1), ['sf:tooltip-hold', false, 'error'], 'released when the result goes, before idle is drawn');
+  assert.equal(holds.length, 2);
+  // A copy that succeeds draws no bubble: held for the press, released at success.
+  holds.length = 0;
+  doc.defaultView.navigator.clipboard.writeText = async () => {};
+  await feedback.run({read: () => 'sk_test', document: doc, words: (key) => key});
+  assert.deepEqual(holds.map(([, hold]) => hold), [true, false]);
+  feedback.cancel();
+});
+
 test('one result at a time on the page (acceptance L4)', async () => {
   const first = recorder(5000);
   const second = recorder(5000);

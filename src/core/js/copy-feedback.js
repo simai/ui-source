@@ -81,6 +81,18 @@ function leaveResult(owner) {
   if (globalThis.SF?.__copyResult === owner) globalThis.SF.__copyResult = null;
 }
 
+// One bubble beside a control (button-copy review L1, 2026-11-11): a refusal
+// gives the focus back to the control, and its name tooltip rose under the
+// result. The pressed control's tooltip (its [data-tooltip] trigger) is held
+// shut from the press until the result has gone (component.tooltip,
+// sf:tooltip-hold); it comes back with the next hover or keyboard focus.
+function holdTooltip(trigger, hold) {
+  if (!trigger?.isConnected) return;
+  const View = trigger.ownerDocument?.defaultView ?? globalThis;
+  if (typeof View.CustomEvent !== 'function') return;
+  trigger.dispatchEvent(new View.CustomEvent('sf:tooltip-hold', {detail: {hold}}));
+}
+
 /** The keys that copy a selection on this platform. */
 export function copyKeys() {
   return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '') ? '⌘C' : 'Ctrl+C';
@@ -151,7 +163,13 @@ export function selectCopySource(element, {text = '', host = null, holderClass =
 export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {}) {
   let timer = null;
   let pending = false;
+  let held = null;
   let api = null;
+  const release = () => {
+    const trigger = held;
+    held = null;
+    holdTooltip(trigger, false);
+  };
   const lasting = () => {
     const value = Number(typeof duration === 'function' ? duration() : duration);
     return Number.isFinite(value) && value >= 0 ? value : DURATION;
@@ -161,11 +179,14 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
     timer = null;
     if (phase === 'success' || phase === 'error') takeResult(api);
     else if (phase === 'idle') leaveResult(api);
+    // A success draws no bubble; an error's words are one until idle.
+    if (phase === 'success' || phase === 'idle') release();
     onPhase(phase, message);
     if (phase === 'success' || phase === 'error') {
       timer = setTimeout(() => {
         timer = null;
         leaveResult(api);
+        release();
         onPhase('idle', '');
       }, lasting());
     }
@@ -188,6 +209,12 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
       // the next Tab started again at the top (acceptance M2).
       const page = doc ?? node?.ownerDocument ?? host?.ownerDocument ?? globalThis.document;
       const pressed = page?.activeElement && page.activeElement !== page.body ? page.activeElement : null;
+      const trigger = pressed?.closest?.('[data-tooltip]') ?? null;
+      if (trigger && trigger !== held) {
+        release();
+        held = trigger;
+        holdTooltip(trigger, true);
+      }
       set('pending', '');
       let text = '';
       try {
@@ -220,6 +247,7 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
       clearTimeout(timer);
       timer = null;
       leaveResult(api);
+      release();
     },
   };
   return api;

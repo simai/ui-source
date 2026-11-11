@@ -34,6 +34,14 @@ over the anchor or surface. It opens on hover and on keyboard focus
 a press on the trigger -- a pointer, or Enter or Space -- hides it until the
 pointer leaves and the focus goes.
 
+A control that shows a bubble of its own beside the trigger (a copy's result)
+holds the tooltip shut meanwhile, so one bubble stands at a time: it sends
+`sf:tooltip-hold` to the trigger with `detail: {hold: true}`, and
+`{hold: false}` when its bubble has gone. While held nothing opens the
+tooltip; the release opens nothing either, and the tooltip comes back with
+the next hover or keyboard focus. The core copy feedback holds the pressed
+control's tooltip from the press until its result has gone.
+
 ## Surface variants
 
 - skins: `dark`, the inverse surface (`--sf-surface-inverse`, light in a dark

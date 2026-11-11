@@ -23,6 +23,19 @@ test('Tooltip controller owns pointer, focus and Escape without moving focus', a
   assert.doesNotMatch(source, /\.focus\(/);
 });
 
+test('a held tooltip opens for nothing, and its release opens nothing (button-copy review L1)', async () => {
+  const source = await read('src/component/tooltip/js/_tooltip.js');
+  assert.match(source, /addEventListener\('sf:tooltip-hold', this\.onHold\)/);
+  assert.match(source, /removeEventListener\('sf:tooltip-hold', this\.onHold\)/);
+  assert.match(source, /open\(\) \{\n\s+if \(this\.held\) return;/);
+  const hold = source.slice(source.indexOf('  handleHold(event) {'), source.indexOf('  handleDocumentKeydown(event) {'));
+  assert.match(hold, /this\.held = event\?\.detail\?\.hold !== false;/);
+  assert.match(hold, /if \(this\.held\) this\.close\(\);/);
+  assert.doesNotMatch(hold, /this\.open\(/);
+  const docs = await read('src/component/tooltip/docs/docs.md');
+  assert.match(docs, /sf:tooltip-hold/);
+});
+
 test('Tooltip anchor positioning follows logical tail classes and tokens', async () => {
   const css = await read('src/component/tooltip/scss/_css__tooltip_custom.scss');
   assert.match(css, /\.sf-tooltip-anchor/);

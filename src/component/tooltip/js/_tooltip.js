@@ -71,6 +71,7 @@ class SfTooltipController {
     this.pointerInside = false;
     this.focusInside = false;
     this.dismissed = false;
+    this.held = false;
     this.originalDescription = null;
     this.originalRole = null;
     this.originalHidden = false;
@@ -80,6 +81,7 @@ class SfTooltipController {
     this.onFocusOut = this.handleFocusOut.bind(this);
     this.onPress = this.handlePress.bind(this);
     this.onDocumentKeydown = this.handleDocumentKeydown.bind(this);
+    this.onHold = this.handleHold.bind(this);
   }
 
   resolveSurface() {
@@ -138,6 +140,7 @@ class SfTooltipController {
     this.trigger.addEventListener('focusout', this.onFocusOut);
     this.trigger.addEventListener('pointerdown', this.onPress);
     this.trigger.addEventListener('click', this.onPress);
+    this.trigger.addEventListener('sf:tooltip-hold', this.onHold);
     tooltipInstances.set(this.trigger, this);
   }
 
@@ -152,6 +155,7 @@ class SfTooltipController {
     this.trigger.removeEventListener('focusout', this.onFocusOut);
     this.trigger.removeEventListener('pointerdown', this.onPress);
     this.trigger.removeEventListener('click', this.onPress);
+    this.trigger.removeEventListener('sf:tooltip-hold', this.onHold);
     this.trigger.ownerDocument.removeEventListener(
       'keydown',
       this.onDocumentKeydown,
@@ -219,6 +223,18 @@ class SfTooltipController {
     });
   }
 
+  // Held by the control the trigger belongs to (event sf:tooltip-hold on the
+  // trigger, detail {hold}): while another bubble of the same control is
+  // shown -- a copy's result -- the name is hidden and nothing opens it, so
+  // one bubble stands beside the control (button-copy review L1,
+  // 2026-11-11). The release opens nothing: the tooltip comes back with the
+  // next hover or keyboard focus. An event, not a method, so a control in
+  // another bundle reaches the controller this bundle made.
+  handleHold(event) {
+    this.held = event?.detail?.hold !== false;
+    if (this.held) this.close();
+  }
+
   handleDocumentKeydown(event) {
     if (event.key !== 'Escape' || this.surface?.hidden) return;
     this.dismissed = true;
@@ -226,6 +242,7 @@ class SfTooltipController {
   }
 
   open() {
+    if (this.held) return;
     // The surface was replaced or taken out after the link was made (a page
     // that redrew the tooltip with new text): link the trigger again, so the
     // new surface is the one shown and not the cached old one.
