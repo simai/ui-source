@@ -46,7 +46,8 @@ for (const kind of ['checkbox', 'radio', 'switch']) {
   test(`${kind} applies root customization to the label without replacing its native input`,async()=>{
     const source=await read(`src/smart/${kind}/js/templates/default.js`);
     assert.match(source,/rootClass/);
-    assert.match(source,/<label class=\$\{[^\n]+\} style=\$\{(?:context\.)?rootStyle \|\| nothing\}>/);
+    // The label also listens for clicks from the help (keepHelpOutOfLabel).
+    assert.match(source,/<label class=\$\{[^\n]+\} style=\$\{(?:context\.)?rootStyle \|\| nothing\}(?: @click=\$\{keepHelpOutOfLabel\})?>/);
     assert.match(source,/<input\s/);
     assert.doesNotMatch(source,/unsafeHTML|innerHTML\s*=/);
   });
