@@ -889,7 +889,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "bb187461d33bf6fb264602619abf1413d0bb3bc97e4cc76f785e98aaa9722c93"
+        "sha256": "803b725e0c698f94782729da866fff5c549e693ea4e35a2f9d3c9b41547459a3"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",

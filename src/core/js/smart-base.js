@@ -2627,6 +2627,34 @@ class SfBaseElement extends HTMLElement {
   // Draws a template into a container of the element's own outside it (a
   // portal at the end of the body, a popup's body): the sizes the drawing
   // gives are relative to the element, as in its own box (density, C22).
+  // A component that draws into a box of its own outside the host -- a
+  // window's or a drawer's portal at the end of the body -- keeps that box out
+  // of view until the sheets it draws with are applied, as the base keeps the
+  // host (the style gate, data-sf-style-pending, at most styleReadyTimeout).
+  // The base's gate is on the host, which such a component leaves empty, so
+  // under held-back sheets an open window painted for a moment as a card in
+  // the page flow, and a closed drawer's panel stood in view beside the page
+  // (ui-control evidence 2026-11-11-modal-followups, N2). Call it before the
+  // drawing; `shown` runs once the box shows.
+  holdPortalUntilStyled(target, shown) {
+    if (this._styleReady || !target || target === this) return;
+    const styles = this.stylesReadiness();
+    if (!styles) return;
+    target.setAttribute("data-sf-style-pending", "");
+    (this._styleHeldTargets ??= new Set()).add(target);
+    if (shown) (this._styleHeldShown ??= new Set()).add(shown);
+    if (this._styleHeldWait) return;
+    this._styleHeldWait = styles.then(() => {
+      this._styleReady = true;
+      this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
+      this._styleHeldTargets.clear();
+      this._styleHeldWait = null;
+      const callbacks = [...(this._styleHeldShown || [])];
+      this._styleHeldShown?.clear();
+      callbacks.forEach((callback) => callback());
+    });
+  }
+
   drawInto(result, container) {
     if (!container) return;
     drawing(() => render(result, container));

@@ -720,7 +720,7 @@ class SfModal extends ModalElement {
       this.prepareRenderContainer(changedAttributes);
     }
     const target = this.resolveRenderTarget();
-    this.holdPortalUntilStyled(target);
+    this.holdWindowUntilStyled(target);
     // The held children leave the host and are placed by the drawing in the
     // same task, as the base's render does (releaseHeldSlotNodes).
     this.releaseHeldSlotNodes();
@@ -734,28 +734,15 @@ class SfModal extends ModalElement {
   }
 
   // The window drawn in its portal stays out of view until the sheets it
-  // draws with are applied, as the base keeps a Smart host (the style gate,
-  // data-sf-style-pending): this render is the window's own and the portal
-  // is not the host, so the gate did not cover it, and under held-back sheets
-  // an open window painted for a moment as a card in the page flow, without
-  // its layer, scrim or x (DEV's acceptance 2026-11-11, N2). The gate is the
-  // Loader's (the modal sheet and the utilities its template uses), at most
-  // styleReadyTimeout; once it settles the window shows and, if it opened in
-  // the meantime, takes its first focus, which a hidden panel could not.
-  // An inline window draws in its host, where the page put it, and keeps
-  // what the base does for it.
-  holdPortalUntilStyled(target) {
-    if (this._styleReady || !target || target === this || this.display === "inline") return;
-    const styles = this.stylesReadiness();
-    if (!styles) return;
-    target.setAttribute("data-sf-style-pending", "");
-    (this._styleHeldTargets ??= new Set()).add(target);
-    if (this._styleHeldWait) return;
-    this._styleHeldWait = styles.then(() => {
-      this._styleReady = true;
-      this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
-      this._styleHeldTargets.clear();
-      this._styleHeldWait = null;
+  // draws with are applied (the base's holdPortalUntilStyled): under
+  // held-back sheets an open window painted for a moment as a card in the
+  // page flow, without its layer, scrim or x (DEV's acceptance 2026-11-11,
+  // N2). Once it shows, a window that opened in the meantime takes its first
+  // focus, which a hidden panel could not. An inline window draws in its
+  // host, where the page put it, and keeps what the base does for it.
+  holdWindowUntilStyled(target) {
+    if (this.display === "inline") return;
+    this.holdPortalUntilStyled(target, () => {
       const root = this._root();
       if (this._isOpen && this._modalState === "open" && root && !root.contains(document.activeElement)) {
         this.focusFirst();

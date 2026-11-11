@@ -656,6 +656,15 @@ class SfDrawer extends DrawerElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer();
     }
+    // Out of view until the drawer's sheets are applied (the base's portal
+    // gate): under held-back sheets the closed panel stood in view beside
+    // the page and the page moved when they came. A modal drawer that opened
+    // in the meantime takes its first focus once it shows, which a hidden
+    // panel could not.
+    this.holdPortalUntilStyled(portal, () => {
+      const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+      if (this.openState && this.modal && panel && !panel.contains(document.activeElement)) this.focusFirst();
+    });
     this.drawInto(result, portal);
     this.afterRender();
   }
