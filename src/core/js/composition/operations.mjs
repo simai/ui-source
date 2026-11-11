@@ -60,6 +60,7 @@ export const REFUSALS = Object.freeze({
   href: 'the link is not safe',
   range: 'the offsets are outside the text',
   empty: 'nothing to undo, redo or paste',
+  'would-lose': 'the block that would go holds more than its text (extensions, bindings, other data); remove it on purpose',
   'id-taken': 'an id of the inserted node is already in the Document',
 });
 
@@ -91,6 +92,19 @@ function normalizeSelection(selection) {
   if (!isPlainObject(selection)) return { block: null, text: null };
   const text = isPlainObject(selection.text) && selection.text.id !== undefined ? { ...selection.text } : null;
   return { block: selection.block ?? null, text };
+}
+
+// Whether a text block that an edit would take away (joined into the block
+// before it, or an empty list item left by Enter) holds anything besides its
+// text (and a heading's level): then the edit is refused rather than drop it.
+const TEXT_DATA_KEYS = new Set(['content', 'level']);
+const NODE_KEYS = new Set(['id', 'type', 'data', 'props', 'slots']);
+function holdsMore(node) {
+  if (!isPlainObject(node)) return false;
+  if (Object.keys(node).some((key) => !NODE_KEYS.has(key))) return true;
+  if (isPlainObject(node.data) && Object.keys(node.data).some((key) => !TEXT_DATA_KEYS.has(key))) return true;
+  if (isPlainObject(node.props) && Object.keys(node.props).length) return true;
+  return Object.values(isPlainObject(node.slots) ? node.slots : {}).some((list) => Array.isArray(list) && list.length);
 }
 
 // A draft of the next state: a deep copy of the Document to change in place.
@@ -245,6 +259,7 @@ export function splitBlock(state, id, offset, context) {
   if (node.type === 'content.list-item' && !length && at.index === items.length - 1) {
     const list = locate(root, at.parent.id);
     if (!list?.parent) return refused('unknown');
+    if (holdsMore(node) || (items.length === 1 && Object.keys(list.node).some((key) => !NODE_KEYS.has(key)))) return refused('would-lose');
     removeAt(at.parent, at.slot, at.index);
     const paragraph = { id: makeId(), type: 'content.paragraph', data: { content: [] } };
     if (!at.parent.slots[at.slot].length) {
@@ -276,6 +291,7 @@ export function joinBack(state, id, context) {
   const previous = at.parent.slots[at.slot][at.index - 1];
   if (islandIn(previous, context) || islandIn(at.node, context)) return refused('island');
   if (!TEXT_BLOCKS.includes(previous.type) || !TEXT_BLOCKS.includes(at.node.type)) return refused('not-text');
+  if (holdsMore(at.node)) return refused('would-lose');
   const before = Array.isArray(previous.data?.content) ? previous.data.content : [];
   const own = Array.isArray(at.node.data?.content) ? at.node.data.content : [];
   const offset = inlineLength(before);
@@ -300,9 +316,12 @@ export function setBlockType(state, id, type, { level } = {}, context) {
   const wantLevel = type === 'content.heading' ? (Number.isInteger(level) ? level : at.node.data?.level ?? 2) : undefined;
   if (at.node.type === type && (type !== 'content.heading' || at.node.data?.level === wantLevel)) return refused('same');
   if (at.node.type !== type && !accepts(next, at.parent.id, at.slot, type, context, 0)) return refused('place');
-  const content = Array.isArray(at.node.data?.content) ? at.node.data.content : [];
+  // Only the type and the level change: every other part of the node (its
+  // props, extensions, data a newer producer wrote) stays as it was.
+  const { level: _level, ...rest } = isPlainObject(at.node.data) ? at.node.data : {};
   at.node.type = type;
-  at.node.data = type === 'content.heading' ? { level: wantLevel, content } : { content };
+  at.node.data = type === 'content.heading' ? { level: wantLevel, ...rest } : rest;
+  if (!Array.isArray(at.node.data.content)) at.node.data.content = [];
   return { ok: true, state: next, id };
 }
 

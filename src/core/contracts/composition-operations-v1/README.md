@@ -78,9 +78,9 @@ history and a context:
 | `insertBreak` | id, key, offset | Inserts a line break at the offset. The caret goes after it. | typing group | + range |
 | `toggleMark` | id, key, start, end, mark | Toggles strong, em, code or strike on [start, end). | one step | + mark, range |
 | `setLink` | id, key, start, end, href or null | Sets a safe link on the range, or removes it. | one step | + href, range |
-| `splitBlock` | id, offset | Enter: the text after the caret goes to a new paragraph, or a new item in a list. On an empty last list item, Enter leaves the list (and removes the list when that item was its only one). Result: `id`, `offset`. | one step | unknown, island, not-text, range, lock |
-| `joinBack` | id | Backspace at the start of a text block joins it to the text block before it. Result: `id` of the earlier block, `offset`. | one step | unknown, first, island, not-text, lock |
-| `setBlockType` | id, type, {level} | Turns a paragraph into a heading or back. The id and text are kept. | one step | unknown, island, not-text, same, place, lock |
+| `splitBlock` | id, offset | Enter: the text after the caret goes to a new paragraph, or a new item in a list. On an empty last list item, Enter leaves the list (and removes the list when that item was its only one). Result: `id`, `offset`. | one step | unknown, island, not-text, range, would-lose, lock |
+| `joinBack` | id | Backspace at the start of a text block joins it to the text block before it. Result: `id` of the earlier block, `offset`. | one step | unknown, first, island, not-text, would-lose, lock |
+| `setBlockType` | id, type, {level} | Turns a paragraph into a heading or back. Only the type and the level change; the id, text, props, extensions and any other data are kept. | one step | unknown, island, not-text, same, place, lock |
 | `insertNode` | node, {parent, slot, index} | Inserts a node whose ids are all new to the Document. The caret goes into its first `content` text. | one step | unknown, place, id-taken, lock |
 | `removeNode` | id | Removes the whole node. A neighbour is chosen, otherwise the parent (never the root). | one step | unknown, required, lock |
 | `moveNode` | id, {parent, slot, index} | Moves the node to the place; the index is read before the node leaves. The caret stays. | one step | unknown, inside-itself, place, same, required, lock |
@@ -109,6 +109,65 @@ not know. The rules are those of assessment Q5:
 | Paste | a copy with fresh ids for the node and all its descendants; ids already in the Document are never reused; content unchanged | `pasteNodes` |
 | Undo / redo | the exact node is restored, with the same id | the history's snapshots |
 
+## Unknown content is never lost
+
+This rule is an owner requirement for every composition stage (DEV letter
+msg-cdcb39c2). Unknown content means:
+
+- blocks of a type the registry does not know;
+- unknown inline entries: a `component` with an undeclared name, or any
+  other inline `type`;
+- unknown marks.
+
+Such content survives each of these, and undo and redo of each:
+
+- opening the Document;
+- typing around it;
+- marks and links over ranges that hold it;
+- copy, cut and paste;
+- moves;
+- deleting a neighbour;
+- Enter and Backspace beside it;
+- a block type change.
+
+It goes only when the person removes that node itself, or a block that holds
+it (`removeNode`). Undo then returns it byte for byte.
+
+How the operations keep it:
+
+- The inline model (`inline-model.mjs`) carries an unknown inline entry as
+  one opaque unit, and keeps an unknown mark beside the known ones.
+- `toggleMark` and `setLink` never change an opaque unit, and a link stops on
+  each side of an atom.
+- An unknown block is an island: no typing, no join into or out of it, and
+  no slot but its own.
+- An edit that would take away a text block holding more than its text is
+  refused with `would-lose`. "More than its text" means extensions, bindings,
+  props, data other than `content` and `level`, or children. The refused
+  edits are:
+  - Backspace-join of such a block;
+  - Enter on such a block when it is an empty last list item;
+  - Enter on the only, empty item of a list that has extensions or bindings.
+
+Not covered:
+
+- `normalizeInline` drops keys that a newer producer adds to a known inline
+  entry (a text run's `lang`, a link's `title`). Such content does not
+  validate today (`schema_one_of`).
+- Unsafe links are dropped by design.
+
+The fixed cases are in
+`tests/composition-operations-unknown.contract.test.mjs`.
+
+For stored Documents, `scripts/composition-roundtrip.mjs <checkout>...`
+opens every stored Document in a session and then:
+
+- runs a no-op pass;
+- removes, edits and pastes, undoing each;
+- compares validation before and after.
+
+`tests/composition-roundtrip.contract.test.mjs` runs it on this repository.
+
 ## What stays in an editor
 
 These parts are not in the core:
@@ -127,7 +186,7 @@ These parts are not in the core:
 
 ## Checks
 
-`tests/composition-operations.contract.test.mjs` covers:
+`tests/composition-operations.contract.test.mjs` covers the following (the unknown-content and round-trip checks are above):
 
 - the ported SIMAI Editor model tests, on the same page fixture;
 - purity;
