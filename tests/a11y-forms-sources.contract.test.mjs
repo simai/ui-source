@@ -30,13 +30,16 @@ test('accordion, popover and the colour field carry their docs in the source (#3
 });
 
 test('sf-switch names its input by the label row and describes it by the description (#44 item 1)', () => {
-  const source = read('src/component/switch/js/_switch.js');
-  assert.match(source, /function linkSwitchText\(root\)/u);
+  // Since C63 W9 the switch reads the binding sf-checkbox and sf-radio read.
+  const own = read('src/component/switch/js/_switch.js');
+  assert.match(own, /function linkSwitchText\(root\) \{\s*linkCheckableText\(root, SWITCH_TEXT_PARTS\);/u);
+  const source = read('src/component/checkable-text-helper.js');
+  assert.match(source, /export const SWITCH_TEXT_PARTS = Object\.freeze\(\{[^}]*text: '\.sf-switch-container'/u);
   assert.match(source, /setAttribute\('aria-labelledby', label\.id\)/u);
   assert.match(source, /setAttribute\('aria-describedby'/u);
   // Ids from the instance path, never a counter (#41).
   assert.match(source, /partId\(path, 'label'\)/u);
-  assert.doesNotMatch(source.slice(source.indexOf('function linkSwitchText')), /\+\+/u);
+  assert.doesNotMatch(source.slice(source.indexOf('export function linkCheckableText')), /\+\+/u);
   // The manifest says the same: the name from the label or aria-label.
   const component = json('src/smart/switch/component.json');
   assert.deepEqual(component.accessibility.name.from.slice(0, 2), ['label', 'aria-label']);

@@ -431,7 +431,7 @@
       },
       {
         "path": "src/smart/switch/js/templates/default.js",
-        "sha256": "58b49959ef0dfbaff7f05fc3bf608d26511e5b5a70e245cab85de1b06bd0917a"
+        "sha256": "a0b31e6e7c0383225fbf49f2f73a903595fcb3b32bf971627be7457ffefa1387"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

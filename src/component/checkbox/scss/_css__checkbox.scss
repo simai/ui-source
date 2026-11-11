@@ -68,7 +68,9 @@
     font-weight: var(--sf-checkbox-label--font-weight);
     line-height: var(--sf-checkbox-label--line-height);
     --sf-checkbox-label--font-family: var(--sf-text--family);
-    --sf-checkbox-label--font-weight: var(--sf-font-weight-medium);
+    /* One label weight for the three choice controls (C63 W6): regular, as the
+       switch drew it; checkbox and radio drew medium. */
+    --sf-checkbox-label--font-weight: var(--sf-font-weight-regular);
   }
 
   /* The icons of the control and of its class markup; the help mark's «?» is

@@ -11,6 +11,8 @@
   ],
   "files": [
     "src/smart/helpers/anchored-badge.js",
+    "src/smart/helpers/checkable-row.css",
+    "src/smart/helpers/checkable-row.js",
     "src/smart/helpers/checkableReset.js",
     "src/smart/helpers/confirm-surface.js",
     "src/smart/helpers/cycle.js",

@@ -45,6 +45,7 @@
 .sf-switch .sf-switch-container {
   --sf-switch-container--background-color: transparent;
   --sf-switch-container--gap: var(--sf-a0);
+  --sf-switch-container--font-weight: var(--sf-font-weight-regular); /* C63 W6: one label weight, named */
   background-color: var(--sf-switch-container--background-color);
   color: var(--sf-switch-container--color);
   font-family: var(--sf-switch-container--font-family);

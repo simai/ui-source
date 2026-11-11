@@ -151,12 +151,12 @@
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-text {
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-1 .sf-radio-button-text{
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-top {
@@ -218,7 +218,7 @@
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-text{
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-top {

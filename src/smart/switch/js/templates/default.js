@@ -1,10 +1,7 @@
 import { html, nothing } from 'lit';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
-
-// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
-// 1, 1/2 beside size 2 (the mark adds no height of its own).
-const HELP_SIZE = { '1/2': '1/3', 1: '1/3', 2: '1/2' };
+import { checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText } from '../../../helpers/checkable-row';
 
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
@@ -28,16 +25,10 @@ export function renderSwitchTemplate(context) {
         ? html`<span class="sf-switch-description">${description}</span>`
         : '';
 
-  const helpContent =
-    context.component?.hasSlotContent?.('help')
-      ? context.component.getSlotContent('help')
-      // help is the explanation: a «?» button after the label text that opens
-      // it (sf-help-mark), outside the switch's activation.
-      : help
-        ? html`<sf-help-mark class="sf-switch-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
-        : '';
+  const helpContent = renderCheckableHelp(context, 'sf-switch-help');
 
   const showContainer = !!(labelContent || descriptionContent);
+  rootClasses.push(...checkableClasses(size, showContainer));
 
   const control = html`
     <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
@@ -54,29 +45,9 @@ export function renderSwitchTemplate(context) {
         <span class="sf-switch-inner transition" aria-hidden="true"></span>
       </span>
 
-      ${showContainer
-        ? html`
-            <span class="sf-switch-container-wrap flex flex-col">
-              ${labelContent
-                ? html`
-                    <span class="sf-switch-top flex">
-                      <span class="sf-switch-container flex items-cross-center content-main-center">
-                        ${labelContent}
-                      </span>
-                    </span>
-                  `
-                : ''}
-              ${descriptionContent}
-            </span>
-          `
-        : ''}
+      ${renderCheckableText({ column: 'sf-switch-container-wrap', top: 'sf-switch-top', wrap: 'sf-switch-container flex items-cross-center content-main-center' }, labelContent, descriptionContent)}
       ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;
-  // The help mark is the label's sibling in a row, not inside the <label>
-  // (owner decision C59, as C33 for field labels): pressing «?» is no press
-  // on the switch.
-  return helpContent
-    ? html`<span class=${`sf-switch-row sf-switch-row--size-${size} flex flex-nowrap items-cross-start`}>${control}${helpContent}</span>`
-    : control;
+  return renderCheckableRow(size, control, helpContent);
 }

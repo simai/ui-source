@@ -43,4 +43,6 @@ utilities, and forced-colors keeps track and thumb distinguishable.
 
 An on switch is one primary pill: the track's edge takes the fill colour, where the outline drew a grey ring around it (1.2.1, docs pre-check 2026-11-10 SW-05). A pointer over it still draws the hover edge.
 
-The help mark stands beside the <label>, not inside it (.sf-switch-row, 1.3.0, C59): pressing «?» never presses the switch. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus and table rows keeps the full row as its target.
+The help mark stands beside the <label>, not inside it (.sf-checkable-row, 1.3.0, C59): pressing «?» never presses the switch. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus and table rows keeps the full row as its target.
+
+A Smart element with text is a row of its step (C63 W5): (control height − line) / 2 above and below, 40 at size 1, 60 with a description, 32 in compact, the touch target under a coarse pointer. The label is regular in all three choice controls (W6). The three share one base (W9): src/smart/helpers/checkable-row.js and checkable-row.css, and the name binding src/component/checkable-text-helper.js.
