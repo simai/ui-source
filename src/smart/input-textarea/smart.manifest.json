@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-textarea",
-  "version": "1.7.5",
+  "version": "1.8.0",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -483,7 +483,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-textarea/index.js",
-        "sha256": "8aee6f68994d29a60fef929c814146d8febffc7c582b7b3f18a90d4e81de7753"
+        "sha256": "8b4c4b3db96a05fd2edb9985d55c9a78992275abee6843552998f75a9f548b19"
       },
       {
         "path": "src/smart/input-textarea/rule.js",
