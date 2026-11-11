@@ -152,6 +152,14 @@
        the page and every opaque or strong place declare it, a translucent
        place (a soft coloured place, glass) sets it initial. */
     --sf-surface-place-solid: var(--sf-surface-page);
+    /* The nearest opaque place (status dot on soft places, 2026-11-11): the
+       colour a cut-out that must not show what is under it lays the place's
+       tone over. Always opaque: the page here, and every place that declares
+       a solid --sf-surface-place-solid declares the same colour; a soft
+       coloured place does not declare it, so it is the opaque place the soft
+       one stands on. Glass declares black, the opaque base of its own tone
+       (DEV, 2026-11-11): under glass is a picture, not a place. */
+    --sf-surface-place-ground: var(--sf-surface-page);
     /* What a translucent layer that must keep its own tone stacks over (C43,
        owner 2026-11-10). It equals the place colour, set only under a
        translucent fill: a selected, open or current row (mix sf-place-fill)
