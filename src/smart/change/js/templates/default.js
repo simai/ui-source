@@ -13,13 +13,24 @@ import {html, nothing} from 'lit';
 
 // A short value -- a number and its unit, a phone number, a name -- stays
 // whole on one line (it reads wrong broken: «4,6 / кг»); only a longer one
-// wraps (dispatcher decision, C40 follow-up 2026-11-11).
+// wraps (dispatcher decision, C40 follow-up 2026-11-11). Whole is made by the
+// text, not by nowrap: its spaces become no-break spaces and a word joiner
+// (U+2060, zero width, not read aloud) follows each hyphen and dash, so the
+// value stays on one line where it fits and still wraps (overflow-wrap
+// anywhere) where its frame is narrower than the value -- never past the
+// frame, and the arrow stays glued to the new value. A value is trimmed, so
+// a padded value draws no leading gap.
 export const WHOLE_VALUE_MAX = 20;
-const whole = (text) => [...String(text).trim()].length <= WHOLE_VALUE_MAX;
+const whole = (text) => [...text].length <= WHOLE_VALUE_MAX;
+const unbroken = (text) => text.replace(/ /gu, '\u00a0').replace(/([-\u2010\u2013])/gu, '$1\u2060');
 
-const value = (context, text, part) => (text === null
-  ? html`<span class=${`sf-change__${part} sf-change__empty`}>${context.words.empty}</span>`
-  : html`<span class=${whole(text) ? `sf-change__${part} sf-change__whole` : `sf-change__${part}`}>${text}</span>`);
+const value = (context, text, part) => {
+  if (text === null) return html`<span class=${`sf-change__${part} sf-change__empty`}>${context.words.empty}</span>`;
+  const shown = String(text).trim();
+  return whole(shown)
+    ? html`<span class=${`sf-change__${part} sf-change__whole`}>${unbroken(shown)}</span>`
+    : html`<span class=${`sf-change__${part}`}>${shown}</span>`;
+};
 
 // The arrow and the new value are joined by a no-break space (the hidden word
 // is out of flow and makes no break), so the arrow never ends a line alone;
