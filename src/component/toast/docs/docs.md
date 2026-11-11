@@ -133,9 +133,9 @@ call returns `null` and warns in the console.
   (`role="status"`). Messages arriving together are said together. The toasts
   of the area are not live regions of their own, so nothing is said twice.
 - Until the toast's stylesheet is applied, and for the first message until
-  its parts' sheets (icon, close button) and fonts are in, the area waits hidden (at most two seconds), so a
-  message never shows unstyled in the middle of the window or changes height
-  while it slides in.
+  its parts' sheets (icon, close button) and fonts are in, the area waits
+  hidden (at most two seconds), so a message never shows unstyled in the
+  middle of the window or changes height while it slides in.
 - Every message is announced on the document as `sf-notification` with
   `{id, status, title, text, source, time}` before it is shown. A notification
   centre records it there; cancelling the event keeps the record and skips the
@@ -146,3 +146,11 @@ The toast component is fetched the first time a message is raised.
 The line-size rule for icons reaches only the toast's own status icon, as its
 status colour does: an icon button inside the toast keeps its own glyph size
 (review R-N1, 2026-11-11).
+
+## Version notes (1.3.0, C50 return)
+
+- dfd66644 says the first message waits for its fonts and so no longer steps
+  back while it slides in. It did not cure that step: the step came from the
+  sheets of the message's parts arriving late. 8467649e supersedes it (the
+  first message waits for its parts' sheets as well as its fonts) and
+  8167be32 narrows the wait to the first message.
