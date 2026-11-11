@@ -16,7 +16,7 @@
     "src/component/spinner/scss/_var__spinner.scss",
     "src/component/spinner/scss/index.scss"
   ],
-  "content_sha256": "fe5b1f51de860b30801567add35398bd224e39725623723f6ec845fb149d2143",
+  "content_sha256": "d0126b1622871760e16745d597a527c43455b0a4558e51b080f6e0c3ec4f5802",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -24,10 +24,6 @@
     },
     {
       "id": "module.component-shared",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.colour",
       "range": "^1.0.0"
     },
     {
