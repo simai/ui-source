@@ -1192,6 +1192,77 @@ export function installIconSubsetRuntime(
     }
   };
 
+  // The class-markup glyphs a Smart element drew inside a
+  // data-sf-observer="ignore" region (2026-11-11). The page scan and the
+  // mutation observer pass such a region by, so a bare <i class="sf-icon">
+  // there was never asked for and never marked sf-icon-loaded: it waited at
+  // font-size 0 for good (an accordion's marker, a menu's icons, a badge's
+  // glyph in a documentation example or a loader wrap). The element hands
+  // them over after each drawing (smart-base); they are asked for like any
+  // static icon and marked when their font is in, now or on the next
+  // sf-icons-subset:ready. A glyph of an sf-icon element is its own.
+  // Answers the number of new names asked for.
+  SFLoaderPlugin.prototype.adoptStaticIcons = function (root = null) {
+    if (!root?.querySelectorAll) return 0;
+    const glyphs = [];
+    const take = (el) => {
+      if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
+      if (el.tagName?.toLowerCase?.() === "sf-icon") return;
+      if (!el.classList?.contains("sf-icon")) return;
+      if (el.closest?.("sf-icon")) return;
+      glyphs.push(el);
+    };
+    take(root);
+    root.querySelectorAll(".sf-icon").forEach(take);
+    if (!glyphs.length) return 0;
+
+    if (!this.adoptedIconsPending) {
+      this.adoptedIconsPending = new Set();
+      const settle = () => {
+        this.adoptedIconsPending.forEach((el) => {
+          if (!el.isConnected) {
+            this.adoptedIconsPending.delete(el);
+            return;
+          }
+          const tracked = this.getTrackedStaticIconAttrs(el);
+          if (!tracked) {
+            this.adoptedIconsPending.delete(el);
+            return;
+          }
+          if (this.isTrackedIconLoaded(tracked)) {
+            el.classList.add("sf-icon-loaded");
+            this.adoptedIconsPending.delete(el);
+          }
+        });
+      };
+      window.addEventListener("sf-icons-subset:ready", settle);
+    }
+
+    let added = 0;
+    glyphs.forEach((el) => {
+      const tracked = this.getTrackedStaticIconAttrs(el);
+      if (!tracked) {
+        el.classList.remove("sf-icon-loaded");
+        this.adoptedIconsPending.delete(el);
+        return;
+      }
+      if (this.isIconSubsetEnabled()) {
+        added += this.trackIconDescriptor(tracked.icon, tracked.attrs);
+      }
+      if (this.isTrackedIconLoaded(tracked)) {
+        el.classList.add("sf-icon-loaded");
+        this.adoptedIconsPending.delete(el);
+      } else {
+        // A glyph whose new name the font in place does not draw waits
+        // unseen, as holdChangedStaticIcon makes a page icon wait.
+        el.classList.remove("sf-icon-loaded");
+        this.adoptedIconsPending.add(el);
+      }
+    });
+    if (added > 0) this.mutate(() => this.loadFonts());
+    return added;
+  };
+
   SFLoaderPlugin.prototype.scanStaticIcons = function (
     root = null,
     autoLoad = true,
