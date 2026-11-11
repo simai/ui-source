@@ -62,6 +62,9 @@ test('the keyboard brings the focused option into view and keeps it there',async
   assert.match(position,/const scrolled = settings\.fitHeight \? scrolledWithin\(floating\) : \[\];\s*if \(settings\.fitHeight\) floating\.style\.maxHeight/);
   assert.match(position,/style\.maxHeight = `\$\{Math\.max\(0, fits \? whole : room\)\}px`;\s*restoreScroll\(scrolled\);/);
   assert.ok(position.includes("node.scrollTo({top, left, behavior: 'instant'})"));
+  // After a fit the option the keyboard is on is in view again.
+  const portal=await read('src/component/dropdown/portal.js');
+  assert.match(portal,/state\.anchor\.update\(\)\.then\(\(\) => \{[\s\S]*?active\.scrollIntoView\(\{block: 'nearest', inline: 'nearest', behavior: 'instant'\}\)/);
   const manifest=JSON.parse(await read('src/smart/dropdown/component.json'));
   assert.equal(manifest.keyboard.host.PageDown,'step:+page');
   assert.equal(manifest.accessibility.keys.PageUp,'step:-page');
