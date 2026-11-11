@@ -663,7 +663,7 @@ class SfTabs extends TabsElement {
     const more = this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-more');
     if (!list) return;
     const hosts = Array.from(list.children).filter((element) => Number.isInteger(tabIndexOf(element)));
-    for (const host of hosts) host.classList.remove('sf-tabs-overflowed');
+    for (const host of hosts) host.classList.remove('sf-tabs-overflowed', 'sf-tabs-squeezed');
     this._overflowed = [];
     const container = list.parentElement;
     const showMore = (shown) => {
@@ -713,16 +713,29 @@ class SfTabs extends TabsElement {
         const index = tabIndexOf(hosts[at]);
         return index === this.activeIndex || items[index]?.pinned === true;
       });
+      const activeAt = hosts.findIndex((host) => tabIndexOf(host) === this.activeIndex);
+      const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
       const missing = must.filter((at) => !kept.includes(at));
       if (missing.length) {
-        const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
         const next = [...kept, ...missing];
         while (span(next) > room() + 0.5) {
-          const dropAt = next.slice().reverse().find((at) => !must.includes(at));
+          // The last kept tabs that are neither pinned nor current go first;
+          // then, when the pinned tabs and the current one still do not fit
+          // beside «Ещё», a pinned tab gives way to the current one, the last
+          // pinned first (contract call on the C54 return D1, 2026-11-11: a
+          // pinned first tab and a current sixth one stood clipped, the
+          // current one under the trigger, in 300-430 px boxes).
+          const dropAt = next.slice().reverse().find((at) => !must.includes(at))
+            ?? next.slice().reverse().find((at) => at !== activeAt);
           if (dropAt === undefined) break;
           next.splice(next.indexOf(dropAt), 1);
         }
         kept = next.sort((a, b) => a - b);
+      }
+      // The current tab alone is wider than the row: it alone may be
+      // shortened, with an ellipsis; every other tab is whole or in «Ещё».
+      if (kept.length === 1 && kept[0] === activeAt && span(kept) > room() + 0.5) {
+        hosts[activeAt].classList.add('sf-tabs-squeezed');
       }
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes

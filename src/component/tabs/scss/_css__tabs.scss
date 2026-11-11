@@ -475,6 +475,23 @@
     flex: none;
   }
 
+  // The current tab alone wider than the row beside «Ещё» (C54 return D1): it
+  // alone is shortened, its words cut with an ellipsis; every other tab is
+  // whole or in «Ещё». The host is display: contents, so the button is the
+  // row's flex item.
+  .sf-tabs-top > .sf-tabs-squeezed > button {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-tabs-top > .sf-tabs-squeezed .sf-button-text-container {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   // «Ещё (n)» is one line, a control of the tabs' size like a tab.
   .sf-tabs-more > button {
     white-space: nowrap;
