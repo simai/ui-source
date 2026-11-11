@@ -125,7 +125,7 @@
 .sf-lookup.sf-lookup--filled .sf-lookup-frame {
   --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-container));
   --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-lookup:not(.error):not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
@@ -175,17 +175,17 @@
 }
 
 .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
-  --sf-on-surface-variant: var(--sf-on-disable);
+  --sf-on-surface-variant: var(--sf-on-surface-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--bordered .sf-lookup-frame {
-  --sf-lookup--border-color: var(--sf-outline-disable);
+  --sf-lookup--border-color: var(--sf-outline-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--filled .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-disable);
+  --sf-lookup--background-color: var(--sf-surface-disabled);
 }
 
 /* The search box: the field's text, inset as sf-input's value is. */
@@ -210,8 +210,19 @@
   opacity: 1;
 }
 
-/* A filled lookup keeps the placeholder on on-surface-variant, which the fill
-   remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
+/* A filled lookup's placeholder is the place's dim ink, as sf-input's filled
+   one is (forms batch round 2, item C, with C41): the frame re-declares
+   --sf-on-surface-variant as the ink on a fill, so the place's value is kept
+   on the host, above the frame. A strong coloured place keeps its full ink
+   there (--sf-place--fill-placeholder). Only the value is on-surface (FA-08);
+   a disabled field keeps the disabled ink. */
+.sf-lookup.sf-lookup--filled {
+  --sf-lookup--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+}
+
+.sf-lookup.sf-lookup--filled:not(.sf-lookup--disabled) .sf-lookup-input::placeholder {
+  color: var(--sf-lookup--place-variant);
+}
 
 .sf-lookup .sf-lookup-input:disabled {
   color: inherit;
