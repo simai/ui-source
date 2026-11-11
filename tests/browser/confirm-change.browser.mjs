@@ -20,11 +20,15 @@ const out = resolve(process.argv[2]);
 const styles = [
   'core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/buttons/css/buttons.css',
+  'smart/smart/change/css/change.css',
   'smart/smart/confirm-change/css/confirm-change.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js',
+  // The values are sf-change's list (sf-confirm-change 1.7.0, C40): the Loader
+  // brings it on a real page; here it is added like the others.
+  'smart/smart/change/js/change.js',
   'smart/smart/confirm-change/js/confirm-change.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));

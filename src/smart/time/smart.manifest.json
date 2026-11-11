@@ -195,11 +195,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/time/index.js",
-        "sha256": "a502a53c219a88d25c04cdf58e76695e3f1521632299cbe338615f0faa96fd71"
+        "sha256": "a2150c59a6c5b31f1d802fc623b33b00fcea287798c52e7cbd9425cca0ca8a0e"
       },
       {
         "path": "src/smart/time/js/templates/default.js",
-        "sha256": "aadb61a70cd96101c399eb70ff9bce66f1ed9cc12011d4f79eeb837e09e51253"
+        "sha256": "1d024f12608ece73c58b9f3c95ca99cb09f0931f6815bc68d97bc238bec37535"
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",

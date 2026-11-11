@@ -318,11 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "d21bf6c804d4ae22d6eaa915053cfcf6a767f2e8e8c43c38ac8d8b21bba0a6b8"
+        "sha256": "7dfd17444171960b4acbe6624de44944c270cbceba3f3637e5748ff3da5f5a7a"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "43c5389a69797ccb7921e34df9e5df8c285d8b6489869c47e0314fb0d633a0eb"
+        "sha256": "f948cf4fe331c07a506fc093f0acb85a6ac4602a01457734679ba01489f8b880"
       },
       {
         "path": "src/smart/list-timeline/js/fold-runs.mjs",

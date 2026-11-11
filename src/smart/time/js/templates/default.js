@@ -18,7 +18,7 @@ export function renderTimeTemplate(context) {
   const {said} = context;
   if (!said) return nothing;
   const classes = ['sf-time', said.relative ? 'sf-time--relative' : '', context.rootClass].filter(Boolean).join(' ');
-  if (!context.tooltip) {
+  if (!context.hasTip) {
     return html`<time class=${classes} datetime=${said.iso}>${said.shown}</time>`;
   }
   return html`<span class="sf-time-anchor sf-tooltip-anchor"><time class=${classes} datetime=${said.iso}

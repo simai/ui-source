@@ -451,7 +451,7 @@
           "covers": "settings.items change, relations cl-change",
           "steps": [
             {
-              "check": "(() => { const change = document.querySelector('#order [data-id=status] .sf-list-timeline-head sf-change'); const after = change && change.querySelector('.sf-change__after'); return Boolean(after) && after.textContent === 'Передан в доставку' && change.querySelector('.sf-change__before').textContent === 'Собран' && !change.querySelector('.sf-badge, s, del'); })()"
+              "check": "(() => { const read = (node) => node && node.textContent.replace(/\\u00a0/gu, ' ').replace(/\\u2060/gu, ''); const change = document.querySelector('#order [data-id=status] .sf-list-timeline-head sf-change'); const after = change && change.querySelector('.sf-change__after'); return Boolean(after) && read(after) === 'Передан в доставку' && read(change.querySelector('.sf-change__before')) === 'Собран' && !change.querySelector('.sf-badge, s, del'); })()"
             }
           ]
         },

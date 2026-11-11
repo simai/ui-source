@@ -57,7 +57,7 @@ function title(context, item) {
 
 function meta(context, item) {
   const time = item.iso
-    ? html`<sf-time class="sf-list-timeline-time" datetime=${item.iso} format=${context.timeFormat} now=${context.now || nothing}></sf-time>`
+    ? html`<sf-time class="sf-list-timeline-time" datetime=${item.iso} format=${context.itemFormat} now=${context.now || nothing}></sf-time>`
     : nothing;
   const words = item.kind === 'comment' ? '' : item.text;
   if (!item.iso && !words) return nothing;

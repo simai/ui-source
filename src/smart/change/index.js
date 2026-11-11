@@ -120,7 +120,8 @@ class SfChange extends ChangeElement {
       ...this.getPropsContext(),
       component: this,
       layout,
-      changes,
+      // rows, not changes: the changes prop keeps its own value ([]) in the context.
+      rows: changes,
       pair,
       empty,
       folded,
