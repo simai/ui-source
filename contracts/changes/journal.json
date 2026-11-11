@@ -9934,7 +9934,7 @@
       "recorded_on": "2026-11-11",
       "stage": "compat",
       "kind": "global",
-      "summary": "SF.whenDefine is the older name of SF.whenDefined (a promise of a Smart element's definition, loading it when the page has not). It keeps working as a dated alias of the same function until the sweep, and every read is noted in SF.deprecations (dispatcher, D17 follow-up, 2026-11-11: the documentation lists one name).",
+      "summary": "SF.whenDefine is the older name of SF.whenDefined (a promise that settles when the named Smart elements are defined, with their tag names). It keeps working as a dated alias of the same function until the sweep, and every read is noted in SF.deprecations (dispatcher, D17 follow-up, 2026-11-11: the documentation lists one name).",
       "items": [
         {
           "from": "SF.whenDefine",
