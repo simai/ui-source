@@ -157,7 +157,7 @@
       "covers": "settings.target default, settings.download, settings.file-name default, settings.file-type",
       "steps": [
         {
-          "check": "(() => { const a = document.querySelector('#d-plain a.sf-download-file'); return a && !a.hasAttribute('target') && a.getAttribute('download') === 'Состав.csv' && a.querySelector('.sf-download-file__name').textContent === 'Состав.csv' && document.querySelector('#d-tab .sf-download-file__type').textContent === 'PDF' && document.querySelector('#d-tab .sf-download-file__size').textContent === '84 КБ'; })()"
+          "check": "(() => { const a = document.querySelector('#d-plain a.sf-download-file'); return a && !a.hasAttribute('target') && a.getAttribute('download') === 'Состав.csv' && [...a.querySelector('.sf-download-file__name').childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim() === 'Состав.csv' && document.querySelector('#d-tab .sf-download-file__type').textContent === 'PDF' && document.querySelector('#d-tab .sf-download-file__size').textContent === '84 КБ'; })()"
         }
       ]
     },

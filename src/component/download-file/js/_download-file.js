@@ -185,6 +185,15 @@ function getSizeNode(root) {
 // A file's own row, the link or the button: a row that cannot be pressed (a
 // file that could not be made, or one ready to be fetched by its «Скачать»)
 // is a group or a plain line, and is not bound.
+// The name as shown: the name element less the words a screen reader hears
+// inside it («, CSV, 112 байт»).
+function shownFileName(node) {
+  if (!node) return '';
+  const copy = node.cloneNode(true);
+  copy.querySelectorAll('.sf-download-file__said').forEach((said) => said.remove());
+  return String(copy.textContent || '').trim();
+}
+
 function isPressableRoot(root) {
   return Boolean(root?.matches?.('a, button'));
 }
@@ -266,7 +275,7 @@ function bindDownloadFile(root, {onActivate, onSize} = {}) {
     const fileName =
       root.getAttribute('download') ||
       root.dataset.fileName ||
-      root.querySelector('.sf-download-file__name, .sf-download-file-file-name')?.textContent?.trim() ||
+      shownFileName(root.querySelector('.sf-download-file__name, .sf-download-file-file-name')) ||
       '';
     const download =
       root.hasAttribute('download') || root.dataset.download === 'true';
