@@ -16,6 +16,9 @@ a real destination or action.
 - state: online/offline indicator and company/verification badge. The
   offline dot is the disabled ink laid over the colour of the place the
   avatar stands on (C43), so a photo or the initials do not show through it.
+  The dot lies over the nearest opaque place
+  (`--sf-surface-place-ground`), so on a soft coloured place
+  (`bg-<colour>-container`) the dot is that place's colour, opaque.
   Its two layers are public variables: `--sf-avatar-offline-background-color`
   (default `var(--sf-surface-place)`) and `--sf-avatar-offline-overlay`
   (default `linear-gradient(var(--sf-on-surface-disabled) 0 0)`). For a dot of

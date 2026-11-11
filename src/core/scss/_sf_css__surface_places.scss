@@ -26,6 +26,10 @@
     backdrop-filter: blur(var(--sf-blur-large));
     --sf-surface-place: var(--sf-surface-media);
     --sf-surface-place-solid: initial;
+    // Under glass is a picture, not a place: the ground is black, the opaque
+    // base of the glass tone (black at 48), so a cut-out on glass -- the
+    // avatar's status dot -- is dark glass, not the photo (DEV, 2026-11-11).
+    --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
     --sf-on-surface: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);

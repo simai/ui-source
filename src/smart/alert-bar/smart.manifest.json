@@ -320,7 +320,7 @@
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "e96b661b84b32477e1890cc64bdd1343b76952944f83f8820be9979e81976c1d"
+        "sha256": "67e7f573dfd80253b312c6e507b3fea0a66c12bdd954caf675b98ded3bb1a7c4"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
