@@ -56,10 +56,13 @@ yet):
 - The row is as wide as its text (`inline-size: fit-content`, up to its
   container); `--full-width` (the class and the `fullWidth` parameter) fills
   the container, the look before.
-- `__text` holds the name and, right after it, `__meta` (type and size); below
-  the `sm` step (32rem) `__meta` goes under the name, a step smaller. The name
-  is never cut: it wraps (`overflow-wrap: anywhere`), the ellipsis and the
-  `title` are gone.
+- `__text` holds the name and, right after it, `__meta` (type and size). When
+  the row has no room for both on one line, `__meta` goes under the name: the
+  row's own width decides, so a file in a narrow column of a wide screen does
+  the same. Below the `sm` step (32rem, a phone) it is always under the name,
+  a step smaller. The name is never cut: it wraps on its spaces and narrows to
+  its longest word, never to letters (`overflow-wrap: break-word`); the
+  ellipsis and the `title` are gone.
 - `__said` is the hidden words a screen reader hears after the name, «, CSV,
   112 байт» with the unit in words; `__meta` is `aria-hidden`. The words come
   from `fileSaid(type, size, node)` and `spokenFileSize(text, node)`.

@@ -128,24 +128,33 @@
     font: inherit;
   }
 
-  /* The name and, right after it, the type and the size (decision C51). */
+  /* The name and, right after it, the type and the size (decision C51) --
+     under it when the row has no room for both on one line: the row's own
+     width decides, not the screen's (acceptance 2026-11-11 D1, D2). The
+     facts move first; the name then wraps on its spaces. */
   .sf-download-file :where(.sf-download-file__text) {
     display: flex;
     flex: 0 1 auto;
+    flex-wrap: wrap;
+    row-gap: var(--sf-0);
     align-items: baseline;
     gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
     min-inline-size: var(--sf-0);
   }
 
   /* The name is never cut (decisions C34, C51): it wraps on its spaces, and
-     inside a word only when the word is wider than the row. The row keeps its
-     control height while the name fits one line. */
+     inside a word only when the word alone is wider than the row. Its
+     narrowest is its longest word (break-word, not anywhere): with anywhere
+     the name could be squeezed to a few letters a line beside the facts -- 8
+     lines in a 200 px box at 1440 (acceptance 2026-11-11 D1), «Смета. / csv»
+     beside «Не удалось собрать» at size 3 (D2). The row keeps its control
+     height while the name and the facts fit one line. */
   .sf-download-file :where(.sf-download-file__name, .sf-download-file-file-name) {
     flex: 0 1 auto;
     min-inline-size: var(--sf-0);
     white-space: normal;
     word-break: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
@@ -159,8 +168,10 @@
      «PDF · 2,4 МБ». The dot stands only between two of them. */
   .sf-download-file :where(.sf-download-file__meta) {
     display: inline-flex;
-    flex: none;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
     align-items: baseline;
+    min-inline-size: var(--sf-0);
     gap: var(--sf-space-1\/4);
     color: var(--sf-on-surface-variant);
     white-space: nowrap;
@@ -171,16 +182,11 @@
      fell to 0-6 px in a 160-200 px cell and the status stood past the box.
      Now the status keeps its line beside the name while both fit, and moves
      under the name when they do not -- a whole line of the size's text, no
-     row gap -- as C51 puts the facts under the name on a narrow screen. The
+     row gap -- as every row's facts do now (the text wraps, above). The
      name takes its own width, not a floor: a floor (--sf-e8) as its basis
      made the row two lines tall where one fitted, and in the phone's column
      a basis is a height (probe 2026-11-11: 44 for 28 at size 1/3, 168 tall
      at 390). */
-  .sf-download-file.sf-download-file--preparing :where(.sf-download-file__text) {
-    flex-wrap: wrap;
-    row-gap: var(--sf-0);
-  }
-
 
   .sf-download-file.sf-download-file--preparing :where(.sf-download-file__meta) {
     flex: 0 1 auto;

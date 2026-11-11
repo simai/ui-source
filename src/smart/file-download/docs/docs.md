@@ -18,8 +18,11 @@ shows the `open_in_new` sign after the name and tells a screen reader
 
 The row is as wide as its text, up to its container; `full-width` stretches it
 to the container. The type and the size stand right after the name
-(«Смета.csv  CSV · 112 Б»); below the `sm` step (32rem, a phone) they go under
-the name, a step smaller. The name is never cut: it wraps whole. The row keeps
+(«Смета.csv  CSV · 112 Б»), and under it when the row has no room for both
+on one line -- the row's own width decides, a narrow column of a wide screen
+too; below the `sm` step (32rem, a phone) they are always under the name, a
+step smaller. The name is never cut and never broken inside a word while the
+facts can move under it: it wraps on its spaces. The row keeps
 the height of an `sf-button` of the same size while the name fits one line.
 
 A screen reader hears «Смета.csv, CSV, 112 байт»: the commas are pauses and the

@@ -51,14 +51,17 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(runtime, /function isSameDocument\(href\)/);
   // L3: while preparing, the status shrinks beside the name and wraps on whole lines.
   assert.match(css, /\.sf-download-file\.sf-download-file--preparing :where\(\.sf-download-file__meta\) \{[^}]*white-space: normal;/);
-  assert.match(css, /\.sf-download-file\.sf-download-file--preparing :where\(\.sf-download-file__text\) \{[^}]*flex-wrap: wrap;/);
+  // C51 return D1/D2: every row's facts go under the name when the row has no room (its own width decides).
+  assert.match(css, /\.sf-download-file :where\(\.sf-download-file__text\) \{[^}]*flex-wrap: wrap;/);
   assert.match(css, /\.sf-download-file:focus-visible/);
   // C51: the row is as wide as its text (full-width fills), the name is
   // never cut -- it wraps -- and the type and size go under it on a phone.
   assert.match(css, /inline-size: fit-content;/);
   assert.match(css, /\.sf-download-file\.sf-download-file--full-width \{\s*inline-size: 100%;/);
   assert.doesNotMatch(css, /text-overflow: ellipsis|word-break: break-all/);
-  assert.match(css, /overflow-wrap: anywhere;/);
+  // A name narrows to its longest word, never to letters (C51 return D1).
+  assert.match(css, /overflow-wrap: break-word;/);
+  assert.doesNotMatch(css, /overflow-wrap: anywhere;/);
   assert.match(css, /@media \(max-width: map\.get\(bp\.\$breakpoint-array, sm\)\)/);
   // What a screen reader hears: the hidden words, the seen facts aria-hidden.
   assert.match(runtime, /function spokenFileSize\(text, node = null\)/);
