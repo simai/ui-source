@@ -120,12 +120,12 @@
    every size, so a spinner in place of an icon changes nothing around it. The
    badge sheet draws the slot on its own, so the box is right before the spinner
    sheet has arrived; the arc then draws still from the drawing's own attributes.
-   The track is the ink at the sheet's faint opacity, as it is before the sheet:
-   the Framework's surface-coloured track would vanish on a tonal badge. */
+   The track is the spinner's own, the ink at 16 % (spinner sheet, DEV J1/S1);
+   it was the ink under the sheet's opacity of 30 %, which the sheet no longer
+   sets. */
 .sf-badge .sf-badge-spinner {
   --sf-loader-svg-width: var(--sf-badge-spinner--size);
   --sf-loader-svg-height: var(--sf-badge-spinner--size);
-  --sf-loader-track-color: var(--sf-spinner-track-color, currentColor);
   display: inline-flex;
   flex: none;
   inline-size: var(--sf-badge-spinner--size);

@@ -123,10 +123,8 @@
     /* The icon's colour (C36 follow-up): the spinner stands where the icon
        stood and reads the same variables the icon does. */
     color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
-    /* The background ring is the spinner's own ink at 16 % (the fill family of
-       the alpha scale), drawn whole, so it shows on every fill; a page's
-       --sf-spinner-track-color still wins (DEV look call on C36). */
-    --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+    /* The background ring is the spinner's own: that ink at 16 %, drawn whole
+       (spinner sheet, DEV J1/S1); the button sets only the colour. */
   }
 
   .sf-icon-button .sf-icon-button-spinner .sf-loader-ring-filled {

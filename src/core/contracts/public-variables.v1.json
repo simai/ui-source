@@ -2495,8 +2495,8 @@
         {
           "name": "--sf-spinner-track-color",
           "role": "stroke",
-          "summary": "The ring under the arc.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The ring under the arc, colour and alpha together: the ring has no opacity of its own.",
+          "default": "color-mix(in srgb, currentColor 16%, transparent)",
           "since": "2026-10-27"
         },
         {
@@ -2529,8 +2529,8 @@
         {
           "name": "--sf-spinner-text-color",
           "role": "color",
-          "summary": "The words under the drawing.",
-          "default": "var(--sf-on-surface)",
+          "summary": "The words under the drawing: the ink of the place, the on-colour of the fill under the spinner.",
+          "default": "currentColor",
           "since": "2026-10-27"
         }
       ]

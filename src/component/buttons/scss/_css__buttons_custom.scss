@@ -99,11 +99,8 @@
      spinner too, so a loading button's spinner is the colour of its label on
      every appearance and scheme. */
   color: var(--sf-loader--color, var(--sf-button-text-container--color, currentColor));
-  /* The background ring is the label's ink at 16 % (the fill family of the
-     alpha scale), drawn whole, so it shows on a light filled button in dark as
-     on every other fill; a page's --sf-spinner-track-color still wins (DEV
-     look call on C36). */
-  --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+  /* The background ring is the spinner's own: that ink at 16 %, drawn whole
+     (spinner sheet, DEV J1/S1); the button sets only the colour. */
 }
 
 .sf-button .sf-button-spinner .sf-loader-ring-filled {

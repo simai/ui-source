@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.spinner",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "title": "Spinner",
   "summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
   "kind": "smart",
@@ -276,7 +276,7 @@
       },
       {
         "path": "src/smart/spinner/docs/docs.md",
-        "sha256": "208b10cd96ca924d22c0e0da162bc4e8d20c340880562e82f715b03e6cd25b03"
+        "sha256": "d5652898b85b7332ad6eed4727c4e1a6c065e417181240be33a7a56142ffda96"
       }
     ],
     "generated_runtime": [

@@ -7,7 +7,13 @@
   /* The colour is the current ink unless --sf-loader--color is set on the
      spinner or any ancestor: inside a button it is the button's ink. The
      Framework never sets it (simai/ui-source#10; it was primary before). */
-  --sf-loader-track-color: var(--sf-spinner-track-color, var(--sf-surface-container));
+  /* The ring under the arc is the spinner's own ink at 16 % (the fill family
+     of the alpha scale), drawn whole: the variable carries the alpha, the
+     ring has no opacity of its own (DEV J1/S1, 2026-11-11). It was
+     --sf-surface-container under an opacity of 30 %, about 5 % of grey, and
+     could not be seen; a button's ring was already this. A page's
+     --sf-spinner-track-color sets colour and alpha together. */
+  --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
   /* The size ladder (simai/ui-source#10): at each step the spinner is exactly
      the icon of a button of the same size, so it can stand in for that icon in
      a button, a field, a chip or a menu item. Step 1 when none is written. */
@@ -38,7 +44,10 @@
   font-family: var(--sf-text--family);
   font-weight: 400;
   font-size: var(--sf-loader-text-size);
-  color: var(--sf-spinner-text-color, var(--sf-on-surface));
+  /* The words take the ink of the place, the on-colour of the fill under the
+     spinner (DEV J1/S1): on-surface on a page, on-primary on a primary plate.
+     --sf-spinner-text-color still sets them apart. */
+  color: var(--sf-spinner-text-color, currentColor);
 }
 
 .sf-loader-container.sf-loader--size-1\/3 {
