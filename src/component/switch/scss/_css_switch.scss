@@ -164,6 +164,10 @@
 
 .sf-switch:has(input:checked):not(:has(input:disabled)) .sf-switch-toggler {
   --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
+  /* The edge takes the fill: an on switch is one primary pill. The outline
+     drew a grey ring around the primary track (docs pre-check 2026-11-10
+     SW-05); a pointer over it still shows the hover edge below. */
+  --sf-switch-toggler--border-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 
 /* The track stands as tall as the line of its size, which is the rule the

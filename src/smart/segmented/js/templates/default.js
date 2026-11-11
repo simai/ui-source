@@ -98,6 +98,29 @@ function renderSegment(item, context) {
   `;
 }
 
+// The labels do not fit on one line (owner decision C47 C): the same choice as
+// an sf-dropdown of the same size, which shows the chosen value. Its keys are
+// the dropdown's (ArrowDown opens, Enter chooses); its change is taken by the
+// host, which sends its own change once, as a segment press does.
+function renderFolded(context) {
+  return html`
+    <div class="sf-button-group-narrow">
+      <sf-dropdown
+        size=${context.foldedSize}
+        appearance="outlined"
+        mode="select"
+        .search=${false}
+        value=${context.value || nothing}
+        aria-label=${context.ariaLabel || nothing}
+        ?disabled=${context.disabled}
+        .options=${context.foldedOptions}
+        @change=${(event) => context.component.handleFoldedChange(event)}
+        @input=${(event) => event.stopPropagation()}
+      ></sf-dropdown>
+    </div>
+  `;
+}
+
 // The track (appearance track, the default since 1.4.0) draws native buttons
 // on a translucent track and one plate element under the selected option: the
 // element measures the option after each render and the plate slides to it
@@ -117,6 +140,7 @@ export function renderButtonGroupTemplate(context) {
     segmented ? `sf-button-group--${context.scheme}` : '',
     backdrop ? `sf-button-group--backdrop-${backdrop}` : '',
     segmented && context.fullWidth ? 'sf-button-group--full-width' : '',
+    segmented && context.folded ? 'sf-button-group--folded' : '',
     context.radius ? `sf-button-group--radius-${context.radius}` : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
@@ -126,6 +150,8 @@ export function renderButtonGroupTemplate(context) {
       class=${classes}
       style=${context.rootStyle || nothing}
       role="radiogroup"
+      ?inert=${Boolean(segmented && context.folded)}
+      aria-hidden=${segmented && context.folded ? 'true' : nothing}
       aria-label=${context.ariaLabel || nothing}
       aria-orientation=${context.orientation}
       data-value=${context.value || ''}
@@ -133,6 +159,7 @@ export function renderButtonGroupTemplate(context) {
       ${segmented ? html`<span class="sf-button-group-plate" aria-hidden="true"></span>` : nothing}
       ${context.entries.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
     </div>
+    ${segmented && context.folded ? renderFolded(context) : nothing}
     ${context.hiddenName
       ? html`<input class="sf-button-group-input" type="hidden" name=${context.hiddenName} value=${context.value || ''} ?disabled=${context.disabled}>`
       : nothing}

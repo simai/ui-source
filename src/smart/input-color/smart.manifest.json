@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -104,7 +104,7 @@
       "label": {
         "type": "string",
         "default": "",
-        "description": "The accessible name of the control. With variant theme it names the icon button; unset, the page's language says \"Theme colour\"."
+        "description": "The field's label, drawn above the row as sf-input's label and naming the colour input (1.6.0). For a name without a visible label, write aria-label."
       },
       "choose-label": {
         "type": "string",
@@ -372,7 +372,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "c5f4932847aba6b9d2bcd29e51d8004c6338b08186d310e219c0322f5d8fdbcd"
+        "sha256": "79005551c6c074c904f8b9c93cfcd31d9f9468402dbd71a4d7b266cbd18c22f5"
       },
       {
         "path": "src/smart/input-color/rule.js",
@@ -380,11 +380,11 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "10c18efa13ad9d5c2c8393125ea5a8e794f96ab8c9c65125bb8c739665113167"
+        "sha256": "39b51abb049ae42ca889b15c19148c5d4c61dd521698c87472d45f2a52e44a40"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "7b232e0dc96cad9055835a72a39bc41b0bb45fef24f0fe7a42d547d3ee4f0167"
+        "sha256": "6a5d490524d106cba3a0925652e3844c757c22bd3dd65522c65ced4264979928"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

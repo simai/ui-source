@@ -10159,6 +10159,74 @@
       },
       "owner": "ui-source",
       "source": "src/component/buttons/scss/_css__buttons.scss; src/smart/button/js/templates/default.js; ui-control control/docs-review/decisions.md C15"
+    },
+    {
+      "id": "attribute-input-country-presence-booleans",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-input-country 1.3.0: four settings that are on by default were switched off by the string \"false\", which is not an HTML boolean (docs pre-check 2026-11-10 CC-05). Each has a presence form: multi-country=\"false\" is fixed-country, use-country-masks=\"false\" is fixed-mask, show-code=\"false\" is hide-code, lazy-flags=\"false\" is eager-flags. The string forms keep working until remove_after and are noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-input-country",
+          "from": "multi-country=\"false\"",
+          "to": "fixed-country",
+          "match": "multi-country=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "use-country-masks=\"false\"",
+          "to": "fixed-mask",
+          "match": "use-country-masks=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "show-code=\"false\"",
+          "to": "hide-code",
+          "match": "show-code=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "lazy-flags=\"false\"",
+          "to": "eager-flags",
+          "match": "lazy-flags=[\"']false[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace each string form by its presence attribute: multi-country=\"false\" by fixed-country, use-country-masks=\"false\" by fixed-mask, show-code=\"false\" by hide-code, lazy-flags=\"false\" by eager-flags. multi-country=\"true\" and the like are the defaults and are simply removed.",
+      "examples": {
+        "before": "<sf-input-country iso2=\"RU\" multi-country=\"false\" use-country-masks=\"false\"></sf-input-country>",
+        "after": "<sf-input-country iso2=\"RU\" fixed-country fixed-mask></sf-input-country>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-country/index.js"
+    },
+    {
+      "id": "behaviour-input-color-visible-label",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-color 1.6.0 draws its label: `label` is shown above the row in the field label look of sf-input (dispatcher decision a, docs pre-check 2026-11-10 FB-10). It only named the colour input before, so a page that printed its own caption and passed the same words in label now shows them twice; a colour in a cell, a record panel or a toolbar that only needs a name passes aria-label instead.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "attribute": "label",
+          "from": "label as the accessible name only",
+          "to": "aria-label"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a colour needs a name and no visible label (a table cell, a record panel that draws the label beside it, a toolbar), write aria-label=\"…\" in place of label=\"…\". Where the page drew its own caption above the colour, remove the caption and keep label.",
+      "examples": {
+        "before": "<sf-input-color slot=\"tools\" label=\"Основной цвет сайта\"></sf-input-color>",
+        "after": "<sf-input-color slot=\"tools\" aria-label=\"Основной цвет сайта\"></sf-input-color>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-color/js/templates/default.js"
     }
   ]
 }

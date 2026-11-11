@@ -65,8 +65,11 @@
 
   /* The status icon is the line's size (C22: an icon follows its text), as
      in a button: 24, compact and phone 20. --sf-icon-size-3 stays 24 on the
-     phone, where the line is 20, so it is not the step here. */
-  .sf-toast .sf-icon,
+     phone, where the line is 20, so it is not the step here. Like the
+     status colour below, only the notice's own icon: an icon button inside
+     keeps its own glyph size (review R-N1). */
+  .sf-toast > .sf-icon,
+  .sf-toast > sf-icon > .sf-icon,
   .sf-toast > sf-icon:not(:defined) {
     --sf-icon--font-size: var(--sf-text-height-1);
     --sf-icon--height: var(--sf-text-height-1);

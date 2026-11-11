@@ -741,7 +741,7 @@
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "ccdcea51eceeb3b0901b9ff3ad829cdb003b4cc4e0938eb0b77aa7110336bcd9"
+        "sha256": "591070ea8d35cfdca7d0f16ab68898247dfc1be1508d0b42f56327fe9612606e"
       },
       {
         "path": "src/smart/input-date/rule.js",

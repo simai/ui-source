@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "title": "Theme generator",
   "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
@@ -451,11 +451,11 @@
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
-        "sha256": "a909eabf6d17011d43a1626d9f8cb2bdb904fbd31ee0776cc21a462bd6672c7a"
+        "sha256": "b53ae97edfc135c0027aa10a587089ab2d8ef97cd9b869a3585d00c13e81a101"
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "174a67a4865f5b445ab65dd9244617ce0464404dc95b6ac625f33e98ddef8ab7"
+        "sha256": "9cada5060f71a2c55970f3ce397ea551f3e596beb382e826072334c921ffbc73"
       },
       {
         "path": "src/smart/theme-generator/rule.js",

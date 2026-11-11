@@ -4,7 +4,7 @@ import { renderInheritedSlot } from '../../../helpers/inherited-value';
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
 
-  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, 'flex', context.rootClass];
+  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, context.short ? 'sf-switch--short' : '', 'flex', context.rootClass];
 
   const labelContent =
     context.component?.hasSlotContent?.('label')

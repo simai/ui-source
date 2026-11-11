@@ -3,6 +3,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { resolveCheckboxIcon } from '../../component/checkbox/js/_checkbox';
 import { renderCheckboxTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
+import { CHECKBOX_TEXT_PARTS, linkCheckableText } from '../../component/checkable-text-helper';
 import { FormField, innerControlName } from '../helpers/form-field';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -71,6 +72,9 @@ class SfCheckbox extends FormField(CheckboxElement) {
     if (!input) return;
 
     this.syncInputState(input);
+    // The class binding is skipped inside sf-checkbox; the name and the
+    // description are linked here the same way.
+    linkCheckableText(this.querySelector('.sf-checkbox'), CHECKBOX_TEXT_PARTS);
     this._releaseReset?.();
     this._releaseReset = bindCheckableReset(this, input);
 

@@ -62,7 +62,10 @@
   outline-offset: var(--sf-focus--offset);
 }
 
-.sf-verification-cell.current { border-color: var(--sf-primary); }
+/* The cell the next character goes to is marked only while the field has the
+   focus: a field at rest drew a primary cell, so three fields on one page all
+   looked focused (docs pre-check 2026-11-10 CI-02). */
+.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current { border-color: var(--sf-primary); }
 
 .sf-verification--filled .sf-verification-cell,
 .sf-verification-form--filled .sf-verification-form-wrap .sf-verification {
@@ -126,7 +129,6 @@
 
   /* The cell the next character goes to. In a filled field the fill rule came
      after .current and took its border away, so the caret had no place. */
-  .sf-verification--filled:not(.error) .sf-verification-cell.current,
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
   .sf-verification-form--filled:not(.error):has(input:enabled:focus) .sf-verification-form-wrap .sf-verification:has(input:focus) {
     border-color: var(--sf-primary);

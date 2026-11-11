@@ -78,3 +78,5 @@ component's item state. A shared external data-target is not cleared by cloning.
 
 This checkpoint does not certify full upload accessibility, transport/security,
 native form submission or every custom composition.
+
+A chosen file's size is written by the core formatFileSize in the page's language («342 КБ», «342 KB»), not «342KB» (1.1.2, C25, FU-01). The glyphs of the zone and the rows are aria-hidden: their ligature names were read as text (FU-03).

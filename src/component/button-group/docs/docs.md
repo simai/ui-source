@@ -27,3 +27,5 @@ orientation только для ролей, которые её поддержи
 границей `--sf-px`, внешний радиус наследуется от Button и UI radius. Pointer
 focus не оставляет кольца; `:focus-visible` рисует inset focus token внутри
 сегмента и не перекрывает соседей.
+
+A segmented track is as wide as its labels (owner decision C47 A, 1.3.0): in full-width each segment starts at its own width (flex 1 1 auto) and the rest is shared; a label stays on one line and is cut with «…» only as the last step. sf-segmented folds a track whose labels do not fit into an sf-dropdown (C47 C): .sf-button-group--folded and [data-sf-measure] lay the track out of sight at its one-line width for measuring; .sf-button-group-narrow holds the dropdown.

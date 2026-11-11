@@ -39,7 +39,7 @@
       "title": "Одна страна",
       "settings": {
         "label": "Телефон",
-        "multi-country": false,
+        "fixed-country": true,
         "iso2": "ru"
       },
       "expect": {

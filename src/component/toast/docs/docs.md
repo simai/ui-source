@@ -95,3 +95,7 @@ call returns `null` and warns in the console.
   toast. `SF.notifications.history()` lists the page's last fifty.
 
 The toast component is fetched the first time a message is raised.
+
+The line-size rule for icons reaches only the toast's own status icon, as its
+status colour does: an icon button inside the toast keeps its own glyph size
+(review R-N1, 2026-11-11).
