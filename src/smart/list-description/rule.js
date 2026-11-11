@@ -6,7 +6,10 @@ SF.RuleLoader['cl-list-description'] = {
   js: true,
   css: true,
   relation: [
+    { name: 'cl-badge' },
+    { name: 'cl-button' },
     { name: 'cl-button-copy' },
+    { name: 'cl-help-mark' },
     { name: 'cl-icon' },
     { name: 'sr-only/default' },
   ],

@@ -83,10 +83,12 @@ const sfBadgeMeta = {
         "waiting",
         "done",
         "stopped",
-        "failed"
+        "failed",
+        "paused",
+        "queued"
       ],
       "default": "",
-      "description": "Where a run stands: running draws a spinner in the icon's place, waiting, done, stopped and failed an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it."
+      "description": "Where a run stands: running draws a spinner in the icon's place, waiting (needs a person's input), done, stopped, failed, paused (stopped and will go on) and queued (in a queue) an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it."
     },
     "compact": {
       "kind": "boolean",

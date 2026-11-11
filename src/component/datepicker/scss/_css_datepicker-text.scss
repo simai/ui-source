@@ -23,7 +23,7 @@
 @layer sf.states {
   .sf-datepicker-text:not(:disabled):not(.disabled):hover {
     --sf-datepicker-text--background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-datepicker-text:focus:not(:focus-visible) {
@@ -41,8 +41,8 @@
   }
 
   .sf-datepicker-text:is(:disabled, .disabled) {
-    --sf-datepicker-text--background-color: var(--sf-surface-1);
-    --sf-datepicker-text--color: var(--sf-on-disable);
+    --sf-datepicker-text--background-color: var(--sf-surface-area);
+    --sf-datepicker-text--color: var(--sf-on-surface-disabled);
   }
 
   @media (forced-colors: active) {

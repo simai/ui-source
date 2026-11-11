@@ -73,7 +73,7 @@
   }
 
   .sf-link:is(.disabled, [aria-disabled='true']) {
-    --sf-link--color: var(--sf-on-disable);
+    --sf-link--color: var(--sf-on-surface-disabled);
     --sf-link--text-decoration: none;
 
     cursor: default;

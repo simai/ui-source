@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -138,7 +138,8 @@
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Accessible name for a field drawn without a visible label; it names the editing surface. A visible label wins."
       }
     },
     "additionalProperties": false
@@ -320,11 +321,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "acab015209ed9d5d7390b66fa53f9b289511a7371b7a5ecb49d2a2ba33d0cdb8"
+        "sha256": "6a17c9bfe30318649f0830457994e74928766b203cedf53b119604e8449a1902"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "7e2796621280c9a6c9dfe14a279bb314cda55cdff8137cc8be15b36d7d1e5c2d"
+        "sha256": "f38ff5a45934eecda496a22a19e11858beb531bcd7b9b11792af5668982b7021"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -336,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "1a9ff8f12f1b682e34c7f1c85e55734607998d6c941ea043ed87d23413aa9eeb"
+        "sha256": "97f2fcb0a688b2a74b47234650ddce0cf1d0b13aa9941ba87c2ebd9e01cbd8b4"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -344,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "cdb515e9eef2e215c4083c6849afdf51ff5fc6791351319b89c5ac73d898b163"
+        "sha256": "007820c4a44041aead00df94226772e00a7ca060e0445cc7f6cad7633148d4c4"
       }
     ],
     "generated_runtime": []

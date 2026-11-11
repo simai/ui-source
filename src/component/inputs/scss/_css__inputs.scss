@@ -72,10 +72,24 @@
     line-height: var(--sf-input-placeholder--line-height);
   }
 
-  // Interactive tonal backgrounds need the stronger foreground pair, including
-  // placeholder text. The variant role is too dim on dark filled hover states.
+  // A filled field keeps the placeholder on on-surface-variant: the fill remaps
+  // that role to on-surface-container--variant, the pair made for the
+  // container background. The value alone is on-surface, so a hint never reads
+  // as typed text (FA-08).
+  // The filled placeholder is the place's dim ink, as the bordered one is
+  // (forms batch round 2, item C, with C41; dispatcher 2026-11-10): the field
+  // re-declares --sf-on-surface-variant as the ink on a fill, so the place's
+  // value is kept on the field's host, above it. On the 8 % fill (C41) the
+  // dark 70 holds 4.65:1 on surface-3 and stands 1.77 from the value; the full
+  // ink (on-surface) gave the value's own tone. A strong coloured place keeps
+  // its full ink there (--sf-place--fill-placeholder): its dim ink over the
+  // fill stays under 4.5:1.
+  .sf-input.sf-input--filled {
+    --sf-input--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+  }
+
   .sf-input.sf-input--filled .sf-input-field input::placeholder {
-    --sf-input-placeholder--color: var(--sf-on-surface);
+    --sf-input-placeholder--color: var(--sf-input--place-variant);
   }
 
   .sf-input .sf-input-left {
@@ -346,20 +360,20 @@
   }
 
   .sf-input.sf-input--bordered:has(input:disabled) .sf-input-field {
-    --sf-input-field--border-color: var(--sf-outline-disable);
+    --sf-input-field--border-color: var(--sf-outline-disabled);
   }
 
   .sf-input.sf-input--bordered:has(input:disabled) input, .sf-input.sf-input--filled:has(input:disabled) input {
-    --sf-input-input--color: var(--sf-on-disable);
+    --sf-input-input--color: var(--sf-on-surface-disabled);
   }
 
   .sf-input.sf-input--filled:has(input:disabled) .sf-input-field {
-    --sf-input-field--background-color: var(--sf-disable);
+    --sf-input-field--background-color: var(--sf-surface-disabled);
   }
 
   .sf-input:not(.error).sf-input--filled:not(:has(input:disabled)) .sf-input-field {
     --sf-input-field--background-color: var(--sf-input-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-input-field--border-color: var(--sf-input-border-color, var(--sf-transparent-for-focus));
   }
 
@@ -372,15 +386,15 @@
   }
 
   .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
   .sf-input:has(input:disabled) .sf-input-field input::placeholder {
-    --sf-input-placeholder--color: var(--sf-on-disable);
+    --sf-input-placeholder--color: var(--sf-on-surface-disabled);
   }
 
   .sf-input:has(input:disabled) .sf-input-text {
-    --sf-input-text--color: var(--sf-on-disable);
+    --sf-input-text--color: var(--sf-on-surface-disabled);
   }
 
   .sf-input:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {

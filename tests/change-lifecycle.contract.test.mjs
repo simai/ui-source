@@ -141,6 +141,42 @@ test('sf-upgrade: a class shared by two components is reported once per use', ()
   }
 });
 
+/* status danger -> error is general (2026-10-09) and error -> danger is the
+   control's (C13, 2026-11-08): the general rename must not turn a control's
+   canonical danger into its former error. */
+test('sf-upgrade: a general value rename skips the elements that rename it back', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  try {
+    writeFileSync(join(project, 'page.html'), '<sf-button status="danger"></sf-button>\n<sf-button-icon status="danger"></sf-button-icon>\n<sf-alert status="danger"></sf-alert>\n<sf-button status="error"></sf-button>\n');
+    const result = spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json'], {encoding: 'utf8'});
+    const findings = JSON.parse(result.stdout).findings.filter((row) => row.from === 'danger' || row.from === 'error');
+    assert.deepEqual([...new Set(findings.map((row) => `${row.line} ${row.from}->${row.to}`))].sort(), ['3 danger->error', '4 error->danger']);
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});
+
+/* A rename reversed by a later record (sf-button--ghost -> sf-button--link,
+   2026-10-09; sf-button--link -> sf-button--ghost, C15, 2026-11-11): the
+   earlier item is history, so the current name is never reported or turned
+   back into the former one, and an applied run is stable. */
+test('sf-upgrade: a rename a later record reverses is history', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  try {
+    const page = join(project, 'page.html');
+    writeFileSync(page, '<button class="sf-button sf-button--ghost"></button>\n<button class="sf-button sf-button--link"></button>\n<sf-button appearance="ghost"></sf-button>\n');
+    const run = (...extra) => spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json', ...extra], {encoding: 'utf8'});
+    const findings = JSON.parse(run().stdout).findings.filter((row) => /ghost|link/u.test(`${row.from} ${row.to}`));
+    assert.deepEqual(findings.map((row) => `${row.line} ${row.from}->${row.to} ${row.record}`), ['2 sf-button--link->sf-button--ghost class-button-link-to-ghost']);
+    run('--apply');
+    assert.equal(readFileSync(page, 'utf8'), '<button class="sf-button sf-button--ghost"></button>\n<button class="sf-button sf-button--ghost"></button>\n<sf-button appearance="ghost"></sf-button>\n');
+    run('--apply');
+    assert.match(readFileSync(page, 'utf8'), /^<button class="sf-button sf-button--ghost"><\/button>\n<button class="sf-button sf-button--ghost">/u, 'a second run changes nothing');
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});
+
 /* Format names without versions, step 3: sf-upgrade moves a project's
    declarations of a format to two fields -- a JSON file in the standard
    layout, a literal in a script -- and reports what it must not touch: a

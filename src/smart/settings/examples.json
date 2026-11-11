@@ -765,11 +765,11 @@
         },
         {
           "id": "p10-width",
-          "title": "the panel is 280 px in every look; a long name wraps and a long value is cut with the whole of it in title",
+          "title": "the panel is 288 px (the menu's ceiling, 18rem) in every look; a long name wraps and a long value is cut with the whole of it in title",
           "covers": "width, long names",
           "steps": [
             {
-              "check": "['#drill', '#rows', '#tiles', '#long'].every((id) => Math.round(document.querySelector(id + ' .sf-context-menu-content').getBoundingClientRect().width) === 280)"
+              "check": "['#drill', '#rows', '#tiles', '#long'].every((id) => Math.round(document.querySelector(id + ' .sf-context-menu-content').getBoundingClientRect().width) === 288)"
             },
             {
               "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const under = row.querySelector('.sf-context-menu-item-under'); return row.getBoundingClientRect().height > 40 && under.scrollWidth > under.clientWidth && under.getAttribute('title') === 'Раз в неделю, в понедельник утром, со всеми задачами'; })()"

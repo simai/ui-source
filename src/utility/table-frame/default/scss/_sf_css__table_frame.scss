@@ -76,7 +76,7 @@
                 // belongs to, so the body cells keep the page's roles. The
                 // fill's default is a fallback rather than a declaration, so
                 // the variable set on the frame reaches the head cells.
-                --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+                --sf-on-surface-variant: var(--sf-on-surface-container-variant);
                 padding-block: var(--sf-table-frame-head-padding-block);
                 background-color: var(--sf-table-frame-head-background, var(--sf-surface-container));
                 color: var(--sf-table-frame-head-color);

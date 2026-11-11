@@ -11,6 +11,14 @@ for(const [component,file,roles] of [
     assert.ok(source.includes(`--sf-${role}--color: var(--sf-on-surface-variant);`));
     assert.ok(!source.includes(`--sf-${role}--color: var(--sf-on-surface-muted);`));
   }
-  assert.ok(source.includes('var(--sf-on-disable)'),'Explicit disabled styling remains separate');
-  if(component!=='quantity')assert.ok(source.includes(`--sf-${component==='inputs'?'input':'textarea'}-placeholder--color: var(--sf-on-surface);`),'Tonal placeholder has a stronger foreground role');
+  assert.ok(source.includes('var(--sf-on-surface-disabled)'),'Explicit disabled styling remains separate');
+  // The filled placeholder is the place's dim ink, kept on the host above the
+  // field's fill (forms batch round 2, item C, 2026-11-10); a strong coloured
+  // place keeps its full ink there.
+  if(component!=='quantity'){
+    const name=component==='inputs'?'input':'textarea';
+    assert.ok(!source.includes(`--sf-${name}-placeholder--color: var(--sf-on-surface);`),'A filled placeholder is not the value ink');
+    assert.ok(source.includes(`--sf-${name}-placeholder--color: var(--sf-${name}--place-variant);`),'Filled placeholder reads the place variant');
+    assert.ok(source.includes(`--sf-${name}--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));`),'The place variant is kept on the host');
+  }
 });

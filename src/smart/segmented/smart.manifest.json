@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.segmented",
-  "version": "1.4.2",
+  "version": "1.6.0",
   "title": "Segmented control",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -29,6 +29,7 @@
       "component.button-group",
       "component.spinner",
       "smart.button",
+      "smart.dropdown",
       "smart.icon"
     ],
     "public_parts": []
@@ -73,10 +74,21 @@
           "3"
         ]
       },
+      "height": {
+        "type": "string",
+        "default": "default",
+        "description": "The control height (owner decision C27), as on sf-button: size sets the text, the icons and the inner scale, height picks the height from the size's tightness steps -- low, default, high, highest. The track stands as tall as an sf-button of the same size and height, and the buttons look draws sf-button with that height. A value outside the list reads as default, with one console warning.",
+        "enum": [
+          "low",
+          "default",
+          "high",
+          "highest"
+        ]
+      },
       "spacing": {
         "type": "string",
         "default": "normal",
-        "description": "Shared semantic internal spacing profile.",
+        "description": "Deprecated (decision C27, until 2027-01-01): the side padding of the segments only -- compact, normal, comfortable or spacious -- at the same height. It keeps working as before with a console warning and is not turned into height; write height for a lower or higher control.",
         "enum": [
           "compact",
           "normal",
@@ -117,7 +129,7 @@
       "plate": {
         "type": "string",
         "default": "raised",
-        "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it.",
+        "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme; in the dark the fill's pressed step, lighter than the track on any place, C42). scheme: the scheme's fill, an accent for the one switch on a screen that needs it.",
         "enum": [
           "raised",
           "scheme"
@@ -484,7 +496,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/segmented/index.js",
-        "sha256": "180ea5d4d490af07dfaea5e0d25b4621b78a6b94ba5f062becf8a8c0817e73b6"
+        "sha256": "a90c62daade9ba04f3034d3b2f82b059eb51d37411f3ae0fbcbbc7f4e183f025"
       }
     ],
     "generated_runtime": []

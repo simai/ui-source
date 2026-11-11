@@ -29,17 +29,21 @@
   --sf-icon--color: var(--sf-on-primary);
 }
 
-.sf-fab.sf-fab--tonal.sf-fab--secondary {
-  --sf-fab--background-color: var(--sf-secondary-container);
+/* The tonal pair is primary (dispatcher decision e, docs pre-check 2026-11-10;
+   C15 retired secondary for the icon buttons): the primary container under
+   on-primary-container. sf-fab--secondary is its former name and draws the
+   same until 2027-01-01 (journal class-fab-tonal-secondary-to-primary). */
+.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary) {
+  --sf-fab--background-color: var(--sf-primary-container);
 }
 
-.sf-fab.sf-fab--tonal.sf-fab--secondary .sf-icon {
-  --sf-icon--color: var(--sf-on-secondary-container);
+.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary) .sf-icon {
+  --sf-icon--color: var(--sf-on-primary-container);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface {
   --sf-fab--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface .sf-icon {
@@ -55,16 +59,16 @@
   --sf-fab--background-color: var(--sf-primary-active);
 }
 
-.sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled):hover {
-  --sf-fab--background-color: var(--sf-secondary-container-hover);
+.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled):hover {
+  --sf-fab--background-color: var(--sf-primary-container-hover);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):hover {
   --sf-fab--background-color: var(--sf-surface-container-hover);
 }
 
-.sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled).active {
-  --sf-fab--background-color: var(--sf-secondary-container-active);
+.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled).active {
+  --sf-fab--background-color: var(--sf-primary-container-active);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled).active {
@@ -127,11 +131,11 @@
 }
 
 .sf-fab.sf-fab.sf-fab:disabled {
-  --sf-fab--background-color: var(--sf-disable);
+  --sf-fab--background-color: var(--sf-surface-disabled);
 }
 
 .sf-fab.sf-fab.sf-fab:disabled .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 /* A floating action button lives on its own elevation, which is exactly why its

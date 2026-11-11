@@ -148,6 +148,27 @@
        that is not the page declares its own (the bg-surface-* place
        utilities, and later the cards and the popups). */
     --sf-surface-place: var(--sf-surface-page);
+    /* The place's colour when the place is solid (C43, owner 2026-11-10):
+       the page and every opaque or strong place declare it, a translucent
+       place (a soft coloured place, glass) sets it initial. */
+    --sf-surface-place-solid: var(--sf-surface-page);
+    /* The nearest opaque place (status dot on soft places, 2026-11-11): the
+       colour a cut-out that must not show what is under it lays the place's
+       tone over. Always opaque: the page here, and every place that declares
+       a solid --sf-surface-place-solid declares the same colour; a soft
+       coloured place does not declare it, so it is the opaque place the soft
+       one stands on. Glass declares black, the opaque base of its own tone
+       (DEV, 2026-11-11): under glass is a picture, not a place. */
+    --sf-surface-place-ground: var(--sf-surface-page);
+    /* What a translucent layer that must keep its own tone stacks over (C43,
+       owner 2026-11-10). It equals the place colour, set only under a
+       translucent fill: a selected, open or current row (mix sf-place-fill)
+       declares --sf-surface-place-solid as it, so a tonal badge on the row
+       lays its tone over the solid place, not over the row's alpha. Everywhere
+       else it is initial, the guaranteed-invalid value: the stacking rule does
+       not apply and nothing changes. On a translucent place the solid colour
+       is initial too, so a row there leaves the role off (base behaviour). */
+    --sf-surface-underlay: initial;
     /* Glass over a photo or a video (C16, C14): controls on media stand on
        black at 48 with a blur, ink white, the same in both themes because the
        picture does not change with the theme. Hover and press take the next
@@ -199,8 +220,9 @@
     /* A step above the strongest plate, and not because the ladder asks: a
        plate sits on the page, a veil covers it. At 24 the two were the same
        colour, and the backdrop of a modal was as strong as a pressed card
-       (owner, 2026-10-08). */
-    --sf-surface-container-strong: light-dark(var(--sf-neutral-50--alfa-32), var(--sf-neutral-90--alfa-32));
+       (owner, 2026-10-08). With the plate family at 8/12/16 (C41, owner
+       2026-11-10) the strong step is 24, still above the pressed plate. */
+    --sf-surface-container-strong: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
     --sf-surface-inverse: light-dark(var(--sf-neutral-20), var(--sf-neutral-90));
     /* The inverse surface under a pointer: the same five-tone step the other
        hover roles take. A carousel control read the primitives for it, there
@@ -240,19 +262,29 @@
        plates with a middle grey while every other translucent surface
        lightened with a near-white -- two tones doing one job.
 
-       The steps are the same in both themes now, which they could not be while
-       the tone differed: 24, 28 and 32 in the dark were that darker tone
-       catching up. And they start at 16 rather than 12, because at 12 a plate
-       was the same colour as a pressed surface and the two could not be told
-       apart (owner, 2026-10-08). */
-    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
-    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
-    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+       The neutral fill family is 8, 12, 16 and 24 (strong), the same in both
+       themes (C41, owner 2026-11-10; research 2026-11-10-container-weight.md).
+       At 16 the plate measured -7.6 lightness on a white page and +16 on the
+       dark one, heavier than the tinted containers beside it and than the
+       neutral fills of the systems compared; 8 is one step darker than the
+       place it stands on, on any place (light #f4f4f5, dark #202226 on the
+       page). It stays translucent for that reason.
+       8 is also the select state's step. That overlap is accepted: a state is
+       drawn over a plate, not instead of it, and a chosen menu row is not grey
+       but primary-container (C23). The former 16 (2026-10-08) kept a plate
+       apart from a press at 12; the press is still a step above the plate.
+       The tinted containers keep their steps (12-20 light, 24-32 dark). */
+    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
     --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
     --sf-on-surface-fixed: var(--sf-neutral-10);
     --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
     --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
-    --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    /* Dark tone 70 since C43 (owner 2026-11-10, palette steps research): tone
+       60 gave Lc 42 on the page against Lc 82 for the light pair, and a quiet
+       key (its fill an 8 % of this ink) 4.25:1 on a card. Light unchanged. */
+    --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     /* Dimmed text on a container fill (--sf-surface-container over any of the
        surfaces 0 to 3). The fill is translucent, so the text lies on the fill
        and the surface together: neutral-60 measured 4.0:1 in the dark theme,
@@ -384,7 +416,14 @@
        a cell and the two ends grow out of it (4.99:1 and 7.72:1 to their 40
        and 80 steps). The same pair as surface-3, which a chart does not sit on. */
     --sf-chart-midpoint: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
-    --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
+    /* The muted ink is the disabled ink (C43, owner 2026-11-10): neutral-60 /
+       neutral-40 measured 3.18:1 light and 2.92:1 dark on the page and fell to
+       1.44:1 on a dark nested popup, a step the places could not take back.
+       It reads --sf-on-surface-disabled, so every place that re-declares
+       the disabled ink re-declares this one with it (mix/_mix__places.scss).
+       Deprecated: read --sf-on-surface-disabled (journal
+       token-c43-muted-is-disabled, remove_after 2027-01-01). */
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);
     /* The boundary of anything a person has to find: a control at rest, a
@@ -442,7 +481,11 @@
     --sf-link-hover: light-dark(var(--sf-primary-35), var(--sf-primary-85));
     --sf-link-active: light-dark(var(--sf-primary-30), var(--sf-primary-90));
     --sf-link-visited: light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80));
-    --sf-code: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
+    // Code in running text is neutral by default (owner decision C10): the
+    // surface container plate, the one the code rule draws
+    // (--sf-code--background in _sf_css__typograpy.scss). Tones of a role are
+    // a site's choice (--sf-code-background-color), not this role's.
+    --sf-code: var(--sf-surface-container);
     /* Shadows (C20, owner 2026-11-08; ui-control prototypes/shadows.html).
        Two colours, both steps of the alpha scale: the key shadow, short and
        sharp at the edge, black at 16 in the light theme and 28 in the dark (a
@@ -498,9 +541,12 @@
        вместе с ней светлеет текст: иначе одна и та же роль даёт 4.14 на второй
        ступени и 2.93 на четвёртой при требуемых WCAG 1.4.3 четырёх с половиной.
        Значений три, а не пять: роль меняется там, где перестаёт проходить. */
-    --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    /* C43 (owner 2026-11-10): dark tone 70 on the page, the area, the card and
+       the raised surface, 80 on the popup and the nested popup -- a quiet key
+       on a card 4.25 -> 5.72, on a popup 4.25 -> 5.52. Light unchanged. */
+    --sf-on-surface-card-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     --sf-on-surface-raised-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
-    --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+    --sf-on-surface-popup-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     --sf-on-surface-popup-nested-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
     /* The neutral half of the alpha scale. The base branches per scheme — ink on
        a light surface, light on a dark one — so a component asks for a degree of

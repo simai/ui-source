@@ -31,8 +31,10 @@ test('Smart Dropdown template keeps option decoration out of the accessibility t
   assert.match(template, /sf-tag-color-icon[^>]+aria-hidden="true"/);
   assert.match(template, /sf-tag-icon" aria-hidden="true"/);
   // The search header's icon (owner C06, R029).
-  assert.match(template, /sf-icon sf-list-search-icon" aria-hidden="true"/);
-  assert.match(template, /\$\{dropdownIcon\}<\/i>/);
+  assert.match(template, /<sf-icon icon="search" root-class="sf-list-search-icon" aria-hidden="true"><\/sf-icon>/);
+  // The chevron is an sf-icon too (sf-dropdown 1.8.1): its name joins the first icon request.
+  assert.match(template, /<sf-icon icon=\$\{dropdownIcon\} aria-hidden="true"><\/sf-icon>/);
+  assert.doesNotMatch(template, /<i class="sf-icon[^"]*" aria-hidden/);
 });
 
 test('Dropdown documentation exposes every supported public axis through examples', {

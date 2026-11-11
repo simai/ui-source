@@ -44,21 +44,28 @@ the Smart `sf-button` projection.
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
-  `sf-button--outline`, `sf-button--link`, `sf-button--surface`;
-  `sf-button--ghost` is a compatibility name for `link`;
+  `sf-button--outline`, `sf-button--ghost`, `sf-button--surface`;
+  `sf-button--link` is the former name of `ghost` (decision C15), drawn the
+  same until 2027-01-01 (journal `class-button-link-to-ghost`); the Smart
+  `sf-button` writes both until then;
 - scheme: `primary`, `on-surface` and `secondary` for every emphasis.
   `default` and `tonal` secondary have a secondary fill of their own;
-  `outline`, `surface` and `link` secondary are the on-surface button --
+  `outline`, `surface` and `ghost` secondary are the on-surface button --
   edge, fill, padding, height, hover, press and disabled -- with the label and
   the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
   these three had no rule: no padding, about 32px at size 1 and the browser's
   text colour);
-- status: `sf-button--danger` (or `--error`, the same rules) for a
-  destructive button, in every emphasis (decision C13); sf-button writes
-  both, and calls `--link` the ghost appearance (C15);
+- status: `sf-button--danger` for a destructive button, in every emphasis
+  (decision C13: danger is what the control does, error is a message's
+  status); `sf-button--error` is its former name on a button, the same rules,
+  until 2027-01-01 (journal class-c13-control-error-to-danger). sf-button
+  writes both, and calls `--link` the ghost appearance (C15);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
-- density: the default, `spacing-compact`, `spacing-comfortable` or
-  `spacing-spacious` (less, more and most side space). Density moves the side
+- density (deprecated, decision C27, until 2027-01-01; journal
+  class-c27-button-spacing-to-height): the default, `spacing-compact`,
+  `spacing-comfortable` or `spacing-spacious` (less, more and most side
+  space). Write a height class instead; the constructor's `spacing` option
+  is deprecated with them. Density moves the side
   padding only: a button of a size is as tall at every density as at every
   appearance (one height per size, 1.4.0). The older
   `tightness-low`, `tightness-high` and `tightness-highest` are the same steps
@@ -73,7 +80,10 @@ the Smart `sf-button` projection.
   Declared after the density classes: a button that carries both takes its
   sides from the height. The Smart `spacing` is deprecated in favour of it;
 - radius: the normal control radius `--sf-radius--ui`, or the explicit
-  `radius-square` and `radius-rounded` overrides.
+  `radius-square` and `radius-rounded` overrides;
+- full width (1.9.0, owner decision C36): `sf-button--full-width` -- the
+  control fills its container and its content stays in the middle, as
+  sf-segmented's `full-width`; the constructor's option is `fullWidth`.
 
 `radius-default` is the control radius `--sf-radius--ui`, the same as no
 radius class; it stays for the Smart `radius="default"` value. The utility
@@ -109,7 +119,13 @@ stays only as a compatibility name; it goes with the next major version.
 
 Native `disabled` is the source of truth for an unavailable action. Loading
 uses `loading sf-button-state-loading`, `aria-busy="true"` and native
-`disabled`, so the same action cannot be triggered twice.
+`disabled`, so the same action cannot be triggered twice. A loading button
+keeps its scheme colour (1.9.0, owner decision C36): the disabled look's rules
+skip `sf-button-state-loading`, so the fill, the edge and the label are the
+resting button's. One that is disabled as well adds the `disabled` class and
+wears the disabled look; the constructor does that for `loading` with
+`disabled`. Markup with the bare `loading` class and no state class keeps the
+disabled look.
 
 A loading button shows the spinner, the Framework's one loading indicator, at
 the size of its icon (simai/ui-source#10):
@@ -123,7 +139,10 @@ the size of its icon (simai/ui-source#10):
   the icon and its gap;
 - an icon-only button shows the spinner in place of its icon.
 
-The spinner takes the button's disabled ink unless `--sf-loader--color` is set,
+The spinner takes the label's ink (the disabled ink on a disabled button)
+unless `--sf-loader--color` is set; its background ring is that ink at 16 %
+(1.9.1, the fill family of the alpha scale, drawn whole, so it shows on a light
+filled button in dark; `--sf-spinner-track-color` wins),
 and under `prefers-reduced-motion` it is a still arc. The constructor draws it;
 in hand-written markup put it where the icon was, or before the label with the
 `--overlay` class:

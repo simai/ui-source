@@ -477,7 +477,7 @@ function renderColorCell(field, value) {
     // general part is for.
     return html`
         <sf-input-color size="1/2" appearance="plain" value=${String(hex)}
-                  label=${field.label || field.key || ''} disabled></sf-input-color>
+                  aria-label=${field.label || field.key || ''} disabled></sf-input-color>
     `;
 }
 
@@ -495,7 +495,7 @@ function renderColorView(field, value) {
                 appearance="plain"
                 value=${hex ? String(hex) : nothing}
                 inherited-value=${inherited ? String(inherited) : nothing}
-                label=${field.label || field.key || ''}
+                aria-label=${field.label || field.key || ''}
                 disabled
         ></sf-input-color>
     `;
@@ -514,7 +514,7 @@ function renderColorEdit(field, value, host) {
                 swatches=${field.swatches ? String(field.swatches) : nothing}
                 ?clearable=${Boolean(inherited) || field.required !== true}
                 ?disabled=${field.readonly === true}
-                label=${field.label || field.key || ''}
+                aria-label=${field.label || field.key || ''}
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? '')}
         ></sf-input-color>
     `;
@@ -2285,9 +2285,26 @@ function dateText(field, value, host) {
     return defaultDateText(field, value, host) ?? viewText(field, value, null);
 }
 
+// The machine reading of a date (C40: every moment the Framework prints is a
+// time element): the record's own day and clock as written, «2026-11-15» or
+// «2026-11-15T10:30», with no zone, because the view never moves a record to
+// the reader's zone. That is also why the view is not sf-time, which reads a
+// moment in the reader's zone: a date near midnight would show another day.
+// '' when the value is no date.
+export function dateTimeAttribute(field, value) {
+    const parts = readDateTime(value);
+    if (!parts.known || !parts.date) return '';
+    const type = field?.propertyType || field?.type || field?.dataType;
+    return type === 'datetime' && parts.time ? `${parts.date}T${parts.time}` : parts.date;
+}
+
 function renderDateView(field, value, host) {
     const text = dateText(field, value, host);
-    return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
+    if (!text) return nothing;
+    const datetime = dateTimeAttribute(field, value);
+    return datetime
+        ? html`<time class="sf-field-view" datetime=${datetime}>${text}</time>`
+        : html`<span class="sf-field-view">${text}</span>`;
 }
 
 function renderBooleanView(field, value, host) {

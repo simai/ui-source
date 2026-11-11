@@ -4631,6 +4631,12 @@ SFLoaderPlugin.prototype.addToMissingFiles = function (
   if (type === 'css') {
     this.notFoundFiles[name].missingMin = missingMin;
   }
+  if (type === 'js') {
+    // The rule's tags will not be defined: nothing waits for them (D2).
+    const pending = globalThis.window?.SF?.__internal?.pendingTags;
+    const tags = this.findPlugins?.[pluginName]?.tags;
+    if (pending?.fail && Array.isArray(tags)) tags.forEach((tag) => pending.fail(tag));
+  }
   safeSetItem(
       'SF_MISSING_PLUGINS',
       encodeCacheValue(JSON.stringify(this.getPersistentMissingFiles())),
@@ -4866,6 +4872,17 @@ SFLoaderPlugin.prototype.onWindowLoad = function (fn) {
   }
 };
 
+// R078: the page is scanned once it is parsed, not at the window's load. A
+// font or image still on its way held load -- 25.9 s with the icon host held
+// on a warm profile -- and the scan, sf-loader-ready and the splash with it.
+SFLoaderPlugin.prototype.onDomParsed = function (fn) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => fn(), { once: true });
+  } else {
+    fn();
+  }
+};
+
 SFLoaderPlugin.prototype.endSearch = function () {
   this.searchEnd = true;
   this.flushObservedChanges?.();
@@ -4950,11 +4967,11 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
   } else {
     this.logTiming('prepare: preloader run');
   }
-  this.onWindowLoad(() => {
+  this.onDomParsed(() => {
     if (observer) {
       observer.disconnect();
     }
-    this.logTiming('onWindowLoad search start');
+    this.logTiming('page scan start');
     this.findShortCodes(document.body);
     try {
       document.dispatchEvent(
@@ -4983,7 +5000,11 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
         this.getLoader(this.module, true);
       }
       this.revalidateMissingPlugins();
-      this.logTiming('onWindowLoad search done');
+      // Changes met during the scan are read now, not at the window's load
+      // (scheduleSearchEnd still ends it there for a page whose scan is
+      // slower than its load).
+      this.endSearch();
+      this.logTiming('page scan done');
     })().catch((error) => console.warn('SFLoader: the page scan failed', error));
   });
 };
@@ -5861,8 +5882,23 @@ SF.__internal.litHtml = (tagName, props = {}) => {
   const tag = unsafeStatic(tagName);
   return staticHtml`<${tag} ...=${props}></${tag}>`;
 };
-SF.whenDefine = whenSmartDefined;
 SF.whenDefined = whenSmartDefined;
+// SF.whenDefine is the older name of SF.whenDefined: a dated alias of the same
+// function until the sweep (journal global-sf-when-define). Enumerable, as it
+// was, so a page that lists window.SF still sees it; a read is noted in
+// SF.deprecations. The Framework's own code calls SF.whenDefined.
+const WHEN_DEFINE_ALIAS = Object.freeze({since: '2026-11-11', remove_after: '2027-01-01'});
+Object.defineProperty(SF, 'whenDefine', {
+  configurable: true,
+  enumerable: true,
+  get() {
+    noteDeprecated({kind: 'global', from: 'SF.whenDefine', to: 'SF.whenDefined', ...WHEN_DEFINE_ALIAS});
+    return whenSmartDefined;
+  },
+  set(value) {
+    Object.defineProperty(SF, 'whenDefine', {configurable: true, enumerable: true, writable: true, value});
+  },
+});
 try {
   window.dispatchEvent(
       new CustomEvent('sf-loader-init', {

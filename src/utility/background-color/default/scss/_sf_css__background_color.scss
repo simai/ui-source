@@ -22,24 +22,36 @@
     // A container fill switches the dimmed text over it, as elevation-N does
     // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
     .#{$infix}bg-surface-container {
-        --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+        --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     }
 
     // A place class is a place (C16): what stands on it reads its colour as
     // --sf-surface-place (a badge's ring, a table head), its dim ink as the
     // variant role, and the theme's roles back -- a card-coloured block on a
     // coloured banner is an ordinary card (mix/_mix__places.scss). The former
-    // keys (surface-0, surface-1, surface) are the same places.
+    // keys (surface-0, surface-1, surface) are the same places. The steps
+    // surface-2, surface-3 and surface-4 are the card, raised and popup
+    // places (C43, owner 2026-11-10): their dim ink is the place's, so a quiet
+    // key or label on bg-surface-4 reads the popup's tone, not the page's.
+    // There is no bg-surface-5 paint ($back-color-array stops at 4), so no
+    // surface-5 place: a place that does not paint would give its cut-outs
+    // (a checkbox box, a badge ring) a colour the block does not have.
+    // The steps also carry a stronger boundary in the light theme, so a
+    // checkbox, a switch or a field on them keeps 3:1 (C43).
     @each $place, $surface, $variant in (
         'page' 'surface-page' null, 'surface-0' 'surface-page' null,
         'area' 'surface-area' null, 'surface-1' 'surface-area' null, 'surface' 'surface-area' null,
         'card' 'surface-card' 'on-surface-card-variant',
         'popup' 'surface-popup' 'on-surface-popup-variant',
-        'popup-nested' 'surface-popup-nested' 'on-surface-popup-nested-variant'
+        'popup-nested' 'surface-popup-nested' 'on-surface-popup-nested-variant',
+        'surface-2' 'surface-2' 'on-surface-card-variant',
+        'surface-3' 'surface-3' 'on-surface-raised-variant',
+        'surface-4' 'surface-4' 'on-surface-popup-variant'
     ) {
         $class: if(str-index($place, 'surface') == 1, $place, 'surface-#{$place}');
         .#{$infix}bg-#{$class} {
-            @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null));
+            @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null),
+                if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));
         }
     }
 
@@ -92,4 +104,13 @@
         }
     }
 // }
+}
+// The accent on a strong coloured place (C42 (4)): on its children, in
+// sf.base, so an opaque place among them takes the theme's accent back.
+@layer sf.base {
+    @each $c in places.$sf-place-colours {
+        .bg-#{$c} > * {
+            @include places.sf-place-strong-accent($c);
+        }
+    }
 }

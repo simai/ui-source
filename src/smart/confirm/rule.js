@@ -10,5 +10,6 @@ SF.RuleLoader['cl-confirm'] = {
   relation: [
     { name: 'cl-button' },
     { name: 'cl-icon' },
+    { name: 'cl-input' },
   ],
 };

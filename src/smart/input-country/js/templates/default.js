@@ -1,6 +1,11 @@
 import { html, nothing } from 'lit';
 
-function flagTemplate(country, flagBase = '') {
+// A flag of the list is the browser's own lazy image: the address is written
+// with the row, and the browser fetches it when the row comes near the view (a
+// closed list fetches nothing). The class script used to set the address only
+// when a press opened the list, so a list drawn open (open) kept empty images
+// (docs pre-check 2026-11-10 CC-02). eager-flags asks for every flag at once.
+function flagTemplate(country, flagBase = '', lazy = true) {
   const iso2 = String(country?.iso2 || '').trim().toLowerCase();
   const fallback = country?.flagEmoji || '';
   const src = iso2 && flagBase ? `${flagBase}/${iso2}.svg` : '';
@@ -13,8 +18,10 @@ function flagTemplate(country, flagBase = '') {
     <img
       alt=${country?.iso2 ? `${country.iso2} flag` : 'flag'}
       decoding="async"
-      loading="lazy"
+      loading=${lazy ? 'lazy' : 'eager'}
+      src=${src}
       data-flag-src=${src}
+      data-loaded="1"
       data-flag-fallback=${fallback}
     />
   `;
@@ -116,7 +123,7 @@ export function renderCountryCodeTemplate(context) {
                       data-mask-pattern=${country.maskPattern || ''}
                     >
                       <div class="sf-country-code-flag" aria-hidden="true">
-                        ${flagTemplate(country, flagBase)}
+                        ${flagTemplate(country, flagBase, lazyFlags !== false)}
                       </div>
                       <span>
                         ${country.label ||

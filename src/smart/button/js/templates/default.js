@@ -74,9 +74,12 @@ export function renderButtonTemplate(context) {
     const rootClasses = [
         'sf-button',
         `sf-button--size-${size}`,
-        // ghost (C15) is drawn by the link class, the one the sheets and
-        // their consumers select; href, not the look, makes a link.
-        `sf-button--${(appearance || type) === 'ghost' ? 'link' : (appearance || type)}`,
+        // ghost (C15): the class is sf-button--ghost; sf-button--link, its
+        // former name, is written beside it until 2027-01-01 (journal
+        // class-button-link-to-ghost), so a page selector that reached it
+        // still does. href, not the look, makes a link.
+        `sf-button--${appearance || type}`,
+        (appearance || type) === 'ghost' ? 'sf-button--link' : '',
         // One colour name, as the styles expect: the status when one is set, the
         // scheme otherwise. A status says what the control is about -- an error
         // for something destructive -- and a scheme says which colour family it
@@ -97,8 +100,13 @@ export function renderButtonTemplate(context) {
         // default draws none, the size's own step.
         context.height && context.height !== 'default' ? `sf-button--height-${context.height}` : '',
         radius ? `radius-${radius}` : '',
+        // full-width (1.12.0, owner decision C36): sf-segmented's setting.
+        context.fullWidth ? 'sf-button--full-width' : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',
+        // A loading button keeps its scheme colour (owner decision C36); one
+        // that is disabled as well wears the disabled look, so it says so.
+        loading && disabled ? 'disabled' : '',
         // A toggle that is on wears the pressed look (component.buttons 1.5.0,
         // rule C12): the class carries it whether or not aria-pressed is said.
         context.pressed || context.cycleView?.pressedLook ? 'sf-button--pressed' : '',

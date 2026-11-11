@@ -48,7 +48,7 @@ test('every action with parameters is one args object in the manifest, unless th
 test('the forms read off the elements', () => {
   const methods = (folder) => json(`src/smart/${folder}/smart.manifest.json`).methods;
   assert.equal(methods('progress-run').chunk.arguments[0].type, 'object|string');
-  assert.deepEqual(methods('progress-run').chunk.arguments[0].schema, {type: 'object', properties: {text: {type: 'string'}}, required: ['text']});
+  assert.deepEqual(methods('progress-run').chunk.arguments[0].schema, {type: 'object', properties: {text: {type: 'string'}, step: {type: 'string'}}, required: ['text']}); // step: a step's own log (1.3.0, C34)
   assert.equal(methods('progress-run').step.arguments[0].type, 'object');
   assert.equal(methods('progress-bar').chunk.arguments[0].type, 'object');
   assert.equal(methods('accordion').open.arguments[0].type, 'object|string');

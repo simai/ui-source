@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.text-decoration-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/text-decoration-color/active/index.js",
@@ -28,7 +28,7 @@
     "src/utility/text-decoration-color/hover/scss/_sf_css__text_decoration_color.scss",
     "src/utility/text-decoration-color/hover/scss/index.scss"
   ],
-  "content_sha256": "8e42417a59285d551831232fb69c82974cca711becaf4cc175679a2a14437acf",
+  "content_sha256": "b1576adf4aae43a0b2307625957a99159e37b1c2195ad70c203e5d2df37e23e7",
   "dependencies": [
     {
       "id": "utility.text-color",

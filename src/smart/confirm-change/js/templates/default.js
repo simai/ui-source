@@ -9,9 +9,11 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 // <h2>: the card is placed inside a message, a panel or a page, and the level
 // that is right in one is a skipped level in another.
 //
-// The values are a description list -- the field is the term, the two values
-// its descriptions -- so a screen reader reads «Название: Было Черновик, Станет
-// Итоги» rather than a grid of loose words. A value is text, never markup.
+// The values are sf-change's list (1.7.0, owner decision C40): a description
+// list, the field the term and «before → after» its description, the old value
+// quiet and the new one in medium weight, so a screen reader reads «Название:
+// Черновик на Итоги» rather than a grid of loose words. A value is text, never
+// markup; an empty one reads «пусто». The group around it names the changes.
 //
 // Both answers are outlined and weigh the same: a change is decided, not
 // nudged, and a filled «Confirm» beside a quiet «Decline» is a nudge.
@@ -21,13 +23,6 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 //
 // The answers call the actions confirm and cancel, which a page reaches as
 // data-sf-action="<id>.confirm" and "<id>.cancel" (§8, §19.4).
-const value = (context, text) => {
-    const shown = text === null || text === undefined || text === "" ? null : String(text);
-    return shown === null
-        ? html`<span class="sf-change-confirm__value sf-change-confirm__value--empty">${context.emptyValueText}</span>`
-        : html`<span class="sf-change-confirm__value">${shown}</span>`;
-};
-
 export function renderChangeConfirmTemplate(context) {
     return html`
         <section
@@ -35,6 +30,7 @@ export function renderChangeConfirmTemplate(context) {
                 aria-labelledby=${context.heading ? context.headingId : nothing}
                 aria-label=${context.heading ? nothing : context.changesLabel}
                 data-state=${context.state}
+                ?hidden=${context.collapsed}
         >
             ${context.heading
                 ? html`<div class="sf-change-confirm__heading" id=${context.headingId} role="heading"
@@ -43,21 +39,9 @@ export function renderChangeConfirmTemplate(context) {
             ${context.hasDescription
                 ? html`<div class="sf-change-confirm__description">${context.descriptionContent}</div>`
                 : nothing}
-            <dl class="sf-change-confirm__changes" aria-label=${context.changesLabel}>
-                ${context.changes.map((change) => html`
-                    <div class="sf-change-confirm__change">
-                        <dt class="sf-change-confirm__label">${String(change.label ?? "")}</dt>
-                        <dd class="sf-change-confirm__before">
-                            <span class="sf-change-confirm__tag">${context.beforeText}</span>
-                            ${value(context, change.before)}
-                        </dd>
-                        <dd class="sf-change-confirm__after">
-                            <span class="sf-change-confirm__tag">${context.afterText}</span>
-                            ${value(context, change.after)}
-                        </dd>
-                    </div>
-                `)}
-            </dl>
+            <div class="sf-change-confirm__changes" role="group" aria-label=${context.changesLabel}>
+                <sf-change class="sf-change-confirm__list" layout="list" .changes=${context.changes}></sf-change>
+            </div>
             ${renderConfirmFooter(context, "sf-change-confirm")}
         </section>
     `;

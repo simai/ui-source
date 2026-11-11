@@ -29,13 +29,19 @@
   }
 }
 
+// The places above a card (C42, owner 2026-11-10): a window, a drawer over
+// the page, a popover and the popup places of the background utilities. A card in one of them adds no plate, as a card in a
+// card does not -- above card level a card adds no fill, only its
+// outline-variant edge, and keeps the place it stands in.
+$sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawer-column="true"]) .sf-drawer-panel, sf-popover > [slot="content"], .bg-surface-popup, .bg-surface-popup-nested';
+
 // A card is a place (C16): its colour for a cut-out, its dim ink and the
 // theme's roles back, so a card on a coloured block is an ordinary card. In
 // sf.base, below the utilities, so a card the page colours (sf-card
-// bg-success-container) is that coloured place instead. A card in a card has
-// no plate, so it keeps the place of the card it is in.
+// bg-success-container) is that coloured place instead. A card in a card, a
+// window, a drawer or a popover has no plate, so it keeps the place it is in.
 @layer sf.base {
-  .sf-card:not(.sf-card--plain):not(.sf-card .sf-card) {
+  .sf-card:not(.sf-card--plain):not(:is(#{$sf-card-above-card}) .sf-card) {
     @include places.sf-place(var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card))), var(--sf-on-surface-card-variant));
   }
 }
@@ -86,7 +92,9 @@
   // A card in a card is its outline only (C16, surfaces research 4.2: page,
   // then area or card, then outline only): no second plate, so it does not
   // stand a step lighter again in the dark. Its own variables still win.
-  .sf-card .sf-card:not(.sf-card--plain) {
+  // The same in a window, a drawer and a popover (C42, owner 2026-11-10):
+  // the edge stays --sf-outline-variant, the fill is the place's.
+  :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
   }
 

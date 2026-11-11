@@ -7779,442 +7779,442 @@
         },
         {
           "from": "color-gray",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray(?![a-z0-9-])"
         },
         {
           "from": "color-gray-0",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-0(?![a-z0-9-])"
         },
         {
           "from": "color-gray-1",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-1(?![a-z0-9-])"
         },
         {
           "from": "color-gray-2",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-2(?![a-z0-9-])"
         },
         {
           "from": "color-gray-3",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-3(?![a-z0-9-])"
         },
         {
           "from": "color-gray-4",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-4(?![a-z0-9-])"
         },
         {
           "from": "color-gray-5",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-5(?![a-z0-9-])"
         },
         {
           "from": "color-gray-6",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-6(?![a-z0-9-])"
         },
         {
           "from": "color-gray-7",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-7(?![a-z0-9-])"
         },
         {
           "from": "color-gray-8",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-8(?![a-z0-9-])"
         },
         {
           "from": "color-gray-9",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-9(?![a-z0-9-])"
         },
         {
           "from": "color-red",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red(?![a-z0-9-])"
         },
         {
           "from": "color-red-0",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-0(?![a-z0-9-])"
         },
         {
           "from": "color-red-1",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-1(?![a-z0-9-])"
         },
         {
           "from": "color-red-2",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-2(?![a-z0-9-])"
         },
         {
           "from": "color-red-3",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-3(?![a-z0-9-])"
         },
         {
           "from": "color-red-4",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-4(?![a-z0-9-])"
         },
         {
           "from": "color-red-5",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-5(?![a-z0-9-])"
         },
         {
           "from": "color-red-6",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-6(?![a-z0-9-])"
         },
         {
           "from": "color-red-7",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-7(?![a-z0-9-])"
         },
         {
           "from": "color-red-8",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-8(?![a-z0-9-])"
         },
         {
           "from": "color-red-9",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-9(?![a-z0-9-])"
         },
         {
           "from": "color-orange",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange(?![a-z0-9-])"
         },
         {
           "from": "color-orange-0",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-0(?![a-z0-9-])"
         },
         {
           "from": "color-orange-1",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-1(?![a-z0-9-])"
         },
         {
           "from": "color-orange-2",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-2(?![a-z0-9-])"
         },
         {
           "from": "color-orange-3",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-3(?![a-z0-9-])"
         },
         {
           "from": "color-orange-4",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-4(?![a-z0-9-])"
         },
         {
           "from": "color-orange-5",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-5(?![a-z0-9-])"
         },
         {
           "from": "color-orange-6",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-6(?![a-z0-9-])"
         },
         {
           "from": "color-orange-7",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-7(?![a-z0-9-])"
         },
         {
           "from": "color-orange-8",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-8(?![a-z0-9-])"
         },
         {
           "from": "color-orange-9",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-9(?![a-z0-9-])"
         },
         {
           "from": "color-yellow",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "color-green",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green(?![a-z0-9-])"
         },
         {
           "from": "color-green-0",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-0(?![a-z0-9-])"
         },
         {
           "from": "color-green-1",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-1(?![a-z0-9-])"
         },
         {
           "from": "color-green-2",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-2(?![a-z0-9-])"
         },
         {
           "from": "color-green-3",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-3(?![a-z0-9-])"
         },
         {
           "from": "color-green-4",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-4(?![a-z0-9-])"
         },
         {
           "from": "color-green-5",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-5(?![a-z0-9-])"
         },
         {
           "from": "color-green-6",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-6(?![a-z0-9-])"
         },
         {
           "from": "color-green-7",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-7(?![a-z0-9-])"
         },
         {
           "from": "color-green-8",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-8(?![a-z0-9-])"
         },
         {
           "from": "color-green-9",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-9(?![a-z0-9-])"
         },
         {
           "from": "color-blue",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue(?![a-z0-9-])"
         },
         {
           "from": "color-blue-0",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-0(?![a-z0-9-])"
         },
         {
           "from": "color-blue-1",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-1(?![a-z0-9-])"
         },
         {
           "from": "color-blue-2",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-2(?![a-z0-9-])"
         },
         {
           "from": "color-blue-3",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-3(?![a-z0-9-])"
         },
         {
           "from": "color-blue-4",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-4(?![a-z0-9-])"
         },
         {
           "from": "color-blue-5",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-5(?![a-z0-9-])"
         },
         {
           "from": "color-blue-6",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-6(?![a-z0-9-])"
         },
         {
           "from": "color-blue-7",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-7(?![a-z0-9-])"
         },
         {
           "from": "color-blue-8",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-8(?![a-z0-9-])"
         },
         {
           "from": "color-blue-9",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-9(?![a-z0-9-])"
         },
         {
           "from": "color-purple",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple(?![a-z0-9-])"
         },
         {
           "from": "color-purple-0",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-0(?![a-z0-9-])"
         },
         {
           "from": "color-purple-1",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-1(?![a-z0-9-])"
         },
         {
           "from": "color-purple-2",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-2(?![a-z0-9-])"
         },
         {
           "from": "color-purple-3",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-3(?![a-z0-9-])"
         },
         {
           "from": "color-purple-4",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-4(?![a-z0-9-])"
         },
         {
           "from": "color-purple-5",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-5(?![a-z0-9-])"
         },
         {
           "from": "color-purple-6",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-6(?![a-z0-9-])"
         },
         {
           "from": "color-purple-7",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-7(?![a-z0-9-])"
         },
         {
           "from": "color-purple-8",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-8(?![a-z0-9-])"
         },
         {
           "from": "color-purple-9",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-9(?![a-z0-9-])"
         },
         {
           "from": "color-pink",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink(?![a-z0-9-])"
         },
         {
           "from": "color-pink-0",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-0(?![a-z0-9-])"
         },
         {
           "from": "color-pink-1",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-1(?![a-z0-9-])"
         },
         {
           "from": "color-pink-2",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-2(?![a-z0-9-])"
         },
         {
           "from": "color-pink-3",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-3(?![a-z0-9-])"
         },
         {
           "from": "color-pink-4",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-4(?![a-z0-9-])"
         },
         {
           "from": "color-pink-5",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-5(?![a-z0-9-])"
         },
         {
           "from": "color-pink-6",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-6(?![a-z0-9-])"
         },
         {
           "from": "color-pink-7",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-7(?![a-z0-9-])"
         },
         {
           "from": "color-pink-8",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-8(?![a-z0-9-])"
         },
         {
           "from": "color-pink-9",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-9(?![a-z0-9-])"
         },
         {
@@ -8229,442 +8229,442 @@
         },
         {
           "from": "bg-gray",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-0",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-0(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-1",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-1(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-2",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-2(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-3",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-3(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-4",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-4(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-5",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-5(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-6",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-6(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-7",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-7(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-8",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-8(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-9",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-9(?![a-z0-9-])"
         },
         {
           "from": "bg-red",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red(?![a-z0-9-])"
         },
         {
           "from": "bg-red-0",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-0(?![a-z0-9-])"
         },
         {
           "from": "bg-red-1",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-1(?![a-z0-9-])"
         },
         {
           "from": "bg-red-2",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-2(?![a-z0-9-])"
         },
         {
           "from": "bg-red-3",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-3(?![a-z0-9-])"
         },
         {
           "from": "bg-red-4",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-4(?![a-z0-9-])"
         },
         {
           "from": "bg-red-5",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-5(?![a-z0-9-])"
         },
         {
           "from": "bg-red-6",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-6(?![a-z0-9-])"
         },
         {
           "from": "bg-red-7",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-7(?![a-z0-9-])"
         },
         {
           "from": "bg-red-8",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-8(?![a-z0-9-])"
         },
         {
           "from": "bg-red-9",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-9(?![a-z0-9-])"
         },
         {
           "from": "bg-orange",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-0",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-0(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-1",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-1(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-2",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-2(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-3",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-3(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-4",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-4(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-5",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-5(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-6",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-6(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-7",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-7(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-8",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-8(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-9",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-9(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "bg-green",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green(?![a-z0-9-])"
         },
         {
           "from": "bg-green-0",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-0(?![a-z0-9-])"
         },
         {
           "from": "bg-green-1",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-1(?![a-z0-9-])"
         },
         {
           "from": "bg-green-2",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-2(?![a-z0-9-])"
         },
         {
           "from": "bg-green-3",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-3(?![a-z0-9-])"
         },
         {
           "from": "bg-green-4",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-4(?![a-z0-9-])"
         },
         {
           "from": "bg-green-5",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-5(?![a-z0-9-])"
         },
         {
           "from": "bg-green-6",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-6(?![a-z0-9-])"
         },
         {
           "from": "bg-green-7",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-7(?![a-z0-9-])"
         },
         {
           "from": "bg-green-8",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-8(?![a-z0-9-])"
         },
         {
           "from": "bg-green-9",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-9(?![a-z0-9-])"
         },
         {
           "from": "bg-blue",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-0",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-0(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-1",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-1(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-2",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-2(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-3",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-3(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-4",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-4(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-5",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-5(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-6",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-6(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-7",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-7(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-8",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-8(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-9",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-9(?![a-z0-9-])"
         },
         {
           "from": "bg-purple",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-0",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-0(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-1",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-1(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-2",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-2(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-3",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-3(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-4",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-4(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-5",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-5(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-6",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-6(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-7",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-7(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-8",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-8(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-9",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-9(?![a-z0-9-])"
         },
         {
           "from": "bg-pink",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-0",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-0(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-1",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-1(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-2",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-2(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-3",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-3(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-4",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-4(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-5",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-5(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-6",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-6(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-7",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-7(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-8",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-8(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-9",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-9(?![a-z0-9-])"
         },
         {
@@ -8679,452 +8679,452 @@
         },
         {
           "from": "border-gray",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray(?![a-z0-9-])"
         },
         {
           "from": "border-gray-0",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-0(?![a-z0-9-])"
         },
         {
           "from": "border-gray-1",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-1(?![a-z0-9-])"
         },
         {
           "from": "border-gray-2",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-2(?![a-z0-9-])"
         },
         {
           "from": "border-gray-3",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-3(?![a-z0-9-])"
         },
         {
           "from": "border-gray-4",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-4(?![a-z0-9-])"
         },
         {
           "from": "border-gray-5",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-5(?![a-z0-9-])"
         },
         {
           "from": "border-gray-6",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-6(?![a-z0-9-])"
         },
         {
           "from": "border-gray-7",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-7(?![a-z0-9-])"
         },
         {
           "from": "border-gray-8",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-8(?![a-z0-9-])"
         },
         {
           "from": "border-gray-9",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-9(?![a-z0-9-])"
         },
         {
           "from": "border-red",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red(?![a-z0-9-])"
         },
         {
           "from": "border-red-0",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-0(?![a-z0-9-])"
         },
         {
           "from": "border-red-1",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-1(?![a-z0-9-])"
         },
         {
           "from": "border-red-2",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-2(?![a-z0-9-])"
         },
         {
           "from": "border-red-3",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-3(?![a-z0-9-])"
         },
         {
           "from": "border-red-4",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-4(?![a-z0-9-])"
         },
         {
           "from": "border-red-5",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-5(?![a-z0-9-])"
         },
         {
           "from": "border-red-6",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-6(?![a-z0-9-])"
         },
         {
           "from": "border-red-7",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-7(?![a-z0-9-])"
         },
         {
           "from": "border-red-8",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-8(?![a-z0-9-])"
         },
         {
           "from": "border-red-9",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-9(?![a-z0-9-])"
         },
         {
           "from": "border-orange",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange(?![a-z0-9-])"
         },
         {
           "from": "border-orange-0",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-0(?![a-z0-9-])"
         },
         {
           "from": "border-orange-1",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-1(?![a-z0-9-])"
         },
         {
           "from": "border-orange-2",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-2(?![a-z0-9-])"
         },
         {
           "from": "border-orange-3",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-3(?![a-z0-9-])"
         },
         {
           "from": "border-orange-4",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-4(?![a-z0-9-])"
         },
         {
           "from": "border-orange-5",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-5(?![a-z0-9-])"
         },
         {
           "from": "border-orange-6",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-6(?![a-z0-9-])"
         },
         {
           "from": "border-orange-7",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-7(?![a-z0-9-])"
         },
         {
           "from": "border-orange-8",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-8(?![a-z0-9-])"
         },
         {
           "from": "border-orange-9",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-9(?![a-z0-9-])"
         },
         {
           "from": "border-yellow",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "border-green",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green(?![a-z0-9-])"
         },
         {
           "from": "border-green-0",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-0(?![a-z0-9-])"
         },
         {
           "from": "border-green-1",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-1(?![a-z0-9-])"
         },
         {
           "from": "border-green-2",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-2(?![a-z0-9-])"
         },
         {
           "from": "border-green-3",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-3(?![a-z0-9-])"
         },
         {
           "from": "border-green-4",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-4(?![a-z0-9-])"
         },
         {
           "from": "border-green-5",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-5(?![a-z0-9-])"
         },
         {
           "from": "border-green-6",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-6(?![a-z0-9-])"
         },
         {
           "from": "border-green-7",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-7(?![a-z0-9-])"
         },
         {
           "from": "border-green-8",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-8(?![a-z0-9-])"
         },
         {
           "from": "border-green-9",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-9(?![a-z0-9-])"
         },
         {
           "from": "border-blue",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue(?![a-z0-9-])"
         },
         {
           "from": "border-blue-0",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-0(?![a-z0-9-])"
         },
         {
           "from": "border-blue-1",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-1(?![a-z0-9-])"
         },
         {
           "from": "border-blue-2",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-2(?![a-z0-9-])"
         },
         {
           "from": "border-blue-3",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-3(?![a-z0-9-])"
         },
         {
           "from": "border-blue-4",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-4(?![a-z0-9-])"
         },
         {
           "from": "border-blue-5",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-5(?![a-z0-9-])"
         },
         {
           "from": "border-blue-6",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-6(?![a-z0-9-])"
         },
         {
           "from": "border-blue-7",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-7(?![a-z0-9-])"
         },
         {
           "from": "border-blue-8",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-8(?![a-z0-9-])"
         },
         {
           "from": "border-blue-9",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-9(?![a-z0-9-])"
         },
         {
           "from": "border-purple",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple(?![a-z0-9-])"
         },
         {
           "from": "border-purple-0",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-0(?![a-z0-9-])"
         },
         {
           "from": "border-purple-1",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-1(?![a-z0-9-])"
         },
         {
           "from": "border-purple-2",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-2(?![a-z0-9-])"
         },
         {
           "from": "border-purple-3",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-3(?![a-z0-9-])"
         },
         {
           "from": "border-purple-4",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-4(?![a-z0-9-])"
         },
         {
           "from": "border-purple-5",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-5(?![a-z0-9-])"
         },
         {
           "from": "border-purple-6",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-6(?![a-z0-9-])"
         },
         {
           "from": "border-purple-7",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-7(?![a-z0-9-])"
         },
         {
           "from": "border-purple-8",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-8(?![a-z0-9-])"
         },
         {
           "from": "border-purple-9",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-9(?![a-z0-9-])"
         },
         {
           "from": "border-pink",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink(?![a-z0-9-])"
         },
         {
           "from": "border-pink-0",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-0(?![a-z0-9-])"
         },
         {
           "from": "border-pink-1",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-1(?![a-z0-9-])"
         },
         {
           "from": "border-pink-2",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-2(?![a-z0-9-])"
         },
         {
           "from": "border-pink-3",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-3(?![a-z0-9-])"
         },
         {
           "from": "border-pink-4",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-4(?![a-z0-9-])"
         },
         {
           "from": "border-pink-5",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-5(?![a-z0-9-])"
         },
         {
           "from": "border-pink-6",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-6(?![a-z0-9-])"
         },
         {
           "from": "border-pink-7",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-7(?![a-z0-9-])"
         },
         {
           "from": "border-pink-8",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-8(?![a-z0-9-])"
         },
         {
           "from": "border-pink-9",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-9(?![a-z0-9-])"
         }
       ],
       "deprecated_on": "2026-11-09",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Use a role class (color-error, bg-success-container, border-info and the rest) where the colour says something, or the static palette primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5.",
+      "manual": "Each item names its successor (R087 item 1, option A, 2026-11-10): the hue of the same name chosen with .sf-hue-<hue> and the hue role utility. color-<hue>[-N] becomes sf-hue-<hue> color-hue; border-<hue>[-N] becomes sf-hue-<hue> border-hue (it reads --sf-hue-outline, as border-primary reads --sf-primary-outline); bg-<hue>[-N] becomes sf-hue-<hue> bg-hue-container where the legacy class read a tint (tone 70 and lighter) and sf-hue-<hue> bg-hue where it read a deeper tone. The roles follow the theme (light 40 / dark 80 for color-hue and bg-hue, 50 / 60 for the outline, 50 at 12 / 24 for the container), so most successors are not the legacy tone: check the look, and where the exact tone matters write the static primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5. Where the colour says something use a status role (color-error, bg-success-container). color-white, color-black, bg-white, bg-black, border-white and border-black have no successor class: use a role (color-on-primary, bg-surface-page) or var(--sf-white) / var(--sf-black).",
       "examples": {
         "before": "<span class=\"color-red-5\">",
-        "after": "<span class=\"color-error\">"
+        "after": "<span class=\"sf-hue-red color-hue\">"
       },
       "owner": "ui-source",
       "source": "src/core/scss/vars/_sf_var__color.scss, src/utility/text-color, src/utility/background-color, src/utility/border-color"
@@ -9238,6 +9238,1049 @@
         "after": "menu.items = [{id: 'docs', label: 'Документация', href: '/docs/'}];"
       },
       "source": "src/smart/menu/items.mjs normaliseItem, ITEM_FIELD_ALIASES"
+    },
+    {
+      "id": "attribute-view-list-roles-to-port-list",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-view 1.6.0 (view set 1.6.0, decision C31, the list of resources) takes a column's place in a list row from the port: simai.dataview-port 1.15.0 sends it as columns[].list. list-roles=\"key:role,…\" on sf-view named the same roles for a host on port 1.14.0 or earlier; it is still read until the date, a column the host gave a role keeps it, and a page that uses it is noted in SF.deprecations once per view.",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "list-roles",
+          "to": "columns[].list",
+          "match": "(?<![\\w-])list-roles(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-view list-roles=\"state:status,name:title,domain:supporting\">",
+        "after": "columns: [{key: 'state', list: 'status'}, {key: 'name', list: 'title'}, {key: 'domain', list: 'supporting'}]"
+      },
+      "manual": "Not a rename: the roles move from the page to the host's data. Speak simai.dataview-port 1.15.0 and send each column's list role as columns[].list (title, supporting, status, …), then remove list-roles from sf-view.",
+      "source": "simai/ui-view package/src/smart/view/component.json aliases and index.js LIST_ATTRIBUTES (feat/c31-resource-list 07d17f8); ui-control control/evidence/2026-11-09-c31-resource-list/README.md"
+    },
+    {
+      "id": "utility-c20-elevation-former",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The elevation classes are former names (C20 follow-up, dispatcher 2026-11-10): elevation-0..5 set a surface, a shadow and the dim ink at once, and the shadow system names the place instead. Each class is two classes now, the surface of its place and the shadow of its place: 0 is bg-surface-page shadow-flat, 1 bg-surface-card shadow-raised, 2 and 3 bg-surface-popup shadow-overlay, 4 and 5 bg-surface-popup-nested shadow-modal. The pair draws the same background and the same shadow and sets the same dim ink (--sf-on-surface-variant; bg-surface-page sets the theme's, where elevation-0 set none); a bg-surface-* class is also a place (C16), so it takes the theme's roles back inside a coloured block where elevation-N did not. Until remove_after each elevation-N class keeps drawing as it does.",
+      "items": [
+        {
+          "from": "elevation-0",
+          "to": "bg-surface-page shadow-flat",
+          "match": "(?<![a-z0-9:-])elevation-0(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-1",
+          "to": "bg-surface-card shadow-raised",
+          "match": "(?<![a-z0-9:-])elevation-1(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-2",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-2(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-3",
+          "to": "bg-surface-popup shadow-overlay",
+          "match": "(?<![a-z0-9:-])elevation-3(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-4",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-4(?![a-z0-9-])"
+        },
+        {
+          "from": "elevation-5",
+          "to": "bg-surface-popup-nested shadow-modal",
+          "match": "(?<![a-z0-9:-])elevation-5(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the class with the two classes of its place: elevation-0 with bg-surface-page shadow-flat, elevation-1 with bg-surface-card shadow-raised, elevation-2 and elevation-3 with bg-surface-popup shadow-overlay, elevation-4 and elevation-5 with bg-surface-popup-nested shadow-modal. In a class attribute this is a plain replacement; where code adds the class (classList.add('elevation-3')) add both names. A component's own stylesheet reads the roles instead: background-color: var(--sf-surface-popup); box-shadow: var(--sf-shadow-overlay).",
+      "examples": {
+        "before": "<div class=\"p-4 radius-3 elevation-3\">",
+        "after": "<div class=\"p-4 radius-3 bg-surface-popup shadow-overlay\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/elevation, src/utility/background-color, src/utility/box-shadow"
+    },
+    {
+      "id": "attribute-list-attention-size-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-attention takes its density from the page (data-sf-density, a compact context; decision C22), never from a size of its own. size, whose 1/2 was 1.1's small rung and in 1.2.0 the compact density, is deprecated: until remove_after size=\"1/2\" still draws the list compact, noted in SF.deprecations and said once per page in the console. In sf-list-timeline size=\"1/2\" is a smaller rung, so the same word cannot mean the density here.",
+      "items": [
+        {
+          "component": "sf-list-attention",
+          "from": "size",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove size from the sf-list-attention. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; size=\"1\" is the normal density and is removed too; inside a compact region the list then becomes compact (size=1 kept it at the normal rung there); data-sf-density=\"normal\" on it keeps it normal.",
+      "examples": {
+        "before": "<sf-list-attention size=\"1/2\" triage>",
+        "after": "<sf-list-attention data-sf-density=\"compact\" triage>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-attention/index.js"
+    },
+    {
+      "id": "token-c43-muted-is-disabled",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The muted ink --sf-on-surface-muted is the disabled ink (C43): it reads var(--sf-on-surface-disabled), re-declared on every place with it, so it moves from neutral-60 / neutral-40 to neutral-50 at 80 / neutral-90 at 48 and follows the place (dark 2.92 -> 4.12 on the page, 1.73 -> 3.30 on a popup, 1.44 -> 2.97 on a nested popup). The name holds that value until remove_after.",
+      "items": [
+        {
+          "from": "--sf-on-surface-muted",
+          "to": "--sf-on-surface-disabled",
+          "match": "--sf-on-surface-muted(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "color: var(--sf-on-surface-muted);",
+        "after": "color: var(--sf-on-surface-disabled);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__theme.scss, src/core/scss/mix/_mix__places.scss"
+    },
+    {
+      "id": "utility-c16-colour-family-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The colour utility families other than bg- take the background system's names (C16, 2026-11-08), as utility-c16-background-names did for bg-: fill-, border-, ring-, ring-offset-, drop-shadow-, gr1/2/3-, stripe-, color- and placeholder- classes named by a former role (surface-0, surface-1, surface-overlay, disable, on-disable, <role>-transparent-select, <role>-transparent-overlay, hover:fill-<role>-transparent) get the current role's name: surface-page, surface-area, surface-veil, surface-disabled, on-surface-disabled, <role>-state-select, <role>-container-strong, hover:fill-<role>-state. Both names draw the same colour: every family reads the current role token now (a former token is var() of its successor wherever the successor is declared). The former class names work until remove_after.",
+      "items": [
+        {
+          "from": "border-surface-0",
+          "to": "border-surface-page",
+          "match": "(?<![a-z0-9-])border-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-surface-0",
+          "to": "ring-surface-page",
+          "match": "(?<![a-z0-9-])ring-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-surface-0",
+          "to": "ring-offset-surface-page",
+          "match": "(?<![a-z0-9-])ring-offset-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "border-surface-1",
+          "to": "border-surface-area",
+          "match": "(?<![a-z0-9-])border-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-surface-1",
+          "to": "ring-surface-area",
+          "match": "(?<![a-z0-9-])ring-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-surface-1",
+          "to": "ring-offset-surface-area",
+          "match": "(?<![a-z0-9-])ring-offset-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "border-surface-overlay",
+          "to": "border-surface-veil",
+          "match": "(?<![a-z0-9-])border-surface-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-surface-overlay",
+          "to": "ring-surface-veil",
+          "match": "(?<![a-z0-9-])ring-surface-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-surface-overlay",
+          "to": "ring-offset-surface-veil",
+          "match": "(?<![a-z0-9-])ring-offset-surface-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-surface-transparent-overlay",
+          "to": "border-surface-container-strong",
+          "match": "(?<![a-z0-9-])border-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-surface-transparent-overlay",
+          "to": "ring-surface-container-strong",
+          "match": "(?<![a-z0-9-])ring-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-surface-transparent-overlay",
+          "to": "ring-offset-surface-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-primary-transparent-overlay",
+          "to": "border-primary-container-strong",
+          "match": "(?<![a-z0-9-])border-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-primary-transparent-overlay",
+          "to": "ring-primary-container-strong",
+          "match": "(?<![a-z0-9-])ring-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-primary-transparent-overlay",
+          "to": "ring-offset-primary-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-secondary-transparent-overlay",
+          "to": "border-secondary-container-strong",
+          "match": "(?<![a-z0-9-])border-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-secondary-transparent-overlay",
+          "to": "ring-secondary-container-strong",
+          "match": "(?<![a-z0-9-])ring-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-secondary-transparent-overlay",
+          "to": "ring-offset-secondary-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-tertiary-transparent-overlay",
+          "to": "border-tertiary-container-strong",
+          "match": "(?<![a-z0-9-])border-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-tertiary-transparent-overlay",
+          "to": "ring-tertiary-container-strong",
+          "match": "(?<![a-z0-9-])ring-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-tertiary-transparent-overlay",
+          "to": "ring-offset-tertiary-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-error-transparent-overlay",
+          "to": "border-error-container-strong",
+          "match": "(?<![a-z0-9-])border-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-error-transparent-overlay",
+          "to": "ring-error-container-strong",
+          "match": "(?<![a-z0-9-])ring-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-error-transparent-overlay",
+          "to": "ring-offset-error-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-warning-transparent-overlay",
+          "to": "border-warning-container-strong",
+          "match": "(?<![a-z0-9-])border-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-warning-transparent-overlay",
+          "to": "ring-warning-container-strong",
+          "match": "(?<![a-z0-9-])ring-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-warning-transparent-overlay",
+          "to": "ring-offset-warning-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "border-success-transparent-overlay",
+          "to": "border-success-container-strong",
+          "match": "(?<![a-z0-9-])border-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-success-transparent-overlay",
+          "to": "ring-success-container-strong",
+          "match": "(?<![a-z0-9-])ring-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "ring-offset-success-transparent-overlay",
+          "to": "ring-offset-success-container-strong",
+          "match": "(?<![a-z0-9-])ring-offset-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-surface-0",
+          "to": "drop-shadow-surface-page",
+          "match": "(?<![a-z0-9-])drop-shadow-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-surface-1",
+          "to": "drop-shadow-surface-area",
+          "match": "(?<![a-z0-9-])drop-shadow-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-primary-transparent-select",
+          "to": "drop-shadow-primary-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-primary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-primary-transparent-overlay",
+          "to": "drop-shadow-primary-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-secondary-transparent-select",
+          "to": "drop-shadow-secondary-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-secondary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-secondary-transparent-overlay",
+          "to": "drop-shadow-secondary-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-tertiary-transparent-select",
+          "to": "drop-shadow-tertiary-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-tertiary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-tertiary-transparent-overlay",
+          "to": "drop-shadow-tertiary-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-error-transparent-select",
+          "to": "drop-shadow-error-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-error-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-error-transparent-overlay",
+          "to": "drop-shadow-error-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-warning-transparent-select",
+          "to": "drop-shadow-warning-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-warning-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-warning-transparent-overlay",
+          "to": "drop-shadow-warning-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-success-transparent-select",
+          "to": "drop-shadow-success-state-select",
+          "match": "(?<![a-z0-9-])drop-shadow-success-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "drop-shadow-success-transparent-overlay",
+          "to": "drop-shadow-success-container-strong",
+          "match": "(?<![a-z0-9-])drop-shadow-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-surface-0",
+          "to": "fill-surface-page",
+          "match": "(?<![a-z0-9-])fill-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-surface-1",
+          "to": "fill-surface-area",
+          "match": "(?<![a-z0-9-])fill-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-surface-transparent-select",
+          "to": "fill-surface-state-select",
+          "match": "(?<![a-z0-9-])fill-surface-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-surface-transparent-overlay",
+          "to": "fill-surface-container-strong",
+          "match": "(?<![a-z0-9-])fill-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-disable",
+          "to": "fill-surface-disabled",
+          "match": "(?<![a-z0-9-])fill-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-primary-transparent-select",
+          "to": "fill-primary-state-select",
+          "match": "(?<![a-z0-9-])fill-primary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-primary-transparent-overlay",
+          "to": "fill-primary-container-strong",
+          "match": "(?<![a-z0-9-])fill-primary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-secondary-transparent-select",
+          "to": "fill-secondary-state-select",
+          "match": "(?<![a-z0-9-])fill-secondary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-secondary-transparent-overlay",
+          "to": "fill-secondary-container-strong",
+          "match": "(?<![a-z0-9-])fill-secondary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-tertiary-transparent-select",
+          "to": "fill-tertiary-state-select",
+          "match": "(?<![a-z0-9-])fill-tertiary-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-tertiary-transparent-overlay",
+          "to": "fill-tertiary-container-strong",
+          "match": "(?<![a-z0-9-])fill-tertiary-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-error-transparent-select",
+          "to": "fill-error-state-select",
+          "match": "(?<![a-z0-9-])fill-error-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-error-transparent-overlay",
+          "to": "fill-error-container-strong",
+          "match": "(?<![a-z0-9-])fill-error-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-warning-transparent-select",
+          "to": "fill-warning-state-select",
+          "match": "(?<![a-z0-9-])fill-warning-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-warning-transparent-overlay",
+          "to": "fill-warning-container-strong",
+          "match": "(?<![a-z0-9-])fill-warning-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-success-transparent-select",
+          "to": "fill-success-state-select",
+          "match": "(?<![a-z0-9-])fill-success-transparent-select(?![a-z0-9-])"
+        },
+        {
+          "from": "fill-success-transparent-overlay",
+          "to": "fill-success-container-strong",
+          "match": "(?<![a-z0-9-])fill-success-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-surface-transparent",
+          "to": "hover:fill-surface-state",
+          "match": "(?<![a-z0-9:-])hover:fill-surface-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-primary-transparent",
+          "to": "hover:fill-primary-state",
+          "match": "(?<![a-z0-9:-])hover:fill-primary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-secondary-transparent",
+          "to": "hover:fill-secondary-state",
+          "match": "(?<![a-z0-9:-])hover:fill-secondary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-tertiary-transparent",
+          "to": "hover:fill-tertiary-state",
+          "match": "(?<![a-z0-9:-])hover:fill-tertiary-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-error-transparent",
+          "to": "hover:fill-error-state",
+          "match": "(?<![a-z0-9:-])hover:fill-error-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-warning-transparent",
+          "to": "hover:fill-warning-state",
+          "match": "(?<![a-z0-9:-])hover:fill-warning-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "hover:fill-success-transparent",
+          "to": "hover:fill-success-state",
+          "match": "(?<![a-z0-9:-])hover:fill-success-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "gr1-surface-0",
+          "to": "gr1-surface-page",
+          "match": "(?<![a-z0-9-])gr1-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "gr2-surface-0",
+          "to": "gr2-surface-page",
+          "match": "(?<![a-z0-9-])gr2-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "gr3-surface-0",
+          "to": "gr3-surface-page",
+          "match": "(?<![a-z0-9-])gr3-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "gr1-surface-1",
+          "to": "gr1-surface-area",
+          "match": "(?<![a-z0-9-])gr1-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "gr2-surface-1",
+          "to": "gr2-surface-area",
+          "match": "(?<![a-z0-9-])gr2-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "gr3-surface-1",
+          "to": "gr3-surface-area",
+          "match": "(?<![a-z0-9-])gr3-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-surface-transparent-overlay",
+          "to": "stripe-surface-container-strong",
+          "match": "(?<![a-z0-9-])stripe-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "color-on-disable",
+          "to": "color-on-surface-disabled",
+          "match": "(?<![a-z0-9-])color-on-disable(?![a-z0-9-])"
+        },
+        {
+          "from": "placeholder-on-disable",
+          "to": "placeholder-on-surface-disabled",
+          "match": "(?<![a-z0-9-])placeholder-on-disable(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<svg class=\"fill-primary-transparent-select\">",
+        "after": "<svg class=\"fill-primary-state-select\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/fill, src/utility/border-color (ring-color, ring-offset-color), src/utility/drop-shadow-color, src/utility/gradient-color, src/utility/stripe-color, src/utility/text-color (placeholder-color)"
+    },
+    {
+      "id": "class-c13-control-error-to-danger",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "A control's destructive status is danger (decision C13; the value record value-control-status-error-to-danger): on the class components the modifier is sf-button--danger and sf-icon-button--danger, and the --error modifiers are their former names on a control, drawn by the same rules until remove_after. The Smart sf-button and sf-button-icon write both. A message (alert, badge, field, toast) keeps --error: there it is the status, not a former name.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--error",
+          "to": "sf-button--danger"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--error",
+          "to": "sf-icon-button--danger"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--error\">",
+        "after": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--danger\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss, src/component/icon-buttons"
+    },
+    {
+      "id": "class-c27-button-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class button's density classes spacing-compact, spacing-comfortable and spacing-spacious move the side padding only at one height; decision C27 gives the button a height of its own (sf-button--height-low|high|highest, component.buttons 1.8.0), as the Smart sf-button's spacing gave way to height (attribute-button-spacing-to-height). On sf-button they are deprecated and keep drawing as before until remove_after. They are not turned into a height: the equivalent is not automatic. sf-icon-button's spacing classes are not part of this record.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "spacing-compact",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])|(?<![a-z0-9:-])spacing-compact(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-button",
+          "from": "spacing-comfortable",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])|(?<![a-z0-9:-])spacing-comfortable(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        },
+        {
+          "component": "sf-button",
+          "from": "spacing-spacious",
+          "to": null,
+          "match": "(?:(?<![a-z0-9-])sf-button(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])|(?<![a-z0-9:-])spacing-spacious(?![a-z0-9-])[^\"'<>]*?(?<![a-z0-9-])sf-button(?![a-z0-9-]))"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing-* from the sf-button. For a lower or a higher button add sf-button--height-low, sf-button--height-high or sf-button--height-highest (the side padding comes with it); the default height needs no class. spacing-* changed the sides only, so pick the height the design wants. The public --sf-button-padding-inline still sets the sides alone.",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary spacing-spacious\">",
+        "after": "<button class=\"sf-button sf-button--size-1 sf-button--default sf-button--primary sf-button--height-high\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss"
+    },
+    {
+      "id": "option-c27-button-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "The class button's constructor option spacing (compact, comfortable, spacious) writes the deprecated density classes (class-c27-button-spacing-to-height); its option height writes the height class (decision C27). spacing keeps working until remove_after and is not turned into a height. The constructors of other class components keep their spacing.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "spacing",
+          "to": "height",
+          "match": "(?<![a-z0-9-])spacing\\s*:\\s*['\"](?:compact|comfortable|spacious)['\"]"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "In the options of the class button (component.buttons) write height: 'low', 'high' or 'highest' instead of spacing; spacing: 'normal' is the default and is simply removed. The finding names every spacing option of the constructors it sees: leave the one of an icon button (sf-icon-button), whose spacing is not deprecated.",
+      "examples": {
+        "before": "new Button({params: {size: '1', spacing: 'spacious', text: 'Сохранить'}})",
+        "after": "new Button({params: {size: '1', height: 'high', text: 'Сохранить'}})"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/js/_buttons.js"
+    },
+    {
+      "id": "attribute-segmented-spacing-to-height",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-segmented has a height of its own, height=\"low|default|high|highest\" (decision C27, as sf-button): the track stands as tall as an sf-button of the same size and height. spacing, which moved the segments' side padding only, is deprecated: it keeps drawing as before with a console warning until remove_after and is not turned into a height.",
+      "items": [
+        {
+          "component": "sf-segmented",
+          "from": "spacing",
+          "to": "height"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing from the sf-segmented. For a lower or a higher control write height=\"low\", \"high\" or \"highest\"; spacing=\"normal\" is the default and is simply removed. spacing changed the sides only, so pick the height the design wants.",
+      "examples": {
+        "before": "<sf-segmented size=\"1\" spacing=\"spacious\">",
+        "after": "<sf-segmented size=\"1\" height=\"high\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/segmented/index.js"
+    },
+    {
+      "id": "token-file-download-variable-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "sf-file-download's seven public variables carry the element's name, not its former tag's (docs pre-check 2026-11-10 DF-11): --sf-download-file-background-color is --sf-file-download-background-color, and so on for -border-color, -radius, -padding, -gap, -icon-size and -icon-color. The class sheet reads the new name first and the former one under it, so a page that sets the former name draws as before.",
+      "items": [
+        {
+          "from": "--sf-download-file-background-color",
+          "to": "--sf-file-download-background-color",
+          "match": "--sf-download-file-background-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-border-color",
+          "to": "--sf-file-download-border-color",
+          "match": "--sf-download-file-border-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-radius",
+          "to": "--sf-file-download-radius",
+          "match": "--sf-download-file-radius(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-padding",
+          "to": "--sf-file-download-padding",
+          "match": "--sf-download-file-padding(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-gap",
+          "to": "--sf-file-download-gap",
+          "match": "--sf-download-file-gap(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-icon-size",
+          "to": "--sf-file-download-icon-size",
+          "match": "--sf-download-file-icon-size(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-download-file-icon-color",
+          "to": "--sf-file-download-icon-color",
+          "match": "--sf-download-file-icon-color(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": ".attachments { --sf-download-file-radius: var(--sf-radius-1); }",
+        "after": ".attachments { --sf-file-download-radius: var(--sf-radius-1); }"
+      },
+      "owner": "ui-source",
+      "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
+    },
+    {
+      "id": "class-icon-button-retired-looks-c15",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class icon button follows decision C15 as the Smart one does (value-icon-button-looks-c15; docs pre-check 2026-11-10, navigation item 2): sf-icon-button--surface is retired and draws as sf-icon-button--tonal with the scheme it is written with, and sf-icon-button--secondary is retired and draws as the quiet neutral, sf-icon-button--on-surface sf-icon-button--on-surface-variant (component.icon-buttons 1.6.0). The alpha-ramp surface look and the secondary container tonal look are gone; the names keep drawing their successors until remove_after.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--surface",
+          "to": "sf-icon-button--tonal",
+          "match": "(?<![a-z0-9-])sf-icon-button--surface(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--secondary",
+          "to": "sf-icon-button--on-surface sf-icon-button--on-surface-variant",
+          "match": "(?<![a-z0-9-])sf-icon-button--secondary(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1\">",
+        "after": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1\">"
+      },
+      "manual": "Write sf-icon-button--tonal for sf-icon-button--surface and keep the scheme class. For sf-icon-button--secondary write sf-icon-button--on-surface and sf-icon-button--on-surface-variant: one class becomes two, so it is not a plain rename.",
+      "owner": "ui-source",
+      "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss"
+    },
+    {
+      "id": "class-carousel-surface-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The carousel's surface modifiers carry the C16 place names (docs pre-check 2026-11-10, CR-01): sf-carousel-switch--surface-zero is sf-carousel-switch--surface-page and sf-carousel-pagination--surface-2 is sf-carousel-pagination--surface-area (component.carousel 1.2.0). The former classes draw the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-carousel",
+          "from": "sf-carousel-switch--surface-zero",
+          "to": "sf-carousel-switch--surface-page",
+          "match": "(?<![a-z0-9-])sf-carousel-switch--surface-zero(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-carousel",
+          "from": "sf-carousel-pagination--surface-2",
+          "to": "sf-carousel-pagination--surface-area",
+          "match": "(?<![a-z0-9-])sf-carousel-pagination--surface-2(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-carousel-switch sf-carousel-switch--next sf-carousel-switch--surface-zero\">",
+        "after": "<button class=\"sf-carousel-switch sf-carousel-switch--next sf-carousel-switch--surface-page\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/carousel/scss/_css__carousel.scss"
+    },
+    {
+      "id": "class-fab-tonal-secondary-to-primary",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The floating action button's tonal pair is primary (dispatcher decision e, docs pre-check 2026-11-10; C15 retired secondary for the icon buttons): sf-fab--tonal sf-fab--primary draws the primary container under on-primary-container (component.fab 1.1.0). sf-fab--secondary is its former name and draws the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-fab",
+          "from": "sf-fab--secondary",
+          "to": "sf-fab--primary",
+          "match": "(?<![a-z0-9-])sf-fab--secondary(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-fab sf-fab--tonal sf-fab--secondary sf-fab--size-1\">",
+        "after": "<button class=\"sf-fab sf-fab--tonal sf-fab--primary sf-fab--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/fab/scss/_css_fab.scss"
+    },
+    {
+      "id": "class-clipboard-size-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The clipboard button's size classes carry the size names, as every sized component's do (CP-03, docs pre-check 2026-11-10; component.clipboard 1.1.0): sf-clipboard--size-1/3, sf-clipboard--size-1 and sf-clipboard--size-2 are the control ladder's 1/3, 1 and 2 steps. sf-clipboard-1, -2 and -3 are their former names and draw the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-1",
+          "to": "sf-clipboard--size-1/3",
+          "match": "(?<![a-z0-9-])sf-clipboard-1(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-2",
+          "to": "sf-clipboard--size-1",
+          "match": "(?<![a-z0-9-])sf-clipboard-2(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-3",
+          "to": "sf-clipboard--size-2",
+          "match": "(?<![a-z0-9-])sf-clipboard-3(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard-1\">",
+        "after": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard--size-1/3\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/scss/_sf_copy.scss"
+    },
+    {
+      "id": "attribute-list-timeline-density-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-timeline takes its density from the page (data-sf-density, a compact context; decision C22), never from a setting of its own (C40). density is deprecated: until remove_after density=\"compact\" writes data-sf-density=\"compact\" on the list's root, noted in SF.deprecations; density=\"normal\" was the default and means nothing.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "from": "density",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove density from the sf-list-timeline. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; density=\"normal\" is removed with nothing in its place (data-sf-density=\"normal\" keeps the list normal inside a compact region).",
+      "examples": {
+        "before": "<sf-list-timeline density=\"compact\">",
+        "after": "<sf-list-timeline data-sf-density=\"compact\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/index.js"
+    },
+    {
+      "id": "class-radio-type-font-to-segmented",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The radio's font-sample variant (sf-radio-wrap--type-font with sf-radio-group--font and sf-radio-button--type-font tiles, the constructor's type: \"font\") is deprecated: choosing one value from buttons is sf-segmented (DEV decision D11a/b, docs pre-check 2026-11-10 CRB-01, where the «Aa» tiles stood 24 high with doubled borders). The variant keeps drawing and submitting as before until remove_after; there is no automatic rewrite, a page moves the choice to an sf-segmented of the same values.",
+      "items": [
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-wrap--type-font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-group--font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-button--type-font",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the group of font-sample tiles with sf-segmented (one segment per value, the sample as the segment's label); keep the name and the values of the radios as the segmented control's name and values.",
+      "examples": {
+        "before": "<div class=\"sf-radio-button sf-radio-wrap--type-font sf-radio-button--size-1\"><div class=\"sf-radio-group sf-radio-group--font\"><label class=\"sf-radio-button sf-radio-button--size-1 sf-radio-button--type-font\">…</label></div></div>",
+        "after": "<sf-segmented name=\"font\" size=\"1\">…</sf-segmented>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/radio/scss/_css_radio_custom.scss, src/component/radio/js/_radio.js; ui-control control/docs-review/decisions.md D11b"
+    },
+    {
+      "id": "event-view-save-kind-view",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-view (simai/ui-view, sf-view 1.12.0, set view 1.7.0) hears a page's request to save a shared saved view as the vocabulary's save with kind view (vocabulary 1.1.5 §9): sf-view-save {kind: \"view\", key, label, revision?, roles?} on the view itself, which raises view.save_shared as before; a save of another kind is not the view's. The former name sf-view-saved-view-intent is a dated same-detail alias until remove_after: still heard, its detail (which has no kind) read as a view, and each use noted in SF.deprecations. The older sf-data-view-saved-view-intent (tag-sf-data-view-to-sf-view) now leads to sf-view-save too. sf-view-save sent without kind is a view and is not noted.",
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "view.dispatchEvent(new CustomEvent('sf-view-saved-view-intent', {detail: {key: 'team', label: 'Team'}}))",
+        "after": "view.dispatchEvent(new CustomEvent('sf-view-save', {detail: {kind: 'view', key: 'team', label: 'Team'}}))"
+      },
+      "manual": "Dispatch sf-view-save on the view for sf-view-saved-view-intent (or sf-data-view-saved-view-intent) and add kind: \"view\" to the detail; key, label, revision and roles stay as they were.",
+      "owner": "ui-view",
+      "source": "simai/ui-view package/src/smart/view/aliases.json and component.json (events.save, aliases), kind event",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "sf-view-saved-view-intent",
+          "to": "sf-view-save"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-saved-view-intent",
+          "to": "sf-view-save"
+        }
+      ]
+    },
+    {
+      "id": "class-button-link-to-ghost",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class button's look without a fill is sf-button--ghost (decision C15, docs review R033, CB-01), as the Smart button's appearance already is (value-button-link-to-ghost); sf-button--link is its former name and is drawn by the same rules until remove_after. The Smart sf-button, sf-segmented's segments and sf-alert's second action write both classes until then, so a page selector that reached sf-button--link still does. The earlier record class-button-ghost-to-link went the other way and stays as history; sf-upgrade no longer reports or rewrites an item a later record reverses.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--link",
+          "to": "sf-button--ghost"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--link sf-button--on-surface\">",
+        "after": "<button class=\"sf-button sf-button--ghost sf-button--on-surface\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss; src/smart/button/js/templates/default.js; ui-control control/docs-review/decisions.md C15"
+    },
+    {
+      "id": "attribute-input-country-presence-booleans",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-input-country 1.3.0: four settings that are on by default were switched off by the string \"false\", which is not an HTML boolean (docs pre-check 2026-11-10 CC-05). Each has a presence form: multi-country=\"false\" is fixed-country, use-country-masks=\"false\" is fixed-mask, show-code=\"false\" is hide-code, lazy-flags=\"false\" is eager-flags. The string forms keep working until remove_after and are noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-input-country",
+          "from": "multi-country=\"false\"",
+          "to": "fixed-country",
+          "match": "multi-country=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "use-country-masks=\"false\"",
+          "to": "fixed-mask",
+          "match": "use-country-masks=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "show-code=\"false\"",
+          "to": "hide-code",
+          "match": "show-code=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "lazy-flags=\"false\"",
+          "to": "eager-flags",
+          "match": "lazy-flags=[\"']false[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace each string form by its presence attribute: multi-country=\"false\" by fixed-country, use-country-masks=\"false\" by fixed-mask, show-code=\"false\" by hide-code, lazy-flags=\"false\" by eager-flags. multi-country=\"true\" and the like are the defaults and are simply removed.",
+      "examples": {
+        "before": "<sf-input-country iso2=\"RU\" multi-country=\"false\" use-country-masks=\"false\"></sf-input-country>",
+        "after": "<sf-input-country iso2=\"RU\" fixed-country fixed-mask></sf-input-country>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-country/index.js"
+    },
+    {
+      "id": "behaviour-input-color-visible-label",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-color 1.6.0 draws its label: `label` is shown above the row in the field label look of sf-input (dispatcher decision a, docs pre-check 2026-11-10 FB-10). It only named the colour input before, so a page that printed its own caption and passed the same words in label now shows them twice; a colour in a cell, a record panel or a toolbar that only needs a name passes aria-label instead.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "attribute": "label",
+          "from": "label as the accessible name only",
+          "to": "aria-label"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a colour needs a name and no visible label (a table cell, a record panel that draws the label beside it, a toolbar), write aria-label=\"…\" in place of label=\"…\". Where the page drew its own caption above the colour, remove the caption and keep label.",
+      "examples": {
+        "before": "<sf-input-color slot=\"tools\" label=\"Основной цвет сайта\"></sf-input-color>",
+        "after": "<sf-input-color slot=\"tools\" aria-label=\"Основной цвет сайта\"></sf-input-color>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-color/js/templates/default.js"
+    },
+    {
+      "id": "value-composition-catalogue-group-structure",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The composition catalogue's group structure is layout (2026-11-04, the visual parity pass: Elements and Layout replace Structure, which said nothing to an author). A type manifest's catalogue.group and a slot's groups still accept structure and read it as layout (CATALOGUE_GROUP_ALIASES in src/core/js/composition/catalogue.mjs) until remove_after. Recorded on 2026-11-11, after the fact: the alias shipped with core.runtime 1.26.0 without a journal record (docs pre-check 2026-11-10, GF-16).",
+      "items": [
+        {
+          "attribute": "catalogue.group",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']group[\"']\\s*:\\s*[\"']structure[\"']"
+        },
+        {
+          "attribute": "groups",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']groups[\"']\\s*:\\s*\\[[^\\]]*[\"']structure[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-04",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "\"catalogue\": {\"group\": \"structure\"}",
+        "after": "\"catalogue\": {\"group\": \"layout\"}"
+      },
+      "manual": "In a composition type manifest write catalogue.group \"layout\" instead of \"structure\", and \"layout\" in a slot's groups; a smart element a block prints goes under \"elements\".",
+      "source": "src/core/js/composition/catalogue.mjs CATALOGUE_GROUP_ALIASES; docs/developer/block-author-guide.md"
+    },
+    {
+      "id": "global-sf-when-define",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "SF.whenDefine is the older name of SF.whenDefined (a promise that settles when the named Smart elements are defined, with their tag names). It keeps working as a dated alias of the same function until the sweep, and every read is noted in SF.deprecations (dispatcher, D17 follow-up, 2026-11-11: the documentation lists one name).",
+      "items": [
+        {
+          "from": "SF.whenDefine",
+          "to": "SF.whenDefined",
+          "match": "\\bSF\\??\\.whenDefine\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "await SF.whenDefine('sf-input');",
+        "after": "await SF.whenDefined('sf-input');"
+      },
+      "manual": "Write SF.whenDefined where a page calls SF.whenDefine; the arguments and the promise are the same.",
+      "owner": "ui-control",
+      "source": "src/core/js/loader.js (WHEN_DEFINE_ALIAS)"
     }
   ]
 }

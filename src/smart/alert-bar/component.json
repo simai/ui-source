@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert-bar's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the page alert bar the Larena storage thread asked for (Federation bus msg-f8fd87ae998c44438cc7), from the owner-approved prototype «Плашка важных уведомлений» (claude.ai artifact BAtvwTPsumKqguQgDwngaM, 2026-11-05).",
   "id": "smart.alert-bar",
   "tag": "sf-alert-bar",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "alert",
   "settings": {
@@ -161,6 +161,9 @@
   },
   "relations": [
     {
+      "name": "cl-time"
+    },
+    {
       "name": "cl-button"
     },
     {
@@ -253,7 +256,13 @@
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.0 (2026-11-08; one number above the two unreleased 1.1.0 it joins): a minor (§4.10; docs review R031, owner decisions C13, C16). The bar reports conditions, so its most serious level is error, as on every message (alert, badge, toast, field); danger -- the word of the first brief -- reads as error and is noted once (change journal value-alert-bar-level-danger-to-error). The bar's class is sf-alert-bar--error; the danger class still draws. The level badge in the list takes the level word as its status. close(id) still answers {reason: danger} for an item that cannot be closed: an outcome has no alias to carry a rename. The bar's own controls write sf-button-icon's ghost, the name of the look without a fill (rule C15). The public variables end in -color (C16 naming): --sf-alert-bar-error-background-color, --sf-alert-bar-warning-background-color, --sf-alert-bar-info-background-color, --sf-alert-bar-list-background-color; the former names --sf-alert-bar-danger-background, --sf-alert-bar-warning-background, --sf-alert-bar-info-background, --sf-alert-bar-list-background are still read under the new ones until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json).",
     "version 1.2.2: the size rule C18 (2026-11-09): the text's floor is the size step f0 (10rem, as before); the list of all scrolls past g1, 352 px (it was 22.5rem, 360 px, no step: 8 px less); the narrow layout holds up to g9, 38rem, 608 px of the bar's own width (it was 600 px, no step: a bar 601-608 px wide now takes the narrow layout); the raw fallbacks of --sf-px and --sf-focus--width are gone (the tokens are always defined, nothing moves); the list's entry slides 4 px as before, written as the step a4. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, close({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, close(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
-    "version 1.3.1 (2026-11-09): each level is a strong coloured place (C16, the background system, owner 2026-11-08): what stands on the bar takes the level's ink on the alpha scale (states 4/8/12, fill 12/16/20, line 24, boundary 64, dim ink 80) from mix/_mix__places.scss instead of its own color-mix; the list of bars stands on an area place."
+    "version 1.3.1 (2026-11-09): each level is a strong coloured place (C16, the background system, owner 2026-11-08): what stands on the bar takes the level's ink on the alpha scale (states 4/8/12, fill 12/16/20, line 24, boundary 64, dim ink 80) from mix/_mix__places.scss instead of its own color-mix; the list of bars stands on an area place.",
+    "version 1.3.2 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
+    "version 1.3.2 (2026-11-10): a patch, nothing drawn differently. Each level row declares its fill as the solid place colour too (--sf-surface-place-solid, C43), so a selected row on the bar stacks its badges over the bar's colour. Settings, values, events and keys unchanged.",
+    "version 1.3.3 (2026-11-10, pair next integration): one number for the two 1.3.2 notes above, the integration's underlay patch and C43's solid place on each level row, which were claimed separately; they ship together and 1.3.2 is never released alone. Settings, values, events and keys unchanged.",
+    "version 1.3.4 (2026-11-10, C16 leftovers; written as a note on 1.3.3, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. (the list's fill)",
+    "version 1.4.0 (2026-11-10, owner decision C40): an item's time is sf-time (cl-time), the Framework's one way to write a moment. Within a day it is relative as before (threshold P1D); older it reads as sf-time's auto («вчера, 19:40», «5 ноября», with the year when it is not this one) where 1.3 printed the medium date and the time; the full moment is in sf-time's tooltip, reached by the pointer and by Tab, and Escape hides it. Settings, values and events unchanged.",
+    "version 1.4.0, also (2026-11-11, written on the pair's 1.3.4, carried by 1.4.0): each level declares --sf-surface-place-ground, the nearest opaque place, with its fill, as every solid place does. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -351,7 +360,7 @@
     "accessibility": {
       "accessible_name": "internal",
       "keyboard": [
-        "Tab reaches the action link, acknowledge, the paging arrows, «All N» and close in order",
+        "Tab reaches the action link, acknowledge, each item's time (its tooltip), the paging arrows, «All N» and close in order",
         "Enter or Space presses a control; Enter follows the action link",
         "Escape closes the open list and returns focus to «All N»"
       ],

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.help-mark",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "title": "Help mark",
   "summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
   "kind": "smart",
@@ -266,7 +266,7 @@
       },
       {
         "path": "src/smart/help-mark/scss/_smart__help_mark.scss",
-        "sha256": "7be28e2c93bb0f13aad0e4ae125c0fb7e9102e4334e1649e092d8194e2dc24f0"
+        "sha256": "ff49e1eab3834b0e738e1b0390af5a4f2b2e085d4e15ddce956d12c7fc78eda4"
       },
       {
         "path": "src/smart/help-mark/rule.js",
@@ -274,7 +274,7 @@
       },
       {
         "path": "src/smart/help-mark/docs.md",
-        "sha256": "7e9f9fbdea88b2249234818e92d9807b33491f92f0e73dd1439cc4ff91427e7c"
+        "sha256": "5952d68230051737d5009eb24a9c15edf01793b0c861bcb64664723573475614"
       }
     ],
     "generated_runtime": []

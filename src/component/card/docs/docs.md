@@ -36,7 +36,7 @@ padding. Use it inside a grid of cards that needs no frames.
 
 | Variable | What | Default |
 |:---|:---|:---|
-| `--sf-card-background-color` | the fill | `--sf-surface-0` |
+| `--sf-card-background-color` | the fill | `--sf-surface-card` |
 | `--sf-card-color` | the text | `--sf-on-surface` |
 | `--sf-card-border-color` | the edge | `--sf-outline-variant` |
 | `--sf-card-border-width` | the edge's width | `--sf-px` |

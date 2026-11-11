@@ -75,6 +75,24 @@ const sfProgressBarMeta = {
       "maximum": 100,
       "description": "A threshold in per cent: from this value on, the bar is an error by itself. Above warning-at when both are set. Unset, no threshold."
     },
+    "indeterminate": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The work runs and its size is not known yet: a segment of the fill crosses the track and the value is not read (aria-valuenow is left out). The page takes it off once the size is known and the same bar fills from the value, once (C34). Reduced motion: the segment stands still."
+    },
+    "paused": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
+    },
     "label": {
       "kind": "custom",
       "valueType": "string",

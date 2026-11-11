@@ -71,9 +71,9 @@ const note = (detail) => failures.push(detail);
 const classMarkup = (size) => `<label class="sf-quantity sf-quantity--size-${size} flex flex-col flex-nowrap justify-start" data-class-size="${size}">
   <span class="sf-quantity-label flex flex-row flex-nowrap justify-start items-start"><span class="sf-quantity-text">Класс</span></span>
   <span class="sf-quantity-wrap flex flex-row flex-nowrap justify-center items-center">
-    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex flex-row flex-nowrap justify-start items-center"><i class="sf-icon">remove</i></button>
+    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3 flex flex-row flex-nowrap justify-start items-center"><i class="sf-icon">remove</i></button>
     <input type="text" class="flex" value="3">
-    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex flex-row flex-nowrap justify-start items-center"><i class="sf-icon">add</i></button>
+    <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1/3 flex flex-row flex-nowrap justify-start items-center"><i class="sf-icon">add</i></button>
   </span>
 </label>`;
 
@@ -365,6 +365,10 @@ try {
           fieldTop: round(wrapRect.top - iField.getBoundingClientRect().top),
           stepper: round(stepper.height), stepperWidth: round(stepper.width), stepperControl: size === '1/2' ? round(length('--sf-icon-size-3')) : control(down),
           stepperGapTop: round(stepper.top - wrapRect.top), stepperGapStart: round(stepper.left - wrapRect.left),
+          // QT-03: the stepper glyph is the field's own icon size, the one
+          // sf-input draws at the same size.
+          glyph: round(quantity.querySelector('.sf-quantity-count .sf-icon').getBoundingClientRect().height),
+          fieldIcon: round(length(`--sf-text-height-${String(size).replace('/', '\\/')}`)),
         }];
       })),
       scroll: document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -390,6 +394,7 @@ try {
       if (Math.abs(rung.quantityLine - rung.inputLine) > 1) note({case: `${width}: size ${size} value text stands on sf-input's line`, got: rung});
       if (rung.stepper !== rung.stepperControl || rung.stepperWidth !== rung.stepperControl) note({case: `${width}: size ${size} steppers are one rung down`, got: rung});
       if (Math.abs(rung.stepperGapTop - rung.stepperGapStart) > 0.5) note({case: `${width}: size ${size} steppers stand as far from the top as from the start`, got: rung});
+      if (rung.glyph !== rung.fieldIcon) note({case: `${width}: size ${size} stepper glyph is the field's icon`, got: rung});
     }
     if (!(got.smart['1/2'].height < got.smart['1'].height && got.smart['1'].height < got.smart['2'].height)) note({case: `${width}: the sizes climb the ladder`, got: got.smart});
     if (got.scroll) note({case: `${width}: the page scrolls sideways`});

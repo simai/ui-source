@@ -317,15 +317,15 @@
         {
           "name": "--sf-alert-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         },
         {
           "name": "--sf-alert-gap",
           "role": "gap",
-          "summary": "Space between the icon, the text and the buttons.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space between the icon, the text and the buttons (decision C35: the toast's icon gap).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-13"
         }
       ]
@@ -800,8 +800,8 @@
         {
           "name": "--sf-toast-padding-block",
           "role": "padding-block",
-          "summary": "Space above and below the content.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space above and below the content (decision C35: the first line stands in a low control's box inside it).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-10-18"
         },
         {
@@ -852,14 +852,14 @@
           "name": "--sf-modal-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the panel before and after its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-modal-padding-block",
           "role": "padding-block",
           "summary": "Space inside the panel above and below its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
@@ -1070,6 +1070,20 @@
           "varies_with": [
             "appearance"
           ]
+        },
+        {
+          "name": "--sf-avatar-offline-background-color",
+          "role": "background",
+          "summary": "The colour under the offline dot: the place the avatar stands on, laid over the nearest opaque place (--sf-surface-place-ground), so neither the photo nor the initials show through the dot (C43), on a soft coloured place too.",
+          "default": "var(--sf-surface-place)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-avatar-offline-overlay",
+          "role": "overlay",
+          "summary": "The layer over that colour: the disabled ink. Set it to none for an offline dot of exactly --sf-avatar-offline-background-color.",
+          "default": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "since": "2026-11-10"
         }
       ]
     },
@@ -1143,8 +1157,8 @@
         {
           "name": "--sf-context-menu-inline-size",
           "role": "inline-size",
-          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value.",
-          "default": "calc(var(--sf-f7) + var(--sf-a8))",
+          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value. By default --sf-popup-menu-max-width, the menu's ceiling of the popup widths, which follows density (C32).",
+          "default": "var(--sf-popup-menu-max-width)",
           "since": "2026-10-30"
         }
       ]
@@ -1608,7 +1622,7 @@
           "name": "--sf-verification-cell-size",
           "role": "size",
           "summary": "A cell's width and height, the same at every size when set.",
-          "default": "var(--sf-title-height-6)",
+          "default": "var(--sf-ui-1--control-height)",
           "since": "2026-10-25",
           "varies_with": [
             "size"
@@ -1797,14 +1811,14 @@
           "name": "--sf-file-upload-dragged-over-background-color",
           "role": "background",
           "summary": "The area's fill while files are held over it.",
-          "default": "var(--sf-primary-transparent-select)",
+          "default": "var(--sf-primary-state-select)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-file-upload-dragged-over-border-color",
           "role": "border-color",
           "summary": "The area's boundary while files are held over it.",
-          "default": "var(--sf-outline-primary)",
+          "default": "var(--sf-primary-outline)",
           "since": "2026-10-27"
         }
       ]
@@ -1947,8 +1961,8 @@
         {
           "name": "--sf-steps-current-border-color",
           "role": "border-color",
-          "summary": "The outline of the current step.",
-          "default": "var(--sf-outline-primary)",
+          "summary": "The outline of the current step; none by default, the current step is a primary-container plate (C16, component.step 1.2.0).",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -2130,66 +2144,66 @@
       ]
     },
     {
-      "component": "download-file",
+      "component": "file-download",
       "selector": ".sf-download-file",
       "variables": [
         {
-          "name": "--sf-download-file-background-color",
+          "name": "--sf-file-download-background-color",
           "role": "background",
-          "summary": "The card's fill at rest; hover, press and disabled keep their own.",
+          "summary": "The card's fill at rest; hover, press and disabled keep their own. The former name --sf-download-file-background-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "transparent",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-border-color",
+          "name": "--sf-file-download-border-color",
           "role": "border-color",
-          "summary": "The card's border at rest; hover and disabled keep their own.",
+          "summary": "The card's border at rest; hover and disabled keep their own. The former name --sf-download-file-border-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-outline-variant)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-radius",
+          "name": "--sf-file-download-radius",
           "role": "radius",
-          "summary": "The card's corner radius.",
+          "summary": "The card's corner radius. The former name --sf-download-file-radius is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-radius--ui)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-padding",
+          "name": "--sf-file-download-padding",
           "role": "padding",
-          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size.",
+          "summary": "Space around the card's content, inside its border: the size's block step and the button's side padding, less the border, so the card stands as tall as a button of its size. The former name --sf-download-file-padding is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)) calc(var(--sf-ui-1--space-x) - var(--sf-px))",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-gap",
+          "name": "--sf-file-download-gap",
           "role": "gap",
-          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size.",
+          "summary": "Space between the icon and the file's name, and between the name and its size: the button's label inset of the size. The former name --sf-download-file-gap is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-ui-1--text-space-x)",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-icon-size",
+          "name": "--sf-file-download-icon-size",
           "role": "size",
-          "summary": "The download icon's size: the button's icon of the size (its text height).",
+          "summary": "The download icon's size: the button's icon of the size (its text height). The former name --sf-download-file-icon-size is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-text-height-1)",
           "varies_with": [
             "size"
           ],
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         },
         {
-          "name": "--sf-download-file-icon-color",
+          "name": "--sf-file-download-icon-color",
           "role": "color",
-          "summary": "The download icon's colour; disabled keeps its own.",
+          "summary": "The download icon's colour; disabled keeps its own. The former name --sf-download-file-icon-color is still read, under this one, until 2027-01-01 (change journal token-file-download-variable-names).",
           "default": "var(--sf-primary)",
-          "since": "2026-10-27"
+          "since": "2026-11-10"
         }
       ]
     },
@@ -2898,7 +2912,7 @@
           "name": "--sf-list-item-background-color",
           "role": "background",
           "summary": "The row's fill.",
-          "default": "var(--sf-elevation-1--surface)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -3072,7 +3086,7 @@
           "name": "--sf-site-header-background-color",
           "role": "background",
           "summary": "The bar's fill. The former name --sf-site-header-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-page)",
           "since": "2026-11-08"
         },
         {
@@ -3796,7 +3810,7 @@
           "name": "--sf-list-hover-background-color",
           "role": "hover-background",
           "summary": "A row under the pointer.",
-          "default": "var(--sf-surface-container-hover)",
+          "default": "var(--sf-surface-state-select)",
           "since": "2026-11-05"
         },
         {
@@ -3809,8 +3823,8 @@
         {
           "name": "--sf-list-heading-color",
           "role": "color",
-          "summary": "A group's heading.",
-          "default": "var(--sf-on-surface-variant)",
+          "summary": "A group's heading. On-surface since 1.4.0 (C40, the shared group heading).",
+          "default": "var(--sf-on-surface)",
           "since": "2026-11-05"
         }
       ]
@@ -3884,22 +3898,22 @@
         {
           "name": "--sf-change-confirm-before-background-color",
           "role": "background",
-          "summary": "The ground of the value as it was.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The ground of the value as it was, behind the text of sf-change; none since 1.7.0 (C40).",
+          "default": "transparent",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-change-confirm-after-background-color",
           "role": "background",
-          "summary": "The ground of the value as it will be.",
-          "default": "var(--sf-primary-container)",
+          "summary": "The ground of the value as it will be, behind the text of sf-change; none since 1.7.0 (C40).",
+          "default": "transparent",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-change-confirm-after-color",
           "role": "color",
-          "summary": "The text of the value as it will be.",
-          "default": "var(--sf-on-primary-container)",
+          "summary": "The text of the value as it will be; sf-change's new value colour (--sf-change-after-color, on-surface) since 1.7.0 (C40).",
+          "default": "var(--sf-change--after)",
           "since": "2026-10-27"
         }
       ]
@@ -3940,7 +3954,7 @@
           "name": "--sf-alert-bar-list-background-color",
           "role": "background",
           "summary": "The surface of the list of all under the bar. The former name --sf-alert-bar-list-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {
@@ -3974,7 +3988,7 @@
           "name": "--sf-wizard-background-color",
           "role": "background",
           "summary": "The frame's surface in a page. The former name --sf-wizard-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {
@@ -4062,14 +4076,17 @@
         {
           "name": "--sf-list-attention-background-color",
           "role": "background",
-          "summary": "The list's fill; none by default, so it is no card. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "transparent",
-          "since": "2026-11-08"
+          "summary": "The list's fill: the card surface (frame card, the default since 1.2.0, owner decision C37), none with frame none. The former name --sf-list-attention-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
+          "default": "var(--sf-surface-card)",
+          "since": "2026-11-08",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-divider-color",
           "role": "border-color",
-          "summary": "The hairline between items.",
+          "summary": "The card's edge and the hairlines between the head, the items and the foot.",
           "default": "var(--sf-outline-variant)",
           "since": "2026-11-07"
         },
@@ -4083,15 +4100,18 @@
         {
           "name": "--sf-list-attention-padding-inline",
           "role": "padding-inline",
-          "summary": "The heading's and the rows' inline inset; 0 by default, so they line up with the page's text.",
-          "default": "calc(var(--sf-px) * 0)",
-          "since": "2026-11-07"
+          "summary": "The text edge: the inline inset of the head, the rows and the foot from the card's edge; --sf-space-1 in a card, 0 with frame none, so the rows line up with the page's text.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-07",
+          "varies_with": [
+            "frame"
+          ]
         },
         {
           "name": "--sf-list-attention-gap",
           "role": "margin-block-end",
-          "summary": "The space under the heading.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space under the heading with frame none (a card's head is a bar of its own).",
+          "default": "var(--sf-space-1/2)",
           "since": "2026-11-07"
         }
       ]
@@ -4100,6 +4120,20 @@
       "component": "progress-run",
       "selector": "sf-progress-run, .sf-progress-run",
       "variables": [
+        {
+          "name": "--sf-progress-run-gap",
+          "role": "gap",
+          "summary": "Space between the run's groups (head, progress, results, errors, steps, output, actions; decision C34, R073); 16 on a desktop, 12 on a phone and in compact density.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-progress-run-gap-tight",
+          "role": "gap",
+          "summary": "Space inside the progress group: the overall bar to its figures line; 8, 4 in compact density.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-11-10"
+        },
         {
           "name": "--sf-progress-run-background-color",
           "role": "background",
@@ -4118,7 +4152,7 @@
           "name": "--sf-progress-run-output-background-color",
           "role": "background",
           "summary": "The output pane's fill. The former name --sf-progress-run-output-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-1)",
+          "default": "var(--sf-surface-area)",
           "since": "2026-11-08"
         },
         {
@@ -4295,14 +4329,14 @@
         {
           "name": "--sf-list-timeline-marker-color",
           "role": "color",
-          "summary": "The marker of an event with no status (neutral).",
+          "summary": "The glyph of a neutral marker and the dot of an event with no status.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-time-color",
           "role": "color",
-          "summary": "The time's and the actor's colour.",
+          "summary": "The quiet meta line: the time and the text.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
@@ -4310,14 +4344,14 @@
           "name": "--sf-list-timeline-day-color",
           "role": "color",
           "summary": "The day headings' colour.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-gap",
           "role": "gap",
-          "summary": "The space after each event in normal density; the rung's text-space-x by default.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space between events (C40, R092); 0 inside one event.",
+          "default": "var(--sf-space-3)",
           "since": "2026-11-08"
         },
         {
@@ -4464,6 +4498,136 @@
           "summary": "The ink of plain glyphs (in a menu or a list box).",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "time",
+      "selector": "sf-time, .sf-time",
+      "variables": [
+        {
+          "name": "--sf-time-color",
+          "role": "color",
+          "summary": "The text colour; inherited from the place by default.",
+          "default": "inherit",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-focus-ring-color",
+          "role": "ring-color",
+          "summary": "The keyboard focus ring of a time with a tooltip.",
+          "default": "var(--sf-focus)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-radius",
+          "role": "radius",
+          "summary": "The focus ring's corner.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-font-variant-numeric",
+          "role": "font-variant-numeric",
+          "summary": "The numerals; tabular, so a column of times lines up.",
+          "default": "tabular-nums",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-white-space",
+          "role": "white-space",
+          "summary": "The wrap; nowrap, so «14:32» never breaks.",
+          "default": "nowrap",
+          "since": "2026-11-10"
+        }
+      ]
+    },
+    {
+      "component": "change",
+      "selector": "sf-change, .sf-change",
+      "variables": [
+        {
+          "name": "--sf-change-before-color",
+          "role": "color",
+          "summary": "The old value and the empty word «пусто».",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-after-color",
+          "role": "color",
+          "summary": "The new value.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-after-weight",
+          "role": "weight",
+          "summary": "The new value's weight.",
+          "default": "var(--sf-font-weight-medium)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-arrow-color",
+          "role": "color",
+          "summary": "The arrow between the values.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-label-color",
+          "role": "color",
+          "summary": "The labels: «Статус:» before the pair, the list's terms, «Было» and «Стало».",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-column-gap",
+          "role": "column-gap",
+          "summary": "Between the list's labels and pairs.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-10"
+        }
+      ]
+    },
+    {
+      "component": "group-heading",
+      "selector": ".sf-group-heading",
+      "variables": [
+        {
+          "name": "--sf-group-heading-date-color",
+          "role": "color",
+          "summary": "The quiet date beside a group's words, and a divider's words.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-margin-block-start",
+          "role": "margin-block-start",
+          "summary": "The space above a heading; none above the first.",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-margin-block-end",
+          "role": "margin-block-end",
+          "summary": "The space below a heading.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-background-color",
+          "role": "background",
+          "summary": "Behind a sticky heading; the place's solid surface.",
+          "default": "var(--sf-surface-place-solid, var(--sf-surface-page))",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-line-color",
+          "role": "background",
+          "summary": "A divider's two hairlines.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-10"
         }
       ]
     }

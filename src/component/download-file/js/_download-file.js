@@ -39,8 +39,32 @@ function buildAnchorDownload(href, filename = '') {
 // The size in the page's language (decision C25; the core formatter, the one
 // SF.format.fileSize is): «2,4 МБ» on a Russian page, «2.4 MB» on an English
 // one. It printed «2.4MB» in English units on every page.
+// A data: or blob: address is the page's own bytes, not a file on a server:
+// there is no one to ask, and a HEAD to it is refused by the browser
+// (net::ERR_METHOD_NOT_SUPPORTED, docs pre-check 2026-11-10 DF-15). The page
+// that made the bytes knows their size and passes file-size, as it passes
+// file-name (nameFromHref skips these addresses too).
+const LOCAL_ADDRESS = /^\s*(?:data|blob):/iu;
+
+// An address that leads back to this very page -- «#», «#part» or the
+// page's own URL -- is no file either: a HEAD to it asks the page for its own
+// length (docs acceptance 2026-11-10, L2). It is compared without the
+// fragment, against the document's base, as the browser resolves the link.
+function isSameDocument(href) {
+  if (typeof document === 'undefined' || typeof URL !== 'function') return false;
+  try {
+    const target = new URL(href, document.baseURI);
+    const page = new URL(document.URL);
+    target.hash = '';
+    page.hash = '';
+    return target.href === page.href;
+  } catch {
+    return false;
+  }
+}
+
 async function resolveRemoteFileSize(href, node = null) {
-  if (!href) return '';
+  if (!href || LOCAL_ADDRESS.test(href) || isSameDocument(href)) return '';
 
   try {
     const response = await fetch(href, {
@@ -73,7 +97,7 @@ const NEW_TAB_WORDS = {
 function nameFromHref(href) {
   const path = String(href || '').split(/[?#]/u)[0];
   const last = path.slice(path.lastIndexOf('/') + 1);
-  if (!last || /^(?:data|blob):/u.test(path)) return '';
+  if (!last || LOCAL_ADDRESS.test(path)) return '';
   try {
     return decodeURIComponent(last);
   } catch {

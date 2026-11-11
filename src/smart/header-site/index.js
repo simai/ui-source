@@ -48,6 +48,11 @@ const SiteHeaderElement = elementFromManifest(manifest, {
 });
 
 class SfSiteHeader extends SiteHeaderElement {
+  // The slot nodes stay in the page until the bar draws and places them, in
+  // the same task: a page that finds its sf-menu by id once the tag is
+  // defined finds it on every load (pair ui-a0370c0c99fb acceptance, D1).
+  static holdsSlotNodesUntilDrawn = true;
+
   constructor() {
     super();
     this._id = `sf-site-header-${++sequence}`;
@@ -66,7 +71,8 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   // The nav is the default slot (component.json): the children the page wrote
-  // without a slot attribute, taken live like the named ones, never copied.
+  // without a slot attribute, taken live like the named ones, never copied,
+  // and held in the page until the bar draws, as the named ones are.
   onConnected() {
     super.onConnected?.();
     const live = this._liveSlotNodes;
@@ -74,7 +80,7 @@ class SfSiteHeader extends SiteHeaderElement {
       const nodes = Array.from(this.children).filter((child) => !child.hasAttribute('slot') && !child.hasAttribute('data-sf-static')
         && child.localName !== 'script' && child.localName !== 'template');
       if (nodes.length) {
-        nodes.forEach((node) => node.remove());
+        nodes.forEach((node) => this.holdSlotNode(node));
         live.set('nav', nodes);
       }
     }

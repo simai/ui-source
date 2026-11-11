@@ -1,67 +1,111 @@
-@layer sf.components {
-/* sf-list-attention (standard simai.smart-component 1.3.14 §6). One rung S
-   of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
-   with size="1/2": the heading and the titles are the rung's line L and
-   type, the texts the rung below's, the status icon the title's line,
-   icon-to-text the rung's text-space-x. A row's block inset is (H - L) / 2,
-   so a one-line row is the rung's control height H, as a list row is; a
-   divider gives up its hairline from the inset (padding gives up the
-   border). The action is an sf-button of the rung below, centred on the row,
-   whose height takes no room beyond the title's line.
+@use '../../../core/scss/mix/mix__places' as places;
 
-   No card: with no items nothing is drawn (empty none), so the list never
-   leaves an empty frame. The public variables are read with the
-   role token as their fallback and never set here. */
+/* A card frame is a place (C16), as sf-card is: its colour for a cut-out, its
+   dim ink and the theme's roles back, so the list's badges and buttons on a
+   coloured block are ordinary ones. */
+@layer sf.base {
+  .sf-list-attention.sf-list-attention--frame-card {
+    @include places.sf-place(var(--sf-list-attention-background-color, var(--sf-list-attention-background, var(--sf-surface-card))), var(--sf-on-surface-card-variant));
+  }
+}
+
+@layer sf.components {
+/* sf-list-attention (standard simai.smart-component 1.3.15 §6; owner
+   decision C37). One rung for the whole block, and the density (C22) moves
+   every value one step together:
+
+   - a row is the UI ladder's rung 3 control height H (--sf-ui-3: 56, 48
+     compact, 52 on a phone); its block inset is what the title's line and
+     the meta line leave of H, so a two-line row is exactly H; a one-line
+     row centres its title in H;
+   - the status icon is --sf-icon-size-3 (24, 20 compact), filled, centred on
+     the title's line; the title is text 1, the meta text 1/2;
+   - the action and the «⋯» are size 1/2 controls, centred on the row, their
+     overhang over the title's line taken back;
+   - icon-to-text and text-to-controls are --sf-space-1/2; the card's inline
+     inset --sf-space-1 at the start (the text edge: head, rows and foot
+     start on it) and --sf-space-1/4 at the end, where the «⋯» stands.
+
+   The rows are one grid of five columns -- icon, text, affected, action,
+   «⋯» -- and each row a subgrid of it, so the actions (and in group mode the
+   affected counts) stand in one column. A part that is not there leaves its
+   column empty: the gaps are the parts' own margins, not column gaps.
+
+   frame="card" (the default) is a surface card; frame="none" the bare list
+   of 1.1, the rows on the page's text edge. The public variables are read
+   with the role token as their fallback and never set here. */
 sf-list-attention {
   display: block;
   min-inline-size: 0;
 }
 
 .sf-list-attention {
-  /* The rung: 1. */
+  --sf-list-attention--row: var(--sf-ui-3--control-height);
   --sf-list-attention--line: var(--sf-text-height-1);
   --sf-list-attention--font-size: var(--sf-text-size-1);
-  --sf-list-attention--below-line: var(--sf-text-height-1\/2);
-  --sf-list-attention--below-font-size: var(--sf-text-size-1\/2);
-  --sf-list-attention--control: var(--sf-ui-1--control-height);
-  --sf-list-attention--action: var(--sf-ui-1\/2--control-height);
-  --sf-list-attention--space-x: var(--sf-ui-1--space-x);
-  --sf-list-attention--text-space-x: var(--sf-ui-1--text-space-x);
-  --sf-list-attention--padding-block: calc((var(--sf-list-attention--control) - var(--sf-list-attention--line)) / 2);
-  --sf-list-attention--padding-inline: var(--sf-list-attention-padding-inline, calc(var(--sf-px) * 0));
+  --sf-list-attention--meta-line: var(--sf-text-height-1\/2);
+  --sf-list-attention--meta-font-size: var(--sf-text-size-1\/2);
+  --sf-list-attention--icon: var(--sf-icon-size-3);
+  --sf-list-attention--control: var(--sf-ui-1\/2--control-height);
+  --sf-list-attention--bar: var(--sf-ui-1--control-height);
+  --sf-list-attention--gap: var(--sf-space-1\/2);
+  --sf-list-attention--padding-start: var(--sf-list-attention-padding-inline, var(--sf-space-1));
+  --sf-list-attention--padding-end: var(--sf-space-1\/4);
   --sf-list-attention--divider: var(--sf-list-attention-divider-color, var(--sf-outline-variant));
   display: block;
   box-sizing: border-box;
   min-inline-size: 0;
   margin: 0;
   container-type: inline-size;
-  background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
+  overflow: hidden;
+  border: var(--sf-px) solid var(--sf-list-attention--divider);
+  border-radius: var(--sf-radius--surface);
+  background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, var(--sf-surface-card)));
   color: var(--sf-on-surface);
   font-size: var(--sf-list-attention--font-size);
   line-height: var(--sf-list-attention--line);
 }
 
-.sf-list-attention.sf-list-attention--size-half {
-  --sf-list-attention--line: var(--sf-text-height-1\/2);
-  --sf-list-attention--font-size: var(--sf-text-size-1\/2);
-  --sf-list-attention--below-line: var(--sf-text-height-1\/3);
-  --sf-list-attention--below-font-size: var(--sf-text-size-1\/3);
-  --sf-list-attention--control: var(--sf-ui-1\/2--control-height);
-  --sf-list-attention--action: var(--sf-ui-1\/3--control-height);
-  --sf-list-attention--space-x: var(--sf-ui-1\/2--space-x);
-  --sf-list-attention--text-space-x: var(--sf-ui-1\/2--text-space-x);
+.sf-list-attention:focus {
+  outline: none;
 }
 
-/* The heading: the rung's line, the count beside it. */
+.sf-list-attention.sf-list-attention--frame-none {
+  --sf-list-attention--padding-start: var(--sf-list-attention-padding-inline, calc(var(--sf-px) * 0));
+  --sf-list-attention--padding-end: var(--sf-list-attention-padding-inline, calc(var(--sf-px) * 0));
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
+}
+
+/* The head: the heading, the summary badges; in group mode the time of the
+   checks at the end. A bar of the rung's height H. */
+.sf-list-attention-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-space-1\/4) var(--sf-list-attention--gap);
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-attention--row);
+  padding-block: var(--sf-space-1\/4);
+  padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
+  border-block-end: var(--sf-px) solid var(--sf-list-attention--divider);
+}
+
+.sf-list-attention--frame-none .sf-list-attention-head {
+  min-block-size: var(--sf-list-attention--line);
+  margin-block-end: var(--sf-list-attention-gap, var(--sf-list-attention--gap));
+  padding-block: 0;
+  border-block-end: 0;
+}
+
 .sf-list-attention-heading {
   display: flex;
   align-items: center;
-  gap: var(--sf-list-attention--text-space-x);
-  min-block-size: var(--sf-list-attention--line);
-  margin-block-end: var(--sf-list-attention-gap, var(--sf-list-attention--text-space-x));
-  padding-inline: var(--sf-list-attention--padding-inline);
+  min-inline-size: 0;
   color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
-  font-weight: var(--sf-text--font-weight-6, 600);
+  font-weight: var(--sf-font-weight-medium);
 }
 
 .sf-list-attention-heading-text {
@@ -69,42 +113,82 @@ sf-list-attention {
   overflow-wrap: anywhere;
 }
 
-.sf-list-attention-count {
-  flex: none;
-  font-weight: normal;
+.sf-list-attention-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1\/4);
 }
 
-.sf-list-attention-list {
-  display: block;
+.sf-list-attention-spacer {
+  flex: 1 1 0;
+}
+
+/* The summary as one line of text and the quiet line's two lines (C45) are
+   the narrow column's; a wide one keeps the badges and the one quiet line. */
+.sf-list-attention-summary-line,
+.sf-list-attention-quiet-title,
+.sf-list-attention-quiet-meta,
+.sf-list-attention .sf-list-attention-recheck--narrow > button {
+  display: none;
+}
+
+/* The rows: one grid, every list and row a subgrid of it. */
+.sf-list-attention-list,
+.sf-list-attention-groups {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* A row: icon, text, action. The icon stands on the title's line; the action
-   on the row's centre. */
+.sf-list-attention-groups > .sf-list-attention-group,
+.sf-list-attention-groups .sf-list-attention-list,
 .sf-list-attention-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sf-list-attention--text-space-x);
-  box-sizing: border-box;
-  min-block-size: var(--sf-list-attention--control);
-  margin: 0;
-  padding-block: var(--sf-list-attention--padding-block);
-  padding-inline: var(--sf-list-attention--padding-inline);
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
 }
 
+.sf-list-attention-groups .sf-list-attention-list[hidden] {
+  display: none;
+}
+
+.sf-list-attention-item {
+  align-items: center;
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-attention--row);
+  margin: 0;
+  padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2);
+  padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
+}
+
+.sf-list-attention-item[data-lines="1"] {
+  padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line)) / 2);
+}
+
+/* A divider gives up its hairline from the inset (padding gives up the
+   border), so every row stays H. */
 .sf-list-attention-item + .sf-list-attention-item {
-  padding-block-start: calc(var(--sf-list-attention--padding-block) - var(--sf-px));
+  padding-block-start: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2 - var(--sf-px));
   border-block-start: var(--sf-px) solid var(--sf-list-attention--divider);
 }
 
+.sf-list-attention-item[data-lines="1"] + .sf-list-attention-item[data-lines="1"],
+.sf-list-attention-item + .sf-list-attention-item[data-lines="1"] {
+  padding-block-start: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line)) / 2 - var(--sf-px));
+}
+
 .sf-list-attention .sf-list-attention-icon {
-  --sf-icon--font-size: var(--sf-list-attention--line);
-  --sf-icon--width: var(--sf-list-attention--line);
-  --sf-icon--height: var(--sf-list-attention--line);
+  --sf-icon--font-size: var(--sf-list-attention--icon);
+  --sf-icon--width: var(--sf-list-attention--icon);
+  --sf-icon--height: var(--sf-list-attention--icon);
   --sf-icon--color: currentColor;
-  flex: none;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  margin-block-start: calc((var(--sf-list-attention--line) - var(--sf-list-attention--icon)) / 2);
+  margin-inline-end: var(--sf-list-attention--gap);
 }
 
 .sf-list-attention-icon--error {
@@ -125,66 +209,394 @@ sf-list-attention {
 
 .sf-list-attention-text {
   display: flex;
-  flex: 1 1 var(--sf-f0);
+  grid-column: 2;
+  grid-row: 1;
   flex-direction: column;
   min-inline-size: 0;
 }
 
 .sf-list-attention-title {
-  font-weight: var(--sf-text--font-weight-5, 500);
+  font-weight: var(--sf-font-weight-medium);
   overflow-wrap: anywhere;
 }
 
-.sf-list-attention-supporting {
+.sf-list-attention-item--passed .sf-list-attention-title {
+  font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-list-attention-meta {
   color: var(--sf-on-surface-variant);
-  font-size: var(--sf-list-attention--below-font-size);
-  line-height: var(--sf-list-attention--below-line);
+  font-size: var(--sf-list-attention--meta-font-size);
+  line-height: var(--sf-list-attention--meta-line);
   overflow-wrap: anywhere;
 }
 
-/* The action keeps its label's width; its control is the rung below's, and
-   its overhang over the title's line is taken back, so a one-line row stays
-   H tall. (sf-button's host is display: contents: the native control is the
-   box.) */
-.sf-list-attention-action {
-  align-self: center;
+.sf-list-attention-object {
+  color: var(--sf-on-surface);
+}
+
+a.sf-list-attention-object {
+  text-decoration: underline;
+  text-decoration-color: var(--sf-outline-variant);
+  text-underline-offset: calc(var(--sf-px) * 2);
+}
+
+a.sf-list-attention-object:hover {
+  text-decoration-color: currentColor;
+}
+
+a.sf-list-attention-object:focus-visible {
+  border-radius: var(--sf-radius--ui);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-list-attention-affected-meta {
+  display: none;
+}
+
+/* The controls: size 1/2, centred on the row; the overhang over the title's
+   line is taken back, so a one-line row stays H. sf-button's host is
+   display: contents: the native control is the box. */
+.sf-list-attention-affected,
+.sf-list-attention-affected > * {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  margin-inline-start: var(--sf-list-attention--gap);
 }
 
 .sf-list-attention-action > :is(a, button) {
-  flex: none;
-  align-self: center;
-  margin-block: calc((var(--sf-list-attention--line) - var(--sf-list-attention--action)) / 2);
+  grid-column: 4;
+  grid-row: 1;
+  justify-self: end;
+  margin-block: calc((var(--sf-list-attention--line) - var(--sf-list-attention--control)) / 2);
+  margin-inline-start: var(--sf-list-attention--gap);
   white-space: nowrap;
 }
 
-/* With no items and empty line: one quiet line at the rung's control height. */
+/* The page's column of actions: one width, the label at the start. */
+.sf-list-attention--group .sf-list-attention-action > :is(a, button) {
+  justify-self: stretch;
+}
+
+.sf-list-attention-more,
+.sf-list-attention-more > button {
+  grid-column: 5;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.sf-list-attention-more > button,
+.sf-list-attention-more > .sf-button-icon {
+  margin-block: calc((var(--sf-list-attention--line) - var(--sf-list-attention--control)) / 2);
+  margin-inline-start: var(--sf-space-1\/4);
+}
+
+.sf-list-attention .sf-list-attention-more {
+  display: inline-flex;
+}
+
+/* The foot: «Проверено …» and the recheck, «Все проблемы (N)» at the end. */
+.sf-list-attention-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-space-1\/4) var(--sf-space-1\/3);
+  box-sizing: border-box;
+  min-block-size: var(--sf-list-attention--bar);
+  padding-block: var(--sf-space-1\/4);
+  padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
+  border-block-start: var(--sf-px) solid var(--sf-list-attention--divider);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-list-attention--meta-font-size);
+  line-height: var(--sf-list-attention--meta-line);
+}
+
+.sf-list-attention-checked {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-list-attention--meta-font-size);
+  line-height: var(--sf-list-attention--meta-line);
+  white-space: nowrap;
+}
+
+.sf-list-attention .sf-list-attention-recheck {
+  display: inline-flex;
+}
+
+/* Group mode: a disclosure header per severity, the rows under it. */
+.sf-list-attention-group-toggle {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: var(--sf-list-attention--gap);
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--sf-list-attention--bar);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
+  border: 0;
+  border-block-start: var(--sf-px) solid var(--sf-list-attention--divider);
+  background: var(--sf-surface-area);
+  color: var(--sf-on-surface);
+  font: inherit;
+  font-size: var(--sf-list-attention--meta-font-size);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-list-attention--meta-line);
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-list-attention-group:first-child > .sf-list-attention-group-toggle {
+  border-block-start: 0;
+}
+
+.sf-list-attention-group-toggle:hover {
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  background: var(--sf-surface-container);
+}
+
+.sf-list-attention-group-toggle:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+.sf-list-attention .sf-list-attention-chevron {
+  --sf-icon--font-size: var(--sf-list-attention--icon);
+  --sf-icon--width: var(--sf-list-attention--icon);
+  --sf-icon--height: var(--sf-list-attention--icon);
+  color: var(--sf-on-surface-variant);
+  transition: transform var(--sf-transition--duration) var(--sf-animation);
+}
+
+.sf-list-attention-group-toggle[aria-expanded="false"] .sf-list-attention-chevron {
+  transform: rotate(-90deg);
+}
+
+.sf-list-attention-group-count {
+  color: var(--sf-on-surface-variant);
+  font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-list-attention-groups .sf-list-attention-list {
+  border-block-start: var(--sf-px) solid var(--sf-list-attention--divider);
+}
+
+/* With no items and empty line: one quiet line of the row's height. */
 .sf-list-attention-quiet {
   display: flex;
-  align-items: flex-start;
-  gap: var(--sf-list-attention--text-space-x);
+  align-items: center;
+  gap: var(--sf-list-attention--gap);
   box-sizing: border-box;
-  min-block-size: var(--sf-list-attention--control);
+  min-block-size: var(--sf-list-attention--row);
   margin: 0;
-  padding-block: var(--sf-list-attention--padding-block);
-  padding-inline: var(--sf-list-attention--padding-inline);
+  padding-block: var(--sf-space-1\/4);
+  padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
   color: var(--sf-on-surface-variant);
 }
 
-/* A phone or a narrow column: the action goes under the text, at the text's
-   start, so the title keeps the row's width. */
+.sf-list-attention-quiet .sf-list-attention-icon {
+  align-self: center;
+  margin: 0;
+}
+
+.sf-list-attention-recheck-text > :is(a, button) {
+  flex: none;
+  white-space: nowrap;
+}
+
+.sf-list-attention-quiet-text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-list-attention .sf-list-attention-chevron {
+    transition: none;
+  }
+}
+
+/* A phone or a narrow column: the action goes under the text, at the
+   text's start; the «⋯» stays at the row's end, on the title's line. The
+   foot stacks, every line on the text edge: the link's own inline padding
+   is taken back so its text, not its box, starts there. */
 @container (max-width: 30rem) {
   .sf-list-attention-item {
-    flex-wrap: wrap;
-    row-gap: var(--sf-list-attention--text-space-x);
+    row-gap: var(--sf-space-1\/3);
+    padding-block: var(--sf-space-1\/2);
   }
 
-  .sf-list-attention-text {
-    flex-basis: calc(100% - var(--sf-list-attention--line) - var(--sf-list-attention--text-space-x));
+  .sf-list-attention-item + .sf-list-attention-item,
+  .sf-list-attention-item + .sf-list-attention-item[data-lines="1"],
+  .sf-list-attention-item[data-lines="1"] + .sf-list-attention-item[data-lines="1"] {
+    padding-block-start: calc(var(--sf-space-1\/2) - var(--sf-px));
+  }
+
+  .sf-list-attention-item[data-lines="1"]:not(:has(.sf-list-attention-action)) {
+    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line)) / 2);
   }
 
   .sf-list-attention-action > :is(a, button) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
     margin-block: 0;
-    margin-inline-start: calc(var(--sf-list-attention--line) + var(--sf-list-attention--text-space-x));
+    margin-inline-start: 0;
+  }
+
+  .sf-list-attention-more,
+  .sf-list-attention-more > button {
+    align-self: start;
+  }
+
+  .sf-list-attention-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* C45 (owner 2026-11-10, option a2): the head is a two-line row of H, the
+     heading over the summary as one meta line («2 ошибки · 1 предупреждение
+     · 3 рекомендации») instead of the badges: its inset is what the two
+     lines leave of H, and the bottom one gives up the divider. In group mode
+     the time of the checks is a third line under it and the recheck an icon
+     at the head's end, centred: H + one meta line. */
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    align-items: center;
+    gap: 0 var(--sf-list-attention--gap);
+    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2);
+    padding-block-end: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2 - var(--sf-px));
+  }
+
+  .sf-list-attention--frame-none .sf-list-attention-head:has(.sf-list-attention-summary-line) {
+    padding-block: 0;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) > .sf-list-attention-heading,
+  .sf-list-attention-summary-line,
+  .sf-list-attention-head .sf-list-attention-checked-text {
+    grid-column: 1;
+  }
+
+  .sf-list-attention-head .sf-list-attention-summary,
+  .sf-list-attention-head .sf-list-attention-spacer {
+    display: none;
+  }
+
+  .sf-list-attention-summary-line,
+  .sf-list-attention-head .sf-list-attention-checked-text {
+    display: block;
+    min-inline-size: 0;
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-list-attention--meta-font-size);
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-list-attention--meta-line);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-checked {
+    display: contents;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck,
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck > button {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+
+  /* C45 (option q2): the quiet line is a two-line row of H, «Всё в порядке»
+     over «Проверено … назад», and the recheck an icon at its end. */
+  .sf-list-attention-quiet-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sf-list-attention-quiet-line,
+  .sf-list-attention-recheck-text,
+  .sf-list-attention-recheck-text > * {
+    display: none;
+  }
+
+  .sf-list-attention-quiet-title {
+    display: block;
+    color: var(--sf-on-surface);
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-list-attention-quiet-meta {
+    display: block;
+    font-size: var(--sf-list-attention--meta-font-size);
+    line-height: var(--sf-list-attention--meta-line);
+  }
+
+  /* sf-button-icon's host is display: contents (an inline style): its
+     native control is the box. */
+  .sf-list-attention .sf-list-attention-recheck--narrow > button {
+    display: inline-flex;
+  }
+
+  .sf-list-attention-foot .sf-list-attention-spacer {
+    display: none;
+  }
+
+  .sf-list-attention-all > :is(a, button) {
+    margin-inline-start: calc(-1 * (var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width)));
+  }
+
+  .sf-list-attention-all .sf-button-text-container {
+    margin-inline-start: calc(-1 * var(--sf-button-text-container--padding-inline-start));
+  }
+}
+
+/* Group mode below 40rem: the affected count moves into the meta line, the
+   action under the text. */
+@container (max-width: 40rem) {
+  .sf-list-attention--group .sf-list-attention-affected,
+  .sf-list-attention--group .sf-list-attention-affected > * {
+    display: none;
+  }
+
+  .sf-list-attention--group .sf-list-attention-affected-meta {
+    display: inline;
+  }
+
+  .sf-list-attention--group .sf-list-attention-item {
+    row-gap: var(--sf-space-1\/3);
+    padding-block: var(--sf-space-1\/2);
+  }
+
+  .sf-list-attention--group .sf-list-attention-item + .sf-list-attention-item {
+    padding-block-start: calc(var(--sf-space-1\/2) - var(--sf-px));
+  }
+
+  .sf-list-attention--group .sf-list-attention-item--passed {
+    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2);
+  }
+
+  .sf-list-attention--group .sf-list-attention-action > :is(a, button) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin-block: 0;
+    margin-inline-start: 0;
+  }
+
+  .sf-list-attention--group .sf-list-attention-more,
+  .sf-list-attention--group .sf-list-attention-more > button {
+    align-self: start;
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-list-attention-group-toggle {
+    border-color: CanvasText;
   }
 }
 

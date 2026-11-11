@@ -1,8 +1,10 @@
 {
   "title": "Description list",
   "runtime": {
-    "empty-text": "—",
+    "empty-text": "Not set",
     "copy": "Copy: {label}",
+    "action": "{action}: {label}",
+    "help": "More about: {label}",
     "status-success": "OK",
     "status-warning": "Warning",
     "status-error": "Error",
@@ -11,6 +13,9 @@
   "events": {
     "navigate": {
       "label": "Go"
+    },
+    "apply": {
+      "label": "Apply"
     }
   }
 }

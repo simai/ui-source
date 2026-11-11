@@ -14,7 +14,7 @@
     {
       "id": "owned-system-definitions",
       "category": "definition-review",
-      "filePattern": "^(?:core/scss/vars/_sf_var__size\\.scss|core/scss/vars/_sf_var__breakpoint\\.scss|core/figma_variables/figma_icon_sizes\\.scss|core/figma_variables/figma_border_radius\\.scss|core/figma_variables/figma_radius\\.scss|utility/letter-spacing/default/scss/_sf_var__letter_spacing\\.scss)$",
+      "filePattern": "^(?:core/scss/vars/_sf_var__size\\.scss|core/scss/vars/_sf_var__breakpoint\\.scss|core/figma_variables/figma_border_radius\\.scss|core/figma_variables/figma_radius\\.scss|utility/letter-spacing/default/scss/_sf_var__letter_spacing\\.scss)$",
       "contextPattern": ".*",
       "status": "accepted-system-definition",
       "reason": "This is an owned primitive, semantic token, breakpoint, or relative typography definition; consumers must reference it rather than repeat its value."
@@ -30,8 +30,8 @@
     {
       "id": "legacy-component-measured-geometry",
       "category": "runtime-review",
-      "filePattern": "^component/(?:country-code/js/_country_code|dropdown/js/_dropdown|modal/js/_modal|scrollbar/js/_scrollbar)\\.js$",
-      "contextPattern": "(?:totalHeight|Math\\.round|scrollbarWidth|thumbSize|maxThumbOffset)",
+      "filePattern": "^component/dropdown/js/_dropdown\\.js$",
+      "contextPattern": "totalHeight",
       "status": "accepted-runtime-geometry",
       "reason": "CSSOM and DOM measurements are expressed in CSS pixels by the browser and must retain their exact measured value."
     },
@@ -70,10 +70,10 @@
     {
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
-      "filePattern": "^smart/(?:datepicker|drawer|dropdown|modal)/index\\.js$",
-      "contextPattern": "(?:\\$\\{(?:[xy]|left|top)\\}|Math\\.(?:max|round)|box\\.|size\\.|offset[XY]|startRect|scrollbarWidth|\\$\\{gap\\}|sides\\[side\\])",
+      "filePattern": "^smart/drawer/index\\.js$",
+      "contextPattern": "(?:Math\\.max|sides\\[side\\])",
       "status": "accepted-runtime-geometry",
-      "reason": "Overlay, drag, scroll-lock and docked-column coordinates are derived from the current viewport or rendered boxes."
+      "reason": "The drawer's scroll-lock gutters and its bottom sheet's drag offset are derived from the current viewport, rendered boxes and the pointer."
     },
     {
       "id": "smart-drag-measured-geometry",
@@ -199,11 +199,11 @@
         "style-review",
         "definition-review"
       ],
-      "filePattern": "^(?:component/kbd/scss/_kbd\\.scss|core/scss/_sf_css__typograpy\\.scss|component/file-upload/scss/_css__upload_progress\\.scss|core/contracts/public-variables\\.v1\\.json)$",
+      "filePattern": "^(?:core/scss/_sf_css__typograpy\\.scss|component/file-upload/scss/_css__upload_progress\\.scss|core/contracts/public-variables\\.v1\\.json)$",
       "contextPattern": ".*",
       "textPattern": "^\\d*\\.?\\d+em$",
       "status": "accepted-owner-decision",
-      "reason": "Sized from the text around them by decision: sf-kbd plain glyphs (C38: the row's own text, 1em, and the hairline gap between glyphs; caps and keys are on the ladder since C38), inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
+      "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
     },
     {
       "id": "documentation-prose",
@@ -258,7 +258,7 @@
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
       "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
-      "contextPattern": "^(?!.*(?:DOCK_MIN_REM|maxThumbOffset|thumbSize|scrollbarWidth|totalHeight))",
+      "contextPattern": ".*",
       "status": "accepted-runtime-geometry",
       "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
     },
@@ -272,15 +272,6 @@
       "contextPattern": "(?:DOCK_MIN_REM|^//)",
       "status": "accepted-size-step",
       "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, and the comments that name it."
-    },
-    {
-      "id": "deferred-c20-sortable-shadow",
-      "category": "style-review",
-      "filePattern": "^smart/sortable/scss/_smart__sortable\\.scss$",
-      "contextPattern": "box-shadow: var\\(--sf-ui-shadow-4,",
-      "status": "reviewed-deferred",
-      "task": "C20 shadows (feat/c20-shadows): the ghost takes the elevation helper and loses the raw fallback",
-      "reason": "A raw shadow fallback; the shadow belongs to the C20 elevation helper, which replaces the line."
     },
     {
       "id": "deferred-legacy-sf-system-panel",

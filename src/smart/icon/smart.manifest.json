@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Icons",
   "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
   "kind": "smart",
@@ -238,7 +238,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/icon/index.js",
-        "sha256": "684a8d20e2d9a7d2f8623771a74e7e2277616c27d28ffd41b71bfc733ecc53ff"
+        "sha256": "9632909fa549de222bfd355a53ca8e802b30e87940c9150d79cf591eb84a49e8"
       },
       {
         "path": "src/smart/icon/js/templates/default.js",

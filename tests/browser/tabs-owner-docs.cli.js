@@ -20,8 +20,6 @@ async page => {
       'component/icon-buttons/css/icon-buttons.css',
       'component/tabs/css/tabs.css',
       'smart/button-icon/css/button-icon.css',
-      'smart/tabs/css/tabs.css',
-      'smart/tabs/template/default.css',
     ]) await frame.addStyleTag({url: `${base}/${path}`});
     for (const name of ['icons', 'close', 'buttons', 'icon-buttons', 'tabs']) {
       await frame.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});

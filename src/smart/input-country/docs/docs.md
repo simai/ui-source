@@ -43,13 +43,13 @@ label, maskPattern). Explicit fields override the built-in record; missing field
 for a known ISO are filled from it. Empty countries restores the dataset. Initial
 selection without iso2/dial-code uses the first supplied item. Known explicit
 selections outside the list remain supported; max-items is a display limit, not
-validation. Fixed multi-country=false still uses the supplied descriptors.
+validation. A fixed country (fixed-country; multi-country="false" until 2027-01-01) still uses the supplied descriptors.
 When assigning after connection, wait for customElements.whenDefined, specify the
 initial ISO and enable use-mask together with the data to avoid formatting the
 initial value against the built-in mask before custom data is available.
 
-Country masks apply the selected local pattern. use-country-masks=false with an
-authored mask-pattern preserves a common pattern across selection and rebind.
+Country masks apply the selected local pattern. fixed-mask (use-country-masks="false" until
+2027-01-01) with an authored mask-pattern preserves a common pattern across selection and rebind.
 Imperative state changes and ordinary reattachment delegate to the original
 runtime owner when both component and Smart bundles are loaded. The old mask is
 detached before events for a newly selected code are dispatched.

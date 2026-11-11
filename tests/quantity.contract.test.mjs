@@ -161,7 +161,10 @@ test('quantity: it draws the class markup, and the class binder leaves it alone'
   for (const part of ['sf-quantity-label', 'sf-quantity-text', 'sf-quantity-required', 'sf-quantity-wrap', 'sf-quantity-count']) {
     assert.ok(template.includes(part), part);
   }
-  assert.match(template, /const STEPPER = 'sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1\/3';/u);
+  // The quiet neutral ghost (C15, QT-04); secondary was retired.
+  assert.match(template, /const STEPPER = 'sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--on-surface-variant sf-icon-button--size-1\/3';/u);
+  assert.doesNotMatch(template, /sf-icon-button--secondary/u);
+  assert.doesNotMatch(read('src/component/quantity/js/_quantity.js'), /sf-icon-button--secondary/u);
   assert.match(template, /`sf-quantity--size-\$\{context\.size\}`/u);
   // The layout utilities are those the class constructor applies.
   const utility = JSON.parse(read('src/component/quantity/json/quantity.utility.json'));
@@ -212,18 +215,26 @@ test('quantity: the public variables wrap the values the class sheet drew before
   // Size 1/2's steppers are the 24 box of the icon ladder with the 4 of the
   // space ladder (C19 after C27: the 1/3 control height moved to 28 and is a
   // control's, not a stepper's).
-  const stepperBox = {'1/2': ['var(--sf-icon-size-3)', 'var(--sf-space-1\\/4)']};
+  // The glyph is the field's own icon, as sf-input draws it at the same size
+  // (QT-03): the stepper padding is what its box leaves around that glyph.
+  const stepperBox = {'1/2': ['var(--sf-icon-size-3)']};
   for (const [size, down] of [['1', '1\\/2'], ['2', '1'], ['1\\/2', '1\\/3']]) {
-    const [inner, pad] = stepperBox[size.replace('\\', '')] || [`var(--sf-ui-${down}--control-height)`, `var(--sf-ui-${down}--space-y-tightness-default)`];
+    const [inner] = stepperBox[size.replace('\\', '')] || [`var(--sf-ui-${down}--control-height)`];
+    const pad = `calc((${inner} - var(--sf-text-height-${size})) / 2)`;
     assert.ok(sheet.includes(`--sf-quantity-wrap--block-size: var(--sf-ui-${size}--control-height);`), size);
     assert.ok(sheet.includes(`--sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-${size}--control-height) - ${inner}) / 2 - var(--sf-px)));`), size);
     assert.ok(sheet.includes(`--sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-${size}--space-y-tightness-default) - var(--sf-px)));`), size);
     const steppers = sheet.slice(sheet.indexOf(`.sf-quantity.sf-quantity--size-${size} .sf-quantity-count {`)).split('}')[0];
     assert.ok(steppers.includes(`--sf-icon-button--padding-top: ${pad};`), size);
     const icon = sheet.slice(sheet.indexOf(`.sf-quantity.sf-quantity--size-${size} .sf-icon {`)).split('}')[0];
-    assert.ok(icon.includes(`--sf-icon--height: var(--sf-text-height-${down});`), size);
+    assert.ok(icon.includes(`--sf-icon--height: var(--sf-text-height-${size});`), size);
   }
   assert.match(sheet, /block-size: var\(--sf-quantity-wrap--block-size\);/u);
+  // Read-only draws the region line, as sf-input's read-only field (QT-08),
+  // and takes no hover border.
+  const readonly = sheet.slice(sheet.indexOf('.sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {')).split('}')[0];
+  assert.ok(readonly.includes('--sf-quantity-wrap--border-color: var(--sf-outline-variant);'));
+  assert.ok(sheet.includes('.sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {'));
   // The states set the internal names only.
   for (const state of ['.sf-quantity.error .sf-quantity-wrap {', '.sf-quantity:has(input:disabled) .sf-quantity-wrap {', '.sf-quantity:has(input:disabled) input {']) {
     const block = sheet.slice(sheet.indexOf(state)).split('}')[0];

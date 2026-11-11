@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
   "kind": "smart",
@@ -362,7 +362,7 @@
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
-        "sha256": "7fd593832bc9980ca7dae8706f69808dd950fa7b9d4f66f3b90c1ae89f71dd48"
+        "sha256": "c78177e75a7aacec90a2d073398ca6fed784b22a554b12ac662c7ad7989ebb40"
       },
       {
         "path": "src/smart/settings/rule.js",
@@ -370,7 +370,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "1a26922cf23eb594faa920afc16a6861a834432ecfd399068fe9f877718fc714"
+        "sha256": "5469dd95550048b0d2d2eacda70191546e4e984a56fd91113c4c9b166bc63d1c"
       }
     ],
     "generated_runtime": []

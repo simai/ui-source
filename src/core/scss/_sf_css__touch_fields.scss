@@ -11,15 +11,21 @@
 // its control height on the ladder. A step that is already 16px or more (2
 // and 3 on a phone) keeps its own size: a field of size 3 is left alone.
 // The query is a touch phone -- a touch primary pointer that cannot hover, on
-// a viewport below the desktop breakpoint (60rem, the typography's) -- so a
+// a viewport below the desktop breakpoint (60rem, the typography's; written
+// as not all and (min-width: 60rem), the exact complement of the ladder's
+// query, so no fractional width between 959.68 and 960px falls between the
+// two; a range query (width < 60rem) is rewritten by the build to
+// max-width: 59.999rem, and a nested not keeps old Safari) -- so a
 // desktop, a laptop with a touch screen and a tablet in landscape are
 // unchanged. In sf.states, so it outranks every component's own field text.
-@media (hover: none) and (pointer: coarse) and (max-width: 59.98rem) {
-  @layer sf.states {
-    input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"], [class*="--size-3"], [class*="--size-3"] *),
-    textarea:not([class*="--size-3"], [class*="--size-3"] *),
-    select:not([class*="--size-3"], [class*="--size-3"] *) {
-      font-size: 16px;
+@media (hover: none) and (pointer: coarse) {
+  @media not all and (min-width: 60rem) {
+    @layer sf.states {
+      input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"], [type="reset"], [type="image"], [type="hidden"], [class*="--size-3"], [class*="--size-3"] *),
+      textarea:not([class*="--size-3"], [class*="--size-3"] *),
+      select:not([class*="--size-3"], [class*="--size-3"] *) {
+        font-size: 16px;
+      }
     }
   }
 }

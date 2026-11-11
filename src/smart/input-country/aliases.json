@@ -35,6 +35,54 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-input-country; sf-country-code is a subclass defined beside it until the date"
+    },
+    {
+      "from": "multi-country=\"false\"",
+      "to": "fixed-country",
+      "kind": "attribute",
+      "component": "sf-input-country",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§4.2, change journal attribute-input-country-presence-booleans",
+      "note": "the string form switches the default-on multi-country off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "shim": "none"
+    },
+    {
+      "from": "use-country-masks=\"false\"",
+      "to": "fixed-mask",
+      "kind": "attribute",
+      "component": "sf-input-country",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§4.2, change journal attribute-input-country-presence-booleans",
+      "note": "the string form switches the default-on use-country-masks off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "shim": "none"
+    },
+    {
+      "from": "show-code=\"false\"",
+      "to": "hide-code",
+      "kind": "attribute",
+      "component": "sf-input-country",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§4.2, change journal attribute-input-country-presence-booleans",
+      "note": "the string form switches the default-on show-code off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "shim": "none"
+    },
+    {
+      "from": "lazy-flags=\"false\"",
+      "to": "eager-flags",
+      "kind": "attribute",
+      "component": "sf-input-country",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§4.2, change journal attribute-input-country-presence-booleans",
+      "note": "the string form switches the default-on lazy-flags off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "shim": "none"
     }
   ]
 }

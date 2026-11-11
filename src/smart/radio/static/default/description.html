@@ -2,18 +2,18 @@
 <sf-radio label="Доставка" description="Курьером до двери" help="info" value="courier" style="display: contents;">
 <label class="sf-radio-button sf-radio-button--size-1 flex" data-sf-radio-bound="1" data-sf-static>
 <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
-<input type="radio" form="sf-radio-no-form" value="courier">
+<input type="radio" form="sf-radio-no-form" value="courier" aria-labelledby="sf-radio-description-1" aria-describedby="sf-radio-description-2">
 <span class="sf-radio-button-mark" aria-hidden="true"></span>
 </span>
 
 <span class="sf-radio-button-container flex flex-col">
 
-<span class="sf-radio-button-top flex">
+<span class="sf-radio-button-top flex" id="sf-radio-description-1">
 <span class="sf-radio-button-text">Доставка</span>
 <i class="sf-icon" aria-hidden="true">info</i>
 </span>
 
-<span class="sf-radio-button-description">Курьером до двери</span>
+<span class="sf-radio-button-description" id="sf-radio-description-2">Курьером до двери</span>
 </span>
 
 </label>

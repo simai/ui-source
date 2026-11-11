@@ -175,7 +175,8 @@ test('whatever lays a container fill under text carries the container text role'
       const near = lines.slice(Math.max(0, index - 3), index + 4).join('\n');
       // A skeleton bar is the fill (C16 S3) and stands in for text it does not carry.
       if (/skeleton/u.test(lines.slice(Math.max(0, index - 8), index + 1).join('\n')) || path.includes('skeleton/')) return;
-      if (!near.includes('--sf-on-surface-variant: var(--sf-on-surface-container--variant)')) offenders.push(`${path}:${index + 1}`);
+      // The role under its C16 name or the former one (token-aliases.v1.json).
+      if (!/--sf-on-surface-variant: var\(--sf-on-surface-container-{1,2}variant\)/u.test(near)) offenders.push(`${path}:${index + 1}`);
     });
   }
   assert.deepEqual(offenders, [], 'dimmed text on a container fill reads the container role');

@@ -35,7 +35,9 @@ const FOLDERS = {
   close: 'close',
   icon: 'icons',
   'reference-link': 'reference-link',
-  'download-file': 'download-file',
+  // sf-file-download draws with the download-file class sheet; its variables
+  // carry the element's name since 2026-11-10 (DF-11).
+  'file-download': 'download-file',
   'copy-button': 'smart/button-copy',
   'help-mark': 'smart/help-mark',
   // Display group B, with its move to standard 1.3.8 (2026-10-27): the class
@@ -96,6 +98,12 @@ const FOLDERS = {
   // The Larena admin screens' description list and timeline (2026-11-08): sheets of their own.
   'list-description': 'smart/list-description',
   'list-timeline': 'smart/list-timeline',
+  // The moment with its tooltip (2026-11-10, C40): a sheet of its own.
+  time: 'smart/time',
+  // «before → after» as text (2026-11-10, C40): a sheet of its own.
+  change: 'smart/change',
+  // The group heading of block list (2026-11-10, C40): a class, CSS only.
+  'group-heading': 'group-heading',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
   workspace: 'core',
   // Code in running text (2026-11-07, R024): the base rule in the core sheet.
@@ -167,8 +175,16 @@ test('the Framework never sets a public variable', async () => {
 // state. A sheet's local alias (--sf-skeleton-base: var(--sf-ui-skeleton))
 // is read through once, and a token's own fallback inside the value is
 // ignored (var(--sf-scrim-color, var(--sf-black)) is var(--sf-scrim-color)).
-const FORMER = new Map(JSON.parse(readFileSync(new URL('../src/core/contracts/token-aliases.v1.json', import.meta.url), 'utf8'))
-  .component_variables.map(({from, to}) => [to, from]));
+// The former names: the C16 list, and the change journal's other renames of
+// public variables (rename-token records of component variables, such as
+// sf-file-download's, 2026-11-10).
+const FORMER = new Map([
+  ...JSON.parse(readFileSync(new URL('../src/core/contracts/token-aliases.v1.json', import.meta.url), 'utf8'))
+    .component_variables.map(({from, to}) => [to, from]),
+  ...JSON.parse(readFileSync(new URL('../contracts/changes/journal.json', import.meta.url), 'utf8')).records
+    .filter((record) => record.kind === 'token' && record.rewrite === 'rename-token' && /-variable-names$/u.test(record.id))
+    .flatMap((record) => record.items.map(({from, to}) => [to, from])),
+]);
 const plain = (value) => value.replace(/\\/gu, '').replace(/\s+/gu, '');
 const withoutFallbacks = (value) => {
   let before;

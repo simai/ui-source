@@ -230,7 +230,9 @@ function createToastElement(options = {}) {
 
     const actionButton = document.createElement('button');
     actionButton.type = 'button';
-    actionButton.className = 'sf-button sf-button--primary sf-button--link sf-button--size-1';
+    // The notice's action (owner decision C35): an unsized low button, tonal
+    // primary, its label the notice's text size (as the Smart sf-toast).
+    actionButton.className = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
     actionButton.setAttribute('data-action', action || 'action');
     actionButton.setAttribute('data-toast-action', action || 'action');
 
@@ -248,19 +250,25 @@ function createToastElement(options = {}) {
   if (closable) {
     const closeButton = document.createElement('button');
     closeButton.type = 'button';
+    // A size-1 low icon button (C35): 32, compact and phone 28, centred on
+    // the first line, its plate hanging out over the inline padding.
     closeButton.className = joinClasses(
       'sf-icon-button',
+      'sf-icon-button--close',
       'sf-icon-button--variant-close',
       'sf-icon-button--on-surface',
       'sf-icon-button--link',
-      'sf-icon-button--size-1/3',
+      'sf-icon-button--size-1',
+      'sf-icon-button--height-low',
+      'flex',
+      'items-cross-center',
     );
     closeButton.setAttribute('aria-label', closeLabel);
     closeButton.setAttribute('data-close', '');
     closeButton.setAttribute('data-toast-close', '');
 
     const close = document.createElement('span');
-    close.className = 'sf-close sf-close--size-1/3 flex justify-center items-center';
+    close.className = 'sf-close sf-close--size-1 flex justify-center items-center';
     close.setAttribute('aria-hidden', 'true');
     const closeIcon = document.createElement('span');
     closeIcon.className = 'sf-close-icon';

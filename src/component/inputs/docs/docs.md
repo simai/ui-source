@@ -16,6 +16,9 @@ Registration: `registerComponent('Inputs', Inputs)`
   `pattern` project the corresponding native metadata.
 - `size` is bounded to `1/3`, `1/2`, `1`, `2` or `3`; `type` is bounded to
   `bordered`, `filled` or the compatibility-only `hidden` presentation.
+  A filled field's placeholder keeps the quiet ink `--sf-on-surface-variant`
+  (on the fill, `--sf-on-surface-container-variant`); only the value is
+  `--sf-on-surface` (1.3.1, FA-08).
 - Read-only inputs remain focusable and selectable but do not use editable
   hover or active feedback.
 

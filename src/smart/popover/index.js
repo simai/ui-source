@@ -4,6 +4,7 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {hasLayerAbove} from '../../core/js/layer-stack';
+import BundledPosition from '../../core/js/position.js';
 import {renderPopoverTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -14,6 +15,20 @@ import ru from './lang/ru.json';
 // §3, §4, §8, §19): placement, label, width, dismissible, surface-role and the
 // value open are attributes and properties made by core/js/element-manifest.js;
 // the old host attribute role is a dated alias of surface-role.
+// The one anchored-positioning contract of the Framework's floating surfaces
+// (core/js/position.js): the page's published copy when there is one.
+const positioning = () => globalThis.SF?.Position || BundledPosition;
+
+// Where the surface hangs from, as the shared helper's side and alignment.
+const ANCHOR_PLACEMENTS = {
+    'bottom-start': {side: 'block-end', align: 'start'},
+    'bottom-end': {side: 'block-end', align: 'end'},
+    'top-start': {side: 'block-start', align: 'start'},
+    'top-end': {side: 'block-start', align: 'end'},
+    'inline-end': {side: 'inline-end', align: 'start'},
+    'inline-start': {side: 'inline-start', align: 'start'},
+};
+
 const PopoverElement = elementFromManifest(manifest, {
     base: SfBaseElement,
     lang: {en, ru},
@@ -117,6 +132,8 @@ class SfPopover extends PopoverElement {
     };
 
     onDisconnected() {
+        this._watchSheet(null);
+        this._releaseAnchor();
         this.removeEventListener('click', this._onTriggerClick);
         this._releaseDismissal();
         super.onDisconnected?.();
@@ -254,7 +271,54 @@ class SfPopover extends PopoverElement {
         // The gap to the trigger (#69), a margin on the trigger's side.
         if (this.offset) surface.style.setProperty('--sf-popover--offset', this.offset);
         else surface.style.removeProperty('--sf-popover--offset');
+        this._syncAnchor(surface);
         return true;
+    }
+
+    // An open surface is kept on screen as every other floating surface is
+    // (core/js/position.js): it hangs from the corner its placement names and
+    // moves along the trigger's edge, or to the other side, when the window has
+    // no room for it there. Placed by the stylesheet alone, a panel wider than
+    // the room beside a trigger at the window's edge ran off it (ui-doc
+    // «Рецепты», «Уведомления», 2026-11-10: 320px from a bell 60px from the
+    // edge of a 400px window ended 260px past it). It stays where it stands in
+    // the stacking order (no top layer): a window or a drawer opened from it is
+    // still drawn over it. Closed, the stylesheet's placement is back.
+    //
+    // A surface a consumer draws as a sheet (data-sf-sheet: sf-input-rich's
+    // link editor on a phone, C32 RT-02) is placed by that consumer's sheet
+    // rule, so it is not anchored: the inline placement would hold it at the
+    // trigger (it hung at the top of a 390 screen). The attribute can arrive
+    // after the surface opened, so it is watched while the surface is open.
+    _syncAnchor(surface) {
+        this._watchSheet(this.open && surface?.isConnected ? surface : null);
+        const sheet = surface?.hasAttribute?.('data-sf-sheet');
+        const want = this.open && surface?.isConnected && !sheet ? `${this.placement}|${this.offset || ''}` : null;
+        if (this._anchor && (this._anchorSurface !== surface || this._anchorKey !== want)) this._releaseAnchor();
+        if (!want || this._anchor) return;
+        const {side, align} = ANCHOR_PLACEMENTS[this.placement] || ANCHOR_PLACEMENTS['bottom-end'];
+        this._anchor = positioning().anchor(this, surface, {
+            side, align, offset: this.offset || 0, flip: true, shift: true, fitHeight: false, topLayer: false,
+        });
+        this._anchorSurface = surface;
+        this._anchorKey = want;
+    }
+
+    _watchSheet(surface) {
+        if (this._sheetWatch?.surface === surface) return;
+        this._sheetWatch?.observer.disconnect();
+        this._sheetWatch = null;
+        if (!surface || typeof MutationObserver !== 'function') return;
+        const observer = new MutationObserver(() => this._syncAnchor(surface));
+        observer.observe(surface, {attributes: true, attributeFilter: ['data-sf-sheet']});
+        this._sheetWatch = {surface, observer};
+    }
+
+    _releaseAnchor() {
+        this._anchor?.stop();
+        this._anchor = null;
+        this._anchorSurface = null;
+        this._anchorKey = null;
     }
 
     templateContext() {

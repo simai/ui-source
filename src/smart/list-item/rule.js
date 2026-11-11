@@ -10,5 +10,7 @@ SF.RuleLoader['cl-list-item'] = {
     { name: 'checkbox' },
     { name: 'avatars' },
     { name: 'tags' },
+    // An icon row's picture is an sf-icon element, so its name reaches the first icon font request (1.2.7, as sf-dropdown 1.8.0).
+    { name: 'cl-icon' },
   ],
 };

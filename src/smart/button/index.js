@@ -13,7 +13,7 @@ import {
   parseShortcut,
   shortcutCaps,
 } from "../../component/kbd/js/shortcut";
-import { cycleState, hasCycle, parseCycle, pressCycle, themeCycleFollow, warnCycleToggle } from "../helpers/cycle";
+import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from "../helpers/cycle";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -38,6 +38,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   "spacing",
   "tightness",
   "radius",
+  "full-width",
   "root-class",
   "loading",
   "segment",
@@ -302,6 +303,10 @@ class SfButton extends ButtonElement {
     // A cycle with an icon shows the item's icon in place of the start icon;
     // one without shows the item's label as its text.
     const cycleIcon = cycle?.item.icon || "";
+    // The icons a press can show, asked for before the press (R074).
+    preloadSwitchIcons(this, {
+      icons: [this.iconStart, this.iconEnd, ...["icon", "icon-left", "icon-right"].map((name) => this.getAttribute(name))],
+    });
 
     return this.createTemplateContext({
       ...props,
@@ -479,6 +484,7 @@ class SfButton extends ButtonElement {
       tightness: resolveControlSpacing({spacing: this.getAttribute('spacing')}).tightness,
       spacing: this.spacing,
       radius: this.radius,
+      fullWidth: this.fullWidth,
       rootClass: this.rootClass,
       loading: this.loading,
       disabled: this.disabled,

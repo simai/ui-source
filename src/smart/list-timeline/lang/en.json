@@ -10,7 +10,18 @@
     "status-success": "Done",
     "status-warning": "Warning",
     "status-error": "Error",
-    "status-info": "Info"
+    "status-info": "Info",
+    "state-done": "Done",
+    "state-current": "Now",
+    "state-upcoming": "Next",
+    "run-changes": {
+      "one": "{n} more change",
+      "other": "{n} more changes"
+    },
+    "run-events": {
+      "one": "{n} more event",
+      "other": "{n} more events"
+    }
   },
   "events": {
     "navigate": {
@@ -18,6 +29,9 @@
     },
     "load-more": {
       "label": "Show more"
+    },
+    "expand": {
+      "label": "Show folded"
     }
   }
 }

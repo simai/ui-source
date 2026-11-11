@@ -67,6 +67,28 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
+    "activity-paused": [
+      "component/badges/css/badges.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "activity-queued": [
+      "component/badges/css/badges.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
     "activity-running": [
       "component/badges/css/badges.min.css",
       "component/spinner/css/spinner.min.css",

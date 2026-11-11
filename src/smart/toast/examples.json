@@ -67,6 +67,21 @@
       }
     },
     {
+      "name": "notice",
+      "title": "Уведомление: значок, текст и действие",
+      "settings": {
+        "heading": "Сессия закончится через 2 минуты",
+        "supporting-text": "Несохранённые изменения пропадут.",
+        "icon": "warning",
+        "action-text": "Продлить",
+        "action": "extend",
+        "status": "warning"
+      },
+      "expect": {
+        "name": "Сессия закончится через 2 минуты"
+      }
+    },
+    {
       "name": "statuses",
       "title": "Статусы",
       "settings": {

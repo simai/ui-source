@@ -31,7 +31,7 @@ test('the switch element is made from its component.json, language files and ali
 
 test('the manifest makes the settings the base reads; value defaults to "on" (#38)', () => {
   const props = propsFromManifest(manifest);
-  assert.deepEqual(Object.keys(props), ['size', 'label', 'description', 'help', 'disabled', 'name', 'value', 'checked']);
+  assert.deepEqual(Object.keys(props), ['size', 'short', 'label', 'description', 'help', 'disabled', 'name', 'value', 'checked']);
   assert.equal(props.value.default, 'on');
   assert.deepEqual(props.size.values, ['1/2', '1', '2']);
   const described = readManifest(manifest);

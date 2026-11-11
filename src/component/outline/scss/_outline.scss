@@ -8,9 +8,14 @@
     --sf-outline--color: var(--sf-on-surface-variant);
     --sf-outline--hover-color: var(--sf-on-surface);
     --sf-outline--hover-background: var(--sf-surface-container-hover);
-    --sf-outline--current-color: var(--sf-on-surface);
-    --sf-outline--current-background: var(--sf-surface-container-active);
-    --sf-outline--current-indicator: var(--sf-primary);
+    /* The current link is the navigation's current page (C23; dispatcher
+       decision c, docs pre-check 2026-11-10): the primary plate of the fill
+       family, on-primary-container words and a medium label, no bar. It was a
+       grey fill with a primary bar. The bar's width stays as a
+       transparent edge, so every link keeps its text on one line. */
+    --sf-outline--current-color: var(--sf-on-primary-container);
+    --sf-outline--current-background: var(--sf-primary-container-active);
+    --sf-outline--current-indicator: var(--sf-transparent);
 
     min-inline-size: var(--sf-0);
     color: var(--sf-on-surface);

@@ -37,3 +37,5 @@ only once when a script is repeated. Native `disabled`, `readonly`, reset and
 The joined control uses `--sf-radius--ui`, `--sf-px`, semantic role colors,
 Framework size/typography/space tokens and `:focus-visible`. No absolute design
 sizes or raw colors are part of the component contract.
+
+The label is the field label of sf-input: regular weight, on-surface-variant, one text step below the field's text (14 at size 1), a quarter step above the cells; it was 16/500 on-surface (1.2.0, docs pre-check 2026-11-10 FB-10, CI-04). The current cell is marked only while the field has the focus: three fields at rest all looked focused (CI-02).

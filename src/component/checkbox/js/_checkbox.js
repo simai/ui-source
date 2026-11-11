@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
+import { CHECKBOX_TEXT_PARTS, linkCheckableText } from '../../checkable-text-helper';
 import checkboxUtility from '../json/checkbox.utility.json';
 
 const CHECKBOX_SELECTOR = 'label.sf-checkbox';
@@ -73,6 +74,7 @@ function bindCheckbox(root) {
 
   root.dataset[CHECKBOX_BOUND_FLAG] = '1';
   syncCheckboxState(root);
+  linkCheckableText(root, CHECKBOX_TEXT_PARTS);
 }
 
 function unbindCheckbox(root) {

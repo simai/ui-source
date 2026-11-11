@@ -10,7 +10,8 @@ SF.RuleLoader['cl-tag'] = {
     { name: 'tags' },
     { name: 'avatars' },
     { name: 'dot' },
-    { name: 'cl-button-icon' },
+    // The remove button: sf-button-close, plain (owner decision C14).
+    { name: 'cl-button-close' },
     // The icon of an icon tag and an avatar's placeholder are sf-icon elements,
     // so their names reach the icon font request (buttons review 2026-11-09).
     { name: 'cl-icon' },

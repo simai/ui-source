@@ -7,8 +7,19 @@
 @use '../../../flex-direction/default/scss/sf_var__flex_direction' as direction;
 @use '../../../flex-wrap/default/scss/sf_var__flex_wrap' as wrap;
 @use '../../../grid-template-columns/default/scss/sf_var__grid_template_columns' as columns;
+@use '../../../grid-column/default/scss/sf_var__grid_column' as column;
 @use '../../../justify-content/default/scss/sf_var__justify_content' as justify;
 @use '../../../align-items/default/scss/sf_var__align_items' as items;
+
+// A container condition outranks the plain utility of its family on the same
+// element whatever order the sheets arrived in: the plain family is a sheet of
+// its own (grid-column, display, ...) in the same sf.utilities layer, and the
+// Loader inserts whichever the page meets first, so equal specificity let load
+// order decide (`col-span-full cq-md:col-span-6` stayed full when the cq sheet
+// came first; recipes gaps acceptance D2, 2026-11-10). The class is written
+// twice (0,2,0): between cq classes source order still holds, sm before md
+// before lg before xl, as it is one sheet.
+@function strong($class) { @return '.#{$class}.#{$class}'; }
 
 @mixin family($condition, $family, $prefix, $property, $values) {
   @each $role in map.get(profile.$query-families, $family) {
@@ -18,7 +29,7 @@
       @for $number from 1 through 12 { @if '#{$number}' == $role { $key: $number; } }
     }
     @if not map.has-key($values, $key) { @error 'Unknown #{$family} role: #{$role}'; }
-    .#{$condition}#{$prefix}#{$role} { #{$property}: #{map.get($values, $key)}; }
+    #{strong('#{$condition}#{$prefix}#{$role}')} { #{$property}: #{map.get($values, $key)}; }
   }
 }
 
@@ -34,6 +45,10 @@
         @include family($condition, 'flex-direction', 'flex-', flex-direction, direction.$flex-direction-array);
         @include family($condition, 'flex-wrap', 'flex-', flex-wrap, wrap.$flex-wrap-array);
         @include family($condition, 'grid-template-columns', 'grid-col-', grid-template-columns, columns.$grid-template-columns-array);
+        // A cell's span by the container's width, as md:col-span-* by the
+        // window's (utility.grid-column's values): a card two columns wide in
+        // a wide box and one in a narrow one (ui-doc «Рецепты», 2026-11-10).
+        @include family($condition, 'grid-column', 'col-', grid-column, column.$grid-column-array);
         // The Framework's name, as the plain utility has it: the Loader rewrites
         // a Tailwind justify-* to content-main-* with its prefix kept, so a
         // cq-* family named justify-* was never reached (docs trial 4).
@@ -41,11 +56,11 @@
         @include family($condition, 'align-items', 'items-cross-', align-items, items.$flex-align-items-array);
         @each $role in map.get(profile.$query-families, 'gap') {
           @if not map.has-key(map.get(space.$space-size-device-array, mobile), $role) { @error 'Unknown gap role: #{$role}'; }
-          .#{$condition}gap-#{$role} { gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}gap-#{$role}')} { gap: var(--sf-space-#{$role}); }
         }
         @each $role in map.get(profile.$query-families, 'gap') {
-          .#{$condition}row-gap-#{$role} { row-gap: var(--sf-space-#{$role}); }
-          .#{$condition}col-gap-#{$role} { column-gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}row-gap-#{$role}')} { row-gap: var(--sf-space-#{$role}); }
+          #{strong('#{$condition}col-gap-#{$role}')} { column-gap: var(--sf-space-#{$role}); }
         }
       }
     }

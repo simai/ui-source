@@ -11,6 +11,9 @@
       "  <sf-progress-bar id=\"p-old\" label=\"Старое имя\" value=\"20\" tone=\"warning\"></sf-progress-bar>",
       "  <sf-progress-bar id=\"p6\" label=\"Диск\" value=\"83\" warning-at=\"80\" error-at=\"95\"></sf-progress-bar>",
       "  <sf-progress-bar id=\"p7\" label=\"Квота\" value=\"40\" status=\"error\" warning-at=\"80\"></sf-progress-bar>",
+      "  <sf-progress-bar id=\"p8\" label=\"Подсчёт\" indeterminate value=\"30\" text-position=\"inline-end\"></sf-progress-bar>",
+      "  <sf-progress-bar id=\"p9\" label=\"Копия\" value=\"35\" paused></sf-progress-bar>",
+      "  <sf-progress-bar id=\"p10\" label=\"Квота\" value=\"40\" status=\"error\" paused></sf-progress-bar>",
       "</main>"
     ]
   },
@@ -143,6 +146,36 @@
           "script": "(document.querySelector('#p6').value = 30, true)",
           "wait": 100,
           "check": "(() => { const a = document.querySelector('#p6'); return a.getAttribute('data-status') === 'neutral' && !a.querySelector('.sf-progress-bar').classList.contains('sf-progress-bar--warning'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-indeterminate",
+      "title": "indeterminate leaves the value unsaid: no aria-valuenow, no percentage text, the segment class; taken off, the same bar fills from the value (C34)",
+      "covers": "settings.indeterminate",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#p8 .sf-progress-bar'); return r.classList.contains('sf-progress-bar--indeterminate') && !r.hasAttribute('aria-valuenow') && r.getAttribute('role') === 'progressbar' && !r.querySelector('.sf-progress-bar-text'); })()"
+        },
+        {
+          "script": "(() => { document.querySelector('#p8').indeterminate = false; return true; })()",
+          "wait": 100,
+          "check": "(() => { const r = document.querySelector('#p8 .sf-progress-bar'); return !r.classList.contains('sf-progress-bar--indeterminate') && r.getAttribute('aria-valuenow') === '30' && r.querySelector('.sf-progress-bar-text').textContent.trim() === '30%'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-paused",
+      "title": "paused is at least a warning and is said in the value text; an error stays an error (C34)",
+      "covers": "settings.paused, host-states data-status",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#p9'); const r = a.querySelector('.sf-progress-bar'); const b = document.querySelector('#p10'); return a.getAttribute('data-status') === 'warning' && r.classList.contains('sf-progress-bar--warning') && r.getAttribute('aria-valuetext') === '35 %, на паузе' && b.getAttribute('data-status') === 'error'; })()"
+        },
+        {
+          "script": "(() => { document.querySelector('#p9').paused = false; return true; })()",
+          "wait": 100,
+          "check": "(() => { const a = document.querySelector('#p9'); return a.getAttribute('data-status') === 'neutral' && !a.querySelector('.sf-progress-bar').hasAttribute('aria-valuetext'); })()"
         }
       ]
     }

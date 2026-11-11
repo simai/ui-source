@@ -17,7 +17,9 @@ import ru from './lang/ru.json';
 // core/js/element-manifest.js; a job's part arrives as the stream fact chunk
 // {done, total} (vocabulary 1.1.5 §5.2), which a rule hands to the action
 // chunk; tone and setProgress are dated aliases (aliases.json). warning-at and
-// error-at (1.2.0) turn the bar a warning or an error by itself.
+// error-at (1.2.0) turn the bar a warning or an error by itself. indeterminate
+// (1.3.0) runs a segment for work of unknown size; paused (1.3.0) is at least
+// a warning and is said in the value text (C34).
 const ProgressBarElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -61,6 +63,11 @@ export function effectiveStatus(status, value, warningAt, errorAt) {
   return (RANK[reached] ?? 0) > (RANK[status] ?? 0) ? reached : status;
 }
 
+// Paused (1.3.0, C34): at least a warning; an error stays an error.
+export function pausedStatus(status, paused) {
+  return paused && (RANK[status] ?? 0) < RANK.warning ? 'warning' : status;
+}
+
 // What retires without a new name (aliases.json rows with `to: null`): kept
 // until the date, and each call is noted with it.
 function noteRetired(from) {
@@ -94,9 +101,20 @@ class SfProgressBar extends ProgressBarElement {
     return Number.isFinite(number) ? number : null;
   }
 
-  // The status drawn: the page's, or the threshold the value reached.
+  // The status drawn: the page's, or the threshold the value reached; a
+  // paused bar is at least a warning (C34).
   get drawnStatus() {
-    return effectiveStatus(this.status, this.value, this.threshold('warning-at'), this.threshold('error-at'));
+    return pausedStatus(effectiveStatus(this.status, this.value, this.threshold('warning-at'), this.threshold('error-at')), this.paused);
+  }
+
+  // What a screen reader hears beside the value: the page's value text, else
+  // for a paused bar the value with the word paused (C34).
+  get spokenValueText() {
+    if (this.valueText) return this.valueText;
+    if (!this.paused) return '';
+    if (this.indeterminate) return this.sfWord('paused');
+    const value = Math.max(0, Math.min(100, Number(this.value) || 0));
+    return this.sfWord('paused-value').replace('{value}', String(Math.round(value * 100) / 100));
   }
 
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).
@@ -110,10 +128,16 @@ class SfProgressBar extends ProgressBarElement {
     const status = this.drawnStatus;
     this.sfHostState('data-status', status);
 
+    // The drawn status and the spoken value text go under their own names:
+    // status and valueText are the page's settings as given (their getters),
+    // and the template reads what the bar resolved (template-context rule).
     return this.createTemplateContext({
       ...props,
-      status,
+      drawnStatus: status,
       label: this.accessibleLabel,
+      spokenValueText: this.spokenValueText,
+      indeterminate: Boolean(this.indeterminate),
+      paused: Boolean(this.paused),
       component: this,
     });
   }
@@ -131,6 +155,8 @@ class SfProgressBar extends ProgressBarElement {
       drawnStatus: this.drawnStatus,
       label: this.label,
       valueText: this.valueText,
+      indeterminate: Boolean(this.indeterminate),
+      paused: Boolean(this.paused),
     };
   }
 
@@ -148,7 +174,7 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label'];
+    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -169,7 +195,9 @@ class SfProgressBar extends ProgressBarElement {
       textPosition: this.textPosition,
       tone: status,
       label: this.accessibleLabel,
-      valueText: this.valueText,
+      valueText: this.spokenValueText,
+      indeterminate: Boolean(this.indeterminate),
+      paused: Boolean(this.paused),
     });
   }
 

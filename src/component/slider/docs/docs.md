@@ -72,3 +72,5 @@ wrap; slides use natural height rather than the default media minimum. Explicit
 classification or DOM reordering occurs. Smart uses the existing root-class
 projection. Overlay mode still requires the author to keep important text and
 interactive content away from controls.
+
+An arrow with nowhere to go is a disabled button: the script sets disabled with Swiper's swiper-button-disabled, so it leaves the tab order, and the arrow holding the focus hands it to the other one (1.1.2, docs pre-check 2026-11-10 SL-04). A button arrow draws the system's disabled look; another element keeps the 0.4 opacity.

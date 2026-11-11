@@ -46,8 +46,8 @@ const measure = async (browser, label, options) => {
     <sf-menu-context id="one" popup size="1" aria-label="Действия"></sf-menu-context>
     <div class="sf-context-menu sf-context-menu--entries" id="plain" style="position:absolute;inset-block-start:400px;inset-inline-start:16px">
       <div class="relative"><div class="sf-context-menu-content flex flex-col">
-        <button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-1/2"><span class="sf-button-text-container">Переименовать</span></button>
-        <button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-1/2"><span class="sf-button-text-container">Удалить</span></button>
+        <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1/2"><span class="sf-button-text-container">Переименовать</span></button>
+        <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1/2"><span class="sf-button-text-container">Удалить</span></button>
       </div></div>
     </div>
   </body></html>`);

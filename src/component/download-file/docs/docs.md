@@ -37,3 +37,15 @@ Since component.download-file 1.2.0 (decision C25, 2026-11-09):
 - A root marked `aria-busy="true"` is being prepared: it takes no press, the
   hover and press fills stand still and the pointer says progress. `__spinner`
   is the Framework spinner in the sign's box (the Smart element draws it).
+
+Since component.download-file 1.3.0 (docs pre-check 2026-11-10):
+
+- The public variables carry the element's name: `--sf-file-download-*`
+  (`-background-color`, `-border-color`, `-radius`, `-padding`, `-gap`,
+  `-icon-size`, `-icon-color`). Each reads its former name,
+  `--sf-download-file-*`, under it until 2027-01-01.
+- `__stack` holds a file and its notice in one column (the Smart element
+  draws it in the error state); the gap is `--sf-space-1/3`.
+- A `data:` or `blob:` address is never asked for its size.
+- Nor is an address that leads back to the page itself (`#`, `#part`, the
+  page's own URL).

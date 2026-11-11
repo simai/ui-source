@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.query-layout",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/query-layout/default/index.js",
@@ -11,7 +11,7 @@
     "src/utility/query-layout/default/rule.js",
     "src/utility/query-layout/default/scss/index.scss"
   ],
-  "content_sha256": "ccbc801b28849cdd555218230c430b357789e7b1b8d25ed3e6f1c60b43566795",
+  "content_sha256": "1a5db62e08626a13c86909b8d441d279360391ff8731438aaf0aaf0f55fb018c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
@@ -35,6 +35,10 @@
     },
     {
       "id": "utility.flex-wrap",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.grid-column",
       "range": "^1.0.0"
     },
     {

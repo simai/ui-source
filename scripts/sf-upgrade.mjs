@@ -133,6 +133,42 @@ for (const record of journal.records) {
   }
 }
 
+// A value renamed everywhere (no component) and renamed back on one element:
+// status danger -> error for every message (2026-10-09), error -> danger on a
+// control (C13, 2026-11-08). The general item must not reach the elements a
+// later item names in reverse, or it rewrites their canonical value into the
+// former one (<sf-button status="danger"> into error). attribute|from|to of
+// the general item -> the tags that reverse it.
+const reversedOn = new Map();
+for (const record of journal.records) {
+  if (record.kind !== 'value') continue;
+  for (const item of record.items) {
+    if (!item.component || !item.component.startsWith('sf-') || !item.to) continue;
+    const key = `${item.attribute || ''}\u0000${item.to}\u0000${item.from}`;
+    if (!reversedOn.has(key)) reversedOn.set(key, new Set());
+    reversedOn.get(key).add(item.component);
+  }
+}
+
+// A rename reversed later: sf-button--ghost -> sf-button--link (2026-10-09),
+// then sf-button--link -> sf-button--ghost (decision C15, 2026-11-11). The
+// earlier item stays in the journal as history; it is neither reported nor
+// rewritten, or every run would turn the current name into the former one and
+// the next run back. An item is history when a later record of the same kind
+// moves the same attribute on the same component from its `to` to its `from`.
+const itemKey = (kind, item, from, to) => [kind, item.component || '', item.attribute || '', from, to].join('\u0000');
+const lastMove = new Map();
+journal.records.forEach((record, index) => {
+  for (const item of record.items || []) {
+    if (item.from && item.to) lastMove.set(itemKey(record.kind, item, item.from, item.to), index);
+  }
+});
+const reversedLater = (record, item) => {
+  if (!item.from || !item.to) return false;
+  const later = lastMove.get(itemKey(record.kind, item, item.to, item.from));
+  return later !== undefined && later > journal.records.indexOf(record);
+};
+
 const STYLE_FILES = /\.(?:css|scss|sass|less)$/u;
 const SCRIPT_FILES = /\.(?:m?js|cjs|ts|tsx|jsx|vue|php)$/u;
 
@@ -143,6 +179,7 @@ function rulesFor(record) {
   // sf-icon-button) made two identical rules, and every use was reported twice.
   const names = new Set();
   for (const listed of record.items) {
+    if (reversedLater(record, listed)) continue;
     let item = listed;
     if (record.kind === 'class' || record.kind === 'token') {
       const key = `${item.from}\u0000${item.to ?? ''}`;
@@ -174,7 +211,9 @@ function rulesFor(record) {
       rules.push({item, mechanical, pattern: new RegExp(`(\\s)${escape(item.from)}(=)`, 'gu'), replace: (match, space, eq) => `${space}${item.to}${eq}`});
     } else if (record.kind === 'value') {
       const attribute = escape(item.attribute || '[a-z-]+');
-      const scope = tag ? `<${escape(tag)}\\b[^>]*?\\s` : '<sf-[a-z-]+\\b[^>]*?\\s';
+      const reversed = [...(reversedOn.get(`${item.attribute || ''}\u0000${item.from}\u0000${item.to}`) || [])];
+      const except = reversed.length ? `(?!(?:${reversed.map(escape).join('|')})(?![\\w-]))` : '';
+      const scope = tag ? `<${escape(tag)}\\b[^>]*?\\s` : `<${except}sf-[a-z-]+\\b[^>]*?\\s`;
       rules.push({item, mechanical, pattern: new RegExp(`(${scope}${attribute}=["'])${escape(item.from)}(["'])`, 'gu'), replace: (match, head, tail) => `${head}${item.to}${tail}`});
     } else if (record.kind === 'event') {
       rules.push({item, mechanical, pattern: new RegExp(`(['"\`])${escape(item.from)}(['"\`])`, 'gu'), replace: (match, open, close) => `${open}${item.to}${close}`});

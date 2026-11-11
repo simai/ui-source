@@ -22,7 +22,8 @@
       "autoload",
       "unclose",
       "hide",
-      "minimized"
+      "minimized",
+      "initial-focus"
     ],
     "dismissal": [
       "overlay",
@@ -33,6 +34,7 @@
     ],
     "layout": [
       "position",
+      "size",
       "display",
       "fullscreen",
       "width",

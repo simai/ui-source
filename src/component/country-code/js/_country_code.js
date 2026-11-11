@@ -33,7 +33,6 @@ const COUNTRY_CODE_SELECTOR = '.sf-country-code';
 const COUNTRY_CODE_BOUND_FLAG = 'sfCountryCodeBound';
 const COUNTRY_ITEMS = Array.isArray(countriesData?.items) ? countriesData.items : [];
 
-let flagObserver = null;
 let countryId = 0;
 const countryGeneratedNames = new WeakMap();
 const countryResetDefaults = new WeakMap();
@@ -203,34 +202,17 @@ function loadFlagImage(img) {
   img.dataset.loaded = '1';
 }
 
-function getFlagObserver() {
-  if (flagObserver || !('IntersectionObserver' in window)) return flagObserver;
-  flagObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const img = entry.target;
-        loadFlagImage(img);
-        flagObserver?.unobserve?.(img);
-      });
-    },
-    { rootMargin: '120px' },
-  );
-  return flagObserver;
-}
-
+// A flag of the list is the browser's own lazy image: its address is set when
+// the row is built and `loading="lazy"` lets the browser fetch it when the row
+// comes near the view, a closed list (display: none) fetching nothing. The
+// field watched the rows with its own IntersectionObserver instead, and that
+// never answered inside a sandboxed frame (an opaque origin): every flag of
+// an open list stayed an empty image (docs pre-check 2026-11-10 CC-02).
+// lazy-flags off (eager-flags) asks for every flag at once.
 function observeFlagImage(img, lazy = true) {
   if (!img) return;
-  if (!lazy) {
-    loadFlagImage(img);
-    return;
-  }
-  const observer = getFlagObserver();
-  if (!observer) {
-    loadFlagImage(img);
-    return;
-  }
-  observer.observe(img);
+  img.loading = lazy ? 'lazy' : 'eager';
+  loadFlagImage(img);
 }
 
 function createFlagNode(country, config, lazy = true) {
@@ -509,7 +491,8 @@ function renderDatasetItems(root, config) {
 function prefetchVisibleFlags(root) {
   const { list } = getNodes(root);
   if (!list) return;
-  list.querySelectorAll('img[data-flag-src]').forEach((img) => observeFlagImage(img, true));
+  const lazy = root.__sfCountryConfig?.lazyFlags !== false;
+  list.querySelectorAll('img[data-flag-src]').forEach((img) => observeFlagImage(img, lazy));
 }
 
 // Caps the scrolling rows at `visibleItems` real rows (default 8). The list is
@@ -1001,7 +984,6 @@ function unbindCountryCode(root) {
   delete root.__sfCountryViewport;
   // Removed while open, it must not leave the mark raised for the whole page.
   holdOpenSurfaceMark(root, false);
-  root.querySelectorAll('img[data-flag-src]').forEach(img => flagObserver?.unobserve(img));
 
   if (toggle && root.__sfCountryCodeToggleClick) {
     toggle.removeEventListener('click', root.__sfCountryCodeToggleClick);

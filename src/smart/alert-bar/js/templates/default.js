@@ -22,10 +22,13 @@ import {html, nothing} from 'lit';
 
 const icon = (name, extra = '') => html`<i class=${['sf-icon', 'sf-alert-bar-icon', extra].filter(Boolean).join(' ')} aria-hidden="true">${name}</i>`;
 
+// The time is sf-time (C40): relative within a day (threshold P1D, as 1.x
+// read it), else sf-time's auto («вчера, 19:40», «5 ноября»), the full
+// moment in its tooltip.
 function meta(item, extra = '') {
-  if (!item.source && !item.timeText) return nothing;
-  return html`<span class=${['sf-alert-bar-meta', extra].filter(Boolean).join(' ')}>${item.source}${item.source && item.timeText ? ' · ' : ''}${item.timeText
-    ? html`<time datetime=${item.time}>${item.timeText}</time>` : nothing}</span>`;
+  if (!item.source && !item.time) return nothing;
+  return html`<span class=${['sf-alert-bar-meta', extra].filter(Boolean).join(' ')}>${item.source}${item.source && item.time ? ' · ' : ''}${item.time
+    ? html`<sf-time class="sf-alert-bar-time" datetime=${item.time} threshold="P1D"></sf-time>` : nothing}</span>`;
 }
 
 function actionLink(context, item, appearance) {

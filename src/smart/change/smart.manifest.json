@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "id": "smart.change",
+  "version": "1.0.1",
+  "title": "Change",
+  "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "change",
+    "diff",
+    "before",
+    "after",
+    "audit",
+    "history",
+    "text"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-change",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.icon"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "before": {
+        "type": "string",
+        "default": "",
+        "description": "The value as it was, text. Empty reads «пусто»"
+      },
+      "after": {
+        "type": "string",
+        "default": "",
+        "description": "The value as it became, text. Empty reads «пусто»"
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The field's name («Статус»). Printed before the pair only with show-label; in layout list each change's own label is its term"
+      },
+      "show-label": {
+        "type": "boolean",
+        "default": false,
+        "description": "Print «Статус: » before the pair -- a table cell, a notification; off inside a sentence that already names the field"
+      },
+      "layout": {
+        "type": "string",
+        "default": "inline",
+        "description": "inline: «Собран → Передан в доставку» inside a sentence, the arrow and the new value never break apart; list: a description list, the labels' column and the pairs, stacked under a 24rem container",
+        "enum": [
+          "inline",
+          "list"
+        ]
+      },
+      "reveal": {
+        "type": "string",
+        "default": "auto",
+        "description": "auto: in layout inline, a value longer than 80 characters is not put in the sentence; «Показать изменения» reveals the two values as blocks («Было», «Стало») in place; none: always the pair",
+        "enum": [
+          "auto",
+          "none"
+        ]
+      },
+      "changes": {
+        "type": "array",
+        "default": [],
+        "description": "The changes of one update, each {label, before, after}, for layout list: a property, the JSON island a server prints, or the changes attribute as JSON (markup). A number is shown as its text; null or empty reads «пусто». In layout inline without before and after, the first change is the pair"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {},
+  "state": {
+    "machines": {
+      "reveal": [
+        "closed",
+        "open"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "open"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "none",
+    "forbidden_client_responsibilities": [
+      "deciding what changed (the host gives before and after)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "none",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab reaches «Показать изменения» when a long value is folded; Enter or Space reveals or hides the values"
+    ],
+    "focus": "Only the reveal's button takes focus."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "6704375b43be27764686ff808f674a6b03de8788",
+    "source_artifacts": [
+      {
+        "path": "src/smart/change/index.js",
+        "sha256": "6538e38d7fc4e3a2b77c3e6fccf92788103bf71599e55b8fecdb7d6ba62f394d"
+      },
+      {
+        "path": "src/smart/change/js/templates/default.js",
+        "sha256": "8af687a441798db57567aa13b70268be9290565c7a5ca769007daa6cb3e063e0"
+      },
+      {
+        "path": "src/smart/change/scss/_smart__change.scss",
+        "sha256": "239cd974d4ceb09ca9e675898b697c53400385509560e3e42d357636d08ccbb3"
+      },
+      {
+        "path": "src/smart/change/rule.js",
+        "sha256": "0c666a3cb823d4b27bea494aab4b18e9278a0803dc8befc7841c91601046e047"
+      },
+      {
+        "path": "src/smart/change/docs.md",
+        "sha256": "ec218689601be27c6d50bc9a6df072eaff30d275f036b56bb877dd710d5fc951"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-change wherever a field's change is said: a timeline event, an audit log column, a notification «Статус: Собран → В пути», a confirmation of an edit, a version history.",
+    "do_not": [
+      "Do not draw the values as badges or strike the old one out",
+      "Do not put markup in before or after; they are text",
+      "Do not use it to ask for a change; sf-confirm-change does that"
+    ],
+    "required_reads": [
+      "inputs",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-change label=\"Статус\" before=\"Собран\" after=\"Передан в доставку\"></sf-change>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

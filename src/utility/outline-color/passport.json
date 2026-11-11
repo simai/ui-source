@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.outline-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/outline-color/active/index.js",
@@ -33,7 +33,7 @@
     "src/utility/outline-color/hover/scss/_sf_css__outline_color.scss",
     "src/utility/outline-color/hover/scss/index.scss"
   ],
-  "content_sha256": "ba3edaa3b22ca728598e6425d836c6284028a67e4c799fe40104d69bbd6795bc",
+  "content_sha256": "e8fe6481724310bae70a7fd08d739f8fc41c837c221f99862ba4f20aa98feae6",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

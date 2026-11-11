@@ -2,46 +2,146 @@
   "examples": [
     {
       "name": "reference",
-      "title": "Здоровье сервера: самое серьёзное первым",
+      "title": "Сводка на главной админки: бейджи серьёзности, пять строк, «⋯», «Все проблемы (8)»",
       "settings": {
-        "label": "Здоровье сервера",
+        "label": "Требует внимания",
+        "triage": true,
+        "checked-at": "2026-10-27T11:55:00+03:00",
+        "more-href": "#checks",
         "items": [
           {
             "id": "backup",
-            "status": "warning",
-            "title": "Последняя копия demo-owned.test не удалась",
-            "text": "27 октября, 03:30 · нет места на диске",
+            "status": "error",
+            "title": "Резервная копия не создана",
+            "object": {
+              "label": "shop.simai.ru",
+              "href": "#site-shop"
+            },
+            "since": "2026-10-25T10:00:00+03:00",
+            "text": "нет места на диске",
+            "source": "Резервные копии",
+            "affected": "1 сайт",
             "action": {
-              "label": "Открыть копии",
-              "href": "#backups"
-            }
+              "label": "Освободить место",
+              "event": "free-space"
+            },
+            "help": "#help-backup"
           },
           {
             "id": "down",
             "status": "error",
-            "title": "demo-php.test не отвечает",
-            "text": "12 минут, код 502",
+            "title": "Сайт не отвечает, код 502",
+            "object": {
+              "label": "zdorovie-clinic.ru",
+              "href": "#site-clinic"
+            },
+            "since": "2026-10-27T11:48:00+03:00",
+            "source": "Мониторинг",
+            "affected": "1 сайт",
             "action": {
               "label": "Перезапустить",
               "event": "restart"
             }
           },
           {
-            "id": "cert",
+            "id": "ssl",
             "status": "warning",
-            "title": "Сертификат demo-static.test истекает через 6 дней",
+            "title": "Сертификат истекает через 6 дней",
+            "object": {
+              "label": "crm.dealer-auto.ru",
+              "href": "#site-crm"
+            },
+            "source": "Сертификаты",
+            "affected": "1 сайт",
             "action": {
               "label": "Продлить",
-              "href": "#cert"
+              "href": "#ssl"
             }
           },
           {
-            "id": "update",
+            "id": "exch",
+            "status": "warning",
+            "title": "14 заказов не выгружены в 1С",
+            "object": {
+              "label": "Обмен с 1С"
+            },
+            "since": "2026-10-27T09:00:00+03:00",
+            "source": "Интеграции",
+            "affected": "14 заказов",
+            "action": {
+              "label": "Открыть журнал",
+              "href": "#exchange"
+            }
+          },
+          {
+            "id": "mail",
+            "status": "warning",
+            "title": "Письма уходят с задержкой до 40 минут",
+            "object": {
+              "label": "Почтовая очередь"
+            },
+            "since": "2026-10-27T07:00:00+03:00",
+            "source": "Почта",
+            "affected": "312 писем",
+            "action": {
+              "label": "Открыть очередь",
+              "href": "#mail"
+            }
+          },
+          {
+            "id": "php",
             "status": "info",
-            "title": "Доступна панель 0.3.1",
-            "text": "Изменения: журнал, резервные копии"
+            "title": "PHP 8.1: поддержка закончится 31 декабря",
+            "object": {
+              "label": "Сервер web-2"
+            },
+            "since": "2026-10-17T12:00:00+03:00",
+            "source": "Сервер",
+            "affected": "4 сайта",
+            "action": {
+              "label": "Как обновить",
+              "href": "#php"
+            },
+            "dismissible": true
+          },
+          {
+            "id": "core",
+            "status": "info",
+            "title": "Доступно обновление Larena 3.4.1",
+            "object": {
+              "label": "Ядро"
+            },
+            "since": "2026-10-26T10:00:00+03:00",
+            "source": "Обновления",
+            "affected": "Все сайты",
+            "action": {
+              "label": "Обновить",
+              "event": "update"
+            },
+            "dismissible": true
+          },
+          {
+            "id": "seo",
+            "status": "info",
+            "title": "38 страниц без описания",
+            "object": {
+              "label": "kodshkola.ru",
+              "href": "#site-kod"
+            },
+            "since": "2026-10-24T12:00:00+03:00",
+            "source": "SEO",
+            "affected": "38 страниц",
+            "action": {
+              "label": "Показать страницы",
+              "href": "#seo"
+            },
+            "dismissible": true
           }
         ]
+      },
+      "first-paint": {
+        "max-bytes": 24576,
+        "why": "The overview card at its limit: a head of three badges, five rows with an action and a «⋯» each, the foot with the time of the checks and «Все проблемы (8)»."
       },
       "studio": {
         "title": "list-attention reference",
@@ -56,64 +156,278 @@
     },
     {
       "name": "one",
-      "title": "Одна проблема, размер 1/2",
+      "title": "Одна проблема",
       "settings": {
         "items": [
           {
             "id": "cert",
             "status": "warning",
             "title": "Сертификат demo-static.test истекает через 6 дней",
+            "object": {
+              "label": "demo-static.test"
+            },
+            "source": "Сертификаты",
             "action": {
               "label": "Продлить",
               "href": "#cert"
             }
           }
         ],
-        "size": "1/2",
         "label": "Проверки сайта"
       }
     },
     {
       "name": "quiet",
-      "title": "Проблем нет: одна тихая строка",
+      "title": "Проблем нет: «Всё в порядке · проверено 5 мин назад»",
       "settings": {
         "items": [],
-        "empty": "line"
+        "checked-at": "2026-10-27T11:55:00+03:00"
+      }
+    },
+    {
+      "name": "frameless",
+      "title": "Без рамки (frame=\"none\"), как в 1.1",
+      "settings": {
+        "frame": "none",
+        "label": "Здоровье сервера",
+        "items": [
+          {
+            "id": "down",
+            "status": "error",
+            "title": "Сайт не отвечает, код 502",
+            "object": {
+              "label": "zdorovie-clinic.ru",
+              "href": "#site-clinic"
+            },
+            "since": "2026-10-27T11:48:00+03:00",
+            "source": "Мониторинг",
+            "affected": "1 сайт",
+            "action": {
+              "label": "Перезапустить",
+              "event": "restart"
+            }
+          },
+          {
+            "id": "ssl",
+            "status": "warning",
+            "title": "Сертификат истекает через 6 дней",
+            "object": {
+              "label": "crm.dealer-auto.ru",
+              "href": "#site-crm"
+            },
+            "source": "Сертификаты",
+            "affected": "1 сайт",
+            "action": {
+              "label": "Продлить",
+              "href": "#ssl"
+            }
+          },
+          {
+            "id": "core",
+            "status": "info",
+            "title": "Доступно обновление Larena 3.4.1",
+            "object": {
+              "label": "Ядро"
+            },
+            "since": "2026-10-26T10:00:00+03:00",
+            "source": "Обновления",
+            "affected": "Все сайты",
+            "action": {
+              "label": "Обновить",
+              "event": "update"
+            },
+            "dismissible": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "group",
+      "title": "Страница «Проверка системы»: группы по серьёзности, «Пройдено» свёрнуто",
+      "settings": {
+        "label": "Проверка системы",
+        "group": "severity",
+        "triage": true,
+        "dismissible": true,
+        "checked-at": "2026-10-27T11:55:00+03:00",
+        "items": [
+          {
+            "id": "backup",
+            "status": "error",
+            "title": "Резервная копия не создана",
+            "object": {
+              "label": "shop.simai.ru",
+              "href": "#site-shop"
+            },
+            "since": "2026-10-25T10:00:00+03:00",
+            "text": "нет места на диске",
+            "source": "Резервные копии",
+            "affected": "1 сайт",
+            "action": {
+              "label": "Освободить место",
+              "event": "free-space"
+            },
+            "help": "#help-backup"
+          },
+          {
+            "id": "down",
+            "status": "error",
+            "title": "Сайт не отвечает, код 502",
+            "object": {
+              "label": "zdorovie-clinic.ru",
+              "href": "#site-clinic"
+            },
+            "since": "2026-10-27T11:48:00+03:00",
+            "source": "Мониторинг",
+            "affected": "1 сайт",
+            "action": {
+              "label": "Перезапустить",
+              "event": "restart"
+            }
+          },
+          {
+            "id": "ssl",
+            "status": "warning",
+            "title": "Сертификат истекает через 6 дней",
+            "object": {
+              "label": "crm.dealer-auto.ru",
+              "href": "#site-crm"
+            },
+            "source": "Сертификаты",
+            "affected": "1 сайт",
+            "action": {
+              "label": "Продлить",
+              "href": "#ssl"
+            }
+          },
+          {
+            "id": "exch",
+            "status": "warning",
+            "title": "14 заказов не выгружены в 1С",
+            "object": {
+              "label": "Обмен с 1С"
+            },
+            "since": "2026-10-27T09:00:00+03:00",
+            "source": "Интеграции",
+            "affected": "14 заказов",
+            "action": {
+              "label": "Открыть журнал",
+              "href": "#exchange"
+            }
+          },
+          {
+            "id": "mail",
+            "status": "warning",
+            "title": "Письма уходят с задержкой до 40 минут",
+            "object": {
+              "label": "Почтовая очередь"
+            },
+            "since": "2026-10-27T07:00:00+03:00",
+            "source": "Почта",
+            "affected": "312 писем",
+            "action": {
+              "label": "Открыть очередь",
+              "href": "#mail"
+            }
+          },
+          {
+            "id": "php",
+            "status": "info",
+            "title": "PHP 8.1: поддержка закончится 31 декабря",
+            "object": {
+              "label": "Сервер web-2"
+            },
+            "since": "2026-10-17T12:00:00+03:00",
+            "source": "Сервер",
+            "affected": "4 сайта",
+            "action": {
+              "label": "Как обновить",
+              "href": "#php"
+            },
+            "dismissible": true
+          },
+          {
+            "id": "core",
+            "status": "info",
+            "title": "Доступно обновление Larena 3.4.1",
+            "object": {
+              "label": "Ядро"
+            },
+            "since": "2026-10-26T10:00:00+03:00",
+            "source": "Обновления",
+            "affected": "Все сайты",
+            "action": {
+              "label": "Обновить",
+              "event": "update"
+            },
+            "dismissible": true
+          },
+          {
+            "id": "seo",
+            "status": "info",
+            "title": "38 страниц без описания",
+            "object": {
+              "label": "kodshkola.ru",
+              "href": "#site-kod"
+            },
+            "since": "2026-10-24T12:00:00+03:00",
+            "source": "SEO",
+            "affected": "38 страниц",
+            "action": {
+              "label": "Показать страницы",
+              "href": "#seo"
+            },
+            "dismissible": true
+          }
+        ],
+        "passed": [
+          "Расписание агентов работает",
+          "Права на папку загрузок",
+          "Обмен с платёжной системой",
+          "Кэш страниц включён",
+          "Почта DKIM и SPF",
+          "Лицензия действует до 12.08.2027"
+        ]
+      },
+      "first-paint": {
+        "max-bytes": 32768,
+        "why": "The full checks page: three open groups of eight rows with their affected counts, actions and «⋯», and the closed «Пройдено» group of six."
       }
     }
   ],
   "pages": [
     {
       "name": "conformance",
-      "title": "sf-list-attention against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+      "title": "sf-list-attention against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
       "page": {
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-list-attention id=\"health\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"27 октября, 03:30 · нет места на диске\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"text\": \"12 минут, код 502\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"update\", \"status\": \"info\", \"title\": \"Доступна панель 0.3.1\", \"text\": \"Изменения: журнал, резервные копии\"}]}</script></sf-list-attention>",
-          "  <sf-list-attention id=\"none\"></sf-list-attention>",
-          "  <sf-list-attention id=\"quiet\" empty=\"line\" empty-text=\"Проверки пройдены\"></sf-list-attention>",
+          "  <sf-list-attention id=\"health\" triage more-href=\"#all\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"нет места на диске\", \"since\": \"2026-01-05T03:30:00+03:00\", \"source\": \"Резервные копии\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"help\": \"#help-backups\"}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"object\": {\"label\": \"demo-php.test\", \"href\": \"#site-php\"}, \"since\": \"2026-01-10T12:00:00+03:00\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"old\", \"status\": \"warning\", \"title\": \"Обмен с 1С стоит\", \"since\": \"2026-01-01T09:00:00+03:00\", \"source\": \"Интеграции\", \"dismissible\": true}, {\"id\": \"update\", \"status\": \"info\", \"title\": \"Доступна панель 0.3.1\", \"text\": \"Изменения: журнал, резервные копии\", \"dismissible\": false}, {\"id\": \"seo\", \"status\": \"info\", \"title\": \"38 страниц без описания\", \"affected\": \"38 страниц\"}, {\"id\": \"php\", \"status\": \"info\", \"title\": \"PHP 8.1: поддержка заканчивается\", \"affected\": \"4 сайта\"}]}</script></sf-list-attention>",
+          "  <sf-list-attention id=\"none\" empty=\"none\"></sf-list-attention>",
+          "  <sf-list-attention id=\"quiet\" empty-text=\"Проверки пройдены\" checked-at=\"2026-01-01T00:00:00Z\"></sf-list-attention>",
+          "  <sf-list-attention id=\"page\" group=\"severity\" triage><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"status\": \"warning\", \"title\": \"Последняя копия demo-owned.test не удалась\", \"text\": \"нет места на диске\", \"since\": \"2026-01-05T03:30:00+03:00\", \"source\": \"Резервные копии\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"help\": \"#help-backups\"}, {\"id\": \"down\", \"status\": \"error\", \"title\": \"demo-php.test не отвечает\", \"object\": {\"label\": \"demo-php.test\", \"href\": \"#site-php\"}, \"since\": \"2026-01-10T12:00:00+03:00\", \"action\": {\"label\": \"Перезапустить\", \"event\": \"restart\"}}, {\"id\": \"cert\", \"status\": \"warning\", \"title\": \"Сертификат demo-static.test истекает через 6 дней\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}, {\"id\": \"old\", \"status\": \"warning\", \"title\": \"Обмен с 1С стоит\", \"since\": \"2026-01-01T09:00:00+03:00\", \"source\": \"Интеграции\", \"dismissible\": true}], \"passed\": [\"Кэш включён\", {\"id\": \"lic\", \"title\": \"Лицензия действует\", \"text\": \"до 12.08.2027\"}]}</script></sf-list-attention>",
           "</main>"
         ]
       },
       "checks": [
         {
-          "id": "p1-order-and-count",
-          "title": "the items are ordered error, warning, info in the host's order inside a status; the heading counts them and the section is named by it",
-          "covers": "settings.items, settings.label, settings.heading-level, accessibility.role region, host-states data-status",
+          "id": "p1-order-and-summary",
+          "title": "the items are ordered error, warning, info, inside a status the longest-lasting first (since), then the host's order; the head shows a badge per severity in words; the section is named by its heading; frame card by default",
+          "covers": "settings.items, settings.label, settings.heading-level, settings.frame, accessibility.role region, host-states data-status",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#health'); const root = el.querySelector('section.sf-list-attention'); const heading = document.getElementById(root.getAttribute('aria-labelledby')); const ids = [...el.querySelectorAll('.sf-list-attention-item')].map((li) => li.dataset.id).join(','); return ids === 'down,backup,cert,update' && heading.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '3' && heading.querySelector('.sf-list-attention-heading-text').textContent === 'Требует внимания' && heading.querySelector('.sf-list-attention-count').textContent.trim() === '4' && el.getAttribute('data-status') === 'error' && el.querySelector('.sf-list-attention-item .sr-only').textContent === 'Ошибка: '; })()"
+              "check": "(() => { const el = document.querySelector('#health'); const root = el.querySelector('section.sf-list-attention'); const heading = document.getElementById(root.getAttribute('aria-labelledby')); const ids = [...el.querySelectorAll('.sf-list-attention-item')].map((li) => li.dataset.id).join(','); const badges = [...el.querySelectorAll('.sf-list-attention-summary sf-badge')].map((b) => b.getAttribute('text')).join('|'); return ids === 'down,old,backup,cert,update' && badges === '1 ошибка|3 предупреждения|3 рекомендации' && heading.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '3' && heading.textContent.trim() === 'Требует внимания' && el.getAttribute('data-status') === 'error' && root.classList.contains('sf-list-attention--frame-card') && el.querySelector('.sf-list-attention-item .sr-only').textContent === 'Ошибка: ' && el.querySelector('.sf-list-attention-item .sf-list-attention-icon').classList.contains('sf-icon--filled'); })()"
             }
           ]
         },
         {
           "id": "p2-navigate",
-          "title": "an action with href is a link; its press asks sf-list-attention-navigate, cancelable",
-          "covers": "events.navigate",
+          "title": "an action with href is a link; its press asks sf-list-attention-navigate {id, status, href, part}, cancelable; the object link asks it too",
+          "covers": "events.navigate, settings.items.object",
           "steps": [
             {
-              "script": "(document.querySelector('#health').addEventListener('sf-list-attention-navigate', (event) => event.preventDefault(), {once: true}), true)"
+              "script": "(document.querySelector('#health').addEventListener('sf-list-attention-navigate', (event) => event.preventDefault()), true)"
             },
             {
               "user": "click:#health [data-id=backup] .sf-list-attention-action a",
@@ -126,22 +440,44 @@
                     "detail": {
                       "id": "backup",
                       "status": "warning",
-                      "href": "#backups"
+                      "href": "#backups",
+                      "part": "action"
                     }
                   }
                 ]
               }
             },
             {
-              "check": "location.hash !== '#backups'"
+              "user": "click:#health [data-id=down] a.sf-list-attention-object",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-navigate",
+                    "count": 1,
+                    "detail": {
+                      "id": "down",
+                      "status": "error",
+                      "href": "#site-php",
+                      "part": "object"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "location.hash !== '#backups' && location.hash !== '#site-php'"
             }
           ]
         },
         {
           "id": "p3-apply",
-          "title": "an action with event is a button; its press sends sf-list-attention-apply {action, scope entry, ids}",
+          "title": "an action with event is a quiet button (outline, on-surface); its press sends sf-list-attention-apply {action, scope entry, ids}",
           "covers": "events.apply",
           "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#health [data-id=down] sf-button.sf-list-attention-action'); return b.getAttribute('appearance') === 'outline' && b.getAttribute('scheme') === 'on-surface'; })()"
+            },
             {
               "user": "click:#health [data-id=down] .sf-list-attention-action button",
               "wait": 100,
@@ -167,16 +503,239 @@
         },
         {
           "id": "p4-empty",
-          "title": "with no items it takes no room (empty none) or draws one quiet line (empty line); a new list draws again",
-          "covers": "settings.empty, settings.empty-text, host-states data-empty",
+          "title": "with no items empty line (the default) draws the head and one quiet line with the time of the checks; empty none takes no room; a new list draws again",
+          "covers": "settings.empty, settings.empty-text, settings.checked-at, host-states data-empty",
           "steps": [
             {
-              "check": "(() => { const none = document.querySelector('#none'); const quiet = document.querySelector('#quiet'); return none.getAttribute('data-empty') === 'true' && !none.querySelector('.sf-list-attention') && quiet.querySelector('.sf-list-attention-quiet').textContent.includes('Проверки пройдены') && quiet.querySelector('.sf-list-attention').getBoundingClientRect().height > 0; })()"
+              "check": "(() => { const none = document.querySelector('#none'); const quiet = document.querySelector('#quiet'); const line = quiet.querySelector('.sf-list-attention-quiet'); return none.getAttribute('data-empty') === 'true' && !none.querySelector('.sf-list-attention') && line.getAttribute('role') === 'status' && /^Проверки пройдены · проверено /u.test(line.querySelector('.sf-list-attention-quiet-text').textContent.trim()) && Boolean(quiet.querySelector('.sf-list-attention-head [role=heading]')) && quiet.querySelector('.sf-list-attention').getBoundingClientRect().height > 0; })()"
             },
             {
               "script": "(document.querySelector('#none').items = [{id: 'x', status: 'warning', title: 'Новая проблема'}], true)",
               "wait": 150,
               "check": "(() => { const none = document.querySelector('#none'); return !none.hasAttribute('data-empty') && none.querySelector('.sf-list-attention').getBoundingClientRect().height > 0 && none.querySelectorAll('.sf-list-attention-item').length === 1; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-limit-and-more",
+          "title": "limit 5 by default: the rest are behind «Все проблемы (7)», a link to more-href whose press asks sf-list-attention-all {href}, cancelable; without more-href «Показать все (7)» shows them in place",
+          "covers": "settings.limit, settings.more-href, events.all",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#health'); const all = el.querySelector('.sf-list-attention-all'); return el.querySelectorAll('.sf-list-attention-item').length === 5 && all.getAttribute('text') === 'Все проблемы (7)' && all.getAttribute('href') === '#all'; })()"
+            },
+            {
+              "script": "(document.querySelector('#health').addEventListener('sf-list-attention-all', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#health .sf-list-attention-all a",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-all",
+                    "count": 1,
+                    "detail": {
+                      "href": "#all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "location.hash !== '#all'"
+            },
+            {
+              "script": "(document.querySelector('#health').removeAttribute('more-href'), true)",
+              "wait": 150,
+              "check": "document.querySelector('#health .sf-list-attention-all').getAttribute('text') === 'Показать все (7)'"
+            },
+            {
+              "user": "click:#health .sf-list-attention-all button",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-all",
+                    "count": 1,
+                    "detail": {
+                      "href": ""
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelectorAll('#health .sf-list-attention-item').length === 7 && !document.querySelector('#health .sf-list-attention-all')"
+            }
+          ]
+        },
+        {
+          "id": "p6-triage-snooze-undo",
+          "title": "triage: the «⋯» opens a menu of snooze a day / a week; a choice asks sf-list-attention-snooze {id, until}, sets the item aside with a notice, and «Вернуть» brings it back with sf-list-attention-undo",
+          "covers": "settings.triage, events.snooze, events.undo",
+          "steps": [
+            {
+              "check": "(() => { const more = document.querySelector('#health [data-id=cert] .sf-list-attention-more button'); return more.getAttribute('aria-label') === 'Ещё: Сертификат demo-static.test истекает через 6 дней' && more.getAttribute('aria-haspopup') === 'menu'; })()"
+            },
+            {
+              "user": "click:#health [data-id=cert] .sf-list-attention-more button",
+              "wait": 300,
+              "check": "(() => { const menu = document.querySelector('#health .sf-list-attention-menu'); const texts = (menu.entries || []).map((one) => one.text || one.type).join('|'); return texts === 'Отложить на день|Отложить на неделю'; })()"
+            },
+            {
+              "script": "(document.querySelector('#health .sf-list-attention-menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {detail: {id: 'snooze-week'}, bubbles: true})), true)",
+              "wait": 300,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-snooze",
+                    "count": 1,
+                    "detail": {
+                      "id": "cert"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const ids = [...document.querySelectorAll('#health .sf-list-attention-item')].map((li) => li.dataset.id); const toast = [...document.querySelectorAll('.sf-notifications .sf-toast')].find((one) => one.textContent.includes('Отложено на неделю: Сертификат demo-static.test')); return !ids.includes('cert') && Boolean(toast); })()"
+            },
+            {
+              "script": "(() => { const toast = [...document.querySelectorAll('.sf-notifications .sf-toast')].find((one) => one.textContent.includes('Отложено на неделю')); [...toast.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Вернуть').click(); return true; })()",
+              "wait": 300,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-undo",
+                    "count": 1,
+                    "detail": {
+                      "id": "cert",
+                      "action": "snooze"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "[...document.querySelectorAll('#health .sf-list-attention-item')].some((li) => li.dataset.id === 'cert')"
+            }
+          ]
+        },
+        {
+          "id": "p7-dismiss-permission",
+          "title": "«Не напоминать» only where the page gives the permission (the host's dismissible); an item's dismissible: true never grants it, dismissible: false takes it away; a choice asks sf-list-attention-dismiss {id}; a cancelled request changes nothing",
+          "covers": "settings.dismissible, settings.items.dismissible, events.dismiss",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#health'); const entries = (id) => el.menuEntries(el.list.find((one) => one.id === id)).map((one) => one.id).filter(Boolean).join(','); return entries('cert') === 'snooze-day,snooze-week' && entries('old') === 'snooze-day,snooze-week' && entries('backup') === 'snooze-day,snooze-week,help'; })()"
+            },
+            {
+              "user": "click:#health [data-id=old] .sf-list-attention-more button",
+              "wait": 300,
+              "check": "(() => { const menu = document.querySelector('#health .sf-list-attention-menu'); return !(menu.entries || []).some((one) => one.id === 'dismiss'); })()"
+            },
+            {
+              "script": "(document.querySelector('#health .sf-list-attention-menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {detail: {id: 'dismiss'}, bubbles: true})), true)",
+              "wait": 200,
+              "check": "(() => { const el = document.querySelector('#health'); return [...el.querySelectorAll('.sf-list-attention-item')].some((li) => li.dataset.id === 'old'); })()"
+            },
+            {
+              "script": "(document.querySelector('#health').setAttribute('dismissible', ''), true)",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#health'); const entries = (id) => el.menuEntries(el.list.find((one) => one.id === id)).map((one) => one.id).filter(Boolean).join(','); return entries('cert') === 'snooze-day,snooze-week,dismiss' && entries('old') === 'snooze-day,snooze-week,dismiss' && entries('update') === 'snooze-day,snooze-week'; })()"
+            },
+            {
+              "script": "(document.querySelector('#health').addEventListener('sf-list-attention-dismiss', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#health [data-id=old] .sf-list-attention-more button",
+              "wait": 300
+            },
+            {
+              "script": "(document.querySelector('#health .sf-list-attention-menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {detail: {id: 'dismiss'}, bubbles: true})), true)",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-dismiss",
+                    "count": 1,
+                    "detail": {
+                      "id": "old"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "[...document.querySelectorAll('#health .sf-list-attention-item')].some((li) => li.dataset.id === 'old')"
+            }
+          ]
+        },
+        {
+          "id": "p9-help-navigate",
+          "title": "«Подробнее о проверке» in the «⋯» is a link; its press asks sf-list-attention-navigate {id, status, href, part: help}, cancelable like the action and the object",
+          "covers": "settings.items.help, events.navigate",
+          "steps": [
+            {
+              "script": "(document.querySelector('#health').addEventListener('sf-list-attention-navigate', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#health [data-id=backup] .sf-list-attention-more button",
+              "wait": 300
+            },
+            {
+              "user": "click:#health .sf-list-attention-menu a[href=\"#help-backups\"]",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-navigate",
+                    "count": 1,
+                    "detail": {
+                      "id": "backup",
+                      "status": "warning",
+                      "href": "#help-backups",
+                      "part": "help"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "location.hash !== '#help-backups'"
+            }
+          ]
+        },
+        {
+          "id": "p8-group-and-recheck",
+          "title": "group severity: a disclosure group per severity, open, and «Пройдено» closed; a header press opens it; checked-at draws the time and a recheck that sends sf-list-attention-recheck",
+          "covers": "settings.group, settings.passed, events.recheck",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#page'); const toggles = [...el.querySelectorAll('.sf-list-attention-group-toggle')].map((b) => `${b.querySelector('.sf-list-attention-group-title').textContent}:${b.getAttribute('aria-expanded')}`).join('|'); const passed = el.querySelector('[data-group=passed] .sf-list-attention-list'); return toggles === 'Ошибки:true|Предупреждения:true|Пройдено:false' && passed.hidden && el.querySelectorAll('[data-group=warning] .sf-list-attention-item').length === 3; })()"
+            },
+            {
+              "user": "click:#page [data-group=passed] .sf-list-attention-group-toggle",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#page'); const passed = el.querySelector('[data-group=passed] .sf-list-attention-list'); return !passed.hidden && passed.querySelectorAll('.sf-list-attention-item').length === 2 && el.querySelector('[data-group=passed] .sf-list-attention-group-toggle').getAttribute('aria-expanded') === 'true'; })()"
+            },
+            {
+              "script": "(document.querySelector('#page').setAttribute('checked-at', new Date(Date.now() - 5 * 60000).toISOString()), true)",
+              "wait": 150,
+              "check": "document.querySelector('#page .sf-list-attention-checked').textContent.trim().startsWith('Проверено 5 мин назад')"
+            },
+            {
+              "user": "click:#page .sf-list-attention-recheck button",
+              "wait": 100,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-attention-recheck",
+                    "count": 1
+                  }
+                ]
+              }
             }
           ]
         }

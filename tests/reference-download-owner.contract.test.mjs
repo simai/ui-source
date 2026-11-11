@@ -40,7 +40,15 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.doesNotMatch(runtime, /^\s*console;\s*$/m);
   assert.match(css, /--sf-download-file--text-size: var\(--sf-text-size-1\)/);
   assert.match(css, /border: var\(--sf-px\)/);
-  assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
+  // The public variable carries the element's name; the former one is read
+  // under it until 2027-01-01 (DF-11, journal token-file-download-variable-names).
+  assert.match(css, /border-radius: var\(--sf-file-download-radius, var\(--sf-download-file-radius, var\(--sf-radius--ui\)\)\)/);
+  // A data: or blob: address is never asked for its size (DF-15).
+  assert.match(runtime, /if \(!href \|\| LOCAL_ADDRESS\.test\(href\) \|\| isSameDocument\(href\)\) return '';/);
+  // L2: an address that leads back to the page itself (#, #part) is no file either.
+  assert.match(runtime, /function isSameDocument\(href\)/);
+  // L3: while preparing, the status shrinks beside the name and wraps on whole lines.
+  assert.match(css, /\.sf-download-file\.sf-download-file--preparing :where\(\.sf-download-file__meta\) \{[^}]*white-space: normal;/);
   assert.match(css, /\.sf-download-file:focus-visible/);
   // One line, cut with an ellipsis, never broken inside a word (rule C01:
   // the card keeps the button's height of its size).
@@ -85,4 +93,13 @@ test('Reference and download documentation uses native destinations and decorati
       assert.match(icon[1], /aria-hidden="true"/);
     }
   }
+});
+
+test('Download File keeps the focus when the button is redrawn as the link', async () => {
+  const source = await read('src/smart/file-download/index.js');
+  assert.match(source, /const REDRAWN_BY = new Set\(\['href', 'disabled', 'state', 'target'\]\);/u);
+  // Read before the change draws anything, and only when the focus was on the file.
+  const hook = source.slice(source.indexOf('attributeChangedCallback(name, oldValue, newValue) {'));
+  assert.ok(hook.indexOf('this.ownerDocument.activeElement === this._boundRoot') < hook.indexOf('super.attributeChangedCallback'));
+  assert.match(source, /if \(this\._boundRoot && \(!active \|\| active === document\.body\)\) \{\n\s+this\._boundRoot\.focus\(\{ preventScroll: true \}\);/u);
 });

@@ -1,0 +1,236 @@
+{
+  "schema_version": 2,
+  "id": "smart.time",
+  "version": "1.0.0",
+  "title": "Time",
+  "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "time",
+    "date",
+    "relative",
+    "tooltip",
+    "text"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-time",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.tooltip"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "datetime": {
+        "type": "string",
+        "default": "",
+        "description": "The moment, ISO 8601 with its offset (2026-11-09T14:32:00+03:00) or milliseconds. Empty or not a date: the element draws nothing"
+      },
+      "format": {
+        "type": "string",
+        "default": "auto",
+        "description": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», this year the day and month («5 ноября»), older the date with the year («30 дек. 2025 г.»); time: «14:32»; date: «9 ноября»; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative",
+        "enum": [
+          "auto",
+          "time",
+          "date",
+          "datetime",
+          "relative"
+        ]
+      },
+      "now": {
+        "type": "string",
+        "default": "",
+        "description": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again each minute while it is relative and at the reader's midnight. A fixed now is for tests and documentation"
+      },
+      "threshold": {
+        "type": "string",
+        "default": "PT1H",
+        "description": "For auto: how long from now the moment stays relative, an ISO 8601 duration (PT1H, PT15M, P1D). Past it auto says the time or the date"
+      },
+      "tooltip": {
+        "type": "string",
+        "default": "auto",
+        "description": "auto: when the text is not the full moment, the full date and time show in a tooltip on hover and on keyboard focus (Escape hides it), and the element is a Tab stop unless it stands inside a link or a button; none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)",
+        "enum": [
+          "auto",
+          "none"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {},
+  "state": {
+    "machines": {
+      "time": [
+        "empty",
+        "absolute",
+        "relative"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "none",
+    "forbidden_client_responsibilities": [
+      "formatting the moment by hand (the words are SF.format's)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "time",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab reaches a time with a tooltip (not inside a link or a button) and shows the full moment; Escape hides it"
+    ],
+    "focus": "A Tab stop only with a tooltip and outside a link or a button."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "6704375b43be27764686ff808f674a6b03de8788",
+    "source_artifacts": [
+      {
+        "path": "src/smart/time/index.js",
+        "sha256": "a502a53c219a88d25c04cdf58e76695e3f1521632299cbe338615f0faa96fd71"
+      },
+      {
+        "path": "src/smart/time/js/templates/default.js",
+        "sha256": "aadb61a70cd96101c399eb70ff9bce66f1ed9cc12011d4f79eeb837e09e51253"
+      },
+      {
+        "path": "src/smart/time/scss/_smart__time.scss",
+        "sha256": "c9f0daea6c5d6b6205db04bcf818036a6302e25df7499c143d15ac4add6d5db4"
+      },
+      {
+        "path": "src/smart/time/rule.js",
+        "sha256": "cfbd1f8e2f1761939655bd51d8958b745b7a763916b4964c644ff78dd3f69b64"
+      },
+      {
+        "path": "src/smart/time/docs.md",
+        "sha256": "66d9335d1d35e5b348e2735ea57aae22904569381db4064e50e096b5afbf7f91"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-time wherever a moment is shown: a list's or a table's «when», a message's time, «изменено …» in a record head, a file version, a notification.",
+    "do_not": [
+      "Do not format a date by hand next to it; give the moment and choose format",
+      "Do not use format relative in a table or a log; auto keeps it to the first hour",
+      "Do not put a title attribute on it; the tooltip says the moment"
+    ],
+    "required_reads": [
+      "inputs",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-time datetime=\"2026-11-09T14:32:00+03:00\"></sf-time>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

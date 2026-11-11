@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-lookup",
-  "version": "1.5.0",
+  "version": "1.5.3",
   "title": "Lookup",
   "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
   "kind": "smart",
@@ -38,9 +38,9 @@
   "composition": {
     "uses": [
       "component.avatars",
-      "component.icon-buttons",
       "component.icons",
       "smart.button",
+      "smart.button-close",
       "smart.spinner",
       "smart.tag"
     ],
@@ -111,7 +111,7 @@
       "max-items": {
         "type": "number",
         "default": 0,
-        "description": "Multiple only: the most items that may be chosen (49 for a group). A choice past it is refused with a visible line; 0 is no cap."
+        "description": "Multiple only: the most items that may be chosen. A choice past it is refused with a visible line; 0 is no cap."
       },
       "min-length": {
         "type": "number",
@@ -126,12 +126,12 @@
       "debounce": {
         "type": "number",
         "default": 120,
-        "description": "Milliseconds the field waits after the last key before it asks the provider, as sf-search."
+        "description": "Milliseconds the field waits after the last key before it asks the provider."
       },
       "maxlength": {
         "type": "number",
         "default": 0,
-        "description": "The most characters the search box takes (80 for simai.chat); 0 is no limit."
+        "description": "The most characters the search box takes; 0 is no limit."
       },
       "required": {
         "type": "boolean",
@@ -160,7 +160,8 @@
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The field's accessible name when it has no visible label; it names the search box and the list."
       },
       "options": {
         "type": "array",
@@ -412,7 +413,7 @@
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "1aa3248b06bec15c591412d4a14c4942845a37603364cb2815b614238269c1b8"
+        "sha256": "0849e14c1b3e70bf7b6d25003407898216d480be5b8bed315bff3507aaca9d25"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -420,15 +421,15 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "0f2e6e287595c4ef84ed715c370449caeb5cb070d94caa4fc32b57a4c5f16de8"
+        "sha256": "9155c1bdf989bccb61bf3cb415fdb12f6c65c504807be43d899e54e601641cf9"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
-        "sha256": "7108e9d0e1db6bd9a1777332bffce1f2a8e1383dda7893054e86761047af5b3e"
+        "sha256": "ce88f2a06406a430034ff0407e415413786298dc8816c3561eb515b92f2ae9e4"
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "3a211a47777e19b729eaad5e6579263cab44017379c57d1d5711024897ebccde"
+        "sha256": "38569bf1f1c73fe62114862ebd5332d5e57b43b509ed1279320d00edc5681f14"
       }
     ],
     "generated_runtime": []

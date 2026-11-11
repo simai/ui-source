@@ -1,9 +1,9 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.2.0
-(`contracts/standards/simai.component-set/1.2.0/standard.json`; 1.0.0, 1.1.0
-and 1.1.1 are kept under `contracts/standards/history`; 1.1.1 changed no
-requirement of 1.1.0; 1.2.0 adds pair ranges). The Loader
+Status: draft standard `simai.component-set` 1.3.0
+(`contracts/standards/simai.component-set/1.3.0/standard.json`; 1.0.0, 1.1.0,
+1.1.1 and 1.2.0 are kept under `contracts/standards/history`; 1.1.1 changed no
+requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
@@ -87,6 +87,37 @@ The fields:
   reference**, so a new component in a set needs no Framework release.
 - **`release`**: added by the release route. It holds `<set>-<12 hex>`, the npm
   version and the source commit.
+
+### Exports (since 1.3.0)
+
+A set that gives a scripted API -- what its bundle registers with
+`SF.RuleLoader.registerPackage('<set>', {exports})` and a page reads as
+`SF.package('<set>')` -- lists every export in `set.json` under `exports`
+(passport form 1.1.0, optional; owner decision D17, 2026-11-11). An entry has
+the shape of SIMAI Framework's own `core/contracts/public-js-api.json`:
+
+| Field | Value |
+|---|---|
+| `name` | the export's key: `SF.package('<set>').<name>` |
+| `status` | `public` (a promise, renamed only through the set's journal) or `internal` |
+| `layer` | `set` (the set's own function, on the set's Functions page) or `component` (a component's API, on the page of the element named in `component`) |
+| `audience` | `public` (listed for authors) or `internal` (not listed); an internal status is never public |
+| `kind` | `object`, `function`, `class` or `value` |
+| `author` | the one line the site shows: one sentence, present tense, no history |
+| `doc` | optional: the slug of the page that describes it |
+| `summary`, `members`, `deprecated` | as in public-js-api |
+
+The set's browser probe holds the list against the page:
+
+```js
+import {checkSetExports} from '<ui-source>/scripts/set-exports-kit.mjs';
+const problems = await checkSetExports(page, JSON.parse(readFileSync('set.json', 'utf8')));
+```
+
+It reports an unlisted export, a listed name not exported, a wrong kind, a
+missing member, an internal name listed for authors and a component export that
+names no element of the set. `tests/browser/component-sets.browser.mjs` runs
+the kit over the fixture set `demo`.
 
 ## Names: one prefix, one registry
 

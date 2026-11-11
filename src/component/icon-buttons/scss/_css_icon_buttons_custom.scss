@@ -45,7 +45,11 @@
 
 /* An icon button shows work as a button does (simai/ui-source#10): the
    spinner, in place of its icon and exactly its size. A loading icon button is
-   also disabled, so it wears the disabled look and takes the disabled ink. */
+   natively disabled -- that is what stops a second click -- but keeps its
+   scheme colour while it works, as sf-button does (owner decision C36): the
+   disabled look's rules skip sf-icon-button-state-loading, unless the button
+   is also disabled, which the element then marks with .disabled. The generic
+   `loading` without the state class greys, as before. */
 @layer sf.components {
   .sf-icon-button {
     > * {
@@ -116,7 +120,17 @@
     flex: none;
     inline-size: var(--sf-icon-button-spinner--size);
     block-size: var(--sf-icon-button-spinner--size);
-    color: var(--sf-loader--color, currentColor);
+    /* The icon's colour (C36 follow-up): the spinner stands where the icon
+       stood and reads the same variables the icon does. */
+    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
+    /* The background ring is the spinner's own ink at 16 % (the fill family of
+       the alpha scale), drawn whole, so it shows on every fill; a page's
+       --sf-spinner-track-color still wins (DEV look call on C36). */
+    --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+  }
+
+  .sf-icon-button .sf-icon-button-spinner .sf-loader-ring-filled {
+    opacity: 1;
   }
 
   .sf-icon-button .sf-icon-button-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
@@ -140,11 +154,11 @@
      resting colour. A close control draws its cross through sf-button-close, whose
      own element stands between the control and the mark, so that colour is
      handed down too. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 }
@@ -154,16 +168,18 @@
      docs review R033): a glyph without a fill in --sf-on-surface-variant
      darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
      do, so the state layer and the ink say the same thing. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  .sf-icon-button:is(:disabled, .disabled) .sf-icon-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+  /* A disabled icon button's spinner (disabled and loading) takes the disabled
+     ink -- unless --sf-loader--color is set. */
+  .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 }
 

@@ -16,6 +16,9 @@ import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
 import { followLanguage, language } from "./page-language";
 import { drawing, markRelativeSizes, noteAuthored, sizedBefore } from "./density.js";
+
+// A region the Loader's page scan passes by (loader.js OBSERVER_IGNORE_SELECTOR).
+const IGNORED_REGION = '[data-sf-observer="ignore"]';
 // The properties a child takes from its parent (CSS inheritance), which a
 // boxless host passes on to its markup without having a box of its own. The
 // host keeps these, and every custom property, beside `display: contents`, so
@@ -374,6 +377,14 @@ class SfBaseElement extends HTMLElement {
   static externalTemplateCssMisses = new Set();
   static waitForStylesBeforeRenderReady = true;
   static styleReadyTimeout = 3000;
+  // A component that takes the page's children into its markup can keep
+  // them where the page wrote them until it draws, instead of taking them out
+  // when it connects (holdSlotNode, releaseHeldSlotNodes). Between the two the
+  // nodes were out of the document for one or more tasks, and a page that
+  // looked one of them up by id then -- after customElements.whenDefined() of
+  // a child's tag -- found nothing (pair ui-a0370c0c99fb acceptance, D1: an
+  // sf-menu in sf-header-site, 8 of 20 loads).
+  static holdsSlotNodesUntilDrawn = false;
   static styleReadinessCssId = "sf-smart-style-readiness";
 
   static get props() {
@@ -1310,6 +1321,7 @@ class SfBaseElement extends HTMLElement {
 
     const printed = this._hasRendered ? [] : this.staticMarkup();
     this.prepareRenderContainer(changedAttributes);
+    this.releaseHeldSlotNodes();
     this.markStylePending(this);
     // Sizes the page placed before the first drawing stay explicit; what the
     // drawing adds is relative to this element (density, C22).
@@ -1332,6 +1344,7 @@ class SfBaseElement extends HTMLElement {
     }
 
     this._hasRendered = true;
+    this.adoptIgnoredGlyphs();
     this.afterRender(changedAttributes);
     this._childrenDefinedPromise = null;
     this.runExternalHook("afterRender", {
@@ -1339,6 +1352,27 @@ class SfBaseElement extends HTMLElement {
       root: this,
     });
     this.emitComponentEvent("after-render", { changedAttributes });
+  }
+
+  // Inside a data-sf-observer="ignore" region the Loader's page scan never
+  // sees what this element drew, so its class-markup glyphs (<i
+  // class="sf-icon">) are handed to the Loader after each drawing; they are
+  // asked for and marked loaded like any page icon (2026-11-11). Outside such
+  // a region the scan finds them, and nothing is done here. An element drawn
+  // before the Loader is ready hands them over when it is.
+  adoptIgnoredGlyphs() {
+    if (!this.closest?.(IGNORED_REGION)) return;
+    const loader = window.SF?.Loader;
+    if (typeof loader?.adoptStaticIcons === "function") {
+      loader.adoptStaticIcons(this);
+      return;
+    }
+    if (this._sfGlyphsAwaitLoader) return;
+    this._sfGlyphsAwaitLoader = true;
+    window.addEventListener("sf-loader-ready", () => {
+      this._sfGlyphsAwaitLoader = false;
+      if (this.isConnected) this.adoptIgnoredGlyphs();
+    }, {once: true});
   }
 
   shouldWaitForStylesReady() {
@@ -2502,7 +2536,34 @@ class SfBaseElement extends HTMLElement {
       this._liveSlotNodes.get(slotName).push(...slotNodes);
       // The page's content: a size it gives stays explicit (density, C22).
       noteAuthored(slotNodes);
-      child.remove();
+      this.holdSlotNode(child);
+    });
+  }
+
+  // A child the slots took: out of the element now, or -- for a component
+  // that holds them (static holdsSlotNodesUntilDrawn) -- left where the page
+  // wrote it until the first drawing, which takes it out and places it in
+  // the same task, so a script never finds it out of the document. Until then
+  // the page shows it where it stood before the element was defined; beside
+  // a printed first paint it is held out of view (data-sf-held, core
+  // placeholder sheet).
+  holdSlotNode(node) {
+    if (this.constructor.holdsSlotNodesUntilDrawn !== true) {
+      node.remove();
+      return;
+    }
+    if (!this._heldSlotNodes) this._heldSlotNodes = [];
+    this._heldSlotNodes.push(node);
+  }
+
+  // The held children leave the host right before the drawing places them
+  // (renderComponent, the same task as the template's render).
+  releaseHeldSlotNodes() {
+    const held = this._heldSlotNodes;
+    if (!held?.length) return;
+    this._heldSlotNodes = null;
+    held.forEach((node) => {
+      if (node.parentNode === this) node.remove();
     });
   }
 

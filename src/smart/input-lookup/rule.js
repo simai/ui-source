@@ -17,8 +17,8 @@ SF.RuleLoader['cl-input-lookup'] = {
     { name: 'cl-spinner' },
     // Retry after an error and Show more when the answer has a next cursor.
     { name: 'cl-button' },
-    // The clear button of a single field holding a value: the class markup
-    // of an icon button, as sf-rich-text's toolbar draws it.
-    { name: 'icon-buttons' },
+    // The clear button of a single field holding a value: sf-button-close,
+    // plain (owner decision C14, a field's clear).
+    { name: 'cl-button-close' },
   ],
 };

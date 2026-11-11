@@ -1,3 +1,24 @@
+/* The box of the Smart menu, which used to be four utilities in its template:
+   the root a row of one (flex), the content a column that takes the rest
+   (flex flex-col flex-1). On a Docara page the Loader linked the utility
+   sheets they need after the first frame -- utility/position for the frame's
+   relative -- so the box is this sheet's now (component.context-menu 1.8.0).
+   In sf.base, below the utilities as the utilities were below the
+   components: a utility a page adds to the root (hidden) and every
+   component rule still win over it, as they did. Class markup keeps writing
+   the utilities; the rules read the Smart frame only. */
+@layer sf.base {
+  .sf-context-menu:has(> .sf-context-menu-frame) {
+    display: flex;
+  }
+
+  .sf-context-menu-frame > .sf-context-menu-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+  }
+}
+
 @layer sf.components {
 .sf-context-menu {
   --sf-context-menu-viewport-space: var(--sf-space-1\/2);
@@ -11,7 +32,10 @@
   --sf-context-menu-tail-corner-offset: 0px;
 }
 
-.sf-context-menu > .relative {
+/* The frame: .relative in class markup, .sf-context-menu-frame in the Smart
+   menu's (sf-menu-context 1.14.1), which writes no utility for its box. */
+.sf-context-menu > :is(.relative, .sf-context-menu-frame) {
+  position: relative;
   display: flex;
   min-inline-size: 0;
   min-block-size: 0;

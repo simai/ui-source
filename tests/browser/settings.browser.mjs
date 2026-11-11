@@ -5,7 +5,7 @@
 // sf-settings on the built bytes with the real Loader, at 1440 and 390 px,
 // light and dark: the three looks inline (drill, rows, tiles), a popup opened
 // from its trigger and the drill look at size 1. Measured: the panel is
-// 280 px in every look; the rows are the menu's rung (32 px at 1/2, 40 px at
+// 288 px in every look (the menu ceiling, C32 addendum); the rows are the menu's rung (32 px at 1/2, 40 px at
 // 1, less on a phone where the ladder is tighter); a long name wraps and a
 // long value ends in an ellipsis with the whole of it in title; the row
 // glyphs are the on-surface or on-surface-variant role; the panel stays in
@@ -162,7 +162,7 @@ for (const theme of ['light', 'dark']) {
       const m = await tab.evaluate(MEASURE);
       const row = await tab.evaluate(rung(size));
       ok(`${label}: the look is ${CASES[name].look}`, m.look === CASES[name].look, m.look);
-      ok(`${label}: the panel is 280 px and stays in the window`, near(m.width, 280) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, left: m.left, right: m.right, overflow: m.overflow}));
+      ok(`${label}: the panel is 288 px (the menu's ceiling, C32) and stays in the window`, near(m.width, 288) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, left: m.left, right: m.right, overflow: m.overflow}));
       ok(`${label}: one-line rows are the menu's rung ${size} (${row} px)`, m.heights.length === 1 && near(m.heights[0], row) && (width < 600 || near(row, size === '1' ? 40 : 32)), JSON.stringify({heights: m.heights, row}));
       const roles = await tab.evaluate(`[${colour('--sf-on-surface')}, ${colour('--sf-on-surface-variant')}]`);
       ok(`${label}: the glyphs are the on-surface or on-surface-variant role`, m.withIcons === (m.glyphs.length > 0) && m.glyphs.every((one) => roles.includes(one)), JSON.stringify({glyphs: m.glyphs, roles}));

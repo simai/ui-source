@@ -712,8 +712,10 @@ class Quantity extends ComponentObserver {
     minus.classList.add(
       'sf-quantity-count',
       'sf-icon-button',
-      'sf-icon-button--secondary',
-      'sf-icon-button--tonal',
+      'sf-icon-button--icon',
+      'sf-icon-button--ghost',
+      'sf-icon-button--on-surface',
+      'sf-icon-button--on-surface-variant',
       'sf-icon-button--size-1/3',
     );
     minus.setAttribute('aria-label', String(decrementLabel));
@@ -762,8 +764,10 @@ class Quantity extends ComponentObserver {
     plus.classList.add(
       'sf-quantity-count',
       'sf-icon-button',
-      'sf-icon-button--secondary',
-      'sf-icon-button--tonal',
+      'sf-icon-button--icon',
+      'sf-icon-button--ghost',
+      'sf-icon-button--on-surface',
+      'sf-icon-button--on-surface-variant',
       'sf-icon-button--size-1/3',
     );
     plus.setAttribute('aria-label', String(incrementLabel));

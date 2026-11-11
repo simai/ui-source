@@ -8,17 +8,19 @@ import {html, nothing} from 'lit';
 // - popup (a trigger in the trigger slot, or one named by for): the trigger as
 //   the page wrote it, and the menu hidden until the trigger opens it.
 //
-// The panel's width is fixed for every look (280 px, the drilling menu's own
-// width, --sf-context-menu-inline-size): it is given to the menu as its
-// lower and upper bound, so a long name wraps and a value ends in an ellipsis
-// rather than the panel growing.
+// The panel's width is fixed for every look (the drilling menu's own width,
+// --sf-context-menu-inline-size; by default the menu's ceiling of the popup
+// widths, 18rem, 16rem in compact density: owner decision C32, addendum
+// 2026-11-09): it is given to the menu as its lower and upper bound, so a
+// long name wraps and a value ends in an ellipsis rather than the panel
+// growing.
 //
 // The menu's value events stay inside (stopPropagation): the page hears
 // sf-settings-change, -changed and -reset, never the menu's.
 
 const stop = (event) => event.stopPropagation();
 
-const WIDTH = 'var(--sf-context-menu-inline-size, calc(var(--sf-f7) + var(--sf-a8)))';
+const WIDTH = 'var(--sf-context-menu-inline-size, var(--sf-popup-menu-max-width))';
 const PANEL = `--sf-context-menu--min-inline-size: ${WIDTH}; --sf-context-menu--max-inline-size: ${WIDTH}`;
 
 function renderMenu(context) {

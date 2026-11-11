@@ -85,7 +85,14 @@ sf-profile-picker {
   display: flex;
   flex-direction: column;
   gap: var(--sf-px);
-  max-inline-size: min(var(--sf-g2), 100vw);
+  /* A panel of the popup widths (owner decision C32, addendum 2026-11-09):
+     the panel's step, 20rem, 18rem in compact density (core's
+     --sf-popup-panel-width, which data-sf-density moves with the text), or
+     the trigger when that is wider (open() sets min-inline-size to it).
+     Fixed, never its content's: it was as wide as the longest name, 238 /
+     214 px, up to 24rem. A long name ends in an ellipsis. Inside the screen. */
+  inline-size: var(--sf-popup-panel-width);
+  max-inline-size: calc(100vi - var(--sf-space-1));
   /* The inset (C05, R029; R017's 1/3 before). */
   padding: var(--sf-profile-picker--inset);
   border: var(--sf-px) solid var(--sf-outline-variant);
@@ -122,13 +129,29 @@ sf-profile-picker {
   outline: none;
 }
 
+/* A profile with a caption under its name keeps a one-line row's space above
+   and below its text, (row step - line) / 2, and is taller by the caption's
+   line: 48 at 1440, 60 under a coarse pointer at 390 (owner decision C49,
+   2026-11-10; docs/foundation-composition-geometry.md §4). It was the row's
+   2px, 40 [2/2]. */
+.sf-profile-picker-row:where(:has(.sf-profile-picker-caption)) {
+  padding-block: calc((var(--sf-profile-picker--row-step, var(--sf-profile-picker--row-height)) - var(--sf-profile-picker--line)) / 2);
+}
+
 .sf-profile-picker-row:hover {
   background-color: var(--sf-surface-container-hover);
 }
 
+/* The chosen profile: the soft fill of the chosen, as a chosen row of a
+   context menu (C16: selected is primary-container everywhere; it was
+   secondary-container through 1.3.1); the check mark is the second sign. */
 .sf-profile-picker-row[aria-checked="true"] {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+}
+
+.sf-profile-picker-row[aria-checked="true"]:hover {
+  background-color: var(--sf-primary-container-hover);
 }
 
 .sf-profile-picker-check {
@@ -282,9 +305,10 @@ sf-profile-picker {
   border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
 }
 
+/* The pressed segment: a pressed toggle's soft primary fill (C12, C16). */
 .sf-profile-picker-segmented > button[aria-pressed="true"] {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
 }
 
 .sf-profile-picker-segmented > button:disabled {
@@ -311,6 +335,19 @@ sf-profile-picker {
 .sf-profile-picker-footer > * {
   flex: 1 1 auto;
 }
+}
+
+/* A row is a touch target under a coarse pointer, as a dropping panel's row
+   is (context menu, simai/ui-source#25; G1-a follow-up, 2026-11-10): at 390
+   it was 36px, under a finger. The row grows to the touch step and keeps its
+   one line on its centre; a mouse keeps the ladder's row. */
+@media (pointer: coarse) {
+  @layer sf.states {
+    .sf-profile-picker-row {
+      --sf-profile-picker--row-step: max(var(--sf-profile-picker--row-height), var(--sf-d1));
+      min-block-size: var(--sf-profile-picker--row-step);
+    }
+  }
 }
 
 @layer sf.states {

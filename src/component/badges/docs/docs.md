@@ -54,11 +54,27 @@ own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
 and so are anchored counts, which have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
 
-Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-disable`
-fill, `--sf-on-disable` text, `--sf-outline-disable` edge) whatever its look,
+Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-surface-disabled`
+fill, `--sf-on-surface-disabled` text, `--sf-outline-disabled` edge) whatever its look,
 for a badge inside a control that cannot be used now -- a choice card, a menu
 row. It is a state and draws over the public variables; `sf-badge` takes it
 through `root-class` (component.badges 1.4.0, owner decision C28).
+
+On a translucent fill: a selected, open or current row draws an alpha of
+primary over its place, and a tonal badge is an alpha of its own colour, so on
+such a row it used to come out as the one alpha over the other -- a warning or
+an error badge on the open record read as a grey fact. A row like that declares
+`--sf-surface-underlay`, which equals the place colour and is set only under a
+translucent fill (core mix `sf-place-fill`, from `--sf-surface-place-solid`; a
+soft coloured place has no solid colour, so a row on it leaves the role off;
+the selected rows of lists, menus, the tree, the admin menu's search and the
+checked choice card do), and
+a tonal badge lays its own tone over that colour, so it reads as it does on the
+place itself (component.badges 1.5.0, owner decision C43). Off such a row the
+role is `initial` and the badge is drawn as before, its `background-color`
+untouched. A row of your own with a translucent fill declares
+`--sf-surface-underlay: var(--sf-surface-place-solid)` with the fill. Probe:
+`tests/browser/badge-on-fill.browser.mjs`.
 
 ## Бейдж на якоре: счётчик и точка
 
@@ -172,9 +188,18 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 страница; иначе `--sf-badge--surface`, которую ставят поверхности Framework —
 выпадающие списки, контекстное меню, горизонтальное подменю, панель админ-меню,
 шторка, поповер, модальное окно, тост; иначе поверхность страницы
-`--sf-surface-0`. Все они через `light-dark()`, поэтому кольцо верно в светлой и
+`--sf-surface-page`. Все они через `light-dark()`, поэтому кольцо верно в светлой и
 тёмной теме и на поднятой поверхности. Страница, рисующая свою поверхность,
 ставит на ней `--sf-badge-ring-color`.
+
+На строке с заливкой — выбранной, открытой, текущей или под указателем
+(миксин ядра `sf-place-fill`) — под бейджем лежит сама строка: её
+полупрозрачная заливка поверх цвета места. Строка объявляет заливку ролью
+`--sf-surface-place-fill`, и кольцо кладёт её поверх цвета места, поэтому
+кольцо совпадает со строкой, а не светится вокруг бейджа цветом места (C43 D3,
+2026-11-11). Заливку кольцо читает только там, где задана
+`--sf-surface-underlay`: на мягком цветном месте, на стекле и в месте внутри
+строки кольцо — ровно цвет места, как раньше.
 
 ### Доступность
 

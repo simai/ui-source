@@ -20,8 +20,8 @@ test('every component has a snapshot per example, and the sheets it needs', () =
   // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05);
   // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06);
   // 75 with sf-wizard and sf-wizard-step (2026-11-06); 78 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07);
-  // 81 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08).
-  assert.equal(all.length, 81);
+  // 81 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 82 with sf-time and 83 with sf-change (C40, 2026-11-10).
+  assert.equal(all.length, 83);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);

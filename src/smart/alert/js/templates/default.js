@@ -25,6 +25,15 @@ function resolveIcon(context) {
   return byStatus[context.status ?? context.type] || 'info';
 }
 
+// The notice's actions (owner decision C35, as the toast; DEV acceptance D3):
+// unsized (size 1) low buttons -- 32, compact and phone 28 -- whose label is
+// the notice's text size; the first tonal primary, its plate starting at the
+// text edge, the second ghost on-surface after it (the research's pair,
+// control/research/2026-11-09-notice-actions.md). The class toast writes the
+// same classes (component/toast/js/_toast.js).
+const ALERT_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+const ALERT_SECONDARY_ACTION_CLASSES = 'sf-button sf-button--ghost sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
+
 export function renderAlertTemplate(context) {
   const rootClasses = joinClasses(
     'sf-alert',
@@ -67,7 +76,7 @@ export function renderAlertTemplate(context) {
                   ? html`
                       <button
                         type="button"
-                        class="sf-button sf-button--default sf-button--on-surface sf-button--size-1/2"
+                        class=${ALERT_ACTION_CLASSES}
                         data-action=${context.action || 'action'}
                         data-alert-action=${context.action || 'action'}
                       >
@@ -79,7 +88,7 @@ export function renderAlertTemplate(context) {
                   ? html`
                       <button
                         type="button"
-                        class="sf-button sf-button--on-surface sf-button--outline sf-button--size-1/2"
+                        class=${ALERT_SECONDARY_ACTION_CLASSES}
                         data-action=${context.secondaryAction || 'secondary'}
                         data-alert-action=${context.secondaryAction || 'secondary'}
                       >
@@ -97,6 +106,7 @@ export function renderAlertTemplate(context) {
                   <sf-button-icon
                           kind="close"
                           size="1"
+                          height="low"
                           appearance="ghost"
                           scheme="on-surface"
                           data-close

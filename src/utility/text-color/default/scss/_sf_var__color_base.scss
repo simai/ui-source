@@ -12,8 +12,9 @@ $color-base-array: (
     'on-surface-variant': 'on-surface-variant',
     'on-surface-inverse': 'on-surface-inverse',
     'on-surface-inverse-fixed': 'on-surface-inverse-fixed',
-    'disable': 'disable',
-    'on-disable': 'on-disable',
+    'disable': 'surface-disabled',
+    'on-disable': 'on-surface-disabled',
+    'on-surface-disabled': 'on-surface-disabled',
     'primary': 'primary',
     'on-primary': 'on-primary',
     'on-primary-container': 'on-primary-container',
@@ -45,6 +46,22 @@ $color-base-array: (
     'on-info-container-graphic': 'on-info-container-graphic',
 );
 
+// The hue roles (C17, owner 2026-11-08; R087 item 1, option A): the role set
+// .sf-hue-<name> gives an element (core/scss/_sf_css__hue.scss). The class
+// reads the hue the element, or an ancestor, chose:
+// class="sf-hue-teal bg-hue-container color-on-hue-container". Without a
+// .sf-hue-<name> the role is not declared and the text keeps the parent's
+// colour. A map of its own, not keys of $color-base-array: that map is read by
+// placeholder-color and by the focus: state too, and the hue roles are the
+// default state only. color-hue is the readable coloured text (40 / 80), as
+// color-primary is; color-on-hue-container-graphic is for a dot or a glyph.
+$color-hue-array: (
+    'hue': 'hue',
+    'on-hue': 'on-hue',
+    'on-hue-container': 'on-hue-container',
+    'on-hue-container-graphic': 'on-hue-container-graphic',
+);
+
 $color-base-hover-active-array: (
     'transparent': 'transparent',
     'on-surface': 'on-surface',
@@ -52,7 +69,8 @@ $color-base-hover-active-array: (
     'on-surface-variant': 'on-surface-variant',
     'on-surface-inverse': 'on-surface-inverse',
     'on-surface-inverse-fixed': 'on-surface-inverse-fixed',
-    'on-disable': 'on-disable',
+    'on-disable': 'on-surface-disabled',
+    'on-surface-disabled': 'on-surface-disabled',
 
     'primary': 'primary',
     'on-primary': 'on-primary',

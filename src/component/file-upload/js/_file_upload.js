@@ -2,6 +2,7 @@
 import registerComponent from '../../register-helper';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { pageText } from '../../../core/js/page-language';
+import { formatFileSize } from '../../../core/js/format-file-size.js';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
@@ -38,23 +39,6 @@ function normalizeSize(value) {
   return fieldSize(value, 'sf-file-upload');
 }
 
-function formatFileSize(bytes) {
-  const size = Number(bytes);
-  if (!Number.isFinite(size) || size < 0) return '';
-  if (size < 1024) return `${size} B`;
-
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let value = size / 1024;
-  let index = 0;
-
-  while (value >= 1024 && index < units.length - 1) {
-    value /= 1024;
-    index += 1;
-  }
-
-  const formatted = value >= 10 ? value.toFixed(0) : value.toFixed(1);
-  return `${formatted}${units[index]}`;
-}
 
 function normalizeItemState(item) {
   const state = String(item?.state || item?.status || 'process').toLowerCase();
@@ -238,6 +222,9 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
   const leftIcon = document.createElement('i');
   leftIcon.classList.add('sf-icon');
+  // The glyphs are pictures: their ligature names («cloud_upload», «check_circle»,
+  // «delete») were read as text (docs pre-check 2026-11-10 FU-03).
+  leftIcon.setAttribute('aria-hidden', 'true');
   leftIcon.textContent = iconName;
 
   const content = document.createElement('div');
@@ -263,6 +250,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
   if (state === 'done') {
     const doneIcon = document.createElement('i');
     doneIcon.className = 'sf-icon sf-icon-solid';
+    doneIcon.setAttribute('aria-hidden', 'true');
     doneIcon.textContent = 'check_circle';
     top.append(doneIcon);
   } else if (state === 'error') {
@@ -274,6 +262,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
     const removeIcon = document.createElement('i');
     removeIcon.className = 'sf-icon';
+    removeIcon.setAttribute('aria-hidden', 'true');
     removeIcon.textContent = 'delete';
     removeButton.append(removeIcon);
     top.append(removeButton);
@@ -295,6 +284,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
     const removeIcon = document.createElement('i');
     removeIcon.className = 'sf-icon';
+    removeIcon.setAttribute('aria-hidden', 'true');
     removeIcon.textContent = 'delete';
     removeButton.append(removeIcon);
     top.append(removeButton);
@@ -431,11 +421,15 @@ function syncFileUploadStateEvents(root, nextItems = [], previousItems = []) {
   }
 }
 
-function normalizeFileItems(files = []) {
+// A chosen file's size is written by the core formatter in the page's
+// language: «342 КБ» on a Russian page, «342 KB» on an English one (C25,
+// docs pre-check 2026-11-10 FU-01). The part's own formatter wrote «342KB»
+// in English units with no space on every page.
+function normalizeFileItems(files = [], root = null) {
   return Array.from(files).map((file) => ({
     id: `${file.name}-${file.size}-${file.lastModified}`,
     name: file.name,
-    fileSize: formatFileSize(file.size),
+    fileSize: formatFileSize(file.size, {node: root}),
     progress: 0,
     state: 'process',
     file,
@@ -542,7 +536,7 @@ function emitSelect(root, files, source = 'input') {
 }
 
 function applySelectedFiles(root, files = [], source = 'input') {
-  const nextFiles = normalizeFileItems(files);
+  const nextFiles = normalizeFileItems(files, root);
   const previousItems = Array.from(root.__sfFileUploadItems || []);
   root.__sfFileUploadItems = nextFiles;
   renderFileUploadItems(root, nextFiles);
@@ -815,6 +809,7 @@ class FileUpload extends ComponentObserver {
     featured.className = `sf-featured-icon sf-featured-icon--size-${step} sf-featured-icon--soft sf-featured-icon--circle sf-featured-icon--neutral`;
     const glyph = document.createElement('i');
     glyph.className = 'sf-icon';
+    glyph.setAttribute('aria-hidden', 'true');
     glyph.textContent = icon;
     featured.append(glyph);
     const bottom = document.createElement('div');

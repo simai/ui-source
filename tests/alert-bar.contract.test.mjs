@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.3.1');
+  assert.equal(manifest.version, '1.4.0');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -26,7 +26,7 @@ test('the manifest: a leaf of block alert with items, four events and the close 
   for (const verb of ['navigate', 'acknowledge', 'close']) assert.equal(manifest.events[verb].cancelable, true, verb);
   assert.equal(manifest.events.acknowledge['own-verb'], true);
   assert.deepEqual(Object.keys(manifest.actions), ['close']);
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-button', 'cl-button-icon', 'cl-badge', 'cl-icon']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-time', 'cl-button', 'cl-button-icon', 'cl-badge', 'cl-icon']);
 });
 
 test('the name is registered in the Framework\'s family alert', () => {

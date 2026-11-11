@@ -38,6 +38,31 @@ The old names keep working until 2026-12-01 and are noted in
 old words `clear` and `danger`), `variant` is `appearance`, and `dismiss()` is
 `close()`.
 
+## Layout
+
+Layout (1.2.0, owner decision C35 with the toast's numbers; DEV acceptance D3
+covers every notice), all in tokens, so a compact region
+(`data-sf-density="compact"`) moves it by itself:
+
+| | desktop | compact, phone |
+|---|---|---|
+| inline padding, both sides (`--sf-space-1`) | 16 | 12 |
+| block padding (`--sf-space-1/2`) | 12 | 8 |
+| status icon (the line's size) | 24 | 20 |
+| icon to text (`--sf-space-1/2`) | 12 | 8 |
+| title to text | 0 | 0 |
+| text to the actions (`--sf-space-1/2`) | 12 | 8 |
+| between the actions (`--sf-space-1/3`) | 8 | 4 (phone 8) |
+| actions: size 1, `height="low"`; label = text | 32 · 16 | 28 · 14 |
+| close: `sf-button-icon kind="close" height="low"`, centred on the first line | 32 | 28 |
+| one-line alert, without the border | 56 | 44 |
+
+The first action is tonal primary, the second ghost on-surface. The first line
+stands in the box of the low control, so the icon, the first line of text and
+the close share one centre; the first action's plate starts at the text edge;
+the close's plate hangs out over the inline padding, so its cross stands where
+the status icon stands on the other side.
+
 ## Accessibility
 
 The root is a live region: `role="status"` (polite) for `neutral`, `info` and

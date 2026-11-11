@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.text-color",
   "kind": "utility",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/text-color/active/index.js",
@@ -28,7 +28,7 @@
     "src/utility/text-color/hover/scss/_sf_css__color_base.scss",
     "src/utility/text-color/hover/scss/index.scss"
   ],
-  "content_sha256": "131c3769a4ecda794e7333e70298bb32a549aae2049fc72540f82e28c486f799",
+  "content_sha256": "4232cdcbf82660f74bf5f894ec864798c4229af6f8adbe05a8e27b8fd4847b43",
   "dependencies": [
     {
       "id": "tokens.colour",

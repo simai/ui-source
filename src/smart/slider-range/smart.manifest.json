@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider-range",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
   "kind": "smart",
@@ -120,6 +120,11 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The name the value is submitted under in a form: the handle's value, or both values joined by a comma (\"20,80\") with two handles."
       },
       "value": {
         "type": "string",
@@ -599,7 +604,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "efb1ecff27e0fa3c28e3a9d869a38a11de7082c0760f98201c0d43606aa7a8d7"
+        "sha256": "f0ef6cbe565786d1c499f71fdbd08479dbd9f6af5d6a1546184f8bab026e56b5"
       }
     ],
     "generated_runtime": [

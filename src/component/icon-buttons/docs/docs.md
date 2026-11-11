@@ -13,8 +13,9 @@ decorative and uses `aria-hidden="true"`.
   the destructive status;
 - scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
   `on-surface`); `secondary` is kept for older markup;
-- status: `sf-icon-button--danger` (or `--error`, the same rules) for a
-  destructive control, in every emphasis (decision C13);
+- status: `sf-icon-button--danger` for a destructive control, in every
+  emphasis (decision C13); `sf-icon-button--error` is its former name, the
+  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger);
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
@@ -22,6 +23,13 @@ decorative and uses `aria-hidden="true"`.
   the side padding only (1.2.0): an icon button of a size is as tall at every
   density, so a compact one is narrower than it is tall and a spacious one
   wider;
+- height (1.5.0, decisions C27 and C35): the default,
+  `sf-icon-button--height-low`, `sf-icon-button--height-high` or
+  `sf-icon-button--height-highest` -- the size's tightness step on all four
+  sides, so the button stays square and stands at the size's line + 2 x the
+  step (size 1 on desktop 32 / 40 / 48 / 56; compact 28 / 32 / 40 / 48; phone
+  28 / 36 / 44 / 52); the icon keeps the size. A close takes the same heights.
+  The constructor's option is `height`. Declared after the density classes;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
@@ -46,8 +54,16 @@ uses `loading sf-icon-button-state-loading`, `aria-busy="true"`, and native
 `disabled`, preventing duplicate activation. A loading icon button shows the
 spinner in place of its icon, at the icon's size (an element with
 `sf-loader-container sf-loader--infinite sf-icon-button-spinner`; the
-constructor draws it), in the disabled ink unless `--sf-loader--color` is set,
-and a still arc under reduced motion. The stripes are gone;
+constructor draws it), and a still arc under reduced motion. A loading icon
+button keeps its scheme colour (1.5.1, the C36 follow-up): the disabled look's
+rules skip `sf-icon-button-state-loading`, so the fill, the edge and the icon
+colour are the resting button's, and the spinner takes the icon colour unless
+`--sf-loader--color` is set; its background ring is that colour at 16 % (the
+fill family of the alpha scale; `--sf-spinner-track-color` wins). A button that
+is disabled and loading at once adds `.disabled` and wears the disabled look,
+the spinner in the disabled ink; the constructor does that for `loading` with
+`disabled`. Markup with the bare `loading` class and no state class keeps the
+disabled look. Tonal danger greys when disabled, as every other look does. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with

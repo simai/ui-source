@@ -26,7 +26,7 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, size, for, remember, label; change, changed, reset; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.0.5');
+  assert.equal(manifest.version, '1.1.0');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'size', 'for', 'remember', 'label']);
   assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles']);
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
@@ -95,10 +95,10 @@ test('tiles: the switches marked tile on top, a separator, the rest as rows; unm
   assert.deepEqual(tileItems(plain).map((item) => item.id), ['night']);
 });
 
-test('it composes sf-menu-context: a fixed 280 px panel, drill as the menu\'s submenu, the menu\'s events kept inside', () => {
+test('it composes sf-menu-context: a fixed panel at the menu\'s ceiling (C32), drill as the menu\'s submenu, the menu\'s events kept inside', () => {
   assert.match(template, /<sf-menu-context[\s\S]*\?popup=\$\{context\.popup\}/u);
   assert.match(template, /submenu=\$\{context\.look === 'drill' \? 'drill' : 'flyout'\}/u);
-  assert.match(template, /--sf-context-menu-inline-size, calc\(var\(--sf-f7\) \+ var\(--sf-a8\)\)/u);
+  assert.match(template, /--sf-context-menu-inline-size, var\(--sf-popup-menu-max-width\)/u);
   assert.match(template, /class="sf-settings-parts" style="display: contents"/u);
   for (const verb of ['select', 'reset']) assert.match(template, new RegExp(`@sf-menu-context-${verb}=\\$\\{stop\\}`, 'u'));
   assert.match(source, /onMenuChange\(event\) \{\n {4}event\.stopPropagation\(\);/u);

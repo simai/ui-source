@@ -91,6 +91,22 @@
       }
     },
     {
+      "name": "low",
+      "title": "Низкая (как в уведомлении)",
+      "settings": {
+        "kind": "close",
+        "appearance": "ghost",
+        "scheme": "on-surface",
+        "height": "low"
+      },
+      "attributes": {
+        "aria-label": "Закрыть уведомление"
+      },
+      "expect": {
+        "height": "low"
+      }
+    },
+    {
       "name": "danger",
       "title": "Удалить",
       "settings": {

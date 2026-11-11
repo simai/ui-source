@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../badges/scss/anchored-geometry' as anchored;
+@use '../../../core/scss/mix/mix__places' as places;
 
 @include anchored.properties;
 
@@ -28,9 +29,9 @@
     overflow: hidden;
     background-color: var(
                     --sf-admin-menu-panel--background-color,
-                    var(--sf-surface-0)
+                    var(--sf-surface-page)
     );
-    --sf-badge--surface: var(--sf-admin-menu-panel--background-color, var(--sf-surface-0));
+    --sf-badge--surface: var(--sf-admin-menu-panel--background-color, var(--sf-surface-page));
     border-color: var(
                     --sf-admin-menu-panel--border-color,
                     var(--sf-outline-variant)
@@ -221,6 +222,9 @@
      the arrows can tell the two apart. */
   .sf-admin-menu-search-row.selected {
     background-color: var(--sf-primary-container);
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+       anchored badge's ring is the row's colour (C43 D3). */
+    @include places.sf-place-fill(var(--sf-primary-container));
   }
 
   .sf-admin-menu-search-mark {
@@ -679,6 +683,8 @@
     --sf-admin-menu-item-segment--background-color: var(
                     --sf-secondary-container-hover
     );
+    /* A translucent fill, as the selected search row (C43 D4). */
+    @include places.sf-place-fill(var(--sf-admin-menu-item-segment--background-color));
   }
 
   .sf-admin-menu-item-segment:not(.disabled):hover .sf-admin-menu-item {
@@ -687,6 +693,7 @@
 
   .sf-admin-menu-item:not(:disabled):not(.disabled):hover {
     --sf-admin-menu-item--background-color: var(--sf-secondary-container-hover);
+    @include places.sf-place-fill(var(--sf-admin-menu-item--background-color));
   }
 
   .sf-admin-menu-item:not(:disabled):not(.disabled):hover
@@ -705,6 +712,7 @@
     --sf-admin-menu-item--background-color: var(
                     --sf-secondary-container-active
     );
+    @include places.sf-place-fill(var(--sf-admin-menu-item--background-color));
   }
 }
 

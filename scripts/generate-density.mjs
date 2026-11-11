@@ -20,7 +20,8 @@
 // the region with their parent.
 //
 // Desktop only (>= 60rem): below it the phone ladder already is the dense one
-// (control 36, text 14) and its touch targets stay; the rule that set compact
+// (control 36, text 14) and its touch targets stay (owner decision C36: compact
+// on a phone does not make the buttons smaller); the rule that set compact
 // body text was desktop-only before as well.
 //
 // The values are read from the ladder files as they are built (desktop
@@ -43,7 +44,12 @@ import {fileURLToPath} from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const VARIABLES = 'src/core/figma_variables';
 const OUTPUT = 'src/core/scss/_sf_css__density.scss';
-const DESKTOP = '60rem';
+// The desktop breakpoint is the ladder's own (adaptive-sizing contract,
+// modes.desktop.minWidthPx over the nominal root): the density switches where
+// the ladder does, never at a width of its own, so every width has exactly one
+// defined ladder (S-03, 2026-11-10).
+const SIZING = JSON.parse(readFileSync(join(root, 'src/core/contracts/adaptive-sizing.v1.json'), 'utf8'));
+export const DESKTOP = `${SIZING.modes.desktop.minWidthPx / SIZING.meta.nominalRootPx}rem`;
 
 // The control ladder. A step below the lowest stays at the lowest: 1/3 is a
 // 24px control, the smallest target (WCAG 2.5.8), and text under 12 is a
@@ -86,6 +92,7 @@ export const WIDTHS = [
   '--sf-popup-panel-width',
   '--sf-popup-form-width',
   '--sf-popup-form-wide-width',
+  '--sf-popup-question-width',
 ];
 
 const esc = (name) => name.replaceAll('/', '\\/');
@@ -143,6 +150,31 @@ export function ladder() {
     });
   }
   return rows;
+}
+
+// Headings do not follow density (owner decision C44, 2026-11-10, after C21):
+// h1-h6 and every title drawn from the heading steps -- the page header, the
+// empty state, the drawer -- keep the C21 ladder in a compact region. The
+// heading steps are declared on :root from the text steps density moves
+// (--sf-heading-3--size: var(--sf-text--size-3)), so with compact on <html>
+// they resolved at the root to the step below while a compact container kept
+// them: one density, two answers. The compact block writes each heading size
+// outright with the normal desktop value of the text step it names, so the
+// heading is the same on <html> and on a container. The line heights are the
+// title lines, which density never moves.
+const HEADINGS = Array.from({length: 6}, (_, index) => `--sf-heading-${index + 1}--size`);
+export function headings() {
+  const roles = rootDeclarations('figma_typography_roles.scss');
+  const sizes = desktopDeclarations('figma_text_text_size.scss');
+  return HEADINGS.map((name) => {
+    const value = roles.get(name);
+    const match = /^var\((--sf-text--size-[^)]+)\)$/u.exec(value ?? '');
+    if (!match) throw new Error(`figma_typography_roles.scss: ${name} is not a text step (${value})`);
+    const step = match[1].replaceAll('\\/', '/');
+    const normal = sizes.get(step);
+    if (!normal) throw new Error(`figma_text_text_size.scss: no desktop value for ${step}`);
+    return [name, normal];
+  });
 }
 
 function derived() {
@@ -215,6 +247,7 @@ export function render() {
     ...rows.map((row) => `${indent}${esc(row.variable)}: ${row[pick]};`),
     ...popup.map((row) => `${indent}${row.variable}: ${row[pick]};`),
     ...aliases.map(([name, value]) => `${indent}${esc(name)}: ${value};`),
+    ...(pick === 'compact' ? headings().map(([name, value]) => `${indent}${name}: ${value};`) : []),
     `${indent}--sf-text--size: var(--sf-text--size-1);`,
     `${indent}--sf-text--height: var(--sf-text--height-1);`,
   ].join('\n');
@@ -233,6 +266,11 @@ export function render() {
  *
  * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
  * next step of the size scale.
+ *
+ * Headings do not follow density (C44): the compact block writes the heading
+ * sizes with their normal values, so h1-h6 and the titles drawn from the
+ * heading steps keep the C21 ladder whether compact stands on <html> or on a
+ * container.
  */
 @layer sf.base {
   @media (min-width: ${DESKTOP}) {

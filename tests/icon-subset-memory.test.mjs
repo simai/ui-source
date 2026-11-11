@@ -104,20 +104,46 @@ const fakePage = ({config = {}, existing = []} = {}) => {
 };
 const storage = (value) => ({getItem: (key) => (key === 'SF_ICON_SUBSET_MANIFEST' ? JSON.stringify(value) : null)});
 
-test('at boot the remembered subset goes in with a font preload, and the pending mark lifts once its face loads', async () => {
+test('at boot the remembered subset goes in with its faces fetched off the window load, and the pending mark lifts once they are loaded (R078)', async () => {
   const page = fakePage();
+  const fetches = [];
+  const added = [];
+  page.win.fetch = (url, options) => {
+    fetches.push({url, options});
+    return Promise.resolve({ok: true, status: 200, arrayBuffer: async () => new ArrayBuffer(8)});
+  };
+  page.win.FontFace = class FontFace {
+    constructor(family, source, descriptors) { Object.assign(this, {family, source, descriptors}); }
+    load() { return Promise.resolve(this); }
+  };
+  page.doc.fonts.add = (face) => added.push(face);
   const applied = applyRememberedIconSubset({win: page.win, doc: page.doc, storage: storage(manifest())});
   assert.ok(applied);
-  const link = page.head.find((node) => node.tag === 'link');
-  assert.equal(link.rel, 'preload');
-  assert.equal(link.as, 'font');
-  assert.equal(link.crossOrigin, 'anonymous');
-  assert.equal(link.href, manifest().fonts[0].url);
+  assert.equal(page.head.filter((node) => node.tag === 'link').length, 0,
+    'no <link rel=preload>: a document request would hold the window load');
   const style = page.head.find((node) => node.tag === 'style');
   assert.equal(style.getAttribute('data-sf-icons-subset-family'), 'outlined');
   assert.equal(style.getAttribute('data-sf-icons-subset'), 'dark_mode,language,menu');
   assert.equal(style.getAttribute('data-sf-icons-subset-hash'), manifest().hash);
   assert.equal(style.hasAttribute('data-sf-icons-remembered'), true);
+  assert.doesNotMatch(style.textContent, /@font-face/u, 'no url for the document to fetch');
+  assert.match(style.textContent, /--sf-icon--font-family: 'Material Symbols Outlined Subset';/u);
+  assert.deepEqual(fetches, [{url: manifest().fonts[0].url, options: {mode: 'cors', credentials: 'omit'}}]);
+  const faces = await style.sfIconFacesReady;
+  assert.equal(faces.length, 1);
+  assert.equal(faces[0].family, 'Material Symbols Outlined Subset');
+  assert.ok(faces[0].source instanceof ArrayBuffer, 'the face is built from the fetched bytes');
+  assert.deepEqual(added, faces);
+  assert.deepEqual(style.sfIconFontFaces, faces, 'the faces ride on the style and are retired with it');
+  await new Promise((done) => setTimeout(done, 0));
+  assert.equal(page.attrs.has('data-sf-icons'), false, 'lifted once the face is loaded');
+});
+
+test('without FontFace or fetch the remembered subset keeps its own @font-face', async () => {
+  const page = fakePage();
+  const applied = applyRememberedIconSubset({win: page.win, doc: page.doc, storage: storage(manifest())});
+  assert.ok(applied);
+  const style = page.head.find((node) => node.tag === 'style');
   assert.match(style.textContent, /@font-face/u);
   await new Promise((done) => setTimeout(done, 0));
   assert.equal(page.loads[0].font, '400 24px "Material Symbols Outlined Subset"');

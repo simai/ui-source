@@ -5,6 +5,8 @@
     "activity-waiting": "Needs your input",
     "activity-done": "Ready",
     "activity-stopped": "Stopped",
-    "activity-failed": "Failed"
+    "activity-failed": "Failed",
+    "activity-paused": "Paused",
+    "activity-queued": "Queued"
   }
 }

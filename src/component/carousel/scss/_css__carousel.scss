@@ -5,10 +5,19 @@
 @layer sf.components {
 .sf-carousel {
   --sf-carousel--block-size: var(--sf-g3);
-  --sf-carousel-control--background-color: var(--sf-primary);
-  --sf-carousel-control--color: var(--sf-on-primary);
-  --sf-carousel-pagination--background-color: var(--sf-primary);
-  --sf-carousel-pagination-item--color: var(--sf-on-primary);
+  /* Controls over the slides are the dark glass of C14 and C16 (dispatcher
+     decision b, docs pre-check 2026-11-10): black at 48 with a blur and white
+     ink in both themes, round, so they read on any slide. They were primary
+     squares and a primary pagination block. sf-carousel-switch--primary and
+     sf-carousel-pagination--primary keep the former look for a page that
+     wants it. */
+  --sf-carousel-control--background-color: var(--sf-surface-media);
+  --sf-carousel-control--color: var(--sf-on-surface-media);
+  --sf-carousel-control--radius: var(--sf-radius-rounded);
+  --sf-carousel-control--backdrop: blur(var(--sf-blur-large));
+  --sf-carousel-pagination--background-color: var(--sf-surface-media);
+  --sf-carousel-pagination-item--color: var(--sf-on-surface-media);
+  --sf-carousel-pagination--radius: var(--sf-radius-rounded);
   block-size: var(--sf-carousel--block-size);
   inline-size: 100%;
   margin-inline: auto;
@@ -52,9 +61,10 @@
 .sf-carousel-rotation {
   appearance: none;
   align-items: center;
+  backdrop-filter: var(--sf-carousel-control--backdrop, none);
   background-color: var(--sf-carousel-control--background-color);
   border: 0;
-  border-radius: var(--sf-radius--ui);
+  border-radius: var(--sf-carousel-control--radius, var(--sf-radius--ui));
   color: var(--sf-carousel-control--color);
   cursor: pointer;
   display: inline-flex;
@@ -67,8 +77,29 @@
 
 .sf-carousel-switch:hover,
 .sf-carousel-rotation:hover {
-  --sf-carousel-control--background-color: var(--sf-primary-hover);
+  --sf-carousel-control--background-color: var(--sf-surface-media-hover);
+}
+
+/* Pressed glass; a coloured modifier keeps its own fill when pressed. */
+.sf-carousel-switch:not(.sf-carousel-switch--primary, .sf-carousel-switch--secondary-container, .sf-carousel-switch--surface-inverse, .sf-carousel-switch--surface-page, .sf-carousel-switch--surface-zero):active,
+.sf-carousel-rotation:active {
+  --sf-carousel-control--background-color: var(--sf-surface-media-active);
+}
+
+/* The former default: a primary square. */
+.sf-carousel-switch--primary {
+  --sf-carousel-control--background-color: var(--sf-primary);
   --sf-carousel-control--color: var(--sf-on-primary);
+  --sf-carousel-control--radius: var(--sf-radius--ui);
+  --sf-carousel-control--backdrop: none;
+}
+
+.sf-carousel-switch--primary:hover {
+  --sf-carousel-control--background-color: var(--sf-primary-hover);
+}
+
+.sf-carousel-switch--primary:active {
+  --sf-carousel-control--background-color: var(--sf-primary-active);
 }
 
 .sf-carousel-switch:focus-visible,
@@ -79,6 +110,8 @@
 }
 
 .sf-carousel-switch--secondary-container {
+  --sf-carousel-control--radius: var(--sf-radius--ui);
+  --sf-carousel-control--backdrop: none;
   --sf-carousel-control--background-color: var(--sf-secondary-container);
   --sf-carousel-control--color: var(--sf-on-secondary-container);
 }
@@ -89,6 +122,8 @@
 }
 
 .sf-carousel-switch--surface-inverse {
+  --sf-carousel-control--radius: var(--sf-radius--ui);
+  --sf-carousel-control--backdrop: none;
   --sf-carousel-control--background-color: var(--sf-surface-inverse);
   --sf-carousel-control--color: var(--sf-on-surface-inverse);
 }
@@ -98,22 +133,27 @@
   --sf-carousel-control--color: var(--sf-on-surface-inverse);
 }
 
-.sf-carousel-switch--surface-zero {
-  --sf-carousel-control--background-color: var(--sf-surface-0);
+/* sf-carousel-switch--surface-page; --surface-zero is its former name (C16
+   names, journal class-carousel-surface-names, until 2027-01-01). */
+.sf-carousel-switch:is(.sf-carousel-switch--surface-page, .sf-carousel-switch--surface-zero) {
+  --sf-carousel-control--radius: var(--sf-radius--ui);
+  --sf-carousel-control--backdrop: none;
+  --sf-carousel-control--background-color: var(--sf-surface-page);
   --sf-carousel-control--color: var(--sf-on-surface);
 }
 
-.sf-carousel-switch--surface-zero:hover {
-  --sf-carousel-control--background-color: var(--sf-surface-1);
+.sf-carousel-switch:is(.sf-carousel-switch--surface-page, .sf-carousel-switch--surface-zero):hover {
+  --sf-carousel-control--background-color: var(--sf-surface-area);
   --sf-carousel-control--color: var(--sf-on-surface-hover);
 }
 
 .sf-carousel-switch--media {
-  /* Glass over the slide (C16, surfaces research 5): black at 48 with a blur
-     and white ink in both themes, so a switch over a photo reads on any photo. */
+  /* Glass over the slide (C16, surfaces research 5), the default since
+     component.carousel 1.2.0; the class says it outright. */
   --sf-carousel-control--background-color: var(--sf-surface-media);
   --sf-carousel-control--color: var(--sf-on-surface-media);
-  backdrop-filter: blur(var(--sf-blur-large));
+  --sf-carousel-control--radius: var(--sf-radius-rounded);
+  --sf-carousel-control--backdrop: blur(var(--sf-blur-large));
 }
 
 .sf-carousel-switch--media:hover {
@@ -157,8 +197,9 @@
 
 .sf-carousel-pagination {
   align-items: center;
+  backdrop-filter: var(--sf-carousel-pagination--backdrop, blur(var(--sf-blur-large)));
   background-color: var(--sf-carousel-pagination--background-color);
-  border-radius: var(--sf-radius--ui);
+  border-radius: var(--sf-carousel-pagination--radius, var(--sf-radius--ui));
   display: inline-flex;
   gap: var(--sf-space-1\/2);
   inset-block-end: var(--sf-space-1);
@@ -202,22 +243,38 @@ button.sf-carousel-pagination-item {
   opacity: unset;
 }
 
+.sf-carousel-pagination--primary {
+  --sf-carousel-pagination--background-color: var(--sf-primary);
+  --sf-carousel-pagination-item--color: var(--sf-on-primary);
+  --sf-carousel-pagination--radius: var(--sf-radius--ui);
+  --sf-carousel-pagination--backdrop: none;
+}
+
 .sf-carousel-pagination--primary-container {
+  --sf-carousel-pagination--radius: var(--sf-radius--ui);
+  --sf-carousel-pagination--backdrop: none;
   --sf-carousel-pagination--background-color: var(--sf-primary-container);
   --sf-carousel-pagination-item--color: var(--sf-on-primary-container);
 }
 
-.sf-carousel-pagination--surface-2 {
-  --sf-carousel-pagination--background-color: var(--sf-surface-1);
+/* sf-carousel-pagination--surface-area; --surface-2 is its former name (C16
+   names, journal class-carousel-surface-names, until 2027-01-01). */
+.sf-carousel-pagination:is(.sf-carousel-pagination--surface-area, .sf-carousel-pagination--surface-2) {
+  --sf-carousel-pagination--radius: var(--sf-radius--ui);
+  --sf-carousel-pagination--backdrop: none;
+  --sf-carousel-pagination--background-color: var(--sf-surface-area);
   --sf-carousel-pagination-item--color: var(--sf-on-surface);
 }
 
 .sf-carousel-pagination--surface-inverse {
+  --sf-carousel-pagination--radius: var(--sf-radius--ui);
+  --sf-carousel-pagination--backdrop: none;
   --sf-carousel-pagination--background-color: var(--sf-surface-inverse);
   --sf-carousel-pagination-item--color: var(--sf-on-surface-inverse);
 }
 
 .sf-carousel-pagination--no-background {
+  --sf-carousel-pagination--backdrop: none;
   --sf-carousel-pagination--background-color: transparent;
   --sf-carousel-pagination-item--color: var(--sf-primary);
 }

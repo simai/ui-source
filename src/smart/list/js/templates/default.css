@@ -16,7 +16,8 @@
        --sf-list-heading-color            a group's heading */
   .sf-list__frame {
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
-    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-container-hover));
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
+    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
     --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 
@@ -33,6 +34,7 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -42,6 +44,7 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -51,6 +54,7 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -65,6 +69,12 @@
      control height either way: its avatar takes the line and stands centred
      in the place. */
   .sf-list__frame { --sf-list--lead-size: var(--sf-list--lead-line); }
+
+  /* The shared row menu is fetched after the page is ready. Until it upgrades
+     (its host turns display: contents) an empty sf-menu-context is a flex item
+     of the frame and takes a slot of its gap: the list drew --sf-space-1/2
+     taller for a few frames and then jumped (C40 first-paint watch). */
+  .sf-list__frame > .sf-list__menu { display: contents; }
   .sf-list--lead-wide { --sf-list--lead-size: var(--sf-list--lead-block); }
 
   .sf-list__lead {
@@ -114,6 +124,53 @@
 
   .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
 
+  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
+     data-sf-list-narrow on its frame below 20rem of its own width): a row
+     with a badge or a count lays out as «picture | text», and the meta goes
+     under the second line, at the text's start, so the title keeps the
+     row's width and the badge stays whole. The row grows by whole bands
+     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
+     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
+     size 1. Rows without a meta keep their layout and their height; the
+     picture place is one width in every row, so all titles start on one
+     line. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sf-space-1\/4);
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The picture: the leading place, or sf-icon's own glyph (its host is
+     display: contents). */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+    grid-column: -2;
+    grid-row: 1;
+    justify-self: stretch;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+    grid-column: -2;
+    grid-row: 2;
+    justify-self: start;
+    /* The text's start: the row's text step, the title's own inset. */
+    margin-inline-start: var(--sf-list--text-step);
+    padding-inline-start: 0;
+  }
+
   .sf-list__body,
   .sf-list__group {
     display: flex;
@@ -124,15 +181,22 @@
   .sf-list__body { gap: var(--sf-list--group-gap); }
 
   .sf-list__body[hidden],
+  .sf-list__empty[hidden],
   .sf-list__next[hidden] { display: none; }
 
-  .sf-list__heading {
-    padding-block: var(--sf-space-1\/4);
+  /* A group's heading is block list's shared heading (.sf-group-heading,
+     component group-heading, C40): its type, weight and spaces are the class's;
+     the list keeps the words on the rows' text edge and their colour. The
+     space above a group after the first is the heading's --sf-space-3 in all,
+     the gap between groups included. */
+  .sf-list__group > .sf-list__heading {
+    margin-block-start: 0;
     padding-inline: var(--sf-list--text-inset);
-    color: var(--sf-list-heading-color, var(--sf-on-surface-variant));
-    font-size: var(--sf-label-medium--size);
-    line-height: var(--sf-label-medium--height);
-    font-weight: var(--sf-font-weight-medium);
+    color: var(--sf-list-heading-color, var(--sf-on-surface));
+  }
+
+  .sf-list__group + .sf-list__group {
+    margin-block-start: calc(var(--sf-space-3) - var(--sf-list--group-gap));
   }
 
   .sf-list__rows {
@@ -162,7 +226,9 @@
     --sf-list-item--border-bottom-width: 0;
   }
 
-  .sf-list__row--current { background-color: var(--sf-list--current); }
+  /* A translucent fill: a tonal badge on the open row keeps its own tone
+     (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
+  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--current); }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
@@ -268,8 +334,9 @@
 
 @layer sf.states {
   /* The pointer over the row or over its «⋯»: one tint for both, the token
-     the row itself takes under the pointer. */
-  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); }
+     the row itself takes under the pointer. A translucent fill, as the open
+     row (C43 D4). */
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
 
   /* The open row is told by more than a tint: in forced colours it is marked
      by the system highlight at its start. */

@@ -63,8 +63,10 @@ const mix = read('src/core/scss/mix/_mix__places.scss');
 const utility = read('src/utility/background-color/default/scss/_sf_css__background_color.scss');
 const COLOURS = ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error'];
 
+const mapOf = (name) => mix.slice(mix.indexOf(`$${name}: (`), mix.indexOf(');', mix.indexOf(`$${name}: (`)));
+
 test("an opaque place takes back exactly the theme's values", () => {
-  const map = mix.slice(mix.indexOf('$sf-place-theme-roles: ('), mix.indexOf(');', mix.indexOf('$sf-place-theme-roles: (')));
+  const map = ['sf-place-theme-roles', 'sf-place-colour-roles', 'sf-place-accent-roles'].map(mapOf).join('\n');
   const entries = [...map.matchAll(/'([a-z0-9-]+)': '([^']+)'/gu)];
   assert.ok(entries.length >= 12, `${entries.length} roles read`);
   const wrong = [];
@@ -76,7 +78,7 @@ test("an opaque place takes back exactly the theme's values", () => {
   // Every role a coloured place re-declares is one an opaque place takes back.
   const strong = mix.slice(mix.indexOf('@mixin sf-place-strong'));
   const set = new Set(entries.map(([, role]) => role));
-  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && !set.has(role));
+  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && role !== 'surface-place-ground' && !role.startsWith('place--') && !set.has(role));
   assert.deepEqual(missed, []);
 });
 
@@ -103,8 +105,38 @@ test('the popover, a sheet that is not Sass, writes the place out as the mixin d
   const map = mix.slice(mix.indexOf('$sf-place-theme-roles: ('), mix.indexOf(');', mix.indexOf('$sf-place-theme-roles: (')));
   for (const [, role, value] of map.matchAll(/'([a-z0-9-]+)': '([^']+)'/gu)) {
     if (role === 'on-surface-variant') continue;
+    // A popup carries the dim ink on a fill one step up (C43, 2026-11-10).
+    if (role === 'on-surface-container-variant') {
+      assert.ok(popover.includes('--sf-on-surface-container-variant: var(--sf-place--popup-container-variant, light-dark(var(--sf-neutral-35), var(--sf-neutral-90)));'), 'popover container variant 90');
+      // A popup opened from it is a nested popup, as sf-place-popup-children writes.
+      assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-surface-popup: var\(--sf-surface-popup-nested\);[^}]*--sf-place--popup-container-variant: light-dark\(var\(--sf-neutral-35\), var\(--sf-neutral-95\)\);/u);
+      continue;
+    }
     assert.ok(popover.includes(`--sf-${role}: ${value};`), `popover --sf-${role}`);
   }
   assert.match(popover, /--sf-surface-place: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/u);
   assert.match(popover, /--sf-on-surface-variant: var\(--sf-on-surface-popup-variant\);/u);
+});
+
+test('places own the accent and the boundary line only on a coloured place (D1, DEV acceptance 2026-11-10)', () => {
+  const always = mapOf('sf-place-theme-roles');
+  for (const role of ['primary', 'primary-hover', 'primary-active', 'on-primary', 'primary-container', 'on-primary-container', 'outline-variant']) {
+    assert.doesNotMatch(always, new RegExp(`'${role}':`, 'u'), `${role} is not declared on every opaque place`);
+  }
+  const at = mix.indexOf('@mixin sf-place-back-on-colour');
+  const back = mix.slice(at, mix.indexOf('\n}\n', at));
+  assert.match(back, /:where\(#\{\$sf-place-coloured-selectors\}\) &/u);
+  assert.match(back, /:where\(#\{\$sf-place-strong-selectors\}\) &/u);
+  assert.match(back, /var\(--sf-place--outer-#\{\$role\}, /u, 'the accent the page had, the theme as fallback');
+  const strong = mix.slice(mix.indexOf('@mixin sf-place-strong('), mix.indexOf('@mixin sf-place-strong-accent'));
+  assert.match(strong, /--sf-place--outer-#\{\$role\}: var\(--sf-#\{\$role\}\);/u, 'a strong place keeps the accent it found');
+  const sfPlace = mix.slice(mix.indexOf('@mixin sf-place('), mix.indexOf('@mixin sf-place-fill'));
+  assert.match(sfPlace, /@include sf-place-back-on-colour;/u);
+  // The popover writes the same out.
+  const popover = read('src/smart/popover/js/templates/default.css');
+  const open = popover.indexOf("  sf-popover > [slot='content'] {");
+  const main = popover.slice(open, popover.indexOf('}', open));
+  assert.doesNotMatch(main, /--sf-(primary|on-primary|outline-variant):/u);
+  assert.match(popover, /:where\(\.bg-primary, [^{]*\.sf-surface-media\) sf-popover > \[slot='content'\] \{\s*--sf-outline-variant: /u);
+  assert.match(popover, /--sf-primary: var\(--sf-place--outer-primary, light-dark\(var\(--sf-primary-40\), var\(--sf-primary-80\)\)\);/u);
 });

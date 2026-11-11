@@ -21,6 +21,28 @@
 // Both say which colour a cut-out takes (--sf-surface-place: a badge's ring,
 // a table head) and which dim ink stands on them (--sf-on-surface-variant).
 //
+// A translucent fill is not a place: a selected, open or current row draws
+// its alpha over the place it stands on. What stands on that row and must keep
+// its own tone (a tonal badge) stacks over the place's solid colour instead of
+// over the row (C43, owner 2026-11-10): sf-place-fill declares that colour as
+// --sf-surface-underlay. Every place above takes it back (initial), so a popup
+// opened from such a row is not painted over the row's place. The colour is
+// --sf-surface-place-solid: the place's colour where the place is solid, and
+// initial on a translucent place (a soft coloured place, glass), whose colour
+// is an alpha a badge cannot stand on -- there a row leaves the role off.
+//
+// --sf-surface-place-ground is the nearest opaque place (status dot on soft
+// places, 2026-11-11): every solid place declares it with --sf-surface-place-
+// solid, a soft place does not, so under a soft place it is the opaque place
+// beneath. A cut-out that must not show what is under it (the avatar's status
+// dot) lays --sf-surface-place over it, which is exactly the soft place's
+// look over its ground. It is never initial; glass declares black.
+//
+// --sf-surface-place-fill is the translucent fill itself (C43 D3, D4,
+// 2026-11-11): sf-place-fill($fill) declares it with the underlay on a
+// selected, open, current or hovered row. It is read only together with the
+// underlay, so where the underlay is initial it does nothing.
+//
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
 // place can take them back (an ancestor's value cannot be read in CSS).
@@ -29,23 +51,102 @@
 
 @use 'sass:list';
 @use 'sass:map';
+@use 'sass:meta';
+@use 'sass:string';
 @use 'mix__role_aliases' as aliases;
 
 $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
-  'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-60))',
+  'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
   'surface-state-select': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
   'surface-state-active': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
-  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
-  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20))',
-  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
+  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
   'outline': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
-  'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
   'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
+  'on-surface-muted': 'var(--sf-on-surface-disabled)',
+  'surface-underlay': 'initial',
 );
+
+// Roles an opaque place takes back only where it stands on a coloured place
+// (DEV acceptance 2026-11-10, D1): a project may set them as roles, on :root
+// or on a theme class (guide/colour/themes), and a card on a neutral place
+// keeps the project's value. Only a coloured place re-declares them, so only
+// there does an opaque place need them back. The boundary line: from the
+// theme's tones, because a coloured place re-declares it on itself and its
+// former value cannot be read below it.
+$sf-place-colour-roles: (
+  'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+);
+
+// The accent (C42 item 4): a strong place re-declares it on its children
+// (sf-place-strong-accent) and keeps the value it found as
+// --sf-place--outer-<role> (sf-place-strong), so an opaque place on it takes
+// back the accent the page had there -- a project's brand, if it set the role
+// -- and not the theme's (D1). The theme's value is the fallback.
+$sf-place-accent-roles: (
+  'primary': 'light-dark(var(--sf-primary-40), var(--sf-primary-80))',
+  'primary-hover': 'light-dark(var(--sf-primary-35), var(--sf-primary-85))',
+  'primary-active': 'light-dark(var(--sf-primary-30), var(--sf-primary-90))',
+  'on-primary': 'light-dark(var(--sf-white), var(--sf-primary-20))',
+  'primary-container': 'light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24))',
+  'primary-container-hover': 'light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28))',
+  'primary-container-active': 'light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32))',
+  'on-primary-container': 'light-dark(var(--sf-primary-10), var(--sf-primary-90))',
+);
+
+// The seven colours that are places.
+$sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
+
+// Where the strong places and the coloured places are: the bg-<c> utilities,
+// the alert bar's strong levels, and (coloured only) the soft bg-<c>-container
+// and glass. Written in :where(), so the rules below keep the opaque place's
+// own specificity.
+@function sf-place-selector-list($suffix: '') {
+  $list: ();
+  @each $c in $sf-place-colours { $list: list.append($list, '.bg-#{$c}#{$suffix}', $separator: comma); }
+  @return $list;
+}
+// The alert bar's levels written out arm by arm, never as :is(...) :is(...):
+// the build's :is() fallback (postcss-is-pseudo-class) joins such a pair
+// inside :where() into one compound class, `.sf-alert-bar--error.sf-alert-bar-row`,
+// which no alert bar has, so the take-back never reached a bar's row.
+@function sf-place-alert-bar-selectors() {
+  $list: ();
+  @each $level in ('error', 'danger', 'warning', 'info') {
+    @each $part in ('row', 'strip') {
+      $list: list.append($list, '.sf-alert-bar--#{$level} .sf-alert-bar-#{$part}', $separator: comma);
+    }
+  }
+  @return $list;
+}
+$sf-place-strong-selectors: list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma);
+$sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf-place-selector-list('-container'), $separator: comma),
+  ('.sf-surface-media',), $separator: comma);
+
+// An opaque place on a coloured place takes back the roles a coloured place
+// re-declares beyond $sf-place-theme-roles: the boundary line on any coloured
+// place, the accent on a strong one. Off a coloured place it declares
+// neither, and a project's role reaches inside.
+@mixin sf-place-back-on-colour {
+  :where(#{$sf-place-coloured-selectors}) & {
+    @each $role, $value in $sf-place-colour-roles {
+      --sf-#{$role}: #{string.unquote($value)};
+    }
+  }
+  :where(#{$sf-place-strong-selectors}) & {
+    @each $role, $value in $sf-place-accent-roles {
+      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    }
+    --sf-place--plate: initial;
+    --sf-place--on-plate: initial;
+    --sf-place--fill-placeholder: initial;
+  }
+}
 
 // The renamed roles among them: their former names are re-declared with them
 // (an alias resolves where it is declared; tests/token-aliases.contract.test.mjs).
@@ -55,20 +156,83 @@ $sf-place-aliased: ('on-surface-container-variant', 'surface-state-hover', 'surf
 // roles back. $surface and $variant are the place's own values (a component
 // passes its public variable chain as $surface); without $variant the dim ink
 // is the theme's (the page, an area).
-@mixin sf-place($surface, $variant: null) {
+// The dim ink on a fill (--sf-on-surface-container-variant) one step up on
+// the popup places (C43, owner 2026-11-10): over a popup's step the theme's
+// 85 gave a tonal quiet button's key 4.25:1 and 3.71:1 on a nested popup; 90
+// and 95 give 4.79 and 4.68. Light (35) unchanged. Read from the place's own
+// dim ink, which every popup passes as $variant.
+$sf-place-popup-container-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-90))';
+$sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-95))';
+
+@function sf-place-container-variant($variant) {
+  @if not $variant { @return null; }
+  $named: meta.inspect($variant);
+  @if string.index($named, 'popup-nested-variant') { @return $sf-place-popup-nested-container-variant; }
+  @if string.index($named, 'popup-variant') { @return 'var(--sf-place--popup-container-variant, #{$sf-place-popup-container-variant})'; }
+  @return null;
+}
+
+// A popup opened from a popup (C16 defect 3, DEV audit 2026-11-10): a list in
+// a window, a submenu, a menu in a drawer. The popup roles are re-declared
+// on the children of every popup place as the nested popup's, so a popup
+// among them paints --sf-surface-popup-nested and its dim ink with no rule
+// of its own (both popups cast the overlay shadow, C20); deeper popups stay nested. On the children, not on
+// the popup itself, which still paints the ordinary popup. A popup portalled
+// out of its parent (to the body) is not nested, and paints the popup.
+@mixin sf-place-popup-children {
+  & > * {
+    --sf-surface-popup: var(--sf-surface-popup-nested);
+    --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
+    --sf-place--popup-container-variant: #{$sf-place-popup-nested-container-variant};
+    @include aliases.sf-role-aliases(('surface-popup', 'on-surface-popup-variant'));
+  }
+}
+
+// The boundary on the light grey steps (C43, owner 2026-11-10): the theme's
+// outline, neutral-50 at 80, holds 3.11:1 on white but 2.84, 2.60 and 2.33
+// on surface-2, 3 and 4 (neutral-95, 90, 85), under WCAG 1.4.11. Opaque
+// neutral-50 holds 3.94, 3.47 and 3.03; the dark half stays the theme's
+// (neutral-90 at 48: 3.86, 3.59 and 3.30 on surfaces 15, 20 and 25). A place
+// that is one of those steps passes it as $outline.
+$sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--alfa-48))';
+
+@mixin sf-place($surface, $variant: null, $outline: null) {
   --sf-surface-place: #{$surface};
+  --sf-surface-place-solid: #{$surface};
+  --sf-surface-place-ground: #{$surface};
+  $container-variant: sf-place-container-variant($variant);
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
+    } @else if $role == 'outline' and $outline {
+      --sf-outline: #{string.unquote($outline)};
+    } @else if $role == 'on-surface-container-variant' and $container-variant {
+      --sf-on-surface-container-variant: #{string.unquote($container-variant)};
     } @else {
       --sf-#{$role}: #{$value};
     }
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
+  @include sf-place-back-on-colour;
+  @if $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested') {
+    @include sf-place-popup-children;
+  }
 }
 
-// The seven colours that are places.
-$sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
+// A translucent fill on a place (C43): a selected, open or current row. What
+// stands on it and keeps its own tone stacks over the solid place under the
+// row, --sf-surface-place, read where the fill is declared. Include it with
+// the fill, in the same rule.
+@mixin sf-place-fill($fill) {
+  --sf-surface-underlay: var(--sf-surface-place-solid);
+  // The fill itself, the colour the row lays over its place (C43 D3, D4,
+  // 2026-11-11). An anchored badge's ring lays it over the place colour, so
+  // on the row the ring is the row's own colour, not a halo of the place
+  // around the badge. $fill is the row's background in that rule; where the
+  // underlay is initial (a soft place, glass, a place nested in the row) the
+  // badge does not read it, so it needs no taking back.
+  --sf-surface-place-fill: #{$fill};
+}
 
 // A soft coloured place, bg-<c>-container: the colour's own container trio is
 // the control fill, its state layers the states, its outline the boundary and
@@ -78,6 +242,9 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // (surfaces research 6.3: text 12.32 light / 8.60 dark at least).
 @mixin sf-place-soft($c) {
   --sf-surface-place: var(--sf-#{$c}-container);
+  --sf-surface-place-solid: initial;
+  // --sf-surface-place-ground is not declared: it is the opaque place below.
+  --sf-surface-underlay: initial;
   --sf-surface-container: var(--sf-#{$c}-container);
   --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
   --sf-surface-container-active: var(--sf-#{$c}-container-active);
@@ -103,6 +270,9 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // own ink is on-<c>, or a field's text would be dark on the colour.
 @mixin sf-place-strong($c) {
   --sf-surface-place: var(--sf-#{$c});
+  --sf-surface-place-solid: var(--sf-#{$c});
+  --sf-surface-place-ground: var(--sf-#{$c});
+  --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
@@ -116,5 +286,59 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   --sf-outline-variant: #{sf-ink($c, 24)};
   --sf-surface-disabled: #{sf-ink($c, 12)};
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
+  --sf-on-surface-muted: var(--sf-on-surface-disabled);
   @include aliases.sf-role-aliases($sf-place-aliased);
+  // The accent the place found, kept for an opaque place on it (D1).
+  @each $role, $value in $sf-place-accent-roles {
+    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  }
+}
+
+// The accent on a strong coloured place (C42 (4), owner 2026-11-10): what
+// stands on bg-<c> takes the place's ink as its accent, --sf-primary the
+// place's on-colour and --sf-on-primary the place's colour, so a filled
+// button, a checked checkbox and a switch that is on are white on a blue
+// header (and tone 20 in the dark) with no rule from the author. Hover and
+// press move one and two five-tone steps towards the place, as the theme's
+// own hover and press move one and two from rest: 95 and 90 in the light
+// theme, 25 and 30 in the dark.
+// Declared on the children, because the place paints itself with --sf-<c>
+// (for primary, the role being re-declared), and from the tones, so a child
+// never reads the role it re-declares. In sf.base, so an opaque place among
+// the children (a card, a popup) takes the accent the page had back by its
+// own rule (sf-place-back-on-colour), and a card on a neutral place never
+// declares the accent: a project's --sf-primary reaches it (D1).
+// The tonal accent (DEV acceptance 2026-11-10, D2) is the place's own-ink
+// fill at 12 under the place's ink (states below): the
+// theme's primary container is a primary tint, blue on blue (2.78:1 light,
+// 1.66:1 dark on bg-primary).
+@mixin sf-place-strong-accent($c) {
+  --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+  --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
+  --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
+  // The place's own colour (its solid colour, declared on the place, so a
+  // project's --sf-primary brands the label of a white button on its banner
+  // too); the tones only where a child is no solid place.
+  --sf-on-primary: var(--sf-surface-place-solid, light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80)));
+  --sf-primary-container: #{sf-ink($c, 12)};
+  // Hover and press (DEV acceptance 2026-11-11, D2b): in the light theme a
+  // step darker, the white fill going down 12 -> 8 -> 4 towards the place,
+  // so the white label gains contrast (more white under white text lost it:
+  // 4.44 hover, 4.06-4.31 press). In the dark the place's dark ink rises
+  // 16 / 20 as before, darker as well (>= 5.34).
+  --sf-primary-container-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
+  --sf-primary-container-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
+  --sf-on-primary-container: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+  // A raised plate on the place (a segmented thumb; DEV acceptance
+  // 2026-11-10, D4): lighter than the track in both themes, as C42 (3) asks
+  // on every place. In the light theme white, the theme's raised place; in the
+  // dark the colour's tone 90 over the place's 80, where the fill's top step
+  // (the place's ink, tone 20) was darker than the track. Its label is the
+  // place's colour in the light theme and the place's ink in the dark.
+  --sf-place--plate: light-dark(var(--sf-white), var(--sf-#{$c}-90));
+  --sf-place--on-plate: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-20));
+  // A filled field's placeholder on the place (forms batch round 2, item C):
+  // the place's full ink, as before. Its dim ink (80) over the field's fill
+  // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
+  --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
 }

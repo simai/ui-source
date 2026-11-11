@@ -30,6 +30,6 @@
 }
 
 .sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
-  background-color: var(--sf-disable);
+  background-color: var(--sf-surface-disabled);
 }
 }

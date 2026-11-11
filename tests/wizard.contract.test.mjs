@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.2.3');
+  assert.equal(manifest.version, '1.2.4');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -119,7 +119,7 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
 
 test('sf-steps 1.2.0: an item\'s own state, skipped and running', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.2.1');
+  assert.equal(steps.version, '1.2.2');
   assert.deepEqual(steps.settings.items.of.state.values, ['default', 'completed', 'skipped', 'running', 'error']);
   const stepsTemplate = read('src/smart/steps/js/templates/default.js');
   assert.match(stepsTemplate, /skipped: 'do_not_disturb_on', running: 'progress_activity'/u);

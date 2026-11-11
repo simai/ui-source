@@ -10,6 +10,10 @@ import { fileURLToPath } from 'node:url';
 // because a disabled control and a decorative glyph are explicitly outside both
 // requirements — and that is the whole of what it may paint.
 //
+// Since C43 (owner 2026-11-10) the role is var(--sf-on-surface-disabled) and
+// deprecated (journal token-c43-muted-is-disabled): it reads the disabled ink
+// of the place it stands on, so the rule below holds for its former readers.
+//
 // It had drifted well past that: the dropdown painted its label and its
 // placeholder with it while the input next door used --sf-on-surface-variant,
 // the progress scale painted its readout, and the error icon of a field came

@@ -22,7 +22,11 @@ Loading model:
   duplicate activation and shows the spinner at the icon's size: in place of
   the start icon (else the end icon; an icon-only button's icon); without an
   icon it lies over the label, which keeps its place, so the width does not
-  change and the label stays the accessible name. Reduced motion: a still arc
+  change and the label stays the accessible name. Reduced motion: a still arc.
+  A loading button keeps its scheme colour -- the fill, the edge and the label
+  of the resting button -- and the spinner takes the label's ink (1.12.0,
+  owner decision C36; before, it wore the grey disabled look). A button that
+  is `disabled` and `loading` at once wears the disabled look
 
 Main attributes:
 
@@ -66,8 +70,10 @@ Main attributes:
   ladder. The side padding grows by half of what the height adds, so the gap
   from the end to the icon stays the same. A compact region
   (`data-sf-density="compact"`) moves the steps one down and the height picks
-  the neighbour there. Another value reads as `default`, with one console
-  warning.
+  the neighbour there -- on the desktop only: below 60rem the phone ladder
+  already is the dense one, and a phone button stands where it stands in a
+  normal region (owner decision C36). Another value reads as `default`, with
+  one console warning.
 
   | size | low | default | high | highest |
   |------|-----|---------|------|---------|
@@ -84,6 +90,15 @@ Main attributes:
   only, at the same height. It keeps drawing as before until 2027-01-01 with a
   console warning and is not turned into a height; write `height` instead
 - `radius="default|square|rounded"`
+- `full-width` — the control fills its container and its content stays in
+  the middle (1.12.0, owner decision C36); the name and the meaning are
+  sf-segmented's `full-width`. Without it the button is as wide as its
+  content. The height does not change. `root-class="w-full"` still works;
+  write `full-width` instead:
+
+  ```html
+  <sf-button full-width text="Войти" icon-start="login"></sf-button>
+  ```
 - `root-class`
 - `loading`
 - `disabled`
@@ -128,6 +143,12 @@ Main attributes:
 - `shortcut` — a key combination drawn at the end of the button, see below
 - `shortcut-listen` — the button is pressed by its shortcut, see below
 - `aria-label` — a host attribute, passed to the native button
+
+An icon-only button (`icon` with an `aria-label` and no text) keeps the
+button's side padding, so it is wider than tall: 56 × 40 at size 1 on the
+desktop, 48 × 36 on a phone. The square button with an icon is
+`sf-button-icon` (40 × 40, 36 × 36); take it for a toolbar or a row of icons
+(owner decision C36).
 
 The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 `appearance`, `icon-left` and `icon-right` for `icon-start` and `icon-end`,

@@ -88,8 +88,19 @@
   line-height: var(--sf-textarea-placeholder--line-height);
 }
 
+/* A filled field keeps the placeholder on on-surface-variant, which the fill
+   remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
+/* The filled placeholder is the place's dim ink, as the bordered one is (as on
+   sf-input; forms batch round 2, item C): the textarea re-declares
+   --sf-on-surface-variant as the ink on a fill, so the place's value is kept
+   on the host above it. A strong coloured place keeps its full ink there
+   (--sf-place--fill-placeholder): its dim ink over the fill stays under 4.5:1. */
+.sf-textarea.sf-textarea--filled {
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+}
+
 .sf-textarea.sf-textarea--filled textarea::placeholder {
-  --sf-textarea-placeholder--color: var(--sf-on-surface);
+  --sf-textarea-placeholder--color: var(--sf-textarea--place-variant);
 }
 
 .sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--flush .sf-textarea-hint-text-wrap {
@@ -137,15 +148,15 @@
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--flush:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--color: var(--sf-on-disable);
+  --sf-textarea-textarea--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--border-color: var(--sf-outline-disable);
+  --sf-textarea-textarea--border-color: var(--sf-outline-disabled);
 }
 
 .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--background-color: var(--sf-disable);
+  --sf-textarea-textarea--background-color: var(--sf-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
@@ -164,7 +175,7 @@
 
 .sf-textarea.sf-textarea--filled textarea {
   --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
@@ -297,7 +308,7 @@
 }
 
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
-  --sf-textarea-placeholder--color: var(--sf-on-disable);
+  --sf-textarea-placeholder--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea:not(.error):has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {

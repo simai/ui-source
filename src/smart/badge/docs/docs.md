@@ -134,6 +134,12 @@ says how something went:
 | `done`     | icon `check_circle`    | success     | Ready            |
 | `stopped`  | icon `stop_circle`     | neutral     | Stopped          |
 | `failed`   | icon `error`           | error       | Failed           |
+| `paused`   | icon `pause_circle`    | warning     | Paused           |
+| `queued`   | icon `schedule`        | neutral     | Queued           |
+
+`paused` and `queued` (1.4.0, decision C34): a run that stopped and will go on
+is a warning; a run in a queue is neutral. `waiting` is the warning «needs your
+input», not a queue.
 
 ```html
 <sf-badge activity="waiting"></sf-badge>

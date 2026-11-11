@@ -184,6 +184,26 @@
       }
     },
     {
+      "name": "activity-paused",
+      "title": "Run state: Paused",
+      "settings": {
+        "activity": "paused"
+      },
+      "expect": {
+        "activity": "paused"
+      }
+    },
+    {
+      "name": "activity-queued",
+      "title": "Run state: Queued",
+      "settings": {
+        "activity": "queued"
+      },
+      "expect": {
+        "activity": "queued"
+      }
+    },
+    {
       "name": "activity-tonal",
       "title": "Run state, tonal",
       "settings": {
@@ -240,6 +260,8 @@
           "  <sf-badge id=\"bd-own\" activity=\"running\" text=\"Build\" icon=\"sync\"></sf-badge>",
           "  <sf-badge id=\"bd-empty-mark\" activity=\"done\" icon-start=\"\"></sf-badge>",
           "  <sf-badge id=\"bd-compact\" activity=\"stopped\" compact></sf-badge>",
+          "  <sf-badge id=\"bd-paused\" activity=\"paused\"></sf-badge>",
+          "  <sf-badge id=\"bd-queued\" activity=\"queued\"></sf-badge>",
           "  <sf-badge id=\"bd-compact-bare\" text=\"Bare\" compact></sf-badge>",
           "  <sf-badge id=\"bd-tight\" text=\"Черновик\" appearance=\"tonal\" tight></sf-badge>",
           "  <sf-badge id=\"bd-figure\" text=\"3\" scheme=\"primary\"></sf-badge>",
@@ -429,6 +451,16 @@
             },
             {
               "check": "(() => { const one = document.querySelector('#bd-figure .sf-badge'); const two = document.querySelector('#bd-figures .sf-badge'); const box = one.getBoundingClientRect(); return one.classList.contains('sf-badge--figure') && !two.classList.contains('sf-badge--figure') && Math.abs(box.width - box.height) < 0.02; })()"
+            }
+          ]
+        },
+        {
+          "id": "p-activity-paused-queued",
+          "title": "paused is a warning with a pause mark, queued a neutral badge with a clock, each with its word (C34)",
+          "covers": "settings.activity paused, queued",
+          "steps": [
+            {
+              "check": "(() => { const p = document.querySelector('#bd-paused'); const pb = p.querySelector('.sf-badge'); const q = document.querySelector('#bd-queued'); const qb = q.querySelector('.sf-badge'); return pb.querySelector('.sf-icon')?.textContent.trim() === 'pause_circle' && pb.classList.contains('sf-badge--warning') && pb.querySelector('.sf-badge-text').textContent === p.sfWord('activity-paused') && qb.querySelector('.sf-icon')?.textContent.trim() === 'schedule' && qb.classList.contains('sf-badge--neutral') && qb.querySelector('.sf-badge-text').textContent === q.sfWord('activity-queued'); })()"
             }
           ]
         }

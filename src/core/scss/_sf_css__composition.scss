@@ -48,7 +48,7 @@
         position: sticky;
         inset-block-start: 0;
         z-index: 1;
-        background: var(--sf-surface-1, Canvas);
+        background: var(--sf-surface-area, Canvas);
     }
 
     @container (min-width: 48rem) {
@@ -172,11 +172,11 @@
         --sf-button--border-color: var(--sf-button-border-color, var(--sf-on-primary));
     }
 
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container {
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container {
         --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
     }
 
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-icon {
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-icon {
         --sf-icon--color: var(--sf-on-primary);
     }
 }
@@ -232,7 +232,7 @@
         padding-inline: var(--sf-space-2);
         border: 1px solid var(--sf-outline, GrayText);
         border-radius: var(--sf-radius-1);
-        background: var(--sf-surface-1, Canvas);
+        background: var(--sf-surface-area, Canvas);
         color: var(--sf-on-surface, CanvasText);
         font: inherit;
     }

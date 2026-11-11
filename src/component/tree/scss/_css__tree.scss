@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
   .sf-tree {
     padding-inline-start: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-start, var(--sf-space-1)));
@@ -33,8 +34,13 @@
 
   .sf-tree .sf-tree-item-container {
     gap: var(--sf-tree-item-gap, var(--sf-tree-item--container-gap, var(--sf-space-1\/2)));
-    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-b6));
-    padding-block: var(--sf-tree-item--padding-block, var(--sf-space-1\/3));
+    /* The row is a step of the height ladder (C01, C18; docs pre-check
+       2026-11-10, navigation item 5): the size 1 control, 40 on a desktop and
+       36 on a phone. It was a fixed 40 (--sf-b6) at every width, and space-1/3
+       above and below the 24 chevron made it 40 on a phone as well: the block
+       padding is what the step leaves around the chevron. */
+    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-ui-1--control-height));
+    padding-block: var(--sf-tree-item--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-icon-size-3)) / 2));
     padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
     border-radius: inherit;
   }
@@ -57,6 +63,9 @@
 
   .sf-tree .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
     background: var(--sf-surface-container-hover);
+    /* A translucent fill, as the selected row: a tonal badge keeps its tone
+       and an anchored badge's ring is the row's colour (C43 D4). */
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
   }
 
   .sf-tree .sf-tree-item.active > .sf-tree-item-container,
@@ -65,6 +74,9 @@
     background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+       anchored badge's ring is the row's colour (C43 D3). */
+    @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
   }
 
   // A row is flush against the rows above and below it, so the ring turns
@@ -82,8 +94,9 @@
     }
   }
 
+  // A disabled item reads the disabled ink of the place it stands on (C43).
   .sf-tree .sf-tree-item[aria-disabled='true'] {
-    color: var(--sf-on-surface-muted);
+    color: var(--sf-on-surface-disabled);
     cursor: not-allowed;
   }
 

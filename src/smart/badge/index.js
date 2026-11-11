@@ -26,6 +26,10 @@ const BADGE_ACTIVITIES = {
   done: {role: 'success', icon: 'check_circle', word: 'activity-done'},
   stopped: {role: 'neutral', icon: 'stop_circle', word: 'activity-stopped'},
   failed: {role: 'error', icon: 'error', word: 'activity-failed'},
+  // 1.4.0 (C34): a run that stopped and will go on is a warning, a run in a
+  // queue is neutral with a clock (waiting stays "needs your input").
+  paused: {role: 'warning', icon: 'pause_circle', word: 'activity-paused'},
+  queued: {role: 'neutral', icon: 'schedule', word: 'activity-queued'},
 };
 
 const normalizeName = (value) => String(value ?? '').trim().toLowerCase();

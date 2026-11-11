@@ -86,9 +86,22 @@ function loader() {
   return globalThis.SF?.Loader;
 }
 
-/** The theme drawn now (light or dark), whatever the preference. */
+/**
+ * False when the page's host draws the theme itself and started the Loader
+ * with `theme: false` (SF_BOOT_CONFIG.theme): the Loader then neither reads
+ * nor sets a theme, and its `theme` stays at the value it began with.
+ */
+export function loaderOwnsTheme() {
+  return loader()?.themeEnabled !== false;
+}
+
+/**
+ * The theme drawn now (light or dark), whatever the preference. The Loader's
+ * own value counts only while the Loader owns the theme; under a host that
+ * owns it (R076: a Docara example frame) the document says what is drawn.
+ */
 export function visibleTheme() {
-  const theme = loader()?.theme;
+  const theme = loaderOwnsTheme() ? loader()?.theme : undefined;
   if (theme === 'dark' || theme === 'light') return theme;
   const root = globalThis.document?.documentElement;
   if (root?.classList?.contains('theme-dark')) return 'dark';
@@ -160,6 +173,21 @@ export function warnCycleToggle(host, names) {
 }
 
 /**
+ * A theme cycle whose press cannot move the theme says why, once per
+ * element (R076): a host that owns the theme (the Loader started with
+ * `theme: false`), or no Loader at all. The button stays where it is and
+ * sends no change.
+ */
+export function warnThemeNotOwned(host) {
+  if (host.__sfThemeWarned) return;
+  host.__sfThemeWarned = true;
+  const reason = loader()
+    ? 'the page\'s theme belongs to its host (the Loader runs with theme: false); a host that hands the theme to the Loader makes it work (a Docara example: theme_switch=true)'
+    : 'SF.Loader is absent';
+  globalThis.console?.warn?.(`[SIMAI Framework] ${host.localName} theme-cycle: the press changes nothing: ${reason}.`);
+}
+
+/**
  * A person's press of a cycle: the next value, the change event and the
  * announcement. Answers true when it moved.
  */
@@ -178,6 +206,7 @@ export function pressCycle(host, state) {
     // theme switched off) leaves the cycle where it is.
     host.__sfCycleExpect = value;
     if (loader()?.setTheme?.(value) !== true) {
+      warnThemeNotOwned(host);
       host.__sfCycleAnnounce = false;
       host.__sfCyclePrevious = before;
       host.__sfCycleExpect = undefined;
@@ -203,4 +232,62 @@ export function themeCycleFollow(host) {
   if (host.__sfCycleExpect !== now) host.__sfCyclePrevious = undefined;
   host.__sfCycleExpect = undefined;
   host.requestComponentUpdate?.('theme-cycle');
+}
+
+// The icons a control can switch to, asked for before it switches (R074).
+// Only the icon on screen was tracked, so the first press that showed another
+// one asked the subset service for a grown font on the click, and the new
+// icon stayed blank while the service built it (up to ~30 s when it was busy).
+// Asked for when the control is drawn, the names join the page's first icon
+// request (held until the Loader is ready); a control added later costs one
+// grown font off the click.
+
+/**
+ * The icon entries ({icon, filled}) a cycle, a theme cycle or a toggle can
+ * show. `icons` are a toggle's own icon names: with `pressed` present they
+ * are drawn filled while on, so both forms are asked for. `filled` is the
+ * control's own filled setting (every form filled).
+ */
+export function switchIconEntries(host, {icons = [], filled = false} = {}) {
+  const entries = [];
+  const add = (icon, fill) => {
+    const name = String(icon || '').trim();
+    if (name) entries.push({icon: name, filled: Boolean(fill || filled)});
+  };
+  if (host.hasAttribute('theme-cycle')) {
+    themeCycleValues(host.getAttribute('theme-cycle')).forEach((value) => add(THEME_ICONS[value], false));
+  } else if (hasCycle(host)) {
+    cycleItems(host.getProp?.('cycle') ?? host.getAttribute('cycle')).forEach((item) => add(item.icon, item.pressed));
+  } else if (host.hasAttribute('pressed')) {
+    icons.forEach((icon) => {
+      add(icon, false);
+      add(icon, true);
+    });
+  }
+  const seen = new Set();
+  return entries.filter((entry) => {
+    const key = `${entry.icon}|${entry.filled}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * Asks the Loader for these icon entries once per distinct list (a render
+ * that draws the same items asks nothing). Answers the number of new names.
+ */
+export function preloadControlIcons(host, entries) {
+  if (!Array.isArray(entries) || !entries.length) return 0;
+  const key = JSON.stringify(entries);
+  if (host.__sfPreloadedIcons === key) return 0;
+  const preload = loader()?.preloadIcons;
+  if (typeof preload !== 'function') return 0;
+  host.__sfPreloadedIcons = key;
+  return preload.call(loader(), entries) || 0;
+}
+
+/** switchIconEntries, asked for. */
+export function preloadSwitchIcons(host, options = {}) {
+  return preloadControlIcons(host, switchIconEntries(host, options));
 }
