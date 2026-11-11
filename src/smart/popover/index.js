@@ -132,6 +132,7 @@ class SfPopover extends PopoverElement {
     };
 
     onDisconnected() {
+        this._watchSheet(null);
         this._releaseAnchor();
         this.removeEventListener('click', this._onTriggerClick);
         this._releaseDismissal();
@@ -283,8 +284,16 @@ class SfPopover extends PopoverElement {
     // edge of a 400px window ended 260px past it). It stays where it stands in
     // the stacking order (no top layer): a window or a drawer opened from it is
     // still drawn over it. Closed, the stylesheet's placement is back.
+    //
+    // A surface a consumer draws as a sheet (data-sf-sheet: sf-input-rich's
+    // link editor on a phone, C32 RT-02) is placed by that consumer's sheet
+    // rule, so it is not anchored: the inline placement would hold it at the
+    // trigger (it hung at the top of a 390 screen). The attribute can arrive
+    // after the surface opened, so it is watched while the surface is open.
     _syncAnchor(surface) {
-        const want = this.open && surface?.isConnected ? `${this.placement}|${this.offset || ''}` : null;
+        this._watchSheet(this.open && surface?.isConnected ? surface : null);
+        const sheet = surface?.hasAttribute?.('data-sf-sheet');
+        const want = this.open && surface?.isConnected && !sheet ? `${this.placement}|${this.offset || ''}` : null;
         if (this._anchor && (this._anchorSurface !== surface || this._anchorKey !== want)) this._releaseAnchor();
         if (!want || this._anchor) return;
         const {side, align} = ANCHOR_PLACEMENTS[this.placement] || ANCHOR_PLACEMENTS['bottom-end'];
@@ -293,6 +302,16 @@ class SfPopover extends PopoverElement {
         });
         this._anchorSurface = surface;
         this._anchorKey = want;
+    }
+
+    _watchSheet(surface) {
+        if (this._sheetWatch?.surface === surface) return;
+        this._sheetWatch?.observer.disconnect();
+        this._sheetWatch = null;
+        if (!surface || typeof MutationObserver !== 'function') return;
+        const observer = new MutationObserver(() => this._syncAnchor(surface));
+        observer.observe(surface, {attributes: true, attributeFilter: ['data-sf-sheet']});
+        this._sheetWatch = {surface, observer};
     }
 
     _releaseAnchor() {

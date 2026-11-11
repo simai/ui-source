@@ -13,10 +13,12 @@
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "smart/alert-bar/css/alert-bar.min.css",
     "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
+    "smart/time/css/time.min.css",
     "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
     "utility/flex-direction/default/css/default.min.css",
@@ -26,8 +28,10 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
+    "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
-    "utility/text-align/default/css/default.min.css"
+    "utility/text-align/default/css/default.min.css",
+    "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
     "error": [
@@ -38,10 +42,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -51,8 +57,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "info": [
       "component/alerts/css/alerts.min.css",
@@ -62,10 +70,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -75,8 +85,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "large": [
       "component/alerts/css/alerts.min.css",
@@ -86,10 +98,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -99,8 +113,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "many": [
       "component/alerts/css/alerts.min.css",
@@ -110,10 +126,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -123,8 +141,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "minimized": [
       "component/alerts/css/alerts.min.css",
@@ -134,10 +154,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -147,8 +169,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "reference": [
       "component/alerts/css/alerts.min.css",
@@ -158,10 +182,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -171,8 +197,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ],
     "three": [
       "component/alerts/css/alerts.min.css",
@@ -182,10 +210,12 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "smart/alert-bar/css/alert-bar.min.css",
       "smart/button-close/css/button-close.min.css",
       "smart/button-icon/css/button-icon.min.css",
+      "smart/time/css/time.min.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
@@ -195,8 +225,10 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/visibility/default/css/default.min.css"
     ]
   }
 }

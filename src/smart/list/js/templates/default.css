@@ -16,7 +16,8 @@
        --sf-list-heading-color            a group's heading */
   .sf-list__frame {
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
-    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-container-hover));
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
+    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
     --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 
@@ -65,6 +66,12 @@
      control height either way: its avatar takes the line and stands centred
      in the place. */
   .sf-list__frame { --sf-list--lead-size: var(--sf-list--lead-line); }
+
+  /* The shared row menu is fetched after the page is ready. Until it upgrades
+     (its host turns display: contents) an empty sf-menu-context is a flex item
+     of the frame and takes a slot of its gap: the list drew --sf-space-1/2
+     taller for a few frames and then jumped (C40 first-paint watch). */
+  .sf-list__frame > .sf-list__menu { display: contents; }
   .sf-list--lead-wide { --sf-list--lead-size: var(--sf-list--lead-block); }
 
   .sf-list__lead {
@@ -127,13 +134,19 @@
   .sf-list__empty[hidden],
   .sf-list__next[hidden] { display: none; }
 
-  .sf-list__heading {
-    padding-block: var(--sf-space-1\/4);
+  /* A group's heading is block list's shared heading (.sf-group-heading,
+     component group-heading, C40): its type, weight and spaces are the class's;
+     the list keeps the words on the rows' text edge and their colour. The
+     space above a group after the first is the heading's --sf-space-3 in all,
+     the gap between groups included. */
+  .sf-list__group > .sf-list__heading {
+    margin-block-start: 0;
     padding-inline: var(--sf-list--text-inset);
-    color: var(--sf-list-heading-color, var(--sf-on-surface-variant));
-    font-size: var(--sf-label-medium--size);
-    line-height: var(--sf-label-medium--height);
-    font-weight: var(--sf-font-weight-medium);
+    color: var(--sf-list-heading-color, var(--sf-on-surface));
+  }
+
+  .sf-list__group + .sf-list__group {
+    margin-block-start: calc(var(--sf-space-3) - var(--sf-list--group-gap));
   }
 
   .sf-list__rows {

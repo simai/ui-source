@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.change",
+  "title": "change reference",
+  "summary": "Deterministic reference fixture for sf-change.",
+  "locale": "ru",
+  "props": {
+    "label": "Статус",
+    "before": "Собран",
+    "after": "Передан в доставку"
+  },
+  "children": [],
+  "state": "default"
+}

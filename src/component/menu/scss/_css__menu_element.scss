@@ -147,9 +147,9 @@
   .sf-menu-element.disabled,
   .sf-menu-element:disabled,
   .sf-menu-element[aria-disabled='true'] {
-    --sf-menu-element--background-color: var(--sf-disable);
-    --sf-menu-element--border-color: var(--sf-outline-disable);
-    --sf-menu-element--color: var(--sf-on-disable);
+    --sf-menu-element--background-color: var(--sf-surface-disabled);
+    --sf-menu-element--border-color: var(--sf-outline-disabled);
+    --sf-menu-element--color: var(--sf-on-surface-disabled);
     cursor: default;
   }
 
@@ -159,9 +159,10 @@
     --sf-icon--color: currentColor;
   }
 
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
   .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-    --sf-menu-element--background-color: var(--sf-surface-container-hover);
-    --sf-menu-element--border-color: var(--sf-surface-container-hover);
+    --sf-menu-element--background-color: var(--sf-surface-state-select);
+    --sf-menu-element--border-color: var(--sf-surface-state-select);
   }
 
   .sf-menu-element.open,

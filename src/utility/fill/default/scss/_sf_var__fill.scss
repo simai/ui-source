@@ -65,6 +65,15 @@ $fill-color-array: (
     'info-container': 'info-container',
     'info-state-select': 'info-state-select',
     'info-container-strong': 'info-container-strong',
+    // The hue roles (C17, owner 2026-11-08; R087 item 1, option A): the role
+    // set .sf-hue-<name> gives an element (core/scss/_sf_css__hue.scss). The
+    // class reads the hue the element, or an ancestor, chose:
+    // class="sf-hue-teal fill-hue-container-graphic". Without a
+    // .sf-hue-<name> the role is not declared: a background or a border is
+    // then transparent or current, a text or fill colour the parent's. They
+    // only paint: a hue is not a place (C16 keeps places to the theme's seven
+    // colours).
+    'hue-container-graphic': 'on-hue-container-graphic',
 );
 
 $fill-color-hover-active-array: (

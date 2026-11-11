@@ -185,25 +185,10 @@ function getItemLabel(item) {
   return item.dataset?.value?.trim?.() || item.textContent?.trim() || "";
 }
 
-function ensureCheckmark(item) {
-  const supportsSelectedIndicator =
-    item.classList.contains("sf-list-item--text") ||
-    item.classList.contains("sf-list-item--icon");
-
-  if (!supportsSelectedIndicator) return;
-  if (!item || item.querySelector(CHECKMARK_SELECTOR)) return;
-
-  const selectedItem = document.createElement("div");
-  selectedItem.className = "sf-list-item-selected-item flex";
-
-  const icon = document.createElement("i");
-  icon.className = "sf-icon";
-  icon.textContent = "check";
-
-  selectedItem.append(icon);
-  item.append(selectedItem);
-}
-
+// A chosen row of a choice list is its fill alone (owner decision C08; docs
+// pre-check 2026-11-10, navigation item 3): the check at the row's end is gone,
+// so the row carries one sign, not two. A mark left in the markup by an older
+// release is taken out when the row is synced.
 function syncSelected(root, selectedItems = []) {
   const selectedSet = new Set(selectedItems);
 
@@ -212,12 +197,7 @@ function syncSelected(root, selectedItems = []) {
     item.classList.toggle("selected", isSelected);
     item.setAttribute("aria-selected", isSelected ? "true" : "false");
 
-    const checkmark = item.querySelector(CHECKMARK_SELECTOR);
-    if (isSelected) {
-      ensureCheckmark(item);
-    } else if (checkmark) {
-      checkmark.remove();
-    }
+    item.querySelector(CHECKMARK_SELECTOR)?.remove();
 
     syncDropdownCheckbox(item, isSelected);
   });

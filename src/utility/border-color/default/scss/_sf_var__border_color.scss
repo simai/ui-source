@@ -49,3 +49,15 @@ $border-color-array: (
     'info-container': 'info-container',
     'info-container-strong': 'info-container-strong',
 );
+
+// The hue roles (C17, owner 2026-11-08; R087 item 1, option A): the line of
+// the hue the element, or an ancestor, chose with .sf-hue-<name>
+// (core/scss/_sf_css__hue.scss): class="sf-hue-teal border-hue". As border-primary
+// reads --sf-primary-outline, border-hue reads --sf-hue-outline.
+// Without a .sf-hue-<name> the role is not declared and the border takes the
+// text colour. A map of its own, not keys of $border-color-array: that map is
+// read by the hover:, focus: and active: states and by ring-color and
+// ring-offset-color too, and the hue roles are the default state only.
+$border-color-hue-array: (
+    'hue': 'hue-outline',
+);

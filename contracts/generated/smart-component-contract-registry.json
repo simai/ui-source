@@ -94,7 +94,8 @@
           "smart.badge",
           "smart.button",
           "smart.button-icon",
-          "smart.icon"
+          "smart.icon",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -106,7 +107,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert-bar/smart.manifest.json",
-      "manifest_sha256": "21f404cb83d34bdbb99ebb20775218608734115e38441ac71cb989a2ecc1d035",
+      "manifest_sha256": "8ebdc076ccd842af4356425d38177cbca7b9c5979eecee1f78fe870e4eb1f2a8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -382,7 +383,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-close/smart.manifest.json",
-      "manifest_sha256": "a7b484a07ba914e94cb245d5ff6f582fdfb2839a13803c0fbfbd116a6e06bd0f",
+      "manifest_sha256": "697f20afe878e746e065f7acddcb7aa69005682f2692e8a2b4b1786b0c11c96f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -475,6 +476,48 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-change",
+      "id": "smart.change",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/change/smart.manifest.json",
+      "manifest_sha256": "ab64af81ca52c06d6e68911f1b9eaa684e1e3ac95f5973efeec6e6450affddf5",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
+      "tags": [
+        "change",
+        "diff",
+        "before",
+        "after",
+        "audit",
+        "history",
+        "text"
+      ],
+      "title": "Change"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
@@ -555,6 +598,7 @@
         "public_parts": [],
         "uses": [
           "smart.button",
+          "smart.change",
           "smart.icon"
         ]
       },
@@ -567,7 +611,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "27af5aed7c237f08df5734c9329d800d970a183c10edec87a7d26a1c51b6f705",
+      "manifest_sha256": "871edaa886d81a5af1cbb68bec1d95b947fd1037f9a80ec77440f37129b0d446",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1703,6 +1747,7 @@
         "public_parts": [],
         "uses": [
           "component.dropdown",
+          "component.group-heading",
           "component.icon-buttons",
           "smart.avatar",
           "smart.badge",
@@ -1710,7 +1755,8 @@
           "smart.empty-state",
           "smart.icon",
           "smart.list-item",
-          "smart.menu-context"
+          "smart.menu-context",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -1722,7 +1768,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "58e81019d3a57350b417be8b6daa25b835ddf4fe534e6cbaaba6fb784020bc4b",
+      "manifest_sha256": "4499b72591abf0f18bf3a0950db8ddd72509620f92e4a2b1f3bd6e4ed0c17cb9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1925,8 +1971,13 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.featured-icon",
+          "component.group-heading",
+          "smart.avatar",
           "smart.button",
-          "smart.icon"
+          "smart.change",
+          "smart.icon",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -1938,21 +1989,23 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-timeline/smart.manifest.json",
-      "manifest_sha256": "2fe15977fca8c687e2bb268e2f85a842285575552e77a8560831b8e408c0b1e2",
+      "manifest_sha256": "38e0fe1a44d596155b43116a32fe0b00f4c1216d762cca1ecbf540f44f9eb8cf",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+      "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
       "tags": [
-        "list",
-        "timeline",
         "activity",
-        "history",
+        "admin",
         "audit",
+        "comments",
         "events",
-        "admin"
+        "history",
+        "list",
+        "steps",
+        "timeline"
       ],
       "title": "Timeline"
     },
@@ -2028,7 +2081,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "eb368cbff9b1a19841617cc78747c03b06a0d28558d6598596d589864610fdd2",
+      "manifest_sha256": "206cf89a5f3305c3f950fc4a43c69dcdc2b34c20bc1c46c20cff91c85025df21",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2185,7 +2238,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "8969763e9ccf12cfdce2082f4f33b0f82d92d7d50ca0a034ab40f7de1dc93304",
+      "manifest_sha256": "a59fbd0bafac4f51b53a26b71da713098331a9d5d3dde110a6a49d1c8b757494",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2582,7 +2635,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/segmented/smart.manifest.json",
-      "manifest_sha256": "789488c3ebcdae2a19b1973a161cd692a844b01b2164046e853a1a8a3b7eaf1b",
+      "manifest_sha256": "dc8d3552ae76e4c14633b6c6842f02d2b77b39ee55f4a8f0888367c6d48386eb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2767,7 +2820,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/sortable/smart.manifest.json",
-      "manifest_sha256": "c3193ed050c60705f808a3696a4ec574b0fda2518289199047687781e3bbd3ed",
+      "manifest_sha256": "2047e2d50a83d53ab8cbdacc7fa0cbd3aeb8d42fab71086fd523146cbcbb5fc2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2843,7 +2896,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/steps/smart.manifest.json",
-      "manifest_sha256": "14a230bc449f63e64324bd8d8974195067a556b2b9844f326d263fc21665fadf",
+      "manifest_sha256": "f12d76c659b05d9f966ea4487c332b005880b4d903718ea72642339c5737b43f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3069,6 +3122,46 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.tooltip"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-time",
+      "id": "smart.time",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/time/smart.manifest.json",
+      "manifest_sha256": "8df69c1b866db3ee1e4e27f47c06e96d45bc2940d60a3224c70aeb43f0adc002",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+      "tags": [
+        "time",
+        "date",
+        "relative",
+        "tooltip",
+        "text"
+      ],
+      "title": "Time"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
@@ -3167,7 +3260,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree/smart.manifest.json",
-      "manifest_sha256": "7a3a054972e9c173a00a8b965472de7fdf3d8cd861b5c2a6e0a996a0bb7c8569",
+      "manifest_sha256": "f921dbefc3337e62f5db6782e6bcce8b3f0e123a0d86c6368d5b49c4963479fe",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
