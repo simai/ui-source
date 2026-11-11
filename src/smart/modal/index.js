@@ -292,7 +292,9 @@ class SfModal extends ModalElement {
     const loose = Array.from(this.childNodes).filter((node) =>
       node.nodeType === Node.ELEMENT_NODE
         // Static markup is a picture of the window, not its content (§5.4).
-        ? node.tagName.toLowerCase() !== "template" && !node.hasAttribute("data-sf-static")
+        // A slotted child is the base's: while it is held (holdSlotNode) it
+        // is still here and is not loose content a second time.
+        ? node.tagName.toLowerCase() !== "template" && !node.hasAttribute("data-sf-static") && !node.hasAttribute("slot")
         : node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
     if (!loose.length) return;
     if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
@@ -713,13 +715,45 @@ class SfModal extends ModalElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer(changedAttributes);
     }
-    this.drawInto(templateResult, this.resolveRenderTarget());
+    const target = this.resolveRenderTarget();
+    this.holdPortalUntilStyled(target);
+    this.drawInto(templateResult, target);
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {
       changedAttributes,
       root: this,
     });
     this.emitComponentEvent("after-render", { changedAttributes });
+  }
+
+  // The window drawn in its portal stays out of view until the sheets it
+  // draws with are applied, as the base keeps a Smart host (the style gate,
+  // data-sf-style-pending): this render is the window's own and the portal
+  // is not the host, so the gate did not cover it, and under held-back sheets
+  // an open window painted for a moment as a card in the page flow, without
+  // its layer, scrim or x (DEV's acceptance 2026-11-11, N2). The gate is the
+  // Loader's (the modal sheet and the utilities its template uses), at most
+  // styleReadyTimeout; once it settles the window shows and, if it opened in
+  // the meantime, takes its first focus, which a hidden panel could not.
+  // An inline window draws in its host, where the page put it, and keeps
+  // what the base does for it.
+  holdPortalUntilStyled(target) {
+    if (this._styleReady || !target || target === this || this.display === "inline") return;
+    const styles = this.stylesReadiness();
+    if (!styles) return;
+    target.setAttribute("data-sf-style-pending", "");
+    (this._styleHeldTargets ??= new Set()).add(target);
+    if (this._styleHeldWait) return;
+    this._styleHeldWait = styles.then(() => {
+      this._styleReady = true;
+      this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
+      this._styleHeldTargets.clear();
+      this._styleHeldWait = null;
+      const root = this._root();
+      if (this._isOpen && this._modalState === "open" && root && !root.contains(document.activeElement)) {
+        this.focusFirst();
+      }
+    });
   }
 
   resolveRenderTarget() {
