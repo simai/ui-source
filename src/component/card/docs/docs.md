@@ -18,11 +18,13 @@ has no semantics: when its content is one article or one link, the page puts
 that element inside it, not on it.
 
 A heading inside the card is its title, whatever its level (`h2` to `h6`
-keep their meaning, not their page size): the title step of the text ladder,
-`--sf-text-size-1` on `--sf-text-height-1`, semibold -- 16 px on a 24 px
-line on a desktop, 14 px on 20 on a phone and in a compact region
-(`data-sf-density="compact"`), as the titles of the other components;
-`--sf-card-title-size` and `--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
+keep their meaning, not their page size): the heading-6 step
+(`--sf-heading-6--size`, the size of `--sf-text-size-1` at normal density) on
+the title line `--sf-title--height-2`, semibold -- 16 px on a 24 px line on a
+desktop, 14 px on 18 on a phone, as the titles of the other components
+(1.5.0, R082). Headings do not follow density (C44): in a compact region
+(`data-sf-density="compact"` on `<html>` or on a container) the title is the
+same; `--sf-card-title-size` and `--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
 word breaks at a hyphen where the language allows it (`hyphens: auto`, with
 the page's `lang`), and only a word with no hyphen point breaks anywhere.
 
@@ -44,7 +46,7 @@ padding. Use it inside a grid of cards that needs no frames.
 | `--sf-card-padding-block` | the space above and below the content | `--sf-space-2` |
 | `--sf-card-padding-inline` | the space beside the content | `--sf-space-2`, or 8 % of the card's column when that is less (a narrow card) |
 | `--sf-card-gap` | between the blocks | `--sf-content--space-text` |
-| `--sf-card-title-size` | a heading's size inside the card | `--sf-text-size-1` (16 px on a desktop, 14 on a phone and in a compact region) |
+| `--sf-card-title-size` | a heading's size inside the card | `--sf-heading-6--size` (16 px on a desktop, 14 on a phone, in a compact region too) |
 | `--sf-card-title-weight` | a heading's weight inside the card | `--sf-text--font-weight-6` |
 
 In forced colours the edge is drawn in `CanvasText`.

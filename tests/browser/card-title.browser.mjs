@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// The card title (R082, C19): a heading inside .sf-card is the title step of
-// the text ladder -- --sf-text-size-1 on --sf-text-height-1, semibold --
-// whatever its level: 16/24 on a desktop, 14/20 on a phone and in a compact
+// The card title (R082, C19, C44): a heading inside .sf-card is the heading-6
+// step on the title line of rung 2 -- --sf-heading-6--size on
+// --sf-title--height-2, semibold -- whatever its level: 16/24 on a desktop,
+// 14/18 on a phone, and the same in a compact region on <html> or on a
+// container (headings do not follow density, C44). Was: 14/20 in a compact
 // region. It is read on the built sheets with the bare heading sizes of the
 // headers utility loaded too, at 1440 and 390, light and dark, three loads
 // each, for every way the Framework draws a card title:
@@ -44,7 +46,7 @@ const drawn = async (prefix) => {
 };
 const normalHtml = await drawn('normal');
 const compactHtml = await drawn('compact');
-const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
+const page = (theme, placement) => `<!doctype html><html lang="ru" class="theme-${theme}"${placement === 'html' ? ' data-sf-density="compact"' : ''}><head><meta charset="utf-8">
 ${sheets.map((sheet) => `<link rel="stylesheet" href="/distr/${sheet}">`).join('\n')}
 </head><body style="margin:16px">
 <div id="normal">${handMade}${normalHtml}</div>
@@ -56,7 +58,7 @@ const server = createServer((request, response) => {
   const path = decodeURIComponent(url.pathname);
   if (path === '/page') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
-    return response.end(page(url.searchParams.get('theme')));
+    return response.end(page(url.searchParams.get('theme'), url.searchParams.get('placement')));
   }
   const file = path.startsWith('/distr/') ? join(out, path.slice('/distr/'.length)) : '';
   if (!file || !file.startsWith(out) || !existsSync(file) || statSync(file).isDirectory()) {
@@ -68,32 +70,32 @@ const server = createServer((request, response) => {
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
 
-// Desktop 16/24 and phone 14/20 (C21 rung 1, R082); a compact region on a
-// desktop takes the phone's step (C22), on a phone it already is it.
-const expected = (width, region) => (width >= 960 && region === 'normal' ? {size: 16, line: 24} : {size: 14, line: 20});
+// Desktop 16/24 and phone 14/18 (C21, R082), in every region: compact on
+// <html> or on a container changes nothing (C44).
+const expected = (width) => (width >= 960 ? {size: 16, line: 24} : {size: 14, line: 18});
 const failures = [];
 const seen = {};
 const browser = await chromium.launch();
 try {
   for (const theme of ['light', 'dark']) {
     for (const width of [1440, 390]) {
-      for (let load = 1; load <= 3; load += 1) {
-        const where = `${theme} ${width} load ${load}`;
+      for (const placement of ['container', 'html']) for (let load = 1; load <= 3; load += 1) {
+        const where = `${theme} ${width} ${placement} load ${load}`;
         const tab = await browser.newPage({viewport: {width, height: 900}});
         const errors = [];
         tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
         tab.on('pageerror', (error) => errors.push(String(error)));
-        await tab.goto(`http://127.0.0.1:${server.address().port}/page?theme=${theme}`, {waitUntil: 'load'});
+        await tab.goto(`http://127.0.0.1:${server.address().port}/page?theme=${theme}&placement=${placement}`, {waitUntil: 'load'});
         const titles = await tab.evaluate(() => [...document.querySelectorAll('.sf-card > :is(h1, h2, h3, h4, h5, h6)')].map((title) => {
           const probe = document.createElement('span');
           title.parentElement.append(probe);
-          probe.style.cssText = 'font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1)';
+          probe.style.cssText = 'font-size:var(--sf-heading-6--size);line-height:var(--sf-title--height-2)';
           const system = {size: parseFloat(getComputedStyle(probe).fontSize), line: parseFloat(getComputedStyle(probe).lineHeight)};
           probe.style.cssText = 'font-weight:var(--sf-text--font-weight-6)';
           system.weight = Number(getComputedStyle(probe).fontWeight);
           probe.remove();
           const style = getComputedStyle(title);
-          const region = title.closest('#compact') ? 'compact' : 'normal';
+          const region = title.closest('[data-sf-density="compact"]') ? 'compact' : 'normal';
           const id = `${title.hasAttribute('data-sf-composition-id') ? 'content.card' : '.sf-card'} ${title.tagName.toLowerCase()} (${region})`;
           return {id, region,
             size: parseFloat(style.fontSize), line: parseFloat(style.lineHeight), weight: Number(style.fontWeight), system};
@@ -102,10 +104,10 @@ try {
         const check = (ok, said, detail) => { if (!ok) failures.push({where, said, ...detail}); };
         check(titles.length === levels.length * 4, 'every title is on the page', {count: titles.length});
         for (const title of titles) {
-          const want = expected(width, title.region);
+          const want = expected(width);
           check(title.size === want.size && title.line === want.line, `${title.id}: ${want.size}/${want.line}`, {title});
           check(title.weight === 600, `${title.id}: semibold`, {title});
-          check(title.size === title.system.size && title.line === title.system.line && title.weight === title.system.weight, `${title.id}: the system's step (--sf-text-size-1 / --sf-text-height-1 / weight 6)`, {title});
+          check(title.size === title.system.size && title.line === title.system.line && title.weight === title.system.weight, `${title.id}: the system's step (--sf-heading-6--size / --sf-title--height-2 / weight 6)`, {title});
         }
         check(errors.length === 0, 'the console stays clean', {errors});
         await tab.close();

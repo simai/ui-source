@@ -316,8 +316,9 @@ an outlined or link primary takes the on-primary ink and edge), so it does
 not melt into the fill. `primary` stays the primary container's light fill.
 
 A heading inside a `content.card` is the card's title (the `.sf-card`
-sheet, card 1.5.0): the title step of the text ladder, semibold -- 16 px on
-a 24 px line on a desktop, 14 on 20 on a phone and in a compact region (the
+sheet, card 1.5.0): the heading-6 step on the title line of rung 2,
+semibold -- 16 px on a 24 px line on a desktop, 14 on 18 on a phone, and the
+same in a compact region, since headings do not follow density (C44; the
 card's title variables change it); in a narrow card the words wrap and
 a long word breaks at a hyphen where the page's language allows it.
 
