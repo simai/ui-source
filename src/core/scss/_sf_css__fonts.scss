@@ -94,8 +94,13 @@
 //   still break in one face and not the other.
 // - Vertical: ascent 0.96875 em, descent 0.24121 em, no line gap (Inter's
 //   hhea 1984 / 494 / 0 over 2048). size-adjust scales the overrides too, so
-//   each face divides them by its own size-adjust; the line box is Inter's to
-//   the pixel at every size and weight, alone or mixed with Inter on a line.
+//   each face divides them by its own size-adjust. Chrome rounds each to whole
+//   pixels, and at 16 and 48 px Inter's ascent is exactly half a pixel (15.5,
+//   46.5): an override at the exact quotient landed a hair below and rounded
+//   down, so 16 px text sat 1 px higher than in Inter, and a line holding
+//   code had a pitch of 24 instead of Inter's 25 (C10 accept.mjs). The ascent
+//   is set 0.12 % above the quotient: measured, 1.0006-1.0019 matches Inter's
+//   line box and baseline at every size from 10 to 96 px in every face here.
 // - Weight bands: Arial ships 400 and 700 only, and the browser does not
 //   thicken a local() face it was given at one weight (a cold visit once set
 //   every bold word at 400, simai.io hub, 2026-10-19), so 600 and 700 take
@@ -109,7 +114,7 @@
   src: local("Arial"), local("ArialMT"), local("Helvetica"), local("Liberation Sans"),
     local("LiberationSans"), local("Arimo");
   size-adjust: 107.45%;
-  ascent-override: 90.1582%;
+  ascent-override: 90.2664%;
   descent-override: 22.4487%;
   line-gap-override: 0%;
 }
@@ -120,7 +125,7 @@
   src: local("Arial"), local("ArialMT"), local("Helvetica"), local("Liberation Sans"),
     local("LiberationSans"), local("Arimo");
   size-adjust: 108.74%;
-  ascent-override: 89.0887%;
+  ascent-override: 89.1956%;
   descent-override: 22.1824%;
   line-gap-override: 0%;
 }
@@ -132,7 +137,7 @@
     local("Helvetica-Bold"), local("Liberation Sans Bold"), local("LiberationSans-Bold"),
     local("Arimo Bold"), local("Arimo-Bold");
   size-adjust: 101.76%;
-  ascent-override: 95.1995%;
+  ascent-override: 95.3137%;
   descent-override: 23.7039%;
   line-gap-override: 0%;
 }
@@ -144,7 +149,7 @@
     local("Helvetica-Bold"), local("Liberation Sans Bold"), local("LiberationSans-Bold"),
     local("Arimo Bold"), local("Arimo-Bold");
   size-adjust: 102.95%;
-  ascent-override: 94.0991%;
+  ascent-override: 94.2120%;
   descent-override: 23.4299%;
   line-gap-override: 0%;
 }
@@ -159,7 +164,7 @@
     local("LiberationSans"), local("Arimo");
   unicode-range: U+0400-04FF, U+2116;
   size-adjust: 106.45%;
-  ascent-override: 91.0052%;
+  ascent-override: 91.1144%;
   descent-override: 22.6596%;
   line-gap-override: 0%;
 }
@@ -171,7 +176,7 @@
     local("LiberationSans"), local("Arimo");
   unicode-range: U+0400-04FF, U+2116;
   size-adjust: 107.57%;
-  ascent-override: 90.0576%;
+  ascent-override: 90.1657%;
   descent-override: 22.4236%;
   line-gap-override: 0%;
 }
@@ -184,7 +189,7 @@
     local("Arimo Bold"), local("Arimo-Bold");
   unicode-range: U+0400-04FF, U+2116;
   size-adjust: 101.2%;
-  ascent-override: 95.7263%;
+  ascent-override: 95.8412%;
   descent-override: 23.8351%;
   line-gap-override: 0%;
 }
@@ -197,7 +202,7 @@
     local("Arimo Bold"), local("Arimo-Bold");
   unicode-range: U+0400-04FF, U+2116;
   size-adjust: 102.24%;
-  ascent-override: 94.7525%;
+  ascent-override: 94.8662%;
   descent-override: 23.5926%;
   line-gap-override: 0%;
 }

@@ -92,7 +92,8 @@ test('core.js starts the text faces from its first module after the public path'
 });
 
 // The fallback faces: one per weight band and script, with the line box of
-// Inter (ascent 1984/2048, descent 494/2048, no gap) once size-adjust scales it.
+// Inter (ascent 1984/2048 plus 0.12 %, descent 494/2048, no gap) once size-adjust
+// scales it.
 test('every Inter Fallback face keeps Inter\'s line box under its own size-adjust', () => {
   const scss = readFileSync(new URL('../src/core/scss/_sf_css__fonts.scss', import.meta.url), 'utf8');
   const faces = [...scss.matchAll(/@font-face\s*\{([^}]*"Inter Fallback"[^}]*)\}/g)].map((m) => m[1]);
@@ -101,7 +102,9 @@ test('every Inter Fallback face keeps Inter\'s line box under its own size-adjus
   for (const body of faces) {
     const value = (name) => Number(new RegExp(`${name}:\\s*([\\d.]+)%`).exec(body)?.[1]);
     const size = value('size-adjust') / 100;
-    assert.ok(Math.abs(value('ascent-override') / 100 * size - 1984 / 2048) < 1e-5, body);
+    // 0.12 % above Inter's ascent: an exact quotient rounds 15.5 px down (16 px text).
+    const ascent = value('ascent-override') / 100 * size / (1984 / 2048);
+    assert.ok(ascent > 1.0008 && ascent < 1.0016, `${body}: ascent ${ascent}`);
     assert.ok(Math.abs(value('descent-override') / 100 * size - 494 / 2048) < 1e-5, body);
     assert.equal(value('line-gap-override'), 0);
     const weight = /font-weight:\s*([\d ]+);/.exec(body)[1].trim();
