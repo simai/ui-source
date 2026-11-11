@@ -12,11 +12,15 @@
 //   - the dimmed ink of a segment that is not selected, and its count, reach
 //     4.5:1 over the track composited over the surfaces 0 to 3, in both themes;
 //     the ink on either plate reaches 4.5:1 over the plate;
-//   - full-width fills its container with equal segments;
+//   - full-width fills its container; each segment starts at its own width and
+//     the rest is shared equally, a label on one line (owner decision C47 A);
 //   - an icon-only segment is square and keeps its label as its name, and a
 //     count is part of the name;
 //   - the keyboard is the group's own: arrows, Home and End, one tab stop,
 //     disabled items skipped, change on the host; the ring is visible;
+//   - labels that do not fit on one line fold the track into an sf-dropdown of
+//     the same size, the track out of sight, the page not wider (C47 C); a
+//     track of a size sf-dropdown lacks (1/3) scrolls inside itself instead;
 //   - no join border reaches a segment, a narrow page does not scroll sideways,
 //     reduced motion stops the transitions and forced colours keep the plate;
 //   - radius, as on sf-button: the plate takes the radius a button of that
@@ -241,15 +245,25 @@ try {
       <div id="box" style="inline-size:320px"><sf-segmented id="full" appearance="track" full-width aria-label="Период" value="d" ${items([{value: 'd', label: 'День'}, {value: 'w', label: 'Неделя'}, {value: 'm', label: 'Месяц'}])}></sf-segmented></div>
       <sf-segmented id="icons" appearance="track" aria-label="Вид" value="list" ${items(ICONS)}></sf-segmented>
       <sf-segmented id="named" appearance="track" aria-label="Фильтр" value="all" ${items([{value: 'all', label: 'Все', count: 24}, {value: 'dark', label: 'Тёмные', count: 7, 'aria-label': 'Тёмные эффекты'}])}></sf-segmented>
-      <sf-segmented id="long" appearance="track" aria-label="Много" value="a" ${items('abcdefghij'.split('').map((value) => ({value, label: `Пункт ${value}`})))}></sf-segmented>`});
+      <sf-segmented id="long" appearance="track" aria-label="Много" value="a" ${items('abcdefghij'.split('').map((value) => ({value, label: `Пункт ${value}`})))}></sf-segmented>
+      <sf-segmented id="small" appearance="track" size="1/3" aria-label="Мелко" value="a" ${items('abcdefghij'.split('').map((value) => ({value, label: `Пункт ${value}`})))}></sf-segmented>`});
     const full = await page.evaluate(() => {
       const box = document.getElementById('box').getBoundingClientRect();
       const root = document.querySelector('#full .sf-button-group');
-      return {box: box.width, track: root.getBoundingClientRect().width, segments: [...root.children].map((node) => node.getBoundingClientRect().width)};
+      const segments = [...root.querySelectorAll(':scope > button')];
+      return {box: box.width, track: root.getBoundingClientRect().width,
+        segments: segments.map((node) => node.getBoundingClientRect().width),
+        labels: segments.map((node) => node.querySelector('.sf-button-text-container')?.getBoundingClientRect().width ?? 0),
+        lines: segments.map((node) => (() => { const text = node.querySelector('.sf-button-text-container'); if (!text) return 0; const range = document.createRange(); range.selectNodeContents(text); return new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size; })())};
     });
     evidence.fullWidth = full;
     check('full-width fills its container', Math.abs(full.track - full.box) < 0.01, full);
-    check('full-width segments are equal', full.segments.every((width) => Math.abs(width - full.segments[0]) < 0.5), full);
+    // C47 A: a segment is as wide as its label plus an equal share of the rest
+    // (flex 1 1 auto), so the labels' differences stay the segments'.
+    const extra = full.segments.map((width, index) => width - full.labels[index]);
+    check('full-width segments start at their labels\' widths and share the rest equally', full.segments.length === 3
+      && full.labels.every((width) => width > 0) && extra.every((value) => Math.abs(value - extra[0]) < 0.5), {...full, extra});
+    check('full-width labels stay on one line', full.lines.every((count) => count === 1), full);
     for (const name of ['Список', 'Сетка']) {
       check(`icon-only segment is named ${name}`, (await page.getByRole('radio', {name, exact: true}).count()) === 1);
     }
@@ -258,11 +272,23 @@ try {
     check('a count is part of the name', (await page.getByRole('radio', {name: 'Все 24', exact: true}).count()) === 1);
     check('an aria-label carries the count', (await page.getByRole('radio', {name: 'Тёмные эффекты 7', exact: true}).count()) === 1);
     const narrow = await page.evaluate(() => {
-      const root = document.querySelector('#long .sf-button-group');
-      return {page: document.documentElement.scrollWidth, viewport: innerWidth, track: root.scrollWidth, visible: root.clientWidth};
+      const host = document.getElementById('long');
+      const root = host.querySelector('.sf-button-group');
+      const dropdown = host.querySelector('sf-dropdown');
+      // sf-dropdown draws no box of its own: its place is the fold's box.
+      const rect = host.querySelector('.sf-button-group-narrow')?.getBoundingClientRect();
+      const small = document.querySelector('#small .sf-button-group');
+      return {page: document.documentElement.scrollWidth, viewport: innerWidth, folded: host.hasAttribute('data-sf-folded'),
+        dropdown: Boolean(dropdown), dropdownLeft: rect?.left ?? null, dropdownRight: rect?.right ?? null,
+        trackVisibility: getComputedStyle(root).visibility, trackInert: Boolean(root.closest('[inert]')) || root.inert === true,
+        smallFolded: document.getElementById('small').hasAttribute('data-sf-folded'), smallTrack: small.scrollWidth, smallVisible: small.clientWidth};
     });
     evidence.narrow = narrow;
-    check('a long track scrolls inside itself, the page does not', narrow.page <= narrow.viewport && narrow.track > narrow.visible, narrow);
+    check('a track whose labels do not fit folds into an sf-dropdown (C47 C)', narrow.folded && narrow.dropdown, narrow);
+    check('the folded track is out of sight; the dropdown stays in the page', narrow.trackVisibility === 'hidden'
+      && narrow.dropdownLeft >= 0 && narrow.dropdownRight <= narrow.viewport + 0.5, narrow);
+    check('a long size 1/3 track scrolls inside itself (no dropdown of that size)', !narrow.smallFolded && narrow.smallTrack > narrow.smallVisible, narrow);
+    check('a narrow page does not scroll sideways', narrow.page <= narrow.viewport, narrow);
     await page.close();
   }
 
