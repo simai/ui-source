@@ -152,9 +152,10 @@ class SfTabs extends TabsElement {
       variant: { default: 'buttons' },
       scheme: { default: 'default' },
       topPosition: {default: 'start'},
-      // scroll (the default), wrap, or more: what does not fit goes into
-      // «Ещё» (owner, 2026-10-14).
-      overflow: { default: 'scroll' },
+      // more (the default since 1.2.0, owner decision C54, 2026-11-11): what
+      // does not fit goes into «Ещё (n)» whole; scroll keeps the former
+      // scrolling row, wrap wraps the rows.
+      overflow: { default: 'more' },
       // A gear at the end of the tabs: the person orders and hides them; the
       // host keeps the choice (sf-tabs-settings-change, setSettings).
       configurable: { type: Boolean, default: false },
@@ -190,6 +191,8 @@ class SfTabs extends TabsElement {
       // Built-in Smart buttons can finish rendering after their owning Tabs.
       if (event.target !== this && event.target.parentElement === this.tabList) {
         this.syncTabSemantics();
+        // A tab drawn after the row was laid out has its width only now.
+        this.scheduleOverflow();
       }
     });
   }
@@ -234,12 +237,33 @@ class SfTabs extends TabsElement {
       this._resizeObserver.observe(container);
       this._observed = container;
     }
+    // «Ещё (n)» changes its width with its count after the row was laid out
+    // (its sf-button draws the new text later), and the room it takes is the
+    // tabs' room: the last tab stood clipped under overflow-x: clip (C54
+    // defect, «Архив» in the filled look at 640 px). Its button is watched as
+    // well, so the row is laid out again with the trigger's real width.
+    const trigger = this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-more > button');
+    if (this._resizeObserver && trigger && this._observedTrigger !== trigger) {
+      if (this._observedTrigger) this._resizeObserver.unobserve(this._observedTrigger);
+      this._resizeObserver.observe(trigger);
+      this._observedTrigger = trigger;
+    }
+    // The text face arriving later widens every tab without resizing the box.
+    if (!this._fontsListener && globalThis.document?.fonts?.addEventListener) {
+      this._fontsListener = () => this.scheduleOverflow();
+      document.fonts.addEventListener('loadingdone', this._fontsListener);
+    }
     this.scheduleOverflow();
   }
 
   disconnectedCallback() {
     this._resizeObserver?.disconnect();
     this._observed = null;
+    this._observedTrigger = null;
+    if (this._fontsListener) {
+      document.fonts?.removeEventListener?.('loadingdone', this._fontsListener);
+      this._fontsListener = null;
+    }
     this._panelObserver?.disconnect();
     this._moreMenu?.close?.({restoreFocus: false});
     this._moreMenu?.remove?.();
@@ -557,7 +581,7 @@ class SfTabs extends TabsElement {
 
   get overflow() {
     const value = this.getAttribute('overflow');
-    return OVERFLOWS.includes(value) ? value : 'scroll';
+    return OVERFLOWS.includes(value) ? value : 'more';
   }
 
   get configurable() {
@@ -657,21 +681,29 @@ class SfTabs extends TabsElement {
       return box?.getBoundingClientRect().width ?? 0;
     };
     const widths = hosts.map(width);
-    const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+    const style = getComputedStyle(list);
+    const gap = parseFloat(style.columnGap) || 0;
+    // The tabs' room is the row's content box: clientWidth holds its padding.
+    const room = () => list.clientWidth - (parseFloat(style.paddingInlineStart) || 0) - (parseFloat(style.paddingInlineEnd) || 0);
+    // The tabs in their order up to the first that does not fit: a tab is in
+    // the row whole or in «Ещё», and a later narrower tab does not jump the
+    // queue past a wider one (owner decision C54).
     const fits = (available) => {
       const kept = [];
       let used = 0;
-      hosts.forEach((host, at) => {
+      for (let at = 0; at < hosts.length; at += 1) {
         const next = used + (kept.length ? gap : 0) + widths[at];
-        if (next <= available + 0.5) { kept.push(at); used = next; }
-      });
+        if (next > available + 0.5) break;
+        kept.push(at);
+        used = next;
+      }
       return kept.length === hosts.length ? null : kept;
     };
     showMore(false);
-    let kept = fits(list.clientWidth);
+    let kept = fits(room());
     if (kept) {
       showMore(true);
-      kept = fits(list.clientWidth) ?? hosts.map((_, at) => at);
+      kept = fits(room()) ?? hosts.map((_, at) => at);
       // The pinned tabs and the active one always stay in the row: the last
       // kept tabs that are neither give way to them. (Only the active one did:
       // at 375px a pinned first tab went into «Ещё» beside an active one,
@@ -685,7 +717,7 @@ class SfTabs extends TabsElement {
       if (missing.length) {
         const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
         const next = [...kept, ...missing];
-        while (span(next) > list.clientWidth + 0.5) {
+        while (span(next) > room() + 0.5) {
           const dropAt = next.slice().reverse().find((at) => !must.includes(at));
           if (dropAt === undefined) break;
           next.splice(next.indexOf(dropAt), 1);

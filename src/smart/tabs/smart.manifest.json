@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.17",
+  "version": "1.2.0",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -98,8 +98,8 @@
       },
       "overflow": {
         "type": "string",
-        "default": "scroll",
-        "description": "What the tabs do when they do not fit: scroll (the row scrolls), wrap (rows wrap), or more (the tabs that do not fit go into a trailing «Ещё (n)» menu; the active one always stays).",
+        "default": "more",
+        "description": "What the tabs do when they do not fit: more (the default: the tabs that do not fit go whole into a trailing «Ещё (n)» menu; the active one always stays in the row), scroll (the row scrolls), or wrap (rows wrap).",
         "enum": [
           "scroll",
           "wrap",
@@ -511,7 +511,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "64a33d0d4a2631ce9bcbbf679ccbdeda09a01d73540cb0b4ec6274ba4c90c7f4"
+        "sha256": "3478e8895817d50314ed300ea7610cbfda8aeecff1e0f7ef6aa8d565c1e621af"
       }
     ],
     "generated_runtime": [

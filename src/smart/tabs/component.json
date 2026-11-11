@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tabs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tabs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tabs",
   "tag": "sf-tabs",
-  "version": "1.1.17",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "tabs",
   "settings": {
@@ -89,8 +89,8 @@
         "wrap",
         "more"
       ],
-      "default": "scroll",
-      "summary": "What the tabs do when they do not fit: scroll (the row scrolls), wrap (rows wrap), or more (the tabs that do not fit go into a trailing «Ещё (n)» menu; the active one always stays)."
+      "default": "more",
+      "summary": "What the tabs do when they do not fit: more (the default: the tabs that do not fit go whole into a trailing «Ещё (n)» menu; the active one always stays in the row), scroll (the row scrolls), or wrap (rows wrap)."
     },
     "configurable": {
       "type": "boolean",
@@ -343,6 +343,7 @@
     "events.sf-tabs-settings-change, sf-tabs-settings-reset → settings-change, settings-reset: own verbs, the DOM names unchanged; component, tagName and template leave the detail (§8)"
   ],
   "x-decisions": [
+    "version: 1.1.17 → 1.2.0, a minor: overflow defaults to more (owner decision C54, 2026-11-11; journal behaviour-tabs-overflow-more). Tabs that do not fit go whole into «Ещё (n)» in their order, the active and the pinned ones stay in the row; no fade, no scroll arrows. The former scrolling row is overflow=\"scroll\". The row is laid out again when «Ещё (n)» changes its width with its count, when a tab draws late and when the text face arrives, so no tab stands clipped before the trigger.",
     "version: 1.0.0 → 1.1.0, a minor while sf-tab-change holds a dated alias (§4.10).",
     "events: the person's choice is `change`, sent as sf-tabs-change with {selected, previous, current, item, items} (§8 <tag>-<verb>; a DOM change would also be heard from a field inside a panel); the old sf-tab-change follows once through a split row whose adapter adds component, tagName and template. The migration's row to the bare `change` is corrected.",
     "change reports a person (§8): a press, a key or «Ещё» send it; go-to, writing selected or active-index do not. The studio scenario asserts the attribute instead of the event.",

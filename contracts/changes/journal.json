@@ -10374,6 +10374,31 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "behaviour-tabs-overflow-more",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.2.0 lays out tabs that do not fit with overflow=\"more\" by default: they go whole into a trailing «Ещё (n)» menu and the active tab stays in the row (owner decision C54). The row scrolled before; a page that wants the scrolling row writes overflow=\"scroll\".",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "overflow",
+          "from": "scroll (the default)",
+          "to": "more (the default); scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the scrolling row (a long row it scrolls itself, a test that scrolls the strip), write overflow=\"scroll\" on the sf-tabs. Nothing is needed for the new behaviour.",
+      "examples": {
+        "before": "<sf-tabs items=\"Обзор|Задачи|…\"></sf-tabs> (the row scrolls)",
+        "after": "<sf-tabs overflow=\"scroll\" items=\"Обзор|Задачи|…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
     }
   ]
 }
