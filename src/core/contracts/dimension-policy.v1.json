@@ -159,6 +159,15 @@
       "reason": "WebKit zooms the page on focus of a field under 16 CSS pixels; the floor is in CSS px by the platform's rule."
     },
     {
+      "id": "touch-field-zoom-floor-quantity-unit",
+      "category": "style-review",
+      "filePattern": "^component/quantity/scss/_css__quantity\\.scss$",
+      "contextPattern": "font-size: max\\(var\\(--sf-quantity-input--font-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The unit beside a quantity's number takes the same touch-phone floor the core gives the number (touch-field-zoom-floor), so the two stay one size (C53 D2)."
+    },
+    {
       "id": "sass-unit-math",
       "category": "style-review",
       "filePattern": "^core/scss/mix/_mix__breakpoint\\.scss$",
