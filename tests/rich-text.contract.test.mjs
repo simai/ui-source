@@ -286,6 +286,19 @@ test('Bold and Italic say the marks only: a heading, bold by its type, is not a 
   // A caret's pending marks go to the typed text and are forgotten when the caret moves.
   assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
   // Composed text (an IME) takes the marks pending when the composition started.
-  assert.match(source, /on\('compositionstart', \(\) => \{ this\._composing = this\._pendingMarks\(\); \}\);/u);
+  assert.match(source, /on\('compositionstart', \(\) => this\._onCompositionStart\(\)\);/u);
+  assert.match(source, /_onCompositionStart\(\) \{\n\s+this\._composing = this\._pendingMarks\(\);\n\s+this\._inComposition = true;/u);
   assert.match(source, /on\('compositionend', \(event\) => this\._onCompositionEnd\(event\)\);/u);
+  // M1, M2: a composition moves the caret, the pending marks stand until it ends (Bold stays pressed);
+  // a cancelled composition (no text, caret back) keeps them.
+  assert.match(source, /if \(this\._inComposition\) return this\._pending;/u);
+  assert.match(source, /if \(pending && !text && collapsed && end\.start === pending\.at\) this\._pending = pending;/u);
+  // M3: one input that is not composing after every composition that changed the text, unless the browser said it.
+  assert.equal((source.match(/this\._sayComposed\(before\);/gu) || []).length, 3);
+  assert.match(source, /if \(this\._composedSay\) this\._composedSay\.said = true;/u);
+  assert.doesNotMatch(source, /this\._say\('insertCompositionText'\);\n\s+\}\n\n\s+_onInput/u);
+  // M4: plain-text paste takes the pending marks, rich paste keeps its own.
+  assert.match(source, /const marks = data\?\.getData\?\.\('text\/html'\) \? null : this\._pendingMarks\(\);/u);
+  // E1: a caret on a mark's end edge reads (and types) in the mark.
+  assert.match(source, /if \(!this\._inComposition\) this\._caretIntoMark\(range\);/u);
 });

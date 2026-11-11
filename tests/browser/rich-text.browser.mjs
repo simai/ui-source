@@ -412,6 +412,101 @@ try {
       check(`IME synthetic: ${one.name}: typing goes on in the mark`, after === '<p>alpha<strong>にx</strong></p>', {got: after});
     }
   }
+  // ---- IME follow-ups (acceptance M1-M4, E1) ----------------------------
+  const bold = (page) => page.evaluate(() => document.querySelector('#r [data-sf-tool="bold"]').getAttribute('aria-pressed'));
+  const listen = (page) => page.evaluate(() => {
+    window.__inputs = [];
+    document.getElementById('r').addEventListener('input', (event) => window.__inputs.push({type: event.inputType, composing: Boolean(event.isComposing)}));
+  });
+  const settled = (page) => page.evaluate(() => window.__inputs.filter((one) => !one.composing).length);
+  // M2: Bold stays pressed while the composition runs; M1: a cancel keeps the mark pending.
+  await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+  await caretInText(page);
+  await page.keyboard.press(`${mod}+b`);
+  await page.waitForTimeout(50);
+  await listen(page);
+  const during = await page.evaluate(async () => {
+    const editor = document.querySelector('#r .sf-rich-text-editor');
+    const selection = getSelection();
+    const range = selection.getRangeAt(0);
+    const text = range.startContainer;
+    const start = range.startOffset;
+    editor.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true, data: ''}));
+    text.replaceData(start, 0, 'n');
+    const caret = document.createRange();
+    caret.setStart(text, start + 1);
+    selection.removeAllRanges();
+    selection.addRange(caret);
+    editor.dispatchEvent(new CompositionEvent('compositionupdate', {bubbles: true, data: 'n'}));
+    editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertCompositionText', data: 'n', isComposing: true}));
+    await new Promise((settle) => setTimeout(settle, 50));
+    const pressed = document.querySelector('#r [data-sf-tool="bold"]').getAttribute('aria-pressed');
+    // The person cancels: the candidate goes, the caret is back.
+    text.replaceData(start, 1, '');
+    const back = document.createRange();
+    back.setStart(text, start);
+    selection.removeAllRanges();
+    selection.addRange(back);
+    editor.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: ''}));
+    await new Promise((settle) => setTimeout(settle, 50));
+    return pressed;
+  });
+  check('IME synthetic M2: Bold pressed while composing', during === 'true', {during});
+  check('IME synthetic M1: a cancel keeps the text', await value(page) === '<p>alpha</p>', {got: await value(page)});
+  check('IME synthetic M1: a cancel keeps Bold pressed', await bold(page) === 'true', {got: await bold(page)});
+  check('IME synthetic M3: a cancel that changed nothing says no input', await settled(page) === 0, {inputs: await page.evaluate(() => window.__inputs)});
+  await page.keyboard.type('z');
+  check('IME synthetic M1: typing after a cancel takes the mark', await value(page) === '<p>alpha<strong>z</strong></p>', {got: await value(page)});
+  // M3: one input that is not composing after a composition, with and without pending marks.
+  for (const [name, keys, expected] of [['no pending mark', [], '<p>alphaに</p>'], ['Bold pending', [`${mod}+b`], '<p>alpha<strong>に</strong></p>']]) {
+    await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+    await caretInText(page);
+    for (const key of keys) await page.keyboard.press(key);
+    await page.waitForTimeout(50);
+    await listen(page);
+    await compose(page, ['n', 'に']);
+    await page.waitForTimeout(80);
+    check(`IME synthetic M3: ${name}: value`, await value(page) === expected, {got: await value(page)});
+    check(`IME synthetic M3: ${name}: exactly one input not composing`, await settled(page) === 1, {inputs: await page.evaluate(() => window.__inputs)});
+  }
+  // M4: plain-text paste takes the pending marks, rich paste keeps its own.
+  const pasteData = (page, data) => page.evaluate((items) => {
+    const transfer = new DataTransfer();
+    for (const [type, text] of Object.entries(items)) transfer.setData(type, text);
+    document.querySelector('#r .sf-rich-text-editor').dispatchEvent(new ClipboardEvent('paste', {bubbles: true, cancelable: true, clipboardData: transfer}));
+  }, data);
+  for (const [name, data, expected] of [
+    ['plain text takes the pending Bold', {'text/plain': 'pasted'}, '<p>alpha<strong>pasted</strong></p>'],
+    ['rich text keeps its own marks', {'text/html': '<em>x</em>', 'text/plain': 'x'}, '<p>alpha<em>x</em></p>'],
+  ]) {
+    await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+    await caretInText(page);
+    await page.keyboard.press(`${mod}+b`);
+    await page.waitForTimeout(50);
+    await pasteData(page, data);
+    await page.waitForTimeout(50);
+    check(`paste M4: ${name}`, await value(page) === expected, {got: await value(page)});
+  }
+  // E1: a caret at a bold run's end edge reads bold, as the text it types is.
+  for (const [name, place] of [['at the paragraph level', 'block'], ['at the start of the next text', 'text']]) {
+    await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p><strong>ab</strong>cd</p>"></sf-input-rich>');
+    await page.evaluate((where) => {
+      const editor = document.querySelector('#r .sf-rich-text-editor');
+      editor.focus();
+      const p = editor.querySelector('p');
+      const range = document.createRange();
+      if (where === 'block') range.setStart(p, 1);
+      else range.setStart(p.lastChild, 0);
+      range.collapse(true);
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+    }, place);
+    await page.waitForTimeout(80);
+    check(`E1: ${name}: Bold pressed`, await bold(page) === 'true', {got: await bold(page)});
+    await page.keyboard.type('x');
+    check(`E1: ${name}: the text goes into the bold run`, await value(page) === '<p><strong>abx</strong>cd</p>', {got: await value(page)});
+  }
+
   // The typed reference: the same caret mark on typed text.
   await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
   await focusEnd(page);
@@ -429,6 +524,29 @@ try {
   await page.waitForTimeout(50);
   check('IME (CDP): Bold then composed', await value(page) === '<p>alpha<strong>に</strong></p>', {got: await value(page)});
   await cdp.detach();
+  // The browser's IME: a cancel keeps the pending Bold (M1), Bold pressed while composing (M2).
+  await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+  await focusEnd(page);
+  await page.keyboard.press(`${mod}+b`);
+  const cdp2 = await page.context().newCDPSession(page);
+  await cdp2.send('Input.imeSetComposition', {text: 'n', selectionStart: 1, selectionEnd: 1});
+  await page.waitForTimeout(50);
+  check('IME (CDP) M2: Bold pressed while composing', await bold(page) === 'true', {got: await bold(page)});
+  await cdp2.send('Input.imeSetComposition', {text: '', selectionStart: 0, selectionEnd: 0});
+  await page.waitForTimeout(50);
+  check('IME (CDP) M1: a cancel keeps Bold pressed', await bold(page) === 'true', {got: await bold(page)});
+  await page.keyboard.type('z');
+  check('IME (CDP) M1: typing after a cancel takes the mark', await value(page) === '<p>alpha<strong>z</strong></p>', {got: await value(page)});
+  // M3 through the browser's IME, no pending mark: one input that is not composing.
+  await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+  await focusEnd(page);
+  await listen(page);
+  await cdp2.send('Input.imeSetComposition', {text: 'n', selectionStart: 1, selectionEnd: 1});
+  await cdp2.send('Input.imeSetComposition', {text: 'に', selectionStart: 1, selectionEnd: 1});
+  await cdp2.send('Input.insertText', {text: 'に'});
+  await page.waitForTimeout(80);
+  check('IME (CDP) M3: no pending mark: exactly one input not composing', await settled(page) === 1, {inputs: await page.evaluate(() => window.__inputs)});
+  await cdp2.detach();
 } finally {
   await browser.close();
   server.close();
