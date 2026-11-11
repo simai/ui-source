@@ -25,7 +25,7 @@
     box-sizing: border-box;
     overflow: hidden;
     // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
     border: var(--sf-figure-border-width, var(--sf-0)) solid var(--sf-figure-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-figure-radius, var(--sf-radius--surface));

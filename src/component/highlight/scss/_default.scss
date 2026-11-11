@@ -115,7 +115,7 @@
     overflow: hidden;
     margin: 0;
     background: var(--sf-highlight-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
     color: var(--sf-highlight-color, var(--sf-on-surface));
