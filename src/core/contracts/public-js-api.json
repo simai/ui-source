@@ -1683,6 +1683,11 @@
       "layer": "component",
       "audience": "internal",
       "author": "Is the flag's script API under its lower-case name; a page calls SF.Flag.",
+      "internal_members": [
+        "mount",
+        "mountAll",
+        "render"
+      ],
       "kind": "function",
       "loaded_by": "component/flag",
       "summary": "A helper of the legacy system scripts (component/flag); the runtime's."

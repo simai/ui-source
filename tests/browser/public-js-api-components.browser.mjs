@@ -16,7 +16,9 @@
 //     22 names declared none of their 74 keys).
 // A second page holds the plain components that give a script API --
 // SF.AdminMenu, SF.Clipboard, SF.Flag, SF.Highlight, SF.Tab -- each loaded by
-// the markup its rule names, and holds the same four rules for them.
+// the markup its rule names, and holds the same four rules for the component
+// layer there (the Loader's lazy internals, such as styleGates, come with the
+// Smart base, which that page does not load).
 import {readFileSync, existsSync, readdirSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -105,7 +107,7 @@ async function check(label, markup, wanted) {
       if (entry.layer === 'component' && entry.audience === 'public' && Object.keys(value).length && !declared.size && !entry.open_members) bare.push(entry.name);
     }
     return {names: Object.keys(window.SF).length, present, missing, undeclared, stale, bare};
-  }, contract.globals);
+  }, label === 'plain' ? contract.globals.filter((entry) => entry.layer === 'component') : contract.globals);
   await page.close();
   return runtime;
 }
