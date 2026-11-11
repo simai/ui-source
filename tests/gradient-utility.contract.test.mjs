@@ -26,8 +26,11 @@ test('six kinds and their settings load by an exact rule', () => {
     ...[8, 12, 16, 24].map((step) => `gradient-strength-${step}`),
     ...['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl'].map((side) => `gradient-dir-${side}`),
     ...[48, 64, 80].map((step) => `gradient-scrim-${step}`),
+    // .sf-hue-<c> gives the kinds their colour too, so the sheet owns those
+    // selectors and its rule names them (the utility rules audit).
+    ...COLOURS.map((colour) => `sf-hue-${colour}`),
   ];
-  assert.equal(names.length, 60);
+  assert.equal(names.length, 79);
   for (const name of names) assert.match(name, rule, name);
   for (const name of ['gradient-color-error', 'gradient-strength-32', 'gradient-scrim-32', 'gradient-glow ']) assert.doesNotMatch(name, rule, name);
 });

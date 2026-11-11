@@ -54,7 +54,9 @@ $p: 'var(--sf-gradient--to)';
 }
 
 // The colour inputs, inherited: .sf-hue-<c> first, so a gradient-color-<c>
-// on the same element wins, and gradient-to-<c> after both.
+// on the same element wins, and gradient-to-<c> after both. This sheet owns
+// .sf-hue-<c> selectors beside core's, so its rule names them too: a page with
+// a hue loads the sheet, and a kind under a hue finds its tones.
 @each $color in $gradient-kind-colors {
     .sf-hue-#{$color}, .gradient-color-#{$color} {
         @each $tone in $gradient-color-tones {
