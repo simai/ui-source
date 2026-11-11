@@ -57,6 +57,11 @@ test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha
   assert.match(keycap, /box-shadow: inset 0 calc\(-1 \* var\(--sf-px\)\) 0/u);
   const plain = css.slice(css.indexOf('@mixin plain'), css.indexOf('@layer'));
   assert.match(plain, /color: var\(--sf-kbd-plain-color, var\(--sf-on-surface-variant\)\)/u);
+  // The keycap's darker muted ink is the keycap's alone: a plain glyph and a
+  // cap take their place's back (kbd-places: dark menu glyphs read the full ink).
+  assert.match(keycap, /--sf-on-surface-variant: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(plain, /--sf-on-surface-variant: inherit;\s*color: var\(--sf-kbd-plain-color/u);
+  assert.match(cap, /--sf-on-surface-variant: inherit;/u);
   // The row's own text (C38): inherited, no em (C18).
   assert.match(plain, /font-size: inherit;/u);
   // Every mixed step is one of the alpha scale's eleven.

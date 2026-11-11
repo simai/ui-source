@@ -13,7 +13,7 @@
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "27788176d500e1cef0498d4eb0c64b3317fd45a4ed1a364cdec009a2ed65b677",
+  "content_sha256": "b4b0ba2d478543c8e15cfbc414050c13559aed49869804ec6016b60a54669f84",
   "dependencies": [
     {
       "id": "tokens.border",
