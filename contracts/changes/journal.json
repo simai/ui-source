@@ -7779,442 +7779,442 @@
         },
         {
           "from": "color-gray",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray(?![a-z0-9-])"
         },
         {
           "from": "color-gray-0",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-0(?![a-z0-9-])"
         },
         {
           "from": "color-gray-1",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-1(?![a-z0-9-])"
         },
         {
           "from": "color-gray-2",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-2(?![a-z0-9-])"
         },
         {
           "from": "color-gray-3",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-3(?![a-z0-9-])"
         },
         {
           "from": "color-gray-4",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-4(?![a-z0-9-])"
         },
         {
           "from": "color-gray-5",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-5(?![a-z0-9-])"
         },
         {
           "from": "color-gray-6",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-6(?![a-z0-9-])"
         },
         {
           "from": "color-gray-7",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-7(?![a-z0-9-])"
         },
         {
           "from": "color-gray-8",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-8(?![a-z0-9-])"
         },
         {
           "from": "color-gray-9",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-9(?![a-z0-9-])"
         },
         {
           "from": "color-red",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red(?![a-z0-9-])"
         },
         {
           "from": "color-red-0",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-0(?![a-z0-9-])"
         },
         {
           "from": "color-red-1",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-1(?![a-z0-9-])"
         },
         {
           "from": "color-red-2",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-2(?![a-z0-9-])"
         },
         {
           "from": "color-red-3",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-3(?![a-z0-9-])"
         },
         {
           "from": "color-red-4",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-4(?![a-z0-9-])"
         },
         {
           "from": "color-red-5",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-5(?![a-z0-9-])"
         },
         {
           "from": "color-red-6",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-6(?![a-z0-9-])"
         },
         {
           "from": "color-red-7",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-7(?![a-z0-9-])"
         },
         {
           "from": "color-red-8",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-8(?![a-z0-9-])"
         },
         {
           "from": "color-red-9",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-9(?![a-z0-9-])"
         },
         {
           "from": "color-orange",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange(?![a-z0-9-])"
         },
         {
           "from": "color-orange-0",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-0(?![a-z0-9-])"
         },
         {
           "from": "color-orange-1",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-1(?![a-z0-9-])"
         },
         {
           "from": "color-orange-2",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-2(?![a-z0-9-])"
         },
         {
           "from": "color-orange-3",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-3(?![a-z0-9-])"
         },
         {
           "from": "color-orange-4",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-4(?![a-z0-9-])"
         },
         {
           "from": "color-orange-5",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-5(?![a-z0-9-])"
         },
         {
           "from": "color-orange-6",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-6(?![a-z0-9-])"
         },
         {
           "from": "color-orange-7",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-7(?![a-z0-9-])"
         },
         {
           "from": "color-orange-8",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-8(?![a-z0-9-])"
         },
         {
           "from": "color-orange-9",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-9(?![a-z0-9-])"
         },
         {
           "from": "color-yellow",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "color-green",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green(?![a-z0-9-])"
         },
         {
           "from": "color-green-0",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-0(?![a-z0-9-])"
         },
         {
           "from": "color-green-1",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-1(?![a-z0-9-])"
         },
         {
           "from": "color-green-2",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-2(?![a-z0-9-])"
         },
         {
           "from": "color-green-3",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-3(?![a-z0-9-])"
         },
         {
           "from": "color-green-4",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-4(?![a-z0-9-])"
         },
         {
           "from": "color-green-5",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-5(?![a-z0-9-])"
         },
         {
           "from": "color-green-6",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-6(?![a-z0-9-])"
         },
         {
           "from": "color-green-7",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-7(?![a-z0-9-])"
         },
         {
           "from": "color-green-8",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-8(?![a-z0-9-])"
         },
         {
           "from": "color-green-9",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-9(?![a-z0-9-])"
         },
         {
           "from": "color-blue",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue(?![a-z0-9-])"
         },
         {
           "from": "color-blue-0",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-0(?![a-z0-9-])"
         },
         {
           "from": "color-blue-1",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-1(?![a-z0-9-])"
         },
         {
           "from": "color-blue-2",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-2(?![a-z0-9-])"
         },
         {
           "from": "color-blue-3",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-3(?![a-z0-9-])"
         },
         {
           "from": "color-blue-4",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-4(?![a-z0-9-])"
         },
         {
           "from": "color-blue-5",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-5(?![a-z0-9-])"
         },
         {
           "from": "color-blue-6",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-6(?![a-z0-9-])"
         },
         {
           "from": "color-blue-7",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-7(?![a-z0-9-])"
         },
         {
           "from": "color-blue-8",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-8(?![a-z0-9-])"
         },
         {
           "from": "color-blue-9",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-9(?![a-z0-9-])"
         },
         {
           "from": "color-purple",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple(?![a-z0-9-])"
         },
         {
           "from": "color-purple-0",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-0(?![a-z0-9-])"
         },
         {
           "from": "color-purple-1",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-1(?![a-z0-9-])"
         },
         {
           "from": "color-purple-2",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-2(?![a-z0-9-])"
         },
         {
           "from": "color-purple-3",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-3(?![a-z0-9-])"
         },
         {
           "from": "color-purple-4",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-4(?![a-z0-9-])"
         },
         {
           "from": "color-purple-5",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-5(?![a-z0-9-])"
         },
         {
           "from": "color-purple-6",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-6(?![a-z0-9-])"
         },
         {
           "from": "color-purple-7",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-7(?![a-z0-9-])"
         },
         {
           "from": "color-purple-8",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-8(?![a-z0-9-])"
         },
         {
           "from": "color-purple-9",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-9(?![a-z0-9-])"
         },
         {
           "from": "color-pink",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink(?![a-z0-9-])"
         },
         {
           "from": "color-pink-0",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-0(?![a-z0-9-])"
         },
         {
           "from": "color-pink-1",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-1(?![a-z0-9-])"
         },
         {
           "from": "color-pink-2",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-2(?![a-z0-9-])"
         },
         {
           "from": "color-pink-3",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-3(?![a-z0-9-])"
         },
         {
           "from": "color-pink-4",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-4(?![a-z0-9-])"
         },
         {
           "from": "color-pink-5",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-5(?![a-z0-9-])"
         },
         {
           "from": "color-pink-6",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-6(?![a-z0-9-])"
         },
         {
           "from": "color-pink-7",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-7(?![a-z0-9-])"
         },
         {
           "from": "color-pink-8",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-8(?![a-z0-9-])"
         },
         {
           "from": "color-pink-9",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-9(?![a-z0-9-])"
         },
         {
@@ -8229,442 +8229,442 @@
         },
         {
           "from": "bg-gray",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-0",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-0(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-1",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-1(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-2",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-2(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-3",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-3(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-4",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-4(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-5",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-5(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-6",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-6(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-7",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-7(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-8",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-8(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-9",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-9(?![a-z0-9-])"
         },
         {
           "from": "bg-red",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red(?![a-z0-9-])"
         },
         {
           "from": "bg-red-0",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-0(?![a-z0-9-])"
         },
         {
           "from": "bg-red-1",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-1(?![a-z0-9-])"
         },
         {
           "from": "bg-red-2",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-2(?![a-z0-9-])"
         },
         {
           "from": "bg-red-3",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-3(?![a-z0-9-])"
         },
         {
           "from": "bg-red-4",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-4(?![a-z0-9-])"
         },
         {
           "from": "bg-red-5",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-5(?![a-z0-9-])"
         },
         {
           "from": "bg-red-6",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-6(?![a-z0-9-])"
         },
         {
           "from": "bg-red-7",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-7(?![a-z0-9-])"
         },
         {
           "from": "bg-red-8",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-8(?![a-z0-9-])"
         },
         {
           "from": "bg-red-9",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-9(?![a-z0-9-])"
         },
         {
           "from": "bg-orange",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-0",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-0(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-1",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-1(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-2",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-2(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-3",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-3(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-4",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-4(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-5",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-5(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-6",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-6(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-7",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-7(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-8",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-8(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-9",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-9(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "bg-green",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green(?![a-z0-9-])"
         },
         {
           "from": "bg-green-0",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-0(?![a-z0-9-])"
         },
         {
           "from": "bg-green-1",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-1(?![a-z0-9-])"
         },
         {
           "from": "bg-green-2",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-2(?![a-z0-9-])"
         },
         {
           "from": "bg-green-3",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-3(?![a-z0-9-])"
         },
         {
           "from": "bg-green-4",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-4(?![a-z0-9-])"
         },
         {
           "from": "bg-green-5",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-5(?![a-z0-9-])"
         },
         {
           "from": "bg-green-6",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-6(?![a-z0-9-])"
         },
         {
           "from": "bg-green-7",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-7(?![a-z0-9-])"
         },
         {
           "from": "bg-green-8",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-8(?![a-z0-9-])"
         },
         {
           "from": "bg-green-9",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-9(?![a-z0-9-])"
         },
         {
           "from": "bg-blue",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-0",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-0(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-1",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-1(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-2",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-2(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-3",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-3(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-4",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-4(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-5",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-5(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-6",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-6(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-7",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-7(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-8",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-8(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-9",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-9(?![a-z0-9-])"
         },
         {
           "from": "bg-purple",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-0",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-0(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-1",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-1(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-2",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-2(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-3",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-3(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-4",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-4(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-5",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-5(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-6",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-6(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-7",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-7(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-8",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-8(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-9",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-9(?![a-z0-9-])"
         },
         {
           "from": "bg-pink",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-0",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-0(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-1",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-1(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-2",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-2(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-3",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-3(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-4",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-4(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-5",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-5(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-6",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-6(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-7",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-7(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-8",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-8(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-9",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-9(?![a-z0-9-])"
         },
         {
@@ -8679,452 +8679,452 @@
         },
         {
           "from": "border-gray",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray(?![a-z0-9-])"
         },
         {
           "from": "border-gray-0",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-0(?![a-z0-9-])"
         },
         {
           "from": "border-gray-1",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-1(?![a-z0-9-])"
         },
         {
           "from": "border-gray-2",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-2(?![a-z0-9-])"
         },
         {
           "from": "border-gray-3",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-3(?![a-z0-9-])"
         },
         {
           "from": "border-gray-4",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-4(?![a-z0-9-])"
         },
         {
           "from": "border-gray-5",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-5(?![a-z0-9-])"
         },
         {
           "from": "border-gray-6",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-6(?![a-z0-9-])"
         },
         {
           "from": "border-gray-7",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-7(?![a-z0-9-])"
         },
         {
           "from": "border-gray-8",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-8(?![a-z0-9-])"
         },
         {
           "from": "border-gray-9",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-9(?![a-z0-9-])"
         },
         {
           "from": "border-red",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red(?![a-z0-9-])"
         },
         {
           "from": "border-red-0",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-0(?![a-z0-9-])"
         },
         {
           "from": "border-red-1",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-1(?![a-z0-9-])"
         },
         {
           "from": "border-red-2",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-2(?![a-z0-9-])"
         },
         {
           "from": "border-red-3",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-3(?![a-z0-9-])"
         },
         {
           "from": "border-red-4",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-4(?![a-z0-9-])"
         },
         {
           "from": "border-red-5",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-5(?![a-z0-9-])"
         },
         {
           "from": "border-red-6",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-6(?![a-z0-9-])"
         },
         {
           "from": "border-red-7",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-7(?![a-z0-9-])"
         },
         {
           "from": "border-red-8",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-8(?![a-z0-9-])"
         },
         {
           "from": "border-red-9",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-9(?![a-z0-9-])"
         },
         {
           "from": "border-orange",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange(?![a-z0-9-])"
         },
         {
           "from": "border-orange-0",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-0(?![a-z0-9-])"
         },
         {
           "from": "border-orange-1",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-1(?![a-z0-9-])"
         },
         {
           "from": "border-orange-2",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-2(?![a-z0-9-])"
         },
         {
           "from": "border-orange-3",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-3(?![a-z0-9-])"
         },
         {
           "from": "border-orange-4",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-4(?![a-z0-9-])"
         },
         {
           "from": "border-orange-5",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-5(?![a-z0-9-])"
         },
         {
           "from": "border-orange-6",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-6(?![a-z0-9-])"
         },
         {
           "from": "border-orange-7",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-7(?![a-z0-9-])"
         },
         {
           "from": "border-orange-8",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-8(?![a-z0-9-])"
         },
         {
           "from": "border-orange-9",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-9(?![a-z0-9-])"
         },
         {
           "from": "border-yellow",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "border-green",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green(?![a-z0-9-])"
         },
         {
           "from": "border-green-0",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-0(?![a-z0-9-])"
         },
         {
           "from": "border-green-1",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-1(?![a-z0-9-])"
         },
         {
           "from": "border-green-2",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-2(?![a-z0-9-])"
         },
         {
           "from": "border-green-3",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-3(?![a-z0-9-])"
         },
         {
           "from": "border-green-4",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-4(?![a-z0-9-])"
         },
         {
           "from": "border-green-5",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-5(?![a-z0-9-])"
         },
         {
           "from": "border-green-6",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-6(?![a-z0-9-])"
         },
         {
           "from": "border-green-7",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-7(?![a-z0-9-])"
         },
         {
           "from": "border-green-8",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-8(?![a-z0-9-])"
         },
         {
           "from": "border-green-9",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-9(?![a-z0-9-])"
         },
         {
           "from": "border-blue",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue(?![a-z0-9-])"
         },
         {
           "from": "border-blue-0",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-0(?![a-z0-9-])"
         },
         {
           "from": "border-blue-1",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-1(?![a-z0-9-])"
         },
         {
           "from": "border-blue-2",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-2(?![a-z0-9-])"
         },
         {
           "from": "border-blue-3",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-3(?![a-z0-9-])"
         },
         {
           "from": "border-blue-4",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-4(?![a-z0-9-])"
         },
         {
           "from": "border-blue-5",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-5(?![a-z0-9-])"
         },
         {
           "from": "border-blue-6",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-6(?![a-z0-9-])"
         },
         {
           "from": "border-blue-7",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-7(?![a-z0-9-])"
         },
         {
           "from": "border-blue-8",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-8(?![a-z0-9-])"
         },
         {
           "from": "border-blue-9",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-9(?![a-z0-9-])"
         },
         {
           "from": "border-purple",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple(?![a-z0-9-])"
         },
         {
           "from": "border-purple-0",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-0(?![a-z0-9-])"
         },
         {
           "from": "border-purple-1",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-1(?![a-z0-9-])"
         },
         {
           "from": "border-purple-2",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-2(?![a-z0-9-])"
         },
         {
           "from": "border-purple-3",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-3(?![a-z0-9-])"
         },
         {
           "from": "border-purple-4",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-4(?![a-z0-9-])"
         },
         {
           "from": "border-purple-5",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-5(?![a-z0-9-])"
         },
         {
           "from": "border-purple-6",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-6(?![a-z0-9-])"
         },
         {
           "from": "border-purple-7",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-7(?![a-z0-9-])"
         },
         {
           "from": "border-purple-8",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-8(?![a-z0-9-])"
         },
         {
           "from": "border-purple-9",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-9(?![a-z0-9-])"
         },
         {
           "from": "border-pink",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink(?![a-z0-9-])"
         },
         {
           "from": "border-pink-0",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-0(?![a-z0-9-])"
         },
         {
           "from": "border-pink-1",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-1(?![a-z0-9-])"
         },
         {
           "from": "border-pink-2",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-2(?![a-z0-9-])"
         },
         {
           "from": "border-pink-3",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-3(?![a-z0-9-])"
         },
         {
           "from": "border-pink-4",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-4(?![a-z0-9-])"
         },
         {
           "from": "border-pink-5",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-5(?![a-z0-9-])"
         },
         {
           "from": "border-pink-6",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-6(?![a-z0-9-])"
         },
         {
           "from": "border-pink-7",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-7(?![a-z0-9-])"
         },
         {
           "from": "border-pink-8",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-8(?![a-z0-9-])"
         },
         {
           "from": "border-pink-9",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-9(?![a-z0-9-])"
         }
       ],
       "deprecated_on": "2026-11-09",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Use a role class (color-error, bg-success-container, border-info and the rest) where the colour says something, or the static palette primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5.",
+      "manual": "Each item names its successor (R087 item 1, option A, 2026-11-10): the hue of the same name chosen with .sf-hue-<hue> and the hue role utility. color-<hue>[-N] becomes sf-hue-<hue> color-hue; border-<hue>[-N] becomes sf-hue-<hue> border-hue (it reads --sf-hue-outline, as border-primary reads --sf-primary-outline); bg-<hue>[-N] becomes sf-hue-<hue> bg-hue-container where the legacy class read a tint (tone 70 and lighter) and sf-hue-<hue> bg-hue where it read a deeper tone. The roles follow the theme (light 40 / dark 80 for color-hue and bg-hue, 50 / 60 for the outline, 50 at 12 / 24 for the container), so most successors are not the legacy tone: check the look, and where the exact tone matters write the static primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5. Where the colour says something use a status role (color-error, bg-success-container). color-white, color-black, bg-white, bg-black, border-white and border-black have no successor class: use a role (color-on-primary, bg-surface-page) or var(--sf-white) / var(--sf-black).",
       "examples": {
         "before": "<span class=\"color-red-5\">",
-        "after": "<span class=\"color-error\">"
+        "after": "<span class=\"sf-hue-red color-hue\">"
       },
       "owner": "ui-source",
       "source": "src/core/scss/vars/_sf_var__color.scss, src/utility/text-color, src/utility/background-color, src/utility/border-color"
