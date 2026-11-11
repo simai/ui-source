@@ -64,8 +64,10 @@ again with the same subset: a request can be written by anyone.
 - `size="1/2|1|2"` -- the field ladder; the frame, padding and text are
   sf-textarea's of the same size, the toolbar's buttons a rung below
   (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
-  square). Headings in the text follow the field's text, not the page's:
-  h2 a rung above it, h3 the field's text, h4 a rung below, all bold.
+  square). Headings in the text climb the text ladder from the field's
+  text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
+  bold, so no heading is smaller than the text. The link editor is one
+  rung: its address field, hint and buttons are the field's size (at most 1).
 - `appearance="bordered|filled"` -- sf-textarea's two boxes.
 - `rows` -- the fewest lines shown (6); the field grows with its text.
   `max-rows` -- the most before the text scrolls inside.

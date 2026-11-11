@@ -24,7 +24,8 @@ pressed for is fetched once -- or `state="error"`: an error notice
 «Не удалось подготовить файл» (`error-text` adds its words) with «Повторить»
 under the file. The two stand in one column of the component's own
 (`.sf-download-file__stack`), so a flex row around the element does not put
-the notice beside the file. «Повторить» sends `sf-file-download-retry {href, fileName}`.
+the notice beside the file. «Повторить» sends `sf-file-download-retry {href, fileName}`;
+when the notice goes away, the focus it held moves to the file, not to the page.
 
 ```js
 file.addEventListener('sf-file-download-download', async (event) => {
@@ -92,7 +93,8 @@ file.addEventListener('sf-file-download-download', (event) => {
 If `file-size` is omitted, the base component will try to resolve it from `Content-Length`.
 Pass the known size when possible so rendering has no discovery request. A
 `data:` or `blob:` address is never asked: those bytes are the page's own, so
-the page passes `file-size` with them.
+the page passes `file-size` with them. Nor is an address that leads back to the
+page itself (`#`, `#part`, the page's own URL): it is no file.
 
 That request is the component's one network side effect, declared in
 `component.json` (`side-effects: network`).

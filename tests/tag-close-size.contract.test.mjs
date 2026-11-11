@@ -31,10 +31,17 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
   const button = '.sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close';
   const closeButton = '.sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close';
   assert.ok(css.includes(`${button},\n    ${closeButton} {\n        padding: 0;`), 'no padding of its own');
-  assert.ok(css.includes(`${button}::after,\n    ${closeButton}::after {\n        content: "";\n        position: absolute;\n        inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));`), 'target of --sf-c2');
+  // The remove box (dispatcher 2026-11-10): a --sf-c2 square, on a line the
+  // larger of the line and --sf-c2, over the mark's place by a negative
+  // margin; no ::after reaches past the box any more.
+  assert.ok(css.includes(`        block-size: var(--sf-tag--remove-box, var(--sf-c2));\n        inline-size: var(--sf-tag--remove-box, var(--sf-c2));\n        margin: calc((var(--sf-tag--remove-place, var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) - var(--sf-tag--remove-box, var(--sf-c2))) / 2);`), 'the box is the target, the place is kept');
+  assert.doesNotMatch(css, /--sf-icon-button--close::after/u, 'no invisible extension');
   assert.ok(css.includes(`.sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {\n        --sf-close-icon--height: var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7));`), 'mark from the cross ladder (C14)');
-  assert.ok(css.includes(`.sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {\n        block-size: var(--sf-tag--line, var(--sf-tag--line-height));`), 'inline: the line');
-  assert.ok(css.includes(`.sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {\n        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));`), 'the target stays off a label that is a button');
+  assert.ok(css.includes(`.sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {\n        margin-inline-start: 0;`), 'the box starts at the end of a label that is a button');
+  const tags = await read('component/tags/scss/_css__tags.scss');
+  assert.ok(tags.includes(`.sf-tag {\n  --sf-tag--remove-place: var(--sf-tag--close-size, var(--sf-text-size-1\\/4));\n  --sf-tag--remove-box: var(--sf-c2);\n}`), 'the box is --sf-c2 over the mark');
+  assert.ok(tags.includes(`.sf-tag.sf-tag--inline.sf-tag--inline {\n  --sf-tag--remove-place: var(--sf-tag--line, var(--sf-tag--line-height));\n  --sf-tag--remove-box: max(var(--sf-c2), var(--sf-tag--line, var(--sf-tag--line-height)));\n}`), 'on a line: the larger of the line and --sf-c2');
+  assert.doesNotMatch(tags, /--sf-icon-button--close::after/u, 'plain markup: no invisible extension');
   assert.doesNotMatch(css, /text-size-1\\\/4/);
 });
 

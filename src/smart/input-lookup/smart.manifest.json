@@ -413,7 +413,7 @@
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "88ef204aaeb6226874e004df5cdaeccbc73a559a69350ccf800c0788a16589b1"
+        "sha256": "0849e14c1b3e70bf7b6d25003407898216d480be5b8bed315bff3507aaca9d25"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -421,7 +421,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "1ffde50913c6b41b2f41ebd3f84fa5d2145ff71ef496ab752bb250496b8b1944"
+        "sha256": "9155c1bdf989bccb61bf3cb415fdb12f6c65c504807be43d899e54e601641cf9"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
@@ -429,7 +429,7 @@
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "5c645c56de29d23e613b9ed11d506ccb7b76a9eba72ab2c02f643c8a63973888"
+        "sha256": "38569bf1f1c73fe62114862ebd5332d5e57b43b509ed1279320d00edc5681f14"
       }
     ],
     "generated_runtime": []

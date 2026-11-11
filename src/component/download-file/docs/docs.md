@@ -47,3 +47,5 @@ Since component.download-file 1.3.0 (docs pre-check 2026-11-10):
 - `__stack` holds a file and its notice in one column (the Smart element
   draws it in the error state); the gap is `--sf-space-1/3`.
 - A `data:` or `blob:` address is never asked for its size.
+- Nor is an address that leads back to the page itself (`#`, `#part`, the
+  page's own URL).

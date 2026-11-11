@@ -25,6 +25,11 @@ A picture before the label is the label's line high. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
 
+The remove button is a square of `--sf-c2` (24 px, the WCAG 2.2 target size) at
+every size and on a phone; on a line it is the larger of the line and 24. The
+cross keeps its size in the middle, and the button stands over the place of the
+cross, so a removable tag is as tall as one without the button.
+
 ## Semantic ownership
 
 - static labels and statuses use a neutral container without an action role or

@@ -15,7 +15,7 @@
     "src/component/download-file/scss/_css_download-file.scss",
     "src/component/download-file/scss/index.scss"
   ],
-  "content_sha256": "5a96f9a0b978127d830378ff850c62f1e4c2e851605434dd81657d65bd23bac7",
+  "content_sha256": "739e97ecf54af9cea036928cb4f0403dd2c1d950f3e8541e1dd86c22b2f632c4",
   "dependencies": [
     {
       "id": "core.runtime",

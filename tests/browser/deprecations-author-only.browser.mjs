@@ -67,7 +67,7 @@ try {
       tab.on('pageerror', (error) => errors.push(error.message));
       tab.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(`${message.type()}: ${message.text()}`); });
       await tab.goto(`http://127.0.0.1:${server.address().port}/${theme}${author ? '?author' : ''}`);
-      await tab.waitForFunction(() => document.querySelectorAll('sf-tag sf-button-icon button').length >= 5
+      await tab.waitForFunction(() => document.querySelectorAll('sf-tag sf-button-close button').length >= 5
         && document.querySelectorAll('sf-slider sf-button-icon button').length >= 2, null, {timeout: 20000})
         .catch(() => errors.push('the tags and the slider never drew their buttons'));
       await tab.waitForTimeout(500);
