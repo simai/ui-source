@@ -97,6 +97,7 @@
 .sf-alert-bar-row,
 .sf-alert-bar-strip {
   --sf-on-surface-hover: var(--sf-alert-bar--ink);
+  --sf-on-surface-active: var(--sf-alert-bar--ink);
   --sf-focus--color: var(--sf-alert-bar--ink);
   background-color: var(--sf-alert-bar--fill);
   color: var(--sf-alert-bar--ink);

@@ -32,6 +32,8 @@
     --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
     --sf-on-surface: var(--sf-on-surface-media);
+    --sf-on-surface-hover: var(--sf-on-surface-media);
+    --sf-on-surface-active: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);
     --sf-surface-state-hover: var(--sf-white--alfa-4);
@@ -42,6 +44,7 @@
     --sf-surface-container-active: var(--sf-white--alfa-16);
     --sf-outline: var(--sf-white--alfa-64);
     --sf-outline-variant: var(--sf-white--alfa-24);
+    --sf-place--container-outline: var(--sf-outline);
     --sf-surface-disabled: var(--sf-white--alfa-12);
     --sf-on-surface-disabled: var(--sf-white--alfa-64);
     --sf-on-surface-muted: var(--sf-on-surface-disabled);

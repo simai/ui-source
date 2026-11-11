@@ -57,6 +57,8 @@
 
 $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
+  'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
+  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
   'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
@@ -196,6 +198,49 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
 // that is one of those steps passes it as $outline.
 $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--alfa-48))';
 
+// The boundary on a neutral container fill, bg-surface-container (contrast
+// lows, 2026-11-11): the fill is neutral-50 at 8 over its place, and the
+// theme's outline on it gave 2.83 (a checkbox, a switch) to 2.91 (a field) on
+// the light page. The container takes the steps' boundary: opaque neutral-50
+// holds 4.07 over the page, 3.89 over an area, 3.61 / 3.20 over surface-2 / 3
+// (2.81 over surface-4, the step's own 3.03 less the fill); the dark half is
+// the theme's (3.95 over the page). On a coloured place the container keeps
+// the place's boundary: a coloured place hands its own outline down as
+// --sf-place--container-outline, an opaque place takes it back (initial), so
+// a container on bg-primary draws the place's ink at 64, and in a card on
+// bg-primary the steps' boundary again.
+$sf-place-container-outline: $sf-place-step-outline;
+
+// The accent on the darkest light step, bg-surface-4 (neutral-85; contrast
+// lows, 2026-11-11): primary-40 as ink -- an outline, ghost or link button's
+// label, a text link -- gave 4.39:1 at rest and 4.39 hovered over its
+// container step, under 4.5. In the light theme the accent moves one step
+// along its own ladder: rest takes the hover tone, hover the press tone, press
+// stays (theme: 35 / 30 / 30, 5.26 at rest, 5.31 hovered, 5.07 pressed); a
+// text link moves along the link's ladder the same way. A visited link
+// (tertiary-40, 4.40) has no darker role of its own and stays. Read
+// from the roles, not the tones, so a project that re-brands --sf-primary keeps
+// its brand there (D1: a neutral place declares no accent of its own). The
+// place keeps the ladder it found as --sf-place--step-*; its children read it,
+// as the strong places' children do, because a role re-declared on the place
+// itself could not read the value it replaces. Surface-3 (neutral-90) holds
+// 5.03 with 40 and keeps the accent; the dark half is the accent as found.
+@mixin sf-place-step-4-accent-found {
+  --sf-place--step-primary: light-dark(var(--sf-primary-hover), var(--sf-primary));
+  --sf-place--step-primary-hover: light-dark(var(--sf-primary-active), var(--sf-primary-hover));
+  --sf-place--step-primary-active: var(--sf-primary-active);
+  --sf-place--step-link: light-dark(var(--sf-link-hover), var(--sf-link));
+  --sf-place--step-link-hover: light-dark(var(--sf-link-active), var(--sf-link-hover));
+}
+
+@mixin sf-place-step-4-accent {
+  --sf-primary: var(--sf-place--step-primary);
+  --sf-primary-hover: var(--sf-place--step-primary-hover);
+  --sf-primary-active: var(--sf-place--step-primary-active);
+  --sf-link: var(--sf-place--step-link);
+  --sf-link-hover: var(--sf-place--step-link-hover);
+}
+
 @mixin sf-place($surface, $variant: null, $outline: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
@@ -213,6 +258,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
     }
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
+  --sf-place--container-outline: initial;
   @include sf-place-back-on-colour;
   @if $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested') {
     @include sf-place-popup-children;
@@ -253,6 +299,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-state-active: var(--sf-#{$c}-state-active);
   --sf-outline: var(--sf-#{$c}-outline);
   --sf-outline-variant: var(--sf-#{$c}-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
   @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
 }
 
@@ -274,6 +321,12 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
+  // The ink of a hovered and a pressed control is the place's ink too
+  // (contrast lows, 2026-11-11): the theme's neutral 15 / 20 (85 / 80 in the
+  // dark) turned a pressed outline or link button's label dark on red, 2.80
+  // light and 1.44 dark in sf-alert-bar.
+  --sf-on-surface-hover: var(--sf-on-#{$c});
+  --sf-on-surface-active: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
   --sf-surface-state-hover: #{sf-ink($c, 4)};
@@ -284,6 +337,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-container-active: #{sf-ink($c, 20)};
   --sf-outline: #{sf-ink($c, 64)};
   --sf-outline-variant: #{sf-ink($c, 24)};
+  --sf-place--container-outline: var(--sf-outline);
   --sf-surface-disabled: #{sf-ink($c, 12)};
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
   --sf-on-surface-muted: var(--sf-on-surface-disabled);
