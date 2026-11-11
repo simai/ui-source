@@ -55,7 +55,11 @@ function extensionsOf(entry, kind) {
 export function inlineExtensions(entry) {
   return isPlainEntry(entry) && Object.hasOwn(OWN_KEYS, entry.type) ? extensionsOf(entry, entry.type) : null;
 }
-const sameExtra = (left, right) => JSON.stringify(left ?? null) === JSON.stringify(right ?? null);
+// Extension keys compare by value: key order does not count, at any depth
+// ({lang, title} and {title, lang} are the same keys, so their runs merge).
+const sortedKeys = (value) => (Array.isArray(value) ? value.map(sortedKeys)
+  : value !== null && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortedKeys(value[key])])) : value);
+const sameExtra = (left, right) => JSON.stringify(sortedKeys(left ?? null)) === JSON.stringify(sortedKeys(right ?? null));
 export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048, maxPropLength: 1000 });
 
 // The closed list of inline atoms. Each name draws one element; its props

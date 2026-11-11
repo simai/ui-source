@@ -32,7 +32,7 @@ import { INLINE_MARKS, breakSegment, inlineLength, inlineText, normalizeInline, 
 import { createHistory } from './history.mjs';
 import { clone, freshCopy, idMaker, idsOf, insertAt, isPlainObject, locate, removeAt, same, walk } from './tree.mjs';
 
-export const OPERATIONS_VERSION = '0.1.0';
+export const OPERATIONS_VERSION = '0.2.0';
 export const CLIPBOARD_TYPE = 'application/x-simai-composition';
 export const CLIPBOARD_SCHEMA = 'simai.composition.clipboard';
 
@@ -48,7 +48,7 @@ export const BLOCK_TYPES = Object.freeze(['content.paragraph', 'content.heading'
 /** Every refusal an operation gives, with what it means. */
 export const REFUSALS = Object.freeze({
   unknown: 'no such node, place or input',
-  place: 'the slot does not take this type, or is full',
+  place: 'the slot does not take this type, or is full; or the node or place lies inside an island, which changes only as a whole',
   required: 'the slot would hold fewer nodes than its minimum',
   'inside-itself': 'a node cannot move into its own subtree',
   same: 'the node is already there or of that type',
@@ -80,6 +80,25 @@ export function islandOf(node, registry) {
 }
 
 const islandIn = (node, context) => (context?.isIsland ?? islandOf)(node, registryOf(context));
+
+/**
+ * The island a node lies inside: its nearest ancestor that is an island, or
+ * null. An island is closed as a whole, so a node inside one (a known child of
+ * an unknown block too) may do nothing on its own: every operation aimed at
+ * it, or at a place inside it, is refused with `place`. Copying it reads and
+ * is allowed. An editor that meets this refusal chooses the island instead.
+ */
+export function islandAround(state, id, context) {
+  const at = locate(state?.document?.root, id);
+  if (!at) return null;
+  for (let index = at.ancestors.length - 1; index >= 0; index -= 1) {
+    if (islandIn(at.ancestors[index], context)) return at.ancestors[index].id ?? null;
+  }
+  return null;
+}
+const insideIsland = (state, id, context) => islandAround(state, id, context) !== null;
+// A place is closed when its parent is an island or lies inside one.
+const closedPlace = (state, parentId, context) => islandIn(locate(state?.document?.root, parentId)?.node, context) || insideIsland(state, parentId, context);
 const lockOf = (id, context) => context?.lockOf?.(id) ?? null;
 const placeLock = (parentId, context) => context?.placeLock?.(parentId) ?? null;
 
@@ -164,6 +183,7 @@ export function select(state, id, key = null, offset = undefined, context) {
   if (id === null) return { ok: true, state: { document: state.document, selection: { block: null, text: null } } };
   const node = nodeOf(state, id);
   if (!node) return refused('unknown');
+  if (insideIsland(state, id, context)) return refused('place');
   if (key === null) return { ok: true, state: { document: state.document, selection: { block: id, text: null } } };
   if (islandIn(node, context)) return refused('island');
   if (!fieldsOf(node, context).includes(key)) return refused('not-text');
@@ -178,6 +198,7 @@ function textTarget(state, id, key, context) {
   if (!node) return { refusal: refused('unknown') };
   const lock = lockOf(id, context);
   if (lock) return { refusal: refused(lock) };
+  if (insideIsland(state, id, context)) return { refusal: refused('place') };
   if (islandIn(node, context)) return { refusal: refused('island') };
   if (!fieldsOf(node, context).includes(key)) return { refusal: refused('not-text') };
   const value = node.data?.[key];
@@ -248,6 +269,7 @@ export function splitBlock(state, id, offset, context) {
   if (!at?.parent) return refused('unknown');
   const lock = lockOf(id, context);
   if (lock) return refused(lock);
+  if (insideIsland(state, id, context)) return refused('place');
   const node = at.node;
   if (islandIn(node, context)) return refused('island');
   if (!TEXT_BLOCKS.includes(node.type)) return refused('not-text');
@@ -260,6 +282,9 @@ export function splitBlock(state, id, offset, context) {
     const list = locate(root, at.parent.id);
     if (!list?.parent) return refused('unknown');
     if (holdsMore(node) || (items.length === 1 && Object.keys(list.node).some((key) => !NODE_KEYS.has(key)))) return refused('would-lose');
+    // The paragraph takes the list's place (its only item left) or goes after it: the slot rule decides.
+    if (closedPlace(state, list.parent.id, context)) return refused('place');
+    if (!accepts(state, list.parent.id, list.slot, 'content.paragraph', context, items.length === 1 ? 0 : 1)) return refused('place');
     removeAt(at.parent, at.slot, at.index);
     const paragraph = { id: makeId(), type: 'content.paragraph', data: { content: [] } };
     if (!at.parent.slots[at.slot].length) {
@@ -272,8 +297,9 @@ export function splitBlock(state, id, offset, context) {
     next.selection = { block: paragraph.id, text: { id: paragraph.id, key: 'content', offset: 0 } };
     return { ok: true, state: next, id: paragraph.id, offset: 0 };
   }
-  node.data = { ...(node.data ?? {}), content: normalizeInline(sliceInline(content, 0, offset)) };
   const type = node.type === 'content.list-item' ? 'content.list-item' : 'content.paragraph';
+  if (!accepts(state, at.parent.id, at.slot, type, context)) return refused('place');
+  node.data = { ...(node.data ?? {}), content: normalizeInline(sliceInline(content, 0, offset)) };
   const fresh = { id: makeId(), type, data: { content: normalizeInline(sliceInline(content, offset, length)) } };
   insertAt(at.parent, at.slot, at.index + 1, fresh);
   next.selection = { block: fresh.id, text: { id: fresh.id, key: 'content', offset: 0 } };
@@ -287,11 +313,15 @@ export function joinBack(state, id, context) {
   if (!at?.parent) return refused('unknown');
   const lock = lockOf(id, context);
   if (lock) return refused(lock);
+  if (insideIsland(state, id, context)) return refused('place');
   if (at.index === 0) return refused('first');
   const previous = at.parent.slots[at.slot][at.index - 1];
   if (islandIn(previous, context) || islandIn(at.node, context)) return refused('island');
   if (!TEXT_BLOCKS.includes(previous.type) || !TEXT_BLOCKS.includes(at.node.type)) return refused('not-text');
   if (holdsMore(at.node)) return refused('would-lose');
+  // The joined block leaves its slot: the slot rule (its min) decides, as for a removal.
+  const min = manifestOf(at.parent.type, context)?.slots?.[at.slot]?.min ?? 0;
+  if (at.parent.slots[at.slot].length <= min) return refused('required');
   const before = Array.isArray(previous.data?.content) ? previous.data.content : [];
   const own = Array.isArray(at.node.data?.content) ? at.node.data.content : [];
   const offset = inlineLength(before);
@@ -311,6 +341,7 @@ export function setBlockType(state, id, type, { level } = {}, context) {
   if (!at?.parent) return refused('unknown');
   const lock = lockOf(id, context);
   if (lock) return refused(lock);
+  if (insideIsland(state, id, context)) return refused('place');
   if (islandIn(at.node, context)) return refused('island');
   if (!BLOCK_TYPES.includes(at.node.type) || !BLOCK_TYPES.includes(type)) return refused('not-text');
   const wantLevel = type === 'content.heading' ? (Number.isInteger(level) ? level : at.node.data?.level ?? 2) : undefined;
@@ -336,6 +367,7 @@ export function insertNode(state, node, place, context) {
   if (!nodeOf(state, place.parent)) return refused('unknown');
   const lock = placeLock(place.parent, context);
   if (lock) return refused(lock);
+  if (closedPlace(state, place.parent, context)) return refused('place');
   if (!accepts(state, place.parent, place.slot, node.type, context)) return refused('place');
   const taken = idsOf(rootOf(state));
   for (const id of idsOf(node)) if (taken.has(id)) return refused('id-taken');
@@ -355,6 +387,7 @@ export function removeNode(state, id, context) {
   if (!at?.parent) return refused('unknown');
   const lock = placeLock(at.parent.id, context) ?? lockOf(id, context);
   if (lock) return refused(lock);
+  if (insideIsland(state, id, context)) return refused('place');
   const min = manifestOf(at.parent.type, context)?.slots?.[at.slot]?.min ?? 0;
   if (at.parent.slots[at.slot].length <= min) return refused('required');
   const next = draft(state);
@@ -379,6 +412,7 @@ export function moveNode(state, id, place, context) {
   if (!nodeOf(state, place.parent)) return refused('unknown');
   const lock = placeLock(at.parent.id, context) ?? placeLock(place.parent, context);
   if (lock) return refused(lock);
+  if (insideIsland(state, id, context) || closedPlace(state, place.parent, context)) return refused('place');
   if (locate(at.node, place.parent)) return refused('inside-itself');
   const sameSlot = place.parent === at.parent.id && place.slot === at.slot;
   if (!sameSlot && !accepts(state, place.parent, place.slot, at.node.type, context)) return refused('place');
@@ -464,12 +498,26 @@ export function cutNodes(state, ids, context) {
  * Document is reused; the content is unchanged. All or nothing, one step.
  */
 export function pasteNodes(state, clipboard, place, context) {
+  return pasteInto(state, clipboard, place, context, false);
+}
+
+// ownSlot: the copies go into the slot their original stands in (a
+// duplicate), so the slot's type rule is not asked again; its max still is.
+// That lets an unknown type, which no slot takes, be duplicated beside itself,
+// as it may move within its own slot.
+function pasteInto(state, clipboard, place, context, ownSlot) {
   const nodes = Array.isArray(clipboard) ? clipboard : clipboard?.nodes;
   if (!Array.isArray(nodes) || !nodes.length) return refused('empty');
   if (!nodes.every(isPlainObject) || !place || !nodeOf(state, place.parent)) return refused('unknown');
   const lock = placeLock(place.parent, context);
   if (lock) return refused(lock);
-  for (const node of nodes) if (!accepts(state, place.parent, place.slot, node.type, context, nodes.length)) return refused('place');
+  if (closedPlace(state, place.parent, context)) return refused('place');
+  if (ownSlot) {
+    const max = manifestOf(nodeOf(state, place.parent).type, context)?.slots?.[place.slot]?.max;
+    if (Number.isInteger(max) && (nodeOf(state, place.parent).slots?.[place.slot]?.length ?? 0) + nodes.length > max) return refused('place');
+  } else {
+    for (const node of nodes) if (!accepts(state, place.parent, place.slot, node.type, context, nodes.length)) return refused('place');
+  }
   const next = draft(state);
   const makeId = idMaker(rootOf(next), context?.idPrefix ?? 'e');
   // Ids of the clipboard are never given again in this paste either.
@@ -491,7 +539,7 @@ export function duplicateNode(state, id, context) {
   const at = locate(rootOf(state), id);
   if (!at?.parent) return refused('unknown');
   const copied = copyNodes(state, [id], context);
-  const pasted = pasteNodes(state, copied.clipboard, { parent: at.parent.id, slot: at.slot, index: at.index + 1 }, context);
+  const pasted = pasteInto(state, copied.clipboard, { parent: at.parent.id, slot: at.slot, index: at.index + 1 }, context, true);
   return pasted.ok ? { ...pasted, id: pasted.ids[0] } : pasted;
 }
 
@@ -585,6 +633,6 @@ export const OPERATIONS = Object.freeze({
 
 export default {
   BLOCK_TYPES, CLIPBOARD_SCHEMA, CLIPBOARD_TYPE, ISLAND_TYPES, OPERATIONS, OPERATIONS_VERSION, REFUSALS, TEXT_BLOCKS,
-  accepts, copyNodes, createSession, createState, cutNodes, duplicateNode, insertBreak, insertNode, islandOf, joinBack, moveBy, moveNode,
+  accepts, copyNodes, createSession, createState, cutNodes, duplicateNode, insertBreak, insertNode, islandAround, islandOf, joinBack, moveBy, moveNode,
   pasteNodes, placeAfter, placeInside, removeNode, select, setBlockType, setLink, setText, settleSelection, splitBlock, toggleMark, typingTarget,
 };

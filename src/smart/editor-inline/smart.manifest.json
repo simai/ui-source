@@ -402,7 +402,7 @@
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
-        "sha256": "8dfdf7d46e63e78db5469ec6b8864baf9fc1971d237caa13116a1327f32ce48a"
+        "sha256": "90921700536834fa6863c262c15c6f1ed41925ceac19fc2b8284aef0ebc4f98f"
       }
     ],
     "generated_runtime": []

@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import Composition from '../src/core/js/composition/index.mjs';
-import { replaceRange, toSegments } from '../src/core/js/composition/inline-model.mjs';
+import { normalizeInline, replaceRange, toSegments } from '../src/core/js/composition/inline-model.mjs';
 import {
   copyNodes, createSession, cutNodes, duplicateNode, insertBreak, joinBack, moveBy, moveNode, pasteNodes, removeNode, setBlockType,
   setLink, setText, splitBlock, toggleMark,
@@ -378,4 +378,21 @@ test('validation: which extension keys are refused', () => {
   const editing = createSession({ document: { ...page(), root: { id: 'r', type: 'layout.area', slots: { default: [{ id: 'x', type: 'content.paragraph', data: { content: [textWith('onclick', 'x()'), { type: 'text', value: 'y' }] } }] } } }, context: { registry } });
   ok(editing.apply(toggleMark, 'x', 'content', 0, 2, 'strong'), 'strong');
   assert.deepEqual(editing.node('x').data.content, [{ type: 'text', value: 'x', marks: ['strong'], onclick: 'x()' }, { type: 'text', value: 'y', marks: ['strong'] }]);
+});
+
+test('extension keys compare by value: the same keys in another order (at any depth) merge into one run', () => {
+  const merged = normalizeInline([
+    { type: 'text', value: 'ab', lang: 'de', 'x.note': { by: 'r', at: 1 } },
+    { type: 'text', value: 'cd', 'x.note': { at: 1, by: 'r' }, lang: 'de' },
+  ]);
+  assert.equal(merged.length, 1, 'one run');
+  assert.equal(merged[0].value, 'abcd');
+  assert.deepEqual({ lang: merged[0].lang, note: merged[0]['x.note'] }, { lang: 'de', note: { by: 'r', at: 1 } });
+  const links = normalizeInline([
+    { type: 'link', href: '/a', title: 'T', rel: 'help', children: [{ type: 'text', value: 'x' }] },
+    { type: 'link', href: '/a', rel: 'help', title: 'T', children: [{ type: 'text', value: 'y' }] },
+  ]);
+  assert.equal(links.length, 1, 'one link');
+  // Other values still do not merge.
+  assert.equal(normalizeInline([{ type: 'text', value: 'a', lang: 'de' }, { type: 'text', value: 'b', lang: 'fr' }]).length, 2);
 });
