@@ -184,7 +184,7 @@ Escape отменяет, фокус возвращается на строку),
 |:---|:---|
 | `--sf-list-gap` | `var(--sf-space-1\/3)` — между группами |
 | `--sf-list-radius` | `var(--sf-radius--ui)` — угол строки |
-| `--sf-list-hover-background-color` | `var(--sf-surface-container-hover)` |
+| `--sf-list-hover-background-color` | `var(--sf-surface-state-select)` |
 | `--sf-list-current-background-color` | `var(--sf-primary-container-active)` |
 | `--sf-list-heading-color` | `var(--sf-on-surface)` (1.4.0; before it `var(--sf-on-surface-variant)`) |
 

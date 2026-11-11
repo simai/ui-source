@@ -568,8 +568,8 @@
   }
 
   .sf-button.sf-button--surface {
-    --sf-button--background-color: var(--sf-button-background-color, var(--sf-alpha-4));
-    --sf-button--border-color: var(--sf-button-border-color, var(--sf-alpha-8));
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-state-hover));
+    --sf-button--border-color: var(--sf-button-border-color, var(--sf-surface-state-select));
     --sf-button--border-bottom-width: var(--sf-button-border-width, var(--sf-px));
     --sf-button--border-inline-end-width: var(--sf-button-border-width, var(--sf-px));
     --sf-button--border-inline-start-width: var(--sf-button-border-width, var(--sf-px));
@@ -806,27 +806,30 @@
   }
 
   /* The states of the two ramp appearances: the fill rises one step on hover and
-     another when pressed, and surface raises its border alongside. */
+     another when pressed, and surface raises its border alongside. The steps
+     are the surface roles (state hover 4, select 8, active 12, container
+     active 16; DEV acceptance 2026-11-10 Q3), not --sf-alpha-*, which is
+     black or white on every place and stayed grey on a coloured one. */
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-alpha-8);
+    --sf-button--background-color: var(--sf-surface-state-select);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-button--border-color: var(--sf-alpha-12);
+    --sf-button--border-color: var(--sf-surface-state-active);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-button--background-color: var(--sf-alpha-12);
+    --sf-button--background-color: var(--sf-surface-state-active);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-button--border-color: var(--sf-alpha-16);
+    --sf-button--border-color: var(--sf-surface-container-active);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)),
   .sf-button.sf-button--surface.disabled {
     --sf-button--background-color: transparent;
-    --sf-button--border-color: var(--sf-alpha-4);
+    --sf-button--border-color: var(--sf-surface-state-hover);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),

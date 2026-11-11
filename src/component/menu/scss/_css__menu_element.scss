@@ -159,9 +159,10 @@
     --sf-icon--color: currentColor;
   }
 
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
   .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-    --sf-menu-element--background-color: var(--sf-surface-container-hover);
-    --sf-menu-element--border-color: var(--sf-surface-container-hover);
+    --sf-menu-element--background-color: var(--sf-surface-state-select);
+    --sf-menu-element--border-color: var(--sf-surface-state-select);
   }
 
   .sf-menu-element.open,

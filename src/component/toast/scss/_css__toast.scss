@@ -125,6 +125,17 @@
     gap: var(--sf-space-1\/3);
   }
 
+  /* The tonal action on a notice of any level is a solid light plate (owner
+     decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
+     fill, --sf-primary-container and its states, is laid over the solid colour
+     of the toast's own place, its popup plate (--sf-surface-place-solid, the
+     C43 rule), not over the level's tint. So the plate is the same on every level and the
+     level's tone does not show through it. The second action stays ghost
+     on-surface (C35). A loading button keeps its own stripes. */
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
+    background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-toast .sf-toast-wrap {
     --sf-toast-wrap--background-color: transparent;

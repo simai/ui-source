@@ -16,7 +16,8 @@
        --sf-list-heading-color            a group's heading */
   .sf-list__frame {
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
-    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-container-hover));
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
+    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
     --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 

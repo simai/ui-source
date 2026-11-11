@@ -32,15 +32,76 @@ in. The `bg-surface-page/-area/-card/-popup/-popup-nested` utilities declare
 it and the place's dim ink; the cards and popups declare it themselves in a
 later stage.
 
-Translucent roles on a place: the fill `--sf-surface-container` (16/20/24),
-the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
-stronger fill `--sf-surface-container-strong` (32), the veil
+Translucent roles on a place: the fill `--sf-surface-container` (8/12/16 since
+C41), the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
+stronger fill `--sf-surface-container-strong` (24 since C41), the veil
 `--sf-surface-veil` (glass under a sticky header), disabled
 `--sf-surface-disabled` / `--sf-on-surface-disabled` / `--sf-outline-disabled`.
 Each colour has the same family: `--sf-<colour>-state-*`,
 `--sf-<colour>-container-strong`, `--sf-<colour>-outline`. Information has its
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
+
+### What changed with C41 and C42 (2026-11-10)
+
+- **The neutral fill is lighter (C41).** `--sf-surface-container` is 8, its
+  hover 12, its press 16 and `--sf-surface-container-strong` 24, in both
+  themes (were 16/20/24/32): light `#f4f4f5`, dark `#202226` on the page, one
+  step darker than any place. Glass over media takes white 8/12/16. Every
+  place that writes the roles out moves with them (the card, the popups, the
+  windows, the `bg-surface-*` places, the popover), and
+  `tests/neutral-fill-weight.contract.test.mjs` holds the sources and the
+  built sheets to it. The select state is also 8: a state is drawn over a
+  plate, and a chosen row is `primary-container`, not grey. The tinted
+  containers keep their steps. White 20 and neutral-50/90 at 20 and 32 are
+  read by nothing now and stay declared until remove_after.
+- **A plate inside a card (C42.1)** is `--sf-surface-container`, with bordered
+  fields on it. Nothing in the components changes for it.
+- **A card above card level (C42.2).** A card inside a window
+  (`.sf-modal-surface`), a drawer over the page, or a popover adds no fill:
+  its edge `--sf-outline-variant`, the place's colour, as a card in a card.
+- **The segmented thumb (C42.3)** is
+  `light-dark(var(--sf-surface-raised), var(--sf-surface-container-active))`
+  through `--sf-button-group-plate-background-color`: white with its shadow
+  in the light theme, and in the dark lighter than the track. On a strong
+  coloured place the place gives the plate: white under the place's colour
+  in the light theme, the colour's tone 90 under its ink in the dark, so it
+  stays lighter than the track there too.
+- **The accent on a strong coloured place (C42.4).** On the children of
+  `bg-<colour>` (all seven), `--sf-primary` is the place's ink and
+  `--sf-on-primary` the place's colour; hover and press are one and two
+  five-tone steps towards the place (95/90 light, 25/30 dark). A filled
+  button, a checked checkbox and a switch that is on are white on a blue
+  header. A tonal button there is the place's own-ink fill (12/16/20) under
+  the place's ink, as `--sf-primary-container` and
+  `--sf-on-primary-container`.
+- **Places own the accent only on a strong place.** A card, a window, a
+  drawer or a popup on a neutral place declares no `--sf-primary` and no
+  `--sf-outline-variant`, so a project that re-brands through the roles (on
+  `:root` or on `.theme-light, .theme-dark`) keeps its brand inside them. On
+  a strong place an opaque place takes back the accent the page had there,
+  the project's brand included; on any coloured place (strong, soft, glass)
+  it takes back the theme's boundary line, because a coloured place
+  re-declares that line on itself and its former value cannot be read below
+  it.
+- **The surface look of buttons, icon buttons, segments and tags** reads the
+  surface roles, not `--sf-alpha-*`: rest 4 is `--sf-surface-state-hover`, 8
+  `--sf-surface-state-select`, 12 `--sf-surface-state-active`, 16
+  `--sf-surface-container-active`. They follow a coloured place.
+- **The filled placeholder** (`sf-input`, `sf-textarea`) is the place's dim
+  ink, as the bordered one: dark 70 on the page.
+- **One row hover (C42.5):** `--sf-surface-state-select` (8) for the
+  navigation menu, a dropdown option, a context-menu item, an interactive
+  `sf-list-item` and an `sf-list` row (was 4 in some and 20 in others).
+- **Defects from the components audit.** A plain `.sf-list` and an
+  `sf-list-item` have no fill of their own; a popup opened from a popup (a
+  list in a window, a submenu) paints `--sf-surface-popup-nested` and its dim
+  ink; `.table-active` wins over a stripe; the documentation keycap
+  stands on the neutral fill; a surface tag rests on
+  `--sf-surface-state-hover`.
+- **Over moving content or an image (C43.3)**, an alpha layer stacks over the
+  solid place colour, `--sf-surface-place`: a sticky column or table head, a
+  list's sticky heading, an avatar or badge ring. No new tone.
 
 ### What changed with C43 (2026-11-10)
 
@@ -128,7 +189,7 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 `--sf-on-surface-media` (white), the same in both themes because a picture
 does not change with the theme. The class `.sf-surface-media` paints the glass
 with a blur (`--sf-blur-large`) and re-declares the roles a control on it
-reads from white on the alpha scale: states 4/8/12, fill 16/20/24, line 24,
+reads from white on the alpha scale: states 4/8/12, fill 8/12/16, line 24,
 boundary 64, dim ink 80. An icon keeps its three roles.
 
 Coloured places (a header in the brand colour, a status banner) are held for
@@ -143,8 +204,8 @@ layer adds white 4/12/16/20/64/80 (white had 8 and 24), black 48/64/80 and the
 missing information steps (info-50 at 4/8, info-90 at 4/8/12/24); the theme
 generator writes the information steps for any theme colour. Two rules hold in
 `tests/alpha-scale.contract.test.mjs`: an ink step (48 and above) is a fill
-only for glass and the scrim; and the neutral plate starts at 16 because 12 is
-the press layer.
+only for glass and the scrim; and the neutral fill family is 8/12/16 with the
+strong step 24 (C41), above every state but the press.
 
 The generator (`src/core/js/theme-palette.js`) also gives the greys no more
 chroma than the colour they come from (`min(5, source chroma)`): a near-grey

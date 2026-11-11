@@ -353,8 +353,12 @@
      built with `border: 0` and a real border would make every tag two pixels
      taller than the one beside it. */
   .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
-    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-alpha-4));
-    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-8);
+    /* The rest fill and the boundary are the surface roles of the same steps
+       (C16; DEV audit 2026-11-10 defect 8 and Q3), so they follow the place:
+       --sf-alpha-4/8/12 are black or white, outside the surface roles, and
+       stayed grey on a coloured place. */
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-surface-state-hover));
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-select);
   }
 
   .sf-tag.sf-tag--appearance-ghost:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
@@ -532,11 +536,12 @@
      raising its boundary alongside. */
   .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
   .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
-    --sf-tag--background-color: var(--sf-alpha-8);
+    /* The surface role of the step (C16; DEV audit 2026-11-10 defect 8). */
+    --sf-tag--background-color: var(--sf-surface-state-select);
   }
 
   .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {
-    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-12);
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-active);
   }
 
   /* Pressed and selected keep the primary container the tag already uses for
@@ -548,7 +553,7 @@
   .sf-tag.sf-tag--appearance-surface:is(:disabled, .disabled),
   .sf-tag.sf-tag--appearance-ghost:is(:disabled, .disabled) {
     --sf-tag--background-color: transparent;
-    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-4);
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-hover);
   }
 
   /* Every size publishes its text on the root, so density, inline and an

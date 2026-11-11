@@ -90,6 +90,18 @@
 
 /* A filled field keeps the placeholder on on-surface-variant, which the fill
    remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
+/* The filled placeholder is the place's dim ink, as the bordered one is (as on
+   sf-input; forms batch round 2, item C): the textarea re-declares
+   --sf-on-surface-variant as the ink on a fill, so the place's value is kept
+   on the host above it. A strong coloured place keeps its full ink there
+   (--sf-place--fill-placeholder): its dim ink over the fill stays under 4.5:1. */
+.sf-textarea.sf-textarea--filled {
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+}
+
+.sf-textarea.sf-textarea--filled textarea::placeholder {
+  --sf-textarea-placeholder--color: var(--sf-textarea--place-variant);
+}
 
 .sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
