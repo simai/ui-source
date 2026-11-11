@@ -66,8 +66,15 @@ function normalizeDuration(value) {
   return Math.min(10000, Math.max(1000, parsed));
 }
 
-function normalizeCopyError(error) {
+// One code for a refusal, sf-button-copy's (acceptance L5, 2026-11-11):
+// the browser refused, or had no clipboard, and the source was selected for
+// the keys -- denied, whatever the browser's own error. The class route's
+// three codes, which the documentation of the released pair lists --
+// copy_denied, copy_unsupported, copy_failed -- stay on that route's buttons
+// (sf-clipboard, btn-clipboard) until 2027-01-01, with the route itself.
+function normalizeCopyError(error, legacy = false) {
   if (SOURCE_ERROR_CODES.has(error?.message)) return error.message;
+  if (!legacy) return 'denied';
   if (error?.message === 'copy_unsupported') return 'copy_unsupported';
   if (error?.name === 'NotAllowedError' || error?.name === 'SecurityError') {
     return 'copy_denied';
@@ -308,7 +315,7 @@ async function activateCopy(button, controller) {
       detail: { method: result.method, text: result.text },
     }));
   } else if (result.reason !== 'busy') {
-    const code = normalizeCopyError(result.error);
+    const code = normalizeCopyError(result.error, isLegacy(button));
     button.dispatchEvent(new CustomEvent('sf:copy-error', {
       bubbles: true,
       detail: { code },
