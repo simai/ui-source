@@ -14,12 +14,18 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 // The copy and its fallback are core's (core/js/clipboard.js, SF.copyText;
 // reuse audit 2026-11-02, finding 11), shared with the clipboard class.
 import {copyText} from '../../core/js/clipboard.js';
+import BundledPosition from '../../core/js/position.js';
+import {instancePath, partId} from '../../core/js/instance-path.js';
+import {preloadControlIcons} from '../helpers/cycle';
 import {renderCopyButtonTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
+
+// Prefer the placement helper Core published; an isolated bundle uses its own copy.
+const positioning = () => globalThis.SF?.Position || BundledPosition;
 
 function isMac() {
   return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '');
@@ -154,7 +160,38 @@ class SfCopyButton extends CopyButtonElement {
 
   disconnectedCallback() {
     clearTimeout(this._timer);
+    this.stopResult();
     super.disconnectedCallback?.();
+  }
+
+  // The result glyphs are asked for with the first drawing, not when they are
+  // first drawn: an icon the subset has not got draws nothing until a second
+  // font arrives, and the error glyph came about a second after a refusal
+  // (docs pre-check, copy anatomy finding 7).
+  afterRender() {
+    super.afterRender?.();
+    preloadControlIcons(this, [this.successIcon || 'check', 'error']);
+    this.placeResult();
+  }
+
+  // The failed copy's words, shown above the control (the template draws the
+  // surface; this places it with SF.Position while it shows, and lets it go).
+  placeResult() {
+    const result = this.querySelector(':scope .sf-copy-button-result');
+    const control = this.querySelector(':scope .sf-copy-button > :is(sf-button, sf-button-icon)')?.querySelector('.sf-button, .sf-icon-button');
+    if (!result || result.hidden || !control) {
+      this.stopResult();
+      return;
+    }
+    if (this._result?.box === result) return;
+    this.stopResult();
+    const placed = positioning().anchor(control, result, {side: 'block-start', align: 'center', fitHeight: false});
+    this._result = {box: result, placed};
+  }
+
+  stopResult() {
+    this._result?.placed?.stop?.();
+    this._result = null;
   }
 
   templateContext() {
@@ -168,6 +205,7 @@ class SfCopyButton extends CopyButtonElement {
       successIcon: this.successIcon,
       // The name says what is copied when the host says so.
       name: this.label || this.text || this.words('copy'),
+      nameTooltipId: partId(instancePath(this, {kind: 'sf-button-copy'}), 'name'),
       phase: this.state.phase,
       message: this.state.message,
       rootClass: this.getRootClass(),
