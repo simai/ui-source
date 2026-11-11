@@ -44,6 +44,8 @@ test('code wraps as text: inline, no nowrap, a run longer than the line breaks (
   assert.doesNotMatch(rule, /display:/u);
   assert.doesNotMatch(rule, /white-space:\s*nowrap;/u);
   assert.match(rule, /overflow-wrap:\s*break-word;/u);
+  // The code's line box stays inside the text line (no 24 -> 25 line).
+  assert.match(rule, /line-height:\s*1;/u);
   // In a table cell a long value breaks anywhere, so it never widens the
   // table (C10 variant A, owner 2026-11-11); no nowrap in a cell either.
   assert.match(sheet, /:where\(td, th\) code:where\(:not\([^{]+\{\s*overflow-wrap:\s*anywhere;\s*\}/u);

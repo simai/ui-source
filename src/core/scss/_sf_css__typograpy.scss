@@ -274,9 +274,15 @@
     // with the punctuation around it and grow the line) and wraps as text
     // does: at its spaces and hyphens. A run that cannot fit a line of its
     // own -- a URL, a token -- breaks where it must (C10, 2026-11-10), so it
-    // never runs out of a narrow column. break-word, not anywhere: a table
-    // still sizes its columns to whole words.
+    // never runs out of a narrow column. break-word, not anywhere, in
+    // running text (a cell takes anywhere, below).
     overflow-wrap: break-word;
+    // The code's own line box stays inside the text line: inheriting the
+    // text line (24px at 16px text) around the mono face's baseline, it rose
+    // a pixel above the strut whenever Inter was ready at the first layout,
+    // and every line with code grew 24 -> 25 (C10, 2026-11-11). The plate is
+    // the font's box with its padding, so this does not change how it looks.
+    line-height: 1;
   }
 
   // In a table cell a long value -- a JSON default, a rule address -- may

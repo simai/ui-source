@@ -100,7 +100,9 @@ at its spaces and hyphens, so a name at the end of a line may part at a hyphen
 a line of its own -- a URL, a token -- breaks where it must
 (`overflow-wrap: break-word`; C10, 2026-11-10), so it never runs out of a
 narrow column. In running text `break-word`, not `anywhere`: inline code
-keeps the no-break with the punctuation around it and the height of its line.
+keeps the no-break with the punctuation around it and the height of its line. The code's own line box is `line-height: 1`:
+with the inherited text line it rose a pixel above the strut whenever Inter
+was ready at the first layout, so a line with code grew 24 -> 25 at 1440.
 In a table cell (`td`, `th`) code takes `overflow-wrap: anywhere` (owner
 decision C10, variant A, 2026-11-11): a long value -- a JSON default, a rule
 address -- lowers the cell's min-content and never widens the table, so a
