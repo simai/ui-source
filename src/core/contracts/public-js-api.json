@@ -1,7 +1,7 @@
 {
   "schema": "simai.framework.public-js-api",
   "schema_version": 1,
-  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core). layer and audience say where the documentation lists a name (owner decision D17, 2026-11-11): layer is core, loader, smart-base or component -- the documentation's Functions section lists the Framework's own names grouped by the first three, and a component's script API (layer component) is documented on its component's page; audience is public (listed for authors) or internal (not listed). Both are derived from loaded_by and status by scripts/generate-public-js-api-layers.mjs, whose exception table says why a name differs. author is the one line the documentation shows for a name (one sentence, present tense, no history), and doc, when there is one, the slug of the page that describes it (language-neutral, an anchor after #); both are written by hand. summary is the release's record of what the name does. public-js-api.schema.json is the shape.",
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it; tests/browser/public-js-api-components.browser.mjs loads every Smart tag on one page and holds those names' members the same way. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core). layer and audience say where the documentation lists a name (owner decision D17, 2026-11-11): layer is core, loader, smart-base or component -- the documentation's Functions section lists the Framework's own names grouped by the first three, and a component's script API (layer component) is documented on its component's page; audience is public (listed for authors) or internal (not listed). Both are derived from loaded_by and status by scripts/generate-public-js-api-layers.mjs, whose exception table says why a name differs. author is the one line the documentation shows for a name (one sentence, present tense, no history), and doc, when there is one, the slug of the page that describes it (language-neutral, an anchor after #); both are written by hand. summary is the release's record of what the name does. public-js-api.schema.json is the shape.",
   "globals": [
     {
       "name": "SF.Loader",
@@ -219,24 +219,13 @@
         "BUILTIN_PORT_MANIFESTS",
         "EDITOR_FIELD_WORDS",
         "EDITOR_WORDS_OWNER",
-        "Recipe",
         "renderFieldFallback",
         "validateFieldKinds",
-        "VALUE_TYPES",
-        "FRAGMENT_DESCRIPTOR_SCHEMA",
-        "startInlineEdit",
         "normalizeInline",
         "inlineText",
-        "BUILTIN_TYPE_MANIFESTS",
-        "compositionTypeFromSmartManifest",
-        "normalize",
         "projectDocumentEditorFields",
         "projectEditorFields",
-        "render",
-        "resolveRecipe",
-        "parseRecipeJson",
         "stableStringify",
-        "validate",
         "validateEditorManifest",
         "BINDING_STATES",
         "BUILTIN_CATALOGUE",
@@ -254,7 +243,7 @@
       ],
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language); the one block editor's contracts: the catalogue and variants, layout parameters as utilities, own modifiers, site blocks, named places and the data source port (docs/developer/block-author-guide.md); the catalogue's groups with their icons and words (CATALOGUE_GROUP_TABLE), each built-in type's icon, and parameter defaults a type prints unset (effectiveProps); a type in more than one section (catalogue.also_in, BUILTIN_CATALOGUE_ALSO_IN, entryGroups; catalogue() gives sections), the built-in form types and the accent background.",
+      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language); the one block editor's contracts: the catalogue and variants, layout parameters as utilities, own modifiers, site blocks, named places and the data source port (docs/developer/block-author-guide.md); the catalogue's groups with their icons and words (CATALOGUE_GROUP_TABLE), each built-in type's icon, and parameter defaults a type prints unset (effectiveProps); a type in more than one section (catalogue.also_in, BUILTIN_CATALOGUE_ALSO_IN, entryGroups; catalogue() gives sections), the built-in form types and the accent background. A page and the documentation also call validate(document, registry) (the problems of a document against its types), normalize(document, registry) (the document with its defaults written out), render(document, context) (the document drawn as elements), resolveRecipe(recipe, context) and parseRecipeJson(text) with Recipe (a composition recipe read and resolved into a document), startInlineEdit(element, options) (inline text editing, once sf-editor-inline is loaded), compositionTypeFromSmartManifest(manifest) (a composition type from a Smart manifest), and the tables FRAGMENT_DESCRIPTOR_SCHEMA (the fragment descriptor's schema id), BUILTIN_TYPE_MANIFESTS (the built-in types) and VALUE_TYPES (the port value types).",
       "members": [
         "checkFragmentDescriptor",
         "publishEffects",
@@ -300,7 +289,18 @@
         "CATALOGUE_GROUP_ALIASES",
         "effectiveProps",
         "BUILTIN_CATALOGUE_ALSO_IN",
-        "entryGroups"
+        "entryGroups",
+        "validate",
+        "render",
+        "normalize",
+        "resolveRecipe",
+        "parseRecipeJson",
+        "Recipe",
+        "startInlineEdit",
+        "compositionTypeFromSmartManifest",
+        "FRAGMENT_DESCRIPTOR_SCHEMA",
+        "BUILTIN_TYPE_MANIFESTS",
+        "VALUE_TYPES"
       ]
     },
     {
@@ -1087,7 +1087,11 @@
       "doc": "components/actions/button-group#javascript",
       "kind": "object",
       "loaded_by": "component/button-group",
-      "summary": "The ButtonGroup component's script API, loaded with the component (component/button-group); its methods are the component's documentation."
+      "summary": "The ButtonGroup component's script API, loaded with the component (component/button-group); its methods are the component's documentation.",
+      "members": [
+        "init",
+        "sync"
+      ]
     },
     {
       "name": "SF.Carousel",
@@ -1109,7 +1113,10 @@
       "doc": "components/forms/checkbox#javascript",
       "kind": "object",
       "loaded_by": "component/checkbox",
-      "summary": "The Checkbox component's script API, loaded with the component (component/checkbox); its methods are the component's documentation."
+      "summary": "The Checkbox component's script API, loaded with the component (component/checkbox); its methods are the component's documentation.",
+      "members": [
+        "setState"
+      ]
     },
     {
       "name": "SF.Clipboard",
@@ -1129,9 +1136,19 @@
       "audience": "public",
       "author": "Is the script API of the composition editor's overlay.",
       "doc": "smart/editor/composition-overlay#методы",
+      "internal_members": [
+        "OVERLAY_EVENTS_FORMER_TAG",
+        "OVERLAY_EVENTS_LEGACY"
+      ],
       "kind": "object",
       "loaded_by": "smart/composition-overlay",
-      "summary": "The CompositionOverlay component's script API, loaded with the component (smart/composition-overlay); its methods are the component's documentation."
+      "summary": "The CompositionOverlay component's script API, loaded with the component (smart/composition-overlay); its methods are the component's documentation.",
+      "members": [
+        "OVERLAY_EVENTS",
+        "overlayNodes",
+        "checkOverlayActions",
+        "checkOverlayNodes"
+      ]
     },
     {
       "name": "SF.Controller",
@@ -1152,7 +1169,10 @@
       "doc": "components/forms/country-code#javascript",
       "kind": "object",
       "loaded_by": "component/country-code",
-      "summary": "The CountryCode component's script API, loaded with the component (component/country-code); its methods are the component's documentation."
+      "summary": "The CountryCode component's script API, loaded with the component (component/country-code); its methods are the component's documentation.",
+      "members": [
+        "setState"
+      ]
     },
     {
       "name": "SF.DownloadFile",
@@ -1163,7 +1183,12 @@
       "doc": "components/actions/download-file#javascript",
       "kind": "object",
       "loaded_by": "component/download-file",
-      "summary": "The DownloadFile component's script API, loaded with the component (component/download-file); its methods are the component's documentation."
+      "summary": "The DownloadFile component's script API, loaded with the component (component/download-file); its methods are the component's documentation.",
+      "members": [
+        "bind",
+        "unbind",
+        "initAll"
+      ]
     },
     {
       "name": "SF.Events",
@@ -1184,7 +1209,13 @@
       "doc": "components/forms/file-upload#javascript",
       "kind": "object",
       "loaded_by": "component/file-upload",
-      "summary": "The FileUpload component's script API, loaded with the component (component/file-upload); its methods are the component's documentation."
+      "summary": "The FileUpload component's script API, loaded with the component (component/file-upload); its methods are the component's documentation.",
+      "members": [
+        "getItems",
+        "setItems",
+        "clear",
+        "removeItem"
+      ]
     },
     {
       "name": "SF.Flag",
@@ -1225,9 +1256,21 @@
       "audience": "public",
       "author": "Is the script API of the inline editor.",
       "doc": "smart/editor/inline-editor#методы",
+      "internal_members": [
+        "INLINE_EVENTS_FORMER_TAG"
+      ],
       "kind": "object",
       "loaded_by": "smart/inline-editor",
-      "summary": "The InlineEditor component's script API, loaded with the component (smart/inline-editor); its methods are the component's documentation."
+      "summary": "The InlineEditor component's script API, loaded with the component (smart/inline-editor); its methods are the component's documentation.",
+      "members": [
+        "startInlineEdit",
+        "readInlineDom",
+        "renderInlineDom",
+        "textOffset",
+        "INLINE_EVENTS",
+        "INLINE_EVENTS_LEGACY",
+        "INLINE_TOOLBAR_MODES"
+      ]
     },
     {
       "name": "SF.Input",
@@ -1292,7 +1335,11 @@
       "doc": "components/feedback/progress-bar#javascript",
       "kind": "object",
       "loaded_by": "component/progress-bar",
-      "summary": "The ProgressBar component's script API, loaded with the component (component/progress-bar); its methods are the component's documentation."
+      "summary": "The ProgressBar component's script API, loaded with the component (component/progress-bar); its methods are the component's documentation.",
+      "members": [
+        "getState",
+        "setState"
+      ]
     },
     {
       "name": "SF.ProgressScale",
@@ -1303,7 +1350,11 @@
       "doc": "components/feedback/progress-scale#javascript",
       "kind": "object",
       "loaded_by": "component/progress-scale",
-      "summary": "The ProgressScale component's script API, loaded with the component (component/progress-scale); its methods are the component's documentation."
+      "summary": "The ProgressScale component's script API, loaded with the component (component/progress-scale); its methods are the component's documentation.",
+      "members": [
+        "getState",
+        "setState"
+      ]
     },
     {
       "name": "SF.Provider",
@@ -1324,7 +1375,10 @@
       "doc": "components/forms/radio#javascript",
       "kind": "object",
       "loaded_by": "component/radio",
-      "summary": "The Radio component's script API, loaded with the component (component/radio); its methods are the component's documentation."
+      "summary": "The Radio component's script API, loaded with the component (component/radio); its methods are the component's documentation.",
+      "members": [
+        "setState"
+      ]
     },
     {
       "name": "SF.RangeSlider",
@@ -1335,7 +1389,13 @@
       "doc": "components/forms/range-slider#javascript",
       "kind": "object",
       "loaded_by": "component/range-slider",
-      "summary": "The RangeSlider component's script API, loaded with the component (component/range-slider); its methods are the component's documentation."
+      "summary": "The RangeSlider component's script API, loaded with the component (component/range-slider); its methods are the component's documentation.",
+      "members": [
+        "bind",
+        "unbind",
+        "getValue",
+        "setValue"
+      ]
     },
     {
       "name": "SF.Resizer",
@@ -1344,9 +1404,16 @@
       "audience": "public",
       "author": "Is the script API of the width resizer.",
       "doc": "smart/overlays/resizer#методы",
+      "internal_members": [
+        "SfResizer",
+        "attachResizer"
+      ],
       "kind": "object",
       "loaded_by": "smart/resizer",
-      "summary": "The Resizer component's script API, loaded with the component (smart/resizer); its methods are the component's documentation."
+      "summary": "The Resizer component's script API, loaded with the component (smart/resizer); its methods are the component's documentation.",
+      "members": [
+        "attach"
+      ]
     },
     {
       "name": "SF.Scrollbar",
@@ -1357,7 +1424,11 @@
       "doc": "components/tools/scrollbar#javascript",
       "kind": "object",
       "loaded_by": "component/scrollbar",
-      "summary": "The Scrollbar component's script API, loaded with the component (component/scrollbar); its methods are the component's documentation."
+      "summary": "The Scrollbar component's script API, loaded with the component (component/scrollbar); its methods are the component's documentation.",
+      "members": [
+        "init",
+        "destroy"
+      ]
     },
     {
       "name": "SF.Search",
@@ -1378,7 +1449,12 @@
       "doc": "components/overlays-media/slider#javascript",
       "kind": "object",
       "loaded_by": "component/slider",
-      "summary": "The Slider component's script API, loaded with the component (component/slider); its methods are the component's documentation."
+      "summary": "The Slider component's script API, loaded with the component (component/slider); its methods are the component's documentation.",
+      "members": [
+        "bind",
+        "unbind",
+        "refresh"
+      ]
     },
     {
       "name": "SF.Sortable",
@@ -1387,9 +1463,22 @@
       "audience": "public",
       "author": "Is the script API of drag-and-drop sorting.",
       "doc": "smart/editor/sortable#методы",
+      "internal_members": [
+        "SORTABLE_MOVE_EVENT",
+        "attachSortable"
+      ],
       "kind": "object",
       "loaded_by": "smart/sortable",
-      "summary": "The Sortable component's script API, loaded with the component (smart/sortable); its methods are the component's documentation."
+      "summary": "The Sortable component's script API, loaded with the component (smart/sortable); its methods are the component's documentation.",
+      "members": [
+        "attach",
+        "registerSortableDropTarget",
+        "activeSortableSession",
+        "sortableIndexAt",
+        "SORTABLE_INSERT_EVENT",
+        "SORTABLE_INTENT_EVENT",
+        "SORTABLE_STATE_EVENT"
+      ]
     },
     {
       "name": "SF.Special",
@@ -1408,9 +1497,18 @@
       "audience": "public",
       "author": "Is the script API of the spinner.",
       "doc": "components/feedback/spinner#javascript",
+      "internal_members": [
+        "bind",
+        "unbind",
+        "createArcSvg",
+        "createDotsSvg"
+      ],
       "kind": "object",
       "loaded_by": "component/spinner",
-      "summary": "The Spinner component's script API, loaded with the component (component/spinner); its methods are the component's documentation."
+      "summary": "The Spinner component's script API, loaded with the component (component/spinner); its methods are the component's documentation.",
+      "members": [
+        "render"
+      ]
     },
     {
       "name": "SF.Switch",
@@ -1421,7 +1519,10 @@
       "doc": "components/forms/switch#javascript",
       "kind": "object",
       "loaded_by": "component/switch",
-      "summary": "The Switch component's script API, loaded with the component (component/switch); its methods are the component's documentation."
+      "summary": "The Switch component's script API, loaded with the component (component/switch); its methods are the component's documentation.",
+      "members": [
+        "setState"
+      ]
     },
     {
       "name": "SF.Tab",
@@ -1443,7 +1544,11 @@
       "doc": "components/navigation/tabs#javascript",
       "kind": "object",
       "loaded_by": "component/tabs",
-      "summary": "The Tabs component's script API, loaded with the component (component/tabs); its methods are the component's documentation."
+      "summary": "The Tabs component's script API, loaded with the component (component/tabs); its methods are the component's documentation.",
+      "members": [
+        "init",
+        "activate"
+      ]
     },
     {
       "name": "SF.Textarea",
@@ -1454,7 +1559,10 @@
       "doc": "components/forms/textarea#javascript",
       "kind": "object",
       "loaded_by": "component/textarea",
-      "summary": "The Textarea component's script API, loaded with the component (component/textarea); its methods are the component's documentation."
+      "summary": "The Textarea component's script API, loaded with the component (component/textarea); its methods are the component's documentation.",
+      "members": [
+        "setState"
+      ]
     },
     {
       "name": "SF.Toast",
@@ -1463,9 +1571,18 @@
       "audience": "public",
       "author": "Is the script API of toast messages.",
       "doc": "components/feedback/toast#javascript",
+      "internal_members": [
+        "bind",
+        "unbind"
+      ],
       "kind": "object",
       "loaded_by": "component/toast",
-      "summary": "The Toast component's script API, loaded with the component (component/toast); its methods are the component's documentation."
+      "summary": "The Toast component's script API, loaded with the component (component/toast); its methods are the component's documentation.",
+      "members": [
+        "show",
+        "create",
+        "dismiss"
+      ]
     },
     {
       "name": "SF.Tree",
@@ -1476,7 +1593,14 @@
       "doc": "components/navigation/tree#javascript",
       "kind": "object",
       "loaded_by": "component/tree",
-      "summary": "The Tree component's script API, loaded with the component (component/tree); its methods are the component's documentation."
+      "summary": "The Tree component's script API, loaded with the component (component/tree); its methods are the component's documentation.",
+      "members": [
+        "init",
+        "sync",
+        "open",
+        "close",
+        "toggle"
+      ]
     },
     {
       "name": "SF.Verification",
@@ -1485,9 +1609,17 @@
       "audience": "public",
       "author": "Is the script API of the verification code field.",
       "doc": "components/forms/verification#javascript",
+      "internal_members": [
+        "contract"
+      ],
       "kind": "object",
       "loaded_by": "component/verification",
-      "summary": "The Verification component's script API, loaded with the component (component/verification); its methods are the component's documentation."
+      "summary": "The Verification component's script API, loaded with the component (component/verification); its methods are the component's documentation.",
+      "members": [
+        "initAll",
+        "getValue",
+        "setValue"
+      ]
     },
     {
       "name": "SF.cloneDeep",
