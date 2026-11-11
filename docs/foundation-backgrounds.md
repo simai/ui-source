@@ -130,7 +130,7 @@ A component that keeps its own value on the page but must follow a place
 reads three hooks. The page declares none of them, so
 `var(--sf-place--<hook>, <the component's own value>)` is unchanged on the page.
 
-- `--sf-place--fill-variant` is the dim ink on a fill on this place. Every
+- `--sf-place--ink-variant` is the dim ink on a fill on this place. Every
   place declares it: an opaque place (a card, a popup, `bg-surface-*`) as its
   `--sf-on-surface-container-variant`, a strong place (`bg-<colour>`) as its
   full ink `on-<colour>` (its dim ink 80 over a fill stays under 4.5:1), glass
@@ -144,7 +144,7 @@ reads three hooks. The page declares none of them, so
   fill took coloured text under 4.5:1. Every other place takes it back.
 
 The code highlight reads all three: its comment, punctuation and line numbers
-take `--sf-place--fill-variant`, its text and every hue `--sf-place--ink`, and
+take `--sf-place--ink-variant`, its text and every hue `--sf-place--ink`, and
 the code surface `--sf-place--fill-surface`. On the page it is drawn as before.
 
 ### The fill of a row (2026-11-11)

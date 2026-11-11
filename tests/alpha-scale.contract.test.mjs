@@ -175,7 +175,9 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
   // The skeletons are a fill since C16 S3 (16 and 24), no longer ink 48.
   for (const path of [themePath, placesPath, 'src/core/scss/_sf_css__placeholder.scss', 'src/core/figma_variables/figma_layer_styles.scss', 'src/component/skeleton/scss/_skeleton.scss']) {
     for (const [, name, value] of read(path).matchAll(/(--sf-[a-z0-9-]+):\s*([^;]+);/gu)) {
-      if (name.startsWith('--sf-on-') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
+      // A place's ink hook (--sf-place--ink, --sf-place--ink-variant) is the colour of
+      // text on the place, not a fill: glass dims its text with white at 80.
+      if (name.startsWith('--sf-on-') || name.startsWith('--sf-place--ink') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
       if (!/--alfa-(48|64|80)\b/u.test(value)) continue;
       if (!allowed.has(name)) wrong.push(`${path}: ${name}: ${value.trim()}`);
     }

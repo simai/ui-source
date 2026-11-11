@@ -17,19 +17,19 @@ const block = (text, selector) => {
 test('places declare the three hooks; the page declares none', async () => {
   const places = await read('src/core/scss/mix/_mix__places.scss');
   const opaque = places.slice(places.indexOf('@mixin sf-place('), places.indexOf('@mixin sf-place-fill'));
-  assert.match(opaque, /--sf-place--fill-variant: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(opaque, /--sf-place--ink-variant: var\(--sf-on-surface-container-variant\);/u);
   assert.match(opaque, /--sf-place--ink: initial;/u);
   assert.match(opaque, /--sf-place--fill-surface: light-dark\(var\(--sf-surface-container\), transparent\);/u);
   assert.match(opaque, /--sf-place--fill-surface: initial;/u);
   const strong = places.slice(places.indexOf('@mixin sf-place-strong('), places.indexOf('@mixin sf-place-strong-accent'));
-  assert.match(strong, /--sf-place--fill-variant: var\(--sf-on-#\{\$c\}\);/u);
+  assert.match(strong, /--sf-place--ink-variant: var\(--sf-on-#\{\$c\}\);/u);
   assert.match(strong, /--sf-place--ink: var\(--sf-on-#\{\$c\}\);/u);
   const glass = block(await read('src/core/scss/_sf_css__surface_places.scss'), '.sf-surface-media {');
   assert.match(glass, /--sf-place--ink: var\(--sf-on-surface-media\);/u);
   const plate = block(await read('src/utility/background-color/default/scss/_sf_css__background_color.scss'), '.#{$infix}bg-surface-container {');
   assert.match(plate, /--sf-place--fill-surface: transparent;/u);
   const theme = await read('src/core/scss/_sf_css__theme.scss');
-  assert.doesNotMatch(theme, /--sf-place--(fill-variant|ink|fill-surface):/u);
+  assert.doesNotMatch(theme, /--sf-place--(ink-variant|ink|fill-surface):/u);
 });
 
 test('every highlight role is read through a place hook, falling back to the page role', async () => {
@@ -37,7 +37,7 @@ test('every highlight role is read through a place hook, falling back to the pag
   const own = block(theme, ':is(.sf-code-surface, .hljs) {');
   assert.match(own, /--sf-highlight--text: var\(--sf-place--ink, var\(--sf-highlight-text\)\);/u);
   for (const role of ['comment', 'punctuation', 'line-number']) {
-    assert.match(own, new RegExp(`--sf-highlight--${role}: var\\(--sf-place--fill-variant, var\\(--sf-highlight-${role}\\)\\);`, 'u'));
+    assert.match(own, new RegExp(`--sf-highlight--${role}: var\\(--sf-place--ink-variant, var\\(--sf-highlight-${role}\\)\\);`, 'u'));
   }
   for (const role of ['keyword', 'title', 'attribute', 'string', 'built-in', 'tag', 'section', 'bullet', 'addition', 'deletion']) {
     assert.match(own, new RegExp(`--sf-highlight--${role}: var\\(--sf-place--ink, var\\(--sf-highlight-${role}\\)\\);`, 'u'));

@@ -32,9 +32,9 @@
     //   (a strong colour, glass: coloured text there is one colour).
     :is(.sf-code-surface, .hljs) {
       --sf-highlight--text: var(--sf-place--ink, var(--sf-highlight-text));
-      --sf-highlight--comment: var(--sf-place--fill-variant, var(--sf-highlight-comment));
-      --sf-highlight--punctuation: var(--sf-place--fill-variant, var(--sf-highlight-punctuation));
-      --sf-highlight--line-number: var(--sf-place--fill-variant, var(--sf-highlight-line-number));
+      --sf-highlight--comment: var(--sf-place--ink-variant, var(--sf-highlight-comment));
+      --sf-highlight--punctuation: var(--sf-place--ink-variant, var(--sf-highlight-punctuation));
+      --sf-highlight--line-number: var(--sf-place--ink-variant, var(--sf-highlight-line-number));
       --sf-highlight--keyword: var(--sf-place--ink, var(--sf-highlight-keyword));
       --sf-highlight--title: var(--sf-place--ink, var(--sf-highlight-title));
       --sf-highlight--attribute: var(--sf-place--ink, var(--sf-highlight-attribute));

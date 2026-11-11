@@ -27,7 +27,7 @@
     // on a fill (mix/_mix__places.scss, the place hooks).
     .#{$infix}bg-surface-container {
         --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-        --sf-place--fill-variant: var(--sf-on-surface-container-variant);
+        --sf-place--ink-variant: var(--sf-on-surface-container-variant);
         --sf-place--fill-surface: transparent;
     }
 
