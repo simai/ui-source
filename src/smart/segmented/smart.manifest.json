@@ -496,7 +496,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/segmented/index.js",
-        "sha256": "a90c62daade9ba04f3034d3b2f82b059eb51d37411f3ae0fbcbbc7f4e183f025"
+        "sha256": "c7d6a5c42e267c68a21625121183fba2fa19144122c168058f386715b2a9903a"
       }
     ],
     "generated_runtime": []

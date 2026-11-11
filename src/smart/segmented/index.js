@@ -18,6 +18,19 @@ const THEME_PREFERENCES = ['system', 'light', 'dark'];
 // review R037): brightness_auto is automatic screen brightness on Android.
 const THEME_ICONS = { system: 'desktop_windows', light: 'light_mode', dark: 'dark_mode' };
 
+// A theme switch whose choice cannot move the theme says why, once per
+// element (R076, as sf-button's theme-cycle): a host that draws the theme
+// itself (the Loader started with theme: false, as a Docara page and its
+// examples are), or no Loader. Nothing is selected and no change is sent.
+function warnThemeNotOwned(host) {
+  if (host.__sfThemeWarned) return;
+  host.__sfThemeWarned = true;
+  const reason = globalThis.SF?.Loader
+    ? 'the page\'s theme belongs to its host (the Loader runs with theme: false); a host that hands the theme to the Loader makes it work (a Docara example: theme_switch=true)'
+    : 'SF.Loader is absent';
+  globalThis.console?.warn?.(`[SIMAI Framework] ${host.localName} theme-switch: the choice changes nothing: ${reason}.`);
+}
+
 // The Loader's theme preference: what the person chose, not the theme drawn,
 // so system stays selected while the system is dark.
 function themePreference() {
@@ -146,7 +159,10 @@ const ButtonGroupElement = elementFromManifest(manifest, {
       // change already finds the page in the theme it chose; a Loader that
       // cannot change the theme (absent, or SF_BOOT_CONFIG.theme false)
       // selects nothing.
-      if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) return 'theme';
+      if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) {
+        warnThemeNotOwned(this);
+        return 'theme';
+      }
       this.value = value;
       this.emitValueChange({ previous, value, item });
       return 'applied';
