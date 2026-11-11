@@ -18,8 +18,14 @@
 // - the avatar, the count and the badge stand centred on the row; the count
 //   and the badge end before the «⋯» and inside the row; «99+» above 99, the
 //   count named in plural forms; the badge carries the tone as status;
-// - pinned items lead under «Закреплённые» («Pinned») before the day groups;
+// - pinned items lead under «Закреплённые» («Pinned») before the day groups
+//   (whose «Сегодня» carries its quiet date, owner decision C40);
 //   ungrouped, first and with no heading;
+// - a narrow list (sf-list 1.5.0, owner decision C47: the list's own width
+//   below 20rem, or a title that would keep less than half of its text column
+//   or less than 10rem): a row with a badge or a count puts them under its
+//   text, at the text's start; the row is the control height, the band step
+//   and the badge's height; the picture stands on the title's band;
 // - a count that comes and goes keeps the row's node and the focus on it;
 // - no sideways scroll, no page error.
 import {createServer} from 'node:http';
@@ -131,6 +137,7 @@ try {
           control: length(`--sf-ui-${esc}--control-height`),
           line: length(`--sf-text-height-${esc}`),
           spaceX: length(`--sf-ui-${esc}--space-x`),
+          band: length('--sf-space-1\\/4'),
         };
         probe.remove();
         const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, right: r.right, cy: r.y + r.height / 2}; };
@@ -144,6 +151,7 @@ try {
           const count = drawn(row.querySelector('sf-badge.sf-list__count'));
           const badge = drawn(row.querySelector('sf-badge.sf-list__badge'));
           const dots = row.querySelector('.sf-list__actions');
+          const meta = row.querySelector('.sf-list__meta');
           return {
             id: row.dataset.id,
             row: box(row),
@@ -157,6 +165,10 @@ try {
             badge: badge ? {...box(badge), status: row.querySelector('sf-badge.sf-list__badge').getAttribute('status')} : null,
             dots: dots ? box(dots) : null,
             twoLine: item.classList.contains('sf-list-item--two-line'),
+            meta: meta && meta.children.length ? box(meta) : null,
+            // C47 (sf-list 1.5.0): a narrow list puts a row's badge and count
+            // under its text, at the text's start.
+            narrow: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow'),
           };
         });
         return {
@@ -166,7 +178,8 @@ try {
           two: rows('two'),
           flat: rows('flat'),
           long: rows('long'),
-          groups: [...document.querySelectorAll('#two .sf-list__group')].map((group) => ({key: group.dataset.group, heading: group.querySelector('.sf-list__heading').textContent.trim(), ids: [...group.querySelectorAll('.sf-list__row')].map((row) => row.dataset.id)})),
+          groups: [...document.querySelectorAll('#two .sf-list__group')].map((group) => ({key: group.dataset.group, heading: [...group.querySelector('.sf-list__heading').childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join('').trim(),
+            date: group.querySelector('.sf-list__heading sf-time.sf-group-heading-date')?.textContent.trim() ?? '', ids: [...group.querySelectorAll('.sf-list__row')].map((row) => row.dataset.id)})),
           flatHeadings: document.querySelectorAll('#flat .sf-list__heading').length,
           leadsPlain: document.querySelectorAll('#plain .sf-list__lead').length,
           scroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -182,7 +195,17 @@ try {
       ok(`${label}: a badge beside an icon, centred, tone as status`, got.plain[1].badge && near(got.plain[1].badge.cy, got.plain[1].row.cy) && got.plain[1].badge.status === 'info', got.plain[1]);
 
       // One-line list with avatars.
+      // C47: in a narrow list a row with a badge or a count is «picture | text»
+      // with the badge and count under the text, at the text's start; the row
+      // grows by whole bands: the control height, the band step, the badge.
+      const under = (row) => row.narrow && row.meta;
+      for (const row of got.one.filter(under)) {
+        ok(`${label}: narrow row ${row.id}: control height + band + the badge's height`, near(row.row.h, tokens.control + tokens.band + row.meta.h), {row: row.row.h, meta: row.meta.h, tokens});
+        ok(`${label}: narrow row ${row.id}: the badge and count under the title, at its start`, row.meta.y >= row.title.y + row.title.h - 0.5 && near(row.meta.x, row.title.x, 1) && row.meta.right <= row.item.right + 0.5, {meta: row.meta, title: row.title, item: row.item});
+        if (row.avatar) ok(`${label}: narrow avatar ${row.id} centred on the title's band`, near(row.avatar.cy, row.row.y + tokens.control / 2), {avatar: row.avatar.cy, band: row.row.y + tokens.control / 2});
+      }
       for (const row of got.one) {
+        if (under(row)) continue;
         ok(`${label}: one-line row ${row.id} keeps the control height`, near(row.row.h, tokens.control), {row: row.row.h, tokens});
         ok(`${label}: one-line row ${row.id} has the leading place, the line wide`, row.lead && near(row.lead.w, tokens.line), {lead: row.lead, tokens});
         if (row.avatar) {
@@ -199,10 +222,11 @@ try {
       ok(`${label}: above 99 the count reads 99+`, channel.count?.text === '99+' && channel.count?.label === '120 непрочитанных', channel.count);
       for (const row of [...got.plain, ...got.one]) {
         const last = row.count ?? row.badge;
-        if (last) ok(`${label}: the row's parts end at the row's end (${row.id})`, near(last.right, row.item.right - tokens.spaceX), {last, item: row.item, tokens});
+        if (last && !under(row)) ok(`${label}: the row's parts end at the row's end (${row.id})`, near(last.right, row.item.right - tokens.spaceX), {last, item: row.item, tokens});
       }
-      ok(`${label}: the badge before the count, both centred, inside the row`, channel.badge && channel.count && channel.badge.right <= channel.count.x + 0.5
-        && near(channel.badge.cy, channel.row.cy) && near(channel.count.cy, channel.row.cy) && channel.count.right <= channel.row.right + 0.5, {badge: channel.badge, count: channel.count, row: channel.row});
+      const line = under(channel) ? channel.meta.y + channel.meta.h / 2 : channel.row.cy;
+      ok(`${label}: the badge before the count, both centred${under(channel) ? ' on the line under the title' : ''}, inside the row`, channel.badge && channel.count && channel.badge.right <= channel.count.x + 0.5
+        && near(channel.badge.cy, line) && near(channel.count.cy, line) && channel.count.right <= channel.row.right + 0.5, {badge: channel.badge, count: channel.count, row: channel.row, line});
       ok(`${label}: a long title wraps inside the row, the count at its end, centred`, long.title.right <= long.count.x + 0.5 && long.count.right <= long.row.right + 0.5
         && near(long.count.cy, long.row.cy) && near(long.avatar.cy, long.row.cy) && long.row.right <= got.one[0].row.right + 0.5, long);
 
@@ -227,7 +251,7 @@ try {
 
       // Pinned.
       ok(`${label}: pinned leads under «Закреплённые» before the days`, got.groups[0]?.key === 'pinned' && got.groups[0]?.heading === 'Закреплённые'
-        && JSON.stringify(got.groups[0].ids) === '["p"]' && got.groups[1]?.heading === 'Сегодня' && got.groups.length === 3, got.groups);
+        && JSON.stringify(got.groups[0].ids) === '["p"]' && got.groups[1]?.heading === 'Сегодня' && Boolean(got.groups[1]?.date) && got.groups.length === 3, got.groups);
       ok(`${label}: ungrouped, pinned leads with no heading`, got.flat[0]?.id === 'p' && got.flatHeadings === 0 && got.flat.map((row) => row.id).join() === 'p,x,y', {flat: got.flat.map((row) => row.id), headings: got.flatHeadings});
 
       ok(`${label}: no sideways scroll`, got.scroll <= 0, got.scroll);
