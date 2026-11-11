@@ -141,7 +141,8 @@
         "startClosedLayerContent",
         "topLayer",
         "tryFocus",
-        "updateLayer"
+        "updateLayer",
+        "whenClosedLayerOpens"
       ]
     },
     "lit": {

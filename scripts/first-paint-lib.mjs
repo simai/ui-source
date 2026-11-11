@@ -393,7 +393,7 @@ export const BOOT_CONFIG = {
   // its content starts (core layer-stack.js startClosedLayerContent): that
   // start waits for the browser to be idle, and the picture and its sheets
   // must not depend on when that came.
-  startClosedContent: false,
+  startClosedLayerContent: false,
   ...(Object.keys(config.packages).length
     ? {packages: Object.fromEntries(Object.entries(config.packages).map(([name, {base}]) => [name, {base}]))} : {}),
 };

@@ -398,12 +398,22 @@ test('a closed layer starts its content past its own root only, with the Loader\
   // component asks for an element it draws.
   assert.match(source, /readyState === 'complete'/u);
   assert.match(source, /loader\.ensure\(tags, \{timeout: 10000\}\)/u);
-  // A page keeps the old timing with SF_BOOT_CONFIG.startClosedContent =
+  // A page keeps the old timing with SF_BOOT_CONFIG.startClosedLayerContent =
   // false, and the first-paint snapshots do: a closed layer is printed at rest.
-  assert.match(source, /view\.SF_BOOT_CONFIG\?\.startClosedContent === false\) return;/u);
-  assert.match(await read('scripts/first-paint-lib.mjs'), /startClosedContent: false,/u);
+  assert.match(source, /view\.SF_BOOT_CONFIG\?\.startClosedLayerContent === false\) return;/u);
+  assert.match(await read('scripts/first-paint-lib.mjs'), /startClosedLayerContent: false,/u);
   const modal = await read('src/smart/modal/index.js');
   const drawer = await read('src/smart/drawer/index.js');
   assert.match(modal, /this\.display !== "inline" && !this\.openState && !this\._closedContentStarted[^]{0,120}startClosedLayerContent\(\(\) => this\._root\(\)\)/u);
   assert.match(drawer, /!this\.openState && !this\._closedContentStarted[^]{0,120}startClosedLayerContent\(\(\) => this\.getDrawerRoot\(\)\?\.querySelector\('\[data-sf-drawer-panel\]'\)\)/u);
+  // The old name was never released: no alias.
+  assert.doesNotMatch(source, /startClosedContent\b/u);
+  // Content added to the closed layer later is walked again (L2).
+  assert.match(source, /watcher\.observe\(root, \{childList: true, subtree: true\}\);/u);
+  assert.match(source, /const CLOSED_LAYER = '\.sf-modal\[inert\], \[data-sf-drawer-panel\]\[inert\]';/u);
+  // Code early, data on opening (M2): a component that fetches its own data
+  // waits for the layer to open; the old timing keeps the old behaviour.
+  assert.match(source, /export function whenClosedLayerOpens\(element, signal\) \{\n\s+const view = globalThis\.window;\n\s+if \(!view\?\.document \|\| view\.SF_BOOT_CONFIG\?\.startClosedLayerContent === false\) return null;/u);
+  const include = await read('src/smart/include/index.js');
+  assert.match(include, /const opens = whenClosedLayerOpens\(this, this\.sfScope\);/u);
 });
