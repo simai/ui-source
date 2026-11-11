@@ -21,7 +21,10 @@ filter or a quiet label reads the same on any background and in both themes.
 Because a tag is built without a border, both draw their boundary as an inset
 line, which keeps a tag exactly as tall as its neighbours.
 
-A picture before the label is the label's line high. On another control's text
+A picture before the label is the label's line high. The label after it starts at the tag's own picture gap,
+`--sf-tag-picture-gap`, not at the label's text inset: per size, screen and
+density it has the text inset's values of 2026-11-11, with 8 at size 1/2, so a
+later change of the text inset does not move the picture's gap. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
 

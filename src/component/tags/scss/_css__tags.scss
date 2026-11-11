@@ -1,4 +1,51 @@
+@use 'sass:map';
 @use 'var__tags' as *;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
+/* The tag's own gap between a leading picture and the label, per size, on
+   the screens and densities of the core ladders (C22: the phone ladder below
+   the lg breakpoint; on a desktop normal, compact one step down, an explicit size or a
+   normal region back to normal). The values are the label's text step of
+   2026-11-11 (the ui ladder's text-space-x) with 8 at size 1/2 everywhere; the
+   tag reads them, not the text step, so a change of the text inset leaves
+   the picture gap where it is. */
+@layer sf.base {
+  :root {
+    --sf-tag--picture-gap-1\/3: var(--sf-a5);
+    --sf-tag--picture-gap-1\/2: var(--sf-a8);
+    --sf-tag--picture-gap-1: var(--sf-a6);
+    --sf-tag--picture-gap-2: var(--sf-a8);
+    --sf-tag--picture-gap-3: var(--sf-b0);
+  }
+
+  @media (min-width: map.get(bp.$breakpoint-array, lg)) {
+    :root {
+      --sf-tag--picture-gap-1\/3: var(--sf-a6);
+      --sf-tag--picture-gap-1\/2: var(--sf-a8);
+      --sf-tag--picture-gap-1: var(--sf-a8);
+      --sf-tag--picture-gap-2: var(--sf-b0);
+      --sf-tag--picture-gap-3: var(--sf-b2);
+    }
+
+    [data-sf-density="compact"] {
+      --sf-tag--picture-gap-1\/3: var(--sf-a6);
+      --sf-tag--picture-gap-1\/2: var(--sf-a8);
+      --sf-tag--picture-gap-1: var(--sf-a7);
+      --sf-tag--picture-gap-2: var(--sf-a8);
+      --sf-tag--picture-gap-3: var(--sf-b0);
+    }
+
+    [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *),
+    [data-sf-density="normal"] {
+      --sf-tag--picture-gap-1\/3: var(--sf-a6);
+      --sf-tag--picture-gap-1\/2: var(--sf-a8);
+      --sf-tag--picture-gap-1: var(--sf-a8);
+      --sf-tag--picture-gap-2: var(--sf-b0);
+      --sf-tag--picture-gap-3: var(--sf-b2);
+    }
+  }
+}
+
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-tag {
@@ -17,6 +64,7 @@
     color: inherit;
     font: inherit;
     gap: var(--sf-tag--gap, var(--sf-tag-gap, var(--sf-a1)));
+    --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1));
     padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-start)));
     padding-top: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top)));
     padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-end)));
@@ -705,6 +753,7 @@
    font request). */
 .sf-tag.sf-tag--size-1\/3 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
+  --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1\/3));
 }
 
 .sf-tag.sf-tag--size-1\/3 .sf-tag-container {
@@ -739,6 +788,7 @@
 
 .sf-tag.sf-tag--size-1\/2 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
+  --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1\/2));
 }
 
 .sf-tag.sf-tag--size-1\/2 .sf-tag-container {
@@ -773,6 +823,7 @@
 
 .sf-tag.sf-tag--size-1 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
+  --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1));
 }
 
 .sf-tag.sf-tag--size-1 .sf-tag-container {
@@ -807,6 +858,7 @@
 
 .sf-tag.sf-tag--size-2 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
+  --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-2));
 }
 
 .sf-tag.sf-tag--size-2 .sf-tag-container {
@@ -841,6 +893,7 @@
 
 .sf-tag.sf-tag--size-3 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
+  --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-3));
 }
 
 .sf-tag.sf-tag--size-3 .sf-tag-container {
@@ -884,6 +937,17 @@
   --sf-avatar--width: var(--sf-tag--line, var(--sf-tag--line-height));
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-tag--line, var(--sf-tag--line-height)) / 2));
   --sf-avatar--line-height: var(--sf-tag--line, var(--sf-tag--line-height));
+}
+
+/* The label after a leading picture (an icon, the check, the status dot, the
+   colour cell, an avatar) starts at the tag's own picture gap, not at the
+   label's text step: one value no longer drives both the label inset and the
+   gap after the picture (2026-11-11). Its ladder (top of this sheet) is the
+   text step's values of today, with 8 at size 1/2, so a change of the text
+   inset does not move it. A page sets --sf-tag-picture-gap; an inline tag
+   keeps the label start its host gives it. */
+.sf-tag :is(.sf-icon, sf-icon, .sf-tag-check, .sf-dot, .sf-tag-color-icon, .sf-avatar) + .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-tag--picture-gap);
 }
 }
 

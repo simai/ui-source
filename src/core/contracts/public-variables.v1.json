@@ -386,9 +386,19 @@
         {
           "name": "--sf-tag-gap",
           "role": "gap",
-          "summary": "Space between the parts of the tag (every size sets 0: the label's own step spaces it).",
+          "summary": "Space between the parts of the tag (every size sets 0: the label's own step spaces it; after a leading picture the label starts at --sf-tag-picture-gap).",
           "default": "var(--sf-a1)",
           "since": "2026-10-18",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-tag-picture-gap",
+          "role": "gap",
+          "summary": "Space between a leading picture (an icon, the check, the status dot, the colour cell, an avatar) and the label. The tag's own ladder: the label's text step of 2026-11-11 at each size, screen and density, with 8 at size 1/2; the label's text inset no longer sets it.",
+          "default": "var(--sf-tag--picture-gap-1)",
+          "since": "2026-11-11",
           "varies_with": [
             "size"
           ]
