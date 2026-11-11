@@ -16,7 +16,7 @@
     "src/component/quantity/scss/_css__quantity.scss",
     "src/component/quantity/scss/index.scss"
   ],
-  "content_sha256": "fb70f4b1d3da9cf9087f9231b2b6b5ca68bd743f04fcda594894144faaed3100",
+  "content_sha256": "2da61f435df6f996399eeacb574ebd0d4736b9c3befb31c46e587e602f03d3aa",
   "dependencies": [
     {
       "id": "component.icon-buttons",
