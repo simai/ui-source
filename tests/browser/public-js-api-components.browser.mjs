@@ -14,6 +14,9 @@
 //   - a public component-layer name declares its keys, so the documentation
 //     page it links to has a list to print (js-api acceptance M2, 2026-11-11:
 //     22 names declared none of their 74 keys).
+// A second page holds the plain components that give a script API --
+// SF.AdminMenu, SF.Clipboard, SF.Flag, SF.Highlight, SF.Tab -- each loaded by
+// the markup its rule names, and holds the same four rules for them.
 import {readFileSync, existsSync, readdirSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -33,12 +36,22 @@ const typeOf = (file) => file.endsWith('.css') ? 'text/css; charset=utf-8'
   : file.endsWith('.woff2') ? 'font/woff2'
   : 'text/javascript; charset=utf-8';
 
+// The plain components' markup: each rule (src/component/<name>/rule.js)
+// loads its component when the page holds it.
+const PLAIN = [
+  '<nav class="sf-admin-menu"><ul><li><a href="#a">A</a></li></ul></nav>',
+  '<button type="button" data-sf-copy="text">Copy</button>',
+  '<span class="sf-flag" data-country="ru"></span>',
+  '<pre><code class="language-js">const a = 1;</code></pre>',
+  '<div class="sf-tab "><button type="button">One</button></div>',
+].join('');
+
 const failures = [];
 const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();
-try {
+async function check(label, markup) {
   const page = await browser.newPage({viewport: {width: 1440, height: 4000}});
-  page.on('pageerror', (error) => note({said: `page error: ${error.message}`}));
+  page.on('pageerror', (error) => note({page: label, said: `page error: ${error.message}`}));
   await page.route('http://probe.test/**', (route) => {
     const url = new URL(route.request().url());
     if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: '<!doctype html><html><body></body></html>'});
@@ -50,10 +63,10 @@ try {
   });
   await page.goto('http://probe.test/');
   await page.setContent(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><link rel="stylesheet" href="/distr/core/css/core.css">
-    <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'js-api-components', pluginListVersion: 'js-api-components', preloader: {enabled: false}, icons: {enabled: false}, theme: false};</script>
-    </head><body>${tags.map((tag) => `<div><${tag}></${tag}></div>`).join('')}<script src="/distr/core/js/core.js"></script></body></html>`);
+    <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'js-api-components', pluginListVersion: 'js-api-components', preloader: {enabled: false}, icons: {enabled: false}};</script>
+    </head><body>${markup}<script src="/distr/core/js/core.js"></script></body></html>`);
   await page.waitForFunction(() => window.SF?.Loader && window.SF?.SfBaseElement, null, {timeout: 20000});
-  await page.evaluate((list) => Promise.all(list.map((tag) => Promise.race([window.SF.whenDefined(tag), new Promise((done) => setTimeout(done, 8000))]))), tags);
+  if (label === 'smart') await page.evaluate((list) => Promise.all(list.map((tag) => Promise.race([window.SF.whenDefined(tag), new Promise((done) => setTimeout(done, 8000))]))), tags);
   await page.evaluate(() => window.SF.whenFieldRenderers?.());
   // Wait until window.SF stops gaining names: a component's script API is set
   // by its module, which may run after the element is defined.
@@ -91,12 +104,24 @@ try {
     }
     return {names: Object.keys(window.SF).length, present, missing, undeclared, stale, bare};
   }, contract.globals);
-  if (runtime.missing.length) note({case: 'every member the contract lists is on window.SF', missing: runtime.missing});
-  if (runtime.undeclared.length) note({case: 'every enumerable member at runtime is declared, as a member or an internal member', undeclared: runtime.undeclared});
-  if (runtime.stale.length) note({case: 'every internal member the contract lists is still there', stale: runtime.stale});
-  if (runtime.bare.length) note({case: 'a public component-layer name declares its members', bare: runtime.bare});
-  const components = contract.globals.filter((entry) => entry.layer === 'component' && runtime.present.includes(entry.name)).length;
-  console.log(JSON.stringify({tags: tags.length, names: runtime.names, present: runtime.present.length, components}));
+  await page.close();
+  return runtime;
+}
+
+try {
+  for (const [label, markup, expected] of [
+    ['smart', tags.map((tag) => `<div><${tag}></${tag}></div>`).join(''), []],
+    ['plain', PLAIN, ['SF.AdminMenu', 'SF.Clipboard', 'SF.Flag', 'SF.Highlight', 'SF.Tab']],
+  ]) {
+    const runtime = await check(label, markup);
+    for (const name of expected) if (!runtime.present.includes(name)) note({page: label, case: 'the page loads the component that gives this name', absent: name});
+    if (runtime.missing.length) note({page: label, case: 'every member the contract lists is on window.SF', missing: runtime.missing});
+    if (runtime.undeclared.length) note({page: label, case: 'every enumerable member at runtime is declared, as a member or an internal member', undeclared: runtime.undeclared});
+    if (runtime.stale.length) note({page: label, case: 'every internal member the contract lists is still there', stale: runtime.stale});
+    if (runtime.bare.length) note({page: label, case: 'a public component-layer name declares its members', bare: runtime.bare});
+    const components = contract.globals.filter((entry) => entry.layer === 'component' && runtime.present.includes(entry.name)).length;
+    console.log(JSON.stringify({page: label, tags: label === 'smart' ? tags.length : undefined, names: runtime.names, present: runtime.present.length, components}));
+  }
 } finally {
   await browser.close();
 }

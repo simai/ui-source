@@ -73,5 +73,8 @@ if (typeof globalThis !== 'undefined') {
   api.list = listDeprecations;
   api.clear = clearDeprecations;
   api.note = noteDeprecated;
+  // The console switch (SF.deprecations.warn = true): off unless the page,
+  // or an earlier bundle, set it.
+  if (!('warn' in api)) api.warn = false;
   globalThis.SF.deprecations = api;
 }
