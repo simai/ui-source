@@ -57,14 +57,18 @@ function body(sign, text, end = nothing) {
 function renderFile(context) {
   const { view, size, fileName, fileType, fileSize, said, words, fullWidth } = context;
   const stack = (content) => html`<div class=${fullWidth ? 'sf-download-file__stack sf-download-file__stack--full-width' : 'sf-download-file__stack'}>${content}</div>`;
-  const name = html`<span class="sf-download-file__name sf-download-file-file-name">${fileName}</span>`;
+  // The hidden words stand inside the name, so a screen reader hears them as
+  // one line with it: «Смета.csv, CSV, 112 байт».
+  const name = (words = '') => html`<span class="sf-download-file__name sf-download-file-file-name">${fileName}${words
+    ? html`<span class="sf-download-file__said">${words}</span>`
+    : nothing}</span>`;
 
   if (view === 'error') {
     const row = html`
       <div class=${rowClasses(context, 'error')} style=${context.rootStyle || nothing} role="group" aria-label=${fileName}>
         ${body(
           html`<i class="sf-download-file__icon sf-icon" aria-hidden="true">error</i>`,
-          html`${name}<span class="sf-download-file__said">, ${words.failed}</span><span class="sf-download-file__meta" aria-hidden="true"><span class="sf-download-file__status">${words.failed}</span></span>`,
+          html`${name(`, ${words.failed}`)}<span class="sf-download-file__meta" aria-hidden="true"><span class="sf-download-file__status">${words.failed}</span></span>`,
           html`<span class="sf-download-file__end"><sf-button
             class="sf-download-file__retry"
             size=${size}
@@ -86,7 +90,7 @@ function renderFile(context) {
       <span class=${rowClasses(context, 'offer')} style=${context.rootStyle || nothing}>
         ${body(
           html`<i class="sf-download-file__icon sf-icon" aria-hidden="true">check_circle</i>`,
-          html`${name}<span class="sf-download-file__said">, ${words.ready}${said}</span>${sizeMeta(fileType, fileSize, html`<span class="sf-download-file__status">${words.ready}</span>`)}`,
+          html`${name(`, ${words.ready}${said}`)}${sizeMeta(fileType, fileSize, html`<span class="sf-download-file__status">${words.ready}</span>`)}`,
         )}
       </span>
     `;
@@ -117,8 +121,8 @@ function renderFile(context) {
     : nothing;
 
   const text = preparing
-    ? html`${name}<span class="sf-download-file__said">, </span><span class="sf-download-file__meta"><span class="sf-download-file__status">${hasValue ? words.preparingValue : words.preparing}</span></span>`
-    : html`${name}${tab}<span class="sf-download-file__said">${said}</span>${sizeMeta(fileType, fileSize)}`;
+    ? html`${name(', ')}<span class="sf-download-file__meta"><span class="sf-download-file__status">${hasValue ? words.preparingValue : words.preparing}</span></span>`
+    : html`${name(opensTab ? '' : said)}${tab}${opensTab && said ? html`<span class="sf-download-file__said">${said}</span>` : nothing}${sizeMeta(fileType, fileSize)}`;
 
   const content = body(sign, text);
   const classes = rowClasses(context, preparing ? 'preparing' : 'ready');

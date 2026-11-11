@@ -367,10 +367,17 @@ class SfDownloadFile extends DownloadFileElement {
         if (target === this._boundRoot && this._boundRoot) {
           this._boundRoot.focus({ preventScroll: true });
         } else if (target) {
-          // An sf-button draws its own button: focus it once it is defined.
-          customElements.whenDefined(target.localName).then(() => {
+          // An sf-button draws its own button and shows it once its sheets
+          // are applied: before that the button takes no focus (the probe of
+          // 2026-11-11 found the focus left on the body). Focus it when it has
+          // rendered.
+          const place = () => {
             const now = document.activeElement;
             if (target.isConnected && (!now || now === document.body)) target.focus({ preventScroll: true });
+          };
+          customElements.whenDefined(target.localName).then(() => {
+            if (target.isRendered === false && typeof target.whenRendered === 'function') target.whenRendered(place);
+            else place();
           });
         }
       }

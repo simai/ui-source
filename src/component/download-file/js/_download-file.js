@@ -414,11 +414,13 @@ class DownloadFile extends ComponentObserver {
       textNode.append(tabNode, tabWords);
     }
 
-    // What a screen reader hears after the name: «, CSV, 112 байт».
+    // What a screen reader hears after the name: «, CSV, 112 байт» -- inside
+    // the name, so it is heard as one line with it (after the tab words when
+    // the link opens a tab).
     const saidNode = document.createElement('span');
     saidNode.classList.add('sf-download-file__said');
     saidNode.textContent = fileSaid(fileType, fileSize, document.documentElement);
-    textNode.append(saidNode);
+    (opensTab ? textNode : fileNameNode).append(saidNode);
 
     // The type and the size are two facts (decision C25): «PDF · 2,4 МБ»,
     // seen; the words above are what is heard.

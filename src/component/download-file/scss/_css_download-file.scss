@@ -73,13 +73,16 @@
     align-items: flex-start;
     gap: var(--sf-space-1\/4);
     box-sizing: border-box;
-    inline-size: 100%;
+    inline-size: fit-content;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
   }
 
+  /* As wide as the row it holds: in a flex row of the page it takes the
+     row's room, not the whole line. */
   .sf-download-file__stack.sf-download-file__stack--full-width {
     align-items: stretch;
+    inline-size: 100%;
   }
 
   /* The row and the button beside it: «Отменить» while the file is made,
