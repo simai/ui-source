@@ -37,7 +37,9 @@ test('the default change is in the change journal', () => {
 test('the row keeps the tabs in their order up to the first that does not fit, in its content box', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   assert.ok(layout.length > 0);
-  assert.match(layout, /const room = \(\) => list\.clientWidth - \(parseFloat\(style\.paddingInlineStart\) \|\| 0\) - \(parseFloat\(style\.paddingInlineEnd\) \|\| 0\);/u);
+  // C54 return: fractional, not the rounded clientWidth.
+  assert.match(layout, /const edges = \['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'\];/u);
+  assert.match(layout, /const room = \(\) => list\.getBoundingClientRect\(\)\.width - edges\.reduce\(/u);
   assert.match(layout, /if \(next > available \+ 0\.5\) break;/u);
   assert.doesNotMatch(layout, /list\.clientWidth \+ 0\.5/u);
 });

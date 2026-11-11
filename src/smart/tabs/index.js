@@ -696,8 +696,13 @@ class SfTabs extends TabsElement {
     const widths = hosts.map(width);
     const style = getComputedStyle(list);
     const gap = parseFloat(style.columnGap) || 0;
-    // The tabs' room is the row's content box: clientWidth holds its padding.
-    const room = () => list.clientWidth - (parseFloat(style.paddingInlineStart) || 0) - (parseFloat(style.paddingInlineEnd) || 0);
+    // The tabs' room is the row's content box, in fractional pixels: the row
+    // clips and has no scrollbar, so its border box less borders and padding.
+    // clientWidth is rounded to a whole pixel, and a row 383.6 px wide read as
+    // 383 or 384 with the trigger's count: the same box came back from a
+    // narrower one with a tab fewer than at load (C54 return, 560 px, underline).
+    const edges = ['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'];
+    const room = () => list.getBoundingClientRect().width - edges.reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
     // The tabs in their order up to the first that does not fit: a tab is in
     // the row whole or in «Ещё», and a later narrower tab does not jump the
     // queue past a wider one (owner decision C54).
