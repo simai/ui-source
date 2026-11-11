@@ -17,8 +17,9 @@
   // the state colour -- with the fill as a layer over the nearest opaque place
   // (--sf-surface-place-ground), so on a soft coloured place the dot is the
   // soft place's own look, opaque. On the page, a card or a popup the place
-  // colour is opaque already and nothing changes. Where no ground is known
-  // (glass) the bottom is transparent: exactly the former dot.
+  // colour is opaque already and nothing changes; on glass the ground is
+  // black, so the dot is dark glass. Where no ground is declared the bottom is
+  // transparent: exactly the former dot.
   background-color: var(--sf-surface-place-ground, transparent);
   background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
   --sf-online-indicator--height: var(--sf-b6);

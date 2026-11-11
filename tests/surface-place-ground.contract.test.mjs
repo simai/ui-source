@@ -6,7 +6,7 @@ import {URL} from 'node:url';
 // --sf-surface-place-ground, the nearest opaque place (status dot on soft
 // places, 2026-11-11): the page declares it, every solid place declares it
 // with its solid colour, a soft coloured place leaves it to the place below,
-// glass sets it initial (held for the owner). The avatar's status dot lays
+// glass declares black (DEV, 2026-11-11). The avatar's status dot lays
 // its fill over it, so nothing under the dot shows through.
 
 const root = new URL('../', import.meta.url);
@@ -26,13 +26,13 @@ test('the page and every solid place declare the ground; a soft place does not',
   assert.doesNotMatch(body(mix, 'sf-place-soft'), /^\s*--sf-surface-place-ground:/mu, 'a soft place inherits the opaque place below');
 });
 
-test('places outside the mixins declare the ground with their solid colour; glass is held', async () => {
+test('places outside the mixins declare the ground with their solid colour; glass declares black', async () => {
   const popover = await read('src/smart/popover/js/templates/default.css');
   assert.match(popover, /--sf-surface-place-ground: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/u);
   const alertBar = await read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
   assert.match(alertBar, /--sf-surface-place-solid: var\(--sf-alert-bar--fill\);\s*--sf-surface-place-ground: var\(--sf-alert-bar--fill\);/u);
   const glass = await read('src/core/scss/_sf_css__surface_places.scss');
-  assert.match(glass, /\.sf-surface-media \{[^}]*--sf-surface-place-ground: initial;/u);
+  assert.match(glass, /\.sf-surface-media \{[^}]*--sf-surface-place-ground: var\(--sf-black\);/u);
 });
 
 test('the status dot draws as before, over the ground', async () => {

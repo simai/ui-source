@@ -53,8 +53,8 @@ on. A cut-out that must not show what is under it lays the place colour over
 it: the avatar's status dot is drawn as before over that ground, so on a
 soft place it is the soft place's own look, opaque, and the photo no longer
 shows through it. On solid places nothing
-changes. Glass (`.sf-surface-media`) sets it `initial` for now and the dot
-keeps its translucent look there.
+changes. Glass (`.sf-surface-media`) declares `var(--sf-black)`, the opaque
+base of its tone: the dot there is solid dark glass, not the photo.
 
 ### What changed with C43 (2026-11-10)
 

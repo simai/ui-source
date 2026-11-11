@@ -36,7 +36,7 @@
 // solid, a soft place does not, so under a soft place it is the opaque place
 // beneath. A cut-out that must not show what is under it (the avatar's status
 // dot) lays --sf-surface-place over it, which is exactly the soft place's
-// look over its ground. It is never initial except on glass (held).
+// look over its ground. It is never initial; glass declares black.
 //
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque

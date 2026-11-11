@@ -157,8 +157,8 @@
        tone over. Always opaque: the page here, and every place that declares
        a solid --sf-surface-place-solid declares the same colour; a soft
        coloured place does not declare it, so it is the opaque place the soft
-       one stands on. Glass sets it initial for now (held for the owner): a
-       reader falls back to today's translucent place colour there. */
+       one stands on. Glass declares black, the opaque base of its own tone
+       (DEV, 2026-11-11): under glass is a picture, not a place. */
     --sf-surface-place-ground: var(--sf-surface-page);
     /* What a translucent layer that must keep its own tone stacks over (C43,
        owner 2026-11-10). It equals the place colour, set only under a
