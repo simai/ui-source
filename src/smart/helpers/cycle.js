@@ -86,9 +86,22 @@ function loader() {
   return globalThis.SF?.Loader;
 }
 
-/** The theme drawn now (light or dark), whatever the preference. */
+/**
+ * False when the page's host draws the theme itself and started the Loader
+ * with `theme: false` (SF_BOOT_CONFIG.theme): the Loader then neither reads
+ * nor sets a theme, and its `theme` stays at the value it began with.
+ */
+export function loaderOwnsTheme() {
+  return loader()?.themeEnabled !== false;
+}
+
+/**
+ * The theme drawn now (light or dark), whatever the preference. The Loader's
+ * own value counts only while the Loader owns the theme; under a host that
+ * owns it (R076: a Docara example frame) the document says what is drawn.
+ */
 export function visibleTheme() {
-  const theme = loader()?.theme;
+  const theme = loaderOwnsTheme() ? loader()?.theme : undefined;
   if (theme === 'dark' || theme === 'light') return theme;
   const root = globalThis.document?.documentElement;
   if (root?.classList?.contains('theme-dark')) return 'dark';
@@ -160,6 +173,21 @@ export function warnCycleToggle(host, names) {
 }
 
 /**
+ * A theme cycle whose press cannot move the theme says why, once per
+ * element (R076): a host that owns the theme (the Loader started with
+ * `theme: false`), or no Loader at all. The button stays where it is and
+ * sends no change.
+ */
+export function warnThemeNotOwned(host) {
+  if (host.__sfThemeWarned) return;
+  host.__sfThemeWarned = true;
+  const reason = loader()
+    ? 'the page\'s theme belongs to its host (the Loader runs with theme: false); a host that hands the theme to the Loader makes it work (a Docara example: theme_switch=true)'
+    : 'SF.Loader is absent';
+  globalThis.console?.warn?.(`[SIMAI Framework] ${host.localName} theme-cycle: the press changes nothing: ${reason}.`);
+}
+
+/**
  * A person's press of a cycle: the next value, the change event and the
  * announcement. Answers true when it moved.
  */
@@ -178,6 +206,7 @@ export function pressCycle(host, state) {
     // theme switched off) leaves the cycle where it is.
     host.__sfCycleExpect = value;
     if (loader()?.setTheme?.(value) !== true) {
+      warnThemeNotOwned(host);
       host.__sfCycleAnnounce = false;
       host.__sfCyclePrevious = before;
       host.__sfCycleExpect = undefined;
