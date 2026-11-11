@@ -420,3 +420,57 @@
     inline-size: auto;
   }
 }
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. The chosen value
+   starts --sf-space-1/2, --sf-space-1 or --sf-space-2 from the field's outer
+   edge, the border counted inside it (size 1/2 keeps 12 on a phone), plus half
+   of what a rounder corner adds over the control radius; the input adds no
+   picture-to-label step of its own. A picture before the value and the chevron
+   stand at the plain inset. The tag field keeps its own inset (C76); its tags follow the corner. */
+@layer sf.components {
+  .sf-dropdown {
+    --sf-dropdown--inset: var(--sf-space-1);
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-1--control-height) / 2);
+    --sf-dropdown--value-inset: calc(var(--sf-dropdown--inset) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-dropdown.sf-dropdown--size-2 {
+    --sf-dropdown--inset: var(--sf-space-2);
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-2--control-height) / 2);
+  }
+
+  .sf-dropdown.sf-dropdown--size-1\/2 {
+    --sf-dropdown--inset: var(--sf-space-1\/2);
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  @media not all and (min-width: 60rem) {
+    .sf-dropdown.sf-dropdown--size-1\/2 {
+      --sf-dropdown--inset: var(--sf-space-1);
+    }
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2) .sf-dropdown-field {
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-dropdown--value-inset) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-end: calc(var(--sf-dropdown--inset) - var(--sf-px));
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2) .sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) {
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-dropdown--inset) - var(--sf-px));
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2):is(.sf-dropdown--outlined, .sf-dropdown--filled) .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  /* A tag inside the field follows its corner, 4 less (at least --sf-radius-1/2,
+     4), so a pill field holds pill-ended tags at an even gap; a page's
+     --sf-tag-radius still wins. */
+  .sf-dropdown .sf-dropdown-tag-container {
+    --sf-dropdown--tag-radius: var(--sf-tag-radius, max(var(--sf-radius-1\/2), var(--sf-dropdown--line-radius) - var(--sf-space-1\/4)));
+    --sf-tag--border-top-left-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-top-right-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-bottom-left-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-bottom-right-radius: var(--sf-dropdown--tag-radius);
+  }
+}

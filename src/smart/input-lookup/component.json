@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "field",
   "settings": {

@@ -418,3 +418,40 @@
     --sf-textarea-textarea--border-color: var(--sf-outline);
   }
 }
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. The text starts
+   --sf-space-1/2, --sf-space-1 or --sf-space-2 from the outer edge, the border
+   counted inside it (size 1/2 keeps 12 on a phone); the text box adds no
+   picture-to-label step. The multi-line box takes the corner of its
+   single-line field (at most half the single-line height: a full corner on a
+   two-line box swallows the first line), and a rounder corner moves the text
+   in by half of what it adds over the control radius. Flush keeps no
+   padding of its own. */
+@layer sf.components {
+  .sf-textarea {
+    --sf-textarea--inset: var(--sf-space-1);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1--control-height) / 2);
+    --sf-textarea--value-inset: calc(var(--sf-textarea--inset) + max(calc(var(--sf-px) * 0), var(--sf-textarea--radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-textarea.sf-textarea--size-2 {
+    --sf-textarea--inset: var(--sf-space-2);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+  }
+
+  .sf-textarea.sf-textarea--size-1\/2 {
+    --sf-textarea--inset: var(--sf-space-1\/2);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  @media not all and (min-width: 60rem) {
+    .sf-textarea.sf-textarea--size-1\/2 {
+      --sf-textarea--inset: var(--sf-space-1);
+    }
+  }
+
+  .sf-textarea:is(.sf-textarea--size-1, .sf-textarea--size-2, .sf-textarea--size-1\/2):not(.sf-textarea--flush) textarea {
+    --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+    --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+  }
+}

@@ -358,3 +358,40 @@
     .sf-list__row--current { border-inline-start: var(--sf-px) solid Highlight; }
   }
 }
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html): a row's text stands
+   where a field's value does in the same column -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2 from the list's outer edge, its border counted
+   inside (size 1/2 keeps 12 on a phone) -- and a row's picture at the same
+   place, its step after it. The row's highlight stands --sf-space-1/4 in from
+   the frame, as a menu's does (C30); a text row adds no picture-to-label step
+   of its own. The group headings and the rename field keep the rows' text
+   edge. */
+@layer sf.components {
+  .sf-list__frame {
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    --sf-list--edge: var(--sf-list--border-width, var(--sf-px));
+  }
+
+  .sf-list__frame.sf-list--size-1 { --sf-list--inset: var(--sf-space-1); }
+  .sf-list__frame.sf-list--size-2 { --sf-list--inset: var(--sf-space-2); }
+  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: var(--sf-space-1\/2); }
+
+  @media not all and (min-width: 60rem) {
+    .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: var(--sf-space-1); }
+  }
+
+  .sf-list__frame:is(.sf-list--size-1, .sf-list--size-2, .sf-list--size-1\/2) {
+    --sf-list--text-inset: calc(var(--sf-list--inset) - var(--sf-space-1\/4) - var(--sf-list--edge));
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item {
+    --sf-list-item--padding-inline-start: var(--sf-list--text-inset);
+    --sf-list-item--padding-inline-end: var(--sf-list--text-inset);
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--text .sf-list-item-container {
+    padding-inline-start: 0;
+  }
+}
