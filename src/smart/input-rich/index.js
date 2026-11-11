@@ -9,8 +9,17 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// The heading blocks of the subset: bold by their type, not by a mark.
-const HEADINGS = 'h2, h3, h4';
+// The marks the toolbar sets: the elements that say them, and the style of
+// a run that says the mark is off (the cleaner splits a mark around it).
+const MARKS = {
+  strong: {selector: 'strong, b', off: ['fontWeight', 'normal']},
+  em: {selector: 'em, i', off: ['fontStyle', 'normal']},
+};
+const markElement = (doc, tag, on) => {
+  const element = doc.createElement(on ? tag : 'span');
+  if (!on) element.style[MARKS[tag].off[0]] = MARKS[tag].off[1];
+  return element;
+};
 
 // On a phone -- below the md breakpoint, where core declares
 // --sf-breakpoint-md -- a form in a popup is a sheet at the bottom of the
@@ -30,9 +39,10 @@ const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement)
 //
 // The value is never trusted: what the page gives, what is pasted or dropped,
 // and the editing surface after every keystroke and command go through the
-// one cleaner. A command may use document.execCommand where the browser has
-// it, but its result is cleaned the same way, and undo and redo are the
-// component's own history of cleaned states, so neither depends on it.
+// one cleaner. Every command is the component's own DOM operation (Bold and
+// Italic too: the browser's command reads the computed style as the mark),
+// its result is cleaned the same way, and undo and redo are the component's
+// own history of cleaned states.
 
 const RichTextElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -426,27 +436,19 @@ class SfRichText extends FormField(RichTextElement) {
   _updateState() {
     const range = this._range();
     const node = this._startNode(range);
-    const command = (name) => {
-      try {
-        return Boolean(range?.collapsed && this.ownerDocument.queryCommandState?.(name));
-      } catch {
-        return false;
-      }
-    };
     const block = node ? this._within(node, 'p, h2, h3, h4, li') : null;
     const item = node ? this._within(node, 'li') : null;
-    // A heading is bold by its type: the browser's bold state reads the
-    // computed weight and says bold everywhere in it, so there only the mark
-    // (or the mark the next typing takes) presses Bold.
-    const heading = Boolean(node && this._within(node, HEADINGS));
-    const pending = this._pendingStrong(range);
+    // Bold and Italic say the marks alone, or the marks the next typing
+    // takes at a caret: never the computed style, which in a heading (bold
+    // by its type) said bold on every word.
+    const mark = (tag) => this._pendingMark(tag, range) ?? Boolean(node && this._within(node, MARKS[tag].selector));
     const next = {
       p: block?.localName === 'p',
       h2: block?.localName === 'h2',
       h3: block?.localName === 'h3',
       h4: block?.localName === 'h4',
-      strong: pending ?? (Boolean(node && this._within(node, 'strong, b')) || (!heading && command('bold'))),
-      em: Boolean(node && this._within(node, 'em, i')) || command('italic'),
+      strong: mark('strong'),
+      em: mark('em'),
       link: Boolean(node && this._within(node, 'a')),
       ul: item?.parentElement?.localName === 'ul',
       ol: item?.parentElement?.localName === 'ol',
@@ -460,15 +462,19 @@ class SfRichText extends FormField(RichTextElement) {
     if (changed) this.requestComponentUpdate('selection');
   }
 
-  // The mark the next typing takes at a caret in a heading, when Bold was
-  // pressed there; forgotten once the caret moves.
-  _pendingStrong(range = this._range()) {
-    if (!this._pending) return undefined;
+  // The marks the next typing takes at a caret where Bold or Italic was
+  // pressed ({at, strong?, em?}); forgotten once the caret moves.
+  _pendingMarks(range = this._range()) {
+    if (!this._pending) return null;
     if (!range?.collapsed || this._saveSelection()?.start !== this._pending.at) {
       this._pending = null;
-      return undefined;
+      return null;
     }
-    return this._pending.strong;
+    return this._pending;
+  }
+
+  _pendingMark(tag, range) {
+    return this._pendingMarks(range)?.[tag];
   }
 
   // ---------------------------------------------------------- cleaning
@@ -589,19 +595,24 @@ class SfRichText extends FormField(RichTextElement) {
     }
   }
 
-  // Text typed at a caret in a heading where Bold was pressed: it takes the
-  // pending mark (the cleaner splits a mark around a run whose weight is normal).
+  // Text typed at a caret where Bold or Italic was pressed: it takes the
+  // pending marks (a mark off is a run of normal style the cleaner splits
+  // the mark around).
   _typePending(event) {
     const range = this._range();
-    const strong = this._pendingStrong(range);
+    const pending = this._pendingMarks(range);
     this._pending = null;
-    if (strong === undefined || !range) return;
+    if (!pending || !range) return;
     event.preventDefault();
     const doc = this.ownerDocument;
     const text = doc.createTextNode(event.data);
-    const wrap = doc.createElement(strong ? 'strong' : 'span');
-    if (!strong) wrap.style.fontWeight = 'normal';
-    wrap.append(text);
+    let wrap = text;
+    for (const tag of Object.keys(MARKS)) {
+      if (pending[tag] === undefined) continue;
+      const element = markElement(doc, tag, pending[tag]);
+      element.append(wrap);
+      wrap = element;
+    }
     range.insertNode(wrap);
     const caret = doc.createRange();
     caret.setStart(text, text.data.length);
@@ -736,8 +747,8 @@ class SfRichText extends FormField(RichTextElement) {
   runCommand(id) {
     if (this.effectiveDisabled || this.readonly) return false;
     if (BLOCK_TAGS[id]) return this._edit(() => this._setBlock(BLOCK_TAGS[id]), 'formatBlock');
-    if (id === 'bold') return this._edit(() => this._toggleMark('bold', 'strong'), 'formatBold');
-    if (id === 'italic') return this._edit(() => this._toggleMark('italic', 'em'), 'formatItalic');
+    if (id === 'bold') return this._edit(() => this._toggleMark('strong'), 'formatBold');
+    if (id === 'italic') return this._edit(() => this._toggleMark('em'), 'formatItalic');
     if (id === 'bulleted-list') return this._edit(() => this._toggleList('ul'), 'insertUnorderedList');
     if (id === 'numbered-list') return this._edit(() => this._toggleList('ol'), 'insertOrderedList');
     if (id === 'quote') return this._edit(() => this._toggleQuote(), 'formatBlock');
@@ -795,48 +806,21 @@ class SfRichText extends FormField(RichTextElement) {
     }
   }
 
-  _toggleMark(command, tag) {
-    const doc = this.ownerDocument;
-    if (tag === 'strong' && this._selectedBlocks().some((block) => block.matches(HEADINGS))) {
-      this._toggleStrongByMark();
-      return;
-    }
-    let done = false;
-    try {
-      done = doc.execCommand(command, false);
-    } catch {
-      done = false;
-    }
-    if (done) return;
-    // Without the command: wrap the selection, or unwrap the mark it is in.
-    const range = this._range();
-    if (!range || range.collapsed) return;
-    const startMark = this._within(range.startContainer, `${tag}, ${tag === 'strong' ? 'b' : 'i'}`);
-    const endMark = this._within(range.endContainer, `${tag}, ${tag === 'strong' ? 'b' : 'i'}`);
-    if (startMark && startMark === endMark) {
-      startMark.replaceWith(...startMark.childNodes);
-      return;
-    }
-    const fragment = range.extractContents();
-    fragment.querySelectorAll(`${tag}, ${tag === 'strong' ? 'b' : 'i'}`).forEach((mark) => mark.replaceWith(...mark.childNodes));
-    const mark = doc.createElement(tag);
-    mark.append(fragment);
-    range.insertNode(mark);
-  }
-
-  // Bold where a heading is in the selection: the browser's command reads
-  // the heading's weight as a mark and takes none, so the mark is set here.
-  // All the selected text marked: the mark comes off (a run of normal weight
-  // the cleaner splits the mark around); otherwise it goes on. At a caret the
-  // mark waits for the typing.
-  _toggleStrongByMark() {
+  // Bold and Italic set the mark themselves. The browser's command reads
+  // the computed style as the mark: in a heading (bold by its type) it saw
+  // bold everywhere and took no mark, and at a caret its typing style was
+  // lost when the edit put the caret back. All the selected text marked: the
+  // mark comes off; otherwise it goes on. At a caret the mark waits for the
+  // typed text.
+  _toggleMark(tag) {
     const range = this._range();
     if (!range) return;
     const doc = this.ownerDocument;
+    const {selector} = MARKS[tag];
     if (range.collapsed) {
-      const pending = this._pendingStrong(range);
-      const marked = pending ?? Boolean(this._within(this._startNode(range), 'strong, b'));
-      this._pending = {at: this._saveSelection().start, strong: !marked};
+      const pending = this._pendingMarks(range);
+      const marked = pending?.[tag] ?? Boolean(this._within(this._startNode(range), selector));
+      this._pending = {...pending, at: this._saveSelection().start, [tag]: !marked};
       return;
     }
     this._pending = null;
@@ -855,13 +839,12 @@ class SfRichText extends FormField(RichTextElement) {
       if (to > from) parts.push({text, from, to});
     }
     if (!parts.length) return;
-    const on = !parts.every(({text}) => this._within(text, 'strong, b'));
+    const on = !parts.every(({text}) => this._within(text, selector));
     for (const part of parts) {
       let {text} = part;
       if (part.to < text.data.length) text.splitText(part.to);
       if (part.from > 0) text = text.splitText(part.from);
-      const wrap = doc.createElement(on ? 'strong' : 'span');
-      if (!on) wrap.style.fontWeight = 'normal';
+      const wrap = markElement(doc, tag, on);
       text.replaceWith(wrap);
       wrap.append(text);
     }
