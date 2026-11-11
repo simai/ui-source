@@ -2,7 +2,7 @@
   "$comment": "The source of sf-change's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#change).",
   "id": "smart.change",
   "tag": "sf-change",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "text",
   "settings": {
@@ -155,7 +155,8 @@
     "list: a dl on one grid: the labels' column as wide as the longest label (max-content), the pairs beside it; under a 24rem container (container query on the host) the label stands over its pair. A value in the list wraps.",
     "reveal: in layout inline a before or after longer than 80 characters (Array.from, so a grapheme is not cut) is not put in the sentence; a link-coloured button «Показать изменения» (aria-expanded, aria-controls) reveals the two values in place as outlined blocks labelled «Было» and «Стало», the old one quiet; «Скрыть изменения» hides them. The state is the element's own; a redraw keeps it.",
     "type: the place's own -- the element inherits the font and the line, so it reads right in a sentence of any size; the reveal's button and the blocks' labels are one step down (text 1/2).",
-    "css-variables: six public variables (§6) -- the old value's colour, the new value's colour and weight, the arrow's colour, the labels' colour and the list's column gap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+    "css-variables: six public variables (§6) -- the old value's colour, the new value's colour and weight, the arrow's colour, the labels' colour and the list's column gap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "version 1.0.1 (2026-11-11, C40 follow-up, acceptance note 1, dispatcher decision): a patch, a small look fix. A value of up to 20 characters (a number and its unit «4,6 кг», a phone number «+7 900 000-00-00», a name) stays whole on one line (.sf-change__whole, white-space nowrap), in a sentence and in a list; only a longer value wraps (overflow-wrap anywhere, as 1.0.0). At 390 1.0.0 read «4,6 / кг», «+7 900 / 000-00-00». Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
