@@ -8,8 +8,9 @@
 // them 300 ms later, until the core loader was ready -- the cards appeared,
 // vanished and came back on a cold load.
 //
-// Each case is a cold load (a new context) at CPU x4, the core loader held
-// back LOADER_DELAY ms, every frame recorded:
+// Each case is a cold load (a new context) at CPU x4, at 1440 and 390, light
+// and dark, three loads each; the core loader is held back LOADER_DELAY ms and
+// every other script a random 0-300 ms (timing-hostile), every frame recorded:
 //   preloaded  SF_PRELOADED.modules is not empty, no preloader setting:
 //              no frame shows the preloader;
 //   drawn      no SF_PRELOADED, a Smart element already drawn (isRendered)
@@ -35,7 +36,7 @@ const DRAWN = `<script>
     connectedCallback() { this.textContent = 'Карточка'; this.isRendered = true; }
   });
 </script>`;
-const page = (mode) => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"><title>preloader</title>
+const page = (mode, theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><title>preloader</title>
   <link rel="stylesheet" href="/distr/core/css/core.css">
   <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'preloader-${mode}', pluginListVersion: 'preloader-${mode}', icons: {enabled: false}, theme: false};
   ${mode === 'preloaded' ? "window.SF_PRELOADED = {modules: {'smart/probe': {}}, loadedPlugins: {}};" : ''}</script>
@@ -49,8 +50,9 @@ const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();
 const runs = {};
 try {
-  for (const mode of ['preloaded', 'drawn', 'bare']) {
-    const context = await browser.newContext({viewport: {width: 800, height: 500}});
+  for (const mode of ['preloaded', 'drawn', 'bare']) for (const width of [1440, 390]) for (const theme of ['light', 'dark']) for (let load = 1; load <= 3; load += 1) {
+    const key = `${mode} ${width} ${theme} #${load}`;
+    const context = await browser.newContext({viewport: {width, height: 700}, colorScheme: theme});
     const tab = await context.newPage();
     const cdp = await context.newCDPSession(tab);
     await cdp.send('Emulation.setCPUThrottlingRate', {rate: 4});
@@ -71,10 +73,11 @@ try {
     });
     await tab.route('http://probe.test/**', async (route) => {
       const url = new URL(route.request().url());
-      if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: page(mode)});
+      if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: page(mode, theme)});
       const path = url.pathname.replace(/^\/distr\//u, '');
       const target = file(path);
       if (/\/core-loader(\.min)?\.js$/u.test(path)) await new Promise((done) => setTimeout(done, LOADER_DELAY));
+      else if (path.endsWith('.js')) await new Promise((done) => setTimeout(done, Math.round(Math.random() * 300)));
       return existsSync(target)
         ? route.fulfill({status: 200, contentType: target.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(target)})
         : route.fulfill({status: 404, body: ''});
@@ -82,13 +85,15 @@ try {
     await tab.goto('http://probe.test/');
     await tab.waitForFunction(() => window.__done === true, null, {timeout: 60000});
     const state = await tab.evaluate(() => ({frames: window.__frames, ready: window.__ready}));
-    runs[mode] = {frames: state.frames.length, shown: state.frames.filter(([, shown]) => shown).length, ready: state.ready, errors};
+    runs[key] = {mode, frames: state.frames.length, shown: state.frames.filter(([, shown]) => shown).length, ready: state.ready, errors};
     await context.close();
   }
-  if (runs.preloaded.shown) note({case: 'preloaded modules: no frame shows the preloader', got: runs.preloaded});
-  if (runs.drawn.shown) note({case: 'a drawn Smart element: no frame shows the preloader', got: runs.drawn});
-  if (!runs.bare.shown) note({case: 'a bare page with a slow loader keeps the preloader (the probe sees it)', got: runs.bare});
-  for (const [mode, run] of Object.entries(runs)) if (run.errors.length) note({case: `${mode}: no page error`, got: run.errors});
+  for (const [key, run] of Object.entries(runs)) {
+    if (run.mode === 'preloaded' && run.shown) note({case: `${key}: preloaded modules, no frame shows the preloader`, got: run});
+    if (run.mode === 'drawn' && run.shown) note({case: `${key}: a drawn Smart element, no frame shows the preloader`, got: run});
+    if (run.mode === 'bare' && !run.shown) note({case: `${key}: a bare page with a slow loader keeps the preloader (the probe sees it)`, got: run});
+    if (run.errors.length) note({case: `${key}: no page error`, got: run.errors});
+  }
   console.log(JSON.stringify(runs));
 } finally {
   await browser.close();
