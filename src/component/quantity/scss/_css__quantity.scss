@@ -204,6 +204,11 @@
 .sf-quantity.sf-quantity--size-1 input {
   --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
   --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+}
+
+/* The number's type is set on the box, so the unit beside the number
+   (.sf-quantity-unit) inherits the same size, line and family (C53). */
+.sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
   --sf-quantity-input--font-size: var(--sf-text-size-1);
   --sf-quantity-input--line-height: var(--sf-text-height-1);
   --sf-quantity-input--font-family: var(--sf-text--family);
@@ -256,11 +261,14 @@
 .sf-quantity.sf-quantity--size-2 input {
   --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
   --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+}
+
+.sf-quantity.sf-quantity--size-2 .sf-quantity-wrap {
   --sf-quantity-input--font-size: var(--sf-text-size-2);
   --sf-quantity-input--line-height: var(--sf-text-height-2);
 }
 
-.sf-quantity.sf-quantity--size-2 input, .sf-quantity.sf-quantity--size-1\/2 input {
+.sf-quantity.sf-quantity--size-2 .sf-quantity-wrap, .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
   --sf-quantity-input--font-family: var(--sf-text--family);
 }
 
@@ -302,6 +310,9 @@
 .sf-quantity.sf-quantity--size-1\/2 input {
   --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
   --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+}
+
+.sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
   --sf-quantity-input--font-size: var(--sf-text-size-1\/2);
   --sf-quantity-input--line-height: var(--sf-text-height-1\/2);
 }
@@ -428,6 +439,17 @@
      gives way, not the steppers. */
   .sf-quantity .sf-quantity-row > .sf-quantity-wrap {
     flex: 0 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  /* The class component (label.sf-quantity with the box as its own child,
+     no .sf-quantity-row) hugs its parts too, at the start of its column:
+     the same box as the Smart field, not the column's width with the
+     steppers pulled into its middle. */
+  .sf-quantity > .sf-quantity-wrap {
+    align-self: flex-start;
+    inline-size: fit-content;
     min-inline-size: 0;
     max-inline-size: 100%;
   }
