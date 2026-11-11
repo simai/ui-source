@@ -156,7 +156,9 @@
   --sf-lookup--line-color: var(--sf-lookup--border-color);
 }
 
-.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:active {
+/* A press wins over the focused hover above: pressing is hovering too. */
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:active,
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly):focus-within .sf-lookup-frame:active {
   --sf-lookup--border-color: var(--sf-primary-active);
   --sf-lookup--line-color: var(--sf-lookup--border-color);
 }
