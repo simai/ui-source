@@ -54,6 +54,12 @@ try {
         <sf-help-mark label="Подробнее: код решения" size="1/3" text="Пояснение"></sf-help-mark></span>
       <span class="sf-input-field flex"><input id="f2"></span>
     </div>
+    <div class="sf-input sf-input--size-1 sf-input--bordered flex flex-col" id="field-sweep" style="inline-size:400px">
+      <span class="sf-input-label flex items-cross-center gap-1"><label class="sf-input-text" for="f3">Код решения для модуля в каталоге решений</label>
+        <span class="sf-input-required">*</span>
+        <sf-help-mark label="Подробнее: код решения" size="1/3" text="Пояснение"></sf-help-mark></span>
+      <span class="sf-input-field flex"><input id="f3"></span>
+    </div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   // Core takes its distr from its own script URL when sfPath is unset
@@ -100,6 +106,29 @@ try {
     return {wrappedHeight: wrapped.getBoundingClientRect().height, line, lines};
   });
   if (flow.lines < 2 || Math.abs(flow.wrappedHeight - flow.lines * flow.line) > 0.5 && Math.abs(flow.wrappedHeight - (flow.lines + 1) * flow.line) > 0.5) note({case: 'a wrapped label with a mark is a whole number of its lines tall (C33 R1)', got: flow});
+  // C33, field labels (inputs 1.3.1): a field label row with a mark is
+  // running text, so over every width the mark stands on the label's last
+  // line, --sf-input-label--gap (4px) after the last word (here after the
+  // required star), inside the row, and the row is a whole number of label
+  // lines. As a flex row the mark stood at the row's end, centred on the
+  // whole label; a line break before the mark put it alone on a new line.
+  const sweep = await page.evaluate(() => {
+    const field = document.getElementById('field-sweep'); const row = field.querySelector('.sf-input-label');
+    const text = row.querySelector('.sf-input-text'); const star = row.querySelector('.sf-input-required');
+    const box = row.querySelector('span.sf-help-mark'); const button = row.querySelector('.sf-help-mark-button button');
+    const line = parseFloat(getComputedStyle(text).lineHeight); const off = [];
+    for (let width = 400; width >= 120; width--) {
+      field.style.inlineSize = `${width}px`;
+      const rects = [...text.getClientRects()]; const last = rects.at(-1); const b = button.getBoundingClientRect(); const r = row.getBoundingClientRect();
+      const gap = box.getBoundingClientRect().left - star.getBoundingClientRect().right;
+      const onLast = Math.abs((b.top + b.bottom) / 2 - (last.top + last.bottom) / 2) < 1;
+      const starOnLast = Math.abs(star.getBoundingClientRect().top - last.top) < 3;
+      const whole = Math.abs(r.height / line - Math.round(r.height / line)) < 0.02;
+      if (!onLast || !starOnLast || Math.abs(gap - 4) > 0.6 || b.right > r.right + 0.5 || !whole) off.push({width, onLast, starOnLast, gap, height: r.height});
+    }
+    return {widths: 281, off: off.length, first: off.slice(0, 3)};
+  });
+  if (sweep.off) note({case: 'a field label mark follows the last word over every width (C33, inputs 1.3.1)', got: sweep});
   await page.hover('#plain .sf-help-mark-button button');
   await page.waitForTimeout(200);
   const hovered = await state('plain');
