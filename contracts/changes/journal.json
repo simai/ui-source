@@ -10227,6 +10227,36 @@
       },
       "owner": "ui-source",
       "source": "src/smart/input-color/js/templates/default.js"
+    },
+    {
+      "id": "value-composition-catalogue-group-structure",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The composition catalogue's group structure is layout (2026-11-04, the visual parity pass: Elements and Layout replace Structure, which said nothing to an author). A type manifest's catalogue.group and a slot's groups still accept structure and read it as layout (CATALOGUE_GROUP_ALIASES in src/core/js/composition/catalogue.mjs) until remove_after. Recorded on 2026-11-11, after the fact: the alias shipped with core.runtime 1.26.0 without a journal record (docs pre-check 2026-11-10, GF-16).",
+      "items": [
+        {
+          "attribute": "catalogue.group",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']group[\"']\\s*:\\s*[\"']structure[\"']"
+        },
+        {
+          "attribute": "groups",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']groups[\"']\\s*:\\s*\\[[^\\]]*[\"']structure[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-04",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "\"catalogue\": {\"group\": \"structure\"}",
+        "after": "\"catalogue\": {\"group\": \"layout\"}"
+      },
+      "manual": "In a composition type manifest write catalogue.group \"layout\" instead of \"structure\", and \"layout\" in a slot's groups; a smart element a block prints goes under \"elements\".",
+      "source": "src/core/js/composition/catalogue.mjs CATALOGUE_GROUP_ALIASES; docs/developer/block-author-guide.md"
     }
   ]
 }
