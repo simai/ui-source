@@ -227,19 +227,37 @@ function region() {
     setOpen();
   });
   // The gaps of an open stack take no pointer (they would swallow the page's
-  // clicks), so the pointer crossing one leaves the area for a moment: the
-  // stack closes only when it has not come back within two frames' time.
-  let leaving = 0;
-  area.addEventListener('pointerover', () => { clearTimeout(leaving); leaving = 0; });
+  // clicks), so the pointer in one has left the area's messages but not the
+  // area: the stack stays open while the pointer is inside the area's box and
+  // closes when it leaves it. Closing on the gap itself moved the messages
+  // under a resting pointer, which opened it again, over and over.
+  let watching = null;
+  const stopWatching = () => {
+    if (watching) document.removeEventListener('pointermove', watching, true);
+    watching = null;
+  };
+  const inside = (event) => {
+    const box = area.getBoundingClientRect();
+    return event.clientX >= box.left && event.clientX < box.right && event.clientY >= box.top && event.clientY < box.bottom;
+  };
+  const leave = () => {
+    stopWatching();
+    state.hover = false;
+    setOpen();
+  };
+  area.addEventListener('pointerover', stopWatching);
   area.addEventListener('pointerleave', (event) => {
     if (event.pointerType === 'touch') return;
-    clearTimeout(leaving);
-    leaving = setTimeout(() => {
-      leaving = 0;
-      if (area.matches(':hover')) return;
-      state.hover = false;
-      setOpen();
-    }, 100);
+    stopWatching();
+    if (!state.open || !inside(event)) {
+      leave();
+      return;
+    }
+    watching = (move) => {
+      if (move.pointerType === 'touch' || inside(move)) return;
+      leave();
+    };
+    document.addEventListener('pointermove', watching, true);
   });
   let touched = false;
   area.addEventListener('pointerdown', (event) => { touched = event.pointerType === 'touch'; });

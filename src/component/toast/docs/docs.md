@@ -112,7 +112,8 @@ call returns `null` and warns in the console.
   list (every message whole, `--sf-space-1/2` apart) while the pointer is over
   it or the focus is in it, and on a tap until a tap elsewhere; while it is
   open every timer in it stands. The gaps between open messages take no
-  pointer, so a click there reaches the page. Tab enters the open stack at the
+  pointer, so a click there reaches the page; the stack stays open while the
+  pointer is inside it, in a gap too, and closes when it leaves. Tab enters the open stack at the
   newest message, then the older ones. Escape closes the message in focus and moves
   the focus to the next, or back where it came from when none is left. With
   reduced motion nothing moves, it only changes. There is no «ещё N».
