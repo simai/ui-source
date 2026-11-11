@@ -45,8 +45,10 @@ test('the Loader asks for adopted glyphs and marks them when their font is in', 
 // (the sortable's inserter "+" stayed blank in a late ignored copy).
 test('an element on a plain base hands an ignored region\'s glyphs to the Loader as it adds them', () => {
   const manifest = read('src/core/js/element-manifest.js');
-  assert.match(manifest, /const IGNORED_REGION = '\[data-sf-observer="ignore"\]';/u);
-  const watch = manifest.slice(manifest.indexOf('export function watchIgnoredGlyphs(element) {'), manifest.indexOf('// The nearest closed container'));
+  const glyphs = read('src/core/js/ignored-glyphs.js');
+  assert.match(glyphs, /const IGNORED_REGION = '\[data-sf-observer="ignore"\]';/u);
+  assert.match(manifest, /import \{ watchIgnoredGlyphs \} from '\.\/ignored-glyphs\.js';/u);
+  const watch = glyphs.slice(glyphs.indexOf('export function watchIgnoredGlyphs(element) {'));
   assert.ok(watch.length > 0);
   assert.match(watch, /if \(!element\.closest\?\.\(IGNORED_REGION\)\) return null;/u);
   assert.match(watch, /loader\.adoptStaticIcons\(root\);/u);
@@ -63,7 +65,7 @@ test('an element on a plain base hands an ignored region\'s glyphs to the Loader
 // The watch itself, driven with stand-ins for the DOM (no browser): what it
 // hands over, what it leaves alone, and how it waits for a late Loader. The
 // built bytes are held by tests/browser/ignored-region-glyphs.browser.mjs.
-const {watchIgnoredGlyphs} = await import('../src/core/js/element-manifest.js');
+const {watchIgnoredGlyphs} = await import('../src/core/js/ignored-glyphs.js');
 
 function stage({inRegion = true, loader = true} = {}) {
   const adopted = [];
