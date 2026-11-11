@@ -106,7 +106,8 @@ try {
     for (let tries = 0; tries < 50 && document.querySelectorAll('.sf-notifications .sf-toast').length < 4; tries += 1) await settle(100);
     await settle(700);
     const area = document.querySelector('.sf-notifications');
-    const toasts = [...area.querySelectorAll('.sf-toast')].reverse();
+    // Newest first in the document (C50 call: Tab enters at the front message).
+    const toasts = [...area.querySelectorAll('.sf-toast')];
     const box = (toast) => toast.getBoundingClientRect();
     const [front, second, third, fourth] = toasts.map(box);
     return {
@@ -126,12 +127,12 @@ try {
   if (closed.fourth !== 'hidden') failures.push('a fourth message waits hidden');
   if (closed.area !== closed.front + 2 * closed.gap) failures.push('the area covers the stack');
   // Hover opens it and every timer stands (3 s timers, 2.5 s over it after about 1 s).
-  const front = stack.locator('.sf-notifications .sf-toast').last();
+  const front = stack.locator('.sf-notifications .sf-toast').first();
   await front.hover();
   await stack.waitForTimeout(2500);
   const open = await stack.evaluate(() => {
     const area = document.querySelector('.sf-notifications');
-    const toasts = [...area.querySelectorAll('.sf-toast:not(.closing)')].reverse();
+    const toasts = [...area.querySelectorAll('.sf-toast:not(.closing)')];
     const gaps = toasts.slice(1).map((toast, at) => Math.round(toasts[at].getBoundingClientRect().top - toast.getBoundingClientRect().bottom));
     return {expanded: area.hasAttribute('data-expanded'), count: toasts.length, gaps, gap: parseFloat(getComputedStyle(area).rowGap),
       widths: toasts.map((toast) => Math.round(toast.getBoundingClientRect().width))};
@@ -148,7 +149,7 @@ try {
     button.textContent = 'На странице';
     document.querySelector('main').append(button);
     button.focus();
-    const toasts = () => [...document.querySelectorAll('.sf-notifications .sf-toast:not(.closing)')].reverse();
+    const toasts = () => [...document.querySelectorAll('.sf-notifications .sf-toast:not(.closing)')];
     toasts()[0].querySelector('[data-close]').focus();
     await settle(50);
     const expanded = document.querySelector('.sf-notifications').hasAttribute('data-expanded');
