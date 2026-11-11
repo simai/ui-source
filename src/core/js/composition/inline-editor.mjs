@@ -61,7 +61,16 @@ const isAtomElement = (node) => node?.nodeType === 1 && node.hasAttribute(NODE_A
 // A mark the editor has no element for is drawn as a span carrying its name,
 // never as an element of that name, so it survives the DOM read-back.
 const MARK_ATTRIBUTE = 'data-sf-inline-mark';
-const MARK_NAME = /^[a-z][a-z0-9-]{0,31}$/u;
+// Editor-copied HTML carries the page's copy token on its wrapper; pasted
+// HTML without it loses every data-sf-inline-* attribute first, so another
+// page cannot inject entries or marks (2026-11-11 acceptance, L3). The token
+// lives on the global, since every bundle carries its own module copy.
+const COPY_ATTRIBUTE = 'data-sf-inline-copy';
+const COPY_KEY = Symbol.for('simai.composition.inline-copy');
+const copyToken = () => {
+  if (!globalThis[COPY_KEY]) globalThis[COPY_KEY] = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  return globalThis[COPY_KEY];
+};
 const MARK_TAGS = new Map([['strong', 'strong'], ['em', 'em'], ['code', 'code'], ['strike', 's']]);
 // A break the editor drew carries this attribute; any other <br> the browser
 // or a paste brings is read as a break too, except the placeholder a browser
@@ -129,7 +138,8 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
     if (tag === 'S' || tag === 'STRIKE' || tag === 'DEL') next.add('strike');
     // A mark this editor cannot draw rides on its wrapper (renderInlineDom).
     const carried = node.nodeType === 1 ? node.getAttribute(MARK_ATTRIBUTE) : null;
-    if (carried && MARK_NAME.test(carried)) next.add(carried);
+    // Any non-empty name, the inline model's own rule (sortMarks).
+    if (carried) next.add(carried);
     if (node.nodeType === 1 && node.style) {
       const weight = node.style.fontWeight;
       if (weight === 'bold' || weight === 'bolder' || Number(weight) >= 600) next.add('strong');
@@ -576,9 +586,14 @@ export function startInlineEdit(element, options = {}) {
     const data = event.clipboardData;
     const html = data?.getData('text/html');
     const plain = data?.getData('text/plain') || '';
-    const parsed = html
-      ? readInlineDom(new globalThis.DOMParser().parseFromString(html, 'text/html').body, { marks, links, collapse: true })
-      : [{ type: 'text', value: plain.replace(/\s+/gu, ' ').trim() }];
+    let parsed = [{ type: 'text', value: plain.replace(/\s+/gu, ' ').trim() }];
+    if (html) {
+      const body = new globalThis.DOMParser().parseFromString(html, 'text/html').body;
+      if (body.querySelector(`[${COPY_ATTRIBUTE}]`)?.getAttribute(COPY_ATTRIBUTE) !== copyToken()) {
+        for (const node of body.querySelectorAll('*')) for (const name of node.getAttributeNames()) if (name.startsWith('data-sf-inline-')) node.removeAttribute(name);
+      }
+      parsed = readInlineDom(body, { marks, links, collapse: true });
+    }
     const inserted = toSegments(parsed);
     const [start, end] = selectionOffsets();
     const length = inlineLength(fromSegments(inserted));
@@ -593,7 +608,10 @@ export function startInlineEdit(element, options = {}) {
     event.preventDefault();
     const slice = sliceInline(read(), start, end);
     const holder = doc.createElement('div');
-    holder.append(renderInlineDom(doc, slice));
+    const wrapper = doc.createElement('span');
+    wrapper.setAttribute(COPY_ATTRIBUTE, copyToken());
+    wrapper.append(renderInlineDom(doc, slice));
+    holder.append(wrapper);
     event.clipboardData.setData('text/html', holder.innerHTML);
     event.clipboardData.setData('text/plain', toSegments(slice).map(({ text, node, break: isBreak }) => (node ? (typeof node.props?.text === 'string' ? node.props.text : '') : isBreak ? '\n' : text)).join(''));
     if (remove) apply(replaceRange(read(), start, end, []), start, start);

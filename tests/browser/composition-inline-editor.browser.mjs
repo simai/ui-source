@@ -26,11 +26,27 @@ async function open({ width = 1280, theme = 'light', dir = 'ltr' } = {}) {
 const lab = () => page.evaluate(() => ({ inputs: window.lab.inputs, commits: window.lab.commits, cancels: window.lab.cancels, refused: window.lab.refused || false }));
 const body = () => page.locator('#canvas [data-sf-composition-id="body"]');
 const canvasHtml = () => page.evaluate(() => document.getElementById('canvas').innerHTML);
+// The HTML of an element once the components inside it have started: polled
+// until it holds for 250 ms. A snapshot taken earlier raced sf-badge starting
+// under load (2026-11-11 acceptance, L2).
+const settledHtml = (selector) => page.evaluate(async (selector) => {
+  const element = document.querySelector(selector);
+  let last = null;
+  let steady = 0;
+  for (let tries = 0; tries < 200 && steady < 5; tries += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    const busy = element.querySelector(':not(:defined)');
+    const html = element.innerHTML;
+    steady = !busy && html === last ? steady + 1 : 0;
+    last = html;
+  }
+  return last;
+}, selector);
 const editorValue = () => page.evaluate(() => window.lab.editor.value());
 const shiftLeft = async (count) => { for (let index = 0; index < count; index += 1) await page.keyboard.press('Shift+ArrowLeft'); };
 
 await open();
-const renderedBefore = await canvasHtml();
+const renderedBefore = await settledHtml('#canvas');
 
 // Open and cancel: the canvas returns to the exact rendered HTML.
 await body().dblclick({ position: { x: 4, y: 4 } });
@@ -44,7 +60,7 @@ observations.opened = opened;
 check(opened.editable === 'true' && opened.role === 'textbox' && opened.label.startsWith('Абзац: редактирование') && opened.outline === 'solid' && opened.focused, 'double click opens an accessible, visibly editing textbox', opened);
 check(opened.toolbarAbove, 'formatting toolbar sits above the text', opened);
 await page.keyboard.press('Escape');
-check(await canvasHtml() === renderedBefore && (await lab()).cancels === 1, 'Escape restores the exact rendered HTML', null);
+check(await settledHtml('#canvas') === renderedBefore && (await lab()).cancels === 1, 'Escape restores the exact rendered HTML', null);
 
 // Typing, marks by keyboard and toolbar, and link with unsafe refusal.
 await body().dblclick({ position: { x: 4, y: 4 } });
@@ -120,7 +136,17 @@ const state = await lab();
 const committed = state.commits.at(-1);
 observations.committed = committed;
 check(committed?.id === 'body' && !state.refused, 'commit event carries normalized content the Document accepts', committed);
-const after = await page.evaluate(async () => ({ html: document.getElementById('canvas').innerHTML, rendered: (await window.SF.Composition.render(window.lab.model())).html }));
+// The published rendering is drawn beside the canvas, and both are compared
+// once their components have started.
+await page.evaluate(async () => {
+  const probe = document.createElement('div');
+  probe.id = 'published-probe';
+  probe.hidden = true;
+  probe.innerHTML = (await window.SF.Composition.render(window.lab.model())).html;
+  document.body.append(probe);
+});
+const after = { html: await settledHtml('#canvas'), rendered: await settledHtml('#published-probe') };
+await page.evaluate(() => document.getElementById('published-probe').remove());
 check(after.html === after.rendered && !after.html.includes('contenteditable') && !after.html.includes('data-sf-inline-editing'), 'after saving the canvas equals the published rendering', null);
 check(JSON.stringify(await page.evaluate((content) => window.SF.Composition.normalizeInline(content), committed.content)) === JSON.stringify(committed.content), 'committed content is already normalized', null);
 check(await page.locator('.sf-inline-editor-toolbar').count() === 0, 'toolbar is removed after commit', null);
@@ -285,6 +311,35 @@ const holds = (content) => content.some((entry) => same(entry, unknownMark.marke
 check(holds(unknownMark.before) && holds(unknownMark.typed) && holds(unknownMark.toggled) && holds(unknownMark.committed), 'a run with an unknown mark is deep-equal after typing, a neighbour\'s mark and commit', unknownMark);
 check(same(unknownMark.wrappers, ['span:superscript']) && unknownMark.strangers === 0, 'an unknown mark is drawn as a span carrying its name', unknownMark.wrappers);
 check(unknownMark.toggled[0]?.marks?.includes('strong') && unknownMark.typed.at(-1).value === ' конец!', 'the neighbour edits took effect', unknownMark.toggled);
+
+// Any unknown mark name the model keeps survives the editor too (2026-11-11
+// acceptance, M1): x_y and a name with a space and a capital. Pasted HTML that
+// this editor did not copy loses its data-sf-inline-* attributes (L3).
+const oddMarks = await page.evaluate(() => {
+  const element = document.createElement('p');
+  document.body.append(element);
+  for (const name of ['sf-editor-inline-change', 'sf-inline-editor-change', 'sf-inline-edit-commit']) element.addEventListener(name, (event) => event.stopPropagation());
+  const content = [{ type: 'text', value: 'a' }, { type: 'text', value: 'b', marks: ['x_y'] }, { type: 'text', value: 'c', marks: ['em', 'Odd Name!'] }];
+  const session = window.SF.Composition.startInlineEdit(element, { content, nodeId: 'odd', label: 'Абзац' });
+  const opened = session.value();
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  range.collapse(false);
+  document.getSelection().removeAllRanges();
+  document.getSelection().addRange(range);
+  const data = new DataTransfer();
+  data.setData('text/html', '<p><span data-sf-inline-mark="injected">t</span><span data-sf-inline-node=\'{"type":"component","name":"kbd","props":{"text":"K"}}\'>z</span><br data-sf-inline-break></p>');
+  data.setData('text/plain', 'tz');
+  element.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+  const pasted = session.value();
+  const committed = session.commit();
+  element.remove();
+  return { content, opened, pasted, committed };
+});
+observations.oddMarks = oddMarks;
+check(same(oddMarks.opened, oddMarks.content), 'unknown marks of any name are kept on open', oddMarks.opened);
+check(same(oddMarks.pasted.slice(0, 3), oddMarks.content) && same(oddMarks.pasted.slice(3), [{ type: 'text', value: 'tz' }]), 'a foreign paste brings no injected mark, atom or marked break', oddMarks.pasted);
+check(same(oddMarks.committed, oddMarks.pasted), 'commit keeps them', oddMarks.committed);
 
 // Shift+Enter (inline model 1.2.0, F2.1): a soft line break in the same
 // block, with the marks of the text before it; Enter still commits. A break

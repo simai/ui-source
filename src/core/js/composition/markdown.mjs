@@ -717,11 +717,16 @@ const DIRECTIVES = {
   },
   foreign(attributes, body, context, id) {
     const get = takeAttributes(attributes, ['source']);
-    const source = oneOf(get('source'), ['editorjs', 'html']);
+    const source = oneOf(get('source'), ['markdown', 'editorjs', 'html']);
     if (!source) fail('foreign source');
     const blocks = parseBlocks(body, context);
     if (blocks.length !== 1 || blocks[0].type !== 'content.code') fail('foreign body');
-    return foreignNode(id, source, blocks[0].data.code);
+    const carried = foreignNode(id, source, blocks[0].data.code);
+    // Read from a carrier, it is printed back in one. A Markdown block that
+    // reads as itself without one is written bare unless a neighbour needs it.
+    context.carried?.add(carried);
+    if (source === 'markdown' && readsAsItself(carried.data.raw)) context.lose('form_normalized', 'a foreign Markdown carrier the block may not need');
+    return carried;
   },
 };
 
@@ -844,9 +849,16 @@ function printNode(child, path, context) {
         context.losses.push({ code: 'foreign_hash_mismatch', path: `${path}.data.hash`, what: 'the hash does not match raw; the block is not written' });
         return null;
       }
-      if (data.source === 'markdown') return String(data.raw ?? '');
+      const raw = String(data.raw ?? '');
+      // Markdown reads every line end as LF; a CR inside raw is reported.
+      if (raw.includes('\r') && !context.reading) lose('a carriage return in a foreign block: Markdown line ends are LF', `${path}.data.raw`);
+      // A foreign Markdown block is written as it came only while it reads
+      // back as itself, alone and beside its neighbours; otherwise, and for
+      // every other source, it goes in the :::foreign carrier, a fenced block
+      // nothing next to it can join.
+      if (data.source === 'markdown' && !context.carried?.has(child) && readsAsItself(raw)) return raw;
       if (!context.reading) lose(`foreign ${data.source} block, written in a carrier`);
-      return directive('foreign', [['source', data.source]], fence(String(data.raw ?? ''), data.source === 'editorjs' ? 'json' : 'html'), context, child);
+      return directive('foreign', [['source', data.source]], fence(raw, { editorjs: 'json', html: 'html', markdown: 'markdown' }[data.source] || ''), context, child);
     }
     default:
       lose(`type ${child.type}`);
@@ -888,6 +900,7 @@ function readContext(prefix) {
   return {
     losses,
     explicit,
+    carried: new Set(),
     path: '$',
     id: () => { let id; do { counter += 1; id = `${prefix}${counter}`; } while (owned.has(id)); owned.add(id); return id; },
     own: (id) => { if (owned.has(id) || !ID.test(id)) fail('id'); owned.add(id); explicit.add(id); },
@@ -896,7 +909,7 @@ function readContext(prefix) {
 }
 
 function printContext(options = {}) {
-  return { losses: [], ids: options.ids === true, explicit: options.explicit, mismatched: options.mismatched || new Map() };
+  return { losses: [], ids: options.ids === true, explicit: options.explicit, mismatched: options.mismatched || new Map(), carried: options.carried };
 }
 
 /**
@@ -905,7 +918,16 @@ function printContext(options = {}) {
  * printer writes otherwise is reported as form_normalized.
  */
 export async function fromMarkdown(markdown, { id = 'markdown' } = {}) {
-  let text = typeof markdown === 'string' ? markdown : '';
+  const { nodes, losses } = readMarkdown(typeof markdown === 'string' ? markdown : '');
+  const root = { id: 'root', type: 'content.document', ...(nodes.length ? { slots: { default: nodes } } : {}) };
+  await settleHashes(root);
+  return { value: { schema: 'simai.composition.document', schema_version: 1, id, profile: 'structured-content', root }, losses };
+}
+
+// The blocks of a Markdown text and what reading them lost; every block is
+// printed and read back, and kept as content.foreign when that differs.
+function readMarkdown(source) {
+  let text = source;
   const context = readContext('m');
   if (text.includes('\r')) { text = text.replace(/\r\n?/gu, '\n'); context.lose('form_normalized', 'line endings'); }
   const lines = text.split('\n');
@@ -926,7 +948,7 @@ export async function fromMarkdown(markdown, { id = 'markdown' } = {}) {
     let unit;
     try {
       unit = parseBlocks(lines.slice(index, end), context);
-      const check = { ...printContext({ explicit: context.explicit }), reading: true };
+      const check = { ...printContext({ explicit: context.explicit, carried: context.carried }), reading: true };
       const again = printBlocks(unit, path, check);
       const back = parseBlocks(again.split('\n'), readContext('check'));
       if (check.losses.some(({ code }) => code === 'not_expressible') || stable(withoutIds(back)) !== stable(withoutIds(unit))) fail('the printed form reads back otherwise');
@@ -941,9 +963,30 @@ export async function fromMarkdown(markdown, { id = 'markdown' } = {}) {
     index = end;
   }
   if (!separatorOk || (lines.length && text.length && !text.endsWith('\n'))) context.losses.push({ code: 'form_normalized', path: '$', what: 'blank lines between blocks' });
-  const root = { id: 'root', type: 'content.document', ...(nodes.length ? { slots: { default: nodes } } : {}) };
-  await settleHashes(root);
-  return { value: { schema: 'simai.composition.document', schema_version: 1, id, profile: 'structured-content', root }, losses: context.losses };
+  return { nodes, losses: context.losses };
+}
+
+// True when raw, read alone, is one foreign Markdown block of the same bytes.
+const ITSELF = new Map();
+function readsAsItself(raw) {
+  if (!ITSELF.has(raw)) {
+    let itself = false;
+    if (raw && !raw.includes('\r') && !BLANK.test(raw.split('\n')[0]) && !BLANK.test(raw.split('\n').at(-1))) {
+      const { nodes } = readMarkdown(raw);
+      itself = nodes.length === 1 && nodes[0].type === 'content.foreign' && nodes[0].data.source === 'markdown' && nodes[0].data.raw === raw;
+    }
+    if (ITSELF.size > 500) ITSELF.clear();
+    ITSELF.set(raw, itself);
+  }
+  return ITSELF.get(raw);
+}
+
+// The foreign Markdown nodes of a subtree.
+function foreignMarkdown(node, found = []) {
+  if (!node || typeof node !== 'object') return found;
+  if (node.type === 'content.foreign' && node.data?.source === 'markdown') found.push(node);
+  for (const children of Object.values(node.slots || {})) if (Array.isArray(children)) for (const child of children) foreignMarkdown(child, found);
+  return found;
 }
 
 /**
@@ -954,14 +997,45 @@ export async function fromMarkdown(markdown, { id = 'markdown' } = {}) {
 export async function toMarkdown(document, options = {}) {
   const root = document?.root ?? document;
   const nodes = root?.type === 'content.document' ? root.slots?.default || [] : root ? [root] : [];
-  const base = root?.type === 'content.document' ? '$.root.slots.default' : '$';
+  const single = root?.type !== 'content.document';
+  const pathOf = (index) => (single ? '$.root' : `$.root.slots.default[${index}]`);
   const mismatched = new Map();
-  for (const [index, child] of nodes.entries()) await mismatchedForeign(child, root?.type === 'content.document' ? `${base}[${index}]` : '$.root', mismatched);
-  const context = printContext({ ...options, mismatched });
+  for (const [index, child] of nodes.entries()) await mismatchedForeign(child, pathOf(index), mismatched);
+  // Foreign Markdown blocks that must go in the carrier because, written as
+  // they came, they would join a neighbour.
+  const carried = new Set();
+  const expected = stable(withoutIds(normalizedTree(nodes.filter((child, index) => !mismatched.has(pathOf(index))))));
+  for (let attempt = 0; ; attempt += 1) {
+    const result = printDocument(root, nodes, pathOf, { ...options, mismatched, carried });
+    const back = normalizedTree(readMarkdown(result.value).nodes);
+    const written = nodes.filter((child, index) => !mismatched.has(pathOf(index)));
+    if (stable(withoutIds(back)) === expected) return result;
+    // The first block that reads back otherwise, and whether a foreign
+    // Markdown block next to it can be carried instead. A block with a loss
+    // of its own reads back otherwise by that loss; it only has to stay one
+    // block of its type.
+    const reported = (index) => { const path = pathOf(nodes.indexOf(written[index])); return result.losses.some((loss) => loss.path === path || loss.path.startsWith(`${path}.`)); };
+    let first = 0;
+    while (first < written.length && first < back.length && (stable(withoutIds(normalizedTree([written[first]]))) === stable(withoutIds([back[first]])) || (reported(first) && back[first].type === written[first].type))) first += 1;
+    if (first >= written.length && back.length === written.length) return result;
+    const near = written.slice(Math.max(0, first - 1), first + 2).flatMap((child) => foreignMarkdown(child)).filter((child) => !carried.has(child));
+    if (near.length && attempt < 100) { for (const child of near) carried.add(child); continue; }
+    // Report what reads back otherwise, unless a loss there already says so.
+    const at = nodes.indexOf(written[Math.min(first, written.length - 1)]);
+    const path = pathOf(Math.max(0, at));
+    if (!result.losses.some((loss) => loss.path !== '$' && (loss.path === path || loss.path.startsWith(`${path}.`)))) {
+      result.losses.push({ code: 'not_expressible', path, what: 'the written Markdown reads back otherwise from this block on' });
+    }
+    return result;
+  }
+}
+
+function printDocument(root, nodes, pathOf, options) {
+  const context = printContext(options);
   if (root?.type === 'content.document' && root.data?.title !== undefined) context.losses.push({ code: 'not_expressible', path: '$.root.data.title', what: 'document title' });
   const blocks = [];
   nodes.forEach((child, index) => {
-    const path = root?.type === 'content.document' ? `${base}[${index}]` : '$.root';
+    const path = pathOf(index);
     const mark = context.losses.length;
     const printed = printNode(child, path, context);
     if (printed === null) return;

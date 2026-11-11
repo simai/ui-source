@@ -134,3 +134,64 @@ test('a foreign block goes back only to its own format; elsewhere in a carrier, 
   assert.deepEqual(refused.losses.map(({ code }) => code), ['foreign_hash_mismatch']);
   assert.deepEqual((await toEditorJs(wrong)).losses.map(({ code }) => code), ['foreign_hash_mismatch']);
 });
+
+// 2026-11-11 acceptance (H2): a neighbour deleted next to a foreign Markdown
+// block must not let the block swallow or be swallowed by what now stands
+// beside it. Generated pages of Docara-like blocks, every block deleted in
+// turn: what is written reads back as the edited Document, or the change is
+// in the loss report.
+const SNIPPETS = [
+  'Para **one**.', '- one ![img](/i.png)\n- two', '- a\n- b', '1. x\n2. y', '    indented code', '<div>html</div>',
+  '# Title', '| A | B |\n| --- | --- |\n| 1 | 2 |', '> quoted', ':::alert {type=info}\n#### T\n\nBody.\n:::', ':::example\nx\n:::',
+  '```js\nconst a = 1;\n```', 'Setext\n===', '[ref]: /x', '***', '- [ ] task', '- a\n  - nested', 'text\n> lazy', 'Line with\\\nbreak', '1) other', '* star',
+];
+function pages(seed, count) {
+  const random = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+  return Array.from({ length: count }, () => Array.from({ length: 3 + Math.floor(random() * 4) }, () => SNIPPETS[Math.floor(random() * SNIPPETS.length)]).join('\n\n') + '\n');
+}
+const silentKinds = new Set(['block ids', 'ids of blocks without a directive']);
+
+test('neighbour deletions around foreign Markdown blocks: read back as edited, or reported', async () => {
+  let equal = 0;
+  let reported = 0;
+  let carried = 0;
+  for (const page of pages(20261111, 120)) {
+    const read = await fromMarkdown(page);
+    const blocks = read.value.root.slots?.default || [];
+    for (let index = 0; index < blocks.length; index += 1) {
+      const edited = structuredClone(read.value);
+      edited.root.slots.default.splice(index, 1);
+      const out = await toMarkdown(edited);
+      const back = await fromMarkdown(out.value);
+      const same = stable(withoutIds(normalizedTree(back.value.root.slots?.default || []))) === stable(withoutIds(normalizedTree(edited.root.slots.default)));
+      if (out.losses.some(({ what }) => what.endsWith('written in a carrier'))) carried += 1;
+      if (same) { equal += 1; continue; }
+      reported += 1;
+      assert.ok(out.losses.some(({ what }) => !silentKinds.has(what) && !what.endsWith('written in a carrier')), `a change without a loss:\n${page}\n-- deleted ${index} --\n${out.value}`);
+    }
+  }
+  assert.ok(equal > 300 && carried > 5, `${equal} equal, ${reported} reported, ${carried} carried`);
+});
+
+test('a foreign Markdown raw that is not one block of itself goes in the carrier; a carriage return is reported', async () => {
+  const doc = { root: { id: 'root', type: 'content.document', slots: { default: [
+    { id: 'f', type: 'content.foreign', data: { source: 'markdown', raw: 'a\n\nb' } },
+    { id: 'g', type: 'content.foreign', data: { source: 'markdown', raw: 'plain' } },
+    { id: 'h', type: 'content.foreign', data: { source: 'html', raw: '<p>a</p>\r\n' } },
+  ] } } };
+  const out = await toMarkdown(doc);
+  const back = await fromMarkdown(out.value);
+  assert.deepEqual(back.value.root.slots.default.map(({ data }) => data.raw), ['a\n\nb', 'plain', '<p>a</p>\n']);
+  assert.ok(out.losses.some(({ path, what }) => path === '$.root.slots.default[2].data.raw' && /carriage return/u.test(what)));
+  // A carrier read from a page: a block that needs it is printed back in it;
+  // one that does not is written bare, and the read said form_normalized.
+  const needed = ':::foreign {source=markdown}\n```markdown\na\n\nb\n```\n:::\n';
+  const kept = await fromMarkdown(needed);
+  assert.deepEqual(kept.losses, []);
+  assert.equal((await toMarkdown(kept.value)).value, needed);
+  const carrier = ':::foreign {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n';
+  const again = await fromMarkdown(carrier);
+  assert.equal(again.value.root.slots.default[0].data.raw, '- one ![img](/i.png)\n- two');
+  assert.ok(again.losses.some(({ code }) => code === 'form_normalized'));
+  assert.equal((await toMarkdown(again.value)).value, '- one ![img](/i.png)\n- two\n');
+});

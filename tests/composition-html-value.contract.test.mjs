@@ -106,3 +106,47 @@ test('the mapping: breaks in marks and links, list lines, quotes, and what html@
     { code: 'not_expressible', path: '$.root.slots.default[2]', what: 'type content.code' },
   ]);
 });
+
+// 2026-11-11 acceptance (M2): white space and breaks next to the boundaries of
+// strong, em and links. Cleaning a value again leaves it unchanged, and the
+// minimal cases the acceptance shrank to take their fixed point at once.
+test('html@1 cleaning is idempotent next to inline boundaries', () => {
+  const minimal = [
+    ['a <em> <br>n', '<p>a<em><br>n</em></p>'],
+    ['a<strong> </strong>\n<strong>\t&amp;', '<p>a<strong> &amp;</strong></p>'],
+    ['б<strong> </strong> <br>б', '<p>б<br>б</p>'],
+    ['<p>a <em><br>n</em></p>', '<p>a<em><br>n</em></p>'],
+  ];
+  for (const [input, expected] of minimal) assert.equal(sanitizeRichText(input, { mode: 'value' }), expected, input);
+  let seed = 7;
+  const random = () => (seed = (seed * 1103515245 + 12345) >>> 0) / 2 ** 32;
+  const pick = (list) => list[Math.floor(random() * list.length)];
+  const atoms = ['a', 'б', ' ', '&nbsp;', '<br>', '<br/>', ' <br> ', '&amp;', '\n', '\t', 'x y'];
+  const inline = (depth) => {
+    let out = '';
+    for (let index = 0, count = 1 + Math.floor(random() * 5); index < count; index += 1) {
+      const roll = random();
+      if (depth < 2 && roll < 0.15) out += `<strong>${inline(depth + 1)}</strong>`;
+      else if (depth < 2 && roll < 0.25) out += `<em>${inline(depth + 1)}</em>`;
+      else if (depth < 2 && roll < 0.32) out += `<a href="${pick(['/x', 'https://simai.io', 'javascript:alert(1)'])}">${inline(depth + 1)}</a>`;
+      else if (depth < 2 && roll < 0.36) out += `<span style="font-weight:700">${inline(depth + 1)}</span>`;
+      else out += pick(atoms);
+    }
+    return out;
+  };
+  const block = () => {
+    const roll = random();
+    if (roll < 0.4) return `<p>${inline(0)}</p>`;
+    if (roll < 0.55) return `<h2>${inline(0)}</h2>`;
+    if (roll < 0.7) return `<ul><li>${inline(0)}</li><li>${inline(0)}</li></ul>`;
+    if (roll < 0.8) return `<blockquote><p>${inline(0)}</p></blockquote>`;
+    return inline(0);
+  };
+  let changed = 0;
+  for (let index = 0; index < 5000; index += 1) {
+    const source = Array.from({ length: 1 + Math.floor(random() * 3) }, block).join(pick(['', '\n', ' ']));
+    const once = sanitizeRichText(source, { mode: 'value' });
+    if (sanitizeRichText(once, { mode: 'value' }) !== once || toHtml(fromHtml(once).value).value !== once) changed += 1;
+  }
+  assert.equal(changed, 0);
+});

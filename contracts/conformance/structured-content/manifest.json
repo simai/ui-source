@@ -65,7 +65,7 @@
     "steps": 7,
     "table": 10,
     "tabs": 2,
-    "markdown": 27,
+    "markdown": 29,
     "editorjs": 4
   },
   "cases": [
@@ -372,6 +372,8 @@
       "export-alert-vocabulary",
       "export-alert-without-title",
       "export-foreign",
+      "export-foreign-neighbours",
+      "export-foreign-not-itself",
       "export-not-expressible",
       "inline-forms"
     ],

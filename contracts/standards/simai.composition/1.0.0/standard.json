@@ -61,14 +61,14 @@
     {
       "id": "soft-line-break",
       "level": "must",
-      "text": "A break is a soft line break inside a block: {\"type\": \"break\", \"marks\"?: [...]}. HTML writes <br>; Markdown writes a backslash before the line end, and <br> in headings and table cells; an editor inserts one with Shift+Enter. A valid html@1 value converted to the model and back is the same bytes.",
+      "text": "A break is a soft line break inside a block: {\"type\": \"break\", \"marks\"?: [...]}. HTML writes <br>; Markdown writes a backslash before the line end, and <br> in headings and table cells; an editor inserts one with Shift+Enter, declared in its keyboard map as the key effect break. A valid html@1 value converted to the model and back is the same bytes, and cleaning a stored html@1 value again leaves it unchanged.",
       "verification": "manual",
       "guidance": "html-value.mjs: toHtml(fromHtml(v).value).value === v for every valid stored value v."
     },
     {
       "id": "foreign-block",
       "level": "must",
-      "text": "A block of another source the model cannot hold is content.foreign {source: markdown|editorjs|html, raw, hash}. raw is the exact source slice for markdown and html and the block value for editorjs; hash is sha256: of raw as UTF-8, written by normalize and every adapter. A public page draws nothing of it and an editor an inert placeholder; raw is never parsed into markup. It goes back only to its own source format, elsewhere in a reported carrier; a block whose hash does not match (foreign_hash_mismatch) is kept, not drawn and not written.",
+      "text": "A block of another source the model cannot hold is content.foreign {source: markdown|editorjs|html, raw, hash}. raw is the exact source slice for markdown and html and the block value for editorjs; hash is sha256: of raw as UTF-8, written by normalize and every adapter. A public page draws nothing of it and an editor an inert placeholder; raw is never parsed into markup. It goes back only to its own source format, and there as it came only while it reads back as itself beside its neighbours; otherwise, and in any other format, in a reported carrier that nothing beside it can join; a block whose hash does not match (foreign_hash_mismatch) is kept, not drawn and not written.",
       "verification": "manual"
     },
     {
@@ -145,7 +145,7 @@
       "id": "simai.composition.structured-content-conformance",
       "version": "2.1.0",
       "path": "../../pinned/structured-content-conformance-2.1.0.manifest.json",
-      "sha256": "555a74298c1fd22d1d33a1dce015f7bc2663d754a6e6f8b8ee50ed1f3e8449e6",
+      "sha256": "8acccde1ca55a1524bf65fca50df386b92c4099b2a6d127af3fc0561e1c404b1",
       "description": "The conformance kit of structured content: its manifest names every case and converter fixture and the type versions it was written for."
     }
   ],

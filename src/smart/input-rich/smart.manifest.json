@@ -332,7 +332,7 @@
       },
       {
         "path": "src/core/js/composition/html-subset.mjs",
-        "sha256": "e0d90dbc84d924c6f1630c7c1f81da0957c5ee2c6be0280d60706c79a9b19266"
+        "sha256": "39c5d4f3595e02a959d389a0663c4648b3c87cc96bc8113d2b0902397a07b3aa"
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",

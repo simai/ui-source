@@ -93,7 +93,12 @@ returns `{value, losses: [{code, path, what}]}` and reports every loss
 
 - `composition/html-value.mjs`: `fromHtml(html)` and `toHtml(document)`, the
   html@1 value of `sf-input-rich` and the model; for every valid stored value
-  `v`, `toHtml(fromHtml(v).value).value === v`.
+  `v`, `toHtml(fromHtml(v).value).value === v`. Cleaning a value is
+  idempotent: inside a block's inline run, white space becomes one space; a
+  space at the start or end of the run, after or before a line break, or after
+  another space (in any format) is dropped; empty runs go; and these steps
+  repeat until a pass changes nothing, so a stored value cleaned again is the
+  same bytes.
 - `composition/markdown.mjs`: `fromMarkdown(text)` and `toMarkdown(document,
   {ids})`, structured content and single text areas in Docara's authoring
   form (CommonMark, GFM tables and strike, `:::alert {type=warning}` and the
@@ -102,7 +107,12 @@ returns `{value, losses: [{code, path, what}]}` and reports every loss
   `appearance`, `clear` and neutral, `danger` and `error`, the first heading
   and `data.title`); a block the model cannot hold exactly is kept as
   `content.foreign` with its source text, so a page read with no
-  `form_normalized` loss prints back to the same bytes.
+  `form_normalized` loss prints back to the same bytes. On the way out the
+  whole text is read back: a foreign Markdown block is written as it came only
+  while it reads back as itself beside its neighbours, otherwise in the
+  `:::foreign {source=markdown}` carrier (reported); any other difference is
+  reported, never silent. A carriage return inside a foreign raw is reported,
+  since Markdown line ends are LF.
 - `composition/editorjs.mjs`: `fromEditorJs(output)` and `toEditorJs(document)`;
   the standard tools map to content types, any other block is kept as
   `content.foreign`, and a node a standard tool cannot bring back unchanged goes

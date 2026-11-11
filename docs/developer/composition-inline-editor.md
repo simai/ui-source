@@ -93,9 +93,11 @@ Editing: Ctrl/Cmd+B, I and E toggle bold, italic and code on the selection;
 Ctrl/Cmd+K opens a link address field (http, https, mailto, tel, relative and
 fragment links only; unsafe addresses show an accessible error); Ctrl/Cmd+Z,
 Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y use the editor's own history; Enter commits,
-Escape cancels, moving focus away commits, Shift+Enter inserts a soft line break. Paste keeps only bold, italic, code
+Escape cancels, moving focus away commits, Shift+Enter inserts a soft line break (key effect `break`). Paste keeps only bold, italic, code
 and safe links from HTML (Word and web pages), drops styles, scripts, images
-and unsafe links, and joins pasted paragraphs into one line. IME composition
+and unsafe links, and joins pasted paragraphs into one line. Only HTML this
+editor copied keeps its `data-sf-inline-*` attributes (atoms, marks it cannot
+draw); a paste from elsewhere loses them first. IME composition
 is never interrupted; one value event follows the committed text. Drag-in drops
 are ignored. `options.marks` narrows marks, `options.links: false` disables
 links, `options.messages` overrides the Russian/English toolbar texts.

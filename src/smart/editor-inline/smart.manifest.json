@@ -303,9 +303,10 @@
       "Mod+Shift+Z",
       "Mod+Y",
       "Enter",
+      "Shift+Enter",
       "Escape"
     ],
-    "focus": "The sf-inline-editor carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar has aria-pressed states and aria-keyshortcuts. Enter commits, Escape cancels, focus leaving commits; IME composition is never interrupted."
+    "focus": "The sf-inline-editor carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar has aria-pressed states and aria-keyshortcuts. Enter commits, Shift+Enter puts a soft line break, Escape cancels, focus leaving commits; IME composition is never interrupted."
   },
   "presentation": {
     "themes": [
@@ -397,7 +398,7 @@
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "f3493b3a9d600cf9ca79cbbfc13c86d1cb8823650558b4af1d02d4cc239e7275"
+        "sha256": "87f7066fe8d1572745dd36b24934e02064e2430ad1b801ced8bb0d846be42c1a"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",

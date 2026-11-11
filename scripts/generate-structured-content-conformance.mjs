@@ -425,7 +425,26 @@ const MARKDOWN_EXPORTS = [
     { id: 'z', type: 'content.foreign', data: { source: 'markdown', raw: 'changed', hash: 'sha256:0000000000000000000000000000000000000000000000000000000000000000' } },
   ])],
 ];
+MARKDOWN_EXPORTS.push(
+  ['export-foreign-neighbours', 'Foreign Markdown blocks beside what would join them once a paragraph between was deleted (2026-11-11 acceptance, H2): a list with an inline image before a list, an indented code block after a list. Written as they came they would merge; each goes in the :::foreign carrier and reads back as itself.', content([
+    { id: 'f1', type: 'content.foreign', data: { source: 'markdown', raw: '- one ![img](/i.png)\n- two' } },
+    { id: 'l1', type: 'content.list', slots: { items: [{ id: 'l1a', type: 'content.list-item', data: { content: [text('three')] } }] } },
+    { id: 'l2', type: 'content.list', props: { ordered: true }, slots: { items: [{ id: 'l2a', type: 'content.list-item', data: { content: [text('a')] } }, { id: 'l2b', type: 'content.list-item', data: { content: [text('b')] } }] } },
+    { id: 'f2', type: 'content.foreign', data: { source: 'markdown', raw: '    indented code' } },
+  ])],
+  ['export-foreign-not-itself', 'A foreign Markdown raw that would read back as model blocks (two paragraphs, plain text) goes in the carrier; a carriage return inside raw is reported, since Markdown line ends are LF.', content([
+    { id: 'f1', type: 'content.foreign', data: { source: 'markdown', raw: 'a\n\nb' } },
+    { id: 'f2', type: 'content.foreign', data: { source: 'markdown', raw: 'plain' } },
+    { id: 'f3', type: 'content.foreign', data: { source: 'html', raw: '<p>a</p>\r\n<p>b</p>' } },
+  ])],
+);
 for (const [id, summary, document] of MARKDOWN_EXPORTS) {
+  if (id.startsWith('export-foreign-')) {
+    const printed = await toMarkdown(document);
+    const back = await fromMarkdown(printed.value);
+    const lostCr = (document.root.slots.default).some((node) => String(node.data?.raw).includes('\r'));
+    if (!lostCr && stable(withoutIds(back.value.root.slots.default)) !== stable(withoutIds(document.root.slots.default))) throw new Error(`conformance_markdown_foreign_reads_back_otherwise:${id}`);
+  }
   const printed = await toMarkdown(document);
   outputs.set(`markdown/${id}.json`, stringify({ schema: 'simai.composition.structured-content-conformance-markdown-export', schema_version: 1, id, summary, input: { document }, expect: { markdown: printed.value, losses: printed.losses } }));
 }
