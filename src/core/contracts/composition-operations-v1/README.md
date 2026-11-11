@@ -149,12 +149,30 @@ How the operations keep it:
   - Enter on such a block when it is an empty last list item;
   - Enter on the only, empty item of a list that has extensions or bindings.
 
-Not covered:
+Extension keys on known entries (owner decision 2026-11-11):
 
-- `normalizeInline` drops keys that a newer producer adds to a known inline
-  entry (a text run's `lang`, a link's `title`). Such content does not
-  validate today (`schema_one_of`).
-- Unsafe links are dropped by design.
+- A key that a known inline entry does not define rides with that entry.
+  The known entries are a text run, a break, a link and an atom; examples
+  are a text run's `lang`, a link's `title` and `rel`, and a break's `kind`.
+- The key survives every operation and the DOM inline editor. Runs merge
+  only when their keys are the same.
+- Removing a link removes the link's own keys; its runs keep theirs.
+  Deleting every letter of a run removes the run.
+- Validation accepts a key as extension data when its name matches
+  `INLINE_EXTENSION_KEY`:
+  - lowercase letters, digits and `_ . :`, starting with a letter;
+  - not `on*`;
+  - not one of the model's own names (`type value marks href children name
+    props`);
+  - not a forbidden name (`style class html script ...`, F1.6 and the
+    Document rule).
+- A refused key is still kept by the model, so nothing is lost silently.
+  Validation reports it with `schema_one_of`, plus
+  `executable_or_secret_field_forbidden` for a forbidden name.
+- Render never draws an extension key.
+- Unsafe links are still dropped by design, and their keys go with them.
+- The Markdown, Editor.js and HTML converters do not carry extension keys.
+  They are serialisers with loss lists (F3), outside this module.
 
 The fixed cases are in
 `tests/composition-operations-unknown.contract.test.mjs`.

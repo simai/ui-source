@@ -246,6 +246,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -275,6 +278,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -299,12 +305,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -334,6 +346,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -379,6 +394,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -428,6 +446,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -458,6 +479,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -499,6 +523,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -600,6 +627,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -629,6 +659,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -653,12 +686,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -688,6 +727,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -733,6 +775,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -782,6 +827,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -812,6 +860,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -853,6 +904,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -2799,6 +2853,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -2828,6 +2885,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -2852,12 +2912,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -2887,6 +2953,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -2932,6 +3001,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -2981,6 +3053,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -3011,6 +3086,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -3052,6 +3130,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -3303,6 +3384,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -3332,6 +3416,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -3356,12 +3443,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -3391,6 +3484,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -3436,6 +3532,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -3485,6 +3584,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -3515,6 +3617,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -3556,6 +3661,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -3607,6 +3715,9 @@
                   "oneOf": [
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "marks": {
                           "items": {
@@ -3636,6 +3747,9 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "marks": {
                           "items": {
@@ -3660,12 +3774,18 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "children": {
                           "items": {
                             "oneOf": [
                               {
                                 "additionalProperties": false,
+                                "patternProperties": {
+                                  "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                                },
                                 "properties": {
                                   "marks": {
                                     "items": {
@@ -3695,6 +3815,9 @@
                               },
                               {
                                 "additionalProperties": false,
+                                "patternProperties": {
+                                  "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                                },
                                 "properties": {
                                   "marks": {
                                     "items": {
@@ -3740,6 +3863,9 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "name": {
                           "const": "badge"
@@ -3789,6 +3915,9 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "name": {
                           "const": "kbd"
@@ -3819,6 +3948,9 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "name": {
                           "const": "icon"
@@ -3860,6 +3992,9 @@
                     },
                     {
                       "additionalProperties": false,
+                      "patternProperties": {
+                        "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                      },
                       "properties": {
                         "name": {
                           "const": "button"
@@ -3986,6 +4121,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4015,6 +4153,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4039,12 +4180,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4074,6 +4221,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4119,6 +4269,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -4168,6 +4321,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -4198,6 +4354,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -4239,6 +4398,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -4366,6 +4528,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4395,6 +4560,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4419,12 +4587,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4454,6 +4628,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4499,6 +4676,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -4548,6 +4728,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -4578,6 +4761,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -4619,6 +4805,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -4734,6 +4923,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4763,6 +4955,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -4787,12 +4982,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4822,6 +5023,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -4867,6 +5071,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -4916,6 +5123,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -4946,6 +5156,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -4987,6 +5200,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"
@@ -5268,6 +5484,9 @@
               "oneOf": [
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -5297,6 +5516,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "marks": {
                       "items": {
@@ -5321,12 +5543,18 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "children": {
                       "items": {
                         "oneOf": [
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -5356,6 +5584,9 @@
                           },
                           {
                             "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
                             "properties": {
                               "marks": {
                                 "items": {
@@ -5401,6 +5632,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "badge"
@@ -5450,6 +5684,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "kbd"
@@ -5480,6 +5717,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "icon"
@@ -5521,6 +5761,9 @@
                 },
                 {
                   "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
                   "properties": {
                     "name": {
                       "const": "button"

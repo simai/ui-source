@@ -170,7 +170,7 @@ test('the kit holds the inline model, escaping, the html@1 cleaning, the outlet 
 
 // Kit 2.1.0 (2026-11-10, F2): content.foreign and the converters.
 test('content.foreign draws nothing of raw on a public page, and a hash mismatch is reported', async () => {
-  assert.equal(manifest.version, '2.1.0');
+  assert.equal(manifest.version, '2.2.0');
   const foreign = cases.filter(({ id }) => id.startsWith('foreign-'));
   assert.deepEqual(foreign.map(({ id }) => id).sort(), ['foreign-editorjs', 'foreign-hash', 'foreign-hash-mismatch', 'foreign-html-script', 'foreign-markdown']);
   for (const entry of foreign) {

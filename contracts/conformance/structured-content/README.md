@@ -146,6 +146,15 @@ The cases pin each of these; the summaries here say where to look.
   An inline node of an unknown type, an unknown atom name, an undeclared prop
   or an atom inside a link makes the Document invalid (`schema_one_of`): it is
   never drawn, and never silently dropped.
+- **Extension keys** (2.2.0): a key a known inline entry (text run, break,
+  link, atom) does not define is extension data when its name is lowercase
+  letters, digits, `_ . :`, starts with a letter, is not `on*`, not one of
+  the model's own names (`type value marks href children name props`) and
+  not a forbidden one (`style`, `class`, `html`, `script`, ...). It is valid
+  and never drawn. Any other such key makes the Document invalid
+  (`schema_one_of`, plus `executable_or_secret_field_forbidden` for a
+  forbidden name). The published schema says the same with
+  `patternProperties`.
 - **Addresses**: a link, an image source and a file address are relative
   (`/`, `./`, `../`), a fragment, or `http:`, `https:`, `mailto:` or `tel:`;
   `//host` and a backslash path are not relative. Anything else is
@@ -180,6 +189,8 @@ The cases pin each of these; the summaries here say where to look.
 | Kit | Change |
 |:---|:---|
 | 1.0.0 | first edition |
+| 2.1.0 | 2026-11-10: content.foreign and the converters |
+| 2.2.0 | 2026-11-11: extension keys on known inline entries (`inline-extension-keys`, four refusals); `inline-break-shape` now uses a break whose marks are not a list, since a break with an extension key is valid |
 | 2.0.0 | 2026-11-10: table alignment by class (`content.table` 1.0.1), `style` a forbidden key, one diagnostic for an unknown profile. Existing expectations changed (`table-align`, `table-align-short`, `invalid-profile`, `invalid-node-field`), hence a major |
 
 ## Keeping the kit current

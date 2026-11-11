@@ -2,7 +2,7 @@
   "schema": "simai.composition.structured-content-conformance-case",
   "schema_version": 1,
   "id": "invalid-inline-break-shape",
-  "summary": "A break of another shape is a newer producer's entry: refused.",
+  "summary": "A break of another shape (marks not a list) is a newer producer's entry: refused.",
   "covers": [
     "inline"
   ],
@@ -28,7 +28,7 @@
                   },
                   {
                     "type": "break",
-                    "kind": "page"
+                    "marks": "strong"
                   }
                 ]
               }

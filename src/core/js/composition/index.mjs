@@ -226,11 +226,17 @@ function validateJsonSchema(value, schema, path, diagnostics) {
     for (const key of schema.required || []) {
       if (!(key in value)) diagnostics.push(diagnostic('schema_required', `${path}.${key}`, `Required field ${key} is missing`));
     }
+    // patternProperties: a key matching a pattern is declared by it (the
+    // inline model's extension keys, 2026-11-11).
+    const patterns = Object.entries(schema.patternProperties || {}).map(([pattern, childSchema]) => [new RegExp(pattern, 'u'), childSchema]);
     if (schema.additionalProperties === false) {
       const properties = schema.properties || {};
       for (const key of Object.keys(value)) {
-        if (!(key in properties)) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
+        if (!(key in properties) && !patterns.some(([pattern]) => pattern.test(key))) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
       }
+    }
+    for (const [pattern, childSchema] of patterns) {
+      for (const key of Object.keys(value)) if (!(key in (schema.properties || {})) && pattern.test(key)) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
     }
     for (const [key, childSchema] of Object.entries(schema.properties || {})) {
       if (key in value) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
@@ -661,7 +667,8 @@ function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
     // A soft line break (inline model 1.2.0) inside the marks it carries.
-    if (inline.type === 'break' && Object.keys(inline).every((key) => key === 'type' || key === 'marks')) {
+    // Its extension keys (inline model) draw nothing.
+    if (inline.type === 'break' && (inline.marks === undefined || Array.isArray(inline.marks))) {
       return (inline.marks || []).reduce((output, mark) => (MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output), '<br>');
     }
     if (inline.type !== 'text') {

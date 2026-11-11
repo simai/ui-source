@@ -398,11 +398,11 @@
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "87f7066fe8d1572745dd36b24934e02064e2430ad1b801ced8bb0d846be42c1a"
+        "sha256": "0693aa4f53d18106830dc5b8de96e816a2fc60657e527079c0390a09992f32f4"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
-        "sha256": "2568548d86e2f913dedf6c94a1efba10c8aa091d1692ddfef5d8b3dcc8452342"
+        "sha256": "8dfdf7d46e63e78db5469ec6b8864baf9fc1971d237caa13116a1327f32ce48a"
       }
     ],
     "generated_runtime": []

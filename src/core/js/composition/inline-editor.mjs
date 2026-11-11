@@ -1,6 +1,6 @@
 import { pageText } from '../page-language.js';
 import { defineTagAliases } from '../tag-aliases.js';
-import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
 // it on a rendered heading or paragraph element; the editor exposes only
@@ -71,6 +71,21 @@ const copyToken = () => {
   if (!globalThis[COPY_KEY]) globalThis[COPY_KEY] = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
   return globalThis[COPY_KEY];
 };
+// The extension keys of a text run, a break or a link (inline model,
+// 2026-11-11) ride on a wrapper span (or the <a>) as JSON, so the DOM
+// read-back keeps them. Foreign paste loses them with the other
+// data-sf-inline-* attributes.
+const EXTRA_ATTRIBUTE = 'data-sf-inline-extra';
+const readExtra = (node) => {
+  const json = node?.nodeType === 1 ? node.getAttribute(EXTRA_ATTRIBUTE) : null;
+  if (json === null) return null;
+  try {
+    const value = JSON.parse(json);
+    return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length ? value : null;
+  } catch {
+    return null;
+  }
+};
 const MARK_TAGS = new Map([['strong', 'strong'], ['em', 'em'], ['code', 'code'], ['strike', 's']]);
 // A break the editor drew carries this attribute; any other <br> the browser
 // or a paste brings is read as a break too, except the placeholder a browser
@@ -112,11 +127,12 @@ const words = (node) => Object.fromEntries(Object.keys(MESSAGES.en).map((key) =>
 /** Reads inline content from any DOM subtree; foreign markup and styles are dropped. */
 export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collapse = false } = {}) {
   const segments = [];
-  const visit = (node, active, href) => {
+  const carry = (extra, linkExtra, href) => ({ ...(extra ? { extra } : {}), ...(href && linkExtra ? { linkExtra } : {}) });
+  const visit = (node, active, href, extra = null, linkExtra = null) => {
     if (node.nodeType === 3) {
       let text = node.nodeValue.replace(/\u00a0/gu, ' ').replace(/[\r\n\t\f\v]/gu, ' ');
       if (collapse) text = text.replace(/ {2,}/gu, ' ');
-      if (text) segments.push({ text, marks: [...active], href });
+      if (text) segments.push({ text, marks: [...active], href, ...carry(extra, linkExtra, href) });
       return;
     }
     if (node.nodeType !== 1 && node.nodeType !== 11) return;
@@ -124,7 +140,7 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
       const entry = atomEntry(node);
       if (entry) {
         // An atom is never inside a link, even when pasted inside an <a>.
-        segments.push({ text: INLINE_OBJECT, marks: [], href: entry.type === 'component' ? null : href, node: entry });
+        segments.push({ text: INLINE_OBJECT, marks: [], href: entry.type === 'component' ? null : href, node: entry, ...(entry.type === 'component' ? {} : carry(null, linkExtra, href)) });
         return;
       }
     }
@@ -145,9 +161,17 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
       if (weight === 'bold' || weight === 'bolder' || Number(weight) >= 600) next.add('strong');
       if (node.style.fontStyle === 'italic') next.add('em');
     }
+    let nextExtra = extra;
+    let nextLinkExtra = linkExtra;
     if (tag === 'A' && !href && links) {
       const candidate = node.getAttribute('href');
-      if (safeHref(candidate)) nextHref = candidate;
+      if (safeHref(candidate)) {
+        nextHref = candidate;
+        nextLinkExtra = readExtra(node);
+      }
+    } else if (node.nodeType === 1 && tag !== 'A') {
+      const own = readExtra(node);
+      if (own) nextExtra = { ...(extra || {}), ...own };
     }
     if (tag === 'BR') {
       // A line break is a break (inline model 1.2.0), no longer a space. The
@@ -155,10 +179,10 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
       // element (an emptied editor, or the empty line after a final break)
       // is not content; a break the editor drew says so itself.
       if (!node.hasAttribute(BREAK_ATTRIBUTE) && isLastLeaf(node, root)) return;
-      segments.push(breakSegment([...active], href));
+      segments.push({ ...breakSegment([...active], href, readExtra(node) || extra), ...carry(null, linkExtra, href) });
       return;
     }
-    for (const child of node.childNodes) visit(child, next, nextHref);
+    for (const child of node.childNodes) visit(child, next, nextHref, nextExtra, nextLinkExtra);
     // Nested blocks (pasted paragraphs) are separated by one space; the root is not.
     if (BLOCK.has(tag) && node !== root) segments.push({ text: ' ', marks: [], href: null });
   };
@@ -208,6 +232,13 @@ export function renderInlineDom(doc, content) {
       wrapper.append(node);
       node = wrapper;
     }
+    const extra = inlineExtensions(entry);
+    if (extra) {
+      const wrapper = doc.createElement('span');
+      wrapper.setAttribute(EXTRA_ATTRIBUTE, JSON.stringify(extra));
+      wrapper.append(node);
+      node = wrapper;
+    }
     return node;
   };
   const normalized = normalizeInline(content);
@@ -215,6 +246,8 @@ export function renderInlineDom(doc, content) {
     if (entry.type === 'link') {
       const anchor = doc.createElement('a');
       anchor.setAttribute('href', entry.href);
+      const linkExtra = inlineExtensions(entry);
+      if (linkExtra) anchor.setAttribute(EXTRA_ATTRIBUTE, JSON.stringify(linkExtra));
       for (const child of entry.children) anchor.append(run(child));
       fragment.append(anchor);
     } else fragment.append(run(entry));

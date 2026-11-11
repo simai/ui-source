@@ -1,4 +1,4 @@
-import { inlineComponentSchemas } from './inline-model.mjs';
+import { INLINE_EXTENSION_KEY, inlineComponentSchemas } from './inline-model.mjs';
 import { REGION_ACCEPTS, REGION_LANDMARKS, REGION_PLACEMENTS } from './regions.mjs';
 import { schemaFields } from './schema-name.mjs';
 import { parameterSetFields } from './parameter-sets.mjs';
@@ -37,6 +37,8 @@ const inlineTextSchema = {
   type: 'object',
   required: ['type', 'value'],
   additionalProperties: false,
+  // Extension keys (a newer producer's lang, title, ...): kept by the inline model.
+  patternProperties: { [INLINE_EXTENSION_KEY]: {} },
   properties: {
     type: { const: 'text' },
     value: { type: 'string', maxLength: 100000 },
@@ -47,6 +49,7 @@ const inlineBreakSchema = {
   type: 'object',
   required: ['type'],
   additionalProperties: false,
+  patternProperties: { [INLINE_EXTENSION_KEY]: {} },
   properties: {
     type: { const: 'break' },
     marks: inlineMarksSchema,
@@ -62,6 +65,7 @@ const inlineContentSchema = {
         type: 'object',
         required: ['type', 'href', 'children'],
         additionalProperties: false,
+        patternProperties: { [INLINE_EXTENSION_KEY]: {} },
         properties: {
           type: { const: 'link' },
           href: { type: 'string', minLength: 1, maxLength: 2048 },

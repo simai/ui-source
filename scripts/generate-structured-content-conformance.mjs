@@ -21,7 +21,7 @@ import { canonicalHtml } from '../contracts/conformance/structured-content/norma
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const kit = resolve(root, 'contracts/conformance/structured-content');
-const KIT_VERSION = '2.1.0';
+const KIT_VERSION = '2.2.0';
 
 // ---------------------------------------------------------------------------
 // Building blocks
@@ -202,6 +202,7 @@ inline('marks-strike-nested', 'strike nests with the other marks in their canoni
 inline('break', 'A break draws br; breaks in a row are kept, at the edges too: the model never removes one.', br(), text('a'), br(), text('b'), br(), br(), text('c'), br());
 inline('break-marked', 'A break inside marks draws br inside them.', text('a', ['strong']), br(['strong', 'em']), text('b', ['strong']));
 inline('break-in-link', 'A link holds breaks.', link('/a', text('one'), br(), text('two')));
+inline('extension-keys', 'Extension keys on a text run, a link, its child, a break and an atom are valid and draw nothing.', { type: 'text', value: 'Bonjour', lang: 'fr' }, { type: 'link', href: '/doc', title: 'Docs', children: [{ type: 'text', value: 'docs', data_ref: 'r1' }] }, { type: 'break', kind: 'soft' }, { ...atom('kbd', { text: 'K' }), lang: 'en' });
 block('break-everywhere', 'A break reads the same in every inline field: heading, item, alert title, table cell.', 'inline', { id: 'g', type: 'content.grid', props: { columns: 1 }, slots: { default: [
   { id: 'h', type: 'content.heading', data: { level: 2, content: [text('a'), br(), text('b')] } },
   { id: 'l', type: 'content.list', slots: { items: [{ id: 'li', type: 'content.list-item', data: { content: [text('x'), br(), text('y')] } }] } },
@@ -302,7 +303,14 @@ badInline('atom-token', 'A token prop takes only token characters.', atom('icon'
 badInline('atom-required', 'kbd needs its text.', atom('kbd', {}));
 badInline('atom-in-link', 'A link holds text runs only.', link('/a', atom('kbd', { text: 'K' })));
 badInline('mark-unknown', 'A mark not on the list.', text('x', ['underline']));
-badInline('break-shape', 'A break of another shape is a newer producer\'s entry: refused.', text('x'), { type: 'break', kind: 'page' });
+badInline('break-shape', 'A break of another shape (marks not a list) is a newer producer\'s entry: refused.', text('x'), { type: 'break', marks: 'strong' });
+// Kit 2.2.0 (2026-11-11): extension keys on known inline entries (owner rule:
+// no silent data loss). Lowercase names outside the model's own and the
+// forbidden ones are extension data: valid, kept, never drawn.
+badInline('extension-style', 'style is no extension key: forbidden, as anywhere in a Document.', { type: 'text', value: 'x', style: 'color:red' });
+badInline('extension-event', 'An event handler name (on*) is no extension key.', { type: 'text', value: 'x', onclick: 'steal()' });
+badInline('extension-own-name', 'A name of the model (href on a text run) is no extension key.', { type: 'text', value: 'x', href: '/a' });
+badInline('extension-name', 'An extension key is lowercase letters, digits, _ . : (no capitals, no dash).', { type: 'text', value: 'x', 'data-ref': 'r' });
 bad('foreign-source', 'source is markdown, editorjs or html.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'notion', raw: 'x' } });
 bad('foreign-hash', 'A hash is sha256: and 64 lowercase hex digits.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'markdown', raw: 'x', hash: 'md5:x' } });
 bad('foreign-raw-length', 'raw holds at most 200000 characters.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'markdown', raw: 'x'.repeat(200001) } });

@@ -38,10 +38,16 @@ test('inline model 1.2.0: strike is a known mark and the break a known entry', (
   assert.deepEqual(normalizeInline(content), content, 'breaks in links, with marks and in a row are kept');
   assert.equal(inlineLength(content), 8);
   assert.equal(inlineText(content), 'a\nbc\nd\n\n');
-  // A break of another shape is a newer producer's entry: opaque, refused.
+  // A break with a key the model does not define (a newer producer's) keeps
+  // it as extension data: kept byte for byte, valid since 2026-11-11 (owner
+  // rule: no silent data loss; inline extension keys), drawn as a break.
   const future = { type: 'break', kind: 'page' };
   assert.deepEqual(normalizeInline([text('x'), future]), [text('x'), future]);
-  assert.equal(validate(paragraph([future])).valid, false);
+  assert.equal(validate(paragraph([future])).valid, true);
+  // A break of another shape (marks not a list) is still opaque and refused.
+  const odd = { type: 'break', marks: 'strong' };
+  assert.deepEqual(normalizeInline([text('x'), odd]), [text('x'), odd]);
+  assert.equal(validate(paragraph([odd])).valid, false);
 });
 
 test('the renderer draws a break as <br> inside its marks, and strike as <s>', async () => {
