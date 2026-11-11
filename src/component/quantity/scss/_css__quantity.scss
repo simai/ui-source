@@ -496,6 +496,17 @@
     cursor: text;
   }
 
+  /* On a touch phone the core lifts a field's text to 16px so iOS does not
+     zoom into it (_sf_css__touch_fields.scss, same query); the unit takes
+     the same floor so it stays the number's size. */
+  @media (hover: none) and (pointer: coarse) {
+    @media not all and (min-width: 60rem) {
+      .sf-quantity .sf-quantity-unit {
+        font-size: max(var(--sf-quantity-input--font-size), 16px);
+      }
+    }
+  }
+
   .sf-quantity:has(input:disabled) .sf-quantity-unit {
     color: var(--sf-on-surface-disabled);
   }
