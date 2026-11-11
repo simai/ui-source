@@ -889,39 +889,20 @@
    (--sf-tag--close-size: 1/4 at tag sizes 1/3 and 1/2, then 1/3, 1/2 and 1),
    with the line of every cross, 2 px (C14; it was 0.7 of the label's font size,
    and its line fell to 1.05-1.75 px), and it sits
-   after the label at the label's own end step.
-
-   The remove box (the tags' remove targets, dispatcher 2026-11-10): the
-   button is a square --sf-c2 (24, the WCAG 2.2 2.5.8 target) at every tag
-   size and on a phone, on a line the larger of the line and --sf-c2, the
-   cross centred in it at its own size. It keeps the place the mark had --
-   the mark's square, or the line on a line tag -- by a negative margin of
-   (place - box) / 2 on every side, so no tag grows. Before, the box was the
-   mark (10-12 px; 20 on a phone's line) and a transparent ::after reached
-   --sf-c2 around it: the target was 24 while the measured box was not. */
-.sf-tag {
-  --sf-tag--remove-place: var(--sf-tag--close-size, var(--sf-text-size-1\/4));
-  --sf-tag--remove-box: var(--sf-c2);
-}
-
-/* On a line the place is the line, and the box the larger of the line and
-   --sf-c2. Doubled class, as the inline rules above. */
-.sf-tag.sf-tag--inline.sf-tag--inline {
-  --sf-tag--remove-place: var(--sf-tag--line, var(--sf-tag--line-height));
-  --sf-tag--remove-box: max(var(--sf-c2), var(--sf-tag--line, var(--sf-tag--line-height)));
-}
-
+   after the label at the label's own end step. The button keeps no padding of
+   its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
+   a checkbox's native control does. */
 .sf-tag > .sf-icon-button.sf-icon-button--close {
   /* Stated outright: the tag's own button rule pads with the tag's insets
      (at size 2 that made the button several times wider than its mark). */
   padding: 0;
   position: relative;
-  box-sizing: border-box;
-  block-size: var(--sf-tag--remove-box);
-  inline-size: var(--sf-tag--remove-box);
-  min-block-size: 0;
-  min-inline-size: 0;
-  margin: calc((var(--sf-tag--remove-place) - var(--sf-tag--remove-box)) / 2);
+}
+
+.sf-tag > .sf-icon-button.sf-icon-button--close::after {
+  content: "";
+  position: absolute;
+  inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2)) min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
 }
 
 .sf-tag > .sf-icon-button.sf-icon-button--close > .sf-close {
