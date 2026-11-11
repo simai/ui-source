@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The layer and the documentation visibility of every name in
+// The layer and the audience of every name in
 // src/core/contracts/public-js-api.json (owner decision D17, 2026-11-11: the
 // documentation's Functions section lists the Framework's own functions,
 // grouped by layer; a component's script API is documented on its component's
@@ -9,11 +9,16 @@
 //          sf-loader-init), smart-base (the Smart base and the shared Smart
 //          runtime modules), component (a component's or a Smart component's
 //          script API, documented on that component's page).
-//   doc    public -- listed for authors (in Functions when the layer is not
-//          component, on the component's page when it is); internal -- not
-//          listed for authors.
+//   audience  public -- listed for authors (in Functions when the layer is
+//          not component, on the component's page when it is); internal --
+//          not listed for authors.
 //
-// Both are derived: the layer from loaded_by, the visibility from status, and
+// Beside them each name carries an author line (one sentence for authors,
+// present tense, no history) and, when the documentation has a page for it,
+// doc: the page's slug (language-neutral, an anchor after #). Those two are
+// written by hand; this script derives the layer and the audience only.
+//
+// Both are derived: the layer from loaded_by, the audience from status, and
 // the exceptions below say why a name differs from its rule. The fields are
 // written right after "status" so a change to a summary elsewhere in an entry
 // does not touch the same lines.
@@ -24,7 +29,7 @@ import {fileURLToPath} from 'node:url';
 
 export const CONTRACT = fileURLToPath(new URL('../src/core/contracts/public-js-api.json', import.meta.url));
 export const LAYERS = ['core', 'loader', 'smart-base', 'component'];
-export const DOCS = ['public', 'internal'];
+export const AUDIENCES = ['public', 'internal'];
 
 // A name whose layer is not what its loaded_by says, and why.
 export const LAYER_EXCEPTIONS = {
@@ -39,8 +44,8 @@ export const LAYER_EXCEPTIONS = {
   'SF.fieldRenderers': 'smart-base',
 };
 
-// A name whose documentation visibility is not its status, and why.
-export const DOC_EXCEPTIONS = {};
+// A name whose audience is not its status, and why.
+export const AUDIENCE_EXCEPTIONS = {};
 
 export function layerOf(entry) {
   if (LAYER_EXCEPTIONS[entry.name]) return LAYER_EXCEPTIONS[entry.name];
@@ -52,11 +57,11 @@ export function layerOf(entry) {
   throw new Error(`${entry.name}: no layer for loaded_by "${by}"`);
 }
 
-export function docOf(entry) {
-  return DOC_EXCEPTIONS[entry.name] ?? (entry.status === 'internal' ? 'internal' : 'public');
+export function audienceOf(entry) {
+  return AUDIENCE_EXCEPTIONS[entry.name] ?? (entry.status === 'internal' ? 'internal' : 'public');
 }
 
-// Rewrites the text in place: each entry's "layer" and "doc" lines sit right
+// Rewrites the text in place: each entry's "layer" and "audience" lines sit right
 // after its "status" line, in the entry's own indentation.
 export function render(text) {
   const contract = JSON.parse(text);
@@ -66,14 +71,14 @@ export function render(text) {
   let inGlobals = false;
   for (const line of lines) {
     if (/^ {2}"globals": \[/u.test(line)) inGlobals = true;
-    if (inGlobals && /^ {6}"(?:layer|doc)": /u.test(line)) continue;
+    if (inGlobals && /^ {6}"(?:layer|audience)": /u.test(line)) continue;
     out.push(line);
     const status = inGlobals && line.match(/^( {6})"status": /u);
     if (status) {
       index += 1;
       const entry = contract.globals[index];
       out.push(`${status[1]}"layer": ${JSON.stringify(layerOf(entry))},`);
-      out.push(`${status[1]}"doc": ${JSON.stringify(docOf(entry))},`);
+      out.push(`${status[1]}"audience": ${JSON.stringify(audienceOf(entry))},`);
     }
   }
   if (index + 1 !== contract.globals.length) throw new Error(`status lines ${index + 1}, entries ${contract.globals.length}`);
@@ -88,11 +93,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const next = render(text);
   if (mode === '--write') {
     writeFileSync(CONTRACT, next);
-    console.log(`public-js-api: layer and doc written for ${JSON.parse(next).globals.length} names`);
+    console.log(`public-js-api: layer and audience written for ${JSON.parse(next).globals.length} names`);
   } else if (next !== text) {
-    console.error('public-js-api: layer or doc out of date; run node scripts/generate-public-js-api-layers.mjs --write');
+    console.error('public-js-api: layer or audience out of date; run node scripts/generate-public-js-api-layers.mjs --write');
     process.exit(1);
   } else {
-    console.log(`public-js-api: layer and doc current for ${JSON.parse(text).globals.length} names`);
+    console.log(`public-js-api: layer and audience current for ${JSON.parse(text).globals.length} names`);
   }
 }

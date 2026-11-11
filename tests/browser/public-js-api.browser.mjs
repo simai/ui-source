@@ -48,6 +48,8 @@ try {
     // dated getter (SF.Effects) themselves.
     const oldNames = (window.SF.deprecations?.list?.() ?? []).filter((note) => note.kind === 'global').map((note) => note.from);
     const missing = [];
+    const undeclared = [];
+    const stale = [];
     for (const entry of globals) {
       const name = entry.name.slice(3);
       // What this page loads has to be there; a component's script API comes
@@ -55,9 +57,19 @@ try {
       // when it is present.
       const loaded = ['core', 'core-loader', 'smart-base', 'smart/field-renderers', 'smart/theme-generator'].includes(entry.loaded_by);
       if (!(name in window.SF)) { if (loaded && entry.status === 'public') missing.push(entry.name); continue; }
+      const value = window.SF[name];
       for (const member of entry.members ?? []) {
-        const value = window.SF[name];
         if (value === null || value === undefined || !(member in Object(value))) missing.push(`${entry.name}.${member}`);
+      }
+      // The declared members against the runtime object, for every name the
+      // page has (DEV msg-00990ba8, 2026-11-11: SF.Position had seven members
+      // and the contract four): every enumerable key is a member or an
+      // internal member, unless the keys are data (open_members), and every
+      // internal member is still there.
+      if (value !== null && (typeof value === 'object' || typeof value === 'function')) {
+        const declared = new Set([...(entry.members ?? []), ...(entry.internal_members ?? [])]);
+        if (!entry.open_members) for (const key of Object.keys(value)) if (!declared.has(key)) undeclared.push(`${entry.name}.${key}`);
+        for (const key of entry.internal_members ?? []) if (!(key in value)) stale.push(`${entry.name}.${key}`);
       }
     }
     // When each name exists, as loaded_by says: core right after core.js ran,
@@ -70,7 +82,7 @@ try {
       if (entry.loaded_by === 'core-loader' && !(window.__sfAt.loader ?? []).includes(name)) early.push(`${entry.name}: not there at sf-loader-init`);
       if (entry.loaded_by === 'core-loader' && (window.__sfAt.core ?? []).includes(name)) early.push(`${entry.name}: there right after core.js -- it is core`);
     }
-    return {keys, missing, oldNames, early};
+    return {keys, missing, undeclared, stale, oldNames, early};
   }, contract.globals);
   if (runtime.early.length) note({case: 'each name exists when loaded_by says', got: runtime.early});
   if (runtime.oldNames.length) note({case: 'the Framework reads none of its old global names itself', got: runtime.oldNames});
@@ -78,6 +90,8 @@ try {
   const unlisted = runtime.keys.filter((key) => !listed.has(key));
   if (unlisted.length) note({case: 'every name on window.SF is in the contract', unlisted});
   if (runtime.missing.length) note({case: 'every public name and member the contract lists is on window.SF', missing: runtime.missing});
+  if (runtime.undeclared.length) note({case: 'every enumerable member at runtime is declared, as a member or an internal member', undeclared: runtime.undeclared});
+  if (runtime.stale.length) note({case: 'every internal member the contract lists is still there', stale: runtime.stale});
   console.log(JSON.stringify({names: runtime.keys.length, listed: listed.size}));
 } finally {
   await browser.close();
