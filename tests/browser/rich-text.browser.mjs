@@ -342,6 +342,78 @@ try {
       if (typeof value === 'number') check(`${theme}: ${part} contrast ${value} >= 4.5`, value >= 4.5, {value});
     }
   }
+
+  // ---- IME composition takes the caret's pending marks ------------------
+  // Synthetic composition events as a browser sends them: compositionstart,
+  // then per step the text written at the caret with compositionupdate and
+  // an input that is composing, then compositionend with the composed text.
+  // And the same through the browser's own IME (CDP), where it has one.
+  const compose = (page, steps) => page.evaluate((list) => {
+    const editor = document.querySelector('#r .sf-rich-text-editor');
+    const selection = getSelection();
+    const range = selection.getRangeAt(0);
+    let text = range.startContainer.nodeType === 3 ? range.startContainer : null;
+    let start = text ? range.startOffset : 0;
+    if (!text) {
+      text = document.createTextNode('');
+      range.insertNode(text);
+    }
+    let written = 0;
+    editor.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true, data: ''}));
+    for (const step of list) {
+      editor.dispatchEvent(new InputEvent('beforeinput', {bubbles: true, inputType: 'insertCompositionText', data: step, isComposing: true}));
+      text.replaceData(start, written, step);
+      written = step.length;
+      const caret = document.createRange();
+      caret.setStart(text, start + written);
+      selection.removeAllRanges();
+      selection.addRange(caret);
+      editor.dispatchEvent(new CompositionEvent('compositionupdate', {bubbles: true, data: step}));
+      editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertCompositionText', data: step, isComposing: true}));
+    }
+    editor.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: list.at(-1)}));
+  }, steps);
+  const imeCases = [
+    {name: 'Bold then composed', value: '<p>alpha</p>', keys: [`${mod}+b`], steps: ['n', 'に'], expected: '<p>alpha<strong>に</strong></p>'},
+    {name: 'Italic then composed', value: '<p>alpha</p>', keys: [`${mod}+i`], steps: ['k', 'か', 'かな'], expected: '<p>alpha<em>かな</em></p>'},
+    {name: 'Bold and Italic then composed', value: '<p>alpha</p>', keys: [`${mod}+b`, `${mod}+i`], steps: ['に'], expected: '<p>alpha<strong><em>に</em></strong></p>'},
+    {name: 'Bold off in bold text then composed', value: '<p><strong>alpha</strong></p>', keys: [`${mod}+b`], steps: ['に'], expected: '<p><strong>alpha</strong>に</p>'},
+    {name: 'caret moved: composed text plain', value: '<p>alpha</p>', keys: [`${mod}+b`, 'ArrowLeft', 'ArrowRight'], steps: ['に'], expected: '<p>alphaに</p>'},
+    {name: 'no pending mark: composed text plain', value: '<p>alpha</p>', keys: [], steps: ['に'], expected: '<p>alphaに</p>'},
+  ];
+  for (const one of imeCases) {
+    await open(page, 'theme-light', `<sf-input-rich id="r" label="Page text" value="${one.value}"></sf-input-rich>`);
+    await focusEnd(page);
+    for (const key of one.keys) await page.keyboard.press(key);
+    await page.evaluate(() => { window.__said = []; document.getElementById('r').addEventListener('input', (event) => window.__said.push(event.inputType)); });
+    await compose(page, one.steps);
+    await page.waitForTimeout(50);
+    const got = await value(page);
+    check(`IME synthetic: ${one.name}`, got === one.expected, {expected: one.expected, got});
+    if (one.keys[0] === `${mod}+b` && one.keys.length === 1 && !one.value.includes('strong')) {
+      check(`IME synthetic: ${one.name}: one input after the marks`, await page.evaluate(() => window.__said.at(-1) === 'insertCompositionText'), {said: await page.evaluate(() => window.__said)});
+      await page.keyboard.type('x');
+      const after = await value(page);
+      check(`IME synthetic: ${one.name}: typing goes on in the mark`, after === '<p>alpha<strong>にx</strong></p>', {got: after});
+    }
+  }
+  // The typed reference: the same caret mark on typed text.
+  await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+  await focusEnd(page);
+  await page.keyboard.press(`${mod}+b`);
+  await page.keyboard.type('X');
+  check('typed: Bold then typed', await value(page) === '<p>alpha<strong>X</strong></p>', {got: await value(page)});
+  // The browser's own IME path.
+  await open(page, 'theme-light', '<sf-input-rich id="r" label="Page text" value="<p>alpha</p>"></sf-input-rich>');
+  await focusEnd(page);
+  await page.keyboard.press(`${mod}+b`);
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Input.imeSetComposition', {text: 'n', selectionStart: 1, selectionEnd: 1});
+  await cdp.send('Input.imeSetComposition', {text: 'に', selectionStart: 1, selectionEnd: 1});
+  await cdp.send('Input.insertText', {text: 'に'});
+  await page.waitForTimeout(50);
+  check('IME (CDP): Bold then composed', await value(page) === '<p>alpha<strong>に</strong></p>', {got: await value(page)});
+  await cdp.detach();
 } finally {
   await browser.close();
   server.close();

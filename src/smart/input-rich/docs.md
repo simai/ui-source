@@ -102,7 +102,7 @@ nothing.
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
 - Bold and Italic say the marks of the text, not how it looks: a heading is
   bold by its type, so Bold is pressed in it only on a bold mark. At a caret
-  the mark goes to the text typed next.
+  the mark goes to the text typed next, or composed with an IME.
 - In the link editor Enter applies and Escape closes; the caret goes back to
   the text. The link editor is a popup form of the form's width; on a phone
   it is a sheet at the bottom of the screen.

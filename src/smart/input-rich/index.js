@@ -325,7 +325,8 @@ class SfRichText extends FormField(RichTextElement) {
     const on = (type, handler) => editor.addEventListener(type, handler, {signal});
     on('beforeinput', (event) => this._onBeforeInput(event));
     on('input', (event) => this._onInput(event));
-    on('compositionend', () => this._afterTyping('insertCompositionText'));
+    on('compositionstart', () => { this._composing = this._pendingMarks(); });
+    on('compositionend', (event) => this._onCompositionEnd(event));
     on('keydown', (event) => this._onKeydown(event));
     on('paste', (event) => this._onPaste(event));
     on('dragstart', () => { this._dragFromSelf = true; });
@@ -622,6 +623,46 @@ class SfRichText extends FormField(RichTextElement) {
     selection.addRange(caret);
     this._afterTyping('insertText');
     this._say('insertText');
+  }
+
+  // Composed text (an IME) cannot be inserted by hand: the browser writes
+  // it. The marks pending when the composition started go round it once it
+  // ends, as typed text takes them; a composition that did not end at the
+  // pending caret plus its text keeps the text plain.
+  _onCompositionEnd(event) {
+    const pending = this._composing;
+    this._composing = null;
+    this._pending = null;
+    const text = String(event.data ?? '');
+    const editor = this.editor;
+    const end = this._saveSelection();
+    if (!pending || !text || !editor || !end || end.start !== end.end || end.start - text.length !== pending.at) {
+      this._afterTyping('insertCompositionText');
+      return;
+    }
+    const doc = this.ownerDocument;
+    const range = doc.createRange();
+    const [startNode, startOffset] = pointAt(editor, pending.at);
+    const [endNode, endOffset] = pointAt(editor, end.start);
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
+    if (range.toString() !== text) {
+      this._afterTyping('insertCompositionText');
+      return;
+    }
+    const content = range.extractContents();
+    let wrap = content;
+    for (const tag of Object.keys(MARKS)) {
+      if (pending[tag] === undefined) continue;
+      const element = markElement(doc, tag, pending[tag]);
+      element.append(wrap);
+      wrap = element;
+    }
+    range.insertNode(wrap);
+    this._clean(end);
+    this._restoreSelection(end);
+    this._afterTyping('insertCompositionText');
+    this._say('insertCompositionText');
   }
 
   _onInput(event) {
