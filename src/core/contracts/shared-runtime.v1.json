@@ -138,6 +138,7 @@
         "openLayers",
         "raiseLayer",
         "returnLayerFocus",
+        "startClosedLayerContent",
         "topLayer",
         "tryFocus",
         "updateLayer"

@@ -362,6 +362,28 @@
   padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-space-3))) + env(safe-area-inset-bottom, 0px));
 }
 
+/* One start line in every window (decision C39, DEV's navigation acceptance
+   D1, 2026-11-10): the body scrolls inside a 1/4 inset (p-1/4 in both
+   templates) that keeps its focus rings whole, and that inset stood the
+   content and its buttons 1/4 right of the title. The scroll box now stands
+   out into the frame by the same 1/4 on both sides, so the title, the content
+   and the answers start on the frame's line and the rings still fit. Every
+   surface states its own outset, so a window inside another never inherits
+   it. Not where the frame is not the window's own: a question window gives
+   the inset back from its frame below, and a page's surface-padding (the
+   gallery's lightbox has 0) keeps its body where it put it. */
+[data-sf-modal-surface] {
+  --sf-modal--body-outset: 0;
+}
+
+.sf-modal:not(.sf-modal--size-question) > [data-sf-modal-panel] > [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
+  --sf-modal--body-outset: calc(var(--sf-space-1\/4) * -1);
+}
+
+[data-sf-modal-surface] [data-sf-modal-body-scroll] {
+  margin-inline: var(--sf-modal--body-outset);
+}
+
 /* A question window (sf-modal size="question", decision C39; ui-control
    control/research/2026-11-09-modal-look.md, round 2, option 1). The steps
    grow towards the answers: the frame --sf-space-3, the title --sf-space-1

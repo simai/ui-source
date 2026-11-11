@@ -28,3 +28,23 @@ test('sf-header-site holds its slots and its nav until it draws', () => {
   assert.match(header, /nodes\.forEach\(\(node\) => this\.holdSlotNode\(node\)\);/u);
   assert.doesNotMatch(header, /nodes\.forEach\(\(node\) => node\.remove\(\)\)/u);
 });
+
+// sf-modal and sf-drawer hold theirs too (ui-control evidence
+// 2026-11-11-modal-followups): a page that looked its sf-menu up by id once
+// sf-modal was defined found nothing on 20 of 20 loads. The browser probe is
+// tests/browser/layer-closed-content.browser.mjs.
+const modal = readFileSync(resolve(root, 'src/smart/modal/index.js'), 'utf8');
+const drawer = readFileSync(resolve(root, 'src/smart/drawer/index.js'), 'utf8');
+
+test('sf-modal holds its slotted and loose children and releases them in the drawing task', () => {
+  assert.match(modal, /static holdsSlotNodesUntilDrawn = true;/u);
+  assert.match(modal, /loose\.forEach\(\(node\) => this\.holdSlotNode\(node\)\);/u);
+  // A slotted child still in the host is not taken a second time as loose content.
+  assert.match(modal, /!node\.hasAttribute\("slot"\)/u);
+  const release = modal.indexOf('this.releaseHeldSlotNodes();\n    this.drawInto(templateResult, target);');
+  assert.ok(release > 0, 'released right before the window draws');
+});
+
+test('sf-drawer holds its slotted children until it draws', () => {
+  assert.match(drawer, /static holdsSlotNodesUntilDrawn = true;/u);
+});
