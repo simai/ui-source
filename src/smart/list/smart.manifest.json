@@ -758,11 +758,11 @@
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "15cab61cc267a48dd2e533d0a9b7c5238e3a53fdc4b4437152144eb4346202e1"
+        "sha256": "200f0432fc02c022d36caed4e0ed624605beeae071b3a56d4518924b8d7b376d"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "21a47be76089008e2f9c8c527ba83af8762fecf2c6f42200a3f3b5f32397f49b"
+        "sha256": "c1c6be410f79957344a052230968ebb38caa0746da0fc4a4aa126781bfe2b56f"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -774,7 +774,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "375c1c4e85fffa450751cb8efcb3e68f3f138890ad0d93d3166e8591ce450864"
+        "sha256": "7b75c3dd7920f32fa7f0490af22e98ffcc0948bc3919f9d305d0a8b99c6e1d87"
       },
       {
         "path": "src/smart/list/lang/en.json",
