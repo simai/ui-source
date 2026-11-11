@@ -3,15 +3,23 @@
 // corner of its own, for its own time -- so messages turned up anywhere and
 // one on top of another (owner, 2026-10-13). Now there is one place for them.
 //
-// SF.notify({status, title, text, action, duration, source, key}), or a string as
-// the text, shows a toast
-// in the page's notification area and says so with the `sf-notification` event
-// on the document, which a notification centre (Larena's) records. The area
-// lives in the top layer, at one edge of the window; messages stack with a gap,
-// at most four at a time and the rest waiting their turn; the same message
-// shown again counts up instead of stacking twice; a timer pauses while the
-// pointer or the focus is on its toast; an error is announced at once, the rest
-// politely. The toast is the toast component, fetched the first time.
+// SF.notify({status, title, text, action, actions, duration, source, key}), or a
+// string as the text, shows a toast in the page's notification area and says so
+// with the `sf-notification` event on the document, which a notification centre
+// (Larena's) records. The area lives in the top layer, at one edge of the
+// window; at most four messages at a time and the rest waiting their turn; the
+// same message shown again counts up instead of stacking twice; a timer pauses
+// while the pointer or the focus is on its toast; an error is announced at
+// once, the rest politely. The toast is the toast component, fetched the first
+// time.
+//
+// The messages of a corner are a stack (owner decision C50, 2026-11-10): the
+// newest in front, the two before it peeking out behind it by the area's gap
+// (12; compact and phone 8), each a step narrower (5 %); the stack opens into
+// the list on hover, focus and tap, and every timer in it stands while it is
+// open; Escape closes the message in focus and moves the focus to the next.
+// The list of earlier pairs, every message whole with a gap, is a setting:
+// SF.notifications.configure({layout: 'list'}).
 import {pageText} from './page-language';
 import {closeLayer, openLayer} from './layer-stack';
 
@@ -26,6 +34,11 @@ const ICONS = {success: 'check_circle', info: 'info', warning: 'warning', error:
 // message until it is closed.
 const DURATIONS = {neutral: 5000, info: 5000, success: 5000, warning: 8000, error: 10000};
 const PLACEMENTS = new Set(['top-start', 'top-end', 'bottom-start', 'bottom-end']);
+const LAYOUTS = new Set(['stack', 'list']);
+// The front message and the two before it show when the stack is closed (C50);
+// a fourth waits hidden behind them and shows when it opens.
+const STACK_LAYERS = 3;
+const STACK_STEP = 0.05;
 
 const state = {
   region: null,
@@ -34,8 +47,128 @@ const state = {
   history: [],
   max: 4,
   placement: 'bottom-end',
+  layout: 'stack',
   counter: 0,
+  // Why the stack is open: the pointer over it, the focus in it, a tap on it.
+  hover: false,
+  focus: false,
+  pinned: false,
+  open: false,
+  // Where the focus came from, to go back to when the last message closes.
+  returnFocus: null,
+  frame: 0,
+  resize: null,
 };
+
+const reducedMotion = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+// The messages on view, newest first, without the ones leaving.
+function onView() {
+  return state.shown
+    .map((entry) => entry.toast)
+    .filter((toast) => toast?.isConnected && !toast.classList.contains('closing'))
+    .reverse();
+}
+
+function timers(toast, reason, stand) {
+  const api = globalThis.SF?.Toast;
+  if (stand) api?.pause?.(toast, reason);
+  else api?.resume?.(toast, reason);
+}
+
+function clearStack(toast) {
+  for (const property of ['transform', 'clipPath', 'zIndex']) toast.style[property] = '';
+  delete toast.dataset.stackLayer;
+}
+
+// Where every message of the stack stands. Heights are the boxes' own
+// (offsetHeight ignores the transform); a message behind keeps its height and
+// is clipped to the front one's, so its top edge alone shows.
+function layout() {
+  state.frame = 0;
+  const area = state.region;
+  if (!area) return;
+  const toasts = onView();
+  area.dataset.layout = state.layout;
+  if (state.layout !== 'stack') {
+    area.style.blockSize = '';
+    area.removeAttribute('data-expanded');
+    toasts.forEach((toast) => {
+      clearStack(toast);
+      timers(toast, 'stack', false);
+      timers(toast, 'hidden', false);
+    });
+    return;
+  }
+  const open = state.open;
+  area.toggleAttribute('data-expanded', open);
+  const top = state.placement.startsWith('top');
+  const gap = Number.parseFloat(globalThis.getComputedStyle(area).rowGap) || 0;
+  const heights = toasts.map((toast) => toast.offsetHeight);
+  const front = heights[0] ?? 0;
+  let reach = 0;
+  toasts.forEach((toast, at) => {
+    const layer = Math.min(at, STACK_LAYERS - 1);
+    const hidden = !open && at >= STACK_LAYERS;
+    // How far the message moves away from the edge it stands on.
+    let away = reach;
+    let scale = 1;
+    let clip = 0;
+    if (open) reach += heights[at] + gap;
+    else {
+      away = front + gap * layer - heights[at];
+      scale = 1 - STACK_STEP * layer;
+      clip = Math.max(0, heights[at] - front);
+    }
+    if (toast.dataset.stackEntering !== undefined) away -= gap;
+    toast.style.transform = `translateY(${top ? away : -away}px) scale(${scale})`;
+    toast.style.clipPath = clip ? (top ? `inset(${clip}px 0 0 0)` : `inset(0 0 ${clip}px 0)`) : '';
+    toast.style.zIndex = String(toasts.length - at);
+    if (hidden) toast.dataset.stackLayer = 'hidden';
+    else if (!open && at > 0) toast.dataset.stackLayer = 'behind';
+    else delete toast.dataset.stackLayer;
+    timers(toast, 'stack', open);
+    timers(toast, 'hidden', hidden);
+  });
+  const layers = Math.min(toasts.length, STACK_LAYERS);
+  const size = open ? Math.max(0, reach - gap) : (toasts.length ? front + gap * (layers - 1) : 0);
+  area.style.blockSize = `${size}px`;
+}
+
+function layoutSoon() {
+  if (state.frame) return;
+  state.frame = globalThis.requestAnimationFrame?.(layout) ?? setTimeout(layout, 16);
+}
+
+function setOpen() {
+  const open = state.layout === 'stack' && onView().length > 0 && (state.hover || state.focus || state.pinned);
+  if (open === state.open) return;
+  state.open = open;
+  layout();
+}
+
+// Escape closes the message in focus and hands the focus to the next one, or
+// back to where it came from when none is left (C50).
+function closeFocused(event) {
+  if (event.key !== 'Escape' || event.defaultPrevented) return;
+  const toasts = onView();
+  const toast = document.activeElement?.closest?.('.sf-toast');
+  const at = toasts.indexOf(toast);
+  if (at === -1) return;
+  event.preventDefault();
+  globalThis.SF?.Toast?.dismiss?.(toast);
+  const rest = onView();
+  const next = rest[Math.min(at, rest.length - 1)];
+  const target = next?.querySelector('[data-close], a[href], button:not(:disabled)');
+  if (target) {
+    target.focus();
+    return;
+  }
+  const back = state.returnFocus;
+  state.returnFocus = null;
+  if (back?.isConnected && typeof back.focus === 'function') back.focus();
+  else toast.querySelector(':focus')?.blur?.();
+}
 
 function toastApi() {
   return globalThis.SF?.Toast?.create ? globalThis.SF.Toast : null;
@@ -74,9 +207,47 @@ function region() {
   area.addEventListener('sf-toast-action', (event) => {
     const entry = state.shown.find((item) => item.toast === event.detail?.toast);
     if (!entry) return;
-    entry.options.action?.onSelect?.(entry.record);
+    const action = entry.actions.find((one) => one.id === event.detail?.action) ?? entry.actions[0];
+    action?.onSelect?.(entry.record);
     globalThis.SF?.Toast?.dismiss?.(entry.toast);
   });
+  // A mouse or a pen over the stack opens it; a touch has no hover, so a tap
+  // on it opens it until a tap elsewhere (C50).
+  area.addEventListener('pointerenter', (event) => {
+    if (event.pointerType === 'touch') return;
+    state.hover = true;
+    setOpen();
+  });
+  area.addEventListener('pointerleave', (event) => {
+    if (event.pointerType === 'touch') return;
+    state.hover = false;
+    setOpen();
+  });
+  let touched = false;
+  area.addEventListener('pointerdown', (event) => { touched = event.pointerType === 'touch'; });
+  area.addEventListener('click', (event) => {
+    if (!touched || event.target?.closest?.('a[href], button')) return;
+    state.pinned = true;
+    setOpen();
+  });
+  area.addEventListener('focusin', (event) => {
+    if (!area.contains(event.relatedTarget)) state.returnFocus = event.relatedTarget ?? null;
+    state.focus = true;
+    setOpen();
+  });
+  area.addEventListener('focusout', (event) => {
+    if (area.contains(event.relatedTarget)) return;
+    state.focus = false;
+    setOpen();
+  });
+  area.addEventListener('keydown', closeFocused);
+  document.addEventListener('pointerdown', (event) => {
+    if (!state.pinned || area.contains(event.target)) return;
+    state.pinned = false;
+    setOpen();
+  }, true);
+  if (typeof ResizeObserver === 'function') state.resize = new ResizeObserver(layoutSoon);
+  area.dataset.layout = state.layout;
   document.body.append(area);
   state.region = area;
   return area;
@@ -102,13 +273,35 @@ function hideRegionWhenEmpty() {
   if (!area || state.shown.length || state.waiting.length) return;
   if (typeof area.hidePopover === 'function' && area.matches(':popover-open')) area.hidePopover();
   closeLayer(area, {restoreFocus: false});
+  // An empty area is no longer under the pointer, in focus or tapped open.
+  state.hover = false;
+  state.focus = false;
+  state.pinned = false;
+  state.open = false;
+  layout();
 }
 
 function release(entry) {
   state.shown = state.shown.filter((item) => item !== entry);
+  if (entry.toast) state.resize?.unobserve(entry.toast);
   const next = state.waiting.shift();
   if (next) display(next);
   else setTimeout(hideRegionWhenEmpty, 0);
+  if (!onView().length) {
+    state.open = false;
+  }
+  layout();
+}
+
+// The actions a message offers (C50): one light navigation action is a link at
+// the end of its text; undo, retry, extend and two actions are buttons under
+// the text (C35, C46). One message never mixes the two.
+function actionsOf(options) {
+  const list = Array.isArray(options.actions) ? options.actions : (options.action ? [options.action] : []);
+  return list
+    .filter((one) => one && String(one.label ?? '').trim())
+    .slice(0, 2)
+    .map((one, at) => ({...one, label: String(one.label).trim(), id: String(one.id ?? (at ? `action-${at + 1}` : 'action'))}));
 }
 
 // The slot is taken at once and the toast drawn when its component is there:
@@ -118,14 +311,15 @@ async function display(entry) {
   state.shown.push(entry);
   const api = await whenToast();
   if (!api || !state.shown.includes(entry)) return;
-  const {record, options} = entry;
+  const {record, options, actions} = entry;
+  const link = actions.length === 1 && (actions[0].href || actions[0].kind === 'link') ? actions[0] : null;
   const toast = api.create({
     status: record.status,
     icon: options.icon ?? ICONS[record.status],
     title: record.title,
     supportingText: record.text,
-    actionText: options.action?.label ?? '',
-    action: options.action ? (options.action.id ?? 'action') : '',
+    link: link ? {text: link.label, href: link.href ?? '', action: link.id, target: link.target ?? ''} : null,
+    actions: link ? [] : actions.map((one) => ({text: one.label, action: one.id})),
     closable: true,
     duration: options.duration,
     role: record.status === 'error' ? 'alert' : 'status',
@@ -136,8 +330,24 @@ async function display(entry) {
   showRegion();
   // The newest at the edge the area grows from: nearest the edge it sits on.
   const area = region();
+  const stack = state.layout === 'stack' && !reducedMotion();
+  // In a stack the newest comes in from outside the edge and fades in; the
+  // first frame stands it there, the next lets it move (no jump: every move
+  // is a transition from where the message stood).
+  if (stack) toast.dataset.stackEntering = '';
   if (state.placement.startsWith('top')) area.prepend(toast);
   else area.append(toast);
+  state.resize?.observe(toast);
+  layout();
+  if (stack) {
+    const settle = () => {
+      delete toast.dataset.stackEntering;
+      layout();
+    };
+    const frame = globalThis.requestAnimationFrame;
+    if (frame) frame(() => frame(settle));
+    else setTimeout(settle, 32);
+  }
 }
 
 function normalise(options) {
@@ -192,11 +402,13 @@ export function notify(input = {}) {
       repeated.toast.dataset.count = String(repeated.count);
       globalThis.SF?.Toast?.unbind?.(repeated.toast);
       globalThis.SF?.Toast?.bind?.(repeated.toast);
+      // Bound again, its timer starts over: an open stack stands it again.
+      layout();
     }
     return {id: repeated.record.id, close: () => close(repeated.record.id)};
   }
 
-  const entry = {record, key, options: {...options, duration}, count: 1, toast: null};
+  const entry = {record, key, options: {...options, duration}, actions: actionsOf(options), count: 1, toast: null};
   if (state.shown.length >= state.max) state.waiting.push(entry);
   else display(entry);
   return handle;
@@ -217,14 +429,23 @@ function close(id) {
   return globalThis.SF?.Toast?.dismiss?.(entry.toast) ?? false;
 }
 
-/** Where the area sits and how many messages it shows at once. */
-export function configureNotifications({placement, max} = {}) {
+/**
+ * Where the area sits, how many messages it shows at once and how they stand:
+ * 'stack' (the default, C50) or 'list'.
+ */
+export function configureNotifications({placement, max, layout: arrangement} = {}) {
   if (PLACEMENTS.has(placement)) {
     state.placement = placement;
     if (state.region) state.region.dataset.placement = placement;
   }
   if (Number.isInteger(max) && max > 0) state.max = max;
-  return {placement: state.placement, max: state.max};
+  if (LAYOUTS.has(arrangement) && arrangement !== state.layout) {
+    state.layout = arrangement;
+    if (arrangement !== 'stack') state.open = false;
+    else setOpen();
+    layout();
+  }
+  return {placement: state.placement, max: state.max, layout: state.layout};
 }
 
 if (typeof window !== 'undefined') {

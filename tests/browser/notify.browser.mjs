@@ -3,7 +3,10 @@
 // SF.notify: one notification area for the page, in the top layer; at most
 // four messages at a time, the rest waiting; the same message counts up; each
 // message is announced with sf-notification for a notification centre; an
-// error is an alert; closing one shows the next.
+// error is an alert; closing one shows the next. The list is a setting; the
+// default is the stack (C50): the newest in front, two before it peeking out
+// by the gap and 5 % narrower each, open on hover and focus with every timer
+// standing, Escape closing the message in focus and moving the focus on.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -44,6 +47,7 @@ try {
     const settle = (ms) => new Promise((done) => setTimeout(done, ms));
     const heard = [];
     document.addEventListener('sf-notification', (event) => heard.push(event.detail));
+    window.SF.notifications.configure({layout: 'list'});
     for (let at = 1; at <= 5; at += 1) window.SF.notify({status: 'success', title: `Сохранено ${at}`, duration: 0});
     window.SF.notify({status: 'error', title: 'Не удалось', text: 'Повторите попытку.', duration: 0});
     window.SF.notify({status: 'success', title: 'Сохранено 1', duration: 0});
@@ -88,6 +92,71 @@ try {
   if (!plain.handle || plain.kept !== 'Товар в корзине') failures.push('a string is shown as the text');
   if (plain.nothing.some((one) => one !== null)) failures.push('nothing to show returns null');
   if (warnings.filter((one) => one.includes('SF.notify')).length !== 3) failures.push('nothing to show warns in the console');
+
+  // The stack, on a page of its own.
+  const stack = await browser.newPage({viewport: {width: 1200, height: 800}});
+  await stack.goto(`http://127.0.0.1:${server.address().port}/`);
+  await stack.waitForFunction(() => typeof window.SF?.notify === 'function', null, {timeout: 10000});
+  const closed = await stack.evaluate(async () => {
+    const settle = (ms) => new Promise((done) => setTimeout(done, ms));
+    for (let at = 1; at <= 4; at += 1) window.SF.notify({status: 'info', title: `Сообщение ${at}`, text: 'Текст сообщения.', duration: 3000});
+    for (let tries = 0; tries < 50 && document.querySelectorAll('.sf-notifications .sf-toast').length < 4; tries += 1) await settle(100);
+    await settle(700);
+    const area = document.querySelector('.sf-notifications');
+    const toasts = [...area.querySelectorAll('.sf-toast')].reverse();
+    const box = (toast) => toast.getBoundingClientRect();
+    const [front, second, third, fourth] = toasts.map(box);
+    return {
+      layout: area.dataset.layout,
+      peek: [Math.round(front.top - second.top), Math.round(second.top - third.top)],
+      narrower: [Math.round((1 - second.width / front.width) * 100), Math.round((1 - third.width / front.width) * 100)],
+      fourth: getComputedStyle(toasts[3]).visibility,
+      area: Math.round(area.getBoundingClientRect().height),
+      front: Math.round(front.height),
+      gap: parseFloat(getComputedStyle(area).rowGap),
+      fourthTop: Math.round(fourth.top),
+    };
+  });
+  if (closed.layout !== 'stack') failures.push('the stack is the default');
+  if (closed.peek.some((one) => one !== closed.gap)) failures.push(`older messages peek out by the gap: ${closed.peek}`);
+  if (closed.narrower[0] !== 5 || closed.narrower[1] !== 10) failures.push(`each older message is 5 % narrower: ${closed.narrower}`);
+  if (closed.fourth !== 'hidden') failures.push('a fourth message waits hidden');
+  if (closed.area !== closed.front + 2 * closed.gap) failures.push('the area covers the stack');
+  // Hover opens it and every timer stands (3 s timers, 2.5 s over it after about 1 s).
+  const front = stack.locator('.sf-notifications .sf-toast').last();
+  await front.hover();
+  await stack.waitForTimeout(2500);
+  const open = await stack.evaluate(() => {
+    const area = document.querySelector('.sf-notifications');
+    const toasts = [...area.querySelectorAll('.sf-toast:not(.closing)')].reverse();
+    const gaps = toasts.slice(1).map((toast, at) => Math.round(toasts[at].getBoundingClientRect().top - toast.getBoundingClientRect().bottom));
+    return {expanded: area.hasAttribute('data-expanded'), count: toasts.length, gaps, gap: parseFloat(getComputedStyle(area).rowGap),
+      widths: toasts.map((toast) => Math.round(toast.getBoundingClientRect().width))};
+  });
+  if (!open.expanded || open.count !== 4) failures.push(`hover opens the stack and its timers stand: ${JSON.stringify(open)}`);
+  if (open.gaps.some((one) => one !== open.gap)) failures.push(`an open stack is the list: ${open.gaps}`);
+  if (new Set(open.widths).size !== 1) failures.push('an open stack is full width');
+  await stack.mouse.move(5, 5);
+  await stack.waitForTimeout(400);
+  // Focus opens it; Escape closes the message in focus and moves on.
+  const keys = await stack.evaluate(async () => {
+    const settle = (ms) => new Promise((done) => setTimeout(done, ms));
+    const button = document.createElement('button');
+    button.textContent = 'На странице';
+    document.querySelector('main').append(button);
+    button.focus();
+    const toasts = () => [...document.querySelectorAll('.sf-notifications .sf-toast:not(.closing)')].reverse();
+    toasts()[0].querySelector('[data-close]').focus();
+    await settle(50);
+    const expanded = document.querySelector('.sf-notifications').hasAttribute('data-expanded');
+    const before = toasts().length;
+    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true}));
+    await settle(50);
+    const moved = document.activeElement?.closest('.sf-toast') === toasts()[0];
+    return {expanded, before, after: toasts().length, moved};
+  });
+  if (!keys.expanded) failures.push('focus opens the stack');
+  if (keys.after !== keys.before - 1 || !keys.moved) failures.push(`Escape closes the focused message and moves the focus: ${JSON.stringify(keys)}`);
 } finally {
   await browser.close();
   server.close();

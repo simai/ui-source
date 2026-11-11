@@ -52,8 +52,11 @@ function pauseToastTimer(root, reason) {
   clearToastTimer(root);
 }
 
+// A reason that was not standing changes nothing: started again, the timer
+// would run its whole remainder from now (an open stack lays out on every
+// change and resumes every message it does not stand).
 function resumeToastTimer(root, reason) {
-  root.__sfToastPauseReasons?.delete(reason);
+  if (!root.__sfToastPauseReasons?.delete(reason)) return;
   startToastTimer(root);
 }
 
@@ -76,6 +79,9 @@ function bindToast(root, removalTarget = root) {
       return;
     }
 
+    // A link action without an address is the page's to answer, not a jump
+    // to the top.
+    if (trigger.matches('a[href="#"]')) event.preventDefault();
     root.dispatchEvent(
       new CustomEvent('sf-toast-action', {
         bubbles: true,
@@ -176,6 +182,8 @@ function createToastElement(options = {}) {
     supportingText = '',
     actionText = '',
     action = '',
+    actions = null,
+    link = null,
     closable = true,
     closeLabel = pageText(TOAST_TEXT, 'close', document.documentElement),
     duration = 0,
@@ -215,33 +223,58 @@ function createToastElement(options = {}) {
     wrap.append(titleNode);
   }
 
-  if (supportingText) {
+  // One light navigation action is a link at the end of the text (owner
+  // decision C50); buttons under the text are for undo, retry, extend and two
+  // actions (C35, C46). A notice never mixes the two: a link takes the place
+  // of the buttons.
+  const linkText = String(link?.text ?? '').trim();
+  if (supportingText || (linkText && !title)) {
     const supportingTextNode = document.createElement('div');
     supportingTextNode.className = 'sf-toast-supporting-text';
     supportingTextNode.textContent = supportingText;
     wrap.append(supportingTextNode);
   }
 
+  if (linkText) {
+    const anchor = document.createElement('a');
+    anchor.className = 'sf-toast-link';
+    anchor.href = link.href || '#';
+    if (link.target) anchor.target = link.target;
+    anchor.setAttribute('data-action', link.action || 'action');
+    anchor.setAttribute('data-toast-action', link.action || 'action');
+    anchor.textContent = linkText;
+    const line = wrap.querySelector('.sf-toast-supporting-text') ?? wrap.lastElementChild;
+    if (line.textContent) line.append(' ');
+    line.append(anchor);
+  }
+
   container.append(wrap);
 
-  if (actionText) {
+  const buttons = linkText
+    ? []
+    : (Array.isArray(actions) ? actions : [{ text: actionText, action }])
+      .filter((one) => String(one?.text ?? '').trim())
+      .slice(0, 2);
+  if (buttons.length) {
     const bottom = document.createElement('div');
     bottom.className = 'sf-toast-bottom flex items-center';
 
-    const actionButton = document.createElement('button');
-    actionButton.type = 'button';
-    // The notice's action (owner decision C35): an unsized low button, tonal
-    // primary, its label the notice's text size (as the Smart sf-toast).
-    actionButton.className = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
-    actionButton.setAttribute('data-action', action || 'action');
-    actionButton.setAttribute('data-toast-action', action || 'action');
+    buttons.forEach((one) => {
+      const actionButton = document.createElement('button');
+      actionButton.type = 'button';
+      // The notice's action (owner decision C35): an unsized low button, tonal
+      // primary, its label the notice's text size (as the Smart sf-toast).
+      actionButton.className = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+      actionButton.setAttribute('data-action', one.action || 'action');
+      actionButton.setAttribute('data-toast-action', one.action || 'action');
 
-    const actionTextNode = document.createElement('span');
-    actionTextNode.className = 'sf-button-text-container';
-    actionTextNode.textContent = actionText;
+      const actionTextNode = document.createElement('span');
+      actionTextNode.className = 'sf-button-text-container';
+      actionTextNode.textContent = String(one.text).trim();
 
-    actionButton.append(actionTextNode);
-    bottom.append(actionButton);
+      actionButton.append(actionTextNode);
+      bottom.append(actionButton);
+    });
     container.append(bottom);
   }
 
@@ -319,6 +352,8 @@ class Toast extends ComponentObserver {
       supportingText = '',
       actionText = '',
       action = '',
+      actions = null,
+      link = null,
       closable = true,
     } = this.params || {};
 
@@ -330,6 +365,8 @@ class Toast extends ComponentObserver {
       supportingText,
       actionText,
       action,
+      actions,
+      link,
       closable,
       closeLabel: this.params?.closeLabel,
       duration: this.params?.duration,
@@ -361,6 +398,10 @@ if (typeof window !== 'undefined') {
   window.SF.Toast.dismiss = dismissToast;
   window.SF.Toast.create = createToastElement;
   window.SF.Toast.show = showToast;
+  // A timer stands for as long as any reason holds it (pointer, focus, or the
+  // page's own: SF.notify stands every message of an open stack).
+  window.SF.Toast.pause = (root, reason = 'page') => root instanceof HTMLElement && pauseToastTimer(root, String(reason));
+  window.SF.Toast.resume = (root, reason = 'page') => root instanceof HTMLElement && resumeToastTimer(root, String(reason));
 }
 
 if (document.readyState === 'loading') {
