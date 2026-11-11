@@ -348,18 +348,38 @@ function bindTree(root) {
 
   root.addEventListener('keydown', (event) => handleTreeKeydown(root, event));
 
+  // A press on a row (docs pre-check 2026-11-10, navigation item 5): the
+  // mouse did nothing but on the toggle button, so a tree with selection
+  // ignored clicks and the chevron was a picture. Now, as on sf-tree: the
+  // toggle button and the chevron open and close the branch; a press on the
+  // rest of the row moves the tab stop there and selects it where the tree
+  // selects (data-selection single or multiple, as the space bar does).
+  // Where the tree does not select, a branch opens or closes and a leaf is
+  // opened (sf-tree-open, as Enter). A link name follows its href, and a
+  // disabled row stays still.
   root.addEventListener('click', (event) => {
-    const button = event.target.closest?.('.sf-icon-button');
-    if (!button || !root.contains(button)) return;
-
-    const item = button.closest(TREE_ITEM_SELECTOR);
+    const item = event.target.closest?.(TREE_ITEM_SELECTOR);
     if (!item || !root.contains(item)) return;
 
     const container = getItemContainer(item);
-    if (container && !container.contains(button)) return;
+    if (!container || !container.contains(event.target)) return;
+    if (item.matches('.disabled, [aria-disabled="true"]')) return;
 
-    toggleTreeItem(item);
+    const toggle = event.target.closest?.('.sf-icon-button, .sf-tree-chevron');
     setTabStop(root, item);
+    if (toggle && container.contains(toggle)) {
+      toggleTreeItem(item);
+      return;
+    }
+
+    if (event.target.closest?.('a[href]')) return;
+    if (['single', 'multiple'].includes(root.getAttribute('data-selection'))) {
+      selectTreeItem(root, item);
+    } else if (isBranch(item)) {
+      toggleTreeItem(item);
+    } else {
+      activateTreeItem(item);
+    }
   });
 
   root.dataset[TREE_BOUND_FLAG] = '1';

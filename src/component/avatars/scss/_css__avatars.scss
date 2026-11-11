@@ -54,10 +54,6 @@ $sf-avatar-hue-classes: ();
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
 
-  .sf-avatar .sf-online-indicator {
-    background-color: var(--sf-online-indicator--background-color);
-  }
-
   .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
     --sf-avatar-badge--border: var(--sf-px) solid;
     --sf-avatar-badge--border-end-end-radius: var(--sf-radius-circle);

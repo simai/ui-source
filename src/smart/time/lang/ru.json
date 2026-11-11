@@ -1,0 +1,6 @@
+{
+  "title": "Время",
+  "runtime": {
+    "yesterday-at": "вчера, {time}"
+  }
+}

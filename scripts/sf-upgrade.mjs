@@ -150,6 +150,25 @@ for (const record of journal.records) {
   }
 }
 
+// A rename reversed later: sf-button--ghost -> sf-button--link (2026-10-09),
+// then sf-button--link -> sf-button--ghost (decision C15, 2026-11-11). The
+// earlier item stays in the journal as history; it is neither reported nor
+// rewritten, or every run would turn the current name into the former one and
+// the next run back. An item is history when a later record of the same kind
+// moves the same attribute on the same component from its `to` to its `from`.
+const itemKey = (kind, item, from, to) => [kind, item.component || '', item.attribute || '', from, to].join('\u0000');
+const lastMove = new Map();
+journal.records.forEach((record, index) => {
+  for (const item of record.items || []) {
+    if (item.from && item.to) lastMove.set(itemKey(record.kind, item, item.from, item.to), index);
+  }
+});
+const reversedLater = (record, item) => {
+  if (!item.from || !item.to) return false;
+  const later = lastMove.get(itemKey(record.kind, item, item.to, item.from));
+  return later !== undefined && later > journal.records.indexOf(record);
+};
+
 const STYLE_FILES = /\.(?:css|scss|sass|less)$/u;
 const SCRIPT_FILES = /\.(?:m?js|cjs|ts|tsx|jsx|vue|php)$/u;
 
@@ -160,6 +179,7 @@ function rulesFor(record) {
   // sf-icon-button) made two identical rules, and every use was reported twice.
   const names = new Set();
   for (const listed of record.items) {
+    if (reversedLater(record, listed)) continue;
     let item = listed;
     if (record.kind === 'class' || record.kind === 'token') {
       const key = `${item.from}\u0000${item.to ?? ''}`;

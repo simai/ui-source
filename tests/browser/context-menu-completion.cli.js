@@ -38,14 +38,14 @@ async page => {
         const menu = document.createElement('sf-menu-context');
         menu.setAttribute('position', position);
         menu.setAttribute('aria-label', position);
-        menu.innerHTML = `<button slot="content" type="button" class="sf-button sf-button--link sf-button--on-surface"><span class="sf-button-text-container">${position}</span></button>`;
+        menu.innerHTML = `<button slot="content" type="button" class="sf-button sf-button--ghost sf-button--on-surface"><span class="sf-button-text-container">${position}</span></button>`;
         main.querySelector('#matrix').append(menu);
       }
       for (const alias of Object.keys(aliases)) {
         const menu = document.createElement('sf-menu-context');
         menu.setAttribute('position', alias);
         menu.setAttribute('aria-label', alias);
-        menu.innerHTML = '<button slot="content" type="button" class="sf-button sf-button--link sf-button--on-surface"><span class="sf-button-text-container">alias</span></button>';
+        menu.innerHTML = '<button slot="content" type="button" class="sf-button sf-button--ghost sf-button--on-surface"><span class="sf-button-text-container">alias</span></button>';
         main.querySelector('#aliases').append(menu);
       }
       const plain = document.createElement('sf-menu-context');

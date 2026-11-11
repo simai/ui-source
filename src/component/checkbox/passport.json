@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.checkbox",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/checkbox/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/checkbox/scss/_custom__checkbox.scss",
     "src/component/checkbox/scss/index.scss"
   ],
-  "content_sha256": "c1dc420d7a727707f44b01a4d084fc8658fc881a9453f92bf4222629588bf7ac",
+  "content_sha256": "faece74d06732bd3574965f351c96bf1ca2ce7634150c20f9b0fa963a1cd0271",
   "dependencies": [
     {
       "id": "core.runtime",

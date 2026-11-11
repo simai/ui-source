@@ -22,11 +22,11 @@ test('steps Studio fixture renders a meaningful multi-step example', async () =>
 test('button link segments keep a closed perimeter without a double selected join', async () => {
   const source = await readFile(path.join(root, 'src/component/buttons/scss/_css__buttons_custom.scss'), 'utf8');
   // The same role the group's own perimeter rests on.
-  assert.match(source, /\.sf-button\.sf-button--link\[class\*="segment-"\][\s\S]*border-color: var\(--sf-outline\)/);
+  assert.match(source, /\.sf-button:is\(\.sf-button--ghost, \.sf-button--link\)\[class\*="segment-"\][\s\S]*border-color: var\(--sf-outline\)/);
   // One line at a join (docs review R003): a follower has no start edge, the
   // first link segment draws the perimeter's start.
   assert.match(source, /\.sf-button:is\(\.segment-middle, \.segment-end\) \{\s*--sf-button--border-inline-start-width: 0;/);
-  assert.match(source, /\.sf-button\.sf-button--link\.segment-start \{\s*--sf-button--border-inline-start-width: var\(--sf-px\);/);
+  assert.match(source, /\.sf-button:is\(\.sf-button--ghost, \.sf-button--link\)\.segment-start \{\s*--sf-button--border-inline-start-width: var\(--sf-px\);/);
   // The outline segment owns both of its joins: the one before it leaves its
   // end edge, and it draws its start edge after a segment that is not one.
   assert.match(source, /:not\(\.sf-button--outline\):has\(\+ :is\(\.sf-button--outline, \.sf-icon-button--outline\)\[class\*="segment-"\]\) \{\s*--sf-button--border-inline-end-width: 0;/);

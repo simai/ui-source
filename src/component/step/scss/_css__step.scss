@@ -17,10 +17,17 @@
   font-weight: var(--sf-step--font-weight, var(--sf-font-weight-regular));
   gap: var(--sf-step--gap, var(--sf-space-1\/4));
   min-width: var(--sf-step--min-width, var(--sf-c2));
-  padding-inline-end: var(--sf-step--padding-right, var(--sf-space-1\/4));
-  padding-inline-start: var(--sf-step--padding-left, var(--sf-space-1\/4));
+  padding-inline-end: var(--sf-step--padding-right, var(--sf-step--padding-inline, var(--sf-space-1\/4)));
+  padding-inline-start: var(--sf-step--padding-left, var(--sf-step--padding-inline, var(--sf-space-1\/4)));
   padding-top: var(--sf-step--padding-top);
   padding-bottom: var(--sf-step--padding-bottom);
+  /* A step is a control of the height ladder (C01, C18; docs pre-check
+     2026-11-10, navigation item 6): the size's control height on a desktop and
+     on a phone, its border inside. It was its padding, line and border -- 34 at
+     size 1, and on a phone 34 beside 30 in one row, as a step with an icon
+     stood taller than one without. */
+  box-sizing: border-box;
+  min-block-size: var(--sf-step--block-size);
   border-color: var(--sf-step--border-color, transparent);
   background-color: var(--sf-step--background-color);
   color: var(--sf-step--color);
@@ -39,9 +46,10 @@
 .sf-step .sf-icon {
   flex-shrink: 0;
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
-  height: var(--sf-icon--height, var(--sf-text-size-3));
-  width: var(--sf-icon--width, var(--sf-text-size-3));
+  /* The icon is the size's text line, a step of the same ladder (C18). */
+  font-size: var(--sf-icon--font-size, var(--sf-step--icon-size, var(--sf-text-height-1)));
+  height: var(--sf-icon--height, var(--sf-step--icon-size, var(--sf-text-height-1)));
+  width: var(--sf-icon--width, var(--sf-step--icon-size, var(--sf-text-height-1)));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
@@ -71,15 +79,15 @@
 }
 
 .sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-skipped .sf-step-container, .sf-step.selected.sf-step--stage-running .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-on-surface);
+  --sf-step-container--color: var(--sf-on-primary-container);
 }
 
 .sf-step.disabled.sf-step--stage-default .sf-step-container, .sf-step.disabled.sf-step--stage-completed .sf-step-container, .sf-step.disabled.sf-step--stage-skipped .sf-step-container, .sf-step.disabled.sf-step--stage-running .sf-step-container, .sf-step.disabled.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-on-disable);
+  --sf-step-container--color: var(--sf-on-surface-disabled);
 }
 
 .sf-step.disabled.sf-step--stage-completed .sf-icon, .sf-step.disabled.sf-step--stage-skipped .sf-icon, .sf-step.disabled.sf-step--stage-running .sf-icon, .sf-step.disabled.sf-step--stage-error .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-step.sf-step--size-1\/2 .sf-step-container {
@@ -88,39 +96,48 @@
 }
 
 .sf-step.sf-step--size-1\/2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-2);
-  --sf-icon--height: var(--sf-text-size-2);
-  --sf-icon--width: var(--sf-text-size-2);
+  --sf-step--icon-size: var(--sf-text-height-1\/2);
 }
 
 .sf-step--size-1 {
   --sf-step--font-size: var(--sf-text-size-1);
   --sf-step--line-height: var(--sf-text-height-1);
-  --sf-step--padding-bottom: var(--sf-space-1\/4);
-  --sf-step--padding-top: var(--sf-space-1\/4);
+  --sf-step--block-size: var(--sf-ui-1--control-height);
+  --sf-step--padding-inline: var(--sf-ui-1--text-space-x);
+  --sf-step--padding-bottom: 0;
+  --sf-step--padding-top: 0;
 }
 
 .sf-step--size-1\/2 {
   --sf-step--font-size: var(--sf-text-size-1\/2);
   --sf-step--line-height: var(--sf-text-height-1\/2);
-  --sf-step--padding-bottom: calc(var(--sf-space-1\/4) / 2);
-  --sf-step--padding-top: calc(var(--sf-space-1\/4) / 2);
+  --sf-step--block-size: var(--sf-ui-1\/2--control-height);
+  --sf-step--padding-inline: var(--sf-ui-1\/2--text-space-x);
+  --sf-step--padding-bottom: 0;
+  --sf-step--padding-top: 0;
 }
 
 .sf-step:is(button, a, [role="button"]):not(:disabled):not(.disabled):hover {
   --sf-step--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
+/* The current step is the selected role (C16, C23; dispatcher decision a,
+   docs pre-check 2026-11-10): the primary container under on-primary-container
+   words, the border transparent over the fill. It was a thin primary outline
+   alone. --sf-steps-current-border-color still draws a border where a page
+   sets one. */
 .sf-step.selected {
-  --sf-step--border-color: var(--sf-steps-current-border-color, var(--sf-outline-primary));
-  --sf-step--color: var(--sf-on-surface);
+  --sf-step--background-color: var(--sf-primary-container);
+  --sf-step--border-color: var(--sf-steps-current-border-color, var(--sf-transparent));
+  --sf-step--color: var(--sf-on-primary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
 }
 
 .sf-step.disabled,
 .sf-step:disabled {
-  --sf-step--border-color: var(--sf-outline-disable);
-  --sf-step--color: var(--sf-on-disable);
+  --sf-step--border-color: var(--sf-outline-disabled);
+  --sf-step--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -154,17 +171,17 @@
    in the sheet, outranked the disabled one. Last in the layer and one class
    heavier than the selected and stage rules, so it wins over both. */
 .sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) {
-  --sf-step--border-color: var(--sf-outline-disable);
-  --sf-step--color: var(--sf-on-disable);
+  --sf-step--border-color: var(--sf-outline-disabled);
+  --sf-step--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
 .sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-step-container {
-  --sf-step-container--color: var(--sf-on-disable);
+  --sf-step-container--color: var(--sf-on-surface-disabled);
 }
 
 .sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 }
 

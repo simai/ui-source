@@ -17,3 +17,18 @@ special compositions, not an invitation to create an unbounded action target.
 The glyph uses typography size tokens and semantic colour ownership through
 `--sf-close-icon--background-color`. Its mask is package-owned and does not
 depend on the Material Symbols font. Forced-colours mode uses system colours.
+
+## Looks (component.close 1.2.0)
+
+The three looks of decision C14 are classes of this component, on the button
+beside `sf-icon-button--close` and the size class, without an icon button
+appearance class: `sf-button-close sf-button-close--ghost` (the default: the
+cross in the ink of its place, a spot of `--sf-surface-container-hover` /
+`-active` on hover and press), `sf-button-close--plain` (no spot; tags, a
+field's clear, an inline remove; the ring around the cross) and
+`sf-button-close--media` (over a photo or a video: a black circle at 48 / 64 /
+80 with a white cross, the same in both themes). Ink: `sf-button-close--on-surface`
+or `--on-surface-variant`; `--backdrop-color` on a coloured place;
+`--radius-rounded` for a round spot. `sf-button-close` draws the same classes.
+Squares with a border and solid fills (`tonal`, `outline`, `default` icon
+buttons) are not close looks.

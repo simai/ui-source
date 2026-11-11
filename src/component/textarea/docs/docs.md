@@ -11,7 +11,7 @@ Use `label.sf-textarea` with a visible `.sf-textarea-text` and one native
 supported sizes are `1/3`, `1/2`, `1`, `2` and `3`.
 
 A filled field's placeholder keeps the quiet ink `--sf-on-surface-variant`
-(on the fill, `--sf-on-surface-container--variant`); only the text is
+(on the fill, `--sf-on-surface-container-variant`); only the text is
 `--sf-on-surface` (1.1.1, FA-08).
 
 The control resizes vertically by default. Use the Framework utilities

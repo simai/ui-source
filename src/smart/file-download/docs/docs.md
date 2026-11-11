@@ -26,6 +26,9 @@ under the file. The two stand in one column of the component's own
 (`.sf-download-file__stack`), so a flex row around the element does not put
 the notice beside the file. «Повторить» sends `sf-file-download-retry {href, fileName}`;
 when the notice goes away, the focus it held moves to the file, not to the page.
+The file is a button until it has an `href` and a link after: when the host
+sets the `href` while the button has the focus, the link takes it (the focus
+moves only if it was on the file).
 
 ```js
 file.addEventListener('sf-file-download-download', async (event) => {

@@ -34,8 +34,13 @@
 
   .sf-tree .sf-tree-item-container {
     gap: var(--sf-tree-item-gap, var(--sf-tree-item--container-gap, var(--sf-space-1\/2)));
-    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-b6));
-    padding-block: var(--sf-tree-item--padding-block, var(--sf-space-1\/3));
+    /* The row is a step of the height ladder (C01, C18; docs pre-check
+       2026-11-10, navigation item 5): the size 1 control, 40 on a desktop and
+       36 on a phone. It was a fixed 40 (--sf-b6) at every width, and space-1/3
+       above and below the 24 chevron made it 40 on a phone as well: the block
+       padding is what the step leaves around the chevron. */
+    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-ui-1--control-height));
+    padding-block: var(--sf-tree-item--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-icon-size-3)) / 2));
     padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
     border-radius: inherit;
   }

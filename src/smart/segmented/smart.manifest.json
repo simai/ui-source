@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.segmented",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Segmented control",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -29,6 +29,7 @@
       "component.button-group",
       "component.spinner",
       "smart.button",
+      "smart.dropdown",
       "smart.icon"
     ],
     "public_parts": []
@@ -128,7 +129,7 @@
       "plate": {
         "type": "string",
         "default": "raised",
-        "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it.",
+        "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme; in the dark the fill's pressed step, lighter than the track on any place, C42). scheme: the scheme's fill, an accent for the one switch on a screen that needs it.",
         "enum": [
           "raised",
           "scheme"
@@ -495,7 +496,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/segmented/index.js",
-        "sha256": "d00b7515ae03d6a638eee738096fc214451f261cfa0e2dd6f99da2103132a480"
+        "sha256": "a90c62daade9ba04f3034d3b2f82b059eb51d37411f3ae0fbcbbc7f4e183f025"
       }
     ],
     "generated_runtime": []

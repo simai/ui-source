@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-timeline's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the activity timeline the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 7), a variant of block list beside sf-list-attention and sf-list-feed.",
   "id": "smart.list-timeline",
   "tag": "sf-list-timeline",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -25,7 +25,31 @@
               "type": "string"
             },
             "actor": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "avatar": {
+                      "type": "string"
+                    },
+                    "hue": {
+                      "type": "string"
+                    },
+                    "system": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              ]
             },
             "status": {
               "type": "string",
@@ -42,6 +66,69 @@
             },
             "href": {
               "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "event",
+                "comment",
+                "sms"
+              ]
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "done",
+                "current",
+                "upcoming"
+              ]
+            },
+            "change": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "after": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "before": {
+                    "type": [
+                      "string",
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "after": {
+                    "type": [
+                      "string",
+                      "number",
+                      "null"
+                    ]
+                  }
+                }
+              }
             }
           },
           "required": [
@@ -51,7 +138,7 @@
         }
       },
       "default": [],
-      "summary": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?}. time is an ISO 8601 date-time (with its offset) or milliseconds. status (success, warning, error, info; neutral by default) colours the marker, icon puts that glyph on it in place of the dot, href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
+      "summary": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?, kind?, state?, change?, changes?}. time is an ISO 8601 date-time (with its offset) or milliseconds, drawn by sf-time. actor is a name or {name, avatar?, hue?, system?}: sf-avatar line and the name in bold at the start of the sentence (a system actor: the name only). status (success, warning, error, info; neutral by default) tones the marker: error, warning and success colour it, info is said in words. icon is the glyph on the marker (.sf-featured-icon), else the kind's (comment chat_bubble, sms phone_iphone), else a dot. kind comment puts text in an outline under the meta line. state (done, current, upcoming) draws the events as steps, current is aria-current=step. change {label, before, after} (or changes, a list) is drawn by sf-change. href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
     },
     "label": {
       "type": "string",
@@ -70,16 +157,29 @@
     "time-format": {
       "type": "enum",
       "values": [
+        "auto",
         "relative",
         "exact"
       ],
-      "default": "relative",
-      "summary": "relative: «5 минут назад», «вчера»; exact: the time («14:32»), with the date when the events are not grouped by day. The exact date and time are always the element's title (under the pointer) and its datetime"
+      "default": "auto",
+      "summary": "auto (1.1): sf-time auto -- under a day heading always the clock time («14:32»), the first hour too, since the heading names the day; ungrouped, auto in full («5 минут назад» within its threshold, «вчера, 19:40», «5 ноября»). relative: always relative. exact: the time under a day heading, the date and time ungrouped. sf-time shows the full moment in a tooltip on hover and focus, and its datetime is the ISO moment"
     },
     "now": {
       "type": "string",
       "default": "",
-      "summary": "The moment relative times and the day headings count from, ISO 8601; empty: the reader's clock (the list then draws them again each minute and at midnight)"
+      "summary": "The moment relative times and the day headings count from, ISO 8601, passed to every sf-time; empty: the reader's clock (sf-time redraws itself while relative, the list its day headings at midnight)"
+    },
+    "collapse": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 5,
+      "summary": "Consecutive events of one actor and one kind within a day: a run longer than this keeps its first this-many events and folds the rest into one «Ещё N» row (a rest of one event is drawn), revealed in place on a press; events without an actor and steps make no run (the focus goes to the first revealed event, expand is said). 0 folds nothing"
+    },
+    "sticky-headings": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The day headings stay in sight while the list scrolls (block list's sticky heading, C40), the place's solid surface behind them"
     },
     "density": {
       "type": "enum",
@@ -88,7 +188,7 @@
         "compact"
       ],
       "default": "normal",
-      "summary": "normal: the text wraps in full and the events stand apart by the gap; compact: a one-line event is the rung's control height and the text keeps to one line"
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-list-timeline-density-to-density): the density comes from the page (data-sf-density, decision C22). Until then compact writes data-sf-density=\"compact\" on the list's root, noted in SF.deprecations; normal is the default and is removed too"
     },
     "size": {
       "type": "enum",
@@ -98,7 +198,7 @@
         "2"
       ],
       "default": "1",
-      "summary": "The ladder rung: the title is the rung's line and type, the time, the actor, the text and the day headings the rung below's, the marker the title's line. 1/2 for a side panel"
+      "summary": "The ladder rung: the sentence is the rung's line and type, the meta line and the comment label the rung below's, the marker (.sf-featured-icon) and the avatar line the rung below's. 1/2 for a side panel"
     },
     "heading-level": {
       "type": "number",
@@ -140,6 +240,14 @@
         "after": "string"
       },
       "summary": "A person pressed «Показать ещё» (vocabulary §5 load-more): {direction: after, after: the id of the last event shown}. The host sets loading, appends the next page to items and clears has-more when there is none"
+    },
+    "expand": {
+      "carries": {
+        "run": "string",
+        "ids": "array",
+        "count": "number"
+      },
+      "summary": "A person pressed «Ещё N»: the folded events are shown in place and the focus moves to the first of them. {run: the id of the first folded event, ids: the revealed ids, count}. Nothing to answer: a host that loads a run's events lazily may use it"
     }
   },
   "actions": {},
@@ -147,10 +255,26 @@
     "host": {
       "Tab": "reach",
       "Enter": "activate",
-      "Space": "activate"
+      "Space": "activate",
+      "Escape": "close"
     }
   },
   "relations": [
+    {
+      "name": "featured-icon"
+    },
+    {
+      "name": "group-heading"
+    },
+    {
+      "name": "cl-time"
+    },
+    {
+      "name": "cl-change"
+    },
+    {
+      "name": "cl-avatar"
+    },
     {
       "name": "cl-button"
     },
@@ -171,7 +295,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "Ordered lists: one per day under its heading (role heading at heading-level), the list named by it; ungrouped, one list named by label. Each event says its status in words before its title (the marker is a picture); its time is a time element whose datetime is the exact moment and whose title says it in words. No live region: a host that wants a new event read out announces it itself. Nothing takes focus.",
+    "$comment": "Ordered lists: one per day under block list's heading (role heading at heading-level), the list named by it; ungrouped, one list named by label. Each event says its status (or step) in words before its sentence; the marker and the avatar are pictures (aria-hidden), the actor's name is text. The time is sf-time: a time element with its datetime, the full moment in a tooltip reached by Tab and closed by Escape. A step list marks the current step aria-current=step. «Ещё N» is a button; its press reveals the events in place and moves the focus to the first of them. No live region.",
     "role": "list",
     "name": {
       "from": [
@@ -181,7 +305,8 @@
     "keys": {
       "Tab": "reach",
       "Enter": "activate",
-      "Space": "activate"
+      "Space": "activate",
+      "Escape": "close"
     }
   },
   "host-states": {
@@ -214,7 +339,7 @@
       "state": "default"
     }
   },
-  "x-summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+  "x-summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
   "x-source": {
     "package": "framework",
     "folder": "list-timeline",
@@ -228,7 +353,7 @@
     "order: the host's; the list never sorts. Grouped by day, consecutive events of one calendar day (in the reader's time zone) share a heading, so a newest-first and an oldest-first list both group right. An event without a time joins the day before it.",
     "days: core's formatRelativeDay with a capital («Сегодня», «Вчера», the weekday within the last week, else «3 ноября», with the year when it is not this one), in the page language.",
     "time: relative is core's formatRelativeTime («5 минут назад», «через 2 часа»); exact is the time («14:32») when grouped by day, the date and the time otherwise. The time element's datetime is the ISO moment and its title the full date and time in words, so the exact moment is under the pointer. With no now set, a timer draws the times again each minute and the days at midnight, and stops when the list leaves the page.",
-    "marker: on the title's line, a box L wide: a dot of a third of L in the status colour (neutral: --sf-list-timeline-marker-color, outline by default), or the item's icon at L in the status colour. The connector is a hairline on the marker's axis from under one marker to the top of the next one's box; the last event of a day has none.",
+    "marker: on the sentence's first line, centred, on a rail as wide as the rung below's control height: the item's icon as .sf-featured-icon of the rung below (neutral, or the tone of error, warning and success), else a dot in the status colour of the dot component's size for the rung (.sf-dot: a8 for 1, a6 for 1/2, b0 for 2; neutral: --sf-list-timeline-marker-color). The connector is a hairline on the marker's axis from under one marker to the top of the next one's box; the last event of a day has none.",
     "density: compact keeps a one-line event at the rung's control height H, the block inset (H - L) / 2, the text to one line with an ellipsis; normal adds the gap (the rung's text-space-x by default) after each event and lets the text wrap in full.",
     "load-more: has-more draws an sf-button of the rung below after the last event, on the text's axis; its press is load-more {direction: after, after: last id} (vocabulary §5 load-more, the direction sf-list-feed does not take). loading makes it busy (sf-button loading) and it asks nothing more.",
     "empty: with no events, one quiet line, empty-text, at the rung's control height; has-more still draws the button under it.",
@@ -236,7 +361,14 @@
     "geometry: one rung S (size 1/2, 1 or 2): the title is the rung's line L and type; the time, the actor, the text and the day headings the rung below's; the marker column L wide, the step to the text the rung's text-space-x; a day heading row is the rung's control height H.",
     "css-variables: six public variables (§6) -- the connector, the neutral marker, the time's colour, the day headings' colour, the gap between events and the inline inset -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): the sf-button its examples draw asks for it before the first paint since sf-button 1.8.0. Settings, values, events and keys unchanged.",
-    "version 1.0.2: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes."
+    "version 1.0.2: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
+    "version 1.1.0 (2026-11-10, owner decision C40, R092 option 1; ui-control control/research/2026-11-09-timeline-parts.md §6): the event is made of the Framework's shared parts. The marker is .sf-featured-icon (circle, soft, the rung below's size) toned by status -- error, warning, success; info and neutral are drawn neutral with a quiet glyph -- standing on the place's solid surface, or the dot with no icon. The actor {name, avatar?, hue?, system?} (a string still reads as a name) is sf-avatar line and a bold name; a change is sf-change, inline for one field, a list for several; the time is sf-time in one quiet meta line «time · text»; kind comment puts its text in an outline with no fill; kind sms takes phone_iphone.",
+    "1.1.0 collapse: consecutive events of one actor and one kind inside one day longer than collapse (5) show the first collapse events and fold the rest into one button row (list-timeline.html R092; C40 round 2, DEV D1) «Ещё N изменений» (or «событий»); a single leftover event is shown, not folded; events without an actor and steps (state) form no run, so the list never folds whole; its press reveals them in place (component state, not .sf-hide-show: the list re-renders from items), moves the focus to the first revealed event (tabindex -1) and fires sf-list-timeline-expand {run, ids, count}. A run once opened stays open while the element lives.",
+    "1.1.0 state: done, current, upcoming draw steps -- done the solid primary circle, current the soft one with a 2px primary ring and aria-current=step, upcoming an empty circle with a quiet ring; the connector after current and upcoming is dashed. The step is said in words before the sentence («Пройдено», «Сейчас», «Впереди»).",
+    "1.1.0 geometry: --sf-space-3 between events (--sf-list-timeline-gap), 0 inside one; the rail is the control height of the rung below and the marker is centred on the sentence's first line; the day headings are block list's .sf-group-heading (event-size text, medium, on-surface, the date quiet beside it for today and yesterday through sf-time, --sf-space-3 above, --sf-space-1/2 below; sticky-headings). The list never paints a surface of its own.",
+    "1.1.0 density: deprecated as a setting (C22): compact writes data-sf-density=\"compact\" on the root until 2027-01-01, noted in SF.deprecations (change journal attribute-list-timeline-density-to-density). Every step variable the list reads comes down a rung in a compact region; nothing in the list's sheet is compact-only.",
+    "1.1.0 time-format: auto is the new default (sf-time auto); 1.0's relative and exact keep their meaning. The list no longer keeps a minute timer: sf-time redraws itself; the list keeps one timer to midnight for the day headings.",
+    "version 1.1.1 (2026-11-11, C40 follow-up, acceptance notes 2 and 4): a patch, nothing drawn differently. The 1.1.0 collapse note above now says the rule as it is (the first collapse events shown, the rest folded, a rest of one drawn, actorless events and steps never folded); the collapse rule (foldRuns) lives in js/fold-runs.mjs, held by a node test (tests/list-timeline-collapse.contract.test.mjs). The reference example's first-paint snapshot is retaken for sf-change 1.0.1's .sf-change__whole. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -253,13 +385,15 @@
       "revision_field": null
     },
     "tags": [
-      "list",
-      "timeline",
       "activity",
-      "history",
+      "admin",
       "audit",
+      "comments",
       "events",
-      "admin"
+      "history",
+      "list",
+      "steps",
+      "timeline"
     ],
     "state": {
       "machines": {
@@ -330,9 +464,9 @@
     "accessibility": {
       "accessible_name": "recommended",
       "keyboard": [
-        "Tab reaches each title link and the «Показать ещё» button in order; Enter follows a link, Enter or Space presses the button"
+        "Tab reaches each title link, each sf-time with its tooltip, each «Ещё N» row and the «Показать ещё» button in order; Enter follows a link, Enter or Space presses a button; Escape hides a time's tooltip"
       ],
-      "focus": "The list never takes focus."
+      "focus": "The list takes focus once: on the first event a «Ещё N» press revealed."
     }
   }
 }

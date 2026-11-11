@@ -10,7 +10,22 @@
     "status-success": "Готово",
     "status-warning": "Предупреждение",
     "status-error": "Ошибка",
-    "status-info": "Сведения"
+    "status-info": "Сведения",
+    "state-done": "Пройдено",
+    "state-current": "Сейчас",
+    "state-upcoming": "Впереди",
+    "run-changes": {
+      "one": "Ещё {n} изменение",
+      "few": "Ещё {n} изменения",
+      "many": "Ещё {n} изменений",
+      "other": "Ещё {n} изменения"
+    },
+    "run-events": {
+      "one": "Ещё {n} событие",
+      "few": "Ещё {n} события",
+      "many": "Ещё {n} событий",
+      "other": "Ещё {n} события"
+    }
   },
   "events": {
     "navigate": {
@@ -18,6 +33,9 @@
     },
     "load-more": {
       "label": "Показать ещё"
+    },
+    "expand": {
+      "label": "Показать свёрнутые"
     }
   }
 }

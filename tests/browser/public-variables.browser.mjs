@@ -209,15 +209,28 @@ const DRAW = {
   // divider is drawn; an empty value takes the label colour too.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
     html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}]})}</script></sf-list-description>`},
-  // sf-list-timeline (2026-11-08): one day of two events, the first without
-  // a status (the neutral marker) and with the connector under it.
-  'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
-    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // sf-list-timeline 1.1 (C40): one day under the shared heading, two
+  // events, the first without a status (the neutral marker) and with the
+  // connector under it.
+  'list-timeline': {css: ['buttons', 'icons', 'featured-icon', 'group-heading', 'avatars', 'tooltip', 'smart/smart/time/css/time.css', 'smart/smart/change/css/change.css', 'smart/smart/list-timeline/css/list-timeline.css'], js: ['list-timeline', 'time', 'change', 'avatar'],
+    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', icon: 'edit', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // .sf-group-heading (C40): a sticky heading with its date, then a divider.
+  'group-heading': {css: ['group-heading'], js: [],
+    html: '<div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-group-heading-date">9 ноября</span></div><div class="sf-group-heading sf-group-heading--divider" role="separator">Вчера</div>'},
+  // sf-time (2026-11-10, C40): a time with its tooltip, so the ring and the
+  // tooltip's anchor are drawn.
+  time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
+    html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>'},
+  // sf-change (2026-11-10, C40): a list of two changes, so the terms, the
+  // arrow and both values are drawn.
+  change: {css: ['smart/smart/change/css/change.css'], js: 'change',
+    html: '<sf-change layout="list" changes=\'[{"label":"Вес","before":"4,2 кг","after":"4,6 кг"},{"label":"Склад","before":"А","after":"Б"}]\'></sf-change>'},
   // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
   // card's fill and edge are drawn beside a card at rest.
   choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
     html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
-  'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
+  // sf-confirm-change 1.7.0 (C40) draws its values with sf-change.
+  'change-confirm': {css: ['buttons', 'smart/smart/change/css/change.css', 'smart/smart/confirm-change/css/confirm-change.css'], js: ['confirm-change', 'change'],
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
   // and the open tint have parts to reach; a feed with a run of one author and

@@ -36,3 +36,5 @@ The indicator uses `--sf-radius--ui`. Typography, spacing, border, colour and
 motion use Framework tokens. Pointer interaction is visually quiet; keyboard
 focus uses `:focus-visible`, with a forced-colours fallback. State transitions
 stop under `prefers-reduced-motion`.
+
+A checkbox is named by its label row and described by its description (aria-labelledby, aria-describedby), as the switch is since 1.2: the box, the label and the description sit in one <label>, which named the input by all its text (1.1.1, docs pre-check 2026-11-10 CH-03). The helper is src/component/checkable-text-helper.js; an author's aria-label or aria-labelledby wins, ids come from the instance path.

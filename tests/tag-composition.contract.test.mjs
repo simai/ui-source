@@ -21,7 +21,5 @@ test('tag composition: label, count, picture and mark take the ladder', async ()
     assert.ok(css.includes(`--sf-tag--close-size: var(--sf-text-size-${MARK[size]});`), `mark ${size}`);
   }
   assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--mask-image: url\(/);
-  // The remove box is the target (C14): a 24 square, no invisible extension.
-  assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close \{[^}]*block-size: var\(--sf-tag--remove-box\);[^}]*margin: calc\(\(var\(--sf-tag--remove-place\) - var\(--sf-tag--remove-box\)\) \/ 2\);/);
-  assert.doesNotMatch(css, /--close::after/);
+  assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close::after \{\s*content: "";\s*position: absolute;\s*inset: min\(calc\(var\(--sf-px\) \* 0\), calc\(\(100% - var\(--sf-c2\)\) \/ 2\)\)/);
 });

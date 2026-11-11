@@ -1,0 +1,137 @@
+/* The three looks of the close button (owner decision C14; docs review R032,
+   R036; docs pre-check 2026-11-10, navigation item 1). They are the class
+   component's since component.close 1.2.0, so a page that writes the class
+   markup gets them too; sf-button-close draws the same classes and inherits
+   them (C19). The box is the icon button's (.sf-icon-button--size-*: 24-56px,
+   24-52 on a phone, and its keyboard ring); the cross is this component's, a
+   2px line at every size. The markup:
+
+     <button type="button" class="sf-icon-button sf-icon-button--size-1
+       sf-icon-button--close sf-button-close sf-button-close--plain
+       sf-button-close--on-surface" aria-label="Закрыть">
+       <span class="sf-close sf-close--size-1" aria-hidden="true">
+         <span class="sf-close-icon"></span></span></button>
+
+   Looks: sf-button-close--ghost (the default), --plain, --media; ink:
+   --on-surface or --on-surface-variant, --backdrop-color on a coloured
+   place; --radius-rounded for a round spot. No appearance class of the icon
+   button goes with them (squares with a border and solid fills are refused).
+
+   The cross takes --sf-button-close--ink; --sf-close-color, the public
+   variable of the cross, wins over it. The ink of a place, backdrop="color",
+   is currentColor: the button takes its colour from the place. */
+@layer sf.overrides {
+    .sf-icon-button.sf-button-close {
+        --sf-button-close--ink: var(--sf-on-surface);
+        --sf-icon-button--background-color: transparent;
+        --sf-icon-button--radius: var(--sf-icon-button-radius, var(--sf-radius--ui));
+        cursor: pointer;
+        position: relative;
+    }
+
+    .sf-icon-button.sf-button-close > .sf-close > .sf-close-icon {
+        --sf-close-icon--background-color: var(--sf-close-color, var(--sf-button-close--ink));
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--on-surface-variant {
+        --sf-button-close--ink: var(--sf-on-surface-variant);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--backdrop-color {
+        --sf-button-close--ink: currentColor;
+        color: inherit;
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--radius-rounded {
+        --sf-icon-button--radius: var(--sf-radius-rounded);
+    }
+
+    /* 1. ghost, the default: only the cross at rest; a spot of the surface
+       container's hover and press steps under it, shaped by radius. A quiet
+       cross comes up to the text colour. On a coloured place the spot is the
+       place's ink at the state steps 8 and 12. */
+    .sf-icon-button.sf-button-close.sf-button-close--ghost:not(:disabled):hover {
+        --sf-icon-button--background-color: var(--sf-surface-container-hover);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--ghost:not(:disabled):active {
+        --sf-icon-button--background-color: var(--sf-surface-container-active);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--ghost.sf-button-close--on-surface-variant:not(:disabled):is(:hover, :active) {
+        --sf-button-close--ink: var(--sf-on-surface);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--ghost.sf-button-close--backdrop-color:not(:disabled):hover {
+        --sf-icon-button--background-color: color-mix(in srgb, currentColor 8%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--ghost.sf-button-close--backdrop-color:not(:disabled):active {
+        --sf-icon-button--background-color: color-mix(in srgb, currentColor 12%, transparent);
+    }
+
+    /* 2. plain: never a spot. The cross is the ink at the step 64 at rest and
+       full on hover and press (a quiet cross: on-surface-variant, then
+       on-surface); the keyboard ring stands around the cross, not the box. */
+    .sf-icon-button.sf-button-close.sf-button-close--plain {
+        --sf-button-close--base: var(--sf-on-surface);
+        --sf-button-close--ink: color-mix(in srgb, var(--sf-button-close--base) 64%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--plain.sf-button-close--on-surface-variant {
+        --sf-button-close--ink: var(--sf-on-surface-variant);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--plain.sf-button-close--backdrop-color {
+        --sf-button-close--base: currentColor;
+        --sf-button-close--ink: color-mix(in srgb, currentColor 64%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--plain:not(:disabled):is(:hover, :active) {
+        --sf-button-close--ink: var(--sf-button-close--base);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--plain:not(:disabled):focus-visible {
+        outline: none;
+        --sf-icon-button--focus-inset: 0 0 var(--sf-transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--plain:not(:disabled):focus-visible > .sf-close {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+        outline-offset: calc(var(--sf-px) * 1);
+        border-radius: var(--sf-radius--ui);
+    }
+
+    /* 3. media: over a photo or a video. A black circle at the ink steps 48,
+       64 and 80 (rest, hover, press), a white cross; the same in both
+       themes, as the picture under it does not change with the theme. */
+    .sf-icon-button.sf-button-close.sf-button-close--media {
+        --sf-button-close--ink: var(--sf-white);
+        --sf-icon-button--radius: var(--sf-radius-rounded);
+        --sf-icon-button--background-color: color-mix(in srgb, var(--sf-black) 48%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--media:not(:disabled):hover {
+        --sf-icon-button--background-color: color-mix(in srgb, var(--sf-black) 64%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--media:not(:disabled):active {
+        --sf-icon-button--background-color: color-mix(in srgb, var(--sf-black) 80%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close:is(.sf-button-close--ghost, .sf-button-close--plain, .sf-button-close--media):is(.sf-button-close--on-surface, .sf-button-close--on-surface-variant):disabled {
+        --sf-button-close--ink: var(--sf-on-surface-disabled);
+        cursor: default;
+    }
+
+    @media (forced-colors: active) {
+        .sf-icon-button.sf-button-close > .sf-close > .sf-close-icon {
+            forced-color-adjust: none;
+            background-color: ButtonText;
+        }
+
+        .sf-icon-button.sf-button-close:disabled > .sf-close > .sf-close-icon {
+            background-color: GrayText;
+        }
+    }
+}

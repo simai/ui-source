@@ -123,9 +123,28 @@
   cursor: pointer;
 }
 
+/* A row that holds more than one line keeps the space a one-line row has
+   above and below its text, (row step - line) / 2, and grows by whole lines
+   (docs/foundation-composition-geometry.md §4; owner decision C49 on G1-b,
+   2026-11-10): a row with a caption or a value under its name, in any menu;
+   a drilling panel's row and a switch row, which wrap. They kept the base
+   rule's 2px, so a caption row was 40 [2/2] and a wrapped switch row grew by
+   2px insets instead of lines (3 lines 64 at 1440 where 32 + 2 x 20 = 72).
+   One line: the same height, the same place (the row's minimum is the step).
+   :where() keeps these at the base rule's weight, so a tile, a choice option
+   and a list's row keep their own block padding. */
+.sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+:where(.sf-context-menu--drill) .sf-context-menu-item,
+.sf-context-menu-item:where(.sf-context-menu-item--switch),
+.sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+}
+
 .sf-context-menu-item:not(:disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
-  background-color: var(--sf-surface-container-hover);
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+     select state, 8. It was the plate's hover, 20 before C41. */
+  background-color: var(--sf-surface-state-select);
 }
 
 /* Selected or current is one role in every component (C16): primary-container
@@ -156,8 +175,8 @@
 }
 
 .sf-context-menu-item:disabled {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -455,7 +474,7 @@
 
 .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
   color: var(--sf-on-surface);
-  background-color: var(--sf-surface-container-hover);
+  background-color: var(--sf-surface-state-select);
 }
 
 .sf-context-menu-choice-option[aria-checked="true"] {
@@ -547,12 +566,12 @@
 }
 
 .sf-context-menu-item:disabled > .sf-context-menu-item-switch {
-  border-color: var(--sf-outline-disable);
+  border-color: var(--sf-outline-disabled);
   background-color: transparent;
 }
 
 .sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
-  background-color: var(--sf-on-disable);
+  background-color: var(--sf-on-surface-disabled);
 }
 
 /* ─── a number in a range: the slider and its number ──────────────────── */
@@ -574,7 +593,7 @@
 }
 
 .sf-context-menu-range-input:disabled {
-  accent-color: var(--sf-on-disable);
+  accent-color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-range-value {
@@ -627,7 +646,7 @@
   padding-block: var(--sf-space-1\/3);
   padding-inline: var(--sf-a4);
   background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-variant);
   white-space: normal;
 }
@@ -673,8 +692,8 @@
 
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-note {
@@ -1117,9 +1136,11 @@
       min-block-size: var(--sf-d1);
     }
 
-    /* A list's row is the touch target's height here, so a wrapped choice
-       keeps the space that row has around its one line (G1-a). */
-    .sf-context-menu .sf-context-menu-content[data-sf-width="list"] {
+    /* A row is the touch target's height here, so a row of more than one
+       line -- a wrapped choice in a list (G1-a), a caption row, a drilling
+       or switch row (C49, G1-b) -- keeps the space that row has around its
+       one line. */
+    .sf-context-menu .sf-context-menu-content {
       --sf-context-menu--row-step: max(var(--sf-context-menu--row-height), var(--sf-d1));
     }
   }

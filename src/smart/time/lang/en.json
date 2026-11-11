@@ -1,0 +1,6 @@
+{
+  "title": "Time",
+  "runtime": {
+    "yesterday-at": "yesterday, {time}"
+  }
+}

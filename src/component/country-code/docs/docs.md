@@ -216,3 +216,5 @@ Explicit Smart iso2/dial-code attribute changes update the reset-country default
 cosmetic renders and imperative setState do not. Existing custom validity from
 the host is preserved. This is required-presence validation, not verification
 of a real international telephone number or complete mask-length validation.
+
+The open list shows eight rows and scrolls the rest from its first paint (the row is the control height of the field's size); a list opened by markup drew all countries for a moment, and a frame that grows with its document kept 9.8k px (1.3.3, CC-01). A flag is the browser's lazy image (loading="lazy", or eager with lazy-flags off): the field's own IntersectionObserver never answered in a sandboxed frame and the open list showed empty images (CC-02).

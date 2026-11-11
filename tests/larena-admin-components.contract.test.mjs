@@ -97,6 +97,23 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.match(code('src/smart/list-attention/js/templates/default.js'), /if \(empty !== 'line'\) return nothing;/u);
   // A narrow row puts the action under the text.
   assert.match(sheet, /@container \(max-width: 30rem\)/u);
+  // C45 (1.3.0): in that column the summary is one meta line under the
+  // heading and the quiet line two lines with an icon recheck; both forms
+  // are drawn and the container shows one. The action stays visible.
+  const template = code('src/smart/list-attention/js/templates/default.js');
+  assert.match(template, /<span class="sf-list-attention-summary-line">\$\{context\.summaryLine\}<\/span>/u);
+  assert.match(template, /<span class="sf-list-attention-quiet-title">\$\{context\.quietTitle\}<\/span>/u);
+  assert.match(template, /sf-list-attention-recheck sf-list-attention-recheck--narrow/u);
+  assert.match(source, /summaryLine: STATUSES\.filter\(\(one\) => counts\[one\]\)\.map\(\(one\) => this\.sfWord\(`summary-\$\{one\}`, \{count: counts\[one\]\}\)\)\.join\(' · '\)/u);
+  const narrow = sheet.slice(sheet.indexOf('@container (max-width: 30rem)'), sheet.indexOf('@container (max-width: 40rem)'));
+  assert.match(narrow, /\.sf-list-attention-head \.sf-list-attention-summary,\s*\.sf-list-attention-head \.sf-list-attention-spacer \{\s*display: none;/u);
+  assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
+  assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text,\s*\.sf-list-attention-recheck-text > \* \{\s*display: none;/u);
+  assert.doesNotMatch(narrow, /sf-list-attention-action[^{]*\{[^}]*display: none/u);
+  // sf-button-icon's host is display: contents: the wide column hides the
+  // narrow recheck's native control, the narrow one shows it.
+  assert.match(sheet, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: none;/u);
+  assert.match(narrow, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: inline-flex;/u);
 });
 
 test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and the reading position', () => {

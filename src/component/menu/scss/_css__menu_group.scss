@@ -69,15 +69,15 @@
   }
 
   button.sf-menu-group-heading:not(:disabled):hover {
-    background: var(--sf-surface-transparent-hover);
+    background: var(--sf-surface-state-hover);
   }
 
   button.sf-menu-group-heading:not(:disabled):active {
-    background: var(--sf-surface-transparent-active);
+    background: var(--sf-surface-state-active);
   }
 
   button.sf-menu-group-heading:disabled {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
     cursor: default;
   }
 

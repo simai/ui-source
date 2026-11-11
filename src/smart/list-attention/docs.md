@@ -124,6 +124,15 @@ mode) the action goes under the text at its start, the «⋯» stays at the end
 of the title's line, the affected count joins the meta line and the foot
 stacks on the text edge.
 
+Below 30rem (1.3.0, owner decision C45) the head is a two-line row of H: the
+heading over the summary as one meta line of text («2 ошибки · 1
+предупреждение · 3 рекомендации») instead of the badges, 52 on a phone. In
+group mode the time of the checks is a third line and the recheck an icon at
+the head's end: H plus one meta line, 68. The empty card's quiet line is a
+two-line row of H as well, «Всё в порядке» over «Проверено 5 мин назад», with
+the recheck as an icon button. The row's action stays visible under its
+text.
+
 ## Public variables
 
 `--sf-list-attention-background-color` (the card surface, none without a
@@ -146,6 +155,10 @@ otherwise: a host that wants a new problem read out announces it itself.
 
 ## Changes
 
+- 1.3.0 (2026-11-11, owner decision C45) — the phone look: in a column
+  narrower than 30rem the summary is one line of text under the heading
+  (the group page too, with the time of the checks under it), and the empty
+  line is two lines with an icon recheck. Wider, nothing changes.
 - 1.2.2 (2026-11-10) — the template reads its computed values under keys of
   their own, not under the settings `passed` and `empty-text`. Nothing
   draws differently.

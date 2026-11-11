@@ -115,11 +115,11 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
     }
 
     > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-      --sf-menu-element--background-color: var(--sf-surface-transparent-hover);
+      --sf-menu-element--background-color: var(--sf-surface-state-select);
     }
 
     > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):active {
-      --sf-menu-element--background-color: var(--sf-surface-transparent-active);
+      --sf-menu-element--background-color: var(--sf-surface-state-active);
     }
 
     > .sf-menu-element .sf-menu-element-icon {
@@ -404,13 +404,15 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu-element--background-color: var(--sf-menu-item-background-color, var(--sf-transparent));
 }
 
+/* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+   select state, 8, where the navigation look had the hover state, 4. */
 .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-  --sf-menu-element--background-color: var(--sf-surface-transparent-hover);
+  --sf-menu-element--background-color: var(--sf-surface-state-select);
   --sf-menu-element--border-color: var(--sf-transparent);
 }
 
 .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
-  --sf-menu-element--background-color: var(--sf-surface-transparent-active);
+  --sf-menu-element--background-color: var(--sf-surface-state-active);
 }
 
 .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
@@ -482,7 +484,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    neutral select plate of the alpha scale, never primary, so open and
    current cannot look alike (C30, R060); its first-level chevron is ⌃. */
 .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
-  --sf-menu-element--background-color: var(--sf-surface-transparent-select);
+  --sf-menu-element--background-color: var(--sf-surface-state-select);
 }
 
 /* A row's panels (R084): every level of the path has a medium label and the

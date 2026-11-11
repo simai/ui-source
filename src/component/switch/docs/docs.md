@@ -40,3 +40,5 @@ The whole enabled label is clickable. Pointer interaction does not show the
 keyboard ring; `:focus-visible` highlights the track. Long labels wrap, logical
 geometry follows direction, reduced motion is respected by Framework motion
 utilities, and forced-colors keeps track and thumb distinguishable.
+
+An on switch is one primary pill: the track's edge takes the fill colour, where the outline drew a grey ring around it (1.2.1, docs pre-check 2026-11-10 SW-05). A pointer over it still draws the hover edge.

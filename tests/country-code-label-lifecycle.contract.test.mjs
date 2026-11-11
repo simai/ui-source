@@ -6,7 +6,9 @@ test('Country Code owns live handlers, not copied rendered markers',()=>{
   assert.match(source,/function bindCountryCode[\s\S]*?typeof root\.__sfCountryCodeInput === 'function'/);
   assert.match(source,/mutation\.removedNodes\.forEach/);
   assert.match(source,/!root\.isConnected && !root\.closest\(tagSelector\('sf-input-country'\)\)\) unbindCountryCode\(root\)/);
-  assert.match(source,/flagObserver\?\.unobserve\(img\)/);
+  // Flags load through the browser's own lazy loading: an IntersectionObserver never fires in a sandboxed docs frame (docs pre-check 2026-11-10 CC-02).
+  assert.doesNotMatch(source,/new IntersectionObserver/);
+  assert.match(source,/img\.loading = lazy \? 'lazy' : 'eager'/);
 });
 test('Country Code maintains generated references independently of author references',()=>{
   assert.match(source,/const countryFieldReferences = new WeakMap/);

@@ -30,7 +30,7 @@ test('disabled ancestors exclude hover and use disabled roles',async()=>{
   }
   // Disabled, the handle is a solid disc of the disabled content role over the
   // surface, without a centre.
-  assert.ok(style.includes('background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable))'));
+  assert.ok(style.includes('background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled))'));
   assert.match(style,/:is\(\[disabled\], \.disabled\) \.sf-thumb-inner \{\s*background-color: transparent;/);
 });
 
@@ -41,8 +41,8 @@ test('the handle is solid by default and the hollow centre is opt-in',async()=>{
   // A ring of the place (C16: --sf-surface-place) parts the disc from the fill.
   assert.ok(style.includes('box-shadow: var(--sf-thumb-handle--box-shadow, 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place))'));
   // Hover and press draw a halo of the primary state layer, 8% and 12%.
-  assert.ok(style.includes('var(--sf-primary-transparent-select)'));
-  assert.ok(style.includes('var(--sf-primary-transparent-active)'));
+  assert.ok(style.includes('var(--sf-primary-state-select)'));
+  assert.ok(style.includes('var(--sf-primary-state-active)'));
 });
 
 test('the handle stands above the progress, so the fill ends under it',async()=>{

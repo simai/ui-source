@@ -33,7 +33,7 @@ function renderUploadItem(item, size, index, retryText) {
                 class="sf-upload-progress sf-upload-progress--size-${size} sf-upload-progress--${state} flex items-main-start items-cross-start"
                 data-index=${String(index)}
         >
-            <i class="sf-icon">${icon}</i>
+            <i class="sf-icon" aria-hidden="true">${icon}</i>
             <div class="sf-upload-progress-content flex flex-col flex-1">
                 <div class="sf-upload-progress-top flex content-main-between">
                     <div class="sf-upload-progress-left flex flex-col">
@@ -42,14 +42,14 @@ function renderUploadItem(item, size, index, retryText) {
                     </div>
 
                     ${state === 'done'
-                            ? html`<i class="sf-icon sf-icon-solid">check_circle</i>`
+                            ? html`<i class="sf-icon sf-icon-solid" aria-hidden="true">check_circle</i>`
                             : html`
                                 <button
                                         type="button"
                                         class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${size} flex items-cross-center content-main-center self-cross-start"
                                         data-action="remove"
                                 >
-                                    <i class="sf-icon">delete</i>
+                                    <i class="sf-icon" aria-hidden="true">delete</i>
                                 </button>
                             `}
                 </div>
@@ -109,7 +109,7 @@ export function renderFileUploadTemplate(context) {
                 aria-label=${context.ariaLabel || nothing}
         >
             <div class=${featuredIconClasses}>
-                <i class="sf-icon">${context.icon}</i>
+                <i class="sf-icon" aria-hidden="true">${context.icon}</i>
             </div>
 
             <div class="sf-file-upload-bottom flex flex-col items-cross-center">

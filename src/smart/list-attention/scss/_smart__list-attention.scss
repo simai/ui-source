@@ -123,6 +123,15 @@ sf-list-attention {
   flex: 1 1 0;
 }
 
+/* The summary as one line of text and the quiet line's two lines (C45) are
+   the narrow column's; a wide one keeps the badges and the one quiet line. */
+.sf-list-attention-summary-line,
+.sf-list-attention-quiet-title,
+.sf-list-attention-quiet-meta,
+.sf-list-attention .sf-list-attention-recheck--narrow > button {
+  display: none;
+}
+
 /* The rows: one grid, every list and row a subgrid of it. */
 .sf-list-attention-list,
 .sf-list-attention-groups {
@@ -447,6 +456,90 @@ a.sf-list-attention-object:focus-visible {
   .sf-list-attention-foot {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* C45 (owner 2026-11-10, option a2): the head is a two-line row of H, the
+     heading over the summary as one meta line («2 ошибки · 1 предупреждение
+     · 3 рекомендации») instead of the badges: its inset is what the two
+     lines leave of H, and the bottom one gives up the divider. In group mode
+     the time of the checks is a third line under it and the recheck an icon
+     at the head's end, centred: H + one meta line. */
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    align-items: center;
+    gap: 0 var(--sf-list-attention--gap);
+    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2);
+    padding-block-end: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2 - var(--sf-px));
+  }
+
+  .sf-list-attention--frame-none .sf-list-attention-head:has(.sf-list-attention-summary-line) {
+    padding-block: 0;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) > .sf-list-attention-heading,
+  .sf-list-attention-summary-line,
+  .sf-list-attention-head .sf-list-attention-checked-text {
+    grid-column: 1;
+  }
+
+  .sf-list-attention-head .sf-list-attention-summary,
+  .sf-list-attention-head .sf-list-attention-spacer {
+    display: none;
+  }
+
+  .sf-list-attention-summary-line,
+  .sf-list-attention-head .sf-list-attention-checked-text {
+    display: block;
+    min-inline-size: 0;
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-list-attention--meta-font-size);
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-list-attention--meta-line);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-checked {
+    display: contents;
+  }
+
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck,
+  .sf-list-attention-head:has(.sf-list-attention-summary-line) .sf-list-attention-recheck > button {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+
+  /* C45 (option q2): the quiet line is a two-line row of H, «Всё в порядке»
+     over «Проверено … назад», and the recheck an icon at its end. */
+  .sf-list-attention-quiet-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sf-list-attention-quiet-line,
+  .sf-list-attention-recheck-text,
+  .sf-list-attention-recheck-text > * {
+    display: none;
+  }
+
+  .sf-list-attention-quiet-title {
+    display: block;
+    color: var(--sf-on-surface);
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-list-attention-quiet-meta {
+    display: block;
+    font-size: var(--sf-list-attention--meta-font-size);
+    line-height: var(--sf-list-attention--meta-line);
+  }
+
+  /* sf-button-icon's host is display: contents (an inline style): its
+     native control is the box. */
+  .sf-list-attention .sf-list-attention-recheck--narrow > button {
+    display: inline-flex;
   }
 
   .sf-list-attention-foot .sf-list-attention-spacer {

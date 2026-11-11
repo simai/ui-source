@@ -65,6 +65,8 @@ test('the field renderers read a date in the page\'s language and a phone by its
   assert.match(set, /const DATE_VIEW = \{dateStyle: 'medium', timeZone: 'UTC'\};/u);
   assert.match(set, /const DATETIME_VIEW = \{dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'\};/u);
   assert.match(set, /import \{formatDate\} from "\.\.\/\.\.\/core\/js\/format-date\.js";/u);
+  // C40: a date in view is a time element with the record's own day and clock.
+  assert.match(set, /html`<time class="sf-field-view" datetime=\$\{datetime\}>\$\{text\}<\/time>`/u);
   const country = read('src/component/country-code/js/_country_code.js');
   assert.match(country, /function countryFromNumber\(root, value\)/u);
   assert.match(country, /countryFromNumber\(root, value\) \|\|\n\s+root\.__sfCountryOptions\?\.\[0\]/u);

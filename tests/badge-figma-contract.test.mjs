@@ -63,7 +63,7 @@ test('badge CSS maps every semantic scheme to theme-aware tokens', async () => {
     );
     assert.match(
       css,
-      new RegExp(`sf-badge--outline${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--border-color: var\\(--sf-outline-${token}\\);`),
+      new RegExp(`sf-badge--outline${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--border-color: var\\(--sf-${token}-outline\\);`),
     );
   }
 });
