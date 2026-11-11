@@ -218,6 +218,8 @@
 .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
   border-color: var(--sf-outline);
   background-color: var(--sf-surface-transparent-hover);
+  /* A translucent fill, as the checked card (C43 D4). */
+  @include places.sf-place-fill(var(--sf-surface-transparent-hover));
 }
 
 .sf-choice .sf-choice-card--checked,
@@ -227,7 +229,7 @@
   box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
   /* A translucent fill: a tonal badge on the checked card («Популярный»)
      keeps its own tone (C43, owner 2026-11-10). */
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-choice--selected-background-color));
 }
 
 .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {

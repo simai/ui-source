@@ -38,6 +38,11 @@
 // dot) lays --sf-surface-place over it, which is exactly the soft place's
 // look over its ground. It is never initial; glass declares black.
 //
+// --sf-surface-place-fill is the translucent fill itself (C43 D3, D4,
+// 2026-11-11): sf-place-fill($fill) declares it with the underlay on a
+// selected, open, current or hovered row. It is read only together with the
+// underlay, so where the underlay is initial it does nothing.
+//
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
 // place can take them back (an ancestor's value cannot be read in CSS).
@@ -218,8 +223,15 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
 // stands on it and keeps its own tone stacks over the solid place under the
 // row, --sf-surface-place, read where the fill is declared. Include it with
 // the fill, in the same rule.
-@mixin sf-place-fill {
+@mixin sf-place-fill($fill) {
   --sf-surface-underlay: var(--sf-surface-place-solid);
+  // The fill itself, the colour the row lays over its place (C43 D3, D4,
+  // 2026-11-11). An anchored badge's ring lays it over the place colour, so
+  // on the row the ring is the row's own colour, not a halo of the place
+  // around the badge. $fill is the row's background in that rule; where the
+  // underlay is initial (a soft place, glass, a place nested in the row) the
+  // badge does not read it, so it needs no taking back.
+  --sf-surface-place-fill: #{$fill};
 }
 
 // A soft coloured place, bg-<c>-container: the colour's own container trio is

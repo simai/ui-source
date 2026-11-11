@@ -47,6 +47,14 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   // --sf-badge--surface, the name a surface said it by before, still wins
   // until the alias list's remove_after.
   --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-place)));
+  // On a translucent fill (a selected, open, current or hovered row, core mix
+  // sf-place-fill) the place under the badge is the row: its fill over the
+  // place colour (C43 D3, D4, 2026-11-11). The fill is laid over the ring as a
+  // second shadow; it is read only where the underlay is set (the mix of 100%
+  // fill and 0% underlay is the fill, and invalid where the underlay is
+  // initial), so on a soft place, on glass and in a place nested in the row the
+  // ring is exactly the place colour, as before.
+  --sf-badge--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
   // A count says something needs attention: the error role, unless the badge
   // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
@@ -71,7 +79,7 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   line-height: var(--sf-badge--anchored-size);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring);
+  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill, transparent), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring);
 
   // RTL: the end is the left, and the badge is centred from its right edge.
   &:dir(rtl) {
