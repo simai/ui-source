@@ -213,6 +213,25 @@ sf-list-timeline {
   background: currentColor;
 }
 
+/* A step without an icon (owner decision C61, variant A of
+   prototypes/timeline-stage-dot-state.html): the state is told by the shape,
+   one logic with the icon steps -- done a solid dot in the primary colour,
+   current the same dot ringed through a gap, upcoming an empty dot with a
+   quiet ring (--sf-on-surface-variant: --sf-outline-variant, the line's 24 %,
+   is lost on a dot this small). A status tone still wins. */
+.sf-list-timeline-item:is([data-state="done"], [data-state="current"]) .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) {
+  color: var(--sf-primary);
+}
+
+.sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
+  box-shadow: 0 0 0 calc(var(--sf-px) * 2) var(--sf-list-timeline--ground), 0 0 0 calc(var(--sf-px) * 4) var(--sf-primary);
+}
+
+.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
+  background: var(--sf-list-timeline--ground);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-on-surface-variant);
+}
+
 .sf-list-timeline-body {
   grid-column: 2;
   display: flex;
