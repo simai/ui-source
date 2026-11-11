@@ -157,6 +157,11 @@ instead of swapping late, while cached visits use Inter immediately.
 - The widths still differ per letter, not by a scale: a line varies by about
   0.7 % (Russian) and 1.5 % (English). A line within about 1 % of its box can
   break in one face and not in the other.
+- core.js asks for the Latin face, and the Cyrillic face on a page whose
+  `<html lang>` is written in Cyrillic, from its first line, so a quick network
+  brings Inter in before the first frame of a cold visit. It uses
+  `FontFace.load()`, so there is no preload link and no "preloaded but not
+  used" warning. Turn it off with `SF_BOOT_CONFIG = {fonts: {early: false}}`.
 
 Projects do not need to preload the font or reserve fixed heights, and custom
 font-family overrides continue to work as before. The stack ends in the system
