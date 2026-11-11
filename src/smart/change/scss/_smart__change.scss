@@ -69,10 +69,10 @@ sf-change[data-block] {
 
 /* A short value (up to 20 characters: a number and its unit, a phone
    number, a name) stays whole on one line, in a sentence and in a list;
-   only a longer value wraps. */
-.sf-change .sf-change__whole {
-  white-space: nowrap;
-}
+   only a longer value wraps. The template makes it whole with no-break
+   spaces and word joiners, not nowrap, so where the frame is narrower than
+   the value it still wraps inside the frame (overflow-wrap above) and the
+   arrow stays on the new value's line. */
 
 /* list: one grid, the labels' column max-content. */
 .sf-change--list {
