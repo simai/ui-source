@@ -525,6 +525,7 @@
         "public_parts": [],
         "uses": [
           "component.checkbox",
+          "smart.help-mark",
           "smart.icon"
         ]
       },
@@ -537,7 +538,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/checkbox/smart.manifest.json",
-      "manifest_sha256": "cd161020ae660f9a3737932601a946f455f09867807eea46cd735bca7e0cb36a",
+      "manifest_sha256": "19fbb3a985f2937fe7beeb35ebfd58c18292fbee2d6df3c5013f15216d0d6e54",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2470,7 +2471,8 @@
         ],
         "uses": [
           "component.icons",
-          "component.radio"
+          "component.radio",
+          "smart.help-mark"
         ]
       },
       "contract_schema": {
@@ -2482,7 +2484,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/radio/smart.manifest.json",
-      "manifest_sha256": "343ced2bba77b843652065cd0e11d436957bc97d101f80ac9787d6ff0c8d7fcf",
+      "manifest_sha256": "c79f874563f519bf09985000dadbd3b2e8840d5d0dbad3ecd80ff9e4e9a0a40a",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2927,7 +2929,8 @@
         "uses": [
           "component.icon-buttons",
           "component.icons",
-          "component.switch"
+          "component.switch",
+          "smart.help-mark"
         ]
       },
       "contract_schema": {
@@ -2939,7 +2942,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "ac34b93f38671c8fe5a7175bd7e7ae60fbb49c06da54b9d9de1516d87ed43866",
+      "manifest_sha256": "fd557861410a4a2a5ba2a903bb53adb847c1b45e624c2348f9336248e21f7ee4",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

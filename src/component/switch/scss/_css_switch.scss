@@ -327,12 +327,12 @@
   --sf-switch-toggler--border-color: var(--sf-primary-hover);
 }
 
-.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-inner {
+.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active:not(:has(sf-help-mark:active, [slot="help"]:active)) .sf-switch-inner {
   --sf-switch-inner--background-color: var(--sf-switch-checked-thumb-color, var(--sf-on-primary));
 }
 
 /* utility-hint: justify-content/flex-end (.justify-end) */
-.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-toggler {
+.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active:not(:has(sf-help-mark:active, [slot="help"]:active)) .sf-switch-toggler {
   --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 }

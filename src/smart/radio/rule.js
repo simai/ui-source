@@ -7,5 +7,6 @@ SF.RuleLoader['cl-radio'] = {
   relation: [
     { name: 'radio' },
     { name: 'icons' },
+    { name: 'cl-help-mark' },
   ],
 };

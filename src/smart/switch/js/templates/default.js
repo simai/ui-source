@@ -1,5 +1,10 @@
 import { html, nothing } from 'lit';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
+import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
+
+// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
+// 1, 1/2 beside size 2 (the mark adds no height of its own).
+const HELP_SIZE = { '1/2': '1/3', 1: '1/3', 2: '1/2' };
 
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
@@ -26,14 +31,16 @@ export function renderSwitchTemplate(context) {
   const helpContent =
     context.component?.hasSlotContent?.('help')
       ? context.component.getSlotContent('help')
+      // help is the explanation: a «?» button after the label text that opens
+      // it (sf-help-mark), outside the switch's activation.
       : help
-        ? html`<i class="sf-icon" aria-hidden="true">${help}</i>`
+        ? html`<sf-help-mark class="sf-switch-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
         : '';
 
   const showContainer = !!(labelContent || descriptionContent || helpContent);
 
   return html`
-    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing}>
+    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-switch-toggler transition flex items-cross-center content-main-start">
         <input
           type="checkbox"

@@ -23,6 +23,7 @@
   "composition": {
     "uses": [
       "component.checkbox",
+      "smart.help-mark",
       "smart.icon"
     ],
     "public_parts": []
@@ -65,7 +66,8 @@
       },
       "help": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "position": {
         "type": "string",
@@ -413,7 +415,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "2c7124755a19544c131fdfec31eddc173317706888f782e9322f5941d00f68f9"
+        "sha256": "be33a5057f125d3b2ed0c5237d6ee071ea9a733aea7295e91818d20a0a685184"
       }
     ],
     "generated_runtime": [

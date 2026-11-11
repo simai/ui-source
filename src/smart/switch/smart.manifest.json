@@ -24,7 +24,8 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.switch"
+      "component.switch",
+      "smart.help-mark"
     ],
     "public_parts": [
       "native-input",
@@ -77,7 +78,8 @@
       },
       "help": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "disabled": {
         "type": "boolean",
@@ -421,15 +423,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "456d57b4a4b435da0a79707bc56c1b36d773d4f3f063918435421b574f937e69"
+        "sha256": "ab4c94afa4e8c4dc6d6af3d01ab9db3d298298f89dd6cdf5482e1a1f864ab756"
       },
       {
         "path": "src/smart/switch/rule.js",
-        "sha256": "d403c7ea02a0bf62234774f710690be219dd4c100469905cf14568467e30e6bf"
+        "sha256": "ef9ac934ded733e400776a394650e403dd1a4f28847891a4820cde1ccb87438a"
       },
       {
         "path": "src/smart/switch/js/templates/default.js",
-        "sha256": "9940008261586b3e62c3cc1cb4de736721178fc045a5e56642a7318cd1e95d71"
+        "sha256": "6558015e609a991286e3c8ed44d11056a897378c3f0827444fac30859d115b0c"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -9,5 +9,6 @@ SF.RuleLoader['cl-switch'] = {
     { name: 'switch' },
     { name: 'icons' },
     { name: 'icon-buttons' },
+    { name: 'cl-help-mark' },
   ],
 };

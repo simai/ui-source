@@ -80,6 +80,8 @@ class SfRadio extends FormField(RadioElement) {
       // Without ElementInternals the named inner radio submits, as before.
       controlName: internals ? groupKey(this) : props.name,
       innerForm: internals ? NO_FORM : '',
+      // The help button is named by its subject («Подробнее: Курьером»).
+      helpLabel: props.help && props.label ? this.sfWord('help', { vars: { label: props.label } }) : '',
       component: this,
     });
   }

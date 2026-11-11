@@ -23,6 +23,28 @@
   width: var(--sf-icon--width, var(--sf-icon-size-3));
 }
 
+/* An icon beside the label (class markup, or what the help slot holds) is the
+   line of its size, as in sf-checkbox (#49): it was 24 at every size, on the
+   20 line of size 1 on a phone, and the row grew from 36 to 40. The help
+   setting draws sf-help-mark, which sizes itself. */
+.sf-radio-button.sf-radio-button--size-1\/2 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button.sf-radio-button--size-1 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-radio-button.sf-radio-button--size-2 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-radio-button-box--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-radio-button .sf-radio-button-box {
   /* Public variables (core/contracts/public-variables.v1.json): names with a
