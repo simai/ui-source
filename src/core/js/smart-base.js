@@ -16,6 +16,9 @@ import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
 import { followLanguage, language } from "./page-language";
 import { drawing, markRelativeSizes, noteAuthored, sizedBefore } from "./density.js";
+
+// A region the Loader's page scan passes by (loader.js OBSERVER_IGNORE_SELECTOR).
+const IGNORED_REGION = '[data-sf-observer="ignore"]';
 // The properties a child takes from its parent (CSS inheritance), which a
 // boxless host passes on to its markup without having a box of its own. The
 // host keeps these, and every custom property, beside `display: contents`, so
@@ -1341,6 +1344,7 @@ class SfBaseElement extends HTMLElement {
     }
 
     this._hasRendered = true;
+    this.adoptIgnoredGlyphs();
     this.afterRender(changedAttributes);
     this._childrenDefinedPromise = null;
     this.runExternalHook("afterRender", {
@@ -1348,6 +1352,27 @@ class SfBaseElement extends HTMLElement {
       root: this,
     });
     this.emitComponentEvent("after-render", { changedAttributes });
+  }
+
+  // Inside a data-sf-observer="ignore" region the Loader's page scan never
+  // sees what this element drew, so its class-markup glyphs (<i
+  // class="sf-icon">) are handed to the Loader after each drawing; they are
+  // asked for and marked loaded like any page icon (2026-11-11). Outside such
+  // a region the scan finds them, and nothing is done here. An element drawn
+  // before the Loader is ready hands them over when it is.
+  adoptIgnoredGlyphs() {
+    if (!this.closest?.(IGNORED_REGION)) return;
+    const loader = window.SF?.Loader;
+    if (typeof loader?.adoptStaticIcons === "function") {
+      loader.adoptStaticIcons(this);
+      return;
+    }
+    if (this._sfGlyphsAwaitLoader) return;
+    this._sfGlyphsAwaitLoader = true;
+    window.addEventListener("sf-loader-ready", () => {
+      this._sfGlyphsAwaitLoader = false;
+      if (this.isConnected) this.adoptIgnoredGlyphs();
+    }, {once: true});
   }
 
   shouldWaitForStylesReady() {
