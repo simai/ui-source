@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.datepicker",
   "kind": "component",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "owner": "simai/ui-source",
   "files": [
     "src/component/datepicker/index.scss",
@@ -14,7 +14,7 @@
     "src/component/datepicker/scss/_css_day.scss",
     "src/component/datepicker/scss/index.scss"
   ],
-  "content_sha256": "afa2c3283552a39ae3f9d2361ef9a5f6f7d33221f414f0d62702661e97ac0138",
+  "content_sha256": "dffb66c3044ba3a265191e251af8b63dcfb7a345ebd6c0fbdea1e7f4a2385e8f",
   "dependencies": [
     {
       "id": "tokens.border",
