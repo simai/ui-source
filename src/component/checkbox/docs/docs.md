@@ -38,3 +38,5 @@ focus uses `:focus-visible`, with a forced-colours fallback. State transitions
 stop under `prefers-reduced-motion`.
 
 A checkbox is named by its label row and described by its description (aria-labelledby, aria-describedby), as the switch is since 1.2: the box, the label and the description sit in one <label>, which named the input by all its text (1.1.1, docs pre-check 2026-11-10 CH-03). The helper is src/component/checkable-text-helper.js; an author's aria-label or aria-labelledby wins, ids come from the instance path.
+
+The help mark stands beside the <label>, not inside it (.sf-checkbox-row, 1.2.0, C59): pressing «?» never presses the control. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus, choice lists and table rows keeps the full row as its target.

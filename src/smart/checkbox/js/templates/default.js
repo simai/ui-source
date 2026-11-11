@@ -62,7 +62,7 @@ export function renderCheckboxTemplate(context) {
                 ? html`<sf-help-mark class="sf-checkbox-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
                 : '';
 
-    const showContainer = !!(labelContent || descriptionContent || helpContent);
+    const showContainer = !!(labelContent || descriptionContent);
     const isStart = position === 'start';
     const input = html`
         <span class="sf-checkbox-box transition flex">
@@ -78,17 +78,16 @@ export function renderCheckboxTemplate(context) {
         />
           <sf-icon aria-hidden="true" icon=${stateIcon || ''}></sf-icon>
       </span>`
-    return html`
+    const control = html`
         <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing} @click=${keepHelpOutOfLabel}>
             ${isStart ? input : ''}
             ${showContainer
                     ? html`
                         <span class="sf-checkbox-container flex flex-col">
-              ${labelContent || helpContent
+              ${labelContent
                       ? html`
                           <span class="sf-checkbox-top flex">
                       ${labelContent}
-                      ${helpContent}
                     </span>
                       `
                       : ''}
@@ -99,4 +98,11 @@ export function renderCheckboxTemplate(context) {
             ${!isStart ? input : ''}
         </label>
     `;
+    // The help mark is the label's sibling in a row, not inside the <label>
+    // (owner decision C59, as C33 for field labels): pressing «?» is then no
+    // press on the control -- the label and its input never become :active,
+    // so the box is not painted pressed and its value does not change.
+    return helpContent
+        ? html`<span class=${`sf-checkbox-row sf-checkbox-row--size-${size} flex flex-nowrap items-cross-start`}>${control}${helpContent}</span>`
+        : control;
 }

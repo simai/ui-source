@@ -42,9 +42,9 @@ export function renderRadioTemplate(context) {
         ? html`<sf-help-mark class="sf-radio-button-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
         : '';
 
-  const showContainer = !!(labelContent || descriptionContent || helpContent);
+  const showContainer = !!(labelContent || descriptionContent);
 
-  return html`
+  const control = html`
     <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
         <input
@@ -61,11 +61,10 @@ export function renderRadioTemplate(context) {
       ${showContainer
         ? html`
             <span class="sf-radio-button-container flex flex-col">
-              ${labelContent || helpContent
+              ${labelContent
                 ? html`
                     <span class="sf-radio-button-top flex">
                       ${labelContent}
-                      ${helpContent}
                     </span>
                   `
                 : ''}
@@ -75,4 +74,10 @@ export function renderRadioTemplate(context) {
         : ''}
     </label>
   `;
+  // The help mark is the label's sibling in a row, not inside the <label>
+  // (owner decision C59, as C33 for field labels): pressing «?» is no press
+  // on the control.
+  return helpContent
+    ? html`<span class=${`sf-radio-button-row sf-radio-button-row--size-${size} flex flex-nowrap items-cross-start`}>${control}${helpContent}</span>`
+    : control;
 }

@@ -42,3 +42,5 @@ geometry follows direction, reduced motion is respected by Framework motion
 utilities, and forced-colors keeps track and thumb distinguishable.
 
 An on switch is one primary pill: the track's edge takes the fill colour, where the outline drew a grey ring around it (1.2.1, docs pre-check 2026-11-10 SW-05). A pointer over it still draws the hover edge.
+
+The help mark stands beside the <label>, not inside it (.sf-switch-row, 1.3.0, C59): pressing «?» never presses the switch. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus and table rows keeps the full row as its target.

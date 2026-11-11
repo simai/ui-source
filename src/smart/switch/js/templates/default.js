@@ -37,9 +37,9 @@ export function renderSwitchTemplate(context) {
         ? html`<sf-help-mark class="sf-switch-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
         : '';
 
-  const showContainer = !!(labelContent || descriptionContent || helpContent);
+  const showContainer = !!(labelContent || descriptionContent);
 
-  return html`
+  const control = html`
     <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-switch-toggler transition flex items-cross-center content-main-start">
         <input
@@ -57,17 +57,12 @@ export function renderSwitchTemplate(context) {
       ${showContainer
         ? html`
             <span class="sf-switch-container-wrap flex flex-col">
-              ${labelContent || helpContent
+              ${labelContent
                 ? html`
                     <span class="sf-switch-top flex">
-                      ${labelContent
-                        ? html`
-                            <span class="sf-switch-container flex items-cross-center content-main-center">
-                              ${labelContent}
-                            </span>
-                          `
-                        : ''}
-                      ${helpContent}
+                      <span class="sf-switch-container flex items-cross-center content-main-center">
+                        ${labelContent}
+                      </span>
                     </span>
                   `
                 : ''}
@@ -78,4 +73,10 @@ export function renderSwitchTemplate(context) {
       ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;
+  // The help mark is the label's sibling in a row, not inside the <label>
+  // (owner decision C59, as C33 for field labels): pressing «?» is no press
+  // on the switch.
+  return helpContent
+    ? html`<span class=${`sf-switch-row sf-switch-row--size-${size} flex flex-nowrap items-cross-start`}>${control}${helpContent}</span>`
+    : control;
 }

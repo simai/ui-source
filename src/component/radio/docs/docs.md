@@ -36,3 +36,5 @@ Use Framework typography, spacing and role-color tokens for adaptation. The
 indicator remains circular; it is not a surface or a configurable card radius.
 
 A radio is named by its label row and described by its description, as the checkbox (1.1.1, docs pre-check 2026-11-10 RA-02; src/component/checkable-text-helper.js).
+
+The help mark stands beside the <label>, not inside it (.sf-radio-button-row, 1.2.0, C59): pressing «?» never presses the control. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus, choice lists and table rows keeps the full row as its target.
