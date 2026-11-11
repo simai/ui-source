@@ -34,10 +34,11 @@ export const THEME_TONES = Object.freeze([98, 95, 90, 85, 80, 70, 60, 50, 40, 35
 // the same generator as the theme, so every hue has the same sixteen tones and
 // the same translucent steps, and no theme colour moves them. Every colour in
 // the product comes from this palette or from the dynamic one the theme makes
-// (C18). The four status hues keep their numbers, byte for byte: red is error,
-// amber warning, green success, blue info. Information is a status, not the
-// brand (owner, 2026-10-21, simai/ui-source#14): blue is the fixed palette of
-// #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
+// (C18). The status hues keep their numbers, byte for byte: red is error,
+// amber warning, green success, sky info. Information is a status, not the
+// brand (owner, 2026-10-21, simai/ui-source#14), and not blue either: blue
+// reads as the Framework's own primary (C17 as amended by the owner
+// 2026-11-11), so info is sky. Blue is the fixed palette of #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
 // own 58.5, the one that puts tone 40 on #005bbe itself. Every added hue is
 // chroma 60, brown 30 and gray 0. No hue is shifted toward the theme colour
 // (research 3.3): a hue keeps its name on every site.
@@ -67,7 +68,7 @@ export const STATIC_HUES = Object.freeze({
 export const STATIC_HUE_NAMES = Object.freeze(Object.keys(STATIC_HUES));
 
 // The hue each status is.
-export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'blue'});
+export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'sky'});
 
 function statusRule(status) {
   const {hue, chroma} = STATIC_HUES[STATUS_HUES[status]];
@@ -95,7 +96,7 @@ export const THEME_RULES = Object.freeze({
   // greys out of a hue it barely has.
   neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
   // The four statuses are four hues of the static palette (C17): error is red,
-  // warning amber, success green and info blue, by the same numbers, so a
+  // warning amber, success green and info sky (amended 2026-11-11), by the same numbers, so a
   // status and its hue are one palette. A theme may still override a status
   // here; the hue it was made from stays as it is.
   error: statusRule('error'),

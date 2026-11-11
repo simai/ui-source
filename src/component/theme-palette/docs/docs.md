@@ -36,7 +36,7 @@ They come from the same generator, every one with the same sixteen tones and
 translucent steps, as the `--sf-<hue>-<tone>` primitives (`--sf-green-50`,
 `--sf-green-50--alfa-12`) that core.css declares; no theme colour moves them.
 The statuses are four of them: error is red, warning amber, success green and
-info blue. `staticPalette()` returns each hue's numbers and tones,
+info sky (info is not blue, which reads as the Framework's own primary). `staticPalette()` returns each hue's numbers and tones,
 `staticVariables()` the primitives, and `STATIC_HUES`, `STATIC_HUE_NAMES`,
 `STATUS_HUES` and `STATIC_ALPHA` are the lists they are made from.
 
