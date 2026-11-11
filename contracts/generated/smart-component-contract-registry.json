@@ -460,7 +460,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "8bb2ecfd96d0a42b3004e68545f745b20b5b2d2639e5c9af9cc9412393488fcf",
+      "manifest_sha256": "4a9fb11421299a6a9b8b77b978be34cdfd536a01e7ad3ad09ffc2ca1980aa061",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -867,8 +867,9 @@
         "uses": [
           "component.download-file",
           "component.icons",
+          "component.progress-ring",
           "component.spinner",
-          "smart.alert",
+          "smart.button",
           "smart.icon"
         ]
       },
@@ -881,7 +882,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-download/smart.manifest.json",
-      "manifest_sha256": "a15446cd6c3d1db5d4031a210cf1e641754ea5fc476000ce388760f6610a4f52",
+      "manifest_sha256": "2b3eb30d3e05b74fb2e5eb1849115935061f7daf444b8fdf21e0eadf70f3c2a2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

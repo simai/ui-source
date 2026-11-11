@@ -159,6 +159,30 @@ const sfButtonIconMeta = {
       "default": "button",
       "description": "Native button type attribute."
     },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An address: the icon button draws a link (an <a href>) with its look, as sf-button's href (decision C51: the quiet «Скачать <name>» at the end of a table row is a real link to the file). A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, pressed and a cycle do not apply; disabled or loading, the link has no href and says aria-disabled. The name is the aria-label, as on the button."
+    },
+    "target": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Where a link (href) opens, as an <a target>: _blank opens a new tab. Not written on a button."
+    },
+    "rel": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The link's relation, as an <a rel>. A link that opens in a new tab (target _blank) with no rel says noopener noreferrer. Not written on a button."
+    },
+    "download": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A link (href) that downloads its file, as an <a download>: the name it is saved under, or present and empty for the server's name. Not written on a button."
+    },
     "badge-count": {
       "kind": "custom",
       "valueType": "string",

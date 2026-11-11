@@ -18,6 +18,7 @@
       "  <sf-button-icon id=\"ib-old-looks\" icon=\"share\" appearance=\"link\" scheme=\"secondary\" aria-label=\"Поделиться\"></sf-button-icon>",
       "  <sf-button-icon id=\"ib-cyc\" aria-label=\"Повтор\" value=\"off\" label-pressed=\"Не так\" cycle='[{\"value\":\"off\",\"label\":\"выключен\",\"icon\":\"repeat\"},{\"value\":\"all\",\"label\":\"весь список\",\"icon\":\"repeat\",\"pressed\":true},{\"value\":\"one\",\"label\":\"один трек\",\"icon\":\"repeat_one\",\"pressed\":true}]'></sf-button-icon>",
       "  <sf-button-icon id=\"ib-theme\" theme-cycle></sf-button-icon>",
+      "  <sf-button-icon id=\"b-link\" icon=\"download\" href=\"/fixture/report\" download=\"Отчёт.pdf\" aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-off\" icon=\"download\" href=\"/fixture/report\" disabled aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-bad\" icon=\"download\" href=\"javascript:alert(1)\" aria-label=\"Скачать\"></sf-button-icon>",
       "</main>"
     ]
   },
@@ -215,6 +216,16 @@
       "steps": [
         {
           "check": "(() => { const b = document.querySelector('#ib-theme button'); const pref = SF.Loader?.themePreference || 'system'; const icon = b.querySelector('sf-icon').getAttribute('icon'); const want = {system: 'contrast', light: 'light_mode', dark: 'dark_mode'}[pref]; return icon === want && b.getAttribute('aria-label').startsWith('Тема: ') && b.title.includes('Нажмите'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-href-link",
+      "title": "href draws a native link with the icon button's look and its name; disabled takes the href away and says aria-disabled; an address off the rule draws a button (1.9.0, decision C51)",
+      "covers": "settings.href, settings.download, settings.disabled",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#b-link a.sf-icon-button'); const off = document.querySelector('#b-link-off a.sf-icon-button'); const bad = document.querySelector('#b-link-bad'); return a && a.getAttribute('href') === '/fixture/report' && a.getAttribute('download') === 'Отчёт.pdf' && a.getAttribute('aria-label') === 'Скачать Отчёт.pdf' && getComputedStyle(a).textDecorationLine === 'none' && off && !off.hasAttribute('href') && off.getAttribute('aria-disabled') === 'true' && !bad.querySelector('a') && bad.querySelector('button.sf-icon-button'); })()"
         }
       ]
     }

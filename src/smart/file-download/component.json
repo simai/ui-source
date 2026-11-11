@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-download's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/download-file (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.file-download",
   "tag": "sf-file-download",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -18,6 +18,11 @@
       "default": "1",
       "summary": "Existing compact-to-prominent component size scale."
     },
+    "full-width": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The row fills its container, the look it had before 1.5.0; without it the row is as wide as its text, up to the container (decision C51), as sf-button's full-width."
+    },
     "file-name": {
       "type": "string",
       "default": "",
@@ -26,7 +31,7 @@
     "file-size": {
       "type": "string",
       "default": "",
-      "summary": "The size as text, in the page's units («2,4 МБ»). Empty with href: asked with one HEAD request and written in the page's language."
+      "summary": "The size as text, in the page's units («2,4 МБ»). A screen reader hears it with the unit in words («2,4 мегабайта»). Empty with an href to this page's own server: asked with one HEAD request and written in the page's language; any other address (another origin, data:, blob:) is not asked -- give the size."
     },
     "file-type": {
       "type": "string",
@@ -61,36 +66,56 @@
         "error"
       ],
       "default": "ready",
-      "summary": "ready: the file can be fetched. preparing: the application is making it -- a spinner in the sign's place, «Готовим файл…», aria-busy, a press is ignored; when the host sets ready again with an href, the file a person pressed for is fetched once. error: it could not be made -- an error notice «Не удалось подготовить файл» with «Повторить» under the file (decision C25)."
+      "summary": "ready: the file can be fetched. preparing: the application is making it -- the spinner in the sign's place (the progress ring with value), «Готовим файл…» or «Готовим… 45 %», aria-busy, a press is ignored, «Отменить» beside it while cancelable; the start is said. When the host sets ready again with an href, the file a person pressed for is fetched by itself if it came within 10 s and the page is in sight, else the row says «Готово» and offers «Скачать» (decision C51); the end is said. error: it could not be made -- the row shows the error sign and border, «Не удалось собрать» and «Повторить» at its end, error-text small under it; the error is said at once."
     },
     "error-text": {
       "type": "string",
       "default": "",
-      "summary": "More words in the error notice (what went wrong, what to do); the heading is «Не удалось подготовить файл»."
+      "summary": "Why the file could not be made and what happens next, a small line under the row in the error state («Сервер не ответил. Файл соберётся заново.»)."
     },
     "target": {
       "type": "string",
       "default": "",
       "summary": "Where the link opens. Empty (default): the file downloads in the same tab. _blank: the file is opened to view in a new tab; the link shows the open-in-new sign and says «(откроется в новой вкладке)» to a screen reader (decision C25)."
+    },
+    "value": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "While preparing: the share made, per cent (0 to 100, clamped), drawn as the progress ring in the sign's place and «Готовим… 45 %» (decision C51). Absent: the spinner and «Готовим файл…»."
+    },
+    "cancelable": {
+      "type": "boolean",
+      "default": false,
+      "summary": "While preparing, «Отменить» stands beside the row; its press sends the cancelable cancel, and unless a listener prevents it the row is ready again (decision C51), as sf-progress-run's cancelable."
     }
   },
   "values": {},
   "events": {
-    "download": {
+    "request": {
       "carries": {
         "href": "string",
         "file-name": "string",
         "download": "boolean"
       },
       "cancelable": true,
-      "summary": "A person pressed the file: the request to fetch it, cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\", then ready with the href, or error."
+      "summary": "A person pressed the file: the request to fetch it (sf-file-download-request), cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\" (value as it goes), then ready with the href, or error. Its former name sf-file-download-download doubled the word (decision C51) and is a dated alias until 2027-01-01."
     },
     "retry": {
       "carries": {
         "href": "string",
         "file-name": "string"
       },
-      "summary": "A person pressed «Повторить» under a file that could not be prepared (vocabulary §5 retry): the host prepares it again and sets the state."
+      "summary": "A person pressed «Повторить» in a row that could not be made (vocabulary §5 retry): the host prepares it again and sets the state; the file is fetched when it is ready, as after the first press."
+    },
+    "cancel": {
+      "carries": {
+        "href": "string",
+        "file-name": "string"
+      },
+      "cancelable": true,
+      "summary": "A person pressed «Отменить» beside a file being made (vocabulary §5 cancel, cancelable): the host stops the work. Unless a listener prevents it the row is ready again at once; a host that prevents it sets ready itself. Either way the cancel is said."
     }
   },
   "actions": {},
@@ -115,9 +140,9 @@
       "name": "cl-icon"
     },
     {
-      "name": "cl-alert",
+      "name": "cl-button",
       "$comment": [
-        "The notice under a file that could not be prepared (state error, decision C25)."
+        "«Повторить» in a row that could not be made, «Отменить» beside one being made, «Скачать» beside one ready (decision C51)."
       ]
     },
     {
@@ -125,6 +150,13 @@
       "lazy": true,
       "$comment": [
         "The spinner in the sign's place while the file is prepared: its box is the class sheet's, the motion the spinner sheet's."
+      ]
+    },
+    {
+      "name": "progress-ring",
+      "lazy": true,
+      "$comment": [
+        "The progress ring in the sign's place while the file is prepared with value (decision C51): its box is the class sheet's, the ring the progress-ring sheet's."
       ]
     }
   ],
@@ -138,7 +170,7 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "A native <a> while href is set and the file is not disabled, a native <button> otherwise; the file name is the visible text. Preparing: aria-busy=\"true\" on it, the words «Готовим файл…» in its name. A link that opens a tab adds «(откроется в новой вкладке)» to its name.",
+    "$comment": "A native <a> while href is set and the file is not disabled, a native <button> otherwise; the file name is the visible text, and after it hidden words a screen reader hears with pauses: «Смета.csv, CSV, 112 байт», the unit in words (decision C51); the visible «CSV · 112 Б» is aria-hidden. Preparing: aria-busy=\"true\", «Готовим файл…» or «Готовим… 45 %» in its name, «Отменить» a button of its own. A row that could not be made is a group named by the file with «Повторить» («Повторить: <name>») in it; a ready row after a long wait is text with «Скачать» («Скачать <name>») beside it. Two hidden live regions: the start, the end and a cancel are said politely (role=status), an error at once (role=alert). A link that opens a tab adds «(откроется в новой вкладке)» to its name.",
     "role": "link",
     "name": {
       "from": [
@@ -242,6 +274,38 @@
         "mode": "same-detail",
         "section": "§8",
         "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
+      },
+      {
+        "from": "sf-file-download-download",
+        "to": "sf-file-download-request",
+        "kind": "event",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "since-version": "1.5.0",
+        "mode": "same-detail",
+        "cancelable": true,
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "note": "the request doubled the word in its name (owner decision C51, docs pre-check DF-11); the shim sends the old name after sf-file-download-request, one detail, one cancel, and the older names after it"
+      },
+      {
+        "from": "sf-download-file-request",
+        "to": "sf-file-download-request",
+        "kind": "event",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
+      },
+      {
+        "from": "sf-download-file-cancel",
+        "to": "sf-file-download-cancel",
+        "kind": "event",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
       }
     ]
   },
@@ -275,16 +339,17 @@
     "version 1.3.0 (2026-11-09): a minor (decision C25; docs review pre-check 2026-11-09 DF-02, DF-03, DF-04, DF-08, DF-09). state ready|preparing|error: preparing puts the Framework's spinner in the sign's box, «Готовим файл…» in place of the type and the size and aria-busy on the link or button, and a press does nothing; the host that cancelled the request and prepared the file sets ready with the href, and the file is fetched once for the person who pressed. error keeps the file and puts an sf-alert «Не удалось подготовить файл» (error-text its words) with «Повторить» under it; the press sends sf-file-download-retry {href, fileName}. file-type gives the type in words before the size («PDF · 2,4 МБ»); icon, which put a type glyph in the download sign's place, is still drawn but noted once until 2027-01-01 (change journal setting-file-download-icon-to-file-type). A file link downloads in the same tab: target is empty by default (it was _blank) and the download semantics are on unless target=\"_blank\", which is a file opened to view and shows the open_in_new sign after the name with «(откроется в новой вкладке)» for a screen reader. An absent file-name is the link's last part, else «Файл» (it was File.pdf). The size the component asks for (HEAD) is written in the page's language by the core formatter, «2,4 МБ» (it was «2.4MB»): component.download-file 1.2.0. The public variables carry an x-summary for the reference. The request's name is unchanged (sf-file-download-download; a shorter name is a proposal to the owner). The element answers what its template draws: fileName is the given name, else the link's last part, else «Файл», and download is true for a file link unless target=\"_blank\" (template-context).",
     "version 1.3.1: the first-paint snapshot of the error example is retaken: the sf-alert it draws takes the notice's actions (smart.alert 1.2.0, decision C35): a tonal primary low retry button; nothing of its own changes.",
     "version 1.4.0 (2026-11-10): a minor (docs pre-check 2026-11-10 DF-11, DF-13, DF-15). The public variables carry the element's name: --sf-file-download-background-color, -border-color, -radius, -padding, -gap, -icon-size, -icon-color; each reads its former name --sf-download-file-* under it until 2027-01-01 (change journal token-file-download-variable-names). The error state draws the file and its notice in one column of its own, .sf-download-file__stack (gap --sf-space-1/3, the prototype's): the host is display: contents, so as two siblings a flex row of the page put the notice beside the file. A data: or blob: href is not asked for its size (no HEAD request; the browser refused it with net::ERR_METHOD_NOT_SUPPORTED): the page that made the bytes passes file-size; nor is an address that leads back to the page itself (#, #part, the page's own URL), which asked the page for its own length (docs acceptance 2026-11-10, L2). After «Повторить» the focus the notice's button held moves to the file when the notice goes away; it fell to the page's body (L1). While preparing, «Готовим файл…» stays beside the name while the name has 9rem (--sf-e8) and moves under it, one whole text line, when it has not; it took the name's whole room (0-6 px at 160-200 px) and stood past the box (L3). component.download-file 1.3.0. The request keeps its name sf-file-download-download: vocabulary 1.1.5 §7 derives it from the tag and the §5 verb download, and another verb would be a synonym of download (§5.1).",
-    "version 1.4.1 (2026-11-11): a patch, nothing drawn differently. The file is a button until it has an href and a link after; a host that prepares the file sets the href when it is ready, the button was replaced by the link and the focus fell to the page's body (also on 1.4.0). The link now takes the focus the button held -- only when the focus was on the file, never taken from where the person moved."
+    "version 1.4.1 (2026-11-11): a patch, nothing drawn differently. The file is a button until it has an href and a link after; a host that prepares the file sets the href when it is ready, the button was replaced by the link and the focus fell to the page's body (also on 1.4.0). The link now takes the focus the button held -- only when the focus was on the file, never taken from where the person moved.",
+    "version 1.5.0 (2026-11-11): a minor (owner decision C51, study control/research/2026-11-10-download-file.md, prototype prototypes/download-file.html; component.download-file 1.3.0, not released yet, carries the class side). The row is as wide as its text, up to its container; full-width stretches it (the look before). The type and the size stand right after the name, under it on a phone (below the sm step, 32rem, a step smaller), and the name is never cut: it wraps, the ellipsis and the title are gone (C34). A screen reader hears «name, type, size» with pauses and the unit in words («Смета.csv, CSV, 112 байт», «2,4 мегабайта»): hidden words after the name, the visible «CSV · 112 Б» aria-hidden. Preparing: value (0-100) draws the progress ring in the sign's box (20 in the 24 of size 1) and «Готовим… 45 %»; cancelable puts «Отменить» (sf-button, ghost, height low) beside the row, which sends the cancelable cancel and, unless it is prevented, returns the row to ready. The start, the end and a cancel are said in a polite live region, an error in an assertive one. A file the person pressed for is fetched by itself only if it came within 10 s and the page is in sight (visibilityState); otherwise the row shows the success sign, «Готово · CSV · 2,4 МБ» and «Скачать» (sf-button, filled, height low, «Скачать <name>») beside it, and the download is a fresh press. Error: the row itself shows it -- the error sign and border, «Не удалось собрать» in place of the type and the size, «Повторить» (sf-button, ghost, height low, icon refresh, «Повторить: <name>») at its end, error-text small under the row; the sf-alert notice under the file is gone (relation cl-alert goes, cl-button and progress-ring come), and with it DF-13. The word error-heading is failed-text; a page's own error-heading word is still said until 2027-01-01. When what held the focus is drawn away, the focus goes to «Повторить» or «Скачать», else to the row. The request is renamed sf-file-download-request: sf-file-download-download doubled the word (C51, DF-11); the old name is a dated same-detail alias until 2027-01-01 (change journal event-file-download-download-to-request), and the older names follow it. The size is asked (HEAD) only of an http(s) address on this page's own origin; another origin failed without CORS (DF-15). The public variables already carry the element's name since 1.4.0 (journal token-file-download-variable-names)."
   ],
   "x-registry": {
     "contracts": {
       "owner_semantics": {
         "resource": "href renders a native anchor",
-        "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-download",
+        "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-request",
         "disabled": "disabled button with no live destination",
-        "preparing": "state preparing: spinner in the sign's place, aria-busy, presses ignored; ready again with an href fetches the file once for the person who pressed",
-        "error": "state error: an sf-alert with «Повторить» under the file; its press sends retry"
+        "preparing": "state preparing: spinner (or the progress ring with value) in the sign's place, aria-busy, presses ignored, «Отменить» with cancelable; ready again with an href fetches the file by itself within 10 s on a page in sight, else offers «Скачать»",
+        "error": "state error: the row shows the error with «Повторить» at its end; its press sends retry"
       },
       "canonical_elements": {
         "type": "string",
@@ -299,8 +364,17 @@
           "sf-download-file__spinner",
           "sf-download-file__status",
           "sf-download-file__tab",
-          "sf-download-file__error",
-          "sf-download-file__stack"
+          "sf-download-file__stack",
+          "sf-download-file__text",
+          "sf-download-file__said",
+          "sf-download-file__ring",
+          "sf-download-file__end",
+          "sf-download-file__retry",
+          "sf-download-file__cancel",
+          "sf-download-file__get",
+          "sf-download-file__line",
+          "sf-download-file__reason",
+          "sf-download-file__live"
         ]
       },
       "interaction_states": {
@@ -368,7 +442,9 @@
         "Do not use the decorative icon as the accessible name",
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component",
-        "Do not put the file type in file-size or in icon: give it in file-type"
+        "Do not put the file type in file-size or in icon: give it in file-type",
+        "Do not leave file-size empty for a file on another server, a data: or a blob: address: give the size",
+        "Do not fire several downloads at once for several files: offer one archive"
       ],
       "required_reads": [
         "inputs",

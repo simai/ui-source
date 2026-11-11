@@ -10374,6 +10374,29 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "event-file-download-download-to-request",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-file-download's request to fetch a file is sf-file-download-request: sf-file-download-download said the word twice (owner decision C51, docs pre-check 2026-11-10 DF-11). The element sends the new name first and the old one after it with the same detail {href, fileName, download}; a listener on either name may cancel it, and one cancel stops the download. The older names sf-download-file-download and sf-download-file:click follow as before.",
+      "items": [
+        {
+          "component": "sf-file-download",
+          "from": "sf-file-download-download",
+          "to": "sf-file-download-request"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "files.addEventListener('sf-file-download-download', (event) => { event.preventDefault(); prepare(event.target); });",
+        "after": "files.addEventListener('sf-file-download-request', (event) => { event.preventDefault(); prepare(event.target); });"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/file-download/aliases.json, src/smart/file-download/component.json events.request"
     }
   ]
 }

@@ -8,9 +8,11 @@ SF.RuleLoader['cl-file-download'] = {
     { name: 'download-file' },
     { name: 'icons' },
     { name: 'cl-icon' },
-    // The notice under a file that could not be prepared (state error, decision C25).
-    { name: 'cl-alert' },
+    // «Повторить» in a row that could not be made, «Отменить» beside one being made, «Скачать» beside one ready (decision C51).
+    { name: 'cl-button' },
     // The spinner in the sign's place while the file is prepared: its box is the class sheet's, the motion the spinner sheet's.
     { name: 'spinner', lazy: true },
+    // The progress ring in the sign's place while the file is prepared with value (decision C51): its box is the class sheet's, the ring the progress-ring sheet's.
+    { name: 'progress-ring', lazy: true },
   ],
 };

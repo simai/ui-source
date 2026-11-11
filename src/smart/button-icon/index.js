@@ -30,6 +30,10 @@ const COMPONENT_ATTRIBUTES = new Set([
   'loading',
   'disabled',
   'native-type',
+  'href',
+  'target',
+  'rel',
+  'download',
   'pressed',
   'label-pressed',
   'cycle',
@@ -51,6 +55,23 @@ function applyButtonAttributes(host, button) {
     storageKey: '__sfIconButtonForwardedDataAttributes',
     targetStorageKey: '__sfIconButtonAttributeKeys',
   });
+}
+
+// href (1.9.0) takes sf-button's addresses: a relative one, a fragment,
+// http(s), mailto and tel. Any other scheme (javascript:, data:) draws the
+// icon button as a button.
+const SAFE_HREF = /^(?:[^:/?#]*(?:[/?#]|$)|https?:|mailto:|tel:)/iu;
+function linkAddress(value) {
+  const href = String(value || '').trim();
+  return href && SAFE_HREF.test(href) ? href : '';
+}
+
+// A link that opens a new tab says noopener noreferrer unless the page wrote
+// its own rel, as sf-button's.
+function linkRelation(target, rel) {
+  const own = String(rel || '').trim();
+  if (own) return own;
+  return String(target || '').trim().toLowerCase() === '_blank' ? 'noopener noreferrer' : '';
 }
 
 // sf-button-icon from its component.json (standard simai.smart-component
@@ -205,6 +226,12 @@ class SfIconButton extends IconButtonElement {
       // tightness step; a value outside the list reads as default.
       height: this.height,
       badge: this.badgeState?.(),
+      // href (1.9.0): a link with the icon button's look; null download is
+      // none, '' the server's name.
+      href: linkAddress(this.getAttribute('href')),
+      linkTarget: this.getAttribute('target') || '',
+      linkRel: linkRelation(this.getAttribute('target'), this.getAttribute('rel')),
+      linkDownload: this.hasAttribute('download') ? this.getAttribute('download') : null,
       component: this,
     });
   }
@@ -222,8 +249,9 @@ class SfIconButton extends IconButtonElement {
     // loading is drawn by the template, not patched: it puts the spinner in
     // place of the icon (simai/ui-source#10).
     const directPatchAttributes = ['disabled', 'aria-label', 'icon'];
-    // A cycle's name and icon come from its item: drawn, not patched.
-    if (this.cycleState()) return 'lit';
+    // A cycle's name and icon come from its item: drawn, not patched; a link
+    // is drawn too (disabled takes its href away).
+    if (this.cycleState() || this.hasAttribute('href')) return 'lit';
 
     if (
       changedAttributes.length > 0 &&

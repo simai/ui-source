@@ -28,6 +28,12 @@
 }
 
 @layer sf.components {
+  /* A link drawn as an icon button (sf-button-icon href, decision C51) takes
+     no link underline, as a.sf-button; its ink is the icon button's own. */
+  a.sf-icon-button {
+    text-decoration: none;
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-icon-button {
     /* Public variables (core/contracts/public-variables.v1.json): names with a
