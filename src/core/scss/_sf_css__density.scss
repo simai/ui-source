@@ -13,6 +13,11 @@
  *
  * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
  * next step of the size scale.
+ *
+ * Headings do not follow density (C44): the compact block writes the heading
+ * sizes with their normal values, so h1-h6 and the titles drawn from the
+ * heading steps keep the C21 ladder whether compact stands on <html> or on a
+ * container.
  */
 @layer sf.base {
   @media (min-width: 60rem) {
@@ -110,6 +115,12 @@
       --sf-text-medium--height: var(--sf-text--height-1);
       --sf-text-large--size: var(--sf-text--size-2);
       --sf-text-large--height: var(--sf-text--height-2);
+      --sf-heading-1--size: var(--sf-c8);
+      --sf-heading-2--size: var(--sf-c6);
+      --sf-heading-3--size: var(--sf-c2);
+      --sf-heading-4--size: var(--sf-c0);
+      --sf-heading-5--size: var(--sf-b6);
+      --sf-heading-6--size: var(--sf-b6);
       --sf-text--size: var(--sf-text--size-1);
       --sf-text--height: var(--sf-text--height-1);
     }

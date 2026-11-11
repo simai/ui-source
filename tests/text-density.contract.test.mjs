@@ -137,3 +137,19 @@ test('the popup widths follow the text in compact density (C32)', async () => {
   }
   assert.match(read('src/core/scss/_sf_css__size.scss'), /@layer sf\.base \{\s*:root \{[\s\S]*--sf-popup-menu-min-width: var\(--sf-f0\);/u);
 });
+
+// Headings do not follow density (owner decision C44, 2026-11-10): the compact
+// block writes every heading size with the normal desktop value of the text
+// step it names, so compact on <html> (where the root's var(--sf-text--size-N)
+// would resolve to the step below) and on a container give the C21 ladder.
+test('headings keep the C21 desktop ladder in a compact region (C44)', async () => {
+  const {headings} = await import('../scripts/generate-density.mjs');
+  const compact = block('[data-sf-density="compact"] {');
+  const C21 = {1: 'var(--sf-c8)', 2: 'var(--sf-c6)', 3: 'var(--sf-c2)', 4: 'var(--sf-c0)', 5: 'var(--sf-b6)', 6: 'var(--sf-b6)'};
+  assert.deepEqual(Object.fromEntries(headings()), Object.fromEntries(Object.entries(C21).map(([level, value]) => [`--sf-heading-${level}--size`, value])));
+  for (const [level, value] of Object.entries(C21)) assert.equal(compact[`--sf-heading-${level}--size`], value, `h${level}`);
+  // No heading line is touched: the title lines are not a density family.
+  for (const level of Object.keys(C21)) assert.equal(compact[`--sf-heading-${level}--height`], undefined);
+  // A title drawn from a text step a region moves is read through a heading step.
+  assert.doesNotMatch(read('src/smart/empty-state/scss/_smart__empty_state.scss'), /font-size:\s*var\(--sf-text--size-[123]\)/u);
+});

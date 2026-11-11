@@ -92,6 +92,14 @@
   gap: var(--sf-modal-header-gap);
 }
 
+/* The title takes the third step of the heading ladder (C21), which density
+   does not move (owner decision C44, 2026-11-11): a compact region, on <html>
+   or a container, keeps the title at its size. */
+.sf-modal-title {
+  font-size: var(--sf-heading-3--size);
+  line-height: var(--sf-heading-3--height);
+}
+
 .sf-modal-surface {
   --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-area));
   --sf-modal-surface-border-color: var(--sf-modal-border-color, var(--sf-outline-variant, transparent));
@@ -411,14 +419,22 @@
   min-block-size: var(--sf-ui-1\/3--control-height);
 }
 
-/* The default title of a window: text step 2 in bold (C21's h4 size), not
-   the page-level title-3 -- a question window's since C39, every window's
-   since the docs pre-check 2026-11-10. */
+/* A long title breaks anywhere rather than widen the window. */
 .sf-modal-title {
-  font-size: var(--sf-text--size-2);
-  line-height: var(--sf-text--height-2);
-  font-weight: var(--sf-font-weight-bold);
   overflow-wrap: anywhere;
+}
+
+/* A question window's title (C39): C21's h4 step in bold, 20 on 28, where
+   every other window's title is the heading-3 step above (C44). Headings do
+   not follow density (dispatcher, pair next 2): the step is the heading
+   ladder's and the line the title ladder's, both the same in a compact
+   region, so a compact question keeps its title. Scoped to the question
+   size: a page-wide rule here outranked C44's and drew every window's title
+   at 20 (compact 16). */
+.sf-modal--size-question .sf-modal-title {
+  font-size: var(--sf-heading-4--size);
+  line-height: var(--sf-title--height-6);
+  font-weight: var(--sf-font-weight-bold);
 }
 
 @media (prefers-reduced-motion: reduce) {
