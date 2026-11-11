@@ -99,8 +99,20 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   @each $c in $sf-place-colours { $list: list.append($list, '.bg-#{$c}#{$suffix}', $separator: comma); }
   @return $list;
 }
-$sf-place-strong-selectors: list.join(sf-place-selector-list(),
-  (':is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip)',), $separator: comma);
+// The alert bar's levels written out arm by arm, never as :is(...) :is(...):
+// the build's :is() fallback (postcss-is-pseudo-class) joins such a pair
+// inside :where() into one compound class, `.sf-alert-bar--error.sf-alert-bar-row`,
+// which no alert bar has, so the take-back never reached a bar's row.
+@function sf-place-alert-bar-selectors() {
+  $list: ();
+  @each $level in ('error', 'danger', 'warning', 'info') {
+    @each $part in ('row', 'strip') {
+      $list: list.append($list, '.sf-alert-bar--#{$level} .sf-alert-bar-#{$part}', $separator: comma);
+    }
+  }
+  @return $list;
+}
+$sf-place-strong-selectors: list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma);
 $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf-place-selector-list('-container'), $separator: comma),
   ('.sf-surface-media',), $separator: comma);
 

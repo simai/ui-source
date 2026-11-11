@@ -351,8 +351,9 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   assert.match(rule(`${enabled}:active`), /var\(--sf-surface-state-active\)/u);
   assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
   // A column's open branch is not filled; a row's open branch -- first level
-  // and panel row -- has the neutral select plate (C30, R060), and only there.
-  assert.equal((block.match(/--sf-surface-state-select/gu) || []).length, 1);
+  // and panel row -- has the neutral select plate (C30, R060); beside the
+  // hover (C42 item 5) nothing else in the block reads it.
+  assert.equal((block.match(/--sf-surface-state-select/gu) || []).length, 2);
   assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-state-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
