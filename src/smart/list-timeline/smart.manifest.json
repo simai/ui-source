@@ -318,7 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "d8a248df6b9d8a5187e6aae10430d61aa69e3ade71507446bdd06543375aa198"
+        "sha256": "f42cbf48a9335a9064093d7fe483411e9dcaae4017807fd62b256d7e0112f46f"
+      },
+      {
+        "path": "src/smart/list-timeline/js/runs.mjs",
+        "sha256": "352c639544e02bfceac4a4901d7d1d3202000f20c3cb4e88299f4f4fb9cc1cf4"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
