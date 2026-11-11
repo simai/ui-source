@@ -162,8 +162,15 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 
 - The pairs are the status roles' pairs: `bg-hue` with `color-on-hue`,
   `bg-hue-container` with `color-on-hue-container`. `color-hue` is coloured
-  text on the page or a card, as `color-primary` is; the graphic role is for a
-  dot or a glyph.
+  text on the page or a card, as `color-primary` is.
+- `color-on-hue-container-graphic` and `fill-hue-container-graphic` are for
+  graphics, not for text: a dot, an icon, a chart mark, a line. They pass the
+  3:1 a graphic needs (WCAG 1.4.11) and not the 4.5:1 of text (1.4.3). Across
+  the sixteen hues, light: 4.46:1 to 4.50:1 on white, 4.26:1 to 4.30:1 on the
+  page's surface, 3.59:1 to 3.72:1 on the hue's own plate
+  (`bg-hue-container`); dark: 5.40:1 to 5.46:1 on the surface, 4.12:1 to
+  4.32:1 on the plate. Text in a hue is `color-on-hue-container` on the plate
+  or `color-hue` on the page.
 - The `.sf-hue-<name>` may sit on the element or an ancestor. Without one the
   role is not declared: a background is transparent, a border takes the text
   colour, a text or fill colour is the parent's.
