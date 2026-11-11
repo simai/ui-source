@@ -62,7 +62,9 @@ test('a pinned tab gives way to the current one, and only a lone current tab is 
 
 test('the row is laid out with the width «Ещё (n)» will have with its new count', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
-  assert.match(layout, /const next = choose\(room\(\) - \(measure\(label\(hosts\.length - kept\.length\)\) - measure\(drawn\)\)\);/u);
+  assert.match(layout, /const extra = measure\(label\(count\)\) - drawn;/u);
+  assert.match(layout, /if \(hosts\.length - chosen\.length === count\) kept = chosen;/u);
+  assert.match(layout, /kept \?\?= choose\(free - Math\.max\(\.\.\.besides\)\);/u);
   assert.match(source, /function textWidth\(element\) \{/u);
   assert.match(JSON.stringify(manifest['x-decisions'][0]), /C54 return D2/u);
 });

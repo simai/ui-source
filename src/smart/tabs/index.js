@@ -752,18 +752,30 @@ class SfTabs extends TabsElement {
       // one width: the row laid out beside «Ещё (7)» stood 2 px past its room
       // beside «Ещё (4)» until the trigger's resize laid it out again (C54
       // return D2, 390 px, underline, current last, 590 px box). The room is
-      // taken with the width the trigger will have with the count it gets.
+      // taken with the width the trigger will have with the count it gets,
+      // measured in its text face: the row with the most tabs that fits
+      // beside its own count. Taking the count the trigger drew instead left
+      // a row that came back from a narrower box with fewer tabs than it had
+      // at load (330 px, underline: «Архив» beside «Ещё (8)», where «Обзор,
+      // Архив» fit beside «Ещё (7)»).
+      const free = room();
       const label = (count) => `${this.text('more')} (${count})`;
       const textBox = more?.querySelector(':scope > button .sf-button-text-container');
-      const drawn = textBox?.textContent.trim() ?? '';
       const measure = textBox ? textWidth(textBox) : null;
-      kept = choose(room());
-      for (let pass = 0; measure && pass < 3; pass += 1) {
-        const next = choose(room() - (measure(label(hosts.length - kept.length)) - measure(drawn)));
-        if (next.length === kept.length) break;
-        // When the counts take turns, the shorter row is kept: it fits beside both.
-        if (pass < 2 || next.length < kept.length) kept = next;
+      kept = null;
+      if (measure) {
+        const drawn = measure(textBox.textContent.trim());
+        const besides = [];
+        for (let count = 1; count < hosts.length && !kept; count += 1) {
+          const extra = measure(label(count)) - drawn;
+          besides.push(extra);
+          const chosen = choose(free - extra);
+          if (hosts.length - chosen.length === count) kept = chosen;
+        }
+        // No count agrees with its row: the row that fits beside the widest.
+        kept ??= choose(free - Math.max(...besides));
       }
+      kept ??= choose(free);
       // The current tab alone is wider than the row: it alone may be
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
       if (kept.length === 1 && kept[0] === activeAt && span(kept) > room() + 0.5) {
