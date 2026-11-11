@@ -511,10 +511,14 @@ function defineActions(target, actions, implementations, events) {
   }
 }
 
-// The nearest closed container (§7.2.1): `hidden`, a closed <details> or
-// <dialog>. What has no box in an opened container is not shown.
 // A region the Loader's page scan passes by (loader.js OBSERVER_IGNORE_SELECTOR).
 const IGNORED_REGION = '[data-sf-observer="ignore"]';
+
+// Two class lists that differ in sf-icon-loaded alone, the Loader's own mark.
+function sameClasses(before, after) {
+  const tokens = (value) => String(value ?? '').split(/\s+/u).filter((token) => token && token !== 'sf-icon-loaded').sort().join(' ');
+  return tokens(before) === tokens(after);
+}
 
 /**
  * The class-markup glyphs (<i class="sf-icon">) of an element that is not on
@@ -525,11 +529,17 @@ const IGNORED_REGION = '[data-sf-observer="ignore"]';
  * so they draw when they like: the sortable's inserter, a toolbar on a
  * selection. While the element is placed in such a region, what it holds now
  * and every glyph added or renamed under it later goes to
- * SF.Loader.adoptStaticIcons, which asks for it and marks it loaded. Outside
- * a region the page scan finds them, and nothing is watched. Answers the
- * observer to stop, or null.
+ * SF.Loader.adoptStaticIcons, which asks for it and marks it loaded. A
+ * rename is any of the ways the Loader's page observer sees one: the glyph's
+ * text, its data-icon (read before the text, iconSubsetRuntime.js
+ * getTrackedStaticIconAttrs), and its class -- an element that becomes an
+ * sf-icon, or a weight or size class. sf-icon-loaded, which the Loader itself
+ * writes, is no change, so marking a glyph never asks for it again. Outside a
+ * region the page scan finds them, and nothing is watched. Answers the
+ * observer to stop, or null. Exported for the unit test
+ * (tests/ignored-region-glyphs.contract.test.mjs), not a public name.
  */
-function watchIgnoredGlyphs(element) {
+export function watchIgnoredGlyphs(element) {
   if (!element.closest?.(IGNORED_REGION)) return null;
   const Observer = globalThis.MutationObserver;
   const adopt = (root) => {
@@ -551,6 +561,14 @@ function watchIgnoredGlyphs(element) {
   const observer = new Observer((records) => {
     const roots = new Set();
     for (const record of records) {
+      if (record.type === 'attributes') {
+        const glyph = record.target;
+        if (!glyph.classList?.contains?.('sf-icon')) continue;
+        const now = glyph.getAttribute(record.attributeName);
+        if (record.attributeName === 'class' ? sameClasses(record.oldValue, now) : record.oldValue === now) continue;
+        roots.add(glyph);
+        continue;
+      }
       if (record.type === 'characterData') {
         const glyph = record.target.parentElement?.closest?.('.sf-icon');
         if (glyph) roots.add(glyph);
@@ -563,10 +581,15 @@ function watchIgnoredGlyphs(element) {
     }
     for (const root of roots) if (root.isConnected) adopt(root);
   });
-  observer.observe(element, {childList: true, subtree: true, characterData: true});
+  observer.observe(element, {
+    childList: true, subtree: true, characterData: true,
+    attributes: true, attributeFilter: ['class', 'data-icon'], attributeOldValue: true,
+  });
   return observer;
 }
 
+// The nearest closed container (§7.2.1): `hidden`, a closed <details> or
+// <dialog>. What has no box in an opened container is not shown.
 function isShown(element) {
   if (!element.isConnected) return false;
   for (let node = element; node && node.nodeType === 1; node = node.parentElement || node.getRootNode?.()?.host) {

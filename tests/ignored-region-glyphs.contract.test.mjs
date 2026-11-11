@@ -46,12 +46,12 @@ test('the Loader asks for adopted glyphs and marks them when their font is in', 
 test('an element on a plain base hands an ignored region\'s glyphs to the Loader as it adds them', () => {
   const manifest = read('src/core/js/element-manifest.js');
   assert.match(manifest, /const IGNORED_REGION = '\[data-sf-observer="ignore"\]';/u);
-  const watch = manifest.slice(manifest.indexOf('function watchIgnoredGlyphs(element) {'), manifest.indexOf('function isShown(element) {'));
+  const watch = manifest.slice(manifest.indexOf('export function watchIgnoredGlyphs(element) {'), manifest.indexOf('// The nearest closed container'));
   assert.ok(watch.length > 0);
   assert.match(watch, /if \(!element\.closest\?\.\(IGNORED_REGION\)\) return null;/u);
   assert.match(watch, /loader\.adoptStaticIcons\(root\);/u);
   assert.match(watch, /addEventListener\?\.\('sf-loader-ready', [\s\S]*?\{once: true\}\);/u);
-  assert.match(watch, /observer\.observe\(element, \{childList: true, subtree: true, characterData: true\}\);/u);
+  assert.match(watch, /observer\.observe\(element, \{\s*childList: true, subtree: true, characterData: true,\s*attributes: true, attributeFilter: \['class', 'data-icon'\], attributeOldValue: true,\s*\}\);/u);
   // Only where the Smart base does not hand them over itself, and stopped when the element leaves.
   assert.match(manifest, /if \(typeof this\.adoptIgnoredGlyphs !== 'function'\) \{\s*this\.__sfGlyphWatch\?\.disconnect\(\);\s*this\.__sfGlyphWatch = watchIgnoredGlyphs\(this\);/u);
   assert.match(manifest, /disconnectedCallback\(\) \{\s*super\.disconnectedCallback\?\.\(\);\s*this\.__sfGlyphWatch\?\.disconnect\(\);\s*this\.__sfGlyphWatch = null;/u);
@@ -59,3 +59,92 @@ test('an element on a plain base hands an ignored region\'s glyphs to the Loader
     assert.match(read(path), /elementFromManifest\(manifest, \{/u, `${path} builds its element through elementFromManifest`);
   }
 });
+
+// The watch itself, driven with stand-ins for the DOM (no browser): what it
+// hands over, what it leaves alone, and how it waits for a late Loader. The
+// built bytes are held by tests/browser/ignored-region-glyphs.browser.mjs.
+const {watchIgnoredGlyphs} = await import('../src/core/js/element-manifest.js');
+
+function stage({inRegion = true, loader = true} = {}) {
+  const adopted = [];
+  const listeners = [];
+  const observers = [];
+  globalThis.MutationObserver = class {
+    constructor(callback) { this.callback = callback; this.connected = false; observers.push(this); }
+    observe(target, options) { this.target = target; this.options = options; this.connected = true; }
+    disconnect() { this.connected = false; }
+  };
+  globalThis.SF = loader ? {Loader: {adoptStaticIcons: (root) => { adopted.push(root); return 0; }}} : {};
+  globalThis.addEventListener = (type, listener, options) => listeners.push({type, listener, options});
+  const element = {
+    isConnected: true,
+    region: inRegion,
+    closest(selector) { return selector === '[data-sf-observer="ignore"]' && this.region ? {} : null; },
+  };
+  const glyph = (classes, attributes = {}) => ({
+    nodeType: 1, isConnected: true,
+    classList: {contains: (name) => classes.split(' ').includes(name)},
+    getAttribute: (name) => (name === 'class' ? classes : attributes[name] ?? null),
+  });
+  return {adopted, listeners, observers, element, glyph};
+}
+
+test('outside an ignored region nothing is watched and nothing is handed over', () => {
+  const {adopted, observers, element} = stage({inRegion: false});
+  assert.equal(watchIgnoredGlyphs(element), null);
+  assert.equal(observers.length, 0);
+  assert.equal(adopted.length, 0);
+});
+
+test('inside a region the element is handed over at once, then what is added or renamed under it', () => {
+  const {adopted, observers, element, glyph} = stage();
+  const observer = watchIgnoredGlyphs(element);
+  assert.equal(observer, observers[0]);
+  assert.deepEqual(adopted, [element]);
+  assert.deepEqual(observer.options.attributeFilter, ['class', 'data-icon']);
+  assert.equal(observer.options.attributeOldValue, true);
+  adopted.length = 0;
+
+  const added = glyph('sf-icon');
+  const renamed = glyph('sf-icon');
+  const byData = glyph('sf-icon', {'data-icon': 'forest'});
+  const became = glyph('sf-icon');
+  const marked = glyph('sf-icon sf-icon-loaded');
+  const weight = glyph('sf-icon sf-icon--weight-bold');
+  const notGlyph = glyph('row', {'data-icon': 'x'});
+  const gone = {...glyph('sf-icon'), isConnected: false};
+  observer.callback([
+    {type: 'childList', addedNodes: [added, {nodeType: 3, parentElement: null}, gone]},
+    {type: 'characterData', target: {parentElement: {closest: () => renamed}}},
+    {type: 'attributes', target: byData, attributeName: 'data-icon', oldValue: null},
+    {type: 'attributes', target: became, attributeName: 'class', oldValue: ''},
+    {type: 'attributes', target: marked, attributeName: 'class', oldValue: 'sf-icon'},
+    {type: 'attributes', target: weight, attributeName: 'class', oldValue: 'sf-icon sf-icon-loaded'},
+    {type: 'attributes', target: notGlyph, attributeName: 'data-icon', oldValue: null},
+  ]);
+  // The Loader's own sf-icon-loaded mark is no rename, so marking never asks again.
+  assert.deepEqual(adopted, [added, renamed, byData, became, weight]);
+});
+
+test('placed before the Loader: the element waits for sf-loader-ready once and is handed over then', () => {
+  const {adopted, listeners, element} = stage({loader: false});
+  watchIgnoredGlyphs(element);
+  watchIgnoredGlyphs(element);
+  assert.equal(adopted.length, 0);
+  assert.equal(listeners.length, 1);
+  assert.equal(listeners[0].type, 'sf-loader-ready');
+  assert.equal(listeners[0].options.once, true);
+  globalThis.SF.Loader = {adoptStaticIcons: (root) => { adopted.push(root); return 0; }};
+  listeners[0].listener();
+  assert.deepEqual(adopted, [element]);
+});
+
+test('a Loader that arrives after the element left the region hands nothing over', () => {
+  const {adopted, listeners, element} = stage({loader: false});
+  watchIgnoredGlyphs(element);
+  element.region = false;
+  globalThis.SF.Loader = {adoptStaticIcons: (root) => { adopted.push(root); return 0; }};
+  listeners[0].listener();
+  assert.equal(adopted.length, 0);
+});
+
