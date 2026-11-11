@@ -450,7 +450,7 @@ count}`: слова без пробелов по краям (пусто, ког�
 | `--sf-menu-item-background-color` | Заливка строки | `var(--sf-transparent)` |
 | `--sf-menu-item-border-color` | Цвет тонкой рамки строки | `var(--sf-surface-container)` |
 | `--sf-menu-item-radius` | Скругление строки | `var(--sf-radius--ui)` |
-| `--sf-menu-submenu-background-color` | Заливка панели строки | `var(--sf-elevation-2--surface)` |
+| `--sf-menu-submenu-background-color` | Заливка панели строки | `var(--sf-surface-popup)` |
 | `--sf-menu-submenu-border-color` | Рамка панели строки | `var(--sf-outline-variant)` |
 | `--sf-menu-submenu-radius` | Скругление панели строки | `var(--sf-radius--ui)` |
 | `--sf-menu-sticky-top` | Отступ от верха окна у меню со `sticky` | `0` |
