@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__pattern' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// PATTERN, the numbered SF4 tiles (DEPRECATED, journal record
+// utility-c57-pattern-numbered, remove_after 2027-01-01). Unchanged from
+// before C57 so the built rules stay byte-identical.
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $pattern_number, $pattern_value in $background-pattern-array {
+            .#{$infix}pattern-#{$pattern_number} {
+                background: $pattern_value;
+            }
+        }
+    }
+// }
+}

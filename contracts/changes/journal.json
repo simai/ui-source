@@ -10403,9 +10403,9 @@
     {
       "id": "utility-c57-pattern-numbered",
       "recorded_on": "2026-11-11",
-      "stage": "removed",
+      "stage": "compat",
       "kind": "utility",
-      "summary": "The numbered patterns pattern-1 ... pattern-9 (SF4's bg-p3, p4, p1, p2, p16, p11, p12, p20, p13, and their sm: ... xxl: forms) are gone. They were 2-4 px black pixel tiles set with the background shorthand, so they wiped the element's own background, took no colour, vanished on a dark surface and shimmered at fractional screen scaling. Owner decision C57 (2026-11-11): they are replaced by the six patterns of the pattern utility, not carried over, so no alias was kept. Each item names the nearest new pattern; the look is not the same.",
+      "summary": "The numbered patterns pattern-1 ... pattern-9 (SF4's bg-p3, p4, p1, p2, p16, p11, p12, p20, p13, and their sm: ... xxl: forms) are deprecated and draw unchanged until remove_after. They were 2-4 px black pixel tiles set with the background shorthand, so they wiped the element's own background, took no colour, vanished on a dark surface and shimmered at fractional screen scaling. Owner decision C57 (2026-11-11): they are replaced by the six patterns of the pattern utility; the dispatcher (2026-11-11) keeps them for the usual transition, since ui-doc and consumers still use them. Each item names the nearest new pattern; the look is not the same, so the rewrite is manual. The breakpoint forms have no new counterpart: a pattern does not change with the breakpoint.",
       "items": [
         {
           "from": "pattern-1",
@@ -10455,7 +10455,6 @@
       ],
       "deprecated_on": "2026-11-11",
       "remove_after": "2027-01-01",
-      "removed_on": "2026-11-11",
       "rewrite": "manual",
       "examples": {
         "before": "<section class=\"pattern-6\">",

@@ -2,7 +2,7 @@
 // simai.backgrounds): six static patterns, the shape a colourless mask, the
 // ink a palette role or hue at a fill step of the alpha scale, the cell a
 // step of the space ladder, a fade for text. The numbered SF4 tiles
-// pattern-1...9 are gone; the stripes join on a transition.
+// pattern-1...9 and the stripes are deprecated and stay on a transition.
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
 import {resolve, dirname} from 'node:path';
@@ -93,7 +93,7 @@ test('a layer under the content: the element keeps its background', () => {
   assert.doesNotMatch(sheet, /^\s*background:/mu, 'no background shorthand');
 });
 
-test('the rule loads every class and nothing of the numbered tiles', () => {
+test('the rule loads every class, and the numbered tiles until their removal', () => {
   const source = read('src/utility/pattern/default/rule.js').match(/new RegExp\((".*")\)/u)[1];
   const rule = new RegExp(JSON.parse(source), 'u');
   const colours = ['neutral', 'primary', 'secondary', 'tertiary', 'error', 'warning', 'success', 'info', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray'];
@@ -106,14 +106,20 @@ test('the rule loads every class and nothing of the numbered tiles', () => {
   ];
   assert.equal(names.length, 49);
   for (const name of names) assert.match(name, rule, name);
-  for (const name of ['pattern-1', 'pattern-9', 'pattern-strength-32', 'pattern-size-0', 'pattern-color-white', 'pattern-dots ']) assert.doesNotMatch(name, rule, name);
-  for (const condition of ['sm', 'md', 'lg', 'xl', 'xxl']) assert.ok(!existsSync(resolve(root, `src/utility/pattern/${condition}`)), `pattern/${condition} is gone`);
+  for (const name of ['pattern-10', 'pattern-strength-32', 'pattern-size-0', 'pattern-color-white', 'pattern-dots ']) assert.doesNotMatch(name, rule, name);
+  // The numbered tiles and their breakpoint forms draw as before until
+  // remove_after (journal utility-c57-pattern-numbered).
+  for (let number = 1; number <= 9; number++) assert.match(`pattern-${number}`, rule);
+  for (const condition of ['sm', 'md', 'lg', 'xl', 'xxl']) assert.ok(existsSync(resolve(root, `src/utility/pattern/${condition}/rule.js`)), `pattern/${condition} stays`);
+  assert.match(read('src/utility/pattern/default/scss/index.scss'), /@use 'sf_css__pattern_numbered';/u);
+  assert.match(vars, /\$background-pattern-array: \(/u);
 });
 
-test('the numbered tiles are a tombstone and the stripes a transition', () => {
+test('the numbered tiles and the stripes are on a transition', () => {
   const journal = JSON.parse(read('contracts/changes/journal.json'));
   const numbered = journal.records.find((record) => record.id === 'utility-c57-pattern-numbered');
-  assert.equal(numbered.stage, 'removed');
+  assert.equal(numbered.stage, 'compat');
+  assert.equal(numbered.removed_on, undefined);
   assert.deepEqual(numbered.items.map(({from}) => from), Array.from({length: 9}, (_, index) => `pattern-${index + 1}`));
   assert.ok(numbered.items.every(({to}) => SHAPES.map((shape) => `pattern-${shape}`).includes(to)));
   const stripes = journal.records.find((record) => record.id === 'utility-c60-stripe-into-pattern');
