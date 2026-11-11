@@ -72,3 +72,7 @@ focus was inside the removed notice.
 Exit motion uses Framework duration/easing tokens and is removed under
 `prefers-reduced-motion`. Late ordinary alerts use the same delegated behavior;
 Smart Alert keeps ownership of its own root without duplicate events.
+
+The line-size rule for icons reaches only the alert's own status icon, as its
+status colour does: an icon button inside the alert keeps its own glyph size
+(review R-N1, 2026-11-11).

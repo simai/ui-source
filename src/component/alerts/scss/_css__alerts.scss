@@ -116,7 +116,11 @@
   border-color: var(--sf-close-icon--border-color, transparent);
 }
 
-.sf-alert .sf-icon {
+/* The size, like the status colour below, is the notice's own icon only
+   (review R-N1): it reached every icon in the notice, so an icon button
+   inside drew its glyph at the line's size instead of its own. */
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
   --sf-icon--font-size: var(--sf-text-height-1);
   --sf-icon--height: var(--sf-text-height-1);
   --sf-icon--width: var(--sf-text-height-1);
