@@ -48,3 +48,21 @@ test('the row is laid out again when the trigger, a late tab or the text face ch
   assert.match(source, /removeEventListener\?\.\('loadingdone', this\._fontsListener\)/u);
   assert.match(source, /this\.syncTabSemantics\(\);\s*\/\/ A tab drawn after the row was laid out has its width only now\.\s*this\.scheduleOverflow\(\);/u);
 });
+
+// C54 return (2026-11-11), measured by ui-control evidence 2026-11-11-tabs-overflow-r2.
+test('a pinned tab gives way to the current one, and only a lone current tab is shortened', () => {
+  const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
+  assert.match(layout, /\?\? next\.slice\(\)\.reverse\(\)\.find\(\(at\) => at !== activeAt\);/u);
+  assert.match(layout, /if \(kept\.length === 1 && kept\[0\] === activeAt && span\(kept\) > room\(\) \+ 0\.5\) \{\s*hosts\[activeAt\]\.classList\.add\('sf-tabs-squeezed'\);/u);
+  assert.match(layout, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed'\);/u);
+  const docs = read('src/smart/tabs/docs/docs.md');
+  assert.match(docs, /закреплённая уступает место выбранной/u);
+  assert.match(JSON.stringify(manifest['x-decisions'][0]), /C54 return D1/u);
+});
+
+test('the row is laid out with the width «Ещё (n)» will have with its new count', () => {
+  const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
+  assert.match(layout, /const next = choose\(room\(\) - \(measure\(label\(hosts\.length - kept\.length\)\) - measure\(drawn\)\)\);/u);
+  assert.match(source, /function textWidth\(element\) \{/u);
+  assert.match(JSON.stringify(manifest['x-decisions'][0]), /C54 return D2/u);
+});

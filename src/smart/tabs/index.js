@@ -39,6 +39,19 @@ function tabIndexOf(element) {
   return own !== undefined && Number.isInteger(index) ? index : null;
 }
 
+// The width a text takes in the face of an element, for a text it does not
+// draw yet (the «Ещё (n)» count before its button draws it).
+let measureCanvas = null;
+function textWidth(element) {
+  const style = getComputedStyle(element);
+  measureCanvas ??= globalThis.document?.createElement('canvas') ?? null;
+  const context = measureCanvas?.getContext?.('2d');
+  if (!context) return null;
+  context.font = style.font;
+  if ('letterSpacing' in context) context.letterSpacing = style.letterSpacing === 'normal' ? '0px' : style.letterSpacing;
+  return (text) => context.measureText(text).width;
+}
+
 function parseItems(items = '') {
   // The list as JSON in the attribute reads like the property.
   if (typeof items === 'string' && items.trim().startsWith('[')) {
@@ -703,11 +716,6 @@ class SfTabs extends TabsElement {
     let kept = fits(room());
     if (kept) {
       showMore(true);
-      kept = fits(room()) ?? hosts.map((_, at) => at);
-      // The pinned tabs and the active one always stay in the row: the last
-      // kept tabs that are neither give way to them. (Only the active one did:
-      // at 375px a pinned first tab went into «Ещё» beside an active one,
-      // docs trial 5.)
       const items = this.computedItems;
       const must = hosts.map((host, at) => at).filter((at) => {
         const index = tabIndexOf(hosts[at]);
@@ -715,22 +723,46 @@ class SfTabs extends TabsElement {
       });
       const activeAt = hosts.findIndex((host) => tabIndexOf(host) === this.activeIndex);
       const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
-      const missing = must.filter((at) => !kept.includes(at));
-      if (missing.length) {
-        const next = [...kept, ...missing];
-        while (span(next) > room() + 0.5) {
-          // The last kept tabs that are neither pinned nor current go first;
-          // then, when the pinned tabs and the current one still do not fit
-          // beside «Ещё», a pinned tab gives way to the current one, the last
-          // pinned first (contract call on the C54 return D1, 2026-11-11: a
-          // pinned first tab and a current sixth one stood clipped, the
-          // current one under the trigger, in 300-430 px boxes).
-          const dropAt = next.slice().reverse().find((at) => !must.includes(at))
-            ?? next.slice().reverse().find((at) => at !== activeAt);
-          if (dropAt === undefined) break;
-          next.splice(next.indexOf(dropAt), 1);
+      const choose = (available) => {
+        let chosen = fits(available) ?? hosts.map((_, at) => at);
+        // The pinned tabs and the active one always stay in the row: the last
+        // kept tabs that are neither give way to them. (Only the active one did:
+        // at 375px a pinned first tab went into «Ещё» beside an active one,
+        // docs trial 5.)
+        const missing = must.filter((at) => !chosen.includes(at));
+        if (missing.length) {
+          const next = [...chosen, ...missing];
+          while (span(next) > available + 0.5) {
+            // The last kept tabs that are neither pinned nor current go first;
+            // then, when the pinned tabs and the current one still do not fit
+            // beside «Ещё», a pinned tab gives way to the current one, the last
+            // pinned first (contract call on the C54 return D1, 2026-11-11: a
+            // pinned first tab and a current sixth one stood clipped, the
+            // current one under the trigger, in 300-430 px boxes).
+            const dropAt = next.slice().reverse().find((at) => !must.includes(at))
+              ?? next.slice().reverse().find((at) => at !== activeAt);
+            if (dropAt === undefined) break;
+            next.splice(next.indexOf(dropAt), 1);
+          }
+          chosen = next.sort((a, b) => a - b);
         }
-        kept = next.sort((a, b) => a - b);
+        return chosen;
+      };
+      // «Ещё (n)» draws its new count a task later, and the digits are not of
+      // one width: the row laid out beside «Ещё (7)» stood 2 px past its room
+      // beside «Ещё (4)» until the trigger's resize laid it out again (C54
+      // return D2, 390 px, underline, current last, 590 px box). The room is
+      // taken with the width the trigger will have with the count it gets.
+      const label = (count) => `${this.text('more')} (${count})`;
+      const textBox = more?.querySelector(':scope > button .sf-button-text-container');
+      const drawn = textBox?.textContent.trim() ?? '';
+      const measure = textBox ? textWidth(textBox) : null;
+      kept = choose(room());
+      for (let pass = 0; measure && pass < 3; pass += 1) {
+        const next = choose(room() - (measure(label(hosts.length - kept.length)) - measure(drawn)));
+        if (next.length === kept.length) break;
+        // When the counts take turns, the shorter row is kept: it fits beside both.
+        if (pass < 2 || next.length < kept.length) kept = next;
       }
       // The current tab alone is wider than the row: it alone may be
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
