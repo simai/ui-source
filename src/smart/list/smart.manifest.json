@@ -762,7 +762,7 @@
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "70d5a73fcbbc3c219a634bd16e9d8d0830a6d381e7df2f49445c7a9607e1feaa"
+        "sha256": "89cf255ba585ba88581c24120ea058c18fa482f900a11aa8506e80c407a3a6fa"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -774,7 +774,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "a23be6163da545964bfc41aa28cb60c261d187fc16d8e05bb96e8a60976c2301"
+        "sha256": "f1975cc29b487ecda62f3789c1c5e411488eedf357fff7f0c5d8f82e950b7449"
       },
       {
         "path": "src/smart/list/lang/en.json",
