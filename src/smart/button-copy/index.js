@@ -17,6 +17,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {createCopyFeedback, readCopyText} from '../../core/js/copy-feedback.js';
 import BundledPosition from '../../core/js/position.js';
 import {instancePath, partId} from '../../core/js/instance-path.js';
+import {tagSelector} from '../../core/js/tag-aliases.js';
 import {preloadControlIcons} from '../helpers/cycle';
 import {renderCopyButtonTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -129,7 +130,9 @@ class SfCopyButton extends CopyButtonElement {
   // surface; this places it with SF.Position while it shows, and lets it go).
   placeResult() {
     const result = this.querySelector(':scope .sf-copy-button-result');
-    const control = this.querySelector(':scope .sf-copy-button > :is(sf-button, sf-button-icon)')?.querySelector('.sf-button, .sf-icon-button');
+    // The drawn control, under its current tag or an old one in its window.
+    const hosts = [tagSelector('sf-button'), tagSelector('sf-button-icon')].join(', ');
+    const control = this.querySelector(`:scope .sf-copy-button > :is(${hosts})`)?.querySelector('.sf-button, .sf-icon-button');
     if (!result || result.hidden || !control) {
       this.stopResult();
       return;

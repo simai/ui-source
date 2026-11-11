@@ -23,6 +23,7 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import BundledPosition from '../../../core/js/position.js';
 import { partId } from '../../../core/js/instance-path.js';
+import { isTag, tagSelector } from '../../../core/js/tag-aliases.js';
 import { noteDeprecated } from '../../../core/js/deprecations.js';
 import { copyText } from '../../../core/js/clipboard.js';
 import { createCopyFeedback, readCopyText, copyWord, DURATION } from '../../../core/js/copy-feedback.js';
@@ -148,7 +149,8 @@ function writeText(text, documentRef = document) {
 // What stands for the button in the page: an sf-button or sf-button-icon
 // host (display: contents) for its inner control, else the button.
 function outerOf(button) {
-  const host = button.parentElement?.closest?.('sf-button, sf-button-icon');
+  // Under their current names and the old ones still in their dated window.
+  const host = button.parentElement?.closest?.(`${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')}`);
   return host && host.contains(button) ? host : button;
 }
 
@@ -234,7 +236,7 @@ function ensureNameTooltip(button, controller) {
 function iconHandle(button) {
   const outer = outerOf(button);
   if (outer !== button) {
-    const attribute = outer.localName === 'sf-button-icon'
+    const attribute = isTag(outer, 'sf-button-icon')
       ? 'icon'
       : ['icon-start', 'icon-end', 'icon'].find(name => outer.hasAttribute(name));
     if (!attribute) return null;
