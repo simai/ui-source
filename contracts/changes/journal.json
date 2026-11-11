@@ -10428,6 +10428,8 @@
           "to": "error look and value-missing message after a failed check"
         }
       ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
       "rewrite": "none",
       "manual": "Nothing to change. A page that drew its own required message on the host's invalid event (invalid + error-message) keeps it: the page's error-message wins over the field's word.",
       "owner": "ui-source",

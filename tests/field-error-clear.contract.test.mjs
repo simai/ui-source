@@ -16,7 +16,8 @@ test('sf-input: the host\'s invalid/error is the state, and the classes follow i
   // off as well as on -- before the binding reads it.
   // `error` is a dated alias of `invalid` (standard 1.3.8 §17.2): writing it
   // writes invalid, so the host's invalid alone is the state.
-  assert.match(body, /const invalid = this\.invalid;/u);
+  // The required error a failed form check shows (ShownRequired) is part of it.
+  assert.match(body, /const invalid = this\.sfShownInvalid\(this\.invalid\);/u);
   assert.match(body, /this\._boundRoot\.classList\.toggle\('error', invalid\);/u);
   assert.match(body, /this\.getInputElement\(\)\?\.classList\.toggle\('error', invalid\);\s*bindInput\(this\._boundRoot\);/u);
   // The template draws aria-invalid from the same state and drops it when valid.
