@@ -323,7 +323,7 @@
   outline: none;
 }
 
-.sf-switch:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-switch-toggler {
+.sf-switch:has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-switch-toggler {
   --sf-switch-toggler--border-color: var(--sf-primary-hover);
 }
 

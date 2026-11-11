@@ -163,7 +163,7 @@
 }
 
 @layer sf.states {
-  .sf-checkbox:not(.error):has(input:not(:checked)) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:checked) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox.error:has(input:not(:checked)) .sf-checkbox-label {
+  .sf-checkbox:not(.error):has(input:not(:checked)) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:checked) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox.error:has(input:not(:checked)) .sf-checkbox-label {
     --sf-checkbox-label--color: var(--sf-on-surface);
   }
 
@@ -239,7 +239,7 @@
   }
 
 
-  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover) .sf-checkbox-box {
+  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-checkbox-box {
     --sf-checkbox-box--border-color: var(--sf-primary-hover);
   }
 

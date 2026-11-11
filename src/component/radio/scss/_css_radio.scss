@@ -235,7 +235,7 @@
 }
 
 
-.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-radio-button-box {
+.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-primary-hover);
 }
 
