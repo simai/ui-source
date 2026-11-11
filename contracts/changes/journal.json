@@ -10374,6 +10374,43 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "behaviour-choice-help-text",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0: help holds the explanation text, shown by a «?» button (sf-help-mark) after the label; a press on it opens the explanation and never changes the control (audit 2026-11-11, W1). It was an icon name drawn as a decorative icon inside the label, so an icon name passed today shows as the explanation's text.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the explanation in help (one or two short sentences) in place of an icon name. A page that wanted only a picture beside the label puts it in the label slot; an explanation with a link or a heading goes in the help slot as an sf-help-mark of its own.",
+      "examples": {
+        "before": "<sf-switch label=\"Синхронизация\" help=\"info\"></sf-switch>",
+        "after": "<sf-switch label=\"Синхронизация\" help=\"Через мобильную сеть синхронизация не идёт.\"></sf-switch>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/checkable-text-helper.js keepHelpOutOfLabel"
     }
   ]
 }
