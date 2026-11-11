@@ -1,5 +1,5 @@
 SF.RuleLoader.clipboard = {
-  regex: /(?:sf-clipboard|btn-clipboard|data-copy|data-clipboard-target)/,
+  regex: /(?:data-sf-copy|data-sf-copy-target|sf-clipboard|btn-clipboard|data-copy|data-clipboard-target)/,
   type: 'component',
   js: true,
   css: true,
@@ -7,5 +7,6 @@ SF.RuleLoader.clipboard = {
     { name: 'icon-buttons' },
     { name: 'buttons' },
     { name: 'icons' },
+    { name: 'tooltip' },
   ],
 };

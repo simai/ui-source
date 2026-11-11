@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.clipboard",
   "kind": "component",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/clipboard/index.js",
@@ -12,7 +12,7 @@
     "src/component/clipboard/scss/_sf_copy.scss",
     "src/component/clipboard/scss/index.scss"
   ],
-  "content_sha256": "358c19c959915b70ccdf7b613205792c25bb11babe553ab36adc4c63431aaf83",
+  "content_sha256": "4ee1e21e212c9168a96b6ca0704c88122e8f2a19631d8225014a5481de314fab",
   "dependencies": [
     {
       "id": "component.buttons",
@@ -25,6 +25,10 @@
     {
       "id": "component.icons",
       "range": "^1.0.0"
+    },
+    {
+      "id": "component.tooltip",
+      "range": "^1.2.3"
     },
     {
       "id": "core.runtime",
@@ -56,10 +60,6 @@
     },
     {
       "id": "tokens.space",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.typography",
       "range": "^1.0.0"
     }
   ]

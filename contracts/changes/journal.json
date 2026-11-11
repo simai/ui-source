@@ -9928,6 +9928,74 @@
       },
       "owner": "ui-source",
       "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
+    },
+    {
+      "id": "class-clipboard-to-data-sf-copy",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "A button copies by what it says, not by a class (owner decision C48): any <button>, sf-button or sf-button-icon with data-sf-copy=\"text\" or data-sf-copy-target=\"#id\" copies and gives sf-button-copy's feedback. The class sf-clipboard (and btn-clipboard before it) keeps binding the button until remove_after and is noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard",
+          "to": "data-sf-copy",
+          "match": "(?<![\\w.-])sf-clipboard(?![\\w-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "btn-clipboard",
+          "to": "data-sf-copy",
+          "match": "(?<![\\w.-])btn-clipboard(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class sf-clipboard (or btn-clipboard) from the button and write what it copies as data-sf-copy (the text) or data-sf-copy-target (#id of the element whose value or text is copied); data-copy, data-target and data-clipboard-target become those (record attribute-clipboard-sources-to-data-sf-copy). The other classes of the button (sf-button, sf-icon-button, ...) stay. The sf-clipboard-* parts the component draws (-status, -fallback, -surface, --overlay, -1/-2/-3) are not this class and stay.",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-icon-button\" data-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\">",
+        "after": "<button class=\"sf-icon-button\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/js/index.js noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "attribute-clipboard-sources-to-data-sf-copy",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "What a copy button copies is named by data-sf-copy (the text) and data-sf-copy-target (#id) (owner decision C48). On a button with the class sf-clipboard the former names keep working until remove_after and are noted once in SF.deprecations: data-copy is data-sf-copy, data-target and data-clipboard-target are data-sf-copy-target.",
+      "items": [
+        {
+          "component": "clipboard",
+          "from": "data-copy",
+          "to": "data-sf-copy",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-copy="
+        },
+        {
+          "component": "clipboard",
+          "from": "data-target",
+          "to": "data-sf-copy-target",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-target="
+        },
+        {
+          "component": "clipboard",
+          "from": "data-clipboard-target",
+          "to": "data-sf-copy-target",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-clipboard-target="
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "On a copy button (class sf-clipboard or btn-clipboard) write data-sf-copy for data-copy and data-sf-copy-target for data-target or data-clipboard-target, and remove the class (record class-clipboard-to-data-sf-copy). Only these buttons: a data-target elsewhere on the page is another component's and stays.",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-icon-button\" data-clipboard-target=\"#key\" aria-label=\"Скопировать ключ\">",
+        "after": "<button class=\"sf-icon-button\" data-sf-copy-target=\"#key\" aria-label=\"Скопировать ключ\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
     }
   ]
 }

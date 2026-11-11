@@ -145,8 +145,11 @@ function ensureCopyButton(block, root, head) {
   }
   button = block.ownerDocument.createElement('button');
   button.type = 'button';
-  button.className = 'sf-highlight__copy sf-clipboard sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
-  button.dataset.target = `#${codeElementId}`;
+  button.className = 'sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
+  // The clipboard component's attribute route (decision C48): the block's
+  // code is copied whole, without its line numbers; the class sf-clipboard
+  // and data-target it used are deprecated until 2027-01-01.
+  button.dataset.sfCopyTarget = `#${codeElementId}`;
   button.dataset.status = `#${status.id}`;
   button.dataset.success = strings.success;
   button.setAttribute('aria-label', strings.label);
