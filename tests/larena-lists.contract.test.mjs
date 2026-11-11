@@ -72,7 +72,7 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
 
 test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C40), the connector, load-more after', () => {
   const manifest = json('src/smart/list-timeline/component.json');
-  assert.equal(manifest.version, '1.1.0');
+  assert.equal(manifest.version, '1.1.1');
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'title']);
   assert.deepEqual(manifest.settings.group.values, ['day', 'none']);
   assert.deepEqual(manifest.settings['time-format'].values, ['auto', 'relative', 'exact']);

@@ -67,6 +67,13 @@ sf-change[data-block] {
   overflow-wrap: anywhere;
 }
 
+/* A short value (up to 20 characters: a number and its unit, a phone
+   number, a name) stays whole on one line, in a sentence and in a list;
+   only a longer value wraps. */
+.sf-change .sf-change__whole {
+  white-space: nowrap;
+}
+
 /* list: one grid, the labels' column max-content. */
 .sf-change--list {
   display: grid;

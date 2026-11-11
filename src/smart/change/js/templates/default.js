@@ -11,9 +11,15 @@ import {html, nothing} from 'lit';
 //   labelled «Было» and «Стало».
 // An empty value is the word «пусто».
 
+// A short value -- a number and its unit, a phone number, a name -- stays
+// whole on one line (it reads wrong broken: «4,6 / кг»); only a longer one
+// wraps (dispatcher decision, C40 follow-up 2026-11-11).
+export const WHOLE_VALUE_MAX = 20;
+const whole = (text) => [...String(text).trim()].length <= WHOLE_VALUE_MAX;
+
 const value = (context, text, part) => (text === null
   ? html`<span class=${`sf-change__${part} sf-change__empty`}>${context.words.empty}</span>`
-  : html`<span class=${`sf-change__${part}`}>${text}</span>`);
+  : html`<span class=${whole(text) ? `sf-change__${part} sf-change__whole` : `sf-change__${part}`}>${text}</span>`);
 
 // The arrow and the new value are joined by a no-break space (the hidden word
 // is out of flow and makes no break), so the arrow never ends a line alone;
