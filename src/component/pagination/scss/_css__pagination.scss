@@ -384,3 +384,40 @@
   }
 }
 }
+
+/* C77 (owner 2026-11-11, dispatcher 2026-11-12): the page box is a number box,
+   not a value field, so it keeps the inset it had before C77 -- the size's
+   --sf-ui-<S>--space-x on the frame and --sf-ui-<S>--text-space-x on each side
+   of the number -- and with it its width. C77 alone made it 10 px narrower at
+   size 1 on a desktop. */
+@layer sf.components {
+  .sf-pagination .sf-pagination-page-input.sf-input--size-1 .sf-input-field {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, var(--sf-ui-1--space-x));
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, var(--sf-ui-1--space-x));
+  }
+
+  .sf-pagination .sf-pagination-page-input.sf-input--size-2 .sf-input-field {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, var(--sf-ui-2--space-x));
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, var(--sf-ui-2--space-x));
+  }
+
+  .sf-pagination .sf-pagination-page-input.sf-input--size-1\/2 .sf-input-field {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, var(--sf-ui-1\/2--space-x));
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, var(--sf-ui-1\/2--space-x));
+  }
+
+  .sf-pagination .sf-pagination-page-input.sf-input--size-1 .sf-input-field input {
+    --sf-input-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+    --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-pagination .sf-pagination-page-input.sf-input--size-2 .sf-input-field input {
+    --sf-input-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+    --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x);
+  }
+
+  .sf-pagination .sf-pagination-page-input.sf-input--size-1\/2 .sf-input-field input {
+    --sf-input-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+    --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+  }
+}

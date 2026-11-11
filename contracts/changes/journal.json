@@ -10435,7 +10435,7 @@
       "deprecated_on": "2026-11-11",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup. A page that set --sf-input-padding-inline, --sf-textarea-padding-inline or --sf-lookup-padding-inline keeps its value; a page that nudged text inside fields or list rows to line up with menus can drop that rule.",
+      "manual": "Nothing to rewrite in markup. A page that set --sf-input-padding-inline, --sf-textarea-padding-inline or --sf-lookup-padding-inline keeps its value; a page that nudged text inside fields or list rows to line up with menus can drop that rule. The sf-pagination page box is a number box and keeps its earlier inset and width.",
       "examples": {
         "before": "<sf-input label=\"Name\"></sf-input> (text at 25 px from the field edge, size 1)",
         "after": "<sf-input label=\"Name\"></sf-input> (text at 16 px, the menu and button inset)"
