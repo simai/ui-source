@@ -179,10 +179,13 @@
 }
 
 @layer sf.overrides {
+  /* A day off is told apart by the variant ink, not by the error red: red read
+     as a fault on every weekend (owner decision 2026-11-11 on docs pre-check
+     DP-02). The day keeps «выходной» in its name. */
   .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
-    --sf-datepicker-day-date--color: var(--sf-error);
+    --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
   }
   .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-info {
-    --sf-datepicker-day-info--color: var(--sf-error);
+    --sf-datepicker-day-info--color: var(--sf-on-surface-variant);
   }
 }
