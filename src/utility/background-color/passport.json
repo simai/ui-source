@@ -13,7 +13,7 @@
     "src/utility/background-color/default/scss/_sf_var__background_color.scss",
     "src/utility/background-color/default/scss/index.scss"
   ],
-  "content_sha256": "17571e85427d81b2951947912f33a456b14e0b57528e727eeebd23f9f4d84ada",
+  "content_sha256": "ed6002891e234e664e073d6178a7544e18efcb2c0fe437f2abe40ee3ce901b3c",
   "dependencies": [
     {
       "id": "tokens.colour",

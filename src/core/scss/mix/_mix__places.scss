@@ -93,10 +93,34 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
 // that is one of those steps passes it as $outline.
 $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--alfa-48))';
 
-@mixin sf-place($surface, $variant: null, $outline: null) {
+// The nested popup's boundary in the dark theme (contrast R3, 2026-11-11): the
+// theme's neutral-90 at 48 over the nested popup's step (neutral-30) is 2.98:1,
+// under WCAG 1.4.11, so a checkbox box, a switch track, a field or an outline
+// button there loses its edge. Opaque neutral-70 holds 4.07, the edge's own
+// contrast on the page (4.12). Light is white there and keeps the theme's.
+// Read from the place's own dim ink, as the container variant above.
+$sf-place-popup-nested-outline: 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-70))';
+
+@function sf-place-outline($variant) {
+  @if not $variant { @return null; }
+  @if string.index(meta.inspect($variant), 'popup-nested-variant') { @return $sf-place-popup-nested-outline; }
+  @return null;
+}
+
+// The light popup step, bg-surface-4 (neutral-85), as a place (contrast R3,
+// 2026-11-11): the popup's dim ink is neutral-40 because a light popup is
+// white; on neutral-85 it gave secondary text 4.38:1, a quiet ghost or outline
+// key 3.98 and a tonal key (neutral-35) 4.10. One step down holds them:
+// neutral-35 text 5.28 and key 4.75, neutral-30 on the tonal fill 5.42 and
+// 4.87. The dark halves are the popup's (80 and 90).
+$sf-place-step4-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-80))';
+$sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-neutral-90))';
+
+@mixin sf-place($surface, $variant: null, $outline: null, $container-variant: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
-  $container-variant: sf-place-container-variant($variant);
+  @if not $container-variant { $container-variant: sf-place-container-variant($variant); }
+  @if not $outline { $outline: sf-place-outline($variant); }
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
