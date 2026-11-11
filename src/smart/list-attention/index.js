@@ -491,7 +491,10 @@ class SfListAttention extends ListAttentionElement {
         icon: ICONS[one],
         text: this.sfWord(`summary-${one}`, {count: counts[one]}),
       })),
+      // The same summary as one line of text, for a narrow column (C45).
+      summaryLine: STATUSES.filter((one) => counts[one]).map((one) => this.sfWord(`summary-${one}`, {count: counts[one]})).join(' · '),
       empty: this.empty === 'none' ? 'none' : 'line',
+      quietTitle: this.emptyText,
       emptyLine: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
       checked,
       checkedLine: checked ? this.sfWord('checked-text', {vars: {when: checked}}) : '',

@@ -65,6 +65,9 @@ const TONES = new Set(["neutral", "info", "success", "warning", "error"]);
 // The largest count drawn as a number; a larger one reads «99+», as
 // sf-avatar's badge-cap does by default.
 const COUNT_CAP = 99;
+// Below this many rem of the list's own width a row's badge and count stand
+// under its text (C47; the width the owner's prototype drew it at).
+const NARROW_REM = 20;
 
 /**
  * The item's picture, or null: {image-url?, text?, shape?, icon?}. A sign
@@ -447,6 +450,7 @@ class SfList extends ListElement {
     afterRender(changed) {
         super.afterRender?.(changed);
         this.watchEnd();
+        this.watchWidth();
         // The keys a row answers, said to assistive technology on the row itself
         // (sf-list-item draws the row; an attribute it does not bind stays).
         for (const row of this.rows()) {
@@ -486,6 +490,9 @@ class SfList extends ListElement {
 
     onDisconnected() {
         this.unwatchEnd();
+        this._widthObserver?.disconnect();
+        this._widthObserver = null;
+        this._widthFrame = null;
         clearTimeout(this._dayTimer);
         this._dayTimer = 0;
         super.onDisconnected?.();
@@ -501,6 +508,31 @@ class SfList extends ListElement {
             this.watchDay();
             if (this.groupBy === "day") this.requestComponentUpdate("day");
         }, msUntilNextDay() + 1000);
+    }
+
+    // A narrow list (owner decision C47, 2026-11-10): below 20rem of its own
+    // width the list marks its frame, and a row's badge and count go under
+    // its second line, at the text's start, so the title keeps the row's
+    // width and the badge stays whole. The list measures itself: no page
+    // breakpoint and no setting. A ResizeObserver, not a container query: an
+    // inline-size container takes no width from its rows, and a list in a
+    // shrink-to-fit place (a popover, an auto-width flex item) would fold to
+    // nothing. The observer reports before the frame is painted, so the
+    // first frame is already laid out narrow. The mark is an attribute the
+    // template does not bind, so a redraw keeps it.
+    watchWidth() {
+        const frame = this.querySelector(":scope > .sf-list__frame");
+        if (!frame || this._widthFrame === frame) return;
+        this._widthObserver?.disconnect();
+        this._widthFrame = frame;
+        if (typeof ResizeObserver !== "function") return;
+        this._widthObserver = new ResizeObserver((entries) => {
+            const entry = entries[entries.length - 1];
+            const width = entry.contentBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
+            const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+            frame.toggleAttribute("data-sf-list-narrow", width > 0 && width < NARROW_REM * rem);
+        });
+        this._widthObserver.observe(frame);
     }
 
     // The end of the list asks for the next page when it comes within reach,

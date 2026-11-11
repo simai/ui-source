@@ -34,6 +34,7 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -43,6 +44,7 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
+    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -52,6 +54,7 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
+    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -120,6 +123,53 @@
   .sf-list__meta:empty { display: none; }
 
   .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
+
+  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
+     data-sf-list-narrow on its frame below 20rem of its own width): a row
+     with a badge or a count lays out as «picture | text», and the meta goes
+     under the second line, at the text's start, so the title keeps the
+     row's width and the badge stays whole. The row grows by whole bands
+     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
+     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
+     size 1. Rows without a meta keep their layout and their height; the
+     picture place is one width in every row, so all titles start on one
+     line. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sf-space-1\/4);
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The picture: the leading place, or sf-icon's own glyph (its host is
+     display: contents). */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+    grid-column: -2;
+    grid-row: 1;
+    justify-self: stretch;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+    grid-column: -2;
+    grid-row: 2;
+    justify-self: start;
+    /* The text's start: the row's text step, the title's own inset. */
+    margin-inline-start: var(--sf-list--text-step);
+    padding-inline-start: 0;
+  }
 
   .sf-list__body,
   .sf-list__group {

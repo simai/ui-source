@@ -21,6 +21,10 @@ import {repeat} from 'lit/directives/repeat.js';
 // - group="severity": disclosure groups by severity, «Пройдено» closed.
 // - With no items: nothing (empty none) or the head and one quiet line
 //   «Всё в порядке · проверено …» (empty line, the default).
+// - A narrow column (C45, below 30rem of the list): the summary is one line
+//   of text under the heading, «2 ошибки · 1 предупреждение», instead of the
+//   badges; the quiet line two lines with an icon recheck. Both forms are in
+//   the markup and the container query shows one.
 
 const icon = (name, extra = '') => html`<i class=${['sf-icon', 'sf-icon--filled', 'sf-list-attention-icon', extra].filter(Boolean).join(' ')} aria-hidden="true">${name}</i>`;
 
@@ -102,7 +106,7 @@ function group(context, one, body) {
 
 function checked(context) {
   if (!context.checked) return nothing;
-  return html`<span class="sf-list-attention-checked">${context.checkedLine}<sf-button-icon class="sf-list-attention-recheck" size="1/2"
+  return html`<span class="sf-list-attention-checked"><span class="sf-list-attention-checked-text">${context.checkedLine}</span><sf-button-icon class="sf-list-attention-recheck" size="1/2"
     appearance="ghost" scheme="on-surface-variant" icon="refresh" aria-label=${context.recheckLabel}
     @click=${() => context.component.onRecheck()}></sf-button-icon></span>`;
 }
@@ -115,7 +119,7 @@ function head(context, withSummary) {
     ${withSummary && context.badges.length ? html`<span class="sf-list-attention-summary">${context.badges.map((one) => html`<sf-badge
       class="sf-list-attention-badge" size="1/3" appearance="tonal" icon-start=${one.icon}
       status=${one.status === 'info' ? nothing : one.status} scheme=${one.status === 'info' ? 'neutral' : nothing}
-      text=${one.text}></sf-badge>`)}</span>` : nothing}
+      text=${one.text}></sf-badge>`)}</span><span class="sf-list-attention-summary-line">${context.summaryLine}</span>` : nothing}
     ${context.grouped ? html`<span class="sf-list-attention-spacer"></span>${checked(context)}` : nothing}
   </div>`;
 }
@@ -144,9 +148,15 @@ export function renderListAttentionTemplate(context) {
   const density = context.compact ? 'compact' : nothing;
   if (count === 0) {
     if (empty !== 'line') return nothing;
-    const quiet = html`<p class="sf-list-attention-quiet" role="status">${icon('check_circle', 'sf-list-attention-icon--success')}<span class="sf-list-attention-quiet-text">${context.emptyLine}</span>${context.checked
+    // One line «Всё в порядке · проверено …» with a text recheck; in a
+    // narrow column (C45) two lines, «Всё в порядке» over «Проверено …», and
+    // the recheck an icon. Both are drawn; the container shows one.
+    const quiet = html`<p class="sf-list-attention-quiet" role="status">${icon('check_circle', 'sf-list-attention-icon--success')}<span class="sf-list-attention-quiet-text"><span class="sf-list-attention-quiet-line">${context.emptyLine}</span><span class="sf-list-attention-quiet-title">${context.quietTitle}</span>${context.checked
+      ? html`<span class="sf-list-attention-quiet-meta">${context.checkedLine}</span>` : nothing}</span>${context.checked
       ? html`<sf-button class="sf-list-attention-recheck-text" size="1/2" appearance="ghost" scheme="on-surface-variant" icon-start="refresh"
-        text=${context.recheckLabel} @click=${() => context.component.onRecheck()}></sf-button>` : nothing}</p>`;
+        text=${context.recheckLabel} @click=${() => context.component.onRecheck()}></sf-button><sf-button-icon class="sf-list-attention-recheck sf-list-attention-recheck--narrow" size="1/2"
+        appearance="ghost" scheme="on-surface-variant" icon="refresh" aria-label=${context.recheckLabel}
+        @click=${() => context.component.onRecheck()}></sf-button-icon>` : nothing}</p>`;
     if (frame === 'none') {
       return html`<div class=${classes} style=${context.rootStyle || nothing} data-sf-density=${density}>${quiet}</div>`;
     }
