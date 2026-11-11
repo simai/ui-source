@@ -428,7 +428,13 @@
       "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
-      "summary": "The older name of SF.whenDefined, kept."
+      "summary": "The older name of SF.whenDefined, the same function: a dated alias until 2027-01-01, every read noted in SF.deprecations (journal global-sf-when-define). Write SF.whenDefined.",
+      "deprecated": {
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "journal": "global-sf-when-define",
+        "to": "SF.whenDefined"
+      }
     },
     {
       "name": "SF.whenFieldRenderers",

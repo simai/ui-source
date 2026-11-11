@@ -63,3 +63,25 @@ test('the schema holds the contract\'s shape', () => {
     if (entry.deprecated) for (const key of Object.keys(entry.deprecated)) assert.ok(key in item.properties.deprecated.properties, `${entry.name}: deprecated.${key}`);
   }
 });
+
+// A deprecated name is a dated alias the change journal records (SF.Effects,
+// SF.whenDefine): the contract's dates and replacement are the journal's, and
+// the documentation keeps listing it with them until remove_after.
+test('every deprecated name is the change journal\'s dated alias', () => {
+  const journal = JSON.parse(readFileSync(new URL('../contracts/changes/journal.json', import.meta.url), 'utf8'));
+  const records = new Map(journal.records.map((record) => [record.id, record]));
+  const deprecated = contract.globals.filter((entry) => entry.deprecated);
+  assert.ok(deprecated.some((entry) => entry.name === 'SF.whenDefine'), 'SF.whenDefine is deprecated');
+  for (const entry of deprecated) {
+    const record = records.get(entry.deprecated.journal);
+    assert.ok(record, `${entry.name}: journal ${entry.deprecated.journal}`);
+    assert.equal(record.kind, 'global', `${entry.name}: a global record`);
+    assert.equal(record.stage, 'compat', `${entry.name}: still an alias`);
+    assert.equal(entry.deprecated.since, record.deprecated_on, `${entry.name}: since`);
+    assert.equal(entry.deprecated.remove_after, record.remove_after, `${entry.name}: remove_after`);
+    const item = record.items.find((candidate) => candidate.from === entry.name);
+    assert.ok(item, `${entry.name}: the record names it`);
+    assert.equal(entry.deprecated.to, item.to, `${entry.name}: replacement`);
+    assert.equal(entry.status, 'public', `${entry.name}: a dated alias stays public until it is removed`);
+  }
+});

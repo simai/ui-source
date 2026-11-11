@@ -5882,8 +5882,23 @@ SF.__internal.litHtml = (tagName, props = {}) => {
   const tag = unsafeStatic(tagName);
   return staticHtml`<${tag} ...=${props}></${tag}>`;
 };
-SF.whenDefine = whenSmartDefined;
 SF.whenDefined = whenSmartDefined;
+// SF.whenDefine is the older name of SF.whenDefined: a dated alias of the same
+// function until the sweep (journal global-sf-when-define). Enumerable, as it
+// was, so a page that lists window.SF still sees it; a read is noted in
+// SF.deprecations. The Framework's own code calls SF.whenDefined.
+const WHEN_DEFINE_ALIAS = Object.freeze({since: '2026-11-11', remove_after: '2027-01-01'});
+Object.defineProperty(SF, 'whenDefine', {
+  configurable: true,
+  enumerable: true,
+  get() {
+    noteDeprecated({kind: 'global', from: 'SF.whenDefine', to: 'SF.whenDefined', ...WHEN_DEFINE_ALIAS});
+    return whenSmartDefined;
+  },
+  set(value) {
+    Object.defineProperty(SF, 'whenDefine', {configurable: true, enumerable: true, writable: true, value});
+  },
+});
 try {
   window.dispatchEvent(
       new CustomEvent('sf-loader-init', {
