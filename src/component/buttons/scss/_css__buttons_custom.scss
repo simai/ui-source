@@ -202,7 +202,7 @@
   /* A disabled button's spinner (disabled and loading) takes the disabled
      ink, the ink of its label -- unless --sf-loader--color is set. */
   .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 
   /* The label under an overlaid spinner: in its place and in the accessibility
@@ -215,7 +215,8 @@
   /* Secondary outline, surface and link keep the secondary ink when hovered
      or pressed: the fill steps as on-surface's do, the label does not turn
      grey. Same weight as the on-surface state rules, later in the layer. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-secondary);
   }
 
@@ -232,7 +233,8 @@
      its container's variant). A filled (default) button keeps on-surface's
      inverse ink: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
-  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-variant));
   }
 
@@ -248,7 +250,8 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
   }
 
@@ -306,7 +309,9 @@
   }
 
   .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):not(:has(> *)),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 
