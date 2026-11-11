@@ -45,9 +45,15 @@ test('every navigation component is made from its component.json, language files
     }
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});
+    // The migration's rows keep its dates; a later rename carries its own
+    // (sf-tabs 1.2.0 scheme -> appearance, journal
+    // attribute-tabs-scheme-to-appearance: 2026-11-10 to 2027-01-01).
     for (const row of rows) {
-      assert.equal(row.since, '2026-10-27', `${folder}: ${row.from}`);
-      assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
+      const dates = [row.since, row.remove_after];
+      assert.ok(
+        (dates[0] === '2026-10-27' && dates[1] === '2026-12-01') || (dates[0] === '2026-11-10' && dates[1] === '2027-01-01'),
+        `${folder}: ${row.from} ${dates.join(' to ')}`,
+      );
     }
     // Every event row names the DOM name the element sends now (§8).
     const names = Object.values(readManifest(manifest).events).map((event) => event.name);
@@ -127,7 +133,12 @@ test('sf-tabs: sf-tabs-change with data only, manual activation over deferred pa
   assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'label', 'icon', 'count', 'href', 'disabled', 'pinned']);
   assert.equal(manifest.values.selected.type, 'id');
   const {rows} = readAliasTable(json('src/smart/tabs/aliases.json'), {tag: 'sf-tabs'});
-  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-tab-change', 'sf-tabs-change', 'split']]);
+  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [
+    ['sf-tab-change', 'sf-tabs-change', 'split'],
+    // sf-tabs 1.2.0 (docs precheck TB-06): the look is appearance.
+    ['scheme', 'appearance', undefined],
+    ['link', 'ghost', undefined],
+  ]);
   const source = read('src/smart/tabs/index.js');
   assert.match(source, /if \(!this\.manualActivation\) this\.selectTab\(nextIndex, \{ person: true \}\);/u);
   assert.match(source, /goTo\(index\) \{\s*return this\.selectTab\(index\?\.index \?\? index, \{ person: false \}\);/u);

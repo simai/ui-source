@@ -10047,31 +10047,6 @@
       "source": "src/smart/file-preview/index.js"
     },
     {
-      "id": "value-file-preview-target-default-same-tab",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "value",
-      "summary": "sf-file-preview's target has no default of its own (sf-file-preview 1.2.0, decision C25; docs precheck smart content FP-03): an opened file (download=\"false\") and the name link stay in the same tab, where the manifest default _blank opened a new one. target=\"_blank\" keeps the new tab and shows the new-tab sign. No alias: the old behaviour is one attribute away.",
-      "items": [
-        {
-          "component": "sf-file-preview",
-          "attribute": "target",
-          "from": "_blank (default)",
-          "to": "\"\" (default, same tab)"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Write target=\"_blank\" on an sf-file-preview that must open its file in a new tab; nothing else changes.",
-      "examples": {
-        "before": "<sf-file-preview file-name=\"Отчёт.pdf\" href=\"/files/report.pdf\" download=\"false\"></sf-file-preview>",
-        "after": "<sf-file-preview file-name=\"Отчёт.pdf\" href=\"/files/report.pdf\" download=\"false\" target=\"_blank\"></sf-file-preview>"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/file-preview/component.json"
-    },
-    {
       "id": "value-tag-appearance-surface-to-outline",
       "recorded_on": "2026-11-10",
       "stage": "compat",
@@ -10195,6 +10170,31 @@
       },
       "owner": "ui-source",
       "source": "src/smart/slider/js/templates/default.js"
+    },
+    {
+      "id": "value-file-preview-target-default-same-tab",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-file-preview's target has no default of its own (sf-file-preview 1.2.0, decision C25; docs precheck smart content FP-03): an opened file (download=\"false\") and the name link stay in the same tab, where the manifest default _blank opened a new one. target=\"_blank\" keeps the new tab and shows the new-tab sign. No alias: the old behaviour is one attribute away.",
+      "items": [
+        {
+          "component": "sf-file-preview",
+          "attribute": "target",
+          "from": "_blank (default)",
+          "to": "\"\" (default, same tab)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write target=\"_blank\" on an sf-file-preview that must open its file in a new tab; nothing else changes.",
+      "examples": {
+        "before": "<sf-file-preview file-name=\"Отчёт.pdf\" href=\"/files/report.pdf\" download=\"false\"></sf-file-preview>",
+        "after": "<sf-file-preview file-name=\"Отчёт.pdf\" href=\"/files/report.pdf\" download=\"false\" target=\"_blank\"></sf-file-preview>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/file-preview/component.json"
     }
   ]
 }

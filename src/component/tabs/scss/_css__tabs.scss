@@ -101,12 +101,12 @@
      and the tab stayed 97 wide beside 1310). */
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
     display: flex;
-    flex: 1 0 0;
     min-inline-size: max-content;
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert],
-  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > :is(sf-button, sf-button-icon, sf-icon-button) {
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > sf-button,
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > :is(sf-button-icon, sf-icon-button) {
     display: contents;
   }
 }
@@ -149,6 +149,19 @@
     --sf-icon-button--border-inline-start-width: 0;
     --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
     --sf-icon-button--border-inline-end-width: 0;
+  }
+
+  /* type="full" shares the row in equal columns, each at least as wide as
+     its tab (a row wider than the list scrolls as before). Columns, not flex
+     growth from a zero basis: a basis of zero counts a button's padding and
+     border on top of its share, so a tab drawn by a page's own component
+     (sf-tabs setData component, a span around an inert copy) came out 32 px
+     narrower than a button beside it (acceptance 2026-11-11 D1). Equal
+     labels and icon tabs measure the same as with flex. */
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(max-content, 1fr);
   }
 
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button,
