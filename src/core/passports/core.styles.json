@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.styles",
   "kind": "core",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "owner": "simai/ui-source",
   "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions and the workspace layout, placeholders and touch fields.",
   "includes": [
@@ -27,7 +27,7 @@
     "src/core/scss/mix/_mix__common.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "aeedda90fb5b325085ed17cbd5c81ac8cc10b3e8c92b1208bd14873e2f5f0804",
+  "content_sha256": "07d048695379867c114f518080672b56c240e26facfd4aa9af34ffd4f5a26d91",
   "dependencies": [
     {
       "id": "font.inter",

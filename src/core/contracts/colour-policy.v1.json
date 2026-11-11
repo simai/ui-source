@@ -95,7 +95,7 @@
       "id": "first-paint-fallbacks",
       "category": "script-data-template-review",
       "filePattern": "^core/js/(?:index|loader|preloader)\\.js$",
-      "contextPattern": "(?:var\\(--sf-surface-0, #fff\\)|^[?:] '#(?:e3e2e7|1a1b1f|0f1115|ffffff)')",
+      "contextPattern": "(?:var\\(--sf-surface-page, #fff\\)|^[?:] '#(?:e3e2e7|1a1b1f|0f1115|ffffff)')",
       "status": "accepted-first-paint-fallback",
       "reason": "The Loader and preloader paint before core.css arrives; their fallbacks are the theme's own page and ink values for that moment."
     },

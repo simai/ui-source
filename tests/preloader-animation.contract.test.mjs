@@ -54,11 +54,11 @@ test('preloader color has an immediate theme-aware fallback', () => {
   );
   assert.equal(
     preloader.getPreloaderBackground(lightRoot),
-    'var(--sf-color--surface-highest, var(--sf-surface-0, #ffffff))',
+    'var(--sf-color--surface-highest, var(--sf-surface-page, #ffffff))',
   );
   assert.equal(
     preloader.getPreloaderBackground(darkRoot),
-    'var(--sf-color--surface-highest, var(--sf-surface-0, #0f1115))',
+    'var(--sf-color--surface-highest, var(--sf-surface-page, #0f1115))',
   );
 });
 

@@ -293,7 +293,7 @@ function SFLoaderPlugin(params) {
       ? params.backgroundPreloader
       : getPreloaderBackground();
   this.tempLoaderStyles =
-      'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;';
+      'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;';
   this.modifierPreloader = params.modifierPreloader
       ? params.modifierPreloader
       : 'loader-default';
@@ -5300,7 +5300,7 @@ const props = {
 
   findPlugins: SF.RuleLoader,
   backgroundPreloader:
-      'var(--sf-color--surface-highest, var(--sf-surface-0, #fff))',
+      'var(--sf-color--surface-highest, var(--sf-surface-page, #fff))',
   modifierPreloader: 'loader-default',
   contentPreloaderText: 'LOADING',
 };

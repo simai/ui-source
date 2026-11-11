@@ -96,7 +96,7 @@ test('smart accordion: its own sheet draws only what the class has no part for, 
   // The icon before the title does not turn with the marker, in either
   // direction: its selector outranks the class's rotation and RTL rules.
   assert.match(sheet, /\.sf-accordion \.sf-accordion-heading \.sf-accordion-trigger \.sf-icon\.sf-accordion-lead \{\n  transform: none;/u);
-  assert.match(sheet, /\.sf-accordion\.sf-accordion--disabled \.sf-accordion-trigger:disabled \{[^}]*color: var\(--sf-on-disable\);/u);
+  assert.match(sheet, /\.sf-accordion\.sf-accordion--disabled \.sf-accordion-trigger:disabled \{[^}]*color: var\(--sf-on-surface-disabled\);/u);
 });
 
 test('smart accordion: buttons in headings, linked to their panels; regions only while few', () => {

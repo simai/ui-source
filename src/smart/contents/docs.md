@@ -162,7 +162,7 @@ or focus but stay the links' names. The progress line is decoration.
 | `--sf-contents-color` | the links' ink | `--sf-on-surface-variant` |
 | `--sf-contents-current-color` | the current link, its bar, stroke or underline, and the progress | `--sf-primary` |
 | `--sf-contents-line-color` | the column's line, the bar's edge, the progress track | `--sf-outline-variant` |
-| `--sf-contents-background-color` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-0` / `--sf-elevation-2--surface` |
+| `--sf-contents-background-color` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-page` / `--sf-surface-popup` |
 | `--sf-contents-indent` | the step of a deeper level | `--sf-space-1/2` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
 | `--sf-contents-inset-block-start` | where the sticky column, rail, bar or compact button stops | `--sf-space-1` |
