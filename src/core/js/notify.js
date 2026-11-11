@@ -393,11 +393,13 @@ async function sheetApplied(area) {
   if (first) globalThis.SF?.Loader?.scanDom?.(area);
   const sheetsIn = () => ![...document.querySelectorAll('link[rel="stylesheet"]')].some((link) => !link.sheet);
   const ready = () => placed() && (!fonts || fonts.status === 'loaded') && sheetsIn();
+  // A later message finds its parts in: it waits only for the sheet that
+  // places the area (it stood two frames at its place and then waited for
+  // sheets of other parts of the page, out of sight but late).
+  if (!first && placed()) return;
   // Laid out, the message asks for its fonts.
   void area.offsetHeight;
-  if (!first && ready()) return;
-  // Other messages on view stay; an area with nothing shown yet waits hidden.
-  if (!placed() || first) area.style.visibility = 'hidden';
+  area.style.visibility = 'hidden';
   const started = Date.now();
   // Ready three checks in a row: the sheets the scan asked for are linked a
   // frame after it.
@@ -405,8 +407,8 @@ async function sheetApplied(area) {
   while (Date.now() - started < 2000) {
     await new Promise((resolve) => setTimeout(resolve, 16));
     void area.offsetHeight;
-    calm = ready() ? calm + 1 : 0;
-    if (calm >= 3) break;
+    calm = (first ? ready() : placed()) ? calm + 1 : 0;
+    if (calm >= (first ? 3 : 1)) break;
   }
 }
 
