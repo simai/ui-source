@@ -1,3 +1,5 @@
+@use '../../../core/scss/mix/mix__places' as places;
+
 @layer sf.components {
   .sf-menu-element {
     /* A row's public variables wrap the values it drew before them; hover,
@@ -163,12 +165,19 @@
   .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
     --sf-menu-element--background-color: var(--sf-surface-state-select);
     --sf-menu-element--border-color: var(--sf-surface-state-select);
+    /* A translucent fill: a tonal badge on the row keeps its own tone, an
+       anchored badge's ring is the row's colour (C43 D4). The fill reads the
+       row's variable, so a look that writes its own background (the
+       documentation tree's unfilled open branch) is followed. */
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
   }
 
   .sf-menu-element.open,
   .sf-menu-element[aria-expanded='true'] {
     --sf-menu-element--background-color: var(--sf-surface-container-active);
     --sf-menu-element--border-color: var(--sf-surface-container-active);
+    /* A translucent fill, as the hover row (C43 D4). */
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
   }
 
   .sf-menu-element[aria-expanded='false']:dir(rtl) > .sf-icon-button .sf-icon {
