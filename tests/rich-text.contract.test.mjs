@@ -266,3 +266,14 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   assert.match(panel, /gap: var\(--sf-space-1\);/u);
   assert.match(panel, /padding: var\(--sf-space-1\);/u);
 });
+
+test('Bold says the bold mark only: a heading, bold by its type, is not a mark', () => {
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8');
+  // The browser's bold state reads the computed weight: in a heading it is not asked.
+  assert.match(source, /strong: pending \?\? \(Boolean\(node && this\._within\(node, 'strong, b'\)\) \|\| \(!heading && command\('bold'\)\)\),/u);
+  // Where a heading is in the selection the mark is set by the component, not the browser's command.
+  assert.match(source, /if \(tag === 'strong' && this\._selectedBlocks\(\)\.some\(\(block\) => block\.matches\(HEADINGS\)\)\) \{/u);
+  assert.match(source, /const HEADINGS = 'h2, h3, h4';/u);
+  // A caret's pending mark goes to the typed text and is forgotten when the caret moves.
+  assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+});

@@ -9,6 +9,9 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
+// The heading blocks of the subset: bold by their type, not by a mark.
+const HEADINGS = 'h2, h3, h4';
+
 // On a phone -- below the md breakpoint, where core declares
 // --sf-breakpoint-md -- a form in a popup is a sheet at the bottom of the
 // screen (decision C32), as sf-menu-context reads it.
@@ -340,6 +343,7 @@ class SfRichText extends FormField(RichTextElement) {
     this._history = [{html: editor.innerHTML, selection: null}];
     this._historyIndex = 0;
     this._lastTyping = 0;
+    this._pending = null;
     this._committed = this.value;
     this._syncEmpty();
     this._updateState();
@@ -431,12 +435,17 @@ class SfRichText extends FormField(RichTextElement) {
     };
     const block = node ? this._within(node, 'p, h2, h3, h4, li') : null;
     const item = node ? this._within(node, 'li') : null;
+    // A heading is bold by its type: the browser's bold state reads the
+    // computed weight and says bold everywhere in it, so there only the mark
+    // (or the mark the next typing takes) presses Bold.
+    const heading = Boolean(node && this._within(node, HEADINGS));
+    const pending = this._pendingStrong(range);
     const next = {
       p: block?.localName === 'p',
       h2: block?.localName === 'h2',
       h3: block?.localName === 'h3',
       h4: block?.localName === 'h4',
-      strong: Boolean(node && this._within(node, 'strong, b')) || command('bold'),
+      strong: pending ?? (Boolean(node && this._within(node, 'strong, b')) || (!heading && command('bold'))),
       em: Boolean(node && this._within(node, 'em, i')) || command('italic'),
       link: Boolean(node && this._within(node, 'a')),
       ul: item?.parentElement?.localName === 'ul',
@@ -449,6 +458,17 @@ class SfRichText extends FormField(RichTextElement) {
     const changed = Object.keys(next).some((key) => next[key] !== this._state[key]);
     this._state = next;
     if (changed) this.requestComponentUpdate('selection');
+  }
+
+  // The mark the next typing takes at a caret in a heading, when Bold was
+  // pressed there; forgotten once the caret moves.
+  _pendingStrong(range = this._range()) {
+    if (!this._pending) return undefined;
+    if (!range?.collapsed || this._saveSelection()?.start !== this._pending.at) {
+      this._pending = null;
+      return undefined;
+    }
+    return this._pending.strong;
   }
 
   // ---------------------------------------------------------- cleaning
@@ -555,6 +575,9 @@ class SfRichText extends FormField(RichTextElement) {
         event.preventDefault();
         this.runCommand('bold');
         return;
+      case 'insertText':
+        if (this._pending && event.data) this._typePending(event);
+        return;
       case 'formatItalic':
         event.preventDefault();
         this.runCommand('italic');
@@ -564,6 +587,30 @@ class SfRichText extends FormField(RichTextElement) {
         // alignment and indent are refused rather than cleaned away later.
         if (String(event.inputType).startsWith('format')) event.preventDefault();
     }
+  }
+
+  // Text typed at a caret in a heading where Bold was pressed: it takes the
+  // pending mark (the cleaner splits a mark around a run whose weight is normal).
+  _typePending(event) {
+    const range = this._range();
+    const strong = this._pendingStrong(range);
+    this._pending = null;
+    if (strong === undefined || !range) return;
+    event.preventDefault();
+    const doc = this.ownerDocument;
+    const text = doc.createTextNode(event.data);
+    const wrap = doc.createElement(strong ? 'strong' : 'span');
+    if (!strong) wrap.style.fontWeight = 'normal';
+    wrap.append(text);
+    range.insertNode(wrap);
+    const caret = doc.createRange();
+    caret.setStart(text, text.data.length);
+    caret.collapse(true);
+    const selection = doc.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(caret);
+    this._afterTyping('insertText');
+    this._say('insertText');
   }
 
   _onInput(event) {
@@ -715,6 +762,7 @@ class SfRichText extends FormField(RichTextElement) {
   }
 
   _applyHistory(inputType) {
+    this._pending = null;
     const editor = this.editor;
     const entry = this._history[this._historyIndex];
     if (!editor || !entry) return;
@@ -749,6 +797,10 @@ class SfRichText extends FormField(RichTextElement) {
 
   _toggleMark(command, tag) {
     const doc = this.ownerDocument;
+    if (tag === 'strong' && this._selectedBlocks().some((block) => block.matches(HEADINGS))) {
+      this._toggleStrongByMark();
+      return;
+    }
     let done = false;
     try {
       done = doc.execCommand(command, false);
@@ -770,6 +822,49 @@ class SfRichText extends FormField(RichTextElement) {
     const mark = doc.createElement(tag);
     mark.append(fragment);
     range.insertNode(mark);
+  }
+
+  // Bold where a heading is in the selection: the browser's command reads
+  // the heading's weight as a mark and takes none, so the mark is set here.
+  // All the selected text marked: the mark comes off (a run of normal weight
+  // the cleaner splits the mark around); otherwise it goes on. At a caret the
+  // mark waits for the typing.
+  _toggleStrongByMark() {
+    const range = this._range();
+    if (!range) return;
+    const doc = this.ownerDocument;
+    if (range.collapsed) {
+      const pending = this._pendingStrong(range);
+      const marked = pending ?? Boolean(this._within(this._startNode(range), 'strong, b'));
+      this._pending = {at: this._saveSelection().start, strong: !marked};
+      return;
+    }
+    this._pending = null;
+    const root = range.commonAncestorContainer;
+    const texts = [];
+    if (root.nodeType === 3) texts.push(root);
+    else {
+      const walker = doc.createTreeWalker(root, 4);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) if (range.intersectsNode(node)) texts.push(node);
+    }
+    const {startContainer, startOffset, endContainer, endOffset} = range;
+    const parts = [];
+    for (const text of texts) {
+      const from = text === startContainer ? startOffset : 0;
+      const to = text === endContainer ? endOffset : text.data.length;
+      if (to > from) parts.push({text, from, to});
+    }
+    if (!parts.length) return;
+    const on = !parts.every(({text}) => this._within(text, 'strong, b'));
+    for (const part of parts) {
+      let {text} = part;
+      if (part.to < text.data.length) text.splitText(part.to);
+      if (part.from > 0) text = text.splitText(part.from);
+      const wrap = doc.createElement(on ? 'strong' : 'span');
+      if (!on) wrap.style.fontWeight = 'normal';
+      text.replaceWith(wrap);
+      wrap.append(text);
+    }
   }
 
   _toggleList(type) {
