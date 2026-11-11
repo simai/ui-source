@@ -266,3 +266,18 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   assert.match(panel, /gap: var\(--sf-space-1\);/u);
   assert.match(panel, /padding: var\(--sf-space-1\);/u);
 });
+
+test('Bold and Italic say the marks only: a heading, bold by its type, is not a mark', () => {
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8');
+  // The state is the mark (or the pending mark at a caret), never the browser's computed-style state.
+  assert.match(source, /const mark = \(tag\) => this\._pendingMark\(tag, range\) \?\? Boolean\(node && this\._within\(node, MARKS\[tag\]\.selector\)\);/u);
+  assert.match(source, /strong: mark\('strong'\),\n\s+em: mark\('em'\),/u);
+  assert.doesNotMatch(source, /queryCommandState|execCommand\((?:command|'bold'|'italic')/u);
+  // The marks are set by the component; a mark off is a run of normal style the cleaner splits the mark around.
+  assert.match(source, /if \(id === 'bold'\) return this\._edit\(\(\) => this\._toggleMark\('strong'\), 'formatBold'\);/u);
+  assert.match(source, /strong: \{selector: 'strong, b', off: \['fontWeight', 'normal'\]\}/u);
+  assert.equal(editor('<h2><strong>ma<span style="font-weight: normal">Z</span>rk</strong></h2>'), '<h2><strong>ma</strong>Z<strong>rk</strong></h2>');
+  assert.equal(editor('<p><em>a<span style="font-style: normal">b</span></em></p>'), '<p><em>a</em>b</p>');
+  // A caret's pending marks go to the typed text and are forgotten when the caret moves.
+  assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+});
