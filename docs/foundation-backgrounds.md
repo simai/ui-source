@@ -115,6 +115,23 @@ shows through it. On solid places nothing
 changes. Glass (`.sf-surface-media`) declares `var(--sf-black)`, the opaque
 base of its tone: the dot there is solid dark glass, not the photo.
 
+### The fill of a row (2026-11-11)
+
+`--sf-surface-place-fill` is the translucent fill a row lays over its place.
+The core mix `sf-place-fill($fill)` declares it with `--sf-surface-underlay`
+on a selected, open, current or hovered row, `$fill` being the row's
+background in that rule. It is read only together with the underlay, so where
+the underlay is initial (a soft coloured place, glass, a place nested in the
+row) it does nothing and needs no taking back.
+
+- **The anchored badge's ring** lays the fill over the place colour, so on a
+  row the ring is the row's own colour, not a halo of the place around the
+  badge (C43 D3). Off a row it is the place colour, as before.
+- **Hovered and open rows** of the list, the dropdown, the context menu, the
+  tree, the menu, the admin menu, sf-list and the choice card include the mix
+  as their selected rows do (C43 D4): a tonal badge on them keeps its tone,
+  where it took the hover's alpha under its own before.
+
 ### What changed with C43 (2026-11-10)
 
 - **Rows with a fill.** A selected, open or current row is not a place: its

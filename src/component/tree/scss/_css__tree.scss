@@ -63,6 +63,9 @@
 
   .sf-tree .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
     background: var(--sf-surface-container-hover);
+    /* A translucent fill, as the selected row: a tonal badge keeps its tone
+       and an anchored badge's ring is the row's colour (C43 D4). */
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
   }
 
   .sf-tree .sf-tree-item.active > .sf-tree-item-container,
@@ -71,8 +74,9 @@
     background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
-    /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
-    @include places.sf-place-fill;
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+       anchored badge's ring is the row's colour (C43 D3). */
+    @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
   }
 
   // A row is flush against the rows above and below it, so the ring turns

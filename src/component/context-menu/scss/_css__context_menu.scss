@@ -126,8 +126,11 @@
 .sf-context-menu-item:not(:disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
-     select state, 8. It was the plate's hover, 20 before C41. */
+     select state, 8. It was the plate's hover, 20 before C41. A translucent
+     fill, as the current row: a tonal badge keeps its tone and an anchored
+     badge's ring is the row's colour (C43 D4). */
   background-color: var(--sf-surface-state-select);
+  @include places.sf-place-fill(var(--sf-surface-state-select));
 }
 
 /* Selected or current is one role in every component (C16): primary-container
@@ -136,8 +139,9 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
-  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
-  @include places.sf-place-fill;
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+     anchored badge's ring is the row's colour (C43 D3). */
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 /* The chosen row of a pick-one list -- a language, a drilled choice's option:
@@ -150,11 +154,12 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 .sf-context-menu-item--chosen:not(:disabled):hover {
   background-color: var(--sf-primary-container-hover);
+  @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
 .sf-context-menu-item:disabled {
@@ -458,11 +463,12 @@
 .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
   color: var(--sf-on-surface);
   background-color: var(--sf-surface-state-select);
+  @include places.sf-place-fill(var(--sf-surface-state-select));
 }
 
 .sf-context-menu-choice-option[aria-checked="true"] {
   background-color: var(--sf-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
   color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
   --sf-icon--color: var(--sf-on-primary-container);
@@ -636,6 +642,7 @@
 
 .sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
   background-color: var(--sf-surface-container-hover);
+  @include places.sf-place-fill(var(--sf-surface-container-hover));
 }
 
 .sf-context-menu-tile-icon {
@@ -659,12 +666,13 @@
 
 .sf-context-menu-tile--on.sf-context-menu-item {
   background-color: var(--sf-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
   color: var(--sf-on-primary-container);
 }
 
 .sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
   background-color: var(--sf-primary-container-hover);
+  @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
 .sf-context-menu-tile--on .sf-context-menu-tile-icon,

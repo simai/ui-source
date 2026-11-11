@@ -957,7 +957,7 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "75f532ec69568503dbbf2c8ea4beeb9a3b77cb2412cae4b7a4e31440c4924866"
+        "sha256": "c77864ae35ed372c21b932f2acbb789dcd66e1cf5298c483a4dc527263fc245c"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

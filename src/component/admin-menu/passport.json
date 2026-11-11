@@ -14,7 +14,7 @@
     "src/component/admin-menu/scss/_css__admin_menu.scss",
     "src/component/admin-menu/scss/index.scss"
   ],
-  "content_sha256": "5323728a858f7a3710fb14726afe9143f13a5f630de7c538eaa2eccc270a665b",
+  "content_sha256": "d225c24c7e70a84de9722574927b71ca994e17d0b2a45e08ce3a20ff7be35876",
   "dependencies": [
     {
       "id": "component.badges",

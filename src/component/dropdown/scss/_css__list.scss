@@ -217,12 +217,14 @@
   .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
   .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
     --sf-list-item--background-color: var(--sf-surface-state-select);
+    /* A translucent fill, as the selected row (C43 D4). */
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
   }
 
   .sf-dropdown .sf-list .sf-list-item.selected,
   .sf-list--menu .sf-list-item.selected {
     --sf-list-item--background-color: var(--sf-primary-container);
-    @include places.sf-place-fill;
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
   }
 }
 

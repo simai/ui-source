@@ -310,14 +310,17 @@
 
 .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
   --sf-list-item--background-color: var(--sf-primary-container-hover);
+  /* A translucent fill, as the selected row (C43 D4). */
+  @include places.sf-place-fill(var(--sf-list-item--background-color));
 }
 
 /* Selected or current is one role in every component (C16): primary-container
      with its ink. */
 .sf-list-item.selected {
   --sf-list-item--background-color: var(--sf-primary-container);
-  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
-  @include places.sf-place-fill;
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+     anchored badge's ring is the row's colour (C43 D3). */
+  @include places.sf-place-fill(var(--sf-list-item--background-color));
 }
 
 /* An option sits flush against the options above and below it. */
@@ -574,6 +577,8 @@
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
   .sf-list-item:is(.sf-list-item--interactive, .sf-list-item--sortable):not(.disabled):not(.selected):hover {
     --sf-list-item--background-color: var(--sf-surface-state-select);
+    /* A translucent fill, as the selected row (C43 D4). */
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
   }
 
   /* A row of a list draws its ring inside itself, as an option does: rows sit

@@ -178,7 +178,7 @@
 
   /* A translucent fill: a tonal badge on the open row keeps its own tone
      (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
-  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); }
+  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--current); }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
@@ -284,8 +284,9 @@
 
 @layer sf.states {
   /* The pointer over the row or over its «⋯»: one tint for both, the token
-     the row itself takes under the pointer. */
-  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); }
+     the row itself takes under the pointer. A translucent fill, as the open
+     row (C43 D4). */
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
 
   /* The open row is told by more than a tint: in forced colours it is marked
      by the system highlight at its start. */
