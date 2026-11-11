@@ -123,6 +123,23 @@
   cursor: pointer;
 }
 
+/* A row that holds more than one line keeps the space a one-line row has
+   above and below its text, (row step - line) / 2, and grows by whole lines
+   (docs/foundation-composition-geometry.md §4; owner decision C49 on G1-b,
+   2026-11-10): a row with a caption or a value under its name, in any menu;
+   a drilling panel's row and a switch row, which wrap. They kept the base
+   rule's 2px, so a caption row was 40 [2/2] and a wrapped switch row grew by
+   2px insets instead of lines (3 lines 64 at 1440 where 32 + 2 x 20 = 72).
+   One line: the same height, the same place (the row's minimum is the step).
+   :where() keeps these at the base rule's weight, so a tile, a choice option
+   and a list's row keep their own block padding. */
+.sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+:where(.sf-context-menu--drill) .sf-context-menu-item,
+.sf-context-menu-item:where(.sf-context-menu-item--switch),
+.sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+}
+
 .sf-context-menu-item:not(:disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
   background-color: var(--sf-surface-container-hover);
@@ -1117,9 +1134,11 @@
       min-block-size: var(--sf-d1);
     }
 
-    /* A list's row is the touch target's height here, so a wrapped choice
-       keeps the space that row has around its one line (G1-a). */
-    .sf-context-menu .sf-context-menu-content[data-sf-width="list"] {
+    /* A row is the touch target's height here, so a row of more than one
+       line -- a wrapped choice in a list (G1-a), a caption row, a drilling
+       or switch row (C49, G1-b) -- keeps the space that row has around its
+       one line. */
+    .sf-context-menu .sf-context-menu-content {
       --sf-context-menu--row-step: max(var(--sf-context-menu--row-height), var(--sf-d1));
     }
   }
