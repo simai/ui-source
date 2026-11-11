@@ -26,6 +26,10 @@ R067). Отказ, который человек дал здесь, сворач
 `answer` словаря 1.1.5). Сборка спрашивает карточку шагом `ask` (§19.4): `open`
 ждёт ответа и отвечает `{accepted, reason, value}`.
 
+Значения рисует `sf-change` списком (1.7.0, решение владельца C40): название поля и
+«было → стало» текстом — старое тихим, новое полужирным, пустое — «пусто», без
+плашек «Было» и «Станет».
+
 Она не знает ни текста команды, ни формата кода, ни сервера: всё это осталось
 в ui-chat.
 
@@ -103,8 +107,8 @@ The 1.0 names follow until 2026-12-01 and each use is noted in `SF.deprecations`
 ## Keyboard and reading
 
 The two answers are native buttons (Tab, Enter, Space). The card is a section named
-by its heading; the values are a description list, read as «Название: Было Новости,
-Станет События». The status line is a polite live region that is in the page before
+by its heading; the values are sf-change's description list (1.7.0, owner decision C40),
+read as «Название: Новости на События». The status line is a polite live region that is in the page before
 it speaks; when a press takes the answers away, focus moves to it instead of falling
 to the page, and back to the first answer when the host cancels.
 
@@ -117,9 +121,9 @@ Public variables, set on the card or any ancestor; the component never sets them
 | `--sf-change-confirm-radius` | `var(--sf-radius-2)` |
 | `--sf-change-confirm-inset` | `var(--sf-space-1\/2) var(--sf-space-1)` |
 | `--sf-change-confirm-gap` | `var(--sf-space-1\/2)` |
-| `--sf-change-confirm-before-background-color` | `var(--sf-surface-container)` |
-| `--sf-change-confirm-after-background-color` | `var(--sf-primary-container)` |
-| `--sf-change-confirm-after-color` | `var(--sf-on-primary-container)` |
+| `--sf-change-confirm-before-background-color` | `transparent` (1.7.0; before it `var(--sf-surface-container)`) |
+| `--sf-change-confirm-after-background-color` | `transparent` (1.7.0; before it `var(--sf-primary-container)`) |
+| `--sf-change-confirm-after-color` | the new value colour of `sf-change` (1.7.0; before it `var(--sf-on-primary-container)`) |
 
 The 1.0 hooks `--sf-change-confirm--radius`, `--inset`, `--gap`, `--before-fill`,
 `--after-fill` and `--after-ink` stay the internal layer these feed.

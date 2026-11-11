@@ -358,6 +358,7 @@ class SfList extends ListElement {
         for (const item of rest) {
             let key;
             let heading;
+            let date = "";
             if (by === "day") {
                 const moment = toDate(item.date);
                 const offset = moment ? calendarDayOffset(moment, {now}) : NaN;
@@ -365,12 +366,14 @@ class SfList extends ListElement {
                 heading = Number.isFinite(offset)
                     ? formatRelativeDay(moment, {now, capital: true, node: this})
                     : this.sfWord("undated-text");
+                // Today and yesterday say the date beside the word (C40).
+                date = offset === 0 || offset === -1 ? moment.toISOString() : "";
             } else {
                 key = `key:${item.group ?? ""}`;
                 const declared = this._groups.find((group) => group.key === String(item.group ?? ""));
                 heading = declared?.text ?? (item.group == null || item.group === "" ? this.sfWord("ungrouped-text") : String(item.group));
             }
-            if (!groups.has(key)) groups.set(key, {key, heading, items: []});
+            if (!groups.has(key)) groups.set(key, {key, heading, date, items: []});
             groups.get(key).items.push(item);
         }
         const list = [...groups.values()];
@@ -405,6 +408,7 @@ class SfList extends ListElement {
             uid: this._uid,
             label: this.label,
             headingLevel: this.headingLevel,
+            stickyHeadings: this.stickyHeadings === true,
             size: this.size,
             noWrap: this.noWrap === true,
             sections: this.arranged(),

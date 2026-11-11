@@ -94,7 +94,8 @@
           "smart.badge",
           "smart.button",
           "smart.button-icon",
-          "smart.icon"
+          "smart.icon",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -474,6 +475,48 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-change",
+      "id": "smart.change",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/change/smart.manifest.json",
+      "manifest_sha256": "ab64af81ca52c06d6e68911f1b9eaa684e1e3ac95f5973efeec6e6450affddf5",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
+      "tags": [
+        "change",
+        "diff",
+        "before",
+        "after",
+        "audit",
+        "history",
+        "text"
+      ],
+      "title": "Change"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
@@ -554,6 +597,7 @@
         "public_parts": [],
         "uses": [
           "smart.button",
+          "smart.change",
           "smart.icon"
         ]
       },
@@ -566,7 +610,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "27af5aed7c237f08df5734c9329d800d970a183c10edec87a7d26a1c51b6f705",
+      "manifest_sha256": "871edaa886d81a5af1cbb68bec1d95b947fd1037f9a80ec77440f37129b0d446",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1702,6 +1746,7 @@
         "public_parts": [],
         "uses": [
           "component.dropdown",
+          "component.group-heading",
           "component.icon-buttons",
           "smart.avatar",
           "smart.badge",
@@ -1709,7 +1754,8 @@
           "smart.empty-state",
           "smart.icon",
           "smart.list-item",
-          "smart.menu-context"
+          "smart.menu-context",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -1924,8 +1970,13 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.featured-icon",
+          "component.group-heading",
+          "smart.avatar",
           "smart.button",
-          "smart.icon"
+          "smart.change",
+          "smart.icon",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -1937,21 +1988,23 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-timeline/smart.manifest.json",
-      "manifest_sha256": "2fe15977fca8c687e2bb268e2f85a842285575552e77a8560831b8e408c0b1e2",
+      "manifest_sha256": "38e0fe1a44d596155b43116a32fe0b00f4c1216d762cca1ecbf540f44f9eb8cf",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "An activity timeline: events on a vertical line, each with its status marker (a dot or an icon), title, time, actor and text, grouped by day («Сегодня», «Вчера», the date), the time relative with the exact moment on hover, a «Показать ещё» button and a quiet line when there are none. Normal or compact density, sizes 1/2, 1 and 2.",
+      "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
       "tags": [
-        "list",
-        "timeline",
         "activity",
-        "history",
+        "admin",
         "audit",
+        "comments",
         "events",
-        "admin"
+        "history",
+        "list",
+        "steps",
+        "timeline"
       ],
       "title": "Timeline"
     },
@@ -3063,6 +3116,46 @@
         "admin"
       ],
       "title": "Metric tile"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.tooltip"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-time",
+      "id": "smart.time",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/time/smart.manifest.json",
+      "manifest_sha256": "8df69c1b866db3ee1e4e27f47c06e96d45bc2940d60a3224c70aeb43f0adc002",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+      "tags": [
+        "time",
+        "date",
+        "relative",
+        "tooltip",
+        "text"
+      ],
+      "title": "Time"
     },
     {
       "backend_adapters": [],

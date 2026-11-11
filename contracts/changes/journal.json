@@ -10049,6 +10049,30 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/scss/_sf_copy.scss"
+    },
+    {
+      "id": "attribute-list-timeline-density-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-timeline takes its density from the page (data-sf-density, a compact context; decision C22), never from a setting of its own (C40). density is deprecated: until remove_after density=\"compact\" writes data-sf-density=\"compact\" on the list's root, noted in SF.deprecations; density=\"normal\" was the default and means nothing.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "from": "density",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove density from the sf-list-timeline. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; density=\"normal\" is removed with nothing in its place (data-sf-density=\"normal\" keeps the list normal inside a compact region).",
+      "examples": {
+        "before": "<sf-list-timeline density=\"compact\">",
+        "after": "<sf-list-timeline data-sf-density=\"compact\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/index.js"
     }
   ]
 }

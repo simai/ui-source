@@ -6,6 +6,8 @@
 // its count and badge as sf-badge; a tag it renders is a tag it fetches. The shared
 // row menu is fetched after the page is ready. The loading status is visually hidden
 // with sr-only, which a class scan can miss.
+// A group's heading is block list's shared heading (group-heading) and the date beside
+// today and yesterday an sf-time (1.4.0, C40).
 SF.RuleLoader['cl-list'] = {
   tags: ['sf-list'],
   type: 'smart',
@@ -13,6 +15,8 @@ SF.RuleLoader['cl-list'] = {
   js: true,
   css: true,
   relation: [
+    { name: 'group-heading' },
+    { name: 'cl-time' },
     { name: 'dropdown' },
     { name: 'cl-list-item' },
     { name: 'icon-buttons' },

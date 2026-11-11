@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.3.5",
+  "version": "1.4.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -32,6 +32,7 @@
   "composition": {
     "uses": [
       "component.dropdown",
+      "component.group-heading",
       "component.icon-buttons",
       "smart.avatar",
       "smart.badge",
@@ -39,7 +40,8 @@
       "smart.empty-state",
       "smart.icon",
       "smart.list-item",
-      "smart.menu-context"
+      "smart.menu-context",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -116,6 +118,11 @@
         "description": "The level of the groups' headings in the page's outline.",
         "minimum": 2,
         "maximum": 6
+      },
+      "sticky-headings": {
+        "type": "boolean",
+        "default": false,
+        "description": "The group headings stay in sight while the list scrolls (block list's sticky heading, C40), the place's solid surface behind them"
       },
       "empty-text": {
         "type": "string",
@@ -747,27 +754,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "a983e0f9fe31d02375b6658e08718ca5fbc892f696457782fc5ef758e1e56801"
+        "sha256": "708a5d2216e7a61105883588f15339ff9a23b94402d8bca77a364bf773155c8f"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "cb65a5b2d31ddba22ef13c8cfcb07c5037d084c1c521e07193d59edadd9167e3"
+        "sha256": "15cab61cc267a48dd2e533d0a9b7c5238e3a53fdc4b4437152144eb4346202e1"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "9979dd74b3b4739592fcf53b25d000763ced4c5143a1eb306fa2706eaa632fb1"
+        "sha256": "21a47be76089008e2f9c8c527ba83af8762fecf2c6f42200a3f3b5f32397f49b"
       },
       {
         "path": "src/smart/list/rule.js",
-        "sha256": "57f39503a177d86850e3c8d352794c9c3a53237d7f8791af126d9c689024856a"
+        "sha256": "8dba9aeffcd2097288cc4b0285143cc9f1461e539b603b875f92836ab6194727"
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "430771a2c1c960c079a3cb5f403e83b7c1b938283a7c7a1143ee1cdf6246e3f7"
+        "sha256": "aabf5935207e61f5a588fa71954c3737e94b7941cc264ea07d4196a0d1734f07"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "417b62d956ae94804a76de6dd44516b06b77aea42a72e7fc10e2f5cc284f86b4"
+        "sha256": "375c1c4e85fffa450751cb8efcb3e68f3f138890ad0d93d3166e8591ce450864"
       },
       {
         "path": "src/smart/list/lang/en.json",

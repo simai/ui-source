@@ -1,0 +1,12 @@
+{
+  "title": "Изменение",
+  "runtime": {
+    "empty-text": "пусто",
+    "to-text": "на",
+    "label-separator": ":",
+    "show-text": "Показать изменения",
+    "hide-text": "Скрыть изменения",
+    "before-text": "Было",
+    "after-text": "Стало"
+  }
+}
