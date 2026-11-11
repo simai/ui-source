@@ -74,17 +74,17 @@
     grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-choice--min-inline-size), calc((100% - 2 * var(--sf-choice--gap)) / 3)), 1fr));
   }
 
-  /* The share never makes more tracks than there are options (review D1 of
-     the preloader round): two options give way to a half of the row, so they
-     take half each with no empty third track, and one option keeps the
-     plain rule and fills a field that holds one card. From the width where
-     the minimum is the smaller term, both are the plain rule again. */
+  /* The share never leaves a track without an option (review D1 of the
+     preloader round): one or two options fit their tracks (auto-fit), so the
+     tracks no option takes collapse and the options share the row -- one
+     fills it, two take half each, at every width. Two options also give way
+     to a half of the row below the width two minimums need. */
   .sf-choice[data-columns='auto'] .sf-choice-grid:has(> :nth-child(2)):not(:has(> :nth-child(3))) {
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-choice--min-inline-size), calc((100% - var(--sf-choice--gap)) / 2)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--sf-choice--min-inline-size), calc((100% - var(--sf-choice--gap)) / 2)), 1fr));
   }
 
   .sf-choice[data-columns='auto'] .sf-choice-grid:not(:has(> :nth-child(2))) {
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-choice--min-inline-size)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--sf-choice--min-inline-size)), 1fr));
   }
 }
 

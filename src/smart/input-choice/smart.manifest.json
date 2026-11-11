@@ -334,7 +334,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "8bf768b1734859f0f4e683ae692d6302a599cd71aa1b1e869c205ca267c0cd66"
+        "sha256": "d061539ee3abedeccbb279e2b97e4c61d16fbaf940fac7c212fa028f6aabc26b"
       },
       {
         "path": "src/smart/input-choice/rule.js",
@@ -342,7 +342,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "214cc1d70c7a4d93c07e47238a9453c8b32f9280bd84d8b174efc1161a58cd08"
+        "sha256": "4f0177f01c8dbb04a65deae16aca8f2dec16ebcadceb019ded031dbe19fca83b"
       }
     ],
     "generated_runtime": []
