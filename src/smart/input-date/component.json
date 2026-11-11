@@ -386,8 +386,8 @@
       "End": "focus:last",
       "PageUp": "step:-page",
       "PageDown": "step:+page",
-      "Shift+PageUp": "step:-year",
-      "Shift+PageDown": "step:+year",
+      "Shift+PageUp": "step:-page",
+      "Shift+PageDown": "step:+page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"
@@ -438,11 +438,12 @@
       "End": "focus:last",
       "PageUp": "step:-page",
       "PageDown": "step:+page",
-      "Shift+PageUp": "step:-year",
-      "Shift+PageDown": "step:+year",
+      "Shift+PageUp": "step:-page",
+      "Shift+PageDown": "step:+page",
       "Enter": "select",
       "Space": "select"
-    }
+    },
+    "x-keys": "Shift+PageUp and Shift+PageDown step a year (twelve month pages, the APG date picker's keys), held to min-date and max-date; the closed list of effects (standard 1.3.15 §4.8) has no year step, so they are declared as a page step"
   },
   "css-variables": {
     "--sf-datepicker-background-color": {
