@@ -104,7 +104,12 @@ const MEASURE = `(anchor) => {
   const point = {x: rtl ? a.left + inset : a.right - inset, y: a.top + inset};
   const centre = {x: b.left + b.width / 2, y: b.top + b.height / 2};
   const style = getComputedStyle(badge);
-  const ring = style.boxShadow.match(/^(rgba?\\([^)]*\\)) 0px 0px 0px ([\\d.]+)px/u);
+  // The ring is two layers since C43 D3 (6ba39e39): the row's own fill on
+  // top (--sf-badge--ring-fill, transparent off a row) over the place colour.
+  // What shows is the topmost layer that is not transparent.
+  const layers = [...style.boxShadow.matchAll(/(rgba?\\([^)]*\\)) 0px 0px 0px ([\\d.]+)px/gu)];
+  const clear = (colour) => /^rgba\\([^)]*,\\s*0\\)$/u.test(colour);
+  const ring = layers.find((layer) => !clear(layer[1])) ?? layers[0];
   return {
     anchor: {width: a.width, height: a.height}, radius, inset,
     dx: centre.x - point.x, dy: centre.y - point.y,
