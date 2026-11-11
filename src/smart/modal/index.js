@@ -28,7 +28,7 @@ const QUESTIONS = "sf-confirm, sf-confirm-change";
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
-import { carryLayerOrigin, layerZIndexAt, lockPageScroll } from "../../core/js/layer-stack";
+import { carryLayerOrigin, layerZIndexAt, lockPageScroll, startClosedLayerContent } from "../../core/js/layer-stack";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
@@ -1200,6 +1200,15 @@ class SfModal extends ModalElement {
     this.applyStackPosition();
     // Projection can replace the panel while an existing layer remains open.
     updateModalLayers();
+
+    // A closed window's content starts after the page's first paint, unseen:
+    // the Loader leaves it until the window opens (its root is inert), and a
+    // page that waited for a tag in it before opening the window waited for
+    // ever (layer-stack.js startClosedLayerContent).
+    if (this.display !== "inline" && !this.openState && !this._closedContentStarted) {
+      this._closedContentStarted = true;
+      startClosedLayerContent(() => this._root());
+    }
 
     if (this.autoload && !this.openState && !this._hasAutoloaded) {
       this._hasAutoloaded = true;
