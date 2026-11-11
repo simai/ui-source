@@ -15,7 +15,7 @@
     "src/component/file-upload/scss/_css__upload_progress.scss",
     "src/component/file-upload/scss/index.scss"
   ],
-  "content_sha256": "1137f9eefef3b162c99f44171d708e159c825e4ed3cf966a9eb0f3124e76b6e2",
+  "content_sha256": "33b8e886e79af729e17259a7b459eaeb1f2a6c812b661e4613498c9ada3a343a",
   "dependencies": [
     {
       "id": "core.runtime",
