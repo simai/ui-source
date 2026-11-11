@@ -68,12 +68,17 @@ test('the solid kinds stand on their own first colour, deeper in the dark theme'
   assert.match(duo, /--sf-gradient--to: #\{tone\('p', 40, 30, 'tertiary'\)\};/u);
   assert.match(duo, /background-color: var\(--sf-gradient--from\);/u);
   assert.match(duo, /color: var\(--sf-white\);/u);
+  // The plate is a strong coloured place: white ink, the accent turned white.
+  for (const line of ['--sf-surface-place-solid: var(--sf-gradient--from);', '--sf-on-surface: var(--sf-white);', '--sf-outline-variant: var(--sf-white--alfa-24);',
+    '--sf-primary: var(--sf-white);', '--sf-on-primary: var(--sf-gradient--from);', '@include aliases.sf-role-aliases(places.$sf-place-aliased);']) assert.ok(duo.includes(line), line);
   const cover = block('gradient-cover');
   assert.match(cover, /--sf-gradient--from: #\{tone\('c', 90, 30, 'primary'\)\};/u);
   assert.match(cover, /--sf-gradient--to: #\{tone\('c', 80, 20, 'primary'\)\};/u);
   assert.match(cover, /background-color: var\(--sf-gradient--from\);/u);
   assert.match(cover, /color: #\{tone\('c', 10, 90, 'primary'\)\};/u);
-  // The scrim: black alpha steps that exist, eased to nothing at 75 %.
+  // The scrim: black alpha steps that exist; the second holds up to the ramp
+  // at the top, so text below the ramp stands on at least that step.
+  assert.ok(block('gradient-scrim').includes("var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4))), var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4)) / 2), transparent 100%"));
   assert.match(kindVars, /48: \(48, 28, 8\),\n {4}64: \(64, 48, 16\),\n {4}80: \(80, 64, 28\),/u);
   for (const step of [48, 28, 8, 64, 16, 80]) assert.ok(ALPHA.includes(step));
   // The fade is a mask, never a paint.

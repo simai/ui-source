@@ -2,6 +2,8 @@
 @use 'sass:map';
 @use 'sf_var__gradient_kind' as *;
 @use '../../../gradient-type/default/scss/sf_mix__gradient' as *;
+@use '../../../../core/scss/mix/mix__role_aliases' as aliases;
+@use '../../../../core/scss/mix/mix__places' as places;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -16,7 +18,8 @@
 //   gradient-duo        the colour into its partner, solid, white text (promo)
 //   gradient-cover      two near tones of the colour, solid, its own ink (a
 //                       cover or placeholder from 64 px)
-//   gradient-scrim      black steps up from the bottom, white text on a photo
+//   gradient-scrim      black steps up from the bottom, white text on a photo;
+//                       the text stands below the ramp (--sf-gradient--scrim-ramp)
 //   gradient-fade       a mask: the content fades out at the end ("there is more")
 //
 //   gradient-color-<c>  the colour: primary (the default), secondary, tertiary
@@ -28,7 +31,8 @@
 //   gradient-scrim-<n>  48 | 64 (default) | 80
 //
 // Variables for components: --sf-gradient--from and --sf-gradient--to (the
-// colours), --sf-gradient--angle, --sf-gradient--strength.
+// colours), --sf-gradient--angle, --sf-gradient--strength; the fade reads
+// --sf-gradient--fade-size and the scrim --sf-gradient--scrim-ramp.
 //
 // Only palette tones and the alpha steps: an alpha kind is tone 50 of its
 // colour at a fill step, one step (+8) stronger in the dark theme, mixed with
@@ -96,6 +100,40 @@ $p: 'var(--sf-gradient--to)';
     background-color: var(--sf-gradient--from);
     color: var(--sf-white);
     @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+    // A strong coloured place (C42): what stands on the plate takes white ink
+    // on the alpha scale and the accent turns white with the plate's colour
+    // for its label, so a filled button is a white button. White in both
+    // themes, as on glass over media (the same white role set, fill 8/12/16):
+    // the dark plate is a deep tone, not tone 80 under tone-20 ink.
+    --sf-surface-place: var(--sf-gradient--from);
+    --sf-surface-place-solid: var(--sf-gradient--from);
+    --sf-surface-place-ground: var(--sf-gradient--from);
+    --sf-surface-underlay: initial;
+    --sf-on-surface: var(--sf-white);
+    --sf-on-surface-variant: var(--sf-white--alfa-80);
+    --sf-on-surface-container-variant: var(--sf-white--alfa-80);
+    --sf-surface-state-hover: var(--sf-white--alfa-4);
+    --sf-surface-state-select: var(--sf-white--alfa-8);
+    --sf-surface-state-active: var(--sf-white--alfa-12);
+    --sf-surface-container: var(--sf-white--alfa-8);
+    --sf-surface-container-hover: var(--sf-white--alfa-12);
+    --sf-surface-container-active: var(--sf-white--alfa-16);
+    --sf-outline: var(--sf-white--alfa-64);
+    --sf-outline-variant: var(--sf-white--alfa-24);
+    --sf-surface-disabled: var(--sf-white--alfa-12);
+    --sf-on-surface-disabled: var(--sf-white--alfa-64);
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
+    @include aliases.sf-role-aliases(places.$sf-place-aliased);
+    --sf-primary: var(--sf-white);
+    --sf-primary-hover: var(--sf-gradient--c-90, var(--sf-primary-90));
+    --sf-primary-active: var(--sf-gradient--c-80, var(--sf-primary-80));
+    --sf-on-primary: var(--sf-gradient--from);
+    --sf-primary-container: var(--sf-white--alfa-12);
+    --sf-primary-container-hover: var(--sf-white--alfa-8);
+    --sf-primary-container-active: var(--sf-white--alfa-4);
+    --sf-on-primary-container: var(--sf-white);
+    --sf-place--plate: var(--sf-white);
+    --sf-place--on-plate: var(--sf-gradient--from);
 }
 .gradient-cover {
     --sf-gradient--from: #{tone('c', 90, 30, 'primary')};
@@ -106,10 +144,14 @@ $p: 'var(--sf-gradient--to)';
     @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
 }
 .gradient-scrim {
+    // The ramp is a length at the top (--sf-gradient--scrim-ramp, space-4 by
+    // default): below it the scrim is at least its second step, so text keeps
+    // its contrast however many lines it takes; the element's top padding is
+    // the ramp, with no text in it.
     --sf-gradient--angle: 0deg;
     color: var(--sf-white);
     @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)',
-        'var(--sf-gradient--scrim-1, var(--sf-black--alfa-64)) 0%, var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) 25%, var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) 50%, transparent 75%');
+        'var(--sf-gradient--scrim-1, var(--sf-black--alfa-64)) 0%, var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4))), var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4)) / 2), transparent 100%');
 }
 // The fade is a mask, so it fades the content on any place -- a card, glass,
 // a pattern -- instead of painting a guess of the place colour. The mask reads
