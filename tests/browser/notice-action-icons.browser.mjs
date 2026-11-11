@@ -38,7 +38,7 @@ const B = 'Несохранённые изменения пропадут.';
 const classButton = (id, classes, icon) => `<button type="button" data-b="${id}" class="sf-button ${classes} sf-button--size-1 sf-button--height-low flex items-cross-center"><i class="sf-icon" aria-hidden="true">${icon}</i><span class="sf-button-text-container">Действие</span></button>`;
 const BUTTONS = [
   classButton('tonal-primary', 'sf-button--tonal sf-button--primary', 'refresh'),
-  classButton('link-on-surface', 'sf-button--link sf-button--on-surface', 'logout'),
+  classButton('link-on-surface', 'sf-button--ghost sf-button--on-surface', 'logout'),
   classButton('outline-primary', 'sf-button--outline sf-button--primary', 'open_in_new'),
   classButton('default-primary', 'sf-button--default sf-button--primary', 'check'),
   `<button type="button" data-b="bare" class="sf-button sf-button--size-1 sf-button--height-low flex items-cross-center"><i class="sf-icon" aria-hidden="true">star</i><span class="sf-button-text-container">Действие</span></button>`,

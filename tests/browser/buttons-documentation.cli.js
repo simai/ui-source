@@ -50,7 +50,7 @@ async page => {
       && document.querySelectorAll('.sf-button--default').length === 2
       && document.querySelectorAll('.sf-button--tonal').length === 2
       && document.querySelectorAll('.sf-button--outline').length === 2
-      && document.querySelectorAll('.sf-button--link').length === 2;
+      && document.querySelectorAll('.sf-button--ghost').length === 2;
   }));
   check('five size profiles are strictly increasing', await sizes.evaluate(() => {
     const heights = [...document.querySelectorAll('.sf-button')].map(button => button.getBoundingClientRect().height);

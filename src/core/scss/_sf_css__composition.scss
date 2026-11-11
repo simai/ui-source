@@ -172,11 +172,11 @@
         --sf-button--border-color: var(--sf-button-border-color, var(--sf-on-primary));
     }
 
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container {
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container {
         --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
     }
 
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--link, .sf-button--ghost).sf-button--primary .sf-icon {
+    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-icon {
         --sf-icon--color: var(--sf-on-primary);
     }
 }

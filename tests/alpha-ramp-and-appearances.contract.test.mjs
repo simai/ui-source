@@ -281,7 +281,7 @@ test('every size dresses the new appearances too', () => {
     );
     // Ghost now reads as link, so it is sized wherever link is.
     assert.ok(
-      buttons.includes(`.sf-button.sf-button--size-${size}:is(.sf-button--link, .sf-button--ghost).sf-button--primary ${label}`),
+      buttons.includes(`.sf-button.sf-button--size-${size}:is(.sf-button--ghost, .sf-button--link).sf-button--primary ${label}`),
       `size ${size} would otherwise leave ghost text unsized`,
     );
   }

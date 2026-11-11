@@ -3,21 +3,24 @@ import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 
 const SRC = new URL('../src/component/', import.meta.url);
+// The button sheet names ghost first (CB-01, C15: sf-button--ghost is the
+// class, sf-button--link its former name until 2027-01-01); the icon button
+// sheet still lists link first. Either order is the same pair.
 const SHEETS = [
-  ['button', 'buttons/scss/_css__buttons.scss'],
-  ['icon-button', 'icon-buttons/scss/_css_icon_buttons.scss'],
+  ['button', 'buttons/scss/_css__buttons.scss', 'ghost-first'],
+  ['icon-button', 'icon-buttons/scss/_css_icon_buttons.scss', 'link-first'],
 ];
 const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
 /* Ghost was identical to link at rest and differed only by a hover tint of 8%
-   instead of 16%: two names for one choice. It stays as a compatibility name,
-   which only holds if ghost goes everywhere link goes and nowhere else. */
+   instead of 16%: two names for one choice. One of them is a compatibility
+   name, which only holds if ghost goes everywhere link goes and nowhere else. */
 test('button variants: ghost is read exactly as link', async () => {
-  for (const [name, file] of SHEETS) {
+  for (const [name, file, order] of SHEETS) {
     const css = strip(await readFile(new URL(file, SRC), 'utf8'));
     const link = `.sf-${name}--link`;
     const ghost = `.sf-${name}--ghost`;
-    const pair = `:is(${link}, ${ghost})`;
+    const pair = order === 'ghost-first' ? `:is(${ghost}, ${link})` : `:is(${link}, ${ghost})`;
     const bareLink = css.split(pair).join('').split(link).length - 1;
     const bareGhost = css.split(pair).join('').split(ghost).length - 1;
     assert.equal(bareLink, 0, `${file}: every link selector also carries ghost`);

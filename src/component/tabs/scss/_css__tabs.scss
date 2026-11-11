@@ -545,11 +545,11 @@
     color: var(--sf-on-primary);
   }
 
-  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):hover {
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):not(.selected):not(:disabled):not(.disabled):hover {
     color: var(--sf-primary-hover);
   }
 
-  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
     color: var(--sf-primary-active);
   }
 

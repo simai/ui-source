@@ -10102,6 +10102,29 @@
           "to": "sf-view-save"
         }
       ]
+    },
+    {
+      "id": "class-button-link-to-ghost",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class button's look without a fill is sf-button--ghost (decision C15, docs review R033, CB-01), as the Smart button's appearance already is (value-button-link-to-ghost); sf-button--link is its former name and is drawn by the same rules until remove_after. The Smart sf-button, sf-segmented's segments and sf-alert's second action write both classes until then, so a page selector that reached sf-button--link still does. The earlier record class-button-ghost-to-link went the other way and stays as history; sf-upgrade no longer reports or rewrites an item a later record reverses.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--link",
+          "to": "sf-button--ghost"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--link sf-button--on-surface\">",
+        "after": "<button class=\"sf-button sf-button--ghost sf-button--on-surface\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss; src/smart/button/js/templates/default.js; ui-control control/docs-review/decisions.md C15"
     }
   ]
 }

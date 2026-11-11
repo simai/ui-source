@@ -49,7 +49,7 @@ const block = (id) => `
       <div class="sf-alert-content flex flex-col flex-1"><div class="sf-alert-text">Сессия закончится</div><div class="sf-alert-supporting-text">Несохранённые изменения пропадут.</div></div>
       <div class="sf-alert-buttons flex flex-wrap items-center">
         <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
-        <button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
+        <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
       </div>
     </div>
     <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Закрыть" data-close>
