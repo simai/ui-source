@@ -206,8 +206,8 @@
       "ArrowUp": "focus:prev",
       "Home": "focus:first",
       "End": "focus:last",
-      "PageDown": "focus:next-page",
-      "PageUp": "focus:prev-page",
+      "PageDown": "step:+page",
+      "PageUp": "step:-page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"
@@ -265,8 +265,8 @@
       "ArrowUp": "focus:prev",
       "Home": "focus:first",
       "End": "focus:last",
-      "PageDown": "focus:next-page",
-      "PageUp": "focus:prev-page",
+      "PageDown": "step:+page",
+      "PageUp": "step:-page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"

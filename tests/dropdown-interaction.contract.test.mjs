@@ -62,6 +62,6 @@ test('the keyboard brings the focused option into view and keeps it there',async
   assert.match(position,/const scrolled = settings\.fitHeight \? scrolledWithin\(floating\) : \[\];\s*if \(settings\.fitHeight\) floating\.style\.maxHeight/);
   assert.match(position,/style\.maxHeight = `\$\{Math\.max\(0, fits \? whole : room\)\}px`;\s*restoreScroll\(scrolled\);/);
   const manifest=JSON.parse(await read('src/smart/dropdown/component.json'));
-  assert.equal(manifest.keyboard.host.PageDown,'focus:next-page');
-  assert.equal(manifest.accessibility.keys.PageUp,'focus:prev-page');
+  assert.equal(manifest.keyboard.host.PageDown,'step:+page');
+  assert.equal(manifest.accessibility.keys.PageUp,'step:-page');
 });
