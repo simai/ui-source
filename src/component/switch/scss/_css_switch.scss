@@ -5,7 +5,10 @@
   gap: var(--sf-switch--gap);
 }
 
-.sf-switch .sf-icon {
+/* The icons of the control and of its class markup; the help mark's «?» is
+   its own button's glyph, sized and coloured by sf-help-mark (it took the
+   size-2 line, 28 in a 32 button). :where keeps the weight of the rules. */
+.sf-switch .sf-icon:where(:not(sf-help-mark *)) {
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
@@ -90,19 +93,19 @@
   width: var(--sf-switch-inner--width);
 }
 
-.sf-switch.sf-switch--size-1\/2 .sf-icon {
+.sf-switch.sf-switch--size-1\/2 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-1\/2);
   --sf-icon--height: var(--sf-text-height-1\/2);
   --sf-icon--width: var(--sf-text-height-1\/2);
 }
 
-.sf-switch.sf-switch--size-1 .sf-icon {
+.sf-switch.sf-switch--size-1 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-1);
   --sf-icon--height: var(--sf-text-height-1);
   --sf-icon--width: var(--sf-text-height-1);
 }
 
-.sf-switch.sf-switch--size-2 .sf-icon {
+.sf-switch.sf-switch--size-2 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-2);
   --sf-icon--height: var(--sf-text-height-2);
   --sf-icon--width: var(--sf-text-height-2);
@@ -293,7 +296,7 @@
   --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-2--text-space-x));
 }
 
-.sf-switch:is(.disabled, :has(input:disabled)) .sf-icon {
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
