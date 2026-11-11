@@ -169,6 +169,13 @@
        not apply and nothing changes. On a translucent place the solid colour
        is initial too, so a row there leaves the role off (base behaviour). */
     --sf-surface-underlay: initial;
+    /* The row's own translucent fill (C43 D3, D4): declared with the underlay
+       by mix sf-place-fill on a selected, open, current or hovered row, and
+       read only with it (the anchored badge's ring). Everywhere else it is
+       initial, as the underlay is, so the page declares the role a component
+       sheet reads (pair next 2 integration: it was declared in component
+       sheets only, which the declared-tokens contract reads as undeclared). */
+    --sf-surface-place-fill: initial;
     /* Glass over a photo or a video (C16, C14): controls on media stand on
        black at 48 with a blur, ink white, the same in both themes because the
        picture does not change with the theme. Hover and press take the next

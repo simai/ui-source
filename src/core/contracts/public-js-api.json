@@ -488,6 +488,9 @@
     {
       "name": "SF.copyFeedback",
       "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Shows a short confirmation on the control that copied text.",
       "kind": "object",
       "loaded_by": "core",
       "summary": "What a copy says, one feedback for sf-button-copy and the clipboard component's attribute route (data-sf-copy, data-sf-copy-target; owner decision C48): create({onPhase, duration}) answers a control's feedback, whose run({read, element, host, node, words, messages}) copies with SF.copyText and settles with {outcome: 'applied', text, method} or {outcome: 'refused', reason} -- the phase is success for two seconds and the words say it was copied; on a refusal the source is selected and the words say which keys copy it; pending, reset() and cancel() too. readText(element) is the text an element copies whole (a field's value, a numbered code block without its numbers, else its text); select(element, {text, host}) selects it; words(key, node, vars) are sf-button-copy's words in the page's language. docs/developer/format.md.",
