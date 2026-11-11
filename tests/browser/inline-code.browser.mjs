@@ -185,7 +185,10 @@ for (const theme of THEMES) {
     untouched: Object.fromEntries(UNTOUCHED.map((id) => [id, codes[id] && {background: codes[id].background, padding: codes[id].paddingLeft, parent: codes[id].parent}])),
   };
 
-  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.1[56]\d*\)/u.test(expected.background), expected);
+  // The plate is the neutral fill, --sf-surface-container (C10, GF-17), which
+  // C41 (owner 2026-11-10) made 8 % and keeps translucent: a step darker than
+  // whatever place it is on.
+  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.08\)/u.test(expected.background), expected);
   check(`${theme}: the radius resolves to 6px`, expected.radius === '6px', expected);
   check(`${theme}: the code in sf-button stays in its button`, buttonHasCode);
 

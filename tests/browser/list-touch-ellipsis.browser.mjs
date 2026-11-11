@@ -24,6 +24,10 @@
 //   for a text that fits;
 // - without no-wrap a long one-line title wraps as in 1.1 and carries no
 //   tooltip;
+// - a narrow list (sf-list 1.5.0, owner decision C47; the 280px column is
+//   below 20rem): a row with a badge or a count puts them under its text, at
+//   the text's start; the row grows by the band step and their height
+//   (geometry standard, multi-line rows);
 // - the geometry is the same in light and dark; no sideways scroll, no page error.
 import {createServer} from 'node:http';
 import {existsSync, mkdirSync, readFileSync, statSync} from 'node:fs';
@@ -130,6 +134,7 @@ try {
               line: length(`var(--sf-text-height-${esc})`),
               lineBelow: length(`var(--sf-text-height-${below})`),
               d1: length('var(--sf-d1)'),
+              band: length('var(--sf-space-1\\/4)'),
             };
             probe.remove();
             const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, right: r.right, bottom: r.bottom, cy: r.y + r.height / 2}; };
@@ -147,6 +152,7 @@ try {
               const dotsStyle = dots && getComputedStyle(dots);
               const title = row.querySelector('.sf-list-item-title');
               const container = row.querySelector('.sf-list-item-container');
+              const meta = row.querySelector('.sf-list__meta');
               const parts = [drawn(row.querySelector('.sf-list__lead sf-avatar')) || row.querySelector('.sf-list__sign') || row.querySelector('.sf-list__glyph'),
                 drawn(row.querySelector('sf-badge.sf-list__count')), drawn(row.querySelector('sf-badge.sf-list__badge'))].filter(Boolean);
               return {
@@ -161,6 +167,13 @@ try {
                 parts: parts.map((node) => ({...box(node), natural: node.scrollWidth})),
                 dots: dots ? {...box(dots), opacity: dotsStyle.opacity, visibility: dotsStyle.visibility, display: dotsStyle.display} : null,
                 colour: getComputedStyle(container).color,
+                // C47 (sf-list 1.5.0): a narrow list puts the badge and count
+                // under the text; the row grows by the band step and their height.
+                under: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow') && Boolean(meta && meta.children.length),
+                meta: meta && meta.children.length ? box(meta) : null,
+                // Where the title's text starts: a one-line row's text is the
+                // container's own, after its inline padding.
+                textX: title ? box(title).x : box(container).x + parseFloat(getComputedStyle(container).paddingInlineStart),
               };
             });
             // The rename field, as F2 opens it, on the first row of #flat.
@@ -190,7 +203,8 @@ try {
               // (sf-list-item's own two-line rule).
               const fits = !(row.title.content === LONG && name === 'wrap' && !row.twoLine);
               if (fits) {
-                const want = row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
+                const lines = row.twoLine ? two : tokens.control;
+                const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
                 ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
               } else {
                 ok(`${where}: a long title wraps without no-wrap`, row.title.h > row.title.lineHeight * 1.5 && row.row.h > (row.twoLine ? two : one), {title: row.title, row: row.row});
@@ -202,7 +216,11 @@ try {
               if (touch) ok(`${where}: «⋯» at least 44 x 44`, row.dots.w >= 44 - 0.5 && row.dots.h >= 44 - 0.5, row.dots);
               else ok(`${where}: «⋯» the step's icon button`, near(row.dots.h, tokens.control) && near(row.dots.w, tokens.control), {dots: row.dots, tokens});
               for (const part of row.parts) ok(`${where}: a part stays whole, inside the row`, part.natural <= part.w + 0.5 && part.right <= row.item.right + 0.5 && part.x >= row.row.x, {part, item: row.item});
-              ok(`${where}: the text ends before the parts and the «⋯»`, row.title.right <= Math.min(row.dots.x, ...row.parts.filter((part) => part.x > row.title.x).map((part) => part.x)) + 0.5, {title: row.title, parts: row.parts, dots: row.dots});
+              // Only the parts on the title's line stand after it (a narrow
+              // row's badge and count are on the line under the text).
+              const beside = row.parts.filter((part) => part.x > row.title.x && part.y < row.title.bottom - 0.5 && part.bottom > row.title.y + 0.5);
+              ok(`${where}: the text ends before the parts and the «⋯»`, row.title.right <= Math.min(row.dots.x, ...beside.map((part) => part.x)) + 0.5, {title: row.title, parts: row.parts, dots: row.dots});
+              if (row.under) ok(`${where}: narrow, the badge and count under the title at its start`, row.meta.y >= row.title.bottom - 0.5 && Math.abs(row.meta.x - row.textX) <= 1, {meta: row.meta, title: row.title, textX: row.textX});
             }
           }
           // no-wrap.

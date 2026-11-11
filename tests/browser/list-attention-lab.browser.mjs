@@ -22,7 +22,8 @@
 //     the action is under the text at its start, the «⋯» on the title's
 //     line, and the stacked foot starts on the text edge;
 //   - limit and more: five rows and «Все проблемы (8)»;
-//   - the empty state «Всё в порядке · проверено 5 мин назад»;
+//   - the empty state «Всё в порядке · проверено 5 мин назад» with «Проверить
+//     снова»; on a phone two lines and an icon recheck (owner decision C45);
 //   - triage by keyboard: Enter on «⋯», the arrows, Enter on «Отложить на
 //     неделю» asks snooze {id, until} (a week on), the row leaves, the focus
 //     goes to the next row's «⋯», the notice holds «Вернуть»; Enter on it
@@ -84,10 +85,14 @@ const MEASURE = () => {
     const rects = [...range.getClientRects()];
     return rects.length ? round(rects[0].left) : null;
   };
-  // The words a person reads: text nodes outside icons and visually hidden parts.
+  // The words a person reads: text nodes outside icons and visually hidden
+  // parts, and drawn (sf-list-attention 1.3.0, owner decision C45, keeps the
+  // wide and the narrow form of the quiet card in the markup; the sheet shows
+  // one of them).
+  const shown = (element) => element.checkVisibility({visibilityProperty: true});
   const words = (element) => {
     if (!element) return '';
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-icon, .sr-only') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-icon, .sr-only') || !shown(node.parentElement) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
     let text = '';
     for (let node = walker.nextNode(); node; node = walker.nextNode()) text += node.textContent;
     return text.replace(/\s+/gu, ' ').trim();
@@ -154,7 +159,9 @@ const MEASURE = () => {
         allLeft: all ? textLeft(all) : null,
         allRight: all ? round(box(all).right) : null,
       } : null,
-      quiet: quiet ? {text: words(quiet), height: round(box(quiet).height), role: quiet.getAttribute('role')} : null,
+      quiet: quiet ? {text: words(quiet), height: round(box(quiet).height), role: quiet.getAttribute('role'),
+        lines: [...quiet.querySelectorAll('.sf-list-attention-quiet-text > *')].filter(shown).map(words),
+        rechecks: [...quiet.querySelectorAll('sf-button > button, sf-button-icon > button')].filter(shown).map((button) => words(button) || button.getAttribute('aria-label') || '')} : null,
       groups: [...host.querySelectorAll('.sf-list-attention-group-toggle')].map((toggle) => ({
         key: toggle.closest('[data-group]').dataset.group,
         title: toggle.querySelector('.sf-list-attention-group-title').textContent,
@@ -246,7 +253,12 @@ try {
           if (!/^Проверено 5 мин назад$/u.test(overview.foot?.checked ?? '')) fail(`checked «${overview.foot?.checked}»`);
 
           // Empty.
-          if (empty.quiet?.text !== 'Всё в порядке · проверено 5 мин назад Проверить снова' || empty.quiet?.role !== 'status') fail(`empty «${empty.quiet?.text}» ${empty.quiet?.role}`);
+          // C45 (q2): on a phone the quiet card is two lines, «Всё в порядке» over
+          // «Проверено 5 мин назад», and the recheck an icon; wide, one line and
+          // the worded recheck. One form at a time.
+          const quietWant = phone ? {lines: ['Всё в порядке', 'Проверено 5 мин назад'], rechecks: ['Проверить снова']}
+            : {lines: ['Всё в порядке · проверено 5 мин назад'], rechecks: ['Проверить снова']};
+          if (JSON.stringify(empty.quiet?.lines) !== JSON.stringify(quietWant.lines) || JSON.stringify(empty.quiet?.rechecks) !== JSON.stringify(quietWant.rechecks) || empty.quiet?.role !== 'status') fail(`empty ${JSON.stringify(empty.quiet?.lines)} recheck ${JSON.stringify(empty.quiet?.rechecks)} ${empty.quiet?.role}, expected ${JSON.stringify(quietWant)}`);
 
           // Alignment: wide card -- actions and «⋯» end on one edge, titles on one.
           const narrowList = phone ? [overview, side] : [side];

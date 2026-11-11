@@ -105,7 +105,9 @@ try {
   report.tag = await tab.evaluate(() => {
     const tag = document.querySelector('#tag');
     const toggle = tag.querySelector('button[aria-pressed]');
-    const remove = tag.querySelector('sf-button-icon');
+    // The remove button is sf-button-close, plain (owner decision C14;
+    // lookup pre-check LK-06 retired sf-button-icon kind="close" there).
+    const remove = tag.querySelector('sf-button-close');
     return {
       kind: tag.kind,
       toggle: Boolean(toggle),

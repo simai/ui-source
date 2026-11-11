@@ -133,17 +133,18 @@ try {
         // The true centre, and clear of both sides.
         if (Math.abs(wide.listCentre - wide.rowCentre) > 1) failures.push(`${key}: the nav's centre is ${wide.listCentre}, the bar's ${wide.rowCentre}`);
         if (!(wide.listLeft > wide.brandRight) || !(wide.listRight < wide.toolLeft)) failures.push(`${key}: the nav overlaps the brand or the tools: ${JSON.stringify(wide)}`);
-        // Hover: the state step on a row at rest; the current plate unchanged.
+        // Hover: one row hover for every menu and list, --sf-surface-state-select
+        // (8; C42 (5), owner 2026-11-10); the current plate unchanged.
         const rest = tab.locator('#m ul.sf-menu > li > .sf-menu-element:not([aria-current])').first();
         await rest.hover();
         await tab.waitForTimeout(150);
         const hovered = await rest.evaluate((row) => getComputedStyle(row).backgroundColor);
-        if (hovered !== `rgba(${TONE[theme]}, 0.04)`) failures.push(`${key}: a hovered row is ${hovered}, expected rgba(${TONE[theme]}, 0.04)`);
+        if (hovered !== `rgba(${TONE[theme]}, 0.08)`) failures.push(`${key}: a hovered row is ${hovered}, expected rgba(${TONE[theme]}, 0.08)`);
         const currentRow = tab.locator('#m ul.sf-menu > li > .sf-menu-element[aria-current="page"]');
         await currentRow.hover();
         await tab.waitForTimeout(150);
         const hoveredCurrent = await currentRow.evaluate((row) => getComputedStyle(row).backgroundColor);
-        const expectHover = fill ? PLATE[theme] : `rgba(${TONE[theme]}, 0.04)`;
+        const expectHover = fill ? PLATE[theme] : `rgba(${TONE[theme]}, 0.08)`;
         if (hoveredCurrent !== expectHover) failures.push(`${key}: the hovered current page is ${hoveredCurrent}, expected ${expectHover}`);
         // The line on the bar's bottom border (indicator line) or none (fill).
         const line = await tab.evaluate(() => {
