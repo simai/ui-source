@@ -12,7 +12,15 @@
   border-top-width: var(--sf-px);
   width: var(--sf-online-indicator--width);
   height: var(--sf-online-indicator--height);
-  background-color: var(--sf-online-indicator--background-color);
+  // The dot is a cut-out: what is under it (the photo, the initials) must not
+  // show through. It is drawn as before -- the ring the place colour, the fill
+  // the state colour -- with the fill as a layer over the nearest opaque place
+  // (--sf-surface-place-ground), so on a soft coloured place the dot is the
+  // soft place's own look, opaque. On the page, a card or a popup the place
+  // colour is opaque already and nothing changes. Where no ground is known
+  // (glass) the bottom is transparent: exactly the former dot.
+  background-color: var(--sf-surface-place-ground, transparent);
+  background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
   --sf-online-indicator--height: var(--sf-b6);
   --sf-online-indicator--width: var(--sf-b6);
 }
@@ -52,12 +60,13 @@
 // the photo or the initials would show through it (a green photo read as
 // online). It stacks over the place's colour instead, as C43 lays every alpha
 // over the solid place: the dot is the disabled ink on the place it is on.
+// Both lie over the nearest opaque place, as the fill does.
 // Both layers are public (core/contracts/public-variables.v1.json): a page
 // that wants a colour of its own sets the background colour variable and
 // the overlay variable to none, and gets exactly that colour.
 .sf-online-indicator--offline {
   --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-surface-place));
-  background-image: var(--sf-avatar-offline-overlay, linear-gradient(var(--sf-on-surface-disabled) 0 0));
+  background-image: var(--sf-avatar-offline-overlay, linear-gradient(var(--sf-on-surface-disabled) 0 0)), linear-gradient(var(--sf-online-indicator--background-color) 0 0);
 }
 
 .sf-online-indicator--online {

@@ -84,6 +84,7 @@
     @include places.sf-place-strong($c);
     --sf-surface-place: var(--sf-alert-bar--fill);
     --sf-surface-place-solid: var(--sf-alert-bar--fill);
+    --sf-surface-place-ground: var(--sf-alert-bar--fill);
   }
 }
 

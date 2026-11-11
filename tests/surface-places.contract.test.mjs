@@ -76,7 +76,7 @@ test("an opaque place takes back exactly the theme's values", () => {
   // Every role a coloured place re-declares is one an opaque place takes back.
   const strong = mix.slice(mix.indexOf('@mixin sf-place-strong'));
   const set = new Set(entries.map(([, role]) => role));
-  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && !set.has(role));
+  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && role !== 'surface-place-ground' && !set.has(role));
   assert.deepEqual(missed, []);
 });
 

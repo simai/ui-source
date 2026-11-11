@@ -31,6 +31,13 @@
 // initial on a translucent place (a soft coloured place, glass), whose colour
 // is an alpha a badge cannot stand on -- there a row leaves the role off.
 //
+// --sf-surface-place-ground is the nearest opaque place (status dot on soft
+// places, 2026-11-11): every solid place declares it with --sf-surface-place-
+// solid, a soft place does not, so under a soft place it is the opaque place
+// beneath. A cut-out that must not show what is under it (the avatar's status
+// dot) lays --sf-surface-place over it, which is exactly the soft place's
+// look over its ground. It is never initial except on glass (held).
+//
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
 // place can take them back (an ancestor's value cannot be read in CSS).
@@ -96,6 +103,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
 @mixin sf-place($surface, $variant: null, $outline: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
+  --sf-surface-place-ground: #{$surface};
   $container-variant: sf-place-container-variant($variant);
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
@@ -131,6 +139,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 @mixin sf-place-soft($c) {
   --sf-surface-place: var(--sf-#{$c}-container);
   --sf-surface-place-solid: initial;
+  // --sf-surface-place-ground is not declared: it is the opaque place below.
   --sf-surface-underlay: initial;
   --sf-surface-container: var(--sf-#{$c}-container);
   --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
@@ -158,6 +167,7 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 @mixin sf-place-strong($c) {
   --sf-surface-place: var(--sf-#{$c});
   --sf-surface-place-solid: var(--sf-#{$c});
+  --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};

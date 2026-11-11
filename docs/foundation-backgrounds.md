@@ -42,6 +42,20 @@ Each colour has the same family: `--sf-<colour>-state-*`,
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
 
+### The nearest opaque place (2026-11-11)
+
+`--sf-surface-place-ground` is the colour of the nearest opaque place. The
+page declares it (`var(--sf-surface-page)`), every solid place declares it with
+its solid colour (cards, popups, `bg-surface-*`, `bg-<colour>`, the popover,
+the alert-bar levels), and a soft coloured place (`bg-<colour>-container`)
+does not, so under a soft place it is the opaque place the soft one stands
+on. A cut-out that must not show what is under it lays the place colour over
+it: the avatar's status dot is drawn as before over that ground, so on a
+soft place it is the soft place's own look, opaque, and the photo no longer
+shows through it. On solid places nothing
+changes. Glass (`.sf-surface-media`) sets it `initial` for now and the dot
+keeps its translucent look there.
+
 ### What changed with C43 (2026-11-10)
 
 - **Rows with a fill.** A selected, open or current row is not a place: its

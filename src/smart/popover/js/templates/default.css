@@ -33,6 +33,7 @@
        ordinary popover. */
     --sf-surface-place: var(--sf-popover-background-color, var(--sf-surface-popup));
     --sf-surface-place-solid: var(--sf-popover-background-color, var(--sf-surface-popup));
+    --sf-surface-place-ground: var(--sf-popover-background-color, var(--sf-surface-popup));
     --sf-surface-underlay: initial;
     --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
     --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
