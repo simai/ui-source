@@ -54,13 +54,31 @@ const sfToastMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "Visible label of the one optional action."
+      "description": "Visible label of the first optional action: a link at the end of the text when action-href is set and there is no secondary action, a button under the text otherwise (owner decision C50)."
     },
     "action": {
       "kind": "custom",
       "valueType": "string",
       "default": "action",
       "description": "Stable action value emitted in sf-toast-action."
+    },
+    "action-href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, action-text is a link at the end of the text, followed as a link and reported in sf-toast-action. Undo, retry, extend and two actions stay buttons; a toast never shows both (owner decision C50)."
+    },
+    "secondary-action-text": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Visible label of a second action: both actions are buttons under the text, and action-href does not apply (C46, C50)."
+    },
+    "secondary-action": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "secondary",
+      "description": "Stable secondary action value emitted in sf-toast-action."
     },
     "closable": {
       "kind": "boolean",

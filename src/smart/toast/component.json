@@ -2,7 +2,7 @@
   "$comment": "The source of sf-toast's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/toast (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.toast",
   "tag": "sf-toast",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "toast",
   "settings": {
@@ -35,12 +35,27 @@
     "action-text": {
       "type": "string",
       "default": "",
-      "summary": "Visible label of the one optional action."
+      "summary": "Visible label of the first optional action: a link at the end of the text when action-href is set and there is no secondary action, a button under the text otherwise (owner decision C50)."
     },
     "action": {
       "type": "string",
       "default": "action",
       "summary": "Stable action value emitted in sf-toast-action."
+    },
+    "action-href": {
+      "type": "string",
+      "default": "",
+      "summary": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, action-text is a link at the end of the text, followed as a link and reported in sf-toast-action. Undo, retry, extend and two actions stay buttons; a toast never shows both (owner decision C50)."
+    },
+    "secondary-action-text": {
+      "type": "string",
+      "default": "",
+      "summary": "Visible label of a second action: both actions are buttons under the text, and action-href does not apply (C46, C50)."
+    },
+    "secondary-action": {
+      "type": "string",
+      "default": "secondary",
+      "summary": "Stable secondary action value emitted in sf-toast-action."
     },
     "closable": {
       "type": "boolean",
@@ -286,6 +301,7 @@
   "x-words": [
     "supporting-text",
     "action-text",
+    "secondary-action-text",
     "close-label"
   ],
   "x-target": {
@@ -317,7 +333,8 @@
     "version 1.1.9 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, show({text, code, count, tone}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.1.10 (2026-11-09): a patch, nothing drawn or done differently. The show action's text, code, count and tone are each optional, as the element reads them (show() and show({text}) both apply), so the reference no longer calls show's argument or its four fields required. Settings, values, events and keys unchanged.",
     "version 1.1.11: an info toast reads the information palette's container, its ink and its graphic tone (--sf-info-container, --sf-on-info-container, --sf-on-info-container-graphic), as success, warning and error read theirs (C17 info parity, dispatcher 2026-11-09; component.toast 1.1.0). It read the brand's primary container before, so under a theme of another colour an info toast took that colour. The former word primary draws the same as info.",
-    "version 1.2.1 (2026-11-10): a patch (component.toast 1.2.4). The status icon is an sf-icon element, as sf-alert draws its own, and the toast asks the Loader for its glyph when it draws (smart/helpers/cycle.js preloadControlIcons, R074). The bare <i class=\"sf-icon\"> it printed was found only by the Loader's page scan, so a toast drawn where the scan does not look -- a data-sf-observer=\"ignore\" region, a shadow root -- kept an empty box for a glyph the page had not asked for (delete beside warning). The toast sheet places the glyph inside the sf-icon (display: contents) and the sf-icon before it is defined, so size, colour and position are unchanged (tests/browser/toast-status-glyph.browser.mjs). Settings, events and keys are unchanged."
+    "version 1.2.1 (2026-11-10): a patch (component.toast 1.2.4). The status icon is an sf-icon element, as sf-alert draws its own, and the toast asks the Loader for its glyph when it draws (smart/helpers/cycle.js preloadControlIcons, R074). The bare <i class=\"sf-icon\"> it printed was found only by the Loader's page scan, so a toast drawn where the scan does not look -- a data-sf-observer=\"ignore\" region, a shadow root -- kept an empty box for a glyph the page had not asked for (delete beside warning). The toast sheet places the glyph inside the sf-icon (display: contents) and the sf-icon before it is defined, so size, colour and position are unchanged (tests/browser/toast-status-glyph.browser.mjs). Settings, events and keys are unchanged.",
+    "version 1.3.0 (2026-11-11): the actions of owner decision C50, the model of SF.Toast.create (component.toast 1.3.0). action-href (a new public name, the <purpose>-href pattern of more-href, prev-href and later-href) turns the one light navigation action into a link at the end of the text, a.sf-toast-link in the text's own ink; secondary-action-text and secondary-action (sf-alert's names) add a second button under the text. With a secondary action both are buttons and action-href does not apply: a toast never mixes a link and buttons. The link and both buttons carry data-action, so sf-toast-action reports which one was pressed; a link with action-href=\"#\" does not jump."
   ],
   "x-registry": {
     "contracts": {

@@ -3185,7 +3185,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/toast/smart.manifest.json",
-      "manifest_sha256": "ec981110bcd8d64fc45bfddddb9d537f9c82fc579eaff9317d52b4132ec341f8",
+      "manifest_sha256": "7a87de11c18c870897be2969300f5f71e7774e6057f6741ab1c5c6d0fb2bee4e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
