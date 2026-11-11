@@ -124,7 +124,11 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   }
   @return $list;
 }
-$sf-place-strong-selectors: list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma);
+// The inverse places re-declare the accent and the boundary line as well
+// (sf-place-inverse), so an opaque place on them takes both back.
+$sf-place-inverse-selectors: ('.bg-surface-inverse', '.bg-surface-inverse-fixed');
+$sf-place-strong-selectors: list.join(list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma),
+  $sf-place-inverse-selectors, $separator: comma);
 $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf-place-selector-list('-container'), $separator: comma),
   ('.sf-surface-media',), $separator: comma);
 
@@ -254,6 +258,60 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-outline: var(--sf-#{$c}-outline);
   --sf-outline-variant: var(--sf-#{$c}-container-strong);
   @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
+}
+
+// An inverse place, bg-surface-inverse (C16 lists it as a place; DEV
+// 2026-11-10, form backgrounds study 1.4): the other theme's surface, so what
+// stands on it takes the other theme's roles -- every light-dark() pair of
+// the theme's place roles, the boundary line and the accent read the other
+// way round. Before it re-declared nothing and a field's label on it measured
+// 1.31:1 light and 1.00:1 dark, its edge 2.37 and 1.00.
+// bg-surface-inverse-fixed is the dark grey in both themes: it takes the dark
+// theme's half of every pair ($fixed).
+// The boundary on the light inverse (the dark theme's, neutral-90) is opaque
+// neutral-50, as on the light grey steps ($sf-place-step-outline): the light
+// theme's neutral-50 at 80 is made for white and loses 3:1 on tone 90.
+@function sf-place-light-dark-half($value, $half) {
+  $v: string.unquote('#{$value}');
+  $open: 'light-dark(';
+  @if string.index($v, $open) != 1 { @return $v; }
+  $inner: string.slice($v, string.length($open) + 1, -2);
+  $cut: string.index($inner, '), ');
+  $light: string.slice($inner, 1, $cut);
+  $dark: string.slice($inner, $cut + 3);
+  @if $half == 'dark' { @return string.unquote($dark); }
+  @return string.unquote('light-dark(#{$dark}, #{$light})');
+}
+
+@mixin sf-place-inverse($surface, $fixed: false) {
+  $half: if($fixed, 'dark', 'swap');
+  --sf-surface-place: #{$surface};
+  --sf-surface-place-solid: #{$surface};
+  --sf-surface-place-ground: #{$surface};
+  @each $role, $value in $sf-place-theme-roles {
+    @if $role == 'outline' and not $fixed {
+      --sf-outline: light-dark(var(--sf-neutral-90--alfa-48), var(--sf-neutral-50));
+    } @else {
+      --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
+    }
+  }
+  @each $role, $value in $sf-place-colour-roles {
+    --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
+  }
+  @include aliases.sf-role-aliases($sf-place-aliased);
+  // The accent the place found, kept for an opaque place on it (D1).
+  @each $role, $value in $sf-place-accent-roles {
+    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  }
+}
+
+// The other theme's accent on an inverse place: on its children, in sf.base,
+// as on a strong place (sf-place-strong-accent), so the place still reads the
+// accent it found and an opaque place among the children takes it back.
+@mixin sf-place-inverse-accent($fixed: false) {
+  @each $role, $value in $sf-place-accent-roles {
+    --sf-#{$role}: #{sf-place-light-dark-half($value, if($fixed, 'dark', 'swap'))};
+  }
 }
 
 // A step of a strong place's ink: on-<c>, white in the light theme and tone 20

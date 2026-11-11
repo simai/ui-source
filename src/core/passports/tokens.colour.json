@@ -34,7 +34,7 @@
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "bfb2f949d2ff19d8c756dd04f7d335511248e35daef663a6c17a7c63b4aaa9ca",
+  "content_sha256": "2a3f93878036f1c1b709dade3bd18769770b06aa1387e34e32627fd4feffda1f",
   "dependencies": [
     {
       "id": "tokens.elevation",

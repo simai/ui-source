@@ -59,6 +59,7 @@
   background-color: var(--sf-textarea-textarea--background-color);
   border: var(--sf-textarea-textarea--border);
   border-color: var(--sf-textarea-textarea--border-color, transparent);
+  border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
   border-end-end-radius: var(--sf-textarea-textarea--border-end-end-radius);
   border-end-start-radius: var(--sf-textarea-textarea--border-end-start-radius);
   border-start-end-radius: var(--sf-textarea-textarea--border-start-end-radius);
@@ -179,12 +180,24 @@
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 8 %
+   (C41) the fill alone stands 1.10 to 1.23 from its place, so at rest the
+   field also draws its bottom edge in --sf-outline, the bordered field's
+   boundary. Only the bottom: the other edges stay the transparent border
+   that a state colours. A state that colours the border (hover, press)
+   takes the line with it, so the edge is one colour. */
+.sf-textarea:not(.error).sf-textarea--filled:not(:has(textarea:disabled)) textarea {
+  --sf-textarea-textarea--line-color: var(--sf-textarea-border-color, var(--sf-outline));
+}
+
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container-hover);
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
   --sf-textarea-textarea--border-color: var(--sf-primary-active);
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea.error.sf-textarea--filled textarea {

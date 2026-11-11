@@ -101,6 +101,7 @@
   min-inline-size: 0;
   border: var(--sf-px) solid;
   border-color: var(--sf-rich-text--border-color, transparent);
+  border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
   border-radius: var(--sf-rich-text--radius);
   background-color: var(--sf-rich-text--background-color);
   color: var(--sf-rich-text-color, var(--sf-on-surface));
@@ -124,8 +125,17 @@
   --sf-rich-text--border-color: var(--sf-primary-hover);
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): at rest
+   the field draws its bottom edge in --sf-outline, the fill at 8 % (C41)
+   being 1.10 to 1.23 from its place. A state that colours the border takes
+   the line with it. */
+.sf-rich-text:not(.error).sf-rich-text--filled:not(.sf-rich-text--disabled) .sf-rich-text-frame {
+  --sf-rich-text--line-color: var(--sf-rich-text-border-color, var(--sf-outline));
+}
+
 .sf-rich-text:not(.error).sf-rich-text--filled:not(.sf-rich-text--disabled):not(.sf-rich-text--readonly) .sf-rich-text-frame:hover {
   --sf-rich-text--background-color: var(--sf-surface-container-hover);
+  --sf-rich-text--line-color: var(--sf-rich-text--border-color);
 }
 
 /* Typing in it: the bordered field's focus surface, as sf-input-textarea's. */

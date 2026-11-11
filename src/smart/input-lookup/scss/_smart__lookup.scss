@@ -108,6 +108,7 @@
   padding-inline: var(--sf-lookup--padding-inline);
   border: var(--sf-px) solid;
   border-color: var(--sf-lookup--border-color, transparent);
+  border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
   border-radius: var(--sf-lookup--radius);
   background-color: var(--sf-lookup--background-color);
   color: var(--sf-lookup-color, var(--sf-on-surface));
@@ -132,8 +133,17 @@
   --sf-lookup--border-color: var(--sf-primary-hover);
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): at rest
+   the field draws its bottom edge in --sf-outline, the fill at 8 % (C41)
+   being 1.10 to 1.23 from its place. A state that colours the border takes
+   the line with it. */
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled) .sf-lookup-frame {
+  --sf-lookup--line-color: var(--sf-lookup-border-color, var(--sf-outline));
+}
+
 .sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
   --sf-lookup--background-color: var(--sf-surface-container-hover);
+  --sf-lookup--line-color: var(--sf-lookup--border-color);
 }
 
 /* Typing in it: sf-input's focus surface. */

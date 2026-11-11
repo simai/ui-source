@@ -337,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "97f2fcb0a688b2a74b47234650ddce0cf1d0b13aa9941ba87c2ebd9e01cbd8b4"
+        "sha256": "4b746843076bed185102a62fe67a93ab456917ebaeca72bfbc321ac9fc179568"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -345,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "6e79f7b229959209b0f9a3813335a4aeddead91a4fcc5ecd27fd0cf21bdfb734"
+        "sha256": "69a48a45e9fc259c00a34d514d88379dea57bb21fd8ac4980ed41abf3812b24a"
       }
     ],
     "generated_runtime": []

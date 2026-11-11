@@ -12,7 +12,9 @@ supported sizes are `1/3`, `1/2`, `1`, `2` and `3`.
 
 A filled field's placeholder keeps the quiet ink `--sf-on-surface-variant`
 (on the fill, `--sf-on-surface-container-variant`); only the text is
-`--sf-on-surface` (1.1.1, FA-08).
+`--sf-on-surface` (1.1.1, FA-08). At rest a filled field draws its bottom
+edge in `--sf-outline` (C52, as `sf-input`); hover and press colour it with the
+border.
 
 The control resizes vertically by default. Use the Framework utilities
 `resize-none`, `resize-y`, `resize-x` or `resize` only when the containing layout
