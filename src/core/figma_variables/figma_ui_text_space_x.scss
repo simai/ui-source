@@ -1,21 +1,18 @@
-// The step from a picture to its label (docs/foundation-composition-geometry.md):
-// a step of the space scale, 4, 8 or 12 (owner rule C18), on both ladders. The
-// phone ladder is the desktop one a step down, as every control family is.
 @layer sf.base {
   :root {
-    --sf-ui-1\/3--text-space-x: var(--sf-a4);
-    --sf-ui-1\/2--text-space-x: var(--sf-a4);
-    --sf-ui-1--text-space-x: var(--sf-a8);
+    --sf-ui-1\/3--text-space-x: var(--sf-a5);
+    --sf-ui-1\/2--text-space-x: var(--sf-a6);
+    --sf-ui-1--text-space-x: var(--sf-a6);
     --sf-ui-2--text-space-x: var(--sf-a8);
-    --sf-ui-3--text-space-x: var(--sf-b2);
+    --sf-ui-3--text-space-x: var(--sf-b0);
   }
 
   @media (min-width: 60rem) {
     :root {
-      --sf-ui-1\/3--text-space-x: var(--sf-a4);
-      --sf-ui-1\/2--text-space-x: var(--sf-a8);
+      --sf-ui-1\/3--text-space-x: var(--sf-a6);
+      --sf-ui-1\/2--text-space-x: var(--sf-a7);
       --sf-ui-1--text-space-x: var(--sf-a8);
-      --sf-ui-2--text-space-x: var(--sf-b2);
+      --sf-ui-2--text-space-x: var(--sf-b0);
       --sf-ui-3--text-space-x: var(--sf-b2);
     }
   }
