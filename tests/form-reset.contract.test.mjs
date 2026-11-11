@@ -17,6 +17,9 @@ function environment() {
   const listeners = [];
   const doc = { addEventListener(type, callback, capture) {
     assert.equal(type, 'reset'); assert.equal(capture, true); listeners.push(callback);
+  }, removeEventListener(type, callback, capture) {
+    assert.equal(type, 'reset'); assert.equal(capture, true);
+    const at = listeners.indexOf(callback); if (at !== -1) listeners.splice(at, 1);
   } };
   const form = { tagName: 'FORM', elements: [] };
   const input = { ownerDocument: doc, form, isConnected: true, checked: true };
@@ -63,6 +66,30 @@ test('one delegated listener per document, reset only touches its own form', asy
   assert.equal(env.listeners.length, 1);
   env.reset(); await settle();
   assert.equal(first, 1); assert.equal(second, 0);
+});
+
+test('the document listener lives while a control is bound, shared by every bundle copy (gate 36)', async () => {
+  // Each bundle carries its own copy of the helper: a second copy of the module.
+  const { bindFormReset: bindFromOtherBundle } = await import(moduleUrl(`${resetSource}\n// another bundle`));
+  const env = environment(); let first = 0, second = 0;
+  const other = { ...env.input };
+  env.form.elements.push(other);
+  const releaseFirst = bindFormReset(env.input, () => first++);
+  const releaseSecond = bindFromOtherBundle(other, () => second++);
+  assert.equal(env.listeners.length, 1, 'one listener for both copies');
+  env.reset(); await settle();
+  assert.equal(first, 1); assert.equal(second, 1);
+  assert.equal(releaseFirst(), true);
+  assert.equal(releaseFirst(), false, 'a second release changes nothing');
+  assert.equal(env.listeners.length, 1, 'kept while a control is bound');
+  releaseSecond();
+  assert.equal(env.listeners.length, 0, 'the last release takes it away');
+  const releaseAgain = bindFormReset(env.input, () => first++);
+  assert.equal(env.listeners.length, 1, 'bound again, listening again');
+  env.reset(); await settle();
+  assert.equal(first, 2);
+  releaseAgain();
+  assert.equal(env.listeners.length, 0);
 });
 
 test('Smart reset keeps initial default across current-state rerenders', async () => {
