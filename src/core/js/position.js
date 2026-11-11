@@ -203,10 +203,11 @@ function scrolledWithin(floating) {
   return found;
 }
 
+// Instant: under scroll-behavior: smooth a plain assignment animates from
+// the clamped top, and the next update measures the panel mid-way.
 function restoreScroll(found) {
   for (const [node, top, left] of found) {
-    if (node.scrollTop !== top) node.scrollTop = top;
-    if (node.scrollLeft !== left) node.scrollLeft = left;
+    if (node.scrollTop !== top || node.scrollLeft !== left) node.scrollTo({top, left, behavior: 'instant'});
   }
 }
 

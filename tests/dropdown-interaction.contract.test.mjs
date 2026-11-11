@@ -61,6 +61,7 @@ test('the keyboard brings the focused option into view and keeps it there',async
   const position=await read('src/core/js/position.js');
   assert.match(position,/const scrolled = settings\.fitHeight \? scrolledWithin\(floating\) : \[\];\s*if \(settings\.fitHeight\) floating\.style\.maxHeight/);
   assert.match(position,/style\.maxHeight = `\$\{Math\.max\(0, fits \? whole : room\)\}px`;\s*restoreScroll\(scrolled\);/);
+  assert.ok(position.includes("node.scrollTo({top, left, behavior: 'instant'})"));
   const manifest=JSON.parse(await read('src/smart/dropdown/component.json'));
   assert.equal(manifest.keyboard.host.PageDown,'step:+page');
   assert.equal(manifest.accessibility.keys.PageUp,'step:-page');
