@@ -421,8 +421,19 @@ if (document.readyState === 'loading') {
   initExistingInputs();
 }
 
+// A field taken out of the page is let go: what it bound (its form reset
+// subscription among them) goes with it, so a removed field leaves nothing
+// (gate 36). One moved within the page is connected again by the time this
+// runs and stays bound.
+function releaseRemovedInputs(node) {
+  if (!(node instanceof Element) || node.isConnected) return;
+  if (node.matches?.(INPUT_SELECTOR)) unbindInput(node);
+  node.querySelectorAll?.(INPUT_SELECTOR).forEach((root) => unbindInput(root));
+}
+
 const inputObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
+    mutation.removedNodes.forEach(releaseRemovedInputs);
     mutation.addedNodes.forEach((node) => {
       if (!(node instanceof Element)) return;
       if (node.matches?.(INPUT_SELECTOR)) {

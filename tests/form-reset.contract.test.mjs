@@ -152,3 +152,18 @@ test('JS constructors preserve initial checked defaults; setState only changes l
     assert.doesNotMatch(setter.split('\nfunction build')[0], /defaultChecked/);
   }
 });
+
+test('a class field taken out of the page lets its reset subscription go (gate 36)', async () => {
+  // The inputs bundle binds every label.sf-input it sees added; one bound that
+  // way and then removed (a Smart field moved by a window's portal and later
+  // taken out) kept its subscription, so the document listener stayed.
+  const inputs = await read('component/inputs/js/_inputs.js');
+  const observer = inputs.slice(inputs.indexOf('const inputObserver'));
+  assert.match(observer, /mutation\.removedNodes\.forEach\(releaseRemovedInputs\)/);
+  const release = inputs.slice(inputs.indexOf('function releaseRemovedInputs'), inputs.indexOf('const inputObserver'));
+  assert.match(release, /node\.isConnected\) return/);
+  assert.match(release, /unbindInput\(node\)/);
+  assert.match(release, /querySelectorAll\?\.\(INPUT_SELECTOR\)\.forEach\(\(root\) => unbindInput\(root\)\)/);
+  const unbind = inputs.slice(inputs.indexOf('function unbindInput'), inputs.indexOf('function initExistingInputs'));
+  assert.match(unbind, /__sfInputReleaseReset\?\.\(\)/);
+});
